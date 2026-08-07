@@ -54,15 +54,20 @@ saboteó a propósito y lo detectó.
 | ¿Los cuatro estados se distinguen de un vistazo? | Casos de uso → Estados |
 | **¿Modo oscuro sí o no?** | Conmutador arriba a la derecha |
 
-**La decisión que más pesa:** el modo oscuro está calculado y verificado, pero
-**duplica la superficie de prueba** en todo lo que venga después. Si lo apruebas,
-cada componente de las fases 4 y 5 se prueba dos veces. Si lo descartas ahora,
-se descarta barato.
+**Modo oscuro — recomendación retirada.** Yo proponía descartarlo. El sistema en
+producción **ya tiene conmutador de tema en la barra superior**, así que no es una
+mejora opcional: es una promesa hecha. Se queda. Ver [D-06](02-decisiones.md).
 
-Mi recomendación: **descartarlo por ahora**. Es un sistema de gestión interno y
-ese esfuerzo rinde más en densidad. Pero mira la maqueta antes de decidir.
+**Esquema de composición.** La lateral plegable sustituye al marco horizontal del
+§5.1. Del sistema real se toma **el esquema, no los colores**. Ver
+[D-12](02-decisiones.md).
 
-**Al cerrar:** capítulo de color del manual — ya escrito, §2 del manual.
+Lo único que queda abierto de color: `marco-fondo #2C3D71` se midió para una barra
+de 54px. En la lateral de altura completa la superficie es seis veces mayor.
+Cumple contraste, pero míralo antes de darlo por bueno.
+
+**Al cerrar:** capítulo de color del manual — ya escrito, §2 del manual. Y
+**corregir MMI-DS §5.1**, que describe una composición que ya no existe.
 
 ---
 

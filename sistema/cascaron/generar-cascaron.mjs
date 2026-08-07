@@ -168,17 +168,88 @@ const filas = [
   ['Álvarez Ponce, Rosa', '70551234', '4.º B', 'Activo', 'exito', '—'],
 ];
 
+// Iconos de trazo 1,5px — Lucide (D-07). Heredan currentColor, que es
+// exactamente lo que el emoji no hace.
+const ic = (d, extra = '') =>
+  `<svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${d}${extra}</svg>`;
+
+const ICONOS = {
+  panel: ic('<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'),
+  matricula: ic('<path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/>'),
+  asistencia: ic('<path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/>'),
+  usuarios: ic('<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M17 6a3 3 0 0 1 0 6M18 20c0-2-1-3.5-2.5-4.5"/>'),
+  comunicaciones: ic('<path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="2" y="13" width="4" height="6" rx="1.5"/><rect x="18" y="13" width="4" height="6" rx="1.5"/>'),
+  administracion: ic('<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>'),
+  tesoreria: ic('<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>'),
+  academico: ic('<path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/>'),
+  configuracion: ic('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/>'),
+  chevron: ic('<path d="m6 9 6 6 6-6"/>'),
+  sol: ic('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/>'),
+  sobre: ic('<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/>'),
+  campana: ic('<path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>'),
+  panelIzq: ic('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/>'),
+};
+
+const MENU = [
+  ['panel', 'Dashboard', false],
+  ['matricula', 'Matrícula', true],
+  ['asistencia', 'Asistencia', true],
+  ['usuarios', 'Usuarios', true],
+  ['comunicaciones', 'Comunicaciones', true],
+  ['administracion', 'Administración', true],
+  ['tesoreria', 'Tesorería', true],
+  ['academico', 'Académico', true],
+  ['configuracion', 'Configuración', true],
+];
+
+const itemsMenu = (activo = 'panel') =>
+  MENU.map(
+    ([k, txt, sub]) => `
+      <a class="nav-item${k === activo ? ' activo' : ''}" href="#" title="${txt}">
+        <span class="nav-ic">${ICONOS[k]}</span>
+        <span class="nav-txt">${txt}</span>
+        ${sub ? `<span class="nav-chev">${ICONOS.chevron}</span>` : ''}
+      </a>`
+  ).join('');
+
+const barraSuperior = `
+  <div class="top">
+    <button class="top-plegar" aria-label="Plegar menú">${ICONOS.panelIzq}</button>
+    <div class="top-filtros">
+      <label class="filtro"><span class="filtro-et">Años</span><select class="campo"><option>2026</option></select></label>
+      <label class="filtro"><span class="filtro-et">Sedes</span><select class="campo"><option>Todas</option></select></label>
+      <label class="filtro"><span class="filtro-et">Nivel</span><select class="campo"><option>Todos</option></select></label>
+    </div>
+    <div class="top-acciones">
+      <button class="top-btn" aria-label="Cambiar tema">${ICONOS.sol}</button>
+      <button class="top-btn" aria-label="Mensajes">${ICONOS.sobre}</button>
+      <button class="top-btn" aria-label="Notificaciones">${ICONOS.campana}<span class="badge">1</span></button>
+      <span class="top-avatar">JH</span>
+    </div>
+  </div>`;
+
+const lateral = (colapsado) => `
+  <aside class="lat${colapsado ? ' colapsado' : ''}">
+    <div class="lat-marca">
+      ${escudo(30)}
+      <div class="lat-id"><span class="lat-colegio">COLEGIO</span><span class="lat-nombre">ALBERT EINSTEIN</span></div>
+    </div>
+    <nav class="lat-nav">${itemsMenu()}</nav>
+    <div class="lat-usuario">
+      <span class="lat-av">JP</span>
+      <div class="lat-user-txt">
+        <span class="lat-user-nom">JOSE ISIDRO PINEDA</span>
+        <span class="lat-user-mail">jose.pineda@ae.edu.pe</span>
+      </div>
+    </div>
+  </aside>`;
+
 const maquetaSistema = `
 <div class="lienzo lienzo-sistema">
-  <div class="s-marco">
-    <div class="s-marco-izq">
-      ${escudo(26)}
-      <div class="s-marco-id"><span class="s-colegio">COLEGIO</span><span class="s-nombre">ALBERT EINSTEIN</span></div>
-    </div>
-    <nav class="s-nav"><span class="activo">Estudiantes</span><span>Asistencia</span><span>Pagos</span><span>Reportes</span></nav>
-    <div class="s-avatar">JH</div>
-  </div>
-
+  <div class="app">
+  ${lateral(false)}
+  <div class="app-main">
+  ${barraSuperior}
   <div class="s-cuerpo">
     <div class="s-cabecera">
       <div>
@@ -224,15 +295,59 @@ const maquetaSistema = `
       </div>
     </div>
   </div>
+  </div>
+  </div>
+</div>`;
+
+// El mismo marco con la lateral plegada: solo iconos.
+const maquetaColapsada = `
+<div class="lienzo lienzo-sistema">
+  <div class="app">
+  ${lateral(true)}
+  <div class="app-main">
+  ${barraSuperior}
+  <div class="s-cuerpo">
+    <div class="s-cabecera">
+      <div><h2>Estudiantes</h2><p>1 240 registros · Marzo 2026</p></div>
+      <button class="btn btn-1">Nuevo estudiante</button>
+    </div>
+    <div class="s-tarjeta">
+      <table class="s-tabla">
+        <thead><tr><th>Estudiante</th><th>DNI</th><th>Grado</th><th>Estado</th><th>Deuda</th><th></th></tr></thead>
+        <tbody>
+          ${filas
+            .map(
+              ([n, dni, g, est, cls, deuda], i) => `
+          <tr${i === 1 ? ' class="hover"' : ''}>
+            <td>${n}</td><td class="mono">${dni}</td><td>${g}</td>
+            <td><span class="chip chip-${cls}">${est}</span></td>
+            <td class="mono ${cls === 'error' ? 'deuda' : 'apagado'}">${deuda}</td>
+            <td><a href="#" class="enlace">Editar</a></td>
+          </tr>`
+            )
+            .join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+  </div>
 </div>`;
 
 const maquetaMovil = `
 <div class="lienzo lienzo-movil">
   <div class="m-marco">
-    <div class="m-marco-fila1">${escudo(22)}<span class="m-nombre">ALBERT EINSTEIN</span><span class="m-avatar">JH</span></div>
+    <div class="m-marco-fila1">
+      <button class="m-hamb" aria-label="Abrir menú">${ICONOS.panelIzq}</button>
+      ${escudo(22)}<span class="m-nombre">ALBERT EINSTEIN</span><span class="m-avatar">JH</span>
+    </div>
     <div class="m-marco-fila2"><span class="activo">Estudiantes</span><span>Asistencia</span><span>Pagos</span></div>
   </div>
   <div class="m-cuerpo">
+    <div class="m-filtros-movil">
+      <select class="campo"><option>2026</option></select>
+      <select class="campo"><option>Todas las sedes</option></select>
+    </div>
     <div class="m-cabecera"><h3>Estudiantes</h3><p>1 240 · Marzo 2026</p></div>
     <input class="campo" placeholder="71234567" aria-label="Buscar">
     ${filas
@@ -562,19 +677,69 @@ h2.seccion {
 .w-datos strong { display: block; font-size: 21px; font-weight: 700; color: var(--marca-rojo); }
 .w-datos span { font-size: 10px; color: var(--texto-secundario); }
 
-/* ── Maqueta SISTEMA ─────────────────────────────────────────────────────── */
-.s-marco { height: 54px; background: var(--marco-fondo); color: var(--marco-texto);
-  display: flex; align-items: center; gap: 22px; padding: 0 18px; }
-.s-marco-izq { display: flex; align-items: center; gap: 8px; }
-.s-marco-id { display: flex; flex-direction: column; line-height: 1.15; }
-.s-colegio { font-size: 8px; letter-spacing: .13em; color: var(--marco-acento); font-weight: 500; }
-.s-nombre { font-size: 12px; font-weight: 600; }
-.s-nav { display: flex; gap: 20px; flex: 1; font-size: 13px; align-self: stretch; align-items: center; }
-.s-nav span { padding: 17px 0 14px; opacity: .85; }
-.s-nav .activo { opacity: 1; color: var(--marco-acento); font-weight: 500;
-  border-bottom: 5px solid var(--marco-acento); }
-.s-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--marco-acento);
-  color: var(--marco-fondo); display: grid; place-items: center; font-size: 11px; font-weight: 600; }
+/* ── Maqueta SISTEMA — lateral plegable + barra de filtros globales ──────── */
+.app { display: flex; min-height: 520px; }
+
+.lat { width: 236px; flex: none; background: var(--marco-fondo); color: var(--marco-texto);
+  display: flex; flex-direction: column; transition: width .18s ease; }
+.lat.colapsado { width: 58px; }
+.lat.colapsado .nav-txt, .lat.colapsado .nav-chev,
+.lat.colapsado .lat-id, .lat.colapsado .lat-user-txt { display: none; }
+.lat.colapsado .lat-marca, .lat.colapsado .lat-usuario { justify-content: center; }
+.lat.colapsado .nav-item { justify-content: center; padding-inline: 0; }
+
+.lat-marca { display: flex; align-items: center; gap: 9px; padding: 13px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.10); }
+.lat-id { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.lat-colegio { font-size: 8px; letter-spacing: .13em; color: var(--marco-acento); font-weight: 500; }
+.lat-nombre { font-size: 12px; font-weight: 600; white-space: nowrap; }
+
+.lat-nav { flex: 1; padding: 8px 8px; display: flex; flex-direction: column; gap: 1px; overflow: hidden; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+  border-radius: 5px; color: var(--marco-texto); text-decoration: none;
+  font-size: 13px; opacity: .84; white-space: nowrap; }
+.nav-item:hover { background: rgba(255,255,255,.07); opacity: 1; }
+.nav-item.activo { background: var(--marco-item-activo); opacity: 1;
+  color: var(--marco-acento); font-weight: 500;
+  box-shadow: inset 3px 0 0 var(--marco-acento); }
+.nav-ic { display: grid; place-items: center; flex: none; }
+.nav-txt { flex: 1; }
+.nav-chev { opacity: .5; display: grid; place-items: center; }
+.nav-chev .ic { width: 14px; height: 14px; }
+
+.lat-usuario { display: flex; align-items: center; gap: 9px; padding: 11px 12px;
+  border-top: 1px solid rgba(255,255,255,.10); }
+.lat-av { width: 30px; height: 30px; border-radius: 50%; flex: none;
+  background: var(--marco-acento); color: var(--marco-fondo);
+  display: grid; place-items: center; font-size: 11px; font-weight: 600; }
+.lat-user-txt { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.lat-user-nom { font-size: 11px; font-weight: 500; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; }
+.lat-user-mail { font-size: 10px; opacity: .62; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; }
+
+.app-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+.top { display: flex; align-items: center; gap: 14px; padding: 9px 16px;
+  background: var(--fondo-tarjeta); border-bottom: 1px solid var(--borde); }
+.top-plegar { background: transparent; border: 0; cursor: pointer; padding: 5px;
+  border-radius: 5px; color: var(--texto-secundario); display: grid; place-items: center; }
+.top-plegar:hover { background: var(--fondo-encabezado); color: var(--texto-principal); }
+.top-filtros { display: flex; gap: 9px; flex: 1; }
+.filtro { display: flex; flex-direction: column; gap: 2px; }
+.filtro-et { font-size: 10px; font-weight: 500; color: var(--texto-secundario); }
+.filtro .campo { font-size: 13px; padding: 5px 9px; min-width: 118px; }
+.top-acciones { display: flex; align-items: center; gap: 5px; }
+.top-btn { background: transparent; border: 0; cursor: pointer; padding: 7px;
+  border-radius: 6px; color: var(--texto-secundario); position: relative;
+  display: grid; place-items: center; }
+.top-btn:hover { background: var(--fondo-encabezado); color: var(--texto-principal); }
+.badge { position: absolute; top: 1px; right: 1px; min-width: 15px; height: 15px;
+  border-radius: 8px; background: var(--error-acento); color: #fff;
+  font-size: 9px; font-weight: 600; display: grid; place-items: center; padding: 0 3px; }
+.top-avatar { width: 30px; height: 30px; border-radius: 50%; margin-left: 5px;
+  background: var(--accion); color: var(--accion-texto);
+  display: grid; place-items: center; font-size: 11px; font-weight: 600; }
 
 .s-cuerpo { padding: 20px; background: var(--fondo-pagina); }
 .s-cabecera { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
@@ -609,6 +774,10 @@ h2.seccion {
 .m-marco-fila2 span { padding: 6px 0 8px; opacity: .85; }
 .m-marco-fila2 .activo { opacity: 1; color: var(--marco-acento); font-weight: 500;
   border-bottom: 4px solid var(--marco-acento); }
+.m-hamb { background: transparent; border: 0; cursor: pointer; padding: 3px;
+  color: var(--marco-texto); display: grid; place-items: center; }
+.m-filtros-movil { display: flex; gap: 8px; margin-bottom: 12px; }
+.m-filtros-movil .campo { flex: 1; min-width: 0; font-size: 14px; }
 .m-cuerpo { padding: 14px; background: var(--fondo-pagina); }
 .m-cabecera h3 { font-size: 21px; font-weight: 600; }
 .m-cabecera p { margin: 2px 0 12px; font-size: 11px; color: var(--texto-secundario); }
@@ -754,7 +923,8 @@ h2.seccion {
 
 <div class="maquetas">
   <div><div class="maqueta-tit">Web — landing</div>${maquetaWeb}</div>
-  <div><div class="maqueta-tit">Sistema — escritorio</div>${maquetaSistema}</div>
+  <div><div class="maqueta-tit">Sistema — escritorio, lateral desplegada</div>${maquetaSistema}</div>
+  <div><div class="maqueta-tit">Sistema — lateral plegada, solo iconos</div>${maquetaColapsada}</div>
   <div><div class="maqueta-tit">App — móvil, 375px</div>${maquetaMovil}</div>
 </div>
 
@@ -856,6 +1026,21 @@ ${Object.entries(marca)
   var guardado = null;
   try { guardado = localStorage.getItem('mmi-tema'); } catch (e) {}
   aplicar(guardado || 'claro');
+
+  // El botón de plegar es real: pliega la lateral de SU maqueta.
+  document.querySelectorAll('.top-plegar').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var lat = b.closest('.app').querySelector('.lat');
+      lat.classList.toggle('colapsado');
+    });
+  });
+
+  // El conmutador de tema de la barra superior de las maquetas también funciona.
+  document.querySelectorAll('.top-btn[aria-label="Cambiar tema"]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      aplicar(raiz.getAttribute('data-tema') === 'oscuro' ? 'claro' : 'oscuro');
+    });
+  });
 })();
 </script>
 </body>

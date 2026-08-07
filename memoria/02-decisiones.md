@@ -85,20 +85,60 @@ estados combinatorios. No es el caso.
 
 ---
 
-## D-06 · No se hace modo oscuro
+## D-06 · Modo oscuro — RECOMENDACIÓN RETIRADA
 
-**Decisión:** solo modo claro.
+**Decisión inicial:** solo modo claro, porque MMI-DS §9 lo desaconseja y duplica
+la superficie de prueba.
 
-**Por qué:** MMI-DS §9 y §2.4. Los valores están calculados y son implementables,
-pero **no aprobados**. Duplica la superficie de prueba de contraste en todos los
-componentes, y el propio documento reconoce que el modo oscuro es «notablemente
-menos marca»: el panel rojo se aplana y el marco queda como único portador de
-identidad.
+**Por qué se retiró:** el usuario mostró una captura del sistema actual y **la
+barra superior ya tiene conmutador de tema**. Si el producto ya lo ofrece, el
+modo oscuro no es una mejora opcional: es una promesa hecha. Retirarlo sería
+quitar función existente.
 
-Ese esfuerzo rinde más en densidad.
+**Estado:** los dos modos están verificados —35 pares bloqueantes cada uno, 0
+fallos— y el cascarón los conmuta.
 
-**Lo revertiría:** que el usuario lo apruebe explícitamente. Entonces se
-implementa a partir de §2.4, que ya tiene los valores.
+**Coste que sigue en pie:** cada componente de las fases 4 y 5 se prueba dos
+veces. Eso ya no es discutible, es el precio de la función.
+
+---
+
+## D-12 · La composición es lateral vertical, no marco horizontal
+
+**Decisión:** barra lateral plegable a la izquierda (236px desplegada, 58px
+plegada), filtros globales en la barra superior, tarjeta de usuario abajo a la
+izquierda.
+
+**Por qué:** MMI-DS §5.1 especifica «marco de aplicación, 54px de alto,
+navegación horizontal». **El sistema real no es así.** El usuario aportó captura
+del sistema en producción: lateral vertical con submenús, filtros globales
+arriba (Años · Sedes · Nivel) y usuario abajo.
+
+Manda el sistema real. **MMI-DS §5.1 queda desactualizado y hay que corregirlo.**
+
+**Consecuencia de color que hay que mirar:** `marco-fondo #2C3D71` se eligió «por
+intensidad medida» **para una barra de 54px**. En una lateral de altura completa
+la superficie se multiplica por seis. El valor sigue cumpliendo contraste, pero
+la decisión estética se tomó para otra proporción. Pendiente de que el usuario lo
+vea y lo confirme.
+
+**Del sistema real se toma el esquema, NO los colores.** Instrucción expresa del
+usuario.
+
+---
+
+## D-13 · Defectos detectados en el sistema en producción
+
+De la captura aportada, para corregir cuando se toque ese código:
+
+| Defecto | Regla que incumple |
+|---|---|
+| «Hola, JOSE ISIDRO» en tipografía **serif** | §3 — IBM Plex Sans para todo, sin excepción |
+| Badge **«0»** en el icono de mensajes | Un contador en cero no informa. No debe pintarse |
+| «Tu cuenta todavía no tiene un perfil asignado.» | Callejón sin salida. Ningún mensaje sin decir qué hacer |
+| Iconos del menú de trazo variable | §8.1 — pendiente de unificar en Lucide 1,5px |
+
+Los tres primeros son de una línea. El de la tipografía es el más visible.
 
 ---
 
