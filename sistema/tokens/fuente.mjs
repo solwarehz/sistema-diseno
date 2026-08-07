@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.1.0';
+export const VERSION = '1.2.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -92,62 +92,68 @@ export const primitivas = {
 
 export const semanticos = {
   // ── Superficies ──────────────────────────────────────────────────────────
-  'fondo-pagina':      { claro: '#F8F8F6', origen: 'gris.50',  uso: 'Fondo detrás de las tarjetas' },
-  'fondo-tarjeta':     { claro: '#FFFFFF', origen: 'gris.0',   uso: 'Tarjeta, panel, cuerpo de tabla, modal' },
-  'fondo-encabezado':  { claro: '#F0EFEE', origen: 'gris.100', uso: 'Encabezado de tabla' },
-  'fondo-fila-alt':    { claro: '#F8F8F6', origen: 'gris.50',  uso: 'Fila alterna si se usa banda cebra' },
-  'fondo-fila-hover':  { claro: '#E9F5FF', origen: 'azul.50',  uso: 'Fila bajo el cursor y fila seleccionada' },
+  'fondo-pagina':      { claro: '#F8F8F6', oscuro: '#1E1D1C', origen: 'gris.50',  uso: 'Fondo detrás de las tarjetas' },
+  'fondo-tarjeta':     { claro: '#FFFFFF', oscuro: '#242422', origen: 'gris.0',   uso: 'Tarjeta, panel, cuerpo de tabla, modal' },
+  'fondo-encabezado':  { claro: '#F0EFEE', oscuro: '#2C2B29', origen: 'gris.100', uso: 'Encabezado de tabla' },
+  'fondo-fila-alt':    { claro: '#F8F8F6', oscuro: '#242422', origen: 'gris.50',  uso: 'Fila alterna si se usa banda cebra' },
+  'fondo-fila-hover':  { claro: '#E9F5FF', oscuro: '#363532', origen: 'azul.50',  uso: 'Fila bajo el cursor y fila seleccionada' },
 
   // ── Texto ────────────────────────────────────────────────────────────────
-  'texto-principal':   { claro: '#2C2A25', origen: 'gris.900', uso: 'Contenido, títulos, celdas de tabla' },
-  'texto-secundario':  { claro: '#6A6864', origen: 'gris.600', uso: 'Datos de apoyo, columnas no primarias' },
-  // v1.1.0 — corregido. Ver `correcciones`. El placeholder es texto y exige 4.5:1.
-  'texto-pista':       { claro: '#6A6864', origen: 'gris.600', uso: 'Solo placeholder y ayuda. Nunca contenido real' },
-  'texto-invertido':   { claro: '#FFFFFF', origen: 'gris.0',   uso: 'Sobre acción y sobre marco' },
+  'texto-principal':   { claro: '#2C2A25', oscuro: '#EFEEEB', origen: 'gris.900', uso: 'Contenido, títulos, celdas de tabla' },
+  'texto-secundario':  { claro: '#6A6864', oscuro: '#C3C1BD', origen: 'gris.600', uso: 'Datos de apoyo, columnas no primarias' },
+  // v1.1.0 — corregido SOLO en claro. En oscuro el #989692 del documento cumple
+  // (5,26:1 sobre tarjeta), así que la jerarquía del placeholder SÍ es
+  // expresable en oscuro y no en claro: el fondo oscuro deja más recorrido.
+  'texto-pista':       { claro: '#6A6864', oscuro: '#989692', origen: 'gris.500/600', uso: 'Solo placeholder y ayuda. Nunca contenido real' },
+  'texto-invertido':   { claro: '#FFFFFF', oscuro: '#20201E', origen: 'gris.0',   uso: 'Sobre acción y sobre marco' },
 
   // ── Bordes ───────────────────────────────────────────────────────────────
-  'borde':             { claro: '#E0DFDE', origen: 'gris.200', uso: 'Divisor de filas, contorno de tarjeta' },
-  'borde-fuerte':      { claro: '#C8C6C4', origen: 'gris.300', uso: 'Hover de contorno, separadores con peso' },
-  // v1.1.0 — corregido. Ver `correcciones`. SC 1.4.11 exige 3:1 en límite de control.
-  'borde-campo':       { claro: '#8B8985', origen: 'gris.500', uso: 'Contorno de input, select, textarea' },
+  'borde':             { claro: '#E0DFDE', oscuro: '#44423F', origen: 'gris.200', uso: 'Divisor de filas, contorno de tarjeta' },
+  'borde-fuerte':      { claro: '#C8C6C4', oscuro: '#575451', origen: 'gris.300', uso: 'Hover de contorno, separadores con peso' },
+  // v1.1.0 — corregido en claro. v1.2.0 — corregido también en oscuro.
+  'borde-campo':       { claro: '#8B8985', oscuro: '#8A8681', origen: 'gris.500', uso: 'Contorno de input, select, textarea' },
 
   // ── Acción ───────────────────────────────────────────────────────────────
-  'accion':            { claro: '#0063CB', origen: 'azul.600', uso: 'Botón principal. UNO por pantalla' },
-  'accion-hover':      { claro: '#004EB2', origen: 'azul.700', uso: 'Hover del botón principal' },
-  'accion-activa':     { claro: '#003B91', origen: 'azul.800', uso: 'Estado presionado' },
-  'accion-texto':      { claro: '#FFFFFF', origen: 'gris.0',   uso: 'Texto dentro del botón principal' },
-  'accion-deshabilitada': { claro: '#C8C6C4', origen: 'gris.300', uso: 'Sin permiso o sin datos válidos' },
-  'accion-texto-desh': { claro: '#8B8985', origen: 'gris.500', uso: 'Texto del botón deshabilitado' },
-  'accion-2':          { claro: '#655000', origen: 'oro.700',  uso: 'Acción secundaria: borde y texto, sin relleno' },
-  'enlace':            { claro: '#0063CB', origen: 'azul.600', uso: 'Enlaces y acciones de fila tipo «Editar»' },
+  // En oscuro la acción SE INVIERTE: azul claro con texto oscuro. Ningún azul
+  // oscuro alcanza 4,5:1 sobre superficie oscura (§2.4).
+  'accion':            { claro: '#0063CB', oscuro: '#6CB2FF', origen: 'azul.600', uso: 'Botón principal. UNO por pantalla' },
+  'accion-hover':      { claro: '#004EB2', oscuro: '#A0D0FF', origen: 'azul.700', uso: 'Hover del botón principal' },
+  'accion-activa':     { claro: '#003B91', oscuro: '#CFE8FF', origen: 'azul.800', uso: 'Estado presionado' },
+  'accion-texto':      { claro: '#FFFFFF', oscuro: '#20201E', origen: 'gris.0',   uso: 'Texto dentro del botón principal' },
+  'accion-deshabilitada': { claro: '#C8C6C4', oscuro: '#44423F', origen: 'gris.300', uso: 'Sin permiso o sin datos válidos' },
+  'accion-texto-desh': { claro: '#8B8985', oscuro: '#989692', origen: 'gris.500', uso: 'Texto del botón deshabilitado' },
+  'accion-2':          { claro: '#655000', oscuro: '#DFCA9C', origen: 'oro.700',  uso: 'Acción secundaria: borde y texto, sin relleno' },
+  'enlace':            { claro: '#0063CB', oscuro: '#6CB2FF', origen: 'azul.600', uso: 'Enlaces y acciones de fila tipo «Editar»' },
 
   // ── Marco de aplicación ──────────────────────────────────────────────────
   // #2C3D71 se eligió por intensidad medida: separa navegación de contenido
-  // sin borde y sin dominar la pantalla.
-  'marco-fondo':       { claro: '#2C3D71', origen: 'directo',  uso: 'Barra de navegación. ÚNICO azul en superficie grande' },
-  'marco-texto':       { claro: '#FFFFFF', origen: 'gris.0',   uso: 'Nombre del colegio e ítems de navegación' },
-  'marco-acento':      { claro: '#DFCA9C', origen: 'oro.200',  uso: 'Ítem activo: texto y filete inferior. También avatar' },
-  'marco-item-activo': { claro: '#1D3163', origen: 'directo',  uso: 'Fondo del ítem activo en desplegable' },
+  // sin borde y sin dominar la pantalla. En oscuro SE CONSERVA IDÉNTICO: se
+  // distingue por diferencia de matiz, no de luminancia (§2.3).
+  'marco-fondo':       { claro: '#2C3D71', oscuro: '#2C3D71', origen: 'directo',  uso: 'Barra de navegación. ÚNICO azul en superficie grande' },
+  'marco-texto':       { claro: '#FFFFFF', oscuro: '#FFFFFF', origen: 'gris.0',   uso: 'Nombre del colegio e ítems de navegación' },
+  'marco-acento':      { claro: '#DFCA9C', oscuro: '#DFCA9C', origen: 'oro.200',  uso: 'Ítem activo: texto y filete inferior. También avatar' },
+  'marco-item-activo': { claro: '#1D3163', oscuro: '#1D3163', origen: 'directo',  uso: 'Fondo del ítem activo en desplegable' },
 
   // ── Foco ─────────────────────────────────────────────────────────────────
   // Son dos tokens y no uno por una razón medida: el ámbar oscuro no alcanza
   // 3:1 sobre el marco, y el ámbar claro no lo alcanza sobre blanco.
-  'foco':              { claro: '#BE7A14', origen: 'directo',  uso: 'Anillo sobre superficies de contenido' },
-  'foco-en-marco':     { claro: '#F0C060', origen: 'directo',  uso: 'Anillo dentro del marco de navegación' },
+  // En oscuro el ámbar oscuro desaparece: `foco` se aclara a #F0C060 (§2.4).
+  'foco':              { claro: '#BE7A14', oscuro: '#F0C060', origen: 'directo',  uso: 'Anillo sobre superficies de contenido' },
+  'foco-en-marco':     { claro: '#F0C060', oscuro: '#F0C060', origen: 'directo',  uso: 'Anillo dentro del marco de navegación' },
 
   // ── Estados — siempre en pares fondo/texto (§2.5.2) ──────────────────────
-  'exito-fondo':  { claro: '#E3F4E1', origen: 'directo', uso: 'Chip «Activo», confirmación' },
-  'exito-texto':  { claro: '#14521A', origen: 'directo', uso: 'Texto sobre exito-fondo' },
-  'exito-acento': { claro: '#338136', origen: 'directo', uso: 'Solo filete del borde. Adorno' },
-  'aviso-fondo':  { claro: '#FFEBD6', origen: 'directo', uso: 'Chip «Parcial», advertencia recuperable' },
-  'aviso-texto':  { claro: '#6B3B00', origen: 'directo', uso: 'Texto sobre aviso-fondo' },
-  'aviso-acento': { claro: '#A46300', origen: 'directo', uso: 'Solo filete del borde. Adorno' },
-  'error-fondo':  { claro: '#FFE6DF', origen: 'directo', uso: 'Chip «Deuda», validación fallida' },
-  'error-texto':  { claro: '#8F1017', origen: 'directo', uso: 'Texto sobre error-fondo' },
-  'error-acento': { claro: '#D63231', origen: 'directo', uso: 'Solo filete del borde. Adorno' },
-  'info-fondo':   { claro: '#E9EEFF', origen: 'directo', uso: 'Aviso neutro, ayuda contextual' },
-  'info-texto':   { claro: '#02468A', origen: 'directo', uso: 'Texto sobre info-fondo' },
-  'info-acento':  { claro: '#2F71CE', origen: 'directo', uso: 'Solo filete del borde. Adorno' },
+  'exito-fondo':  { claro: '#E3F4E1', oscuro: '#233521', origen: 'directo', uso: 'Chip «Activo», confirmación' },
+  'exito-texto':  { claro: '#14521A', oscuro: '#B3DCAE', origen: 'directo', uso: 'Texto sobre exito-fondo' },
+  'exito-acento': { claro: '#338136', oscuro: '#5FA862', origen: 'directo', uso: 'Solo filete del borde. Adorno' },
+  'aviso-fondo':  { claro: '#FFEBD6', oscuro: '#402C16', origen: 'directo', uso: 'Chip «Parcial», advertencia recuperable' },
+  'aviso-texto':  { claro: '#6B3B00', oscuro: '#FBC894', origen: 'directo', uso: 'Texto sobre aviso-fondo' },
+  'aviso-acento': { claro: '#A46300', oscuro: '#C88A3C', origen: 'directo', uso: 'Solo filete del borde. Adorno' },
+  'error-fondo':  { claro: '#FFE6DF', oscuro: '#4D241F', origen: 'directo', uso: 'Chip «Deuda», validación fallida' },
+  'error-texto':  { claro: '#8F1017', oscuro: '#FFB8A9', origen: 'directo', uso: 'Texto sobre error-fondo' },
+  'error-acento': { claro: '#D63231', oscuro: '#E2665C', origen: 'directo', uso: 'Solo filete del borde. Adorno' },
+  'info-fondo':   { claro: '#E9EEFF', oscuro: '#273048', origen: 'directo', uso: 'Aviso neutro, ayuda contextual' },
+  'info-texto':   { claro: '#02468A', oscuro: '#BFD0FF', origen: 'directo', uso: 'Texto sobre info-fondo' },
+  'info-acento':  { claro: '#2F71CE', oscuro: '#6D97DE', origen: 'directo', uso: 'Solo filete del borde. Adorno' },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -156,10 +162,13 @@ export const semanticos = {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const marca = {
-  'marca-rojo':     { valor: '#E30613', uso: 'Escudo, titulares de landing, impresos', prohibidoEn: 'Interfaz' },
-  'marca-oro':      { valor: '#DEBD68', uso: 'Escudo, filete de landing',              prohibidoEn: 'Interfaz. En sistema usar oro-200 u oro-700' },
-  'marca-amarillo': { valor: '#FDF200', uso: 'Campaña, afiches, redes',                prohibidoEn: 'Todo el sistema. 1,2:1 — no admite texto' },
-  'marca-celeste':  { valor: '#01ADED', uso: 'Campaña',                                prohibidoEn: 'Todo el sistema. 2,6:1 — no admite texto' },
+  // En oscuro el titular sube a rojo-400: el #E30613 sobre página oscura
+  // pierde legibilidad y el panel de marca se aplana (§2.4).
+  'marca-rojo':       { claro: '#E30613', oscuro: '#FF4C37', uso: 'Escudo, titulares de landing, impresos', prohibidoEn: 'Interfaz' },
+  'marca-rojo-panel': { claro: '#E30613', oscuro: '#930000', uso: 'Panel de marca de la landing',           prohibidoEn: 'Interfaz' },
+  'marca-oro':        { claro: '#DEBD68', oscuro: '#DEBD68', uso: 'Escudo, filete de landing',              prohibidoEn: 'Interfaz. En sistema usar accion-2 o marco-acento' },
+  'marca-amarillo':   { claro: '#FDF200', oscuro: '#FDF200', uso: 'Campaña, afiches, redes',                prohibidoEn: 'Todo el sistema. 1,2:1 — no admite texto' },
+  'marca-celeste':    { claro: '#01ADED', oscuro: '#01ADED', uso: 'Campaña',                                prohibidoEn: 'Todo el sistema. 2,6:1 — no admite texto' },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────

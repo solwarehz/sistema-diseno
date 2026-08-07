@@ -43,22 +43,29 @@ const medir = (a, b) => Math.floor(contraste(a, b) * 100) / 100;
 
 // ── Verificación de los pares ──────────────────────────────────────────────
 
-const resultados = pares.map(([frente, fondo, minimo, motivo]) => {
-  const hexFrente = semanticos[frente].claro;
-  const hexFondo = semanticos[fondo].claro;
-  const ratio = medir(hexFrente, hexFondo);
-  const bloqueante = minimo !== 'informativo';
-  return {
-    frente,
-    fondo,
-    hexFrente,
-    hexFondo,
-    ratio,
-    minimo,
-    motivo,
-    cumple: bloqueante ? ratio >= minimo : null,
-  };
-});
+const MODOS = ['claro', 'oscuro'];
+
+const verificar = (modo) =>
+  pares.map(([frente, fondo, minimo, motivo]) => {
+    const hexFrente = semanticos[frente][modo];
+    const hexFondo = semanticos[fondo][modo];
+    const ratio = medir(hexFrente, hexFondo);
+    const bloqueante = minimo !== 'informativo';
+    return {
+      modo,
+      frente,
+      fondo,
+      hexFrente,
+      hexFondo,
+      ratio,
+      minimo,
+      motivo,
+      cumple: bloqueante ? ratio >= minimo : null,
+    };
+  });
+
+const porModo = Object.fromEntries(MODOS.map((m) => [m, verificar(m)]));
+const resultados = MODOS.flatMap((m) => porModo[m]);
 
 const fallos = resultados.filter((r) => r.cumple === false);
 const verificados = resultados.filter((r) => r.cumple !== null);
@@ -70,7 +77,7 @@ const lock = {
   version: VERSION,
   norma: NORMA,
   generado: 'node sistema/tokens/generar.mjs',
-  modo: 'claro',
+  modos: MODOS,
   aviso:
     'Archivo generado. No editar a mano. La fuente es sistema/tokens/fuente.mjs. ' +
     'Cambiar un valor exige regenerar, re-verificar y subir versión (§2.5 regla 8).',
@@ -79,11 +86,23 @@ const lock = {
     paresBloqueantes: verificados.length,
     paresInformativos: resultados.length - verificados.length,
     fallos: fallos.length,
+    porModo: Object.fromEntries(
+      MODOS.map((m) => [
+        m,
+        {
+          bloqueantes: porModo[m].filter((r) => r.cumple !== null).length,
+          fallos: porModo[m].filter((r) => r.cumple === false).length,
+        },
+      ])
+    ),
   },
   correcciones,
   primitivas,
   semanticos: Object.fromEntries(
-    Object.entries(semanticos).map(([k, v]) => [k, { valor: v.claro, origen: v.origen, uso: v.uso }])
+    Object.entries(semanticos).map(([k, v]) => [
+      k,
+      { claro: v.claro, oscuro: v.oscuro, origen: v.origen, uso: v.uso },
+    ])
   ),
   marca,
   contrastes: resultados,
@@ -111,29 +130,57 @@ const grupos = {
   ],
 };
 
+const variables = (modo) =>
+  Object.entries(grupos)
+    .map(([titulo, claves]) =>
+      bloque(
+        titulo,
+        claves.map((k) => `--${k}: ${semanticos[k][modo]};`)
+      )
+    )
+    .join('\n');
+
 const css = `/* ───────────────────────────────────────────────────────────────────────────
    TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v${VERSION}
-   Modo claro BLOQUEADO · ${NORMA} · ${verificados.length} pares verificados, ${fallos.length} fallos
+   ${NORMA} · ${verificados.length} pares verificados en los dos modos, ${fallos.length} fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
 
-   Para uso fuera de Tailwind. Dentro de Tailwind, usa las clases del preset.
+   El modo se conmuta con el atributo \`data-tema\` en <html>:
+       <html data-tema="claro">   ó   <html data-tema="oscuro">
+   Sin atributo, se respeta la preferencia del sistema operativo.
    ─────────────────────────────────────────────────────────────────────────── */
 
-:root {
-${Object.entries(grupos)
-  .map(([titulo, claves]) =>
-    bloque(
-      titulo,
-      claves.map((k) => `--${k}: ${semanticos[k].claro};`)
-    )
-  )
-  .join('\n')}
+:root,
+[data-tema='claro'] {
+${variables('claro')}
   /* Marca — FUERA del sistema. Prohibidos en interfaz (§2.3) */
 ${Object.entries(marca)
-  .map(([k, v]) => `  --${k}: ${v.valor};`)
+  .map(([k, v]) => `  --${k}: ${v.claro};`)
   .join('\n')}
+}
+
+[data-tema='oscuro'] {
+${variables('oscuro')}
+  /* Marca en oscuro. El titular sube a rojo-400; el panel de marca baja
+     a #930000 porque el rojo del escudo se aplana contra la página (§2.4). */
+${Object.entries(marca)
+  .map(([k, v]) => `  --${k}: ${v.oscuro};`)
+  .join('\n')}
+}
+
+/* Si nadie ha elegido, se respeta el sistema operativo. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema]) {
+${variables('oscuro')
+  .split('\n')
+  .map((l) => (l.trim() ? `  ${l}` : l))
+  .join('\n')}
+${Object.entries(marca)
+  .map(([k, v]) => `    --${k}: ${v.oscuro};`)
+  .join('\n')}
+  }
 }
 
 /* Anillo de foco — 2px con desplazamiento de 2px (§2.3).
@@ -144,15 +191,17 @@ ${Object.entries(marca)
 }
 `;
 
-writeFileSync(join(AQUI, 'tokens-light.css'), css);
+writeFileSync(join(AQUI, 'tokens.css'), css);
 
 // ── tailwind-preset.ts ─────────────────────────────────────────────────────
 // Extiende la configuración, no la reemplaza (§7).
 
+// El preset consume las VARIABLES CSS, no los hex: así el mismo build sirve
+// para los dos modos y el tema se conmuta con `data-tema` sin recompilar.
 const colorSemantico = Object.fromEntries(
-  Object.entries(semanticos).map(([k, v]) => [k, v.claro])
+  Object.keys(semanticos).map((k) => [k, `var(--${k})`])
 );
-const colorMarca = Object.fromEntries(Object.entries(marca).map(([k, v]) => [k, v.valor]));
+const colorMarca = Object.fromEntries(Object.keys(marca).map((k) => [k, `var(--${k})`]));
 
 const preset = `/* ───────────────────────────────────────────────────────────────────────────
    PRESET DE TAILWIND 3.4 — Colegio Albert Einstein · MMI-DS v${VERSION}
@@ -258,17 +307,25 @@ writeFileSync(join(AQUI, 'tailwind-preset.ts'), preset);
 // ── Reporte ────────────────────────────────────────────────────────────────
 
 console.log(`\nMMI-DS v${VERSION} — generación de artefactos de color\n`);
-console.log(`  paleta.lock.json    ${resultados.length} pares`);
-console.log(`  tokens-light.css    ${Object.keys(semanticos).length} semánticos + ${Object.keys(marca).length} de marca`);
-console.log(`  tailwind-preset.ts  preset Tailwind 3.4\n`);
-console.log(`  Verificados (bloqueantes): ${verificados.length}`);
-console.log(`  Informativos:              ${resultados.length - verificados.length}`);
-console.log(`  Fallos:                    ${fallos.length}\n`);
+console.log(`  paleta.lock.json    ${resultados.length} pares (${MODOS.length} modos)`);
+console.log(`  tokens.css          ${Object.keys(semanticos).length} semánticos + ${Object.keys(marca).length} de marca, claro y oscuro`);
+console.log(`  tailwind-preset.ts  preset Tailwind 3.4 sobre variables CSS\n`);
+
+for (const m of MODOS) {
+  const b = porModo[m].filter((r) => r.cumple !== null).length;
+  const f = porModo[m].filter((r) => r.cumple === false).length;
+  const marca_ = f === 0 ? 'OK' : `${f} FALLOS`;
+  console.log(`  ${m.padEnd(7)} ${String(b).padStart(2)} bloqueantes  →  ${marca_}`);
+}
+console.log('');
 
 if (fallos.length) {
-  console.log('  FALLOS:');
+  console.log(`  ${fallos.length} FALLOS:\n`);
   for (const f of fallos) {
-    console.log(`    ${f.ratio.toFixed(2)}:1 < ${f.minimo}  ${f.frente} sobre ${f.fondo}  — ${f.motivo}`);
+    console.log(
+      `    [${f.modo}] ${f.ratio.toFixed(2)}:1 < ${f.minimo}  ${f.frente} sobre ${f.fondo}`
+    );
+    console.log(`             ${f.hexFrente} sobre ${f.hexFondo} — ${f.motivo}`);
   }
   console.log('');
   process.exit(1);

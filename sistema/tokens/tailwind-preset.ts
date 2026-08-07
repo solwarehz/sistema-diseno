@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   PRESET DE TAILWIND 3.4 — Colegio Albert Einstein · MMI-DS v1.1.0
+   PRESET DE TAILWIND 3.4 — Colegio Albert Einstein · MMI-DS v1.2.0
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -69,52 +69,53 @@ export const primitivas = {
 
 /** Semánticos. Lo único que un componente consume. */
 export const semanticos = {
-  "fondo-pagina": "#F8F8F6",
-  "fondo-tarjeta": "#FFFFFF",
-  "fondo-encabezado": "#F0EFEE",
-  "fondo-fila-alt": "#F8F8F6",
-  "fondo-fila-hover": "#E9F5FF",
-  "texto-principal": "#2C2A25",
-  "texto-secundario": "#6A6864",
-  "texto-pista": "#6A6864",
-  "texto-invertido": "#FFFFFF",
-  "borde": "#E0DFDE",
-  "borde-fuerte": "#C8C6C4",
-  "borde-campo": "#8B8985",
-  "accion": "#0063CB",
-  "accion-hover": "#004EB2",
-  "accion-activa": "#003B91",
-  "accion-texto": "#FFFFFF",
-  "accion-deshabilitada": "#C8C6C4",
-  "accion-texto-desh": "#8B8985",
-  "accion-2": "#655000",
-  "enlace": "#0063CB",
-  "marco-fondo": "#2C3D71",
-  "marco-texto": "#FFFFFF",
-  "marco-acento": "#DFCA9C",
-  "marco-item-activo": "#1D3163",
-  "foco": "#BE7A14",
-  "foco-en-marco": "#F0C060",
-  "exito-fondo": "#E3F4E1",
-  "exito-texto": "#14521A",
-  "exito-acento": "#338136",
-  "aviso-fondo": "#FFEBD6",
-  "aviso-texto": "#6B3B00",
-  "aviso-acento": "#A46300",
-  "error-fondo": "#FFE6DF",
-  "error-texto": "#8F1017",
-  "error-acento": "#D63231",
-  "info-fondo": "#E9EEFF",
-  "info-texto": "#02468A",
-  "info-acento": "#2F71CE"
+  "fondo-pagina": "var(--fondo-pagina)",
+  "fondo-tarjeta": "var(--fondo-tarjeta)",
+  "fondo-encabezado": "var(--fondo-encabezado)",
+  "fondo-fila-alt": "var(--fondo-fila-alt)",
+  "fondo-fila-hover": "var(--fondo-fila-hover)",
+  "texto-principal": "var(--texto-principal)",
+  "texto-secundario": "var(--texto-secundario)",
+  "texto-pista": "var(--texto-pista)",
+  "texto-invertido": "var(--texto-invertido)",
+  "borde": "var(--borde)",
+  "borde-fuerte": "var(--borde-fuerte)",
+  "borde-campo": "var(--borde-campo)",
+  "accion": "var(--accion)",
+  "accion-hover": "var(--accion-hover)",
+  "accion-activa": "var(--accion-activa)",
+  "accion-texto": "var(--accion-texto)",
+  "accion-deshabilitada": "var(--accion-deshabilitada)",
+  "accion-texto-desh": "var(--accion-texto-desh)",
+  "accion-2": "var(--accion-2)",
+  "enlace": "var(--enlace)",
+  "marco-fondo": "var(--marco-fondo)",
+  "marco-texto": "var(--marco-texto)",
+  "marco-acento": "var(--marco-acento)",
+  "marco-item-activo": "var(--marco-item-activo)",
+  "foco": "var(--foco)",
+  "foco-en-marco": "var(--foco-en-marco)",
+  "exito-fondo": "var(--exito-fondo)",
+  "exito-texto": "var(--exito-texto)",
+  "exito-acento": "var(--exito-acento)",
+  "aviso-fondo": "var(--aviso-fondo)",
+  "aviso-texto": "var(--aviso-texto)",
+  "aviso-acento": "var(--aviso-acento)",
+  "error-fondo": "var(--error-fondo)",
+  "error-texto": "var(--error-texto)",
+  "error-acento": "var(--error-acento)",
+  "info-fondo": "var(--info-fondo)",
+  "info-texto": "var(--info-texto)",
+  "info-acento": "var(--info-acento)"
 } as const;
 
 /** Marca. Fuera del sistema: landing, impresos, escudo. Nunca en interfaz. */
 export const marca = {
-  "marca-rojo": "#E30613",
-  "marca-oro": "#DEBD68",
-  "marca-amarillo": "#FDF200",
-  "marca-celeste": "#01ADED"
+  "marca-rojo": "var(--marca-rojo)",
+  "marca-rojo-panel": "var(--marca-rojo-panel)",
+  "marca-oro": "var(--marca-oro)",
+  "marca-amarillo": "var(--marca-amarillo)",
+  "marca-celeste": "var(--marca-celeste)"
 } as const;
 
 const preset = {

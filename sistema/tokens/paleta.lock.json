@@ -1,15 +1,28 @@
 {
   "documento": "MMI-DS",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "norma": "WCAG 2.2 AA",
   "generado": "node sistema/tokens/generar.mjs",
-  "modo": "claro",
+  "modos": [
+    "claro",
+    "oscuro"
+  ],
   "aviso": "Archivo generado. No editar a mano. La fuente es sistema/tokens/fuente.mjs. Cambiar un valor exige regenerar, re-verificar y subir versión (§2.5 regla 8).",
   "resumen": {
-    "paresTotales": 46,
-    "paresBloqueantes": 35,
-    "paresInformativos": 11,
-    "fallos": 0
+    "paresTotales": 92,
+    "paresBloqueantes": 70,
+    "paresInformativos": 22,
+    "fallos": 0,
+    "porModo": {
+      "claro": {
+        "bloqueantes": 35,
+        "fallos": 0
+      },
+      "oscuro": {
+        "bloqueantes": 35,
+        "fallos": 0
+      }
+    }
   },
   "correcciones": [
     {
@@ -84,220 +97,269 @@
   },
   "semanticos": {
     "fondo-pagina": {
-      "valor": "#F8F8F6",
+      "claro": "#F8F8F6",
+      "oscuro": "#1E1D1C",
       "origen": "gris.50",
       "uso": "Fondo detrás de las tarjetas"
     },
     "fondo-tarjeta": {
-      "valor": "#FFFFFF",
+      "claro": "#FFFFFF",
+      "oscuro": "#242422",
       "origen": "gris.0",
       "uso": "Tarjeta, panel, cuerpo de tabla, modal"
     },
     "fondo-encabezado": {
-      "valor": "#F0EFEE",
+      "claro": "#F0EFEE",
+      "oscuro": "#2C2B29",
       "origen": "gris.100",
       "uso": "Encabezado de tabla"
     },
     "fondo-fila-alt": {
-      "valor": "#F8F8F6",
+      "claro": "#F8F8F6",
+      "oscuro": "#242422",
       "origen": "gris.50",
       "uso": "Fila alterna si se usa banda cebra"
     },
     "fondo-fila-hover": {
-      "valor": "#E9F5FF",
+      "claro": "#E9F5FF",
+      "oscuro": "#363532",
       "origen": "azul.50",
       "uso": "Fila bajo el cursor y fila seleccionada"
     },
     "texto-principal": {
-      "valor": "#2C2A25",
+      "claro": "#2C2A25",
+      "oscuro": "#EFEEEB",
       "origen": "gris.900",
       "uso": "Contenido, títulos, celdas de tabla"
     },
     "texto-secundario": {
-      "valor": "#6A6864",
+      "claro": "#6A6864",
+      "oscuro": "#C3C1BD",
       "origen": "gris.600",
       "uso": "Datos de apoyo, columnas no primarias"
     },
     "texto-pista": {
-      "valor": "#6A6864",
-      "origen": "gris.600",
+      "claro": "#6A6864",
+      "oscuro": "#989692",
+      "origen": "gris.500/600",
       "uso": "Solo placeholder y ayuda. Nunca contenido real"
     },
     "texto-invertido": {
-      "valor": "#FFFFFF",
+      "claro": "#FFFFFF",
+      "oscuro": "#20201E",
       "origen": "gris.0",
       "uso": "Sobre acción y sobre marco"
     },
     "borde": {
-      "valor": "#E0DFDE",
+      "claro": "#E0DFDE",
+      "oscuro": "#44423F",
       "origen": "gris.200",
       "uso": "Divisor de filas, contorno de tarjeta"
     },
     "borde-fuerte": {
-      "valor": "#C8C6C4",
+      "claro": "#C8C6C4",
+      "oscuro": "#575451",
       "origen": "gris.300",
       "uso": "Hover de contorno, separadores con peso"
     },
     "borde-campo": {
-      "valor": "#8B8985",
+      "claro": "#8B8985",
+      "oscuro": "#8A8681",
       "origen": "gris.500",
       "uso": "Contorno de input, select, textarea"
     },
     "accion": {
-      "valor": "#0063CB",
+      "claro": "#0063CB",
+      "oscuro": "#6CB2FF",
       "origen": "azul.600",
       "uso": "Botón principal. UNO por pantalla"
     },
     "accion-hover": {
-      "valor": "#004EB2",
+      "claro": "#004EB2",
+      "oscuro": "#A0D0FF",
       "origen": "azul.700",
       "uso": "Hover del botón principal"
     },
     "accion-activa": {
-      "valor": "#003B91",
+      "claro": "#003B91",
+      "oscuro": "#CFE8FF",
       "origen": "azul.800",
       "uso": "Estado presionado"
     },
     "accion-texto": {
-      "valor": "#FFFFFF",
+      "claro": "#FFFFFF",
+      "oscuro": "#20201E",
       "origen": "gris.0",
       "uso": "Texto dentro del botón principal"
     },
     "accion-deshabilitada": {
-      "valor": "#C8C6C4",
+      "claro": "#C8C6C4",
+      "oscuro": "#44423F",
       "origen": "gris.300",
       "uso": "Sin permiso o sin datos válidos"
     },
     "accion-texto-desh": {
-      "valor": "#8B8985",
+      "claro": "#8B8985",
+      "oscuro": "#989692",
       "origen": "gris.500",
       "uso": "Texto del botón deshabilitado"
     },
     "accion-2": {
-      "valor": "#655000",
+      "claro": "#655000",
+      "oscuro": "#DFCA9C",
       "origen": "oro.700",
       "uso": "Acción secundaria: borde y texto, sin relleno"
     },
     "enlace": {
-      "valor": "#0063CB",
+      "claro": "#0063CB",
+      "oscuro": "#6CB2FF",
       "origen": "azul.600",
       "uso": "Enlaces y acciones de fila tipo «Editar»"
     },
     "marco-fondo": {
-      "valor": "#2C3D71",
+      "claro": "#2C3D71",
+      "oscuro": "#2C3D71",
       "origen": "directo",
       "uso": "Barra de navegación. ÚNICO azul en superficie grande"
     },
     "marco-texto": {
-      "valor": "#FFFFFF",
+      "claro": "#FFFFFF",
+      "oscuro": "#FFFFFF",
       "origen": "gris.0",
       "uso": "Nombre del colegio e ítems de navegación"
     },
     "marco-acento": {
-      "valor": "#DFCA9C",
+      "claro": "#DFCA9C",
+      "oscuro": "#DFCA9C",
       "origen": "oro.200",
       "uso": "Ítem activo: texto y filete inferior. También avatar"
     },
     "marco-item-activo": {
-      "valor": "#1D3163",
+      "claro": "#1D3163",
+      "oscuro": "#1D3163",
       "origen": "directo",
       "uso": "Fondo del ítem activo en desplegable"
     },
     "foco": {
-      "valor": "#BE7A14",
+      "claro": "#BE7A14",
+      "oscuro": "#F0C060",
       "origen": "directo",
       "uso": "Anillo sobre superficies de contenido"
     },
     "foco-en-marco": {
-      "valor": "#F0C060",
+      "claro": "#F0C060",
+      "oscuro": "#F0C060",
       "origen": "directo",
       "uso": "Anillo dentro del marco de navegación"
     },
     "exito-fondo": {
-      "valor": "#E3F4E1",
+      "claro": "#E3F4E1",
+      "oscuro": "#233521",
       "origen": "directo",
       "uso": "Chip «Activo», confirmación"
     },
     "exito-texto": {
-      "valor": "#14521A",
+      "claro": "#14521A",
+      "oscuro": "#B3DCAE",
       "origen": "directo",
       "uso": "Texto sobre exito-fondo"
     },
     "exito-acento": {
-      "valor": "#338136",
+      "claro": "#338136",
+      "oscuro": "#5FA862",
       "origen": "directo",
       "uso": "Solo filete del borde. Adorno"
     },
     "aviso-fondo": {
-      "valor": "#FFEBD6",
+      "claro": "#FFEBD6",
+      "oscuro": "#402C16",
       "origen": "directo",
       "uso": "Chip «Parcial», advertencia recuperable"
     },
     "aviso-texto": {
-      "valor": "#6B3B00",
+      "claro": "#6B3B00",
+      "oscuro": "#FBC894",
       "origen": "directo",
       "uso": "Texto sobre aviso-fondo"
     },
     "aviso-acento": {
-      "valor": "#A46300",
+      "claro": "#A46300",
+      "oscuro": "#C88A3C",
       "origen": "directo",
       "uso": "Solo filete del borde. Adorno"
     },
     "error-fondo": {
-      "valor": "#FFE6DF",
+      "claro": "#FFE6DF",
+      "oscuro": "#4D241F",
       "origen": "directo",
       "uso": "Chip «Deuda», validación fallida"
     },
     "error-texto": {
-      "valor": "#8F1017",
+      "claro": "#8F1017",
+      "oscuro": "#FFB8A9",
       "origen": "directo",
       "uso": "Texto sobre error-fondo"
     },
     "error-acento": {
-      "valor": "#D63231",
+      "claro": "#D63231",
+      "oscuro": "#E2665C",
       "origen": "directo",
       "uso": "Solo filete del borde. Adorno"
     },
     "info-fondo": {
-      "valor": "#E9EEFF",
+      "claro": "#E9EEFF",
+      "oscuro": "#273048",
       "origen": "directo",
       "uso": "Aviso neutro, ayuda contextual"
     },
     "info-texto": {
-      "valor": "#02468A",
+      "claro": "#02468A",
+      "oscuro": "#BFD0FF",
       "origen": "directo",
       "uso": "Texto sobre info-fondo"
     },
     "info-acento": {
-      "valor": "#2F71CE",
+      "claro": "#2F71CE",
+      "oscuro": "#6D97DE",
       "origen": "directo",
       "uso": "Solo filete del borde. Adorno"
     }
   },
   "marca": {
     "marca-rojo": {
-      "valor": "#E30613",
+      "claro": "#E30613",
+      "oscuro": "#FF4C37",
       "uso": "Escudo, titulares de landing, impresos",
       "prohibidoEn": "Interfaz"
     },
+    "marca-rojo-panel": {
+      "claro": "#E30613",
+      "oscuro": "#930000",
+      "uso": "Panel de marca de la landing",
+      "prohibidoEn": "Interfaz"
+    },
     "marca-oro": {
-      "valor": "#DEBD68",
+      "claro": "#DEBD68",
+      "oscuro": "#DEBD68",
       "uso": "Escudo, filete de landing",
-      "prohibidoEn": "Interfaz. En sistema usar oro-200 u oro-700"
+      "prohibidoEn": "Interfaz. En sistema usar accion-2 o marco-acento"
     },
     "marca-amarillo": {
-      "valor": "#FDF200",
+      "claro": "#FDF200",
+      "oscuro": "#FDF200",
       "uso": "Campaña, afiches, redes",
       "prohibidoEn": "Todo el sistema. 1,2:1 — no admite texto"
     },
     "marca-celeste": {
-      "valor": "#01ADED",
+      "claro": "#01ADED",
+      "oscuro": "#01ADED",
       "uso": "Campaña",
       "prohibidoEn": "Todo el sistema. 2,6:1 — no admite texto"
     }
   },
   "contrastes": [
     {
+      "modo": "claro",
       "frente": "texto-principal",
       "fondo": "fondo-tarjeta",
       "hexFrente": "#2C2A25",
@@ -308,6 +370,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "texto-principal",
       "fondo": "fondo-pagina",
       "hexFrente": "#2C2A25",
@@ -318,6 +381,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "texto-principal",
       "fondo": "fondo-encabezado",
       "hexFrente": "#2C2A25",
@@ -328,6 +392,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "texto-principal",
       "fondo": "fondo-fila-hover",
       "hexFrente": "#2C2A25",
@@ -338,6 +403,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "texto-principal",
       "fondo": "fondo-fila-alt",
       "hexFrente": "#2C2A25",
@@ -348,6 +414,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "texto-secundario",
       "fondo": "fondo-tarjeta",
       "hexFrente": "#6A6864",
@@ -358,6 +425,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "texto-secundario",
       "fondo": "fondo-pagina",
       "hexFrente": "#6A6864",
@@ -368,6 +436,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "texto-secundario",
       "fondo": "fondo-encabezado",
       "hexFrente": "#6A6864",
@@ -378,6 +447,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "texto-secundario",
       "fondo": "fondo-fila-hover",
       "hexFrente": "#6A6864",
@@ -388,6 +458,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "texto-pista",
       "fondo": "fondo-tarjeta",
       "hexFrente": "#6A6864",
@@ -398,6 +469,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "texto-pista",
       "fondo": "fondo-pagina",
       "hexFrente": "#6A6864",
@@ -408,6 +480,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "accion-texto",
       "fondo": "accion",
       "hexFrente": "#FFFFFF",
@@ -418,6 +491,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "accion-texto",
       "fondo": "accion-hover",
       "hexFrente": "#FFFFFF",
@@ -428,6 +502,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "accion-texto",
       "fondo": "accion-activa",
       "hexFrente": "#FFFFFF",
@@ -438,6 +513,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "accion",
       "fondo": "fondo-tarjeta",
       "hexFrente": "#0063CB",
@@ -448,6 +524,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "accion",
       "fondo": "fondo-pagina",
       "hexFrente": "#0063CB",
@@ -458,6 +535,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "accion-2",
       "fondo": "fondo-tarjeta",
       "hexFrente": "#655000",
@@ -468,6 +546,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "accion-2",
       "fondo": "fondo-pagina",
       "hexFrente": "#655000",
@@ -478,6 +557,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "enlace",
       "fondo": "fondo-tarjeta",
       "hexFrente": "#0063CB",
@@ -488,6 +568,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "enlace",
       "fondo": "fondo-pagina",
       "hexFrente": "#0063CB",
@@ -498,6 +579,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "enlace",
       "fondo": "fondo-fila-hover",
       "hexFrente": "#0063CB",
@@ -508,6 +590,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "marco-texto",
       "fondo": "marco-fondo",
       "hexFrente": "#FFFFFF",
@@ -518,6 +601,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "marco-acento",
       "fondo": "marco-fondo",
       "hexFrente": "#DFCA9C",
@@ -528,6 +612,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "marco-acento",
       "fondo": "marco-item-activo",
       "hexFrente": "#DFCA9C",
@@ -538,6 +623,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "marco-texto",
       "fondo": "marco-item-activo",
       "hexFrente": "#FFFFFF",
@@ -548,6 +634,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "foco",
       "fondo": "fondo-tarjeta",
       "hexFrente": "#BE7A14",
@@ -558,6 +645,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "foco",
       "fondo": "fondo-pagina",
       "hexFrente": "#BE7A14",
@@ -568,6 +656,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "foco",
       "fondo": "fondo-encabezado",
       "hexFrente": "#BE7A14",
@@ -578,6 +667,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "foco-en-marco",
       "fondo": "marco-fondo",
       "hexFrente": "#F0C060",
@@ -588,6 +678,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "borde-campo",
       "fondo": "fondo-tarjeta",
       "hexFrente": "#8B8985",
@@ -598,6 +689,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "borde-campo",
       "fondo": "fondo-pagina",
       "hexFrente": "#8B8985",
@@ -608,6 +700,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "exito-texto",
       "fondo": "exito-fondo",
       "hexFrente": "#14521A",
@@ -618,6 +711,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "aviso-texto",
       "fondo": "aviso-fondo",
       "hexFrente": "#6B3B00",
@@ -628,6 +722,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "error-texto",
       "fondo": "error-fondo",
       "hexFrente": "#8F1017",
@@ -638,6 +733,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "info-texto",
       "fondo": "info-fondo",
       "hexFrente": "#02468A",
@@ -648,6 +744,7 @@
       "cumple": true
     },
     {
+      "modo": "claro",
       "frente": "exito-fondo",
       "fondo": "fondo-tarjeta",
       "hexFrente": "#E3F4E1",
@@ -658,6 +755,7 @@
       "cumple": null
     },
     {
+      "modo": "claro",
       "frente": "aviso-fondo",
       "fondo": "fondo-tarjeta",
       "hexFrente": "#FFEBD6",
@@ -668,6 +766,7 @@
       "cumple": null
     },
     {
+      "modo": "claro",
       "frente": "error-fondo",
       "fondo": "fondo-tarjeta",
       "hexFrente": "#FFE6DF",
@@ -678,6 +777,7 @@
       "cumple": null
     },
     {
+      "modo": "claro",
       "frente": "info-fondo",
       "fondo": "fondo-tarjeta",
       "hexFrente": "#E9EEFF",
@@ -688,6 +788,7 @@
       "cumple": null
     },
     {
+      "modo": "claro",
       "frente": "exito-acento",
       "fondo": "exito-fondo",
       "hexFrente": "#338136",
@@ -698,6 +799,7 @@
       "cumple": null
     },
     {
+      "modo": "claro",
       "frente": "aviso-acento",
       "fondo": "aviso-fondo",
       "hexFrente": "#A46300",
@@ -708,6 +810,7 @@
       "cumple": null
     },
     {
+      "modo": "claro",
       "frente": "error-acento",
       "fondo": "error-fondo",
       "hexFrente": "#D63231",
@@ -718,6 +821,7 @@
       "cumple": null
     },
     {
+      "modo": "claro",
       "frente": "info-acento",
       "fondo": "info-fondo",
       "hexFrente": "#2F71CE",
@@ -728,6 +832,7 @@
       "cumple": null
     },
     {
+      "modo": "claro",
       "frente": "accion-texto-desh",
       "fondo": "accion-deshabilitada",
       "hexFrente": "#8B8985",
@@ -738,6 +843,7 @@
       "cumple": null
     },
     {
+      "modo": "claro",
       "frente": "borde",
       "fondo": "fondo-tarjeta",
       "hexFrente": "#E0DFDE",
@@ -748,11 +854,518 @@
       "cumple": null
     },
     {
+      "modo": "claro",
       "frente": "borde-fuerte",
       "fondo": "fondo-tarjeta",
       "hexFrente": "#C8C6C4",
       "hexFondo": "#FFFFFF",
       "ratio": 1.7,
+      "minimo": "informativo",
+      "motivo": "Separador con peso",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-principal",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#EFEEEB",
+      "hexFondo": "#242422",
+      "ratio": 13.4,
+      "minimo": 4.5,
+      "motivo": "Contenido y celdas sobre tarjeta",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-principal",
+      "fondo": "fondo-pagina",
+      "hexFrente": "#EFEEEB",
+      "hexFondo": "#1E1D1C",
+      "ratio": 14.5,
+      "minimo": 4.5,
+      "motivo": "Contenido sobre fondo de página",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-principal",
+      "fondo": "fondo-encabezado",
+      "hexFrente": "#EFEEEB",
+      "hexFondo": "#2C2B29",
+      "ratio": 12.19,
+      "minimo": 4.5,
+      "motivo": "Encabezado de tabla",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-principal",
+      "fondo": "fondo-fila-hover",
+      "hexFrente": "#EFEEEB",
+      "hexFondo": "#363532",
+      "ratio": 10.57,
+      "minimo": 4.5,
+      "motivo": "Celda en fila bajo el cursor",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-principal",
+      "fondo": "fondo-fila-alt",
+      "hexFrente": "#EFEEEB",
+      "hexFondo": "#242422",
+      "ratio": 13.4,
+      "minimo": 4.5,
+      "motivo": "Celda en banda cebra",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-secundario",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#C3C1BD",
+      "hexFondo": "#242422",
+      "ratio": 8.65,
+      "minimo": 4.5,
+      "motivo": "Dato de apoyo sobre tarjeta",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-secundario",
+      "fondo": "fondo-pagina",
+      "hexFrente": "#C3C1BD",
+      "hexFondo": "#1E1D1C",
+      "ratio": 9.36,
+      "minimo": 4.5,
+      "motivo": "Dato de apoyo sobre página",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-secundario",
+      "fondo": "fondo-encabezado",
+      "hexFrente": "#C3C1BD",
+      "hexFondo": "#2C2B29",
+      "ratio": 7.86,
+      "minimo": 4.5,
+      "motivo": "Etiqueta de columna no primaria",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-secundario",
+      "fondo": "fondo-fila-hover",
+      "hexFrente": "#C3C1BD",
+      "hexFondo": "#363532",
+      "ratio": 6.82,
+      "minimo": 4.5,
+      "motivo": "Dato de apoyo en fila activa",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-pista",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#989692",
+      "hexFondo": "#242422",
+      "ratio": 5.26,
+      "minimo": 4.5,
+      "motivo": "Placeholder dentro de campo",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-pista",
+      "fondo": "fondo-pagina",
+      "hexFrente": "#989692",
+      "hexFondo": "#1E1D1C",
+      "ratio": 5.7,
+      "minimo": 4.5,
+      "motivo": "Texto de ayuda sobre página",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "accion-texto",
+      "fondo": "accion",
+      "hexFrente": "#20201E",
+      "hexFondo": "#6CB2FF",
+      "ratio": 7.34,
+      "minimo": 4.5,
+      "motivo": "Texto del botón principal",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "accion-texto",
+      "fondo": "accion-hover",
+      "hexFrente": "#20201E",
+      "hexFondo": "#A0D0FF",
+      "ratio": 10.07,
+      "minimo": 4.5,
+      "motivo": "Texto del botón en hover",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "accion-texto",
+      "fondo": "accion-activa",
+      "hexFrente": "#20201E",
+      "hexFondo": "#CFE8FF",
+      "ratio": 12.93,
+      "minimo": 4.5,
+      "motivo": "Texto del botón presionado",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "accion",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#6CB2FF",
+      "hexFondo": "#242422",
+      "ratio": 6.99,
+      "minimo": 3,
+      "motivo": "Superficie del botón contra la tarjeta",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "accion",
+      "fondo": "fondo-pagina",
+      "hexFrente": "#6CB2FF",
+      "hexFondo": "#1E1D1C",
+      "ratio": 7.57,
+      "minimo": 3,
+      "motivo": "Superficie del botón contra la página",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "accion-2",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#DFCA9C",
+      "hexFondo": "#242422",
+      "ratio": 9.67,
+      "minimo": 4.5,
+      "motivo": "Texto de la acción secundaria en oro",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "accion-2",
+      "fondo": "fondo-pagina",
+      "hexFrente": "#DFCA9C",
+      "hexFondo": "#1E1D1C",
+      "ratio": 10.47,
+      "minimo": 4.5,
+      "motivo": "Acción secundaria sobre página",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "enlace",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#6CB2FF",
+      "hexFondo": "#242422",
+      "ratio": 6.99,
+      "minimo": 4.5,
+      "motivo": "Enlace «Editar» en celda de tabla",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "enlace",
+      "fondo": "fondo-pagina",
+      "hexFrente": "#6CB2FF",
+      "hexFondo": "#1E1D1C",
+      "ratio": 7.57,
+      "minimo": 4.5,
+      "motivo": "Enlace sobre página",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "enlace",
+      "fondo": "fondo-fila-hover",
+      "hexFrente": "#6CB2FF",
+      "hexFondo": "#363532",
+      "ratio": 5.51,
+      "minimo": 4.5,
+      "motivo": "Enlace «Editar» en fila bajo el cursor",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "marco-texto",
+      "fondo": "marco-fondo",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#2C3D71",
+      "ratio": 10.43,
+      "minimo": 4.5,
+      "motivo": "Nombre e ítems de navegación",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "marco-acento",
+      "fondo": "marco-fondo",
+      "hexFrente": "#DFCA9C",
+      "hexFondo": "#2C3D71",
+      "ratio": 6.49,
+      "minimo": 4.5,
+      "motivo": "Texto del ítem activo en el marco",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "marco-acento",
+      "fondo": "marco-item-activo",
+      "hexFrente": "#DFCA9C",
+      "hexFondo": "#1D3163",
+      "ratio": 7.81,
+      "minimo": 4.5,
+      "motivo": "Ítem activo en desplegable",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "marco-texto",
+      "fondo": "marco-item-activo",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#1D3163",
+      "ratio": 12.56,
+      "minimo": 4.5,
+      "motivo": "Texto sobre ítem activo de desplegable",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "foco",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#F0C060",
+      "hexFondo": "#242422",
+      "ratio": 9.19,
+      "minimo": 3,
+      "motivo": "Anillo de foco sobre tarjeta",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "foco",
+      "fondo": "fondo-pagina",
+      "hexFrente": "#F0C060",
+      "hexFondo": "#1E1D1C",
+      "ratio": 9.94,
+      "minimo": 3,
+      "motivo": "Anillo de foco sobre página",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "foco",
+      "fondo": "fondo-encabezado",
+      "hexFrente": "#F0C060",
+      "hexFondo": "#2C2B29",
+      "ratio": 8.36,
+      "minimo": 3,
+      "motivo": "Anillo de foco sobre encabezado",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "foco-en-marco",
+      "fondo": "marco-fondo",
+      "hexFrente": "#F0C060",
+      "hexFondo": "#2C3D71",
+      "ratio": 6.16,
+      "minimo": 3,
+      "motivo": "Anillo de foco dentro del marco",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "borde-campo",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#8A8681",
+      "hexFondo": "#242422",
+      "ratio": 4.3,
+      "minimo": 3,
+      "motivo": "Contorno de input sobre tarjeta",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "borde-campo",
+      "fondo": "fondo-pagina",
+      "hexFrente": "#8A8681",
+      "hexFondo": "#1E1D1C",
+      "ratio": 4.65,
+      "minimo": 3,
+      "motivo": "Contorno de input sobre página",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "exito-texto",
+      "fondo": "exito-fondo",
+      "hexFrente": "#B3DCAE",
+      "hexFondo": "#233521",
+      "ratio": 8.58,
+      "minimo": 4.5,
+      "motivo": "Chip «Activo»",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "aviso-texto",
+      "fondo": "aviso-fondo",
+      "hexFrente": "#FBC894",
+      "hexFondo": "#402C16",
+      "ratio": 8.67,
+      "minimo": 4.5,
+      "motivo": "Chip «Parcial»",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "error-texto",
+      "fondo": "error-fondo",
+      "hexFrente": "#FFB8A9",
+      "hexFondo": "#4D241F",
+      "ratio": 7.98,
+      "minimo": 4.5,
+      "motivo": "Chip «Deuda»",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "info-texto",
+      "fondo": "info-fondo",
+      "hexFrente": "#BFD0FF",
+      "hexFondo": "#273048",
+      "ratio": 8.53,
+      "minimo": 4.5,
+      "motivo": "Aviso neutro",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "exito-fondo",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#233521",
+      "hexFondo": "#242422",
+      "ratio": 1.18,
+      "minimo": "informativo",
+      "motivo": "Chip contra la tarjeta",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "aviso-fondo",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#402C16",
+      "hexFondo": "#242422",
+      "ratio": 1.17,
+      "minimo": "informativo",
+      "motivo": "Chip contra la tarjeta",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "error-fondo",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#4D241F",
+      "hexFondo": "#242422",
+      "ratio": 1.17,
+      "minimo": "informativo",
+      "motivo": "Chip contra la tarjeta",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "info-fondo",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#273048",
+      "hexFondo": "#242422",
+      "ratio": 1.18,
+      "minimo": "informativo",
+      "motivo": "Chip contra la tarjeta",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "exito-acento",
+      "fondo": "exito-fondo",
+      "hexFrente": "#5FA862",
+      "hexFondo": "#233521",
+      "ratio": 4.53,
+      "minimo": "informativo",
+      "motivo": "Filete del chip. Adorno, exento",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "aviso-acento",
+      "fondo": "aviso-fondo",
+      "hexFrente": "#C88A3C",
+      "hexFondo": "#402C16",
+      "ratio": 4.5,
+      "minimo": "informativo",
+      "motivo": "Filete del chip. Adorno, exento",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "error-acento",
+      "fondo": "error-fondo",
+      "hexFrente": "#E2665C",
+      "hexFondo": "#4D241F",
+      "ratio": 3.96,
+      "minimo": "informativo",
+      "motivo": "Filete del chip. Adorno, exento",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "info-acento",
+      "fondo": "info-fondo",
+      "hexFrente": "#6D97DE",
+      "hexFondo": "#273048",
+      "ratio": 4.44,
+      "minimo": "informativo",
+      "motivo": "Filete del chip. Adorno, exento",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "accion-texto-desh",
+      "fondo": "accion-deshabilitada",
+      "hexFrente": "#989692",
+      "hexFondo": "#44423F",
+      "ratio": 3.39,
+      "minimo": "informativo",
+      "motivo": "Botón deshabilitado. Exento por 1.4.3",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "borde",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#44423F",
+      "hexFondo": "#242422",
+      "ratio": 1.55,
+      "minimo": "informativo",
+      "motivo": "Divisor de fila. Adorno",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "borde-fuerte",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#575451",
+      "hexFondo": "#242422",
+      "ratio": 2.06,
       "minimo": "informativo",
       "motivo": "Separador con peso",
       "cumple": null
