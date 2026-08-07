@@ -1,0 +1,76 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.1.0
+   Modo claro BLOQUEADO · WCAG 2.2 AA · 35 pares verificados, 0 fallos
+
+   ARCHIVO GENERADO. No editar a mano.
+   Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
+
+   Para uso fuera de Tailwind. Dentro de Tailwind, usa las clases del preset.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Superficies */
+  --fondo-pagina: #F8F8F6;
+  --fondo-tarjeta: #FFFFFF;
+  --fondo-encabezado: #F0EFEE;
+  --fondo-fila-alt: #F8F8F6;
+  --fondo-fila-hover: #E9F5FF;
+
+  /* Texto */
+  --texto-principal: #2C2A25;
+  --texto-secundario: #6A6864;
+  --texto-pista: #6A6864;
+  --texto-invertido: #FFFFFF;
+
+  /* Bordes */
+  --borde: #E0DFDE;
+  --borde-fuerte: #C8C6C4;
+  --borde-campo: #8B8985;
+
+  /* Acción */
+  --accion: #0063CB;
+  --accion-hover: #004EB2;
+  --accion-activa: #003B91;
+  --accion-texto: #FFFFFF;
+  --accion-deshabilitada: #C8C6C4;
+  --accion-texto-desh: #8B8985;
+  --accion-2: #655000;
+  --enlace: #0063CB;
+
+  /* Marco de aplicación */
+  --marco-fondo: #2C3D71;
+  --marco-texto: #FFFFFF;
+  --marco-acento: #DFCA9C;
+  --marco-item-activo: #1D3163;
+
+  /* Foco */
+  --foco: #BE7A14;
+  --foco-en-marco: #F0C060;
+
+  /* Estados — siempre en pares fondo/texto */
+  --exito-fondo: #E3F4E1;
+  --exito-texto: #14521A;
+  --exito-acento: #338136;
+  --aviso-fondo: #FFEBD6;
+  --aviso-texto: #6B3B00;
+  --aviso-acento: #A46300;
+  --error-fondo: #FFE6DF;
+  --error-texto: #8F1017;
+  --error-acento: #D63231;
+  --info-fondo: #E9EEFF;
+  --info-texto: #02468A;
+  --info-acento: #2F71CE;
+
+  /* Marca — FUERA del sistema. Prohibidos en interfaz (§2.3) */
+  --marca-rojo: #E30613;
+  --marca-oro: #DEBD68;
+  --marca-amarillo: #FDF200;
+  --marca-celeste: #01ADED;
+}
+
+/* Anillo de foco — 2px con desplazamiento de 2px (§2.3).
+   Prohibido `outline: none` sin reemplazo de contraste equivalente (§2.5.7). */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--foco);
+  outline-offset: 2px;
+}

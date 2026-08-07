@@ -1,0 +1,61 @@
+# Dependencias — viven en el volumen de Docker, nunca en el repo
+node_modules/
+.pnp
+.pnp.js
+
+# Secretos — nunca, bajo ninguna circunstancia
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+credentials.json
+
+# Build
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# Entrega generada — se reconstruye con `npm run empaquetar`
+*.zip
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ACTIVOS DE MARCA — se quedan en local, NUNCA suben al repositorio.
+# Son propiedad del cliente (Colegio Albert Einstein). El repositorio versiona
+# el sistema; los archivos de identidad viven en marca/02_identidad/ en la
+# máquina de trabajo. Ver marca/02_identidad/LEEME.md
+# ─────────────────────────────────────────────────────────────────────────────
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.ico
+*.pdf
+*.ai
+*.psd
+*.eps
+*.sketch
+*.fig
+
+# Excepción: los SVG del sistema (iconos, marcadores de posición) sí se versionan
+!sistema/**/*.svg
+!app/**/*.svg
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+._*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Registros
+*.log
+npm-debug.log*
