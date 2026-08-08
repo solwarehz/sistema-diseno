@@ -123,7 +123,26 @@ const CONTENIDO = [
   ['cascaron/index.html', 'catalogo/index.html'],
 ];
 
+/**
+ * La versión vive en fuente.mjs, pero npm solo lee la de package.json. Son dos
+ * sitios para el mismo número, así que aquí va el candado: si se separan, el
+ * área de sistemas instalaría por etiqueta una versión que dice ser otra, y eso
+ * no se descubre hasta que algo se ve distinto en pantalla.
+ */
+function comprobarVersion() {
+  const manifiesto = JSON.parse(readFileSync(join(RAIZ, 'package.json'), 'utf8'));
+  if (manifiesto.version !== VERSION) {
+    console.error(`\n  La versión no coincide:`);
+    console.error(`    sistema/tokens/fuente.mjs   ${VERSION}`);
+    console.error(`    package.json                ${manifiesto.version}`);
+    console.error(`\n  Iguálalas antes de empaquetar. La entrega y la etiqueta de git`);
+    console.error(`  tienen que decir el mismo número.\n`);
+    process.exit(1);
+  }
+}
+
 export function empaquetar({ silencioso = false } = {}) {
+  comprobarVersion();
   const entradas = [];
 
   for (const [origen, destino] of CONTENIDO) {
@@ -205,10 +224,15 @@ funciona dentro de esta entrega**: apunta al ZIP que ya tienes en las manos.
 
 ## 3 · Cómo se implementa
 
+Las rutas dependen de por dónde llegó el sistema. Si vino en este ZIP, se copia
+dentro del proyecto y se importa por ruta relativa. Si vino por npm, se importa
+por el nombre del paquete: \`sistema-diseno-ae\`.
+
 **1 · Los colores.** Importa \`tokens.css\` una sola vez, en el layout raíz:
 
 \`\`\`ts
-import './sistema/tokens/tokens.css';
+import './sistema/tokens/tokens.css';   // llegó por ZIP
+import 'sistema-diseno-ae/tokens.css';  // llegó por npm
 \`\`\`
 
 El modo se conmuta con el atributo \`data-tema\` en \`<html>\`:
@@ -222,7 +246,8 @@ Sin atributo se respeta la preferencia del sistema operativo.
 **2 · Tailwind.** El preset **extiende** la configuración, no la reemplaza:
 
 \`\`\`ts
-import preset from './sistema/tokens/tailwind-preset';
+import preset from './sistema/tokens/tailwind-preset';   // llegó por ZIP
+import preset from 'sistema-diseno-ae/preset';           // llegó por npm
 
 export default {
   presets: [preset],
@@ -272,23 +297,7 @@ que hay dentro de \`sistema/\` se edita aquí: se edita en el repositorio del
 sistema y baja ya generado. Por eso actualizar es **reemplazar la carpeta**, no
 resolver conflictos.
 
-### Ruta A · dependencia de git — recomendada
-
-Cada versión del sistema lleva una etiqueta. El proyecto la fija en su
-\`package.json\`:
-
-\`\`\`json
-"dependencies": {
-  "sistema-diseno": "github:solwarehz/sistema-diseno#v${VERSION}"
-}
-\`\`\`
-
-Actualizar es subir el número de la etiqueta y \`npm install\`. Ventajas: la
-versión queda **anclada y visible en el control de versiones**, dos proyectos no
-se desincronizan sin que se note, y se puede volver atrás cambiando un número.
-Necesita acceso de lectura al repositorio, que es privado.
-
-### Ruta B · ZIP versionado — sin acceso al repositorio
+### Ruta A · ZIP versionado — funciona hoy
 
 Se descarga el ZIP nuevo desde el catálogo, menú de usuario → **Descargar el
 sistema**, y se reemplazan enteras estas dos carpetas:
@@ -305,6 +314,33 @@ node sistema/candado/verificar-contraste.mjs   # 0 fallos
 npm run lint                                    # el candado en su sitio
 npm run build
 \`\`\`
+
+### Ruta B · dependencia de git — mejor, y necesita dos cosas antes
+
+El repositorio ya trae \`package.json\`, así que es instalable como paquete. Con
+la etiqueta publicada, se instala así:
+
+\`\`\`bash
+npm install github:solwarehz/sistema-diseno#v${VERSION}
+\`\`\`
+
+Actualizar es cambiar el número de la etiqueta y volver a instalar. Es mejor que
+el ZIP porque **la versión queda anclada y visible en el control de versiones**:
+dos proyectos no se desincronizan sin que nadie se entere, y volver atrás es
+cambiar un número.
+
+Antes de que funcione hacen falta dos cosas, y ninguna es del proyecto que
+consume:
+
+1. **Que exista la etiqueta \`v${VERSION}\`** en el repositorio.
+2. **Acceso de lectura al repositorio**, que es privado. Por HTTPS pide
+   credenciales; lo habitual es una clave SSH en la cuenta de quien instala, o
+   un token de acceso.
+
+Verificado hasta donde se puede sin instalar: \`npm pack --dry-run\` resuelve el
+paquete —12 archivos, 35,4 kB— y el manifiesto se lee bien. **La instalación
+completa no está probada de punta a punta**, porque en esta máquina no se
+instala nada.
 
 ### Qué mirar en cada actualización
 

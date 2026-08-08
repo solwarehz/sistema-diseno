@@ -304,10 +304,10 @@ La carpeta entregada es **de solo lectura para el proyecto que la consume**.
 Nada dentro de `sistema/` se edita allí, así que actualizar es **reemplazar la
 carpeta**, nunca resolver conflictos.
 
-| Ruta | Cuándo | Cómo se actualiza |
+| Ruta | Estado | Cómo se actualiza |
 |---|---|---|
-| **Etiqueta de git** — recomendada | Tienen acceso al repositorio privado | `"sistema-diseno": "github:solwarehz/sistema-diseno#v1.6.0"` en `package.json`. Subir el número y `npm install` |
-| **ZIP versionado** | Sin acceso al repositorio | Descargar del catálogo y reemplazar `sistema/tokens/` y `sistema/candado/` enteras |
+| **ZIP versionado** | ✅ funciona hoy | Descargar del catálogo y reemplazar `sistema/tokens/` y `sistema/candado/` enteras |
+| **Dependencia de git** | ⏳ falta la etiqueta | `npm install github:solwarehz/sistema-diseno#v1.6.0` |
 
 La ruta de git es mejor porque **la versión queda anclada y visible en el
 control de versiones**: dos proyectos no se desincronizan sin que se note, y
@@ -317,5 +317,32 @@ volver atrás es cambiar un número.
 token desapareció o cambió de nombre, el build falla **en compilación, no en
 producción** — que es justo lo que se busca.
 
-**Nota abierta:** para que la ruta de git funcione hace falta **etiquetar las
-versiones**, y hoy no hay ninguna etiqueta en el repositorio. Pendiente.
+### Corrección: la ruta de npm se documentó antes de que pudiera funcionar
+
+Se recomendó `npm install github:…#v1.6.0` cuando **no podía funcionar**, por
+tres motivos a la vez: no había `package.json` en la raíz —npm no instala un
+repositorio sin él—, no había ninguna etiqueta, y el repositorio es privado. Y
+un cuarto: las rutas de importación del LEEME eran relativas y no coinciden con
+las de `node_modules`.
+
+**Qué se hizo:** se añadió `package.json` con `files` y `exports`, de modo que
+el paquete expone solo lo que se consume:
+
+```
+sistema-diseno-ae/tokens.css   sistema-diseno-ae/preset
+sistema-diseno-ae/fuente       sistema-diseno-ae/lock
+sistema-diseno-ae/eslint
+```
+
+Verificado con `npm pack --dry-run`: 12 archivos, 35,4 kB, sin `app/`, sin
+`memoria/` y sin `cascaron/`. **La instalación no está probada de punta a
+punta**: en esta máquina no se instala nada.
+
+**El número de versión ahora vive en dos sitios** —`fuente.mjs` y
+`package.json`—, así que `empaquetar.mjs` lo comprueba y sale con código 1 si se
+separan. Probado en fallo. Sin ese candado, el área de sistemas instalaría por
+etiqueta una versión que dice ser otra, y eso no se descubre hasta que algo se
+ve distinto en pantalla.
+
+**Sigue pendiente y necesita autorización:** etiquetar `v1.6.0` y empujar la
+etiqueta. Es publicar hacia fuera, no una decisión de dentro de la carpeta.
