@@ -19,7 +19,7 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.1.0** — color modo claro bloqueado y verificado.
+**Estado actual: v1.7.0** — iconografía con regla, avatar unificado, séptimo estado y densidad.
 
 ---
 
@@ -183,15 +183,15 @@ en rojo, reviértela.
 
 | Módulo | Estado |
 |---|---|
-| Motor de tokens | ✅ v1.1.0 · 46 pares, 35 bloqueantes, 0 fallos |
+| Motor de tokens | ✅ v1.7.0 · 144 pares, 106 bloqueantes, 0 fallos |
 | Candado de contraste | ✅ verificado, probado en fallo |
 | Candado de lint | ✅ escrito · sin ejecutar (falta Docker) |
-| Componentes | ⏳ pendiente |
+| Componentes | ⏳ pendiente · 17 elementos documentados en el catálogo |
 | Catálogo `/diseño` | ⏳ pendiente |
 | Manual de aplicaciones web | ✅ `manual/MANUAL-APLICACIONES-WEB.md` |
-| Entrega ZIP | ✅ `node sistema/paquete/empaquetar.mjs` · 10 archivos, 354 KB |
+| Entrega ZIP | ✅ se construye junto al catálogo · 11 archivos, 368 KB |
 | Contenedor | ⏳ pendiente · Docker sin autorizar |
-| Iconografía | ⚠️ 24 iconos en uso, retícula 24×24, trazo 1,5px · **falta la regla**: hoy conviven 6 tamaños (13·14·15·16·18·32) y tres fuera de rejilla |
+| Iconografía | ✅ 30 iconos · módulo consumible · cuatro tamaños (14·16·18·32) · regla de significado |
 | Modo oscuro | ⛔ calculado, **no aprobado**. No implementar |
 
 ### Correcciones aplicadas sobre MMI-DS v1.0.0

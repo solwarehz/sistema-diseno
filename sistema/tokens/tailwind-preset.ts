@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   PRESET DE TAILWIND 3.4 — Colegio Albert Einstein · MMI-DS v1.6.0
+   PRESET DE TAILWIND 3.4 — Colegio Albert Einstein · MMI-DS v1.7.0
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -116,7 +116,12 @@ export const semanticos = {
   "error-acento": "var(--error-acento)",
   "info-fondo": "var(--info-fondo)",
   "info-texto": "var(--info-texto)",
-  "info-acento": "var(--info-acento)"
+  "info-acento": "var(--info-acento)",
+  "identidad-1": "var(--identidad-1)",
+  "identidad-2": "var(--identidad-2)",
+  "identidad-3": "var(--identidad-3)",
+  "identidad-4": "var(--identidad-4)",
+  "identidad-texto": "var(--identidad-texto)"
 } as const;
 
 /** Marca. Fuera del sistema: landing, impresos, escudo. Nunca en interfaz. */

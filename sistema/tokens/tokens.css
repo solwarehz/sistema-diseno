@@ -1,6 +1,6 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.6.0
-   WCAG 2.2 AA · 98 pares verificados en los dos modos, 0 fallos
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.7.0
+   WCAG 2.2 AA · 106 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -74,6 +74,13 @@
   --info-texto: #02468A;
   --info-acento: #2F71CE;
 
+  /* Identidad — avatar. NO significan nada */
+  --identidad-1: #0E6F63;
+  --identidad-2: #6A3FA0;
+  --identidad-3: #9B3B6E;
+  --identidad-4: #4A5568;
+  --identidad-texto: #FFFFFF;
+
   /* Marca — FUERA del sistema. Prohibidos en interfaz (§2.3) */
   --marca-rojo: #E30613;
   --marca-rojo-panel: #E30613;
@@ -144,6 +151,13 @@
   --info-fondo: #273048;
   --info-texto: #BFD0FF;
   --info-acento: #6D97DE;
+
+  /* Identidad — avatar. NO significan nada */
+  --identidad-1: #0E6F63;
+  --identidad-2: #6A3FA0;
+  --identidad-3: #9B3B6E;
+  --identidad-4: #4A5568;
+  --identidad-texto: #FFFFFF;
 
   /* Marca en oscuro. El titular sube a rojo-400; el panel de marca baja
      a #930000 porque el rojo del escudo se aplana contra la página (§2.4). */
@@ -218,6 +232,13 @@
     --info-fondo: #273048;
     --info-texto: #BFD0FF;
     --info-acento: #6D97DE;
+
+    /* Identidad — avatar. NO significan nada */
+    --identidad-1: #0E6F63;
+    --identidad-2: #6A3FA0;
+    --identidad-3: #9B3B6E;
+    --identidad-4: #4A5568;
+    --identidad-texto: #FFFFFF;
 
     --marca-rojo: #FF4C37;
     --marca-rojo-panel: #930000;

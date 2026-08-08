@@ -1,6 +1,6 @@
 {
   "name": "sistema-diseno-ae",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Sistema de diseño web del Colegio Albert Einstein — implementación ejecutable de MMI-DS",
   "private": true,
   "type": "module",
@@ -15,10 +15,13 @@
   "files": [
     "sistema/tokens",
     "sistema/candado",
+    "sistema/iconos",
     "manual",
     "CLAUDE.md"
   ],
   "exports": {
+    ".": "./sistema/tokens/fuente.mjs",
+    "./iconos": "./sistema/iconos/iconos.mjs",
     "./tokens.css": "./sistema/tokens/tokens.css",
     "./preset": "./sistema/tokens/tailwind-preset.ts",
     "./fuente": "./sistema/tokens/fuente.mjs",

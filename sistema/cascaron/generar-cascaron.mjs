@@ -17,6 +17,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { VERSION, primitivas, semanticos, marca, correcciones } from '../tokens/fuente.mjs';
 import { empaquetar, NOMBRE_ZIP } from '../paquete/empaquetar.mjs';
+import { ICONOS, ic, icono, TAMANOS } from '../iconos/iconos.mjs';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 const RAIZ = join(AQUI, '..', '..');
@@ -184,40 +185,12 @@ const filas = [
 
 // Iconos de trazo 1,5px — Lucide (D-07). Heredan currentColor, que es
 // exactamente lo que el emoji no hace.
-const ic = (d, extra = '') =>
-  `<svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${d}${extra}</svg>`;
-
-const ICONOS = {
-  panel: ic('<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'),
-  matricula: ic('<path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/>'),
-  asistencia: ic('<path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/>'),
-  usuarios: ic('<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M17 6a3 3 0 0 1 0 6M18 20c0-2-1-3.5-2.5-4.5"/>'),
-  comunicaciones: ic('<path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="2" y="13" width="4" height="6" rx="1.5"/><rect x="18" y="13" width="4" height="6" rx="1.5"/>'),
-  administracion: ic('<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>'),
-  tesoreria: ic('<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>'),
-  academico: ic('<path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/>'),
-  configuracion: ic('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/>'),
-  chevron: ic('<path d="m6 9 6 6 6-6"/>'),
-  sol: ic('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/>'),
-  sobre: ic('<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/>'),
-  campana: ic('<path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>'),
-  panelIzq: ic('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/>'),
-  hamburguesa: ic('<path d="M4 6h16M4 12h16M4 18h16"/>'),
-  luna: ic('<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>'),
-  salir: ic('<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/>'),
-  // Los tres destinos del conmutador de vista, y la navegación de la app.
-  escritorio: ic('<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>'),
-  movil: ic('<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/>'),
-  atras: ic('<path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>'),
-  mas: ic('<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>'),
-  libro: ic('<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>'),
-  descargar: ic('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>'),
-  capas: ic('<path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/>'),
-};
+// El conjunto vive en su propio modulo: lo consume el catalogo y lo consume
+// la entrega. Definido aqui, la copia entregada envejeceria por su cuenta.
 
 // Chevrons direccionales del componente Paginación.
-const ICO_CHEV_IZQ = ic('<path d="m15 18-6-6 6-6"/>');
-const ICO_CHEV_DER = ic('<path d="m9 18 6-6-6-6"/>');
+const ICO_CHEV_IZQ = icono('chevronIzq', TAMANOS.etiqueta);
+const ICO_CHEV_DER = icono('chevronDer', TAMANOS.etiqueta);
 
 const MENU = [
   ['panel', 'Dashboard', false],
@@ -253,7 +226,7 @@ const barraSuperior = `
       <button class="top-btn" aria-label="Cambiar tema">${ICONOS.sol}</button>
       <button class="top-btn" aria-label="Mensajes">${ICONOS.sobre}</button>
       <button class="top-btn" aria-label="Notificaciones">${ICONOS.campana}<span class="badge">1</span></button>
-      <span class="top-avatar">JH</span>
+      <span class="avatar avatar-m avatar-2 top-avatar">JH</span>
     </div>
   </div>`;
 
@@ -1520,7 +1493,7 @@ ${verCodigo(
 
 // Silueta neutra. No se inventan fotos de personas: cuando no hay foto se
 // muestran las iniciales, que es lo que hará el sistema real.
-const SILUETA = `<svg viewBox="0 0 40 40" class="av-silueta" aria-hidden="true">
+const SILUETA = `<svg viewBox="0 0 40 40" class="avatar-silueta" aria-hidden="true">
   <circle cx="20" cy="15" r="7" fill="currentColor" opacity=".5"/>
   <path d="M6 38c0-8 6-13 14-13s14 5 14 13" fill="currentColor" opacity=".5"/>
 </svg>`;
@@ -1541,7 +1514,7 @@ const PERSONAL = [
 
 const tarjetaPersona = ([nombre, cargo, est, etiqueta, hora, conFoto]) => `
   <article class="tp tp-${est}">
-    <div class="tp-av">${conFoto ? SILUETA : `<span class="tp-ini">${iniciales(nombre)}</span>`}</div>
+    <div class="avatar avatar-l">${conFoto ? SILUETA : `<span class="av-ini">${iniciales(nombre)}</span>`}</div>
     <div class="tp-txt">
       <h4 class="tp-nom">${nombre}</h4>
       <p class="tp-cargo">${cargo}</p>
@@ -1621,9 +1594,9 @@ const pagTarjeta = `
 <h3 class="sub-seccion">La foto</h3>
 <div class="bloque">
   <div class="muestra-fila">
-    <div class="mf"><div class="tp-av tp-av-suelto">${SILUETA}</div><span class="mf-et"><b>Sin foto cargada</b><br>Silueta neutra<br>Marcador, no una persona inventada</span></div>
-    <div class="mf"><div class="tp-av tp-av-suelto"><span class="tp-ini">QM</span></div><span class="mf-et"><b>Iniciales</b><br>Del primer apellido y el nombre<br>Preferible a la silueta</span></div>
-    <div class="mf"><div class="tp-av tp-av-suelto tp-av-marco"><span class="tp-ini">RA</span></div><span class="mf-et"><b>En el marco</b><br><code>marco-acento</code></span></div>
+    <div class="mf"><div class="avatar avatar-xl avatar-vacio">${SILUETA}</div><span class="mf-et"><b>Sin foto cargada</b><br>Silueta neutra<br>Marcador, no una persona inventada</span></div>
+    <div class="mf"><div class="avatar avatar-xl avatar-vacio"><span class="av-ini">QM</span></div><span class="mf-et"><b>Iniciales</b><br>Del primer apellido y el nombre<br>Preferible a la silueta</span></div>
+    <div class="mf"><div class="avatar avatar-xl avatar-marco"><span class="av-ini">RA</span></div><span class="mf-et"><b>En el marco</b><br><code>marco-acento</code></span></div>
   </div>
 </div>
 <p class="pag-intro" style="margin-top:12px">Las iniciales <strong>ganan a la silueta</strong>:
@@ -1817,6 +1790,18 @@ configuración y descarga CSV.</p>
   </tbody>
 </table>
 <p class="pag-intro" style="margin-top:12px">Las dos <strong>comparten el lenguaje visual</strong>. Si no lo compartieran, dos tablas en la misma pantalla parecerían de dos productos distintos.</p>
+
+<h3 class="sub-seccion">Densidad</h3>
+<p class="pag-intro">Dos alturas de fila: <strong>cómoda 34px</strong> y <strong>compacta 28px</strong>.
+Se cambia en el menú de usuario, junto al tema.</p>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td>Es <strong>global, no por tabla</strong>. Un conmutador por tabla permitiría dos alturas de fila en la misma pantalla, y eso no se lee como una preferencia: se lee como un fallo.</td></tr>
+    <tr><td class="num">2</td><td>Es una preferencia <strong>de la persona</strong>, no de la pantalla. Por eso vive en el menú de usuario y se recuerda.</td></tr>
+    <tr><td class="num">3</td><td><strong>En táctil no se aplica.</strong> Una fila de 28px no es un blanco que se acierte con el dedo: SC 2.5.8 pide 24px como mínimo y la práctica pide 44.</td></tr>
+    <tr><td class="num">4</td><td>Cambia la <strong>altura de la fila</strong>, nunca el tamaño de la letra. Encoger el texto no es densidad: es hacerlo ilegible.</td></tr>
+  </tbody>
+</table>
 
 <h3 class="sub-seccion">Filas desplegables — agrupar subelementos</h3>
 <p class="seccion-sub">El símbolo se llama <strong>chevron</strong>; cuando su trabajo es abrir y cerrar contenido se le llama <em>disclosure</em>. Gira al desplegar y el contenido entra con transición de altura.</p>
@@ -2130,6 +2115,18 @@ const ESTADOS_PANTALLA = [
     linea: 'Pídeselo a Dirección si lo necesitas.',
     accion: null,
   },
+  // v1.7.0 — SÉPTIMO. No sustituye a «Error»: son cosas distintas y confundirlas
+  // da una pantalla que miente. En «Error» la petición falló pero QUEDA pantalla,
+  // y por eso se ofrece Reintentar. Aquí reventó el propio dibujado y NO hay área
+  // donde pintar: ofrecer Reintentar sería ofrecer un botón que vuelve a fallar,
+  // porque volvería a ejecutar exactamente el mismo dibujado que ya falló.
+  {
+    k: 'fallo-dibujado', t: 'Fallo de dibujado', ico: icono('roto', TAMANOS.estado),
+    cuando: 'El componente reventó al pintarse',
+    titulo: 'No pudimos mostrar esta pantalla',
+    linea: 'Puedes recargar o volver al inicio. Referencia: 7K4M-92.',
+    accion: 'Recargar la pantalla',
+  },
 ];
 
 const cajaEstado = (e) =>
@@ -2152,7 +2149,7 @@ const pagEstados = `
 cargando, recién abierta, filtrada a cero, caída. Son seis estados, y confundir dos de ellos
 hace que la gente crea que el sistema perdió su información.</p>
 
-<h3 class="sub-seccion">Los seis</h3>
+<h3 class="sub-seccion">Los siete</h3>
 <div class="bloque">
   <div class="ep-rejilla">
     ${ESTADOS_PANTALLA.map(
@@ -2164,6 +2161,29 @@ hace que la gente crea que el sistema perdió su información.</p>
     ).join('')}
   </div>
 </div>
+
+<h3 class="sub-seccion">Error o fallo de dibujado</h3>
+<p class="pag-intro">Los dos dicen «algo salió mal» y no son lo mismo. Confundirlos da una
+pantalla que <strong>ofrece un botón que vuelve a fallar</strong>.</p>
+<table class="tabla-simple">
+  <thead><tr><th></th><th>Error</th><th>Fallo de dibujado</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Qué pasó</strong></td><td>La petición falló</td><td class="motivo">El componente reventó al pintarse</td></tr>
+    <tr><td><strong>Queda pantalla</strong></td><td>Sí. El aviso va dentro del área de contenido</td><td class="motivo">No. <strong>No hay área</strong> donde pintar</td></tr>
+    <tr><td><strong>Qué se ofrece</strong></td><td>Reintentar la petición</td><td class="motivo">Recargar. Reintentar repetiría el mismo dibujado</td></tr>
+    <tr><td><strong>Alcance</strong></td><td>Un panel o una tabla</td><td class="motivo">La región entera que quedó rota</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Qué NO se dice en un fallo</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td>Ni traza, ni nombre de excepción, ni ruta, ni nombre de servicio. <strong>A quien lo lee no le sirve, y a quien no debería verlo, sí.</strong></td></tr>
+    <tr><td class="num">2</td><td>Sí un <strong>código de referencia</strong> corto y copiable. Es lo que convierte «no funciona» en un caso que alguien puede buscar.</td></tr>
+    <tr><td class="num">3</td><td>Un código sin registro detrás es <strong>decoración</strong>. Si no se puede buscar, no se pone.</td></tr>
+    <tr><td class="num">4</td><td>Nunca se culpa a la persona. No hizo nada mal: se rompió el programa.</td></tr>
+  </tbody>
+</table>
 
 <h3 class="sub-seccion">Las tres parejas que se confunden</h3>
 <table class="tabla-simple">
@@ -3151,6 +3171,109 @@ ${casosDeUso}
     <span><strong>Contrastes</strong>Los ${lock.resumen.paresBloqueantes} pares medidos</span></a>
 </div>`;
 
+// ── Avatar ──────────────────────────────────────────────────────────────────
+// La asignación es DETERMINISTA y por identificador estable, nunca por nombre:
+// un cambio de apellido no debe cambiarle el color a nadie.
+const colorIdentidad = (id) => {
+  let n = 0;
+  for (let i = 0; i < id.length; i++) n = (n * 31 + id.charCodeAt(i)) >>> 0;
+  return (n % 4) + 1;
+};
+const PERSONAS_AV = [
+  { id: '71234567', n: 'QUISPE MAMANI, Rosa' },
+  { id: '08765432', n: 'ROJAS VARGAS, Luis' },
+  { id: '45120983', n: 'PINEDA HUAMÁN, José' },
+  { id: '62901745', n: 'VARGAS SOTO, Ana' },
+  { id: '33845612', n: 'CHÁVEZ RÍOS, Marta' },
+  { id: '19472068', n: 'TORRES LEÓN, Pedro' },
+];
+const inicialesDe = (n) => {
+  const [ap, no] = n.split(',');
+  return (ap.trim()[0] + (no ? no.trim()[0] : '')).toUpperCase();
+};
+
+const pagAvatar = `
+<p class="pag-intro">El disco con las iniciales de una persona. Existe para <strong>reconocer de un
+vistazo</strong> en una lista larga, no para informar de nada.</p>
+
+<h3 class="sub-seccion">El color no significa nada</h3>
+<p class="pag-intro">Es la decisión que sostiene todo lo demás. El avatar usa una paleta de
+<strong>identidad</strong>, no la de estado, y esto no es preferencia: si un avatar fuera rojo,
+diría que esa persona tiene un problema <strong>sin que nadie lo haya dicho</strong>. Sería pintar
+un estado donde solo hay una identidad.</p>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td>Los cuatro colores <strong>no coinciden con ningún tono de estado</strong>. Medido en tono: estado ocupa rojo, ámbar, verde y azul; cada identidad queda a 30° o más del tono de estado más cercano.</td></tr>
+    <tr><td class="num">2</td><td>Son <strong>cuatro y no seis</strong> porque cuatro es lo que la paleta de estado deja libre. Añadir un quinto obligaría a invadir una familia que ya significa algo.</td></tr>
+    <tr><td class="num">3</td><td>Las iniciales cumplen <strong>4,5:1 sobre los cuatro</strong>, verificado en los dos modos y dentro del contrato, como cualquier otro par.</td></tr>
+    <tr><td class="num">4</td><td>El color <strong>nunca filtra, agrupa ni informa</strong>. Si alguien lo usa para eso, deja de ser identidad y pasa a ser un estado sin declarar.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">La paleta</h3>
+<div class="bloque">
+  <div class="avatar-rejilla">
+    ${[1, 2, 3, 4]
+      .map(
+        (i) => `<span class="avatar-caso"><span class="avatar avatar-xl avatar-${i}">AE</span>
+        <code>identidad-${i}</code></span>`
+      )
+      .join('')}
+  </div>
+</div>
+
+<h3 class="sub-seccion">Cómo se asigna</h3>
+<p class="pag-intro">Determinista y por <strong>identificador estable</strong>, nunca por nombre:
+un cambio de apellido no debe cambiarle el color a nadie. La misma persona sale del mismo color
+en todas las pantallas y en todos los proyectos.</p>
+<div class="bloque">
+  <div class="avatar-rejilla">
+    ${PERSONAS_AV.map(
+      (p) => `<span class="avatar-caso"><span class="avatar avatar-l avatar-${colorIdentidad(p.id)}">${inicialesDe(p.n)}</span>
+      <code>${p.id}</code></span>`
+    ).join('')}
+  </div>
+</div>
+
+<h3 class="sub-seccion">Tamaños</h3>
+<div class="bloque">
+  <div class="avatar-rejilla">
+    <span class="avatar-caso"><span class="avatar avatar-s avatar-1">RQ</span>24 · en tabla</span>
+    <span class="avatar-caso"><span class="avatar avatar-m avatar-2">LR</span>32 · en la barra</span>
+    <span class="avatar-caso"><span class="avatar avatar-l avatar-3">JP</span>40 · en tarjeta</span>
+    <span class="avatar-caso"><span class="avatar avatar-xl avatar-4">AV</span>48 · en detalle</span>
+  </div>
+</div>
+<p class="pag-intro">Cuatro pasos, todos en la rejilla de 4. Hasta la v1.7.0 convivían cuatro
+tamaños distintos —30, 36, 42 y 48— en tres implementaciones separadas. Era el mismo defecto que
+ya costó tener dos paginaciones.</p>
+
+<h3 class="sub-seccion">Cuando sí hay foto</h3>
+<div class="bloque">
+  <div class="avatar-rejilla">
+    <span class="avatar-caso"><span class="avatar avatar-xl avatar-vacio">${SILUETA}</span>Sin foto y sin nombre</span>
+    <span class="avatar-caso"><span class="avatar avatar-xl avatar-2">RQ</span>Sin foto, con nombre</span>
+    <span class="avatar-caso"><span class="avatar avatar-xl avatar-marco">RA</span>Sobre el marco</span>
+  </div>
+</div>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td>Proporción <strong>1:1 y recorte centrado</strong>. Nunca deformada: una cara estirada se nota siempre.</td></tr>
+    <tr><td class="num">2</td><td>Si la imagen <strong>no carga, quedan las iniciales</strong>. Ni marco roto ni hueco.</td></tr>
+    <tr><td class="num">3</td><td>Sin foto y sin nombre, <strong>silueta neutra</strong>. Es un marcador, no una persona inventada.</td></tr>
+    <tr><td class="num">4</td><td>El avatar <strong>no es un botón</strong> por defecto. Si abre algo, el control lo envuelve y lleva su nombre accesible.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Lo que decide cada proyecto</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td>De dónde salen las fotos, dónde se guardan y con qué caducidad</td></tr>
+    <tr><td><strong>Si se muestran fotos de menores de edad.</strong> Eso no es una decisión de interfaz: es de dirección y con consentimiento por escrito. El sistema entrega el componente; a qué caras se aplica, no.</td></tr>
+  </tbody>
+</table>
+`;
+
 // ── Horario ─────────────────────────────────────────────────────────────────
 // Dos juegos de datos a propósito: uno de clases con paso de 30 minutos y otro
 // de turnos con paso de 60 y siete días. Si el componente solo supiera dibujar
@@ -3310,6 +3433,7 @@ const CATALOGO = [
       { id: 'fecha', t: 'Fecha y rango', estado: 'listo', c: pagFecha },
       { id: 'horario', t: 'Horario', estado: 'listo', c: pagHorario },
       { id: 'chip', t: 'Chip de estado', estado: 'listo', c: pagChip },
+      { id: 'avatar', t: 'Avatar', estado: 'listo', c: pagAvatar },
       { id: 'tarjeta', t: 'Tarjeta', estado: 'listo', c: pagTarjeta },
       { id: 'tabla', t: 'Tabla de datos', estado: 'listo', c: pagTabla },
       { id: 'paginacion', t: 'Paginación', estado: 'listo', c: pagPaginacion },
@@ -3502,7 +3626,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .nav-rama:first-child { border-top: 0; }
 .nav-rama-tit { width: 100%; background: transparent; border: 0; cursor: pointer;
   font: inherit; text-align: left; }
-.nav-rama-tit .nav-chev .ic { width: 13px; height: 13px;
+.nav-rama-tit .nav-chev .ic { width: 14px; height: 14px;
   transition: transform .18s ease; transform: rotate(-90deg); }
 .nav-rama.abierta .nav-chev .ic { transform: rotate(0deg); }
 .nav-nietos { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
@@ -3650,7 +3774,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .av-x { display: grid; place-items: center; background: transparent; border: 0;
   cursor: pointer; color: var(--texto-secundario); padding: 4px; border-radius: 6px; flex: none; }
 .av-x:hover { color: var(--texto-principal); background: var(--fondo-encabezado); }
-.av-x .ic { width: 15px; height: 15px; }
+.av-x .ic { width: 16px; height: 16px; }
 @media (max-width: 640px) { .av-zona { left: 16px; right: 16px; top: 68px; max-width: none; } }
 @media (prefers-reduced-motion: reduce) { .av { transform: none; transition: opacity .15s ease; } }
 
@@ -4109,6 +4233,18 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 .tb-flecha { font-size: 12px; width: 10px; }
 .tb-th.tb-num .tb-orden { justify-content: flex-end; }
 .tb td { padding: 0 12px; height: 34px; border-top: 1px solid var(--borde); }
+/* DENSIDAD. El atributo va en <html> y no en la tabla: es GLOBAL. Un conmutador
+   por tabla permitiría dos alturas de fila en la misma pantalla, y eso no se lee
+   como preferencia sino como fallo. Los dos valores son los del preset —
+   fila-comoda 34px, fila-compacta 28px—, ya definidos desde v1.0.0. */
+[data-densidad='compacta'] .tb td { height: 28px; }
+[data-densidad='compacta'] .hor-c { height: 28px; }
+/* EN TÁCTIL LA DENSIDAD COMPACTA NO SE APLICA. Una fila de 28px no es un blanco
+   que se acierte con el dedo: SC 2.5.8 pide 24px como mínimo absoluto y la
+   práctica pide 44. Sin esta regla pasaba lo mismo pero POR ACCIDENTE —el
+   contenido no cabía en 28 y la fila crecía sola a 45—, y lo que ocurre por
+   accidente deja de ocurrir en cuanto alguien encoge el contenido. */
+[data-vista='movil'][data-densidad='compacta'] .tb td { height: 44px; }
 .tb-num { text-align: right; }
 /* Columna de posición: estrecha, en secundario y sin botón de orden. Es un
    localizador para decir "mira la fila 7", no un dato que se compare. */
@@ -4145,7 +4281,7 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 .tb-act-x { display: grid; place-items: center; background: transparent; border: 0;
   cursor: pointer; color: var(--texto-secundario); padding: 4px; border-radius: 3px; }
 .tb-act-x:hover { color: var(--error-texto); }
-.tb-act-x .ic { width: 13px; height: 13px; }
+.tb-act-x .ic { width: 14px; height: 14px; }
 .tb-act-todo { font: inherit; font-size: 12px; cursor: pointer; background: transparent;
   border: 0; color: var(--info-texto); text-decoration: underline; margin-left: 4px; }
 .tb-vacio-quitar { font: inherit; font-size: 13px; cursor: pointer; background: transparent;
@@ -4221,15 +4357,35 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 /* Inactivo: cambia la SUPERFICIE. Nunca la opacidad del texto. */
 .tp-inact { background: var(--fondo-encabezado); border-left-color: var(--borde-fuerte); }
 
-.tp-av { width: 42px; height: 42px; border-radius: 50%; flex: none; overflow: hidden;
-  background: var(--fondo-encabezado); color: var(--texto-secundario);
-  display: grid; place-items: center; }
-.tp-inact .tp-av { background: var(--borde); }
-.av-silueta { width: 100%; height: 100%; display: block; }
-.tp-ini { font-size: 15px; font-weight: 600; color: var(--texto-principal); }
-.tp-av-suelto { width: 48px; height: 48px; }
-.tp-av-marco { background: var(--marco-acento); }
-.tp-av-marco .tp-ini { color: var(--marco-fondo); }
+/* ── AVATAR ──────────────────────────────────────────────────────────────────
+   UNO solo. Hasta v1.7.0 vivía en tres sitios con cuatro tamaños —30, 36, 42 y
+   48px, uno de ellos fuera de rejilla—: el mismo defecto que ya costó tener dos
+   paginaciones. Ahora es un componente con cuatro pasos, todos en rejilla de 4.
+
+   El color NO significa nada. Es ayuda de reconocimiento en una lista larga, y
+   por eso usa la paleta de IDENTIDAD y no la de estado: un avatar rojo diría
+   que esa persona tiene un problema sin que nadie lo haya dicho. */
+.avatar { border-radius: 50%; flex: none; overflow: hidden; display: grid;
+  place-items: center; font-weight: 600; line-height: 1; user-select: none;
+  background: var(--identidad-4); color: var(--identidad-texto); }
+.avatar-s  { width: 24px; height: 24px; font-size: 12px; }
+.avatar-m  { width: 32px; height: 32px; font-size: 13px; }
+.avatar-l  { width: 40px; height: 40px; font-size: 16px; }
+.avatar-xl { width: 48px; height: 48px; font-size: 19px; }
+.avatar-1 { background: var(--identidad-1); }
+.avatar-2 { background: var(--identidad-2); }
+.avatar-3 { background: var(--identidad-3); }
+.avatar-4 { background: var(--identidad-4); }
+/* Ni foto ni nombre: silueta neutra. Es un marcador, no una persona inventada. */
+.avatar-vacio { background: var(--fondo-encabezado); color: var(--texto-secundario); }
+.tp-inact .avatar-vacio { background: var(--borde); }
+/* La foto se recorta centrada y nunca se deforma. Si no carga, el navegador
+   deja ver las iniciales que hay detrás. */
+.av img, .avatar-silueta { width: 100%; height: 100%; object-fit: cover; display: block; }
+.avatar-marco { background: var(--marco-acento); color: var(--marco-fondo); }
+.avatar-rejilla { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
+.avatar-caso { display: flex; flex-direction: column; align-items: center; gap: 4px;
+  font-size: 12px; color: var(--texto-secundario); }
 
 .tp-txt { min-width: 0; flex: 1; }
 .tp-nom { font-size: 15px; font-weight: 600; margin: 0 0 4px;
@@ -4307,7 +4463,7 @@ input.campo.sel-in { width: 100%; padding-left: 32px; padding-right: 32px; }
 .sel-op.marcado { background: var(--fondo-fila-hover); }
 .sel-op[aria-selected="true"] { color: var(--accion); font-weight: 500; }
 .sel-check { color: var(--accion); display: grid; place-items: center; }
-.sel-check .ic { width: 15px; height: 15px; }
+.sel-check .ic { width: 16px; height: 16px; }
 .sel-vacio { padding: 12px 12px; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .sel-vacio strong { color: var(--texto-principal); }
 .sel-demo-fila { display: grid; grid-template-columns: minmax(260px,360px) 1fr; gap: 28px; align-items: start; }
@@ -4456,7 +4612,7 @@ a.enlace.enl-nosub { text-decoration: none; }
 .cod-ver { display: inline-flex; align-items: center; gap: 4px; font: inherit;
   font-size: 13px; font-weight: 500; cursor: pointer; background: transparent;
   border: 0; color: var(--accion); padding: 4px 4px; border-radius: 6px; }
-.cod-ver .ic { width: 15px; height: 15px; transition: transform .15s; }
+.cod-ver .ic { width: 16px; height: 16px; transition: transform .15s; }
 .cod-ver.abierto .ic { transform: rotate(180deg); }
 .cod-tit { flex: 1; font-size: 12px; color: var(--texto-secundario); }
 .cod-pre { margin: 0; padding: 16px; font-family: 'IBM Plex Mono', monospace;
@@ -4772,9 +4928,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .badge { position: absolute; top: 1px; right: 1px; min-width: 15px; height: 15px;
   border-radius: 6px; background: var(--error-acento); color: var(--texto-invertido);
   font-size: 12px; font-weight: 600; display: grid; place-items: center; padding: 0 4px; }
-.top-avatar { width: 30px; height: 30px; border-radius: 50%; margin-left: 4px;
-  background: var(--accion); color: var(--accion-texto); border: 0; cursor: pointer;
-  display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+.top-avatar { margin-left: 4px; border: 0; cursor: pointer; }
 
 /* Menú de usuario */
 .us { position: relative; }
@@ -4784,9 +4938,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   box-shadow: var(--sombra-aviso); }
 .us-cab { display: flex; align-items: center; gap: 12px; padding: 12px;
   border-bottom: 1px solid var(--borde); margin-bottom: 4px; }
-.us-av { width: 36px; height: 36px; border-radius: 50%; flex: none;
-  background: var(--accion); color: var(--accion-texto);
-  display: grid; place-items: center; font-size: 13px; font-weight: 600; }
+
 .us-txt { display: flex; flex-direction: column; min-width: 0; }
 .us-nom { font-size: 13px; font-weight: 600; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis; }
@@ -4803,7 +4955,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   color: var(--texto-secundario); }
 .us-tema-b:hover { color: var(--texto-principal); }
 .us-tema-b[aria-pressed='true'] { background: var(--accion); color: var(--accion-texto); }
-.us-tema-b .ic { width: 15px; height: 15px; }
+.us-tema-b .ic { width: 16px; height: 16px; }
 .us-op { display: flex; align-items: center; gap: 12px; width: 100%;
   padding: 8px 12px; font: inherit; font-size: 13px; text-align: left; cursor: pointer;
   background: transparent; border: 0; border-radius: 6px; color: var(--texto-principal); }
@@ -5106,11 +5258,11 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <button class="top-btn" aria-label="Notificaciones">${ICONOS.campana}<span class="badge">1</span></button>
 
         <div class="us">
-          <button class="top-avatar" id="us-btn" aria-expanded="false" aria-controls="us-menu"
+          <button class="avatar avatar-m avatar-2 top-avatar" id="us-btn" aria-expanded="false" aria-controls="us-menu"
                   aria-haspopup="menu" aria-label="Menú de JOSE ISIDRO PINEDA">JP</button>
           <div class="us-menu" id="us-menu" role="menu" hidden>
             <div class="us-cab">
-              <span class="us-av">JP</span>
+              <span class="avatar avatar-m avatar-2">JP</span>
               <div class="us-txt">
                 <span class="us-nom">JOSE ISIDRO PINEDA</span>
                 <span class="us-mail">jose.pineda@ae.edu.pe</span>
@@ -5122,6 +5274,16 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
               <div class="us-tema" role="group" aria-label="Modo de color">
                 <button id="b-claro" class="us-tema-b" aria-pressed="true" aria-label="Modo claro" title="Claro">${ICONOS.sol}</button>
                 <button id="b-oscuro" class="us-tema-b" aria-pressed="false" aria-label="Modo oscuro" title="Oscuro">${ICONOS.luna}</button>
+              </div>
+            </div>
+
+            <div class="us-sec">
+              <span class="us-et">Densidad</span>
+              <div class="us-tema" role="group" aria-label="Densidad de las tablas">
+                <button id="d-comoda" class="us-tema-b" aria-pressed="true"
+                        aria-label="Densidad cómoda" title="Cómoda">${icono('filas', TAMANOS.control)}</button>
+                <button id="d-compacta" class="us-tema-b" aria-pressed="false"
+                        aria-label="Densidad compacta" title="Compacta">${icono('filasFinas', TAMANOS.control)}</button>
               </div>
             </div>
 
@@ -6389,6 +6551,32 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       aplicar(raiz.getAttribute('data-tema') === 'oscuro' ? 'claro' : 'oscuro');
     });
   });
+
+  // ── Densidad ──────────────────────────────────────────────────────────────
+  // GLOBAL, no por tabla. Un conmutador por tabla permite dos tablas con
+  // distinta altura de fila en la misma pantalla, y eso no se lee como una
+  // preferencia: se lee como un fallo. Por eso el atributo va en <html>.
+  (function () {
+    var bComoda = document.getElementById('d-comoda');
+    var bCompacta = document.getElementById('d-compacta');
+    if (!bComoda) return;
+    var densidad = 'comoda';
+    try { densidad = localStorage.getItem('mmi-densidad') || densidad; } catch (e) {}
+
+    function aplicarDensidad(d, guardar) {
+      densidad = d === 'compacta' ? 'compacta' : 'comoda';
+      raiz.setAttribute('data-densidad', densidad);
+      bComoda.setAttribute('aria-pressed', String(densidad === 'comoda'));
+      bCompacta.setAttribute('aria-pressed', String(densidad === 'compacta'));
+      // En el catálogo se guarda en el navegador porque no hay sesión. En un
+      // producto va al PERFIL de la persona: si no, la preferencia se queda en
+      // ese equipo y no le sigue al móvil.
+      if (guardar) { try { localStorage.setItem('mmi-densidad', densidad); } catch (e) {} }
+    }
+    bComoda.addEventListener('click', function () { aplicarDensidad('comoda', true); });
+    bCompacta.addEventListener('click', function () { aplicarDensidad('compacta', true); });
+    aplicarDensidad(densidad, false);
+  })();
 
   // ── Horario ───────────────────────────────────────────────────────────────
   // Rotar NO reordena datos: intercambia los ejes de la misma tabla. Por eso el

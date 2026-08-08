@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.6.0';
+export const VERSION = '1.7.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -197,6 +197,28 @@ export const semanticos = {
   'info-fondo':   { claro: '#E9EEFF', oscuro: '#273048', origen: 'directo', uso: 'Aviso neutro, ayuda contextual' },
   'info-texto':   { claro: '#02468A', oscuro: '#BFD0FF', origen: 'directo', uso: 'Texto sobre info-fondo' },
   'info-acento':  { claro: '#2F71CE', oscuro: '#6D97DE', origen: 'directo', uso: 'Solo filete del borde. Adorno' },
+
+  // ── IDENTIDAD · v1.7.0 ────────────────────────────────────────────────────
+  // Colores del avatar sin foto. Existen porque NO se puede reutilizar la
+  // paleta de estado: un avatar rojo diría que esa persona tiene un problema
+  // sin que nadie lo haya dicho. Estos no significan NADA: son ayuda de
+  // reconocimiento y nunca informan, agrupan ni filtran.
+  //
+  // Son cuatro y no seis porque cuatro es lo que la paleta de estado deja
+  // libre. Medido en tono: estado ocupa rojo (0°/358°), ámbar (36°/48°), verde
+  // (122°) y azul (211°/215°/225°). Cada identidad queda a 30° o más del tono
+  // de estado más cercano, salvo pizarra, que va al 17 % de saturación y por
+  // eso se lee como ausencia de color y no como uno.
+  //
+  // Mismo valor en los dos modos, como el marco: es un disco relleno con texto
+  // blanco encima, y cambiarlo por tema no aporta nada.
+  'identidad-1':     { claro: '#0E6F63', oscuro: '#0E6F63', origen: 'directo', uso: 'Avatar sin foto. Verde azulado, tono 173°' },
+  'identidad-2':     { claro: '#6A3FA0', oscuro: '#6A3FA0', origen: 'directo', uso: 'Avatar sin foto. Violeta, tono 267°' },
+  'identidad-3':     { claro: '#9B3B6E', oscuro: '#9B3B6E', origen: 'directo', uso: 'Avatar sin foto. Magenta, tono 328°' },
+  'identidad-4':     { claro: '#4A5568', oscuro: '#4A5568', origen: 'directo', uso: 'Avatar sin foto. Pizarra, saturación 17 %' },
+  // Blanco en los DOS modos. texto-invertido no sirve: en oscuro vale #20201E
+  // y las iniciales quedarían oscuras sobre un disco oscuro.
+  'identidad-texto': { claro: '#FFFFFF', oscuro: '#FFFFFF', origen: 'gris.0',  uso: 'Iniciales sobre cualquier color de identidad' },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -311,4 +333,10 @@ export const pares = [
   // Divisores — adorno, no son límite de control
   ['borde',            'fondo-tarjeta',    'informativo', 'Divisor de fila. Adorno'],
   ['borde-fuerte',     'fondo-tarjeta',    'informativo', 'Separador con peso'],
+
+  // Identidad — las iniciales son texto de verdad y se leen. 4,5 sin rebaja.
+  ['identidad-texto',  'identidad-1',      4.5, 'Iniciales del avatar sobre verde azulado'],
+  ['identidad-texto',  'identidad-2',      4.5, 'Iniciales del avatar sobre violeta'],
+  ['identidad-texto',  'identidad-3',      4.5, 'Iniciales del avatar sobre magenta'],
+  ['identidad-texto',  'identidad-4',      4.5, 'Iniciales del avatar sobre pizarra'],
 ];

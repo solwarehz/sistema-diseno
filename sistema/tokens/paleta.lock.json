@@ -1,6 +1,6 @@
 {
   "documento": "MMI-DS",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "norma": "WCAG 2.2 AA",
   "generado": "node sistema/tokens/generar.mjs",
   "modos": [
@@ -9,17 +9,17 @@
   ],
   "aviso": "Archivo generado. No editar a mano. La fuente es sistema/tokens/fuente.mjs. Cambiar un valor exige regenerar, re-verificar y subir versión (§2.5 regla 8).",
   "resumen": {
-    "paresTotales": 136,
-    "paresBloqueantes": 98,
+    "paresTotales": 144,
+    "paresBloqueantes": 106,
     "paresInformativos": 38,
     "fallos": 0,
     "porModo": {
       "claro": {
-        "bloqueantes": 49,
+        "bloqueantes": 53,
         "fallos": 0
       },
       "oscuro": {
-        "bloqueantes": 49,
+        "bloqueantes": 53,
         "fallos": 0
       }
     }
@@ -383,6 +383,36 @@
       "oscuro": "#6D97DE",
       "origen": "directo",
       "uso": "Solo filete del borde. Adorno"
+    },
+    "identidad-1": {
+      "claro": "#0E6F63",
+      "oscuro": "#0E6F63",
+      "origen": "directo",
+      "uso": "Avatar sin foto. Verde azulado, tono 173°"
+    },
+    "identidad-2": {
+      "claro": "#6A3FA0",
+      "oscuro": "#6A3FA0",
+      "origen": "directo",
+      "uso": "Avatar sin foto. Violeta, tono 267°"
+    },
+    "identidad-3": {
+      "claro": "#9B3B6E",
+      "oscuro": "#9B3B6E",
+      "origen": "directo",
+      "uso": "Avatar sin foto. Magenta, tono 328°"
+    },
+    "identidad-4": {
+      "claro": "#4A5568",
+      "oscuro": "#4A5568",
+      "origen": "directo",
+      "uso": "Avatar sin foto. Pizarra, saturación 17 %"
+    },
+    "identidad-texto": {
+      "claro": "#FFFFFF",
+      "oscuro": "#FFFFFF",
+      "origen": "gris.0",
+      "uso": "Iniciales sobre cualquier color de identidad"
     }
   },
   "marca": {
@@ -1167,6 +1197,50 @@
       "cumple": null
     },
     {
+      "modo": "claro",
+      "frente": "identidad-texto",
+      "fondo": "identidad-1",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#0E6F63",
+      "ratio": 6.04,
+      "minimo": 4.5,
+      "motivo": "Iniciales del avatar sobre verde azulado",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "identidad-texto",
+      "fondo": "identidad-2",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#6A3FA0",
+      "ratio": 7.41,
+      "minimo": 4.5,
+      "motivo": "Iniciales del avatar sobre violeta",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "identidad-texto",
+      "fondo": "identidad-3",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#9B3B6E",
+      "ratio": 6.47,
+      "minimo": 4.5,
+      "motivo": "Iniciales del avatar sobre magenta",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "identidad-texto",
+      "fondo": "identidad-4",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#4A5568",
+      "ratio": 7.52,
+      "minimo": 4.5,
+      "motivo": "Iniciales del avatar sobre pizarra",
+      "cumple": true
+    },
+    {
       "modo": "oscuro",
       "frente": "texto-principal",
       "fondo": "fondo-tarjeta",
@@ -1913,6 +1987,50 @@
       "minimo": "informativo",
       "motivo": "Separador con peso",
       "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "identidad-texto",
+      "fondo": "identidad-1",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#0E6F63",
+      "ratio": 6.04,
+      "minimo": 4.5,
+      "motivo": "Iniciales del avatar sobre verde azulado",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "identidad-texto",
+      "fondo": "identidad-2",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#6A3FA0",
+      "ratio": 7.41,
+      "minimo": 4.5,
+      "motivo": "Iniciales del avatar sobre violeta",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "identidad-texto",
+      "fondo": "identidad-3",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#9B3B6E",
+      "ratio": 6.47,
+      "minimo": 4.5,
+      "motivo": "Iniciales del avatar sobre magenta",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "identidad-texto",
+      "fondo": "identidad-4",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#4A5568",
+      "ratio": 7.52,
+      "minimo": 4.5,
+      "motivo": "Iniciales del avatar sobre pizarra",
+      "cumple": true
     }
   ]
 }

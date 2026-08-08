@@ -128,7 +128,41 @@ const grupos = {
     'error-fondo', 'error-texto', 'error-acento',
     'info-fondo', 'info-texto', 'info-acento',
   ],
+  'Identidad — avatar. NO significan nada': [
+    'identidad-1', 'identidad-2', 'identidad-3', 'identidad-4', 'identidad-texto',
+  ],
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CANDADO DEL AGRUPADO
+//
+// `grupos` se escribe a mano y `tokens.css` se arma SOLO desde ahí. Un token
+// que exista en `semanticos` pero no esté en ningún grupo se verifica en el
+// contrato, aparece en el preset... y NUNCA llega al CSS. En silencio.
+//
+// Pasó de verdad con los cinco tokens de identidad en v1.7.0: el verificador
+// daba 0 fallos, el contrato los contaba, y en pantalla el avatar salía
+// transparente porque `var(--identidad-1)` no existía.
+//
+// Un token que no llega al CSS es un token que no existe. Esto lo convierte en
+// fallo de generación en vez de en un rato de depuración.
+// ─────────────────────────────────────────────────────────────────────────────
+const agrupados = new Set(Object.values(grupos).flat());
+const huerfanos = Object.keys(semanticos).filter((k) => !agrupados.has(k));
+const inventados = [...agrupados].filter((k) => !semanticos[k]);
+
+if (huerfanos.length || inventados.length) {
+  console.error('\n  El agrupado de tokens no cuadra con la fuente:\n');
+  huerfanos.forEach((k) =>
+    console.error(`    sin grupo      ${k}  → existe en semanticos y NO llegaría al CSS`)
+  );
+  inventados.forEach((k) =>
+    console.error(`    no existe      ${k}  → está en grupos y no en semanticos`)
+  );
+  console.error('\n  Añádelos a `grupos` en este archivo. Un token que no llega al');
+  console.error('  CSS es un token que no existe.\n');
+  process.exit(1);
+}
 
 const variables = (modo) =>
   Object.entries(grupos)
