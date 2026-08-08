@@ -1237,6 +1237,7 @@ mirar</strong>, y por debajo la caja de búsqueda estorba.</p>
           <input class="campo sel-in" role="combobox" aria-expanded="false"
                  aria-autocomplete="list" aria-controls="sel-lista" aria-labelledby="sel-et"
                  placeholder="Escribe para buscar" autocomplete="off">
+          <span class="sel-chev">${ICONOS.chevron}</span>
         </div>
         <ul class="sel-lista" id="sel-lista" role="listbox" aria-labelledby="sel-et" hidden></ul>
       </div>
@@ -1258,16 +1259,16 @@ mirar</strong>, y por debajo la caja de búsqueda estorba.</p>
 <div class="bloque">
   <div class="campos-rejilla">
     <label class="cg"><span class="cg-et">Reposo</span>
-      <div class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span>
+      <div class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
         <input class="campo sel-in" placeholder="Escribe para buscar" readonly></div></label>
     <label class="cg"><span class="cg-et">Con foco</span>
-      <div class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span>
+      <div class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
         <input class="campo sel-in foco-demo" placeholder="Escribe para buscar" readonly></div></label>
     <label class="cg"><span class="cg-et">Con selección</span>
-      <div class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span>
+      <div class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
         <input class="campo sel-in" value="Pérez Salazar, Ana" readonly></div></label>
     <label class="cg"><span class="cg-et">Con error</span>
-      <div class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span>
+      <div class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
         <input class="campo sel-in cg-mal" placeholder="Escribe para buscar" readonly></div>
       <span class="cg-error">${ICO_ERROR}Elige un apoderado.</span></label>
   </div>
@@ -1751,7 +1752,16 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .sel-lupa { position: absolute; left: 9px; color: var(--texto-pista);
   display: grid; place-items: center; pointer-events: none; }
 .sel-lupa .ic { width: 16px; height: 16px; }
-.sel-in { width: 100%; padding-left: 32px; }
+/* Todo selector lleva el chevron que lo identifica como tal. Sin él, con solo
+   la lupa, el componente parece una caja de búsqueda y no un desplegable. */
+.sel-chev { position: absolute; right: 12px; color: var(--texto-secundario);
+  display: grid; place-items: center; pointer-events: none; }
+.sel-chev .ic { width: 16px; height: 16px; transition: transform .15s ease; }
+.sel-caja.abierta .sel-chev .ic { transform: rotate(180deg); }
+/* Especificidad explícita: la clase .campo declara padding en atajo y pisaría
+   estas dos longhand si empataran. La lupa ocupa la izquierda y el chevron la
+   derecha, así que el texto necesita hueco reservado a ambos lados. */
+input.campo.sel-in { width: 100%; padding-left: 32px; padding-right: 34px; }
 .sel-lista { position: absolute; z-index: 30; top: calc(100% + 4px); left: 0; right: 0;
   max-height: 244px; overflow-y: auto; margin: 0; padding: 4px; list-style: none;
   background: var(--fondo-tarjeta); border: 1px solid var(--borde-campo);
@@ -1775,9 +1785,12 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .cg-et-oculta { visibility: hidden; }
 .cg-req { color: var(--error-texto); margin-left: 2px; font-weight: 600; }
 .cg-in { width: 100%; }
-.cg-in:disabled { background: var(--fondo-encabezado); color: var(--texto-secundario);
+/* background-color y no el atajo background: el atajo borra el background-image
+   y un select deshabilitado se quedaba sin su flecha, que es justo lo que lo
+   identifica como selector. */
+.cg-in:disabled { background-color: var(--fondo-encabezado); color: var(--texto-secundario);
   border-color: var(--borde); cursor: not-allowed; }
-.cg-in[readonly] { background: var(--fondo-encabezado); border-color: var(--borde); }
+.cg-in[readonly] { background-color: var(--fondo-encabezado); border-color: var(--borde); }
 .cg-mal { border-color: var(--error-acento); border-width: 2px; }
 .cg-ayuda { font-size: 12px; color: var(--texto-pista); }
 .cg-error { font-size: 12px; color: var(--error-texto); font-weight: 500;
@@ -2505,10 +2518,16 @@ select.campo:disabled { opacity: .75; }
       }
     }
 
-    function abrir() { lista.hidden = false; input.setAttribute('aria-expanded', 'true'); }
+    var caja = raizSel.querySelector('.sel-caja');
+    function abrir() {
+      lista.hidden = false;
+      input.setAttribute('aria-expanded', 'true');
+      caja.classList.add('abierta');
+    }
     function cerrar() {
       lista.hidden = true;
       input.setAttribute('aria-expanded', 'false');
+      caja.classList.remove('abierta');
       input.setAttribute('aria-activedescendant', '');
       // Esc devuelve el valor anterior; nunca vacía la selección.
       input.value = elegido;
