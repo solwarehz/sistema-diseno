@@ -147,6 +147,51 @@ const grupos = {
 // Un token que no llega al CSS es un token que no existe. Esto lo convierte en
 // fallo de generación en vez de en un rato de depuración.
 // ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// CANDADO DEL ORIGEN
+//
+// `origen` decía de qué primitiva sale cada token, y NADIE lo comprobaba. Se
+// demostró ejecutándolo: poniendo `origen: 'unicornio.999'` —una familia de
+// color que no existe— el generador salía con 0, el contrato lo daba por bueno
+// y el verificador imprimía «El contrato es fiel a los valores». Una referencia
+// que nadie resuelve no es una referencia: es un comentario disfrazado.
+//
+// Además mentía por omisión. Nueve tokens declaraban su primitiva de modo claro
+// y callaban la de oscuro: `accion` decía `azul.600` cuando en oscuro vale
+// `azul.300`. Y cinco usaban una sintaxis compuesta inventada —`gris.500/600`,
+// `oro.100/800`— que no tiene gramática y nada podía interpretar.
+//
+// Ahora `origen` es `{ claro, oscuro }` y esto comprueba lo FUERTE: no solo que
+// la primitiva exista, sino que su valor COINCIDA con el del token en ese modo.
+// Existir no basta —apuntar a `azul.500` teniendo el valor de `azul.600` sería
+// igual de falso y saldría en verde—.
+// ─────────────────────────────────────────────────────────────────────────────
+const malOrigen = [];
+for (const [nombre, t] of Object.entries(semanticos)) {
+  if (!t.origen || typeof t.origen !== 'object') {
+    malOrigen.push(`${nombre}  origen no es { claro, oscuro }`);
+    continue;
+  }
+  for (const modo of ['claro', 'oscuro']) {
+    const ref = t.origen[modo];
+    if (ref === 'directo') continue;
+    const [familia, paso] = String(ref).split('.');
+    const valor = primitivas[familia]?.[paso];
+    if (!valor) {
+      malOrigen.push(`${nombre}.${modo}  apunta a "${ref}", que no existe`);
+    } else if (valor.toUpperCase() !== t[modo].toUpperCase()) {
+      malOrigen.push(`${nombre}.${modo}  dice "${ref}" (${valor}) y vale ${t[modo]}`);
+    }
+  }
+}
+if (malOrigen.length) {
+  console.error('\n  El origen declarado no cuadra con las primitivas:\n');
+  malOrigen.forEach((m) => console.error(`    ${m}`));
+  console.error('\n  Un origen que no se puede resolver es un comentario, no una');
+  console.error('  referencia. Corrígelo o ponlo en "directo".\n');
+  process.exit(1);
+}
+
 const agrupados = new Set(Object.values(grupos).flat());
 const huerfanos = Object.keys(semanticos).filter((k) => !agrupados.has(k));
 const inventados = [...agrupados].filter((k) => !semanticos[k]);

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.7.0';
+export const VERSION = '1.8.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -92,13 +92,13 @@ export const primitivas = {
 
 export const semanticos = {
   // ── Superficies ──────────────────────────────────────────────────────────
-  'fondo-pagina':      { claro: '#F8F8F6', oscuro: '#1E1D1C', origen: 'gris.50',  uso: 'Fondo detrás de las tarjetas' },
-  'fondo-tarjeta':     { claro: '#FFFFFF', oscuro: '#242422', origen: 'gris.0',   uso: 'Tarjeta, panel, cuerpo de tabla, modal' },
-  'fondo-encabezado':  { claro: '#F0EFEE', oscuro: '#2C2B29', origen: 'gris.100', uso: 'Encabezado de tabla' },
+  'fondo-pagina':      { claro: '#F8F8F6', oscuro: '#1E1D1C', origen: { claro: 'gris.50', oscuro: 'directo' },  uso: 'Fondo detrás de las tarjetas' },
+  'fondo-tarjeta':     { claro: '#FFFFFF', oscuro: '#242422', origen: { claro: 'gris.0', oscuro: 'directo' },   uso: 'Tarjeta, panel, cuerpo de tabla, modal' },
+  'fondo-encabezado':  { claro: '#F0EFEE', oscuro: '#2C2B29', origen: { claro: 'gris.100', oscuro: 'directo' }, uso: 'Encabezado de tabla' },
   // v1.5.0 — En oscuro valía #242422, idéntico a `fondo-tarjeta`: 1:1. No había
   // cebra en modo oscuro. Ahora da 1,06 contra la tarjeta, la misma sutileza
   // que la cebra en claro, y 1,18 contra el hover.
-  'fondo-fila-alt':    { claro: '#F8F8F6', oscuro: '#2A2927', origen: 'gris.50/dir', uso: 'Fila alterna de la banda cebra' },
+  'fondo-fila-alt':    { claro: '#F8F8F6', oscuro: '#2A2927', origen: { claro: 'gris.50', oscuro: 'directo' }, uso: 'Fila alterna de la banda cebra' },
   // v1.5.0 — Se probó reforzarlo a azul-100 #CFE8FF porque sobre la fila
   // alterna solo daba 1,04:1. El candado lo rechazó: `texto-secundario` caía a
   // 4,40:1. El valor más fuerte que aún cumple es #D4EAFF, y da 1,16 sobre la
@@ -109,34 +109,34 @@ export const semanticos = {
   // FILETE de 3px en `accion`, igual que el chip y la tarjeta de persona: un
   // signo estructural es inequívoco sobre cualquier fondo y no cuesta contraste.
   // El valor se queda en azul-50, que da 5,02:1 con `texto-secundario`.
-  'fondo-fila-hover':  { claro: '#E9F5FF', oscuro: '#363532', origen: 'azul.50', uso: 'Fila bajo el cursor y fila seleccionada. Acompañado de filete `accion` de 3px' },
+  'fondo-fila-hover':  { claro: '#E9F5FF', oscuro: '#363532', origen: { claro: 'azul.50', oscuro: 'directo' }, uso: 'Fila bajo el cursor y fila seleccionada. Acompañado de filete `accion` de 3px' },
 
   // ── Texto ────────────────────────────────────────────────────────────────
-  'texto-principal':   { claro: '#2C2A25', oscuro: '#EFEEEB', origen: 'gris.900', uso: 'Contenido, títulos, celdas de tabla' },
-  'texto-secundario':  { claro: '#6A6864', oscuro: '#C3C1BD', origen: 'gris.600', uso: 'Datos de apoyo, columnas no primarias' },
+  'texto-principal':   { claro: '#2C2A25', oscuro: '#EFEEEB', origen: { claro: 'gris.900', oscuro: 'directo' }, uso: 'Contenido, títulos, celdas de tabla' },
+  'texto-secundario':  { claro: '#6A6864', oscuro: '#C3C1BD', origen: { claro: 'gris.600', oscuro: 'directo' }, uso: 'Datos de apoyo, columnas no primarias' },
   // v1.1.0 — corregido SOLO en claro. En oscuro el #989692 del documento cumple
   // (5,26:1 sobre tarjeta), así que la jerarquía del placeholder SÍ es
   // expresable en oscuro y no en claro: el fondo oscuro deja más recorrido.
-  'texto-pista':       { claro: '#6A6864', oscuro: '#989692', origen: 'gris.500/600', uso: 'Solo placeholder y ayuda. Nunca contenido real' },
-  'texto-invertido':   { claro: '#FFFFFF', oscuro: '#20201E', origen: 'gris.0',   uso: 'Sobre acción y sobre marco' },
+  'texto-pista':       { claro: '#6A6864', oscuro: '#989692', origen: { claro: 'gris.600', oscuro: 'directo' }, uso: 'Solo placeholder y ayuda. Nunca contenido real' },
+  'texto-invertido':   { claro: '#FFFFFF', oscuro: '#20201E', origen: { claro: 'gris.0', oscuro: 'directo' },   uso: 'Sobre acción. NUNCA sobre el marco: ahí va marco-texto' },
 
   // ── Bordes ───────────────────────────────────────────────────────────────
-  'borde':             { claro: '#E0DFDE', oscuro: '#44423F', origen: 'gris.200', uso: 'Divisor de filas, contorno de tarjeta' },
-  'borde-fuerte':      { claro: '#C8C6C4', oscuro: '#575451', origen: 'gris.300', uso: 'Hover de contorno, separadores con peso' },
+  'borde':             { claro: '#E0DFDE', oscuro: '#44423F', origen: { claro: 'gris.200', oscuro: 'directo' }, uso: 'Divisor de filas, contorno de tarjeta' },
+  'borde-fuerte':      { claro: '#C8C6C4', oscuro: '#575451', origen: { claro: 'gris.300', oscuro: 'directo' }, uso: 'Hover de contorno, separadores con peso' },
   // v1.1.0 — corregido en claro. v1.2.0 — corregido también en oscuro.
-  'borde-campo':       { claro: '#8B8985', oscuro: '#8A8681', origen: 'gris.500', uso: 'Contorno de input, select, textarea' },
+  'borde-campo':       { claro: '#8B8985', oscuro: '#8A8681', origen: { claro: 'gris.500', oscuro: 'directo' }, uso: 'Contorno de input, select, textarea' },
 
   // ── Acción ───────────────────────────────────────────────────────────────
   // En oscuro la acción SE INVIERTE: azul claro con texto oscuro. Ningún azul
   // oscuro alcanza 4,5:1 sobre superficie oscura (§2.4).
-  'accion':            { claro: '#0063CB', oscuro: '#6CB2FF', origen: 'azul.600', uso: 'Botón principal. UNO por pantalla' },
-  'accion-hover':      { claro: '#004EB2', oscuro: '#A0D0FF', origen: 'azul.700', uso: 'Hover del botón principal' },
-  'accion-activa':     { claro: '#003B91', oscuro: '#CFE8FF', origen: 'azul.800', uso: 'Estado presionado' },
-  'accion-texto':      { claro: '#FFFFFF', oscuro: '#20201E', origen: 'gris.0',   uso: 'Texto dentro del botón principal' },
-  'accion-deshabilitada': { claro: '#C8C6C4', oscuro: '#44423F', origen: 'gris.300', uso: 'Sin permiso o sin datos válidos' },
-  'accion-texto-desh': { claro: '#8B8985', oscuro: '#989692', origen: 'gris.500', uso: 'Texto del botón deshabilitado' },
-  'accion-2':          { claro: '#655000', oscuro: '#DFCA9C', origen: 'oro.700',  uso: 'Acción secundaria: borde y texto, sin relleno' },
-  'enlace':            { claro: '#0063CB', oscuro: '#6CB2FF', origen: 'azul.600', uso: 'Enlaces y acciones de fila tipo «Editar»' },
+  'accion':            { claro: '#0063CB', oscuro: '#6CB2FF', origen: { claro: 'azul.600', oscuro: 'azul.300' }, uso: 'Botón principal. UNO por pantalla' },
+  'accion-hover':      { claro: '#004EB2', oscuro: '#A0D0FF', origen: { claro: 'azul.700', oscuro: 'azul.200' }, uso: 'Hover del botón principal' },
+  'accion-activa':     { claro: '#003B91', oscuro: '#CFE8FF', origen: { claro: 'azul.800', oscuro: 'azul.100' }, uso: 'Estado presionado' },
+  'accion-texto':      { claro: '#FFFFFF', oscuro: '#20201E', origen: { claro: 'gris.0', oscuro: 'directo' },   uso: 'Texto dentro del botón principal' },
+  'accion-deshabilitada': { claro: '#C8C6C4', oscuro: '#44423F', origen: { claro: 'gris.300', oscuro: 'directo' }, uso: 'Sin permiso o sin datos válidos' },
+  'accion-texto-desh': { claro: '#8B8985', oscuro: '#989692', origen: { claro: 'gris.500', oscuro: 'directo' }, uso: 'Texto del botón deshabilitado' },
+  'accion-2':          { claro: '#655000', oscuro: '#DFCA9C', origen: { claro: 'oro.700', oscuro: 'oro.200' },  uso: 'Acción secundaria: borde y texto, sin relleno' },
+  'enlace':            { claro: '#0063CB', oscuro: '#6CB2FF', origen: { claro: 'azul.600', oscuro: 'azul.300' }, uso: 'Enlaces y acciones de fila tipo «Editar»' },
 
   // v1.3.0 — El sistema no tenía botón destructivo. «Eliminar» no puede ir en
   // `accion` azul: el azul no significa peligro. Se elige rojo-600 y no
@@ -148,22 +148,22 @@ export const semanticos = {
   // así que el relleno NO puede ser lo que identifica el control. Por eso el
   // borde se conserva: es él quien cumple SC 1.4.11. Relleno y borde, no uno
   // de los dos.
-  'accion-2-fondo':     { claro: '#F1E4CA', oscuro: '#4F3E00', origen: 'oro.100/800',  uso: 'Relleno de la acción secundaria. El borde sigue siendo obligatorio' },
-  'neutra-fondo':       { claro: '#F0EFEE', oscuro: '#3A3835', origen: 'gris.100/dir', uso: 'Relleno de la acción neutra. El borde sigue siendo obligatorio' },
-  'neutra-texto':       { claro: '#2C2A25', oscuro: '#EFEEEB', origen: 'gris.900/100', uso: 'Texto de la acción neutra' },
+  'accion-2-fondo':     { claro: '#F1E4CA', oscuro: '#4F3E00', origen: { claro: 'oro.100', oscuro: 'oro.800' },  uso: 'Relleno de la acción secundaria. El borde sigue siendo obligatorio' },
+  'neutra-fondo':       { claro: '#F0EFEE', oscuro: '#3A3835', origen: { claro: 'gris.100', oscuro: 'directo' }, uso: 'Relleno de la acción neutra. El borde sigue siendo obligatorio' },
+  'neutra-texto':       { claro: '#2C2A25', oscuro: '#EFEEEB', origen: { claro: 'gris.900', oscuro: 'directo' }, uso: 'Texto de la acción neutra' },
 
-  'destructiva':        { claro: '#D40006', oscuro: '#FF7D62', origen: 'rojo.600', uso: 'Botón de acción irreversible: Eliminar, Anular' },
-  'destructiva-hover':  { claro: '#B40000', oscuro: '#FFAD95', origen: 'rojo.700', uso: 'Hover del botón destructivo' },
-  'destructiva-texto':  { claro: '#FFFFFF', oscuro: '#20201E', origen: 'gris.0',   uso: 'Texto dentro del botón destructivo' },
+  'destructiva':        { claro: '#D40006', oscuro: '#FF7D62', origen: { claro: 'rojo.600', oscuro: 'rojo.300' }, uso: 'Botón de acción irreversible: Eliminar, Anular' },
+  'destructiva-hover':  { claro: '#B40000', oscuro: '#FFAD95', origen: { claro: 'rojo.700', oscuro: 'rojo.200' }, uso: 'Hover del botón destructivo' },
+  'destructiva-texto':  { claro: '#FFFFFF', oscuro: '#20201E', origen: { claro: 'gris.0', oscuro: 'directo' },   uso: 'Texto dentro del botón destructivo' },
 
   // ── Marco de aplicación ──────────────────────────────────────────────────
   // #2C3D71 se eligió por intensidad medida: separa navegación de contenido
   // sin borde y sin dominar la pantalla. En oscuro SE CONSERVA IDÉNTICO: se
   // distingue por diferencia de matiz, no de luminancia (§2.3).
-  'marco-fondo':       { claro: '#2C3D71', oscuro: '#2C3D71', origen: 'directo',  uso: 'Barra de navegación. ÚNICO azul en superficie grande' },
-  'marco-texto':       { claro: '#FFFFFF', oscuro: '#FFFFFF', origen: 'gris.0',   uso: 'Nombre del colegio e ítems de navegación' },
-  'marco-acento':      { claro: '#DFCA9C', oscuro: '#DFCA9C', origen: 'oro.200',  uso: 'Ítem activo: texto y filete inferior. También avatar' },
-  'marco-item-activo': { claro: '#1D3163', oscuro: '#1D3163', origen: 'directo',  uso: 'Fondo del ítem activo en desplegable' },
+  'marco-fondo':       { claro: '#2C3D71', oscuro: '#2C3D71', origen: { claro: 'directo', oscuro: 'directo' },  uso: 'Barra de navegación. ÚNICO azul en superficie grande' },
+  'marco-texto':       { claro: '#FFFFFF', oscuro: '#FFFFFF', origen: { claro: 'gris.0', oscuro: 'gris.0' },   uso: 'Nombre del colegio e ítems de navegación' },
+  'marco-acento':      { claro: '#DFCA9C', oscuro: '#DFCA9C', origen: { claro: 'oro.200', oscuro: 'oro.200' },  uso: 'Ítem activo: texto y filete inferior. También avatar' },
+  'marco-item-activo': { claro: '#1D3163', oscuro: '#1D3163', origen: { claro: 'directo', oscuro: 'directo' },  uso: 'Fondo del ítem activo en desplegable' },
 
   // v1.6.0 — Cierra el hueco P-11. El marco es una superficie oscura y encima
   // vivían tres cosas sin token: los niveles de anidamiento del menú, el
@@ -172,31 +172,31 @@ export const semanticos = {
   // El TECHO lo pone el acento dorado, no el texto blanco: aclarando el marco
   // hacia blanco, `marco-acento` cae por debajo de 4,5:1 pasado el 10 %.
   // Por eso hay sitio para exactamente dos niveles y no para tres.
-  'marco-nivel-1':     { claro: '#39497A', oscuro: '#39497A', origen: 'directo', uso: 'Fondo de las subopciones de primer nivel del menú' },
-  'marco-nivel-2':     { claro: '#41507F', oscuro: '#41507F', origen: 'directo', uso: 'Fondo de las subopciones de segundo nivel. No hay tercero: el acento dejaría de cumplir' },
-  'marco-borde':       { claro: '#45558A', oscuro: '#45558A', origen: 'directo', uso: 'Separador dentro del marco' },
-  'marco-texto-tenue': { claro: '#B9C2DC', oscuro: '#B9C2DC', origen: 'directo', uso: 'Correo del usuario y textos de apoyo dentro del marco' },
+  'marco-nivel-1':     { claro: '#39497A', oscuro: '#39497A', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Fondo de las subopciones de primer nivel del menú' },
+  'marco-nivel-2':     { claro: '#41507F', oscuro: '#41507F', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Fondo de las subopciones de segundo nivel. No hay tercero: el acento dejaría de cumplir' },
+  'marco-borde':       { claro: '#45558A', oscuro: '#45558A', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Separador dentro del marco' },
+  'marco-texto-tenue': { claro: '#B9C2DC', oscuro: '#B9C2DC', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Correo del usuario y textos de apoyo dentro del marco' },
 
   // ── Foco ─────────────────────────────────────────────────────────────────
   // Son dos tokens y no uno por una razón medida: el ámbar oscuro no alcanza
   // 3:1 sobre el marco, y el ámbar claro no lo alcanza sobre blanco.
   // En oscuro el ámbar oscuro desaparece: `foco` se aclara a #F0C060 (§2.4).
-  'foco':              { claro: '#BE7A14', oscuro: '#F0C060', origen: 'directo',  uso: 'Anillo sobre superficies de contenido' },
-  'foco-en-marco':     { claro: '#F0C060', oscuro: '#F0C060', origen: 'directo',  uso: 'Anillo dentro del marco de navegación' },
+  'foco':              { claro: '#BE7A14', oscuro: '#F0C060', origen: { claro: 'directo', oscuro: 'directo' },  uso: 'Anillo sobre superficies de contenido' },
+  'foco-en-marco':     { claro: '#F0C060', oscuro: '#F0C060', origen: { claro: 'directo', oscuro: 'directo' },  uso: 'Anillo dentro del marco de navegación' },
 
   // ── Estados — siempre en pares fondo/texto (§2.5.2) ──────────────────────
-  'exito-fondo':  { claro: '#E3F4E1', oscuro: '#233521', origen: 'directo', uso: 'Chip «Activo», confirmación' },
-  'exito-texto':  { claro: '#14521A', oscuro: '#B3DCAE', origen: 'directo', uso: 'Texto sobre exito-fondo' },
-  'exito-acento': { claro: '#338136', oscuro: '#5FA862', origen: 'directo', uso: 'Solo filete del borde. Adorno' },
-  'aviso-fondo':  { claro: '#FFEBD6', oscuro: '#402C16', origen: 'directo', uso: 'Chip «Parcial», advertencia recuperable' },
-  'aviso-texto':  { claro: '#6B3B00', oscuro: '#FBC894', origen: 'directo', uso: 'Texto sobre aviso-fondo' },
-  'aviso-acento': { claro: '#A46300', oscuro: '#C88A3C', origen: 'directo', uso: 'Solo filete del borde. Adorno' },
-  'error-fondo':  { claro: '#FFE6DF', oscuro: '#4D241F', origen: 'directo', uso: 'Chip «Deuda», validación fallida' },
-  'error-texto':  { claro: '#8F1017', oscuro: '#FFB8A9', origen: 'directo', uso: 'Texto sobre error-fondo' },
-  'error-acento': { claro: '#D63231', oscuro: '#E2665C', origen: 'directo', uso: 'Solo filete del borde. Adorno' },
-  'info-fondo':   { claro: '#E9EEFF', oscuro: '#273048', origen: 'directo', uso: 'Aviso neutro, ayuda contextual' },
-  'info-texto':   { claro: '#02468A', oscuro: '#BFD0FF', origen: 'directo', uso: 'Texto sobre info-fondo' },
-  'info-acento':  { claro: '#2F71CE', oscuro: '#6D97DE', origen: 'directo', uso: 'Solo filete del borde. Adorno' },
+  'exito-fondo':  { claro: '#E3F4E1', oscuro: '#233521', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Chip «Activo», confirmación' },
+  'exito-texto':  { claro: '#14521A', oscuro: '#B3DCAE', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Texto sobre exito-fondo' },
+  'exito-acento': { claro: '#338136', oscuro: '#5FA862', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Solo filete del borde. Adorno' },
+  'aviso-fondo':  { claro: '#FFEBD6', oscuro: '#402C16', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Chip «Parcial», advertencia recuperable' },
+  'aviso-texto':  { claro: '#6B3B00', oscuro: '#FBC894', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Texto sobre aviso-fondo' },
+  'aviso-acento': { claro: '#A46300', oscuro: '#C88A3C', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Solo filete del borde. Adorno' },
+  'error-fondo':  { claro: '#FFE6DF', oscuro: '#4D241F', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Chip «Deuda», validación fallida' },
+  'error-texto':  { claro: '#8F1017', oscuro: '#FFB8A9', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Texto sobre error-fondo' },
+  'error-acento': { claro: '#D63231', oscuro: '#E2665C', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Solo filete del borde. Adorno' },
+  'info-fondo':   { claro: '#E9EEFF', oscuro: '#273048', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Aviso neutro, ayuda contextual' },
+  'info-texto':   { claro: '#02468A', oscuro: '#BFD0FF', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Texto sobre info-fondo' },
+  'info-acento':  { claro: '#2F71CE', oscuro: '#6D97DE', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Solo filete del borde. Adorno' },
 
   // ── IDENTIDAD · v1.7.0 ────────────────────────────────────────────────────
   // Colores del avatar sin foto. Existen porque NO se puede reutilizar la
@@ -212,13 +212,13 @@ export const semanticos = {
   //
   // Mismo valor en los dos modos, como el marco: es un disco relleno con texto
   // blanco encima, y cambiarlo por tema no aporta nada.
-  'identidad-1':     { claro: '#0E6F63', oscuro: '#0E6F63', origen: 'directo', uso: 'Avatar sin foto. Verde azulado, tono 173°' },
-  'identidad-2':     { claro: '#6A3FA0', oscuro: '#6A3FA0', origen: 'directo', uso: 'Avatar sin foto. Violeta, tono 267°' },
-  'identidad-3':     { claro: '#9B3B6E', oscuro: '#9B3B6E', origen: 'directo', uso: 'Avatar sin foto. Magenta, tono 328°' },
-  'identidad-4':     { claro: '#4A5568', oscuro: '#4A5568', origen: 'directo', uso: 'Avatar sin foto. Pizarra, saturación 17 %' },
+  'identidad-1':     { claro: '#0E6F63', oscuro: '#0E6F63', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Avatar sin foto. Verde azulado, tono 173°' },
+  'identidad-2':     { claro: '#6A3FA0', oscuro: '#6A3FA0', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Avatar sin foto. Violeta, tono 267°' },
+  'identidad-3':     { claro: '#9B3B6E', oscuro: '#9B3B6E', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Avatar sin foto. Magenta, tono 328°' },
+  'identidad-4':     { claro: '#4A5568', oscuro: '#4A5568', origen: { claro: 'directo', oscuro: 'directo' }, uso: 'Avatar sin foto. Pizarra, saturación 17 %' },
   // Blanco en los DOS modos. texto-invertido no sirve: en oscuro vale #20201E
   // y las iniciales quedarían oscuras sobre un disco oscuro.
-  'identidad-texto': { claro: '#FFFFFF', oscuro: '#FFFFFF', origen: 'gris.0',  uso: 'Iniciales sobre cualquier color de identidad' },
+  'identidad-texto': { claro: '#FFFFFF', oscuro: '#FFFFFF', origen: { claro: 'gris.0', oscuro: 'gris.0' },  uso: 'Iniciales sobre cualquier color de identidad' },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -333,6 +333,11 @@ export const pares = [
   // Divisores — adorno, no son límite de control
   ['borde',            'fondo-tarjeta',    'informativo', 'Divisor de fila. Adorno'],
   ['borde-fuerte',     'fondo-tarjeta',    'informativo', 'Separador con peso'],
+
+  // texto-invertido era el UNICO token que no aparecia en ningun par: su
+  // contraste no se verificaba jamas. Estaba cubierto por accidente porque en
+  // claro coincide con accion-texto, que si se verifica.
+  ['texto-invertido',  'accion',           4.5, 'Texto dentro del boton principal, por su propio token'],
 
   // Identidad — las iniciales son texto de verdad y se leen. 4,5 sin rebaja.
   ['identidad-texto',  'identidad-1',      4.5, 'Iniciales del avatar sobre verde azulado'],
