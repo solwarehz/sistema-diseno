@@ -3197,6 +3197,7 @@ const menuCatalogo = CATALOGO.map(
     </button>
     <div class="nav-hijos" id="grupo-${n}">
       <div class="nav-hijos-in">
+      <span class="nav-flot-tit">${g.grupo}</span>
       ${
         g.ramas
           ? g.ramas
@@ -3295,8 +3296,11 @@ code { font-family: 'IBM Plex Mono', monospace; }
 
 /* ── El cascarón usa la misma cáscara que la aplicación ──────────────────── */
 .app-cascaron { min-height: 100vh; }
-.app-cascaron .lat { position: sticky; top: 0; height: 100vh; overflow: hidden; }
-.app-cascaron .lat-nav { overflow-y: auto; }
+/* La lateral plegada NO puede recortar el panel flotante, que sale fuera de
+   sus 56px. El recorte se limita al eje vertical. */
+.app-cascaron .lat { position: sticky; top: 0; height: 100vh; overflow: visible; }
+.app-cascaron .lat-nav { overflow-y: auto; overflow-x: visible; }
+.app-cascaron .lat.colapsado .lat-nav { overflow: visible; }
 .app-cascaron .app-main { min-height: 100vh; }
 .top-cascaron { position: sticky; top: 0; z-index: 20; }
 
@@ -3352,7 +3356,32 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .nav-hijo.activo { background: var(--marco-item-activo); opacity: 1;
   color: var(--marco-acento); font-weight: 500;
   box-shadow: inset 3px 0 0 var(--marco-acento); }
-.lat.colapsado .nav-hijos, .lat.colapsado .lat-leyenda { display: none; }
+/* PLEGADA: las subopciones no desaparecen, salen en panel FLOTANTE a la
+   derecha del carril. Es como lo resuelven VS Code, Linear y Ant Design: con
+   56px no cabe el texto, pero sí cabe al lado. Se puede elegir sin desplegar
+   la lateral, y al elegir el panel se cierra y la lateral sigue plegada. */
+.lat.colapsado .lat-leyenda { display: none; }
+.nav-grupo { position: relative; }
+.lat.colapsado .nav-hijos {
+  position: absolute; left: 56px; top: 0; z-index: 50;
+  min-width: 216px; grid-template-rows: 1fr;
+  border-radius: 6px; box-shadow: var(--sombra-capa);
+  border: 1px solid var(--marco-borde);
+  opacity: 0; visibility: hidden; transform: translateX(-4px);
+  transition: opacity .14s ease, transform .14s ease, visibility .14s; }
+.lat.colapsado .nav-grupo.abierto .nav-hijos {
+  opacity: 1; visibility: visible; transform: translateX(0); }
+.lat.colapsado .nav-hijos-in { border-radius: 6px; }
+.lat.colapsado .nav-hijo { padding-left: 12px; }
+.lat.colapsado .nav-nieto { padding-left: 28px; }
+/* El nombre del grupo solo se muestra en el panel: plegada no se ve en el carril. */
+.nav-flot-tit { display: none; }
+.lat.colapsado .nav-flot-tit { display: block; padding: 8px 12px;
+  font-size: 12px; font-weight: 600; color: var(--marco-acento);
+  border-bottom: 1px solid var(--marco-borde); }
+@media (prefers-reduced-motion: reduce) {
+  .lat.colapsado .nav-hijos { transition: none; }
+}
 .lat.colapsado .nav-grupo-tit { justify-content: center; padding-inline: 0; }
 
 .pt { width: 7px; height: 7px; border-radius: 50%; flex: none; }
@@ -4201,14 +4230,15 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    sobre azul —tiene cuerpo blanco propio—, pero se usa la misma banda en los
    dos estados para que el plegado no cambie de fondo. */
 .lat-marca { display: flex; align-items: center; justify-content: center;
-  padding: 12px; background: var(--fondo-tarjeta);
-  border-bottom: 1px solid var(--marco-borde); min-height: 56px; }
-.lat-lockup { display: block; height: 32px; width: auto; max-width: 100%; }
-.lat-escudo { display: none; height: 32px; width: auto; }
+  padding: 8px 12px; background: var(--fondo-tarjeta);
+  border-bottom: 1px solid var(--marco-borde); height: 64px; flex: none; }
+/* El logo crece hasta llenar la banda: 44px de alto en 64px de caja. */
+.lat-lockup { display: block; height: 44px; width: auto; max-width: 100%; }
+.lat-escudo { display: none; height: 40px; width: auto; }
 /* Plegada: el lockup no cabe, queda el escudo. */
 .lat.colapsado .lat-lockup { display: none; }
 .lat.colapsado .lat-escudo { display: block; }
-.lat.colapsado .lat-marca { padding: 12px 8px; }
+.lat.colapsado .lat-marca { padding: 8px; }
 .lat-id { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
 .lat-colegio { font-size: 12px; letter-spacing: .13em; color: var(--marco-acento); font-weight: 500; }
 .lat-nombre { font-size: 12px; font-weight: 600; white-space: nowrap; }
@@ -4242,8 +4272,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
 .app-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
+/* Altura fija y COMPARTIDA con la banda de marca: así la línea divisoria del
+   header y el inicio del menú caen en la misma y. 64px, en rejilla. */
 .top { display: flex; align-items: center; gap: 12px; padding: 8px 16px;
-  background: var(--fondo-tarjeta); border-bottom: 1px solid var(--borde); }
+  height: 64px; background: var(--fondo-tarjeta); border-bottom: 1px solid var(--borde); }
 .top-plegar { background: transparent; border: 0; cursor: pointer; padding: 4px;
   border-radius: 6px; color: var(--texto-secundario); display: grid; place-items: center; }
 .top-plegar:hover { background: var(--fondo-encabezado); color: var(--texto-principal); }
@@ -4691,8 +4723,22 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   }
 
   grupos.forEach(function (g) {
-    g.addEventListener('mouseenter', function () { g.classList.add('hover'); sincronizarGrupo(g); });
-    g.addEventListener('mouseleave', function () { g.classList.remove('hover'); sincronizarGrupo(g); });
+    // Retardo al salir: plegada, el cursor tiene que recorrer los 56px del
+    // carril hasta el panel flotante. Sin margen, el panel se cierra por el
+    // camino y no hay forma de llegar a elegir.
+    var salida = null;
+    g.addEventListener('mouseenter', function () {
+      clearTimeout(salida);
+      g.classList.add('hover');
+      sincronizarGrupo(g);
+    });
+    g.addEventListener('mouseleave', function () {
+      clearTimeout(salida);
+      salida = setTimeout(function () {
+        g.classList.remove('hover');
+        sincronizarGrupo(g);
+      }, 220);
+    });
     // Con teclado no hay ratón: al enfocar dentro, se abre igual.
     g.addEventListener('focusin', function () { g.classList.add('hover'); sincronizarGrupo(g); });
     g.addEventListener('focusout', function (e) {
@@ -4769,6 +4815,14 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     if (!a) return;
     e.preventDefault();
     abrir(a.getAttribute('data-ir'));
+    // Con la lateral plegada, elegir cierra el panel flotante y la lateral
+    // sigue plegada: quien la plegó quiere que siga así.
+    var g = a.closest('.nav-grupo');
+    if (g && document.getElementById('lateral').classList.contains('colapsado')) {
+      g.classList.remove('hover');
+      g.classList.remove('abierto');
+      g.querySelector('.nav-grupo-tit').setAttribute('aria-expanded', 'false');
+    }
   });
 
   window.addEventListener('hashchange', function () {
