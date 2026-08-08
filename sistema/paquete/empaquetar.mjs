@@ -16,7 +16,7 @@
  * fuente. Se reconstruye con este comando.
  */
 
-import { readFileSync, writeFileSync, statSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, statSync, mkdirSync, readdirSync } from 'node:fs';
 import { deflateRawSync, crc32 } from 'node:zlib';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -184,6 +184,18 @@ export function empaquetar({ silencioso = false, inventario } = {}) {
   const salida = join(RAIZ, 'cascaron', `${CARPETA}.zip`);
   mkdirSync(dirname(salida), { recursive: true });
   writeFileSync(salida, zip);
+
+  // ENTREGAS VIEJAS. Se AVISA, no se borran: este proyecto no borra archivos
+  // por su cuenta, ni siquiera los que genera él mismo. Pero callarlas tampoco
+  // vale: el botón del catálogo apunta a la última, y quien mire la carpeta en
+  // vez de usar el botón puede llevarse una versión anterior sin enterarse.
+  const viejas = readdirSync(join(RAIZ, 'cascaron'))
+    .filter((f) => /^sistema-diseno-v.+\.zip$/.test(f) && f !== `${CARPETA}.zip`);
+  if (viejas.length) {
+    console.log(`\n  Hay ${viejas.length} entrega(s) de versiones anteriores en cascaron/:`);
+    viejas.forEach((f) => console.log(`    ${f}`));
+    console.log('  Se avisan, no se borran. Bórralas tú si ya no hacen falta.');
+  }
 
   if (!silencioso) {
     console.log(`\n  Entrega — ${CARPETA}.zip`);
