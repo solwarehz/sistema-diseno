@@ -1897,6 +1897,9 @@ ${verCodigo(
 const pagPaginacion = `
 <p class="pag-intro">Divide un conjunto largo en páginas y dice <strong>dónde estás y cuánto
 queda</strong>. Lo segundo importa más que lo primero: «página 3 de ?» no informa de nada.</p>
+<p class="pag-intro">Un solo componente para todo el sistema. La
+<a href="#tabla" data-ir="tabla" class="enlace">tabla de datos</a> lo consume igual que
+cualquier otro listado: no tiene paginación propia.</p>
 
 <h3 class="sub-seccion">Anatomía</h3>
 <div class="bloque">
@@ -1927,22 +1930,22 @@ queda</strong>. Lo segundo importa más que lo primero: «página 3 de ?» no in
   <div class="pg-variantes">
     <div class="pg-var">
       <div class="tb-pag">
-        <span class="tb-p" aria-disabled="true">‹</span>
-        <span class="tb-p activa">1</span><span class="tb-p">2</span><span class="tb-p">3</span>
-        <span class="tb-elip">…</span><span class="tb-p">124</span>
-        <span class="tb-p">›</span>
+        <span class="pgn-btn" aria-disabled="true">‹</span>
+        <span class="pgn-btn activa">1</span><span class="pgn-btn">2</span><span class="pgn-btn">3</span>
+        <span class="pgn-elip">…</span><span class="pgn-btn">124</span>
+        <span class="pgn-btn">›</span>
       </div>
       <span class="mf-et"><b>Completa</b><br>Escritorio, con muchas páginas</span>
     </div>
     <div class="pg-var">
       <div class="tb-pag">
-        <span class="tb-p activa">1</span><span class="tb-p">2</span><span class="tb-p">3</span>
+        <span class="pgn-btn activa">1</span><span class="pgn-btn">2</span><span class="pgn-btn">3</span>
       </div>
       <span class="mf-et"><b>Corta</b><br>Tres páginas o menos: sin flechas ni elisión</span>
     </div>
     <div class="pg-var">
       <div class="tb-pag">
-        <span class="tb-p">‹ Anterior</span><span class="pg-pos">Página 3 de 124</span><span class="tb-p">Siguiente ›</span>
+        <span class="pgn-btn">‹ Anterior</span><span class="pg-pos">Página 3 de 124</span><span class="pgn-btn">Siguiente ›</span>
       </div>
       <span class="mf-et"><b>Móvil</b><br>Sin números: no caben y el dedo falla</span>
     </div>
@@ -1962,7 +1965,7 @@ queda</strong>. Lo segundo importa más que lo primero: «página 3 de ?» no in
     </div>
     <div class="enl-caja mal">
       <div class="pg-demo-mini"><span class="tb-rango">1–6 de 6</span>
-        <div class="tb-pag"><span class="tb-p" aria-disabled="true">‹</span><span class="tb-p activa">1</span><span class="tb-p" aria-disabled="true">›</span></div></div>
+        <div class="tb-pag"><span class="pgn-btn" aria-disabled="true">‹</span><span class="pgn-btn activa">1</span><span class="pgn-btn" aria-disabled="true">›</span></div></div>
       <span class="mal-et">Controles que no llevan a ninguna parte</span>
     </div>
   </div>
@@ -2427,8 +2430,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .pg-variantes { display: grid; grid-template-columns: repeat(auto-fit,minmax(252px,1fr)); gap: 20px; }
 .pg-var { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
 .pg-pos { font-size: 12px; color: var(--texto-secundario); padding: 4px 8px; }
-.pg-var .tb-p { cursor: default; }
-.pg-var .tb-p[aria-disabled='true'] { color: var(--accion-texto-desh); }
+.pg-var .pgn-btn { cursor: default; }
 
 /* Tabla de datos */
 .tb-barra { display: flex; align-items: flex-end; justify-content: space-between;
@@ -2512,18 +2514,20 @@ select.tb-f { padding-right: 26px; background-position: right 7px center; backgr
 .tb-pie { display: flex; align-items: center; justify-content: space-between;
   gap: 12px; flex-wrap: wrap; margin-top: 12px; }
 .tb-rango { font-size: 12px; color: var(--texto-secundario); }
-.tb-pag { display: flex; gap: 4px; align-items: center; }
+/* Componente Paginación. Las clases son suyas, no de la tabla: la tabla lo
+   consume igual que cualquier otro listado. */
+.tb-pag, .pgn { display: flex; gap: 4px; align-items: center; }
 /* Rejilla de 4: padding 4px vertical y 8px horizontal. La altura fija de 28px
    manda sobre el alto; el padding queda declarado y en rejilla igualmente, y
    el centrado lo garantiza inline-flex y no el ajuste por defecto del botón. */
-.tb-p { min-width: 28px; height: 28px; padding: 4px 8px; font: inherit; font-size: 12px;
+.pgn-btn { min-width: 28px; height: 28px; padding: 4px 8px; font: inherit; font-size: 12px;
   cursor: pointer; background: var(--fondo-tarjeta); color: var(--texto-principal);
   border: 1px solid var(--borde); border-radius: 4px;
   display: inline-flex; align-items: center; justify-content: center; }
-.tb-p:hover:not(:disabled) { border-color: var(--accion); color: var(--accion); }
-.tb-p.activa { background: var(--accion); color: var(--accion-texto); border-color: var(--accion); }
-.tb-p:disabled, .tb-p[aria-disabled='true'] { color: var(--accion-texto-desh); cursor: not-allowed; }
-.tb-elip { color: var(--texto-pista); padding: 4px; display: inline-flex; align-items: center; }
+.pgn-btn:hover:not(:disabled) { border-color: var(--accion); color: var(--accion); }
+.pgn-btn.activa { background: var(--accion); color: var(--accion-texto); border-color: var(--accion); }
+.pgn-btn:disabled, .pgn-btn[aria-disabled='true'] { color: var(--accion-texto-desh); cursor: not-allowed; }
+.pgn-elip { color: var(--texto-pista); padding: 4px; display: inline-flex; align-items: center; }
 
 /* Tabla con filas desplegables */
 .tb-desp .tb-th-txt { display: block; padding: 9px 12px; font-weight: 500; }
@@ -3270,6 +3274,60 @@ select.campo:disabled { opacity: .75; }
   var bClaro = document.getElementById('b-claro');
   var bOscuro = document.getElementById('b-oscuro');
 
+  // ── COMPONENTE: Paginación ───────────────────────────────────────────────
+  // Un solo sitio. La tabla lo consume igual que cualquier otro listado; no
+  // tiene copia propia. Antes la tenía, y la copia ya había divergido: sus
+  // botones no llevaban aria-label ni aria-current.
+  //
+  //   Paginacion(caja, { total, porPagina, pagina, onCambio })
+  //
+  // Devuelve un objeto con .ir(n) y .estado(). Con una sola página no pinta
+  // nada: el rango, que va fuera, es el que sigue informando.
+  window.Paginacion = function (caja, o) {
+    var pagina = o.pagina || 1;
+
+    function paginas() {
+      return o.porPagina ? Math.max(1, Math.ceil(o.total() / o.porPagina())) : 1;
+    }
+
+    function pintar() {
+      var n = paginas();
+      if (pagina > n) pagina = n;
+      if (n <= 1) { caja.innerHTML = ''; return; }
+      var b = ['<button class="pgn-btn" data-pgn="' + (pagina - 1) +
+        '" aria-label="Página anterior"' + (pagina === 1 ? ' disabled' : '') + '>‹</button>'];
+      for (var p = 1; p <= n; p++) {
+        if (p === 1 || p === n || Math.abs(p - pagina) <= 1) {
+          b.push('<button class="pgn-btn' + (p === pagina ? ' activa' : '') +
+            '" data-pgn="' + p + '" aria-label="Página ' + p + '"' +
+            (p === pagina ? ' aria-current="page"' : '') + '>' + p + '</button>');
+        } else if (Math.abs(p - pagina) === 2) {
+          b.push('<span class="pgn-elip" aria-hidden="true">…</span>');
+        }
+      }
+      b.push('<button class="pgn-btn" data-pgn="' + (pagina + 1) +
+        '" aria-label="Página siguiente"' + (pagina === n ? ' disabled' : '') + '>›</button>');
+      caja.innerHTML = b.join('');
+    }
+
+    caja.setAttribute('role', 'navigation');
+    caja.setAttribute('aria-label', o.etiqueta || 'Paginación');
+    caja.addEventListener('click', function (e) {
+      var b = e.target.closest('.pgn-btn');
+      if (!b || b.disabled) return;
+      pagina = Number(b.dataset.pgn);
+      pintar();
+      if (o.onCambio) o.onCambio(pagina);
+    });
+
+    pintar();
+    return {
+      pagina: function () { return pagina; },
+      ir: function (n) { pagina = n; pintar(); },
+      refrescar: pintar,
+    };
+  };
+
   var hex = ${JSON.stringify(
     Object.fromEntries(Object.entries(semanticos).map(([k, v]) => [k, { claro: v.claro, oscuro: v.oscuro }]))
   )};
@@ -3493,22 +3551,21 @@ select.campo:disabled { opacity: .75; }
         ? (desde + 1) + '–' + Math.min(desde + tam, f.length) + ' de ' + f.length
         : '0 de 0';
 
-      // Paginación
-      var pag = document.getElementById('tb-pag');
-      if (paginas <= 1) { pag.innerHTML = ''; }
-      else {
-        var botones = [];
-        botones.push('<button class="tb-p" data-pag="' + (cfg.pag - 1) + '"' + (cfg.pag === 1 ? ' disabled' : '') + '>‹</button>');
-        for (var p = 1; p <= paginas; p++) {
-          if (p === 1 || p === paginas || Math.abs(p - cfg.pag) <= 1) {
-            botones.push('<button class="tb-p' + (p === cfg.pag ? ' activa' : '') + '" data-pag="' + p + '">' + p + '</button>');
-          } else if (Math.abs(p - cfg.pag) === 2) botones.push('<span class="tb-elip">…</span>');
-        }
-        botones.push('<button class="tb-p" data-pag="' + (cfg.pag + 1) + '"' + (cfg.pag === paginas ? ' disabled' : '') + '>›</button>');
-        pag.innerHTML = botones.join('');
-      }
+      // La tabla NO pinta su paginación: la delega en el componente.
+      if (!pgn) {
+        pgn = window.Paginacion(document.getElementById('tb-pag'), {
+          etiqueta: 'Paginación de la tabla',
+          total: function () { return filtradas().length; },
+          porPagina: function () { return cfg.tam || filtradas().length; },
+          pagina: cfg.pag,
+          onCambio: function (n) { cfg.pag = n; pintar(); },
+        });
+      } else if (pgn.pagina() !== cfg.pag) pgn.ir(cfg.pag);
+      else pgn.refrescar();
+
       selTam.value = String(cfg.tam);
     }
+    var pgn = null;
 
     function pintarPanel() {
       panel.innerHTML = COLS.map(function (c) {
@@ -3577,11 +3634,6 @@ select.campo:disabled { opacity: .75; }
       guardar(); pintar();
     });
 
-    document.getElementById('tb-pag').addEventListener('click', function (e) {
-      var b = e.target.closest('.tb-p'); if (!b || b.disabled) return;
-      cfg.pag = Number(b.dataset.pag); pintar();
-    });
-
     selTam.addEventListener('change', function () {
       var n = Number(selTam.value);
       if (n === 0 && FILAS.length > 500 &&
@@ -3637,38 +3689,24 @@ select.campo:disabled { opacity: .75; }
     pintar();
   })();
 
-  // ── Paginación suelta ────────────────────────────────────────────────────
+  // ── Paginación: la propia página del componente también lo consume ───────
   (function () {
     var caja = document.getElementById('pg-botones');
     if (!caja) return;
-    var TOTAL = 1240, POR = 10, pag = 1;
-    var paginas = Math.ceil(TOTAL / POR);
+    var TOTAL = 1240, POR = 10;
     var rango = document.getElementById('pg-rango');
-
-    function pintar() {
-      var desde = (pag - 1) * POR;
+    function verRango(p) {
+      var desde = (p - 1) * POR;
       rango.textContent = (desde + 1) + '–' + Math.min(desde + POR, TOTAL) + ' de ' + TOTAL;
-      var b = [];
-      b.push('<button class="tb-p" data-p="' + (pag - 1) + '" aria-label="Página anterior"' +
-        (pag === 1 ? ' disabled' : '') + '>‹</button>');
-      for (var p = 1; p <= paginas; p++) {
-        if (p === 1 || p === paginas || Math.abs(p - pag) <= 1) {
-          b.push('<button class="tb-p' + (p === pag ? ' activa' : '') + '" data-p="' + p +
-            '" aria-label="Página ' + p + '"' + (p === pag ? ' aria-current="page"' : '') + '>' + p + '</button>');
-        } else if (Math.abs(p - pag) === 2) b.push('<span class="tb-elip" aria-hidden="true">…</span>');
-      }
-      b.push('<button class="tb-p" data-p="' + (pag + 1) + '" aria-label="Página siguiente"' +
-        (pag === paginas ? ' disabled' : '') + '>›</button>');
-      caja.innerHTML = b.join('');
     }
-
-    caja.addEventListener('click', function (e) {
-      var b = e.target.closest('.tb-p');
-      if (!b || b.disabled) return;
-      pag = Number(b.dataset.p);
-      pintar();
+    window.Paginacion(caja, {
+      etiqueta: 'Ejemplo de paginación',
+      total: function () { return TOTAL; },
+      porPagina: function () { return POR; },
+      pagina: 1,
+      onCambio: verRango,
     });
-    pintar();
+    verRango(1);
   })();
 
   // ── Filas desplegables ───────────────────────────────────────────────────
