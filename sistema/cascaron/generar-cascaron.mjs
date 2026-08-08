@@ -1711,18 +1711,25 @@ const FILAS_TABLA = APODERADOS.concat([
 });
 
 const COLUMNAS = [
-  { k: 'nombre', t: 'Trabajador', tipo: 'texto', fija: true },
-  { k: 'dni', t: 'DNI', tipo: 'mono' },
-  { k: 'cargo', t: 'Cargo', tipo: 'texto' },
-  { k: 'sede', t: 'Sede', tipo: 'texto' },
-  { k: 'estado', t: 'Estado', tipo: 'chip' },
-  { k: 'marca', t: 'Marca', tipo: 'mono' },
-  { k: 'tarde', t: 'Min. tarde', tipo: 'numero' },
+  // El índice es POSICIÓN, no dato: continúa entre páginas y no se ordena.
+  // Ordenar por la posición no significa nada.
+  { k: '__n', t: 'N.º', tipo: 'indice' },
+  { k: 'nombre', t: 'Trabajador', tipo: 'texto', fija: true, filtro: 'texto' },
+  { k: 'dni', t: 'DNI', tipo: 'mono', filtro: 'texto' },
+  // Pocos valores distintos → lista. Escribir «Docente · Secundaria» a mano
+  // para filtrar es trabajo que la interfaz puede ahorrar.
+  { k: 'cargo', t: 'Cargo', tipo: 'texto', filtro: 'lista' },
+  { k: 'sede', t: 'Sede', tipo: 'texto', filtro: 'lista' },
+  { k: 'estado', t: 'Estado', tipo: 'chip', filtro: 'lista' },
+  { k: 'marca', t: 'Marca', tipo: 'mono', filtro: 'texto' },
+  { k: 'tarde', t: 'Min. tarde', tipo: 'numero', filtro: 'texto' },
 ];
 
 const ICO_DESC = ic('<path d="M12 5v14M6 13l6 6 6-6"/>');
 const ICO_ORD = ic('<path d="m7 15 5 5 5-5M7 9l5-5 5 5"/>');
 const ICO_COLS = ic('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/>');
+const ICO_FILTRO = ic('<path d="M3 5h18l-7 8v6l-4 2v-8Z"/>');
+const ICO_X = ic('<path d="M6 6l12 12M18 6 6 18"/>');
 
 const pagTabla = `
 <p class="pag-intro">Es el <strong>80 % de la superficie del sistema</strong>. Todo lo demás se
@@ -1732,12 +1739,17 @@ pagina, oculta columnas, recuerda tu configuración y descarga CSV.</p>
 <div class="bloque">
   <div class="tb-barra">
     <div class="tb-barra-izq">
+      <label class="tb-mini tb-buscar"><span>Buscar en toda la tabla</span>
+        <span class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span>
+          <input class="campo sel-in" id="tb-buscar" placeholder="Nombre, DNI, cargo…" autocomplete="off"></span>
+      </label>
       <label class="tb-mini"><span>Mostrar</span>
         <select class="campo" id="tb-tam"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="0">Todas</option></select>
       </label>
       <span class="tb-conteo" id="tb-conteo"></span>
     </div>
     <div class="tb-barra-der">
+      <button class="btn btn-neutro btn-ic" id="tb-filtros-btn" aria-expanded="false">${ICO_FILTRO}Filtros</button>
       <div class="tb-cols-menu">
         <button class="btn btn-neutro btn-ic" id="tb-cols-btn" aria-expanded="false">${ICO_COLS}Columnas</button>
         <div class="tb-cols-panel" id="tb-cols-panel" hidden></div>
@@ -1746,9 +1758,11 @@ pagina, oculta columnas, recuerda tu configuración y descarga CSV.</p>
     </div>
   </div>
 
+  <div class="tb-activos" id="tb-activos" hidden></div>
+
   <div class="tb-envoltura">
     <table class="tb" id="tb-tabla">
-      <thead><tr id="tb-cab"></tr></thead>
+      <thead><tr id="tb-cab"></tr><tr id="tb-filtros" class="tb-fila-filtros" hidden></tr></thead>
       <tbody id="tb-cuerpo"></tbody>
     </table>
   </div>
@@ -1766,6 +1780,7 @@ pagina, oculta columnas, recuerda tu configuración y descarga CSV.</p>
     <table class="tb tb-desp">
       <thead><tr>
         <th class="tb-th tb-th-chev"></th>
+        <th class="tb-th tb-th-indice"><span class="tb-th-txt tb-num">N.º</span></th>
         <th class="tb-th"><span class="tb-th-txt">Cargo</span></th>
         <th class="tb-th"><span class="tb-th-txt">Personal</span></th>
         <th class="tb-th"><span class="tb-th-txt">Asistieron</span></th>
@@ -1782,21 +1797,23 @@ pagina, oculta columnas, recuerda tu configuración y descarga CSV.</p>
             <button class="tb-chev" aria-expanded="false" aria-controls="det-g${n}"
                     aria-label="Mostrar personal de ${cargo}">${ICONOS.chevron}</button>
           </td>
+          <td class="tb-indice mono">${n + 1}</td>
           <td><strong>${cargo}</strong></td>
           <td class="mono">${gente.length}</td>
           <td><span class="chip chip-exito">${asis}</span></td>
           <td class="tb-num mono">${pend || '—'}</td>
         </tr>
         <tr class="tb-detalle" id="det-g${n}">
-          <td colspan="5">
+          <td colspan="6">
             <div class="tb-desliza">
               <div class="tb-desliza-in">
                 <table class="tb-sub">
-                  <thead><tr><th>Trabajador</th><th>DNI</th><th>Sede</th><th>Estado</th><th>Marca</th></tr></thead>
+                  <thead><tr><th class="tb-num tb-sub-n">N.º</th><th>Trabajador</th><th>DNI</th><th>Sede</th><th>Estado</th><th>Marca</th></tr></thead>
                   <tbody>
                   ${gente
                     .map(
-                      (f) => `<tr><td>${f.nombre}</td><td class="mono">${f.dni}</td><td>${f.sede}</td>
+                      (f, j) => `<tr><td class="tb-indice mono tb-sub-n">${j + 1}</td>
+                        <td>${f.nombre}</td><td class="mono">${f.dni}</td><td>${f.sede}</td>
                         <td><span class="chip chip-${f.est}">${f.estado}</span></td>
                         <td class="mono">${f.marca}</td></tr>`
                     )
@@ -1835,6 +1852,11 @@ pagina, oculta columnas, recuerda tu configuración y descarga CSV.</p>
     <tr><td><strong>La configuración se guarda por persona</strong></td><td class="motivo">Quien trabaja con la tabla a diario no debe reconfigurarla cada mañana</td></tr>
     <tr><td><strong>El CSV exporta lo <em>filtrado</em>, no la página</strong></td><td class="motivo">Descargar solo las 10 visibles es la trampa clásica. Se exporta lo que el usuario ve como conjunto</td></tr>
     <tr><td><strong>Números a la derecha y en mono</strong></td><td class="motivo">Las cifras se comparan por columna. Alineadas a la izquierda no se comparan</td></tr>
+    <tr><td><strong>La columna N.º no ordena</strong></td><td class="motivo">Es posición, no dato. Continúa entre páginas: la página 2 empieza en 11</td></tr>
+    <tr><td><strong>Filtro de lista donde hay pocos valores</strong></td><td class="motivo">Escribir «Docente · Secundaria» a mano es trabajo que la interfaz puede ahorrar</td></tr>
+    <tr><td><strong>El filtro ignora tildes</strong></td><td class="motivo"><code>nunez</code> encuentra <code>Núñez</code>. Misma promesa que el selector</td></tr>
+    <tr><td><strong>Los filtros NO se recuerdan</strong></td><td class="motivo">Un filtro guardado hace que vuelvas al día siguiente, veas 3 filas de 38 y creas que faltan datos. La configuración sí se guarda; el filtro es del momento</td></tr>
+    <tr><td><strong>Los filtros activos se ven arriba</strong></td><td class="motivo">Con la fila de filtros plegada, nada indicaría que la tabla está filtrada</td></tr>
   </tbody>
 </table>
 
@@ -1843,8 +1865,8 @@ pagina, oculta columnas, recuerda tu configuración y descarga CSV.</p>
   <tbody>
     <tr><td>Selección múltiple con acciones en lote</td><td class="motivo">Necesita definir qué acciones y con qué permisos. Es regla de negocio</td></tr>
     <tr><td>Encabezado fijo al desplazar</td><td class="motivo">Trivial de añadir; se hace con el componente real</td></tr>
-    <tr><td>Filtros por columna</td><td class="motivo">Se resuelve con la barra de filtros, no dentro de la tabla</td></tr>
     <tr><td>Reordenar columnas arrastrando</td><td class="motivo">Coste alto y beneficio dudoso. Ocultar ya cubre el 90 % del caso</td></tr>
+    <tr><td>Guardar vistas con nombre</td><td class="motivo">«Mis tardanzas de esta semana». Útil, pero primero hay que ver si alguien lo pide</td></tr>
   </tbody>
 </table>
 
@@ -2309,6 +2331,12 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .tb-th.tb-num .tb-orden { justify-content: flex-end; }
 .tb td { padding: 0 12px; height: 34px; border-top: 1px solid var(--borde); }
 .tb-num { text-align: right; }
+/* Columna de posición: estrecha, en secundario y sin botón de orden. Es un
+   localizador para decir "mira la fila 7", no un dato que se compare. */
+.tb-th-indice { width: 52px; }
+.tb-th-indice .tb-th-txt { display: block; padding: 9px 12px; font-weight: 500; }
+.tb-indice { text-align: right; color: var(--texto-secundario);
+  font-size: 13px; width: 52px; }
 .tb-acc { text-align: right; white-space: nowrap; }
 /* Cebra: una fila blanca y la siguiente en fondo-fila-alt. */
 .tb tbody tr.tb-alt { background: var(--fondo-fila-alt); }
@@ -2318,6 +2346,31 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .tb-vacio { text-align: center; padding: 34px 16px !important; height: auto !important;
   font-size: 13px; color: var(--texto-secundario); line-height: 1.6; }
 .tb-vacio strong { color: var(--texto-principal); }
+
+/* Filtros por columna */
+.tb-buscar .sel-caja { display: flex; }
+.tb-buscar input.campo.sel-in { min-width: 230px; font-size: 13px; padding-block: 5px; }
+#tb-filtros-btn.activo { border-color: var(--accion); color: var(--accion); }
+.tb-fila-filtros .tb-f-celda { padding: 6px 8px; background: var(--fondo-encabezado);
+  border-bottom: 1px solid var(--borde); }
+.tb-f { width: 100%; font-size: 12px; padding: 4px 8px; }
+select.tb-f { padding-right: 26px; background-position: right 7px center; background-size: 13px 13px; }
+
+.tb-activos { display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  margin-bottom: 10px; padding: 8px 10px; border-radius: 6px;
+  background: var(--info-fondo); border-left: 3px solid var(--info-acento); }
+.tb-act { display: inline-flex; align-items: center; gap: 4px; font-size: 12px;
+  color: var(--info-texto); background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde); border-radius: 3px; padding: 3px 4px 3px 8px; }
+.tb-act b { font-weight: 600; }
+.tb-act-x { display: grid; place-items: center; background: transparent; border: 0;
+  cursor: pointer; color: var(--texto-secundario); padding: 2px; border-radius: 3px; }
+.tb-act-x:hover { color: var(--error-texto); }
+.tb-act-x .ic { width: 13px; height: 13px; }
+.tb-act-todo { font: inherit; font-size: 12px; cursor: pointer; background: transparent;
+  border: 0; color: var(--info-texto); text-decoration: underline; margin-left: 4px; }
+.tb-vacio-quitar { font: inherit; font-size: 13px; cursor: pointer; background: transparent;
+  border: 0; color: var(--enlace); text-decoration: underline; padding: 0; }
 
 .tb-pie { display: flex; align-items: center; justify-content: space-between;
   gap: 12px; flex-wrap: wrap; margin-top: 12px; }
@@ -2357,7 +2410,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
   border-bottom: 1px solid var(--borde); }
 .tb-sub th:not(:first-child) { padding-left: 12px; }
 .tb-sub td { padding: 0 12px; height: 30px; border-bottom: 1px solid var(--borde); }
-.tb-sub td:first-child { padding-left: 42px; }
+.tb-sub .tb-sub-n { width: 52px; padding-left: 42px; text-align: right; }
 .tb-sub tr:last-child td { border-bottom: 0; }
 .tb-sub tbody tr:hover { background: var(--fondo-tarjeta); }
 
@@ -3183,8 +3236,34 @@ select.campo:disabled { opacity: .75; }
 
     var visibles = function () { return COLS.filter(function (c) { return cfg.ocultas.indexOf(c.k) === -1; }); };
 
+    // Los filtros NO se guardan. La configuración —columnas, orden, tamaño— sí,
+    // porque es preferencia. Un filtro guardado hace que la persona vuelva al
+    // día siguiente, vea 3 filas de 38 y crea que faltan datos.
+    var filtros = {};
+    var busca = '';
+
+    function plano(s) {
+      return String(s).normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();
+    }
+
+    function filtradas() {
+      return FILAS.filter(function (f) {
+        for (var k in filtros) {
+          if (!filtros[k]) continue;
+          if (plano(f[k]).indexOf(plano(filtros[k])) === -1) return false;
+        }
+        if (busca) {
+          var hay = visibles().some(function (c) {
+            return c.tipo !== 'indice' && plano(f[c.k]).indexOf(plano(busca)) !== -1;
+          });
+          if (!hay) return false;
+        }
+        return true;
+      });
+    }
+
     function ordenadas() {
-      var f = FILAS.slice();
+      var f = filtradas();
       if (!cfg.orden) return f;
       var col = COLS.filter(function (c) { return c.k === cfg.orden; })[0];
       return f.sort(function (a, b) {
@@ -3204,6 +3283,10 @@ select.campo:disabled { opacity: .75; }
 
       // Encabezado: cada columna ordena, con flecha y aria-sort.
       cab.innerHTML = visibles().map(function (c) {
+        // La columna de índice no ordena: es un localizador, no un dato.
+        if (c.tipo === 'indice') {
+          return '<th class="tb-th tb-th-indice"><span class="tb-th-txt tb-num">' + c.t + '</span></th>';
+        }
         var act = cfg.orden === c.k;
         var aria = act ? (cfg.dir === 1 ? 'ascending' : 'descending') : 'none';
         return '<th class="tb-th' + (c.tipo === 'numero' ? ' tb-num' : '') + '" aria-sort="' + aria + '">' +
@@ -3212,9 +3295,44 @@ select.campo:disabled { opacity: .75; }
           '<span class="tb-flecha">' + (act ? (cfg.dir === 1 ? '↑' : '↓') : '') + '</span></button></th>';
       }).join('') + '<th class="tb-th"></th>';
 
+      // Fila de filtros: lista donde hay pocos valores, texto donde no.
+      var filaF = document.getElementById('tb-filtros');
+      filaF.innerHTML = visibles().map(function (c) {
+        if (!c.filtro) return '<td class="tb-f-celda"></td>';
+        if (c.filtro === 'lista') {
+          var vals = FILAS.map(function (x) { return x[c.k]; })
+            .filter(function (v, i, a) { return a.indexOf(v) === i; }).sort();
+          return '<td class="tb-f-celda"><select class="campo tb-f" data-col="' + c.k + '">' +
+            '<option value="">Todos</option>' +
+            vals.map(function (v) {
+              return '<option' + (filtros[c.k] === v ? ' selected' : '') + '>' + v + '</option>';
+            }).join('') + '</select></td>';
+        }
+        return '<td class="tb-f-celda"><input class="campo tb-f" data-col="' + c.k +
+          '" value="' + (filtros[c.k] || '') + '" placeholder="Filtrar" aria-label="Filtrar por ' + c.t + '"></td>';
+      }).join('') + '<td class="tb-f-celda"></td>';
+
+      // Resumen de filtros activos, para que nadie olvide que están puestos.
+      var activos = Object.keys(filtros).filter(function (k) { return filtros[k]; });
+      var cajaAct = document.getElementById('tb-activos');
+      if (!activos.length && !busca) cajaAct.hidden = true;
+      else {
+        cajaAct.hidden = false;
+        cajaAct.innerHTML = (busca ? '<span class="tb-act">Busca: <b>' + busca + '</b>' +
+          '<button class="tb-act-x" data-quitar="__busca" aria-label="Quitar búsqueda">' + '${ICO_X.replace(/'/g, "\\'")}' + '</button></span>' : '') +
+          activos.map(function (k) {
+            var c = COLS.filter(function (x) { return x.k === k; })[0];
+            return '<span class="tb-act">' + c.t + ': <b>' + filtros[k] + '</b>' +
+              '<button class="tb-act-x" data-quitar="' + k + '" aria-label="Quitar filtro de ' + c.t + '">' + '${ICO_X.replace(/'/g, "\\'")}' + '</button></span>';
+          }).join('') +
+          '<button class="tb-act-todo">Quitar todos</button>';
+      }
+
       cuerpo.innerHTML = trozo.length ? trozo.map(function (fila, i) {
         return '<tr class="' + (i % 2 ? 'tb-alt' : '') + '">' + visibles().map(function (c) {
           var v = fila[c.k];
+          // Numeración continua: la página 2 empieza en 11, no vuelve a 1.
+          if (c.tipo === 'indice') return '<td class="tb-indice mono">' + (desde + i + 1) + '</td>';
           if (c.tipo === 'chip') return '<td><span class="chip chip-' + fila.est + '">' + v + '</span></td>';
           if (c.tipo === 'numero') return '<td class="tb-num mono">' + (v || '—') + '</td>';
           if (c.tipo === 'mono') return '<td class="mono">' + v + '</td>';
@@ -3222,9 +3340,15 @@ select.campo:disabled { opacity: .75; }
         }).join('') + '<td class="tb-acc"><a href="#" class="enlace">Editar</a></td></tr>';
       }).join('')
         : '<tr><td colspan="' + (visibles().length + 1) + '" class="tb-vacio">' +
-          '<strong>Sin resultados.</strong><br>Prueba con menos filtros.</td></tr>';
+          '<strong>Sin resultados' + (busca ? ' para «' + busca + '»' : '') + '.</strong><br>' +
+          (activos.length || busca
+            ? 'Prueba con menos filtros, o <button class="tb-vacio-quitar">quítalos todos</button>.'
+            : 'No hay trabajadores registrados todavía.') + '</td></tr>';
 
-      document.getElementById('tb-conteo').textContent = FILAS.length + ' trabajadores';
+      var total = filtradas().length;
+      document.getElementById('tb-conteo').textContent = total === FILAS.length
+        ? FILAS.length + ' trabajadores'
+        : total + ' de ' + FILAS.length + ' trabajadores';
       document.getElementById('tb-rango').textContent = f.length
         ? (desde + 1) + '–' + Math.min(desde + tam, f.length) + ' de ' + f.length
         : '0 de 0';
@@ -3254,6 +3378,54 @@ select.campo:disabled { opacity: .75; }
           '<span>' + c.t + '</span>' + (c.fija ? '<em>fija</em>' : '') + '</label>';
       }).join('') + '<button class="tb-col-reset">Restablecer</button>';
     }
+
+    // ── Filtros ──────────────────────────────────────────────────────────
+    var btnF = document.getElementById('tb-filtros-btn');
+    var filaFiltros = document.getElementById('tb-filtros');
+    btnF.addEventListener('click', function () {
+      var abierto = !filaFiltros.hidden;
+      filaFiltros.hidden = abierto;
+      btnF.setAttribute('aria-expanded', String(!abierto));
+      btnF.classList.toggle('activo', !abierto);
+    });
+
+    function aplicar() { cfg.pag = 1; pintar(); }
+
+    filaFiltros.addEventListener('input', function (e) {
+      var el = e.target.closest('.tb-f'); if (!el) return;
+      filtros[el.dataset.col] = el.value.trim();
+      aplicar();
+      // El re-render pierde el foco: se devuelve a la misma celda.
+      var nuevo = filaFiltros.querySelector('.tb-f[data-col="' + el.dataset.col + '"]');
+      if (nuevo && nuevo.tagName === 'INPUT') { nuevo.focus(); nuevo.setSelectionRange(nuevo.value.length, nuevo.value.length); }
+    });
+    filaFiltros.addEventListener('change', function (e) {
+      var el = e.target.closest('select.tb-f'); if (!el) return;
+      filtros[el.dataset.col] = el.value;
+      aplicar();
+    });
+
+    var cajaBuscar = document.getElementById('tb-buscar');
+    cajaBuscar.addEventListener('input', function () {
+      busca = cajaBuscar.value.trim(); aplicar();
+    });
+
+    document.getElementById('tb-activos').addEventListener('click', function (e) {
+      var x = e.target.closest('[data-quitar]');
+      if (x) {
+        if (x.dataset.quitar === '__busca') { busca = ''; cajaBuscar.value = ''; }
+        else filtros[x.dataset.quitar] = '';
+        return aplicar();
+      }
+      if (e.target.closest('.tb-act-todo')) {
+        filtros = {}; busca = ''; cajaBuscar.value = ''; aplicar();
+      }
+    });
+    cuerpo.addEventListener('click', function (e) {
+      if (e.target.closest('.tb-vacio-quitar')) {
+        filtros = {}; busca = ''; cajaBuscar.value = ''; aplicar();
+      }
+    });
 
     // Ordenar: primer clic ascendente, segundo descendente, tercero quita el orden.
     cab.addEventListener('click', function (e) {
@@ -3308,8 +3480,10 @@ select.campo:disabled { opacity: .75; }
       var cols = visibles();
       var esc = function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; };
       var lineas = [cols.map(function (c) { return esc(c.t); }).join(';')];
-      ordenadas().forEach(function (f) {
-        lineas.push(cols.map(function (c) { return esc(f[c.k]); }).join(';'));
+      ordenadas().forEach(function (f, i) {
+        lineas.push(cols.map(function (c) {
+          return esc(c.tipo === 'indice' ? i + 1 : f[c.k]);
+        }).join(';'));
       });
       // BOM para que Excel en Windows lea bien las tildes.
       var blob = new Blob(['\\ufeff' + lineas.join('\\r\\n')], { type: 'text/csv;charset=utf-8;' });
