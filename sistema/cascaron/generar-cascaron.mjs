@@ -2243,6 +2243,527 @@ ${verCodigo(
   </tbody>
 </table>`;
 
+// ── Elemento: Interruptor ───────────────────────────────────────────────────
+
+const sw = (o = {}) => `
+  <label class="sw-fila${o.desh ? ' sw-desh' : ''}">
+    <button type="button" role="switch" class="sw" aria-checked="${o.on ? 'true' : 'false'}"
+            ${o.desh ? 'disabled' : ''}${o.demo ? ' data-sw' : ''}><span class="sw-bolita"></span></button>
+    <span class="sw-txt">
+      <span class="sw-et">${o.etiqueta || 'Notificar por correo'}</span>
+      ${o.ayuda ? `<span class="sw-ayuda">${o.ayuda}</span>` : ''}
+    </span>
+  </label>`;
+
+const pagInterruptor = `
+<p class="pag-intro">Enciende o apaga algo, y <strong>surte efecto al instante</strong>. Si hace
+falta pulsar «Guardar» después, no es un interruptor: es una casilla dentro de un formulario.</p>
+
+<h3 class="sub-seccion">Interruptor o casilla</h3>
+<table class="tabla-contraste">
+  <thead><tr><th></th><th>Interruptor</th><th>Casilla</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Cuándo surte efecto</strong></td><td>Al instante</td><td class="motivo">Al enviar el formulario</td></tr>
+    <tr><td><strong>Necesita «Guardar»</strong></td><td>No</td><td class="motivo">Sí</td></tr>
+    <tr><td><strong>Se puede deshacer</strong></td><td>Volviéndolo a pulsar</td><td class="motivo">Cancelando el formulario</td></tr>
+    <tr><td><strong>Ejemplo</strong></td><td>Activar notificaciones</td><td class="motivo">Acepto el reglamento</td></tr>
+  </tbody>
+</table>
+<p class="pag-intro" style="margin-top:12px">Un interruptor dentro de un formulario con «Guardar»
+engaña: la persona lo mueve, se va, y el cambio no se aplicó.</p>
+
+<h3 class="sub-seccion">Estados</h3>
+<div class="bloque">
+  <div class="sw-rejilla">
+    ${sw({ etiqueta: 'Apagado', on: false })}
+    ${sw({ etiqueta: 'Encendido', on: true })}
+    ${sw({ etiqueta: 'Apagado sin permiso', on: false, desh: true, ayuda: 'Solo Dirección puede cambiarlo.' })}
+    ${sw({ etiqueta: 'Encendido sin permiso', on: true, desh: true })}
+  </div>
+</div>
+
+<h3 class="sub-seccion">Pruébalo</h3>
+<div class="bloque">
+  <div class="sw-rejilla">
+    ${sw({ etiqueta: 'Notificar tardanzas por correo', on: true, demo: true, ayuda: 'Se envía un resumen a las 09:00.' })}
+    ${sw({ etiqueta: 'Permitir marcar desde el móvil', on: false, demo: true, ayuda: 'Requiere estar dentro del colegio.' })}
+    ${sw({ etiqueta: 'Modo compacto en las tablas', on: false, demo: true, ayuda: 'Filas de 28px en vez de 34px.' })}
+  </div>
+</div>
+
+<h3 class="sub-seccion">La transición</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>La bolita se desplaza en <strong>180 ms</strong> con <code>ease</code>. Más rápido no se ve; más lento se percibe lento.</td></tr>
+    <tr><td class="num">2</td><td>El fondo cambia de color en el <strong>mismo tiempo</strong>: si van desacompasados, parece un fallo.</td></tr>
+    <tr><td class="num">3</td><td>Con <code>prefers-reduced-motion</code>, el cambio es <strong>instantáneo</strong>. Sigue siendo perceptible: no depende del movimiento.</td></tr>
+    <tr><td class="num">4</td><td>Nunca se anima el foco. El anillo aparece y desaparece de golpe.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>Surte efecto <strong>al instante</strong>. Sin «Guardar».</td></tr>
+    <tr><td class="num">2</td><td>La etiqueta va <strong>al lado y es pulsable</strong>. Un interruptor sin etiqueta no dice qué apaga.</td></tr>
+    <tr><td class="num">3</td><td>La etiqueta nombra <strong>lo que se activa</strong>, no el estado: «Notificar por correo», no «Notificaciones activas».</td></tr>
+    <tr><td class="num">4</td><td>Si guardar puede fallar, el interruptor <strong>vuelve atrás</strong> y avisa. Nunca se queda mostrando algo que no se guardó.</td></tr>
+    <tr><td class="num">5</td><td>Nunca para acciones destructivas. Eso es un botón con confirmación.</td></tr>
+    <tr><td class="num">6</td><td><code>role="switch"</code> con <code>aria-checked</code>. Con Espacio se activa.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+${verCodigo(
+  'Uso del componente',
+  `import { Interruptor } from '@ae/sistema';
+
+<Interruptor
+  etiqueta="Notificar tardanzas por correo"
+  ayuda="Se envía un resumen a las 09:00."
+  valor={activo}
+  onCambio={guardarYAplicar}
+/>
+
+<Interruptor etiqueta="Marcar desde el móvil" valor={x} deshabilitado />`
+)}`;
+
+// ── Elemento: Selección múltiple ────────────────────────────────────────────
+
+const OPCIONES_ENCUESTA = [
+  ['Puntualidad en el ingreso', true],
+  ['Trato con los estudiantes', true],
+  ['Cumplimiento del plan de clase', false],
+  ['Uso de material didáctico', false],
+  ['Registro de asistencia al día', false],
+];
+
+const pagMultiple = `
+<p class="pag-intro">Elegir <strong>varias opciones de una lista</strong>. Es el control de las
+encuestas y de las configuraciones por lote. Se distingue de la lista de un solo valor no por el
+aspecto, sino por lo que permite: una o varias.</p>
+
+<h3 class="sub-seccion">Qué control para qué caso</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>Se elige</th><th>Cuántas opciones</th><th>Control</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="2"><strong>Varias</strong></td><td>Hasta 7</td><td>Casillas a la vista</td></tr>
+    <tr><td>8 o más</td><td class="motivo">Selector múltiple con búsqueda</td></tr>
+    <tr><td rowspan="2"><strong>Una sola</strong></td><td>Hasta 5</td><td>Botones de opción a la vista</td></tr>
+    <tr><td>6 o más</td><td class="motivo">Selector</td></tr>
+    <tr><td><strong>Sí o no, ya</strong></td><td>—</td><td class="motivo">Interruptor</td></tr>
+  </tbody>
+</table>
+<p class="pag-intro" style="margin-top:12px">A la vista se responde más rápido: no hay que abrir
+nada y se compara de un vistazo. Escondidas en un desplegable solo compensa cuando no caben.</p>
+
+<h3 class="sub-seccion">Casillas — varias respuestas</h3>
+<div class="bloque">
+  <fieldset class="ms-grupo">
+    <legend class="ms-leyenda">Aspectos observados en la visita de aula</legend>
+    <p class="ms-ayuda">Marca todos los que apliquen.</p>
+    <label class="ms-op ms-todas"><input type="checkbox" data-ms-todas><span>Seleccionar todos</span></label>
+    <div class="ms-lista" data-ms-lista>
+      ${OPCIONES_ENCUESTA.map(
+        ([t, on], i) => `<label class="ms-op"><input type="checkbox" data-ms${on ? ' checked' : ''}><span>${t}</span></label>`
+      ).join('')}
+    </div>
+    <p class="ms-conteo" data-ms-conteo></p>
+  </fieldset>
+</div>
+
+<h3 class="sub-seccion">Botones de opción — una sola respuesta</h3>
+<div class="bloque">
+  <fieldset class="ms-grupo">
+    <legend class="ms-leyenda">Resultado de la visita</legend>
+    <div class="ms-lista">
+      <label class="ms-op"><input type="radio" name="res"><span>Satisfactorio</span></label>
+      <label class="ms-op"><input type="radio" name="res" checked><span>Satisfactorio con observaciones</span></label>
+      <label class="ms-op"><input type="radio" name="res"><span>Requiere acompañamiento</span></label>
+      <label class="ms-op ms-desh"><input type="radio" name="res" disabled><span>No realizada</span><em>solo Dirección</em></label>
+    </div>
+  </fieldset>
+</div>
+
+<h3 class="sub-seccion">Estados</h3>
+<div class="bloque">
+  <div class="ms-estados">
+    <label class="ms-op"><input type="checkbox"><span>Sin marcar</span></label>
+    <label class="ms-op"><input type="checkbox" checked><span>Marcada</span></label>
+    <label class="ms-op"><input type="checkbox" data-indet><span>Parcial</span></label>
+    <label class="ms-op ms-desh"><input type="checkbox" disabled><span>Sin permiso</span></label>
+    <label class="ms-op ms-desh"><input type="checkbox" checked disabled><span>Marcada y bloqueada</span></label>
+    <label class="ms-op ms-mal"><input type="checkbox"><span>Con error</span></label>
+  </div>
+  <p class="cg-error" style="margin-top:10px">${ICO_ERROR}Elige al menos un aspecto.</p>
+</div>
+<p class="pag-intro" style="margin-top:12px">El estado <strong>parcial</strong> es el de
+«Seleccionar todos» cuando hay algunas marcadas y otras no. No es un tercer valor: es un resumen
+de las de abajo.</p>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>Van dentro de <code>&lt;fieldset&gt;</code> con <code>&lt;legend&gt;</code>. Sin eso, el lector lee opciones sueltas sin saber de qué pregunta son.</td></tr>
+    <tr><td class="num">2</td><td>La etiqueta <strong>completa</strong> es pulsable, no solo el cuadrito.</td></tr>
+    <tr><td class="num">3</td><td>En vertical, una por línea. En horizontal se pierde qué texto va con qué casilla.</td></tr>
+    <tr><td class="num">4</td><td>Casillas para varias, botones de opción para una. <strong>Nunca casillas donde solo cabe una respuesta.</strong></td></tr>
+    <tr><td class="num">5</td><td>Un grupo de opción <strong>siempre tiene una marcada</strong>. Si «ninguna» es válida, es una opción más.</td></tr>
+    <tr><td class="num">6</td><td>«Seleccionar todos» solo con 5 o más opciones.</td></tr>
+    <tr><td class="num">7</td><td>El orden es el que la persona espera: alfabético, cronológico o de importancia. <strong>Nunca el orden de la base de datos.</strong></td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+${verCodigo(
+  'Uso del componente',
+  `import { SeleccionMultiple, GrupoOpcion } from '@ae/sistema';
+
+<SeleccionMultiple
+  leyenda="Aspectos observados en la visita de aula"
+  ayuda="Marca todos los que apliquen."
+  opciones={aspectos}
+  valor={marcados}
+  onCambio={setMarcados}
+  seleccionarTodos
+/>
+
+<GrupoOpcion
+  leyenda="Resultado de la visita"
+  opciones={resultados}
+  valor={resultado}
+  onCambio={setResultado}
+/>`
+)}`;
+
+// ── Elemento: Fecha ─────────────────────────────────────────────────────────
+
+const pagFecha = `
+<p class="pag-intro">Fecha suelta y rango de fechas. En el sistema casi siempre es
+<strong>rango</strong>: la asistencia, los pagos y los reportes se consultan por periodo, no por
+día.</p>
+
+<h3 class="sub-seccion">Formato</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td><strong>Se muestra</strong></td><td class="mono">31/03/2026</td><td class="motivo">Formato peruano, día primero. Nunca el americano</td></tr>
+    <tr><td><strong>Se escribe</strong></td><td class="mono">31/03/2026 · 31-03-2026 · 31032026</td><td class="motivo">Se acepta con barras, guiones o sin nada. <strong>Limpiar no es rechazar</strong></td></tr>
+    <tr><td><strong>Se guarda</strong></td><td class="mono">2026-03-31</td><td class="motivo">ISO, siempre. El formato es cosa de la pantalla</td></tr>
+    <tr><td><strong>En una tabla</strong></td><td class="mono">31/03/2026</td><td class="motivo">En mono y alineada a la derecha, para comparar por columna</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Fecha suelta</h3>
+<div class="bloque">
+  <div class="campos-rejilla">
+    <label class="cg"><span class="cg-et">Fecha de ingreso</span>
+      <input type="date" class="campo cg-in" value="2026-03-01">
+      <span class="cg-ayuda">Se muestra como 01/03/2026.</span></label>
+    <label class="cg"><span class="cg-et">Con error</span>
+      <input type="date" class="campo cg-in cg-mal" value="2027-01-01">
+      <span class="cg-error">${ICO_ERROR}No puede ser posterior a hoy.</span></label>
+    <label class="cg"><span class="cg-et">Sin permiso</span>
+      <input type="date" class="campo cg-in" value="2026-03-01" disabled>
+      <span class="cg-ayuda">Solo Dirección puede cambiarla.</span></label>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Rango con calendario — pruébalo</h3>
+<p class="seccion-sub">Primer clic marca el inicio, segundo marca el fin, y el tramo entre ambos queda sombreado. Al pasar el cursor se previsualiza el tramo antes de fijarlo.</p>
+<div class="bloque">
+  <div class="fc-campos">
+    <label class="cg"><span class="cg-et">Desde</span>
+      <input class="campo cg-in mono" id="fc-ini" placeholder="dd/mm/aaaa" readonly></label>
+    <span class="fc-guion" aria-hidden="true">${ICO_CHEV_DER}</span>
+    <label class="cg"><span class="cg-et">Hasta</span>
+      <input class="campo cg-in mono" id="fc-fin" placeholder="dd/mm/aaaa" readonly></label>
+    <button class="btn btn-terc btn-mini" id="fc-limpiar">Limpiar</button>
+  </div>
+
+  <div class="fc-cal" id="fc-cal">
+    <div class="fc-cal-cab">
+      <button class="pgn-btn" id="fc-prev" aria-label="Mes anterior">${ICO_CHEV_IZQ}</button>
+      <span class="fc-meses" id="fc-titulo"></span>
+      <button class="pgn-btn" id="fc-next" aria-label="Mes siguiente">${ICO_CHEV_DER}</button>
+    </div>
+    <div class="fc-cal-cuerpo" id="fc-cuerpo"></div>
+  </div>
+
+  <p class="fc-resumen" id="fc-resumen">Elige la fecha de inicio.</p>
+
+  <div class="fc-atajos">
+    <button class="btn btn-neutro btn-mini" data-fc="mes">Este mes</button>
+    <button class="btn btn-neutro btn-mini" data-fc="mes-pasado">Mes pasado</button>
+    <button class="btn btn-neutro btn-mini" data-fc="bimestre">Últimos 2 meses</button>
+    <button class="btn btn-neutro btn-mini" data-fc="anio">Este año</button>
+  </div>
+</div>
+<table class="tabla-contraste" style="margin-top:14px">
+  <thead><tr><th>Detalle</th><th>Por qué</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Dos meses a la vez</strong></td><td class="motivo">La mayoría de rangos cruzan de mes. Con uno solo hay que navegar a media selección y se pierde el hilo</td></tr>
+    <tr><td><strong>Previsualización al pasar el cursor</strong></td><td class="motivo">Se ve el tramo antes de fijarlo, así se corrige sin tener que empezar de nuevo</td></tr>
+    <tr><td><strong>Segundo clic anterior al primero</strong></td><td class="motivo">No se rechaza: se toma como nuevo inicio. Quien lo hizo quería mover el periodo, no equivocarse</td></tr>
+    <tr><td><strong>Extremos e interior se distinguen</strong></td><td class="motivo">Los extremos van rellenos con <code>accion</code>; el interior en <code>fondo-fila-hover</code>. Si se pintan igual no se sabe dónde empieza</td></tr>
+    <tr><td><strong>Los campos son de solo lectura</strong></td><td class="motivo">El calendario es la fuente. Tecleado y calendario a la vez se desincronizan</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Las cuatro reglas del rango</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>«Hasta» no puede ser anterior a «Desde».</strong> Si se elige una fecha menor, se ajusta «Desde» en vez de rechazar: quien lo hizo probablemente quería mover el periodo entero.</td></tr>
+    <tr><td class="num">2</td><td>Siempre <strong>se muestra cuántos días</strong> abarca. «Del 1 al 31 de marzo» no dice si son 30 o 31.</td></tr>
+    <tr><td class="num">3</td><td><strong>Atajos para lo que se pide siempre:</strong> este mes, mes pasado, este año. Ahorra dos calendarios cada vez.</td></tr>
+    <tr><td class="num">4</td><td>Un rango sin fin es válido si el periodo sigue abierto. Se dice: «Desde el 01/03/2026, en curso».</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>Formato peruano al mostrar, ISO al guardar.</td></tr>
+    <tr><td class="num">2</td><td>Se acepta escribir con barras, guiones o seguido. Se limpia al guardar.</td></tr>
+    <tr><td class="num">3</td><td>El calendario es <strong>ayuda, no obligación</strong>: siempre se puede teclear.</td></tr>
+    <tr><td class="num">4</td><td>Las fechas fuera de lo posible se avisan, no se bloquean, salvo que el sistema lo sepa con certeza (una fecha de ingreso futura sí es un error cierto).</td></tr>
+    <tr><td class="num">5</td><td>En tablas, mono y a la derecha.</td></tr>
+    <tr><td class="num">6</td><td>Nunca «dd/mm/aaaa» como etiqueta. Eso es la pista; la etiqueta dice <strong>qué fecha es</strong>.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+${verCodigo(
+  'Uso del componente',
+  `import { CampoFecha, RangoFechas } from '@ae/sistema';
+
+<CampoFecha etiqueta="Fecha de ingreso" maximo="hoy" />
+
+<RangoFechas
+  etiquetaInicio="Desde"
+  etiquetaFin="Hasta"
+  valor={rango}
+  onCambio={setRango}
+  atajos={['mes', 'mes-pasado', 'anio']}
+  permitirAbierto            // «en curso», sin fecha de fin
+/>`
+)}`;
+
+// ── Elemento: Barra de progreso ─────────────────────────────────────────────
+
+const pagProgreso = `
+<p class="pag-intro">Muestra <strong>cuánto lleva y cuánto queda</strong> de algo que avanza. Si
+no se sabe cuánto queda, no es una barra de progreso: es un
+<a href="#estados" data-ir="estados" class="enlace">estado de carga</a>.</p>
+
+<h3 class="sub-seccion">Determinada o indeterminada</h3>
+<table class="tabla-contraste">
+  <thead><tr><th></th><th>Cuándo</th><th>Qué muestra</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Determinada</strong></td><td>Se conoce el total: 40 de 120 filas importadas</td><td class="motivo">El porcentaje y las cifras reales</td></tr>
+    <tr><td><strong>Indeterminada</strong></td><td>No se conoce el total pero sí que está trabajando</td><td class="motivo">Movimiento, sin cifras. <strong>Solo si no hay alternativa</strong></td></tr>
+    <tr><td><strong>Ninguna</strong></td><td>La forma de lo que viene sí se conoce</td><td class="motivo">Esqueleto, que además reserva el sitio</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Variantes</h3>
+<div class="bloque">
+  <div class="pr-rejilla">
+    <div class="pr-caja">
+      <div class="pr-cab"><span>Importando trabajadores</span><span class="mono">62 %</span></div>
+      <div class="pr" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-label="Importando trabajadores"><div class="pr-relleno" style="width:62%"></div></div>
+      <span class="pr-pie">74 de 120 filas</span>
+    </div>
+    <div class="pr-caja">
+      <div class="pr-cab"><span>Completado</span><span class="mono">100 %</span></div>
+      <div class="pr" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-label="Completado"><div class="pr-relleno pr-exito" style="width:100%"></div></div>
+      <span class="pr-pie">120 de 120 filas</span>
+    </div>
+    <div class="pr-caja">
+      <div class="pr-cab"><span>Se detuvo</span><span class="mono">38 %</span></div>
+      <div class="pr" role="progressbar" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100" aria-label="Se detuvo"><div class="pr-relleno pr-error" style="width:38%"></div></div>
+      <span class="pr-pie pr-pie-error">Fila 46: el DNI 7123 no tiene 8 dígitos</span>
+    </div>
+    <div class="pr-caja">
+      <div class="pr-cab"><span>Trabajando</span></div>
+      <div class="pr" role="progressbar" aria-label="Trabajando"><div class="pr-indet"></div></div>
+      <span class="pr-pie">Sin total conocido</span>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Pruébalo</h3>
+<div class="bloque">
+  <div class="pr-caja" style="max-width:420px">
+    <div class="pr-cab"><span>Importando asistencia</span><span class="mono" id="pr-pct">0 %</span></div>
+    <div class="pr" id="pr-barra" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Importando asistencia"><div class="pr-relleno" id="pr-relleno" style="width:0%"></div></div>
+    <span class="pr-pie" id="pr-pie">0 de 120 filas</span>
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button class="btn btn-1 btn-mini" id="pr-ir">Importar</button>
+      <button class="btn btn-neutro btn-mini" id="pr-reset">Reiniciar</button>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Progreso por pasos</h3>
+<div class="bloque">
+  <ol class="pr-pasos">
+    <li class="pr-paso pr-hecho"><span class="pr-punto">${ICO_CHECK}</span><div><b>Archivo recibido</b><span>120 filas</span></div></li>
+    <li class="pr-paso pr-hecho"><span class="pr-punto">${ICO_CHECK}</span><div><b>Formato validado</b><span>Sin errores</span></div></li>
+    <li class="pr-paso pr-curso"><span class="pr-punto">3</span><div><b>Comprobando DNI</b><span>74 de 120</span></div></li>
+    <li class="pr-paso"><span class="pr-punto">4</span><div><b>Guardando</b><span>Pendiente</span></div></li>
+  </ol>
+</div>
+<p class="pag-intro" style="margin-top:12px">Los pasos sirven cuando el proceso tiene
+<strong>fases con nombre</strong> y la persona necesita saber en cuál va. Con menos de tres pasos
+no aportan nada sobre una barra.</p>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>Si no se conoce el total, <strong>no es una barra de progreso</strong>. Usa esqueleto.</td></tr>
+    <tr><td class="num">2</td><td>Junto al porcentaje van <strong>las cifras reales</strong>: «74 de 120». El 62 % solo no dice si son minutos o segundos.</td></tr>
+    <tr><td class="num">3</td><td>La barra <strong>nunca retrocede</strong>. Si el total cambia, se recalcula sin bajar.</td></tr>
+    <tr><td class="num">4</td><td>Al fallar, la barra <strong>se queda donde estaba</strong> y en rojo, con el motivo. Vaciarla borra la única pista de dónde ocurrió.</td></tr>
+    <tr><td class="num">5</td><td><code>role="progressbar"</code> con <code>aria-valuenow</code>, <code>min</code> y <code>max</code>. La indeterminada va sin <code>valuenow</code>.</td></tr>
+    <tr><td class="num">6</td><td>Con <code>prefers-reduced-motion</code>, la indeterminada <strong>deja de moverse</strong> y se apoya en el texto.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+${verCodigo(
+  'Uso del componente',
+  `import { Progreso, ProgresoPasos } from '@ae/sistema';
+
+<Progreso
+  etiqueta="Importando trabajadores"
+  valor={74}
+  total={120}
+  unidad="filas"
+/>
+
+<Progreso etiqueta="Trabajando" indeterminada />
+
+<Progreso etiqueta="Se detuvo" valor={46} total={120}
+  error="Fila 46: el DNI 7123 no tiene 8 dígitos" />
+
+<ProgresoPasos pasos={pasos} actual={3} />`
+)}`;
+
+// ── Elemento: Aviso temporal ────────────────────────────────────────────────
+
+const pagAviso = `
+<p class="pag-intro">Confirma que <strong>algo pasó</strong> y se va solo. No interrumpe, no pide
+nada y no tapa el contenido. Si hace falta que la persona lea y decida, no es un aviso temporal:
+es un diálogo.</p>
+
+<h3 class="sub-seccion">Pruébalo</h3>
+<div class="bloque">
+  <div class="av-botones">
+    <button class="btn btn-1" data-av="exito">Guardar</button>
+    <button class="btn btn-2" data-av="info">Exportar</button>
+    <button class="btn btn-neutro" data-av="aviso">Enviar con faltas</button>
+    <button class="btn btn-destr" data-av="error">Eliminar</button>
+    <button class="btn btn-terc" data-av="deshacer">Archivar (con deshacer)</button>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Los cuatro tonos y su duración</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>Tono</th><th>Cuándo</th><th class="num">Dura</th><th>Por qué esa duración</th></tr></thead>
+  <tbody>
+    <tr><td><span class="chip chip-exito">Éxito</span></td><td>Se hizo lo que se pidió</td><td class="num">4 s</td><td class="motivo">Solo confirma. Leerlo cuesta un segundo</td></tr>
+    <tr><td><span class="chip chip-info">Información</span></td><td>Algo ocurrió que conviene saber</td><td class="num">5 s</td><td class="motivo">Suele traer un dato que hay que retener</td></tr>
+    <tr><td><span class="chip chip-aviso">Aviso</span></td><td>Se hizo, pero con salvedades</td><td class="num">7 s</td><td class="motivo">Hay algo que releer antes de seguir</td></tr>
+    <tr><td><span class="chip chip-error">Error</span></td><td>No se pudo hacer</td><td class="num">No se va</td><td class="motivo"><strong>Un error que desaparece solo es un error que nadie leyó.</strong> Se cierra a mano</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Con deshacer, el reloj cambia</h3>
+<div class="aviso">
+  Un aviso con <strong>Deshacer</strong> dura <strong>10 segundos</strong>, no 4. Ese botón es la
+  única ventana para arreglar un error, y cuatro segundos no bastan para leer, entender y decidir.
+  <br><br>
+  Y mientras el cursor esté encima o el foco dentro, <strong>el reloj se detiene</strong>. Si se va
+  justo cuando alguien iba a pulsarlo, el botón nunca sirvió de nada.
+</div>
+
+<h3 class="sub-seccion">Aviso temporal, aviso fijo o diálogo</h3>
+<table class="tabla-contraste">
+  <thead><tr><th></th><th>Aviso temporal</th><th>Aviso fijo en la página</th><th>Diálogo</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Interrumpe</strong></td><td>No</td><td class="motivo">No</td><td class="motivo">Sí</td></tr>
+    <tr><td><strong>Se va solo</strong></td><td>Sí</td><td class="motivo">No</td><td class="motivo">No</td></tr>
+    <tr><td><strong>Para qué</strong></td><td>Confirmar lo ya hecho</td><td class="motivo">Una condición que sigue vigente: «El periodo se cierra el 31»</td><td class="motivo">Pedir una decisión antes de continuar</td></tr>
+    <tr><td><strong>Ejemplo</strong></td><td>«Se guardó»</td><td class="motivo">«Hay 3 tardanzas sin justificar»</td><td class="motivo">«¿Eliminar 24 registros?»</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Dónde y cómo aparece</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Abajo a la derecha</strong> en escritorio. No tapa el contenido ni la acción que acaba de pulsarse.</td></tr>
+    <tr><td class="num">2</td><td><strong>Abajo</strong> en móvil, por encima del botón flotante y a ancho completo menos los márgenes.</td></tr>
+    <tr><td class="num">3</td><td>Entra deslizando <strong>16px desde abajo</strong> en 220 ms y sale igual. Un aviso que aparece de golpe se percibe como un fallo de pintado.</td></tr>
+    <tr><td class="num">4</td><td>Se apilan, <strong>máximo tres</strong>. El cuarto expulsa al más antiguo: cuatro avisos a la vez ya no se leen.</td></tr>
+    <tr><td class="num">5</td><td>Con <code>prefers-reduced-motion</code> aparece sin deslizar, solo con fundido.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Accesibilidad</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>La zona es <code>aria-live="polite"</code>. El lector lo anuncia al terminar la frase en curso, sin cortar.</td></tr>
+    <tr><td class="num">2</td><td>El error es <code>aria-live="assertive"</code> con <code>role="alert"</code>: interrumpe, porque algo no se hizo.</td></tr>
+    <tr><td class="num">3</td><td>El aviso <strong>no roba el foco</strong>. Robarlo saca a la persona de donde estaba escribiendo.</td></tr>
+    <tr><td class="num">4</td><td>Si trae acción, es alcanzable con Tab y el reloj se detiene al enfocarla.</td></tr>
+    <tr><td class="num">5</td><td>Todo aviso se puede cerrar a mano. El temporizador es una comodidad, no la única salida.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">El texto</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>✗</th><th>✓</th></tr></thead>
+  <tbody>
+    <tr><td>«Operación exitosa»</td><td>«Se guardó la asistencia de marzo»</td></tr>
+    <tr><td>«Registro eliminado»</td><td>«Se eliminaron 24 registros» <em>+ Deshacer</em></td></tr>
+    <tr><td>«Error al guardar»</td><td>«No se guardó: falta el DNI de 2 trabajadores»</td></tr>
+    <tr><td>«¡Listo!»</td><td>«Se exportaron 38 filas a CSV»</td></tr>
+  </tbody>
+</table>
+<p class="pag-intro" style="margin-top:12px">Una línea. El aviso <strong>dice qué pasó y con qué
+dato</strong>; el detalle vive en la pantalla, no en algo que se va en cuatro segundos.</p>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>Solo para <strong>lo ya hecho</strong>. Si hay que decidir, es un diálogo.</td></tr>
+    <tr><td class="num">2</td><td><strong>Los errores no se van solos.</strong></td></tr>
+    <tr><td class="num">3</td><td>Con Deshacer, 10 segundos y el reloj se detiene al pasar por encima.</td></tr>
+    <tr><td class="num">4</td><td>Una línea, con el dato concreto.</td></tr>
+    <tr><td class="num">5</td><td>Máximo tres a la vez.</td></tr>
+    <tr><td class="num">6</td><td>Nunca roba el foco.</td></tr>
+    <tr><td class="num">7</td><td>Nunca para información permanente: eso va en la pantalla.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+${verCodigo(
+  'Uso del componente',
+  `import { avisar } from '@ae/sistema';
+
+avisar.exito('Se guardó la asistencia de marzo');
+avisar.info('Se exportaron 38 filas a CSV');
+avisar.aviso('Se envió con 3 faltas sin justificar');
+
+// El error no se va solo
+avisar.error('No se guardó: falta el DNI de 2 trabajadores');
+
+// Con deshacer: 10 s y el reloj se detiene al pasar por encima
+avisar.exito('Se archivaron 12 expedientes', {
+  accion: { texto: 'Deshacer', al: restaurar },
+});`
+)}`;
+
 // ── Elementos aún no construidos ────────────────────────────────────────────
 
 const pendiente = (nombre) => `
@@ -2467,10 +2988,15 @@ const CATALOGO = [
       { id: 'enlace', t: 'Enlace', estado: 'listo', c: pagEnlace },
       { id: 'campo', t: 'Campo de texto', estado: 'listo', c: pagCampo },
       { id: 'selector', t: 'Selector', estado: 'listo', c: pagSelector },
+      { id: 'interruptor', t: 'Interruptor', estado: 'listo', c: pagInterruptor },
+      { id: 'multiple', t: 'Selección múltiple', estado: 'listo', c: pagMultiple },
+      { id: 'fecha', t: 'Fecha y rango', estado: 'listo', c: pagFecha },
       { id: 'chip', t: 'Chip de estado', estado: 'listo', c: pagChip },
       { id: 'tarjeta', t: 'Tarjeta', estado: 'listo', c: pagTarjeta },
       { id: 'tabla', t: 'Tabla de datos', estado: 'listo', c: pagTabla },
       { id: 'paginacion', t: 'Paginación', estado: 'listo', c: pagPaginacion },
+      { id: 'progreso', t: 'Barra de progreso', estado: 'listo', c: pagProgreso },
+      { id: 'aviso', t: 'Aviso temporal', estado: 'listo', c: pagAviso },
       { id: 'estados', t: 'Estados de pantalla', estado: 'listo', c: pagEstados },
     ],
   },
@@ -2639,6 +3165,145 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .btn-ic { display: inline-flex; align-items: center; gap: 7px; }
 .btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
+
+/* Aviso temporal */
+.av-botones { display: flex; gap: 8px; flex-wrap: wrap; }
+.av-zona { position: fixed; right: 20px; bottom: 20px; z-index: 100;
+  display: flex; flex-direction: column; gap: 8px; max-width: 380px; }
+.av { display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px;
+  border-radius: 6px; border-left: 4px solid; font-size: 13px;
+  background: var(--fondo-tarjeta); box-shadow: 0 8px 24px rgba(0,0,0,.18);
+  /* Entra deslizando 16px: aparecer de golpe se percibe como fallo de pintado. */
+  transform: translateY(16px); opacity: 0;
+  transition: transform .22s ease, opacity .22s ease; }
+.av-dentro { transform: translateY(0); opacity: 1; }
+.av-exito { border-color: var(--exito-acento); }
+.av-info  { border-color: var(--info-acento); }
+.av-aviso { border-color: var(--aviso-acento); }
+.av-error { border-color: var(--error-acento); }
+.av-txt { flex: 1; line-height: 1.45; }
+.av-accion { font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+  background: transparent; border: 0; color: var(--enlace); text-decoration: underline;
+  padding: 4px; border-radius: 4px; flex: none; }
+.av-x { display: grid; place-items: center; background: transparent; border: 0;
+  cursor: pointer; color: var(--texto-secundario); padding: 4px; border-radius: 4px; flex: none; }
+.av-x:hover { color: var(--texto-principal); background: var(--fondo-encabezado); }
+.av-x .ic { width: 15px; height: 15px; }
+@media (max-width: 640px) { .av-zona { left: 16px; right: 16px; bottom: 84px; max-width: none; } }
+@media (prefers-reduced-motion: reduce) { .av { transform: none; transition: opacity .15s ease; } }
+
+/* Interruptor */
+.sw-rejilla { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 16px; }
+.sw-fila { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+.sw-desh { cursor: not-allowed; }
+.sw { width: 40px; height: 24px; flex: none; padding: 0; cursor: pointer;
+  border: 1px solid var(--borde-campo); border-radius: 12px;
+  background: var(--neutra-fondo); position: relative;
+  transition: background-color .18s ease, border-color .18s ease; }
+.sw-bolita { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px;
+  border-radius: 50%; background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-campo);
+  /* El desplazamiento y el color van al MISMO tiempo: desacompasados parecen fallo. */
+  transition: transform .18s ease; }
+.sw[aria-checked='true'] { background: var(--accion); border-color: var(--accion); }
+.sw[aria-checked='true'] .sw-bolita { transform: translateX(16px); border-color: var(--accion); }
+.sw:disabled { cursor: not-allowed; background: var(--accion-deshabilitada); border-color: var(--borde); }
+.sw:disabled[aria-checked='true'] { background: var(--borde-fuerte); border-color: var(--borde-fuerte); }
+.sw-txt { display: flex; flex-direction: column; gap: 2px; }
+.sw-et { font-size: 14px; }
+.sw-desh .sw-et { color: var(--texto-secundario); }
+.sw-ayuda { font-size: 12px; color: var(--texto-pista); }
+@media (prefers-reduced-motion: reduce) {
+  .sw, .sw-bolita { transition: none; }
+}
+
+/* Selección múltiple */
+.ms-grupo { border: 0; padding: 0; margin: 0; }
+.ms-leyenda { font-size: 14px; font-weight: 600; padding: 0; margin-bottom: 2px; }
+.ms-ayuda { font-size: 12px; color: var(--texto-pista); margin: 0 0 12px; }
+.ms-lista { display: flex; flex-direction: column; gap: 2px; }
+.ms-op { display: flex; align-items: center; gap: 10px; padding: 7px 8px;
+  border-radius: 4px; cursor: pointer; font-size: 14px; }
+.ms-op:hover { background: var(--fondo-encabezado); }
+.ms-op input { width: 16px; height: 16px; flex: none; accent-color: var(--accion); cursor: pointer; }
+.ms-desh { cursor: not-allowed; color: var(--texto-secundario); }
+.ms-desh input { cursor: not-allowed; }
+.ms-desh em { margin-left: auto; font-style: normal; font-size: 11px; color: var(--texto-pista); }
+.ms-mal input { outline: 2px solid var(--error-acento); outline-offset: 1px; }
+.ms-todas { border-bottom: 1px solid var(--borde); border-radius: 4px 4px 0 0;
+  margin-bottom: 6px; font-weight: 500; }
+.ms-conteo { font-size: 12px; color: var(--texto-secundario); margin: 10px 0 0;
+  padding-top: 10px; border-top: 1px dashed var(--borde); }
+.ms-estados { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 4px; }
+
+/* Fecha */
+.fc-campos { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.fc-campos .cg { max-width: 148px; }
+.fc-guion { color: var(--texto-pista); padding-bottom: 8px; display: grid; place-items: center; }
+.fc-guion .ic { width: 16px; height: 16px; }
+.fc-cal { border: 1px solid var(--borde); border-radius: 6px; overflow: hidden;
+  background: var(--fondo-tarjeta); max-width: 560px; }
+.fc-cal-cab { display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 8px 12px; background: var(--fondo-encabezado);
+  border-bottom: 1px solid var(--borde); }
+.fc-meses { font-size: 13px; font-weight: 600; text-transform: capitalize; }
+.fc-cal-cuerpo { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 16px; }
+.fc-mes-tit { font-size: 12px; font-weight: 600; text-transform: capitalize;
+  text-align: center; margin-bottom: 8px; }
+.fc-sem, .fc-dias { display: grid; grid-template-columns: repeat(7,1fr); }
+.fc-sem span { font-size: 10px; font-weight: 500; color: var(--texto-secundario);
+  text-align: center; padding-bottom: 4px; }
+.fc-d { height: 30px; font: inherit; font-size: 12px; cursor: pointer;
+  background: transparent; border: 0; color: var(--texto-principal); border-radius: 0; }
+.fc-d:hover { background: var(--fondo-encabezado); }
+.fc-vacio { cursor: default; }
+/* El interior del tramo y los extremos NO se pintan igual: si no, no se sabe
+   dónde empieza y dónde acaba. */
+.fc-dentro { background: var(--fondo-fila-hover); }
+.fc-ini, .fc-fin { background: var(--accion); color: var(--accion-texto); font-weight: 600; }
+.fc-ini { border-radius: 4px 0 0 4px; }
+.fc-fin { border-radius: 0 4px 4px 0; }
+.fc-ini.fc-fin { border-radius: 4px; }
+.fc-previo { background: var(--accion-hover); }
+.fc-resumen { font-size: 13px; color: var(--texto-secundario); margin: 14px 0 0; }
+.fc-atajos { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+@media (max-width: 620px) { .fc-cal-cuerpo { grid-template-columns: 1fr; } }
+
+/* Barra de progreso */
+.pr-rejilla { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 20px; }
+.pr-caja { display: flex; flex-direction: column; gap: 6px; }
+.pr-cab { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; font-weight: 500; }
+.pr { height: 8px; border-radius: 4px; background: var(--neutra-fondo);
+  overflow: hidden; border: 1px solid var(--borde); }
+.pr-relleno { height: 100%; background: var(--accion); transition: width .3s ease; }
+.pr-exito { background: var(--exito-acento); }
+.pr-error { background: var(--error-acento); }
+.pr-indet { height: 100%; width: 34%; background: var(--accion);
+  animation: pr-va 1.3s ease-in-out infinite; }
+@keyframes pr-va { 0% { transform: translateX(-110%); } 100% { transform: translateX(320%); } }
+.pr-pie { font-size: 12px; color: var(--texto-secundario); }
+.pr-pie-error { color: var(--error-texto); }
+@media (prefers-reduced-motion: reduce) {
+  .pr-indet { animation: none; width: 100%; opacity: .5; }
+  .pr-relleno { transition: none; }
+}
+.pr-pasos { list-style: none; margin: 0; padding: 0; display: flex;
+  flex-direction: column; gap: 0; }
+.pr-paso { display: flex; gap: 12px; align-items: flex-start; padding-bottom: 18px;
+  position: relative; }
+.pr-paso:not(:last-child)::before { content: ''; position: absolute; left: 11px; top: 24px;
+  bottom: 0; width: 2px; background: var(--borde); }
+.pr-paso.pr-hecho:not(:last-child)::before { background: var(--exito-acento); }
+.pr-punto { width: 24px; height: 24px; border-radius: 50%; flex: none; z-index: 1;
+  display: grid; place-items: center; font-size: 11px; font-weight: 600;
+  background: var(--neutra-fondo); color: var(--texto-secundario);
+  border: 1px solid var(--borde-campo); }
+.pr-hecho .pr-punto { background: var(--exito-acento); color: #fff; border-color: var(--exito-acento); }
+.pr-hecho .pr-punto .ic { width: 14px; height: 14px; }
+.pr-curso .pr-punto { background: var(--accion); color: var(--accion-texto); border-color: var(--accion); }
+.pr-paso b { display: block; font-size: 14px; font-weight: 600; }
+.pr-paso span { font-size: 12px; color: var(--texto-secundario); }
+.pr-paso div b + span { display: block; }
 
 /* Estados de pantalla */
 .ep-rejilla { display: grid; grid-template-columns: repeat(auto-fit,minmax(232px,1fr)); gap: 12px; }
@@ -3944,6 +4609,224 @@ select.campo:disabled { opacity: .75; }
     });
 
     pintar();
+  })();
+
+  // ── Interruptor ──────────────────────────────────────────────────────────
+  document.querySelectorAll('[data-sw]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      b.setAttribute('aria-checked', b.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
+    });
+  });
+
+  // ── Selección múltiple ───────────────────────────────────────────────────
+  (function () {
+    var lista = document.querySelector('[data-ms-lista]');
+    if (!lista) return;
+    var todas = document.querySelector('[data-ms-todas]');
+    var conteo = document.querySelector('[data-ms-conteo]');
+    var ops = lista.querySelectorAll('[data-ms]');
+
+    function refrescar() {
+      var n = 0;
+      ops.forEach(function (o) { if (o.checked) n++; });
+      todas.checked = n === ops.length;
+      // Parcial: ni todas ni ninguna. No es un tercer valor, es un resumen.
+      todas.indeterminate = n > 0 && n < ops.length;
+      conteo.textContent = n === 0 ? 'Ninguno marcado'
+        : n === ops.length ? 'Los ' + n + ' marcados'
+        : n + ' de ' + ops.length + ' marcados';
+    }
+    ops.forEach(function (o) { o.addEventListener('change', refrescar); });
+    todas.addEventListener('change', function () {
+      ops.forEach(function (o) { o.checked = todas.checked; });
+      refrescar();
+    });
+    var indet = document.querySelector('[data-indet]');
+    if (indet) indet.indeterminate = true;
+    refrescar();
+  })();
+
+  // ── Rango de fechas con calendario ───────────────────────────────────────
+  (function () {
+    var cal = document.getElementById('fc-cal');
+    if (!cal) return;
+    var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
+      'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    var DIAS = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+    var hoy = new Date();
+    var ancla = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+    var ini = null, fin = null, sobre = null;
+
+    var d2 = function (n) { return String(n).padStart(2, '0'); };
+    var clave = function (d) { return d.getFullYear() + '-' + d2(d.getMonth() + 1) + '-' + d2(d.getDate()); };
+    var esp = function (d) { return d2(d.getDate()) + '/' + d2(d.getMonth() + 1) + '/' + d.getFullYear(); };
+    var dias = function (a, b) { return Math.round((b - a) / 86400000) + 1; };
+
+    function mes(base) {
+      var y = base.getFullYear(), m = base.getMonth();
+      // Semana que empieza en lunes: el domingo pasa de 0 a 6.
+      var primero = (new Date(y, m, 1).getDay() + 6) % 7;
+      var total = new Date(y, m + 1, 0).getDate();
+      var celdas = [];
+      for (var i = 0; i < primero; i++) celdas.push('<span class="fc-d fc-vacio"></span>');
+      for (var d = 1; d <= total; d++) {
+        var f = new Date(y, m, d);
+        var t = f.getTime();
+        var hasta = fin || (ini && sobre && sobre > ini ? sobre : null);
+        var esIni = ini && t === ini.getTime();
+        var esFin = fin && t === fin.getTime();
+        var dentro = ini && hasta && t > ini.getTime() && t < hasta.getTime();
+        var clases = 'fc-d' +
+          (esIni ? ' fc-ini' : '') + (esFin ? ' fc-fin' : '') +
+          (dentro ? ' fc-dentro' : '') +
+          (!fin && ini && sobre && t === sobre.getTime() && t > ini.getTime() ? ' fc-fin fc-previo' : '');
+        celdas.push('<button type="button" class="' + clases + '" data-f="' + clave(f) + '"' +
+          (esIni || esFin ? ' aria-current="date"' : '') +
+          ' aria-label="' + d + ' de ' + MESES[m] + ' de ' + y + '">' + d + '</button>');
+      }
+      return '<div class="fc-mes"><div class="fc-mes-tit">' + MESES[m] + ' ' + y + '</div>' +
+        '<div class="fc-sem">' + DIAS.map(function (x) { return '<span>' + x + '</span>'; }).join('') + '</div>' +
+        '<div class="fc-dias">' + celdas.join('') + '</div></div>';
+    }
+
+    function pintar() {
+      var sig = new Date(ancla.getFullYear(), ancla.getMonth() + 1, 1);
+      document.getElementById('fc-cuerpo').innerHTML = mes(ancla) + mes(sig);
+      document.getElementById('fc-titulo').textContent =
+        MESES[ancla.getMonth()] + ' – ' + MESES[sig.getMonth()] + ' ' + sig.getFullYear();
+      document.getElementById('fc-ini').value = ini ? esp(ini) : '';
+      document.getElementById('fc-fin').value = fin ? esp(fin) : '';
+      var res = document.getElementById('fc-resumen');
+      res.textContent = !ini ? 'Elige la fecha de inicio.'
+        : !fin ? 'Elige la fecha de fin. Inicio: ' + esp(ini) + '.'
+        : 'Del ' + esp(ini) + ' al ' + esp(fin) + ' · ' + dias(ini, fin) + ' días.';
+    }
+
+    document.getElementById('fc-cuerpo').addEventListener('click', function (e) {
+      var b = e.target.closest('.fc-d[data-f]'); if (!b) return;
+      var p = b.dataset.f.split('-');
+      var f = new Date(+p[0], +p[1] - 1, +p[2]);
+      if (!ini || fin) { ini = f; fin = null; }
+      // Un segundo clic anterior al primero no se rechaza: pasa a ser el inicio.
+      else if (f < ini) { ini = f; }
+      else { fin = f; }
+      sobre = null;
+      pintar();
+    });
+    document.getElementById('fc-cuerpo').addEventListener('mouseover', function (e) {
+      var b = e.target.closest('.fc-d[data-f]'); if (!b || !ini || fin) return;
+      var p = b.dataset.f.split('-');
+      sobre = new Date(+p[0], +p[1] - 1, +p[2]);
+      pintar();
+    });
+    document.getElementById('fc-prev').addEventListener('click', function () {
+      ancla = new Date(ancla.getFullYear(), ancla.getMonth() - 1, 1); pintar();
+    });
+    document.getElementById('fc-next').addEventListener('click', function () {
+      ancla = new Date(ancla.getFullYear(), ancla.getMonth() + 1, 1); pintar();
+    });
+    document.getElementById('fc-limpiar').addEventListener('click', function () {
+      ini = fin = sobre = null; pintar();
+    });
+    document.querySelectorAll('[data-fc]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var y = hoy.getFullYear(), m = hoy.getMonth(), k = b.dataset.fc;
+        if (k === 'mes') { ini = new Date(y, m, 1); fin = new Date(y, m + 1, 0); }
+        else if (k === 'mes-pasado') { ini = new Date(y, m - 1, 1); fin = new Date(y, m, 0); }
+        else if (k === 'bimestre') { ini = new Date(y, m - 1, 1); fin = new Date(y, m + 1, 0); }
+        else { ini = new Date(y, 0, 1); fin = new Date(y, 11, 31); }
+        ancla = new Date(ini.getFullYear(), ini.getMonth(), 1);
+        sobre = null; pintar();
+      });
+    });
+    pintar();
+  })();
+
+  // ── Barra de progreso ────────────────────────────────────────────────────
+  (function () {
+    var barra = document.getElementById('pr-barra');
+    if (!barra) return;
+    var relleno = document.getElementById('pr-relleno');
+    var pct = document.getElementById('pr-pct');
+    var pie = document.getElementById('pr-pie');
+    var TOTAL = 120, n = 0, t = null;
+
+    function ver() {
+      var p = Math.round((n / TOTAL) * 100);
+      relleno.style.width = p + '%';
+      barra.setAttribute('aria-valuenow', String(p));
+      pct.textContent = p + ' %';
+      pie.textContent = n + ' de ' + TOTAL + ' filas';
+      relleno.classList.toggle('pr-exito', n === TOTAL);
+    }
+    document.getElementById('pr-ir').addEventListener('click', function () {
+      if (t) return;
+      t = setInterval(function () {
+        n = Math.min(TOTAL, n + 4);
+        ver();
+        if (n === TOTAL) { clearInterval(t); t = null; }
+      }, 80);
+    });
+    document.getElementById('pr-reset').addEventListener('click', function () {
+      clearInterval(t); t = null; n = 0; ver();
+    });
+    ver();
+  })();
+
+  // ── Aviso temporal ───────────────────────────────────────────────────────
+  (function () {
+    var botones = document.querySelectorAll('[data-av]');
+    if (!botones.length) return;
+
+    var zona = document.createElement('div');
+    zona.className = 'av-zona';
+    zona.setAttribute('aria-live', 'polite');
+    document.body.appendChild(zona);
+
+    var TEXTOS = {
+      exito: ['exito', 'Se guardó la asistencia de marzo', 4000],
+      info: ['info', 'Se exportaron 38 filas a CSV', 5000],
+      aviso: ['aviso', 'Se envió con 3 faltas sin justificar', 7000],
+      // El error NO se va solo: uno que desaparece es uno que nadie leyó.
+      error: ['error', 'No se guardó: falta el DNI de 2 trabajadores', 0],
+      deshacer: ['exito', 'Se archivaron 12 expedientes', 10000],
+    };
+
+    function avisar(tipo) {
+      var d = TEXTOS[tipo];
+      var el = document.createElement('div');
+      el.className = 'av av-' + d[0];
+      if (d[0] === 'error') el.setAttribute('role', 'alert');
+      el.innerHTML = '<span class="av-txt">' + d[1] + '</span>' +
+        (tipo === 'deshacer' ? '<button class="av-accion">Deshacer</button>' : '') +
+        '<button class="av-x" aria-label="Cerrar aviso">' + '${ICO_X.replace(/'/g, "\\'")}' + '</button>';
+      zona.appendChild(el);
+      // Máximo tres: el cuarto expulsa al más antiguo.
+      while (zona.children.length > 3) zona.firstChild.remove();
+      requestAnimationFrame(function () { el.classList.add('av-dentro'); });
+
+      var t = null;
+      function cerrar() {
+        clearTimeout(t);
+        el.classList.remove('av-dentro');
+        setTimeout(function () { el.remove(); }, 220);
+      }
+      function arrancar() { if (d[2]) t = setTimeout(cerrar, d[2]); }
+      // El reloj se detiene con el cursor encima o con el foco dentro: si se va
+      // justo cuando alguien iba a pulsar Deshacer, ese botón nunca sirvió.
+      el.addEventListener('mouseenter', function () { clearTimeout(t); });
+      el.addEventListener('mouseleave', arrancar);
+      el.addEventListener('focusin', function () { clearTimeout(t); });
+      el.addEventListener('focusout', arrancar);
+      el.querySelector('.av-x').addEventListener('click', cerrar);
+      var acc = el.querySelector('.av-accion');
+      if (acc) acc.addEventListener('click', cerrar);
+      arrancar();
+    }
+
+    botones.forEach(function (b) {
+      b.addEventListener('click', function () { avisar(b.dataset.av); });
+    });
   })();
 
   // ── Paginación: la propia página del componente también lo consume ───────
