@@ -5304,7 +5304,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
             <a class="us-op us-zip" role="menuitem" href="${NOMBRE_ZIP}" download
-               >${ICONOS.descargar}<span>Descargar el sistema <span class="us-zip-det">ZIP · v${VERSION}</span></span></a>
+               >${ICONOS.descargar}<span>Descargar el sistema <span class="us-zip-det">v${VERSION}</span></span></a>
 
             <button class="us-op us-salir" role="menuitem">${ICONOS.salir}<span>Salir del sistema</span></button>
           </div>
