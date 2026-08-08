@@ -726,6 +726,23 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 [data-vista='movil'] .lienzo-movil { max-width: 100%; }
 .sw-mini { width: 40px; height: 24px; }
 
+/* ── Nada desborda la pantalla ───────────────────────────────────────────
+   Regla del sistema: lo ancho se desplaza DENTRO de su caja; la página nunca
+   se desplaza en horizontal. Las tablas de documentación no estaban envueltas
+   en ningún contenedor, así que estiraban la página entera. Con display:block
+   la propia tabla se convierte en su caja de desplazamiento. */
+.tabla-contraste, .tabla-manual, .tb-sub { display: block; overflow-x: auto; }
+.tabla-contraste > thead, .tabla-contraste > tbody,
+.tabla-manual > thead, .tabla-manual > tbody { display: table; width: 100%; min-width: 520px; }
+.tb-sub > thead, .tb-sub > tbody { display: table; width: 100%; min-width: 480px; }
+/* Los hijos de una rejilla o de un flex no bajan de su contenido si no se les
+   dice: es el mismo motivo por el que las muestras de color desbordaban. */
+.cat-cuerpo, .pagina, .bloque, .app-main { min-width: 0; }
+[data-vista='movil'] .muestra-fila > *,
+[data-vista='movil'] .op-fila > *,
+[data-vista='movil'] .fila-demo > * { max-width: 100%; }
+[data-vista='movil'] .codigo, [data-vista='movil'] .cod-pre { max-width: 100%; }
+
 /* Estados de pantalla */
 .ep-rejilla { display: grid; grid-template-columns: repeat(auto-fit,minmax(232px,1fr)); gap: 12px; }
 .ep-caja { border: 1px solid var(--borde); border-radius: 6px; overflow: hidden;
@@ -766,7 +783,12 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 /* Tabla de datos */
 .tb-barra { display: flex; align-items: flex-end; justify-content: space-between;
   gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
-.tb-barra-izq, .tb-barra-der { display: flex; align-items: flex-end; gap: 8px; }
+/* Envuelven: en 373px la fila de búsqueda + tamaño + conteo mide 406px y
+   estiraba la página. Y el buscador encoge en vez de imponer su ancho. */
+.tb-barra-izq, .tb-barra-der { display: flex; align-items: flex-end; gap: 8px; flex-wrap: wrap; }
+.tb-barra-izq { min-width: 0; }
+.tb-buscar { min-width: 0; flex: 1 1 180px; }
+.tb-buscar input.campo.sel-in { min-width: 0; width: 100%; }
 .tb-mini { display: flex; flex-direction: column; gap: 4px; }
 .tb-mini span { font-size: 12px; font-weight: 500; color: var(--texto-secundario); }
 .tb-mini .campo { font-size: 13px; padding: 4px 8px; min-width: 92px; }
@@ -847,7 +869,7 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 .tb-rango { font-size: 12px; color: var(--texto-secundario); }
 /* Componente Paginación. Las clases son suyas, no de la tabla: la tabla lo
    consume igual que cualquier otro listado. */
-.tb-pag, .pgn { display: flex; gap: 4px; align-items: center; }
+.tb-pag, .pgn { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
 /* Rejilla de 4: padding 4px vertical y 8px horizontal. La altura fija de 28px
    manda sobre el alto; el padding queda declarado y en rejilla igualmente, y
    el centrado lo garantiza inline-flex y no el ajuste por defecto del botón. */
@@ -1037,8 +1059,8 @@ a.enlace.enl-nosub { text-decoration: none; }
 .enl-desh { color: var(--texto-secundario); font-size: 13px; }
 .enl-ext::after { content: ' ↗'; font-size: 12px; }
 .enl-comp { display: grid; grid-template-columns: repeat(auto-fit,minmax(270px,1fr)); gap: 12px; }
-.enl-caja { position: relative; padding: 16px 16px 28px; border-radius: 6px;
-  border: 1px solid var(--borde); }
+.enl-caja { display: flex; flex-direction: column; gap: 12px; padding: 16px;
+  border-radius: 6px; border: 1px solid var(--borde); }
 .enl-caja.bien { background: var(--exito-fondo); border-color: var(--exito-acento); }
 .enl-caja.mal { background: var(--error-fondo); border-color: var(--error-acento); }
 .enl-caja p { margin: 0; font-size: 15px; line-height: 1.6; }
@@ -1051,15 +1073,15 @@ a.enlace.enl-nosub { text-decoration: none; }
 
 /* Diálogos de ejemplo */
 .dialogos { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 12px; }
-.dlg { position: relative; border: 1px solid var(--borde); border-radius: 6px;
-  background: var(--fondo-tarjeta); padding-bottom: 24px; }
+.dlg { display: flex; flex-direction: column; border: 1px solid var(--borde);
+  border-radius: 6px; background: var(--fondo-tarjeta); }
 .dlg-mal { border-color: var(--error-acento); }
 .dlg-cuerpo { padding: 16px 16px 12px; }
 .dlg-cuerpo strong { display: block; font-size: 15px; font-weight: 600; margin-bottom: 4px; }
 .dlg-cuerpo p { margin: 0; font-size: 13px; color: var(--texto-secundario); }
 .dlg-pie { display: flex; justify-content: flex-end; gap: 8px;
   padding: 12px 16px; border-top: 1px solid var(--borde); }
-.dlg-et { position: absolute; bottom: 6px; left: 16px; font-size: 12px;
+.dlg-et { padding: 8px 16px 12px; font-size: 12px;
   font-weight: 600; text-transform: uppercase; letter-spacing: .07em; }
 .dlg-ok { color: var(--exito-acento); }
 .dlg-mal-et { color: var(--error-texto); }
@@ -1162,8 +1184,16 @@ h2.seccion {
 .muestra-nombre { display: block; font-size: 12px; font-weight: 500; }
 .muestra-hex { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px;
   color: var(--texto-secundario); }
+/* El texto FLUYE. Con white-space: nowrap fijaba el ancho mínimo de la tarjeta
+   en 484px: en escritorio se disimulaba con puntos suspensivos, y en 373px
+   desbordaba 108px. Además, para qué sirve un token es justo lo que la página
+   tiene que dejar leer. */
 .muestra-uso { display: block; font-size: 12px; color: var(--texto-pista);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  line-height: 1.4; }
+/* Los ítems de una rejilla tienen min-width auto y no bajan de su contenido:
+   sin esto, cualquier texto largo estira la columna. */
+.rejilla > *, .marca-rejilla > *, .campos-rejilla > *,
+.tp-rejilla > *, .tn-rejilla > *, .ep-rejilla > * { min-width: 0; }
 
 /* Escalas */
 .escala { margin-bottom: 12px; }
@@ -1267,9 +1297,12 @@ input[type='date'].campo {
 }
 /* El disparador nativo se mantiene pulsable pero invisible: el icono visible
    es el nuestro y ocupa su sitio. */
+/* El disparador nativo se mantiene, invisible, cubriendo la zona del icono.
+   El icono visible es el del sistema. */
 input[type='date'].campo::-webkit-calendar-picker-indicator {
   opacity: 0; cursor: pointer;
-  width: 22px; height: 22px; margin: 0; padding: 0;
+  width: 32px; height: 100%; margin: 0; padding: 0;
+  position: absolute; right: 0; top: 0;
 }
 input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: none; }
 
@@ -1630,12 +1663,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .mal-rejilla { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px,1fr)); gap: 12px; }
 .mal-par { display: grid; grid-template-columns: 1fr 1fr; gap: 0;
   border: 1px solid var(--borde); border-radius: 6px; overflow: hidden; background: var(--fondo-tarjeta); }
-.mal-caja { padding: 16px 12px 28px; position: relative; display: flex;
-  align-items: center; justify-content: center; min-height: 92px; }
+/* Las etiquetas van EN FLUJO, no posicionadas al fondo. En absoluto, al ocupar
+   dos o tres líneas en 390px se montaban encima del contenido. */
+.mal-caja { padding: 16px 12px; display: flex; flex-direction: column;
+  align-items: center; justify-content: space-between; gap: 12px; min-height: 92px; }
 .mal-caja.mal { background: var(--error-fondo); }
 .mal-caja.bien { background: var(--exito-fondo); border-left: 1px solid var(--borde); }
-.mal-et, .bien-et { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center;
-  font-size: 12px; padding: 0 8px; }
+.mal-et, .bien-et { text-align: center; font-size: 12px; line-height: 1.4; }
 .mal-et { color: var(--error-texto); font-weight: 500; }
 .bien-et { color: var(--exito-texto); font-weight: 500; }
 .mal-et code, .bien-et code { font-size: 12px; }
@@ -8677,6 +8711,17 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       if (window.avisarDemo) window.avisarDemo('info', 'Salir del sistema — en el catálogo no hay sesión que cerrar');
     });
   })();
+
+  // ── Campo de fecha: toda la caja abre el calendario ──────────────────────
+  // Con appearance:none el disparador nativo queda invisible y en un teléfono
+  // es un blanco de 22px imposible de acertar. Tocar el campo entero lo abre.
+  document.querySelectorAll('input[type="date"]').forEach(function (i) {
+    i.addEventListener('click', function () {
+      if (!i.disabled && !i.readOnly && typeof i.showPicker === 'function') {
+        try { i.showPicker(); } catch (e) {}
+      }
+    });
+  });
 
   // ── Desplegable de filtros globales ──────────────────────────────────────
   (function () {
