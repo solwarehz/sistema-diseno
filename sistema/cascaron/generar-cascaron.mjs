@@ -2482,7 +2482,7 @@ día.</p>
       <label class="cg"><span class="cg-et">Hasta</span>
         <input class="campo cg-in mono fc-campo" id="fc-fin" placeholder="dd/mm/aaaa"
                readonly aria-haspopup="dialog" aria-expanded="false" aria-controls="fc-cal"></label>
-      <button class="btn btn-destr" id="fc-limpiar">Limpiar</button>
+      <button class="btn btn-neutro" id="fc-limpiar">Limpiar</button>
     </div>
 
     <div class="fc-cal" id="fc-cal" role="dialog" aria-label="Elegir rango de fechas" hidden>
@@ -5017,7 +5017,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       var f = new Date(+p[0], +p[1] - 1, +p[2]);
       if (modo === 'ini') {
         ini = f; fin = null; modo = 'fin'; sobre = null;
-        pintar();
+        cajaIni.value = esp(ini); cajaFin.value = '';
+        cajaIni.classList.remove('fc-activo'); cajaFin.classList.add('fc-activo');
+        document.getElementById('fc-pista').textContent = 'Elige la fecha de fin. Inicio: ' + esp(ini) + '.';
+        resaltar();
         cajaFin.focus({ preventScroll: true });
       } else {
         // Un clic anterior al inicio no se rechaza: pasa a ser el nuevo inicio.
@@ -5027,11 +5030,33 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         cerrar();
       }
     });
+    // La previsualización SOLO cambia clases. Si repintara el calendario, con
+    // un ratón real el botón se destruiría entre el mousedown y el mouseup y
+    // el clic no llegaría a dispararse: era la razón de que el segundo clic
+    // no hiciera nada.
+    function resaltar() {
+      var hasta = fin || (ini && sobre && sobre > ini ? sobre : null);
+      document.getElementById('fc-cuerpo').querySelectorAll('.fc-d[data-f]').forEach(function (b) {
+        var p = b.dataset.f.split('-');
+        var t = new Date(+p[0], +p[1] - 1, +p[2]).getTime();
+        var esIni = ini && t === ini.getTime();
+        var esFin = fin && t === fin.getTime();
+        var previo = !fin && ini && sobre && t === sobre.getTime() && t > ini.getTime();
+        b.classList.toggle('fc-ini', !!esIni);
+        b.classList.toggle('fc-fin', !!esFin || !!previo);
+        b.classList.toggle('fc-previo', !!previo);
+        b.classList.toggle('fc-dentro', !!(ini && hasta && t > ini.getTime() && t < hasta.getTime()));
+      });
+    }
+
     document.getElementById('fc-cuerpo').addEventListener('mouseover', function (e) {
       var b = e.target.closest('.fc-d[data-f]'); if (!b || !ini || fin) return;
       var p = b.dataset.f.split('-');
       sobre = new Date(+p[0], +p[1] - 1, +p[2]);
-      pintar();
+      resaltar();
+    });
+    document.getElementById('fc-cuerpo').addEventListener('mouseleave', function () {
+      if (!fin) { sobre = null; resaltar(); }
     });
     document.getElementById('fc-prev').addEventListener('click', function () {
       ancla = new Date(ancla.getFullYear(), ancla.getMonth() - 1, 1); pintar();
