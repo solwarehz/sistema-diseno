@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.5.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.6.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.5.0
-   WCAG 2.2 AA · 86 pares verificados en los dos modos, 0 fallos
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.6.0
+   WCAG 2.2 AA · 98 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -59,6 +59,10 @@
   --marco-texto: #FFFFFF;
   --marco-acento: #DFCA9C;
   --marco-item-activo: #1D3163;
+  --marco-nivel-1: #39497A;
+  --marco-nivel-2: #41507F;
+  --marco-borde: #45558A;
+  --marco-texto-tenue: #B9C2DC;
 
   /* Foco */
   --foco: #BE7A14;
@@ -126,6 +130,10 @@
   --marco-texto: #FFFFFF;
   --marco-acento: #DFCA9C;
   --marco-item-activo: #1D3163;
+  --marco-nivel-1: #39497A;
+  --marco-nivel-2: #41507F;
+  --marco-borde: #45558A;
+  --marco-texto-tenue: #B9C2DC;
 
   /* Foco */
   --foco: #F0C060;
@@ -196,6 +204,10 @@
     --marco-texto: #FFFFFF;
     --marco-acento: #DFCA9C;
     --marco-item-activo: #1D3163;
+    --marco-nivel-1: #39497A;
+    --marco-nivel-2: #41507F;
+    --marco-borde: #45558A;
+    --marco-texto-tenue: #B9C2DC;
 
     /* Foco */
     --foco: #F0C060;
@@ -297,6 +309,29 @@ code { font-family: 'IBM Plex Mono', monospace; }
 /* El grupo fijado se marca: dice por qué está abierto mientras los demás no. */
 .nav-grupo.fijo > .nav-grupo-tit { color: var(--marco-acento); opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .nav-hijos { transition: none; } }
+/* Los dos niveles usan marco-nivel-1 y marco-nivel-2, medidos: el techo lo
+   pone el acento dorado, que por debajo de #41507F dejaría de cumplir AA. */
+.nav-hijos-in { background: var(--marco-nivel-1); }
+.nav-nietos-in { background: var(--marco-nivel-2); }
+.nav-rama { border-top: 1px solid var(--marco-borde); }
+.nav-rama:first-child { border-top: 0; }
+.nav-rama-tit { width: 100%; background: transparent; border: 0; cursor: pointer;
+  font: inherit; text-align: left; }
+.nav-rama-tit .nav-chev .ic { width: 13px; height: 13px;
+  transition: transform .18s ease; transform: rotate(-90deg); }
+.nav-rama.abierta .nav-chev .ic { transform: rotate(0deg); }
+.nav-nietos { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
+.nav-rama.abierta .nav-nietos { grid-template-rows: 1fr; }
+.nav-nietos-in { overflow: hidden; }
+.nav-nieto { display: block; padding: 4px 8px 4px 56px; border-radius: 6px;
+  text-decoration: none; color: var(--marco-texto); font-size: 12px;
+  opacity: .78; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav-nieto:hover { background: var(--marco-item-activo); opacity: 1; }
+.nav-nieto.activo { background: var(--marco-item-activo); opacity: 1;
+  color: var(--marco-acento); font-weight: 500;
+  box-shadow: inset 3px 0 0 var(--marco-acento); }
+.lat.colapsado .nav-nietos { display: none; }
+
 .nav-hijo { display: flex; align-items: center; justify-content: space-between;
   gap: 8px; padding: 4px 8px 4px 40px; border-radius: 6px; text-decoration: none;
   color: var(--marco-texto); font-size: 13px; opacity: .78; white-space: nowrap; }
@@ -1134,17 +1169,21 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
 /* En un ítem flexible manda flex-basis, no width. Y min-width:0 desactiva el
    mínimo automático, que si no impide encoger por debajo del contenido. */
-.lat { flex: 0 0 236px; min-width: 0; overflow: hidden;
+/* El plegado se anima sobre width con flex-basis auto: animar flex-basis
+   directamente dejaba el ancho desincronizado de la clase. */
+.lat { flex: 0 0 auto; width: 236px; min-width: 0; overflow: hidden;
   background: var(--marco-fondo); color: var(--marco-texto);
-  display: flex; flex-direction: column; }
-.lat.colapsado { flex: 0 0 56px; }
+  display: flex; flex-direction: column;
+  transition: width .22s ease; }
+.lat.colapsado { width: 56px; }
+@media (prefers-reduced-motion: reduce) { .lat { transition: none; } }
 .lat.colapsado .nav-txt, .lat.colapsado .nav-chev,
 .lat.colapsado .lat-id, .lat.colapsado .lat-user-txt { display: none; }
 .lat.colapsado .lat-marca, .lat.colapsado .lat-usuario { justify-content: center; }
 .lat.colapsado .nav-item { justify-content: center; padding-inline: 0; }
 
-.lat-marca { display: flex; align-items: center; gap: 8px; padding: 12px 12px;
-  border-bottom: 1px solid rgba(255,255,255,.10); }
+.lat-marca { display: flex; align-items: center; gap: 8px; padding: 12px;
+  border-bottom: 1px solid var(--marco-borde); }
 .lat-id { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
 .lat-colegio { font-size: 12px; letter-spacing: .13em; color: var(--marco-acento); font-weight: 500; }
 .lat-nombre { font-size: 12px; font-weight: 600; white-space: nowrap; }
@@ -1165,15 +1204,15 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .nav-chev { opacity: .5; display: grid; place-items: center; }
 .nav-chev .ic { width: 14px; height: 14px; }
 
-.lat-usuario { display: flex; align-items: center; gap: 8px; padding: 12px 12px;
-  border-top: 1px solid rgba(255,255,255,.10); }
+.lat-usuario { display: flex; align-items: center; gap: 8px; padding: 12px;
+  border-top: 1px solid var(--marco-borde); }
 .lat-av { width: 30px; height: 30px; border-radius: 50%; flex: none;
   background: var(--marco-acento); color: var(--marco-fondo);
   display: grid; place-items: center; font-size: 12px; font-weight: 600; }
 .lat-user-txt { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
 .lat-user-nom { font-size: 12px; font-weight: 500; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis; }
-.lat-user-mail { font-size: 12px; opacity: .62; white-space: nowrap;
+.lat-user-mail { font-size: 12px; color: var(--marco-texto-tenue); white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis; }
 
 .app-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
@@ -1483,7 +1522,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     <div class="nav-hijos" id="grupo-0">
       <div class="nav-hijos-in">
       <a class="nav-hijo" href="#inicio" data-ir="inicio" title="Vista general">
-            <span class="nav-txt">Vista general</span></a>
+                  <span class="nav-txt">Vista general</span></a>
       </div>
     </div>
   </div>
@@ -1496,10 +1535,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     <div class="nav-hijos" id="grupo-1">
       <div class="nav-hijos-in">
       <a class="nav-hijo" href="#color" data-ir="color" title="Color">
-            <span class="nav-txt">Color</span></a><a class="nav-hijo" href="#tipografia" data-ir="tipografia" title="Tipografía">
-            <span class="nav-txt">Tipografía</span></a><a class="nav-hijo" href="#espaciado" data-ir="espaciado" title="Espaciado">
-            <span class="nav-txt">Espaciado</span></a><a class="nav-hijo" href="#iconos" data-ir="iconos" title="Iconos">
-            <span class="nav-txt">Iconos</span></a>
+                  <span class="nav-txt">Color</span></a><a class="nav-hijo" href="#tipografia" data-ir="tipografia" title="Tipografía">
+                  <span class="nav-txt">Tipografía</span></a><a class="nav-hijo" href="#espaciado" data-ir="espaciado" title="Espaciado">
+                  <span class="nav-txt">Espaciado</span></a><a class="nav-hijo" href="#iconos" data-ir="iconos" title="Iconos">
+                  <span class="nav-txt">Iconos</span></a>
       </div>
     </div>
   </div>
@@ -1512,21 +1551,21 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     <div class="nav-hijos" id="grupo-2">
       <div class="nav-hijos-in">
       <a class="nav-hijo" href="#boton" data-ir="boton" title="Botón">
-            <span class="nav-txt">Botón</span></a><a class="nav-hijo" href="#enlace" data-ir="enlace" title="Enlace">
-            <span class="nav-txt">Enlace</span></a><a class="nav-hijo" href="#campo" data-ir="campo" title="Campo de texto">
-            <span class="nav-txt">Campo de texto</span></a><a class="nav-hijo" href="#selector" data-ir="selector" title="Selector">
-            <span class="nav-txt">Selector</span></a><a class="nav-hijo" href="#interruptor" data-ir="interruptor" title="Interruptor">
-            <span class="nav-txt">Interruptor</span></a><a class="nav-hijo" href="#multiple" data-ir="multiple" title="Selección múltiple">
-            <span class="nav-txt">Selección múltiple</span></a><a class="nav-hijo" href="#fecha" data-ir="fecha" title="Fecha y rango">
-            <span class="nav-txt">Fecha y rango</span></a><a class="nav-hijo" href="#chip" data-ir="chip" title="Chip de estado">
-            <span class="nav-txt">Chip de estado</span></a><a class="nav-hijo" href="#tarjeta" data-ir="tarjeta" title="Tarjeta">
-            <span class="nav-txt">Tarjeta</span></a><a class="nav-hijo" href="#tabla" data-ir="tabla" title="Tabla de datos">
-            <span class="nav-txt">Tabla de datos</span></a><a class="nav-hijo" href="#paginacion" data-ir="paginacion" title="Paginación">
-            <span class="nav-txt">Paginación</span></a><a class="nav-hijo" href="#progreso" data-ir="progreso" title="Barra de progreso">
-            <span class="nav-txt">Barra de progreso</span></a><a class="nav-hijo" href="#aviso" data-ir="aviso" title="Aviso temporal">
-            <span class="nav-txt">Aviso temporal</span></a><a class="nav-hijo" href="#confirmar" data-ir="confirmar" title="Confirmación">
-            <span class="nav-txt">Confirmación</span></a><a class="nav-hijo" href="#estados" data-ir="estados" title="Estados de pantalla">
-            <span class="nav-txt">Estados de pantalla</span></a>
+                  <span class="nav-txt">Botón</span></a><a class="nav-hijo" href="#enlace" data-ir="enlace" title="Enlace">
+                  <span class="nav-txt">Enlace</span></a><a class="nav-hijo" href="#campo" data-ir="campo" title="Campo de texto">
+                  <span class="nav-txt">Campo de texto</span></a><a class="nav-hijo" href="#selector" data-ir="selector" title="Selector">
+                  <span class="nav-txt">Selector</span></a><a class="nav-hijo" href="#interruptor" data-ir="interruptor" title="Interruptor">
+                  <span class="nav-txt">Interruptor</span></a><a class="nav-hijo" href="#multiple" data-ir="multiple" title="Selección múltiple">
+                  <span class="nav-txt">Selección múltiple</span></a><a class="nav-hijo" href="#fecha" data-ir="fecha" title="Fecha y rango">
+                  <span class="nav-txt">Fecha y rango</span></a><a class="nav-hijo" href="#chip" data-ir="chip" title="Chip de estado">
+                  <span class="nav-txt">Chip de estado</span></a><a class="nav-hijo" href="#tarjeta" data-ir="tarjeta" title="Tarjeta">
+                  <span class="nav-txt">Tarjeta</span></a><a class="nav-hijo" href="#tabla" data-ir="tabla" title="Tabla de datos">
+                  <span class="nav-txt">Tabla de datos</span></a><a class="nav-hijo" href="#paginacion" data-ir="paginacion" title="Paginación">
+                  <span class="nav-txt">Paginación</span></a><a class="nav-hijo" href="#progreso" data-ir="progreso" title="Barra de progreso">
+                  <span class="nav-txt">Barra de progreso</span></a><a class="nav-hijo" href="#aviso" data-ir="aviso" title="Aviso temporal">
+                  <span class="nav-txt">Aviso temporal</span></a><a class="nav-hijo" href="#confirmar" data-ir="confirmar" title="Confirmación">
+                  <span class="nav-txt">Confirmación</span></a><a class="nav-hijo" href="#estados" data-ir="estados" title="Estados de pantalla">
+                  <span class="nav-txt">Estados de pantalla</span></a>
       </div>
     </div>
   </div>
@@ -1539,8 +1578,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     <div class="nav-hijos" id="grupo-3">
       <div class="nav-hijos-in">
       <a class="nav-hijo" href="#casos" data-ir="casos" title="Casos de uso">
-            <span class="nav-txt">Casos de uso</span></a><a class="nav-hijo" href="#maquetas" data-ir="maquetas" title="Maquetas">
-            <span class="nav-txt">Maquetas</span></a>
+                  <span class="nav-txt">Casos de uso</span></a><a class="nav-hijo" href="#maquetas" data-ir="maquetas" title="Maquetas">
+                  <span class="nav-txt">Maquetas</span></a>
       </div>
     </div>
   </div>
@@ -1552,19 +1591,35 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     </button>
     <div class="nav-hijos" id="grupo-4">
       <div class="nav-hijos-in">
-      <a class="nav-hijo" href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" title="Cómo se usa este manual">
-            <span class="nav-txt">Cómo se usa este manual</span></a><a class="nav-hijo" href="#man-las-seis-reglas-que-resuelven-el-9" data-ir="man-las-seis-reglas-que-resuelven-el-9" title="Las seis reglas que resuelven el 90 % de las dudas">
-            <span class="nav-txt">Las seis reglas que resuelven el 90 % de las dudas</span></a><a class="nav-hijo" href="#man-color-como-elegir-el-token" data-ir="man-color-como-elegir-el-token" title="Color — cómo elegir el token">
-            <span class="nav-txt">Color — cómo elegir el token</span></a><a class="nav-hijo" href="#man-tipografia-como-elegir-el-tamano" data-ir="man-tipografia-como-elegir-el-tamano" title="Tipografía — cómo elegir el tamaño">
-            <span class="nav-txt">Tipografía — cómo elegir el tamaño</span></a><a class="nav-hijo" href="#man-foco-y-accesibilidad" data-ir="man-foco-y-accesibilidad" title="Foco y accesibilidad">
-            <span class="nav-txt">Foco y accesibilidad</span></a><a class="nav-hijo" href="#man-composicion" data-ir="man-composicion" title="Composición">
-            <span class="nav-txt">Composición</span></a><a class="nav-hijo" href="#man-formularios" data-ir="man-formularios" title="Formularios">
-            <span class="nav-txt">Formularios</span></a><a class="nav-hijo" href="#man-voz-de-interfaz" data-ir="man-voz-de-interfaz" title="Voz de interfaz">
-            <span class="nav-txt">Voz de interfaz</span></a><a class="nav-hijo" href="#man-errores-frecuentes" data-ir="man-errores-frecuentes" title="Errores frecuentes">
-            <span class="nav-txt">Errores frecuentes</span></a><a class="nav-hijo" href="#man-antes-de-dar-una-pantalla-por-term" data-ir="man-antes-de-dar-una-pantalla-por-term" title="Antes de dar una pantalla por terminada">
-            <span class="nav-txt">Antes de dar una pantalla por terminada</span></a><a class="nav-hijo" href="#man-lo-que-este-manual-todavia-no-cubr" data-ir="man-lo-que-este-manual-todavia-no-cubr" title="Lo que este manual todavía no cubre">
-            <span class="nav-txt">Lo que este manual todavía no cubre</span></a><a class="nav-hijo" href="#man-historial" data-ir="man-historial" title="Historial">
-            <span class="nav-txt">Historial</span></a>
+      <div class="nav-rama" data-rama="4-0">
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="4-0">
+                    <span class="nav-txt">Cómo se aplica</span>
+                    <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+                  </button>
+                  <div class="nav-nietos"><div class="nav-nietos-in">
+                    <a class="nav-nieto" href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" title="Cómo se usa este manual">
+                          <span class="nav-txt">Cómo se usa este manual</span></a><a class="nav-nieto" href="#man-las-seis-reglas-que-resuelven-el-9" data-ir="man-las-seis-reglas-que-resuelven-el-9" title="Las seis reglas que resuelven el 90 % de las dudas">
+                          <span class="nav-txt">Las seis reglas que resuelven el 90 % de las dudas</span></a><a class="nav-nieto" href="#man-color-como-elegir-el-token" data-ir="man-color-como-elegir-el-token" title="Color — cómo elegir el token">
+                          <span class="nav-txt">Color — cómo elegir el token</span></a><a class="nav-nieto" href="#man-tipografia-como-elegir-el-tamano" data-ir="man-tipografia-como-elegir-el-tamano" title="Tipografía — cómo elegir el tamaño">
+                          <span class="nav-txt">Tipografía — cómo elegir el tamaño</span></a><a class="nav-nieto" href="#man-foco-y-accesibilidad" data-ir="man-foco-y-accesibilidad" title="Foco y accesibilidad">
+                          <span class="nav-txt">Foco y accesibilidad</span></a><a class="nav-nieto" href="#man-composicion" data-ir="man-composicion" title="Composición">
+                          <span class="nav-txt">Composición</span></a>
+                  </div></div>
+                </div><div class="nav-rama" data-rama="4-1">
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="4-1">
+                    <span class="nav-txt">Cómo se escribe</span>
+                    <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+                  </button>
+                  <div class="nav-nietos"><div class="nav-nietos-in">
+                    <a class="nav-nieto" href="#man-formularios" data-ir="man-formularios" title="Formularios">
+                          <span class="nav-txt">Formularios</span></a><a class="nav-nieto" href="#man-voz-de-interfaz" data-ir="man-voz-de-interfaz" title="Voz de interfaz">
+                          <span class="nav-txt">Voz de interfaz</span></a><a class="nav-nieto" href="#man-errores-frecuentes" data-ir="man-errores-frecuentes" title="Errores frecuentes">
+                          <span class="nav-txt">Errores frecuentes</span></a><a class="nav-nieto" href="#man-antes-de-dar-una-pantalla-por-term" data-ir="man-antes-de-dar-una-pantalla-por-term" title="Antes de dar una pantalla por terminada">
+                          <span class="nav-txt">Antes de dar una pantalla por terminada</span></a><a class="nav-nieto" href="#man-lo-que-este-manual-todavia-no-cubr" data-ir="man-lo-que-este-manual-todavia-no-cubr" title="Lo que este manual todavía no cubre">
+                          <span class="nav-txt">Lo que este manual todavía no cubre</span></a><a class="nav-nieto" href="#man-historial" data-ir="man-historial" title="Historial">
+                          <span class="nav-txt">Historial</span></a>
+                  </div></div>
+                </div>
       </div>
     </div>
   </div>
@@ -1577,7 +1632,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     <div class="nav-hijos" id="grupo-5">
       <div class="nav-hijos-in">
       <a class="nav-hijo" href="#contraste" data-ir="contraste" title="Contrastes">
-            <span class="nav-txt">Contrastes</span></a>
+                  <span class="nav-txt">Contrastes</span></a>
       </div>
     </div>
   </div></nav>
@@ -1597,7 +1652,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.5.0</option></select></label>
+          <select class="campo cg-in"><option>v1.6.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -1644,8 +1699,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 El menú de la izquierda lo abre por partes.</p>
 
 <div class="estado-rejilla">
-  <div class="est"><b>44</b><span>tokens semánticos</span></div>
-  <div class="est"><b>86</b><span>pares verificados</span></div>
+  <div class="est"><b>48</b><span>tokens semánticos</span></div>
+  <div class="est"><b>98</b><span>pares verificados</span></div>
   <div class="est est-ok"><b>0</b><span>fallos de contraste</span></div>
   <div class="est"><b>2</b><span>modos, claro y oscuro</span></div>
 </div>
@@ -2186,7 +2241,7 @@ El menú de la izquierda lo abre por partes.</p>
   <a href="#espaciado" data-ir="espaciado" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
     <span><strong>Espaciado</strong>Rejilla de 4px y tamaños de control</span></a>
   <a href="#contraste" data-ir="contraste" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg></span>
-    <span><strong>Contrastes</strong>Los 86 pares medidos</span></a>
+    <span><strong>Contrastes</strong>Los 98 pares medidos</span></a>
 </div>
     </section><section class="pagina" id="pg-color" hidden>
       <nav class="migas" aria-label="Ubicación">
@@ -2198,7 +2253,7 @@ El menú de la izquierda lo abre por partes.</p>
       </nav>
       <div class="pag-cab"><h1>Color</h1></div>
       
-<p class="pag-intro">44 tokens semánticos sobre 4 escalas primitivas.
+<p class="pag-intro">48 tokens semánticos sobre 4 escalas primitivas.
 Es lo único que un componente consume. <strong>Las primitivas están prohibidas dentro de un componente.</strong></p>
 
   <section class="grupo">
@@ -6745,7 +6800,7 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       </nav>
       <div class="pag-cab"><h1>Contrastes</h1></div>
       
-<p class="pag-intro">86 pares bloqueantes en los dos modos ·
+<p class="pag-intro">98 pares bloqueantes en los dos modos ·
 <strong>0 fallos</strong> · WCAG 2.2 AA. Recalculados en cada build por
 <code>verificar-contraste.mjs</code>: si el contrato miente, el build falla.</p>
 <h3 class="sub-seccion">Modo claro</h3>
@@ -7015,6 +7070,54 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <td class="num">4.5</td>
       <td class="ok">cumple</td>
       <td class="motivo">Texto sobre ítem activo de desplegable</td>
+    </tr>
+    <tr>
+      <td><code>marco-texto</code></td>
+      <td><code>marco-nivel-1</code></td>
+      <td class="num">8.72:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Texto en subopción de primer nivel</td>
+    </tr>
+    <tr>
+      <td><code>marco-acento</code></td>
+      <td><code>marco-nivel-1</code></td>
+      <td class="num">5.42:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Ítem activo en subopción de primer nivel</td>
+    </tr>
+    <tr>
+      <td><code>marco-texto</code></td>
+      <td><code>marco-nivel-2</code></td>
+      <td class="num">7.83:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Texto en subopción de segundo nivel</td>
+    </tr>
+    <tr>
+      <td><code>marco-acento</code></td>
+      <td><code>marco-nivel-2</code></td>
+      <td class="num">4.87:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Ítem activo en subopción de segundo nivel — es el techo del anidamiento</td>
+    </tr>
+    <tr>
+      <td><code>marco-texto-tenue</code></td>
+      <td><code>marco-fondo</code></td>
+      <td class="num">5.86:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Correo del usuario dentro del marco</td>
+    </tr>
+    <tr>
+      <td><code>marco-texto-tenue</code></td>
+      <td><code>marco-nivel-1</code></td>
+      <td class="num">4.90:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Texto de apoyo en primer nivel</td>
     </tr>
     <tr>
       <td><code>foco</code></td>
@@ -7366,6 +7469,54 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <td class="motivo">Texto sobre ítem activo de desplegable</td>
     </tr>
     <tr>
+      <td><code>marco-texto</code></td>
+      <td><code>marco-nivel-1</code></td>
+      <td class="num">8.72:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Texto en subopción de primer nivel</td>
+    </tr>
+    <tr>
+      <td><code>marco-acento</code></td>
+      <td><code>marco-nivel-1</code></td>
+      <td class="num">5.42:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Ítem activo en subopción de primer nivel</td>
+    </tr>
+    <tr>
+      <td><code>marco-texto</code></td>
+      <td><code>marco-nivel-2</code></td>
+      <td class="num">7.83:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Texto en subopción de segundo nivel</td>
+    </tr>
+    <tr>
+      <td><code>marco-acento</code></td>
+      <td><code>marco-nivel-2</code></td>
+      <td class="num">4.87:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Ítem activo en subopción de segundo nivel — es el techo del anidamiento</td>
+    </tr>
+    <tr>
+      <td><code>marco-texto-tenue</code></td>
+      <td><code>marco-fondo</code></td>
+      <td class="num">5.86:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Correo del usuario dentro del marco</td>
+    </tr>
+    <tr>
+      <td><code>marco-texto-tenue</code></td>
+      <td><code>marco-nivel-1</code></td>
+      <td class="num">4.90:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Texto de apoyo en primer nivel</td>
+    </tr>
+    <tr>
       <td><code>foco</code></td>
       <td><code>fondo-tarjeta</code></td>
       <td class="num">9.19:1</td>
@@ -7526,7 +7677,7 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
     };
   };
 
-  var hex = {"fondo-pagina":{"claro":"#F8F8F6","oscuro":"#1E1D1C"},"fondo-tarjeta":{"claro":"#FFFFFF","oscuro":"#242422"},"fondo-encabezado":{"claro":"#F0EFEE","oscuro":"#2C2B29"},"fondo-fila-alt":{"claro":"#F8F8F6","oscuro":"#2A2927"},"fondo-fila-hover":{"claro":"#E9F5FF","oscuro":"#363532"},"texto-principal":{"claro":"#2C2A25","oscuro":"#EFEEEB"},"texto-secundario":{"claro":"#6A6864","oscuro":"#C3C1BD"},"texto-pista":{"claro":"#6A6864","oscuro":"#989692"},"texto-invertido":{"claro":"#FFFFFF","oscuro":"#20201E"},"borde":{"claro":"#E0DFDE","oscuro":"#44423F"},"borde-fuerte":{"claro":"#C8C6C4","oscuro":"#575451"},"borde-campo":{"claro":"#8B8985","oscuro":"#8A8681"},"accion":{"claro":"#0063CB","oscuro":"#6CB2FF"},"accion-hover":{"claro":"#004EB2","oscuro":"#A0D0FF"},"accion-activa":{"claro":"#003B91","oscuro":"#CFE8FF"},"accion-texto":{"claro":"#FFFFFF","oscuro":"#20201E"},"accion-deshabilitada":{"claro":"#C8C6C4","oscuro":"#44423F"},"accion-texto-desh":{"claro":"#8B8985","oscuro":"#989692"},"accion-2":{"claro":"#655000","oscuro":"#DFCA9C"},"enlace":{"claro":"#0063CB","oscuro":"#6CB2FF"},"accion-2-fondo":{"claro":"#F1E4CA","oscuro":"#4F3E00"},"neutra-fondo":{"claro":"#F0EFEE","oscuro":"#3A3835"},"neutra-texto":{"claro":"#2C2A25","oscuro":"#EFEEEB"},"destructiva":{"claro":"#D40006","oscuro":"#FF7D62"},"destructiva-hover":{"claro":"#B40000","oscuro":"#FFAD95"},"destructiva-texto":{"claro":"#FFFFFF","oscuro":"#20201E"},"marco-fondo":{"claro":"#2C3D71","oscuro":"#2C3D71"},"marco-texto":{"claro":"#FFFFFF","oscuro":"#FFFFFF"},"marco-acento":{"claro":"#DFCA9C","oscuro":"#DFCA9C"},"marco-item-activo":{"claro":"#1D3163","oscuro":"#1D3163"},"foco":{"claro":"#BE7A14","oscuro":"#F0C060"},"foco-en-marco":{"claro":"#F0C060","oscuro":"#F0C060"},"exito-fondo":{"claro":"#E3F4E1","oscuro":"#233521"},"exito-texto":{"claro":"#14521A","oscuro":"#B3DCAE"},"exito-acento":{"claro":"#338136","oscuro":"#5FA862"},"aviso-fondo":{"claro":"#FFEBD6","oscuro":"#402C16"},"aviso-texto":{"claro":"#6B3B00","oscuro":"#FBC894"},"aviso-acento":{"claro":"#A46300","oscuro":"#C88A3C"},"error-fondo":{"claro":"#FFE6DF","oscuro":"#4D241F"},"error-texto":{"claro":"#8F1017","oscuro":"#FFB8A9"},"error-acento":{"claro":"#D63231","oscuro":"#E2665C"},"info-fondo":{"claro":"#E9EEFF","oscuro":"#273048"},"info-texto":{"claro":"#02468A","oscuro":"#BFD0FF"},"info-acento":{"claro":"#2F71CE","oscuro":"#6D97DE"}};
+  var hex = {"fondo-pagina":{"claro":"#F8F8F6","oscuro":"#1E1D1C"},"fondo-tarjeta":{"claro":"#FFFFFF","oscuro":"#242422"},"fondo-encabezado":{"claro":"#F0EFEE","oscuro":"#2C2B29"},"fondo-fila-alt":{"claro":"#F8F8F6","oscuro":"#2A2927"},"fondo-fila-hover":{"claro":"#E9F5FF","oscuro":"#363532"},"texto-principal":{"claro":"#2C2A25","oscuro":"#EFEEEB"},"texto-secundario":{"claro":"#6A6864","oscuro":"#C3C1BD"},"texto-pista":{"claro":"#6A6864","oscuro":"#989692"},"texto-invertido":{"claro":"#FFFFFF","oscuro":"#20201E"},"borde":{"claro":"#E0DFDE","oscuro":"#44423F"},"borde-fuerte":{"claro":"#C8C6C4","oscuro":"#575451"},"borde-campo":{"claro":"#8B8985","oscuro":"#8A8681"},"accion":{"claro":"#0063CB","oscuro":"#6CB2FF"},"accion-hover":{"claro":"#004EB2","oscuro":"#A0D0FF"},"accion-activa":{"claro":"#003B91","oscuro":"#CFE8FF"},"accion-texto":{"claro":"#FFFFFF","oscuro":"#20201E"},"accion-deshabilitada":{"claro":"#C8C6C4","oscuro":"#44423F"},"accion-texto-desh":{"claro":"#8B8985","oscuro":"#989692"},"accion-2":{"claro":"#655000","oscuro":"#DFCA9C"},"enlace":{"claro":"#0063CB","oscuro":"#6CB2FF"},"accion-2-fondo":{"claro":"#F1E4CA","oscuro":"#4F3E00"},"neutra-fondo":{"claro":"#F0EFEE","oscuro":"#3A3835"},"neutra-texto":{"claro":"#2C2A25","oscuro":"#EFEEEB"},"destructiva":{"claro":"#D40006","oscuro":"#FF7D62"},"destructiva-hover":{"claro":"#B40000","oscuro":"#FFAD95"},"destructiva-texto":{"claro":"#FFFFFF","oscuro":"#20201E"},"marco-fondo":{"claro":"#2C3D71","oscuro":"#2C3D71"},"marco-texto":{"claro":"#FFFFFF","oscuro":"#FFFFFF"},"marco-acento":{"claro":"#DFCA9C","oscuro":"#DFCA9C"},"marco-item-activo":{"claro":"#1D3163","oscuro":"#1D3163"},"marco-nivel-1":{"claro":"#39497A","oscuro":"#39497A"},"marco-nivel-2":{"claro":"#41507F","oscuro":"#41507F"},"marco-borde":{"claro":"#45558A","oscuro":"#45558A"},"marco-texto-tenue":{"claro":"#B9C2DC","oscuro":"#B9C2DC"},"foco":{"claro":"#BE7A14","oscuro":"#F0C060"},"foco-en-marco":{"claro":"#F0C060","oscuro":"#F0C060"},"exito-fondo":{"claro":"#E3F4E1","oscuro":"#233521"},"exito-texto":{"claro":"#14521A","oscuro":"#B3DCAE"},"exito-acento":{"claro":"#338136","oscuro":"#5FA862"},"aviso-fondo":{"claro":"#FFEBD6","oscuro":"#402C16"},"aviso-texto":{"claro":"#6B3B00","oscuro":"#FBC894"},"aviso-acento":{"claro":"#A46300","oscuro":"#C88A3C"},"error-fondo":{"claro":"#FFE6DF","oscuro":"#4D241F"},"error-texto":{"claro":"#8F1017","oscuro":"#FFB8A9"},"error-acento":{"claro":"#D63231","oscuro":"#E2665C"},"info-fondo":{"claro":"#E9EEFF","oscuro":"#273048"},"info-texto":{"claro":"#02468A","oscuro":"#BFD0FF"},"info-acento":{"claro":"#2F71CE","oscuro":"#6D97DE"}};
 
   function aplicar(modo) {
     raiz.setAttribute('data-tema', modo);
@@ -7549,7 +7700,7 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
 
   // ── Navegación del catálogo ──────────────────────────────────────────────
   var paginas = document.querySelectorAll('.pagina');
-  var enlaces = document.querySelectorAll('.nav-hijo');
+  var enlaces = document.querySelectorAll('.nav-hijo[data-ir], .nav-nieto[data-ir]');
 
   // Los grupos nacen comprimidos. Se abren al pasar el ratón y se cierran al
   // salir, salvo el que está FIJADO, que es el de la página en curso.
@@ -7570,6 +7721,16 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       if (!g.contains(e.relatedTarget)) { g.classList.remove('hover'); sincronizarGrupo(g); }
     });
     sincronizarGrupo(g);
+  });
+
+  // Las ramas de segundo nivel se despliegan al pulsar su título.
+  document.querySelectorAll('[data-abrir-rama]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var r = b.closest('.nav-rama');
+      var ab = !r.classList.contains('abierta');
+      r.classList.toggle('abierta', ab);
+      b.setAttribute('aria-expanded', String(ab));
+    });
   });
 
   // El título del grupo fija o suelta. Fijar es la forma de dejarlo abierto
@@ -7604,8 +7765,16 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       a.classList.toggle('activo', act);
     });
     // El grupo de la página en curso queda FIJADO: se queda abierto aunque el
-    // cursor se vaya. Los demás vuelven a comprimirse.
-    var activo = document.querySelector('.nav-hijo.activo');
+    // cursor se vaya. Los demás vuelven a comprimirse. Si el activo está en
+    // una rama de segundo nivel, la rama también se abre.
+    var activo = document.querySelector('.nav-hijo.activo, .nav-nieto.activo');
+    document.querySelectorAll('.nav-rama').forEach(function (r) {
+      var dentro = !!activo && r.contains(activo);
+      if (dentro) {
+        r.classList.add('abierta');
+        r.querySelector('.nav-rama-tit').setAttribute('aria-expanded', 'true');
+      }
+    });
     document.querySelectorAll('.nav-grupo').forEach(function (g) {
       g.classList.toggle('fijo', !!activo && g.contains(activo));
       var ab = g.classList.contains('fijo') || g.classList.contains('hover');

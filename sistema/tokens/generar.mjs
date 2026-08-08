@@ -120,7 +120,7 @@ const grupos = {
   Texto: ['texto-principal', 'texto-secundario', 'texto-pista', 'texto-invertido'],
   Bordes: ['borde', 'borde-fuerte', 'borde-campo'],
   Acción: ['accion', 'accion-hover', 'accion-activa', 'accion-texto', 'accion-deshabilitada', 'accion-texto-desh', 'accion-2', 'accion-2-fondo', 'neutra-fondo', 'neutra-texto', 'enlace', 'destructiva', 'destructiva-hover', 'destructiva-texto'],
-  'Marco de aplicación': ['marco-fondo', 'marco-texto', 'marco-acento', 'marco-item-activo'],
+  'Marco de aplicación': ['marco-fondo', 'marco-texto', 'marco-acento', 'marco-item-activo', 'marco-nivel-1', 'marco-nivel-2', 'marco-borde', 'marco-texto-tenue'],
   Foco: ['foco', 'foco-en-marco'],
   'Estados — siempre en pares fondo/texto': [
     'exito-fondo', 'exito-texto', 'exito-acento',

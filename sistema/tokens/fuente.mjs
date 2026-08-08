@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.5.0';
+export const VERSION = '1.6.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -165,6 +165,18 @@ export const semanticos = {
   'marco-acento':      { claro: '#DFCA9C', oscuro: '#DFCA9C', origen: 'oro.200',  uso: 'Ítem activo: texto y filete inferior. También avatar' },
   'marco-item-activo': { claro: '#1D3163', oscuro: '#1D3163', origen: 'directo',  uso: 'Fondo del ítem activo en desplegable' },
 
+  // v1.6.0 — Cierra el hueco P-11. El marco es una superficie oscura y encima
+  // vivían tres cosas sin token: los niveles de anidamiento del menú, el
+  // separador y el texto atenuado. Hasta ahora se resolvían con blanco y alfa.
+  //
+  // El TECHO lo pone el acento dorado, no el texto blanco: aclarando el marco
+  // hacia blanco, `marco-acento` cae por debajo de 4,5:1 pasado el 10 %.
+  // Por eso hay sitio para exactamente dos niveles y no para tres.
+  'marco-nivel-1':     { claro: '#39497A', oscuro: '#39497A', origen: 'directo', uso: 'Fondo de las subopciones de primer nivel del menú' },
+  'marco-nivel-2':     { claro: '#41507F', oscuro: '#41507F', origen: 'directo', uso: 'Fondo de las subopciones de segundo nivel. No hay tercero: el acento dejaría de cumplir' },
+  'marco-borde':       { claro: '#45558A', oscuro: '#45558A', origen: 'directo', uso: 'Separador dentro del marco' },
+  'marco-texto-tenue': { claro: '#B9C2DC', oscuro: '#B9C2DC', origen: 'directo', uso: 'Correo del usuario y textos de apoyo dentro del marco' },
+
   // ── Foco ─────────────────────────────────────────────────────────────────
   // Son dos tokens y no uno por una razón medida: el ámbar oscuro no alcanza
   // 3:1 sobre el marco, y el ámbar claro no lo alcanza sobre blanco.
@@ -257,6 +269,17 @@ export const pares = [
   ['marco-acento',     'marco-fondo',      4.5, 'Texto del ítem activo en el marco'],
   ['marco-acento',     'marco-item-activo',4.5, 'Ítem activo en desplegable'],
   ['marco-texto',      'marco-item-activo',4.5, 'Texto sobre ítem activo de desplegable'],
+
+  // Capas del marco — v1.6.0
+  ['marco-texto',      'marco-nivel-1',    4.5, 'Texto en subopción de primer nivel'],
+  ['marco-acento',     'marco-nivel-1',    4.5, 'Ítem activo en subopción de primer nivel'],
+  ['marco-texto',      'marco-nivel-2',    4.5, 'Texto en subopción de segundo nivel'],
+  ['marco-acento',     'marco-nivel-2',    4.5, 'Ítem activo en subopción de segundo nivel — es el techo del anidamiento'],
+  ['marco-texto-tenue','marco-fondo',      4.5, 'Correo del usuario dentro del marco'],
+  ['marco-texto-tenue','marco-nivel-1',    4.5, 'Texto de apoyo en primer nivel'],
+  ['marco-nivel-1',    'marco-fondo',      'informativo', 'El nivel 1 debe distinguirse del marco'],
+  ['marco-nivel-2',    'marco-nivel-1',    'informativo', 'El nivel 2 debe distinguirse del nivel 1'],
+  ['marco-borde',      'marco-fondo',      'informativo', 'Separador dentro del marco. Adorno'],
 
   // Foco — anillo: contraste de componente, mínimo 3:1
   ['foco',             'fondo-tarjeta',    3.0, 'Anillo de foco sobre tarjeta'],

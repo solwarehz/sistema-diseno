@@ -3149,6 +3149,12 @@ const CATALOGO = [
   {
     grupo: 'Manual de uso',
     icono: 'comunicaciones',
+    // Segundo nivel: las doce secciones se agrupan en dos ramas. Doce ítems
+    // seguidos no se leen; dos ramas de seis, sí.
+    ramas: [
+      { t: 'Cómo se aplica', desde: 0, hasta: 6 },
+      { t: 'Cómo se escribe', desde: 6, hasta: 12 },
+    ],
     items: seccionesManual.map((s) => ({
       id: s.id,
       t: s.t,
@@ -3178,12 +3184,34 @@ const menuCatalogo = CATALOGO.map(
     </button>
     <div class="nav-hijos" id="grupo-${n}">
       <div class="nav-hijos-in">
-      ${g.items
-        .map(
-          (i) => `<a class="nav-hijo" href="#${i.id}" data-ir="${i.id}" title="${i.t}">
-            <span class="nav-txt">${i.t}</span>${PUNTO[i.estado]}</a>`
-        )
-        .join('')}
+      ${
+        g.ramas
+          ? g.ramas
+              .map(
+                (r, k) => `<div class="nav-rama" data-rama="${n}-${k}">
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="${n}-${k}">
+                    <span class="nav-txt">${r.t}</span>
+                    <span class="nav-chev">${ICONOS.chevron}</span>
+                  </button>
+                  <div class="nav-nietos"><div class="nav-nietos-in">
+                    ${g.items
+                      .slice(r.desde, r.hasta)
+                      .map(
+                        (i) => `<a class="nav-nieto" href="#${i.id}" data-ir="${i.id}" title="${i.t}">
+                          <span class="nav-txt">${i.t}</span></a>`
+                      )
+                      .join('')}
+                  </div></div>
+                </div>`
+              )
+              .join('')
+          : g.items
+              .map(
+                (i) => `<a class="nav-hijo" href="#${i.id}" data-ir="${i.id}" title="${i.t}">
+                  <span class="nav-txt">${i.t}</span>${PUNTO[i.estado]}</a>`
+              )
+              .join('')
+      }
       </div>
     </div>
   </div>`
@@ -3281,6 +3309,29 @@ code { font-family: 'IBM Plex Mono', monospace; }
 /* El grupo fijado se marca: dice por qué está abierto mientras los demás no. */
 .nav-grupo.fijo > .nav-grupo-tit { color: var(--marco-acento); opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .nav-hijos { transition: none; } }
+/* Los dos niveles usan marco-nivel-1 y marco-nivel-2, medidos: el techo lo
+   pone el acento dorado, que por debajo de #41507F dejaría de cumplir AA. */
+.nav-hijos-in { background: var(--marco-nivel-1); }
+.nav-nietos-in { background: var(--marco-nivel-2); }
+.nav-rama { border-top: 1px solid var(--marco-borde); }
+.nav-rama:first-child { border-top: 0; }
+.nav-rama-tit { width: 100%; background: transparent; border: 0; cursor: pointer;
+  font: inherit; text-align: left; }
+.nav-rama-tit .nav-chev .ic { width: 13px; height: 13px;
+  transition: transform .18s ease; transform: rotate(-90deg); }
+.nav-rama.abierta .nav-chev .ic { transform: rotate(0deg); }
+.nav-nietos { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
+.nav-rama.abierta .nav-nietos { grid-template-rows: 1fr; }
+.nav-nietos-in { overflow: hidden; }
+.nav-nieto { display: block; padding: 4px 8px 4px 56px; border-radius: 6px;
+  text-decoration: none; color: var(--marco-texto); font-size: 12px;
+  opacity: .78; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav-nieto:hover { background: var(--marco-item-activo); opacity: 1; }
+.nav-nieto.activo { background: var(--marco-item-activo); opacity: 1;
+  color: var(--marco-acento); font-weight: 500;
+  box-shadow: inset 3px 0 0 var(--marco-acento); }
+.lat.colapsado .nav-nietos { display: none; }
+
 .nav-hijo { display: flex; align-items: center; justify-content: space-between;
   gap: 8px; padding: 4px 8px 4px 40px; border-radius: 6px; text-decoration: none;
   color: var(--marco-texto); font-size: 13px; opacity: .78; white-space: nowrap; }
@@ -4118,17 +4169,21 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
 /* En un ítem flexible manda flex-basis, no width. Y min-width:0 desactiva el
    mínimo automático, que si no impide encoger por debajo del contenido. */
-.lat { flex: 0 0 236px; min-width: 0; overflow: hidden;
+/* El plegado se anima sobre width con flex-basis auto: animar flex-basis
+   directamente dejaba el ancho desincronizado de la clase. */
+.lat { flex: 0 0 auto; width: 236px; min-width: 0; overflow: hidden;
   background: var(--marco-fondo); color: var(--marco-texto);
-  display: flex; flex-direction: column; }
-.lat.colapsado { flex: 0 0 56px; }
+  display: flex; flex-direction: column;
+  transition: width .22s ease; }
+.lat.colapsado { width: 56px; }
+@media (prefers-reduced-motion: reduce) { .lat { transition: none; } }
 .lat.colapsado .nav-txt, .lat.colapsado .nav-chev,
 .lat.colapsado .lat-id, .lat.colapsado .lat-user-txt { display: none; }
 .lat.colapsado .lat-marca, .lat.colapsado .lat-usuario { justify-content: center; }
 .lat.colapsado .nav-item { justify-content: center; padding-inline: 0; }
 
-.lat-marca { display: flex; align-items: center; gap: 8px; padding: 12px 12px;
-  border-bottom: 1px solid rgba(255,255,255,.10); }
+.lat-marca { display: flex; align-items: center; gap: 8px; padding: 12px;
+  border-bottom: 1px solid var(--marco-borde); }
 .lat-id { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
 .lat-colegio { font-size: 12px; letter-spacing: .13em; color: var(--marco-acento); font-weight: 500; }
 .lat-nombre { font-size: 12px; font-weight: 600; white-space: nowrap; }
@@ -4149,15 +4204,15 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .nav-chev { opacity: .5; display: grid; place-items: center; }
 .nav-chev .ic { width: 14px; height: 14px; }
 
-.lat-usuario { display: flex; align-items: center; gap: 8px; padding: 12px 12px;
-  border-top: 1px solid rgba(255,255,255,.10); }
+.lat-usuario { display: flex; align-items: center; gap: 8px; padding: 12px;
+  border-top: 1px solid var(--marco-borde); }
 .lat-av { width: 30px; height: 30px; border-radius: 50%; flex: none;
   background: var(--marco-acento); color: var(--marco-fondo);
   display: grid; place-items: center; font-size: 12px; font-weight: 600; }
 .lat-user-txt { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
 .lat-user-nom { font-size: 12px; font-weight: 500; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis; }
-.lat-user-mail { font-size: 12px; opacity: .62; white-space: nowrap;
+.lat-user-mail { font-size: 12px; color: var(--marco-texto-tenue); white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis; }
 
 .app-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
@@ -4594,7 +4649,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
   // ── Navegación del catálogo ──────────────────────────────────────────────
   var paginas = document.querySelectorAll('.pagina');
-  var enlaces = document.querySelectorAll('.nav-hijo');
+  var enlaces = document.querySelectorAll('.nav-hijo[data-ir], .nav-nieto[data-ir]');
 
   // Los grupos nacen comprimidos. Se abren al pasar el ratón y se cierran al
   // salir, salvo el que está FIJADO, que es el de la página en curso.
@@ -4615,6 +4670,16 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       if (!g.contains(e.relatedTarget)) { g.classList.remove('hover'); sincronizarGrupo(g); }
     });
     sincronizarGrupo(g);
+  });
+
+  // Las ramas de segundo nivel se despliegan al pulsar su título.
+  document.querySelectorAll('[data-abrir-rama]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var r = b.closest('.nav-rama');
+      var ab = !r.classList.contains('abierta');
+      r.classList.toggle('abierta', ab);
+      b.setAttribute('aria-expanded', String(ab));
+    });
   });
 
   // El título del grupo fija o suelta. Fijar es la forma de dejarlo abierto
@@ -4649,8 +4714,16 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       a.classList.toggle('activo', act);
     });
     // El grupo de la página en curso queda FIJADO: se queda abierto aunque el
-    // cursor se vaya. Los demás vuelven a comprimirse.
-    var activo = document.querySelector('.nav-hijo.activo');
+    // cursor se vaya. Los demás vuelven a comprimirse. Si el activo está en
+    // una rama de segundo nivel, la rama también se abre.
+    var activo = document.querySelector('.nav-hijo.activo, .nav-nieto.activo');
+    document.querySelectorAll('.nav-rama').forEach(function (r) {
+      var dentro = !!activo && r.contains(activo);
+      if (dentro) {
+        r.classList.add('abierta');
+        r.querySelector('.nav-rama-tit').setAttribute('aria-expanded', 'true');
+      }
+    });
     document.querySelectorAll('.nav-grupo').forEach(function (g) {
       g.classList.toggle('fijo', !!activo && g.contains(activo));
       var ab = g.classList.contains('fijo') || g.classList.contains('hover');

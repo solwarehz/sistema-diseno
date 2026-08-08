@@ -1,6 +1,6 @@
 {
   "documento": "MMI-DS",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "norma": "WCAG 2.2 AA",
   "generado": "node sistema/tokens/generar.mjs",
   "modos": [
@@ -9,17 +9,17 @@
   ],
   "aviso": "Archivo generado. No editar a mano. La fuente es sistema/tokens/fuente.mjs. Cambiar un valor exige regenerar, re-verificar y subir versión (§2.5 regla 8).",
   "resumen": {
-    "paresTotales": 118,
-    "paresBloqueantes": 86,
-    "paresInformativos": 32,
+    "paresTotales": 136,
+    "paresBloqueantes": 98,
+    "paresInformativos": 38,
     "fallos": 0,
     "porModo": {
       "claro": {
-        "bloqueantes": 43,
+        "bloqueantes": 49,
         "fallos": 0
       },
       "oscuro": {
-        "bloqueantes": 43,
+        "bloqueantes": 49,
         "fallos": 0
       }
     }
@@ -275,6 +275,30 @@
       "oscuro": "#1D3163",
       "origen": "directo",
       "uso": "Fondo del ítem activo en desplegable"
+    },
+    "marco-nivel-1": {
+      "claro": "#39497A",
+      "oscuro": "#39497A",
+      "origen": "directo",
+      "uso": "Fondo de las subopciones de primer nivel del menú"
+    },
+    "marco-nivel-2": {
+      "claro": "#41507F",
+      "oscuro": "#41507F",
+      "origen": "directo",
+      "uso": "Fondo de las subopciones de segundo nivel. No hay tercero: el acento dejaría de cumplir"
+    },
+    "marco-borde": {
+      "claro": "#45558A",
+      "oscuro": "#45558A",
+      "origen": "directo",
+      "uso": "Separador dentro del marco"
+    },
+    "marco-texto-tenue": {
+      "claro": "#B9C2DC",
+      "oscuro": "#B9C2DC",
+      "origen": "directo",
+      "uso": "Correo del usuario y textos de apoyo dentro del marco"
     },
     "foco": {
       "claro": "#BE7A14",
@@ -811,6 +835,105 @@
       "minimo": 4.5,
       "motivo": "Texto sobre ítem activo de desplegable",
       "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "marco-texto",
+      "fondo": "marco-nivel-1",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#39497A",
+      "ratio": 8.72,
+      "minimo": 4.5,
+      "motivo": "Texto en subopción de primer nivel",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "marco-acento",
+      "fondo": "marco-nivel-1",
+      "hexFrente": "#DFCA9C",
+      "hexFondo": "#39497A",
+      "ratio": 5.42,
+      "minimo": 4.5,
+      "motivo": "Ítem activo en subopción de primer nivel",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "marco-texto",
+      "fondo": "marco-nivel-2",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#41507F",
+      "ratio": 7.83,
+      "minimo": 4.5,
+      "motivo": "Texto en subopción de segundo nivel",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "marco-acento",
+      "fondo": "marco-nivel-2",
+      "hexFrente": "#DFCA9C",
+      "hexFondo": "#41507F",
+      "ratio": 4.87,
+      "minimo": 4.5,
+      "motivo": "Ítem activo en subopción de segundo nivel — es el techo del anidamiento",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "marco-texto-tenue",
+      "fondo": "marco-fondo",
+      "hexFrente": "#B9C2DC",
+      "hexFondo": "#2C3D71",
+      "ratio": 5.86,
+      "minimo": 4.5,
+      "motivo": "Correo del usuario dentro del marco",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "marco-texto-tenue",
+      "fondo": "marco-nivel-1",
+      "hexFrente": "#B9C2DC",
+      "hexFondo": "#39497A",
+      "ratio": 4.9,
+      "minimo": 4.5,
+      "motivo": "Texto de apoyo en primer nivel",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "marco-nivel-1",
+      "fondo": "marco-fondo",
+      "hexFrente": "#39497A",
+      "hexFondo": "#2C3D71",
+      "ratio": 1.19,
+      "minimo": "informativo",
+      "motivo": "El nivel 1 debe distinguirse del marco",
+      "cumple": null
+    },
+    {
+      "modo": "claro",
+      "frente": "marco-nivel-2",
+      "fondo": "marco-nivel-1",
+      "hexFrente": "#41507F",
+      "hexFondo": "#39497A",
+      "ratio": 1.11,
+      "minimo": "informativo",
+      "motivo": "El nivel 2 debe distinguirse del nivel 1",
+      "cumple": null
+    },
+    {
+      "modo": "claro",
+      "frente": "marco-borde",
+      "fondo": "marco-fondo",
+      "hexFrente": "#45558A",
+      "hexFondo": "#2C3D71",
+      "ratio": 1.45,
+      "minimo": "informativo",
+      "motivo": "Separador dentro del marco. Adorno",
+      "cumple": null
     },
     {
       "modo": "claro",
@@ -1460,6 +1583,105 @@
       "minimo": 4.5,
       "motivo": "Texto sobre ítem activo de desplegable",
       "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "marco-texto",
+      "fondo": "marco-nivel-1",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#39497A",
+      "ratio": 8.72,
+      "minimo": 4.5,
+      "motivo": "Texto en subopción de primer nivel",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "marco-acento",
+      "fondo": "marco-nivel-1",
+      "hexFrente": "#DFCA9C",
+      "hexFondo": "#39497A",
+      "ratio": 5.42,
+      "minimo": 4.5,
+      "motivo": "Ítem activo en subopción de primer nivel",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "marco-texto",
+      "fondo": "marco-nivel-2",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#41507F",
+      "ratio": 7.83,
+      "minimo": 4.5,
+      "motivo": "Texto en subopción de segundo nivel",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "marco-acento",
+      "fondo": "marco-nivel-2",
+      "hexFrente": "#DFCA9C",
+      "hexFondo": "#41507F",
+      "ratio": 4.87,
+      "minimo": 4.5,
+      "motivo": "Ítem activo en subopción de segundo nivel — es el techo del anidamiento",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "marco-texto-tenue",
+      "fondo": "marco-fondo",
+      "hexFrente": "#B9C2DC",
+      "hexFondo": "#2C3D71",
+      "ratio": 5.86,
+      "minimo": 4.5,
+      "motivo": "Correo del usuario dentro del marco",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "marco-texto-tenue",
+      "fondo": "marco-nivel-1",
+      "hexFrente": "#B9C2DC",
+      "hexFondo": "#39497A",
+      "ratio": 4.9,
+      "minimo": 4.5,
+      "motivo": "Texto de apoyo en primer nivel",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "marco-nivel-1",
+      "fondo": "marco-fondo",
+      "hexFrente": "#39497A",
+      "hexFondo": "#2C3D71",
+      "ratio": 1.19,
+      "minimo": "informativo",
+      "motivo": "El nivel 1 debe distinguirse del marco",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "marco-nivel-2",
+      "fondo": "marco-nivel-1",
+      "hexFrente": "#41507F",
+      "hexFondo": "#39497A",
+      "ratio": 1.11,
+      "minimo": "informativo",
+      "motivo": "El nivel 2 debe distinguirse del nivel 1",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "marco-borde",
+      "fondo": "marco-fondo",
+      "hexFrente": "#45558A",
+      "hexFondo": "#2C3D71",
+      "ratio": 1.45,
+      "minimo": "informativo",
+      "motivo": "Separador dentro del marco. Adorno",
+      "cumple": null
     },
     {
       "modo": "oscuro",

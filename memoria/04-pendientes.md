@@ -106,21 +106,29 @@ mensajes que ya existen en los sistemas y corregir los que no dicen qué hacer.
 lo que el sistema define. Encontró dos cosas que **el sistema no cubre**. No son
 incumplimientos: son tokens que faltan.
 
-### P-11 · Capas sobre el marco
+### P-11 · Capas sobre el marco — RESUELTO en v1.6.0
 
-El marco es una superficie oscura y encima viven tres cosas sin token:
+Se definieron cuatro tokens y se midieron contra `marco-fondo`:
 
-| Uso | Hoy | Token que falta |
+| Token | Valor | Para qué |
 |---|---|---|
-| Separador dentro del marco | `rgba(255,255,255,.10)` | `marco-borde` |
-| Correo del usuario, atenuado | `rgba(255,255,255,.62)` | `marco-texto-tenue` |
-| Punto de «sin construir» | `rgba(255,255,255,.34)` | `marco-tenue` |
+| `marco-nivel-1` | `#39497A` | Subopciones de primer nivel |
+| `marco-nivel-2` | `#41507F` | Subopciones de segundo nivel |
+| `marco-borde` | `#45558A` | Separador dentro del marco |
+| `marco-texto-tenue` | `#B9C2DC` | Correo del usuario y textos de apoyo |
 
-`marco-texto` existe y es blanco puro, pero no hay grados intermedios. Mientras
-no se definan, el cascarón usa blanco con alfa y lo deja **declarado en el
-código**, no escondido.
+**El techo lo pone el acento dorado, no el texto blanco.** Aclarando el marco
+hacia blanco, `marco-acento` cae por debajo de 4,5:1 pasado el 10 %:
 
-Al definirlos hay que medirlos contra `marco-fondo` como cualquier otro par.
+| Aclarado | Valor | Blanco | Oro |
+|---|---|---|---|
+| 0 % | `#2C3D71` | 10,43 | 6,49 |
+| 6 % | `#39497A` | 8,72 | 5,42 |
+| 10 % | `#41507F` | 7,83 | **4,87** |
+| 14 % | `#4A5885` | 6,94 | 4,31 ✗ |
+
+Por eso **hay sitio para exactamente dos niveles de anidamiento y no para
+tres**. No es una preferencia: es lo que deja la paleta.
 
 ### P-12 · Elevación
 
