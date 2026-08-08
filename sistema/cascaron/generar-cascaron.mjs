@@ -1180,6 +1180,181 @@ ${verCodigo(
   </tbody>
 </table>`;
 
+// ── Elemento: Selector ──────────────────────────────────────────────────────
+
+const ICO_LUPA = ic('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>');
+const ICO_CHECK = ic('<path d="m5 12 5 5L20 7"/>');
+
+// Nombres con tilde a propósito: la demostración de búsqueda sin tildes solo
+// significa algo si hay tildes que ignorar.
+const APODERADOS = [
+  'Álvarez Ponce, Rosa', 'Bustamante Ríos, Julio', 'Castañeda Ludeña, Miriam',
+  'Fernández Cruz, María', 'García Núñez, Óscar', 'Gutiérrez Paredes, Elena',
+  'Huamán Soto, Pedro', 'Jiménez Vílchez, Andrés', 'López Ñahui, Teresa',
+  'Mendoza Quiñones, Raúl', 'Pérez Salazar, Ana', 'Quispe Mamani, Lucía',
+  'Ramírez Ochoa, Víctor', 'Rojas Vega, Luis', 'Sánchez Idrogo, Patricia',
+  'Torres Bejarano, Iván', 'Valdivia Ccahuana, Sofía', 'Zúñiga Peralta, Martín',
+];
+
+const pagSelector = `
+<p class="pag-intro">Dos componentes distintos con el mismo aspecto. La diferencia no es
+estética: <strong>por encima de cierto número de opciones, buscar es más rápido que
+mirar</strong>, y por debajo la caja de búsqueda estorba.</p>
+
+<h3 class="sub-seccion">Cuál de los dos</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>Opciones</th><th>Componente</th><th>Por qué</th></tr></thead>
+  <tbody>
+    <tr><td><strong>2</strong></td><td>Interruptor o dos radios</td><td class="motivo">Un desplegable para dos opciones esconde la mitad de la información</td></tr>
+    <tr><td><strong>3 a 8</strong></td><td><code>Selector</code> simple</td><td class="motivo">Se abarcan de un vistazo. Una caja de búsqueda sería un paso de más</td></tr>
+    <tr><td><strong>9 o más</strong></td><td><code>Selector</code> con búsqueda</td><td class="motivo">A partir de ahí la lista deja de leerse y se recorre</td></tr>
+    <tr><td><strong>Cientos o miles</strong></td><td>Con búsqueda <strong>contra el servidor</strong></td><td class="motivo">No se traen mil filas al navegador para filtrar tres</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Selector simple — 3 a 8 opciones</h3>
+<div class="bloque">
+  <div class="campos-rejilla">
+    <label class="cg"><span class="cg-et">Nivel</span>
+      <select class="campo cg-in"><option>Inicial</option><option>Primaria</option><option>Secundaria</option></select></label>
+    <label class="cg"><span class="cg-et">Estado</span>
+      <select class="campo cg-in"><option>Todos</option><option>Activo</option><option>Parcial</option><option>Deuda</option></select></label>
+    <label class="cg"><span class="cg-et">Sin permiso</span>
+      <select class="campo cg-in" disabled><option>Huaraz</option></select>
+      <span class="cg-ayuda">Solo Dirección puede cambiar la sede.</span></label>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Selector con búsqueda — funciona, pruébalo</h3>
+<p class="seccion-sub">${APODERADOS.length} apoderados. Escribe y filtra por coincidencias. Flechas para moverte, Enter para elegir, Esc para cerrar.</p>
+<div class="bloque">
+  <div class="sel-demo-fila">
+    <div class="cg" style="max-width:340px">
+      <span class="cg-et" id="sel-et">Apoderado</span>
+      <div class="sel" data-sel>
+        <div class="sel-caja">
+          <span class="sel-lupa">${ICO_LUPA}</span>
+          <input class="campo sel-in" role="combobox" aria-expanded="false"
+                 aria-autocomplete="list" aria-controls="sel-lista" aria-labelledby="sel-et"
+                 placeholder="Escribe para buscar" autocomplete="off">
+        </div>
+        <ul class="sel-lista" id="sel-lista" role="listbox" aria-labelledby="sel-et" hidden></ul>
+      </div>
+      <span class="cg-ayuda" data-sel-conteo>${APODERADOS.length} apoderados</span>
+    </div>
+    <div class="sel-notas">
+      <p><strong>Prueba a escribir <code>perez</code> sin tilde.</strong> Encuentra
+      «Pérez Salazar, Ana».</p>
+      <p>Eso no es un detalle de la caja de búsqueda: en producción lo hacen las
+      extensiones <code>unaccent</code> y <code>pg_trgm</code> de PostgreSQL.
+      <strong>Es una promesa de interfaz.</strong> Si otro buscador se monta sin
+      esas extensiones, el componente se comporta distinto y nadie sabrá por qué.</p>
+      <p>Prueba también <code>ñ</code>, <code>quinones</code> o un texto que no exista.</p>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Estados</h3>
+<div class="bloque">
+  <div class="campos-rejilla">
+    <label class="cg"><span class="cg-et">Reposo</span>
+      <div class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span>
+        <input class="campo sel-in" placeholder="Escribe para buscar" readonly></div></label>
+    <label class="cg"><span class="cg-et">Con foco</span>
+      <div class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span>
+        <input class="campo sel-in foco-demo" placeholder="Escribe para buscar" readonly></div></label>
+    <label class="cg"><span class="cg-et">Con selección</span>
+      <div class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span>
+        <input class="campo sel-in" value="Pérez Salazar, Ana" readonly></div></label>
+    <label class="cg"><span class="cg-et">Con error</span>
+      <div class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span>
+        <input class="campo sel-in cg-mal" placeholder="Escribe para buscar" readonly></div>
+      <span class="cg-error">${ICO_ERROR}Elige un apoderado.</span></label>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Sin resultados: el estado que más comunica</h3>
+<div class="bloque">
+  <div class="enl-comp">
+    <div class="enl-caja bien">
+      <p><strong>Sin resultados para <em>zapata</em>.</strong><br>Prueba con menos letras, o revisa si está matriculado.</p>
+      <span class="bien-et">Dice qué se buscó y ofrece salida</span>
+    </div>
+    <div class="enl-caja mal">
+      <p><strong>No hay datos</strong></p>
+      <span class="mal-et">Callejón. Ni dice qué se buscó ni qué hacer</span>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Teclado — es donde se cae este componente</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>Tecla</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">↓ ↑</td><td>Mueve por las opciones. Abre la lista si está cerrada</td></tr>
+    <tr><td class="mono">Enter</td><td>Elige la opción marcada y cierra</td></tr>
+    <tr><td class="mono">Esc</td><td>Cierra sin elegir. <strong>Devuelve el valor anterior</strong>, no lo vacía</td></tr>
+    <tr><td class="mono">Tab</td><td>Sale del campo. Si había una marcada, la elige</td></tr>
+    <tr><td class="mono">Inicio · Fin</td><td>Primera y última opción</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Por qué aquí sí se usa una librería</h3>
+<div class="aviso">
+  MMI-DS §9 prohíbe adoptar una librería de componentes <strong>en general</strong>, y
+  autoriza primitivas accesibles para <strong>exactamente tres casos</strong>: diálogo, menú
+  y <strong>selector con búsqueda</strong>.
+  <br><br>
+  La razón está medida en la práctica del sector: el patrón <code>combobox</code> de ARIA
+  exige <code>aria-activedescendant</code>, anuncio del número de resultados, foco que se
+  queda en el input mientras la selección se mueve por la lista, y un contrato de teclado
+  completo. <strong>Escrito a mano produce fallos de accesibilidad de forma sistemática.</strong>
+  Radix o Ark resuelven el comportamiento y <strong>el estilo queda íntegro</strong>: los
+  tokens siguen siendo los nuestros.
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>Menos de 3 opciones: no es un selector. Son radios o un interruptor.</td></tr>
+    <tr><td class="num">2</td><td>9 o más: <strong>con búsqueda</strong>. Por debajo, la caja estorba.</td></tr>
+    <tr><td class="num">3</td><td>La búsqueda <strong>ignora tildes y mayúsculas</strong>. <code>perez</code> encuentra <code>Pérez</code>.</td></tr>
+    <tr><td class="num">4</td><td>Sin resultados: di <strong>qué se buscó</strong> y ofrece una salida.</td></tr>
+    <tr><td class="num">5</td><td>Esc devuelve el valor anterior. <strong>Nunca vacía la selección.</strong></td></tr>
+    <tr><td class="num">6</td><td>La etiqueta va fuera y siempre visible, como en cualquier campo.</td></tr>
+    <tr><td class="num">7</td><td>Nunca metas una acción en la lista de opciones. Una lista se elige, no se pulsa.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+${verCodigo(
+  'Uso del componente',
+  `import { Selector } from '@ae/sistema';
+
+// 3 a 8 opciones
+<Selector etiqueta="Nivel" opciones={niveles} />
+
+// 9 o más: la búsqueda se activa sola
+<Selector etiqueta="Apoderado" opciones={apoderados} />
+
+// Cientos: filtra contra el servidor
+<Selector
+  etiqueta="Apoderado"
+  buscar={(texto) => api.apoderados.buscar(texto)}
+  sinResultados={(t) => \`Sin resultados para \${t}. Prueba con menos letras.\`}
+/>`
+)}
+<table class="tabla-contraste" style="margin-top:14px">
+  <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>etiqueta</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatoria</strong></td></tr>
+    <tr><td><code>opciones</code></td><td class="mono">Opcion[]</td><td class="mono">—</td><td class="motivo">Lista local. Con 9 o más activa la búsqueda sola</td></tr>
+    <tr><td><code>buscar</code></td><td class="mono">(texto) =&gt; Promise</td><td class="mono">—</td><td class="motivo">Filtra contra el servidor. Excluye <code>opciones</code></td></tr>
+    <tr><td><code>sinResultados</code></td><td class="mono">(texto) =&gt; string</td><td class="mono">genérico</td><td class="motivo">Recibe lo buscado para poder nombrarlo</td></tr>
+    <tr><td><code>error</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo">Activa el estado de error</td></tr>
+  </tbody>
+</table>`;
+
 // ── Elementos aún no construidos ────────────────────────────────────────────
 
 const pendiente = (nombre, fase) => `
@@ -1411,7 +1586,7 @@ const CATALOGO = [
       { id: 'boton', t: 'Botón', estado: 'listo', c: pagBoton },
       { id: 'enlace', t: 'Enlace', estado: 'listo', c: pagEnlace },
       { id: 'campo', t: 'Campo de texto', estado: 'listo', c: pagCampo },
-      { id: 'selector', t: 'Selector', estado: 'pendiente', c: pendiente('Selector con búsqueda', 'fase 4') },
+      { id: 'selector', t: 'Selector', estado: 'listo', c: pagSelector },
       { id: 'chip', t: 'Chip de estado', estado: 'pendiente', c: pendiente('Chip de estado', 'fase 4') },
       { id: 'tarjeta', t: 'Tarjeta', estado: 'pendiente', c: pendiente('Tarjeta', 'fase 4') },
       { id: 'tabla', t: 'Tabla de datos', estado: 'pendiente', c: pendiente('Tabla de datos', 'fase 5') },
@@ -1569,6 +1744,30 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .btn-ic { display: inline-flex; align-items: center; gap: 7px; }
 .btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
+
+/* Selector con búsqueda */
+.sel { position: relative; }
+.sel-caja { position: relative; display: flex; align-items: center; }
+.sel-lupa { position: absolute; left: 9px; color: var(--texto-pista);
+  display: grid; place-items: center; pointer-events: none; }
+.sel-lupa .ic { width: 16px; height: 16px; }
+.sel-in { width: 100%; padding-left: 32px; }
+.sel-lista { position: absolute; z-index: 30; top: calc(100% + 4px); left: 0; right: 0;
+  max-height: 244px; overflow-y: auto; margin: 0; padding: 4px; list-style: none;
+  background: var(--fondo-tarjeta); border: 1px solid var(--borde-campo);
+  border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,.16); }
+.sel-op { display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 7px 10px; border-radius: 4px; font-size: 14px; cursor: pointer; }
+.sel-op.marcado { background: var(--fondo-fila-hover); }
+.sel-op[aria-selected="true"] { color: var(--accion); font-weight: 500; }
+.sel-check { color: var(--accion); display: grid; place-items: center; }
+.sel-check .ic { width: 15px; height: 15px; }
+.sel-vacio { padding: 14px 12px; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
+.sel-vacio strong { color: var(--texto-principal); }
+.sel-demo-fila { display: grid; grid-template-columns: minmax(260px,360px) 1fr; gap: 28px; align-items: start; }
+.sel-notas p { margin: 0 0 10px; font-size: 13px; line-height: 1.6; color: var(--texto-secundario); }
+.sel-notas strong { color: var(--texto-principal); }
+@media (max-width: 760px) { .sel-demo-fila { grid-template-columns: 1fr; } }
 
 /* Campo de texto */
 .cg { display: flex; flex-direction: column; gap: 5px; }
@@ -2233,6 +2432,106 @@ h2.seccion {
   });
 
   abrir(location.hash.slice(1) || 'inicio');
+
+  // ── Selector con búsqueda ────────────────────────────────────────────────
+  // Demostración del comportamiento. En producción esto lo resuelve Radix
+  // (MMI-DS §9 lo autoriza para exactamente tres casos, y este es uno).
+  (function () {
+    var raizSel = document.querySelector('[data-sel]');
+    if (!raizSel) return;
+    var OPCIONES = ${JSON.stringify(APODERADOS)};
+    var input = raizSel.querySelector('.sel-in');
+    var lista = raizSel.querySelector('.sel-lista');
+    var conteo = document.querySelector('[data-sel-conteo]');
+    var marcado = -1;
+    var visibles = [];
+    var elegido = '';
+
+    // Sin tildes y sin mayúsculas. Es lo que en producción hacen unaccent y
+    // pg_trgm: 'perez' tiene que encontrar 'Pérez'.
+    function plano(s) {
+      return s.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();
+    }
+
+    function pintar(texto) {
+      var q = plano(texto.trim());
+      visibles = q ? OPCIONES.filter(function (o) { return plano(o).indexOf(q) !== -1; }) : OPCIONES.slice();
+      marcado = visibles.length ? 0 : -1;
+
+      if (!visibles.length) {
+        lista.innerHTML = '<li class="sel-vacio"><strong>Sin resultados para «' +
+          texto.trim() + '».</strong><br>Prueba con menos letras, o revisa si está matriculado.</li>';
+      } else {
+        lista.innerHTML = visibles.map(function (o, i) {
+          var et = o === elegido ? '<span class="sel-check">${ICO_CHECK.replace(/'/g, "\\'")}</span>' : '';
+          return '<li role="option" id="sel-op-' + i + '" data-i="' + i +
+            '" class="sel-op' + (i === 0 ? ' marcado' : '') + '"' +
+            (o === elegido ? ' aria-selected="true"' : '') + '>' + o + et + '</li>';
+        }).join('');
+      }
+      conteo.textContent = q
+        ? visibles.length + ' de ' + OPCIONES.length + ' coinciden con «' + texto.trim() + '»'
+        : OPCIONES.length + ' apoderados';
+      sincronizar();
+    }
+
+    function sincronizar() {
+      var ops = lista.querySelectorAll('.sel-op');
+      ops.forEach(function (el, i) { el.classList.toggle('marcado', i === marcado); });
+      input.setAttribute('aria-activedescendant', marcado >= 0 ? 'sel-op-' + marcado : '');
+      var m = ops[marcado];
+      if (m) {
+        var lr = lista.getBoundingClientRect(), mr = m.getBoundingClientRect();
+        if (mr.bottom > lr.bottom) lista.scrollTop += mr.bottom - lr.bottom;
+        if (mr.top < lr.top) lista.scrollTop -= lr.top - mr.top;
+      }
+    }
+
+    function abrir() { lista.hidden = false; input.setAttribute('aria-expanded', 'true'); }
+    function cerrar() {
+      lista.hidden = true;
+      input.setAttribute('aria-expanded', 'false');
+      input.setAttribute('aria-activedescendant', '');
+      // Esc devuelve el valor anterior; nunca vacía la selección.
+      input.value = elegido;
+    }
+    function elegir(i) {
+      if (i < 0 || !visibles[i]) return;
+      elegido = visibles[i];
+      input.value = elegido;
+      cerrar();
+      conteo.textContent = 'Elegido: ' + elegido;
+    }
+
+    input.addEventListener('focus', function () { pintar(input.value === elegido ? '' : input.value); abrir(); });
+    input.addEventListener('input', function () { pintar(input.value); abrir(); });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (lista.hidden) { pintar(''); abrir(); return; }
+        if (!visibles.length) return;
+        marcado = e.key === 'ArrowDown'
+          ? (marcado + 1) % visibles.length
+          : (marcado - 1 + visibles.length) % visibles.length;
+        sincronizar();
+      } else if (e.key === 'Home' && !lista.hidden) { e.preventDefault(); marcado = 0; sincronizar(); }
+      else if (e.key === 'End' && !lista.hidden) { e.preventDefault(); marcado = visibles.length - 1; sincronizar(); }
+      else if (e.key === 'Enter') { e.preventDefault(); elegir(marcado); }
+      else if (e.key === 'Escape') { e.preventDefault(); cerrar(); }
+      else if (e.key === 'Tab' && !lista.hidden && marcado >= 0) { elegir(marcado); }
+    });
+    lista.addEventListener('mousedown', function (e) {
+      var li = e.target.closest('.sel-op');
+      if (li) { e.preventDefault(); elegir(Number(li.dataset.i)); }
+    });
+    lista.addEventListener('mousemove', function (e) {
+      var li = e.target.closest('.sel-op');
+      if (li) { marcado = Number(li.dataset.i); sincronizar(); }
+    });
+    document.addEventListener('click', function (e) {
+      if (!raizSel.contains(e.target) && !lista.hidden) cerrar();
+    });
+  })();
 
   // Revelar código: plegado por defecto, como en Material, Carbon y Polaris.
   document.querySelectorAll('.cod-ver').forEach(function (b) {
