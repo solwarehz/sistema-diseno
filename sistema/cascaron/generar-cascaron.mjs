@@ -2703,9 +2703,9 @@ es un diálogo.</p>
 <h3 class="sub-seccion">Dónde y cómo aparece</h3>
 <table class="tabla-contraste">
   <tbody>
-    <tr><td class="num">1</td><td><strong>Abajo a la derecha</strong> en escritorio. No tapa el contenido ni la acción que acaba de pulsarse.</td></tr>
-    <tr><td class="num">2</td><td><strong>Abajo</strong> en móvil, por encima del botón flotante y a ancho completo menos los márgenes.</td></tr>
-    <tr><td class="num">3</td><td>Entra deslizando <strong>16px desde abajo</strong> en 220 ms y sale igual. Un aviso que aparece de golpe se percibe como un fallo de pintado.</td></tr>
+    <tr><td class="num">1</td><td><strong>Arriba a la derecha</strong>, bajo la barra superior. Es donde la vista vuelve tras pulsar, y no tapa el contenido que se acaba de tocar.</td></tr>
+    <tr><td class="num">2</td><td>En móvil, <strong>arriba y a ancho completo</strong> menos los márgenes. Abajo compite con el botón flotante y con el teclado.</td></tr>
+    <tr><td class="num">3</td><td>Entra deslizando <strong>16px desde arriba</strong> —de donde viene— en 220 ms y sale igual. Un aviso que aparece de golpe se percibe como un fallo de pintado.</td></tr>
     <tr><td class="num">4</td><td>Se apilan, <strong>máximo tres</strong>. El cuarto expulsa al más antiguo: cuatro avisos a la vez ya no se leen.</td></tr>
     <tr><td class="num">5</td><td>Con <code>prefers-reduced-motion</code> aparece sin deslizar, solo con fundido.</td></tr>
   </tbody>
@@ -2764,6 +2764,134 @@ avisar.error('No se guardó: falta el DNI de 2 trabajadores');
 avisar.exito('Se archivaron 12 expedientes', {
   accion: { texto: 'Deshacer', al: restaurar },
 });`
+)}`;
+
+// ── Elemento: Confirmación en línea ─────────────────────────────────────────
+
+const pagConfirmar = `
+<p class="pag-intro">Cuando algo hay que confirmar, <strong>no se abre una ventana encima</strong>:
+aparece una banda arriba del contenido y lo empuja hacia abajo. Al confirmar o cancelar, la banda
+se pliega y el contenido vuelve a subir.</p>
+
+<h3 class="sub-seccion">Por qué no un diálogo encima</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>Problema del diálogo modal</th><th>Qué pasa en móvil</th></tr></thead>
+  <tbody>
+    <tr><td>Tapa la pantalla entera</td><td class="motivo">Se pierde de vista <strong>qué</strong> se estaba a punto de borrar</td></tr>
+    <tr><td>Se cierra al tocar fuera</td><td class="motivo">Un roce con el pulgar lo descarta sin querer</td></tr>
+    <tr><td>Pelea con el teclado</td><td class="motivo">Si trae un campo, el teclado lo parte por la mitad</td></tr>
+    <tr><td>Rompe el botón «atrás»</td><td class="motivo">Atrás sale de la pantalla en vez de cerrar el diálogo</td></tr>
+    <tr><td>Hay que atrapar el foco dentro</td><td class="motivo">Se hace mal casi siempre, y con lector de pantalla se sale del diálogo</td></tr>
+  </tbody>
+</table>
+<p class="pag-intro" style="margin-top:12px">La banda no tiene ninguno de esos problemas:
+<strong>vive en el flujo de la página</strong>. Se desplaza con ella, el teclado no la parte, y
+«atrás» sigue siendo «atrás».</p>
+
+<h3 class="sub-seccion">Pruébalo</h3>
+<div class="bloque">
+  <div class="cf-demo">
+    <div class="cf-banda" id="cf-banda" hidden>
+      <div class="cf-banda-in">
+        <div class="cf-caja">
+          <div class="cf-txt">
+            <strong id="cf-titulo">Eliminar el registro</strong>
+            <span id="cf-linea">No se puede deshacer.</span>
+          </div>
+          <div class="cf-acciones">
+            <button class="btn btn-terc" id="cf-cancelar">Cancelar</button>
+            <button class="btn btn-destr" id="cf-ok">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cf-lista" id="cf-lista"></div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Anatomía</h3>
+<div class="bloque">
+  <ol class="anat-lista">
+    <li><b>Aparece arriba del contenido</b>, no encima. El contenido baja; nada se tapa.</li>
+    <li><b>Título</b> — nombra <strong>qué</strong> y <strong>cuánto</strong>: «Eliminar 24 registros de asistencia».</li>
+    <li><b>Una línea</b> — qué se pierde. «No se puede deshacer» cuando es cierto.</li>
+    <li><b>Acciones a la derecha</b> — Cancelar en terciaria, la acción en su variante. La acción va a la derecha, siempre igual.</li>
+    <li><b>Filete izquierdo</b> — en <code>error-acento</code> si es destructiva, en <code>aviso-acento</code> si no.</li>
+  </ol>
+</div>
+
+<h3 class="sub-seccion">La transición</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>La banda abre con <code>grid-template-rows</code> de <code>0fr</code> a <code>1fr</code> en <strong>240 ms</strong>. Es lo único que anima hasta altura automática sin fijar píxeles.</td></tr>
+    <tr><td class="num">2</td><td>El contenido <strong>no se anima aparte</strong>: baja porque la banda ocupa sitio. Animar los dos por separado los descompasa.</td></tr>
+    <tr><td class="num">3</td><td>Al cerrarse, el contenido sube con la misma curva. Entrada y salida <strong>simétricas</strong>.</td></tr>
+    <tr><td class="num">4</td><td>Con <code>prefers-reduced-motion</code>, aparece y desaparece sin transición.</td></tr>
+    <tr><td class="num">5</td><td>La fila afectada <strong>se marca mientras la banda está abierta</strong>. Sin eso, con veinte filas no se sabe cuál se va a borrar.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Accesibilidad</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>La banda es <code>role="region"</code> con <code>aria-live="assertive"</code>: se anuncia al aparecer sin necesidad de atrapar el foco.</td></tr>
+    <tr><td class="num">2</td><td>El foco <strong>va a la banda</strong> al abrirse. Es una decisión que hay que tomar; dejar el foco atrás obliga a buscarla.</td></tr>
+    <tr><td class="num">3</td><td><strong>Escape cancela</strong> y devuelve el foco al botón que la abrió.</td></tr>
+    <tr><td class="num">4</td><td>No se atrapa el foco. Se puede salir con Tab, y eso está bien: no es modal.</td></tr>
+    <tr><td class="num">5</td><td>El botón dice el <strong>verbo</strong>: <em>Eliminar</em>, no <em>Aceptar</em>.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Cuándo sí y cuándo no</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>Situación</th><th>Qué se usa</th></tr></thead>
+  <tbody>
+    <tr><td>Confirmar algo <strong>irreversible</strong></td><td>Banda de confirmación</td></tr>
+    <tr><td>Algo reversible</td><td class="motivo"><strong>Nada.</strong> Se hace y se ofrece <a href="#aviso" data-ir="aviso" class="enlace">Deshacer</a> en el aviso</td></tr>
+    <tr><td>Un formulario de varios campos</td><td class="motivo">Otra pantalla o un panel lateral, no una banda</td></tr>
+    <tr><td>Elegir de una lista larga</td><td class="motivo"><a href="#selector" data-ir="selector" class="enlace">Selector con búsqueda</a></td></tr>
+    <tr><td>Avisar de algo ya hecho</td><td class="motivo"><a href="#aviso" data-ir="aviso" class="enlace">Aviso temporal</a></td></tr>
+  </tbody>
+</table>
+<div class="aviso">
+  <strong>Confirmar lo reversible entrena a aceptar sin leer</strong>, y entonces la confirmación
+  que sí importaba tampoco se lee. Si la acción se puede deshacer, no se pregunta: se hace y se
+  ofrece Deshacer.
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Nunca un diálogo encima.</strong> La banda empuja, no tapa.</td></tr>
+    <tr><td class="num">2</td><td>Solo para lo irreversible. Lo reversible se hace y se ofrece Deshacer.</td></tr>
+    <tr><td class="num">3</td><td>Di <strong>qué</strong> y <strong>cuánto</strong> se pierde, con la cifra.</td></tr>
+    <tr><td class="num">4</td><td>Una línea. Alargar el texto reduce la protección, no la aumenta.</td></tr>
+    <tr><td class="num">5</td><td>La acción a la derecha, Cancelar a su izquierda. Siempre igual.</td></tr>
+    <tr><td class="num">6</td><td>Marca la fila afectada mientras la banda está abierta.</td></tr>
+    <tr><td class="num">7</td><td>Al confirmar, la banda se cierra y sale un <strong>aviso temporal</strong> con el resultado.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+${verCodigo(
+  'Uso del componente',
+  `import { useConfirmar } from '@ae/sistema';
+
+const confirmar = useConfirmar();
+
+async function eliminar(fila) {
+  const ok = await confirmar({
+    titulo: \`Eliminar \${fila.nombre}\`,
+    linea: 'No se puede deshacer.',
+    accion: 'Eliminar',
+    tono: 'destructivo',      // destructivo · aviso
+    marcar: fila.id,          // resalta la fila mientras se decide
+  });
+  if (!ok) return;
+  await api.eliminar(fila.id);
+  avisar.exito(\`Se eliminó \${fila.nombre}\`);
+}`
 )}`;
 
 // ── Elementos aún no construidos ────────────────────────────────────────────
@@ -2999,6 +3127,7 @@ const CATALOGO = [
       { id: 'paginacion', t: 'Paginación', estado: 'listo', c: pagPaginacion },
       { id: 'progreso', t: 'Barra de progreso', estado: 'listo', c: pagProgreso },
       { id: 'aviso', t: 'Aviso temporal', estado: 'listo', c: pagAviso },
+      { id: 'confirmar', t: 'Confirmación', estado: 'listo', c: pagConfirmar },
       { id: 'estados', t: 'Estados de pantalla', estado: 'listo', c: pagEstados },
     ],
   },
@@ -3168,15 +3297,46 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
 
+/* Confirmación en línea */
+.cf-demo { border: 1px solid var(--borde); border-radius: 6px; overflow: hidden; }
+/* La banda abre empujando: grid-template-rows de 0fr a 1fr es lo único que
+   anima hasta altura automática sin fijar píxeles a mano. */
+.cf-banda { display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows .24s ease; }
+.cf-banda.abierta { grid-template-rows: 1fr; }
+.cf-banda-in { overflow: hidden; }
+.cf-caja { display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; padding: 14px 16px;
+  background: var(--error-fondo); border-bottom: 1px solid var(--borde);
+  border-left: 4px solid var(--error-acento); }
+.cf-banda.cf-aviso .cf-caja { background: var(--aviso-fondo); border-left-color: var(--aviso-acento); }
+.cf-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cf-txt strong { font-size: 14px; font-weight: 600; color: var(--error-texto); }
+.cf-banda.cf-aviso .cf-txt strong { color: var(--aviso-texto); }
+.cf-txt span { font-size: 12px; color: var(--error-texto); opacity: .85; }
+.cf-banda.cf-aviso .cf-txt span { color: var(--aviso-texto); }
+.cf-acciones { display: flex; gap: 8px; margin-left: auto; }
+.cf-lista { background: var(--fondo-tarjeta); }
+.cf-item { display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 0 16px; height: 44px; border-bottom: 1px solid var(--borde); }
+.cf-item:last-child { border-bottom: 0; }
+.cf-item.cf-marcada { background: var(--error-fondo); box-shadow: inset 3px 0 0 var(--error-acento); }
+.cf-nom { font-size: 14px; }
+.cf-meta { font-size: 12px; color: var(--texto-secundario); margin-left: 8px; }
+@media (prefers-reduced-motion: reduce) { .cf-banda { transition: none; } }
+
 /* Aviso temporal */
 .av-botones { display: flex; gap: 8px; flex-wrap: wrap; }
-.av-zona { position: fixed; right: 20px; bottom: 20px; z-index: 100;
+/* Arriba a la derecha, por debajo de la barra superior. Es donde la vista
+   vuelve tras pulsar, y no tapa el contenido que se acaba de tocar. */
+.av-zona { position: fixed; right: 20px; top: 76px; z-index: 100;
   display: flex; flex-direction: column; gap: 8px; max-width: 380px; }
 .av { display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px;
   border-radius: 6px; border-left: 4px solid; font-size: 13px;
   background: var(--fondo-tarjeta); box-shadow: 0 8px 24px rgba(0,0,0,.18);
-  /* Entra deslizando 16px: aparecer de golpe se percibe como fallo de pintado. */
-  transform: translateY(16px); opacity: 0;
+  /* Entra deslizando 16px DESDE ARRIBA, que es de donde viene: aparecer de
+     golpe se percibe como fallo de pintado. */
+  transform: translateY(-16px); opacity: 0;
   transition: transform .22s ease, opacity .22s ease; }
 .av-dentro { transform: translateY(0); opacity: 1; }
 .av-exito { border-color: var(--exito-acento); }
@@ -3191,7 +3351,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
   cursor: pointer; color: var(--texto-secundario); padding: 4px; border-radius: 4px; flex: none; }
 .av-x:hover { color: var(--texto-principal); background: var(--fondo-encabezado); }
 .av-x .ic { width: 15px; height: 15px; }
-@media (max-width: 640px) { .av-zona { left: 16px; right: 16px; bottom: 84px; max-width: none; } }
+@media (max-width: 640px) { .av-zona { left: 16px; right: 16px; top: 68px; max-width: none; } }
 @media (prefers-reduced-motion: reduce) { .av { transform: none; transition: opacity .15s ease; } }
 
 /* Interruptor */
@@ -4832,6 +4992,66 @@ select.campo:disabled { opacity: .75; }
       clearInterval(t); t = null; n = 0; ver();
     });
     ver();
+  })();
+
+  // ── Confirmación en línea ────────────────────────────────────────────────
+  (function () {
+    var lista = document.getElementById('cf-lista');
+    if (!lista) return;
+    var banda = document.getElementById('cf-banda');
+    var datos = [
+      ['Álvarez Ponce, Rosa', '70000000'],
+      ['Quispe Mamani, Lucía', '70137923'],
+      ['Rojas Vega, Luis', '70275846'],
+      ['Fernández Cruz, María', '70413769'],
+    ];
+    var pendiente = null, origen = null;
+
+    function pintar() {
+      lista.innerHTML = datos.map(function (d, i) {
+        return '<div class="cf-item' + (pendiente === i ? ' cf-marcada' : '') + '">' +
+          '<span><span class="cf-nom">' + d[0] + '</span><span class="cf-meta mono">' + d[1] + '</span></span>' +
+          '<button class="btn btn-terc btn-mini" data-cf-del="' + i + '">Eliminar</button></div>';
+      }).join('') || '<div class="cf-item"><span class="cf-meta">No queda ninguno. Recarga la página para volver a empezar.</span></div>';
+    }
+
+    function abrir(i, boton) {
+      pendiente = i; origen = boton;
+      document.getElementById('cf-titulo').textContent = 'Eliminar a ' + datos[i][0];
+      document.getElementById('cf-linea').textContent = 'No se puede deshacer.';
+      banda.hidden = false;
+      requestAnimationFrame(function () { banda.classList.add('abierta'); });
+      banda.setAttribute('role', 'region');
+      banda.setAttribute('aria-live', 'assertive');
+      pintar();
+      // El foco va a la banda: dejarlo atrás obliga a buscarla.
+      document.getElementById('cf-ok').focus();
+    }
+
+    function cerrar() {
+      banda.classList.remove('abierta');
+      pendiente = null;
+      pintar();
+      setTimeout(function () { banda.hidden = true; }, 260);
+      if (origen && document.contains(origen)) origen.focus();
+    }
+
+    lista.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-cf-del]');
+      if (b) abrir(Number(b.dataset.cfDel), b);
+    });
+    document.getElementById('cf-cancelar').addEventListener('click', cerrar);
+    document.getElementById('cf-ok').addEventListener('click', function () {
+      var nombre = datos[pendiente][0];
+      datos.splice(pendiente, 1);
+      cerrar();
+      if (window.avisarDemo) window.avisarDemo('exito', 'Se eliminó a ' + nombre);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !banda.hidden) cerrar();
+    });
+
+    pintar();
   })();
 
   // ── Menú de usuario ──────────────────────────────────────────────────────
