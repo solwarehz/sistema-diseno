@@ -204,3 +204,76 @@ la identidad. Instrucción expresa del usuario.
 **Nota:** la capa de tokens hace que rebrandear sea cambiar **un archivo**,
 `fuente.mjs`. Si algún día se quiere una versión para otro cliente, no se rehace
 nada: se cambian los valores y se regenera. No es necesario decidirlo ahora.
+
+---
+
+## D-14 · La app móvil es otra gramática, no la web estrecha
+
+**Decisión:** el catálogo tiene **tres vistas**, no dos: escritorio, web en móvil
+y **app móvil**. Se eligen en el menú de usuario.
+
+**Por qué:** una app nativa no es la web a 390px. Cambian las convenciones de
+navegación, no solo el ancho:
+
+| Web a 390px | App móvil |
+|---|---|
+| Hamburguesa y lateral que entra | Pestañas abajo, al alcance del pulgar |
+| Migas de navegación | Barra de app con flecha atrás |
+| Una página larga que se desplaza | Pestaña → lista → detalle |
+
+**Cómo está implementado:** `data-app` **se suma** a `data-vista='movil'` en vez
+de ser un tercer valor. Así hereda el marco de 390px y las ~70 reglas de ancho ya
+escritas, y solo se cambia el cromo. Como tercer valor habría que duplicarlas
+todas y las copias acabarían divergiendo.
+
+**Las pestañas leen la lateral**, no repiten la jerarquía: añadir una página al
+catálogo la añade a la app sin tocar nada.
+
+### Cuatro pestañas, y es una medida, no una opinión
+
+La convención dice cinco como máximo. Aquí manda la medida: a cinco, cada
+pestaña ocupa 78px y deja 70px de texto, y las etiquetas reales piden **76px**
+(«Fundamentos») y **72px** («Composición»). No caben, y 12px ya es el paso más
+pequeño de la escala, así que no hay de dónde recortar. A cuatro quedan 89px.
+
+El sexto grupo y los que sobren entran en **«Más»**, que lista secciones en vez
+de páginas.
+
+### Zonas reservadas del dispositivo — obligatorio
+
+Arriba viven la barra de estado y la **muesca de la cámara**; abajo, la **barra
+de gestos o los botones del sistema**. Lo que se dibuje ahí queda tapado o es
+intocable.
+
+| Zona | Reservado |
+|---|---|
+| Arriba | **44px** — la barra de app empieza debajo |
+| Abajo | **36px** — las pestañas se apoyan encima, nunca debajo |
+
+iOS marca 34pt abajo. Se redondea **hacia arriba** a 36 para seguir en la
+rejilla de 4: pasarse deja aire, quedarse corto invade la zona.
+
+**Sin barra de título en la app.** Lo pone el `h1` de la pantalla; ponerlo en los
+dos sitios es decir lo mismo dos veces en 64px. Y las **migas se ocultan**: en la
+app esa función la hace la flecha de atrás, y dos caminos para lo mismo sobran.
+
+---
+
+## D-15 · La marca en móvil es el escudo, no el lockup
+
+**Decisión:** en la barra superior de móvil va `AE.png` (el escudo), centrado.
+
+**Por qué:** medido sobre los píxeles reales de los dos PNG, no por preferencia.
+
+| | Sobre `#FFFFFF` | Sobre `#242422` (modo oscuro) |
+|---|---|---|
+| Lockup — texto `#1D1D1B` | 16,88:1 | **1,08:1 · invisible** |
+| Escudo — 62% de píxeles blancos | (su rojo, 4,88:1) | **15,55:1** |
+
+El lockup **solo funciona sobre fondo claro**. El escudo tiene cuerpo blanco
+propio y funciona en los dos modos, y además ya es el activo de la lateral
+plegada: no añade activo ni superficie de fallo nueva.
+
+**Consecuencia abierta:** la banda de marca de la lateral usa `fondo-tarjeta`,
+que en oscuro es `#242422`. Ahí el lockup sigue teniendo el mismo problema.
+Pendiente de decidir si esa banda se fuerza a blanco en los dos modos.

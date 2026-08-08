@@ -204,6 +204,13 @@ const ICONOS = {
   hamburguesa: ic('<path d="M4 6h16M4 12h16M4 18h16"/>'),
   luna: ic('<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>'),
   salir: ic('<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/>'),
+  // Los tres destinos del conmutador de vista, y la navegación de la app.
+  escritorio: ic('<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>'),
+  movil: ic('<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/>'),
+  atras: ic('<path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>'),
+  mas: ic('<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>'),
+  libro: ic('<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>'),
+  capas: ic('<path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/>'),
 };
 
 // Chevrons direccionales del componente Paginación.
@@ -3754,6 +3761,89 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
   left: 50%; transform: translateX(-50%); border-radius: 6px; }
 [data-vista='movil'] .top-marca img { display: block; height: 44px; width: auto; }
 [data-vista='movil'] .top-marca:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
+
+/* ── VISTA APP MÓVIL ──────────────────────────────────────────────────────
+   No es la web estrecha: es otra gramática. La navegación baja al pulgar en
+   forma de pestañas, la lateral desaparece, y la barra superior pasa de
+   cabecera web a barra de app —atrás y título—.
+
+   data-app SE SUMA a data-vista='movil': hereda el marco de 390px y las
+   reglas de ancho ya escritas, y aquí solo se cambia el cromo. */
+
+/* ZONAS RESERVADAS DEL DISPOSITIVO. Arriba viven la barra de estado y la
+   muesca de la cámara; abajo, la barra de gestos o los botones del sistema.
+   Lo que se dibuje ahí queda tapado o es intocable, así que el contenido no
+   entra: se reserva con relleno del marco.
+   44px arriba y 36px abajo. iOS marca 34pt abajo y se redondea HACIA ARRIBA
+   para seguir en la rejilla de 4 —pasarse deja aire, quedarse corto invade—. */
+[data-app] .app-cascaron { padding: 44px 0 36px; }
+.app-zona-arriba, .app-zona-abajo, .app-tabs { display: none; }
+[data-app] .app-zona-arriba, [data-app] .app-zona-abajo {
+  position: absolute; left: 0; right: 0; display: grid; place-items: center;
+  background: var(--fondo-pagina); z-index: 45; }
+[data-app] .app-zona-arriba { top: 0; height: 44px; }
+[data-app] .app-zona-abajo { bottom: 0; height: 36px; }
+[data-app] .app-camara { width: 96px; height: 24px; border-radius: 999px;
+  background: var(--texto-principal); }
+[data-app] .app-gestos { width: 136px; height: 4px; border-radius: 999px;
+  background: var(--texto-secundario); }
+
+/* La lateral no existe en la app: si se pudiera abrir habría dos navegaciones
+   compitiendo y ninguna sería la de verdad. */
+[data-app] .lat, [data-app] .velo,
+[data-app] #plegar-cat, [data-app] #fg { display: none; }
+
+/* PESTAÑAS. Se apoyan SOBRE la zona de gestos, nunca debajo. Cinco como
+   máximo: a partir de ahí ni se leen las etiquetas ni se aciertan con el
+   pulgar, y el sexto grupo entra en «Más». */
+[data-app] .app-tabs { display: flex; position: absolute; left: 0; right: 0;
+  bottom: 36px; z-index: 44; background: var(--fondo-tarjeta);
+  border-top: 1px solid var(--borde); }
+.app-tab { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 4px; padding: 8px 4px;
+  background: transparent; border: 0; cursor: pointer; min-height: 56px;
+  color: var(--texto-secundario); font-size: 12px; font-weight: 500;
+  font-family: inherit; }
+/* §1.3 y SC 1.4.1: el activo no se distingue SOLO por color. Lleva el peso
+   del icono relleno mediante el trazo más grueso y el texto en 600. */
+.app-tab[aria-current='page'] { color: var(--accion); font-weight: 600; }
+.app-tab[aria-current='page'] .ic { stroke-width: 2.2; }
+.app-tab:focus-visible { outline: 2px solid var(--foco); outline-offset: -2px; }
+.app-tab-txt { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* El contenido termina POR ENCIMA de las pestañas, que flotan sobre él: 57px
+   de barra más aire. Lleva los dos atributos a propósito: la regla de móvil
+   usa el atajo padding y va después en la hoja, así que con un solo atributo
+   ganaba ella y el último bloque quedaba 9px por debajo de las pestañas. */
+[data-vista='movil'][data-app] .cat-cuerpo { padding-bottom: 80px; }
+
+/* BARRA DE APP. Atrás sustituye a hamburguesa y filtros; el escudo se queda.
+   No lleva título: lo pone el h1 de la pantalla, y ponerlo en los dos sitios
+   es decir lo mismo dos veces en 64px.
+   El :not([hidden]) NO es adorno: display:grid gana al display:none que el
+   navegador aplica por el atributo hidden, y sin él la flecha de atrás se veía
+   también en las pantallas raíz, donde no hay a dónde volver. */
+[data-app] .app-atras:not([hidden]) { display: grid; place-items: center;
+  background: transparent; border: 0; cursor: pointer; padding: 8px;
+  margin-left: -8px; border-radius: 6px; color: var(--texto-principal); }
+[data-app] .app-atras:hover { background: var(--fondo-encabezado); }
+[data-app] .app-atras:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
+/* Las migas son la vuelta atrás de la web. En la app esa función la hace la
+   flecha, y dejar las dos es tener dos caminos para lo mismo. */
+[data-app] .migas { display: none; }
+
+/* LISTA DE SECCIÓN. El patrón de la app es pestaña → lista → detalle, no una
+   página larga. Es una lista de toque, con blanco de 48px. */
+.app-lista { display: flex; flex-direction: column; }
+.app-lista-it { display: flex; align-items: center; gap: 12px; padding: 12px 4px;
+  min-height: 48px; background: transparent; border: 0; border-bottom: 1px solid var(--borde);
+  cursor: pointer; text-align: left; font-family: inherit; font-size: 16px;
+  color: var(--texto-principal); width: 100%; }
+.app-lista-it:hover { background: var(--fondo-fila-hover); }
+.app-lista-it:focus-visible { outline: 2px solid var(--foco); outline-offset: -2px; }
+.app-lista-it .ic { color: var(--texto-secundario); flex: none; }
+.app-lista-tx { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app-lista-ch { flex: none; color: var(--texto-secundario); transform: rotate(-90deg); }
 [data-vista='movil'] .cat-cuerpo { padding: 16px 12px 48px; }
 [data-vista='movil'] .pag-cab h1 { font-size: 24px; }
 /* §3.5 — bajo 640px el cuerpo y el texto de interfaz suben a 18px. */
@@ -4808,6 +4898,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <span class="ic-escritorio">${ICONOS.panelIzq}</span>
         <span class="ic-movil">${ICONOS.hamburguesa}</span>
       </button>
+      <!-- Barra de app: la vuelta atrás. Solo existe en la vista de app. -->
+      <button class="app-atras" id="app-atras" aria-label="Volver" hidden>${ICONOS.atras}</button>
       <div class="top-filtros">
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
@@ -4850,10 +4942,15 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
             </div>
 
             <div class="us-sec">
-              <span class="us-et">Vista móvil</span>
-              <button type="button" role="switch" class="sw sw-mini" id="us-movil"
-                      aria-checked="false" aria-label="Ver el catálogo en vista móvil">
-                <span class="sw-bolita"></span></button>
+              <span class="us-et">Vista</span>
+              <div class="us-tema" role="group" aria-label="Vista del catálogo">
+                <button id="v-escritorio" class="us-tema-b" aria-pressed="true"
+                        aria-label="Vista de escritorio" title="Escritorio">${ICONOS.escritorio}</button>
+                <button id="v-movil" class="us-tema-b" aria-pressed="false"
+                        aria-label="Vista web en móvil" title="Web en móvil">${ICONOS.movil}</button>
+                <button id="v-app" class="us-tema-b" aria-pressed="false"
+                        aria-label="Vista de aplicación móvil" title="App móvil">${ICONOS.panel}</button>
+              </div>
             </div>
 
             <button class="us-op us-salir" role="menuitem">${ICONOS.salir}<span>Salir del sistema</span></button>
@@ -4861,8 +4958,17 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         </div>
       </div>
     </div>
-    <main class="cat-cuerpo">${paginasCatalogo}</main>
+    <main class="cat-cuerpo">${paginasCatalogo}
+      <section class="pagina app-lista-pag" id="pg-app-seccion" hidden></section>
+    </main>
   </div>
+
+  <!-- ZONAS RESERVADAS DEL DISPOSITIVO. Se dibujan para que se vea dónde NO se
+       puede poner nada: arriba la barra de estado y la muesca de cámara, abajo
+       la barra de gestos o los botones del sistema. -->
+  <div class="app-zona-arriba" aria-hidden="true"><span class="app-camara"></span></div>
+  <nav class="app-tabs" id="app-tabs" aria-label="Secciones"></nav>
+  <div class="app-zona-abajo" aria-hidden="true"><span class="app-gestos"></span></div>
 </div>
 
 <script>
@@ -5734,20 +5840,37 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && !menu.hidden) { cerrar(); btn.focus(); }
     });
-    // Vista móvil: solo afecta al catálogo, no al sistema.
-    var movil = document.getElementById('us-movil');
+    // Tres vistas del catálogo: escritorio, web en móvil y APP móvil. Solo
+    // afectan al catálogo, no al sistema.
+    var VISTAS = ['escritorio', 'movil', 'app'];
+    var botonVista = {
+      escritorio: document.getElementById('v-escritorio'),
+      movil: document.getElementById('v-movil'),
+      app: document.getElementById('v-app'),
+    };
     // Cambiar de vista NO es poner un atributo: muda la zona de avisos, muda
     // los filtros globales, pliega la lateral y repinta las paginaciones. Por
     // eso vive en una función y no dentro del manejador del clic. Restaurar la
     // vista guardada tiene que hacer EXACTAMENTE lo mismo, y si el trabajo
     // estuviera duplicado las dos copias acabarían divergiendo —es el mismo
     // error que ya costó la paginación de la tabla—.
-    function aplicarVista(on, avisar) {
-      movil.setAttribute('aria-checked', String(on));
-      document.documentElement.toggleAttribute('data-vista', false);
-      if (on) document.documentElement.setAttribute('data-vista', 'movil');
-      else document.documentElement.removeAttribute('data-vista');
-      // En 390px la lateral empieza fuera de pantalla.
+    function aplicarVista(modo, avisar) {
+      if (VISTAS.indexOf(modo) < 0) modo = 'escritorio';
+      var on = modo !== 'escritorio';   // web-en-móvil y app comparten marco
+      var esApp = modo === 'app';
+      VISTAS.forEach(function (v) {
+        botonVista[v].setAttribute('aria-pressed', String(v === modo));
+      });
+      var raizEl = document.documentElement;
+      if (on) raizEl.setAttribute('data-vista', 'movil');
+      else raizEl.removeAttribute('data-vista');
+      // data-app se SUMA a data-vista en vez de sustituirla: las reglas de
+      // 390px ya escritas valen igual para la app y solo cambia el cromo. Si
+      // fuera un tercer valor de data-vista habría que duplicarlas todas.
+      if (esApp) raizEl.setAttribute('data-app', 'si');
+      else raizEl.removeAttribute('data-app');
+      // En 390px la lateral empieza fuera de pantalla. En app NUNCA se abre:
+      // la navegación son las pestañas de abajo.
       document.getElementById('lateral').classList.toggle('colapsado', on);
       // El aviso se muda dentro del marco: fuera se posicionaría contra la
       // ventana y aparecería flotando fuera del teléfono.
@@ -5768,24 +5891,25 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       (window.__paginaciones || []).forEach(function (p) { p.refrescar(); });
       document.getElementById('plegar-cat')
         .setAttribute('aria-label', on ? 'Abrir menú' : 'Plegar menú');
+      if (window.__appSincronizar) window.__appSincronizar();
       if (avisar && window.avisarDemo) {
-        window.avisarDemo('info', on
-          ? 'Vista móvil: 390px. El menú se abre con el botón de arriba a la izquierda'
+        window.avisarDemo('info',
+          esApp ? 'App móvil: la navegación son las pestañas de abajo'
+          : on ? 'Web en móvil: 390px. El menú se abre con el botón de arriba a la izquierda'
           : 'Vista de escritorio');
       }
     }
     // La restaura el arranque, al final del script: ver «Vista guardada».
     window.__aplicarVista = aplicarVista;
 
-    movil.addEventListener('click', function () {
-      var on = movil.getAttribute('aria-checked') !== 'true';
-      aplicarVista(on, true);
+    VISTAS.forEach(function (v) { botonVista[v].addEventListener('click', function () {
+      aplicarVista(v, true);
       // La vista sobrevive a la recarga, igual que el tema. Al revisar el
       // catálogo en móvil se recarga constantemente, y volver a escritorio en
       // cada F5 obligaba a rehacer el camino entero.
-      try { localStorage.setItem('mmi-vista', on ? 'movil' : 'escritorio'); } catch (e) {}
+      try { localStorage.setItem('mmi-vista', v); } catch (e) {}
       cerrar();
-    });
+    }); });
 
     menu.querySelector('.us-salir').addEventListener('click', function () {
       cerrar();
@@ -6071,14 +6195,114 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     });
   });
 
+  // ── Navegación de la app móvil ────────────────────────────────────────────
+  // La app NO reinventa la jerarquía: la LEE de la lateral. Así, añadir una
+  // página al catálogo la añade a la app sin tocar nada de aquí, y las dos no
+  // pueden divergir.
+  var appTabs = document.getElementById('app-tabs');
+  var appAtras = document.getElementById('app-atras');
+  var appLista = document.getElementById('pg-app-seccion');
+  var ICO_MAS = '${ICONOS.mas}';
+  var ICO_CHEV = '${ICONOS.chevron}';
+
+  var secciones = [].map.call(document.querySelectorAll('.lat-nav .nav-grupo'), function (g) {
+    var t = g.querySelector('[data-desplegar]');
+    return {
+      titulo: t.querySelector('.nav-txt').textContent.trim(),
+      icono: t.querySelector('.nav-ic').innerHTML,
+      items: [].map.call(g.querySelectorAll('[data-ir]'), function (a) {
+        return { id: a.getAttribute('data-ir'), t: a.querySelector('.nav-txt').textContent.trim() };
+      }),
+    };
+  });
+
+  // CUATRO PESTAÑAS. La convención dice cinco como máximo, pero aquí manda la
+  // medida: a cinco, cada pestaña tiene 78px y deja 70px de texto, y las
+  // etiquetas reales piden 76px -Fundamentos- y 72px -Composición-. No caben,
+  // y 12px ya es el paso más pequeño de la escala, así que no hay de dónde
+  // recortar. A cuatro quedan 89px y entran holgadas.
+  var MAX_TABS = 4;
+  var pestanas = secciones.length <= MAX_TABS
+    ? secciones.map(function (s) { return { titulo: s.titulo, icono: s.icono, secciones: [s] }; })
+    : secciones.slice(0, MAX_TABS - 1)
+        .map(function (s) { return { titulo: s.titulo, icono: s.icono, secciones: [s] }; })
+        .concat([{ titulo: 'Más', icono: ICO_MAS, secciones: secciones.slice(MAX_TABS - 1) }]);
+
+  var tabDe = {};
+  pestanas.forEach(function (p, i) {
+    p.secciones.forEach(function (s) { s.items.forEach(function (it) { tabDe[it.id] = i; }); });
+  });
+  var tabActual = 0;
+
+  appTabs.innerHTML = pestanas.map(function (p, i) {
+    return '<button type="button" class="app-tab" data-tab="' + i + '">' + p.icono +
+      '<span class="app-tab-txt">' + p.titulo + '</span></button>';
+  }).join('');
+
+  // La lista de sección reutiliza .pag-cab y .sub-seccion, que ya existen. No
+  // se inventa tipografía nueva para una pantalla nueva.
+  function pintarLista(i) {
+    var p = pestanas[i];
+    var h = '<div class="pag-cab"><h1>' + p.titulo + '</h1></div><div class="app-lista">';
+    p.secciones.forEach(function (s) {
+      if (p.secciones.length > 1) h += '</div><h2 class="sub-seccion">' + s.titulo + '</h2><div class="app-lista">';
+      s.items.forEach(function (it) {
+        h += '<button type="button" class="app-lista-it" data-ir="' + it.id + '">' +
+          '<span class="app-lista-tx">' + it.t + '</span>' +
+          '<span class="app-lista-ch">' + ICO_CHEV + '</span></button>';
+      });
+    });
+    appLista.innerHTML = h + '</div>';
+  }
+
+  function appSincronizar() {
+    var visible = document.querySelector('.pagina:not([hidden])');
+    if (!document.documentElement.hasAttribute('data-app')) {
+      appAtras.hidden = true;
+      // Al salir de la app, la lista de sección no significa nada fuera.
+      if (visible && visible.id === 'pg-app-seccion') abrir('inicio');
+      return;
+    }
+    var enLista = !!visible && visible.id === 'pg-app-seccion';
+    if (!enLista && visible) {
+      var id = visible.id.replace(/^pg-/, '');
+      if (tabDe[id] !== undefined) tabActual = tabDe[id];
+    }
+    // En la raíz de una pestaña no hay a dónde volver.
+    appAtras.hidden = enLista;
+    [].forEach.call(appTabs.children, function (b, i) {
+      if (i === tabActual) b.setAttribute('aria-current', 'page');
+      else b.removeAttribute('aria-current');
+    });
+  }
+  window.__appSincronizar = appSincronizar;
+
+  function irARaiz(i) {
+    tabActual = i;
+    pintarLista(i);
+    abrir('app-seccion');
+    appSincronizar();
+  }
+  appTabs.addEventListener('click', function (e) {
+    var b = e.target.closest('.app-tab');
+    if (b) irARaiz(parseInt(b.getAttribute('data-tab'), 10));
+  });
+  appAtras.addEventListener('click', function () { irARaiz(tabActual); });
+  // Se registra DESPUÉS del manejador de [data-ir], así que corre cuando la
+  // página ya cambió y la barra puede leer el título de verdad.
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-ir]')) appSincronizar();
+  });
+
   // ── Vista guardada ────────────────────────────────────────────────────────
   // Va AL FINAL a propósito. Aplicar la vista muda la zona de avisos y repinta
   // las paginaciones, y ninguna de las dos existe todavía cuando se define el
   // menú de usuario. Restaurarla antes dejaría media aplicación en la otra
   // vista: barra de móvil con paginación de escritorio.
   try {
-    if (localStorage.getItem('mmi-vista') === 'movil' && window.__aplicarVista) {
-      window.__aplicarVista(true, false);
+    var vistaGuardada = localStorage.getItem('mmi-vista');
+    if ((vistaGuardada === 'movil' || vistaGuardada === 'app') && window.__aplicarVista) {
+      window.__aplicarVista(vistaGuardada, false);
     }
   } catch (e) {}
 })();
