@@ -1675,6 +1675,212 @@ ${verCodigo(
 <Tarjeta href="/estudiantes/71234567" titulo="Quispe Mamani, Ana" />`
 )}`;
 
+// ── Elemento: Tabla de datos ────────────────────────────────────────────────
+
+const CARGOS = ['Docente · Inicial', 'Docente · Primaria', 'Docente · Secundaria', 'Auxiliar', 'Administración', 'Mantenimiento'];
+const SEDES = ['Huaraz', 'Independencia'];
+const EST_ASIS = [
+  ['exito', 'Asistió'], ['exito', 'Asistió'], ['exito', 'Asistió'],
+  ['aviso', 'Tardanza'], ['pend', 'Aún no marca'], ['error', 'Falta'], ['info', 'Permiso'],
+];
+
+// Datos deterministas: sin Math.random, para que dos generaciones den lo mismo
+// y el diff del HTML sea legible.
+const FILAS_TABLA = APODERADOS.concat([
+  'Aguilar Ñopo, Beatriz', 'Barrantes Yupanqui, Hugo', 'Cáceres Molina, Nadia',
+  'Delgado Ríos, Fabián', 'Espinoza Marín, Gabriela', 'Flores Ccopa, Ignacio',
+  'Guzmán Alarcón, Jimena', 'Herrera Túpac, Kevin', 'Ibáñez Rosales, Lorena',
+  'Juárez Manrique, Mateo', 'Lazo Chávez, Natalia', 'Maldonado Ríos, Omar',
+  'Navarro Espíritu, Paula', 'Ocampo Villar, Quintín', 'Palacios Tirado, Rebeca',
+  'Rivas Coronel, Sergio', 'Salcedo Bravo, Tatiana', 'Ubillús Grados, Ulises',
+  'Vargas Melgarejo, Verónica', 'Yarleque Ampuero, Wilmer',
+]).map((nombre, i) => {
+  const [est, etiqueta] = EST_ASIS[i % EST_ASIS.length];
+  const marca = est === 'exito' ? `07:${String(30 + (i * 7) % 25).padStart(2, '0')}`
+    : est === 'aviso' ? `08:${String(5 + (i * 3) % 25).padStart(2, '0')}` : '—';
+  return {
+    nombre,
+    dni: String(70000000 + i * 137923).slice(0, 8),
+    cargo: CARGOS[i % CARGOS.length],
+    sede: SEDES[i % SEDES.length],
+    est,
+    estado: etiqueta,
+    marca,
+    tarde: est === 'aviso' ? (5 + (i * 3) % 25) : 0,
+  };
+});
+
+const COLUMNAS = [
+  { k: 'nombre', t: 'Trabajador', tipo: 'texto', fija: true },
+  { k: 'dni', t: 'DNI', tipo: 'mono' },
+  { k: 'cargo', t: 'Cargo', tipo: 'texto' },
+  { k: 'sede', t: 'Sede', tipo: 'texto' },
+  { k: 'estado', t: 'Estado', tipo: 'chip' },
+  { k: 'marca', t: 'Marca', tipo: 'mono' },
+  { k: 'tarde', t: 'Min. tarde', tipo: 'numero' },
+];
+
+const ICO_DESC = ic('<path d="M12 5v14M6 13l6 6 6-6"/>');
+const ICO_ORD = ic('<path d="m7 15 5 5 5-5M7 9l5-5 5 5"/>');
+const ICO_COLS = ic('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/>');
+
+const pagTabla = `
+<p class="pag-intro">Es el <strong>80 % de la superficie del sistema</strong>. Todo lo demás se
+mira un rato; esto se mira seis horas. La tabla de abajo <strong>funciona</strong>: ordena,
+pagina, oculta columnas, recuerda tu configuración y descarga CSV.</p>
+
+<div class="bloque">
+  <div class="tb-barra">
+    <div class="tb-barra-izq">
+      <label class="tb-mini"><span>Mostrar</span>
+        <select class="campo" id="tb-tam"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="0">Todas</option></select>
+      </label>
+      <span class="tb-conteo" id="tb-conteo"></span>
+    </div>
+    <div class="tb-barra-der">
+      <div class="tb-cols-menu">
+        <button class="btn btn-neutro btn-ic" id="tb-cols-btn" aria-expanded="false">${ICO_COLS}Columnas</button>
+        <div class="tb-cols-panel" id="tb-cols-panel" hidden></div>
+      </div>
+      <button class="btn btn-2 btn-ic" id="tb-csv">${ICO_DESC}CSV</button>
+    </div>
+  </div>
+
+  <div class="tb-envoltura">
+    <table class="tb" id="tb-tabla">
+      <thead><tr id="tb-cab"></tr></thead>
+      <tbody id="tb-cuerpo"></tbody>
+    </table>
+  </div>
+
+  <div class="tb-pie">
+    <span class="tb-rango" id="tb-rango"></span>
+    <div class="tb-pag" id="tb-pag"></div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Filas desplegables — agrupar subelementos</h3>
+<p class="seccion-sub">El símbolo se llama <strong>chevron</strong>; cuando su trabajo es abrir y cerrar contenido se le llama <em>disclosure</em>. Gira al desplegar y el contenido entra con transición de altura.</p>
+<div class="bloque">
+  <div class="tb-envoltura">
+    <table class="tb tb-desp">
+      <thead><tr>
+        <th class="tb-th tb-th-chev"></th>
+        <th class="tb-th"><span class="tb-th-txt">Cargo</span></th>
+        <th class="tb-th"><span class="tb-th-txt">Personal</span></th>
+        <th class="tb-th"><span class="tb-th-txt">Asistieron</span></th>
+        <th class="tb-th tb-num"><span class="tb-th-txt">Pendientes</span></th>
+      </tr></thead>
+      <tbody>
+      ${CARGOS.map((cargo, n) => {
+        const gente = FILAS_TABLA.filter((f) => f.cargo === cargo);
+        const asis = gente.filter((f) => f.est === 'exito').length;
+        const pend = gente.length - asis;
+        return `
+        <tr class="tb-grupo${n % 2 ? ' tb-alt' : ''}" data-grupo="g${n}">
+          <td class="tb-chev-celda">
+            <button class="tb-chev" aria-expanded="false" aria-controls="det-g${n}"
+                    aria-label="Mostrar personal de ${cargo}">${ICONOS.chevron}</button>
+          </td>
+          <td><strong>${cargo}</strong></td>
+          <td class="mono">${gente.length}</td>
+          <td><span class="chip chip-exito">${asis}</span></td>
+          <td class="tb-num mono">${pend || '—'}</td>
+        </tr>
+        <tr class="tb-detalle" id="det-g${n}">
+          <td colspan="5">
+            <div class="tb-desliza">
+              <div class="tb-desliza-in">
+                <table class="tb-sub">
+                  <thead><tr><th>Trabajador</th><th>DNI</th><th>Sede</th><th>Estado</th><th>Marca</th></tr></thead>
+                  <tbody>
+                  ${gente
+                    .map(
+                      (f) => `<tr><td>${f.nombre}</td><td class="mono">${f.dni}</td><td>${f.sede}</td>
+                        <td><span class="chip chip-${f.est}">${f.estado}</span></td>
+                        <td class="mono">${f.marca}</td></tr>`
+                    )
+                    .join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </td>
+        </tr>`;
+      }).join('')}
+      </tbody>
+    </table>
+  </div>
+</div>
+<table class="tabla-contraste" style="margin-top:12px">
+  <thead><tr><th>Detalle</th><th>Por qué así</th></tr></thead>
+  <tbody>
+    <tr><td>El chevron es un <code>&lt;button&gt;</code>, no un icono suelto</td><td class="motivo">Se alcanza con Tab y se activa con Enter o Espacio. Un <code>span</code> con <code>onClick</code> no</td></tr>
+    <tr><td><code>aria-expanded</code> y <code>aria-controls</code></td><td class="motivo">El lector de pantalla anuncia si está abierto y qué controla</td></tr>
+    <tr><td>La transición usa <code>grid-template-rows</code></td><td class="motivo">Es lo único que anima hasta altura automática sin fijar píxeles a mano</td></tr>
+    <tr><td>La fila resumen trae las cifras</td><td class="motivo">Si hay que desplegar para saber si importa, el resumen no sirve de nada</td></tr>
+    <tr><td>Solo un nivel de anidamiento</td><td class="motivo">Dos niveles y la persona se pierde. Si hacen falta dos, es otra pantalla</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Decisiones que tomé, y por qué</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>Decisión</th><th>Razón</th></tr></thead>
+  <tbody>
+    <tr><td><strong>10 por defecto</strong>, luego 25, 50 y Todas</td><td class="motivo">10 cabe sin desplazar en un portátil. Quien necesita más lo sube una vez y se le recuerda</td></tr>
+    <tr><td><strong>«Todas» avisa por encima de 500 filas</strong></td><td class="motivo">Pintar miles de filas congela el navegador. El aviso llega antes que el bloqueo</td></tr>
+    <tr><td><strong>El resaltado lleva filete azul de 3px</strong></td><td class="motivo">Medido: sobre la fila alterna el fondo solo cambia 1,04:1. El filete es inequívoco sobre las dos</td></tr>
+    <tr><td><strong>La primera columna no se puede ocultar</strong></td><td class="motivo">Sin el nombre, la fila no identifica nada. Ocultarla deja una tabla de datos huérfanos</td></tr>
+    <tr><td><strong>El orden se marca con flecha y con <code>aria-sort</code></strong></td><td class="motivo">Un encabezado resaltado sin flecha no dice en qué sentido está ordenado</td></tr>
+    <tr><td><strong>La configuración se guarda por persona</strong></td><td class="motivo">Quien trabaja con la tabla a diario no debe reconfigurarla cada mañana</td></tr>
+    <tr><td><strong>El CSV exporta lo <em>filtrado</em>, no la página</strong></td><td class="motivo">Descargar solo las 10 visibles es la trampa clásica. Se exporta lo que el usuario ve como conjunto</td></tr>
+    <tr><td><strong>Números a la derecha y en mono</strong></td><td class="motivo">Las cifras se comparan por columna. Alineadas a la izquierda no se comparan</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Qué falta y no está</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td>Selección múltiple con acciones en lote</td><td class="motivo">Necesita definir qué acciones y con qué permisos. Es regla de negocio</td></tr>
+    <tr><td>Encabezado fijo al desplazar</td><td class="motivo">Trivial de añadir; se hace con el componente real</td></tr>
+    <tr><td>Filtros por columna</td><td class="motivo">Se resuelve con la barra de filtros, no dentro de la tabla</td></tr>
+    <tr><td>Reordenar columnas arrastrando</td><td class="motivo">Coste alto y beneficio dudoso. Ocultar ya cubre el 90 % del caso</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>Filas de <strong>34px</strong> en densidad cómoda, 28px en compacta.</td></tr>
+    <tr><td class="num">2</td><td>Las acciones de fila van como <strong>enlace</strong>, no como botón.</td></tr>
+    <tr><td class="num">3</td><td>El resaltado <strong>lleva filete</strong>, no solo fondo. Con cebra, el fondo solo no basta.</td></tr>
+    <tr><td class="num">4</td><td>Números a la derecha, en mono. Texto a la izquierda.</td></tr>
+    <tr><td class="num">5</td><td>La columna identificadora <strong>no se oculta</strong>.</td></tr>
+    <tr><td class="num">6</td><td>Los tres estados de pantalla —cargando, nunca consultado, sin resultados— <strong>son obligatorios</strong>.</td></tr>
+    <tr><td class="num">7</td><td>El CSV exporta el conjunto filtrado, nunca solo la página visible.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+${verCodigo(
+  'Uso del componente',
+  `import { TablaDatos } from '@ae/sistema';
+
+<TablaDatos
+  id="asistencia-personal"        // clave con la que se recuerda la configuración
+  filas={personal}
+  columnas={[
+    { clave: 'nombre', titulo: 'Trabajador', fija: true },
+    { clave: 'dni',    titulo: 'DNI',        tipo: 'mono' },
+    { clave: 'estado', titulo: 'Estado',     tipo: 'chip' },
+    { clave: 'tarde',  titulo: 'Min. tarde', tipo: 'numero' },
+  ]}
+  porPagina={10}                  // 10 · 25 · 50 · 0 para todas
+  exportarCSV
+  accionFila={(f) => <Enlace href={\`/personal/\${f.dni}\`}>Editar</Enlace>}
+/>`
+)}`;
+
 // ── Elementos aún no construidos ────────────────────────────────────────────
 
 const pendiente = (nombre, fase) => `
@@ -1909,7 +2115,7 @@ const CATALOGO = [
       { id: 'selector', t: 'Selector', estado: 'listo', c: pagSelector },
       { id: 'chip', t: 'Chip de estado', estado: 'listo', c: pagChip },
       { id: 'tarjeta', t: 'Tarjeta', estado: 'listo', c: pagTarjeta },
-      { id: 'tabla', t: 'Tabla de datos', estado: 'pendiente', c: pendiente('Tabla de datos', 'fase 5') },
+      { id: 'tabla', t: 'Tabla de datos', estado: 'listo', c: pagTabla },
       { id: 'paginacion', t: 'Paginación', estado: 'pendiente', c: pendiente('Paginación', 'fase 5') },
       { id: 'estados', t: 'Estados de pantalla', estado: 'pendiente', c: pendiente('Estados de pantalla', 'fase 5') },
     ],
@@ -2064,6 +2270,96 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .btn-ic { display: inline-flex; align-items: center; gap: 7px; }
 .btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
+
+/* Tabla de datos */
+.tb-barra { display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.tb-barra-izq, .tb-barra-der { display: flex; align-items: flex-end; gap: 10px; }
+.tb-mini { display: flex; flex-direction: column; gap: 3px; }
+.tb-mini span { font-size: 11px; font-weight: 500; color: var(--texto-secundario); }
+.tb-mini .campo { font-size: 13px; padding: 5px 9px; min-width: 92px; }
+.tb-conteo { font-size: 12px; color: var(--texto-secundario); padding-bottom: 7px; }
+
+.tb-cols-menu { position: relative; }
+.tb-cols-panel { position: absolute; z-index: 30; right: 0; top: calc(100% + 4px);
+  min-width: 210px; padding: 6px; background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-campo); border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.16); }
+.tb-col-op { display: flex; align-items: center; gap: 9px; padding: 7px 9px;
+  border-radius: 4px; font-size: 13px; cursor: pointer; }
+.tb-col-op:hover { background: var(--fondo-encabezado); }
+.tb-col-op.fija { cursor: not-allowed; color: var(--texto-secundario); }
+.tb-col-op em { margin-left: auto; font-style: normal; font-size: 10px;
+  color: var(--texto-pista); text-transform: uppercase; letter-spacing: .06em; }
+.tb-col-op input { accent-color: var(--accion); width: 15px; height: 15px; }
+.tb-col-reset { width: 100%; margin-top: 4px; padding: 7px; font: inherit; font-size: 12px;
+  cursor: pointer; background: transparent; border: 0; border-top: 1px solid var(--borde);
+  color: var(--enlace); }
+
+.tb-envoltura { overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
+.tb { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--fondo-tarjeta); }
+.tb-th { background: var(--fondo-encabezado); text-align: left; padding: 0;
+  white-space: nowrap; border-bottom: 1px solid var(--borde); }
+.tb-orden { display: flex; align-items: center; gap: 5px; width: 100%; padding: 9px 12px;
+  font: inherit; font-size: 14px; font-weight: 500; cursor: pointer;
+  background: transparent; border: 0; color: var(--texto-principal); text-align: left; }
+.tb-orden:hover { color: var(--accion); }
+.tb-orden.activo { color: var(--accion); }
+.tb-flecha { font-size: 11px; width: 10px; }
+.tb-th.tb-num .tb-orden { justify-content: flex-end; }
+.tb td { padding: 0 12px; height: 34px; border-top: 1px solid var(--borde); }
+.tb-num { text-align: right; }
+.tb-acc { text-align: right; white-space: nowrap; }
+/* Cebra: una fila blanca y la siguiente en fondo-fila-alt. */
+.tb tbody tr.tb-alt { background: var(--fondo-fila-alt); }
+/* El resaltado lleva FILETE, no solo fondo: medido, sobre la fila alterna el
+   fondo solo cambia 1,04:1 y la mitad de las filas no responderían. */
+.tb tbody tr:hover { background: var(--fondo-fila-hover); box-shadow: inset 3px 0 0 var(--accion); }
+.tb-vacio { text-align: center; padding: 34px 16px !important; height: auto !important;
+  font-size: 13px; color: var(--texto-secundario); line-height: 1.6; }
+.tb-vacio strong { color: var(--texto-principal); }
+
+.tb-pie { display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+.tb-rango { font-size: 12px; color: var(--texto-secundario); }
+.tb-pag { display: flex; gap: 4px; align-items: center; }
+.tb-p { min-width: 28px; height: 28px; padding: 0 7px; font: inherit; font-size: 12px;
+  cursor: pointer; background: var(--fondo-tarjeta); color: var(--texto-principal);
+  border: 1px solid var(--borde); border-radius: 4px; }
+.tb-p:hover:not(:disabled) { border-color: var(--accion); color: var(--accion); }
+.tb-p.activa { background: var(--accion); color: var(--accion-texto); border-color: var(--accion); }
+.tb-p:disabled { color: var(--accion-texto-desh); cursor: not-allowed; }
+.tb-elip { color: var(--texto-pista); padding: 0 2px; }
+
+/* Tabla con filas desplegables */
+.tb-desp .tb-th-txt { display: block; padding: 9px 12px; font-weight: 500; }
+.tb-th-chev { width: 42px; }
+.tb-chev-celda { width: 42px; padding: 0 !important; }
+.tb-chev { width: 100%; height: 34px; display: grid; place-items: center;
+  background: transparent; border: 0; cursor: pointer; color: var(--texto-secundario); }
+.tb-chev:hover { color: var(--accion); }
+.tb-chev .ic { width: 16px; height: 16px; transition: transform .18s ease; }
+.tb-chev[aria-expanded='true'] .ic { transform: rotate(180deg); }
+.tb-grupo.abierto { background: var(--fondo-fila-hover); }
+.tb-grupo.abierto td { border-bottom: 0; }
+
+.tb-detalle > td { padding: 0 !important; height: auto !important; border-top: 0 !important; }
+/* grid-template-rows 0fr → 1fr es lo único que anima hasta altura automática
+   sin tener que fijar la altura en píxeles a mano. */
+.tb-desliza { display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows .22s ease; }
+.tb-detalle.abierto .tb-desliza { grid-template-rows: 1fr; }
+.tb-desliza-in { overflow: hidden; }
+.tb-sub { width: 100%; border-collapse: collapse; font-size: 13px;
+  background: var(--fondo-pagina); }
+.tb-sub th { text-align: left; font-weight: 500; font-size: 12px;
+  color: var(--texto-secundario); padding: 8px 12px 8px 42px;
+  border-bottom: 1px solid var(--borde); }
+.tb-sub th:not(:first-child) { padding-left: 12px; }
+.tb-sub td { padding: 0 12px; height: 30px; border-bottom: 1px solid var(--borde); }
+.tb-sub td:first-child { padding-left: 42px; }
+.tb-sub tr:last-child td { border-bottom: 0; }
+.tb-sub tbody tr:hover { background: var(--fondo-tarjeta); }
 
 /* Tarjeta de persona */
 .tp-rejilla { display: grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap: 10px; }
@@ -2860,6 +3156,185 @@ select.campo:disabled { opacity: .75; }
   });
 
   abrir(location.hash.slice(1) || 'inicio');
+
+  // ── Tabla de datos ───────────────────────────────────────────────────────
+  (function () {
+    var tabla = document.getElementById('tb-tabla');
+    if (!tabla) return;
+    var FILAS = ${JSON.stringify(FILAS_TABLA)};
+    var COLS = ${JSON.stringify(COLUMNAS)};
+    var CLAVE = 'mmi-tabla-asistencia';
+
+    var cab = document.getElementById('tb-cab');
+    var cuerpo = document.getElementById('tb-cuerpo');
+    var selTam = document.getElementById('tb-tam');
+    var panel = document.getElementById('tb-cols-panel');
+    var btnCols = document.getElementById('tb-cols-btn');
+
+    // Configuración recordada por persona: columnas visibles, orden y tamaño.
+    var cfg = { ocultas: [], orden: null, dir: 1, tam: 10, pag: 1 };
+    try {
+      var g = JSON.parse(localStorage.getItem(CLAVE) || 'null');
+      if (g) { cfg.ocultas = g.ocultas || []; cfg.orden = g.orden || null; cfg.dir = g.dir || 1; cfg.tam = g.tam == null ? 10 : g.tam; }
+    } catch (e) {}
+    function guardar() {
+      try { localStorage.setItem(CLAVE, JSON.stringify({ ocultas: cfg.ocultas, orden: cfg.orden, dir: cfg.dir, tam: cfg.tam })); } catch (e) {}
+    }
+
+    var visibles = function () { return COLS.filter(function (c) { return cfg.ocultas.indexOf(c.k) === -1; }); };
+
+    function ordenadas() {
+      var f = FILAS.slice();
+      if (!cfg.orden) return f;
+      var col = COLS.filter(function (c) { return c.k === cfg.orden; })[0];
+      return f.sort(function (a, b) {
+        var x = a[cfg.orden], y = b[cfg.orden];
+        if (col && col.tipo === 'numero') return (x - y) * cfg.dir;
+        return String(x).localeCompare(String(y), 'es', { sensitivity: 'base' }) * cfg.dir;
+      });
+    }
+
+    function pintar() {
+      var f = ordenadas();
+      var tam = cfg.tam || f.length;
+      var paginas = Math.max(1, Math.ceil(f.length / tam));
+      if (cfg.pag > paginas) cfg.pag = paginas;
+      var desde = (cfg.pag - 1) * tam;
+      var trozo = f.slice(desde, desde + tam);
+
+      // Encabezado: cada columna ordena, con flecha y aria-sort.
+      cab.innerHTML = visibles().map(function (c) {
+        var act = cfg.orden === c.k;
+        var aria = act ? (cfg.dir === 1 ? 'ascending' : 'descending') : 'none';
+        return '<th class="tb-th' + (c.tipo === 'numero' ? ' tb-num' : '') + '" aria-sort="' + aria + '">' +
+          '<button class="tb-orden' + (act ? ' activo' : '') + '" data-col="' + c.k + '">' +
+          '<span>' + c.t + '</span>' +
+          '<span class="tb-flecha">' + (act ? (cfg.dir === 1 ? '↑' : '↓') : '') + '</span></button></th>';
+      }).join('') + '<th class="tb-th"></th>';
+
+      cuerpo.innerHTML = trozo.length ? trozo.map(function (fila, i) {
+        return '<tr class="' + (i % 2 ? 'tb-alt' : '') + '">' + visibles().map(function (c) {
+          var v = fila[c.k];
+          if (c.tipo === 'chip') return '<td><span class="chip chip-' + fila.est + '">' + v + '</span></td>';
+          if (c.tipo === 'numero') return '<td class="tb-num mono">' + (v || '—') + '</td>';
+          if (c.tipo === 'mono') return '<td class="mono">' + v + '</td>';
+          return '<td>' + v + '</td>';
+        }).join('') + '<td class="tb-acc"><a href="#" class="enlace">Editar</a></td></tr>';
+      }).join('')
+        : '<tr><td colspan="' + (visibles().length + 1) + '" class="tb-vacio">' +
+          '<strong>Sin resultados.</strong><br>Prueba con menos filtros.</td></tr>';
+
+      document.getElementById('tb-conteo').textContent = FILAS.length + ' trabajadores';
+      document.getElementById('tb-rango').textContent = f.length
+        ? (desde + 1) + '–' + Math.min(desde + tam, f.length) + ' de ' + f.length
+        : '0 de 0';
+
+      // Paginación
+      var pag = document.getElementById('tb-pag');
+      if (paginas <= 1) { pag.innerHTML = ''; }
+      else {
+        var botones = [];
+        botones.push('<button class="tb-p" data-pag="' + (cfg.pag - 1) + '"' + (cfg.pag === 1 ? ' disabled' : '') + '>‹</button>');
+        for (var p = 1; p <= paginas; p++) {
+          if (p === 1 || p === paginas || Math.abs(p - cfg.pag) <= 1) {
+            botones.push('<button class="tb-p' + (p === cfg.pag ? ' activa' : '') + '" data-pag="' + p + '">' + p + '</button>');
+          } else if (Math.abs(p - cfg.pag) === 2) botones.push('<span class="tb-elip">…</span>');
+        }
+        botones.push('<button class="tb-p" data-pag="' + (cfg.pag + 1) + '"' + (cfg.pag === paginas ? ' disabled' : '') + '>›</button>');
+        pag.innerHTML = botones.join('');
+      }
+      selTam.value = String(cfg.tam);
+    }
+
+    function pintarPanel() {
+      panel.innerHTML = COLS.map(function (c) {
+        var vis = cfg.ocultas.indexOf(c.k) === -1;
+        return '<label class="tb-col-op' + (c.fija ? ' fija' : '') + '">' +
+          '<input type="checkbox" data-col="' + c.k + '"' + (vis ? ' checked' : '') + (c.fija ? ' disabled' : '') + '>' +
+          '<span>' + c.t + '</span>' + (c.fija ? '<em>fija</em>' : '') + '</label>';
+      }).join('') + '<button class="tb-col-reset">Restablecer</button>';
+    }
+
+    // Ordenar: primer clic ascendente, segundo descendente, tercero quita el orden.
+    cab.addEventListener('click', function (e) {
+      var b = e.target.closest('.tb-orden'); if (!b) return;
+      var k = b.dataset.col;
+      if (cfg.orden !== k) { cfg.orden = k; cfg.dir = 1; }
+      else if (cfg.dir === 1) cfg.dir = -1;
+      else { cfg.orden = null; cfg.dir = 1; }
+      guardar(); pintar();
+    });
+
+    document.getElementById('tb-pag').addEventListener('click', function (e) {
+      var b = e.target.closest('.tb-p'); if (!b || b.disabled) return;
+      cfg.pag = Number(b.dataset.pag); pintar();
+    });
+
+    selTam.addEventListener('change', function () {
+      var n = Number(selTam.value);
+      if (n === 0 && FILAS.length > 500 &&
+          !confirm('Vas a pintar ' + FILAS.length + ' filas de una vez. Puede tardar. ¿Continuar?')) {
+        selTam.value = String(cfg.tam); return;
+      }
+      cfg.tam = n; cfg.pag = 1; guardar(); pintar();
+    });
+
+    btnCols.addEventListener('click', function () {
+      var abierto = !panel.hidden;
+      panel.hidden = abierto;
+      btnCols.setAttribute('aria-expanded', String(!abierto));
+      if (!abierto) pintarPanel();
+    });
+    panel.addEventListener('change', function (e) {
+      var ch = e.target.closest('input[data-col]'); if (!ch) return;
+      var k = ch.dataset.col;
+      if (ch.checked) cfg.ocultas = cfg.ocultas.filter(function (x) { return x !== k; });
+      else cfg.ocultas.push(k);
+      guardar(); pintar();
+    });
+    panel.addEventListener('click', function (e) {
+      if (!e.target.closest('.tb-col-reset')) return;
+      cfg.ocultas = []; cfg.orden = null; cfg.dir = 1; cfg.tam = 10; cfg.pag = 1;
+      guardar(); pintarPanel(); pintar();
+    });
+    document.addEventListener('click', function (e) {
+      if (!panel.hidden && !e.target.closest('.tb-cols-menu')) {
+        panel.hidden = true; btnCols.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // CSV del conjunto ORDENADO Y FILTRADO, no de la página visible.
+    document.getElementById('tb-csv').addEventListener('click', function () {
+      var cols = visibles();
+      var esc = function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; };
+      var lineas = [cols.map(function (c) { return esc(c.t); }).join(';')];
+      ordenadas().forEach(function (f) {
+        lineas.push(cols.map(function (c) { return esc(f[c.k]); }).join(';'));
+      });
+      // BOM para que Excel en Windows lea bien las tildes.
+      var blob = new Blob(['\\ufeff' + lineas.join('\\r\\n')], { type: 'text/csv;charset=utf-8;' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'asistencia-personal.csv';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    pintar();
+  })();
+
+  // ── Filas desplegables ───────────────────────────────────────────────────
+  document.querySelectorAll('.tb-chev').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var abierto = b.getAttribute('aria-expanded') === 'true';
+      var det = document.getElementById(b.getAttribute('aria-controls'));
+      b.setAttribute('aria-expanded', String(!abierto));
+      det.classList.toggle('abierto', !abierto);
+      b.closest('tr').classList.toggle('abierto', !abierto);
+      var cargo = b.getAttribute('aria-label').replace(/^(Mostrar|Ocultar) personal de /, '');
+      b.setAttribute('aria-label', (abierto ? 'Mostrar' : 'Ocultar') + ' personal de ' + cargo);
+    });
+  });
 
   // ── Selector con búsqueda ────────────────────────────────────────────────
   // Demostración del comportamiento. En producción esto lo resuelve Radix

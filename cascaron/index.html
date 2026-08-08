@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.4.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.5.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.4.0
-   WCAG 2.2 AA · 84 pares verificados en los dos modos, 0 fallos
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.5.0
+   WCAG 2.2 AA · 86 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -91,7 +91,7 @@
   --fondo-pagina: #1E1D1C;
   --fondo-tarjeta: #242422;
   --fondo-encabezado: #2C2B29;
-  --fondo-fila-alt: #242422;
+  --fondo-fila-alt: #2A2927;
   --fondo-fila-hover: #363532;
 
   /* Texto */
@@ -161,7 +161,7 @@
     --fondo-pagina: #1E1D1C;
     --fondo-tarjeta: #242422;
     --fondo-encabezado: #2C2B29;
-    --fondo-fila-alt: #242422;
+    --fondo-fila-alt: #2A2927;
     --fondo-fila-hover: #363532;
 
     /* Texto */
@@ -313,6 +313,96 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .btn-ic { display: inline-flex; align-items: center; gap: 7px; }
 .btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
+
+/* Tabla de datos */
+.tb-barra { display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.tb-barra-izq, .tb-barra-der { display: flex; align-items: flex-end; gap: 10px; }
+.tb-mini { display: flex; flex-direction: column; gap: 3px; }
+.tb-mini span { font-size: 11px; font-weight: 500; color: var(--texto-secundario); }
+.tb-mini .campo { font-size: 13px; padding: 5px 9px; min-width: 92px; }
+.tb-conteo { font-size: 12px; color: var(--texto-secundario); padding-bottom: 7px; }
+
+.tb-cols-menu { position: relative; }
+.tb-cols-panel { position: absolute; z-index: 30; right: 0; top: calc(100% + 4px);
+  min-width: 210px; padding: 6px; background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-campo); border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.16); }
+.tb-col-op { display: flex; align-items: center; gap: 9px; padding: 7px 9px;
+  border-radius: 4px; font-size: 13px; cursor: pointer; }
+.tb-col-op:hover { background: var(--fondo-encabezado); }
+.tb-col-op.fija { cursor: not-allowed; color: var(--texto-secundario); }
+.tb-col-op em { margin-left: auto; font-style: normal; font-size: 10px;
+  color: var(--texto-pista); text-transform: uppercase; letter-spacing: .06em; }
+.tb-col-op input { accent-color: var(--accion); width: 15px; height: 15px; }
+.tb-col-reset { width: 100%; margin-top: 4px; padding: 7px; font: inherit; font-size: 12px;
+  cursor: pointer; background: transparent; border: 0; border-top: 1px solid var(--borde);
+  color: var(--enlace); }
+
+.tb-envoltura { overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
+.tb { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--fondo-tarjeta); }
+.tb-th { background: var(--fondo-encabezado); text-align: left; padding: 0;
+  white-space: nowrap; border-bottom: 1px solid var(--borde); }
+.tb-orden { display: flex; align-items: center; gap: 5px; width: 100%; padding: 9px 12px;
+  font: inherit; font-size: 14px; font-weight: 500; cursor: pointer;
+  background: transparent; border: 0; color: var(--texto-principal); text-align: left; }
+.tb-orden:hover { color: var(--accion); }
+.tb-orden.activo { color: var(--accion); }
+.tb-flecha { font-size: 11px; width: 10px; }
+.tb-th.tb-num .tb-orden { justify-content: flex-end; }
+.tb td { padding: 0 12px; height: 34px; border-top: 1px solid var(--borde); }
+.tb-num { text-align: right; }
+.tb-acc { text-align: right; white-space: nowrap; }
+/* Cebra: una fila blanca y la siguiente en fondo-fila-alt. */
+.tb tbody tr.tb-alt { background: var(--fondo-fila-alt); }
+/* El resaltado lleva FILETE, no solo fondo: medido, sobre la fila alterna el
+   fondo solo cambia 1,04:1 y la mitad de las filas no responderían. */
+.tb tbody tr:hover { background: var(--fondo-fila-hover); box-shadow: inset 3px 0 0 var(--accion); }
+.tb-vacio { text-align: center; padding: 34px 16px !important; height: auto !important;
+  font-size: 13px; color: var(--texto-secundario); line-height: 1.6; }
+.tb-vacio strong { color: var(--texto-principal); }
+
+.tb-pie { display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+.tb-rango { font-size: 12px; color: var(--texto-secundario); }
+.tb-pag { display: flex; gap: 4px; align-items: center; }
+.tb-p { min-width: 28px; height: 28px; padding: 0 7px; font: inherit; font-size: 12px;
+  cursor: pointer; background: var(--fondo-tarjeta); color: var(--texto-principal);
+  border: 1px solid var(--borde); border-radius: 4px; }
+.tb-p:hover:not(:disabled) { border-color: var(--accion); color: var(--accion); }
+.tb-p.activa { background: var(--accion); color: var(--accion-texto); border-color: var(--accion); }
+.tb-p:disabled { color: var(--accion-texto-desh); cursor: not-allowed; }
+.tb-elip { color: var(--texto-pista); padding: 0 2px; }
+
+/* Tabla con filas desplegables */
+.tb-desp .tb-th-txt { display: block; padding: 9px 12px; font-weight: 500; }
+.tb-th-chev { width: 42px; }
+.tb-chev-celda { width: 42px; padding: 0 !important; }
+.tb-chev { width: 100%; height: 34px; display: grid; place-items: center;
+  background: transparent; border: 0; cursor: pointer; color: var(--texto-secundario); }
+.tb-chev:hover { color: var(--accion); }
+.tb-chev .ic { width: 16px; height: 16px; transition: transform .18s ease; }
+.tb-chev[aria-expanded='true'] .ic { transform: rotate(180deg); }
+.tb-grupo.abierto { background: var(--fondo-fila-hover); }
+.tb-grupo.abierto td { border-bottom: 0; }
+
+.tb-detalle > td { padding: 0 !important; height: auto !important; border-top: 0 !important; }
+/* grid-template-rows 0fr → 1fr es lo único que anima hasta altura automática
+   sin tener que fijar la altura en píxeles a mano. */
+.tb-desliza { display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows .22s ease; }
+.tb-detalle.abierto .tb-desliza { grid-template-rows: 1fr; }
+.tb-desliza-in { overflow: hidden; }
+.tb-sub { width: 100%; border-collapse: collapse; font-size: 13px;
+  background: var(--fondo-pagina); }
+.tb-sub th { text-align: left; font-weight: 500; font-size: 12px;
+  color: var(--texto-secundario); padding: 8px 12px 8px 42px;
+  border-bottom: 1px solid var(--borde); }
+.tb-sub th:not(:first-child) { padding-left: 12px; }
+.tb-sub td { padding: 0 12px; height: 30px; border-bottom: 1px solid var(--borde); }
+.tb-sub td:first-child { padding-left: 42px; }
+.tb-sub tr:last-child td { border-bottom: 0; }
+.tb-sub tbody tr:hover { background: var(--fondo-tarjeta); }
 
 /* Tarjeta de persona */
 .tp-rejilla { display: grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap: 10px; }
@@ -1037,7 +1127,7 @@ select.campo:disabled { opacity: .75; }
             <span class="nav-txt">Selector</span></a><a class="nav-hijo" href="#chip" data-ir="chip" title="Chip de estado">
             <span class="nav-txt">Chip de estado</span></a><a class="nav-hijo" href="#tarjeta" data-ir="tarjeta" title="Tarjeta">
             <span class="nav-txt">Tarjeta</span></a><a class="nav-hijo" href="#tabla" data-ir="tabla" title="Tabla de datos">
-            <span class="nav-txt">Tabla de datos</span><span class="pt pt-pend" title="Sin construir"></span></a><a class="nav-hijo" href="#paginacion" data-ir="paginacion" title="Paginación">
+            <span class="nav-txt">Tabla de datos</span></a><a class="nav-hijo" href="#paginacion" data-ir="paginacion" title="Paginación">
             <span class="nav-txt">Paginación</span><span class="pt pt-pend" title="Sin construir"></span></a><a class="nav-hijo" href="#estados" data-ir="estados" title="Estados de pantalla">
             <span class="nav-txt">Estados de pantalla</span><span class="pt pt-pend" title="Sin construir"></span></a>
     </div>
@@ -1107,7 +1197,7 @@ select.campo:disabled { opacity: .75; }
         <label class="filtro"><span class="filtro-et">Sistema</span>
           <select class="campo"><option>Colegio Albert Einstein</option></select></label>
         <label class="filtro"><span class="filtro-et">Versión</span>
-          <select class="campo"><option>v1.4.0</option></select></label>
+          <select class="campo"><option>v1.5.0</option></select></label>
         <label class="filtro"><span class="filtro-et">Fase</span>
           <select class="campo"><option>2 · Tipografía</option></select></label>
       </div>
@@ -1129,7 +1219,7 @@ El menú de la izquierda lo abre por partes.</p>
 
 <div class="estado-rejilla">
   <div class="est"><b>44</b><span>tokens semánticos</span></div>
-  <div class="est"><b>84</b><span>pares verificados</span></div>
+  <div class="est"><b>86</b><span>pares verificados</span></div>
   <div class="est est-ok"><b>0</b><span>fallos de contraste</span></div>
   <div class="est"><b>2</b><span>modos, claro y oscuro</span></div>
 </div>
@@ -1173,12 +1263,12 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#F8F8F6" data-oscuro="#242422"
+    <div class="muestra-color" data-claro="#F8F8F6" data-oscuro="#2A2927"
          style="background: var(--fondo-fila-alt)"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">fondo-fila-alt</code>
       <span class="muestra-hex" data-hex-de="fondo-fila-alt">#F8F8F6</span>
-      <span class="muestra-uso">Fila alterna si se usa banda cebra</span>
+      <span class="muestra-uso">Fila alterna de la banda cebra</span>
     </div>
   </div>
   <div class="muestra">
@@ -1187,7 +1277,7 @@ El menú de la izquierda lo abre por partes.</p>
     <div class="muestra-txt">
       <code class="muestra-nombre">fondo-fila-hover</code>
       <span class="muestra-hex" data-hex-de="fondo-fila-hover">#E9F5FF</span>
-      <span class="muestra-uso">Fila bajo el cursor y fila seleccionada</span>
+      <span class="muestra-uso">Fila bajo el cursor y fila seleccionada. Acompañado de filete `accion` de 3px</span>
     </div>
   </div></div>
   </section>
@@ -1676,7 +1766,7 @@ El menú de la izquierda lo abre por partes.</p>
   <a href="#espaciado" data-ir="espaciado" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
     <span><strong>Espaciado</strong>Las cinco opciones de tamaño, a decidir</span></a>
   <a href="#contraste" data-ir="contraste" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg></span>
-    <span><strong>Contrastes</strong>Los 84 pares medidos</span></a>
+    <span><strong>Contrastes</strong>Los 86 pares medidos</span></a>
 </div>
     </section><section class="pagina" id="pg-color" hidden>
       <div class="pag-cab"><span class="pag-ruta">Fundamentos</span><h2>Color</h2></div>
@@ -1715,12 +1805,12 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#F8F8F6" data-oscuro="#242422"
+    <div class="muestra-color" data-claro="#F8F8F6" data-oscuro="#2A2927"
          style="background: var(--fondo-fila-alt)"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">fondo-fila-alt</code>
       <span class="muestra-hex" data-hex-de="fondo-fila-alt">#F8F8F6</span>
-      <span class="muestra-uso">Fila alterna si se usa banda cebra</span>
+      <span class="muestra-uso">Fila alterna de la banda cebra</span>
     </div>
   </div>
   <div class="muestra">
@@ -1729,7 +1819,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <div class="muestra-txt">
       <code class="muestra-nombre">fondo-fila-hover</code>
       <span class="muestra-hex" data-hex-de="fondo-fila-hover">#E9F5FF</span>
-      <span class="muestra-uso">Fila bajo el cursor y fila seleccionada</span>
+      <span class="muestra-uso">Fila bajo el cursor y fila seleccionada. Acompañado de filete `accion` de 3px</span>
     </div>
   </div></div>
   </section>
@@ -3800,13 +3890,353 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
     </section><section class="pagina" id="pg-tabla" hidden>
       <div class="pag-cab"><span class="pag-ruta">Elementos</span><h2>Tabla de datos</h2></div>
       
-<div class="pendiente">
-  <div class="pendiente-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/></svg></div>
-  <h3>Tabla de datos</h3>
-  <p>Todavía no está construido. Entra en la <strong>fase 5</strong>.</p>
-  <p class="pendiente-nota">El menú lo lista para que se vea el alcance completo del sistema,
-  no para fingir que existe.</p>
+<p class="pag-intro">Es el <strong>80 % de la superficie del sistema</strong>. Todo lo demás se
+mira un rato; esto se mira seis horas. La tabla de abajo <strong>funciona</strong>: ordena,
+pagina, oculta columnas, recuerda tu configuración y descarga CSV.</p>
+
+<div class="bloque">
+  <div class="tb-barra">
+    <div class="tb-barra-izq">
+      <label class="tb-mini"><span>Mostrar</span>
+        <select class="campo" id="tb-tam"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="0">Todas</option></select>
+      </label>
+      <span class="tb-conteo" id="tb-conteo"></span>
+    </div>
+    <div class="tb-barra-der">
+      <div class="tb-cols-menu">
+        <button class="btn btn-neutro btn-ic" id="tb-cols-btn" aria-expanded="false"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg>Columnas</button>
+        <div class="tb-cols-panel" id="tb-cols-panel" hidden></div>
+      </div>
+      <button class="btn btn-2 btn-ic" id="tb-csv"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>CSV</button>
+    </div>
+  </div>
+
+  <div class="tb-envoltura">
+    <table class="tb" id="tb-tabla">
+      <thead><tr id="tb-cab"></tr></thead>
+      <tbody id="tb-cuerpo"></tbody>
+    </table>
+  </div>
+
+  <div class="tb-pie">
+    <span class="tb-rango" id="tb-rango"></span>
+    <div class="tb-pag" id="tb-pag"></div>
+  </div>
 </div>
+
+<h3 class="sub-seccion">Filas desplegables — agrupar subelementos</h3>
+<p class="seccion-sub">El símbolo se llama <strong>chevron</strong>; cuando su trabajo es abrir y cerrar contenido se le llama <em>disclosure</em>. Gira al desplegar y el contenido entra con transición de altura.</p>
+<div class="bloque">
+  <div class="tb-envoltura">
+    <table class="tb tb-desp">
+      <thead><tr>
+        <th class="tb-th tb-th-chev"></th>
+        <th class="tb-th"><span class="tb-th-txt">Cargo</span></th>
+        <th class="tb-th"><span class="tb-th-txt">Personal</span></th>
+        <th class="tb-th"><span class="tb-th-txt">Asistieron</span></th>
+        <th class="tb-th tb-num"><span class="tb-th-txt">Pendientes</span></th>
+      </tr></thead>
+      <tbody>
+      
+        <tr class="tb-grupo" data-grupo="g0">
+          <td class="tb-chev-celda">
+            <button class="tb-chev" aria-expanded="false" aria-controls="det-g0"
+                    aria-label="Mostrar personal de Docente · Inicial"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          </td>
+          <td><strong>Docente · Inicial</strong></td>
+          <td class="mono">7</td>
+          <td><span class="chip chip-exito">3</span></td>
+          <td class="tb-num mono">4</td>
+        </tr>
+        <tr class="tb-detalle" id="det-g0">
+          <td colspan="5">
+            <div class="tb-desliza">
+              <div class="tb-desliza-in">
+                <table class="tb-sub">
+                  <thead><tr><th>Trabajador</th><th>DNI</th><th>Sede</th><th>Estado</th><th>Marca</th></tr></thead>
+                  <tbody>
+                  <tr><td>Álvarez Ponce, Rosa</td><td class="mono">70000000</td><td>Huaraz</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:30</td></tr><tr><td>Huamán Soto, Pedro</td><td class="mono">70827538</td><td>Huaraz</td>
+                        <td><span class="chip chip-info">Permiso</span></td>
+                        <td class="mono">—</td></tr><tr><td>Ramírez Ochoa, Víctor</td><td class="mono">71655076</td><td>Huaraz</td>
+                        <td><span class="chip chip-error">Falta</span></td>
+                        <td class="mono">—</td></tr><tr><td>Aguilar Ñopo, Beatriz</td><td class="mono">72482614</td><td>Huaraz</td>
+                        <td><span class="chip chip-pend">Aún no marca</span></td>
+                        <td class="mono">—</td></tr><tr><td>Guzmán Alarcón, Jimena</td><td class="mono">73310152</td><td>Huaraz</td>
+                        <td><span class="chip chip-aviso">Tardanza</span></td>
+                        <td class="mono">08:27</td></tr><tr><td>Navarro Espíritu, Paula</td><td class="mono">74137690</td><td>Huaraz</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:40</td></tr><tr><td>Vargas Melgarejo, Verónica</td><td class="mono">74965228</td><td>Huaraz</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:32</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr class="tb-grupo tb-alt" data-grupo="g1">
+          <td class="tb-chev-celda">
+            <button class="tb-chev" aria-expanded="false" aria-controls="det-g1"
+                    aria-label="Mostrar personal de Docente · Primaria"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          </td>
+          <td><strong>Docente · Primaria</strong></td>
+          <td class="mono">7</td>
+          <td><span class="chip chip-exito">3</span></td>
+          <td class="tb-num mono">4</td>
+        </tr>
+        <tr class="tb-detalle" id="det-g1">
+          <td colspan="5">
+            <div class="tb-desliza">
+              <div class="tb-desliza-in">
+                <table class="tb-sub">
+                  <thead><tr><th>Trabajador</th><th>DNI</th><th>Sede</th><th>Estado</th><th>Marca</th></tr></thead>
+                  <tbody>
+                  <tr><td>Bustamante Ríos, Julio</td><td class="mono">70137923</td><td>Independencia</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:37</td></tr><tr><td>Jiménez Vílchez, Andrés</td><td class="mono">70965461</td><td>Independencia</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:54</td></tr><tr><td>Rojas Vega, Luis</td><td class="mono">71792999</td><td>Independencia</td>
+                        <td><span class="chip chip-info">Permiso</span></td>
+                        <td class="mono">—</td></tr><tr><td>Barrantes Yupanqui, Hugo</td><td class="mono">72620537</td><td>Independencia</td>
+                        <td><span class="chip chip-error">Falta</span></td>
+                        <td class="mono">—</td></tr><tr><td>Herrera Túpac, Kevin</td><td class="mono">73448075</td><td>Independencia</td>
+                        <td><span class="chip chip-pend">Aún no marca</span></td>
+                        <td class="mono">—</td></tr><tr><td>Ocampo Villar, Quintín</td><td class="mono">74275613</td><td>Independencia</td>
+                        <td><span class="chip chip-aviso">Tardanza</span></td>
+                        <td class="mono">08:23</td></tr><tr><td>Yarleque Ampuero, Wilmer</td><td class="mono">75103151</td><td>Independencia</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:39</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr class="tb-grupo" data-grupo="g2">
+          <td class="tb-chev-celda">
+            <button class="tb-chev" aria-expanded="false" aria-controls="det-g2"
+                    aria-label="Mostrar personal de Docente · Secundaria"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          </td>
+          <td><strong>Docente · Secundaria</strong></td>
+          <td class="mono">6</td>
+          <td><span class="chip chip-exito">3</span></td>
+          <td class="tb-num mono">3</td>
+        </tr>
+        <tr class="tb-detalle" id="det-g2">
+          <td colspan="5">
+            <div class="tb-desliza">
+              <div class="tb-desliza-in">
+                <table class="tb-sub">
+                  <thead><tr><th>Trabajador</th><th>DNI</th><th>Sede</th><th>Estado</th><th>Marca</th></tr></thead>
+                  <tbody>
+                  <tr><td>Castañeda Ludeña, Miriam</td><td class="mono">70275846</td><td>Huaraz</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:44</td></tr><tr><td>López Ñahui, Teresa</td><td class="mono">71103384</td><td>Huaraz</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:36</td></tr><tr><td>Sánchez Idrogo, Patricia</td><td class="mono">71930922</td><td>Huaraz</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:53</td></tr><tr><td>Cáceres Molina, Nadia</td><td class="mono">72758460</td><td>Huaraz</td>
+                        <td><span class="chip chip-info">Permiso</span></td>
+                        <td class="mono">—</td></tr><tr><td>Ibáñez Rosales, Lorena</td><td class="mono">73585998</td><td>Huaraz</td>
+                        <td><span class="chip chip-error">Falta</span></td>
+                        <td class="mono">—</td></tr><tr><td>Palacios Tirado, Rebeca</td><td class="mono">74413536</td><td>Huaraz</td>
+                        <td><span class="chip chip-pend">Aún no marca</span></td>
+                        <td class="mono">—</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr class="tb-grupo tb-alt" data-grupo="g3">
+          <td class="tb-chev-celda">
+            <button class="tb-chev" aria-expanded="false" aria-controls="det-g3"
+                    aria-label="Mostrar personal de Auxiliar"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          </td>
+          <td><strong>Auxiliar</strong></td>
+          <td class="mono">6</td>
+          <td><span class="chip chip-exito">3</span></td>
+          <td class="tb-num mono">3</td>
+        </tr>
+        <tr class="tb-detalle" id="det-g3">
+          <td colspan="5">
+            <div class="tb-desliza">
+              <div class="tb-desliza-in">
+                <table class="tb-sub">
+                  <thead><tr><th>Trabajador</th><th>DNI</th><th>Sede</th><th>Estado</th><th>Marca</th></tr></thead>
+                  <tbody>
+                  <tr><td>Fernández Cruz, María</td><td class="mono">70413769</td><td>Independencia</td>
+                        <td><span class="chip chip-aviso">Tardanza</span></td>
+                        <td class="mono">08:14</td></tr><tr><td>Mendoza Quiñones, Raúl</td><td class="mono">71241307</td><td>Independencia</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:43</td></tr><tr><td>Torres Bejarano, Iván</td><td class="mono">72068845</td><td>Independencia</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:35</td></tr><tr><td>Delgado Ríos, Fabián</td><td class="mono">72896383</td><td>Independencia</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:52</td></tr><tr><td>Juárez Manrique, Mateo</td><td class="mono">73723921</td><td>Independencia</td>
+                        <td><span class="chip chip-info">Permiso</span></td>
+                        <td class="mono">—</td></tr><tr><td>Rivas Coronel, Sergio</td><td class="mono">74551459</td><td>Independencia</td>
+                        <td><span class="chip chip-error">Falta</span></td>
+                        <td class="mono">—</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr class="tb-grupo" data-grupo="g4">
+          <td class="tb-chev-celda">
+            <button class="tb-chev" aria-expanded="false" aria-controls="det-g4"
+                    aria-label="Mostrar personal de Administración"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          </td>
+          <td><strong>Administración</strong></td>
+          <td class="mono">6</td>
+          <td><span class="chip chip-exito">3</span></td>
+          <td class="tb-num mono">3</td>
+        </tr>
+        <tr class="tb-detalle" id="det-g4">
+          <td colspan="5">
+            <div class="tb-desliza">
+              <div class="tb-desliza-in">
+                <table class="tb-sub">
+                  <thead><tr><th>Trabajador</th><th>DNI</th><th>Sede</th><th>Estado</th><th>Marca</th></tr></thead>
+                  <tbody>
+                  <tr><td>García Núñez, Óscar</td><td class="mono">70551692</td><td>Huaraz</td>
+                        <td><span class="chip chip-pend">Aún no marca</span></td>
+                        <td class="mono">—</td></tr><tr><td>Pérez Salazar, Ana</td><td class="mono">71379230</td><td>Huaraz</td>
+                        <td><span class="chip chip-aviso">Tardanza</span></td>
+                        <td class="mono">08:10</td></tr><tr><td>Valdivia Ccahuana, Sofía</td><td class="mono">72206768</td><td>Huaraz</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:42</td></tr><tr><td>Espinoza Marín, Gabriela</td><td class="mono">73034306</td><td>Huaraz</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:34</td></tr><tr><td>Lazo Chávez, Natalia</td><td class="mono">73861844</td><td>Huaraz</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:51</td></tr><tr><td>Salcedo Bravo, Tatiana</td><td class="mono">74689382</td><td>Huaraz</td>
+                        <td><span class="chip chip-info">Permiso</span></td>
+                        <td class="mono">—</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr class="tb-grupo tb-alt" data-grupo="g5">
+          <td class="tb-chev-celda">
+            <button class="tb-chev" aria-expanded="false" aria-controls="det-g5"
+                    aria-label="Mostrar personal de Mantenimiento"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          </td>
+          <td><strong>Mantenimiento</strong></td>
+          <td class="mono">6</td>
+          <td><span class="chip chip-exito">3</span></td>
+          <td class="tb-num mono">3</td>
+        </tr>
+        <tr class="tb-detalle" id="det-g5">
+          <td colspan="5">
+            <div class="tb-desliza">
+              <div class="tb-desliza-in">
+                <table class="tb-sub">
+                  <thead><tr><th>Trabajador</th><th>DNI</th><th>Sede</th><th>Estado</th><th>Marca</th></tr></thead>
+                  <tbody>
+                  <tr><td>Gutiérrez Paredes, Elena</td><td class="mono">70689615</td><td>Independencia</td>
+                        <td><span class="chip chip-error">Falta</span></td>
+                        <td class="mono">—</td></tr><tr><td>Quispe Mamani, Lucía</td><td class="mono">71517153</td><td>Independencia</td>
+                        <td><span class="chip chip-pend">Aún no marca</span></td>
+                        <td class="mono">—</td></tr><tr><td>Zúñiga Peralta, Martín</td><td class="mono">72344691</td><td>Independencia</td>
+                        <td><span class="chip chip-aviso">Tardanza</span></td>
+                        <td class="mono">08:06</td></tr><tr><td>Flores Ccopa, Ignacio</td><td class="mono">73172229</td><td>Independencia</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:41</td></tr><tr><td>Maldonado Ríos, Omar</td><td class="mono">73999767</td><td>Independencia</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:33</td></tr><tr><td>Ubillús Grados, Ulises</td><td class="mono">74827305</td><td>Independencia</td>
+                        <td><span class="chip chip-exito">Asistió</span></td>
+                        <td class="mono">07:50</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<table class="tabla-contraste" style="margin-top:12px">
+  <thead><tr><th>Detalle</th><th>Por qué así</th></tr></thead>
+  <tbody>
+    <tr><td>El chevron es un <code>&lt;button&gt;</code>, no un icono suelto</td><td class="motivo">Se alcanza con Tab y se activa con Enter o Espacio. Un <code>span</code> con <code>onClick</code> no</td></tr>
+    <tr><td><code>aria-expanded</code> y <code>aria-controls</code></td><td class="motivo">El lector de pantalla anuncia si está abierto y qué controla</td></tr>
+    <tr><td>La transición usa <code>grid-template-rows</code></td><td class="motivo">Es lo único que anima hasta altura automática sin fijar píxeles a mano</td></tr>
+    <tr><td>La fila resumen trae las cifras</td><td class="motivo">Si hay que desplegar para saber si importa, el resumen no sirve de nada</td></tr>
+    <tr><td>Solo un nivel de anidamiento</td><td class="motivo">Dos niveles y la persona se pierde. Si hacen falta dos, es otra pantalla</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Decisiones que tomé, y por qué</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>Decisión</th><th>Razón</th></tr></thead>
+  <tbody>
+    <tr><td><strong>10 por defecto</strong>, luego 25, 50 y Todas</td><td class="motivo">10 cabe sin desplazar en un portátil. Quien necesita más lo sube una vez y se le recuerda</td></tr>
+    <tr><td><strong>«Todas» avisa por encima de 500 filas</strong></td><td class="motivo">Pintar miles de filas congela el navegador. El aviso llega antes que el bloqueo</td></tr>
+    <tr><td><strong>El resaltado lleva filete azul de 3px</strong></td><td class="motivo">Medido: sobre la fila alterna el fondo solo cambia 1,04:1. El filete es inequívoco sobre las dos</td></tr>
+    <tr><td><strong>La primera columna no se puede ocultar</strong></td><td class="motivo">Sin el nombre, la fila no identifica nada. Ocultarla deja una tabla de datos huérfanos</td></tr>
+    <tr><td><strong>El orden se marca con flecha y con <code>aria-sort</code></strong></td><td class="motivo">Un encabezado resaltado sin flecha no dice en qué sentido está ordenado</td></tr>
+    <tr><td><strong>La configuración se guarda por persona</strong></td><td class="motivo">Quien trabaja con la tabla a diario no debe reconfigurarla cada mañana</td></tr>
+    <tr><td><strong>El CSV exporta lo <em>filtrado</em>, no la página</strong></td><td class="motivo">Descargar solo las 10 visibles es la trampa clásica. Se exporta lo que el usuario ve como conjunto</td></tr>
+    <tr><td><strong>Números a la derecha y en mono</strong></td><td class="motivo">Las cifras se comparan por columna. Alineadas a la izquierda no se comparan</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Qué falta y no está</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td>Selección múltiple con acciones en lote</td><td class="motivo">Necesita definir qué acciones y con qué permisos. Es regla de negocio</td></tr>
+    <tr><td>Encabezado fijo al desplazar</td><td class="motivo">Trivial de añadir; se hace con el componente real</td></tr>
+    <tr><td>Filtros por columna</td><td class="motivo">Se resuelve con la barra de filtros, no dentro de la tabla</td></tr>
+    <tr><td>Reordenar columnas arrastrando</td><td class="motivo">Coste alto y beneficio dudoso. Ocultar ya cubre el 90 % del caso</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>Filas de <strong>34px</strong> en densidad cómoda, 28px en compacta.</td></tr>
+    <tr><td class="num">2</td><td>Las acciones de fila van como <strong>enlace</strong>, no como botón.</td></tr>
+    <tr><td class="num">3</td><td>El resaltado <strong>lleva filete</strong>, no solo fondo. Con cebra, el fondo solo no basta.</td></tr>
+    <tr><td class="num">4</td><td>Números a la derecha, en mono. Texto a la izquierda.</td></tr>
+    <tr><td class="num">5</td><td>La columna identificadora <strong>no se oculta</strong>.</td></tr>
+    <tr><td class="num">6</td><td>Los tres estados de pantalla —cargando, nunca consultado, sin resultados— <strong>son obligatorios</strong>.</td></tr>
+    <tr><td class="num">7</td><td>El CSV exporta el conjunto filtrado, nunca solo la página visible.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+
+  <div class="cod-bloque">
+    <div class="cod-cab">
+      <button class="cod-ver" data-ver="cod9" aria-expanded="false" aria-controls="cod9">
+        <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
+      </button>
+      <span class="cod-tit">Uso del componente</span>
+      <button class="copiar" data-copiar-de="cod9">Copiar</button>
+    </div>
+    <pre class="cod-pre" id="cod9" hidden>import { TablaDatos } from '@ae/sistema';
+
+&lt;TablaDatos
+  id="asistencia-personal"        // clave con la que se recuerda la configuración
+  filas={personal}
+  columnas={[
+    { clave: 'nombre', titulo: 'Trabajador', fija: true },
+    { clave: 'dni',    titulo: 'DNI',        tipo: 'mono' },
+    { clave: 'estado', titulo: 'Estado',     tipo: 'chip' },
+    { clave: 'tarde',  titulo: 'Min. tarde', tipo: 'numero' },
+  ]}
+  porPagina={10}                  // 10 · 25 · 50 · 0 para todas
+  exportarCSV
+  accionFila={(f) =&gt; &lt;Enlace href={`/personal/${f.dni}`}&gt;Editar&lt;/Enlace&gt;}
+/&gt;</pre>
+  </div>
     </section><section class="pagina" id="pg-paginacion" hidden>
       <div class="pag-cab"><span class="pag-ruta">Elementos</span><h2>Paginación</h2></div>
       
@@ -4545,7 +4975,7 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
     </section><section class="pagina" id="pg-contraste" hidden>
       <div class="pag-cab"><span class="pag-ruta">Referencia</span><h2>Contrastes</h2></div>
       
-<p class="pag-intro">84 pares bloqueantes en los dos modos ·
+<p class="pag-intro">86 pares bloqueantes en los dos modos ·
 <strong>0 fallos</strong> · WCAG 2.2 AA. Recalculados en cada build por
 <code>verificar-contraste.mjs</code>: si el contrato miente, el build falla.</p>
 <h3 class="sub-seccion">Modo claro</h3>
@@ -4591,6 +5021,14 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <td class="num">4.5</td>
       <td class="ok">cumple</td>
       <td class="motivo">Celda en banda cebra</td>
+    </tr>
+    <tr>
+      <td><code>texto-secundario</code></td>
+      <td><code>fondo-fila-alt</code></td>
+      <td class="num">5.22:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Dato de apoyo en banda cebra</td>
     </tr>
     <tr>
       <td><code>texto-secundario</code></td>
@@ -4928,10 +5366,18 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
     <tr>
       <td><code>texto-principal</code></td>
       <td><code>fondo-fila-alt</code></td>
-      <td class="num">13.40:1</td>
+      <td class="num">12.52:1</td>
       <td class="num">4.5</td>
       <td class="ok">cumple</td>
       <td class="motivo">Celda en banda cebra</td>
+    </tr>
+    <tr>
+      <td><code>texto-secundario</code></td>
+      <td><code>fondo-fila-alt</code></td>
+      <td class="num">8.08:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Dato de apoyo en banda cebra</td>
     </tr>
     <tr>
       <td><code>texto-secundario</code></td>
@@ -5249,7 +5695,7 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
   var bClaro = document.getElementById('b-claro');
   var bOscuro = document.getElementById('b-oscuro');
 
-  var hex = {"fondo-pagina":{"claro":"#F8F8F6","oscuro":"#1E1D1C"},"fondo-tarjeta":{"claro":"#FFFFFF","oscuro":"#242422"},"fondo-encabezado":{"claro":"#F0EFEE","oscuro":"#2C2B29"},"fondo-fila-alt":{"claro":"#F8F8F6","oscuro":"#242422"},"fondo-fila-hover":{"claro":"#E9F5FF","oscuro":"#363532"},"texto-principal":{"claro":"#2C2A25","oscuro":"#EFEEEB"},"texto-secundario":{"claro":"#6A6864","oscuro":"#C3C1BD"},"texto-pista":{"claro":"#6A6864","oscuro":"#989692"},"texto-invertido":{"claro":"#FFFFFF","oscuro":"#20201E"},"borde":{"claro":"#E0DFDE","oscuro":"#44423F"},"borde-fuerte":{"claro":"#C8C6C4","oscuro":"#575451"},"borde-campo":{"claro":"#8B8985","oscuro":"#8A8681"},"accion":{"claro":"#0063CB","oscuro":"#6CB2FF"},"accion-hover":{"claro":"#004EB2","oscuro":"#A0D0FF"},"accion-activa":{"claro":"#003B91","oscuro":"#CFE8FF"},"accion-texto":{"claro":"#FFFFFF","oscuro":"#20201E"},"accion-deshabilitada":{"claro":"#C8C6C4","oscuro":"#44423F"},"accion-texto-desh":{"claro":"#8B8985","oscuro":"#989692"},"accion-2":{"claro":"#655000","oscuro":"#DFCA9C"},"enlace":{"claro":"#0063CB","oscuro":"#6CB2FF"},"accion-2-fondo":{"claro":"#F1E4CA","oscuro":"#4F3E00"},"neutra-fondo":{"claro":"#F0EFEE","oscuro":"#3A3835"},"neutra-texto":{"claro":"#2C2A25","oscuro":"#EFEEEB"},"destructiva":{"claro":"#D40006","oscuro":"#FF7D62"},"destructiva-hover":{"claro":"#B40000","oscuro":"#FFAD95"},"destructiva-texto":{"claro":"#FFFFFF","oscuro":"#20201E"},"marco-fondo":{"claro":"#2C3D71","oscuro":"#2C3D71"},"marco-texto":{"claro":"#FFFFFF","oscuro":"#FFFFFF"},"marco-acento":{"claro":"#DFCA9C","oscuro":"#DFCA9C"},"marco-item-activo":{"claro":"#1D3163","oscuro":"#1D3163"},"foco":{"claro":"#BE7A14","oscuro":"#F0C060"},"foco-en-marco":{"claro":"#F0C060","oscuro":"#F0C060"},"exito-fondo":{"claro":"#E3F4E1","oscuro":"#233521"},"exito-texto":{"claro":"#14521A","oscuro":"#B3DCAE"},"exito-acento":{"claro":"#338136","oscuro":"#5FA862"},"aviso-fondo":{"claro":"#FFEBD6","oscuro":"#402C16"},"aviso-texto":{"claro":"#6B3B00","oscuro":"#FBC894"},"aviso-acento":{"claro":"#A46300","oscuro":"#C88A3C"},"error-fondo":{"claro":"#FFE6DF","oscuro":"#4D241F"},"error-texto":{"claro":"#8F1017","oscuro":"#FFB8A9"},"error-acento":{"claro":"#D63231","oscuro":"#E2665C"},"info-fondo":{"claro":"#E9EEFF","oscuro":"#273048"},"info-texto":{"claro":"#02468A","oscuro":"#BFD0FF"},"info-acento":{"claro":"#2F71CE","oscuro":"#6D97DE"}};
+  var hex = {"fondo-pagina":{"claro":"#F8F8F6","oscuro":"#1E1D1C"},"fondo-tarjeta":{"claro":"#FFFFFF","oscuro":"#242422"},"fondo-encabezado":{"claro":"#F0EFEE","oscuro":"#2C2B29"},"fondo-fila-alt":{"claro":"#F8F8F6","oscuro":"#2A2927"},"fondo-fila-hover":{"claro":"#E9F5FF","oscuro":"#363532"},"texto-principal":{"claro":"#2C2A25","oscuro":"#EFEEEB"},"texto-secundario":{"claro":"#6A6864","oscuro":"#C3C1BD"},"texto-pista":{"claro":"#6A6864","oscuro":"#989692"},"texto-invertido":{"claro":"#FFFFFF","oscuro":"#20201E"},"borde":{"claro":"#E0DFDE","oscuro":"#44423F"},"borde-fuerte":{"claro":"#C8C6C4","oscuro":"#575451"},"borde-campo":{"claro":"#8B8985","oscuro":"#8A8681"},"accion":{"claro":"#0063CB","oscuro":"#6CB2FF"},"accion-hover":{"claro":"#004EB2","oscuro":"#A0D0FF"},"accion-activa":{"claro":"#003B91","oscuro":"#CFE8FF"},"accion-texto":{"claro":"#FFFFFF","oscuro":"#20201E"},"accion-deshabilitada":{"claro":"#C8C6C4","oscuro":"#44423F"},"accion-texto-desh":{"claro":"#8B8985","oscuro":"#989692"},"accion-2":{"claro":"#655000","oscuro":"#DFCA9C"},"enlace":{"claro":"#0063CB","oscuro":"#6CB2FF"},"accion-2-fondo":{"claro":"#F1E4CA","oscuro":"#4F3E00"},"neutra-fondo":{"claro":"#F0EFEE","oscuro":"#3A3835"},"neutra-texto":{"claro":"#2C2A25","oscuro":"#EFEEEB"},"destructiva":{"claro":"#D40006","oscuro":"#FF7D62"},"destructiva-hover":{"claro":"#B40000","oscuro":"#FFAD95"},"destructiva-texto":{"claro":"#FFFFFF","oscuro":"#20201E"},"marco-fondo":{"claro":"#2C3D71","oscuro":"#2C3D71"},"marco-texto":{"claro":"#FFFFFF","oscuro":"#FFFFFF"},"marco-acento":{"claro":"#DFCA9C","oscuro":"#DFCA9C"},"marco-item-activo":{"claro":"#1D3163","oscuro":"#1D3163"},"foco":{"claro":"#BE7A14","oscuro":"#F0C060"},"foco-en-marco":{"claro":"#F0C060","oscuro":"#F0C060"},"exito-fondo":{"claro":"#E3F4E1","oscuro":"#233521"},"exito-texto":{"claro":"#14521A","oscuro":"#B3DCAE"},"exito-acento":{"claro":"#338136","oscuro":"#5FA862"},"aviso-fondo":{"claro":"#FFEBD6","oscuro":"#402C16"},"aviso-texto":{"claro":"#6B3B00","oscuro":"#FBC894"},"aviso-acento":{"claro":"#A46300","oscuro":"#C88A3C"},"error-fondo":{"claro":"#FFE6DF","oscuro":"#4D241F"},"error-texto":{"claro":"#8F1017","oscuro":"#FFB8A9"},"error-acento":{"claro":"#D63231","oscuro":"#E2665C"},"info-fondo":{"claro":"#E9EEFF","oscuro":"#273048"},"info-texto":{"claro":"#02468A","oscuro":"#BFD0FF"},"info-acento":{"claro":"#2F71CE","oscuro":"#6D97DE"}};
 
   function aplicar(modo) {
     raiz.setAttribute('data-tema', modo);
@@ -5323,6 +5769,185 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
   });
 
   abrir(location.hash.slice(1) || 'inicio');
+
+  // ── Tabla de datos ───────────────────────────────────────────────────────
+  (function () {
+    var tabla = document.getElementById('tb-tabla');
+    if (!tabla) return;
+    var FILAS = [{"nombre":"Álvarez Ponce, Rosa","dni":"70000000","cargo":"Docente · Inicial","sede":"Huaraz","est":"exito","estado":"Asistió","marca":"07:30","tarde":0},{"nombre":"Bustamante Ríos, Julio","dni":"70137923","cargo":"Docente · Primaria","sede":"Independencia","est":"exito","estado":"Asistió","marca":"07:37","tarde":0},{"nombre":"Castañeda Ludeña, Miriam","dni":"70275846","cargo":"Docente · Secundaria","sede":"Huaraz","est":"exito","estado":"Asistió","marca":"07:44","tarde":0},{"nombre":"Fernández Cruz, María","dni":"70413769","cargo":"Auxiliar","sede":"Independencia","est":"aviso","estado":"Tardanza","marca":"08:14","tarde":14},{"nombre":"García Núñez, Óscar","dni":"70551692","cargo":"Administración","sede":"Huaraz","est":"pend","estado":"Aún no marca","marca":"—","tarde":0},{"nombre":"Gutiérrez Paredes, Elena","dni":"70689615","cargo":"Mantenimiento","sede":"Independencia","est":"error","estado":"Falta","marca":"—","tarde":0},{"nombre":"Huamán Soto, Pedro","dni":"70827538","cargo":"Docente · Inicial","sede":"Huaraz","est":"info","estado":"Permiso","marca":"—","tarde":0},{"nombre":"Jiménez Vílchez, Andrés","dni":"70965461","cargo":"Docente · Primaria","sede":"Independencia","est":"exito","estado":"Asistió","marca":"07:54","tarde":0},{"nombre":"López Ñahui, Teresa","dni":"71103384","cargo":"Docente · Secundaria","sede":"Huaraz","est":"exito","estado":"Asistió","marca":"07:36","tarde":0},{"nombre":"Mendoza Quiñones, Raúl","dni":"71241307","cargo":"Auxiliar","sede":"Independencia","est":"exito","estado":"Asistió","marca":"07:43","tarde":0},{"nombre":"Pérez Salazar, Ana","dni":"71379230","cargo":"Administración","sede":"Huaraz","est":"aviso","estado":"Tardanza","marca":"08:10","tarde":10},{"nombre":"Quispe Mamani, Lucía","dni":"71517153","cargo":"Mantenimiento","sede":"Independencia","est":"pend","estado":"Aún no marca","marca":"—","tarde":0},{"nombre":"Ramírez Ochoa, Víctor","dni":"71655076","cargo":"Docente · Inicial","sede":"Huaraz","est":"error","estado":"Falta","marca":"—","tarde":0},{"nombre":"Rojas Vega, Luis","dni":"71792999","cargo":"Docente · Primaria","sede":"Independencia","est":"info","estado":"Permiso","marca":"—","tarde":0},{"nombre":"Sánchez Idrogo, Patricia","dni":"71930922","cargo":"Docente · Secundaria","sede":"Huaraz","est":"exito","estado":"Asistió","marca":"07:53","tarde":0},{"nombre":"Torres Bejarano, Iván","dni":"72068845","cargo":"Auxiliar","sede":"Independencia","est":"exito","estado":"Asistió","marca":"07:35","tarde":0},{"nombre":"Valdivia Ccahuana, Sofía","dni":"72206768","cargo":"Administración","sede":"Huaraz","est":"exito","estado":"Asistió","marca":"07:42","tarde":0},{"nombre":"Zúñiga Peralta, Martín","dni":"72344691","cargo":"Mantenimiento","sede":"Independencia","est":"aviso","estado":"Tardanza","marca":"08:06","tarde":6},{"nombre":"Aguilar Ñopo, Beatriz","dni":"72482614","cargo":"Docente · Inicial","sede":"Huaraz","est":"pend","estado":"Aún no marca","marca":"—","tarde":0},{"nombre":"Barrantes Yupanqui, Hugo","dni":"72620537","cargo":"Docente · Primaria","sede":"Independencia","est":"error","estado":"Falta","marca":"—","tarde":0},{"nombre":"Cáceres Molina, Nadia","dni":"72758460","cargo":"Docente · Secundaria","sede":"Huaraz","est":"info","estado":"Permiso","marca":"—","tarde":0},{"nombre":"Delgado Ríos, Fabián","dni":"72896383","cargo":"Auxiliar","sede":"Independencia","est":"exito","estado":"Asistió","marca":"07:52","tarde":0},{"nombre":"Espinoza Marín, Gabriela","dni":"73034306","cargo":"Administración","sede":"Huaraz","est":"exito","estado":"Asistió","marca":"07:34","tarde":0},{"nombre":"Flores Ccopa, Ignacio","dni":"73172229","cargo":"Mantenimiento","sede":"Independencia","est":"exito","estado":"Asistió","marca":"07:41","tarde":0},{"nombre":"Guzmán Alarcón, Jimena","dni":"73310152","cargo":"Docente · Inicial","sede":"Huaraz","est":"aviso","estado":"Tardanza","marca":"08:27","tarde":27},{"nombre":"Herrera Túpac, Kevin","dni":"73448075","cargo":"Docente · Primaria","sede":"Independencia","est":"pend","estado":"Aún no marca","marca":"—","tarde":0},{"nombre":"Ibáñez Rosales, Lorena","dni":"73585998","cargo":"Docente · Secundaria","sede":"Huaraz","est":"error","estado":"Falta","marca":"—","tarde":0},{"nombre":"Juárez Manrique, Mateo","dni":"73723921","cargo":"Auxiliar","sede":"Independencia","est":"info","estado":"Permiso","marca":"—","tarde":0},{"nombre":"Lazo Chávez, Natalia","dni":"73861844","cargo":"Administración","sede":"Huaraz","est":"exito","estado":"Asistió","marca":"07:51","tarde":0},{"nombre":"Maldonado Ríos, Omar","dni":"73999767","cargo":"Mantenimiento","sede":"Independencia","est":"exito","estado":"Asistió","marca":"07:33","tarde":0},{"nombre":"Navarro Espíritu, Paula","dni":"74137690","cargo":"Docente · Inicial","sede":"Huaraz","est":"exito","estado":"Asistió","marca":"07:40","tarde":0},{"nombre":"Ocampo Villar, Quintín","dni":"74275613","cargo":"Docente · Primaria","sede":"Independencia","est":"aviso","estado":"Tardanza","marca":"08:23","tarde":23},{"nombre":"Palacios Tirado, Rebeca","dni":"74413536","cargo":"Docente · Secundaria","sede":"Huaraz","est":"pend","estado":"Aún no marca","marca":"—","tarde":0},{"nombre":"Rivas Coronel, Sergio","dni":"74551459","cargo":"Auxiliar","sede":"Independencia","est":"error","estado":"Falta","marca":"—","tarde":0},{"nombre":"Salcedo Bravo, Tatiana","dni":"74689382","cargo":"Administración","sede":"Huaraz","est":"info","estado":"Permiso","marca":"—","tarde":0},{"nombre":"Ubillús Grados, Ulises","dni":"74827305","cargo":"Mantenimiento","sede":"Independencia","est":"exito","estado":"Asistió","marca":"07:50","tarde":0},{"nombre":"Vargas Melgarejo, Verónica","dni":"74965228","cargo":"Docente · Inicial","sede":"Huaraz","est":"exito","estado":"Asistió","marca":"07:32","tarde":0},{"nombre":"Yarleque Ampuero, Wilmer","dni":"75103151","cargo":"Docente · Primaria","sede":"Independencia","est":"exito","estado":"Asistió","marca":"07:39","tarde":0}];
+    var COLS = [{"k":"nombre","t":"Trabajador","tipo":"texto","fija":true},{"k":"dni","t":"DNI","tipo":"mono"},{"k":"cargo","t":"Cargo","tipo":"texto"},{"k":"sede","t":"Sede","tipo":"texto"},{"k":"estado","t":"Estado","tipo":"chip"},{"k":"marca","t":"Marca","tipo":"mono"},{"k":"tarde","t":"Min. tarde","tipo":"numero"}];
+    var CLAVE = 'mmi-tabla-asistencia';
+
+    var cab = document.getElementById('tb-cab');
+    var cuerpo = document.getElementById('tb-cuerpo');
+    var selTam = document.getElementById('tb-tam');
+    var panel = document.getElementById('tb-cols-panel');
+    var btnCols = document.getElementById('tb-cols-btn');
+
+    // Configuración recordada por persona: columnas visibles, orden y tamaño.
+    var cfg = { ocultas: [], orden: null, dir: 1, tam: 10, pag: 1 };
+    try {
+      var g = JSON.parse(localStorage.getItem(CLAVE) || 'null');
+      if (g) { cfg.ocultas = g.ocultas || []; cfg.orden = g.orden || null; cfg.dir = g.dir || 1; cfg.tam = g.tam == null ? 10 : g.tam; }
+    } catch (e) {}
+    function guardar() {
+      try { localStorage.setItem(CLAVE, JSON.stringify({ ocultas: cfg.ocultas, orden: cfg.orden, dir: cfg.dir, tam: cfg.tam })); } catch (e) {}
+    }
+
+    var visibles = function () { return COLS.filter(function (c) { return cfg.ocultas.indexOf(c.k) === -1; }); };
+
+    function ordenadas() {
+      var f = FILAS.slice();
+      if (!cfg.orden) return f;
+      var col = COLS.filter(function (c) { return c.k === cfg.orden; })[0];
+      return f.sort(function (a, b) {
+        var x = a[cfg.orden], y = b[cfg.orden];
+        if (col && col.tipo === 'numero') return (x - y) * cfg.dir;
+        return String(x).localeCompare(String(y), 'es', { sensitivity: 'base' }) * cfg.dir;
+      });
+    }
+
+    function pintar() {
+      var f = ordenadas();
+      var tam = cfg.tam || f.length;
+      var paginas = Math.max(1, Math.ceil(f.length / tam));
+      if (cfg.pag > paginas) cfg.pag = paginas;
+      var desde = (cfg.pag - 1) * tam;
+      var trozo = f.slice(desde, desde + tam);
+
+      // Encabezado: cada columna ordena, con flecha y aria-sort.
+      cab.innerHTML = visibles().map(function (c) {
+        var act = cfg.orden === c.k;
+        var aria = act ? (cfg.dir === 1 ? 'ascending' : 'descending') : 'none';
+        return '<th class="tb-th' + (c.tipo === 'numero' ? ' tb-num' : '') + '" aria-sort="' + aria + '">' +
+          '<button class="tb-orden' + (act ? ' activo' : '') + '" data-col="' + c.k + '">' +
+          '<span>' + c.t + '</span>' +
+          '<span class="tb-flecha">' + (act ? (cfg.dir === 1 ? '↑' : '↓') : '') + '</span></button></th>';
+      }).join('') + '<th class="tb-th"></th>';
+
+      cuerpo.innerHTML = trozo.length ? trozo.map(function (fila, i) {
+        return '<tr class="' + (i % 2 ? 'tb-alt' : '') + '">' + visibles().map(function (c) {
+          var v = fila[c.k];
+          if (c.tipo === 'chip') return '<td><span class="chip chip-' + fila.est + '">' + v + '</span></td>';
+          if (c.tipo === 'numero') return '<td class="tb-num mono">' + (v || '—') + '</td>';
+          if (c.tipo === 'mono') return '<td class="mono">' + v + '</td>';
+          return '<td>' + v + '</td>';
+        }).join('') + '<td class="tb-acc"><a href="#" class="enlace">Editar</a></td></tr>';
+      }).join('')
+        : '<tr><td colspan="' + (visibles().length + 1) + '" class="tb-vacio">' +
+          '<strong>Sin resultados.</strong><br>Prueba con menos filtros.</td></tr>';
+
+      document.getElementById('tb-conteo').textContent = FILAS.length + ' trabajadores';
+      document.getElementById('tb-rango').textContent = f.length
+        ? (desde + 1) + '–' + Math.min(desde + tam, f.length) + ' de ' + f.length
+        : '0 de 0';
+
+      // Paginación
+      var pag = document.getElementById('tb-pag');
+      if (paginas <= 1) { pag.innerHTML = ''; }
+      else {
+        var botones = [];
+        botones.push('<button class="tb-p" data-pag="' + (cfg.pag - 1) + '"' + (cfg.pag === 1 ? ' disabled' : '') + '>‹</button>');
+        for (var p = 1; p <= paginas; p++) {
+          if (p === 1 || p === paginas || Math.abs(p - cfg.pag) <= 1) {
+            botones.push('<button class="tb-p' + (p === cfg.pag ? ' activa' : '') + '" data-pag="' + p + '">' + p + '</button>');
+          } else if (Math.abs(p - cfg.pag) === 2) botones.push('<span class="tb-elip">…</span>');
+        }
+        botones.push('<button class="tb-p" data-pag="' + (cfg.pag + 1) + '"' + (cfg.pag === paginas ? ' disabled' : '') + '>›</button>');
+        pag.innerHTML = botones.join('');
+      }
+      selTam.value = String(cfg.tam);
+    }
+
+    function pintarPanel() {
+      panel.innerHTML = COLS.map(function (c) {
+        var vis = cfg.ocultas.indexOf(c.k) === -1;
+        return '<label class="tb-col-op' + (c.fija ? ' fija' : '') + '">' +
+          '<input type="checkbox" data-col="' + c.k + '"' + (vis ? ' checked' : '') + (c.fija ? ' disabled' : '') + '>' +
+          '<span>' + c.t + '</span>' + (c.fija ? '<em>fija</em>' : '') + '</label>';
+      }).join('') + '<button class="tb-col-reset">Restablecer</button>';
+    }
+
+    // Ordenar: primer clic ascendente, segundo descendente, tercero quita el orden.
+    cab.addEventListener('click', function (e) {
+      var b = e.target.closest('.tb-orden'); if (!b) return;
+      var k = b.dataset.col;
+      if (cfg.orden !== k) { cfg.orden = k; cfg.dir = 1; }
+      else if (cfg.dir === 1) cfg.dir = -1;
+      else { cfg.orden = null; cfg.dir = 1; }
+      guardar(); pintar();
+    });
+
+    document.getElementById('tb-pag').addEventListener('click', function (e) {
+      var b = e.target.closest('.tb-p'); if (!b || b.disabled) return;
+      cfg.pag = Number(b.dataset.pag); pintar();
+    });
+
+    selTam.addEventListener('change', function () {
+      var n = Number(selTam.value);
+      if (n === 0 && FILAS.length > 500 &&
+          !confirm('Vas a pintar ' + FILAS.length + ' filas de una vez. Puede tardar. ¿Continuar?')) {
+        selTam.value = String(cfg.tam); return;
+      }
+      cfg.tam = n; cfg.pag = 1; guardar(); pintar();
+    });
+
+    btnCols.addEventListener('click', function () {
+      var abierto = !panel.hidden;
+      panel.hidden = abierto;
+      btnCols.setAttribute('aria-expanded', String(!abierto));
+      if (!abierto) pintarPanel();
+    });
+    panel.addEventListener('change', function (e) {
+      var ch = e.target.closest('input[data-col]'); if (!ch) return;
+      var k = ch.dataset.col;
+      if (ch.checked) cfg.ocultas = cfg.ocultas.filter(function (x) { return x !== k; });
+      else cfg.ocultas.push(k);
+      guardar(); pintar();
+    });
+    panel.addEventListener('click', function (e) {
+      if (!e.target.closest('.tb-col-reset')) return;
+      cfg.ocultas = []; cfg.orden = null; cfg.dir = 1; cfg.tam = 10; cfg.pag = 1;
+      guardar(); pintarPanel(); pintar();
+    });
+    document.addEventListener('click', function (e) {
+      if (!panel.hidden && !e.target.closest('.tb-cols-menu')) {
+        panel.hidden = true; btnCols.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // CSV del conjunto ORDENADO Y FILTRADO, no de la página visible.
+    document.getElementById('tb-csv').addEventListener('click', function () {
+      var cols = visibles();
+      var esc = function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; };
+      var lineas = [cols.map(function (c) { return esc(c.t); }).join(';')];
+      ordenadas().forEach(function (f) {
+        lineas.push(cols.map(function (c) { return esc(f[c.k]); }).join(';'));
+      });
+      // BOM para que Excel en Windows lea bien las tildes.
+      var blob = new Blob(['\ufeff' + lineas.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'asistencia-personal.csv';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    pintar();
+  })();
+
+  // ── Filas desplegables ───────────────────────────────────────────────────
+  document.querySelectorAll('.tb-chev').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var abierto = b.getAttribute('aria-expanded') === 'true';
+      var det = document.getElementById(b.getAttribute('aria-controls'));
+      b.setAttribute('aria-expanded', String(!abierto));
+      det.classList.toggle('abierto', !abierto);
+      b.closest('tr').classList.toggle('abierto', !abierto);
+      var cargo = b.getAttribute('aria-label').replace(/^(Mostrar|Ocultar) personal de /, '');
+      b.setAttribute('aria-label', (abierto ? 'Mostrar' : 'Ocultar') + ' personal de ' + cargo);
+    });
+  });
 
   // ── Selector con búsqueda ────────────────────────────────────────────────
   // Demostración del comportamiento. En producción esto lo resuelve Radix

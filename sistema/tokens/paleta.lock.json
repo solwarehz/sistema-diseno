@@ -1,6 +1,6 @@
 {
   "documento": "MMI-DS",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "norma": "WCAG 2.2 AA",
   "generado": "node sistema/tokens/generar.mjs",
   "modos": [
@@ -9,17 +9,17 @@
   ],
   "aviso": "Archivo generado. No editar a mano. La fuente es sistema/tokens/fuente.mjs. Cambiar un valor exige regenerar, re-verificar y subir versión (§2.5 regla 8).",
   "resumen": {
-    "paresTotales": 112,
-    "paresBloqueantes": 84,
-    "paresInformativos": 28,
+    "paresTotales": 118,
+    "paresBloqueantes": 86,
+    "paresInformativos": 32,
     "fallos": 0,
     "porModo": {
       "claro": {
-        "bloqueantes": 42,
+        "bloqueantes": 43,
         "fallos": 0
       },
       "oscuro": {
-        "bloqueantes": 42,
+        "bloqueantes": 43,
         "fallos": 0
       }
     }
@@ -116,15 +116,15 @@
     },
     "fondo-fila-alt": {
       "claro": "#F8F8F6",
-      "oscuro": "#242422",
-      "origen": "gris.50",
-      "uso": "Fila alterna si se usa banda cebra"
+      "oscuro": "#2A2927",
+      "origen": "gris.50/dir",
+      "uso": "Fila alterna de la banda cebra"
     },
     "fondo-fila-hover": {
       "claro": "#E9F5FF",
       "oscuro": "#363532",
       "origen": "azul.50",
-      "uso": "Fila bajo el cursor y fila seleccionada"
+      "uso": "Fila bajo el cursor y fila seleccionada. Acompañado de filete `accion` de 3px"
     },
     "texto-principal": {
       "claro": "#2C2A25",
@@ -448,6 +448,39 @@
       "minimo": 4.5,
       "motivo": "Celda en banda cebra",
       "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "texto-secundario",
+      "fondo": "fondo-fila-alt",
+      "hexFrente": "#6A6864",
+      "hexFondo": "#F8F8F6",
+      "ratio": 5.22,
+      "minimo": 4.5,
+      "motivo": "Dato de apoyo en banda cebra",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "fondo-fila-alt",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#F8F8F6",
+      "hexFondo": "#FFFFFF",
+      "ratio": 1.06,
+      "minimo": "informativo",
+      "motivo": "Cebra: debe distinguirse de la fila blanca",
+      "cumple": null
+    },
+    {
+      "modo": "claro",
+      "frente": "fondo-fila-hover",
+      "fondo": "fondo-fila-alt",
+      "hexFrente": "#E9F5FF",
+      "hexFondo": "#F8F8F6",
+      "ratio": 1.04,
+      "minimo": "informativo",
+      "motivo": "El hover debe verse también sobre la fila alterna",
+      "cumple": null
     },
     {
       "modo": "claro",
@@ -1059,11 +1092,44 @@
       "frente": "texto-principal",
       "fondo": "fondo-fila-alt",
       "hexFrente": "#EFEEEB",
-      "hexFondo": "#242422",
-      "ratio": 13.4,
+      "hexFondo": "#2A2927",
+      "ratio": 12.52,
       "minimo": 4.5,
       "motivo": "Celda en banda cebra",
       "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-secundario",
+      "fondo": "fondo-fila-alt",
+      "hexFrente": "#C3C1BD",
+      "hexFondo": "#2A2927",
+      "ratio": 8.08,
+      "minimo": 4.5,
+      "motivo": "Dato de apoyo en banda cebra",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "fondo-fila-alt",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#2A2927",
+      "hexFondo": "#242422",
+      "ratio": 1.06,
+      "minimo": "informativo",
+      "motivo": "Cebra: debe distinguirse de la fila blanca",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "fondo-fila-hover",
+      "fondo": "fondo-fila-alt",
+      "hexFrente": "#363532",
+      "hexFondo": "#2A2927",
+      "ratio": 1.18,
+      "minimo": "informativo",
+      "motivo": "El hover debe verse también sobre la fila alterna",
+      "cumple": null
     },
     {
       "modo": "oscuro",

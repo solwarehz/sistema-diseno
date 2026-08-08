@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.4.0';
+export const VERSION = '1.5.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -95,8 +95,21 @@ export const semanticos = {
   'fondo-pagina':      { claro: '#F8F8F6', oscuro: '#1E1D1C', origen: 'gris.50',  uso: 'Fondo detrás de las tarjetas' },
   'fondo-tarjeta':     { claro: '#FFFFFF', oscuro: '#242422', origen: 'gris.0',   uso: 'Tarjeta, panel, cuerpo de tabla, modal' },
   'fondo-encabezado':  { claro: '#F0EFEE', oscuro: '#2C2B29', origen: 'gris.100', uso: 'Encabezado de tabla' },
-  'fondo-fila-alt':    { claro: '#F8F8F6', oscuro: '#242422', origen: 'gris.50',  uso: 'Fila alterna si se usa banda cebra' },
-  'fondo-fila-hover':  { claro: '#E9F5FF', oscuro: '#363532', origen: 'azul.50',  uso: 'Fila bajo el cursor y fila seleccionada' },
+  // v1.5.0 — En oscuro valía #242422, idéntico a `fondo-tarjeta`: 1:1. No había
+  // cebra en modo oscuro. Ahora da 1,06 contra la tarjeta, la misma sutileza
+  // que la cebra en claro, y 1,18 contra el hover.
+  'fondo-fila-alt':    { claro: '#F8F8F6', oscuro: '#2A2927', origen: 'gris.50/dir', uso: 'Fila alterna de la banda cebra' },
+  // v1.5.0 — Se probó reforzarlo a azul-100 #CFE8FF porque sobre la fila
+  // alterna solo daba 1,04:1. El candado lo rechazó: `texto-secundario` caía a
+  // 4,40:1. El valor más fuerte que aún cumple es #D4EAFF, y da 1,16 sobre la
+  // alterna — perceptualmente casi lo mismo que 1,04.
+  //
+  // Conclusión: la cebra y el resaltado compiten en el mismo canal, la
+  // luminancia del fondo, y ahí no hay margen. El resaltado se resuelve con un
+  // FILETE de 3px en `accion`, igual que el chip y la tarjeta de persona: un
+  // signo estructural es inequívoco sobre cualquier fondo y no cuesta contraste.
+  // El valor se queda en azul-50, que da 5,02:1 con `texto-secundario`.
+  'fondo-fila-hover':  { claro: '#E9F5FF', oscuro: '#363532', origen: 'azul.50', uso: 'Fila bajo el cursor y fila seleccionada. Acompañado de filete `accion` de 3px' },
 
   // ── Texto ────────────────────────────────────────────────────────────────
   'texto-principal':   { claro: '#2C2A25', oscuro: '#EFEEEB', origen: 'gris.900', uso: 'Contenido, títulos, celdas de tabla' },
@@ -203,6 +216,9 @@ export const pares = [
   ['texto-principal',  'fondo-encabezado', 4.5, 'Encabezado de tabla'],
   ['texto-principal',  'fondo-fila-hover', 4.5, 'Celda en fila bajo el cursor'],
   ['texto-principal',  'fondo-fila-alt',   4.5, 'Celda en banda cebra'],
+  ['texto-secundario', 'fondo-fila-alt',   4.5, 'Dato de apoyo en banda cebra'],
+  ['fondo-fila-alt',   'fondo-tarjeta',    'informativo', 'Cebra: debe distinguirse de la fila blanca'],
+  ['fondo-fila-hover', 'fondo-fila-alt',   'informativo', 'El hover debe verse también sobre la fila alterna'],
   ['texto-secundario', 'fondo-tarjeta',    4.5, 'Dato de apoyo sobre tarjeta'],
   ['texto-secundario', 'fondo-pagina',     4.5, 'Dato de apoyo sobre página'],
   ['texto-secundario', 'fondo-encabezado', 4.5, 'Etiqueta de columna no primaria'],
