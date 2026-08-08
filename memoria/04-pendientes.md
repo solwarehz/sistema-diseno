@@ -97,3 +97,43 @@ mensajes que ya existen en los sistemas y corregir los que no dicen qué hacer.
 | Storybook | Prohibido por §9. Ver D-05 |
 | Librería de componentes general | Prohibido por §9. Solo Radix para 3 casos. Ver D-08 |
 | Mostrar markup interno de componentes compartidos | §9. Se copia la importación y las props |
+
+---
+
+## Huecos del sistema detectados por el auditor
+
+`node sistema/candado/auditar-cascaron.mjs` comprueba que el catálogo use solo
+lo que el sistema define. Encontró dos cosas que **el sistema no cubre**. No son
+incumplimientos: son tokens que faltan.
+
+### P-11 · Capas sobre el marco
+
+El marco es una superficie oscura y encima viven tres cosas sin token:
+
+| Uso | Hoy | Token que falta |
+|---|---|---|
+| Separador dentro del marco | `rgba(255,255,255,.10)` | `marco-borde` |
+| Correo del usuario, atenuado | `rgba(255,255,255,.62)` | `marco-texto-tenue` |
+| Punto de «sin construir» | `rgba(255,255,255,.34)` | `marco-tenue` |
+
+`marco-texto` existe y es blanco puro, pero no hay grados intermedios. Mientras
+no se definan, el cascarón usa blanco con alfa y lo deja **declarado en el
+código**, no escondido.
+
+Al definirlos hay que medirlos contra `marco-fondo` como cualquier otro par.
+
+### P-12 · Elevación
+
+El sistema no define sombras. El cascarón usa dos —capa flotante y aviso—
+declaradas una sola vez como variables propias, no repetidas.
+
+Falta decidir si la elevación entra al sistema y con cuántos niveles. Con tres
+superficies flotantes (menú de usuario, calendario y avisos) probablemente
+bastan dos.
+
+### P-13 · Radio de control
+
+El sistema define radio de tarjeta (6px) y de chip (3px). Los controles
+pequeños —botones de paginación, ítems de menú— usaban 4px y 5px. Se llevaron a
+6px para no inventar un valor, pero conviene decidir si un radio de control
+propio tiene sentido.
