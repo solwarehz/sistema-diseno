@@ -1496,6 +1496,185 @@ ${verCodigo(
   </tbody>
 </table>`;
 
+// ── Elemento: Tarjeta ───────────────────────────────────────────────────────
+
+// Silueta neutra. No se inventan fotos de personas: cuando no hay foto se
+// muestran las iniciales, que es lo que hará el sistema real.
+const SILUETA = `<svg viewBox="0 0 40 40" class="av-silueta" aria-hidden="true">
+  <circle cx="20" cy="15" r="7" fill="currentColor" opacity=".5"/>
+  <path d="M6 38c0-8 6-13 14-13s14 5 14 13" fill="currentColor" opacity=".5"/>
+</svg>`;
+
+const iniciales = (n) => {
+  const [ap, no] = n.split(',').map((s) => s.trim());
+  return (ap[0] + (no ? no[0] : ap.split(' ')[1][0])).toUpperCase();
+};
+
+const PERSONAL = [
+  ['Álvarez Ponce, Rosa', 'Docente · Primaria', 'exito', 'Asistió', '07:42', true],
+  ['Quispe Mamani, Lucía', 'Docente · Inicial', 'exito', 'Asistió', '07:38', false],
+  ['Rojas Vega, Luis', 'Auxiliar', 'aviso', 'Tardanza', '08:21', false],
+  ['Fernández Cruz, María', 'Docente · Secundaria', 'pend', 'Aún no marca', '—', true],
+  ['Huamán Soto, Pedro', 'Mantenimiento', 'error', 'Falta', '—', false],
+  ['Mendoza Quiñones, Raúl', 'Docente · Secundaria', 'info', 'Permiso', '—', false],
+];
+
+const tarjetaPersona = ([nombre, cargo, est, etiqueta, hora, conFoto]) => `
+  <article class="tp tp-${est}">
+    <div class="tp-av">${conFoto ? SILUETA : `<span class="tp-ini">${iniciales(nombre)}</span>`}</div>
+    <div class="tp-txt">
+      <h4 class="tp-nom">${nombre}</h4>
+      <p class="tp-cargo">${cargo}</p>
+      <div class="tp-pie">
+        <span class="chip chip-${est === 'pend' ? 'pend' : est}">${etiqueta}</span>
+        <span class="tp-hora mono">${hora}</span>
+      </div>
+    </div>
+  </article>`;
+
+const pagTarjeta = `
+<p class="pag-intro">Dos componentes con el mismo nombre y trabajos distintos. La
+<strong>tarjeta de persona</strong> se lee en bloque, de un vistazo y a decenas. La
+<strong>tarjeta normal</strong> agrupa contenido en una pantalla.</p>
+
+<h3 class="sub-seccion">Tarjeta de persona — control de asistencia</h3>
+<p class="seccion-sub">Foto o iniciales, apellidos y nombre, cargo, estado y hora de marca. Pensada para mirar treinta a la vez y saber quién falta <strong>sin leer una por una</strong>.</p>
+<div class="bloque">
+  <div class="tp-rejilla">${PERSONAL.map(tarjetaPersona).join('')}</div>
+</div>
+
+<div class="aviso">
+  <strong>Por qué el estado va también en el borde izquierdo.</strong> Con treinta tarjetas
+  en pantalla, el chip es demasiado pequeño para barrerlo con la vista. El filete recorre
+  toda la altura y se ve de reojo. Es el mismo criterio del chip: el color estructural va en
+  el borde, no en el relleno.
+</div>
+
+<h3 class="sub-seccion">Activo e inactivo</h3>
+<div class="bloque">
+  <div class="tp-rejilla tp-rejilla-2">
+    ${tarjetaPersona(['Álvarez Ponce, Rosa', 'Docente · Primaria', 'exito', 'Activo', '07:42', true])}
+    ${tarjetaPersona(['Torres Bejarano, Iván', 'Docente · Primaria', 'inact', 'Inactivo', '—', false])}
+  </div>
+</div>
+<table class="tabla-contraste" style="margin-top:12px">
+  <thead><tr><th>Estado</th><th>Tokens</th><th>Se distingue por</th></tr></thead>
+  <tbody>
+    <tr><td>Activo · Asistió</td><td class="mono">exito-*</td><td class="motivo">Filete verde, chip «Activo», superficie normal</td></tr>
+    <tr><td>Tardanza</td><td class="mono">aviso-*</td><td class="motivo">Filete ámbar y la hora de marca visible</td></tr>
+    <tr><td>Aún no marca</td><td class="mono">borde-fuerte</td><td class="motivo">Filete neutro. <strong>No es falta todavía</strong></td></tr>
+    <tr><td>Falta</td><td class="mono">error-*</td><td class="motivo">Filete rojo. Solo cuando se cierra el día</td></tr>
+    <tr><td>Permiso</td><td class="mono">info-*</td><td class="motivo">Filete azul. Ausencia justificada</td></tr>
+    <tr><td>Inactivo — ya no trabaja aquí</td><td class="mono">fondo-encabezado</td><td class="motivo"><strong>Cambia la superficie</strong>, no la opacidad del texto</td></tr>
+  </tbody>
+</table>
+
+<div class="aviso">
+  <strong>«Aún no marca» y «Falta» no son el mismo estado</strong>, igual que «nunca
+  consultado» y «sin resultados» no lo son en una tabla. A las 08:00 nadie ha faltado
+  todavía. Pintar de rojo a quien aún puede llegar produce llamadas que no hacían falta.
+</div>
+
+<h3 class="sub-seccion">Nunca se atenúa con opacidad</h3>
+<div class="aviso">
+  <strong>Medido:</strong> <code>texto-principal</code> a opacidad <strong>0,6</strong> cae a
+  <strong>4,00:1</strong> y ya incumple AA. A <strong>0,5</strong> queda en
+  <strong>2,99:1</strong>. Y <code>texto-secundario</code> a 0,7 se queda en 2,98:1.
+  <br><br>
+  Atenuar la tarjeta inactiva es el reflejo habitual y <strong>rompe el contraste de media
+  pantalla</strong>. Lo inactivo se marca cambiando la superficie y el chip; el texto se queda
+  a contraste completo.
+</div>
+<div class="bloque">
+  <div class="enl-comp">
+    <div class="enl-caja bien">
+      <div class="tp-rejilla-1">${tarjetaPersona(['Torres Bejarano, Iván', 'Docente · Primaria', 'inact', 'Inactivo', '—', false])}</div>
+      <span class="bien-et">Superficie distinta, texto a 12,48:1</span>
+    </div>
+    <div class="enl-caja mal">
+      <div class="tp-rejilla-1 tp-opaca">${tarjetaPersona(['Torres Bejarano, Iván', 'Docente · Primaria', 'inact', 'Inactivo', '—', false])}</div>
+      <span class="mal-et">Opacidad 0,5 — el texto cae a 2,99:1</span>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">La foto</h3>
+<div class="bloque">
+  <div class="muestra-fila">
+    <div class="mf"><div class="tp-av tp-av-suelto">${SILUETA}</div><span class="mf-et"><b>Sin foto cargada</b><br>Silueta neutra<br>Marcador, no una persona inventada</span></div>
+    <div class="mf"><div class="tp-av tp-av-suelto"><span class="tp-ini">QM</span></div><span class="mf-et"><b>Iniciales</b><br>Del primer apellido y el nombre<br>Preferible a la silueta</span></div>
+    <div class="mf"><div class="tp-av tp-av-suelto tp-av-marco"><span class="tp-ini">RA</span></div><span class="mf-et"><b>En el marco</b><br><code>marco-acento</code></span></div>
+  </div>
+</div>
+<p class="pag-intro" style="margin-top:12px">Las iniciales <strong>ganan a la silueta</strong>:
+identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el avatar
+<strong>nunca es el único identificador</strong>: el nombre va siempre al lado.</p>
+
+<h3 class="sub-seccion">Tarjeta normal</h3>
+<div class="bloque">
+  <div class="tn-rejilla">
+    <article class="tn">
+      <div class="tn-cuerpo"><h4>Simple</h4><p>Solo contenido. Fondo <code>fondo-tarjeta</code>, borde <code>borde</code>, radio 6px.</p></div>
+    </article>
+    <article class="tn">
+      <div class="tn-cab"><h4>Con cabecera</h4><span class="chip chip-info">12</span></div>
+      <div class="tn-cuerpo"><p>La cabecera separa el título del contenido con un divisor.</p></div>
+    </article>
+    <article class="tn">
+      <div class="tn-cab"><h4>Con acciones</h4></div>
+      <div class="tn-cuerpo"><p>Las acciones van al pie, alineadas a la derecha.</p></div>
+      <div class="tn-pie"><button class="btn btn-terc">Cancelar</button><button class="btn btn-1">Guardar</button></div>
+    </article>
+    <a href="#" class="tn tn-pulsable">
+      <div class="tn-cuerpo"><h4>Pulsable →</h4><p>Si toda la tarjeta navega, es un <code>&lt;a&gt;</code>. <strong>Nunca un div con onClick.</strong></p></div>
+    </a>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>El estado va en el <strong>filete del borde</strong>, no en el fondo de la tarjeta. Un fondo de color entero cansa y compite con el contenido.</td></tr>
+    <tr><td class="num">2</td><td><strong>Nunca opacidad</strong> para atenuar. Medido: a 0,6 ya incumple AA.</td></tr>
+    <tr><td class="num">3</td><td>«Aún no marca» ≠ «Falta». No pintes de rojo a quien todavía puede llegar.</td></tr>
+    <tr><td class="num">4</td><td>El avatar nunca identifica solo. <strong>El nombre va siempre.</strong></td></tr>
+    <tr><td class="num">5</td><td>Si toda la tarjeta navega, es un <code>&lt;a&gt;</code>. Si tiene varias acciones dentro, <strong>no</strong> es pulsable entera.</td></tr>
+    <tr><td class="num">6</td><td>El estado lleva texto, no solo color. Se lee «Tardanza», no se deduce del ámbar.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+${verCodigo(
+  'Tarjeta de persona',
+  `import { TarjetaPersona } from '@ae/sistema';
+
+<TarjetaPersona
+  nombre="Álvarez Ponce, Rosa"
+  cargo="Docente · Primaria"
+  foto={trabajador.foto}      // si falta, muestra iniciales
+  estado="asistio"            // asistio · tardanza · pendiente · falta · permiso · inactivo
+  hora="07:42"
+/>`
+)}
+<div style="height:10px"></div>
+${verCodigo(
+  'Tarjeta normal',
+  `import { Tarjeta } from '@ae/sistema';
+
+<Tarjeta titulo="Resumen del mes">
+  <p>Contenido</p>
+</Tarjeta>
+
+<Tarjeta titulo="Editar sede" acciones={
+  <><Boton variante="terciaria">Cancelar</Boton>
+    <Boton variante="principal">Guardar</Boton></>
+}>
+  <CampoTexto etiqueta="Nombre" />
+</Tarjeta>
+
+<Tarjeta href="/estudiantes/71234567" titulo="Quispe Mamani, Ana" />`
+)}`;
+
 // ── Elementos aún no construidos ────────────────────────────────────────────
 
 const pendiente = (nombre, fase) => `
@@ -1729,7 +1908,7 @@ const CATALOGO = [
       { id: 'campo', t: 'Campo de texto', estado: 'listo', c: pagCampo },
       { id: 'selector', t: 'Selector', estado: 'listo', c: pagSelector },
       { id: 'chip', t: 'Chip de estado', estado: 'listo', c: pagChip },
-      { id: 'tarjeta', t: 'Tarjeta', estado: 'pendiente', c: pendiente('Tarjeta', 'fase 4') },
+      { id: 'tarjeta', t: 'Tarjeta', estado: 'listo', c: pagTarjeta },
       { id: 'tabla', t: 'Tabla de datos', estado: 'pendiente', c: pendiente('Tabla de datos', 'fase 5') },
       { id: 'paginacion', t: 'Paginación', estado: 'pendiente', c: pendiente('Paginación', 'fase 5') },
       { id: 'estados', t: 'Estados de pantalla', estado: 'pendiente', c: pendiente('Estados de pantalla', 'fase 5') },
@@ -1885,6 +2064,63 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .btn-ic { display: inline-flex; align-items: center; gap: 7px; }
 .btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
+
+/* Tarjeta de persona */
+.tp-rejilla { display: grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap: 10px; }
+.tp-rejilla-2 { grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); max-width: 560px; }
+.tp-rejilla-1 { max-width: 300px; }
+.tp { display: flex; gap: 11px; align-items: flex-start; padding: 12px 14px;
+  background: var(--fondo-tarjeta); border: 1px solid var(--borde);
+  border-left: 4px solid var(--borde-fuerte); border-radius: 6px; }
+/* El estado va en el filete: con treinta tarjetas el chip es demasiado pequeño
+   para barrerlo con la vista, y el filete recorre toda la altura. */
+.tp-exito { border-left-color: var(--exito-acento); }
+.tp-aviso { border-left-color: var(--aviso-acento); }
+.tp-error { border-left-color: var(--error-acento); }
+.tp-info  { border-left-color: var(--info-acento); }
+.tp-pend  { border-left-color: var(--borde-fuerte); }
+/* Inactivo: cambia la SUPERFICIE. Nunca la opacidad del texto. */
+.tp-inact { background: var(--fondo-encabezado); border-left-color: var(--borde-fuerte); }
+
+.tp-av { width: 42px; height: 42px; border-radius: 50%; flex: none; overflow: hidden;
+  background: var(--fondo-encabezado); color: var(--texto-secundario);
+  display: grid; place-items: center; }
+.tp-inact .tp-av { background: var(--borde); }
+.av-silueta { width: 100%; height: 100%; display: block; }
+.tp-ini { font-size: 14px; font-weight: 600; color: var(--texto-principal); }
+.tp-av-suelto { width: 48px; height: 48px; }
+.tp-av-marco { background: var(--marco-acento); }
+.tp-av-marco .tp-ini { color: var(--marco-fondo); }
+
+.tp-txt { min-width: 0; flex: 1; }
+.tp-nom { font-size: 14px; font-weight: 600; margin: 0 0 1px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tp-cargo { font-size: 12px; color: var(--texto-secundario); margin: 0 0 8px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tp-pie { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tp-hora { font-size: 12px; color: var(--texto-secundario); }
+.chip-pend { background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-color: var(--borde-fuerte); }
+.chip-inact { background: var(--borde); color: var(--texto-principal);
+  border-color: var(--borde-fuerte); }
+/* Solo para el ejemplo de lo que NO se debe hacer. */
+.tp-opaca { opacity: .5; }
+
+/* Tarjeta normal */
+.tn-rejilla { display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 12px; }
+.tn { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
+  border-radius: 6px; display: flex; flex-direction: column; text-decoration: none;
+  color: var(--texto-principal); }
+.tn-cab { display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 12px 14px; border-bottom: 1px solid var(--borde); }
+.tn-cab h4, .tn-cuerpo h4 { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+.tn-cab h4 { margin: 0; }
+.tn-cuerpo { padding: 14px; flex: 1; }
+.tn-cuerpo p { margin: 0; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
+.tn-pie { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 14px;
+  border-top: 1px solid var(--borde); }
+.tn-pulsable:hover { border-color: var(--accion); }
+.tn-pulsable:hover h4 { color: var(--accion); }
 
 /* Chip de estado */
 .chip-sup { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 10px; }
