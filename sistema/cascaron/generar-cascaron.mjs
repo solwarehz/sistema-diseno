@@ -15,7 +15,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { VERSION, primitivas, semanticos, marca, correcciones } from '../tokens/fuente.mjs';
+import { VERSION, primitivas, semanticos, marca, correcciones, CAMBIOS } from '../tokens/fuente.mjs';
 import { empaquetar, NOMBRE_ZIP } from '../paquete/empaquetar.mjs';
 import { ICONOS, ic, icono, TAMANOS } from '../iconos/iconos.mjs';
 
@@ -3171,6 +3171,52 @@ ${casosDeUso}
     <span><strong>Contrastes</strong>Los ${lock.resumen.paresBloqueantes} pares medidos</span></a>
 </div>`;
 
+// ── Registro de cambios ─────────────────────────────────────────────────────
+// Se genera desde CAMBIOS, en fuente.mjs. La entrega decía «mira el Historial
+// del catálogo: ahí está qué cambió y por qué», y esa página es la historia del
+// MANUAL —una fila, sobre otro artefacto—. Un consumidor que abría eso para
+// decidir si actualizaba no encontraba nada que le sirviera.
+const pagCambios = `
+<p class="pag-intro">Qué cambió en cada versión y <strong>qué puede romperte</strong>. Es lo que hay
+que leer antes de actualizar. Las altas y bajas de token se comprueban contra el historial del
+repositorio; el porqué es lo único escrito a mano.</p>
+
+<div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
+Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+${CAMBIOS.map(
+  (c) => `
+<h3 class="sub-seccion">v${c.v} <span class="cam-fecha">${c.fecha}</span></h3>
+<p class="pag-intro"><strong>${c.que}.</strong> ${c.porque}</p>
+${
+  c.rompe.length
+    ? `<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody>${c.rompe
+        .map((r) => `<tr><td>${r.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/`(.+?)`/g, '<code>$1</code>')}</td></tr>`)
+        .join('')}</tbody></table>`
+    : ''
+}
+${
+  c.tokens.alta.length
+    ? `<p class="cam-tok"><strong>Tokens nuevos:</strong> ${c.tokens.alta.map((t) => `<code>${t}</code>`).join(' · ')}</p>`
+    : ''
+}
+${
+  c.tokens.baja.length
+    ? `<p class="cam-tok"><strong>Tokens retirados:</strong> ${c.tokens.baja.map((t) => `<code>${t}</code>`).join(' · ')}</p>`
+    : ''
+}`
+).join('')}
+
+<h3 class="sub-seccion">Cómo leer los números de versión</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td>Un <strong>cambio de valor de color</strong> que mantiene el contrato —el par sigue verificado— es una versión <strong>menor</strong>. Lo que compras aquí es «este par cumple AA», no un hexadecimal concreto, y el verificador lo hace mecánico.</td></tr>
+    <tr><td class="num">2</td><td>Retirar o renombrar un <strong>token</strong>, cambiar la <strong>forma</strong> de lo que se exporta o mover un <strong>archivo entregado</strong> es <strong>mayor</strong>. Las dos brechas de la v1.2.0 salieron como menores y no debieron.</td></tr>
+    <tr><td class="num">3</td><td>Añadir tokens es <strong>menor</strong>. Siempre lo ha sido y siempre lo será: nada de lo que ya usabas cambia.</td></tr>
+  </tbody>
+</table>
+`;
+
 // ── Avatar ──────────────────────────────────────────────────────────────────
 // La asignación es DETERMINISTA y por identificador estable, nunca por nombre:
 // un cambio de apellido no debe cambiarle el color a nadie.
@@ -3470,7 +3516,10 @@ const CATALOGO = [
   {
     grupo: 'Referencia',
     icono: 'academico',
-    items: [{ id: 'contraste', t: 'Contrastes', estado: 'listo', c: pagContraste }],
+    items: [
+      { id: 'cambios', t: 'Registro de cambios', estado: 'listo', c: pagCambios },
+      { id: 'contraste', t: 'Contrastes', estado: 'listo', c: pagContraste },
+    ],
   },
 ];
 
@@ -3612,7 +3661,14 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .nav-grupo.abierto .nav-hijos { grid-template-rows: 1fr; }
 /* El padding va en los hijos, no en la caja: el padding de la caja NO lo
    recorta overflow, y un grupo cerrado se quedaba ocupando 8px. */
-.nav-hijos-in { overflow: hidden; }
+/* EL CONTENIDO PLEGADO SE OCULTA DE VERDAD. Con solo grid-template-rows:0fr y
+   overflow:hidden los enlaces conservan tamaño cero pero siguen en el orden de
+   tabulación y en el árbol de accesibilidad: son paradas de Tab invisibles
+   mientras el botón anuncia aria-expanded="false".
+   La visibilidad se retrasa hasta que acaba la animación de cierre y vuelve al
+   instante al abrir, así que el plegado sigue viéndose igual. */
+.nav-hijos-in { overflow: hidden; visibility: hidden; transition: visibility 0s .18s; }
+.nav-grupo.abierto .nav-hijos-in { visibility: visible; transition: visibility 0s; }
 .nav-hijos-in > .nav-hijo:first-child { margin-top: 4px; }
 .nav-hijos-in > .nav-hijo:last-child { margin-bottom: 8px; }
 /* El grupo fijado se marca: dice por qué está abierto mientras los demás no. */
@@ -3631,7 +3687,8 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .nav-rama.abierta .nav-chev .ic { transform: rotate(0deg); }
 .nav-nietos { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
 .nav-rama.abierta .nav-nietos { grid-template-rows: 1fr; }
-.nav-nietos-in { overflow: hidden; }
+.nav-nietos-in { overflow: hidden; visibility: hidden; transition: visibility 0s .18s; }
+.nav-rama.abierta .nav-nietos-in { visibility: visible; transition: visibility 0s; }
 .nav-nieto { display: block; padding: 4px 8px 4px 56px; border-radius: 6px;
   text-decoration: none; color: var(--marco-texto); font-size: 12px;
   opacity: .78; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -4328,7 +4385,10 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 .tb-desliza { display: grid; grid-template-rows: 0fr;
   transition: grid-template-rows .22s ease; }
 .tb-detalle.abierto .tb-desliza { grid-template-rows: 1fr; }
-.tb-desliza-in { overflow: hidden; }
+/* Mismo caso que el menú: sin ocultarlo, un lector de pantalla lee las
+   sub-tablas de las seis filas mientras cada chevron dice aria-expanded=false. */
+.tb-desliza-in { overflow: hidden; visibility: hidden; transition: visibility 0s .22s; }
+.tb-detalle.abierto .tb-desliza-in { visibility: visible; transition: visibility 0s; }
 .tb-sub { width: 100%; border-collapse: collapse; font-size: 13px;
   background: var(--fondo-pagina); }
 .tb-sub th { text-align: left; font-weight: 500; font-size: 12px;
@@ -4557,6 +4617,10 @@ a.enlace.enl-nosub { text-decoration: none; }
 .hor-error  { background: var(--error-fondo);     color: var(--error-texto);  border-left-color: var(--error-acento); }
 .hor-oro    { background: var(--accion-2-fondo);  color: var(--accion-2);     border-left-color: var(--accion-2); }
 .hor-neutro { background: var(--neutra-fondo);    color: var(--neutra-texto); border-left-color: var(--borde-fuerte); }
+
+.cam-fecha { font-size: 13px; font-weight: 400; color: var(--texto-secundario); }
+.cam-tok { font-size: 13px; color: var(--texto-secundario); margin: 8px 0 0; }
+.cam-tok code { font-size: 12px; }
 
 /* Diálogos de ejemplo */
 .dialogos { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 12px; }

@@ -34,6 +34,7 @@
     "verificar": "node sistema/candado/verificar-contraste.mjs",
     "catalogo": "node sistema/cascaron/generar-cascaron.mjs",
     "auditar": "node sistema/candado/auditar-cascaron.mjs",
-    "servir": "node sistema/cascaron/servir.mjs"
+    "servir": "node sistema/cascaron/servir.mjs",
+    "probar-candado": "node sistema/candado/probar-candado.mjs"
   }
 }

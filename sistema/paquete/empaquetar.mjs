@@ -119,6 +119,7 @@ const CONTENIDO = [
   // Los candados. Sin ellos el sistema es una sugerencia.
   ['sistema/candado/verificar-contraste.mjs', 'sistema/candado/verificar-contraste.mjs'],
   ['sistema/candado/candado.eslint.config.mjs', 'sistema/candado/candado.eslint.config.mjs'],
+  ['sistema/candado/probar-candado.mjs', 'sistema/candado/probar-candado.mjs'],
   // La documentación.
   ['manual/MANUAL-APLICACIONES-WEB.md', 'manual/MANUAL-APLICACIONES-WEB.md'],
   // El catálogo navegable, para consultar cada elemento.
@@ -412,10 +413,19 @@ instala nada.
 
 ### Qué mirar en cada actualización
 
-Cualquier cambio de color **exige una versión nueva**, así que el número sube
-siempre que algo cambie. Antes de adoptarla, mira el **Historial** del catálogo:
-ahí está qué cambió y por qué. Si un token desapareció o cambió de nombre, el
-build falla en compilación —no en producción—, que es justo lo que se busca.
+Abre el catálogo y ve a **Referencia → Registro de cambios**. Ahí está, versión a
+versión: qué cambió, por qué, qué tokens entraron y **qué puede romperte**.
+
+Dos cosas que conviene saber de entrada:
+
+- **En ocho versiones no se ha retirado ni renombrado ningún token.** Solo altas.
+  Una versión nueva no te quita nada de lo que ya usas.
+- Lo que sí se rompió fueron **dos cosas en la v1.2.0** —la forma del objeto
+  \`marca\` y la ruta de \`tokens-light.css\`—, y están declaradas ahí. Salieron como
+  versión menor y deberían haber sido mayor.
+
+Si un token desapareciera o cambiara de nombre, el build falla **en compilación,
+no en producción**. Eso es intencionado.
 
 ---
 

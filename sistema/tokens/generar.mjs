@@ -14,7 +14,7 @@
 import { writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { VERSION, NORMA, primitivas, semanticos, marca, pares, correcciones } from './fuente.mjs';
+import { VERSION, NORMA, primitivas, semanticos, marca, pares, correcciones , CAMBIOS } from './fuente.mjs';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 
@@ -166,6 +166,31 @@ const grupos = {
 // Existir no basta —apuntar a `azul.500` teniendo el valor de `azul.600` sería
 // igual de falso y saldría en verde—.
 // ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// CANDADO DEL REGISTRO DE CAMBIOS
+//
+// Un registro de cambios que se queda atrás es peor que no tenerlo: dice que no
+// pasó nada. Esto obliga a que la versión en curso tenga entrada, y a que las
+// altas de token declaradas existan de verdad en `semanticos`.
+// ─────────────────────────────────────────────────────────────────────────────
+const malCambios = [];
+if (!CAMBIOS.length || CAMBIOS[0].v !== VERSION) {
+  malCambios.push(`la versión en curso es ${VERSION} y la primera entrada de CAMBIOS es ${CAMBIOS[0]?.v ?? '(ninguna)'}`);
+}
+for (const c of CAMBIOS) {
+  for (const t of c.tokens.alta) {
+    // La entrada de 1.1.0 resume los 38 iniciales en una frase; no es un token.
+    if (/^\d/.test(t)) continue;
+    if (!semanticos[t]) malCambios.push(`${c.v} declara el alta de "${t}", que no existe en semanticos`);
+  }
+}
+if (malCambios.length) {
+  console.error('\n  El registro de cambios no cuadra:\n');
+  malCambios.forEach((m) => console.error(`    ${m}`));
+  console.error('\n  Añade la entrada de esta versión en CAMBIOS, dentro de fuente.mjs.\n');
+  process.exit(1);
+}
+
 const malOrigen = [];
 for (const [nombre, t] of Object.entries(semanticos)) {
   if (!t.origen || typeof t.origen !== 'object') {

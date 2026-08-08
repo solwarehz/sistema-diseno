@@ -54,6 +54,93 @@ export const correcciones = [
   },
 ];
 
+/**
+ * REGISTRO DE CAMBIOS
+ *
+ * Lo que un consumidor necesita para decidir si actualiza. Existe porque la
+ * entrega llevaba escrito «mira el Historial del catálogo: ahí está qué cambió
+ * y por qué», y esa página tenía UNA fila, sobre otro artefacto. Era una
+ * promesa falsa en cada ZIP entregado.
+ *
+ * Las altas y bajas de token se comprueban contra el historial de git, no se
+ * escriben a mano. El porqué sí es prosa: eso no se deriva de nada.
+ *
+ * `rompe` marca los cambios que pueden partir a un consumidor. Los dos de la
+ * v1.2.0 se declaran ahora, tarde: en su momento salieron como versión menor y
+ * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
+ */
+export const CAMBIOS = [
+  {
+    v: '1.8.0', fecha: '2026-08-08',
+    que: 'El origen de cada token se verifica en vez de documentarse',
+    porque:
+      'Una auditoría demostró, ejecutándolo, que un token podía declarar `origen` ' +
+      'apuntando a una familia de color inexistente y todo el sistema salía en verde. ' +
+      '`origen` pasa de cadena a { claro, oscuro } y el generador comprueba que la ' +
+      'primitiva exista Y que su valor coincida. `texto-invertido` entra en el contrato: ' +
+      'era el único token cuyo contraste no se verificaba nunca.',
+    tokens: { alta: [], baja: [] },
+    rompe: ['`origen` cambia de cadena a objeto en `paleta.lock.json` y en `./fuente`'],
+  },
+  {
+    v: '1.7.0', fecha: '2026-08-08',
+    que: 'Identidad, iconografía con regla, séptimo estado y densidad',
+    porque:
+      'Cuatro requerimientos del proyecto Control de Asistencia. La paleta de identidad ' +
+      'es nueva porque no se podía reutilizar la de estado: un avatar rojo diría que esa ' +
+      'persona tiene un problema.',
+    tokens: { alta: ['identidad-1', 'identidad-2', 'identidad-3', 'identidad-4', 'identidad-texto'], baja: [] },
+    rompe: [],
+  },
+  {
+    v: '1.6.0', fecha: '2026-08-07',
+    que: 'Capas del marco de aplicación',
+    porque: 'El marco es una superficie oscura y encima había que apilar niveles sin perder contraste.',
+    tokens: { alta: ['marco-nivel-1', 'marco-nivel-2', 'marco-borde', 'marco-texto-tenue'], baja: [] },
+    rompe: [],
+  },
+  {
+    v: '1.5.0', fecha: '2026-08-07',
+    que: 'La cebra existe en modo oscuro',
+    porque: '`fondo-fila-alt` valía lo mismo que `fondo-tarjeta` en oscuro: 1:1. No había banda cebra.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
+  {
+    v: '1.4.0', fecha: '2026-08-07',
+    que: 'Botones tonales: relleno más borde',
+    porque: 'El borde es quien identifica el control; el relleno solo acompaña y no alcanza 3:1 a propósito.',
+    tokens: { alta: ['accion-2-fondo', 'neutra-fondo', 'neutra-texto'], baja: [] },
+    rompe: [],
+  },
+  {
+    v: '1.3.0', fecha: '2026-08-07',
+    que: 'Botón destructivo',
+    porque: 'Eliminar y anular no pueden compartir color con la acción principal.',
+    tokens: { alta: ['destructiva', 'destructiva-hover', 'destructiva-texto'], baja: [] },
+    rompe: [],
+  },
+  {
+    v: '1.2.0', fecha: '2026-08-07',
+    que: 'Cascarón navegable con los dos modos',
+    porque: 'Primer catálogo consultable, con conmutador de tema.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'El objeto `marca` pasó de `{ valor }` a `{ claro, oscuro }`. **La clave `valor` se eliminó**: quien la leyera obtiene `undefined` sin error de compilación',
+      'El archivo entregado `sistema/tokens/tokens-light.css` pasó a llamarse `tokens.css`. Ruta pública retirada sin aviso',
+    ],
+  },
+  {
+    v: '1.1.0', fecha: '2026-08-07',
+    que: 'Motor de tokens y candado de contraste',
+    porque:
+      'Primera versión del código. Corrige dos valores de MMI-DS v1.0.0 que no cumplían: ' +
+      '`borde-campo` a 1,70:1 y `texto-pista` a 3,49:1. Ver `correcciones`.',
+    tokens: { alta: ['38 tokens iniciales'], baja: [] },
+    rompe: [],
+  },
+];
+
 // ─────────────────────────────────────────────────────────────────────────────
 // PRIMITIVAS — escalas completas. PROHIBIDO usarlas en un componente (§2.5.1).
 // Existen para que los semánticos tengan de dónde elegir.

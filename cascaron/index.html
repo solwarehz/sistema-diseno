@@ -327,7 +327,14 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .nav-grupo.abierto .nav-hijos { grid-template-rows: 1fr; }
 /* El padding va en los hijos, no en la caja: el padding de la caja NO lo
    recorta overflow, y un grupo cerrado se quedaba ocupando 8px. */
-.nav-hijos-in { overflow: hidden; }
+/* EL CONTENIDO PLEGADO SE OCULTA DE VERDAD. Con solo grid-template-rows:0fr y
+   overflow:hidden los enlaces conservan tamaño cero pero siguen en el orden de
+   tabulación y en el árbol de accesibilidad: son paradas de Tab invisibles
+   mientras el botón anuncia aria-expanded="false".
+   La visibilidad se retrasa hasta que acaba la animación de cierre y vuelve al
+   instante al abrir, así que el plegado sigue viéndose igual. */
+.nav-hijos-in { overflow: hidden; visibility: hidden; transition: visibility 0s .18s; }
+.nav-grupo.abierto .nav-hijos-in { visibility: visible; transition: visibility 0s; }
 .nav-hijos-in > .nav-hijo:first-child { margin-top: 4px; }
 .nav-hijos-in > .nav-hijo:last-child { margin-bottom: 8px; }
 /* El grupo fijado se marca: dice por qué está abierto mientras los demás no. */
@@ -346,7 +353,8 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .nav-rama.abierta .nav-chev .ic { transform: rotate(0deg); }
 .nav-nietos { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
 .nav-rama.abierta .nav-nietos { grid-template-rows: 1fr; }
-.nav-nietos-in { overflow: hidden; }
+.nav-nietos-in { overflow: hidden; visibility: hidden; transition: visibility 0s .18s; }
+.nav-rama.abierta .nav-nietos-in { visibility: visible; transition: visibility 0s; }
 .nav-nieto { display: block; padding: 4px 8px 4px 56px; border-radius: 6px;
   text-decoration: none; color: var(--marco-texto); font-size: 12px;
   opacity: .78; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1043,7 +1051,10 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 .tb-desliza { display: grid; grid-template-rows: 0fr;
   transition: grid-template-rows .22s ease; }
 .tb-detalle.abierto .tb-desliza { grid-template-rows: 1fr; }
-.tb-desliza-in { overflow: hidden; }
+/* Mismo caso que el menú: sin ocultarlo, un lector de pantalla lee las
+   sub-tablas de las seis filas mientras cada chevron dice aria-expanded=false. */
+.tb-desliza-in { overflow: hidden; visibility: hidden; transition: visibility 0s .22s; }
+.tb-detalle.abierto .tb-desliza-in { visibility: visible; transition: visibility 0s; }
 .tb-sub { width: 100%; border-collapse: collapse; font-size: 13px;
   background: var(--fondo-pagina); }
 .tb-sub th { text-align: left; font-weight: 500; font-size: 12px;
@@ -1272,6 +1283,10 @@ a.enlace.enl-nosub { text-decoration: none; }
 .hor-error  { background: var(--error-fondo);     color: var(--error-texto);  border-left-color: var(--error-acento); }
 .hor-oro    { background: var(--accion-2-fondo);  color: var(--accion-2);     border-left-color: var(--accion-2); }
 .hor-neutro { background: var(--neutra-fondo);    color: var(--neutra-texto); border-left-color: var(--borde-fuerte); }
+
+.cam-fecha { font-size: 13px; font-weight: 400; color: var(--texto-secundario); }
+.cam-tok { font-size: 13px; color: var(--texto-secundario); margin: 8px 0 0; }
+.cam-tok code { font-size: 12px; }
 
 /* Diálogos de ejemplo */
 .dialogos { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 12px; }
@@ -2056,7 +2071,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     <div class="nav-hijos" id="grupo-5">
       <div class="nav-hijos-in">
       <span class="nav-flot-tit">Referencia</span>
-      <a class="nav-hijo" href="#contraste" data-ir="contraste" title="Contrastes">
+      <a class="nav-hijo" href="#cambios" data-ir="cambios" title="Registro de cambios">
+                  <span class="nav-txt">Registro de cambios</span></a><a class="nav-hijo" href="#contraste" data-ir="contraste" title="Contrastes">
                   <span class="nav-txt">Contrastes</span></a>
       </div>
     </div>
@@ -7509,11 +7525,79 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <div class="pag-cab"><h1>Historial</h1></div>
       <div class="manual"><table class="tabla-simple tabla-manual"><thead><tr><th>Versión</th><th>Fecha</th><th>Cambio</th></tr></thead><tbody><tr><td>1.0.0</td><td>2026-08-07</td><td>Primera edición. Sobre MMI-DS v1.1.0</td></tr></tbody></table>
 <p class="man-p"><strong>Este manual se corrige cuando cambia el sistema, no al revés.</strong></p></div>
+    </section><section class="pagina" id="pg-cambios" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#cambios" data-ir="cambios" class="migas-grupo">Referencia</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#cambios" data-ir="cambios" class="migas-actual" aria-current="page">Registro de cambios</a>
+      </nav>
+      <div class="pag-cab"><h1>Registro de cambios</h1></div>
+      
+<p class="pag-intro">Qué cambió en cada versión y <strong>qué puede romperte</strong>. Es lo que hay
+que leer antes de actualizar. Las altas y bajas de token se comprueban contra el historial del
+repositorio; el porqué es lo único escrito a mano.</p>
+
+<div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
+Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.8.0 <span class="cam-fecha">2026-08-08</span></h3>
+<p class="pag-intro"><strong>El origen de cada token se verifica en vez de documentarse.</strong> Una auditoría demostró, ejecutándolo, que un token podía declarar `origen` apuntando a una familia de color inexistente y todo el sistema salía en verde. `origen` pasa de cadena a { claro, oscuro } y el generador comprueba que la primitiva exista Y que su valor coincida. `texto-invertido` entra en el contrato: era el único token cuyo contraste no se verificaba nunca.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td><code>origen</code> cambia de cadena a objeto en <code>paleta.lock.json</code> y en <code>./fuente</code></td></tr></tbody></table>
+
+
+<h3 class="sub-seccion">v1.7.0 <span class="cam-fecha">2026-08-08</span></h3>
+<p class="pag-intro"><strong>Identidad, iconografía con regla, séptimo estado y densidad.</strong> Cuatro requerimientos del proyecto Control de Asistencia. La paleta de identidad es nueva porque no se podía reutilizar la de estado: un avatar rojo diría que esa persona tiene un problema.</p>
+
+<p class="cam-tok"><strong>Tokens nuevos:</strong> <code>identidad-1</code> · <code>identidad-2</code> · <code>identidad-3</code> · <code>identidad-4</code> · <code>identidad-texto</code></p>
+
+<h3 class="sub-seccion">v1.6.0 <span class="cam-fecha">2026-08-07</span></h3>
+<p class="pag-intro"><strong>Capas del marco de aplicación.</strong> El marco es una superficie oscura y encima había que apilar niveles sin perder contraste.</p>
+
+<p class="cam-tok"><strong>Tokens nuevos:</strong> <code>marco-nivel-1</code> · <code>marco-nivel-2</code> · <code>marco-borde</code> · <code>marco-texto-tenue</code></p>
+
+<h3 class="sub-seccion">v1.5.0 <span class="cam-fecha">2026-08-07</span></h3>
+<p class="pag-intro"><strong>La cebra existe en modo oscuro.</strong> `fondo-fila-alt` valía lo mismo que `fondo-tarjeta` en oscuro: 1:1. No había banda cebra.</p>
+
+
+
+<h3 class="sub-seccion">v1.4.0 <span class="cam-fecha">2026-08-07</span></h3>
+<p class="pag-intro"><strong>Botones tonales: relleno más borde.</strong> El borde es quien identifica el control; el relleno solo acompaña y no alcanza 3:1 a propósito.</p>
+
+<p class="cam-tok"><strong>Tokens nuevos:</strong> <code>accion-2-fondo</code> · <code>neutra-fondo</code> · <code>neutra-texto</code></p>
+
+<h3 class="sub-seccion">v1.3.0 <span class="cam-fecha">2026-08-07</span></h3>
+<p class="pag-intro"><strong>Botón destructivo.</strong> Eliminar y anular no pueden compartir color con la acción principal.</p>
+
+<p class="cam-tok"><strong>Tokens nuevos:</strong> <code>destructiva</code> · <code>destructiva-hover</code> · <code>destructiva-texto</code></p>
+
+<h3 class="sub-seccion">v1.2.0 <span class="cam-fecha">2026-08-07</span></h3>
+<p class="pag-intro"><strong>Cascarón navegable con los dos modos.</strong> Primer catálogo consultable, con conmutador de tema.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>El objeto <code>marca</code> pasó de <code>{ valor }</code> a <code>{ claro, oscuro }</code>. <strong>La clave <code>valor</code> se eliminó</strong>: quien la leyera obtiene <code>undefined</code> sin error de compilación</td></tr><tr><td>El archivo entregado <code>sistema/tokens/tokens-light.css</code> pasó a llamarse <code>tokens.css</code>. Ruta pública retirada sin aviso</td></tr></tbody></table>
+
+
+<h3 class="sub-seccion">v1.1.0 <span class="cam-fecha">2026-08-07</span></h3>
+<p class="pag-intro"><strong>Motor de tokens y candado de contraste.</strong> Primera versión del código. Corrige dos valores de MMI-DS v1.0.0 que no cumplían: `borde-campo` a 1,70:1 y `texto-pista` a 3,49:1. Ver `correcciones`.</p>
+
+<p class="cam-tok"><strong>Tokens nuevos:</strong> <code>38 tokens iniciales</code></p>
+
+
+<h3 class="sub-seccion">Cómo leer los números de versión</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td>Un <strong>cambio de valor de color</strong> que mantiene el contrato —el par sigue verificado— es una versión <strong>menor</strong>. Lo que compras aquí es «este par cumple AA», no un hexadecimal concreto, y el verificador lo hace mecánico.</td></tr>
+    <tr><td class="num">2</td><td>Retirar o renombrar un <strong>token</strong>, cambiar la <strong>forma</strong> de lo que se exporta o mover un <strong>archivo entregado</strong> es <strong>mayor</strong>. Las dos brechas de la v1.2.0 salieron como menores y no debieron.</td></tr>
+    <tr><td class="num">3</td><td>Añadir tokens es <strong>menor</strong>. Siempre lo ha sido y siempre lo será: nada de lo que ya usabas cambia.</td></tr>
+  </tbody>
+</table>
+
     </section><section class="pagina" id="pg-contraste" hidden>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <a href="#contraste" data-ir="contraste" class="migas-grupo">Referencia</a>
+        <a href="#cambios" data-ir="cambios" class="migas-grupo">Referencia</a>
         <span class="migas-sep" aria-hidden="true">/</span>
         <a href="#contraste" data-ir="contraste" class="migas-actual" aria-current="page">Contrastes</a>
       </nav>
