@@ -2029,6 +2029,220 @@ ${verCodigo(
   </tbody>
 </table>`;
 
+// ── Elemento: Estados de pantalla ───────────────────────────────────────────
+
+const ICO_BUSCAR_VACIO = ic('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>');
+const ICO_PRIMERA = ic('<path d="M12 5v14M5 12h14"/>');
+const ICO_AVERIA = ic('<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/>');
+const ICO_CANDADO = ic('<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>');
+const ICO_PERIODO = ic('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>');
+
+const ESTADOS_PANTALLA = [
+  {
+    k: 'cargando', t: 'Cargando',
+    cuando: 'La petición está en marcha',
+    titulo: null,
+  },
+  {
+    k: 'inicial', t: 'Nunca consultado', ico: ICO_PERIODO,
+    cuando: 'Aún no se ha pedido nada',
+    titulo: 'Elige un periodo para ver la asistencia',
+    linea: 'Los datos se cargan al seleccionar mes y sede.',
+    accion: null,
+  },
+  {
+    k: 'sin-resultados', t: 'Sin resultados', ico: ICO_BUSCAR_VACIO,
+    cuando: 'Se buscó y no hubo coincidencias',
+    titulo: 'Sin resultados para «perez»',
+    linea: 'Prueba con menos letras, o revisa los filtros.',
+    accion: 'Quitar filtros',
+  },
+  {
+    k: 'primera-vez', t: 'Primera vez', ico: ICO_PRIMERA,
+    cuando: 'No hay datos porque todavía no se ha creado ninguno',
+    titulo: 'Todavía no hay trabajadores registrados',
+    linea: 'Al registrar el primero aparecerá aquí.',
+    accion: 'Registrar trabajador',
+  },
+  {
+    k: 'error', t: 'Error', ico: ICO_AVERIA,
+    cuando: 'La petición falló',
+    titulo: 'No se pudo cargar la asistencia',
+    linea: 'La conexión se interrumpió. Los datos no se han perdido.',
+    accion: 'Reintentar',
+  },
+  {
+    k: 'sin-permiso', t: 'Sin permiso', ico: ICO_CANDADO,
+    cuando: 'La persona no puede ver esto',
+    titulo: 'No tienes acceso a la asistencia de otras sedes',
+    linea: 'Pídeselo a Dirección si lo necesitas.',
+    accion: null,
+  },
+];
+
+const cajaEstado = (e) =>
+  e.k === 'cargando'
+    ? `<div class="ep ep-cargando">
+        <div class="esqueleto" style="width:38%"></div>
+        <div class="esqueleto" style="width:64%"></div>
+        <div class="esqueleto" style="width:52%"></div>
+        <div class="esqueleto" style="width:70%"></div>
+      </div>`
+    : `<div class="ep">
+        <div class="ep-ico ep-ico-${e.k}">${e.ico}</div>
+        <h4 class="ep-titulo">${e.titulo}</h4>
+        <p class="ep-linea">${e.linea}</p>
+        ${e.accion ? `<button class="btn btn-1">${e.accion}</button>` : ''}
+      </div>`;
+
+const pagEstados = `
+<p class="pag-intro">Una pantalla pasa más tiempo <strong>sin datos que con ellos</strong>:
+cargando, recién abierta, filtrada a cero, caída. Son seis estados, y confundir dos de ellos
+hace que la gente crea que el sistema perdió su información.</p>
+
+<h3 class="sub-seccion">Los seis</h3>
+<div class="bloque">
+  <div class="ep-rejilla">
+    ${ESTADOS_PANTALLA.map(
+      (e) => `<div class="ep-caja">
+        <span class="ep-et">${e.t}</span>
+        ${cajaEstado(e)}
+        <p class="ep-cuando">${e.cuando}</p>
+      </div>`
+    ).join('')}
+  </div>
+</div>
+
+<h3 class="sub-seccion">Las tres parejas que se confunden</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>No es lo mismo</th><th>que</th><th>Consecuencia de confundirlos</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Nunca consultado</strong><br><span class="ep-mini">No se ha pedido nada</span></td>
+      <td><strong>Sin resultados</strong><br><span class="ep-mini">Se pidió y no hay</span></td>
+      <td class="motivo">La persona cree que no hay datos cuando en realidad todavía no ha buscado. Cierra la pantalla y llama por teléfono</td>
+    </tr>
+    <tr>
+      <td><strong>Sin resultados</strong><br><span class="ep-mini">El filtro no encontró</span></td>
+      <td><strong>Primera vez</strong><br><span class="ep-mini">No existe ninguno todavía</span></td>
+      <td class="motivo">«No hay trabajadores» con un filtro puesto hace pensar que se borraron. Y en una pantalla recién estrenada, «sin resultados» no dice que hay que crear el primero</td>
+    </tr>
+    <tr>
+      <td><strong>Error</strong><br><span class="ep-mini">Falló la petición</span></td>
+      <td><strong>Sin permiso</strong><br><span class="ep-mini">No le corresponde verlo</span></td>
+      <td class="motivo">Un error invita a reintentar; sin permiso, reintentar no sirve. Y al revés: pintar de error algo que es de permisos manda a la gente a soporte sin motivo</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Anatomía</h3>
+<div class="bloque">
+  <div class="anatomia">
+    ${cajaEstado(ESTADOS_PANTALLA[2])}
+    <ol class="anat-lista">
+      <li><b>Icono</b> — de trazo, 32px, en <code>texto-pista</code>. Solo en error y sin permiso toma color.</li>
+      <li><b>Título</b> — <strong>nombra lo que pasó</strong>, con el dato concreto: «Sin resultados para <em>perez</em>», no «Sin resultados».</li>
+      <li><b>Una línea</b> — dice qué hacer. Si hacen falta dos, sobra una.</li>
+      <li><b>Acción</b> — solo si existe una salida real. Sin salida, no se pone botón.</li>
+    </ol>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Cargando: esqueleto, giro o nada</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>Duración</th><th>Qué se muestra</th><th>Por qué</th></tr></thead>
+  <tbody>
+    <tr><td>Bajo <strong>300 ms</strong></td><td><strong>Nada</strong></td><td class="motivo">Un parpadeo se percibe como un fallo. Esperar en silencio se percibe como rapidez</td></tr>
+    <tr><td>300 ms a 3 s</td><td><strong>Esqueleto</strong></td><td class="motivo">Se conoce la forma de lo que viene: filas, tarjetas, campos. Reserva el sitio y la página no salta</td></tr>
+    <tr><td>Más de 3 s</td><td>Esqueleto <strong>y aviso</strong></td><td class="motivo">«Esto tarda más de lo normal» evita que se pulse otra vez</td></tr>
+    <tr><td>Forma desconocida</td><td>Indicador de giro</td><td class="motivo">Solo cuando no se puede dibujar el esqueleto. Es el último recurso, no el primero</td></tr>
+  </tbody>
+</table>
+<div class="aviso">
+  <strong>El esqueleto imita la maqueta, no la decora.</strong> Si el esqueleto tiene cuatro
+  líneas y llegan diez filas, la página salta y se pierde el sitio donde se estaba mirando.
+</div>
+
+<h3 class="sub-seccion">Dónde vive el estado</h3>
+<div class="bloque">
+  <div class="ep-ambitos">
+    <div class="ep-ambito">
+      <div class="ep-marco-demo"><div class="ep-mini-cab"></div>${cajaEstado(ESTADOS_PANTALLA[1])}</div>
+      <span class="mf-et"><b>Pantalla entera</b><br>El marco y los filtros se quedan.<br>Nunca desaparece la navegación</span>
+    </div>
+    <div class="ep-ambito">
+      <div class="tn"><div class="tn-cab"><h4>Asistencia del mes</h4></div>${cajaEstado(ESTADOS_PANTALLA[4])}</div>
+      <span class="mf-et"><b>Dentro de una tarjeta</b><br>Si falla un panel, el resto de la pantalla sigue</span>
+    </div>
+    <div class="ep-ambito">
+      <div class="tb-envoltura">
+        <table class="tb"><thead><tr><th class="tb-th"><span class="tb-th-txt">Trabajador</span></th><th class="tb-th"><span class="tb-th-txt">Estado</span></th></tr></thead>
+        <tbody><tr><td colspan="2" class="tb-vacio"><strong>Sin resultados para «zapata».</strong><br>Prueba con menos letras.</td></tr></tbody></table>
+      </div>
+      <span class="mf-et"><b>Dentro de una tabla</b><br>El encabezado se queda: dice qué columnas habría</span>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">El texto</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>✗</th><th>✓</th></tr></thead>
+  <tbody>
+    <tr><td>«Sin resultados»</td><td>«Sin resultados para <em>perez</em>. Prueba con menos letras»</td></tr>
+    <tr><td>«No hay datos»</td><td>«Todavía no hay trabajadores registrados»</td></tr>
+    <tr><td>«Error 500»</td><td>«No se pudo cargar. Reintenta en un minuto»</td></tr>
+    <tr><td>«Acceso denegado»</td><td>«No tienes acceso a otras sedes. Pídeselo a Dirección»</td></tr>
+    <tr><td>«Ha ocurrido un error inesperado»</td><td>«La conexión se interrumpió. Los datos no se han perdido»</td></tr>
+  </tbody>
+</table>
+<p class="pag-intro" style="margin-top:12px">En el error, decir <strong>qué NO se perdió</strong>
+importa tanto como decir qué falló. Quien acaba de rellenar un formulario largo necesita saberlo
+antes que la causa técnica.</p>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>Los seis estados son <strong>obligatorios</strong> en cualquier pantalla que cargue datos. No solo el que tiene datos.</td></tr>
+    <tr><td class="num">2</td><td><strong>Nunca consultado ≠ sin resultados ≠ primera vez.</strong> Tres mensajes distintos.</td></tr>
+    <tr><td class="num">3</td><td>El título <strong>nombra el dato concreto</strong>: qué se buscó, qué periodo, qué sede.</td></tr>
+    <tr><td class="num">4</td><td>Una línea. Si hacen falta dos, sobra una.</td></tr>
+    <tr><td class="num">5</td><td>Botón <strong>solo si hay salida real</strong>. Un botón que no resuelve nada es peor que ninguno.</td></tr>
+    <tr><td class="num">6</td><td>Bajo 300 ms no se muestra nada. El parpadeo se lee como fallo.</td></tr>
+    <tr><td class="num">7</td><td>El estado <strong>no se come el marco ni los filtros</strong>: quien llegó ahí necesita poder cambiar la consulta.</td></tr>
+    <tr><td class="num">8</td><td>En error, di <strong>qué no se perdió</strong>.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+${verCodigo(
+  'Uso del componente',
+  `import { EstadoPantalla } from '@ae/sistema';
+
+// El componente elige el estado; la pantalla no lo decide a mano
+<EstadoPantalla
+  cargando={cargando}
+  error={error}
+  consultado={consultado}       // false = nunca consultado
+  vacio={filas.length === 0}
+  existenDatos={totalSinFiltros > 0}   // distingue «sin resultados» de «primera vez»
+  busqueda={texto}              // para nombrarlo en el título
+  onReintentar={recargar}
+  onQuitarFiltros={limpiar}
+>
+  <TablaDatos filas={filas} />
+</EstadoPantalla>`
+)}
+<table class="tabla-contraste" style="margin-top:14px">
+  <thead><tr><th>Prop</th><th>Tipo</th><th>Qué resuelve</th></tr></thead>
+  <tbody>
+    <tr><td><code>consultado</code></td><td class="mono">boolean</td><td class="motivo">Separa «nunca consultado» de «sin resultados»</td></tr>
+    <tr><td><code>existenDatos</code></td><td class="mono">boolean</td><td class="motivo">Separa «sin resultados» de «primera vez». <strong>Es el total sin filtros</strong>, no el filtrado</td></tr>
+    <tr><td><code>busqueda</code></td><td class="mono">string</td><td class="motivo">Permite nombrar lo buscado en el título</td></tr>
+    <tr><td><code>error</code></td><td class="mono">Error · null</td><td class="motivo">Si es de permisos, el componente muestra «sin permiso» y oculta Reintentar</td></tr>
+    <tr><td><code>esqueleto</code></td><td class="mono">ReactNode</td><td class="motivo">La forma de lo que viene. Por defecto, filas</td></tr>
+  </tbody>
+</table>`;
+
 // ── Elementos aún no construidos ────────────────────────────────────────────
 
 const pendiente = (nombre) => `
@@ -2257,7 +2471,7 @@ const CATALOGO = [
       { id: 'tarjeta', t: 'Tarjeta', estado: 'listo', c: pagTarjeta },
       { id: 'tabla', t: 'Tabla de datos', estado: 'listo', c: pagTabla },
       { id: 'paginacion', t: 'Paginación', estado: 'listo', c: pagPaginacion },
-      { id: 'estados', t: 'Estados de pantalla', estado: 'pendiente', c: pendiente('Estados de pantalla', 'fase 5') },
+      { id: 'estados', t: 'Estados de pantalla', estado: 'listo', c: pagEstados },
     ],
   },
   {
@@ -2425,6 +2639,33 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .btn-ic { display: inline-flex; align-items: center; gap: 7px; }
 .btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
+
+/* Estados de pantalla */
+.ep-rejilla { display: grid; grid-template-columns: repeat(auto-fit,minmax(232px,1fr)); gap: 12px; }
+.ep-caja { border: 1px solid var(--borde); border-radius: 6px; overflow: hidden;
+  display: flex; flex-direction: column; }
+.ep-et { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--texto-secundario); padding: 8px 12px; background: var(--fondo-encabezado);
+  border-bottom: 1px solid var(--borde); }
+.ep-cuando { font-size: 11px; color: var(--texto-pista); margin: 0;
+  padding: 8px 12px; border-top: 1px dashed var(--borde); }
+.ep { flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; text-align: center; gap: 8px; padding: 24px 16px;
+  background: var(--fondo-tarjeta); min-height: 168px; }
+.ep-cargando { align-items: stretch; justify-content: flex-start; gap: 12px; }
+.ep-ico { color: var(--texto-pista); }
+.ep-ico .ic { width: 32px; height: 32px; }
+/* Solo error y sin permiso toman color: los demás no son incidencias. */
+.ep-ico-error { color: var(--error-acento); }
+.ep-ico-sin-permiso { color: var(--aviso-acento); }
+.ep-titulo { font-size: 15px; font-weight: 600; margin: 0; max-width: 28ch; }
+.ep-linea { font-size: 13px; color: var(--texto-secundario); margin: 0; max-width: 34ch; line-height: 1.5; }
+.ep-mini { font-size: 11px; color: var(--texto-secundario); }
+.ep-ambitos { display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap: 20px; }
+.ep-ambito { display: flex; flex-direction: column; gap: 10px; }
+.ep-marco-demo { border: 1px solid var(--borde); border-radius: 6px; overflow: hidden; }
+.ep-mini-cab { height: 34px; background: var(--marco-fondo); }
+.ep-ambito .tn .ep { min-height: 128px; }
 
 /* Paginación */
 /* Todo el bloque en rejilla de 4. */

@@ -42,17 +42,19 @@ De 32 a 1024px. Hoy solo existe incrustado en los lockups.
 
 ## Sistema — por retorno
 
-### P-06 · Contrato completo de la tabla de datos (§8.3)
+### P-06 · Tabla de datos — RESUELTO en el cascarón
 
-**El de mayor retorno.** Es el 80 % de la superficie del sistema.
+Orden por columna, filtros por columna y globales, paginación, columnas
+ocultables con persistencia, CSV y filas desplegables: todo especificado y
+funcionando en `cascaron/index.html`.
 
-Falta: orden por columna, filtros, paginación, selección múltiple con acciones en
-lote, encabezado fijo, desborde horizontal, configuración de columnas visibles, y
-los tres estados de pantalla.
+**Sigue sin construir:** selección múltiple con acciones en lote (necesita definir
+permisos, es regla de negocio), encabezado fijo al desplazar y reordenar columnas
+arrastrando.
 
-Los tres estados —cargando, nunca consultado, sin resultados— ya existen dentro de
-la tabla actual, y **distinguir los dos últimos es un acierto que casi nadie
-hace**. Falta un patrón general para pantallas que no son tabla.
+El §8.3 pedía además «un patrón general para pantallas que no son tabla». Está en
+el elemento **Estados de pantalla**, que define seis y las tres parejas que se
+confunden.
 
 ### P-07 · Iconografía (§8.1)
 

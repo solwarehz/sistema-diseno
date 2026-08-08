@@ -14,14 +14,16 @@
 | Candado de contraste | ✅ | Ejecutado en verde **y saboteado a propósito**: lo detectó, salió con código 1 |
 | Candado de lint | ⚠️ escrito | **No ejecutado.** Requiere `npm`/Docker, aún sin autorizar |
 | Manual de aplicaciones web | ✅ | `manual/MANUAL-APLICACIONES-WEB.md` |
+| Catálogo navegable | ✅ | `cascaron/index.html`, 29 páginas en 6 grupos |
+| Los 9 elementos | ✅ | Botón · Enlace · Campo · Selector · Chip · Tarjeta · Tabla · Paginación · Estados |
+| Componente Paginación compartido | ✅ | La tabla lo consume; no tiene copia propia |
 | Repositorio y `.gitignore` | ✅ | Probado con PNG, PDF, `.env`, `.zip`, `node_modules`: todos bloqueados |
 
 ## Qué NO está hecho
 
 | Módulo | Por qué |
 |---|---|
-| Componentes | Sin Docker no se puede compilar ni verificar nada de React |
-| Catálogo `/diseño` | Depende de los componentes |
+| Componentes en React | Sin Docker no se puede compilar ni verificar nada de React |
 | Contenedor y ZIP | **Docker sin autorizar** |
 | Iconografía | Decidido Lucide; sin implementar |
 
