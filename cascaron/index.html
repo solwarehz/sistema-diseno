@@ -314,6 +314,27 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
 
+/* Campo de texto */
+.cg { display: flex; flex-direction: column; gap: 5px; }
+.cg-et { font-size: 13px; font-weight: 500; color: var(--texto-principal); }
+.cg-et-oculta { visibility: hidden; }
+.cg-req { color: var(--error-texto); margin-left: 2px; font-weight: 600; }
+.cg-in { width: 100%; }
+.cg-in:disabled { background: var(--fondo-encabezado); color: var(--texto-secundario);
+  border-color: var(--borde); cursor: not-allowed; }
+.cg-in[readonly] { background: var(--fondo-encabezado); border-color: var(--borde); }
+.cg-mal { border-color: var(--error-acento); border-width: 2px; }
+.cg-ayuda { font-size: 12px; color: var(--texto-pista); }
+.cg-error { font-size: 12px; color: var(--error-texto); font-weight: 500;
+  display: flex; align-items: center; gap: 4px; }
+.cg-error .ic { width: 14px; height: 14px; flex: none; }
+.campos-rejilla { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 16px; }
+.anatomia { display: grid; grid-template-columns: minmax(220px,300px) 1fr; gap: 28px; align-items: start; }
+.anat-lista { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.7;
+  color: var(--texto-secundario); }
+.anat-lista b { color: var(--texto-principal); }
+@media (max-width: 700px) { .anatomia { grid-template-columns: 1fr; } }
+
 /* Enlace */
 a.enlace.enl-sub { text-decoration: underline; text-underline-offset: 2px; }
 a.enlace.enl-nosub { text-decoration: none; }
@@ -880,7 +901,7 @@ h2.seccion {
       <a class="nav-hijo" href="#boton" data-ir="boton" title="Botón">
             <span class="nav-txt">Botón</span></a><a class="nav-hijo" href="#enlace" data-ir="enlace" title="Enlace">
             <span class="nav-txt">Enlace</span></a><a class="nav-hijo" href="#campo" data-ir="campo" title="Campo de texto">
-            <span class="nav-txt">Campo de texto</span><span class="pt pt-pend" title="Sin construir"></span></a><a class="nav-hijo" href="#selector" data-ir="selector" title="Selector">
+            <span class="nav-txt">Campo de texto</span></a><a class="nav-hijo" href="#selector" data-ir="selector" title="Selector">
             <span class="nav-txt">Selector</span><span class="pt pt-pend" title="Sin construir"></span></a><a class="nav-hijo" href="#chip" data-ir="chip" title="Chip de estado">
             <span class="nav-txt">Chip de estado</span><span class="pt pt-pend" title="Sin construir"></span></a><a class="nav-hijo" href="#tarjeta" data-ir="tarjeta" title="Tarjeta">
             <span class="nav-txt">Tarjeta</span><span class="pt pt-pend" title="Sin construir"></span></a><a class="nav-hijo" href="#tabla" data-ir="tabla" title="Tabla de datos">
@@ -2810,13 +2831,228 @@ contextual, el lector de pantalla y si «abrir en pestaña nueva» funciona.</p>
     </section><section class="pagina" id="pg-campo" hidden>
       <div class="pag-cab"><span class="pag-ruta">Elementos</span><h2>Campo de texto</h2></div>
       
-<div class="pendiente">
-  <div class="pendiente-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/></svg></div>
-  <h3>Campo de texto</h3>
-  <p>Todavía no está construido. Entra en la <strong>fase 4</strong>.</p>
-  <p class="pendiente-nota">El menú lo lista para que se vea el alcance completo del sistema,
-  no para fingir que existe.</p>
+<p class="pag-intro">El sitio donde el sistema pide algo. <strong>El formulario trabaja, no
+enseña</strong>: si un campo necesita un párrafo para entenderse, el problema es el campo.</p>
+
+<h3 class="sub-seccion">Anatomía</h3>
+<div class="bloque">
+  <div class="anatomia">
+    
+  <label class="cg ">
+    <span class="cg-et">Documento de identidad<b class="cg-req" aria-hidden="true">*</b></span>
+    <input class="campo cg-in " placeholder="71234567" value="">
+    
+    <span class="cg-ayuda">Ocho dígitos, sin guiones ni puntos.</span>
+  </label>
+    <ol class="anat-lista">
+      <li><b>Etiqueta</b> — <strong>siempre visible</strong>, encima del campo. 13px Medium.</li>
+      <li><b>Marca de obligatorio</b> — solo si de verdad lo es. Y nunca es el único aviso.</li>
+      <li><b>Contorno</b> — <code>borde-campo</code>. Mide 3,48:1: es lo que hace que el campo se vea.</li>
+      <li><b>Pista</b> — un <strong>ejemplo del formato</strong>, no una instrucción. Desaparece al escribir.</li>
+      <li><b>Ayuda</b> — una línea, debajo. Si hacen falta dos, sobra una.</li>
+    </ol>
+  </div>
 </div>
+
+<h3 class="sub-seccion">La etiqueta nunca se sustituye por la pista</h3>
+<div class="bloque">
+  <div class="enl-comp">
+    <div class="enl-caja bien">
+      
+  <label class="cg ">
+    <span class="cg-et">Documento de identidad</span>
+    <input class="campo cg-in " placeholder="71234567" value="">
+    
+    
+  </label>
+      <span class="bien-et">Al escribir, la etiqueta sigue ahí</span>
+    </div>
+    <div class="enl-caja mal">
+      <label class="cg"><span class="cg-et cg-et-oculta">&nbsp;</span>
+        <input class="campo cg-in" value="71234567"></label>
+      <span class="mal-et">Etiqueta como pista: al escribir desaparece y ya nadie sabe qué campo es</span>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Estados</h3>
+<div class="bloque">
+  <div class="campos-rejilla">
+    
+  <label class="cg ">
+    <span class="cg-et">Reposo</span>
+    <input class="campo cg-in " placeholder="71234567" value="">
+    
+    
+  </label>
+    
+  <label class="cg ">
+    <span class="cg-et">Con foco</span>
+    <input class="campo cg-in foco-demo" placeholder="71234567" value="">
+    
+    
+  </label>
+    
+  <label class="cg ">
+    <span class="cg-et">Relleno</span>
+    <input class="campo cg-in " placeholder="" value="71234567">
+    
+    
+  </label>
+    
+  <label class="cg ">
+    <span class="cg-et">Con error</span>
+    <input class="campo cg-in cg-mal" placeholder="" value="7123">
+    <span class="cg-error"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg>Faltan 4 dígitos.</span>
+    
+  </label>
+    
+  <label class="cg ">
+    <span class="cg-et">Solo lectura</span>
+    <input class="campo cg-in " placeholder="" value="71234567" readonly>
+    
+    <span class="cg-ayuda">Se ve y se copia. No se edita.</span>
+  </label>
+    
+  <label class="cg ">
+    <span class="cg-et">Sin permiso</span>
+    <input class="campo cg-in " placeholder="" value="71234567" disabled>
+    
+    <span class="cg-ayuda">Solo Dirección puede editarlo.</span>
+  </label>
+  </div>
+</div>
+<p class="pag-intro" style="margin-top:12px"><strong>Deshabilitado y solo lectura no son lo mismo.</strong>
+Solo lectura se puede seleccionar, copiar y leer con lector de pantalla; deshabilitado no.
+Para un dato que la persona debe <em>ver</em> pero no cambiar, va <strong>solo lectura</strong>.</p>
+
+<h3 class="sub-seccion">Tipos</h3>
+<div class="bloque">
+  <div class="campos-rejilla">
+    
+  <label class="cg ">
+    <span class="cg-et">Texto</span>
+    <input class="campo cg-in " placeholder="Quispe Mamani" value="">
+    
+    
+  </label>
+    
+  <label class="cg ">
+    <span class="cg-et">DNI</span>
+    <input class="campo cg-in " placeholder="71234567" value="">
+    
+    <span class="cg-ayuda">Se valida el dígito verificador.</span>
+  </label>
+    
+  <label class="cg ">
+    <span class="cg-et">Correo</span>
+    <input class="campo cg-in " placeholder="ana@ae.edu.pe" value="">
+    
+    
+  </label>
+    
+  <label class="cg ">
+    <span class="cg-et">Teléfono</span>
+    <input class="campo cg-in " placeholder="987 654 321" value="">
+    
+    
+  </label>
+    
+  <label class="cg ">
+    <span class="cg-et">Monto en soles</span>
+    <input class="campo cg-in " placeholder="1 240.00" value="">
+    
+    <span class="cg-ayuda">Alineado a la derecha, en mono.</span>
+  </label>
+    
+  <label class="cg ">
+    <span class="cg-et">Observación</span>
+    <textarea class="campo cg-in " rows="3" placeholder="Motivo de la inasistencia"></textarea>
+    
+    
+  </label>
+  </div>
+</div>
+<p class="pag-intro" style="margin-top:12px">DNI, RUC, montos y fechas peruanas son <strong>primitivas de dominio</strong>, no campos genéricos con una máscara encima. Entran en la fase 6. Ninguna librería del mundo las trae.</p>
+
+<h3 class="sub-seccion">Validación — ante la duda, avisar sí; bloquear no</h3>
+<div class="aviso">
+  Una validación que <strong>impide escribir</strong> solo debe existir cuando el sistema sabe
+  <strong>con certeza</strong> que el dato está mal. Quien tiene prisa y se topa con un campo
+  que no le deja avanzar <strong>inventa un dato que sí pase</strong>. Y un dato inventado es
+  peor que un dato raro: el raro se ve, el inventado no.
+</div>
+<table class="tabla-contraste">
+  <thead><tr><th>Situación</th><th>Qué hace el campo</th><th>Por qué</th></tr></thead>
+  <tbody>
+    <tr><td>El DNI tiene 7 dígitos</td><td><strong>Avisa al salir</strong> del campo</td><td class="motivo">Se sabe con certeza que está mal. Pero avisa, no borra</td></tr>
+    <tr><td>El apellido lleva espacios sobrantes</td><td><strong>Limpia en silencio</strong></td><td class="motivo">Limpiar no es rechazar. Quitar espacios es invisible y ayuda</td></tr>
+    <tr><td>El teléfono tiene formato raro</td><td><strong>Lo acepta</strong></td><td class="motivo">Hay teléfonos con extensión, con prefijo. No se sabe con certeza</td></tr>
+    <tr><td>El nombre lleva un solo apellido</td><td><strong>Lo acepta</strong></td><td class="motivo">Hay personas con un apellido. Bloquear excluye</td></tr>
+    <tr><td>Falta un campo obligatorio</td><td><strong>Avisa al enviar</strong>, no antes</td><td class="motivo">Marcar en rojo lo que aún no se ha rellenado castiga por ir en orden</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">El mensaje de error dice qué hacer</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>✗</th><th>✓</th></tr></thead>
+  <tbody>
+    <tr><td>«Campo inválido»</td><td>«El DNI debe tener 8 dígitos»</td></tr>
+    <tr><td>«Error de formato»</td><td>«Falta el @ en el correo»</td></tr>
+    <tr><td>«Dato incorrecto»</td><td>«El dígito verificador no coincide. Revísalo»</td></tr>
+    <tr><td>«Campo requerido»</td><td>«Falta el nombre del apoderado»</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Accesibilidad</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>La etiqueta va en <code>&lt;label&gt;</code> asociada al campo. <strong>Un <code>&lt;span&gt;</code> encima no vale:</strong> pulsar la etiqueta no enfoca y el lector no la lee.</td></tr>
+    <tr><td class="num">2</td><td>La ayuda y el error se enlazan con <code>aria-describedby</code>. Si no, el lector los ignora.</td></tr>
+    <tr><td class="num">3</td><td>En error, <code>aria-invalid="true"</code>.</td></tr>
+    <tr><td class="num">4</td><td>El error <strong>nunca solo en rojo</strong>: lleva texto y icono. Hay quien no distingue el rojo.</td></tr>
+    <tr><td class="num">5</td><td>El asterisco de obligatorio va <code>aria-hidden</code> y el campo lleva <code>required</code>. El asterisco solo no se anuncia.</td></tr>
+    <tr><td class="num">6</td><td>En móvil, mínimo <strong>16px</strong> de texto: por debajo, iOS hace zoom al enfocar y descoloca la pantalla.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+
+  <div class="cod-bloque">
+    <div class="cod-cab">
+      <button class="cod-ver" data-ver="cod4" aria-expanded="false" aria-controls="cod4">
+        <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
+      </button>
+      <span class="cod-tit">Uso del componente</span>
+      <button class="copiar" data-copiar-de="cod4">Copiar</button>
+    </div>
+    <pre class="cod-pre" id="cod4" hidden>import { CampoTexto } from '@ae/sistema';
+
+&lt;CampoTexto
+  etiqueta="Documento de identidad"
+  pista="71234567"
+  ayuda="Ocho dígitos, sin guiones ni puntos."
+  obligatorio
+/&gt;
+
+&lt;CampoTexto etiqueta="Observación" area rows={3} /&gt;
+&lt;CampoTexto etiqueta="Monto" tipo="soles" /&gt;
+&lt;CampoTexto etiqueta="Sede" valor="Huaraz" soloLectura /&gt;
+&lt;CampoTexto etiqueta="DNI" valor="7123" error="Faltan 4 dígitos." /&gt;</pre>
+  </div>
+<table class="tabla-contraste" style="margin-top:14px">
+  <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>etiqueta</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatoria.</strong> Sin etiqueta el componente no renderiza</td></tr>
+    <tr><td><code>pista</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo">Ejemplo de formato. <strong>Nunca una instrucción</strong></td></tr>
+    <tr><td><code>ayuda</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo">Una línea bajo el campo</td></tr>
+    <tr><td><code>error</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo">Su presencia activa el estado de error y <code>aria-invalid</code></td></tr>
+    <tr><td><code>tipo</code></td><td class="mono">texto · dni · ruc · correo · soles</td><td class="mono">texto</td><td class="motivo">Teclado, alineación y validación de dominio</td></tr>
+    <tr><td><code>soloLectura</code></td><td class="mono">boolean</td><td class="mono">false</td><td class="motivo">Se ve y se copia. Prefiérelo a <code>deshabilitado</code></td></tr>
+    <tr><td><code>obligatorio</code></td><td class="mono">boolean</td><td class="mono">false</td><td class="motivo">Marca visual + <code>required</code></td></tr>
+    <tr><td><code>area</code></td><td class="mono">boolean</td><td class="mono">false</td><td class="motivo">Renderiza <code>textarea</code></td></tr>
+  </tbody>
+</table>
     </section><section class="pagina" id="pg-selector" hidden>
       <div class="pag-cab"><span class="pag-ruta">Elementos</span><h2>Selector</h2></div>
       
