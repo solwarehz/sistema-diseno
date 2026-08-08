@@ -3151,6 +3151,136 @@ ${casosDeUso}
     <span><strong>Contrastes</strong>Los ${lock.resumen.paresBloqueantes} pares medidos</span></a>
 </div>`;
 
+// ── Horario ─────────────────────────────────────────────────────────────────
+// Dos juegos de datos a propósito: uno de clases con paso de 30 minutos y otro
+// de turnos con paso de 60 y siete días. Si el componente solo supiera dibujar
+// el primero, el segundo lo delataría.
+const HORARIOS = {
+  clases: {
+    titulo: 'Horario de clases · 5.º A',
+    dias: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
+    ini: '07:30', fin: '13:30', paso: 30,
+    bloques: [
+      { dia: 0, de: '07:30', a: '08:00', t: 'Tutoría', d: 'Aula 201', tono: 'neutro' },
+      { dia: 0, de: '08:00', a: '09:30', t: 'Matemática', d: 'Aula 201', tono: 'info' },
+      { dia: 0, de: '09:30', a: '10:00', t: 'Recreo', d: '', tono: 'neutro' },
+      { dia: 0, de: '10:00', a: '11:30', t: 'Comunicación', d: 'Aula 201', tono: 'exito' },
+      { dia: 0, de: '11:30', a: '13:00', t: 'Ciencia y Tecnología', d: 'Laboratorio', tono: 'oro' },
+      { dia: 1, de: '07:30', a: '09:00', t: 'Inglés', d: 'Aula 104', tono: 'aviso' },
+      { dia: 1, de: '09:00', a: '09:30', t: 'Recreo', d: '', tono: 'neutro' },
+      { dia: 1, de: '09:30', a: '11:00', t: 'Matemática', d: 'Aula 201', tono: 'info' },
+      { dia: 1, de: '11:00', a: '12:30', t: 'Educación Física', d: 'Patio', tono: 'error' },
+      { dia: 2, de: '07:30', a: '09:00', t: 'Comunicación', d: 'Aula 201', tono: 'exito' },
+      { dia: 2, de: '09:00', a: '09:30', t: 'Recreo', d: '', tono: 'neutro' },
+      { dia: 2, de: '09:30', a: '11:30', t: 'Arte y Cultura', d: 'Taller', tono: 'oro' },
+      { dia: 2, de: '11:30', a: '13:30', t: 'Matemática', d: 'Aula 201', tono: 'info' },
+      { dia: 3, de: '08:00', a: '09:30', t: 'Ciencias Sociales', d: 'Aula 201', tono: 'aviso' },
+      { dia: 3, de: '09:30', a: '10:00', t: 'Recreo', d: '', tono: 'neutro' },
+      { dia: 3, de: '10:00', a: '12:00', t: 'Inglés', d: 'Aula 104', tono: 'aviso' },
+      { dia: 4, de: '07:30', a: '09:30', t: 'Matemática', d: 'Aula 201', tono: 'info' },
+      { dia: 4, de: '09:30', a: '10:00', t: 'Recreo', d: '', tono: 'neutro' },
+      { dia: 4, de: '10:00', a: '11:30', t: 'Educación Religiosa', d: 'Aula 201', tono: 'neutro' },
+      { dia: 4, de: '11:30', a: '13:00', t: 'Educación Física', d: 'Patio', tono: 'error' },
+    ],
+  },
+  turnos: {
+    titulo: 'Horario de trabajo · Secretaría',
+    dias: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
+    ini: '06:00', fin: '22:00', paso: 60,
+    bloques: [
+      { dia: 0, de: '07:00', a: '15:00', t: 'Turno mañana', d: 'M. Quispe', tono: 'info' },
+      { dia: 0, de: '15:00', a: '21:00', t: 'Turno tarde', d: 'L. Rojas', tono: 'oro' },
+      { dia: 1, de: '07:00', a: '15:00', t: 'Turno mañana', d: 'M. Quispe', tono: 'info' },
+      { dia: 1, de: '15:00', a: '21:00', t: 'Turno tarde', d: 'L. Rojas', tono: 'oro' },
+      { dia: 2, de: '07:00', a: '15:00', t: 'Turno mañana', d: 'A. Vargas', tono: 'info' },
+      { dia: 2, de: '15:00', a: '21:00', t: 'Turno tarde', d: 'L. Rojas', tono: 'oro' },
+      { dia: 3, de: '07:00', a: '15:00', t: 'Turno mañana', d: 'M. Quispe', tono: 'info' },
+      { dia: 3, de: '15:00', a: '21:00', t: 'Turno tarde', d: 'A. Vargas', tono: 'oro' },
+      { dia: 4, de: '07:00', a: '15:00', t: 'Turno mañana', d: 'M. Quispe', tono: 'info' },
+      { dia: 4, de: '15:00', a: '22:00', t: 'Turno tarde ampliado', d: 'L. Rojas', tono: 'aviso' },
+      { dia: 5, de: '08:00', a: '13:00', t: 'Turno sábado', d: 'A. Vargas', tono: 'exito' },
+      { dia: 6, de: '09:00', a: '12:00', t: 'Guardia', d: 'Rotativo', tono: 'error' },
+    ],
+  },
+};
+
+const pagHorario = `
+<p class="pag-intro">Una rejilla de <strong>día por hora</strong>: sirve igual para el horario de
+clases de un aula que para los turnos de un puesto. No es el calendario de elegir una fecha
+—eso es <a href="#fecha" data-ir="fecha" class="enlace">Fecha y rango</a>—, es el de ver qué
+ocupa cada franja.</p>
+
+<h3 class="sub-seccion">Horario o calendario de fecha</h3>
+<table class="tabla-simple">
+  <thead><tr><th></th><th>Horario</th><th>Fecha y rango</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Qué responde</strong></td><td>Qué pasa en esta franja</td><td class="motivo">Qué día es</td></tr>
+    <tr><td><strong>Se repite</strong></td><td>Sí, cada semana</td><td class="motivo">No, es un día concreto</td></tr>
+    <tr><td><strong>Eje</strong></td><td>Día × hora</td><td class="motivo">Mes</td></tr>
+    <tr><td><strong>Ejemplo</strong></td><td>Matemática, lunes de 8:00 a 9:30</td><td class="motivo">Matrícula: 01/03/2026</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Pruébalo</h3>
+<p class="pag-intro">Los dos ajustes valen para <strong>todos los horarios de la aplicación</strong>
+y sobreviven a la recarga. Rota la presentación y cambia el formato: los dos ejemplos de abajo
+responden a la vez.</p>
+
+<div class="hor-barra" role="group" aria-label="Ajustes del horario">
+  <span class="hor-grupo">
+    <span class="hor-grupo-et" id="hor-et-eje">Presentación</span>
+    <span class="hor-botones" role="group" aria-labelledby="hor-et-eje">
+      <button type="button" class="btn btn-mini" data-hor-eje="vertical">Vertical</button>
+      <button type="button" class="btn btn-mini" data-hor-eje="horizontal">Horizontal</button>
+    </span>
+  </span>
+  <span class="hor-grupo">
+    <span class="hor-grupo-et" id="hor-et-fmt">Formato</span>
+    <span class="hor-botones" role="group" aria-labelledby="hor-et-fmt">
+      <button type="button" class="btn btn-mini" data-hor-fmt="24">24 h</button>
+      <button type="button" class="btn btn-mini" data-hor-fmt="12">12 h</button>
+    </span>
+  </span>
+</div>
+
+<h4 class="hor-tit">${HORARIOS.clases.titulo}</h4>
+<div class="hor-env" data-horario="clases" tabindex="0" role="region" aria-label="${HORARIOS.clases.titulo}"></div>
+
+<h4 class="hor-tit">${HORARIOS.turnos.titulo}</h4>
+<div class="hor-env" data-horario="turnos" tabindex="0" role="region" aria-label="${HORARIOS.turnos.titulo}"></div>
+
+<h3 class="sub-seccion">Por qué se puede rotar</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Vertical</strong> —día en columna, hora en fila— es como se lee un horario escolar en papel. Es el que se reconoce sin pensar.</td></tr>
+    <tr><td class="num">2</td><td><strong>Horizontal</strong> —día en fila, hora en columna— es el de una planificación de turnos: se ve de un vistazo quién cubre la tarde toda la semana.</td></tr>
+    <tr><td class="num">3</td><td>Rotar <strong>no reordena datos</strong>: intercambia los ejes de la misma tabla. Lo que cambia es qué eje es el que se recorre.</td></tr>
+    <tr><td class="num">4</td><td>Con muchas horas y pocos días, vertical se hace alto y horizontal se hace ancho. <strong>Se elige por la forma de los datos</strong>, no por gusto.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td>Es una <strong>tabla de verdad</strong>, no una rejilla dibujada. Con lector de pantalla, cada bloque se anuncia con su día y su franja porque las cabeceras están declaradas.</td></tr>
+    <tr><td class="num">2</td><td>El bloque lleva <strong>filete de color a la izquierda</strong>, igual que el <a href="#chip" data-ir="chip" class="enlace">chip de estado</a>. El color solo no distingue nada: SC 1.4.1.</td></tr>
+    <tr><td class="num">3</td><td>El bloque <strong>siempre dice su franja en texto</strong>. Deducirla de la altura de la celda no es leerla.</td></tr>
+    <tr><td class="num">4</td><td>La franja vacía es <strong>una celda vacía</strong>, no un bloque gris. Un hueco es ausencia de dato, y pintarlo lo convierte en dato.</td></tr>
+    <tr><td class="num">5</td><td>La preferencia de presentación y de formato <strong>es de la persona, no de la pantalla</strong>: se guarda y vale para toda la aplicación.</td></tr>
+    <tr><td class="num">6</td><td>En pantalla estrecha el horario <strong>se desplaza dentro de su marco</strong>. Nunca se encoge la letra para que quepa.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">12 horas o 24 horas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td>En el Perú se dice «a las tres de la tarde», pero los horarios oficiales se publican en 24 h. Por eso <strong>24 h es el valor por omisión</strong> y 12 h es la preferencia que se elige.</td></tr>
+    <tr><td class="num">2</td><td>En 12 h se escribe <code>a. m.</code> y <code>p. m.</code> <strong>con espacio y con puntos</strong>, que es la forma correcta en español.</td></tr>
+    <tr><td class="num">3</td><td>El cambio de formato <strong>no toca los datos</strong>. Una franja guardada es un minuto del día; el formato es solo cómo se escribe.</td></tr>
+  </tbody>
+</table>
+`;
+
 const CATALOGO = [
   {
     grupo: 'Inicio',
@@ -3178,6 +3308,7 @@ const CATALOGO = [
       { id: 'interruptor', t: 'Interruptor', estado: 'listo', c: pagInterruptor },
       { id: 'multiple', t: 'Selección múltiple', estado: 'listo', c: pagMultiple },
       { id: 'fecha', t: 'Fecha y rango', estado: 'listo', c: pagFecha },
+      { id: 'horario', t: 'Horario', estado: 'listo', c: pagHorario },
       { id: 'chip', t: 'Chip de estado', estado: 'listo', c: pagChip },
       { id: 'tarjeta', t: 'Tarjeta', estado: 'listo', c: pagTarjeta },
       { id: 'tabla', t: 'Tabla de datos', estado: 'listo', c: pagTabla },
@@ -4226,6 +4357,50 @@ a.enlace.enl-nosub { text-decoration: none; }
   display: inline-block; }
 .enl-en-marco { color: var(--marco-acento); text-decoration: underline;
   text-underline-offset: 2px; font-size: 13px; }
+
+/* ── HORARIO ─────────────────────────────────────────────────────────────────
+   Rejilla de día por hora. Es una TABLA de verdad y no una rejilla dibujada:
+   con lector de pantalla cada bloque se anuncia con su día y su franja porque
+   las cabeceras están declaradas con scope. Una rejilla de divs no lo hace.
+   Rotar intercambia los ejes de la misma tabla; no reordena datos. */
+.hor-barra { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-bottom: 12px; }
+.hor-grupo { display: flex; align-items: center; gap: 8px; }
+.hor-grupo-et { font-size: 12px; color: var(--texto-secundario); }
+.hor-botones { display: flex; gap: 4px; }
+.hor-tit { font-size: 13px; font-weight: 600; color: var(--texto-secundario); margin: 16px 0 4px; }
+/* El horario se desplaza DENTRO de su marco. Nunca se encoge la letra para que
+   quepa. Lleva tabindex para que el desplazamiento también se alcance con
+   teclado: un área que solo se mueve con el ratón deja fuera a quien no lo usa. */
+.hor-env { overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px;
+  background: var(--fondo-tarjeta); }
+.hor-env:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
+.hor { border-collapse: collapse; font-size: 13px; width: 100%; }
+.hor th, .hor td { border: 1px solid var(--borde); }
+.hor thead th { background: var(--fondo-encabezado); color: var(--texto-principal);
+  font-weight: 600; font-size: 12px; padding: 8px 12px; white-space: nowrap; }
+.hor-esq { background: var(--fondo-encabezado); }
+/* La cabecera de franja va en 12px y alineada al borde que toca el dato: así
+   la columna de horas no compite con el contenido. */
+.hor-eje { background: var(--fondo-encabezado); color: var(--texto-secundario);
+  font-weight: 400; font-size: 12px; padding: 4px 8px; white-space: nowrap;
+  vertical-align: top; }
+.hor-eje-v { text-align: right; }
+.hor-eje-h { text-align: left; }
+.hor-c { vertical-align: top; padding: 0; min-width: 108px; height: 32px; }
+.hor-vacia { background: var(--fondo-tarjeta); }
+/* El filete de la izquierda es estructural, igual que en el chip: el color solo
+   no distingue nada -SC 1.4.1-. */
+.hor-b { display: block; height: 100%; padding: 4px 8px; border-left: 3px solid;
+  border-radius: 3px; }
+.hor-b b { display: block; font-weight: 600; font-size: 13px; }
+.hor-b span { display: block; font-size: 12px; }
+.hor-rango { font-variant-numeric: tabular-nums; opacity: .84; }
+.hor-info   { background: var(--info-fondo);      color: var(--info-texto);   border-left-color: var(--info-acento); }
+.hor-exito  { background: var(--exito-fondo);     color: var(--exito-texto);  border-left-color: var(--exito-acento); }
+.hor-aviso  { background: var(--aviso-fondo);     color: var(--aviso-texto);  border-left-color: var(--aviso-acento); }
+.hor-error  { background: var(--error-fondo);     color: var(--error-texto);  border-left-color: var(--error-acento); }
+.hor-oro    { background: var(--accion-2-fondo);  color: var(--accion-2);     border-left-color: var(--accion-2); }
+.hor-neutro { background: var(--neutra-fondo);    color: var(--neutra-texto); border-left-color: var(--borde-fuerte); }
 
 /* Diálogos de ejemplo */
 .dialogos { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 12px; }
@@ -6214,6 +6389,120 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       aplicar(raiz.getAttribute('data-tema') === 'oscuro' ? 'claro' : 'oscuro');
     });
   });
+
+  // ── Horario ───────────────────────────────────────────────────────────────
+  // Rotar NO reordena datos: intercambia los ejes de la misma tabla. Por eso el
+  // dibujo se hace desde los datos en cada pintado en vez de mover nodos —mover
+  // celdas entre filas y columnas es donde se pierden los rowspan—.
+  (function () {
+    var zonas = document.querySelectorAll('[data-horario]');
+    if (!zonas.length) return;
+    var DATOS = ${JSON.stringify(HORARIOS)};
+
+    var eje = 'vertical', fmt = '24';
+    try { eje = localStorage.getItem('mmi-horario-eje') || eje; } catch (e) {}
+    try { fmt = localStorage.getItem('mmi-horario-formato') || fmt; } catch (e) {}
+
+    function aMin(s) { var p = s.split(':'); return (+p[0]) * 60 + (+p[1]); }
+    // El formato es SOLO cómo se escribe. El dato guardado es un minuto del día.
+    function texto(m) {
+      var h = Math.floor(m / 60), n = m % 60, mm = (n < 10 ? '0' : '') + n;
+      if (fmt === '24') return ((h < 10 ? '0' : '') + h) + ':' + mm;
+      var h12 = h % 12; if (h12 === 0) h12 = 12;
+      // Con espacio y con puntos: es la forma correcta en español.
+      return h12 + ':' + mm + (h < 12 ? ' a. m.' : ' p. m.');
+    }
+    function esc(t) {
+      return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function bloque(b, dia) {
+      var rango = texto(aMin(b.de)) + ' – ' + texto(aMin(b.a));
+      // El bloque SIEMPRE dice su franja en texto: deducirla de la altura de la
+      // celda no es leerla.
+      return '<span class="hor-b hor-' + b.tono + '" title="' + esc(dia + ', ' + rango) + '">' +
+        '<b>' + esc(b.t) + '</b>' +
+        (b.d ? '<span>' + esc(b.d) + '</span>' : '') +
+        '<span class="hor-rango">' + rango + '</span></span>';
+    }
+
+    function tabla(h) {
+      var ini = aMin(h.ini), paso = h.paso;
+      var n = Math.round((aMin(h.fin) - ini) / paso);
+      var empieza = [], tapada = [];
+      h.dias.forEach(function () { empieza.push({}); tapada.push({}); });
+      h.bloques.forEach(function (b) {
+        var i = Math.round((aMin(b.de) - ini) / paso);
+        var largo = Math.round((aMin(b.a) - aMin(b.de)) / paso);
+        // Un bloque desalineado o fuera de rango rompería la tabla en silencio.
+        if (i < 0 || largo < 1 || i + largo > n) return;
+        empieza[b.dia][i] = { b: b, largo: largo };
+        for (var k = 1; k < largo; k++) tapada[b.dia][i + k] = true;
+      });
+
+      var vertical = eje === 'vertical';
+      var o = '<table class="hor"><thead><tr><th class="hor-esq" scope="col">' +
+        (vertical ? 'Hora' : 'Día') + '</th>';
+      if (vertical) h.dias.forEach(function (d) { o += '<th scope="col">' + esc(d) + '</th>'; });
+      else for (var c = 0; c < n; c++) o += '<th scope="col">' + texto(ini + c * paso) + '</th>';
+      o += '</tr></thead><tbody>';
+
+      // Las dos ramas recorren lo mismo con los ejes cambiados: en vertical la
+      // fila es la franja y el bloque se estira con rowspan; en horizontal la
+      // fila es el día y se estira con colspan.
+      var filas = vertical ? n : h.dias.length;
+      var cols = vertical ? h.dias.length : n;
+      for (var f = 0; f < filas; f++) {
+        o += '<tr><th scope="row" class="hor-eje ' + (vertical ? 'hor-eje-v' : 'hor-eje-h') + '">' +
+          (vertical ? texto(ini + f * paso) : esc(h.dias[f])) + '</th>';
+        for (var g = 0; g < cols; g++) {
+          var dia = vertical ? g : f, ranura = vertical ? f : g;
+          if (tapada[dia][ranura]) continue;
+          var e = empieza[dia][ranura];
+          if (e) {
+            o += '<td class="hor-c" ' + (vertical ? 'rowspan' : 'colspan') + '="' + e.largo + '">' +
+              bloque(e.b, h.dias[dia]) + '</td>';
+          } else o += '<td class="hor-c hor-vacia"></td>';
+        }
+        o += '</tr>';
+      }
+      return o + '</tbody></table>';
+    }
+
+    function marcar(sel, valor) {
+      document.querySelectorAll(sel).forEach(function (b) {
+        var act = b.getAttribute(sel.slice(1, -1)) === valor;
+        b.setAttribute('aria-pressed', String(act));
+        b.className = 'btn btn-mini ' + (act ? 'btn-1' : 'btn-neutro');
+      });
+    }
+
+    function pintar() {
+      zonas.forEach(function (z) {
+        var h = DATOS[z.getAttribute('data-horario')];
+        if (h) z.innerHTML = tabla(h);
+      });
+      marcar('[data-hor-eje]', eje);
+      marcar('[data-hor-fmt]', fmt);
+    }
+
+    document.addEventListener('click', function (ev) {
+      var be = ev.target.closest('[data-hor-eje]');
+      if (be) {
+        eje = be.getAttribute('data-hor-eje');
+        try { localStorage.setItem('mmi-horario-eje', eje); } catch (e) {}
+        return pintar();
+      }
+      var bf = ev.target.closest('[data-hor-fmt]');
+      if (bf) {
+        fmt = bf.getAttribute('data-hor-fmt');
+        try { localStorage.setItem('mmi-horario-formato', fmt); } catch (e) {}
+        pintar();
+      }
+    });
+
+    pintar();
+  })();
 
   // ── Navegación de la app móvil ────────────────────────────────────────────
   // La app NO reinventa la jerarquía: la LEE de la lateral. Así, añadir una
