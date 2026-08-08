@@ -3728,8 +3728,11 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
    a la vista en la barra y un desplegable sobraría. */
 .fg { position: relative; display: none; }
 [data-vista='movil'] .fg { display: block; }
-.fg-panel { position: absolute; z-index: 60; right: 0; top: calc(100% + 8px);
-  min-width: 240px; padding: 4px; background: var(--fondo-tarjeta);
+/* Se abre hacia la DERECHA del botón. Anclado a la derecha se salía del marco,
+   porque el botón de filtros vive a la izquierda de la barra. */
+.fg-panel { position: absolute; z-index: 60; left: 0; top: calc(100% + 8px);
+  width: max-content; max-width: 320px; min-width: 240px; padding: 4px;
+  background: var(--fondo-tarjeta);
   border: 1px solid var(--borde-campo); border-radius: 6px;
   box-shadow: var(--sombra-capa); }
 .fg-panel .top-filtros { flex-direction: column; gap: 12px; padding: 12px; width: 100%; }
@@ -4457,7 +4460,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .top-filtros .cg-et { font-size: 12px; color: var(--texto-secundario); }
 .top-filtros .campo { font-size: 13px; padding: 4px 8px; min-width: 120px; }
 .top-filtros select.campo { padding-right: 28px; background-position: right 8px center; }
-.top-acciones { display: flex; align-items: center; gap: 4px; }
+/* Las acciones se van SIEMPRE a la derecha. En móvil los filtros salen de la
+   barra y ya no hay nada que empuje: sin esto, los iconos se quedaban pegados
+   a la hamburguesa. */
+.top-acciones { display: flex; align-items: center; gap: 4px; margin-left: auto; }
 .top-btn { background: transparent; border: 0; cursor: pointer; padding: 8px;
   border-radius: 6px; color: var(--texto-secundario); position: relative;
   display: grid; place-items: center; }
@@ -4770,12 +4776,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
+      <div class="fg" id="fg">
+        <button class="top-btn" id="fg-btn" aria-expanded="false"
+                aria-controls="fg-panel" aria-haspopup="true" aria-label="Filtros">${ICO_FILTRO}</button>
+        <div class="fg-panel" id="fg-panel" hidden></div>
+      </div>
       <div class="top-acciones">
-        <div class="fg" id="fg">
-          <button class="top-btn ic-movil" id="fg-btn" aria-expanded="false"
-                  aria-controls="fg-panel" aria-haspopup="true" aria-label="Filtros">${ICO_FILTRO}</button>
-          <div class="fg-panel" id="fg-panel" hidden></div>
-        </div>
         <button class="top-btn" aria-label="Mensajes">${ICONOS.sobre}</button>
         <button class="top-btn" aria-label="Notificaciones">${ICONOS.campana}<span class="badge">1</span></button>
 
