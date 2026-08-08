@@ -428,6 +428,11 @@ select.tb-f { padding-right: 26px; background-position: right 7px center; backgr
 .pgn-btn.activa { background: var(--accion); color: var(--accion-texto); border-color: var(--accion); }
 .pgn-btn:disabled, .pgn-btn[aria-disabled='true'] { color: var(--accion-texto-desh); cursor: not-allowed; }
 .pgn-elip { color: var(--texto-pista); padding: 4px; display: inline-flex; align-items: center; }
+/* Anterior y Siguiente llevan nombre visible, no solo el chevron. */
+.pgn-flecha { gap: 4px; padding: 4px 12px; }
+.pgn-flecha .ic { width: 14px; height: 14px; }
+/* El chevron y el nombre van siempre juntos, en cualquier ancho: el chevron
+   da la dirección de un vistazo y el nombre la nombra. */
 
 /* Tabla con filas desplegables */
 .tb-desp .tb-th-txt { display: block; padding: 9px 12px; font-weight: 500; }
@@ -4457,10 +4462,10 @@ cualquier otro listado: no tiene paginación propia.</p>
   <div class="pg-variantes">
     <div class="pg-var">
       <div class="tb-pag">
-        <span class="pgn-btn" aria-disabled="true">‹</span>
+        <span class="pgn-btn pgn-flecha" aria-disabled="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span>Anterior</span></span>
         <span class="pgn-btn activa">1</span><span class="pgn-btn">2</span><span class="pgn-btn">3</span>
         <span class="pgn-elip">…</span><span class="pgn-btn">124</span>
-        <span class="pgn-btn">›</span>
+        <span class="pgn-btn pgn-flecha"><span>Siguiente</span><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
       </div>
       <span class="mf-et"><b>Completa</b><br>Escritorio, con muchas páginas</span>
     </div>
@@ -4472,7 +4477,7 @@ cualquier otro listado: no tiene paginación propia.</p>
     </div>
     <div class="pg-var">
       <div class="tb-pag">
-        <span class="pgn-btn">‹ Anterior</span><span class="pg-pos">Página 3 de 124</span><span class="pgn-btn">Siguiente ›</span>
+        <span class="pgn-btn pgn-flecha"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span>Anterior</span></span><span class="pg-pos">3 de 124</span><span class="pgn-btn pgn-flecha"><span>Siguiente</span><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
       </div>
       <span class="mf-et"><b>Móvil</b><br>Sin números: no caben y el dedo falla</span>
     </div>
@@ -4492,7 +4497,7 @@ cualquier otro listado: no tiene paginación propia.</p>
     </div>
     <div class="enl-caja mal">
       <div class="pg-demo-mini"><span class="tb-rango">1–6 de 6</span>
-        <div class="tb-pag"><span class="pgn-btn" aria-disabled="true">‹</span><span class="pgn-btn activa">1</span><span class="pgn-btn" aria-disabled="true">›</span></div></div>
+        <div class="tb-pag"><span class="pgn-btn pgn-flecha" aria-disabled="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span>Anterior</span></span><span class="pgn-btn activa">1</span><span class="pgn-btn pgn-flecha" aria-disabled="true"><span>Siguiente</span><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></div>
       <span class="mal-et">Controles que no llevan a ninguna parte</span>
     </div>
   </div>
@@ -4517,7 +4522,7 @@ cualquier otro listado: no tiene paginación propia.</p>
     <tr><td class="num">2</td><td>Con una sola página, <strong>no se pinta la paginación</strong>. El rango se queda.</td></tr>
     <tr><td class="num">3</td><td>Anterior y siguiente se <strong>deshabilitan</strong> en los extremos, no se ocultan.</td></tr>
     <tr><td class="num">4</td><td>Nunca desplazamiento infinito.</td></tr>
-    <tr><td class="num">5</td><td>En móvil, sin números: anterior, posición y siguiente.</td></tr>
+    <tr><td class="num">5</td><td>En móvil, sin números: anterior, posición y siguiente. <strong>El chevron y el nombre nunca se separan.</strong></td></tr>
     <tr><td class="num">6</td><td>«Cargar más» dice <strong>cuántos</strong> carga.</td></tr>
     <tr><td class="num">7</td><td>Al filtrar u ordenar, se vuelve a la <strong>página 1</strong>. Quedarse en la 7 de un conjunto que ahora tiene 2 muestra una página vacía.</td></tr>
   </tbody>
@@ -4960,7 +4965,7 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
 
       <div class="s-paginacion">
         <span>1–5 de 1 240</span>
-        <div class="s-pag-btns"><span class="pag activa">1</span><span class="pag">2</span><span class="pag">3</span><span class="pag">›</span></div>
+        <div class="tb-pag"><span class="pgn-btn activa">1</span><span class="pgn-btn">2</span><span class="pgn-btn">3</span><span class="pgn-btn pgn-flecha"><span>Siguiente</span><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div>
       </div>
     </div>
   </div>
@@ -6125,6 +6130,11 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
   //
   // Devuelve un objeto con .ir(n) y .estado(). Con una sola página no pinta
   // nada: el rango, que va fuera, es el que sigue informando.
+  // Chevrons de verdad: los caracteres ‹ y › se leen mal o no se leen, y el
+  // texto visible manda sobre el aria-label (SC 2.5.3, «Label in Name»).
+  var CHEV_IZQ = '<svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d=\'m15 18-6-6 6-6\'/></svg>';
+  var CHEV_DER = '<svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d=\'m9 18 6-6-6-6\'/></svg>';
+
   window.Paginacion = function (caja, o) {
     var pagina = o.pagina || 1;
 
@@ -6136,8 +6146,9 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       var n = paginas();
       if (pagina > n) pagina = n;
       if (n <= 1) { caja.innerHTML = ''; return; }
-      var b = ['<button class="pgn-btn" data-pgn="' + (pagina - 1) +
-        '" aria-label="Página anterior"' + (pagina === 1 ? ' disabled' : '') + '>‹</button>'];
+      var b = ['<button class="pgn-btn pgn-flecha" data-pgn="' + (pagina - 1) +
+        '" aria-label="Página anterior"' + (pagina === 1 ? ' disabled' : '') + '>' +
+        CHEV_IZQ + '<span>Anterior</span></button>'];
       for (var p = 1; p <= n; p++) {
         if (p === 1 || p === n || Math.abs(p - pagina) <= 1) {
           b.push('<button class="pgn-btn' + (p === pagina ? ' activa' : '') +
@@ -6147,8 +6158,9 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
           b.push('<span class="pgn-elip" aria-hidden="true">…</span>');
         }
       }
-      b.push('<button class="pgn-btn" data-pgn="' + (pagina + 1) +
-        '" aria-label="Página siguiente"' + (pagina === n ? ' disabled' : '') + '>›</button>');
+      b.push('<button class="pgn-btn pgn-flecha" data-pgn="' + (pagina + 1) +
+        '" aria-label="Página siguiente"' + (pagina === n ? ' disabled' : '') + '>' +
+        '<span>Siguiente</span>' + CHEV_DER + '</button>');
       caja.innerHTML = b.join('');
     }
 
