@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.3.0';
+export const VERSION = '1.4.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -130,6 +130,15 @@ export const semanticos = {
   // `error-acento` (#D63231) porque este último da 4,81:1 con blanco, que pasa
   // pero sin margen. rojo-600 da 5,52:1 y sale de la rampa primitiva.
   // En oscuro se invierte igual que la acción principal (§2.4).
+  // v1.4.0 — Secundaria y neutra pasan a TONAL: relleno suave + borde.
+  // Ningún relleno tonal alcanza 3:1 contra la tarjeta (oro-100 da 1,25:1),
+  // así que el relleno NO puede ser lo que identifica el control. Por eso el
+  // borde se conserva: es él quien cumple SC 1.4.11. Relleno y borde, no uno
+  // de los dos.
+  'accion-2-fondo':     { claro: '#F1E4CA', oscuro: '#4F3E00', origen: 'oro.100/800',  uso: 'Relleno de la acción secundaria. El borde sigue siendo obligatorio' },
+  'neutra-fondo':       { claro: '#F0EFEE', oscuro: '#3A3835', origen: 'gris.100/dir', uso: 'Relleno de la acción neutra. El borde sigue siendo obligatorio' },
+  'neutra-texto':       { claro: '#2C2A25', oscuro: '#EFEEEB', origen: 'gris.900/100', uso: 'Texto de la acción neutra' },
+
   'destructiva':        { claro: '#D40006', oscuro: '#FF7D62', origen: 'rojo.600', uso: 'Botón de acción irreversible: Eliminar, Anular' },
   'destructiva-hover':  { claro: '#B40000', oscuro: '#FFAD95', origen: 'rojo.700', uso: 'Hover del botón destructivo' },
   'destructiva-texto':  { claro: '#FFFFFF', oscuro: '#20201E', origen: 'gris.0',   uso: 'Texto dentro del botón destructivo' },
@@ -212,6 +221,14 @@ export const pares = [
   ['enlace',           'fondo-tarjeta',    4.5, 'Enlace «Editar» en celda de tabla'],
   ['enlace',           'fondo-pagina',     4.5, 'Enlace sobre página'],
   ['enlace',           'fondo-fila-hover', 4.5, 'Enlace «Editar» en fila bajo el cursor'],
+
+  // Secundaria y neutra tonales
+  ['accion-2',         'accion-2-fondo',   4.5, 'Texto de la secundaria sobre su relleno'],
+  ['accion-2',         'fondo-tarjeta',    3.0, 'Borde de la secundaria: es quien identifica el control'],
+  ['neutra-texto',     'neutra-fondo',     4.5, 'Texto de la neutra sobre su relleno'],
+  ['borde-campo',      'neutra-fondo',     'informativo', 'Borde de la neutra contra su propio relleno'],
+  ['accion-2-fondo',   'fondo-tarjeta',    'informativo', 'Relleno tonal: NO alcanza 3:1 y no debe hacerlo. Identifica el borde'],
+  ['neutra-fondo',     'fondo-tarjeta',    'informativo', 'Relleno tonal: NO alcanza 3:1 y no debe hacerlo. Identifica el borde'],
 
   // Destructiva
   ['destructiva-texto','destructiva',      4.5, 'Texto del botón destructivo'],

@@ -1,6 +1,6 @@
 {
   "documento": "MMI-DS",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "norma": "WCAG 2.2 AA",
   "generado": "node sistema/tokens/generar.mjs",
   "modos": [
@@ -9,17 +9,17 @@
   ],
   "aviso": "Archivo generado. No editar a mano. La fuente es sistema/tokens/fuente.mjs. Cambiar un valor exige regenerar, re-verificar y subir versión (§2.5 regla 8).",
   "resumen": {
-    "paresTotales": 100,
-    "paresBloqueantes": 78,
-    "paresInformativos": 22,
+    "paresTotales": 112,
+    "paresBloqueantes": 84,
+    "paresInformativos": 28,
     "fallos": 0,
     "porModo": {
       "claro": {
-        "bloqueantes": 39,
+        "bloqueantes": 42,
         "fallos": 0
       },
       "oscuro": {
-        "bloqueantes": 39,
+        "bloqueantes": 42,
         "fallos": 0
       }
     }
@@ -215,6 +215,24 @@
       "oscuro": "#6CB2FF",
       "origen": "azul.600",
       "uso": "Enlaces y acciones de fila tipo «Editar»"
+    },
+    "accion-2-fondo": {
+      "claro": "#F1E4CA",
+      "oscuro": "#4F3E00",
+      "origen": "oro.100/800",
+      "uso": "Relleno de la acción secundaria. El borde sigue siendo obligatorio"
+    },
+    "neutra-fondo": {
+      "claro": "#F0EFEE",
+      "oscuro": "#3A3835",
+      "origen": "gris.100/dir",
+      "uso": "Relleno de la acción neutra. El borde sigue siendo obligatorio"
+    },
+    "neutra-texto": {
+      "claro": "#2C2A25",
+      "oscuro": "#EFEEEB",
+      "origen": "gris.900/100",
+      "uso": "Texto de la acción neutra"
     },
     "destructiva": {
       "claro": "#D40006",
@@ -606,6 +624,72 @@
       "minimo": 4.5,
       "motivo": "Enlace «Editar» en fila bajo el cursor",
       "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "accion-2",
+      "fondo": "accion-2-fondo",
+      "hexFrente": "#655000",
+      "hexFondo": "#F1E4CA",
+      "ratio": 6.17,
+      "minimo": 4.5,
+      "motivo": "Texto de la secundaria sobre su relleno",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "accion-2",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#655000",
+      "hexFondo": "#FFFFFF",
+      "ratio": 7.77,
+      "minimo": 3,
+      "motivo": "Borde de la secundaria: es quien identifica el control",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "neutra-texto",
+      "fondo": "neutra-fondo",
+      "hexFrente": "#2C2A25",
+      "hexFondo": "#F0EFEE",
+      "ratio": 12.48,
+      "minimo": 4.5,
+      "motivo": "Texto de la neutra sobre su relleno",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "borde-campo",
+      "fondo": "neutra-fondo",
+      "hexFrente": "#8B8985",
+      "hexFondo": "#F0EFEE",
+      "ratio": 3.04,
+      "minimo": "informativo",
+      "motivo": "Borde de la neutra contra su propio relleno",
+      "cumple": null
+    },
+    {
+      "modo": "claro",
+      "frente": "accion-2-fondo",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#F1E4CA",
+      "hexFondo": "#FFFFFF",
+      "ratio": 1.25,
+      "minimo": "informativo",
+      "motivo": "Relleno tonal: NO alcanza 3:1 y no debe hacerlo. Identifica el borde",
+      "cumple": null
+    },
+    {
+      "modo": "claro",
+      "frente": "neutra-fondo",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#F0EFEE",
+      "hexFondo": "#FFFFFF",
+      "ratio": 1.14,
+      "minimo": "informativo",
+      "motivo": "Relleno tonal: NO alcanza 3:1 y no debe hacerlo. Identifica el borde",
+      "cumple": null
     },
     {
       "modo": "claro",
@@ -1156,6 +1240,72 @@
       "minimo": 4.5,
       "motivo": "Enlace «Editar» en fila bajo el cursor",
       "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "accion-2",
+      "fondo": "accion-2-fondo",
+      "hexFrente": "#DFCA9C",
+      "hexFondo": "#4F3E00",
+      "ratio": 6.46,
+      "minimo": 4.5,
+      "motivo": "Texto de la secundaria sobre su relleno",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "accion-2",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#DFCA9C",
+      "hexFondo": "#242422",
+      "ratio": 9.67,
+      "minimo": 3,
+      "motivo": "Borde de la secundaria: es quien identifica el control",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "neutra-texto",
+      "fondo": "neutra-fondo",
+      "hexFrente": "#EFEEEB",
+      "hexFondo": "#3A3835",
+      "ratio": 10.07,
+      "minimo": 4.5,
+      "motivo": "Texto de la neutra sobre su relleno",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "borde-campo",
+      "fondo": "neutra-fondo",
+      "hexFrente": "#8A8681",
+      "hexFondo": "#3A3835",
+      "ratio": 3.23,
+      "minimo": "informativo",
+      "motivo": "Borde de la neutra contra su propio relleno",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "accion-2-fondo",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#4F3E00",
+      "hexFondo": "#242422",
+      "ratio": 1.49,
+      "minimo": "informativo",
+      "motivo": "Relleno tonal: NO alcanza 3:1 y no debe hacerlo. Identifica el borde",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "neutra-fondo",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#3A3835",
+      "hexFondo": "#242422",
+      "ratio": 1.33,
+      "minimo": "informativo",
+      "motivo": "Relleno tonal: NO alcanza 3:1 y no debe hacerlo. Identifica el borde",
+      "cumple": null
     },
     {
       "modo": "oscuro",

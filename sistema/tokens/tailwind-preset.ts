@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   PRESET DE TAILWIND 3.4 — Colegio Albert Einstein · MMI-DS v1.3.0
+   PRESET DE TAILWIND 3.4 — Colegio Albert Einstein · MMI-DS v1.4.0
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -89,6 +89,9 @@ export const semanticos = {
   "accion-texto-desh": "var(--accion-texto-desh)",
   "accion-2": "var(--accion-2)",
   "enlace": "var(--enlace)",
+  "accion-2-fondo": "var(--accion-2-fondo)",
+  "neutra-fondo": "var(--neutra-fondo)",
+  "neutra-texto": "var(--neutra-texto)",
   "destructiva": "var(--destructiva)",
   "destructiva-hover": "var(--destructiva-hover)",
   "destructiva-texto": "var(--destructiva-texto)",

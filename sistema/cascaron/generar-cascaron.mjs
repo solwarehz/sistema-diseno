@@ -761,16 +761,72 @@ const pagBoton = `
 por pantalla</strong>: si hay dos botones rellenos compitiendo, uno de los dos no era
 principal.</p>
 
-<h3 class="sub-seccion">Variantes</h3>
+<h3 class="sub-seccion">Las seis variantes</h3>
+<p class="seccion-sub">Ordenadas de más a menos énfasis. <strong>Cuanto más abajo, más barato es equivocarse al pulsarlo.</strong></p>
 <div class="bloque">
   <div class="muestra-fila">
-    <div class="mf"><button class="btn btn-1">Guardar</button><span class="mf-et">Principal<br><code>accion</code></span></div>
-    <div class="mf"><button class="btn btn-2">Columnas</button><span class="mf-et">Secundaria<br><code>accion-2</code> en oro</span></div>
-    <div class="mf"><button class="btn btn-neutro">Exportar</button><span class="mf-et">Neutra<br><code>borde-campo</code></span></div>
-    <div class="mf"><button class="btn" disabled style="background:var(--accion-deshabilitada);color:var(--accion-texto-desh);cursor:not-allowed">Sin permiso</button><span class="mf-et">Deshabilitada<br><code>accion-deshabilitada</code></span></div>
-    <div class="mf"><a href="#" class="enlace">Editar</a><span class="mf-et">Acción de fila<br><code>enlace</code> — texto, no botón</span></div>
+    <div class="mf"><button class="btn btn-1">Guardar</button><span class="mf-et"><b>Principal</b><br><code>accion</code><br>Una por pantalla</span></div>
+    <div class="mf"><button class="btn btn-destr">Eliminar</button><span class="mf-et"><b>Destructiva</b><br><code>destructiva</code><br>Irreversible</span></div>
+    <div class="mf"><button class="btn btn-2">Columnas</button><span class="mf-et"><b>Secundaria</b><br><code>accion-2</code> en oro<br>Apoyo con identidad</span></div>
+    <div class="mf"><button class="btn btn-neutro">Exportar</button><span class="mf-et"><b>Neutra</b><br><code>borde-campo</code><br>Apoyo sin peso</span></div>
+    <div class="mf"><button class="btn btn-terc">Cancelar</button><span class="mf-et"><b>Terciaria</b><br>sin relleno ni borde<br>Retroceder</span></div>
+    <div class="mf"><a href="#" class="enlace">Editar</a><span class="mf-et"><b>Enlace</b><br><code>enlace</code><br>Acción de fila</span></div>
   </div>
 </div>
+
+<h3 class="sub-seccion">Por acción — qué variante le toca a cada una</h3>
+<p class="seccion-sub">La tabla que resuelve la duda real. No se elige la variante por gusto: se elige por lo que la acción hace y por lo que cuesta deshacerla.</p>
+<table class="tabla-contraste">
+  <thead><tr><th>Acción</th><th>Variante</th><th>Aspecto</th><th>Por qué</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Guardar</strong> · Grabar · Crear · Confirmar</td><td><code>principal</code></td><td><button class="btn btn-mini btn-1">Guardar</button></td><td class="motivo">Es a lo que vino la persona. Una sola por pantalla</td></tr>
+    <tr><td><strong>Eliminar</strong> · Anular · Dar de baja</td><td><code>destructiva</code></td><td><button class="btn btn-mini btn-destr">Eliminar</button></td><td class="motivo">Irreversible. El rojo avisa antes de pulsar, no después</td></tr>
+    <tr><td><strong>Cancelar</strong> · Volver · Descartar</td><td><code>terciaria</code></td><td><button class="btn btn-mini btn-terc">Cancelar</button></td><td class="motivo">No debe competir. Si Cancelar pesa lo mismo que Guardar, la pantalla no dice qué hacer</td></tr>
+    <tr><td><strong>Editar</strong> · Ver detalle (en fila)</td><td><code>enlace</code></td><td><a href="#" class="enlace">Editar</a></td><td class="motivo">Con cinco filas, cinco botones son ruido, no jerarquía</td></tr>
+    <tr><td><strong>Columnas</strong> · Filtros avanzados</td><td><code>secundaria</code></td><td><button class="btn btn-mini btn-2">Columnas</button></td><td class="motivo">Le da al oro trabajo funcional y no solo decorativo</td></tr>
+    <tr><td><strong>Exportar</strong> · Imprimir · Duplicar</td><td><code>neutra</code></td><td><button class="btn btn-mini btn-neutro">Exportar</button></td><td class="motivo">Apoyo que no necesita reclamar atención</td></tr>
+    <tr><td><strong>Inactivo</strong> — sin permiso o sin datos</td><td><code>deshabilitada</code></td><td><button class="btn btn-mini" disabled style="background:var(--accion-deshabilitada);color:var(--accion-texto-desh);cursor:not-allowed">Guardar</button></td><td class="motivo">Se ve pero no se pulsa. <strong>Di por qué</strong> en un texto al lado</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Dónde se ve de verdad: el pie de un diálogo</h3>
+<p class="seccion-sub">Es el sitio donde Cancelar y la acción conviven, y donde más se equivoca la gente.</p>
+<div class="bloque">
+  <div class="dialogos">
+    <div class="dlg">
+      <div class="dlg-cuerpo">
+        <strong>Eliminar 24 registros de asistencia</strong>
+        <p>No se puede deshacer.</p>
+      </div>
+      <div class="dlg-pie">
+        <button class="btn btn-terc">Cancelar</button>
+        <button class="btn btn-destr">Eliminar</button>
+      </div>
+      <span class="dlg-et dlg-ok">Correcto</span>
+    </div>
+    <div class="dlg dlg-mal">
+      <div class="dlg-cuerpo">
+        <strong>¿Está seguro de que desea continuar?</strong>
+        <p>Esta acción podría afectar a los datos del sistema.</p>
+      </div>
+      <div class="dlg-pie">
+        <button class="btn btn-1">Aceptar</button>
+        <button class="btn btn-1">Cancelar</button>
+      </div>
+      <span class="dlg-et dlg-mal-et">Incorrecto</span>
+    </div>
+  </div>
+</div>
+<table class="tabla-contraste" style="margin-top:10px">
+  <thead><tr><th>Lo que falla en el segundo</th><th>Regla</th></tr></thead>
+  <tbody>
+    <tr><td>Dos botones rellenos compitiendo</td><td class="motivo">Cancelar va en terciaria. Solo una acción lleva relleno</td></tr>
+    <tr><td>«Aceptar» no dice qué va a pasar</td><td class="motivo">El botón lleva el <strong>verbo</strong>: <em>Eliminar</em>, no <em>Aceptar</em></td></tr>
+    <tr><td>«¿Está seguro?» no informa</td><td class="motivo">Di <strong>qué</strong> se pierde y <strong>cuánto</strong>: «24 registros»</td></tr>
+    <tr><td>«podría afectar a los datos»</td><td class="motivo">Un aviso que no se lee no avisa. Alargar el texto reduce la protección</td></tr>
+    <tr><td>Cancelar a la derecha</td><td class="motivo">La acción va a la derecha, Cancelar a su izquierda. Siempre igual</td></tr>
+  </tbody>
+</table>
 
 <h3 class="sub-seccion">Estados de la principal</h3>
 <div class="bloque">
@@ -1244,6 +1300,22 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
 
+/* Diálogos de ejemplo */
+.dialogos { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 14px; }
+.dlg { position: relative; border: 1px solid var(--borde); border-radius: 6px;
+  background: var(--fondo-tarjeta); padding-bottom: 26px; }
+.dlg-mal { border-color: var(--error-acento); }
+.dlg-cuerpo { padding: 16px 16px 12px; }
+.dlg-cuerpo strong { display: block; font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.dlg-cuerpo p { margin: 0; font-size: 13px; color: var(--texto-secundario); }
+.dlg-pie { display: flex; justify-content: flex-end; gap: 8px;
+  padding: 12px 16px; border-top: 1px solid var(--borde); }
+.dlg-et { position: absolute; bottom: 6px; left: 16px; font-size: 10px;
+  font-weight: 600; text-transform: uppercase; letter-spacing: .07em; }
+.dlg-ok { color: var(--exito-acento); }
+.dlg-mal-et { color: var(--error-texto); }
+.mf-et b { color: var(--texto-principal); font-weight: 600; }
+
 .atajos { display: grid; grid-template-columns: repeat(auto-fit,minmax(230px,1fr)); gap: 10px; }
 .atajo { display: flex; align-items: flex-start; gap: 11px; padding: 14px 16px;
   background: var(--fondo-tarjeta); border: 1px solid var(--borde);
@@ -1377,9 +1449,20 @@ h2.seccion {
   padding: 8px 15px; border-radius: 6px; border: 1px solid transparent; }
 .btn-1 { background: var(--accion); color: var(--accion-texto); }
 .btn-1:hover { background: var(--accion-hover); }
-.btn-2 { background: transparent; color: var(--accion-2); border-color: var(--accion-2); }
-.btn-oro { background: transparent; color: var(--accion-2); border-color: var(--accion-2); }
-.btn-neutro { background: transparent; color: var(--texto-principal); border-color: var(--borde-campo); }
+/* Secundaria y neutra son TONALES: relleno suave + borde. El relleno no llega
+   a 3:1 contra la tarjeta y no tiene por qué: quien identifica el control es
+   el borde (SC 1.4.11). Por eso el borde no se quita. */
+.btn-2, .btn-oro { background: var(--accion-2-fondo); color: var(--accion-2); border-color: var(--accion-2); }
+.btn-2:hover, .btn-oro:hover { background: var(--marco-acento); }
+.btn-neutro { background: var(--neutra-fondo); color: var(--neutra-texto); border-color: var(--borde-campo); }
+.btn-neutro:hover { background: var(--borde); }
+/* Terciaria: ni relleno ni borde. Cancelar es retroceder, y retroceder no debe
+   competir con la acción de la pantalla. */
+.btn-terc { background: transparent; color: var(--texto-principal); border-color: transparent; }
+.btn-terc:hover { background: var(--fondo-encabezado); }
+.btn-destr { background: var(--destructiva); color: var(--destructiva-texto); }
+.btn-destr:hover { background: var(--destructiva-hover); }
+.btn-mini { font-size: 12px; padding: 5px 12px; }
 .enlace { color: var(--enlace); text-decoration: none; font-size: 13px; }
 .enlace:hover { text-decoration: underline; }
 .mono { font-family: 'IBM Plex Mono', monospace; }
