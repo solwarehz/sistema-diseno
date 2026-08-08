@@ -910,6 +910,124 @@ ${verCodigo(
 <h3 class="sub-seccion">Tamaño — pendiente de decisión</h3>
 <p class="seccion-sub">Es lo que estamos decidiendo. Está en <a href="#" data-ir="espaciado" class="enlace">Fundamentos → Espaciado</a>.</p>`;
 
+// ── Elemento: Enlace ────────────────────────────────────────────────────────
+
+const pagEnlace = `
+<p class="pag-intro">Un enlace <strong>lleva a otro sitio</strong>. Un botón <strong>hace algo
+donde estás</strong>. Elegir mal no es un detalle de estilo: cambia el teclado, el menú
+contextual, el lector de pantalla y si «abrir en pestaña nueva» funciona.</p>
+
+<h3 class="sub-seccion">Enlace o botón</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>Si la acción…</th><th>Es</th><th>Ejemplo</th></tr></thead>
+  <tbody>
+    <tr><td>Cambia de pantalla o de URL</td><td><strong>Enlace</strong> <code>&lt;a href&gt;</code></td><td class="motivo">Ver detalle · Editar · Ir al expediente</td></tr>
+    <tr><td>Descarga un archivo</td><td><strong>Enlace</strong></td><td class="motivo">Descargar constancia</td></tr>
+    <tr><td>Modifica datos</td><td><strong>Botón</strong> <code>&lt;button&gt;</code></td><td class="motivo">Guardar · Eliminar</td></tr>
+    <tr><td>Abre un diálogo o despliega algo</td><td><strong>Botón</strong></td><td class="motivo">Filtros · Columnas</td></tr>
+    <tr><td>Envía un formulario</td><td><strong>Botón</strong></td><td class="motivo">Matricular</td></tr>
+  </tbody>
+</table>
+<p class="pag-intro" style="margin-top:12px">Regla rápida: <strong>si al pulsarlo con el botón derecho tiene sentido «abrir en pestaña nueva», es un enlace.</strong> Si no, es un botón.</p>
+
+<h3 class="sub-seccion">El subrayado no es decoración: es obligatorio en texto corrido</h3>
+<div class="aviso">
+  <strong>Medido en este sistema:</strong> <code>enlace</code> contra <code>texto-principal</code>
+  da <strong>2,48:1</strong> en claro y <strong>1,91:1</strong> en oscuro. WCAG 1.4.1 pide 3:1
+  para distinguir por color solo. No llega — <strong>y no hay ningún azul que llegue sin dejar
+  de ser azul</strong>. Por eso el enlace dentro de un párrafo va subrayado siempre.
+</div>
+<div class="bloque">
+  <div class="enl-comp">
+    <div class="enl-caja bien">
+      <p>La matrícula se cierra el 31 de marzo. Consulta los <a href="#" class="enlace enl-sub">requisitos de admisión</a> antes de esa fecha.</p>
+      <span class="bien-et">Subrayado — se distingue sin depender del color</span>
+    </div>
+    <div class="enl-caja mal">
+      <p>La matrícula se cierra el 31 de marzo. Consulta los <a href="#" class="enlace enl-nosub">requisitos de admisión</a> antes de esa fecha.</p>
+      <span class="mal-et">Sin subrayar — 2,48:1 contra el texto. Quien no distingue el azul no lo ve</span>
+    </div>
+  </div>
+</div>
+<p class="pag-intro" style="margin-top:12px"><strong>La excepción:</strong> en una tabla o una lista, donde el enlace está solo en su celda y no rodeado de texto, el subrayado puede reservarse para el hover. Ahí no hay texto del que distinguirlo.</p>
+
+<h3 class="sub-seccion">Los cuatro sitios donde aparece</h3>
+<div class="bloque">
+  <div class="muestra-fila">
+    <div class="mf">
+      <p style="margin:0;font-size:14px;max-width:34ch">Consulta el <a href="#" class="enlace enl-sub">calendario académico</a>.</p>
+      <span class="mf-et"><b>En texto corrido</b><br>Subrayado siempre<br><code>enlace</code></span>
+    </div>
+    <div class="mf">
+      <a href="#" class="enlace">Editar</a>
+      <span class="mf-et"><b>Acción de fila</b><br>Sin subrayar; subraya al pasar<br><code>enlace</code></span>
+    </div>
+    <div class="mf">
+      <a href="#" class="enlace enl-sub enl-ext">Ministerio de Educación</a>
+      <span class="mf-et"><b>Externo</b><br>Icono y <code>aria-label</code> que avisa<br>Sale del sistema</span>
+    </div>
+    <div class="mf">
+      <span class="enl-marco-caja"><a href="#" class="enl-en-marco">Ayuda</a></span>
+      <span class="mf-et"><b>Dentro del marco</b><br><code>marco-acento</code>, nunca <code>enlace</code><br>El azul sobre azul da 1,81:1</span>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Estados</h3>
+<div class="bloque">
+  <div class="muestra-fila">
+    <div class="mf"><a href="#" class="enlace">Ver detalle</a><span class="mf-et"><b>Reposo</b><br>5,75:1 sobre tarjeta</span></div>
+    <div class="mf"><a href="#" class="enlace enl-sub">Ver detalle</a><span class="mf-et"><b>Hover</b><br>Aparece el subrayado</span></div>
+    <div class="mf"><a href="#" class="enlace foco-demo">Ver detalle</a><span class="mf-et"><b>Foco</b><br>Anillo <code>foco</code> 2px</span></div>
+    <div class="mf"><a href="#" class="enlace enl-activo">Ver detalle</a><span class="mf-et"><b>Activo</b><br><code>accion-activa</code></span></div>
+    <div class="mf"><span class="enl-desh">Ver detalle</span><span class="mf-et"><b>Sin permiso</b><br>No es enlace: es texto<br>Un enlace muerto engaña</span></div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">El texto del enlace</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>✗</th><th>✓</th><th>Por qué</th></tr></thead>
+  <tbody>
+    <tr><td>«Clic aquí»</td><td>«Ver requisitos de admisión»</td><td class="motivo">Un lector de pantalla puede listar solo los enlaces. «Clic aquí» ×12 no dice nada</td></tr>
+    <tr><td>«Más información»</td><td>«Calendario académico 2026»</td><td class="motivo">El texto debe entenderse <strong>fuera de contexto</strong></td></tr>
+    <tr><td>«https://ae.edu.pe/adm…»</td><td>«Admisión»</td><td class="motivo">Una URL cruda se lee carácter a carácter</td></tr>
+    <tr><td>«Leer más» en cada tarjeta</td><td>«Leer sobre Inicial»</td><td class="motivo">Doce enlaces idénticos que llevan a sitios distintos</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>Navega → enlace. Actúa → botón. <strong>Nunca un <code>div</code> con <code>onClick</code>.</strong></td></tr>
+    <tr><td class="num">2</td><td>En texto corrido, <strong>subrayado siempre</strong>. Medido: 2,48:1 no llega a los 3:1 que pide la norma.</td></tr>
+    <tr><td class="num">3</td><td>Dentro del marco, <code>marco-acento</code>. <strong>Nunca <code>enlace</code></strong>: 1,81:1.</td></tr>
+    <tr><td class="num">4</td><td>El texto debe entenderse fuera de contexto. Prohibido «clic aquí».</td></tr>
+    <tr><td class="num">5</td><td>Enlace externo: icono visible y aviso en <code>aria-label</code>.</td></tr>
+    <tr><td class="num">6</td><td><code>target="_blank"</code> solo si salir pierde trabajo del formulario. Y avísalo.</td></tr>
+    <tr><td class="num">7</td><td>Sin permiso, <strong>no es un enlace deshabilitado</strong>: es texto plano. Un enlace muerto engaña.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+${verCodigo(
+  'Uso del componente',
+  `import { Enlace } from '@ae/sistema';
+
+<Enlace href="/estudiantes/71234567">Ver detalle</Enlace>
+<Enlace href="/calendario" enTexto>calendario académico</Enlace>
+<Enlace href="https://minedu.gob.pe" externo>Ministerio de Educación</Enlace>
+<Enlace href="/ayuda" enMarco>Ayuda</Enlace>`
+)}
+<table class="tabla-contraste" style="margin-top:14px">
+  <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>href</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Sin destino no es un enlace</td></tr>
+    <tr><td><code>enTexto</code></td><td class="mono">boolean</td><td class="mono">false</td><td class="motivo">Subrayado permanente. Para enlaces dentro de un párrafo</td></tr>
+    <tr><td><code>externo</code></td><td class="mono">boolean</td><td class="mono">false</td><td class="motivo">Añade icono, <code>rel="noopener"</code> y aviso accesible</td></tr>
+    <tr><td><code>enMarco</code></td><td class="mono">boolean</td><td class="mono">false</td><td class="motivo">Usa <code>marco-acento</code>. Obligatorio dentro de la navegación</td></tr>
+  </tbody>
+</table>`;
+
 // ── Elementos aún no construidos ────────────────────────────────────────────
 
 const pendiente = (nombre, fase) => `
@@ -1139,7 +1257,7 @@ const CATALOGO = [
     icono: 'panel',
     items: [
       { id: 'boton', t: 'Botón', estado: 'listo', c: pagBoton },
-      { id: 'enlace', t: 'Enlace', estado: 'pendiente', c: pendiente('Enlace', 'fase 4') },
+      { id: 'enlace', t: 'Enlace', estado: 'listo', c: pagEnlace },
       { id: 'campo', t: 'Campo de texto', estado: 'pendiente', c: pendiente('Campo de texto', 'fase 4') },
       { id: 'selector', t: 'Selector', estado: 'pendiente', c: pendiente('Selector con búsqueda', 'fase 4') },
       { id: 'chip', t: 'Chip de estado', estado: 'pendiente', c: pendiente('Chip de estado', 'fase 4') },
@@ -1299,6 +1417,25 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .btn-ic { display: inline-flex; align-items: center; gap: 7px; }
 .btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
+
+/* Enlace */
+a.enlace.enl-sub { text-decoration: underline; text-underline-offset: 2px; }
+a.enlace.enl-nosub { text-decoration: none; }
+.enl-activo { color: var(--accion-activa); }
+.enl-desh { color: var(--texto-secundario); font-size: 13px; }
+.enl-ext::after { content: ' ↗'; font-size: 11px; }
+.enl-comp { display: grid; grid-template-columns: repeat(auto-fit,minmax(270px,1fr)); gap: 12px; }
+.enl-caja { position: relative; padding: 16px 16px 30px; border-radius: 6px;
+  border: 1px solid var(--borde); }
+.enl-caja.bien { background: var(--exito-fondo); border-color: var(--exito-acento); }
+.enl-caja.mal { background: var(--error-fondo); border-color: var(--error-acento); }
+.enl-caja p { margin: 0; font-size: 14px; line-height: 1.6; }
+.enl-caja.bien p { color: var(--exito-texto); }
+.enl-caja.mal p { color: var(--error-texto); }
+.enl-marco-caja { background: var(--marco-fondo); padding: 10px 14px; border-radius: 6px;
+  display: inline-block; }
+.enl-en-marco { color: var(--marco-acento); text-decoration: underline;
+  text-underline-offset: 2px; font-size: 13px; }
 
 /* Diálogos de ejemplo */
 .dialogos { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 14px; }
