@@ -293,6 +293,22 @@ ${Object.entries(marca)
   outline: 2px solid var(--foco);
   outline-offset: 2px;
 }
+
+/* SOBRE EL MARCO EL ANILLO CAMBIA DE TOKEN. No es un matiz: medido, el ámbar
+   oscuro da 2,48:1 sobre marco-nivel-1 y 2,97:1 sobre marco-fondo, por debajo
+   del 3:1 que exige SC 1.4.11. \`foco-en-marco\` da 5,16:1.
+
+   El token existía desde el principio y estaba medido; lo que faltaba era
+   enchufarlo. El candado de contraste no podía verlo porque verifica PARES DE
+   TOKENS, no qué token se aplica a qué elemento —esa distancia es justo lo que
+   separa «el contrato cumple» de «la página cumple» (§5.2.2)—.
+
+   Esta regla se entrega en tokens.css, así que cualquier proyecto que ponga
+   navegación sobre \`marco-fondo\` la hereda sin tener que saberla. */
+:where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
+:where([data-marco], .marco, .lat):focus-visible {
+  outline-color: var(--foco-en-marco);
+}
 `;
 
 writeFileSync(join(AQUI, 'tokens.css'), css);

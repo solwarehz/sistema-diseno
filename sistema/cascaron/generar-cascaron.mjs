@@ -55,7 +55,7 @@ const contra = (a, b) => {
   const [hi, lo] = x > y ? [x, y] : [y, x];
   return Math.floor(((hi + 0.05) / (lo + 0.05)) * 100) / 100;
 };
-const esClaro = (hex) => lum(hex) > 0.4;
+
 
 const GRUPOS = {
   Superficies: ['fondo-pagina', 'fondo-tarjeta', 'fondo-encabezado', 'fondo-fila-alt', 'fondo-fila-hover'],
@@ -93,8 +93,9 @@ const escala = (nombre, pasos) => `
       ${Object.entries(pasos)
         .map(
           ([paso, hex]) => `
-        <div class="tira" style="background:${hex}; color:${esClaro(hex) ? '#2C2A25' : '#FFFFFF'}">
-          <span>${paso}</span><span class="tira-hex">${hex}</span>
+        <div class="tira">
+          <span class="tira-color" style="background:${hex}"></span>
+          <span class="tira-paso">${paso}</span><span class="tira-hex">${hex}</span>
         </div>`
         )
         .join('')}
@@ -2317,15 +2318,26 @@ ${verCodigo(
 
 // ── Elemento: Interruptor ───────────────────────────────────────────────────
 
-const sw = (o = {}) => `
+// EL NOMBRE ACCESIBLE VA CON aria-labelledby, Y NO ES OPCIONAL.
+// Envolver en <label> NO nombra a un <button>: HTML-AAM calcula el nombre de un
+// botón desde aria-labelledby → aria-label → su subárbol → title, y <label> no
+// entra en esa lista. El botón está vacío —solo lleva la bolita—, así que sin
+// esto los ocho interruptores se anunciaban como «interruptor, activado» SIN
+// decir qué controlan. Es SC 4.1.2.
+let nSw = 0;
+const sw = (o = {}) => {
+  const id = `sw-et-${++nSw}`;
+  return `
   <label class="sw-fila${o.desh ? ' sw-desh' : ''}">
     <button type="button" role="switch" class="sw" aria-checked="${o.on ? 'true' : 'false'}"
+            aria-labelledby="${id}"
             ${o.desh ? 'disabled' : ''}${o.demo ? ' data-sw' : ''}><span class="sw-bolita"></span></button>
     <span class="sw-txt">
-      <span class="sw-et">${o.etiqueta || 'Notificar por correo'}</span>
+      <span class="sw-et" id="${id}">${o.etiqueta || 'Notificar por correo'}</span>
       ${o.ayuda ? `<span class="sw-ayuda">${o.ayuda}</span>` : ''}
     </span>
   </label>`;
+};
 
 const pagInterruptor = `
 <p class="pag-intro">Enciende o apaga algo, y <strong>surte efecto al instante</strong>. Si hace
@@ -3643,7 +3655,43 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .app-cascaron .lat-nav { overflow-y: auto; overflow-x: visible; }
 .app-cascaron .lat.colapsado .lat-nav { overflow: visible; }
 .app-cascaron .app-main { min-height: 100vh; }
-.top-cascaron { position: sticky; top: 0; z-index: 20; }
+/* .top-cascaron y .top tenian la MISMA especificidad (0,1,0) y ganaba la
+   ultima: la barra decia ser pegajosa y no lo era. Con las dos clases en el
+   selector gana esta. sticky establece bloque contenedor igual que relative,
+   asi que el escudo centrado en movil sigue en su sitio.
+   scroll-margin-top reserva los 64px de la barra: sin el, tabular hacia arriba
+   deja el elemento enfocado DEBAJO de la barra y eso incumple SC 2.4.11. */
+.top.top-cascaron { position: sticky; top: 0; z-index: 20; }
+
+/* ── REFLUJO — SC 1.4.10 ─────────────────────────────────────────────────────
+   A 320px de ancho el armazón pedía 790px de mínimo y la página se desplazaba
+   en horizontal 470px: la lateral se quedaba con 236 de 320 y dejaba 84 para el
+   contenido, con el texto envolviendo a una palabra por línea.
+
+   Dos culpables medidos: la lateral con ancho fijo de 236px que nunca colapsaba,
+   y tres campos de filtro con min-width de 120px que nunca envolvían.
+
+   La vista móvil NO resolvía esto: es un conmutador manual que mete la
+   aplicación en un marco de 390×780. Es una simulación, no comportamiento
+   responsivo. 320px es el umbral de la norma; 375 y 390 no lo son.
+
+   El corte va en 700px porque por debajo de ahí la lateral de 236 más un
+   contenido utilizable ya no caben a la vez. */
+@media (max-width: 700px) {
+  /* La lateral sale del flujo y entra con el botón, igual que en vista móvil. */
+  .app-cascaron .lat { position: absolute; left: 0; top: 0; bottom: 0; z-index: 60;
+    height: 100%; transform: translateX(-100%); transition: transform .22s ease; }
+  .app-cascaron .lat:not(.colapsado) { transform: translateX(0); box-shadow: var(--sombra-capa); }
+  .app-cascaron { position: relative; overflow-x: hidden; }
+  /* Los filtros envuelven y encogen en vez de imponer 360px de mínimo. */
+  .top-filtros { flex-wrap: wrap; }
+  .top-filtros .campo { min-width: 0; }
+  .top-filtros .cg { min-width: 0; flex: 1 1 120px; }
+  /* El icono del botón cambia: en estrecho la hamburguesa es lo que se reconoce. */
+  .ic-escritorio { display: none; }
+  .ic-movil { display: grid; }
+}
+.cat-cuerpo :where(a, button, input, select, textarea, [tabindex]) { scroll-margin-top: 72px; }
 
 /* Grupos desplegables — icono + nombre + chevron.
    Comprimidos por defecto. Se abren al pasar el ratón, y el grupo de la página
@@ -4610,7 +4658,10 @@ a.enlace.enl-nosub { text-decoration: none; }
   border-radius: 3px; }
 .hor-b b { display: block; font-weight: 600; font-size: 13px; }
 .hor-b span { display: block; font-size: 12px; }
-.hor-rango { font-variant-numeric: tabular-nums; opacity: .84; }
+/* Sin opacidad. Atenuar texto con opacity lo saca del contrato: medido daba
+   4,35:1 sobre el bloque oro, por debajo de 4,5. La jerarquia la hace el
+   tamano, no la transparencia. */
+.hor-rango { font-variant-numeric: tabular-nums; }
 .hor-info   { background: var(--info-fondo);      color: var(--info-texto);   border-left-color: var(--info-acento); }
 .hor-exito  { background: var(--exito-fondo);     color: var(--exito-texto);  border-left-color: var(--exito-acento); }
 .hor-aviso  { background: var(--aviso-fondo);     color: var(--aviso-texto);  border-left-color: var(--aviso-acento); }
@@ -4621,6 +4672,7 @@ a.enlace.enl-nosub { text-decoration: none; }
 .cam-fecha { font-size: 13px; font-weight: 400; color: var(--texto-secundario); }
 .cam-tok { font-size: 13px; color: var(--texto-secundario); margin: 8px 0 0; }
 .cam-tok code { font-size: 12px; }
+
 
 /* Diálogos de ejemplo */
 .dialogos { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 12px; }
@@ -4750,9 +4802,21 @@ h2.seccion {
    del sistema es que lo ancho se desplaza en su caja, nunca la página. */
 .escala-tiras { display: flex; border-radius: 6px; overflow-x: auto;
   border: 1px solid var(--borde); }
-.tira { flex: 1 0 60px; padding: 12px 4px 8px; font-size: 12px; text-align: center;
-  font-family: 'IBM Plex Mono', monospace; display: flex; flex-direction: column; gap: 4px; }
-.tira-hex { font-size: 12px; opacity: .75; }
+/* EL TEXTO NO VA ENCIMA DEL COLOR, VA DEBAJO.
+   Antes el paso y el hex se pintaban sobre la propia muestra y la tinta se
+   elegía por umbral de luminancia. Medido: 5 de las 41 muestras no alcanzan
+   4,5:1 con NINGUNA de las dos tintas —la peor, 4,1:1—, y el hex además llevaba
+   opacity .75, que lo hundía hasta 2:1. Y el hex es información, no adorno: no
+   tiene exención.
+   Con la etiqueta sobre la tarjeta, las 41 se leen a 12,48:1 y la muestra puede
+   ser de cualquier color, que es justo lo que una rampa necesita poder hacer. */
+.tira { flex: 1 0 60px; padding: 8px 4px; font-size: 12px; text-align: center;
+  font-family: 'IBM Plex Mono', monospace; display: flex; flex-direction: column; gap: 4px;
+  color: var(--texto-principal); }
+.tira-color { display: block; height: 40px; border-radius: 3px;
+  border: 1px solid var(--borde); }
+.tira-paso { font-weight: 600; }
+.tira-hex { font-size: 12px; color: var(--texto-secundario); }
 
 /* Marca */
 .marca-rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 12px; }
