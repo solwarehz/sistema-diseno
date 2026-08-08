@@ -3751,8 +3751,9 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
    36px de ancho y queda a 85px del grupo de la izquierda y a 55px del de la
    derecha, así que no colisiona ni con los filtros ni con las acciones. */
 [data-vista='movil'] .top-marca { display: block; position: absolute;
-  left: 50%; transform: translateX(-50%); height: 44px; width: auto;
-  pointer-events: none; }
+  left: 50%; transform: translateX(-50%); border-radius: 6px; }
+[data-vista='movil'] .top-marca img { display: block; height: 44px; width: auto; }
+[data-vista='movil'] .top-marca:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
 [data-vista='movil'] .cat-cuerpo { padding: 16px 12px 48px; }
 [data-vista='movil'] .pag-cab h1 { font-size: 24px; }
 /* §3.5 — bajo 640px el cuerpo y el texto de interfaz suben a 18px. */
@@ -4426,6 +4427,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   padding: 8px 12px; background: var(--fondo-tarjeta);
   border-bottom: 1px solid var(--marco-borde); height: 64px; flex: none; }
 /* El logo crece hasta llenar la banda: 44px de alto en 64px de caja. */
+/* La marca lleva al inicio, que es lo que todo el mundo espera de un logo en la
+   cabecera. El alt de las imágenes va vacío a propósito: el nombre accesible lo
+   pone el enlace, y con los dos puestos el lector lo diría dos veces. */
+.lat-marca-enl { display: flex; align-items: center; justify-content: center;
+  min-width: 0; border-radius: 6px; }
+.lat-marca-enl:focus-visible { outline: 2px solid var(--foco-en-marco); outline-offset: 2px; }
 .lat-lockup { display: block; height: 44px; width: auto; max-width: 100%; }
 .lat-escudo { display: none; height: 40px; width: auto; }
 /* Plegada: el lockup no cabe, queda el escudo. */
@@ -4775,12 +4782,15 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
   <aside class="lat" id="lateral">
     <div class="lat-marca">
+      <a class="lat-marca-enl" href="#inicio" data-ir="inicio"
+         aria-label="Colegio Albert Einstein — ir al inicio">
       ${
         LOCKUP_PNG
-          ? `<img class="lat-lockup" src="${LOCKUP_PNG}" alt="Colegio Albert Einstein">
-             <img class="lat-escudo" src="${ESCUDO_PNG}" alt="Colegio Albert Einstein">`
+          ? `<img class="lat-lockup" src="${LOCKUP_PNG}" alt="">
+             <img class="lat-escudo" src="${ESCUDO_PNG}" alt="">`
           : `${escudo(30)}<div class="lat-id"><span class="lat-colegio">COLEGIO</span><span class="lat-nombre">ALBERT EINSTEIN</span></div>`
       }
+      </a>
     </div>
     <nav class="lat-nav">${menuCatalogo}</nav>
     <div class="lat-usuario">
@@ -4812,7 +4822,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <div class="fg-panel" id="fg-panel" hidden></div>
       </div>
       ${ESCUDO_PNG
-        ? `<img class="top-marca" src="${ESCUDO_PNG}" alt="Colegio Albert Einstein">`
+        ? `<a class="top-marca" href="#inicio" data-ir="inicio"
+              aria-label="Colegio Albert Einstein — ir al inicio"><img src="${ESCUDO_PNG}" alt=""></a>`
         : ''}
       <div class="top-acciones">
         <button class="top-btn" aria-label="Mensajes">${ICONOS.sobre}</button>
