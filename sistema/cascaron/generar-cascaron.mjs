@@ -1983,6 +1983,24 @@ h2.seccion {
   color: var(--texto-principal); }
 .campo::placeholder { color: var(--texto-pista); }
 
+/* La flecha nativa del desplegable la dibuja el navegador: va pegada al borde,
+   no respeta el espaciado y no es de trazo. Se sustituye por el chevron del
+   sistema, a 12px del borde y con hueco reservado para que el texto no lo pise.
+   El color va literal porque un data URI no resuelve var(); son los valores de
+   texto-secundario en cada modo, y el catálogo está exento del candado. */
+select.campo {
+  appearance: none; -webkit-appearance: none;
+  padding-right: 34px;
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px 16px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236A6864' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+}
+[data-tema='oscuro'] select.campo {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C3C1BD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+}
+select.campo:disabled { opacity: .75; }
+
 .chip { display: inline-block; font-size: 11px; font-weight: 500;
   padding: 3px 9px; border-radius: 3px; border-left: 3px solid; }
 .chip-exito { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
