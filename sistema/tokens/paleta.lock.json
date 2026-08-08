@@ -1,6 +1,6 @@
 {
   "documento": "MMI-DS",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "norma": "WCAG 2.2 AA",
   "generado": "node sistema/tokens/generar.mjs",
   "modos": [
@@ -9,17 +9,17 @@
   ],
   "aviso": "Archivo generado. No editar a mano. La fuente es sistema/tokens/fuente.mjs. Cambiar un valor exige regenerar, re-verificar y subir versión (§2.5 regla 8).",
   "resumen": {
-    "paresTotales": 92,
-    "paresBloqueantes": 70,
+    "paresTotales": 100,
+    "paresBloqueantes": 78,
     "paresInformativos": 22,
     "fallos": 0,
     "porModo": {
       "claro": {
-        "bloqueantes": 35,
+        "bloqueantes": 39,
         "fallos": 0
       },
       "oscuro": {
-        "bloqueantes": 35,
+        "bloqueantes": 39,
         "fallos": 0
       }
     }
@@ -215,6 +215,24 @@
       "oscuro": "#6CB2FF",
       "origen": "azul.600",
       "uso": "Enlaces y acciones de fila tipo «Editar»"
+    },
+    "destructiva": {
+      "claro": "#D40006",
+      "oscuro": "#FF7D62",
+      "origen": "rojo.600",
+      "uso": "Botón de acción irreversible: Eliminar, Anular"
+    },
+    "destructiva-hover": {
+      "claro": "#B40000",
+      "oscuro": "#FFAD95",
+      "origen": "rojo.700",
+      "uso": "Hover del botón destructivo"
+    },
+    "destructiva-texto": {
+      "claro": "#FFFFFF",
+      "oscuro": "#20201E",
+      "origen": "gris.0",
+      "uso": "Texto dentro del botón destructivo"
     },
     "marco-fondo": {
       "claro": "#2C3D71",
@@ -587,6 +605,50 @@
       "ratio": 5.2,
       "minimo": 4.5,
       "motivo": "Enlace «Editar» en fila bajo el cursor",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "destructiva-texto",
+      "fondo": "destructiva",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#D40006",
+      "ratio": 5.52,
+      "minimo": 4.5,
+      "motivo": "Texto del botón destructivo",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "destructiva-texto",
+      "fondo": "destructiva-hover",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#B40000",
+      "ratio": 7.14,
+      "minimo": 4.5,
+      "motivo": "Texto del botón destructivo en hover",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "destructiva",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#D40006",
+      "hexFondo": "#FFFFFF",
+      "ratio": 5.52,
+      "minimo": 3,
+      "motivo": "Superficie del botón destructivo contra la tarjeta",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "destructiva",
+      "fondo": "fondo-pagina",
+      "hexFrente": "#D40006",
+      "hexFondo": "#F8F8F6",
+      "ratio": 5.19,
+      "minimo": 3,
+      "motivo": "Superficie del botón destructivo contra la página",
       "cumple": true
     },
     {
@@ -1093,6 +1155,50 @@
       "ratio": 5.51,
       "minimo": 4.5,
       "motivo": "Enlace «Editar» en fila bajo el cursor",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "destructiva-texto",
+      "fondo": "destructiva",
+      "hexFrente": "#20201E",
+      "hexFondo": "#FF7D62",
+      "ratio": 6.49,
+      "minimo": 4.5,
+      "motivo": "Texto del botón destructivo",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "destructiva-texto",
+      "fondo": "destructiva-hover",
+      "hexFrente": "#20201E",
+      "hexFondo": "#FFAD95",
+      "ratio": 9.06,
+      "minimo": 4.5,
+      "motivo": "Texto del botón destructivo en hover",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "destructiva",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#FF7D62",
+      "hexFondo": "#242422",
+      "ratio": 6.19,
+      "minimo": 3,
+      "motivo": "Superficie del botón destructivo contra la tarjeta",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "destructiva",
+      "fondo": "fondo-pagina",
+      "hexFrente": "#FF7D62",
+      "hexFondo": "#1E1D1C",
+      "ratio": 6.7,
+      "minimo": 3,
+      "motivo": "Superficie del botón destructivo contra la página",
       "cumple": true
     },
     {

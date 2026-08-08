@@ -51,35 +51,32 @@ try {
 const problemas = [];
 
 for (const par of lock.contrastes) {
-  const { frente, fondo, hexFrente, hexFondo, ratio, minimo, motivo } = par;
+  const { modo, frente, fondo, hexFrente, hexFondo, ratio, minimo, motivo } = par;
+  const etiqueta = `[${modo}] ${frente} sobre ${fondo}`;
 
-  // 1 · El hex guardado debe coincidir con el semántico declarado.
+  // 1 · El hex guardado debe coincidir con el semántico declarado, en ESE modo.
   //     Detecta que alguien editó un token y no regeneró.
-  const realFrente = lock.semanticos[frente]?.valor;
-  const realFondo = lock.semanticos[fondo]?.valor;
+  const realFrente = lock.semanticos[frente]?.[modo];
+  const realFondo = lock.semanticos[fondo]?.[modo];
   if (realFrente !== hexFrente) {
-    problemas.push(`  ${frente}: el par dice ${hexFrente} pero el token vale ${realFrente}`);
+    problemas.push(`  ${etiqueta}: el par dice ${hexFrente} pero ${frente} vale ${realFrente}`);
     continue;
   }
   if (realFondo !== hexFondo) {
-    problemas.push(`  ${fondo}: el par dice ${hexFondo} pero el token vale ${realFondo}`);
+    problemas.push(`  ${etiqueta}: el par dice ${hexFondo} pero ${fondo} vale ${realFondo}`);
     continue;
   }
 
   // 2 · El contraste guardado debe coincidir con el recalculado.
   const recalculado = medir(hexFrente, hexFondo);
   if (recalculado !== ratio) {
-    problemas.push(
-      `  ${frente} sobre ${fondo}: el contrato dice ${ratio}:1, el cálculo da ${recalculado}:1`
-    );
+    problemas.push(`  ${etiqueta}: el contrato dice ${ratio}:1, el cálculo da ${recalculado}:1`);
     continue;
   }
 
   // 3 · El contraste debe alcanzar su mínimo.
   if (minimo !== 'informativo' && recalculado < minimo) {
-    problemas.push(
-      `  ${frente} sobre ${fondo}: ${recalculado}:1 < ${minimo}:1 — ${motivo}`
-    );
+    problemas.push(`  ${etiqueta}: ${recalculado}:1 < ${minimo}:1 — ${motivo}`);
   }
 }
 
@@ -88,8 +85,12 @@ for (const par of lock.contrastes) {
 const { paresTotales, paresBloqueantes, paresInformativos } = lock.resumen;
 
 console.log(`\n  Candado de color — ${lock.documento} v${lock.version} · ${lock.norma}\n`);
-console.log(`  Modo:         ${lock.modo}`);
+console.log(`  Modos:        ${lock.modos.join(' · ')}`);
 console.log(`  Pares:        ${paresTotales} (${paresBloqueantes} bloqueantes · ${paresInformativos} informativos)`);
+for (const m of lock.modos) {
+  const r = lock.resumen.porModo[m];
+  console.log(`    ${m.padEnd(7)} ${String(r.bloqueantes).padStart(2)} bloqueantes · ${r.fallos} fallos`);
+}
 
 if (problemas.length) {
   console.error(`\n  ${problemas.length} problema(s):\n`);

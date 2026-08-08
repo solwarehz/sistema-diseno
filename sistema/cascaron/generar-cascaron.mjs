@@ -518,7 +518,638 @@ const casosDeUso = `
   </div>
 </div>`;
 
-// ── Página ──────────────────────────────────────────────────────────────────
+// ── Tipografía — fase 2 ─────────────────────────────────────────────────────
+
+const ESCALA_SISTEMA = [
+  ['s-titulo-pantalla', 'Título de pantalla', 28, 'SemiBold 600', 1.2, 'Estudiantes'],
+  ['s-titulo-seccion', 'Título de sección', 20, 'Medium 500', 1.3, 'Datos del apoderado'],
+  ['s-cuerpo', 'Cuerpo', 16, 'Regular 400', 1.6, 'Texto corrido de una descripción'],
+  ['s-interfaz', 'Interfaz y tabla', 15, 'Regular 400', 1.45, 'Quispe Mamani, Ana'],
+  ['s-encabezado', 'Encabezado de tabla', 15, 'Medium 500', 1.45, 'Estudiante'],
+  ['s-etiqueta', 'Etiqueta de campo', 13, 'Medium 500', 1.4, 'Documento de identidad'],
+  ['s-pista', 'Pista y chip', 12, 'Regular 400', 1.4, 'Ocho dígitos, sin guiones'],
+];
+
+const ESCALA_LANDING = [
+  ['l-hero', 'Titular hero', 56, 'Bold 700', 1.05, 'Educación que forma'],
+  ['l-seccion', 'Titular de sección', 34, 'SemiBold 600', 1.15, 'Nuestros niveles'],
+  ['l-subtitulo', 'Subtítulo', 24, 'Medium 500', 1.25, 'Inicial, Primaria y Secundaria'],
+  ['l-destacado', 'Destacado', 19, 'Regular 400', 1.5, 'Cincuenta años en Huaraz'],
+  ['l-cuerpo', 'Cuerpo', 16, 'Regular 400', 1.65, 'Texto corrido de la landing'],
+  ['l-pie', 'Pie y legal', 13, 'Regular 400', 1.5, 'Colegio Albert Einstein · Huaraz'],
+];
+
+const filaEscala = ([clase, nombre, px, peso, lh, texto]) => `
+  <tr>
+    <td class="esc-muestra">
+      <span style="font-size:${px}px; line-height:${lh}; font-weight:${peso.match(/\d+/)[0]}">${texto}</span>
+    </td>
+    <td><code>text-${clase}</code></td>
+    <td class="num">${px}px</td>
+    <td>${peso}</td>
+    <td class="num">${lh}</td>
+  </tr>`;
+
+const tablaEscala = (filas) => `
+  <table class="tabla-escala">
+    <thead><tr><th>Muestra</th><th>Clase</th><th class="num">Tamaño</th><th>Peso</th><th class="num">Interlínea</th></tr></thead>
+    <tbody>${filas.map(filaEscala).join('')}</tbody>
+  </table>`;
+
+const PESOS = [
+  [400, 'Regular', 'Cuerpo, celdas de tabla, texto secundario', true],
+  [500, 'Medium', 'Etiquetas, encabezados de tabla, botones', true],
+  [600, 'SemiBold', 'Títulos de pantalla y de sección', true],
+  [700, 'Bold', 'Solo titulares de landing', true],
+  [100, 'Thin', 'Prohibido', false],
+  [200, 'ExtraLight', 'Prohibido', false],
+  [300, 'Light', 'Prohibido', false],
+  [800, 'ExtraBold', 'Prohibido', false],
+  [900, 'Black', 'Prohibido', false],
+];
+
+const tipografia = `
+<div class="tipo-nota">
+  <strong>Verificado en esta página:</strong> los diez dígitos de IBM Plex Sans miden
+  <strong>exactamente 12px a 20px de cuerpo</strong>, sin activar <code>tnum</code>.
+  Las columnas numéricas se alinean solas. Con tablas de doscientas filas eso no es
+  un detalle estético.
+</div>
+
+<h3 class="sub-seccion">Escala del sistema</h3>
+<p class="seccion-sub">Rango corto: <strong>nada por encima de 28px</strong>. La densidad manda — quien lleva seis horas mirando la pantalla necesita ver más filas, no titulares.</p>
+${tablaEscala(ESCALA_SISTEMA)}
+
+<h3 class="sub-seccion">Escala de la landing</h3>
+<p class="seccion-sub">Hasta 56px. El trabajo es el opuesto: <strong>detener</strong> a alguien que no conoce el colegio.</p>
+${tablaEscala(ESCALA_LANDING)}
+
+<h3 class="sub-seccion">Cuatro pesos, y ninguno más</h3>
+<p class="seccion-sub">Los cinco de abajo están <strong>prohibidos</strong> y el candado los bloquea. Aquí se ven para que se entienda por qué.</p>
+<div class="pesos">
+${PESOS.map(
+  ([w, nombre, uso, ok]) => `
+  <div class="peso${ok ? '' : ' peso-mal'}">
+    <span class="peso-muestra" style="font-weight:${w}">Albert Einstein 2026</span>
+    <span class="peso-meta"><code>font-${nombre.toLowerCase()}</code> · ${w}</span>
+    <span class="peso-uso">${uso}</span>
+  </div>`
+).join('')}
+</div>
+<p class="seccion-sub" style="margin-top:10px">Fíjate en que Thin, ExtraLight y Light <strong>no se ven distintos</strong> a este tamaño: el navegador no tiene esos cortes y sintetiza o cae al más cercano. Un peso que no existe en el archivo no es una decisión de diseño, es un accidente.</p>
+
+<h3 class="sub-seccion">Cuándo va monoespaciado</h3>
+<p class="seccion-sub">Identificadores: DNI, RUC, códigos, expedientes. <strong>Nunca</strong> texto normal.</p>
+<div class="mono-comp">
+  <div class="mono-caja">
+    <div class="mono-et">Plex Sans — cuesta comparar</div>
+    <div class="mono-lista sans">71234567<br>71284567<br>71234561</div>
+  </div>
+  <div class="mono-caja">
+    <div class="mono-et">Plex Mono — la diferencia salta</div>
+    <div class="mono-lista mono">71234567<br>71284567<br>71234561</div>
+  </div>
+</div>
+<p class="seccion-sub" style="margin-top:8px">Los tres DNI difieren en un dígito. En monoespaciado las columnas se alinean y el dígito distinto salta a la vista; en proporcional hay que leerlos.</p>
+
+<h3 class="sub-seccion">Ancho de línea</h3>
+<p class="seccion-sub">Máximo <strong>72 caracteres</strong> en landing, <strong>90</strong> en descripciones de sistema. Más allá, el ojo pierde el renglón al volver.</p>
+<div class="anchos">
+  <div class="ancho-caja"><span class="ancho-et">72ch — landing</span><p class="ancho-72">La institución mantiene un énfasis declarado en ciencias desde su fundación, y ese énfasis se refleja en la distribución de horas del plan de estudios y en los talleres de la tarde.</p></div>
+  <div class="ancho-caja"><span class="ancho-et">Sin límite — ilegible</span><p class="ancho-libre">La institución mantiene un énfasis declarado en ciencias desde su fundación, y ese énfasis se refleja en la distribución de horas del plan de estudios y en los talleres de la tarde.</p></div>
+</div>
+
+<h3 class="sub-seccion">Móvil — bajo 640px</h3>
+<p class="seccion-sub">El cuerpo y el texto de interfaz <strong>suben</strong> a 18px. No es capricho: por debajo, la gente se acerca el teléfono a la cara.</p>
+<table class="tabla-contraste">
+  <thead><tr><th>Estilo</th><th class="num">Escritorio</th><th class="num">Móvil</th></tr></thead>
+  <tbody>
+    <tr><td>Cuerpo</td><td class="num">16px</td><td class="num"><strong>18px</strong></td></tr>
+    <tr><td>Interfaz y tabla</td><td class="num">15px</td><td class="num"><strong>18px</strong></td></tr>
+    <tr><td>Etiqueta</td><td class="num">13px</td><td class="num">14px</td></tr>
+    <tr><td>Pista</td><td class="num">12px</td><td class="num">13px</td></tr>
+    <tr><td>Titular hero</td><td class="num">56px</td><td class="num">32px</td></tr>
+    <tr><td>Título de pantalla</td><td class="num">28px</td><td class="num">22px</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Las siete reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>Cuatro pesos y ningún otro.</td></tr>
+    <tr><td class="num">2</td><td>Identificadores y columnas numéricas en <strong>Plex Mono</strong>. Todo lo demás en Plex Sans.</td></tr>
+    <tr><td class="num">3</td><td>Prohibido <code>text-[Npx]</code>. Solo los pasos de la escala. <em>El candado lo bloquea.</em></td></tr>
+    <tr><td class="num">4</td><td>Interlínea <strong>nunca por debajo de 1.4</strong> en texto corrido.</td></tr>
+    <tr><td class="num">5</td><td>Ancho de línea: 72 caracteres en landing, 90 en sistema.</td></tr>
+    <tr><td class="num">6</td><td>Cursiva solo en citas de landing. <strong>Nunca en interfaz.</strong></td></tr>
+    <tr><td class="num">7</td><td>Mayúsculas sostenidas solo en el lockup. <strong>Nunca en etiquetas ni botones.</strong></td></tr>
+  </tbody>
+</table>
+
+<div class="aviso" style="margin-top:22px">
+  <strong>Pendiente de decisión tuya:</strong> hoy el cascarón carga IBM Plex desde
+  Google Fonts. Para producción hay que <strong>descargar los seis cortes y servirlos
+  desde el proyecto</strong> — son unos 600 KB dentro de la carpeta. Gana en privacidad
+  (Google deja de ver quién abre tu sistema) y en velocidad. Necesito que lo autorices
+  porque implica descargar archivos.
+</div>`;
+
+// ── Espaciado — a decidir ───────────────────────────────────────────────────
+
+const OPCIONES = [
+  ['A', 28, 12, 'Compacto'],
+  ['B', 32, 12, 'Normal estrecho'],
+  ['C', 32, 16, 'Normal'],
+  ['D', 36, 16, 'Holgado — el que sale de 8px vertical'],
+  ['E', 40, 16, 'Grande'],
+];
+
+const tiraBotones = (h, ph) => `
+  <div class="op-fila">
+    <button class="btn-op btn-op-1" style="height:${h}px;padding-inline:${ph}px">Nuevo estudiante</button>
+    <button class="btn-op btn-op-2" style="height:${h}px;padding-inline:${ph}px">Columnas</button>
+    <button class="btn-op btn-op-n" style="height:${h}px;padding-inline:${ph}px">Ver</button>
+    <input class="campo op-campo" style="height:${h}px;padding-inline:${ph}px" placeholder="71234567">
+    <select class="campo op-campo" style="height:${h}px;padding-inline:${ph}px"><option>Todos los grados</option></select>
+  </div>`;
+
+const opciones = OPCIONES.map(
+  ([letra, h, ph, nombre]) => `
+  <div class="op">
+    <div class="op-cab">
+      <span class="op-letra">${letra}</span>
+      <div>
+        <strong>${nombre}</strong>
+        <span class="op-med">alto <b>${h}px</b> · horizontal <b>${ph}px</b> · ${h >= 44 ? 'táctil OK' : h >= 24 ? 'AA OK, táctil corto' : 'FALLA'}</span>
+      </div>
+    </div>
+    ${tiraBotones(h, ph)}
+    <div class="op-contexto">
+      <table class="s-tabla op-tabla">
+        <thead><tr><th>Estudiante</th><th>DNI</th><th>Estado</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>Quispe Mamani, Ana</td><td class="mono">71234567</td><td><span class="chip chip-exito">Activo</span></td><td><a href="#" class="enlace">Editar</a></td></tr>
+          <tr class="hover"><td>Rojas Vega, Luis</td><td class="mono">70998811</td><td><span class="chip chip-aviso">Parcial</span></td><td><a href="#" class="enlace">Editar</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>`
+).join('');
+
+const espaciado = `
+<div class="aviso">
+  <strong>Cambio de método que propongo.</strong> No declarar padding vertical en los
+  controles. Se fija la <strong>altura</strong> desde la rejilla y el texto se centra.
+  El padding solo gobierna el horizontal.
+  <br><br>
+  Por qué: con padding vertical, la altura del botón depende de la interlínea de la
+  fuente. 13px a 1.4 da caja de 18px; con 8+8 y borde salen <strong>36px</strong>, y no
+  hay ningún múltiplo de 4 que dé 32px por esa vía —haría falta 6px de padding, que
+  se sale de la rejilla. Fijando la altura, 28 · 32 · 40 · 48 salen exactos y todos
+  los controles de una fila casan solos.
+</div>
+
+<h3 class="sub-seccion">Compara y elige</h3>
+<p class="seccion-sub">Cada opción con botones, campo y selector, y debajo la tabla real para ver si pesan o no al lado de las filas.</p>
+<div class="opciones">${opciones}</div>
+
+<h3 class="sub-seccion">La rejilla de 4</h3>
+<div class="rejilla-vis">
+  ${[4, 8, 12, 16, 20, 24, 32, 40, 48, 56, 64].map((n) => `<div class="rej"><div class="rej-barra" style="width:${n}px"></div><span>${n}</span></div>`).join('')}
+</div>
+
+<h3 class="sub-seccion">Tres valores del sistema se salen de la rejilla</h3>
+<p class="seccion-sub">Si adoptamos múltiplos de 4, estos hay que corregirlos. Los tres vienen del documento.</p>
+<table class="tabla-contraste">
+  <thead><tr><th>Valor</th><th class="num">Hoy</th><th class="num">Propuesto</th><th>Consecuencia</th></tr></thead>
+  <tbody>
+    <tr><td>Fila cómoda</td><td class="num">34px</td><td class="num"><strong>32px</strong></td><td class="motivo">Dos píxeles menos por fila. En 25 filas visibles, gana media fila más de pantalla</td></tr>
+    <tr><td>Alto del marco</td><td class="num">54px</td><td class="num"><strong>56px</strong></td><td class="motivo">Coincide con el botón flotante de móvil, que ya es 56</td></tr>
+    <tr><td>Lateral plegada</td><td class="num">58px</td><td class="num"><strong>56px</strong></td><td class="motivo">Icono de 18px centrado en 56 deja 19px a cada lado</td></tr>
+    <tr><td>Fila compacta</td><td class="num">28px</td><td class="num">28px</td><td class="motivo">Ya encaja. Sin cambio</td></tr>
+  </tbody>
+</table>`;
+
+// ── Bloque «Ver código» ─────────────────────────────────────────────────────
+// Plegado por defecto, con revelar y copiar. Es el patrón que usan Material,
+// Carbon y Polaris: el ejemplo vivo manda, el código está a un clic.
+
+let nCodigo = 0;
+const verCodigo = (titulo, codigo) => {
+  const id = 'cod' + ++nCodigo;
+  const escapado = codigo
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  return `
+  <div class="cod-bloque">
+    <div class="cod-cab">
+      <button class="cod-ver" data-ver="${id}" aria-expanded="false" aria-controls="${id}">
+        ${ICONOS.chevron}<span>Ver código</span>
+      </button>
+      <span class="cod-tit">${titulo}</span>
+      <button class="copiar" data-copiar-de="${id}">Copiar</button>
+    </div>
+    <pre class="cod-pre" id="${id}" hidden>${escapado}</pre>
+  </div>`;
+};
+
+// ── Elemento: Botón ─────────────────────────────────────────────────────────
+
+const pagBoton = `
+<p class="pag-intro">Cinco variantes y cuatro tamaños. <strong>Una sola acción principal
+por pantalla</strong>: si hay dos botones rellenos compitiendo, uno de los dos no era
+principal.</p>
+
+<h3 class="sub-seccion">Variantes</h3>
+<div class="bloque">
+  <div class="muestra-fila">
+    <div class="mf"><button class="btn btn-1">Guardar</button><span class="mf-et">Principal<br><code>accion</code></span></div>
+    <div class="mf"><button class="btn btn-2">Columnas</button><span class="mf-et">Secundaria<br><code>accion-2</code> en oro</span></div>
+    <div class="mf"><button class="btn btn-neutro">Exportar</button><span class="mf-et">Neutra<br><code>borde-campo</code></span></div>
+    <div class="mf"><button class="btn" disabled style="background:var(--accion-deshabilitada);color:var(--accion-texto-desh);cursor:not-allowed">Sin permiso</button><span class="mf-et">Deshabilitada<br><code>accion-deshabilitada</code></span></div>
+    <div class="mf"><a href="#" class="enlace">Editar</a><span class="mf-et">Acción de fila<br><code>enlace</code> — texto, no botón</span></div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Estados de la principal</h3>
+<div class="bloque">
+  <div class="muestra-fila">
+    <div class="mf"><button class="btn btn-1">Guardar</button><span class="mf-et">Normal<br><code>accion</code></span></div>
+    <div class="mf"><button class="btn" style="background:var(--accion-hover);color:var(--accion-texto)">Guardar</button><span class="mf-et">Hover<br><code>accion-hover</code></span></div>
+    <div class="mf"><button class="btn" style="background:var(--accion-activa);color:var(--accion-texto)">Guardar</button><span class="mf-et">Presionado<br><code>accion-activa</code></span></div>
+    <div class="mf"><button class="btn btn-1 foco-demo">Guardar</button><span class="mf-et">Con foco<br>anillo <code>foco</code> 2px</span></div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Con icono</h3>
+<div class="bloque">
+  <div class="muestra-fila">
+    <div class="mf"><button class="btn btn-1 btn-ic">${ICONOS.panel}Nuevo estudiante</button><span class="mf-et">Icono a la izquierda</span></div>
+    <div class="mf"><button class="btn btn-2 btn-ic">${ICONOS.chevron}Columnas</button><span class="mf-et">Icono en secundaria</span></div>
+    <div class="mf"><button class="btn btn-neutro btn-ic btn-solo-ic" aria-label="Configuración">${ICONOS.configuracion}</button><span class="mf-et">Solo icono<br><strong>exige <code>aria-label</code></strong></span></div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">En móvil</h3>
+<div class="bloque">
+  <div class="movil-btn-demo">
+    <button class="btn btn-1" style="width:100%;height:48px">Solicitar información</button>
+    <span class="mf-et">Ancho completo, 48px de alto. Por debajo de 44px el dedo falla.</span>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Una sola principal por pantalla.</strong> El resto son secundarias o neutras.</td></tr>
+    <tr><td class="num">2</td><td><strong>Las acciones de fila van como enlace</strong>, no como botón. Con cinco filas, cinco botones sólidos son ruido, no jerarquía.</td></tr>
+    <tr><td class="num">3</td><td>El botón dice el <strong>verbo</strong>, no «Aceptar». <em>Eliminar</em> / <em>Cancelar</em>.</td></tr>
+    <tr><td class="num">4</td><td><strong>Nunca mayúsculas sostenidas.</strong> Se leen más lento.</td></tr>
+    <tr><td class="num">5</td><td>Botón de solo icono <strong>siempre con <code>aria-label</code></strong>.</td></tr>
+    <tr><td class="num">6</td><td>Prohibido quitar el anillo de foco. En móvil, mínimo 44px de alto.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Props</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>variante</code></td><td class="mono">principal · secundaria · neutra</td><td class="mono">principal</td><td class="motivo">Jerarquía visual. Una sola principal por pantalla</td></tr>
+    <tr><td><code>tamaño</code></td><td class="mono">pequeño · normal · grande</td><td class="mono">normal</td><td class="motivo">Pendiente de tu decisión en Espaciado</td></tr>
+    <tr><td><code>deshabilitado</code></td><td class="mono">boolean</td><td class="mono">false</td><td class="motivo">Sin permiso o sin datos válidos</td></tr>
+    <tr><td><code>icono</code></td><td class="mono">ReactNode</td><td class="mono">—</td><td class="motivo">Se coloca a la izquierda del texto</td></tr>
+    <tr><td><code>anchoCompleto</code></td><td class="mono">boolean</td><td class="mono">false</td><td class="motivo">Ocupa el ancho del contenedor. Móvil</td></tr>
+    <tr><td><code>aria-label</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio</strong> si el botón es solo icono</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+${verCodigo(
+  'Uso del componente',
+  `import { Boton } from '@ae/sistema';
+
+<Boton variante="principal">Guardar</Boton>
+<Boton variante="secundaria">Columnas</Boton>
+<Boton variante="neutra">Exportar</Boton>
+<Boton variante="principal" deshabilitado>Sin permiso</Boton>
+<Boton variante="neutra" icono={<Ajustes />} aria-label="Configuración" />`
+)}
+<p class="pag-intro" style="margin-top:12px"><strong>Se copia la importación y las props, no el markup interno</strong> (MMI-DS §9). Si copiaras las tripas del botón, cada pantalla tendría su propia versión y el sistema dejaría de ser un sistema.</p>
+
+<h3 class="sub-seccion">Composición — aquí sí se copia el markup</h3>
+<p class="seccion-sub">La excepción del §9: ensamblar varios elementos es una composición puntual, no un componente compartido.</p>
+${verCodigo(
+  'Barra de filtros',
+  `<div className="flex gap-2 p-4 border-b border-borde">
+  <CampoTexto placeholder="71234567" aria-label="Buscar por DNI" />
+  <Selector opciones={grados} placeholder="Todos los grados" />
+  <div className="ml-auto flex gap-2">
+    <Boton variante="neutra">Exportar</Boton>
+    <Boton variante="secundaria">Columnas</Boton>
+  </div>
+</div>`
+)}
+
+<h3 class="sub-seccion">Tamaño — pendiente de decisión</h3>
+<p class="seccion-sub">Es lo que estamos decidiendo. Está en <a href="#" data-ir="espaciado" class="enlace">Fundamentos → Espaciado</a>.</p>`;
+
+// ── Elementos aún no construidos ────────────────────────────────────────────
+
+const pendiente = (nombre, fase) => `
+<div class="pendiente">
+  <div class="pendiente-ic">${ICONOS.configuracion}</div>
+  <h3>${nombre}</h3>
+  <p>Todavía no está construido. Entra en la <strong>${fase}</strong>.</p>
+  <p class="pendiente-nota">El menú lo lista para que se vea el alcance completo del sistema,
+  no para fingir que existe.</p>
+</div>`;
+
+// ── Manual en Markdown → HTML ───────────────────────────────────────────────
+// Conversor mínimo. Cubre solo lo que el manual usa: encabezados, tablas,
+// listas, negrita, cursiva, código, enlaces y citas. No es un parser general.
+
+const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+const enLinea = (s) =>
+  esc(s)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/(^|[^*])\*([^*]+)\*/g, '$1<em>$2</em>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="enlace">$1</a>');
+
+const md = (texto) => {
+  const out = [];
+  const lineas = texto.split('\n');
+  let i = 0;
+  while (i < lineas.length) {
+    const l = lineas[i];
+
+    // Tabla
+    if (/^\|/.test(l) && /^\|[\s:|-]+\|$/.test(lineas[i + 1] || '')) {
+      const cabs = l.split('|').slice(1, -1).map((c) => c.trim());
+      i += 2;
+      const filas = [];
+      while (i < lineas.length && /^\|/.test(lineas[i])) {
+        filas.push(lineas[i].split('|').slice(1, -1).map((c) => c.trim()));
+        i++;
+      }
+      out.push(
+        `<table class="tabla-manual"><thead><tr>${cabs.map((c) => `<th>${enLinea(c)}</th>`).join('')}</tr></thead>` +
+          `<tbody>${filas.map((f) => `<tr>${f.map((c) => `<td>${enLinea(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`
+      );
+      continue;
+    }
+
+    // Encabezados
+    const h = l.match(/^(#{2,4})\s+(.*)$/);
+    if (h) {
+      const n = h[1].length;
+      out.push(`<h${n} class="man-h${n}">${enLinea(h[2])}</h${n}>`);
+      i++;
+      continue;
+    }
+
+    // Cita
+    if (/^>\s/.test(l)) {
+      const cita = [];
+      while (i < lineas.length && /^>/.test(lineas[i])) {
+        cita.push(lineas[i].replace(/^>\s?/, ''));
+        i++;
+      }
+      out.push(`<blockquote class="man-cita">${enLinea(cita.join(' '))}</blockquote>`);
+      continue;
+    }
+
+    // Lista
+    if (/^[-*]\s/.test(l)) {
+      const items = [];
+      while (i < lineas.length && /^[-*]\s/.test(lineas[i])) {
+        items.push(lineas[i].replace(/^[-*]\s/, ''));
+        i++;
+      }
+      out.push(`<ul class="man-lista">${items.map((t) => `<li>${enLinea(t)}</li>`).join('')}</ul>`);
+      continue;
+    }
+
+    // Separador
+    if (/^---+$/.test(l)) { out.push('<hr class="man-hr">'); i++; continue; }
+
+    // Párrafo
+    if (l.trim()) {
+      const p = [];
+      while (i < lineas.length && lineas[i].trim() && !/^[#>|-]/.test(lineas[i])) {
+        p.push(lineas[i]);
+        i++;
+      }
+      if (p.length) { out.push(`<p class="man-p">${enLinea(p.join(' '))}</p>`); continue; }
+    }
+    i++;
+  }
+  return out.join('\n');
+};
+
+// El manual se parte por sus secciones `## N · Título`
+const manualCrudo = readFileSync(join(RAIZ, 'manual', 'MANUAL-APLICACIONES-WEB.md'), 'utf8');
+const trozos = manualCrudo.split(/\n(?=## )/).filter((t) => t.startsWith('## '));
+const seccionesManual = trozos.map((t) => {
+  const titulo = t.split('\n')[0].replace(/^##\s+/, '');
+  const limpio = titulo.replace(/^\d+\s*·\s*/, '');
+  const id = 'man-' + limpio.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 34);
+  return { id, t: limpio, cuerpo: md(t.split('\n').slice(1).join('\n')) };
+});
+
+// ── Jerarquía del catálogo ──────────────────────────────────────────────────
+
+const pagColor = `
+<p class="pag-intro">${Object.keys(semanticos).length} tokens semánticos sobre 4 escalas primitivas.
+Es lo único que un componente consume. <strong>Las primitivas están prohibidas dentro de un componente.</strong></p>
+${Object.entries(GRUPOS).map(grupoMuestras).join('')}
+<h3 class="sub-seccion">Primitivas</h3>
+<p class="seccion-sub">Existen para que los semánticos elijan. No se consumen directamente.</p>
+${Object.entries(primitivas).map(([n, p]) => escala(n, p)).join('')}
+<h3 class="sub-seccion">Marca — fuera del sistema</h3>
+<p class="seccion-sub">Viven en el escudo, la landing y los impresos. No en la interfaz.</p>
+<div class="marca-rejilla">
+${Object.entries(marca).map(([k, v]) => `
+  <div class="marca-item">
+    <div class="marca-tapa" style="background: var(--${k})"></div>
+    <div class="marca-cuerpo"><code>${k}</code><p>${v.uso}</p>
+      <div class="marca-prohibido">Prohibido en: ${v.prohibidoEn}</div></div>
+  </div>`).join('')}
+</div>`;
+
+const pagContraste = `
+<p class="pag-intro">${lock.resumen.paresBloqueantes} pares bloqueantes en los dos modos ·
+<strong>${lock.resumen.fallos} fallos</strong> · ${lock.norma}. Recalculados en cada build por
+<code>verificar-contraste.mjs</code>: si el contrato miente, el build falla.</p>
+<h3 class="sub-seccion">Modo claro</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>Frente</th><th>Fondo</th><th class="num">Medido</th><th class="num">Mínimo</th><th>Estado</th><th>Motivo</th></tr></thead>
+  <tbody>${filasContraste('claro')}</tbody>
+</table>
+<h3 class="sub-seccion">Modo oscuro</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>Frente</th><th>Fondo</th><th class="num">Medido</th><th class="num">Mínimo</th><th>Estado</th><th>Motivo</th></tr></thead>
+  <tbody>${filasContraste('oscuro')}</tbody>
+</table>
+<h3 class="sub-seccion">Correcciones sobre el documento original</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>Token</th><th>Antes</th><th>Ahora</th><th>Medido</th><th>Norma</th><th>Razón</th></tr></thead>
+  <tbody>${correcciones.map((c) => `<tr><td><code>${c.token}</code></td><td class="mono">${c.antes}</td>
+    <td class="mono">${c.despues}</td><td class="num">${c.medido}</td><td>${c.criterio}</td>
+    <td class="motivo">${c.razon}</td></tr>`).join('')}</tbody>
+</table>`;
+
+const pagIconos = `
+<p class="pag-intro">Lucide, trazo <strong>1,5px a 18px</strong>, alineado con texto de 15px.
+Heredan <code>currentColor</code> — que es exactamente lo que el emoji no hace.</p>
+<div class="bloque">
+  <div class="iconos-rejilla">
+  ${Object.entries(ICONOS).map(([n, svg]) => `<div class="ico-item">${svg}<span>${n}</span></div>`).join('')}
+  </div>
+</div>
+<h3 class="sub-seccion">Por qué no emoji</h3>
+<div class="mal-rejilla">
+  <div class="mal-par">
+    <div class="mal-caja mal"><span class="emoji-demo">📋 📊 ⚙️</span><span class="mal-et">No hereda color, no se alinea, cambia según el sistema operativo</span></div>
+    <div class="mal-caja bien"><span class="iconos-demo">${ICONOS.panel}${ICONOS.tesoreria}${ICONOS.configuracion}</span><span class="bien-et">Trazo 1,5px, hereda <code>currentColor</code></span></div>
+  </div>
+</div>
+<p class="pag-intro" style="margin-top:14px">Es el tercer defecto real que el documento reporta en §1.3, y el único que seguía sin resolver.</p>`;
+
+const pagMaquetas = `
+<p class="pag-intro">Los tres contextos. Landing y sistema <strong>comparten valores, no proporciones</strong>.
+El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
+<div class="maqueta-tit">Web — landing</div>${maquetaWeb}
+<div class="maqueta-tit">Sistema — lateral desplegada</div>${maquetaSistema}
+<div class="maqueta-tit">Sistema — lateral plegada</div>${maquetaColapsada}
+<div class="maqueta-tit">App — móvil, 375px</div>${maquetaMovil}`;
+
+const pagInicio = `
+<p class="pag-intro">Vista general del sistema. Todo lo que hay, de una vez.
+El menú de la izquierda lo abre por partes.</p>
+
+<div class="estado-rejilla">
+  <div class="est"><b>${Object.keys(semanticos).length}</b><span>tokens semánticos</span></div>
+  <div class="est"><b>${lock.resumen.paresBloqueantes}</b><span>pares verificados</span></div>
+  <div class="est est-ok"><b>${lock.resumen.fallos}</b><span>fallos de contraste</span></div>
+  <div class="est"><b>2</b><span>modos, claro y oscuro</span></div>
+</div>
+
+<div class="aviso">
+  <strong>Fase 1 aprobada</strong> — color, esquema y casos de uso.
+  <strong>Fase 2 en curso</strong> — tipografía lista; falta que decidas el
+  <a href="#" data-ir="espaciado" class="enlace">tamaño de los botones</a>.
+</div>
+
+<h3 class="sub-seccion">Color</h3>
+${Object.entries(GRUPOS).map(grupoMuestras).join('')}
+
+<h3 class="sub-seccion">Casos de uso</h3>
+${casosDeUso}
+
+<h3 class="sub-seccion">Y además</h3>
+<div class="atajos">
+  <a href="#maquetas" data-ir="maquetas" class="atajo"><span class="atajo-ic">${ICONOS.matricula}</span>
+    <span><strong>Maquetas</strong>Web, sistema y móvil. La lateral se pliega de verdad</span></a>
+  <a href="#boton" data-ir="boton" class="atajo"><span class="atajo-ic">${ICONOS.panel}</span>
+    <span><strong>Botón</strong>Variantes, estados y código para copiar</span></a>
+  <a href="#espaciado" data-ir="espaciado" class="atajo"><span class="atajo-ic">${ICONOS.administracion}</span>
+    <span><strong>Espaciado</strong>Las cinco opciones de tamaño, a decidir</span></a>
+  <a href="#contraste" data-ir="contraste" class="atajo"><span class="atajo-ic">${ICONOS.academico}</span>
+    <span><strong>Contrastes</strong>Los ${lock.resumen.paresBloqueantes} pares medidos</span></a>
+</div>`;
+
+const CATALOGO = [
+  {
+    grupo: 'Inicio',
+    icono: 'panel',
+    items: [{ id: 'inicio', t: 'Vista general', estado: 'listo', c: pagInicio }],
+  },
+  {
+    grupo: 'Fundamentos',
+    icono: 'administracion',
+    items: [
+      { id: 'color', t: 'Color', estado: 'listo', c: pagColor },
+      { id: 'tipografia', t: 'Tipografía', estado: 'listo', c: tipografia },
+      { id: 'espaciado', t: 'Espaciado', estado: 'decidir', c: espaciado },
+      { id: 'iconos', t: 'Iconos', estado: 'listo', c: pagIconos },
+    ],
+  },
+  {
+    grupo: 'Elementos',
+    icono: 'panel',
+    items: [
+      { id: 'boton', t: 'Botón', estado: 'listo', c: pagBoton },
+      { id: 'enlace', t: 'Enlace', estado: 'pendiente', c: pendiente('Enlace', 'fase 4') },
+      { id: 'campo', t: 'Campo de texto', estado: 'pendiente', c: pendiente('Campo de texto', 'fase 4') },
+      { id: 'selector', t: 'Selector', estado: 'pendiente', c: pendiente('Selector con búsqueda', 'fase 4') },
+      { id: 'chip', t: 'Chip de estado', estado: 'pendiente', c: pendiente('Chip de estado', 'fase 4') },
+      { id: 'tarjeta', t: 'Tarjeta', estado: 'pendiente', c: pendiente('Tarjeta', 'fase 4') },
+      { id: 'tabla', t: 'Tabla de datos', estado: 'pendiente', c: pendiente('Tabla de datos', 'fase 5') },
+      { id: 'paginacion', t: 'Paginación', estado: 'pendiente', c: pendiente('Paginación', 'fase 5') },
+      { id: 'estados', t: 'Estados de pantalla', estado: 'pendiente', c: pendiente('Estados de pantalla', 'fase 5') },
+    ],
+  },
+  {
+    grupo: 'Composición',
+    icono: 'matricula',
+    items: [
+      { id: 'casos', t: 'Casos de uso', estado: 'listo', c: casosDeUso },
+      { id: 'maquetas', t: 'Maquetas', estado: 'listo', c: pagMaquetas },
+    ],
+  },
+  {
+    grupo: 'Manual de uso',
+    icono: 'comunicaciones',
+    items: seccionesManual.map((s) => ({
+      id: s.id,
+      t: s.t,
+      estado: 'listo',
+      c: `<div class="manual">${s.cuerpo}</div>`,
+    })),
+  },
+  {
+    grupo: 'Referencia',
+    icono: 'academico',
+    items: [{ id: 'contraste', t: 'Contrastes', estado: 'listo', c: pagContraste }],
+  },
+];
+
+const PUNTO = { listo: '', decidir: '<span class="pt pt-decidir" title="Esperando tu decisión"></span>', pendiente: '<span class="pt pt-pend" title="Sin construir"></span>' };
+
+// El menú del catálogo ES el mismo componente que el de la aplicación:
+// icono + nombre, sombreado en el activo, y chevron que despliega el grupo.
+// Si el catálogo no usara su propio sistema, no valdría nada.
+const menuCatalogo = CATALOGO.map(
+  (g, n) => `
+  <div class="nav-grupo" data-grupo="${n}">
+    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="${n}">
+      <span class="nav-ic">${ICONOS[g.icono]}</span>
+      <span class="nav-txt">${g.grupo}</span>
+      <span class="nav-chev">${ICONOS.chevron}</span>
+    </button>
+    <div class="nav-hijos" id="grupo-${n}">
+      ${g.items
+        .map(
+          (i) => `<a class="nav-hijo" href="#${i.id}" data-ir="${i.id}" title="${i.t}">
+            <span class="nav-txt">${i.t}</span>${PUNTO[i.estado]}</a>`
+        )
+        .join('')}
+    </div>
+  </div>`
+).join('');
+
+const paginasCatalogo = CATALOGO.flatMap((g) =>
+  g.items.map(
+    (i) => `<section class="pagina" id="pg-${i.id}" hidden>
+      <div class="pag-cab"><span class="pag-ruta">${g.grupo}</span><h2>${i.t}</h2></div>
+      ${i.c}
+    </section>`
+  )
+).join('');
 
 const html = `<!doctype html>
 <html lang="es" data-tema="claro">
@@ -563,14 +1194,133 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .conmutador button[aria-pressed="true"] { background: var(--marco-acento); color: var(--marco-item-activo); }
 .conmutador button:focus-visible { outline: 2px solid var(--foco-en-marco); outline-offset: 2px; }
 
-/* Navegación de secciones */
-.secnav { display: flex; gap: 4px; flex-wrap: wrap; padding: 16px 0 4px; }
-.secnav a {
-  font-size: 13px; font-weight: 500; text-decoration: none;
-  color: var(--texto-secundario); padding: 6px 12px; border-radius: 4px;
-  border: 1px solid var(--borde);
+/* ── El cascarón usa la misma cáscara que la aplicación ──────────────────── */
+.app-cascaron { min-height: 100vh; }
+.app-cascaron .lat { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+.app-cascaron .lat-nav { overflow-y: auto; }
+.app-cascaron .app-main { min-height: 100vh; }
+.top-cascaron { position: sticky; top: 0; z-index: 20; }
+
+/* Grupos desplegables — icono + nombre + chevron */
+.nav-grupo { margin-bottom: 2px; }
+.nav-grupo-tit { width: 100%; background: transparent; border: 0; cursor: pointer;
+  font: inherit; text-align: left; }
+.nav-grupo-tit .nav-chev .ic { transition: transform .15s; }
+.nav-grupo[data-cerrado] .nav-chev .ic { transform: rotate(-90deg); }
+.nav-grupo[data-cerrado] .nav-hijos { display: none; }
+.nav-hijos { padding: 2px 0 6px 0; }
+.nav-hijo { display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding: 6px 10px 6px 40px; border-radius: 5px; text-decoration: none;
+  color: var(--marco-texto); font-size: 13px; opacity: .78; white-space: nowrap; }
+.nav-hijo:hover { background: rgba(255,255,255,.07); opacity: 1; }
+.nav-hijo.activo { background: var(--marco-item-activo); opacity: 1;
+  color: var(--marco-acento); font-weight: 500;
+  box-shadow: inset 3px 0 0 var(--marco-acento); }
+.lat.colapsado .nav-hijos, .lat.colapsado .lat-leyenda { display: none; }
+.lat.colapsado .nav-grupo-tit { justify-content: center; padding-inline: 0; }
+
+.pt { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.pt-decidir { background: var(--aviso-acento); }
+.pt-pend { background: rgba(255,255,255,.34); }
+.lat-leyenda { border-top: 1px solid rgba(255,255,255,.10); margin: 0 8px;
+  padding: 11px 4px; font-size: 10px; color: rgba(255,255,255,.62);
+  display: grid; gap: 5px; }
+.lat-leyenda div { display: flex; align-items: center; gap: 7px; }
+
+.cat-cuerpo { flex: 1; min-width: 0; padding: 24px 32px 80px; max-width: 1120px;
+  background: var(--fondo-pagina); }
+.pag-cab { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 2px solid var(--borde); }
+.pag-ruta { font-size: 11px; font-weight: 500; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--texto-secundario); }
+.pag-cab h2 { font-size: 28px; font-weight: 600; margin-top: 3px; }
+.pag-intro { font-size: 15px; color: var(--texto-secundario); max-width: 90ch; margin: 0 0 20px; }
+
+.bloque { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
+  border-radius: 6px; padding: 20px; margin-bottom: 8px; }
+.muestra-fila { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
+.mf { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.mf-et { font-size: 11px; color: var(--texto-secundario); line-height: 1.45; }
+.btn-ic { display: inline-flex; align-items: center; gap: 7px; }
+.btn-solo-ic { padding-inline: 8px; }
+.movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
+
+.atajos { display: grid; grid-template-columns: repeat(auto-fit,minmax(230px,1fr)); gap: 10px; }
+.atajo { display: flex; align-items: flex-start; gap: 11px; padding: 14px 16px;
+  background: var(--fondo-tarjeta); border: 1px solid var(--borde);
+  border-radius: 6px; text-decoration: none; color: var(--texto-principal); }
+.atajo:hover { border-color: var(--accion); }
+.atajo-ic { color: var(--accion); display: grid; place-items: center; flex: none; margin-top: 1px; }
+.atajo strong { display: block; font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.atajo span span, .atajo > span:last-child { font-size: 12px; color: var(--texto-secundario); line-height: 1.45; }
+
+.estado-rejilla { display: grid; grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
+  gap: 10px; margin-bottom: 18px; }
+.est { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
+  border-radius: 6px; padding: 14px 16px; }
+.est b { display: block; font-size: 26px; font-weight: 600; line-height: 1.1; }
+.est span { font-size: 11px; color: var(--texto-secundario); }
+.est-ok b { color: var(--exito-acento); }
+
+.iconos-rejilla { display: grid; grid-template-columns: repeat(auto-fill,minmax(104px,1fr)); gap: 8px; }
+.ico-item { display: flex; flex-direction: column; align-items: center; gap: 7px;
+  padding: 14px 6px; border: 1px solid var(--borde); border-radius: 6px; }
+.ico-item span { font-size: 10px; color: var(--texto-secundario); }
+
+.pendiente { text-align: center; padding: 56px 24px; background: var(--fondo-tarjeta);
+  border: 1px dashed var(--borde-fuerte); border-radius: 6px; }
+.pendiente-ic { color: var(--texto-pista); margin-bottom: 12px; }
+.pendiente-ic .ic { width: 32px; height: 32px; }
+.pendiente h3 { font-size: 19px; font-weight: 600; margin-bottom: 6px; }
+.pendiente p { font-size: 14px; color: var(--texto-secundario); margin: 0 0 6px; }
+.pendiente-nota { font-size: 12px !important; color: var(--texto-pista) !important; max-width: 46ch; margin: 10px auto 0 !important; }
+
+/* Ver código */
+.cod-bloque { border: 1px solid var(--borde); border-radius: 6px;
+  background: var(--fondo-tarjeta); overflow: hidden; }
+.cod-cab { display: flex; align-items: center; gap: 12px; padding: 8px 12px;
+  background: var(--fondo-encabezado); }
+.cod-ver { display: inline-flex; align-items: center; gap: 6px; font: inherit;
+  font-size: 13px; font-weight: 500; cursor: pointer; background: transparent;
+  border: 0; color: var(--accion); padding: 4px 4px; border-radius: 4px; }
+.cod-ver .ic { width: 15px; height: 15px; transition: transform .15s; }
+.cod-ver.abierto .ic { transform: rotate(180deg); }
+.cod-tit { flex: 1; font-size: 12px; color: var(--texto-secundario); }
+.cod-pre { margin: 0; padding: 16px; font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px; line-height: 1.65; overflow-x: auto;
+  border-top: 1px solid var(--borde); }
+.copiar { font: inherit; font-size: 12px; font-weight: 500; cursor: pointer;
+  padding: 5px 12px; border-radius: 5px; border: 1px solid var(--borde-campo);
+  background: var(--fondo-tarjeta); color: var(--texto-principal); }
+.copiar:hover { border-color: var(--accion); color: var(--accion); }
+
+/* Manual */
+.manual { max-width: 88ch; }
+.man-h2 { font-size: 21px; font-weight: 600; margin: 28px 0 10px; }
+.man-h3 { font-size: 17px; font-weight: 600; margin: 24px 0 8px; }
+.man-h4 { font-size: 14px; font-weight: 600; margin: 18px 0 6px; }
+.man-p { font-size: 15px; line-height: 1.65; margin: 0 0 14px; }
+.man-lista { font-size: 15px; line-height: 1.65; margin: 0 0 14px; padding-left: 22px; }
+.man-lista li { margin-bottom: 5px; }
+.man-cita { margin: 0 0 16px; padding: 12px 16px; background: var(--info-fondo);
+  color: var(--info-texto); border-left: 3px solid var(--info-acento); border-radius: 4px;
+  font-size: 14px; }
+.man-hr { border: 0; border-top: 1px solid var(--borde); margin: 26px 0; }
+.tabla-manual { width: 100%; border-collapse: collapse; font-size: 14px;
+  margin: 0 0 18px; background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde); border-radius: 6px; }
+.tabla-manual th { background: var(--fondo-encabezado); text-align: left;
+  padding: 9px 12px; font-weight: 500; font-size: 13px; }
+.tabla-manual td { padding: 9px 12px; border-top: 1px solid var(--borde);
+  vertical-align: top; line-height: 1.5; }
+.manual code { background: var(--fondo-encabezado); padding: 1px 5px;
+  border-radius: 3px; font-size: 13px; }
+
+@media (max-width: 900px) {
+  .catalogo { flex-direction: column; }
+  .cat-nav { width: 100%; position: static; max-height: none;
+    border-right: 0; border-bottom: 1px solid var(--borde); }
+  .cat-cuerpo { padding: 20px 16px 60px; }
 }
-.secnav a:hover { color: var(--accion); border-color: var(--accion); }
 
 h2.seccion {
   font-size: 22px; font-weight: 600; margin: 44px 0 6px;
@@ -680,9 +1430,12 @@ h2.seccion {
 /* ── Maqueta SISTEMA — lateral plegable + barra de filtros globales ──────── */
 .app { display: flex; min-height: 520px; }
 
-.lat { width: 236px; flex: none; background: var(--marco-fondo); color: var(--marco-texto);
-  display: flex; flex-direction: column; transition: width .18s ease; }
-.lat.colapsado { width: 58px; }
+/* En un ítem flexible manda flex-basis, no width. Y min-width:0 desactiva el
+   mínimo automático, que si no impide encoger por debajo del contenido. */
+.lat { flex: 0 0 236px; min-width: 0; overflow: hidden;
+  background: var(--marco-fondo); color: var(--marco-texto);
+  display: flex; flex-direction: column; }
+.lat.colapsado { flex: 0 0 56px; }
 .lat.colapsado .nav-txt, .lat.colapsado .nav-chev,
 .lat.colapsado .lat-id, .lat.colapsado .lat-user-txt { display: none; }
 .lat.colapsado .lat-marca, .lat.colapsado .lat-usuario { justify-content: center; }
@@ -794,6 +1547,77 @@ h2.seccion {
   background: var(--accion); color: var(--accion-texto);
   box-shadow: 0 4px 14px rgba(0,0,0,.28); }
 
+/* ── Tipografía ──────────────────────────────────────────────────────────── */
+.tipo-nota { background: var(--exito-fondo); color: var(--exito-texto);
+  border-left: 3px solid var(--exito-acento); padding: 12px 15px;
+  border-radius: 4px; font-size: 13px; margin-bottom: 20px; }
+.tipo-nota code { background: rgba(0,0,0,.07); padding: 1px 4px; border-radius: 3px; }
+
+.tabla-escala { width: 100%; border-collapse: collapse; font-size: 13px;
+  background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 6px; }
+.tabla-escala th { background: var(--fondo-encabezado); text-align: left;
+  padding: 8px 12px; font-weight: 500; font-size: 12px; }
+.tabla-escala td { padding: 10px 12px; border-top: 1px solid var(--borde); vertical-align: middle; }
+.tabla-escala .num { font-family: 'IBM Plex Mono', monospace; text-align: right; }
+.esc-muestra { width: 45%; overflow: hidden; }
+.esc-muestra span { display: block; }
+
+.pesos { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 8px; }
+.peso { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
+  border-radius: 6px; padding: 11px 13px; display: flex; flex-direction: column; gap: 2px; }
+.peso-mal { background: var(--error-fondo); border-color: var(--error-acento); }
+.peso-muestra { font-size: 19px; }
+.peso-mal .peso-muestra { color: var(--error-texto); }
+.peso-meta { font-size: 11px; color: var(--texto-secundario); }
+.peso-mal .peso-meta, .peso-mal .peso-uso { color: var(--error-texto); }
+.peso-uso { font-size: 11px; color: var(--texto-pista); }
+
+.mono-comp { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+.mono-caja { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
+  border-radius: 6px; padding: 13px; }
+.mono-et { font-size: 11px; color: var(--texto-secundario); margin-bottom: 8px; }
+.mono-lista { font-size: 18px; line-height: 1.6; }
+.mono-lista.sans { font-family: 'IBM Plex Sans', sans-serif; }
+.mono-lista.mono { font-family: 'IBM Plex Mono', monospace; }
+
+.anchos { display: grid; gap: 11px; }
+.ancho-caja { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
+  border-radius: 6px; padding: 13px; }
+.ancho-et { font-size: 11px; color: var(--texto-secundario); display: block; margin-bottom: 5px; }
+.ancho-72 { max-width: 72ch; margin: 0; font-size: 16px; line-height: 1.65; }
+.ancho-libre { margin: 0; font-size: 16px; line-height: 1.65; }
+
+/* ── Opciones de espaciado de botón ──────────────────────────────────────── */
+.opciones { display: grid; gap: 12px; }
+.op { background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 6px; overflow: hidden; }
+.op-cab { display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+  background: var(--fondo-encabezado); border-bottom: 1px solid var(--borde); }
+.op-letra { width: 28px; height: 28px; border-radius: 50%; flex: none;
+  background: var(--accion); color: var(--accion-texto);
+  display: grid; place-items: center; font-weight: 600; font-size: 13px; }
+.op-cab strong { display: block; font-size: 14px; }
+.op-med { font-size: 12px; color: var(--texto-secundario); }
+.op-med b { font-family: 'IBM Plex Mono', monospace; color: var(--texto-principal); }
+
+.op-fila { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 16px; }
+.btn-op { font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+  border-radius: 6px; border: 1px solid transparent; padding-block: 0;
+  display: inline-flex; align-items: center; justify-content: center; }
+.btn-op-1 { background: var(--accion); color: var(--accion-texto); }
+.btn-op-2 { background: transparent; color: var(--accion-2); border-color: var(--accion-2); }
+.btn-op-n { background: transparent; color: var(--texto-principal); border-color: var(--borde-campo); }
+.op-campo { padding-block: 0; font-size: 13px; }
+
+.op-contexto { padding: 0 16px 16px; }
+.op-tabla { border: 1px solid var(--borde); border-radius: 6px; overflow: hidden; }
+
+.rejilla-vis { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end;
+  background: var(--fondo-tarjeta); border: 1px solid var(--borde);
+  border-radius: 6px; padding: 16px; }
+.rej { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.rej-barra { height: 24px; background: var(--accion); border-radius: 2px; }
+.rej span { font-size: 10px; font-family: 'IBM Plex Mono', monospace; color: var(--texto-secundario); }
+
 /* Tabla de contrastes */
 .tabla-contraste { width: 100%; border-collapse: collapse; font-size: 12px;
   background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 6px; }
@@ -888,114 +1712,50 @@ h2.seccion {
 </head>
 <body>
 
-<header class="cab">
-  <h1>Sistema de diseño · Colegio Albert Einstein</h1>
-  <span class="ver">v${VERSION} · cascarón</span>
-  <span class="sep"></span>
-  <div class="conmutador" role="group" aria-label="Modo de color">
-    <button id="b-claro" aria-pressed="true">Claro</button>
-    <button id="b-oscuro" aria-pressed="false">Oscuro</button>
-  </div>
-</header>
+<div class="app app-cascaron">
 
-<div class="envoltorio">
-
-<nav class="secnav">
-  <a href="#maquetas">Maquetas</a>
-  <a href="#casos">Casos de uso</a>
-  <a href="#semanticos">Tokens semánticos</a>
-  <a href="#primitivas">Primitivas</a>
-  <a href="#marca">Marca</a>
-  <a href="#contraste">Contrastes</a>
-</nav>
-
-<div class="aviso">
-  <strong>Esto es un cascarón.</strong> Estructura y color para decidir la paleta.
-  No son los componentes reales. Conmuta claro/oscuro arriba a la derecha:
-  el modo oscuro está <strong>calculado pero sin aprobar</strong> — esta página existe
-  para que lo apruebes o lo rechaces.
-  El escudo aparece como marcador punteado porque <strong>el activo no existe</strong>
-  (MMI-DS §10 y §8.6): no se recorta del lockup.
-</div>
-
-<h2 class="seccion" id="maquetas">Maquetas</h2>
-<p class="seccion-sub">Los tres contextos. Landing y sistema comparten valores, no proporciones.</p>
-
-<div class="maquetas">
-  <div><div class="maqueta-tit">Web — landing</div>${maquetaWeb}</div>
-  <div><div class="maqueta-tit">Sistema — escritorio, lateral desplegada</div>${maquetaSistema}</div>
-  <div><div class="maqueta-tit">Sistema — lateral plegada, solo iconos</div>${maquetaColapsada}</div>
-  <div><div class="maqueta-tit">App — móvil, 375px</div>${maquetaMovil}</div>
-</div>
-
-<h2 class="seccion" id="casos">Casos de uso</h2>
-<p class="seccion-sub">Cada color en el sitio donde trabaja. Los roles que el documento describe, aquí se ven.</p>
-${casosDeUso}
-
-<h2 class="seccion" id="semanticos">Tokens semánticos</h2>
-<p class="seccion-sub">${Object.keys(semanticos).length} tokens. Es lo único que un componente consume.</p>
-${Object.entries(GRUPOS).map(grupoMuestras).join('')}
-
-<h2 class="seccion" id="primitivas">Primitivas</h2>
-<p class="seccion-sub">Las escalas completas. Existen para que los semánticos elijan. <strong>Prohibido usarlas en un componente.</strong></p>
-${Object.entries(primitivas).map(([n, p]) => escala(n, p)).join('')}
-
-<h2 class="seccion" id="marca">Marca — fuera del sistema</h2>
-<p class="seccion-sub">Viven en el escudo, la landing y los impresos. No en la interfaz.</p>
-<div class="marca-rejilla">
-${Object.entries(marca)
-  .map(
-    ([k, v]) => `
-  <div class="marca-item">
-    <div class="marca-tapa" style="background: var(--${k})"></div>
-    <div class="marca-cuerpo">
-      <code>${k}</code>
-      <p>${v.uso}</p>
-      <div class="marca-prohibido">Prohibido en: ${v.prohibidoEn}</div>
+  <aside class="lat" id="lateral">
+    <div class="lat-marca">
+      ${escudo(30)}
+      <div class="lat-id"><span class="lat-colegio">COLEGIO</span><span class="lat-nombre">ALBERT EINSTEIN</span></div>
     </div>
-  </div>`
-  )
-  .join('')}
-</div>
+    <nav class="lat-nav">${menuCatalogo}</nav>
+    <div class="lat-leyenda">
+      <div><span class="pt pt-decidir"></span> esperando tu decisión</div>
+      <div><span class="pt pt-pend"></span> sin construir</div>
+    </div>
+    <div class="lat-usuario">
+      <span class="lat-av">JP</span>
+      <div class="lat-user-txt">
+        <span class="lat-user-nom">JOSE ISIDRO PINEDA</span>
+        <span class="lat-user-mail">jose.pineda@ae.edu.pe</span>
+      </div>
+    </div>
+  </aside>
 
-<h2 class="seccion" id="contraste">Contrastes verificados</h2>
-<p class="seccion-sub">
-  ${lock.resumen.paresBloqueantes} pares bloqueantes en los dos modos ·
-  ${lock.resumen.fallos} fallos · ${lock.norma}
-</p>
-
-<h3 style="font-size:14px;margin:18px 0 8px">Modo claro</h3>
-<table class="tabla-contraste">
-  <thead><tr><th>Frente</th><th>Fondo</th><th class="num">Medido</th><th class="num">Mínimo</th><th>Estado</th><th>Motivo</th></tr></thead>
-  <tbody>${filasContraste('claro')}</tbody>
-</table>
-
-<h3 style="font-size:14px;margin:26px 0 8px">Modo oscuro</h3>
-<table class="tabla-contraste">
-  <thead><tr><th>Frente</th><th>Fondo</th><th class="num">Medido</th><th class="num">Mínimo</th><th>Estado</th><th>Motivo</th></tr></thead>
-  <tbody>${filasContraste('oscuro')}</tbody>
-</table>
-
-<h2 class="seccion">Correcciones aplicadas</h2>
-<p class="seccion-sub">Sobre los valores del documento original. Cada una con su medición.</p>
-<table class="tabla-contraste">
-  <thead><tr><th>Token</th><th>Antes</th><th>Ahora</th><th>Medido</th><th>Norma</th><th>Razón</th></tr></thead>
-  <tbody>
-  ${correcciones
-    .map(
-      (c) => `<tr>
-      <td><code>${c.token}</code></td>
-      <td class="mono">${c.antes}</td>
-      <td class="mono">${c.despues}</td>
-      <td class="num">${c.medido}</td>
-      <td>${c.criterio}</td>
-      <td class="motivo">${c.razon}</td>
-    </tr>`
-    )
-    .join('')}
-  </tbody>
-</table>
-
+  <div class="app-main">
+    <div class="top top-cascaron">
+      <button class="top-plegar" id="plegar-cat" aria-label="Plegar menú">${ICONOS.panelIzq}</button>
+      <div class="top-filtros">
+        <label class="filtro"><span class="filtro-et">Sistema</span>
+          <select class="campo"><option>Colegio Albert Einstein</option></select></label>
+        <label class="filtro"><span class="filtro-et">Versión</span>
+          <select class="campo"><option>v${VERSION}</option></select></label>
+        <label class="filtro"><span class="filtro-et">Fase</span>
+          <select class="campo"><option>2 · Tipografía</option></select></label>
+      </div>
+      <div class="top-acciones">
+        <div class="conmutador" role="group" aria-label="Modo de color">
+          <button id="b-claro" aria-pressed="true">Claro</button>
+          <button id="b-oscuro" aria-pressed="false">Oscuro</button>
+        </div>
+        <button class="top-btn" aria-label="Mensajes">${ICONOS.sobre}</button>
+        <button class="top-btn" aria-label="Notificaciones">${ICONOS.campana}<span class="badge">1</span></button>
+        <span class="top-avatar">JP</span>
+      </div>
+    </div>
+    <main class="cat-cuerpo">${paginasCatalogo}</main>
+  </div>
 </div>
 
 <script>
@@ -1027,11 +1787,89 @@ ${Object.entries(marca)
   try { guardado = localStorage.getItem('mmi-tema'); } catch (e) {}
   aplicar(guardado || 'claro');
 
+  // ── Navegación del catálogo ──────────────────────────────────────────────
+  var paginas = document.querySelectorAll('.pagina');
+  var enlaces = document.querySelectorAll('.nav-hijo');
+
+  // Chevron de grupo: despliega y pliega, como en la aplicación.
+  document.querySelectorAll('[data-desplegar]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var g = b.closest('.nav-grupo');
+      var cerrado = g.hasAttribute('data-cerrado');
+      if (cerrado) g.removeAttribute('data-cerrado');
+      else g.setAttribute('data-cerrado', '');
+      b.setAttribute('aria-expanded', String(cerrado));
+    });
+  });
+
+  // Plegado de la lateral del cascarón. Tiene su propio manejador y el
+  // genérico de las maquetas lo salta: si los dos actúan sobre el mismo botón
+  // se anulan entre sí, y el ancho queda un clic por detrás de la clase.
+  document.getElementById('plegar-cat').addEventListener('click', function () {
+    document.getElementById('lateral').classList.toggle('colapsado');
+  });
+
+  function abrir(id) {
+    var hay = false;
+    paginas.forEach(function (p) {
+      var esta = p.id === 'pg-' + id;
+      p.hidden = !esta;
+      if (esta) hay = true;
+    });
+    if (!hay) return abrir('inicio');
+    enlaces.forEach(function (a) {
+      var act = a.getAttribute('data-ir') === id;
+      a.classList.toggle('activo', act);
+      // Si el elegido está en un grupo plegado, se despliega solo.
+      if (act) a.closest('.nav-grupo').removeAttribute('data-cerrado');
+    });
+    if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
+    document.querySelector('.cat-cuerpo').scrollTop = 0;
+    window.scrollTo(0, 0);
+  }
+
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-ir]');
+    if (!a) return;
+    e.preventDefault();
+    abrir(a.getAttribute('data-ir'));
+  });
+
+  window.addEventListener('hashchange', function () {
+    abrir(location.hash.slice(1) || 'inicio');
+  });
+
+  abrir(location.hash.slice(1) || 'inicio');
+
+  // Revelar código: plegado por defecto, como en Material, Carbon y Polaris.
+  document.querySelectorAll('.cod-ver').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var pre = document.getElementById(b.getAttribute('data-ver'));
+      var abierto = !pre.hidden;
+      pre.hidden = abierto;
+      b.setAttribute('aria-expanded', String(!abierto));
+      b.querySelector('span').textContent = abierto ? 'Ver código' : 'Ocultar código';
+      b.classList.toggle('abierto', !abierto);
+    });
+  });
+
+  // Copiar. Del bloque salen la importación y las props, nunca el markup
+  // interno de un componente compartido (§9).
+  document.querySelectorAll('.copiar').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var pre = document.getElementById(b.getAttribute('data-copiar-de'));
+      navigator.clipboard.writeText(pre.textContent).then(function () {
+        b.textContent = 'Copiado';
+        setTimeout(function () { b.textContent = 'Copiar'; }, 1400);
+      });
+    });
+  });
+
   // El botón de plegar es real: pliega la lateral de SU maqueta.
   document.querySelectorAll('.top-plegar').forEach(function (b) {
+    if (b.id === 'plegar-cat') return; // ese tiene el suyo, arriba
     b.addEventListener('click', function () {
-      var lat = b.closest('.app').querySelector('.lat');
-      lat.classList.toggle('colapsado');
+      b.closest('.app').querySelector('.lat').classList.toggle('colapsado');
     });
   });
 

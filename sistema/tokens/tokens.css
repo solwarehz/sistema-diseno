@@ -1,6 +1,6 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.2.0
-   WCAG 2.2 AA · 70 pares verificados en los dos modos, 0 fallos
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.3.0
+   WCAG 2.2 AA · 78 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -39,6 +39,9 @@
   --accion-texto-desh: #8B8985;
   --accion-2: #655000;
   --enlace: #0063CB;
+  --destructiva: #D40006;
+  --destructiva-hover: #B40000;
+  --destructiva-texto: #FFFFFF;
 
   /* Marco de aplicación */
   --marco-fondo: #2C3D71;
@@ -100,6 +103,9 @@
   --accion-texto-desh: #989692;
   --accion-2: #DFCA9C;
   --enlace: #6CB2FF;
+  --destructiva: #FF7D62;
+  --destructiva-hover: #FFAD95;
+  --destructiva-texto: #20201E;
 
   /* Marco de aplicación */
   --marco-fondo: #2C3D71;
@@ -164,6 +170,9 @@
     --accion-texto-desh: #989692;
     --accion-2: #DFCA9C;
     --enlace: #6CB2FF;
+    --destructiva: #FF7D62;
+    --destructiva-hover: #FFAD95;
+    --destructiva-texto: #20201E;
 
     /* Marco de aplicación */
     --marco-fondo: #2C3D71;

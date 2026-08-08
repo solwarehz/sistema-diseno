@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.2.0';
+export const VERSION = '1.3.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -125,6 +125,15 @@ export const semanticos = {
   'accion-2':          { claro: '#655000', oscuro: '#DFCA9C', origen: 'oro.700',  uso: 'Acción secundaria: borde y texto, sin relleno' },
   'enlace':            { claro: '#0063CB', oscuro: '#6CB2FF', origen: 'azul.600', uso: 'Enlaces y acciones de fila tipo «Editar»' },
 
+  // v1.3.0 — El sistema no tenía botón destructivo. «Eliminar» no puede ir en
+  // `accion` azul: el azul no significa peligro. Se elige rojo-600 y no
+  // `error-acento` (#D63231) porque este último da 4,81:1 con blanco, que pasa
+  // pero sin margen. rojo-600 da 5,52:1 y sale de la rampa primitiva.
+  // En oscuro se invierte igual que la acción principal (§2.4).
+  'destructiva':        { claro: '#D40006', oscuro: '#FF7D62', origen: 'rojo.600', uso: 'Botón de acción irreversible: Eliminar, Anular' },
+  'destructiva-hover':  { claro: '#B40000', oscuro: '#FFAD95', origen: 'rojo.700', uso: 'Hover del botón destructivo' },
+  'destructiva-texto':  { claro: '#FFFFFF', oscuro: '#20201E', origen: 'gris.0',   uso: 'Texto dentro del botón destructivo' },
+
   // ── Marco de aplicación ──────────────────────────────────────────────────
   // #2C3D71 se eligió por intensidad medida: separa navegación de contenido
   // sin borde y sin dominar la pantalla. En oscuro SE CONSERVA IDÉNTICO: se
@@ -203,6 +212,12 @@ export const pares = [
   ['enlace',           'fondo-tarjeta',    4.5, 'Enlace «Editar» en celda de tabla'],
   ['enlace',           'fondo-pagina',     4.5, 'Enlace sobre página'],
   ['enlace',           'fondo-fila-hover', 4.5, 'Enlace «Editar» en fila bajo el cursor'],
+
+  // Destructiva
+  ['destructiva-texto','destructiva',      4.5, 'Texto del botón destructivo'],
+  ['destructiva-texto','destructiva-hover',4.5, 'Texto del botón destructivo en hover'],
+  ['destructiva',      'fondo-tarjeta',    3.0, 'Superficie del botón destructivo contra la tarjeta'],
+  ['destructiva',      'fondo-pagina',     3.0, 'Superficie del botón destructivo contra la página'],
 
   // Marco de aplicación
   ['marco-texto',      'marco-fondo',      4.5, 'Nombre e ítems de navegación'],
