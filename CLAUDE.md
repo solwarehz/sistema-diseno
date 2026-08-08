@@ -189,7 +189,8 @@ en rojo, reviértela.
 | Componentes | ⏳ pendiente |
 | Catálogo `/diseño` | ⏳ pendiente |
 | Manual de aplicaciones web | ✅ `manual/MANUAL-APLICACIONES-WEB.md` |
-| Contenedor y ZIP | ⏳ pendiente · Docker sin autorizar |
+| Entrega ZIP | ✅ `node sistema/paquete/empaquetar.mjs` · 10 archivos, 354 KB |
+| Contenedor | ⏳ pendiente · Docker sin autorizar |
 | Iconografía | ⏳ §8.1 — decidido Lucide, sin implementar |
 | Modo oscuro | ⛔ calculado, **no aprobado**. No implementar |
 

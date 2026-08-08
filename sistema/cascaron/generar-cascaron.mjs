@@ -16,6 +16,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { VERSION, primitivas, semanticos, marca, correcciones } from '../tokens/fuente.mjs';
+import { empaquetar, NOMBRE_ZIP } from '../paquete/empaquetar.mjs';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 const RAIZ = join(AQUI, '..', '..');
@@ -210,6 +211,7 @@ const ICONOS = {
   atras: ic('<path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>'),
   mas: ic('<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>'),
   libro: ic('<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>'),
+  descargar: ic('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>'),
   capas: ic('<path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/>'),
 };
 
@@ -4631,6 +4633,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   padding: 8px 12px; font: inherit; font-size: 13px; text-align: left; cursor: pointer;
   background: transparent; border: 0; border-radius: 6px; color: var(--texto-principal); }
 .us-op:hover { background: var(--fondo-encabezado); }
+.us-op:focus-visible { outline: 2px solid var(--foco); outline-offset: -2px; }
+/* Es un enlace, así que hay que quitarle el subrayado que le pone el navegador:
+   dentro de un menú, la fila entera ya es el blanco. §2.5.7 exige que el
+   subrayado esté en los enlaces DE TEXTO, no en las filas de un menú. */
+.us-zip { text-decoration: none; }
+.us-zip span { display: block; }
+.us-zip-det { font-size: 12px; color: var(--texto-secundario); }
 .us-op .ic { width: 16px; height: 16px; color: var(--texto-secundario); }
 .us-salir { border-top: 1px solid var(--borde); border-radius: 0 0 6px 6px; margin-top: 4px; }
 .us-salir:hover { background: var(--error-fondo); color: var(--error-texto); }
@@ -4952,6 +4961,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                         aria-label="Vista de aplicación móvil" title="App móvil">${ICONOS.panel}</button>
               </div>
             </div>
+
+            <!-- La entrega para el área de sistemas. Es un enlace y no un
+                 botón porque descargar un archivo es navegar a él: así funciona
+                 con «guardar como», con el botón central y con teclado, sin
+                 una línea de JavaScript. -->
+            <a class="us-op us-zip" role="menuitem" href="${NOMBRE_ZIP}" download
+               >${ICONOS.descargar}<span>Descargar el sistema <span class="us-zip-det">ZIP · v${VERSION}</span></span></a>
 
             <button class="us-op us-salir" role="menuitem">${ICONOS.salir}<span>Salir del sistema</span></button>
           </div>
@@ -5911,6 +5927,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       cerrar();
     }); });
 
+    // La descarga la hace el navegador por el href; aquí solo se recoge el
+    // menú, que si no se queda abierto sobre la página.
+    menu.querySelector('.us-zip').addEventListener('click', function () { cerrar(); });
+
     menu.querySelector('.us-salir').addEventListener('click', function () {
       cerrar();
       if (window.avisarDemo) window.avisarDemo('info', 'Salir del sistema — en el catálogo no hay sesión que cerrar');
@@ -6316,4 +6336,10 @@ writeFileSync(join(SALIDA, 'index.html'), html);
 
 const kb = (html.length / 1024).toFixed(0);
 console.log(`\n  cascaron/index.html  ${kb} KB, autocontenido`);
-console.log(`  ${Object.keys(semanticos).length} semánticos · ${Object.keys(primitivas).length} escalas · 3 maquetas · 2 modos\n`);
+console.log(`  ${Object.keys(semanticos).length} semánticos · ${Object.keys(primitivas).length} escalas · 3 maquetas · 2 modos`);
+
+// La entrega se reconstruye SIEMPRE con el catálogo, y después de escribirlo
+// para que lleve dentro esta misma versión. Si fueran dos comandos separados,
+// el botón de descarga acabaría entregando un catálogo viejo sin que se note.
+const entrega = empaquetar({ silencioso: true });
+console.log(`  ${entrega.nombre}  ${(entrega.bytes / 1024).toFixed(0)} KB, ${entrega.archivos} archivos\n`);

@@ -277,3 +277,45 @@ plegada: no añade activo ni superficie de fallo nueva.
 **Consecuencia abierta:** la banda de marca de la lateral usa `fondo-tarjeta`,
 que en oscuro es `#242422`. Ahí el lockup sigue teniendo el mismo problema.
 Pendiente de decidir si esa banda se fuerza a blanco en los dos modos.
+
+---
+
+## D-16 · La entrega es un ZIP generado, y se distribuye por etiqueta de git
+
+**Decisión:** `node sistema/paquete/empaquetar.mjs` construye
+`cascaron/sistema-diseno-v<VERSION>.zip`, y el catálogo lo ofrece desde el menú
+de usuario. El empaquetado corre **dentro** del generador del catálogo, después
+de escribir `index.html`.
+
+**Por qué corre dentro:** si fueran dos comandos separados, regenerar el
+catálogo sin empaquetar dejaría el botón entregando una versión vieja **sin que
+se note**. Un fallo silencioso es peor que uno ruidoso.
+
+**Sin dependencias.** El formato ZIP se escribe a mano sobre `zlib` de Node
+—`deflateRawSync` y `crc32`, los dos incluidos desde Node 20.15—. No se instala
+nada, que es el límite del proyecto.
+
+**Está en `.gitignore`** (`*.zip` ya estaba reservado como «entrega generada»):
+es artefacto, no fuente. Se reconstruye con el comando.
+
+### Cómo llegan las mejoras al área de sistemas
+
+La carpeta entregada es **de solo lectura para el proyecto que la consume**.
+Nada dentro de `sistema/` se edita allí, así que actualizar es **reemplazar la
+carpeta**, nunca resolver conflictos.
+
+| Ruta | Cuándo | Cómo se actualiza |
+|---|---|---|
+| **Etiqueta de git** — recomendada | Tienen acceso al repositorio privado | `"sistema-diseno": "github:solwarehz/sistema-diseno#v1.6.0"` en `package.json`. Subir el número y `npm install` |
+| **ZIP versionado** | Sin acceso al repositorio | Descargar del catálogo y reemplazar `sistema/tokens/` y `sistema/candado/` enteras |
+
+La ruta de git es mejor porque **la versión queda anclada y visible en el
+control de versiones**: dos proyectos no se desincronizan sin que se note, y
+volver atrás es cambiar un número.
+
+**Después de actualizar, siempre** el verificador de contraste y el lint. Si un
+token desapareció o cambió de nombre, el build falla **en compilación, no en
+producción** — que es justo lo que se busca.
+
+**Nota abierta:** para que la ruta de git funcione hace falta **etiquetar las
+versiones**, y hoy no hay ninguna etiqueta en el repositorio. Pendiente.
