@@ -3498,18 +3498,22 @@ code { font-family: 'IBM Plex Mono', monospace; }
   border: 1px solid var(--error-acento); border-radius: 999px;
   background: var(--error-fondo); position: relative;
   transition: background-color .18s ease, border-color .18s ease; }
-/* Apagado en rojo claro. Medido: el relleno da 1,19:1 contra la tarjeta y NO
-   identifica el control —lo identifica el borde, a 4,81:1—. Y la bolita blanca
-   sobre el rojo claro queda a 1,19:1, así que lleva borde propio o desaparece. */
+/* La bolita NO usa la superficie: usa el token hecho para ir sobre SU vía.
+   Con fondo-tarjeta quedaba a 1,19:1 sobre el rojo claro y a 1,17:1 sobre el
+   rojo oscuro —invisible en los dos modos—. Ahora:
+       apagado    error-texto  sobre error-fondo   7,82 claro · 7,98 oscuro
+       encendido  accion-texto sobre accion        5,75 claro · 7,34 oscuro
+   El peor caso pasa de 1,17 a 5,75. */
 .sw-bolita { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px;
-  border-radius: 999px; background: var(--fondo-tarjeta);
-  border: 1px solid var(--error-acento);
+  border-radius: 999px; background: var(--error-texto);
+  border: 1px solid var(--error-texto);
   /* El desplazamiento y el color van al MISMO tiempo: desacompasados parecen fallo. */
-  transition: transform .18s ease, border-color .18s ease; }
+  transition: transform .18s ease, background-color .18s ease, border-color .18s ease; }
 .sw[aria-checked='true'] { background: var(--accion); border-color: var(--accion); }
-.sw[aria-checked='true'] .sw-bolita { transform: translateX(16px); border-color: var(--accion); }
+.sw[aria-checked='true'] .sw-bolita { transform: translateX(16px);
+  background: var(--accion-texto); border-color: var(--accion-texto); }
 .sw:disabled { cursor: not-allowed; background: var(--accion-deshabilitada); border-color: var(--borde-fuerte); }
-.sw:disabled .sw-bolita { border-color: var(--borde-fuerte); }
+.sw:disabled .sw-bolita { background: var(--texto-secundario); border-color: var(--texto-secundario); }
 .sw:disabled[aria-checked='true'] { background: var(--borde-fuerte); border-color: var(--borde-fuerte); }
 .sw-txt { display: flex; flex-direction: column; gap: 4px; }
 .sw-et { font-size: 15px; }
