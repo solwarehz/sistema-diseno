@@ -37,7 +37,10 @@ const ESCALA = new Set([56, 34, 28, 24, 20, 19, 16, 15, 13, 12]);
 // §3.2 — cuatro pesos y ninguno más
 const PESOS = new Set([400, 500, 600, 700]);
 // Radios definidos en el preset: tarjeta 6px, chip 3px. 50% para círculos.
-const RADIOS = new Set([3, 6]);
+// 999px es la PASTILLA: no es una esquina redondeada sino una forma —el
+// interruptor y las etiquetas con forma de cápsula—. Se admite como valor del
+// sistema, no como número suelto.
+const RADIOS = new Set([3, 6, 999]);
 
 // Bloques donde SÍ se permiten literales: son las definiciones, no el consumo.
 const ES_DEFINICION = (sel) => /^:root|\[data-tema/.test(sel.trim());

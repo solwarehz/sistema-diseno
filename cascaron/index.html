@@ -333,7 +333,9 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .nav-nieto.activo { background: var(--marco-item-activo); opacity: 1;
   color: var(--marco-acento); font-weight: 500;
   box-shadow: inset 3px 0 0 var(--marco-acento); }
-.lat.colapsado .nav-nietos { display: none; }
+/* El segundo nivel TAMBIÉN vive en el panel flotante, con su propio fondo.
+   Ocultarlo obligaría a desplegar la lateral solo para llegar a él. */
+.lat.colapsado .nav-rama { border-top-color: var(--marco-borde); }
 
 .nav-hijo { display: flex; align-items: center; justify-content: space-between;
   gap: 8px; padding: 4px 8px 4px 40px; border-radius: 6px; text-decoration: none;
@@ -358,8 +360,18 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .lat.colapsado .nav-grupo.abierto .nav-hijos {
   opacity: 1; visibility: visible; transform: translateX(0); }
 .lat.colapsado .nav-hijos-in { border-radius: 6px; }
+/* El texto vuelve DENTRO del panel: la regla que lo oculta es para el carril
+   de 56px, no para una capa que sale fuera y tiene sitio de sobra. */
+.lat.colapsado .nav-hijos .nav-txt,
+.lat.colapsado .nav-hijos .pt { display: block; }
+.lat.colapsado .nav-hijos .nav-chev { display: grid; }
 .lat.colapsado .nav-hijo { padding-left: 12px; }
 .lat.colapsado .nav-nieto { padding-left: 28px; }
+/* Los fondos del panel son los MISMOS que los del menú desplegado: el panel es
+   el mismo menú en otro sitio, no otro componente. */
+.lat.colapsado .nav-hijos-in { background: var(--marco-nivel-1); }
+.lat.colapsado .nav-nietos-in { background: var(--marco-nivel-2); }
+.lat.colapsado .nav-rama-tit { padding-left: 12px; }
 /* El nombre del grupo solo se muestra en el panel: plegada no se ve en el carril. */
 .nav-flot-tit { display: none; }
 .lat.colapsado .nav-flot-tit { display: block; padding: 8px 12px;
@@ -464,18 +476,26 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .sw-rejilla { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 16px; }
 .sw-fila { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
 .sw-desh { cursor: not-allowed; }
+/* PASTILLA: radio mayor que la mitad del alto. El sistema define 3 y 6, que son
+   radios de esquina; una pastilla no es una esquina redondeada sino una forma.
+   Queda admitido en el auditor como valor del sistema, no como número suelto.
+   El barrido a la rejilla lo había llevado de 12px a 6px y le quitó la forma. */
 .sw { width: 40px; height: 24px; flex: none; padding: 0; cursor: pointer;
-  border: 1px solid var(--borde-campo); border-radius: 6px;
-  background: var(--neutra-fondo); position: relative;
+  border: 1px solid var(--error-acento); border-radius: 999px;
+  background: var(--error-fondo); position: relative;
   transition: background-color .18s ease, border-color .18s ease; }
+/* Apagado en rojo claro. Medido: el relleno da 1,19:1 contra la tarjeta y NO
+   identifica el control —lo identifica el borde, a 4,81:1—. Y la bolita blanca
+   sobre el rojo claro queda a 1,19:1, así que lleva borde propio o desaparece. */
 .sw-bolita { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px;
-  border-radius: 50%; background: var(--fondo-tarjeta);
-  border: 1px solid var(--borde-campo);
+  border-radius: 999px; background: var(--fondo-tarjeta);
+  border: 1px solid var(--error-acento);
   /* El desplazamiento y el color van al MISMO tiempo: desacompasados parecen fallo. */
-  transition: transform .18s ease; }
+  transition: transform .18s ease, border-color .18s ease; }
 .sw[aria-checked='true'] { background: var(--accion); border-color: var(--accion); }
 .sw[aria-checked='true'] .sw-bolita { transform: translateX(16px); border-color: var(--accion); }
-.sw:disabled { cursor: not-allowed; background: var(--accion-deshabilitada); border-color: var(--borde); }
+.sw:disabled { cursor: not-allowed; background: var(--accion-deshabilitada); border-color: var(--borde-fuerte); }
+.sw:disabled .sw-bolita { border-color: var(--borde-fuerte); }
 .sw:disabled[aria-checked='true'] { background: var(--borde-fuerte); border-color: var(--borde-fuerte); }
 .sw-txt { display: flex; flex-direction: column; gap: 4px; }
 .sw-et { font-size: 15px; }
@@ -7747,7 +7767,10 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
   var grupos = document.querySelectorAll('.nav-grupo');
 
   function sincronizarGrupo(g) {
-    var abierto = g.classList.contains('fijo') || g.classList.contains('hover');
+    // Plegada, el FIJADO no abre el panel flotante: solo el cursor. Si no, al
+    // elegir una opción el grupo queda fijado y el panel se reabre solo.
+    var plegada = document.getElementById('lateral').classList.contains('colapsado');
+    var abierto = (!plegada && g.classList.contains('fijo')) || g.classList.contains('hover');
     g.classList.toggle('abierto', abierto);
     g.querySelector('.nav-grupo-tit').setAttribute('aria-expanded', String(abierto));
   }
@@ -7804,6 +7827,13 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
   // se anulan entre sí, y el ancho queda un clic por detrás de la clase.
   document.getElementById('plegar-cat').addEventListener('click', function () {
     document.getElementById('lateral').classList.toggle('colapsado');
+    // Al plegar cambia la regla de apertura: fijado deja de abrir y solo abre
+    // el cursor. Sin re-sincronizar, el grupo fijado se quedaba como panel
+    // flotante atascado, abierto sin que nadie lo hubiera pedido.
+    document.querySelectorAll('.nav-grupo').forEach(function (g) {
+      g.classList.remove('hover');
+      sincronizarGrupo(g);
+    });
   });
 
   function abrir(id) {
@@ -7821,6 +7851,7 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
     // El grupo de la página en curso queda FIJADO: se queda abierto aunque el
     // cursor se vaya. Los demás vuelven a comprimirse. Si el activo está en
     // una rama de segundo nivel, la rama también se abre.
+    var plegada = document.getElementById('lateral').classList.contains('colapsado');
     var activo = document.querySelector('.nav-hijo.activo, .nav-nieto.activo');
     document.querySelectorAll('.nav-rama').forEach(function (r) {
       var dentro = !!activo && r.contains(activo);
@@ -7831,7 +7862,7 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
     });
     document.querySelectorAll('.nav-grupo').forEach(function (g) {
       g.classList.toggle('fijo', !!activo && g.contains(activo));
-      var ab = g.classList.contains('fijo') || g.classList.contains('hover');
+      var ab = (!plegada && g.classList.contains('fijo')) || g.classList.contains('hover');
       g.classList.toggle('abierto', ab);
       g.querySelector('.nav-grupo-tit').setAttribute('aria-expanded', String(ab));
     });
@@ -7849,9 +7880,13 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
     // sigue plegada: quien la plegó quiere que siga así.
     var g = a.closest('.nav-grupo');
     if (g && document.getElementById('lateral').classList.contains('colapsado')) {
-      g.classList.remove('hover');
-      g.classList.remove('abierto');
-      g.querySelector('.nav-grupo-tit').setAttribute('aria-expanded', 'false');
+      // Se quita el hover a mano: el cursor sigue encima tras el clic, así que
+      // no habrá mouseleave hasta que la persona lo mueva.
+      document.querySelectorAll('.nav-grupo').forEach(function (o) {
+        o.classList.remove('hover');
+        o.classList.remove('abierto');
+        o.querySelector('.nav-grupo-tit').setAttribute('aria-expanded', 'false');
+      });
     }
   });
 
