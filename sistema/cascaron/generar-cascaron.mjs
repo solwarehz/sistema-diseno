@@ -643,7 +643,7 @@ ${PESOS.map(
 
 <h3 class="sub-seccion">Móvil — bajo 640px</h3>
 <p class="seccion-sub">El cuerpo y el texto de interfaz <strong>suben</strong> a 18px. No es capricho: por debajo, la gente se acerca el teléfono a la cara.</p>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Estilo</th><th class="num">Escritorio</th><th class="num">Móvil</th></tr></thead>
   <tbody>
     <tr><td>Cuerpo</td><td class="num">16px</td><td class="num"><strong>18px</strong></td></tr>
@@ -656,7 +656,7 @@ ${PESOS.map(
 </table>
 
 <h3 class="sub-seccion">Las siete reglas</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>Cuatro pesos y ningún otro.</td></tr>
     <tr><td class="num">2</td><td>Identificadores y columnas numéricas en <strong>Plex Mono</strong>. Todo lo demás en Plex Sans.</td></tr>
@@ -734,7 +734,7 @@ const espaciado = `
 
 <h3 class="sub-seccion">Valores fuera de rejilla</h3>
 <p class="seccion-sub">Tres medidas heredadas no son múltiplo de 4.</p>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Valor</th><th class="num">Hoy</th><th class="num">Propuesto</th><th>Consecuencia</th></tr></thead>
   <tbody>
     <tr><td>Fila cómoda</td><td class="num">34px</td><td class="num"><strong>32px</strong></td><td class="motivo">Dos píxeles menos por fila. En 25 filas visibles, gana media fila más de pantalla</td></tr>
@@ -790,7 +790,7 @@ principal.</p>
 
 <h3 class="sub-seccion">Por acción — qué variante le toca a cada una</h3>
 <p class="seccion-sub">La tabla que resuelve la duda real. No se elige la variante por gusto: se elige por lo que la acción hace y por lo que cuesta deshacerla.</p>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Acción</th><th>Variante</th><th>Aspecto</th><th>Por qué</th></tr></thead>
   <tbody>
     <tr><td><strong>Guardar</strong> · Grabar · Crear · Confirmar</td><td><code>principal</code></td><td><button class="btn btn-mini btn-1">Guardar</button></td><td class="motivo">Es a lo que vino la persona. Una sola por pantalla</td></tr>
@@ -831,7 +831,7 @@ principal.</p>
     </div>
   </div>
 </div>
-<table class="tabla-contraste" style="margin-top:10px">
+<table class="tabla-simple" style="margin-top:10px">
   <thead><tr><th>Lo que falla en el segundo</th><th>Regla</th></tr></thead>
   <tbody>
     <tr><td>Dos botones rellenos compitiendo</td><td class="motivo">Cancelar va en terciaria. Solo una acción lleva relleno</td></tr>
@@ -870,7 +870,7 @@ principal.</p>
 </div>
 
 <h3 class="sub-seccion">Reglas</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td><strong>Una sola principal por pantalla.</strong> El resto son secundarias o neutras.</td></tr>
     <tr><td class="num">2</td><td><strong>Las acciones de fila van como enlace</strong>, no como botón. Con cinco filas, cinco botones sólidos son ruido, no jerarquía.</td></tr>
@@ -882,7 +882,7 @@ principal.</p>
 </table>
 
 <h3 class="sub-seccion">Props</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td><code>variante</code></td><td class="mono">principal · secundaria · neutra</td><td class="mono">principal</td><td class="motivo">Jerarquía visual. Una sola principal por pantalla</td></tr>
@@ -930,7 +930,7 @@ donde estás</strong>. Elegir mal no es un detalle de estilo: cambia el teclado,
 contextual, el lector de pantalla y si «abrir en pestaña nueva» funciona.</p>
 
 <h3 class="sub-seccion">Enlace o botón</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Si la acción…</th><th>Es</th><th>Ejemplo</th></tr></thead>
   <tbody>
     <tr><td>Cambia de pantalla o de URL</td><td><strong>Enlace</strong> <code>&lt;a href&gt;</code></td><td class="motivo">Ver detalle · Editar · Ir al expediente</td></tr>
@@ -997,7 +997,7 @@ contextual, el lector de pantalla y si «abrir en pestaña nueva» funciona.</p>
 </div>
 
 <h3 class="sub-seccion">El texto del enlace</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>✗</th><th>✓</th><th>Por qué</th></tr></thead>
   <tbody>
     <tr><td>«Clic aquí»</td><td>«Ver requisitos de admisión»</td><td class="motivo">Un lector de pantalla puede listar solo los enlaces. «Clic aquí» ×12 no dice nada</td></tr>
@@ -1008,7 +1008,7 @@ contextual, el lector de pantalla y si «abrir en pestaña nueva» funciona.</p>
 </table>
 
 <h3 class="sub-seccion">Reglas</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>Navega → enlace. Actúa → botón. <strong>Nunca un <code>div</code> con <code>onClick</code>.</strong></td></tr>
     <tr><td class="num">2</td><td>En texto corrido, <strong>subrayado siempre</strong>. Medido: 2,48:1 no llega a los 3:1 que pide la norma.</td></tr>
@@ -1030,7 +1030,7 @@ ${verCodigo(
 <Enlace href="https://minedu.gob.pe" externo>Ministerio de Educación</Enlace>
 <Enlace href="/ayuda" enMarco>Ayuda</Enlace>`
 )}
-<table class="tabla-contraste" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:14px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td><code>href</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Sin destino no es un enlace</td></tr>
@@ -1127,7 +1127,7 @@ Para un dato que la persona debe <em>ver</em> pero no cambiar, va <strong>solo l
   que no le deja avanzar <strong>inventa un dato que sí pase</strong>. Y un dato inventado es
   peor que un dato raro: el raro se ve, el inventado no.
 </div>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Situación</th><th>Qué hace el campo</th><th>Por qué</th></tr></thead>
   <tbody>
     <tr><td>El DNI tiene 7 dígitos</td><td><strong>Avisa al salir</strong> del campo</td><td class="motivo">Se sabe con certeza que está mal. Pero avisa, no borra</td></tr>
@@ -1139,7 +1139,7 @@ Para un dato que la persona debe <em>ver</em> pero no cambiar, va <strong>solo l
 </table>
 
 <h3 class="sub-seccion">El mensaje de error dice qué hacer</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>✗</th><th>✓</th></tr></thead>
   <tbody>
     <tr><td>«Campo inválido»</td><td>«El DNI debe tener 8 dígitos»</td></tr>
@@ -1150,7 +1150,7 @@ Para un dato que la persona debe <em>ver</em> pero no cambiar, va <strong>solo l
 </table>
 
 <h3 class="sub-seccion">Accesibilidad</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>La etiqueta va en <code>&lt;label&gt;</code> asociada al campo. <strong>Un <code>&lt;span&gt;</code> encima no vale:</strong> pulsar la etiqueta no enfoca y el lector no la lee.</td></tr>
     <tr><td class="num">2</td><td>La ayuda y el error se enlazan con <code>aria-describedby</code>. Si no, el lector los ignora.</td></tr>
@@ -1178,7 +1178,7 @@ ${verCodigo(
 <CampoTexto etiqueta="Sede" valor="Huaraz" soloLectura />
 <CampoTexto etiqueta="DNI" valor="7123" error="Faltan 4 dígitos." />`
 )}
-<table class="tabla-contraste" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:14px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td><code>etiqueta</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatoria.</strong> Sin etiqueta el componente no renderiza</td></tr>
@@ -1214,7 +1214,7 @@ estética: <strong>por encima de cierto número de opciones, buscar es más ráp
 mirar</strong>, y por debajo la caja de búsqueda estorba.</p>
 
 <h3 class="sub-seccion">Cuál de los dos</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Opciones</th><th>Componente</th><th>Por qué</th></tr></thead>
   <tbody>
     <tr><td><strong>2</strong></td><td>Interruptor o dos radios</td><td class="motivo">Un desplegable para dos opciones esconde la mitad de la información</td></tr>
@@ -1300,7 +1300,7 @@ mirar</strong>, y por debajo la caja de búsqueda estorba.</p>
 </div>
 
 <h3 class="sub-seccion">Teclado — es donde se cae este componente</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Tecla</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td class="mono">↓ ↑</td><td>Mueve por las opciones. Abre la lista si está cerrada</td></tr>
@@ -1326,7 +1326,7 @@ mirar</strong>, y por debajo la caja de búsqueda estorba.</p>
 </div>
 
 <h3 class="sub-seccion">Reglas</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>Menos de 3 opciones: no es un selector. Son radios o un interruptor.</td></tr>
     <tr><td class="num">2</td><td>9 o más: <strong>con búsqueda</strong>. Por debajo, la caja estorba.</td></tr>
@@ -1356,7 +1356,7 @@ ${verCodigo(
   sinResultados={(t) => \`Sin resultados para \${t}. Prueba con menos letras.\`}
 />`
 )}
-<table class="tabla-contraste" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:14px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td><code>etiqueta</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatoria</strong></td></tr>
@@ -1386,7 +1386,7 @@ chip de estado.</p>
 <h3 class="sub-seccion">Los cuatro estados, siempre en pares</h3>
 <p class="seccion-sub">Fondo y texto salen juntos o no salen. <strong>Nunca un color de estado suelto.</strong></p>
 <div class="bloque">
-  <table class="tabla-contraste">
+  <table class="tabla-simple">
     <thead><tr><th>Chip</th><th>Tokens</th><th class="num">Texto sobre fondo</th><th>Cuándo</th></tr></thead>
     <tbody>
       ${ESTADOS_CHIP.map(([c, t, uso]) => {
@@ -1449,7 +1449,7 @@ texto, nunca sustituirlo. Si la columna es estrecha, se acorta el texto —«Deu
 «Con deuda pendiente»—, no se elimina.</p>
 
 <h3 class="sub-seccion">Chip de estado y chip de filtro no son el mismo componente</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th></th><th>Chip de estado</th><th>Chip de filtro</th></tr></thead>
   <tbody>
     <tr><td><strong>Qué hace</strong></td><td>Informa</td><td class="motivo">Representa un filtro aplicado</td></tr>
@@ -1474,7 +1474,7 @@ convierte una etiqueta informativa en algo que parece pulsable y no lo es.</p>
 completo se lee como algo pulsable, y este componente no se pulsa.</p>
 
 <h3 class="sub-seccion">Reglas</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>Fondo y texto <strong>siempre en pareja</strong>. Nunca un color de estado suelto.</td></tr>
     <tr><td class="num">2</td><td><strong>El filete no se quita.</strong> Es lo único que hace visible el chip: el relleno da 1,00:1 sobre el encabezado.</td></tr>
@@ -1498,7 +1498,7 @@ ${verCodigo(
 
 <Chip estado="exito" punto>Activo</Chip>`
 )}
-<table class="tabla-contraste" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:14px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td><code>estado</code></td><td class="mono">exito · aviso · error · info</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Trae el par fondo/texto y su filete</td></tr>
@@ -1568,7 +1568,7 @@ const pagTarjeta = `
     ${tarjetaPersona(['Torres Bejarano, Iván', 'Docente · Primaria', 'inact', 'Inactivo', '—', false])}
   </div>
 </div>
-<table class="tabla-contraste" style="margin-top:12px">
+<table class="tabla-simple" style="margin-top:12px">
   <thead><tr><th>Estado</th><th>Tokens</th><th>Se distingue por</th></tr></thead>
   <tbody>
     <tr><td>Activo · Asistió</td><td class="mono">exito-*</td><td class="motivo">Filete verde, chip «Activo», superficie normal</td></tr>
@@ -1643,7 +1643,7 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 </div>
 
 <h3 class="sub-seccion">Reglas</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>El estado va en el <strong>filete del borde</strong>, no en el fondo de la tarjeta. Un fondo de color entero cansa y compite con el contenido.</td></tr>
     <tr><td class="num">2</td><td><strong>Nunca opacidad</strong> para atenuar. Medido: a 0,6 ya incumple AA.</td></tr>
@@ -1784,6 +1784,31 @@ configuración y descarga CSV.</p>
   </div>
 </div>
 
+<h3 class="sub-seccion">Tabla simple</h3>
+<p class="seccion-sub">Muestra datos y ya: <strong>no ordena, no filtra, no pagina</strong>. Mismo lenguaje visual que la de datos, sin sus controles. Es la que se usa para documentar, para comparar y para las fichas de detalle.</p>
+<div class="bloque">
+  <table class="tabla-simple">
+    <thead><tr><th>Trabajador</th><th>DNI</th><th>Cargo</th><th class="num">Min. tarde</th></tr></thead>
+    <tbody>
+      <tr><td>Álvarez Ponce, Rosa</td><td class="mono">70000000</td><td>Docente · Inicial</td><td class="num">0</td></tr>
+      <tr><td>Rojas Vega, Luis</td><td class="mono">70275846</td><td>Auxiliar</td><td class="num">14</td></tr>
+      <tr><td>Huamán Soto, Pedro</td><td class="mono">70827538</td><td>Mantenimiento</td><td class="num">0</td></tr>
+    </tbody>
+  </table>
+</div>
+<table class="tabla-simple" style="margin-top:12px">
+  <thead><tr><th></th><th>Tabla simple</th><th>Tabla de datos</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Cuándo</strong></td><td>Hasta ~15 filas que caben de una vez</td><td class="motivo">Conjuntos que no caben en pantalla</td></tr>
+    <tr><td><strong>Ordena</strong></td><td>No</td><td class="motivo">Sí, por columna</td></tr>
+    <tr><td><strong>Filtra</strong></td><td>No</td><td class="motivo">Sí, global y por columna</td></tr>
+    <tr><td><strong>Pagina</strong></td><td>No</td><td class="motivo">Sí</td></tr>
+    <tr><td><strong>Recuerda</strong></td><td>Nada</td><td class="motivo">Columnas, orden y tamaño</td></tr>
+    <tr><td><strong>Comparte</strong></td><td colspan="2" class="motivo">Encabezado, altura de fila, divisores, resaltado y alineación de números</td></tr>
+  </tbody>
+</table>
+<p class="pag-intro" style="margin-top:12px">Las dos <strong>comparten el lenguaje visual</strong>. Si no lo compartieran, dos tablas en la misma pantalla parecerían de dos productos distintos.</p>
+
 <h3 class="sub-seccion">Filas desplegables — agrupar subelementos</h3>
 <p class="seccion-sub">El símbolo se llama <strong>chevron</strong>; cuando su trabajo es abrir y cerrar contenido se le llama <em>disclosure</em>. Gira al desplegar y el contenido entra con transición de altura.</p>
 <div class="bloque">
@@ -1840,7 +1865,7 @@ configuración y descarga CSV.</p>
     </table>
   </div>
 </div>
-<table class="tabla-contraste" style="margin-top:12px">
+<table class="tabla-simple" style="margin-top:12px">
   <thead><tr><th>Detalle</th><th>Por qué así</th></tr></thead>
   <tbody>
     <tr><td>El chevron es un <code>&lt;button&gt;</code>, no un icono suelto</td><td class="motivo">Se alcanza con Tab y se activa con Enter o Espacio. Un <code>span</code> con <code>onClick</code> no</td></tr>
@@ -1852,7 +1877,7 @@ configuración y descarga CSV.</p>
 </table>
 
 <h3 class="sub-seccion">Comportamiento</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Regla</th><th>Por qué</th></tr></thead>
   <tbody>
     <tr><td><strong>10 por defecto</strong>, luego 25, 50 y Todas</td><td class="motivo">10 cabe sin desplazar en un portátil. Quien necesita más lo sube una vez y queda recordado</td></tr>
@@ -1872,7 +1897,7 @@ configuración y descarga CSV.</p>
 </table>
 
 <h3 class="sub-seccion">Sin construir</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td>Selección múltiple con acciones en lote</td><td class="motivo">Necesita definir qué acciones y con qué permisos. Es regla de negocio</td></tr>
     <tr><td>Encabezado fijo al desplazar</td><td class="motivo">Trivial de añadir; se hace con el componente real</td></tr>
@@ -1882,7 +1907,7 @@ configuración y descarga CSV.</p>
 </table>
 
 <h3 class="sub-seccion">Reglas</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>Filas de <strong>34px</strong> en densidad cómoda, 28px en compacta.</td></tr>
     <tr><td class="num">2</td><td>Las acciones de fila van como <strong>enlace</strong>, no como botón.</td></tr>
@@ -1938,7 +1963,7 @@ cualquier otro listado: no tiene paginación propia.</p>
 </div>
 
 <h3 class="sub-seccion">Paginar, «cargar más» o desplazamiento infinito</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Patrón</th><th>Cuándo</th><th>Cuándo no</th></tr></thead>
   <tbody>
     <tr><td><strong>Paginación</strong></td><td class="motivo">Hay que localizar un registro concreto, volver a él, o saber cuántos hay en total</td><td class="motivo">—</td></tr>
@@ -1994,7 +2019,7 @@ cualquier otro listado: no tiene paginación propia.</p>
 </div>
 
 <h3 class="sub-seccion">Accesibilidad</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>Va dentro de <code>&lt;nav aria-label="Paginación"&gt;</code>. Sin etiqueta, un lector anuncia «navegación» y no dice cuál.</td></tr>
     <tr><td class="num">2</td><td>La página actual lleva <code>aria-current="page"</code>. El color solo no la marca.</td></tr>
@@ -2006,7 +2031,7 @@ cualquier otro listado: no tiene paginación propia.</p>
 </table>
 
 <h3 class="sub-seccion">Reglas</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>El <strong>rango es obligatorio</strong>. Los números de página son opcionales.</td></tr>
     <tr><td class="num">2</td><td>Con una sola página, <strong>no se pinta la paginación</strong>. El rango se queda.</td></tr>
@@ -2036,7 +2061,7 @@ ${verCodigo(
 // Cargar más
 <Paginacion variante="cargar-mas" restantes={215} porTanda={25} onCargar={cargar} />`
 )}
-<table class="tabla-contraste" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:14px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td><code>total</code></td><td class="mono">number</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Sin total no se puede construir el rango</td></tr>
@@ -2132,7 +2157,7 @@ hace que la gente crea que el sistema perdió su información.</p>
 </div>
 
 <h3 class="sub-seccion">Las tres parejas que se confunden</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>No es lo mismo</th><th>que</th><th>Consecuencia de confundirlos</th></tr></thead>
   <tbody>
     <tr>
@@ -2167,7 +2192,7 @@ hace que la gente crea que el sistema perdió su información.</p>
 </div>
 
 <h3 class="sub-seccion">Cargando: esqueleto, giro o nada</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Duración</th><th>Qué se muestra</th><th>Por qué</th></tr></thead>
   <tbody>
     <tr><td>Bajo <strong>300 ms</strong></td><td><strong>Nada</strong></td><td class="motivo">Un parpadeo se percibe como un fallo. Esperar en silencio se percibe como rapidez</td></tr>
@@ -2203,7 +2228,7 @@ hace que la gente crea que el sistema perdió su información.</p>
 </div>
 
 <h3 class="sub-seccion">El texto</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>✗</th><th>✓</th></tr></thead>
   <tbody>
     <tr><td>«Sin resultados»</td><td>«Sin resultados para <em>perez</em>. Prueba con menos letras»</td></tr>
@@ -2218,7 +2243,7 @@ importa tanto como decir qué falló. Quien acaba de rellenar un formulario larg
 antes que la causa técnica.</p>
 
 <h3 class="sub-seccion">Reglas</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>Los seis estados son <strong>obligatorios</strong> en cualquier pantalla que cargue datos. No solo el que tiene datos.</td></tr>
     <tr><td class="num">2</td><td><strong>Nunca consultado ≠ sin resultados ≠ primera vez.</strong> Tres mensajes distintos.</td></tr>
@@ -2250,7 +2275,7 @@ ${verCodigo(
   <TablaDatos filas={filas} />
 </EstadoPantalla>`
 )}
-<table class="tabla-contraste" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:14px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Qué resuelve</th></tr></thead>
   <tbody>
     <tr><td><code>consultado</code></td><td class="mono">boolean</td><td class="motivo">Separa «nunca consultado» de «sin resultados»</td></tr>
@@ -2278,7 +2303,7 @@ const pagInterruptor = `
 falta pulsar «Guardar» después, no es un interruptor: es una casilla dentro de un formulario.</p>
 
 <h3 class="sub-seccion">Interruptor o casilla</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th></th><th>Interruptor</th><th>Casilla</th></tr></thead>
   <tbody>
     <tr><td><strong>Cuándo surte efecto</strong></td><td>Al instante</td><td class="motivo">Al enviar el formulario</td></tr>
@@ -2310,7 +2335,7 @@ engaña: la persona lo mueve, se va, y el cambio no se aplicó.</p>
 </div>
 
 <h3 class="sub-seccion">La transición</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>La bolita se desplaza en <strong>180 ms</strong> con <code>ease</code>. Más rápido no se ve; más lento se percibe lento.</td></tr>
     <tr><td class="num">2</td><td>El fondo cambia de color en el <strong>mismo tiempo</strong>: si van desacompasados, parece un fallo.</td></tr>
@@ -2320,7 +2345,7 @@ engaña: la persona lo mueve, se va, y el cambio no se aplicó.</p>
 </table>
 
 <h3 class="sub-seccion">Reglas</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>Surte efecto <strong>al instante</strong>. Sin «Guardar».</td></tr>
     <tr><td class="num">2</td><td>La etiqueta va <strong>al lado y es pulsable</strong>. Un interruptor sin etiqueta no dice qué apaga.</td></tr>
@@ -2362,7 +2387,7 @@ encuestas y de las configuraciones por lote. Se distingue de la lista de un solo
 aspecto, sino por lo que permite: una o varias.</p>
 
 <h3 class="sub-seccion">Qué control para qué caso</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Se elige</th><th>Cuántas opciones</th><th>Control</th></tr></thead>
   <tbody>
     <tr><td rowspan="2"><strong>Varias</strong></td><td>Hasta 7</td><td>Casillas a la vista</td></tr>
@@ -2420,7 +2445,7 @@ nada y se compara de un vistazo. Escondidas en un desplegable solo compensa cuan
 de las de abajo.</p>
 
 <h3 class="sub-seccion">Reglas</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>Van dentro de <code>&lt;fieldset&gt;</code> con <code>&lt;legend&gt;</code>. Sin eso, el lector lee opciones sueltas sin saber de qué pregunta son.</td></tr>
     <tr><td class="num">2</td><td>La etiqueta <strong>completa</strong> es pulsable, no solo el cuadrito.</td></tr>
@@ -2462,7 +2487,7 @@ const pagFecha = `
 día.</p>
 
 <h3 class="sub-seccion">Formato</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td><strong>Se muestra</strong></td><td class="mono">31/03/2026</td><td class="motivo">Formato peruano, día primero. Nunca el americano</td></tr>
     <tr><td><strong>Se escribe</strong></td><td class="mono">31/03/2026 · 31-03-2026 · 31032026</td><td class="motivo">Se acepta con barras, guiones o sin nada. <strong>Limpiar no es rechazar</strong></td></tr>
@@ -2523,7 +2548,7 @@ día.</p>
 
   <p class="fc-resumen" id="fc-resumen">Sin rango elegido.</p>
 </div>
-<table class="tabla-contraste" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:14px">
   <thead><tr><th>Detalle</th><th>Por qué</th></tr></thead>
   <tbody>
     <tr><td><strong>Dos meses a la vez</strong></td><td class="motivo">La mayoría de rangos cruzan de mes. Con uno solo hay que navegar a media selección y se pierde el hilo</td></tr>
@@ -2535,7 +2560,7 @@ día.</p>
 </table>
 
 <h3 class="sub-seccion">Las cuatro reglas del rango</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td><strong>«Hasta» no puede ser anterior a «Desde».</strong> Si se elige una fecha menor, se ajusta «Desde» en vez de rechazar: quien lo hizo probablemente quería mover el periodo entero.</td></tr>
     <tr><td class="num">2</td><td>Siempre <strong>se muestra cuántos días</strong> abarca. «Del 1 al 31 de marzo» no dice si son 30 o 31.</td></tr>
@@ -2545,7 +2570,7 @@ día.</p>
 </table>
 
 <h3 class="sub-seccion">Reglas</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>Formato peruano al mostrar, ISO al guardar.</td></tr>
     <tr><td class="num">2</td><td>Se acepta escribir con barras, guiones o seguido. Se limpia al guardar.</td></tr>
@@ -2581,7 +2606,7 @@ no se sabe cuánto queda, no es una barra de progreso: es un
 <a href="#estados" data-ir="estados" class="enlace">estado de carga</a>.</p>
 
 <h3 class="sub-seccion">Determinada o indeterminada</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th></th><th>Cuándo</th><th>Qué muestra</th></tr></thead>
   <tbody>
     <tr><td><strong>Determinada</strong></td><td>Se conoce el total: 40 de 120 filas importadas</td><td class="motivo">El porcentaje y las cifras reales</td></tr>
@@ -2643,7 +2668,7 @@ no se sabe cuánto queda, no es una barra de progreso: es un
 no aportan nada sobre una barra.</p>
 
 <h3 class="sub-seccion">Reglas</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>Si no se conoce el total, <strong>no es una barra de progreso</strong>. Usa esqueleto.</td></tr>
     <tr><td class="num">2</td><td>Junto al porcentaje van <strong>las cifras reales</strong>: «74 de 120». El 62 % solo no dice si son minutos o segundos.</td></tr>
@@ -2693,7 +2718,7 @@ es un diálogo.</p>
 </div>
 
 <h3 class="sub-seccion">Los cuatro tonos y su duración</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Tono</th><th>Cuándo</th><th class="num">Dura</th><th>Por qué esa duración</th></tr></thead>
   <tbody>
     <tr><td><span class="chip chip-exito">Éxito</span></td><td>Se hizo lo que se pidió</td><td class="num">4 s</td><td class="motivo">Solo confirma. Leerlo cuesta un segundo</td></tr>
@@ -2713,7 +2738,7 @@ es un diálogo.</p>
 </div>
 
 <h3 class="sub-seccion">Aviso temporal, aviso fijo o diálogo</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th></th><th>Aviso temporal</th><th>Aviso fijo en la página</th><th>Diálogo</th></tr></thead>
   <tbody>
     <tr><td><strong>Interrumpe</strong></td><td>No</td><td class="motivo">No</td><td class="motivo">Sí</td></tr>
@@ -2724,7 +2749,7 @@ es un diálogo.</p>
 </table>
 
 <h3 class="sub-seccion">Dónde y cómo aparece</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td><strong>Arriba a la derecha</strong>, bajo la barra superior. Es donde la vista vuelve tras pulsar, y no tapa el contenido que se acaba de tocar.</td></tr>
     <tr><td class="num">2</td><td>En móvil, <strong>arriba y a ancho completo</strong> menos los márgenes. Abajo compite con el botón flotante y con el teclado.</td></tr>
@@ -2735,7 +2760,7 @@ es un diálogo.</p>
 </table>
 
 <h3 class="sub-seccion">Accesibilidad</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>La zona es <code>aria-live="polite"</code>. El lector lo anuncia al terminar la frase en curso, sin cortar.</td></tr>
     <tr><td class="num">2</td><td>El error es <code>aria-live="assertive"</code> con <code>role="alert"</code>: interrumpe, porque algo no se hizo.</td></tr>
@@ -2746,7 +2771,7 @@ es un diálogo.</p>
 </table>
 
 <h3 class="sub-seccion">El texto</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>✗</th><th>✓</th></tr></thead>
   <tbody>
     <tr><td>«Operación exitosa»</td><td>«Se guardó la asistencia de marzo»</td></tr>
@@ -2759,7 +2784,7 @@ es un diálogo.</p>
 dato</strong>; el detalle vive en la pantalla, no en algo que se va en cuatro segundos.</p>
 
 <h3 class="sub-seccion">Reglas</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>Solo para <strong>lo ya hecho</strong>. Si hay que decidir, es un diálogo.</td></tr>
     <tr><td class="num">2</td><td><strong>Los errores no se van solos.</strong></td></tr>
@@ -2797,7 +2822,7 @@ aparece una banda arriba del contenido y lo empuja hacia abajo. Al confirmar o c
 se pliega y el contenido vuelve a subir.</p>
 
 <h3 class="sub-seccion">Por qué no un diálogo encima</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Problema del diálogo modal</th><th>Qué pasa en móvil</th></tr></thead>
   <tbody>
     <tr><td>Tapa la pantalla entera</td><td class="motivo">Se pierde de vista <strong>qué</strong> se estaba a punto de borrar</td></tr>
@@ -2845,7 +2870,7 @@ se pliega y el contenido vuelve a subir.</p>
 </div>
 
 <h3 class="sub-seccion">La transición</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>La banda abre con <code>grid-template-rows</code> de <code>0fr</code> a <code>1fr</code> en <strong>240 ms</strong>. Es lo único que anima hasta altura automática sin fijar píxeles.</td></tr>
     <tr><td class="num">2</td><td>El contenido <strong>no se anima aparte</strong>: baja porque la banda ocupa sitio. Animar los dos por separado los descompasa.</td></tr>
@@ -2856,7 +2881,7 @@ se pliega y el contenido vuelve a subir.</p>
 </table>
 
 <h3 class="sub-seccion">Accesibilidad</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>La banda es <code>role="region"</code> con <code>aria-live="assertive"</code>: se anuncia al aparecer sin necesidad de atrapar el foco.</td></tr>
     <tr><td class="num">2</td><td>El foco <strong>va a la banda</strong> al abrirse. Es una decisión que hay que tomar; dejar el foco atrás obliga a buscarla.</td></tr>
@@ -2867,7 +2892,7 @@ se pliega y el contenido vuelve a subir.</p>
 </table>
 
 <h3 class="sub-seccion">Cuándo sí y cuándo no</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Situación</th><th>Qué se usa</th></tr></thead>
   <tbody>
     <tr><td>Confirmar algo <strong>irreversible</strong></td><td>Banda de confirmación</td></tr>
@@ -2884,7 +2909,7 @@ se pliega y el contenido vuelve a subir.</p>
 </div>
 
 <h3 class="sub-seccion">Reglas</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td><strong>Nunca un diálogo encima.</strong> La banda empuja, no tapa.</td></tr>
     <tr><td class="num">2</td><td>Solo para lo irreversible. Lo reversible se hace y se ofrece Deshacer.</td></tr>
@@ -2956,7 +2981,7 @@ const md = (texto) => {
         i++;
       }
       out.push(
-        `<table class="tabla-manual"><thead><tr>${cabs.map((c) => `<th>${enLinea(c)}</th>`).join('')}</tr></thead>` +
+        `<table class="tabla-simple tabla-manual"><thead><tr>${cabs.map((c) => `<th>${enLinea(c)}</th>`).join('')}</tr></thead>` +
           `<tbody>${filas.map((f) => `<tr>${f.map((c) => `<td>${enLinea(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`
       );
       continue;
@@ -3046,17 +3071,17 @@ const pagContraste = `
 <strong>${lock.resumen.fallos} fallos</strong> · ${lock.norma}. Recalculados en cada build por
 <code>verificar-contraste.mjs</code>: si el contrato miente, el build falla.</p>
 <h3 class="sub-seccion">Modo claro</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Frente</th><th>Fondo</th><th class="num">Medido</th><th class="num">Mínimo</th><th>Estado</th><th>Motivo</th></tr></thead>
   <tbody>${filasContraste('claro')}</tbody>
 </table>
 <h3 class="sub-seccion">Modo oscuro</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Frente</th><th>Fondo</th><th class="num">Medido</th><th class="num">Mínimo</th><th>Estado</th><th>Motivo</th></tr></thead>
   <tbody>${filasContraste('oscuro')}</tbody>
 </table>
 <h3 class="sub-seccion">Correcciones sobre el documento original</h3>
-<table class="tabla-contraste">
+<table class="tabla-simple">
   <thead><tr><th>Token</th><th>Antes</th><th>Ahora</th><th>Medido</th><th>Norma</th><th>Razón</th></tr></thead>
   <tbody>${correcciones.map((c) => `<tr><td><code>${c.token}</code></td><td class="mono">${c.antes}</td>
     <td class="mono">${c.despues}</td><td class="num">${c.medido}</td><td>${c.criterio}</td>
@@ -3748,9 +3773,8 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
    se desplaza en horizontal. Las tablas de documentación no estaban envueltas
    en ningún contenedor, así que estiraban la página entera. Con display:block
    la propia tabla se convierte en su caja de desplazamiento. */
-.tabla-contraste, .tabla-manual, .tb-sub { display: block; overflow-x: auto; }
-.tabla-contraste > thead, .tabla-contraste > tbody,
-.tabla-manual > thead, .tabla-manual > tbody { display: table; width: 100%; min-width: 520px; }
+.tabla-simple, .tb-sub { display: block; overflow-x: auto; }
+.tabla-simple > thead, .tabla-simple > tbody { display: table; width: 100%; min-width: 520px; }
 .tb-sub > thead, .tb-sub > tbody { display: table; width: 100%; min-width: 480px; }
 /* Los hijos de una rejilla o de un flex no bajan de su contenido si no se les
    dice: es el mismo motivo por el que las muestras de color desbordaban. */
@@ -4165,13 +4189,7 @@ a.enlace.enl-nosub { text-decoration: none; }
   color: var(--info-texto); border-left: 3px solid var(--info-acento); border-radius: 6px;
   font-size: 15px; }
 .man-hr { border: 0; border-top: 1px solid var(--borde); margin: 24px 0; }
-.tabla-manual { width: 100%; border-collapse: collapse; font-size: 15px;
-  margin: 0 0 16px; background: var(--fondo-tarjeta);
-  border: 1px solid var(--borde); border-radius: 6px; }
-.tabla-manual th { background: var(--fondo-encabezado); text-align: left;
-  padding: 8px 12px; font-weight: 500; font-size: 13px; }
-.tabla-manual td { padding: 8px 12px; border-top: 1px solid var(--borde);
-  vertical-align: top; line-height: 1.5; }
+.tabla-manual { margin: 0 0 16px; }
 .manual code { background: var(--fondo-encabezado); padding: 4px 4px;
   border-radius: 3px; font-size: 13px; }
 
@@ -4616,15 +4634,22 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .rej span { font-size: 12px; font-family: 'IBM Plex Mono', monospace; color: var(--texto-secundario); }
 
 /* Tabla de contrastes */
-.tabla-contraste { width: 100%; border-collapse: collapse; font-size: 12px;
+/* TABLA SIMPLE — el elemento. Muestra datos y ya: no ordena, no filtra, no
+   pagina. Mismo lenguaje visual que la tabla de datos, sin sus controles.
+   El catálogo la consume entera; antes tenía tres estilos de tabla inventados
+   -contraste, manual y escala- que el sistema no reconocía. */
+.tabla-simple { width: 100%; border-collapse: collapse; font-size: 13px;
   background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 6px; }
-.tabla-contraste th { background: var(--fondo-encabezado); text-align: left;
-  padding: 8px 8px; font-weight: 500; font-size: 12px; }
-.tabla-contraste td { padding: 4px 8px; border-top: 1px solid var(--borde); }
-.tabla-contraste .num { font-family: 'IBM Plex Mono', monospace; text-align: right; }
-.tabla-contraste .ok { color: var(--exito-texto); font-weight: 500; }
-.tabla-contraste .mal { color: var(--error-texto); font-weight: 600; }
-.tabla-contraste .motivo { color: var(--texto-secundario); }
+.tabla-simple th { background: var(--fondo-encabezado); text-align: left;
+  padding: 8px 12px; font-weight: 500; font-size: 13px; color: var(--texto-principal); }
+.tabla-simple td { padding: 8px 12px; border-top: 1px solid var(--borde);
+  vertical-align: top; line-height: 1.45; }
+.tabla-simple tbody tr:hover { background: var(--fondo-fila-hover); }
+.tabla-simple .num { font-family: 'IBM Plex Mono', monospace; text-align: right; white-space: nowrap; }
+.tabla-simple .ok { color: var(--exito-texto); font-weight: 500; }
+.tabla-simple .mal { color: var(--error-texto); font-weight: 600; }
+.tabla-simple .motivo { color: var(--texto-secundario); }
+.tabla-simple code { background: var(--fondo-encabezado); padding: 0 4px; border-radius: 3px; font-size: 12px; }
 
 /* ── Casos de uso ────────────────────────────────────────────────────────── */
 .sub-seccion { font-size: 16px; font-weight: 600; margin: 40px 0 4px; }
@@ -4821,6 +4846,23 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       var n = paginas();
       if (pagina > n) pagina = n;
       if (n <= 1) { caja.innerHTML = ''; return; }
+
+      // Variante compacta: sin números. La regla del elemento dice que en móvil
+      // no caben y el dedo falla, así que el componente la implementa —no basta
+      // con documentarla—. En el catálogo la señal es la vista móvil; en la
+      // aplicación real sería el ancho.
+      if (document.documentElement.getAttribute('data-vista') === 'movil') {
+        caja.innerHTML =
+          '<button class="pgn-btn pgn-flecha" data-pgn="' + (pagina - 1) +
+          '" aria-label="Página anterior"' + (pagina === 1 ? ' disabled' : '') + '>' +
+          CHEV_IZQ + '<span>Anterior</span></button>' +
+          '<span class="pg-pos" aria-current="page">' + pagina + ' de ' + n + '</span>' +
+          '<button class="pgn-btn pgn-flecha" data-pgn="' + (pagina + 1) +
+          '" aria-label="Página siguiente"' + (pagina === n ? ' disabled' : '') + '>' +
+          '<span>Siguiente</span>' + CHEV_DER + '</button>';
+        return;
+      }
+
       var b = ['<button class="pgn-btn pgn-flecha" data-pgn="' + (pagina - 1) +
         '" aria-label="Página anterior"' + (pagina === 1 ? ' disabled' : '') + '>' +
         CHEV_IZQ + '<span>Anterior</span></button>'];
@@ -4850,11 +4892,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     });
 
     pintar();
-    return {
+    var api = {
       pagina: function () { return pagina; },
       ir: function (n) { pagina = n; pintar(); },
       refrescar: pintar,
     };
+    (window.__paginaciones = window.__paginaciones || []).push(api);
+    return api;
   };
 
   var hex = ${JSON.stringify(
@@ -5665,6 +5709,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       }
       document.getElementById('fg-panel').hidden = true;
       document.getElementById('fg-btn').setAttribute('aria-expanded', 'false');
+      // La paginación cambia de forma con la vista: se repintan todas.
+      (window.__paginaciones || []).forEach(function (p) { p.refrescar(); });
       document.getElementById('plegar-cat')
         .setAttribute('aria-label', on ? 'Abrir menú' : 'Plegar menú');
       cerrar();
