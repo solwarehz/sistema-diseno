@@ -22,6 +22,19 @@ const RAIZ = join(AQUI, '..', '..');
 const SALIDA = join(RAIZ, 'cascaron');
 
 const tokensCss = readFileSync(join(RAIZ, 'sistema', 'tokens', 'tokens.css'), 'utf8');
+
+// Los activos de marca se incrustan como data URI: el cascarón sigue siendo un
+// solo archivo autocontenido y los PNG originales siguen fuera del repositorio
+// por .gitignore. Si faltan, se cae al marcador de posición.
+const b64 = (rel) => {
+  try {
+    return 'data:image/png;base64,' + readFileSync(join(RAIZ, rel)).toString('base64');
+  } catch {
+    return null;
+  }
+};
+const ESCUDO_PNG = b64('imagenes/AE.png');
+const LOCKUP_PNG = b64('imagenes/AE-nombre-horizontal.png');
 const lock = JSON.parse(readFileSync(join(RAIZ, 'sistema', 'tokens', 'paleta.lock.json'), 'utf8'));
 
 // ── Utilidades ──────────────────────────────────────────────────────────────
@@ -4182,8 +4195,20 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .lat.colapsado .lat-marca, .lat.colapsado .lat-usuario { justify-content: center; }
 .lat.colapsado .nav-item { justify-content: center; padding-inline: 0; }
 
-.lat-marca { display: flex; align-items: center; gap: 8px; padding: 12px;
-  border-bottom: 1px solid var(--marco-borde); }
+/* BANDA CLARA detrás de la marca. Medido: el rojo del lockup da 2,38:1 sobre
+   el marco y el negro de «COLEGIO» 1,66:1. Los activos son transparentes, así
+   que irían directos sobre el azul y no se leerían. El escudo solo sí funciona
+   sobre azul —tiene cuerpo blanco propio—, pero se usa la misma banda en los
+   dos estados para que el plegado no cambie de fondo. */
+.lat-marca { display: flex; align-items: center; justify-content: center;
+  padding: 12px; background: var(--fondo-tarjeta);
+  border-bottom: 1px solid var(--marco-borde); min-height: 56px; }
+.lat-lockup { display: block; height: 32px; width: auto; max-width: 100%; }
+.lat-escudo { display: none; height: 32px; width: auto; }
+/* Plegada: el lockup no cabe, queda el escudo. */
+.lat.colapsado .lat-lockup { display: none; }
+.lat.colapsado .lat-escudo { display: block; }
+.lat.colapsado .lat-marca { padding: 12px 8px; }
 .lat-id { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
 .lat-colegio { font-size: 12px; letter-spacing: .13em; color: var(--marco-acento); font-weight: 500; }
 .lat-nombre { font-size: 12px; font-weight: 600; white-space: nowrap; }
@@ -4500,8 +4525,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
   <aside class="lat" id="lateral">
     <div class="lat-marca">
-      ${escudo(30)}
-      <div class="lat-id"><span class="lat-colegio">COLEGIO</span><span class="lat-nombre">ALBERT EINSTEIN</span></div>
+      ${
+        LOCKUP_PNG
+          ? `<img class="lat-lockup" src="${LOCKUP_PNG}" alt="Colegio Albert Einstein">
+             <img class="lat-escudo" src="${ESCUDO_PNG}" alt="Colegio Albert Einstein">`
+          : `${escudo(30)}<div class="lat-id"><span class="lat-colegio">COLEGIO</span><span class="lat-nombre">ALBERT EINSTEIN</span></div>`
+      }
     </div>
     <nav class="lat-nav">${menuCatalogo}</nav>
     <div class="lat-usuario">

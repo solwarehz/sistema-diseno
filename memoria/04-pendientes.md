@@ -30,9 +30,22 @@ Se piden por el chat. Ver [`03-al-clonar.md`](03-al-clonar.md).
 
 Sin él **no hay favicon válido ni marco a 40px**. Es el que más bloquea de los tres.
 
-### P-04 · Escudo suelto en PNG (§10)
+### P-04 · Escudo suelto — RESUELTO
 
-De 32 a 1024px. Hoy solo existe incrustado en los lockups.
+`imagenes/AE.png`, 1063×1291 con canal alfa. El usuario lo aportó.
+
+**Consecuencia medida al montarlo:** el lockup es transparente y su texto es
+rojo `#EC2027` y negro. Sobre `marco-fondo` dan **2,38:1** y **1,66:1**, muy por
+debajo de AA. El escudo solo sí funciona sobre azul —tiene cuerpo blanco
+propio—, pero el lockup no.
+
+Por eso la marca de la lateral va sobre **banda clara** (`fondo-tarjeta`). Es la
+única forma de usar el activo tal como está. La alternativa sería una versión
+del lockup en blanco, que no existe.
+
+Sigue en pie el §8.6: a 32px, «COLEGIO» y «HUARAZ» dentro del escudo son
+ilegibles. Se lee como marca, no como texto. Para el favicon a 16px sigue
+faltando un isotipo.
 
 ### P-05 · Corrección del lockup (§8.5)
 

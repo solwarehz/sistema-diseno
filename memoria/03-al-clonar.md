@@ -25,11 +25,16 @@ Esto **no necesita instalar nada**: es cálculo puro con el `node` que ya haya.
 
 `.gitignore` excluye los binarios de diseño porque son **propiedad del cliente**.
 
-| Archivo | Cómo se consigue |
-|---|---|
-| `AE-nombre-horizontal.png` | **Pedírselo al usuario por el chat** |
-| `AE-nombre-vertical.png` | **Pedírselo al usuario por el chat** |
-| `TIPOGRAFIA-web-y-sistema.png` | **Pedírselo al usuario por el chat** |
+Los activos viven en **`imagenes/`** y están excluidos por `.gitignore`.
+
+| Archivo | Para qué | Cómo se consigue |
+|---|---|---|
+| `imagenes/AE.png` | Escudo. Menú plegado | **Pedírselo al usuario** |
+| `imagenes/AE-nombre-horizontal.png` | Lockup. Menú desplegado | **Pedírselo al usuario** |
+| `AE-nombre-vertical.png` | Sin usar todavía | Pedírselo al usuario |
+| `TIPOGRAFIA-web-y-sistema.png` | Espécimen | Pedírselo al usuario |
+
+Sin ellos el cascarón **no falla**: cae al marcador de posición punteado.
 
 No los busques en `~/Downloads` ni en ninguna otra carpeta: **no se puede salir de
 la carpeta del proyecto**. Se piden y el usuario los manda.
@@ -52,9 +57,8 @@ general de trabajar en la carpeta.
 
 No los busques: **nunca se han creado**. Son trabajo de diseñador.
 
-**El escudo suelto.** MMI-DS §10 lista `AE-escudo-*.png` de 32 a 1024px. No
-existen. El escudo solo está incrustado dentro de los lockups. Lo necesitan el
-marco (32px), la landing (48px y 96px) y el panel de marca.
+**El escudo suelto ya existe** — `imagenes/AE.png`, 1063×1291 con alfa. Cierra
+el hueco que MMI-DS §10 daba por perdido.
 
 **El isotipo simplificado** (§8.6). Bajo 56px, «COLEGIO» y «HUARAZ» son ilegibles
 dentro del escudo. Para el marco a 40px y el favicon a 16px **no hay activo
