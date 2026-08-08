@@ -201,6 +201,7 @@ const ICONOS = {
   sobre: ic('<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/>'),
   campana: ic('<path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>'),
   panelIzq: ic('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/>'),
+  hamburguesa: ic('<path d="M4 6h16M4 12h16M4 18h16"/>'),
   luna: ic('<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>'),
   salir: ic('<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/>'),
 };
@@ -570,10 +571,12 @@ const filaEscala = ([clase, nombre, px, peso, lh, texto]) => `
   </tr>`;
 
 const tablaEscala = (filas) => `
-  <table class="tabla-escala">
-    <thead><tr><th>Muestra</th><th>Clase</th><th class="num">Tamaño</th><th>Peso</th><th class="num">Interlínea</th></tr></thead>
-    <tbody>${filas.map(filaEscala).join('')}</tbody>
-  </table>`;
+  <div class="tabla-escala-caja">
+    <table class="tabla-escala">
+      <thead><tr><th>Muestra</th><th>Clase</th><th class="num">Tamaño</th><th>Peso</th><th class="num">Interlínea</th></tr></thead>
+      <tbody>${filas.map(filaEscala).join('')}</tbody>
+    </table>
+  </div>`;
 
 const PESOS = [
   [400, 'Regular', 'Cuerpo, celdas de tabla, texto secundario', true],
@@ -3681,8 +3684,33 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 [data-vista='movil'] .app-main { min-height: 0; height: 100%; overflow-y: auto; }
 [data-vista='movil'] .top { position: sticky; top: 0; }
 /* Los filtros globales no caben en fila: se deslizan. */
-[data-vista='movil'] .top-filtros { overflow-x: auto; flex: 1; }
-[data-vista='movil'] .top-filtros .campo { min-width: 104px; }
+/* Un icono por vista: en móvil la hamburguesa es lo que la gente reconoce como
+   «aquí está el menú». El de plegar panel no significa nada en un teléfono. */
+.ic-movil { display: none; }
+.ic-escritorio, .ic-movil { display: grid; place-items: center; }
+.ic-escritorio { display: grid; }
+[data-vista='movil'] .ic-escritorio { display: none; }
+[data-vista='movil'] .ic-movil { display: grid; }
+/* Los filtros globales se MUDAN al menú de usuario: en 390px, tres selectores
+   en la barra dejan sin sitio al título y se deslizan mal. */
+[data-vista='movil'] .top-filtros { flex-direction: column; gap: 12px; padding: 12px; width: 100%; }
+[data-vista='movil'] .top-filtros .cg { width: 100%; }
+[data-vista='movil'] .top-filtros .campo { width: 100%; min-width: 0; font-size: 16px; }
+[data-vista='movil'] .us-menu { min-width: 264px; }
+/* Los filtros globales tienen SU PROPIO desplegable, no van dentro del menú de
+   usuario: son de la pantalla, no de la cuenta. Se elige y se cierra. */
+/* El botón de filtros solo existe en móvil: en escritorio los filtros ya están
+   a la vista en la barra y un desplegable sobraría. */
+.fg { position: relative; display: none; }
+[data-vista='movil'] .fg { display: block; }
+.fg-panel { position: absolute; z-index: 60; right: 0; top: calc(100% + 8px);
+  min-width: 240px; padding: 4px; background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-campo); border-radius: 6px;
+  box-shadow: var(--sombra-capa); }
+.fg-panel .top-filtros { flex-direction: column; gap: 12px; padding: 12px; width: 100%; }
+.fg-panel .cg { width: 100%; }
+.fg-panel .campo { width: 100%; min-width: 0; font-size: 16px; }
+#fg-btn.activo { color: var(--accion); background: var(--fondo-fila-hover); }
 [data-vista='movil'] .cat-cuerpo { padding: 16px 12px 48px; }
 [data-vista='movil'] .pag-cab h1 { font-size: 24px; }
 /* §3.5 — bajo 640px el cuerpo y el texto de interfaz suben a 18px. */
@@ -4158,8 +4186,13 @@ h2.seccion {
 .escala { margin-bottom: 12px; }
 .escala-nombre { font-size: 12px; font-weight: 600; text-transform: uppercase;
   letter-spacing: .06em; color: var(--texto-secundario); margin-bottom: 4px; }
-.escala-tiras { display: flex; border-radius: 6px; overflow: hidden; border: 1px solid var(--borde); }
-.tira { flex: 1; padding: 12px 4px 8px; font-size: 12px; text-align: center;
+/* La escala se desplaza DENTRO de su contenedor. El gris cálido tiene 11 pasos
+   y cada tira necesita ~59px para que quepa el hex: por debajo de 650px de
+   contenido la última se salía y arrastraba la barra a toda la página. La regla
+   del sistema es que lo ancho se desplaza en su caja, nunca la página. */
+.escala-tiras { display: flex; border-radius: 6px; overflow-x: auto;
+  border: 1px solid var(--borde); }
+.tira { flex: 1 0 60px; padding: 12px 4px 8px; font-size: 12px; text-align: center;
   font-family: 'IBM Plex Mono', monospace; display: flex; flex-direction: column; gap: 4px; }
 .tira-hex { font-size: 12px; opacity: .75; }
 
@@ -4481,8 +4514,11 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   border-radius: 6px; font-size: 13px; margin-bottom: 20px; }
 .tipo-nota code { background: var(--fondo-tarjeta); padding: 4px; border-radius: 3px; }
 
+/* Misma regla que la escala de primitivas y que la tabla de datos: lo ancho se
+   desplaza en su caja. La muestra de 56px del titular hero no encoge. */
+.tabla-escala-caja { overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
 .tabla-escala { width: 100%; border-collapse: collapse; font-size: 13px;
-  background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 6px; }
+  background: var(--fondo-tarjeta); min-width: 520px; }
 .tabla-escala th { background: var(--fondo-encabezado); text-align: left;
   padding: 8px 12px; font-weight: 500; font-size: 12px; }
 .tabla-escala td { padding: 8px 12px; border-top: 1px solid var(--borde); vertical-align: middle; }
@@ -4663,7 +4699,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
   <div class="app-main">
     <div class="top top-cascaron">
-      <button class="top-plegar" id="plegar-cat" aria-label="Plegar menú">${ICONOS.panelIzq}</button>
+      <button class="top-plegar" id="plegar-cat" aria-label="Plegar menú">
+        <span class="ic-escritorio">${ICONOS.panelIzq}</span>
+        <span class="ic-movil">${ICONOS.hamburguesa}</span>
+      </button>
       <div class="top-filtros">
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
@@ -4673,6 +4712,11 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
       <div class="top-acciones">
+        <div class="fg" id="fg">
+          <button class="top-btn ic-movil" id="fg-btn" aria-expanded="false"
+                  aria-controls="fg-panel" aria-haspopup="true" aria-label="Filtros">${ICO_FILTRO}</button>
+          <div class="fg-panel" id="fg-panel" hidden></div>
+        </div>
         <button class="top-btn" aria-label="Mensajes">${ICONOS.sobre}</button>
         <button class="top-btn" aria-label="Notificaciones">${ICONOS.campana}<span class="badge">1</span></button>
 
@@ -5576,6 +5620,19 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       // ventana y aparecería flotando fuera del teléfono.
       var zona = document.querySelector('.av-zona');
       if (zona) (on ? document.querySelector('.app-cascaron') : document.body).appendChild(zona);
+      // Los filtros se mudan al menú: se MUEVE el nodo, no se duplica. Dos
+      // copias del mismo control acaban divergiendo, como pasó con la
+      // paginación de la tabla.
+      var filtros = document.querySelector('.top-filtros');
+      if (filtros) {
+        if (on) document.getElementById('fg-panel').appendChild(filtros);
+        else document.querySelector('.top-cascaron')
+          .insertBefore(filtros, document.querySelector('.top-acciones'));
+      }
+      document.getElementById('fg-panel').hidden = true;
+      document.getElementById('fg-btn').setAttribute('aria-expanded', 'false');
+      document.getElementById('plegar-cat')
+        .setAttribute('aria-label', on ? 'Abrir menú' : 'Plegar menú');
       cerrar();
       if (window.avisarDemo) {
         window.avisarDemo('info', on
@@ -5587,6 +5644,35 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     menu.querySelector('.us-salir').addEventListener('click', function () {
       cerrar();
       if (window.avisarDemo) window.avisarDemo('info', 'Salir del sistema — en el catálogo no hay sesión que cerrar');
+    });
+  })();
+
+  // ── Desplegable de filtros globales ──────────────────────────────────────
+  (function () {
+    var btn = document.getElementById('fg-btn');
+    var panel = document.getElementById('fg-panel');
+    if (!btn) return;
+    function cerrarFg() {
+      panel.hidden = true;
+      btn.setAttribute('aria-expanded', 'false');
+      btn.classList.remove('activo');
+    }
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var abierto = !panel.hidden;
+      panel.hidden = abierto;
+      btn.setAttribute('aria-expanded', String(!abierto));
+      btn.classList.toggle('activo', !abierto);
+    });
+    // Al elegir un valor se cierra: es lo que se venía a hacer.
+    panel.addEventListener('change', function (e) {
+      if (e.target.closest('select')) cerrarFg();
+    });
+    document.addEventListener('click', function (e) {
+      if (!panel.hidden && !e.target.closest('#fg')) cerrarFg();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !panel.hidden) { cerrarFg(); btn.focus(); }
     });
   })();
 
