@@ -188,6 +188,8 @@ const ICONOS = {
   sobre: ic('<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/>'),
   campana: ic('<path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>'),
   panelIzq: ic('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/>'),
+  luna: ic('<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>'),
+  salir: ic('<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/>'),
 };
 
 // Chevrons direccionales del componente Paginación.
@@ -220,9 +222,9 @@ const barraSuperior = `
   <div class="top">
     <button class="top-plegar" aria-label="Plegar menú">${ICONOS.panelIzq}</button>
     <div class="top-filtros">
-      <label class="filtro"><span class="filtro-et">Años</span><select class="campo"><option>2026</option></select></label>
-      <label class="filtro"><span class="filtro-et">Sedes</span><select class="campo"><option>Todas</option></select></label>
-      <label class="filtro"><span class="filtro-et">Nivel</span><select class="campo"><option>Todos</option></select></label>
+      <label class="cg"><span class="cg-et">Años</span><select class="campo cg-in"><option>2026</option></select></label>
+      <label class="cg"><span class="cg-et">Sedes</span><select class="campo cg-in"><option>Todas</option></select></label>
+      <label class="cg"><span class="cg-et">Nivel</span><select class="campo cg-in"><option>Todos</option></select></label>
     </div>
     <div class="top-acciones">
       <button class="top-btn" aria-label="Cambiar tema">${ICONOS.sol}</button>
@@ -3907,10 +3909,13 @@ select.campo:disabled { opacity: .75; }
 .top-plegar { background: transparent; border: 0; cursor: pointer; padding: 5px;
   border-radius: 5px; color: var(--texto-secundario); display: grid; place-items: center; }
 .top-plegar:hover { background: var(--fondo-encabezado); color: var(--texto-principal); }
-.top-filtros { display: flex; gap: 9px; flex: 1; }
-.filtro { display: flex; flex-direction: column; gap: 2px; }
-.filtro-et { font-size: 10px; font-weight: 500; color: var(--texto-secundario); }
-.filtro .campo { font-size: 13px; padding: 5px 9px; min-width: 118px; }
+/* Los filtros de la barra usan la anatomía del Campo -.cg y .cg-et-, no clases
+   propias. El cascarón consume su propio sistema. */
+.top-filtros { display: flex; gap: 8px; flex: 1; }
+.top-filtros .cg { gap: 2px; }
+.top-filtros .cg-et { font-size: 10px; color: var(--texto-secundario); }
+.top-filtros .campo { font-size: 13px; padding: 4px 8px; min-width: 120px; }
+.top-filtros select.campo { padding-right: 28px; background-position: right 8px center; }
 .top-acciones { display: flex; align-items: center; gap: 5px; }
 .top-btn { background: transparent; border: 0; cursor: pointer; padding: 7px;
   border-radius: 6px; color: var(--texto-secundario); position: relative;
@@ -3919,9 +3924,46 @@ select.campo:disabled { opacity: .75; }
 .badge { position: absolute; top: 1px; right: 1px; min-width: 15px; height: 15px;
   border-radius: 8px; background: var(--error-acento); color: #fff;
   font-size: 9px; font-weight: 600; display: grid; place-items: center; padding: 0 3px; }
-.top-avatar { width: 30px; height: 30px; border-radius: 50%; margin-left: 5px;
-  background: var(--accion); color: var(--accion-texto);
+.top-avatar { width: 30px; height: 30px; border-radius: 50%; margin-left: 4px;
+  background: var(--accion); color: var(--accion-texto); border: 0; cursor: pointer;
   display: grid; place-items: center; font-size: 11px; font-weight: 600; }
+
+/* Menú de usuario */
+.us { position: relative; }
+.us-menu { position: absolute; z-index: 60; right: 0; top: calc(100% + 8px);
+  min-width: 248px; padding: 4px; background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-campo); border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+.us-cab { display: flex; align-items: center; gap: 12px; padding: 12px;
+  border-bottom: 1px solid var(--borde); margin-bottom: 4px; }
+.us-av { width: 36px; height: 36px; border-radius: 50%; flex: none;
+  background: var(--accion); color: var(--accion-texto);
+  display: grid; place-items: center; font-size: 13px; font-weight: 600; }
+.us-txt { display: flex; flex-direction: column; min-width: 0; }
+.us-nom { font-size: 13px; font-weight: 600; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; }
+.us-mail { font-size: 11px; color: var(--texto-secundario); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; }
+.us-sec { display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 8px 12px; }
+.us-et { font-size: 12px; color: var(--texto-secundario); }
+/* El tema va en iconos, no en palabras: sol y luna se reconocen sin leer. */
+.us-tema { display: flex; gap: 4px; padding: 2px; border-radius: 6px;
+  background: var(--neutra-fondo); border: 1px solid var(--borde); }
+.us-tema-b { display: grid; place-items: center; width: 28px; height: 24px;
+  background: transparent; border: 0; border-radius: 4px; cursor: pointer;
+  color: var(--texto-secundario); }
+.us-tema-b:hover { color: var(--texto-principal); }
+.us-tema-b[aria-pressed='true'] { background: var(--accion); color: var(--accion-texto); }
+.us-tema-b .ic { width: 15px; height: 15px; }
+.us-op { display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 8px 12px; font: inherit; font-size: 13px; text-align: left; cursor: pointer;
+  background: transparent; border: 0; border-radius: 4px; color: var(--texto-principal); }
+.us-op:hover { background: var(--fondo-encabezado); }
+.us-op .ic { width: 16px; height: 16px; color: var(--texto-secundario); }
+.us-salir { border-top: 1px solid var(--borde); border-radius: 0 0 4px 4px; margin-top: 4px; }
+.us-salir:hover { background: var(--error-fondo); color: var(--error-texto); }
+.us-salir:hover .ic { color: var(--error-texto); }
 
 .s-cuerpo { padding: 20px; background: var(--fondo-pagina); }
 .s-cabecera { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
@@ -4162,21 +4204,40 @@ select.campo:disabled { opacity: .75; }
     <div class="top top-cascaron">
       <button class="top-plegar" id="plegar-cat" aria-label="Plegar menú">${ICONOS.panelIzq}</button>
       <div class="top-filtros">
-        <label class="filtro"><span class="filtro-et">Sistema</span>
-          <select class="campo"><option>Colegio Albert Einstein</option></select></label>
-        <label class="filtro"><span class="filtro-et">Versión</span>
-          <select class="campo"><option>v${VERSION}</option></select></label>
-        <label class="filtro"><span class="filtro-et">Fase</span>
-          <select class="campo"><option>2 · Tipografía</option></select></label>
+        <label class="cg"><span class="cg-et">Sistema</span>
+          <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
+        <label class="cg"><span class="cg-et">Versión</span>
+          <select class="campo cg-in"><option>v${VERSION}</option></select></label>
+        <label class="cg"><span class="cg-et">Modo</span>
+          <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
       <div class="top-acciones">
-        <div class="conmutador" role="group" aria-label="Modo de color">
-          <button id="b-claro" aria-pressed="true">Claro</button>
-          <button id="b-oscuro" aria-pressed="false">Oscuro</button>
-        </div>
         <button class="top-btn" aria-label="Mensajes">${ICONOS.sobre}</button>
         <button class="top-btn" aria-label="Notificaciones">${ICONOS.campana}<span class="badge">1</span></button>
-        <span class="top-avatar">JP</span>
+
+        <div class="us">
+          <button class="top-avatar" id="us-btn" aria-expanded="false" aria-controls="us-menu"
+                  aria-haspopup="menu" aria-label="Menú de JOSE ISIDRO PINEDA">JP</button>
+          <div class="us-menu" id="us-menu" role="menu" hidden>
+            <div class="us-cab">
+              <span class="us-av">JP</span>
+              <div class="us-txt">
+                <span class="us-nom">JOSE ISIDRO PINEDA</span>
+                <span class="us-mail">jose.pineda@ae.edu.pe</span>
+              </div>
+            </div>
+
+            <div class="us-sec">
+              <span class="us-et">Tema</span>
+              <div class="us-tema" role="group" aria-label="Modo de color">
+                <button id="b-claro" class="us-tema-b" aria-pressed="true" aria-label="Modo claro" title="Claro">${ICONOS.sol}</button>
+                <button id="b-oscuro" class="us-tema-b" aria-pressed="false" aria-label="Modo oscuro" title="Oscuro">${ICONOS.luna}</button>
+              </div>
+            </div>
+
+            <button class="us-op us-salir" role="menuitem">${ICONOS.salir}<span>Salir del sistema</span></button>
+          </div>
+        </div>
       </div>
     </div>
     <main class="cat-cuerpo">${paginasCatalogo}</main>
@@ -4773,10 +4834,33 @@ select.campo:disabled { opacity: .75; }
     ver();
   })();
 
+  // ── Menú de usuario ──────────────────────────────────────────────────────
+  (function () {
+    var btn = document.getElementById('us-btn');
+    var menu = document.getElementById('us-menu');
+    if (!btn) return;
+    function cerrar() { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var abierto = !menu.hidden;
+      menu.hidden = abierto;
+      btn.setAttribute('aria-expanded', String(!abierto));
+    });
+    document.addEventListener('click', function (e) {
+      if (!menu.hidden && !e.target.closest('.us')) cerrar();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !menu.hidden) { cerrar(); btn.focus(); }
+    });
+    menu.querySelector('.us-salir').addEventListener('click', function () {
+      cerrar();
+      if (window.avisarDemo) window.avisarDemo('info', 'Salir del sistema — en el catálogo no hay sesión que cerrar');
+    });
+  })();
+
   // ── Aviso temporal ───────────────────────────────────────────────────────
   (function () {
     var botones = document.querySelectorAll('[data-av]');
-    if (!botones.length) return;
 
     var zona = document.createElement('div');
     zona.className = 'av-zona';
@@ -4792,13 +4876,14 @@ select.campo:disabled { opacity: .75; }
       deshacer: ['exito', 'Se archivaron 12 expedientes', 10000],
     };
 
-    function avisar(tipo) {
-      var d = TEXTOS[tipo];
+    function avisar(tono, texto, conAccion) {
+      var d = TEXTOS[tono] || [tono, texto, tono === 'error' ? 0 : 4000];
+      if (texto) d = [d[0], texto, d[2]];
       var el = document.createElement('div');
       el.className = 'av av-' + d[0];
       if (d[0] === 'error') el.setAttribute('role', 'alert');
       el.innerHTML = '<span class="av-txt">' + d[1] + '</span>' +
-        (tipo === 'deshacer' ? '<button class="av-accion">Deshacer</button>' : '') +
+        (conAccion || tono === 'deshacer' ? '<button class="av-accion">Deshacer</button>' : '') +
         '<button class="av-x" aria-label="Cerrar aviso">' + '${ICO_X.replace(/'/g, "\\'")}' + '</button>';
       zona.appendChild(el);
       // Máximo tres: el cuarto expulsa al más antiguo.
@@ -4827,6 +4912,10 @@ select.campo:disabled { opacity: .75; }
     botones.forEach(function (b) {
       b.addEventListener('click', function () { avisar(b.dataset.av); });
     });
+
+    // Expuesto para que la propia cáscara lo consuma, igual que lo hará
+    // cualquier pantalla del sistema.
+    window.avisarDemo = avisar;
   })();
 
   // ── Paginación: la propia página del componente también lo consume ───────
