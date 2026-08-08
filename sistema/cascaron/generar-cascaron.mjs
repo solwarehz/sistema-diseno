@@ -1356,6 +1356,146 @@ ${verCodigo(
   </tbody>
 </table>`;
 
+// ── Elemento: Chip de estado ────────────────────────────────────────────────
+
+const ESTADOS_CHIP = [
+  ['exito', 'Activo', 'La matrícula está al día'],
+  ['aviso', 'Parcial', 'Falta completar algo, pero se puede seguir'],
+  ['error', 'Deuda', 'Hay algo que impide continuar'],
+  ['info', 'En trámite', 'Estado neutro, sin bueno ni malo'],
+];
+
+const chip = (clase, texto) => `<span class="chip chip-${clase}">${texto}</span>`;
+
+const pagChip = `
+<p class="pag-intro">Una etiqueta que dice <strong>en qué estado está una fila</strong>. No se
+pulsa, no se cierra y no navega: solo informa. Si hace alguna de esas tres cosas, no es un
+chip de estado.</p>
+
+<h3 class="sub-seccion">Los cuatro estados, siempre en pares</h3>
+<p class="seccion-sub">Fondo y texto salen juntos o no salen. <strong>Nunca un color de estado suelto.</strong></p>
+<div class="bloque">
+  <table class="tabla-contraste">
+    <thead><tr><th>Chip</th><th>Tokens</th><th class="num">Texto sobre fondo</th><th>Cuándo</th></tr></thead>
+    <tbody>
+      ${ESTADOS_CHIP.map(([c, t, uso]) => {
+        const par = lock.contrastes.find(
+          (x) => x.modo === 'claro' && x.frente === c + '-texto' && x.fondo === c + '-fondo'
+        );
+        return `<tr><td>${chip(c, t)}</td>
+          <td class="mono">${c}-fondo · ${c}-texto · ${c}-acento</td>
+          <td class="num">${par ? par.ratio.toFixed(2) + ':1' : '—'}</td>
+          <td class="motivo">${uso}</td></tr>`;
+      }).join('')}
+    </tbody>
+  </table>
+</div>
+
+<h3 class="sub-seccion">El filete no es adorno: es lo que dibuja el chip</h3>
+<div class="aviso">
+  <strong>Medido sobre las cuatro superficies donde vive un chip:</strong> el relleno da entre
+  <strong>1,00 y 1,19:1</strong> contra el fondo. Sobre el encabezado de tabla mide exactamente
+  <strong>1,00:1</strong> — luminancia idéntica. El filete de acento da entre
+  <strong>4,18 y 4,84:1</strong> en todos los casos.
+  <br><br>
+  Sin filete, el chip no es un chip: es texto de color flotando en la fila. Por eso
+  <strong>el filete no se quita nunca</strong>, ni siquiera «para que se vea más limpio».
+</div>
+<div class="bloque">
+  <div class="chip-sup">
+    ${['fondo-tarjeta', 'fondo-pagina', 'fondo-fila-hover', 'fondo-encabezado']
+      .map(
+        (s) => `<div class="chip-sup-caja" style="background: var(--${s})">
+          <span class="chip-sup-et"><code>${s}</code></span>
+          <div class="chip-sup-fila">
+            ${ESTADOS_CHIP.map(([c, t]) => chip(c, t)).join('')}
+          </div>
+          <div class="chip-sup-fila">
+            ${ESTADOS_CHIP.map(([c, t]) => `<span class="chip chip-${c} chip-sin-filete">${t}</span>`).join('')}
+          </div>
+          <span class="chip-sup-nota">arriba con filete · abajo sin él</span>
+        </div>`
+      )
+      .join('')}
+  </div>
+</div>
+
+<h3 class="sub-seccion">El color nunca es el único portador</h3>
+<div class="bloque">
+  <div class="enl-comp">
+    <div class="enl-caja bien">
+      <div class="chip-fila-demo">${chip('exito', 'Activo')} ${chip('error', 'Deuda')}</div>
+      <span class="bien-et">El texto dice el estado. Quien no distingue el rojo del verde lo lee igual</span>
+    </div>
+    <div class="enl-caja mal">
+      <div class="chip-fila-demo"><span class="chip chip-exito chip-punto"></span> <span class="chip chip-error chip-punto"></span></div>
+      <span class="mal-et">Solo color. Un 8 % de los hombres no distingue estos dos</span>
+    </div>
+  </div>
+</div>
+<p class="pag-intro" style="margin-top:12px">Un punto de color <strong>puede acompañar</strong> al
+texto, nunca sustituirlo. Si la columna es estrecha, se acorta el texto —«Deuda» en vez de
+«Con deuda pendiente»—, no se elimina.</p>
+
+<h3 class="sub-seccion">Chip de estado y chip de filtro no son el mismo componente</h3>
+<table class="tabla-contraste">
+  <thead><tr><th></th><th>Chip de estado</th><th>Chip de filtro</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Qué hace</strong></td><td>Informa</td><td class="motivo">Representa un filtro aplicado</td></tr>
+    <tr><td><strong>Se pulsa</strong></td><td>No</td><td class="motivo">Sí, para quitarlo</td></tr>
+    <tr><td><strong>Lleva ✕</strong></td><td>Nunca</td><td class="motivo">Siempre</td></tr>
+    <tr><td><strong>Etiqueta HTML</strong></td><td><code>&lt;span&gt;</code></td><td class="motivo"><code>&lt;button&gt;</code></td></tr>
+    <tr><td><strong>Estado</strong></td><td>Listo</td><td class="motivo">Sin construir. Entra con la tabla de datos, fase 5</td></tr>
+  </tbody>
+</table>
+<p class="pag-intro" style="margin-top:12px">Meter la ✕ en el chip de estado es el error más común:
+convierte una etiqueta informativa en algo que parece pulsable y no lo es.</p>
+
+<h3 class="sub-seccion">Tamaño y forma</h3>
+<div class="bloque">
+  <div class="muestra-fila">
+    <div class="mf">${chip('exito', 'Activo')}<span class="mf-et"><b>Normal</b><br>12px Medium · radio 3px</span></div>
+    <div class="mf"><span class="chip chip-exito chip-con-punto"><i></i>Activo</span><span class="mf-et"><b>Con punto</b><br>El punto acompaña, no sustituye</span></div>
+    <div class="mf">${chip('aviso', 'Parcial')}${chip('error', 'Deuda')}<span class="mf-et"><b>Varios</b><br>8px de separación</span></div>
+  </div>
+</div>
+<p class="pag-intro" style="margin-top:12px"><strong>Radio 3px, no cápsula.</strong> El redondeo
+completo se lee como algo pulsable, y este componente no se pulsa.</p>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>Fondo y texto <strong>siempre en pareja</strong>. Nunca un color de estado suelto.</td></tr>
+    <tr><td class="num">2</td><td><strong>El filete no se quita.</strong> Es lo único que hace visible el chip: el relleno da 1,00:1 sobre el encabezado.</td></tr>
+    <tr><td class="num">3</td><td>El texto lleva el significado. <strong>El color solo, nunca.</strong></td></tr>
+    <tr><td class="num">4</td><td>No se pulsa, no se cierra, no navega. <strong>Sin ✕.</strong></td></tr>
+    <tr><td class="num">5</td><td>Radio 3px. La cápsula parece un botón.</td></tr>
+    <tr><td class="num">6</td><td>Una palabra, dos como mucho. Si necesita explicación, va en la celda de al lado.</td></tr>
+    <tr><td class="num">7</td><td>Cuatro estados y ninguno más. Un quinto color obliga a aprenderse una leyenda.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+${verCodigo(
+  'Uso del componente',
+  `import { Chip } from '@ae/sistema';
+
+<Chip estado="exito">Activo</Chip>
+<Chip estado="aviso">Parcial</Chip>
+<Chip estado="error">Deuda</Chip>
+<Chip estado="info">En trámite</Chip>
+
+<Chip estado="exito" punto>Activo</Chip>`
+)}
+<table class="tabla-contraste" style="margin-top:14px">
+  <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>estado</code></td><td class="mono">exito · aviso · error · info</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Trae el par fondo/texto y su filete</td></tr>
+    <tr><td><code>children</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Sin texto no renderiza: el color solo no informa</td></tr>
+    <tr><td><code>punto</code></td><td class="mono">boolean</td><td class="mono">false</td><td class="motivo">Añade un punto antes del texto. Nunca lo sustituye</td></tr>
+  </tbody>
+</table>`;
+
 // ── Elementos aún no construidos ────────────────────────────────────────────
 
 const pendiente = (nombre, fase) => `
@@ -1588,7 +1728,7 @@ const CATALOGO = [
       { id: 'enlace', t: 'Enlace', estado: 'listo', c: pagEnlace },
       { id: 'campo', t: 'Campo de texto', estado: 'listo', c: pagCampo },
       { id: 'selector', t: 'Selector', estado: 'listo', c: pagSelector },
-      { id: 'chip', t: 'Chip de estado', estado: 'pendiente', c: pendiente('Chip de estado', 'fase 4') },
+      { id: 'chip', t: 'Chip de estado', estado: 'listo', c: pagChip },
       { id: 'tarjeta', t: 'Tarjeta', estado: 'pendiente', c: pendiente('Tarjeta', 'fase 4') },
       { id: 'tabla', t: 'Tabla de datos', estado: 'pendiente', c: pendiente('Tabla de datos', 'fase 5') },
       { id: 'paginacion', t: 'Paginación', estado: 'pendiente', c: pendiente('Paginación', 'fase 5') },
@@ -1745,6 +1885,27 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .btn-ic { display: inline-flex; align-items: center; gap: 7px; }
 .btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
+
+/* Chip de estado */
+.chip-sup { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 10px; }
+.chip-sup-caja { border: 1px solid var(--borde); border-radius: 6px; padding: 12px;
+  display: flex; flex-direction: column; gap: 8px; }
+.chip-sup-et code { font-size: 11px; color: var(--texto-secundario); }
+.chip-sup-fila { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip-sup-nota { font-size: 10px; color: var(--texto-pista); }
+.chip-sin-filete { border-left-color: transparent !important; }
+/* El punto suelto usa el ACENTO, no el relleno: con el relleno sería invisible
+   y el ejemplo no se entendería. Este es el patrón real que se ve por ahí, un
+   punto de color sin texto al lado. */
+.chip.chip-punto { width: 14px; height: 14px; border-radius: 50%; padding: 0;
+  border-left-width: 0; display: inline-block; flex: none; }
+.chip-punto.chip-exito { background: var(--exito-acento); }
+.chip-punto.chip-aviso { background: var(--aviso-acento); }
+.chip-punto.chip-error { background: var(--error-acento); }
+.chip-punto.chip-info  { background: var(--info-acento); }
+.chip-con-punto i { display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  background: currentColor; margin-right: 6px; vertical-align: middle; }
+.chip-fila-demo { display: flex; gap: 8px; align-items: center; }
 
 /* Selector con búsqueda */
 .sel { position: relative; }

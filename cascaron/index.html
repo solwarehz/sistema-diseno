@@ -314,6 +314,27 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
 
+/* Chip de estado */
+.chip-sup { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 10px; }
+.chip-sup-caja { border: 1px solid var(--borde); border-radius: 6px; padding: 12px;
+  display: flex; flex-direction: column; gap: 8px; }
+.chip-sup-et code { font-size: 11px; color: var(--texto-secundario); }
+.chip-sup-fila { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip-sup-nota { font-size: 10px; color: var(--texto-pista); }
+.chip-sin-filete { border-left-color: transparent !important; }
+/* El punto suelto usa el ACENTO, no el relleno: con el relleno sería invisible
+   y el ejemplo no se entendería. Este es el patrón real que se ve por ahí, un
+   punto de color sin texto al lado. */
+.chip.chip-punto { width: 14px; height: 14px; border-radius: 50%; padding: 0;
+  border-left-width: 0; display: inline-block; flex: none; }
+.chip-punto.chip-exito { background: var(--exito-acento); }
+.chip-punto.chip-aviso { background: var(--aviso-acento); }
+.chip-punto.chip-error { background: var(--error-acento); }
+.chip-punto.chip-info  { background: var(--info-acento); }
+.chip-con-punto i { display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  background: currentColor; margin-right: 6px; vertical-align: middle; }
+.chip-fila-demo { display: flex; gap: 8px; align-items: center; }
+
 /* Selector con búsqueda */
 .sel { position: relative; }
 .sel-caja { position: relative; display: flex; align-items: center; }
@@ -957,7 +978,7 @@ select.campo:disabled { opacity: .75; }
             <span class="nav-txt">Enlace</span></a><a class="nav-hijo" href="#campo" data-ir="campo" title="Campo de texto">
             <span class="nav-txt">Campo de texto</span></a><a class="nav-hijo" href="#selector" data-ir="selector" title="Selector">
             <span class="nav-txt">Selector</span></a><a class="nav-hijo" href="#chip" data-ir="chip" title="Chip de estado">
-            <span class="nav-txt">Chip de estado</span><span class="pt pt-pend" title="Sin construir"></span></a><a class="nav-hijo" href="#tarjeta" data-ir="tarjeta" title="Tarjeta">
+            <span class="nav-txt">Chip de estado</span></a><a class="nav-hijo" href="#tarjeta" data-ir="tarjeta" title="Tarjeta">
             <span class="nav-txt">Tarjeta</span><span class="pt pt-pend" title="Sin construir"></span></a><a class="nav-hijo" href="#tabla" data-ir="tabla" title="Tabla de datos">
             <span class="nav-txt">Tabla de datos</span><span class="pt pt-pend" title="Sin construir"></span></a><a class="nav-hijo" href="#paginacion" data-ir="paginacion" title="Paginación">
             <span class="nav-txt">Paginación</span><span class="pt pt-pend" title="Sin construir"></span></a><a class="nav-hijo" href="#estados" data-ir="estados" title="Estados de pantalla">
@@ -3278,13 +3299,167 @@ mirar</strong>, y por debajo la caja de búsqueda estorba.</p>
     </section><section class="pagina" id="pg-chip" hidden>
       <div class="pag-cab"><span class="pag-ruta">Elementos</span><h2>Chip de estado</h2></div>
       
-<div class="pendiente">
-  <div class="pendiente-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/></svg></div>
-  <h3>Chip de estado</h3>
-  <p>Todavía no está construido. Entra en la <strong>fase 4</strong>.</p>
-  <p class="pendiente-nota">El menú lo lista para que se vea el alcance completo del sistema,
-  no para fingir que existe.</p>
+<p class="pag-intro">Una etiqueta que dice <strong>en qué estado está una fila</strong>. No se
+pulsa, no se cierra y no navega: solo informa. Si hace alguna de esas tres cosas, no es un
+chip de estado.</p>
+
+<h3 class="sub-seccion">Los cuatro estados, siempre en pares</h3>
+<p class="seccion-sub">Fondo y texto salen juntos o no salen. <strong>Nunca un color de estado suelto.</strong></p>
+<div class="bloque">
+  <table class="tabla-contraste">
+    <thead><tr><th>Chip</th><th>Tokens</th><th class="num">Texto sobre fondo</th><th>Cuándo</th></tr></thead>
+    <tbody>
+      <tr><td><span class="chip chip-exito">Activo</span></td>
+          <td class="mono">exito-fondo · exito-texto · exito-acento</td>
+          <td class="num">8.12:1</td>
+          <td class="motivo">La matrícula está al día</td></tr><tr><td><span class="chip chip-aviso">Parcial</span></td>
+          <td class="mono">aviso-fondo · aviso-texto · aviso-acento</td>
+          <td class="num">8.04:1</td>
+          <td class="motivo">Falta completar algo, pero se puede seguir</td></tr><tr><td><span class="chip chip-error">Deuda</span></td>
+          <td class="mono">error-fondo · error-texto · error-acento</td>
+          <td class="num">7.82:1</td>
+          <td class="motivo">Hay algo que impide continuar</td></tr><tr><td><span class="chip chip-info">En trámite</span></td>
+          <td class="mono">info-fondo · info-texto · info-acento</td>
+          <td class="num">8.07:1</td>
+          <td class="motivo">Estado neutro, sin bueno ni malo</td></tr>
+    </tbody>
+  </table>
 </div>
+
+<h3 class="sub-seccion">El filete no es adorno: es lo que dibuja el chip</h3>
+<div class="aviso">
+  <strong>Medido sobre las cuatro superficies donde vive un chip:</strong> el relleno da entre
+  <strong>1,00 y 1,19:1</strong> contra el fondo. Sobre el encabezado de tabla mide exactamente
+  <strong>1,00:1</strong> — luminancia idéntica. El filete de acento da entre
+  <strong>4,18 y 4,84:1</strong> en todos los casos.
+  <br><br>
+  Sin filete, el chip no es un chip: es texto de color flotando en la fila. Por eso
+  <strong>el filete no se quita nunca</strong>, ni siquiera «para que se vea más limpio».
+</div>
+<div class="bloque">
+  <div class="chip-sup">
+    <div class="chip-sup-caja" style="background: var(--fondo-tarjeta)">
+          <span class="chip-sup-et"><code>fondo-tarjeta</code></span>
+          <div class="chip-sup-fila">
+            <span class="chip chip-exito">Activo</span><span class="chip chip-aviso">Parcial</span><span class="chip chip-error">Deuda</span><span class="chip chip-info">En trámite</span>
+          </div>
+          <div class="chip-sup-fila">
+            <span class="chip chip-exito chip-sin-filete">Activo</span><span class="chip chip-aviso chip-sin-filete">Parcial</span><span class="chip chip-error chip-sin-filete">Deuda</span><span class="chip chip-info chip-sin-filete">En trámite</span>
+          </div>
+          <span class="chip-sup-nota">arriba con filete · abajo sin él</span>
+        </div><div class="chip-sup-caja" style="background: var(--fondo-pagina)">
+          <span class="chip-sup-et"><code>fondo-pagina</code></span>
+          <div class="chip-sup-fila">
+            <span class="chip chip-exito">Activo</span><span class="chip chip-aviso">Parcial</span><span class="chip chip-error">Deuda</span><span class="chip chip-info">En trámite</span>
+          </div>
+          <div class="chip-sup-fila">
+            <span class="chip chip-exito chip-sin-filete">Activo</span><span class="chip chip-aviso chip-sin-filete">Parcial</span><span class="chip chip-error chip-sin-filete">Deuda</span><span class="chip chip-info chip-sin-filete">En trámite</span>
+          </div>
+          <span class="chip-sup-nota">arriba con filete · abajo sin él</span>
+        </div><div class="chip-sup-caja" style="background: var(--fondo-fila-hover)">
+          <span class="chip-sup-et"><code>fondo-fila-hover</code></span>
+          <div class="chip-sup-fila">
+            <span class="chip chip-exito">Activo</span><span class="chip chip-aviso">Parcial</span><span class="chip chip-error">Deuda</span><span class="chip chip-info">En trámite</span>
+          </div>
+          <div class="chip-sup-fila">
+            <span class="chip chip-exito chip-sin-filete">Activo</span><span class="chip chip-aviso chip-sin-filete">Parcial</span><span class="chip chip-error chip-sin-filete">Deuda</span><span class="chip chip-info chip-sin-filete">En trámite</span>
+          </div>
+          <span class="chip-sup-nota">arriba con filete · abajo sin él</span>
+        </div><div class="chip-sup-caja" style="background: var(--fondo-encabezado)">
+          <span class="chip-sup-et"><code>fondo-encabezado</code></span>
+          <div class="chip-sup-fila">
+            <span class="chip chip-exito">Activo</span><span class="chip chip-aviso">Parcial</span><span class="chip chip-error">Deuda</span><span class="chip chip-info">En trámite</span>
+          </div>
+          <div class="chip-sup-fila">
+            <span class="chip chip-exito chip-sin-filete">Activo</span><span class="chip chip-aviso chip-sin-filete">Parcial</span><span class="chip chip-error chip-sin-filete">Deuda</span><span class="chip chip-info chip-sin-filete">En trámite</span>
+          </div>
+          <span class="chip-sup-nota">arriba con filete · abajo sin él</span>
+        </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">El color nunca es el único portador</h3>
+<div class="bloque">
+  <div class="enl-comp">
+    <div class="enl-caja bien">
+      <div class="chip-fila-demo"><span class="chip chip-exito">Activo</span> <span class="chip chip-error">Deuda</span></div>
+      <span class="bien-et">El texto dice el estado. Quien no distingue el rojo del verde lo lee igual</span>
+    </div>
+    <div class="enl-caja mal">
+      <div class="chip-fila-demo"><span class="chip chip-exito chip-punto"></span> <span class="chip chip-error chip-punto"></span></div>
+      <span class="mal-et">Solo color. Un 8 % de los hombres no distingue estos dos</span>
+    </div>
+  </div>
+</div>
+<p class="pag-intro" style="margin-top:12px">Un punto de color <strong>puede acompañar</strong> al
+texto, nunca sustituirlo. Si la columna es estrecha, se acorta el texto —«Deuda» en vez de
+«Con deuda pendiente»—, no se elimina.</p>
+
+<h3 class="sub-seccion">Chip de estado y chip de filtro no son el mismo componente</h3>
+<table class="tabla-contraste">
+  <thead><tr><th></th><th>Chip de estado</th><th>Chip de filtro</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Qué hace</strong></td><td>Informa</td><td class="motivo">Representa un filtro aplicado</td></tr>
+    <tr><td><strong>Se pulsa</strong></td><td>No</td><td class="motivo">Sí, para quitarlo</td></tr>
+    <tr><td><strong>Lleva ✕</strong></td><td>Nunca</td><td class="motivo">Siempre</td></tr>
+    <tr><td><strong>Etiqueta HTML</strong></td><td><code>&lt;span&gt;</code></td><td class="motivo"><code>&lt;button&gt;</code></td></tr>
+    <tr><td><strong>Estado</strong></td><td>Listo</td><td class="motivo">Sin construir. Entra con la tabla de datos, fase 5</td></tr>
+  </tbody>
+</table>
+<p class="pag-intro" style="margin-top:12px">Meter la ✕ en el chip de estado es el error más común:
+convierte una etiqueta informativa en algo que parece pulsable y no lo es.</p>
+
+<h3 class="sub-seccion">Tamaño y forma</h3>
+<div class="bloque">
+  <div class="muestra-fila">
+    <div class="mf"><span class="chip chip-exito">Activo</span><span class="mf-et"><b>Normal</b><br>12px Medium · radio 3px</span></div>
+    <div class="mf"><span class="chip chip-exito chip-con-punto"><i></i>Activo</span><span class="mf-et"><b>Con punto</b><br>El punto acompaña, no sustituye</span></div>
+    <div class="mf"><span class="chip chip-aviso">Parcial</span><span class="chip chip-error">Deuda</span><span class="mf-et"><b>Varios</b><br>8px de separación</span></div>
+  </div>
+</div>
+<p class="pag-intro" style="margin-top:12px"><strong>Radio 3px, no cápsula.</strong> El redondeo
+completo se lee como algo pulsable, y este componente no se pulsa.</p>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>Fondo y texto <strong>siempre en pareja</strong>. Nunca un color de estado suelto.</td></tr>
+    <tr><td class="num">2</td><td><strong>El filete no se quita.</strong> Es lo único que hace visible el chip: el relleno da 1,00:1 sobre el encabezado.</td></tr>
+    <tr><td class="num">3</td><td>El texto lleva el significado. <strong>El color solo, nunca.</strong></td></tr>
+    <tr><td class="num">4</td><td>No se pulsa, no se cierra, no navega. <strong>Sin ✕.</strong></td></tr>
+    <tr><td class="num">5</td><td>Radio 3px. La cápsula parece un botón.</td></tr>
+    <tr><td class="num">6</td><td>Una palabra, dos como mucho. Si necesita explicación, va en la celda de al lado.</td></tr>
+    <tr><td class="num">7</td><td>Cuatro estados y ninguno más. Un quinto color obliga a aprenderse una leyenda.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+
+  <div class="cod-bloque">
+    <div class="cod-cab">
+      <button class="cod-ver" data-ver="cod6" aria-expanded="false" aria-controls="cod6">
+        <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
+      </button>
+      <span class="cod-tit">Uso del componente</span>
+      <button class="copiar" data-copiar-de="cod6">Copiar</button>
+    </div>
+    <pre class="cod-pre" id="cod6" hidden>import { Chip } from '@ae/sistema';
+
+&lt;Chip estado="exito"&gt;Activo&lt;/Chip&gt;
+&lt;Chip estado="aviso"&gt;Parcial&lt;/Chip&gt;
+&lt;Chip estado="error"&gt;Deuda&lt;/Chip&gt;
+&lt;Chip estado="info"&gt;En trámite&lt;/Chip&gt;
+
+&lt;Chip estado="exito" punto&gt;Activo&lt;/Chip&gt;</pre>
+  </div>
+<table class="tabla-contraste" style="margin-top:14px">
+  <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>estado</code></td><td class="mono">exito · aviso · error · info</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Trae el par fondo/texto y su filete</td></tr>
+    <tr><td><code>children</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Sin texto no renderiza: el color solo no informa</td></tr>
+    <tr><td><code>punto</code></td><td class="mono">boolean</td><td class="mono">false</td><td class="motivo">Añade un punto antes del texto. Nunca lo sustituye</td></tr>
+  </tbody>
+</table>
     </section><section class="pagina" id="pg-tarjeta" hidden>
       <div class="pag-cab"><span class="pag-ruta">Elementos</span><h2>Tarjeta</h2></div>
       
