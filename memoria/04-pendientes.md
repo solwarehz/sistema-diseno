@@ -158,3 +158,47 @@ El sistema define radio de tarjeta (6px) y de chip (3px). Los controles
 pequeños —botones de paginación, ítems de menú— usaban 4px y 5px. Se llevaron a
 6px para no inventar un valor, pero conviene decidir si un radio de control
 propio tiene sentido.
+
+---
+
+## Peticiones aceptadas de Control de Asistencia — 2026-08-08
+
+Respuesta razonada en
+[`../peticiones/2026-08-08-control-de-asistencia.md`](../peticiones/2026-08-08-control-de-asistencia.md).
+Orden de entrega decidido por plazo y por bloqueo, no por su prioridad.
+
+**1 · Iconografía** — el conjunto existe (24 iconos, retícula 24×24, trazo
+1,5px, `currentColor`) pero **no hay regla de tamaño**: conviven 13, 14, 15, 16,
+18 y 32px, y tres están fuera de la rejilla de 4. Falta además entregarlo como
+módulo consumible y publicar la regla de icono decorativo frente a significativo.
+Hallazgo propio, aparecido al auditar para responderles.
+
+**2 · Fallo de dibujado — estado SÉPTIMO**, no sustituye al «Error» que ya
+existe. Error es «la petición falló» y ofrece Reintentar; fallo de dibujado es
+«el componente reventó al pintarse» y ofrece Recargar, porque reintentar el mismo
+dibujado repite el fallo. Sin traza, sin nombre de excepción, sin ruta.
+
+**3 · Avatar** — cierra C-09. **Necesita tokens nuevos y versión nueva.** No se
+puede reutilizar la paleta de estado: un avatar rojo diría que la persona tiene
+un problema. Paleta de identidad propia, iniciales a 4,5:1 sobre todos los
+colores en los dos modos, asignación determinista por identificador estable
+—nunca por nombre, que cambia—. Unifica las tres implementaciones y los cuatro
+tamaños actuales (30·36·42·48; el 42 está fuera de rejilla).
+
+**4 · Conmutador de densidad** — los tokens ya existen (`fila-comoda` 34px,
+`fila-compacta` 28px), así que **no les bloquea**. Decisión tomada: la densidad
+es **global, no por tabla**; dos tablas con distinta altura de fila en la misma
+pantalla se leen como fallo, no como preferencia.
+
+### Recomendación repetida a los proyectos
+
+Tema, densidad y formato horario deben persistir en **el perfil del usuario**, no
+en `localStorage`. El catálogo usa `localStorage` porque no tiene sesión; un
+producto sí la tiene, y una preferencia que no sigue a la persona entre
+dispositivos está a medias.
+
+### Advertencia elevada, no resuelta
+
+Si el avatar va a mostrar fotos de **estudiantes menores de edad**, eso no es
+decisión de interfaz: es de dirección y con consentimiento por escrito. El
+sistema entrega el componente; a qué caras se aplica, no.

@@ -191,7 +191,7 @@ en rojo, reviértela.
 | Manual de aplicaciones web | ✅ `manual/MANUAL-APLICACIONES-WEB.md` |
 | Entrega ZIP | ✅ `node sistema/paquete/empaquetar.mjs` · 10 archivos, 354 KB |
 | Contenedor | ⏳ pendiente · Docker sin autorizar |
-| Iconografía | ⏳ §8.1 — decidido Lucide, sin implementar |
+| Iconografía | ⚠️ 24 iconos en uso, retícula 24×24, trazo 1,5px · **falta la regla**: hoy conviven 6 tamaños (13·14·15·16·18·32) y tres fuera de rejilla |
 | Modo oscuro | ⛔ calculado, **no aprobado**. No implementar |
 
 ### Correcciones aplicadas sobre MMI-DS v1.0.0
