@@ -20,7 +20,7 @@ import { readFileSync, writeFileSync, statSync, mkdirSync } from 'node:fs';
 import { deflateRawSync, crc32 } from 'node:zlib';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { VERSION } from '../tokens/fuente.mjs';
+import { VERSION, NORMA, primitivas, semanticos, marca, pares } from '../tokens/fuente.mjs';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 const RAIZ = join(AQUI, '..', '..');
@@ -141,8 +141,24 @@ function comprobarVersion() {
   }
 }
 
-export function empaquetar({ silencioso = false } = {}) {
+/**
+ * @param {object} opciones
+ * @param {Array}  opciones.inventario  El índice REAL del catálogo, tal cual lo
+ *   construye el generador. Es obligatorio: el LEEME tiene que enumerar lo que
+ *   el sistema cubre de verdad, y escribirlo a mano garantiza que un día diga
+ *   una cosa y el catálogo otra. Quien recibe la entrega se guía por el LEEME,
+ *   así que un LEEME incompleto es un sistema que parece más pequeño de lo que
+ *   es —y eso fue justo lo que reportó el área de sistemas—.
+ */
+export function empaquetar({ silencioso = false, inventario } = {}) {
   comprobarVersion();
+  if (!Array.isArray(inventario) || !inventario.length) {
+    console.error(`\n  Falta el inventario del catálogo.`);
+    console.error(`\n  El empaquetado no se ejecuta suelto: lo lanza el generador del`);
+    console.error(`  catálogo, que es quien sabe qué páginas existen. Usa:`);
+    console.error(`\n      node sistema/cascaron/generar-cascaron.mjs\n`);
+    process.exit(1);
+  }
   const entradas = [];
 
   for (const [origen, destino] of CONTENIDO) {
@@ -159,7 +175,7 @@ export function empaquetar({ silencioso = false } = {}) {
     entradas.push({ nombre: `${CARPETA}/${destino}`, datos, fecha: statSync(ruta).mtime });
   }
 
-  const leeme = Buffer.from(LEEME(), 'utf8');
+  const leeme = Buffer.from(LEEME(inventario), 'utf8');
   entradas.unshift({ nombre: `${CARPETA}/LEEME.md`, datos: leeme, fecha: new Date() });
 
   const zip = construirZip(entradas);
@@ -180,12 +196,50 @@ export function empaquetar({ silencioso = false } = {}) {
 
 // ── El LEEME que abre quien recibe la entrega ───────────────────────────────
 
-function LEEME() {
+function LEEME(inventario) {
+  const bloqueantes = pares.filter((p) => typeof p[2] === 'number').length;
+  const nEscalas = Object.keys(primitivas).length;
+  const nPaginas = inventario.reduce((n, g) => n + g.items.length, 0);
+
+  // El inventario se ESCRIBE desde el índice del catálogo, nunca a mano: una
+  // lista copiada envejece en cuanto se añade un elemento, y quien recibe la
+  // entrega no tiene forma de saber que está mirando una lista vieja.
+  const seccion = (g) => {
+    const filas = g.items
+      .map((i) => `| ${i.t} | ${i.estado === 'listo' ? 'construido' : 'pendiente'} |`)
+      .join('\n');
+    return `#### ${g.grupo} — ${g.items.length}\n\n| | |\n|---|---|\n${filas}\n`;
+  };
+
   return `# Sistema de diseño Colegio Albert Einstein — v${VERSION}
 
 Entrega para implementar el sistema en un proyecto nuevo.
 
 **Pila objetivo:** Next.js 14.2 · React 18.3 · TypeScript 5.6 · Tailwind 3.4.
+**Norma:** ${NORMA}.
+
+---
+
+## 0 · Qué cubre este sistema
+
+Esta lista se genera desde el índice del catálogo, así que **no puede quedarse
+vieja**: si el catálogo crece, crece aquí.
+
+| | |
+|---|---|
+| Páginas de catálogo | **${nPaginas}** |
+| Tokens semánticos | **${Object.keys(semanticos).length}** en dos modos |
+| Tokens de marca | ${Object.keys(marca).length} |
+| Escalas primitivas | ${nEscalas} |
+| Pares de contraste | ${pares.length} definidos → **${pares.length * 2} comprobaciones** en los dos modos |
+| De ellas, bloqueantes | **${bloqueantes * 2}** · 0 fallos |
+
+${inventario.map(seccion).join('\n')}
+Cada una de esas páginas está en \`catalogo/index.html\`: ábrelo y navégalas.
+Traen anatomía, estados, cuándo usar cada cosa y cuándo no.
+
+**El catálogo cubre más de lo que cabe en este archivo.** Si estás decidiendo
+cómo resolver una pantalla, la respuesta está en el catálogo, no aquí.
 
 ---
 

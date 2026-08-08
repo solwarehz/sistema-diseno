@@ -6341,5 +6341,14 @@ console.log(`  ${Object.keys(semanticos).length} semánticos · ${Object.keys(pr
 // La entrega se reconstruye SIEMPRE con el catálogo, y después de escribirlo
 // para que lleve dentro esta misma versión. Si fueran dos comandos separados,
 // el botón de descarga acabaría entregando un catálogo viejo sin que se note.
-const entrega = empaquetar({ silencioso: true });
+// El inventario del LEEME sale del MISMO índice que el menú, no de una lista
+// escrita a mano: si se copiara, envejecería en cuanto se añada un elemento y
+// quien recibe la entrega creería que el sistema es más pequeño de lo que es.
+const entrega = empaquetar({
+  silencioso: true,
+  inventario: CATALOGO.map((g) => ({
+    grupo: g.grupo,
+    items: g.items.map((i) => ({ t: i.t, estado: i.estado })),
+  })),
+});
 console.log(`  ${entrega.nombre}  ${(entrega.bytes / 1024).toFixed(0)} KB, ${entrega.archivos} archivos\n`);

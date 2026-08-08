@@ -346,3 +346,22 @@ ve distinto en pantalla.
 
 **Sigue pendiente y necesita autorización:** etiquetar `v1.6.0` y empujar la
 etiqueta. Es publicar hacia fuera, no una decisión de dentro de la carpeta.
+
+### El inventario del LEEME se genera, no se escribe
+
+El área de sistemas reportó que el LEEME **no decía todo lo que el sistema
+contiene**: al abrir el catálogo aparecían muchas más cosas de las que la
+entrega sugería. Tenían razón, y el problema de fondo no era que faltara texto
+sino **quién lo escribía**.
+
+Ahora el LEEME lleva una sección «Qué cubre este sistema» construida desde el
+**mismo índice que alimenta el menú del catálogo**: 35 páginas, 15 elementos, 12
+secciones de manual, y las cifras de tokens y contraste leídas de `fuente.mjs`.
+Si el catálogo crece, crece el LEEME. Una lista copiada a mano habría envejecido
+en el primer elemento nuevo, y quien recibe la entrega no tiene forma de saber
+que está mirando una lista vieja.
+
+**Consecuencia:** `empaquetar.mjs` ya no corre suelto. Exige el inventario y
+sale con código 1 si no lo recibe, indicando el comando correcto. Lo lanza el
+generador del catálogo, que es quien sabe qué páginas existen. Se quitó el
+script `empaquetar` de `package.json` para que no haya dos puertas.
