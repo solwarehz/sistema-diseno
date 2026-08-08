@@ -2420,12 +2420,13 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
 
 /* Paginación */
+/* Todo el bloque en rejilla de 4. */
 .pg-demo { display: flex; align-items: center; justify-content: space-between;
-  gap: 14px; flex-wrap: wrap; }
-.pg-demo-mini { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-.pg-variantes { display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap: 20px; }
-.pg-var { display: flex; flex-direction: column; gap: 9px; align-items: flex-start; }
-.pg-pos { font-size: 12px; color: var(--texto-secundario); padding: 0 8px; }
+  gap: 16px; flex-wrap: wrap; }
+.pg-demo-mini { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.pg-variantes { display: grid; grid-template-columns: repeat(auto-fit,minmax(252px,1fr)); gap: 20px; }
+.pg-var { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.pg-pos { font-size: 12px; color: var(--texto-secundario); padding: 4px 8px; }
 .pg-var .tb-p { cursor: default; }
 .pg-var .tb-p[aria-disabled='true'] { color: var(--accion-texto-desh); }
 
@@ -2512,13 +2513,17 @@ select.tb-f { padding-right: 26px; background-position: right 7px center; backgr
   gap: 12px; flex-wrap: wrap; margin-top: 12px; }
 .tb-rango { font-size: 12px; color: var(--texto-secundario); }
 .tb-pag { display: flex; gap: 4px; align-items: center; }
-.tb-p { min-width: 28px; height: 28px; padding: 0 7px; font: inherit; font-size: 12px;
+/* Rejilla de 4: padding 4px vertical y 8px horizontal. La altura fija de 28px
+   manda sobre el alto; el padding queda declarado y en rejilla igualmente, y
+   el centrado lo garantiza inline-flex y no el ajuste por defecto del botón. */
+.tb-p { min-width: 28px; height: 28px; padding: 4px 8px; font: inherit; font-size: 12px;
   cursor: pointer; background: var(--fondo-tarjeta); color: var(--texto-principal);
-  border: 1px solid var(--borde); border-radius: 4px; }
+  border: 1px solid var(--borde); border-radius: 4px;
+  display: inline-flex; align-items: center; justify-content: center; }
 .tb-p:hover:not(:disabled) { border-color: var(--accion); color: var(--accion); }
 .tb-p.activa { background: var(--accion); color: var(--accion-texto); border-color: var(--accion); }
-.tb-p:disabled { color: var(--accion-texto-desh); cursor: not-allowed; }
-.tb-elip { color: var(--texto-pista); padding: 0 2px; }
+.tb-p:disabled, .tb-p[aria-disabled='true'] { color: var(--accion-texto-desh); cursor: not-allowed; }
+.tb-elip { color: var(--texto-pista); padding: 4px; display: inline-flex; align-items: center; }
 
 /* Tabla con filas desplegables */
 .tb-desp .tb-th-txt { display: block; padding: 9px 12px; font-weight: 500; }
