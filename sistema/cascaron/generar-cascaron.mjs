@@ -3739,6 +3739,20 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 .fg-panel .cg { width: 100%; }
 .fg-panel .campo { width: 100%; min-width: 0; font-size: 16px; }
 #fg-btn.activo { color: var(--accion); background: var(--fondo-fila-hover); }
+/* LA MARCA EN MÓVIL. Con la lateral fuera de pantalla, la barra superior es lo
+   único que queda del marco: sin logo aquí la marca desaparece de toda la
+   aplicación.
+   Va el ESCUDO y no el lockup. Medido sobre los píxeles reales del PNG: el
+   lockup lleva texto #1D1D1B que da 1,08:1 sobre el fondo oscuro —invisible—,
+   mientras que el escudo es 62% blanco y da 15,55:1 en oscuro. Es el mismo
+   activo que ya usa la lateral plegada, así que no añade ni activo ni fallo.
+   Centrado en la PANTALLA, no entre los dos grupos de botones: el centro
+   óptico de una barra de navegación es el del dispositivo. A 44px de alto mide
+   36px de ancho y queda a 85px del grupo de la izquierda y a 55px del de la
+   derecha, así que no colisiona ni con los filtros ni con las acciones. */
+[data-vista='movil'] .top-marca { display: block; position: absolute;
+  left: 50%; transform: translateX(-50%); height: 44px; width: auto;
+  pointer-events: none; }
 [data-vista='movil'] .cat-cuerpo { padding: 16px 12px 48px; }
 [data-vista='movil'] .pag-cab h1 { font-size: 24px; }
 /* §3.5 — bajo 640px el cuerpo y el texto de interfaz suben a 18px. */
@@ -3759,6 +3773,11 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 [data-vista='movil'] .atajos,
 [data-vista='movil'] .mal-rejilla,
 [data-vista='movil'] .enl-comp { grid-template-columns: 1fr; }
+/* La comparación mal/bien es una rejilla DENTRO de otra. La de fuera colapsaba
+   y la de dentro no, así que en 390px sus dos pistas quedaban a 173px con un
+   campo de 189px encima. Apiladas, el divisor pasa de vertical a horizontal. */
+[data-vista='movil'] .mal-par { grid-template-columns: 1fr; }
+[data-vista='movil'] .mal-caja.bien { border-left: 0; border-top: 1px solid var(--borde); }
 [data-vista='movil'] .anatomia,
 [data-vista='movil'] .sel-demo-fila,
 [data-vista='movil'] .fc-cal-cuerpo { grid-template-columns: 1fr; }
@@ -4448,8 +4467,16 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
 /* Altura fija y COMPARTIDA con la banda de marca: así la línea divisoria del
    header y el inicio del menú caen en la misma y. 64px, en rejilla. */
-.top { display: flex; align-items: center; gap: 12px; padding: 8px 16px;
-  height: 64px; background: var(--fondo-tarjeta); border-bottom: 1px solid var(--borde); }
+/* flex:none no es adorno: sin él la barra es un elemento flexible que CEDE
+   cuando el contenido desborda, y en móvil se encogía de 64px a 51px. La
+   altura declarada tiene que cumplirse o la línea divisoria deja de caer donde
+   dice el comentario de arriba. */
+.top { display: flex; align-items: center; gap: 12px; padding: 8px 16px; position: relative;
+  height: 64px; flex: none;
+  background: var(--fondo-tarjeta); border-bottom: 1px solid var(--borde); }
+/* La marca de la barra solo existe en móvil: en escritorio ya la lleva la
+   banda de la lateral y repetirla sería marca duplicada en pantalla. */
+.top-marca { display: none; }
 .top-plegar { background: transparent; border: 0; cursor: pointer; padding: 4px;
   border-radius: 6px; color: var(--texto-secundario); display: grid; place-items: center; }
 .top-plegar:hover { background: var(--fondo-encabezado); color: var(--texto-principal); }
@@ -4713,7 +4740,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   border: 1px solid var(--borde); border-radius: 6px; overflow: hidden; background: var(--fondo-tarjeta); }
 /* Las etiquetas van EN FLUJO, no posicionadas al fondo. En absoluto, al ocupar
    dos o tres líneas en 390px se montaban encima del contenido. */
-.mal-caja { padding: 16px 12px; display: flex; flex-direction: column;
+/* min-width:0 porque el valor por defecto de un elemento de rejilla es auto, y
+   auto le impide encoger por debajo de su contenido: un campo de ejemplo de
+   189px ensanchaba su pista y sacaba la caja del marco. */
+.mal-caja { padding: 16px 12px; display: flex; flex-direction: column; min-width: 0;
   align-items: center; justify-content: space-between; gap: 12px; min-height: 92px; }
 .mal-caja.mal { background: var(--error-fondo); }
 .mal-caja.bien { background: var(--exito-fondo); border-left: 1px solid var(--borde); }
@@ -4781,6 +4811,9 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                 aria-controls="fg-panel" aria-haspopup="true" aria-label="Filtros">${ICO_FILTRO}</button>
         <div class="fg-panel" id="fg-panel" hidden></div>
       </div>
+      ${ESCUDO_PNG
+        ? `<img class="top-marca" src="${ESCUDO_PNG}" alt="Colegio Albert Einstein">`
+        : ''}
       <div class="top-acciones">
         <button class="top-btn" aria-label="Mensajes">${ICONOS.sobre}</button>
         <button class="top-btn" aria-label="Notificaciones">${ICONOS.campana}<span class="badge">1</span></button>
@@ -5692,8 +5725,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     });
     // Vista móvil: solo afecta al catálogo, no al sistema.
     var movil = document.getElementById('us-movil');
-    movil.addEventListener('click', function () {
-      var on = movil.getAttribute('aria-checked') !== 'true';
+    // Cambiar de vista NO es poner un atributo: muda la zona de avisos, muda
+    // los filtros globales, pliega la lateral y repinta las paginaciones. Por
+    // eso vive en una función y no dentro del manejador del clic. Restaurar la
+    // vista guardada tiene que hacer EXACTAMENTE lo mismo, y si el trabajo
+    // estuviera duplicado las dos copias acabarían divergiendo —es el mismo
+    // error que ya costó la paginación de la tabla—.
+    function aplicarVista(on, avisar) {
       movil.setAttribute('aria-checked', String(on));
       document.documentElement.toggleAttribute('data-vista', false);
       if (on) document.documentElement.setAttribute('data-vista', 'movil');
@@ -5719,12 +5757,23 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       (window.__paginaciones || []).forEach(function (p) { p.refrescar(); });
       document.getElementById('plegar-cat')
         .setAttribute('aria-label', on ? 'Abrir menú' : 'Plegar menú');
-      cerrar();
-      if (window.avisarDemo) {
+      if (avisar && window.avisarDemo) {
         window.avisarDemo('info', on
           ? 'Vista móvil: 390px. El menú se abre con el botón de arriba a la izquierda'
           : 'Vista de escritorio');
       }
+    }
+    // La restaura el arranque, al final del script: ver «Vista guardada».
+    window.__aplicarVista = aplicarVista;
+
+    movil.addEventListener('click', function () {
+      var on = movil.getAttribute('aria-checked') !== 'true';
+      aplicarVista(on, true);
+      // La vista sobrevive a la recarga, igual que el tema. Al revisar el
+      // catálogo en móvil se recarga constantemente, y volver a escritorio en
+      // cada F5 obligaba a rehacer el camino entero.
+      try { localStorage.setItem('mmi-vista', on ? 'movil' : 'escritorio'); } catch (e) {}
+      cerrar();
     });
 
     menu.querySelector('.us-salir').addEventListener('click', function () {
@@ -6010,6 +6059,17 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       aplicar(raiz.getAttribute('data-tema') === 'oscuro' ? 'claro' : 'oscuro');
     });
   });
+
+  // ── Vista guardada ────────────────────────────────────────────────────────
+  // Va AL FINAL a propósito. Aplicar la vista muda la zona de avisos y repinta
+  // las paginaciones, y ninguna de las dos existe todavía cuando se define el
+  // menú de usuario. Restaurarla antes dejaría media aplicación en la otra
+  // vista: barra de móvil con paginación de escritorio.
+  try {
+    if (localStorage.getItem('mmi-vista') === 'movil' && window.__aplicarVista) {
+      window.__aplicarVista(true, false);
+    }
+  } catch (e) {}
 })();
 </script>
 </body>
