@@ -3177,12 +3177,14 @@ const menuCatalogo = CATALOGO.map(
       <span class="nav-chev">${ICONOS.chevron}</span>
     </button>
     <div class="nav-hijos" id="grupo-${n}">
+      <div class="nav-hijos-in">
       ${g.items
         .map(
           (i) => `<a class="nav-hijo" href="#${i.id}" data-ir="${i.id}" title="${i.t}">
             <span class="nav-txt">${i.t}</span>${PUNTO[i.estado]}</a>`
         )
         .join('')}
+      </div>
     </div>
   </div>`
 ).join('');
@@ -3257,14 +3259,28 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .app-cascaron .app-main { min-height: 100vh; }
 .top-cascaron { position: sticky; top: 0; z-index: 20; }
 
-/* Grupos desplegables — icono + nombre + chevron */
-.nav-grupo { margin-bottom: 4px; }
+/* Grupos desplegables — icono + nombre + chevron.
+   Comprimidos por defecto. Se abren al pasar el ratón, y el grupo de la página
+   en curso queda FIJADO: no se cierra al salir el cursor. Un menú que se cierra
+   bajo la página en la que estás obliga a buscarla otra vez. */
+/* Sin margen propio: la separación la da el gap del contenedor. Con las dos
+   cosas se contaba doble y los grupos quedaban a 8px. */
+.nav-grupo { margin-bottom: 0; }
 .nav-grupo-tit { width: 100%; background: transparent; border: 0; cursor: pointer;
   font: inherit; text-align: left; }
-.nav-grupo-tit .nav-chev .ic { transition: transform .15s; }
-.nav-grupo[data-cerrado] .nav-chev .ic { transform: rotate(-90deg); }
-.nav-grupo[data-cerrado] .nav-hijos { display: none; }
-.nav-hijos { padding: 4px 0 4px 0; }
+.nav-grupo-tit .nav-chev .ic { transition: transform .18s ease; transform: rotate(-90deg); }
+.nav-grupo.abierto .nav-chev .ic { transform: rotate(0deg); }
+/* grid-template-rows de 0fr a 1fr: lo único que anima hasta altura automática. */
+.nav-hijos { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
+.nav-grupo.abierto .nav-hijos { grid-template-rows: 1fr; }
+/* El padding va en los hijos, no en la caja: el padding de la caja NO lo
+   recorta overflow, y un grupo cerrado se quedaba ocupando 8px. */
+.nav-hijos-in { overflow: hidden; }
+.nav-hijos-in > .nav-hijo:first-child { margin-top: 4px; }
+.nav-hijos-in > .nav-hijo:last-child { margin-bottom: 8px; }
+/* El grupo fijado se marca: dice por qué está abierto mientras los demás no. */
+.nav-grupo.fijo > .nav-grupo-tit { color: var(--marco-acento); opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .nav-hijos { transition: none; } }
 .nav-hijo { display: flex; align-items: center; justify-content: space-between;
   gap: 8px; padding: 4px 8px 4px 40px; border-radius: 6px; text-decoration: none;
   color: var(--marco-texto); font-size: 13px; opacity: .78; white-space: nowrap; }
@@ -4580,14 +4596,36 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   var paginas = document.querySelectorAll('.pagina');
   var enlaces = document.querySelectorAll('.nav-hijo');
 
-  // Chevron de grupo: despliega y pliega, como en la aplicación.
+  // Los grupos nacen comprimidos. Se abren al pasar el ratón y se cierran al
+  // salir, salvo el que está FIJADO, que es el de la página en curso.
+  var grupos = document.querySelectorAll('.nav-grupo');
+
+  function sincronizarGrupo(g) {
+    var abierto = g.classList.contains('fijo') || g.classList.contains('hover');
+    g.classList.toggle('abierto', abierto);
+    g.querySelector('.nav-grupo-tit').setAttribute('aria-expanded', String(abierto));
+  }
+
+  grupos.forEach(function (g) {
+    g.addEventListener('mouseenter', function () { g.classList.add('hover'); sincronizarGrupo(g); });
+    g.addEventListener('mouseleave', function () { g.classList.remove('hover'); sincronizarGrupo(g); });
+    // Con teclado no hay ratón: al enfocar dentro, se abre igual.
+    g.addEventListener('focusin', function () { g.classList.add('hover'); sincronizarGrupo(g); });
+    g.addEventListener('focusout', function (e) {
+      if (!g.contains(e.relatedTarget)) { g.classList.remove('hover'); sincronizarGrupo(g); }
+    });
+    sincronizarGrupo(g);
+  });
+
+  // El título del grupo fija o suelta. Fijar es la forma de dejarlo abierto
+  // sin tener el cursor encima.
   document.querySelectorAll('[data-desplegar]').forEach(function (b) {
     b.addEventListener('click', function () {
       var g = b.closest('.nav-grupo');
-      var cerrado = g.hasAttribute('data-cerrado');
-      if (cerrado) g.removeAttribute('data-cerrado');
-      else g.setAttribute('data-cerrado', '');
-      b.setAttribute('aria-expanded', String(cerrado));
+      var yaFijo = g.classList.contains('fijo');
+      grupos.forEach(function (o) { o.classList.remove('fijo'); sincronizarGrupo(o); });
+      if (!yaFijo) g.classList.add('fijo');
+      sincronizarGrupo(g);
     });
   });
 
@@ -4609,8 +4647,15 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     enlaces.forEach(function (a) {
       var act = a.getAttribute('data-ir') === id;
       a.classList.toggle('activo', act);
-      // Si el elegido está en un grupo plegado, se despliega solo.
-      if (act) a.closest('.nav-grupo').removeAttribute('data-cerrado');
+    });
+    // El grupo de la página en curso queda FIJADO: se queda abierto aunque el
+    // cursor se vaya. Los demás vuelven a comprimirse.
+    var activo = document.querySelector('.nav-hijo.activo');
+    document.querySelectorAll('.nav-grupo').forEach(function (g) {
+      g.classList.toggle('fijo', !!activo && g.contains(activo));
+      var ab = g.classList.contains('fijo') || g.classList.contains('hover');
+      g.classList.toggle('abierto', ab);
+      g.querySelector('.nav-grupo-tit').setAttribute('aria-expanded', String(ab));
     });
     if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
     document.querySelector('.cat-cuerpo').scrollTop = 0;
