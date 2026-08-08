@@ -299,10 +299,15 @@ code { font-family: 'IBM Plex Mono', monospace; }
 
 .cat-cuerpo { flex: 1; min-width: 0; padding: 24px 32px 80px; max-width: 1120px;
   background: var(--fondo-pagina); }
+.migas { display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+  font-size: 12px; margin-bottom: 10px; }
+.migas a { color: var(--enlace); text-decoration: none; }
+.migas a:hover { text-decoration: underline; }
+.migas-sep { color: var(--texto-pista); }
+.migas-grupo { color: var(--texto-secundario); }
+.migas-actual { color: var(--texto-principal); font-weight: 500; }
 .pag-cab { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 2px solid var(--borde); }
-.pag-ruta { font-size: 11px; font-weight: 500; text-transform: uppercase;
-  letter-spacing: .08em; color: var(--texto-secundario); }
-.pag-cab h2 { font-size: 28px; font-weight: 600; margin-top: 3px; }
+.pag-cab h1 { font-size: 28px; font-weight: 600; }
 .pag-intro { font-size: 15px; color: var(--texto-secundario); max-width: 90ch; margin: 0 0 20px; }
 
 .bloque { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
@@ -1140,7 +1145,7 @@ select.campo:disabled { opacity: .75; }
       <a class="nav-hijo" href="#color" data-ir="color" title="Color">
             <span class="nav-txt">Color</span></a><a class="nav-hijo" href="#tipografia" data-ir="tipografia" title="Tipografía">
             <span class="nav-txt">Tipografía</span></a><a class="nav-hijo" href="#espaciado" data-ir="espaciado" title="Espaciado">
-            <span class="nav-txt">Espaciado</span><span class="pt pt-decidir" title="Esperando tu decisión"></span></a><a class="nav-hijo" href="#iconos" data-ir="iconos" title="Iconos">
+            <span class="nav-txt">Espaciado</span></a><a class="nav-hijo" href="#iconos" data-ir="iconos" title="Iconos">
             <span class="nav-txt">Iconos</span></a>
     </div>
   </div>
@@ -1208,10 +1213,6 @@ select.campo:disabled { opacity: .75; }
             <span class="nav-txt">Contrastes</span></a>
     </div>
   </div></nav>
-    <div class="lat-leyenda">
-      <div><span class="pt pt-decidir"></span> esperando tu decisión</div>
-      <div><span class="pt pt-pend"></span> sin construir</div>
-    </div>
     <div class="lat-usuario">
       <span class="lat-av">JP</span>
       <div class="lat-user-txt">
@@ -1243,7 +1244,14 @@ select.campo:disabled { opacity: .75; }
       </div>
     </div>
     <main class="cat-cuerpo"><section class="pagina" id="pg-inicio" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Inicio</span><h2>Vista general</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Inicio</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Vista general</span>
+      </nav>
+      <div class="pag-cab"><h1>Vista general</h1></div>
       
 <p class="pag-intro">Vista general del sistema. Todo lo que hay, de una vez.
 El menú de la izquierda lo abre por partes.</p>
@@ -1253,12 +1261,6 @@ El menú de la izquierda lo abre por partes.</p>
   <div class="est"><b>86</b><span>pares verificados</span></div>
   <div class="est est-ok"><b>0</b><span>fallos de contraste</span></div>
   <div class="est"><b>2</b><span>modos, claro y oscuro</span></div>
-</div>
-
-<div class="aviso">
-  <strong>Fase 1 aprobada</strong> — color, esquema y casos de uso.
-  <strong>Fase 2 en curso</strong> — tipografía lista; falta que decidas el
-  <a href="#" data-ir="espaciado" class="enlace">tamaño de los botones</a>.
 </div>
 
 <h3 class="sub-seccion">Color</h3>
@@ -1795,12 +1797,19 @@ El menú de la izquierda lo abre por partes.</p>
   <a href="#boton" data-ir="boton" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
     <span><strong>Botón</strong>Variantes, estados y código para copiar</span></a>
   <a href="#espaciado" data-ir="espaciado" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
-    <span><strong>Espaciado</strong>Las cinco opciones de tamaño, a decidir</span></a>
+    <span><strong>Espaciado</strong>Rejilla de 4px y tamaños de control</span></a>
   <a href="#contraste" data-ir="contraste" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg></span>
     <span><strong>Contrastes</strong>Los 86 pares medidos</span></a>
 </div>
     </section><section class="pagina" id="pg-color" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Fundamentos</span><h2>Color</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Fundamentos</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Color</span>
+      </nav>
+      <div class="pag-cab"><h1>Color</h1></div>
       
 <p class="pag-intro">44 tokens semánticos sobre 4 escalas primitivas.
 Es lo único que un componente consume. <strong>Las primitivas están prohibidas dentro de un componente.</strong></p>
@@ -2356,10 +2365,17 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
   </div>
 </div>
     </section><section class="pagina" id="pg-tipografia" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Fundamentos</span><h2>Tipografía</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Fundamentos</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Tipografía</span>
+      </nav>
+      <div class="pag-cab"><h1>Tipografía</h1></div>
       
 <div class="tipo-nota">
-  <strong>Verificado en esta página:</strong> los diez dígitos de IBM Plex Sans miden
+  <strong>Cifras tabulares:</strong> los diez dígitos de IBM Plex Sans miden
   <strong>exactamente 12px a 20px de cuerpo</strong>, sin activar <code>tnum</code>.
   Las columnas numéricas se alinean solas. Con tablas de doscientas filas eso no es
   un detalle estético.
@@ -2598,19 +2614,18 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
   </tbody>
 </table>
 
-<div class="aviso" style="margin-top:22px">
-  <strong>Pendiente de decisión tuya:</strong> hoy el cascarón carga IBM Plex desde
-  Google Fonts. Para producción hay que <strong>descargar los seis cortes y servirlos
-  desde el proyecto</strong> — son unos 600 KB dentro de la carpeta. Gana en privacidad
-  (Google deja de ver quién abre tu sistema) y en velocidad. Necesito que lo autorices
-  porque implica descargar archivos.
-</div>
     </section><section class="pagina" id="pg-espaciado" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Fundamentos</span><h2>Espaciado</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Fundamentos</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Espaciado</span>
+      </nav>
+      <div class="pag-cab"><h1>Espaciado</h1></div>
       
 <div class="aviso">
-  <strong>Cambio de método que propongo.</strong> No declarar padding vertical en los
-  controles. Se fija la <strong>altura</strong> desde la rejilla y el texto se centra.
+  <strong>Los controles no declaran padding vertical.</strong> Se fija la <strong>altura</strong> desde la rejilla y el texto se centra.
   El padding solo gobierna el horizontal.
   <br><br>
   Por qué: con padding vertical, la altura del botón depende de la interlínea de la
@@ -2620,8 +2635,8 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
   los controles de una fila casan solos.
 </div>
 
-<h3 class="sub-seccion">Compara y elige</h3>
-<p class="seccion-sub">Cada opción con botones, campo y selector, y debajo la tabla real para ver si pesan o no al lado de las filas.</p>
+<h3 class="sub-seccion">Tamaños</h3>
+<p class="seccion-sub">Cada tamaño con sus controles y la tabla debajo, para verlos en proporción.</p>
 <div class="opciones">
   <div class="op">
     <div class="op-cab">
@@ -2759,8 +2774,8 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
   <div class="rej"><div class="rej-barra" style="width:4px"></div><span>4</span></div><div class="rej"><div class="rej-barra" style="width:8px"></div><span>8</span></div><div class="rej"><div class="rej-barra" style="width:12px"></div><span>12</span></div><div class="rej"><div class="rej-barra" style="width:16px"></div><span>16</span></div><div class="rej"><div class="rej-barra" style="width:20px"></div><span>20</span></div><div class="rej"><div class="rej-barra" style="width:24px"></div><span>24</span></div><div class="rej"><div class="rej-barra" style="width:32px"></div><span>32</span></div><div class="rej"><div class="rej-barra" style="width:40px"></div><span>40</span></div><div class="rej"><div class="rej-barra" style="width:48px"></div><span>48</span></div><div class="rej"><div class="rej-barra" style="width:56px"></div><span>56</span></div><div class="rej"><div class="rej-barra" style="width:64px"></div><span>64</span></div>
 </div>
 
-<h3 class="sub-seccion">Tres valores del sistema se salen de la rejilla</h3>
-<p class="seccion-sub">Si adoptamos múltiplos de 4, estos hay que corregirlos. Los tres vienen del documento.</p>
+<h3 class="sub-seccion">Valores fuera de rejilla</h3>
+<p class="seccion-sub">Tres medidas heredadas no son múltiplo de 4.</p>
 <table class="tabla-contraste">
   <thead><tr><th>Valor</th><th class="num">Hoy</th><th class="num">Propuesto</th><th>Consecuencia</th></tr></thead>
   <tbody>
@@ -2771,7 +2786,14 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
   </tbody>
 </table>
     </section><section class="pagina" id="pg-iconos" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Fundamentos</span><h2>Iconos</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Fundamentos</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Iconos</span>
+      </nav>
+      <div class="pag-cab"><h1>Iconos</h1></div>
       
 <p class="pag-intro">Lucide, trazo <strong>1,5px a 18px</strong>, alineado con texto de 15px.
 Heredan <code>currentColor</code> — que es exactamente lo que el emoji no hace.</p>
@@ -2789,7 +2811,14 @@ Heredan <code>currentColor</code> — que es exactamente lo que el emoji no hace
 </div>
 <p class="pag-intro" style="margin-top:14px">Es el tercer defecto real que el documento reporta en §1.3, y el único que seguía sin resolver.</p>
     </section><section class="pagina" id="pg-boton" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Elementos</span><h2>Botón</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Elementos</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Botón</span>
+      </nav>
+      <div class="pag-cab"><h1>Botón</h1></div>
       
 <p class="pag-intro">Cinco variantes y cuatro tamaños. <strong>Una sola acción principal
 por pantalla</strong>: si hay dos botones rellenos compitiendo, uno de los dos no era
@@ -2955,10 +2984,15 @@ principal.</p>
 &lt;/div&gt;</pre>
   </div>
 
-<h3 class="sub-seccion">Tamaño — pendiente de decisión</h3>
-<p class="seccion-sub">Es lo que estamos decidiendo. Está en <a href="#" data-ir="espaciado" class="enlace">Fundamentos → Espaciado</a>.</p>
     </section><section class="pagina" id="pg-enlace" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Elementos</span><h2>Enlace</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Elementos</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Enlace</span>
+      </nav>
+      <div class="pag-cab"><h1>Enlace</h1></div>
       
 <p class="pag-intro">Un enlace <strong>lleva a otro sitio</strong>. Un botón <strong>hace algo
 donde estás</strong>. Elegir mal no es un detalle de estilo: cambia el teclado, el menú
@@ -2979,7 +3013,7 @@ contextual, el lector de pantalla y si «abrir en pestaña nueva» funciona.</p>
 
 <h3 class="sub-seccion">El subrayado no es decoración: es obligatorio en texto corrido</h3>
 <div class="aviso">
-  <strong>Medido en este sistema:</strong> <code>enlace</code> contra <code>texto-principal</code>
+  <code>enlace</code> contra <code>texto-principal</code>
   da <strong>2,48:1</strong> en claro y <strong>1,91:1</strong> en oscuro. WCAG 1.4.1 pide 3:1
   para distinguir por color solo. No llega — <strong>y no hay ningún azul que llegue sin dejar
   de ser azul</strong>. Por eso el enlace dentro de un párrafo va subrayado siempre.
@@ -3082,7 +3116,14 @@ contextual, el lector de pantalla y si «abrir en pestaña nueva» funciona.</p>
   </tbody>
 </table>
     </section><section class="pagina" id="pg-campo" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Elementos</span><h2>Campo de texto</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Elementos</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Campo de texto</span>
+      </nav>
+      <div class="pag-cab"><h1>Campo de texto</h1></div>
       
 <p class="pag-intro">El sitio donde el sistema pide algo. <strong>El formulario trabaja, no
 enseña</strong>: si un campo necesita un párrafo para entenderse, el problema es el campo.</p>
@@ -3307,7 +3348,14 @@ Para un dato que la persona debe <em>ver</em> pero no cambiar, va <strong>solo l
   </tbody>
 </table>
     </section><section class="pagina" id="pg-selector" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Elementos</span><h2>Selector</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Elementos</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Selector</span>
+      </nav>
+      <div class="pag-cab"><h1>Selector</h1></div>
       
 <p class="pag-intro">Dos componentes distintos con el mismo aspecto. La diferencia no es
 estética: <strong>por encima de cierto número de opciones, buscar es más rápido que
@@ -3356,13 +3404,12 @@ mirar</strong>, y por debajo la caja de búsqueda estorba.</p>
       <span class="cg-ayuda" data-sel-conteo>18 apoderados</span>
     </div>
     <div class="sel-notas">
-      <p><strong>Prueba a escribir <code>perez</code> sin tilde.</strong> Encuentra
-      «Pérez Salazar, Ana».</p>
+      <p><strong>La búsqueda ignora tildes y mayúsculas.</strong> <code>perez</code> encuentra «Pérez Salazar, Ana».</p>
       <p>Eso no es un detalle de la caja de búsqueda: en producción lo hacen las
       extensiones <code>unaccent</code> y <code>pg_trgm</code> de PostgreSQL.
       <strong>Es una promesa de interfaz.</strong> Si otro buscador se monta sin
       esas extensiones, el componente se comporta distinto y nadie sabrá por qué.</p>
-      <p>Prueba también <code>ñ</code>, <code>quinones</code> o un texto que no exista.</p>
+      <p>Lo mismo con <code>ñ</code> y <code>quinones</code>.</p>
     </div>
   </div>
 </div>
@@ -3475,7 +3522,14 @@ mirar</strong>, y por debajo la caja de búsqueda estorba.</p>
   </tbody>
 </table>
     </section><section class="pagina" id="pg-chip" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Elementos</span><h2>Chip de estado</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Elementos</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Chip de estado</span>
+      </nav>
+      <div class="pag-cab"><h1>Chip de estado</h1></div>
       
 <p class="pag-intro">Una etiqueta que dice <strong>en qué estado está una fila</strong>. No se
 pulsa, no se cierra y no navega: solo informa. Si hace alguna de esas tres cosas, no es un
@@ -3506,7 +3560,7 @@ chip de estado.</p>
 
 <h3 class="sub-seccion">El filete no es adorno: es lo que dibuja el chip</h3>
 <div class="aviso">
-  <strong>Medido sobre las cuatro superficies donde vive un chip:</strong> el relleno da entre
+  Sobre las cuatro superficies donde vive un chip, el relleno da entre
   <strong>1,00 y 1,19:1</strong> contra el fondo. Sobre el encabezado de tabla mide exactamente
   <strong>1,00:1</strong> — luminancia idéntica. El filete de acento da entre
   <strong>4,18 y 4,84:1</strong> en todos los casos.
@@ -3639,14 +3693,21 @@ completo se lee como algo pulsable, y este componente no se pulsa.</p>
   </tbody>
 </table>
     </section><section class="pagina" id="pg-tarjeta" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Elementos</span><h2>Tarjeta</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Elementos</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Tarjeta</span>
+      </nav>
+      <div class="pag-cab"><h1>Tarjeta</h1></div>
       
 <p class="pag-intro">Dos componentes con el mismo nombre y trabajos distintos. La
 <strong>tarjeta de persona</strong> se lee en bloque, de un vistazo y a decenas. La
 <strong>tarjeta normal</strong> agrupa contenido en una pantalla.</p>
 
 <h3 class="sub-seccion">Tarjeta de persona — control de asistencia</h3>
-<p class="seccion-sub">Foto o iniciales, apellidos y nombre, cargo, estado y hora de marca. Pensada para mirar treinta a la vez y saber quién falta <strong>sin leer una por una</strong>.</p>
+<p class="seccion-sub">Foto o iniciales, apellidos y nombre, cargo, estado y hora de marca. Para mirar treinta a la vez y saber quién falta <strong>sin leer una por una</strong>.</p>
 <div class="bloque">
   <div class="tp-rejilla">
   <article class="tp tp-exito">
@@ -3919,11 +3980,18 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 &lt;Tarjeta href="/estudiantes/71234567" titulo="Quispe Mamani, Ana" /&gt;</pre>
   </div>
     </section><section class="pagina" id="pg-tabla" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Elementos</span><h2>Tabla de datos</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Elementos</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Tabla de datos</span>
+      </nav>
+      <div class="pag-cab"><h1>Tabla de datos</h1></div>
       
 <p class="pag-intro">Es el <strong>80 % de la superficie del sistema</strong>. Todo lo demás se
-mira un rato; esto se mira seis horas. La tabla de abajo <strong>funciona</strong>: ordena,
-pagina, oculta columnas, recuerda tu configuración y descarga CSV.</p>
+mira un rato; esto se mira seis horas. Ordena, pagina, oculta columnas, recuerda la
+configuración y descarga CSV.</p>
 
 <div class="bloque">
   <div class="tb-barra">
@@ -4256,27 +4324,27 @@ pagina, oculta columnas, recuerda tu configuración y descarga CSV.</p>
   </tbody>
 </table>
 
-<h3 class="sub-seccion">Decisiones que tomé, y por qué</h3>
+<h3 class="sub-seccion">Comportamiento</h3>
 <table class="tabla-contraste">
-  <thead><tr><th>Decisión</th><th>Razón</th></tr></thead>
+  <thead><tr><th>Regla</th><th>Por qué</th></tr></thead>
   <tbody>
-    <tr><td><strong>10 por defecto</strong>, luego 25, 50 y Todas</td><td class="motivo">10 cabe sin desplazar en un portátil. Quien necesita más lo sube una vez y se le recuerda</td></tr>
+    <tr><td><strong>10 por defecto</strong>, luego 25, 50 y Todas</td><td class="motivo">10 cabe sin desplazar en un portátil. Quien necesita más lo sube una vez y queda recordado</td></tr>
     <tr><td><strong>«Todas» avisa por encima de 500 filas</strong></td><td class="motivo">Pintar miles de filas congela el navegador. El aviso llega antes que el bloqueo</td></tr>
     <tr><td><strong>El resaltado lleva filete azul de 3px</strong></td><td class="motivo">Medido: sobre la fila alterna el fondo solo cambia 1,04:1. El filete es inequívoco sobre las dos</td></tr>
     <tr><td><strong>La primera columna no se puede ocultar</strong></td><td class="motivo">Sin el nombre, la fila no identifica nada. Ocultarla deja una tabla de datos huérfanos</td></tr>
     <tr><td><strong>El orden se marca con flecha y con <code>aria-sort</code></strong></td><td class="motivo">Un encabezado resaltado sin flecha no dice en qué sentido está ordenado</td></tr>
-    <tr><td><strong>La configuración se guarda por persona</strong></td><td class="motivo">Quien trabaja con la tabla a diario no debe reconfigurarla cada mañana</td></tr>
-    <tr><td><strong>El CSV exporta lo <em>filtrado</em>, no la página</strong></td><td class="motivo">Descargar solo las 10 visibles es la trampa clásica. Se exporta lo que el usuario ve como conjunto</td></tr>
+    <tr><td><strong>La configuración se guarda por persona</strong></td><td class="motivo">Quien usa la tabla a diario no la reconfigura cada mañana</td></tr>
+    <tr><td><strong>El CSV exporta lo <em>filtrado</em>, no la página</strong></td><td class="motivo">Descargar solo las 10 visibles deja fuera lo que la persona considera su resultado</td></tr>
     <tr><td><strong>Números a la derecha y en mono</strong></td><td class="motivo">Las cifras se comparan por columna. Alineadas a la izquierda no se comparan</td></tr>
     <tr><td><strong>La columna N.º no ordena</strong></td><td class="motivo">Es posición, no dato. Continúa entre páginas: la página 2 empieza en 11</td></tr>
     <tr><td><strong>Filtro de lista donde hay pocos valores</strong></td><td class="motivo">Escribir «Docente · Secundaria» a mano es trabajo que la interfaz puede ahorrar</td></tr>
     <tr><td><strong>El filtro ignora tildes</strong></td><td class="motivo"><code>nunez</code> encuentra <code>Núñez</code>. Misma promesa que el selector</td></tr>
-    <tr><td><strong>Los filtros NO se recuerdan</strong></td><td class="motivo">Un filtro guardado hace que vuelvas al día siguiente, veas 3 filas de 38 y creas que faltan datos. La configuración sí se guarda; el filtro es del momento</td></tr>
-    <tr><td><strong>Los filtros activos se ven arriba</strong></td><td class="motivo">Con la fila de filtros plegada, nada indicaría que la tabla está filtrada</td></tr>
+    <tr><td><strong>Los filtros NO se recuerdan</strong></td><td class="motivo">Un filtro guardado hace que al día siguiente se vean 3 filas de 38 y parezca que faltan datos. La configuración es preferencia; el filtro es del momento</td></tr>
+    <tr><td><strong>Los filtros activos se ven arriba</strong></td><td class="motivo">Con la fila de filtros plegada, nada más indica que la tabla está filtrada</td></tr>
   </tbody>
 </table>
 
-<h3 class="sub-seccion">Qué falta y no está</h3>
+<h3 class="sub-seccion">Sin construir</h3>
 <table class="tabla-contraste">
   <tbody>
     <tr><td>Selección múltiple con acciones en lote</td><td class="motivo">Necesita definir qué acciones y con qué permisos. Es regla de negocio</td></tr>
@@ -4326,27 +4394,44 @@ pagina, oculta columnas, recuerda tu configuración y descarga CSV.</p>
 /&gt;</pre>
   </div>
     </section><section class="pagina" id="pg-paginacion" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Elementos</span><h2>Paginación</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Elementos</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Paginación</span>
+      </nav>
+      <div class="pag-cab"><h1>Paginación</h1></div>
       
 <div class="pendiente">
   <div class="pendiente-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/></svg></div>
   <h3>Paginación</h3>
-  <p>Todavía no está construido. Entra en la <strong>fase 5</strong>.</p>
-  <p class="pendiente-nota">El menú lo lista para que se vea el alcance completo del sistema,
-  no para fingir que existe.</p>
+  <p>Sin construir.</p>
 </div>
     </section><section class="pagina" id="pg-estados" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Elementos</span><h2>Estados de pantalla</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Elementos</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Estados de pantalla</span>
+      </nav>
+      <div class="pag-cab"><h1>Estados de pantalla</h1></div>
       
 <div class="pendiente">
   <div class="pendiente-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/></svg></div>
   <h3>Estados de pantalla</h3>
-  <p>Todavía no está construido. Entra en la <strong>fase 5</strong>.</p>
-  <p class="pendiente-nota">El menú lo lista para que se vea el alcance completo del sistema,
-  no para fingir que existe.</p>
+  <p>Sin construir.</p>
 </div>
     </section><section class="pagina" id="pg-casos" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Composición</span><h2>Casos de uso</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Composición</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Casos de uso</span>
+      </nav>
+      <div class="pag-cab"><h1>Casos de uso</h1></div>
       
 <div class="casos">
 
@@ -4500,7 +4585,14 @@ pagina, oculta columnas, recuerda tu configuración y descarga CSV.</p>
   </div>
 </div>
     </section><section class="pagina" id="pg-maquetas" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Composición</span><h2>Maquetas</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Composición</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Maquetas</span>
+      </nav>
+      <div class="pag-cab"><h1>Maquetas</h1></div>
       
 <p class="pag-intro">Los tres contextos. Landing y sistema <strong>comparten valores, no proporciones</strong>.
 El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
@@ -4920,13 +5012,27 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
   <button class="m-flotante" aria-label="Nuevo estudiante">+</button>
 </div>
     </section><section class="pagina" id="pg-man-como-se-usa-este-manual" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Manual de uso</span><h2>Cómo se usa este manual</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Manual de uso</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Cómo se usa este manual</span>
+      </nav>
+      <div class="pag-cab"><h1>Cómo se usa este manual</h1></div>
       <div class="manual"><p class="man-p"><code>SISTEMA-DE-DISENO.md</code> explica <strong>por qué</strong> el sistema es como es. Este manual explica <strong>qué hacer</strong>. Si solo vas a leer uno, lee este.</p>
 <p class="man-p">Está escrito para quien construye una pantalla y tiene que decidir: qué color, qué tamaño, qué componente, qué texto. Cada sección responde a una decisión concreta.</p>
 <p class="man-p"><strong>Si una regla de aquí contradice al documento de sistema, gana el documento y este manual se corrige.</strong> Nunca se deja la contradicción viva.</p>
 <hr class="man-hr"></div>
     </section><section class="pagina" id="pg-man-las-seis-reglas-que-resuelven-el-9" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Manual de uso</span><h2>Las seis reglas que resuelven el 90 % de las dudas</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Manual de uso</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Las seis reglas que resuelven el 90 % de las dudas</span>
+      </nav>
+      <div class="pag-cab"><h1>Las seis reglas que resuelven el 90 % de las dudas</h1></div>
       <div class="manual"><p class="man-p"><strong>1. Nunca escribas un color a mano.</strong> Ni hex, ni <code>rgb()</code>, ni <code>bg-[#004aad]</code>. Si el token que necesitas no existe, se añade en <code>sistema/tokens/fuente.mjs</code> y se regenera. El build falla si lo intentas: eso es intencional.</p>
 <p class="man-p"><strong>2. Un solo azul en superficie grande: el marco.</strong> El azul es estructura, no decoración. Una pantalla con dos zonas azules grandes ya está mal.</p>
 <p class="man-p"><strong>3. Una sola acción principal por pantalla.</strong> Si hay dos botones rellenos compitiendo, uno de los dos no era principal.</p>
@@ -4935,7 +5041,14 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
 <p class="man-p"><strong>6. La etiqueta del campo siempre visible.</strong> El placeholder es un ejemplo de formato, nunca la etiqueta. Si el placeholder desaparece al escribir y con él la única pista de qué va ahí, el formulario está roto.</p>
 <hr class="man-hr"></div>
     </section><section class="pagina" id="pg-man-color-como-elegir-el-token" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Manual de uso</span><h2>Color — cómo elegir el token</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Manual de uso</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Color — cómo elegir el token</span>
+      </nav>
+      <div class="pag-cab"><h1>Color — cómo elegir el token</h1></div>
       <div class="manual"><h3 class="man-h3">2.1 El árbol de decisión</h3>
 <p class="man-p"><strong>¿Es una superficie?</strong></p>
 <table class="tabla-manual"><thead><tr><th>Estás pintando</th><th>Token</th></tr></thead><tbody><tr><td>El fondo detrás de todo</td><td><code>fondo-pagina</code></td></tr><tr><td>Una tarjeta, panel, modal o el cuerpo de una tabla</td><td><code>fondo-tarjeta</code></td></tr><tr><td>El encabezado de una tabla</td><td><code>fondo-encabezado</code></td></tr><tr><td>La fila bajo el cursor, o la fila seleccionada</td><td><code>fondo-fila-hover</code></td></tr></tbody></table>
@@ -4954,7 +5067,14 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
 <p class="man-p">El celeste es el que más se cuela, porque venía de campaña y se usó en botones. Un botón celeste con texto blanco es ilegible: 2,6:1 contra el 4,5:1 que exige la norma. Si ves uno, es un defecto, no una decisión.</p>
 <hr class="man-hr"></div>
     </section><section class="pagina" id="pg-man-tipografia-como-elegir-el-tamano" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Manual de uso</span><h2>Tipografía — cómo elegir el tamaño</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Manual de uso</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Tipografía — cómo elegir el tamaño</span>
+      </nav>
+      <div class="pag-cab"><h1>Tipografía — cómo elegir el tamaño</h1></div>
       <div class="manual"><p class="man-p"><strong>IBM Plex Sans</strong> para todo. <strong>IBM Plex Mono</strong> solo para identificadores.</p>
 <h3 class="man-h3">3.1 En una pantalla de sistema</h3>
 <table class="tabla-manual"><thead><tr><th>Estás escribiendo</th><th>Clase</th><th>Tamaño</th></tr></thead><tbody><tr><td>El título de la pantalla</td><td><code>text-s-titulo-pantalla</code></td><td>28px SemiBold</td></tr><tr><td>El título de una sección</td><td><code>text-s-titulo-seccion</code></td><td>20px Medium</td></tr><tr><td>Texto corrido</td><td><code>text-s-cuerpo</code></td><td>16px Regular</td></tr><tr><td>Celda de tabla, control</td><td><code>text-s-interfaz</code></td><td>15px Regular</td></tr><tr><td>Encabezado de columna</td><td><code>text-s-encabezado</code></td><td>15px Medium</td></tr><tr><td>Etiqueta de campo</td><td><code>text-s-etiqueta</code></td><td>13px Medium</td></tr><tr><td>Pista, chip</td><td><code>text-s-pista</code></td><td>12px Regular</td></tr></tbody></table>
@@ -4977,7 +5097,14 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
 <p class="man-p">El titular de landing baja de 56px a 32px. El título de pantalla, de 28px a 22px.</p>
 <hr class="man-hr"></div>
     </section><section class="pagina" id="pg-man-foco-y-accesibilidad" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Manual de uso</span><h2>Foco y accesibilidad</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Manual de uso</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Foco y accesibilidad</span>
+      </nav>
+      <div class="pag-cab"><h1>Foco y accesibilidad</h1></div>
       <div class="manual"><p class="man-p"><strong>Piso obligatorio: WCAG 2.2 nivel AA.</strong> No es un objetivo, es el mínimo.</p>
 <h3 class="man-h3">4.1 El anillo de foco</h3>
 <p class="man-p">2px de grosor, 2px de separación. Dos tokens según dónde estés:</p>
@@ -4995,7 +5122,14 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
 <p class="man-p">  <code>node sistema/candado/verificar-contraste.mjs</code></p>
 <hr class="man-hr"></div>
     </section><section class="pagina" id="pg-man-composicion" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Manual de uso</span><h2>Composición</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Manual de uso</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Composición</span>
+      </nav>
+      <div class="pag-cab"><h1>Composición</h1></div>
       <div class="manual"><h3 class="man-h3">5.1 Landing y sistema comparten valores, no proporciones</h3>
 <table class="tabla-manual"><thead><tr><th></th><th>Landing</th><th>Sistema</th></tr></thead><tbody><tr><td>Superficie dominante</td><td><code>marca-rojo</code> y blanco</td><td><code>fondo-pagina</code> y <code>fondo-tarjeta</code></td></tr><tr><td>Rojo en áreas grandes</td><td>Sí — el panel de marca</td><td><strong>Nunca</strong></td></tr><tr><td>Azul en áreas grandes</td><td>No</td><td>Solo el marco</td></tr><tr><td>Escala</td><td>Hasta 56px</td><td>Máximo 28px</td></tr><tr><td>Densidad</td><td>Amplia</td><td>Según token</td></tr></tbody></table>
 <p class="man-p">El trabajo es opuesto: la landing tiene que <strong>detener</strong> a alguien que no conoce el colegio. El sistema tiene que <strong>desaparecer</strong> para alguien que lleva seis horas mirándolo.</p>
@@ -5012,7 +5146,14 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
 <p class="man-p">El marco se parte en dos filas: identidad arriba, navegación abajo. La acción principal pasa a <strong>botón flotante de 56px</strong> en la esquina inferior derecha, al alcance del pulgar.</p>
 <hr class="man-hr"></div>
     </section><section class="pagina" id="pg-man-formularios" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Manual de uso</span><h2>Formularios</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Manual de uso</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Formularios</span>
+      </nav>
+      <div class="pag-cab"><h1>Formularios</h1></div>
       <div class="manual"><h3 class="man-h3">6.1 El formulario trabaja, no enseña</h3>
 <p class="man-p">La explicación va al manual, no al campo. Si un campo necesita un párrafo para entenderse, el problema es el campo.</p>
 <ul class="man-lista"><li><strong>Etiqueta siempre visible.</strong> Encima del campo, en <code>text-s-etiqueta</code>.</li><li><strong>Placeholder solo como ejemplo de formato</strong>: <code>71234567</code>, no <code>Ingrese su DNI</code>.</li><li>La ayuda va <strong>debajo</strong> del campo, en <code>texto-pista</code>, y es una línea.</li></ul>
@@ -5023,7 +5164,14 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
 <p class="man-p">Quitar espacios sobrantes al guardar es invisible y ayuda. Exigir un formato exacto impide trabajar. Limpia en silencio; rechaza solo lo imposible.</p>
 <hr class="man-hr"></div>
     </section><section class="pagina" id="pg-man-voz-de-interfaz" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Manual de uso</span><h2>Voz de interfaz</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Manual de uso</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Voz de interfaz</span>
+      </nav>
+      <div class="pag-cab"><h1>Voz de interfaz</h1></div>
       <div class="manual"><p class="man-p">Donde la marca deja de ser color y se vuelve tono.</p>
 <h3 class="man-h3">7.1 Cómo se escribe</h3>
 <p class="man-p"><strong>La gente no lee.</strong> Una frase. Si hacen falta dos, sobra una.</p>
@@ -5043,25 +5191,60 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
 <p class="man-p">El botón dice el verbo, no «Aceptar»: <strong>Eliminar</strong> / <strong>Cancelar</strong>.</p>
 <hr class="man-hr"></div>
     </section><section class="pagina" id="pg-man-errores-frecuentes" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Manual de uso</span><h2>Errores frecuentes</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Manual de uso</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Errores frecuentes</span>
+      </nav>
+      <div class="pag-cab"><h1>Errores frecuentes</h1></div>
       <div class="manual"><table class="tabla-manual"><thead><tr><th>Lo que se ve</th><th>Por qué está mal</th><th>Qué hacer</th></tr></thead><tbody><tr><td>Botón celeste <code>#01ADED</code> con texto blanco</td><td>2,6:1. Ilegible</td><td><code>accion</code></td></tr><tr><td>Dos botones rellenos en una pantalla</td><td>Ninguno destaca</td><td>Uno relleno, el otro <code>accion-2</code></td></tr><tr><td>Emoji como icono</td><td>No hereda color, no se alinea, cambia según el sistema</td><td>Iconos de trazo (Lucide, 1.5px)</td></tr><tr><td><code>outline-none</code> en un filtro</td><td>Con teclado te pierdes</td><td><code>outline-foco</code></td></tr><tr><td>Placeholder como etiqueta</td><td>Al escribir desaparece la pista</td><td>Etiqueta visible encima</td></tr><tr><td>Rojo para decorar</td><td>El rojo significa problema</td><td><code>texto-principal</code> o <code>accion</code></td></tr><tr><td>«Editar» como botón en cada fila</td><td>Ruido, no jerarquía</td><td><code>enlace</code></td></tr><tr><td>Segunda zona azul grande</td><td>Compite con el marco</td><td><code>fondo-tarjeta</code></td></tr><tr><td><code>text-[14px]</code></td><td>Evade la escala</td><td><code>text-s-interfaz</code> (15px)</td></tr><tr><td>Mayúsculas en un botón</td><td>Se lee más lento</td><td>Capitalización normal</td></tr></tbody></table>
 <hr class="man-hr"></div>
     </section><section class="pagina" id="pg-man-antes-de-dar-una-pantalla-por-term" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Manual de uso</span><h2>Antes de dar una pantalla por terminada</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Manual de uso</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Antes de dar una pantalla por terminada</span>
+      </nav>
+      <div class="pag-cab"><h1>Antes de dar una pantalla por terminada</h1></div>
       <div class="manual"><table class="tabla-manual"><thead><tr><th>#</th><th>Comprobación</th><th>Cómo se comprueba</th></tr></thead><tbody><tr><td>1</td><td>Ningún color escrito a mano</td><td><code>npx eslint</code> pasa sin errores</td></tr><tr><td>2</td><td>Los contrastes cumplen</td><td><code>node sistema/candado/verificar-contraste.mjs</code> en verde</td></tr><tr><td>3</td><td>Una sola acción principal</td><td>A ojo: un solo botón relleno</td></tr><tr><td>4</td><td>Un solo azul grande</td><td>A ojo: solo el marco</td></tr><tr><td>5</td><td>Foco siempre visible</td><td>Recorrer la pantalla entera con Tab</td></tr><tr><td>6</td><td>Nada desborda en móvil</td><td>Navegador a 375px de ancho</td></tr><tr><td>7</td><td>Etiquetas visibles en todos los campos</td><td>A ojo</td></tr><tr><td>8</td><td>Los tres estados resueltos</td><td>Probar sin buscar, buscar sin resultados, y con datos</td></tr><tr><td>9</td><td>Ningún error sin decir qué hacer</td><td>Leer todos los mensajes</td></tr><tr><td>10</td><td>Ningún texto bajo 4,5:1</td><td>Lo cubre la comprobación 2</td></tr></tbody></table>
 <hr class="man-hr"></div>
     </section><section class="pagina" id="pg-man-lo-que-este-manual-todavia-no-cubr" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Manual de uso</span><h2>Lo que este manual todavía no cubre</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Manual de uso</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Lo que este manual todavía no cubre</span>
+      </nav>
+      <div class="pag-cab"><h1>Lo que este manual todavía no cubre</h1></div>
       <div class="manual"><p class="man-p">Honestidad sobre los límites, para que nadie asuma cobertura que no existe:</p>
 <table class="tabla-manual"><thead><tr><th>Pendiente</th><th>Estado</th></tr></thead><tbody><tr><td><strong>Iconografía</strong></td><td>Decidido Lucide, trazo 1.5px a 18px. Sin implementar</td></tr><tr><td><strong>Densidad</strong></td><td>Token definido (34px / 28px). Falta el conmutador y que se recuerde por sesión</td></tr><tr><td><strong>Contrato completo de tabla</strong></td><td>Orden, selección múltiple, encabezado fijo, columnas visibles</td></tr><tr><td><strong>Primitivas de dominio</strong></td><td>DNI y RUC con dígito verificador, dos apellidos, ubigeo en cascada, soles, fechas peruanas</td></tr><tr><td><strong>Modo oscuro</strong></td><td>Calculado, <strong>no aprobado</strong>. No implementar</td></tr></tbody></table>
 <p class="man-p">Una nota que debe tratarse como contrato y no como detalle de base de datos: que <code>perez</code> encuentre a <code>Pérez</code> depende de las extensiones <code>unaccent</code> y <code>pg_trgm</code>. <strong>Es una promesa de interfaz.</strong> Si un buscador se monta sin ellas, el componente se comporta distinto y nadie sabrá por qué.</p>
 <hr class="man-hr"></div>
     </section><section class="pagina" id="pg-man-historial" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Manual de uso</span><h2>Historial</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Manual de uso</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Historial</span>
+      </nav>
+      <div class="pag-cab"><h1>Historial</h1></div>
       <div class="manual"><table class="tabla-manual"><thead><tr><th>Versión</th><th>Fecha</th><th>Cambio</th></tr></thead><tbody><tr><td>1.0.0</td><td>2026-08-07</td><td>Primera edición. Sobre MMI-DS v1.1.0</td></tr></tbody></table>
 <p class="man-p"><strong>Este manual se corrige cuando cambia el sistema, no al revés.</strong></p></div>
     </section><section class="pagina" id="pg-contraste" hidden>
-      <div class="pag-cab"><span class="pag-ruta">Referencia</span><h2>Contrastes</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">Referencia</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">Contrastes</span>
+      </nav>
+      <div class="pag-cab"><h1>Contrastes</h1></div>
       
 <p class="pag-intro">86 pares bloqueantes en los dos modos ·
 <strong>0 fallos</strong> · WCAG 2.2 AA. Recalculados en cada build por
@@ -5993,10 +6176,13 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
             ? 'Prueba con menos filtros, o <button class="tb-vacio-quitar">quítalos todos</button>.'
             : 'No hay trabajadores registrados todavía.') + '</td></tr>';
 
+      // Con un filtro puesto se muestra siempre «X de Y», aunque X sea igual
+      // que Y. Si no, un filtro que no descarta nada parece no haber hecho nada.
       var total = filtradas().length;
-      document.getElementById('tb-conteo').textContent = total === FILAS.length
-        ? FILAS.length + ' trabajadores'
-        : total + ' de ' + FILAS.length + ' trabajadores';
+      var hayFiltro = activos.length > 0 || !!busca;
+      document.getElementById('tb-conteo').textContent = hayFiltro
+        ? total + ' de ' + FILAS.length + ' trabajadores'
+        : FILAS.length + ' trabajadores';
       document.getElementById('tb-rango').textContent = f.length
         ? (desde + 1) + '–' + Math.min(desde + tam, f.length) + ' de ' + f.length
         : '0 de 0';

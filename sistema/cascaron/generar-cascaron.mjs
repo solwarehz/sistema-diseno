@@ -570,7 +570,7 @@ const PESOS = [
 
 const tipografia = `
 <div class="tipo-nota">
-  <strong>Verificado en esta página:</strong> los diez dígitos de IBM Plex Sans miden
+  <strong>Cifras tabulares:</strong> los diez dígitos de IBM Plex Sans miden
   <strong>exactamente 12px a 20px de cuerpo</strong>, sin activar <code>tnum</code>.
   Las columnas numéricas se alinean solas. Con tablas de doscientas filas eso no es
   un detalle estético.
@@ -645,16 +645,9 @@ ${PESOS.map(
     <tr><td class="num">7</td><td>Mayúsculas sostenidas solo en el lockup. <strong>Nunca en etiquetas ni botones.</strong></td></tr>
   </tbody>
 </table>
+`;
 
-<div class="aviso" style="margin-top:22px">
-  <strong>Pendiente de decisión tuya:</strong> hoy el cascarón carga IBM Plex desde
-  Google Fonts. Para producción hay que <strong>descargar los seis cortes y servirlos
-  desde el proyecto</strong> — son unos 600 KB dentro de la carpeta. Gana en privacidad
-  (Google deja de ver quién abre tu sistema) y en velocidad. Necesito que lo autorices
-  porque implica descargar archivos.
-</div>`;
-
-// ── Espaciado — a decidir ───────────────────────────────────────────────────
+// ── Espaciado ───────────────────────────────────────────────────────────────
 
 const OPCIONES = [
   ['A', 28, 12, 'Compacto'],
@@ -698,8 +691,7 @@ const opciones = OPCIONES.map(
 
 const espaciado = `
 <div class="aviso">
-  <strong>Cambio de método que propongo.</strong> No declarar padding vertical en los
-  controles. Se fija la <strong>altura</strong> desde la rejilla y el texto se centra.
+  <strong>Los controles no declaran padding vertical.</strong> Se fija la <strong>altura</strong> desde la rejilla y el texto se centra.
   El padding solo gobierna el horizontal.
   <br><br>
   Por qué: con padding vertical, la altura del botón depende de la interlínea de la
@@ -709,8 +701,8 @@ const espaciado = `
   los controles de una fila casan solos.
 </div>
 
-<h3 class="sub-seccion">Compara y elige</h3>
-<p class="seccion-sub">Cada opción con botones, campo y selector, y debajo la tabla real para ver si pesan o no al lado de las filas.</p>
+<h3 class="sub-seccion">Tamaños</h3>
+<p class="seccion-sub">Cada tamaño con sus controles y la tabla debajo, para verlos en proporción.</p>
 <div class="opciones">${opciones}</div>
 
 <h3 class="sub-seccion">La rejilla de 4</h3>
@@ -718,8 +710,8 @@ const espaciado = `
   ${[4, 8, 12, 16, 20, 24, 32, 40, 48, 56, 64].map((n) => `<div class="rej"><div class="rej-barra" style="width:${n}px"></div><span>${n}</span></div>`).join('')}
 </div>
 
-<h3 class="sub-seccion">Tres valores del sistema se salen de la rejilla</h3>
-<p class="seccion-sub">Si adoptamos múltiplos de 4, estos hay que corregirlos. Los tres vienen del documento.</p>
+<h3 class="sub-seccion">Valores fuera de rejilla</h3>
+<p class="seccion-sub">Tres medidas heredadas no son múltiplo de 4.</p>
 <table class="tabla-contraste">
   <thead><tr><th>Valor</th><th class="num">Hoy</th><th class="num">Propuesto</th><th>Consecuencia</th></tr></thead>
   <tbody>
@@ -906,9 +898,7 @@ ${verCodigo(
   </div>
 </div>`
 )}
-
-<h3 class="sub-seccion">Tamaño — pendiente de decisión</h3>
-<p class="seccion-sub">Es lo que estamos decidiendo. Está en <a href="#" data-ir="espaciado" class="enlace">Fundamentos → Espaciado</a>.</p>`;
+`;
 
 // ── Elemento: Enlace ────────────────────────────────────────────────────────
 
@@ -932,7 +922,7 @@ contextual, el lector de pantalla y si «abrir en pestaña nueva» funciona.</p>
 
 <h3 class="sub-seccion">El subrayado no es decoración: es obligatorio en texto corrido</h3>
 <div class="aviso">
-  <strong>Medido en este sistema:</strong> <code>enlace</code> contra <code>texto-principal</code>
+  <code>enlace</code> contra <code>texto-principal</code>
   da <strong>2,48:1</strong> en claro y <strong>1,91:1</strong> en oscuro. WCAG 1.4.1 pide 3:1
   para distinguir por color solo. No llega — <strong>y no hay ningún azul que llegue sin dejar
   de ser azul</strong>. Por eso el enlace dentro de un párrafo va subrayado siempre.
@@ -1244,13 +1234,12 @@ mirar</strong>, y por debajo la caja de búsqueda estorba.</p>
       <span class="cg-ayuda" data-sel-conteo>${APODERADOS.length} apoderados</span>
     </div>
     <div class="sel-notas">
-      <p><strong>Prueba a escribir <code>perez</code> sin tilde.</strong> Encuentra
-      «Pérez Salazar, Ana».</p>
+      <p><strong>La búsqueda ignora tildes y mayúsculas.</strong> <code>perez</code> encuentra «Pérez Salazar, Ana».</p>
       <p>Eso no es un detalle de la caja de búsqueda: en producción lo hacen las
       extensiones <code>unaccent</code> y <code>pg_trgm</code> de PostgreSQL.
       <strong>Es una promesa de interfaz.</strong> Si otro buscador se monta sin
       esas extensiones, el componente se comporta distinto y nadie sabrá por qué.</p>
-      <p>Prueba también <code>ñ</code>, <code>quinones</code> o un texto que no exista.</p>
+      <p>Lo mismo con <code>ñ</code> y <code>quinones</code>.</p>
     </div>
   </div>
 </div>
@@ -1393,7 +1382,7 @@ chip de estado.</p>
 
 <h3 class="sub-seccion">El filete no es adorno: es lo que dibuja el chip</h3>
 <div class="aviso">
-  <strong>Medido sobre las cuatro superficies donde vive un chip:</strong> el relleno da entre
+  Sobre las cuatro superficies donde vive un chip, el relleno da entre
   <strong>1,00 y 1,19:1</strong> contra el fondo. Sobre el encabezado de tabla mide exactamente
   <strong>1,00:1</strong> — luminancia idéntica. El filete de acento da entre
   <strong>4,18 y 4,84:1</strong> en todos los casos.
@@ -1538,7 +1527,7 @@ const pagTarjeta = `
 <strong>tarjeta normal</strong> agrupa contenido en una pantalla.</p>
 
 <h3 class="sub-seccion">Tarjeta de persona — control de asistencia</h3>
-<p class="seccion-sub">Foto o iniciales, apellidos y nombre, cargo, estado y hora de marca. Pensada para mirar treinta a la vez y saber quién falta <strong>sin leer una por una</strong>.</p>
+<p class="seccion-sub">Foto o iniciales, apellidos y nombre, cargo, estado y hora de marca. Para mirar treinta a la vez y saber quién falta <strong>sin leer una por una</strong>.</p>
 <div class="bloque">
   <div class="tp-rejilla">${PERSONAL.map(tarjetaPersona).join('')}</div>
 </div>
@@ -1733,8 +1722,8 @@ const ICO_X = ic('<path d="M6 6l12 12M18 6 6 18"/>');
 
 const pagTabla = `
 <p class="pag-intro">Es el <strong>80 % de la superficie del sistema</strong>. Todo lo demás se
-mira un rato; esto se mira seis horas. La tabla de abajo <strong>funciona</strong>: ordena,
-pagina, oculta columnas, recuerda tu configuración y descarga CSV.</p>
+mira un rato; esto se mira seis horas. Ordena, pagina, oculta columnas, recuerda la
+configuración y descarga CSV.</p>
 
 <div class="bloque">
   <div class="tb-barra">
@@ -1840,27 +1829,27 @@ pagina, oculta columnas, recuerda tu configuración y descarga CSV.</p>
   </tbody>
 </table>
 
-<h3 class="sub-seccion">Decisiones que tomé, y por qué</h3>
+<h3 class="sub-seccion">Comportamiento</h3>
 <table class="tabla-contraste">
-  <thead><tr><th>Decisión</th><th>Razón</th></tr></thead>
+  <thead><tr><th>Regla</th><th>Por qué</th></tr></thead>
   <tbody>
-    <tr><td><strong>10 por defecto</strong>, luego 25, 50 y Todas</td><td class="motivo">10 cabe sin desplazar en un portátil. Quien necesita más lo sube una vez y se le recuerda</td></tr>
+    <tr><td><strong>10 por defecto</strong>, luego 25, 50 y Todas</td><td class="motivo">10 cabe sin desplazar en un portátil. Quien necesita más lo sube una vez y queda recordado</td></tr>
     <tr><td><strong>«Todas» avisa por encima de 500 filas</strong></td><td class="motivo">Pintar miles de filas congela el navegador. El aviso llega antes que el bloqueo</td></tr>
     <tr><td><strong>El resaltado lleva filete azul de 3px</strong></td><td class="motivo">Medido: sobre la fila alterna el fondo solo cambia 1,04:1. El filete es inequívoco sobre las dos</td></tr>
     <tr><td><strong>La primera columna no se puede ocultar</strong></td><td class="motivo">Sin el nombre, la fila no identifica nada. Ocultarla deja una tabla de datos huérfanos</td></tr>
     <tr><td><strong>El orden se marca con flecha y con <code>aria-sort</code></strong></td><td class="motivo">Un encabezado resaltado sin flecha no dice en qué sentido está ordenado</td></tr>
-    <tr><td><strong>La configuración se guarda por persona</strong></td><td class="motivo">Quien trabaja con la tabla a diario no debe reconfigurarla cada mañana</td></tr>
-    <tr><td><strong>El CSV exporta lo <em>filtrado</em>, no la página</strong></td><td class="motivo">Descargar solo las 10 visibles es la trampa clásica. Se exporta lo que el usuario ve como conjunto</td></tr>
+    <tr><td><strong>La configuración se guarda por persona</strong></td><td class="motivo">Quien usa la tabla a diario no la reconfigura cada mañana</td></tr>
+    <tr><td><strong>El CSV exporta lo <em>filtrado</em>, no la página</strong></td><td class="motivo">Descargar solo las 10 visibles deja fuera lo que la persona considera su resultado</td></tr>
     <tr><td><strong>Números a la derecha y en mono</strong></td><td class="motivo">Las cifras se comparan por columna. Alineadas a la izquierda no se comparan</td></tr>
     <tr><td><strong>La columna N.º no ordena</strong></td><td class="motivo">Es posición, no dato. Continúa entre páginas: la página 2 empieza en 11</td></tr>
     <tr><td><strong>Filtro de lista donde hay pocos valores</strong></td><td class="motivo">Escribir «Docente · Secundaria» a mano es trabajo que la interfaz puede ahorrar</td></tr>
     <tr><td><strong>El filtro ignora tildes</strong></td><td class="motivo"><code>nunez</code> encuentra <code>Núñez</code>. Misma promesa que el selector</td></tr>
-    <tr><td><strong>Los filtros NO se recuerdan</strong></td><td class="motivo">Un filtro guardado hace que vuelvas al día siguiente, veas 3 filas de 38 y creas que faltan datos. La configuración sí se guarda; el filtro es del momento</td></tr>
-    <tr><td><strong>Los filtros activos se ven arriba</strong></td><td class="motivo">Con la fila de filtros plegada, nada indicaría que la tabla está filtrada</td></tr>
+    <tr><td><strong>Los filtros NO se recuerdan</strong></td><td class="motivo">Un filtro guardado hace que al día siguiente se vean 3 filas de 38 y parezca que faltan datos. La configuración es preferencia; el filtro es del momento</td></tr>
+    <tr><td><strong>Los filtros activos se ven arriba</strong></td><td class="motivo">Con la fila de filtros plegada, nada más indica que la tabla está filtrada</td></tr>
   </tbody>
 </table>
 
-<h3 class="sub-seccion">Qué falta y no está</h3>
+<h3 class="sub-seccion">Sin construir</h3>
 <table class="tabla-contraste">
   <tbody>
     <tr><td>Selección múltiple con acciones en lote</td><td class="motivo">Necesita definir qué acciones y con qué permisos. Es regla de negocio</td></tr>
@@ -1905,13 +1894,11 @@ ${verCodigo(
 
 // ── Elementos aún no construidos ────────────────────────────────────────────
 
-const pendiente = (nombre, fase) => `
+const pendiente = (nombre) => `
 <div class="pendiente">
   <div class="pendiente-ic">${ICONOS.configuracion}</div>
   <h3>${nombre}</h3>
-  <p>Todavía no está construido. Entra en la <strong>${fase}</strong>.</p>
-  <p class="pendiente-nota">El menú lo lista para que se vea el alcance completo del sistema,
-  no para fingir que existe.</p>
+  <p>Sin construir.</p>
 </div>`;
 
 // ── Manual en Markdown → HTML ───────────────────────────────────────────────
@@ -2087,12 +2074,6 @@ El menú de la izquierda lo abre por partes.</p>
   <div class="est"><b>2</b><span>modos, claro y oscuro</span></div>
 </div>
 
-<div class="aviso">
-  <strong>Fase 1 aprobada</strong> — color, esquema y casos de uso.
-  <strong>Fase 2 en curso</strong> — tipografía lista; falta que decidas el
-  <a href="#" data-ir="espaciado" class="enlace">tamaño de los botones</a>.
-</div>
-
 <h3 class="sub-seccion">Color</h3>
 ${Object.entries(GRUPOS).map(grupoMuestras).join('')}
 
@@ -2106,7 +2087,7 @@ ${casosDeUso}
   <a href="#boton" data-ir="boton" class="atajo"><span class="atajo-ic">${ICONOS.panel}</span>
     <span><strong>Botón</strong>Variantes, estados y código para copiar</span></a>
   <a href="#espaciado" data-ir="espaciado" class="atajo"><span class="atajo-ic">${ICONOS.administracion}</span>
-    <span><strong>Espaciado</strong>Las cinco opciones de tamaño, a decidir</span></a>
+    <span><strong>Espaciado</strong>Rejilla de 4px y tamaños de control</span></a>
   <a href="#contraste" data-ir="contraste" class="atajo"><span class="atajo-ic">${ICONOS.academico}</span>
     <span><strong>Contrastes</strong>Los ${lock.resumen.paresBloqueantes} pares medidos</span></a>
 </div>`;
@@ -2123,7 +2104,7 @@ const CATALOGO = [
     items: [
       { id: 'color', t: 'Color', estado: 'listo', c: pagColor },
       { id: 'tipografia', t: 'Tipografía', estado: 'listo', c: tipografia },
-      { id: 'espaciado', t: 'Espaciado', estado: 'decidir', c: espaciado },
+      { id: 'espaciado', t: 'Espaciado', estado: 'listo', c: espaciado },
       { id: 'iconos', t: 'Iconos', estado: 'listo', c: pagIconos },
     ],
   },
@@ -2167,7 +2148,7 @@ const CATALOGO = [
   },
 ];
 
-const PUNTO = { listo: '', decidir: '<span class="pt pt-decidir" title="Esperando tu decisión"></span>', pendiente: '<span class="pt pt-pend" title="Sin construir"></span>' };
+const PUNTO = { listo: '', decidir: '', pendiente: '<span class="pt pt-pend" title="Sin construir"></span>' };
 
 // El menú del catálogo ES el mismo componente que el de la aplicación:
 // icono + nombre, sombreado en el activo, y chevron que despliega el grupo.
@@ -2194,7 +2175,14 @@ const menuCatalogo = CATALOGO.map(
 const paginasCatalogo = CATALOGO.flatMap((g) =>
   g.items.map(
     (i) => `<section class="pagina" id="pg-${i.id}" hidden>
-      <div class="pag-cab"><span class="pag-ruta">${g.grupo}</span><h2>${i.t}</h2></div>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-grupo">${g.grupo}</span>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <span class="migas-actual" aria-current="page">${i.t}</span>
+      </nav>
+      <div class="pag-cab"><h1>${i.t}</h1></div>
       ${i.c}
     </section>`
   )
@@ -2278,10 +2266,15 @@ code { font-family: 'IBM Plex Mono', monospace; }
 
 .cat-cuerpo { flex: 1; min-width: 0; padding: 24px 32px 80px; max-width: 1120px;
   background: var(--fondo-pagina); }
+.migas { display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+  font-size: 12px; margin-bottom: 10px; }
+.migas a { color: var(--enlace); text-decoration: none; }
+.migas a:hover { text-decoration: underline; }
+.migas-sep { color: var(--texto-pista); }
+.migas-grupo { color: var(--texto-secundario); }
+.migas-actual { color: var(--texto-principal); font-weight: 500; }
 .pag-cab { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 2px solid var(--borde); }
-.pag-ruta { font-size: 11px; font-weight: 500; text-transform: uppercase;
-  letter-spacing: .08em; color: var(--texto-secundario); }
-.pag-cab h2 { font-size: 28px; font-weight: 600; margin-top: 3px; }
+.pag-cab h1 { font-size: 28px; font-weight: 600; }
 .pag-intro { font-size: 15px; color: var(--texto-secundario); max-width: 90ch; margin: 0 0 20px; }
 
 .bloque { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
@@ -3089,10 +3082,6 @@ select.campo:disabled { opacity: .75; }
       <div class="lat-id"><span class="lat-colegio">COLEGIO</span><span class="lat-nombre">ALBERT EINSTEIN</span></div>
     </div>
     <nav class="lat-nav">${menuCatalogo}</nav>
-    <div class="lat-leyenda">
-      <div><span class="pt pt-decidir"></span> esperando tu decisión</div>
-      <div><span class="pt pt-pend"></span> sin construir</div>
-    </div>
     <div class="lat-usuario">
       <span class="lat-av">JP</span>
       <div class="lat-user-txt">
@@ -3345,10 +3334,13 @@ select.campo:disabled { opacity: .75; }
             ? 'Prueba con menos filtros, o <button class="tb-vacio-quitar">quítalos todos</button>.'
             : 'No hay trabajadores registrados todavía.') + '</td></tr>';
 
+      // Con un filtro puesto se muestra siempre «X de Y», aunque X sea igual
+      // que Y. Si no, un filtro que no descarta nada parece no haber hecho nada.
       var total = filtradas().length;
-      document.getElementById('tb-conteo').textContent = total === FILAS.length
-        ? FILAS.length + ' trabajadores'
-        : total + ' de ' + FILAS.length + ' trabajadores';
+      var hayFiltro = activos.length > 0 || !!busca;
+      document.getElementById('tb-conteo').textContent = hayFiltro
+        ? total + ' de ' + FILAS.length + ' trabajadores'
+        : FILAS.length + ' trabajadores';
       document.getElementById('tb-rango').textContent = f.length
         ? (desde + 1) + '–' + Math.min(desde + tam, f.length) + ' de ' + f.length
         : '0 de 0';
