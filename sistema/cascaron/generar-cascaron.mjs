@@ -2473,32 +2473,38 @@ día.</p>
 <h3 class="sub-seccion">Rango con calendario — pruébalo</h3>
 <p class="seccion-sub">Primer clic marca el inicio, segundo marca el fin, y el tramo entre ambos queda sombreado. Al pasar el cursor se previsualiza el tramo antes de fijarlo.</p>
 <div class="bloque">
-  <div class="fc-campos">
-    <label class="cg"><span class="cg-et">Desde</span>
-      <input class="campo cg-in mono" id="fc-ini" placeholder="dd/mm/aaaa" readonly></label>
-    <span class="fc-guion" aria-hidden="true">${ICO_CHEV_DER}</span>
-    <label class="cg"><span class="cg-et">Hasta</span>
-      <input class="campo cg-in mono" id="fc-fin" placeholder="dd/mm/aaaa" readonly></label>
-    <button class="btn btn-terc btn-mini" id="fc-limpiar">Limpiar</button>
-  </div>
-
-  <div class="fc-cal" id="fc-cal">
-    <div class="fc-cal-cab">
-      <button class="pgn-btn" id="fc-prev" aria-label="Mes anterior">${ICO_CHEV_IZQ}</button>
-      <span class="fc-meses" id="fc-titulo"></span>
-      <button class="pgn-btn" id="fc-next" aria-label="Mes siguiente">${ICO_CHEV_DER}</button>
+  <div class="fc-zona" id="fc-zona">
+    <div class="fc-campos">
+      <label class="cg"><span class="cg-et">Desde</span>
+        <input class="campo cg-in mono fc-campo" id="fc-ini" placeholder="dd/mm/aaaa"
+               readonly aria-haspopup="dialog" aria-expanded="false" aria-controls="fc-cal"></label>
+      <span class="fc-guion" aria-hidden="true">${ICO_CHEV_DER}</span>
+      <label class="cg"><span class="cg-et">Hasta</span>
+        <input class="campo cg-in mono fc-campo" id="fc-fin" placeholder="dd/mm/aaaa"
+               readonly aria-haspopup="dialog" aria-expanded="false" aria-controls="fc-cal"></label>
+      <button class="btn btn-destr" id="fc-limpiar">Limpiar</button>
     </div>
-    <div class="fc-cal-cuerpo" id="fc-cuerpo"></div>
+
+    <div class="fc-cal" id="fc-cal" role="dialog" aria-label="Elegir rango de fechas" hidden>
+      <div class="fc-cal-cab">
+        <button class="pgn-btn" id="fc-prev" aria-label="Mes anterior">${ICO_CHEV_IZQ}</button>
+        <span class="fc-meses" id="fc-titulo"></span>
+        <button class="pgn-btn" id="fc-next" aria-label="Mes siguiente">${ICO_CHEV_DER}</button>
+      </div>
+      <div class="fc-cal-cuerpo" id="fc-cuerpo"></div>
+      <div class="fc-cal-pie">
+        <span id="fc-pista">Elige la fecha de inicio.</span>
+        <div class="fc-atajos">
+          <button class="btn btn-neutro btn-mini" data-fc="mes">Este mes</button>
+          <button class="btn btn-neutro btn-mini" data-fc="mes-pasado">Mes pasado</button>
+          <button class="btn btn-neutro btn-mini" data-fc="bimestre">Últimos 2 meses</button>
+          <button class="btn btn-neutro btn-mini" data-fc="anio">Este año</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <p class="fc-resumen" id="fc-resumen">Elige la fecha de inicio.</p>
-
-  <div class="fc-atajos">
-    <button class="btn btn-neutro btn-mini" data-fc="mes">Este mes</button>
-    <button class="btn btn-neutro btn-mini" data-fc="mes-pasado">Mes pasado</button>
-    <button class="btn btn-neutro btn-mini" data-fc="bimestre">Últimos 2 meses</button>
-    <button class="btn btn-neutro btn-mini" data-fc="anio">Este año</button>
-  </div>
+  <p class="fc-resumen" id="fc-resumen">Sin rango elegido.</p>
 </div>
 <table class="tabla-contraste" style="margin-top:14px">
   <thead><tr><th>Detalle</th><th>Por qué</th></tr></thead>
@@ -3400,11 +3406,33 @@ code { font-family: 'IBM Plex Mono', monospace; }
 
 /* Fecha */
 .fc-campos { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
-.fc-campos .cg { max-width: 148px; }
+.fc-campos .cg { width: 172px; flex: none; }
 .fc-guion { color: var(--texto-pista); padding-bottom: 8px; display: grid; place-items: center; }
 .fc-guion .ic { width: 16px; height: 16px; }
-.fc-cal { border: 1px solid var(--borde); border-radius: 6px; overflow: hidden;
-  background: var(--fondo-tarjeta); max-width: 560px; }
+/* Cada campo lleva su icono de calendario. Como son de solo lectura, el icono
+   es la única señal de que abren un calendario. */
+input.fc-campo { padding-right: 34px;
+  background-repeat: no-repeat; background-position: right 12px center;
+  background-size: 16px 16px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236A6864' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='16' rx='2'/><path d='M3 10h18M8 3v4M16 3v4'/></svg>");
+  cursor: pointer; }
+[data-tema='oscuro'] input.fc-campo {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C3C1BD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='16' rx='2'/><path d='M3 10h18M8 3v4M16 3v4'/></svg>");
+}
+/* El campo que se está eligiendo se marca: con dos campos y un calendario hay
+   que saber cuál se va a rellenar. */
+input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 1px var(--accion); }
+
+.fc-zona { position: relative; }
+.fc-cal { position: absolute; z-index: 40; top: calc(100% + 6px); left: 0;
+  border: 1px solid var(--borde-campo); border-radius: 6px; overflow: hidden;
+  background: var(--fondo-tarjeta); max-width: 560px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.16); }
+/* Los atajos viven DENTRO del calendario: fuera obligarían a cerrar y volver
+   a abrir para usarlos, que es justo el paso que venían a ahorrar. */
+.fc-cal-pie { display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; padding: 12px 16px; border-top: 1px solid var(--borde);
+  background: var(--fondo-encabezado); font-size: 12px; color: var(--texto-secundario); }
 .fc-cal-cab { display: flex; align-items: center; justify-content: space-between;
   gap: 12px; padding: 8px 12px; background: var(--fondo-encabezado);
   border-bottom: 1px solid var(--borde); }
@@ -3428,7 +3456,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .fc-ini.fc-fin { border-radius: 4px; }
 .fc-previo { background: var(--accion-hover); }
 .fc-resumen { font-size: 13px; color: var(--texto-secundario); margin: 14px 0 0; }
-.fc-atajos { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.fc-atajos { display: flex; gap: 8px; flex-wrap: wrap; }
 @media (max-width: 620px) { .fc-cal-cuerpo { grid-template-columns: 1fr; } }
 
 /* Barra de progreso */
@@ -3986,6 +4014,9 @@ select.campo:disabled { opacity: .75; }
    y LO RETIRA al deshabilitarlo. Sin icono deja de parecer un campo de fecha,
    y en deshabilitado es cuando más falta hace saber qué es, porque no se puede
    abrir para averiguarlo. Se dibuja con el del sistema. */
+/* Una fecha ocupa lo que ocupa: 10 caracteres. Estirarla a toda la columna la
+   hace parecer un campo de texto libre. Mismo ancho que el rango. */
+input[type='date'].campo, input.fc-campo { max-width: 172px; }
 input[type='date'].campo {
   appearance: none; -webkit-appearance: none;
   padding-right: 34px; position: relative;
@@ -4933,29 +4964,68 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         '<div class="fc-dias">' + celdas.join('') + '</div></div>';
     }
 
+    var cajaIni = document.getElementById('fc-ini');
+    var cajaFin = document.getElementById('fc-fin');
+    var cal = document.getElementById('fc-cal');
+    var modo = 'ini';
+
+    function abrir(cual) {
+      // Si aún no hay inicio, siempre se empieza por el inicio.
+      modo = (cual === 'fin' && ini) ? 'fin' : 'ini';
+      if (modo === 'ini') { ini = null; fin = null; }
+      cal.hidden = false;
+      cajaIni.setAttribute('aria-expanded', 'true');
+      cajaFin.setAttribute('aria-expanded', 'true');
+      if (ini) ancla = new Date(ini.getFullYear(), ini.getMonth(), 1);
+      pintar();
+    }
+    function cerrar() {
+      cal.hidden = true;
+      sobre = null;
+      cajaIni.setAttribute('aria-expanded', 'false');
+      cajaFin.setAttribute('aria-expanded', 'false');
+      pintar();
+    }
+
     function pintar() {
       var sig = new Date(ancla.getFullYear(), ancla.getMonth() + 1, 1);
       document.getElementById('fc-cuerpo').innerHTML = mes(ancla) + mes(sig);
       document.getElementById('fc-titulo').textContent =
         MESES[ancla.getMonth()] + ' – ' + MESES[sig.getMonth()] + ' ' + sig.getFullYear();
-      document.getElementById('fc-ini').value = ini ? esp(ini) : '';
-      document.getElementById('fc-fin').value = fin ? esp(fin) : '';
-      var res = document.getElementById('fc-resumen');
-      res.textContent = !ini ? 'Elige la fecha de inicio.'
-        : !fin ? 'Elige la fecha de fin. Inicio: ' + esp(ini) + '.'
-        : 'Del ' + esp(ini) + ' al ' + esp(fin) + ' · ' + dias(ini, fin) + ' días.';
+      cajaIni.value = ini ? esp(ini) : '';
+      cajaFin.value = fin ? esp(fin) : '';
+      cajaIni.classList.toggle('fc-activo', !cal.hidden && modo === 'ini');
+      cajaFin.classList.toggle('fc-activo', !cal.hidden && modo === 'fin');
+      var pista = document.getElementById('fc-pista');
+      if (pista) pista.textContent = modo === 'ini'
+        ? 'Elige la fecha de inicio.'
+        : 'Elige la fecha de fin. Inicio: ' + esp(ini) + '.';
+      document.getElementById('fc-resumen').textContent = ini && fin
+        ? 'Del ' + esp(ini) + ' al ' + esp(fin) + ' · ' + dias(ini, fin) + ' días.'
+        : 'Sin rango elegido.';
     }
+
+    [cajaIni, cajaFin].forEach(function (c) {
+      var cual = c === cajaIni ? 'ini' : 'fin';
+      c.addEventListener('focus', function () { abrir(cual); });
+      c.addEventListener('click', function () { if (cal.hidden) abrir(cual); });
+    });
 
     document.getElementById('fc-cuerpo').addEventListener('click', function (e) {
       var b = e.target.closest('.fc-d[data-f]'); if (!b) return;
       var p = b.dataset.f.split('-');
       var f = new Date(+p[0], +p[1] - 1, +p[2]);
-      if (!ini || fin) { ini = f; fin = null; }
-      // Un segundo clic anterior al primero no se rechaza: pasa a ser el inicio.
-      else if (f < ini) { ini = f; }
-      else { fin = f; }
-      sobre = null;
-      pintar();
+      if (modo === 'ini') {
+        ini = f; fin = null; modo = 'fin'; sobre = null;
+        pintar();
+        cajaFin.focus({ preventScroll: true });
+      } else {
+        // Un clic anterior al inicio no se rechaza: pasa a ser el nuevo inicio.
+        if (f < ini) { ini = f; sobre = null; pintar(); return; }
+        fin = f;
+        // Rango completo: los calendarios se van y quedan las dos fechas.
+        cerrar();
+      }
     });
     document.getElementById('fc-cuerpo').addEventListener('mouseover', function (e) {
       var b = e.target.closest('.fc-d[data-f]'); if (!b || !ini || fin) return;
@@ -4970,7 +5040,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       ancla = new Date(ancla.getFullYear(), ancla.getMonth() + 1, 1); pintar();
     });
     document.getElementById('fc-limpiar').addEventListener('click', function () {
-      ini = fin = sobre = null; pintar();
+      ini = fin = sobre = null; modo = 'ini'; cerrar();
     });
     document.querySelectorAll('[data-fc]').forEach(function (b) {
       b.addEventListener('click', function () {
@@ -4980,8 +5050,19 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         else if (k === 'bimestre') { ini = new Date(y, m - 1, 1); fin = new Date(y, m + 1, 0); }
         else { ini = new Date(y, 0, 1); fin = new Date(y, 11, 31); }
         ancla = new Date(ini.getFullYear(), ini.getMonth(), 1);
-        sobre = null; pintar();
+        // El atajo deja el rango completo: no hay nada que elegir, se cierra.
+        cerrar();
       });
+    });
+    document.addEventListener('click', function (e) {
+      // isConnected: al elegir un día el calendario se repinta y el botón
+      // pulsado queda desconectado del DOM. Sin esta comprobación, closest()
+      // no lo encuentra dentro y el clic se toma por externo: el calendario se
+      // cerraba justo al marcar el inicio.
+      if (!cal.hidden && e.target.isConnected && !e.target.closest('#fc-zona')) cerrar();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !cal.hidden) { cerrar(); cajaIni.blur(); }
     });
     pintar();
   })();
