@@ -301,11 +301,14 @@ code { font-family: 'IBM Plex Mono', monospace; }
   background: var(--fondo-pagina); }
 .migas { display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
   font-size: 12px; margin-bottom: 10px; }
-.migas a { color: var(--enlace); text-decoration: none; }
+/* Los tres tramos son enlaces. El último, además, lleva aria-current="page":
+   sigue siendo navegable pero el lector anuncia que es la página en curso. */
+.migas a { color: var(--enlace); text-decoration: none; border-radius: 3px; }
 .migas a:hover { text-decoration: underline; }
+.migas a:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
 .migas-sep { color: var(--texto-pista); }
-.migas-grupo { color: var(--texto-secundario); }
-.migas-actual { color: var(--texto-principal); font-weight: 500; }
+.migas a.migas-actual { color: var(--texto-principal); font-weight: 500; }
+.migas a.migas-actual:hover { color: var(--enlace); }
 .pag-cab { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 2px solid var(--borde); }
 .pag-cab h1 { font-size: 28px; font-weight: 600; }
 .pag-intro { font-size: 15px; color: var(--texto-secundario); max-width: 90ch; margin: 0 0 20px; }
@@ -1247,9 +1250,9 @@ select.campo:disabled { opacity: .75; }
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Inicio</span>
+        <a href="#inicio" data-ir="inicio" class="migas-grupo">Inicio</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Vista general</span>
+        <a href="#inicio" data-ir="inicio" class="migas-actual" aria-current="page">Vista general</a>
       </nav>
       <div class="pag-cab"><h1>Vista general</h1></div>
       
@@ -1805,9 +1808,9 @@ El menú de la izquierda lo abre por partes.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Fundamentos</span>
+        <a href="#color" data-ir="color" class="migas-grupo">Fundamentos</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Color</span>
+        <a href="#color" data-ir="color" class="migas-actual" aria-current="page">Color</a>
       </nav>
       <div class="pag-cab"><h1>Color</h1></div>
       
@@ -2368,9 +2371,9 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Fundamentos</span>
+        <a href="#color" data-ir="color" class="migas-grupo">Fundamentos</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Tipografía</span>
+        <a href="#tipografia" data-ir="tipografia" class="migas-actual" aria-current="page">Tipografía</a>
       </nav>
       <div class="pag-cab"><h1>Tipografía</h1></div>
       
@@ -2618,9 +2621,9 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Fundamentos</span>
+        <a href="#color" data-ir="color" class="migas-grupo">Fundamentos</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Espaciado</span>
+        <a href="#espaciado" data-ir="espaciado" class="migas-actual" aria-current="page">Espaciado</a>
       </nav>
       <div class="pag-cab"><h1>Espaciado</h1></div>
       
@@ -2789,9 +2792,9 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Fundamentos</span>
+        <a href="#color" data-ir="color" class="migas-grupo">Fundamentos</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Iconos</span>
+        <a href="#iconos" data-ir="iconos" class="migas-actual" aria-current="page">Iconos</a>
       </nav>
       <div class="pag-cab"><h1>Iconos</h1></div>
       
@@ -2814,9 +2817,9 @@ Heredan <code>currentColor</code> — que es exactamente lo que el emoji no hace
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Elementos</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Botón</span>
+        <a href="#boton" data-ir="boton" class="migas-actual" aria-current="page">Botón</a>
       </nav>
       <div class="pag-cab"><h1>Botón</h1></div>
       
@@ -2988,9 +2991,9 @@ principal.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Elementos</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Enlace</span>
+        <a href="#enlace" data-ir="enlace" class="migas-actual" aria-current="page">Enlace</a>
       </nav>
       <div class="pag-cab"><h1>Enlace</h1></div>
       
@@ -3119,9 +3122,9 @@ contextual, el lector de pantalla y si «abrir en pestaña nueva» funciona.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Elementos</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Campo de texto</span>
+        <a href="#campo" data-ir="campo" class="migas-actual" aria-current="page">Campo de texto</a>
       </nav>
       <div class="pag-cab"><h1>Campo de texto</h1></div>
       
@@ -3351,9 +3354,9 @@ Para un dato que la persona debe <em>ver</em> pero no cambiar, va <strong>solo l
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Elementos</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Selector</span>
+        <a href="#selector" data-ir="selector" class="migas-actual" aria-current="page">Selector</a>
       </nav>
       <div class="pag-cab"><h1>Selector</h1></div>
       
@@ -3525,9 +3528,9 @@ mirar</strong>, y por debajo la caja de búsqueda estorba.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Elementos</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Chip de estado</span>
+        <a href="#chip" data-ir="chip" class="migas-actual" aria-current="page">Chip de estado</a>
       </nav>
       <div class="pag-cab"><h1>Chip de estado</h1></div>
       
@@ -3696,9 +3699,9 @@ completo se lee como algo pulsable, y este componente no se pulsa.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Elementos</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Tarjeta</span>
+        <a href="#tarjeta" data-ir="tarjeta" class="migas-actual" aria-current="page">Tarjeta</a>
       </nav>
       <div class="pag-cab"><h1>Tarjeta</h1></div>
       
@@ -3983,9 +3986,9 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Elementos</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Tabla de datos</span>
+        <a href="#tabla" data-ir="tabla" class="migas-actual" aria-current="page">Tabla de datos</a>
       </nav>
       <div class="pag-cab"><h1>Tabla de datos</h1></div>
       
@@ -4397,9 +4400,9 @@ configuración y descarga CSV.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Elementos</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Paginación</span>
+        <a href="#paginacion" data-ir="paginacion" class="migas-actual" aria-current="page">Paginación</a>
       </nav>
       <div class="pag-cab"><h1>Paginación</h1></div>
       
@@ -4412,9 +4415,9 @@ configuración y descarga CSV.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Elementos</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Estados de pantalla</span>
+        <a href="#estados" data-ir="estados" class="migas-actual" aria-current="page">Estados de pantalla</a>
       </nav>
       <div class="pag-cab"><h1>Estados de pantalla</h1></div>
       
@@ -4427,9 +4430,9 @@ configuración y descarga CSV.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Composición</span>
+        <a href="#casos" data-ir="casos" class="migas-grupo">Composición</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Casos de uso</span>
+        <a href="#casos" data-ir="casos" class="migas-actual" aria-current="page">Casos de uso</a>
       </nav>
       <div class="pag-cab"><h1>Casos de uso</h1></div>
       
@@ -4588,9 +4591,9 @@ configuración y descarga CSV.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Composición</span>
+        <a href="#casos" data-ir="casos" class="migas-grupo">Composición</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Maquetas</span>
+        <a href="#maquetas" data-ir="maquetas" class="migas-actual" aria-current="page">Maquetas</a>
       </nav>
       <div class="pag-cab"><h1>Maquetas</h1></div>
       
@@ -5015,9 +5018,9 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Manual de uso</span>
+        <a href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" class="migas-grupo">Manual de uso</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Cómo se usa este manual</span>
+        <a href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" class="migas-actual" aria-current="page">Cómo se usa este manual</a>
       </nav>
       <div class="pag-cab"><h1>Cómo se usa este manual</h1></div>
       <div class="manual"><p class="man-p"><code>SISTEMA-DE-DISENO.md</code> explica <strong>por qué</strong> el sistema es como es. Este manual explica <strong>qué hacer</strong>. Si solo vas a leer uno, lee este.</p>
@@ -5028,9 +5031,9 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Manual de uso</span>
+        <a href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" class="migas-grupo">Manual de uso</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Las seis reglas que resuelven el 90 % de las dudas</span>
+        <a href="#man-las-seis-reglas-que-resuelven-el-9" data-ir="man-las-seis-reglas-que-resuelven-el-9" class="migas-actual" aria-current="page">Las seis reglas que resuelven el 90 % de las dudas</a>
       </nav>
       <div class="pag-cab"><h1>Las seis reglas que resuelven el 90 % de las dudas</h1></div>
       <div class="manual"><p class="man-p"><strong>1. Nunca escribas un color a mano.</strong> Ni hex, ni <code>rgb()</code>, ni <code>bg-[#004aad]</code>. Si el token que necesitas no existe, se añade en <code>sistema/tokens/fuente.mjs</code> y se regenera. El build falla si lo intentas: eso es intencional.</p>
@@ -5044,9 +5047,9 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Manual de uso</span>
+        <a href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" class="migas-grupo">Manual de uso</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Color — cómo elegir el token</span>
+        <a href="#man-color-como-elegir-el-token" data-ir="man-color-como-elegir-el-token" class="migas-actual" aria-current="page">Color — cómo elegir el token</a>
       </nav>
       <div class="pag-cab"><h1>Color — cómo elegir el token</h1></div>
       <div class="manual"><h3 class="man-h3">2.1 El árbol de decisión</h3>
@@ -5070,9 +5073,9 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Manual de uso</span>
+        <a href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" class="migas-grupo">Manual de uso</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Tipografía — cómo elegir el tamaño</span>
+        <a href="#man-tipografia-como-elegir-el-tamano" data-ir="man-tipografia-como-elegir-el-tamano" class="migas-actual" aria-current="page">Tipografía — cómo elegir el tamaño</a>
       </nav>
       <div class="pag-cab"><h1>Tipografía — cómo elegir el tamaño</h1></div>
       <div class="manual"><p class="man-p"><strong>IBM Plex Sans</strong> para todo. <strong>IBM Plex Mono</strong> solo para identificadores.</p>
@@ -5100,9 +5103,9 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Manual de uso</span>
+        <a href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" class="migas-grupo">Manual de uso</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Foco y accesibilidad</span>
+        <a href="#man-foco-y-accesibilidad" data-ir="man-foco-y-accesibilidad" class="migas-actual" aria-current="page">Foco y accesibilidad</a>
       </nav>
       <div class="pag-cab"><h1>Foco y accesibilidad</h1></div>
       <div class="manual"><p class="man-p"><strong>Piso obligatorio: WCAG 2.2 nivel AA.</strong> No es un objetivo, es el mínimo.</p>
@@ -5125,9 +5128,9 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Manual de uso</span>
+        <a href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" class="migas-grupo">Manual de uso</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Composición</span>
+        <a href="#man-composicion" data-ir="man-composicion" class="migas-actual" aria-current="page">Composición</a>
       </nav>
       <div class="pag-cab"><h1>Composición</h1></div>
       <div class="manual"><h3 class="man-h3">5.1 Landing y sistema comparten valores, no proporciones</h3>
@@ -5149,9 +5152,9 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Manual de uso</span>
+        <a href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" class="migas-grupo">Manual de uso</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Formularios</span>
+        <a href="#man-formularios" data-ir="man-formularios" class="migas-actual" aria-current="page">Formularios</a>
       </nav>
       <div class="pag-cab"><h1>Formularios</h1></div>
       <div class="manual"><h3 class="man-h3">6.1 El formulario trabaja, no enseña</h3>
@@ -5167,9 +5170,9 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Manual de uso</span>
+        <a href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" class="migas-grupo">Manual de uso</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Voz de interfaz</span>
+        <a href="#man-voz-de-interfaz" data-ir="man-voz-de-interfaz" class="migas-actual" aria-current="page">Voz de interfaz</a>
       </nav>
       <div class="pag-cab"><h1>Voz de interfaz</h1></div>
       <div class="manual"><p class="man-p">Donde la marca deja de ser color y se vuelve tono.</p>
@@ -5194,9 +5197,9 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Manual de uso</span>
+        <a href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" class="migas-grupo">Manual de uso</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Errores frecuentes</span>
+        <a href="#man-errores-frecuentes" data-ir="man-errores-frecuentes" class="migas-actual" aria-current="page">Errores frecuentes</a>
       </nav>
       <div class="pag-cab"><h1>Errores frecuentes</h1></div>
       <div class="manual"><table class="tabla-manual"><thead><tr><th>Lo que se ve</th><th>Por qué está mal</th><th>Qué hacer</th></tr></thead><tbody><tr><td>Botón celeste <code>#01ADED</code> con texto blanco</td><td>2,6:1. Ilegible</td><td><code>accion</code></td></tr><tr><td>Dos botones rellenos en una pantalla</td><td>Ninguno destaca</td><td>Uno relleno, el otro <code>accion-2</code></td></tr><tr><td>Emoji como icono</td><td>No hereda color, no se alinea, cambia según el sistema</td><td>Iconos de trazo (Lucide, 1.5px)</td></tr><tr><td><code>outline-none</code> en un filtro</td><td>Con teclado te pierdes</td><td><code>outline-foco</code></td></tr><tr><td>Placeholder como etiqueta</td><td>Al escribir desaparece la pista</td><td>Etiqueta visible encima</td></tr><tr><td>Rojo para decorar</td><td>El rojo significa problema</td><td><code>texto-principal</code> o <code>accion</code></td></tr><tr><td>«Editar» como botón en cada fila</td><td>Ruido, no jerarquía</td><td><code>enlace</code></td></tr><tr><td>Segunda zona azul grande</td><td>Compite con el marco</td><td><code>fondo-tarjeta</code></td></tr><tr><td><code>text-[14px]</code></td><td>Evade la escala</td><td><code>text-s-interfaz</code> (15px)</td></tr><tr><td>Mayúsculas en un botón</td><td>Se lee más lento</td><td>Capitalización normal</td></tr></tbody></table>
@@ -5205,9 +5208,9 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Manual de uso</span>
+        <a href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" class="migas-grupo">Manual de uso</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Antes de dar una pantalla por terminada</span>
+        <a href="#man-antes-de-dar-una-pantalla-por-term" data-ir="man-antes-de-dar-una-pantalla-por-term" class="migas-actual" aria-current="page">Antes de dar una pantalla por terminada</a>
       </nav>
       <div class="pag-cab"><h1>Antes de dar una pantalla por terminada</h1></div>
       <div class="manual"><table class="tabla-manual"><thead><tr><th>#</th><th>Comprobación</th><th>Cómo se comprueba</th></tr></thead><tbody><tr><td>1</td><td>Ningún color escrito a mano</td><td><code>npx eslint</code> pasa sin errores</td></tr><tr><td>2</td><td>Los contrastes cumplen</td><td><code>node sistema/candado/verificar-contraste.mjs</code> en verde</td></tr><tr><td>3</td><td>Una sola acción principal</td><td>A ojo: un solo botón relleno</td></tr><tr><td>4</td><td>Un solo azul grande</td><td>A ojo: solo el marco</td></tr><tr><td>5</td><td>Foco siempre visible</td><td>Recorrer la pantalla entera con Tab</td></tr><tr><td>6</td><td>Nada desborda en móvil</td><td>Navegador a 375px de ancho</td></tr><tr><td>7</td><td>Etiquetas visibles en todos los campos</td><td>A ojo</td></tr><tr><td>8</td><td>Los tres estados resueltos</td><td>Probar sin buscar, buscar sin resultados, y con datos</td></tr><tr><td>9</td><td>Ningún error sin decir qué hacer</td><td>Leer todos los mensajes</td></tr><tr><td>10</td><td>Ningún texto bajo 4,5:1</td><td>Lo cubre la comprobación 2</td></tr></tbody></table>
@@ -5216,9 +5219,9 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Manual de uso</span>
+        <a href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" class="migas-grupo">Manual de uso</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Lo que este manual todavía no cubre</span>
+        <a href="#man-lo-que-este-manual-todavia-no-cubr" data-ir="man-lo-que-este-manual-todavia-no-cubr" class="migas-actual" aria-current="page">Lo que este manual todavía no cubre</a>
       </nav>
       <div class="pag-cab"><h1>Lo que este manual todavía no cubre</h1></div>
       <div class="manual"><p class="man-p">Honestidad sobre los límites, para que nadie asuma cobertura que no existe:</p>
@@ -5229,9 +5232,9 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Manual de uso</span>
+        <a href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" class="migas-grupo">Manual de uso</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Historial</span>
+        <a href="#man-historial" data-ir="man-historial" class="migas-actual" aria-current="page">Historial</a>
       </nav>
       <div class="pag-cab"><h1>Historial</h1></div>
       <div class="manual"><table class="tabla-manual"><thead><tr><th>Versión</th><th>Fecha</th><th>Cambio</th></tr></thead><tbody><tr><td>1.0.0</td><td>2026-08-07</td><td>Primera edición. Sobre MMI-DS v1.1.0</td></tr></tbody></table>
@@ -5240,9 +5243,9 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">Referencia</span>
+        <a href="#contraste" data-ir="contraste" class="migas-grupo">Referencia</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">Contrastes</span>
+        <a href="#contraste" data-ir="contraste" class="migas-actual" aria-current="page">Contrastes</a>
       </nav>
       <div class="pag-cab"><h1>Contrastes</h1></div>
       

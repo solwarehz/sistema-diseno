@@ -2178,9 +2178,9 @@ const paginasCatalogo = CATALOGO.flatMap((g) =>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-grupo">${g.grupo}</span>
+        <a href="#${g.items[0].id}" data-ir="${g.items[0].id}" class="migas-grupo">${g.grupo}</a>
         <span class="migas-sep" aria-hidden="true">/</span>
-        <span class="migas-actual" aria-current="page">${i.t}</span>
+        <a href="#${i.id}" data-ir="${i.id}" class="migas-actual" aria-current="page">${i.t}</a>
       </nav>
       <div class="pag-cab"><h1>${i.t}</h1></div>
       ${i.c}
@@ -2268,11 +2268,14 @@ code { font-family: 'IBM Plex Mono', monospace; }
   background: var(--fondo-pagina); }
 .migas { display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
   font-size: 12px; margin-bottom: 10px; }
-.migas a { color: var(--enlace); text-decoration: none; }
+/* Los tres tramos son enlaces. El último, además, lleva aria-current="page":
+   sigue siendo navegable pero el lector anuncia que es la página en curso. */
+.migas a { color: var(--enlace); text-decoration: none; border-radius: 3px; }
 .migas a:hover { text-decoration: underline; }
+.migas a:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
 .migas-sep { color: var(--texto-pista); }
-.migas-grupo { color: var(--texto-secundario); }
-.migas-actual { color: var(--texto-principal); font-weight: 500; }
+.migas a.migas-actual { color: var(--texto-principal); font-weight: 500; }
+.migas a.migas-actual:hover { color: var(--enlace); }
 .pag-cab { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 2px solid var(--borde); }
 .pag-cab h1 { font-size: 28px; font-weight: 600; }
 .pag-intro { font-size: 15px; color: var(--texto-secundario); max-width: 90ch; margin: 0 0 20px; }
