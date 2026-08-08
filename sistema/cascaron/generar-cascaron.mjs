@@ -3652,6 +3652,69 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 .pr-paso span { font-size: 12px; color: var(--texto-secundario); }
 .pr-paso div b + span { display: block; }
 
+/* ── VISTA MÓVIL ─────────────────────────────────────────────────────────
+   Solo del catálogo: encierra la aplicación en un marco de 390x780 para verla
+   como en un teléfono. No es una maqueta dibujada: es el catálogo entero
+   dentro del ancho real, así que lo que se rompa, se rompe de verdad. */
+[data-vista='movil'] body { background: var(--fondo-encabezado); padding: 24px 0; }
+[data-vista='movil'] .app-cascaron {
+  width: 390px; height: 780px; margin: 0 auto; overflow: hidden;
+  border: 1px solid var(--borde-fuerte); border-radius: 6px;
+  box-shadow: var(--sombra-capa); position: relative; }
+/* La lateral sale de pantalla y vuelve con el botón: en 390px no caben las dos. */
+[data-vista='movil'] .lat {
+  position: absolute; left: 0; top: 0; bottom: 0; z-index: 60;
+  transform: translateX(-100%); transition: transform .22s ease; height: 100%; }
+[data-vista='movil'] .lat:not(.colapsado) { transform: translateX(0); }
+[data-vista='movil'] .lat.colapsado { transform: translateX(-100%); }
+/* En móvil no hay panel flotante: con la lateral fuera de pantalla no hay
+   carril del que salir. La lateral se abre entera y se cierra al elegir. */
+[data-vista='movil'] .lat.colapsado .nav-hijos { display: none; }
+[data-vista='movil'] .lat:not(.colapsado) { width: 288px; }
+[data-vista='movil'] .lat:not(.colapsado) .nav-txt,
+[data-vista='movil'] .lat:not(.colapsado) .lat-id,
+[data-vista='movil'] .lat:not(.colapsado) .lat-user-txt { display: block; }
+/* Velo detrás de la lateral abierta: en móvil tapa contenido, y hay que poder
+   cerrarla tocando fuera. */
+[data-vista='movil'] .velo { position: absolute; inset: 0; z-index: 55;
+  background: var(--marco-fondo); opacity: .5; }
+[data-vista='movil'] .app-main { min-height: 0; height: 100%; overflow-y: auto; }
+[data-vista='movil'] .top { position: sticky; top: 0; }
+/* Los filtros globales no caben en fila: se deslizan. */
+[data-vista='movil'] .top-filtros { overflow-x: auto; flex: 1; }
+[data-vista='movil'] .top-filtros .campo { min-width: 104px; }
+[data-vista='movil'] .cat-cuerpo { padding: 16px 12px 48px; }
+[data-vista='movil'] .pag-cab h1 { font-size: 24px; }
+/* §3.5 — bajo 640px el cuerpo y el texto de interfaz suben a 18px. */
+[data-vista='movil'] .pag-intro,
+[data-vista='movil'] .man-p,
+[data-vista='movil'] .man-lista { font-size: 19px; }
+[data-vista='movil'] .campo { font-size: 16px; }
+/* Rejillas a una columna: en 390px dos columnas dan 170px por celda. */
+[data-vista='movil'] .rejilla,
+[data-vista='movil'] .campos-rejilla,
+[data-vista='movil'] .sw-rejilla,
+[data-vista='movil'] .tp-rejilla,
+[data-vista='movil'] .tn-rejilla,
+[data-vista='movil'] .ep-rejilla,
+[data-vista='movil'] .chip-sup,
+[data-vista='movil'] .pr-rejilla,
+[data-vista='movil'] .estado-rejilla,
+[data-vista='movil'] .atajos,
+[data-vista='movil'] .mal-rejilla,
+[data-vista='movil'] .enl-comp { grid-template-columns: 1fr; }
+[data-vista='movil'] .anatomia,
+[data-vista='movil'] .sel-demo-fila,
+[data-vista='movil'] .fc-cal-cuerpo { grid-template-columns: 1fr; }
+[data-vista='movil'] .fc-cal { position: static; max-width: none; }
+[data-vista='movil'] .fc-cal-marco { flex-direction: column; }
+[data-vista='movil'] .fc-atajos { border-left: 0; border-top: 1px solid var(--borde); }
+/* El aviso ocupa el ancho, como manda su propia regla en móvil. */
+[data-vista='movil'] .av-zona { position: absolute; left: 12px; right: 12px;
+  top: 76px; max-width: none; z-index: 70; }
+[data-vista='movil'] .lienzo-movil { max-width: 100%; }
+.sw-mini { width: 40px; height: 24px; }
+
 /* Estados de pantalla */
 .ep-rejilla { display: grid; grid-template-columns: repeat(auto-fit,minmax(232px,1fr)); gap: 12px; }
 .ep-caja { border: 1px solid var(--borde); border-radius: 6px; overflow: hidden;
@@ -4633,6 +4696,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
               </div>
             </div>
 
+            <div class="us-sec">
+              <span class="us-et">Vista móvil</span>
+              <button type="button" role="switch" class="sw sw-mini" id="us-movil"
+                      aria-checked="false" aria-label="Ver el catálogo en vista móvil">
+                <span class="sw-bolita"></span></button>
+            </div>
+
             <button class="us-op us-salir" role="menuitem">${ICONOS.salir}<span>Salir del sistema</span></button>
           </div>
         </div>
@@ -4799,8 +4869,25 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   // Plegado de la lateral del cascarón. Tiene su propio manejador y el
   // genérico de las maquetas lo salta: si los dos actúan sobre el mismo botón
   // se anulan entre sí, y el ancho queda un clic por detrás de la clase.
+  function velo(poner) {
+    var app = document.querySelector('.app-cascaron');
+    var v = app.querySelector('.velo');
+    if (poner && !v) {
+      v = document.createElement('div');
+      v.className = 'velo';
+      v.addEventListener('click', function () {
+        document.getElementById('lateral').classList.add('colapsado');
+        velo(false);
+      });
+      app.appendChild(v);
+    } else if (!poner && v) v.remove();
+  }
+
   document.getElementById('plegar-cat').addEventListener('click', function () {
     document.getElementById('lateral').classList.toggle('colapsado');
+    if (document.documentElement.getAttribute('data-vista') === 'movil') {
+      velo(!document.getElementById('lateral').classList.contains('colapsado'));
+    }
     // Al plegar cambia la regla de apertura: fijado deja de abrir y solo abre
     // el cursor. Sin re-sincronizar, el grupo fijado se quedaba como panel
     // flotante atascado, abierto sin que nadie lo hubiera pedido.
@@ -4852,6 +4939,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     abrir(a.getAttribute('data-ir'));
     // Con la lateral plegada, elegir cierra el panel flotante y la lateral
     // sigue plegada: quien la plegó quiere que siga así.
+    // En móvil, elegir cierra la lateral: ocupa media pantalla.
+    if (document.documentElement.getAttribute('data-vista') === 'movil' && a.closest('.lat')) {
+      document.getElementById('lateral').classList.add('colapsado');
+      var v = document.querySelector('.velo');
+      if (v) v.remove();
+    }
     var g = a.closest('.nav-grupo');
     if (g && document.getElementById('lateral').classList.contains('colapsado')) {
       // Se quita el hover a mano: el cursor sigue encima tras el clic, así que
@@ -5469,6 +5562,28 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && !menu.hidden) { cerrar(); btn.focus(); }
     });
+    // Vista móvil: solo afecta al catálogo, no al sistema.
+    var movil = document.getElementById('us-movil');
+    movil.addEventListener('click', function () {
+      var on = movil.getAttribute('aria-checked') !== 'true';
+      movil.setAttribute('aria-checked', String(on));
+      document.documentElement.toggleAttribute('data-vista', false);
+      if (on) document.documentElement.setAttribute('data-vista', 'movil');
+      else document.documentElement.removeAttribute('data-vista');
+      // En 390px la lateral empieza fuera de pantalla.
+      document.getElementById('lateral').classList.toggle('colapsado', on);
+      // El aviso se muda dentro del marco: fuera se posicionaría contra la
+      // ventana y aparecería flotando fuera del teléfono.
+      var zona = document.querySelector('.av-zona');
+      if (zona) (on ? document.querySelector('.app-cascaron') : document.body).appendChild(zona);
+      cerrar();
+      if (window.avisarDemo) {
+        window.avisarDemo('info', on
+          ? 'Vista móvil: 390px. El menú se abre con el botón de arriba a la izquierda'
+          : 'Vista de escritorio');
+      }
+    });
+
     menu.querySelector('.us-salir').addEventListener('click', function () {
       cerrar();
       if (window.avisarDemo) window.avisarDemo('info', 'Salir del sistema — en el catálogo no hay sesión que cerrar');
