@@ -1892,6 +1892,136 @@ ${verCodigo(
 />`
 )}`;
 
+// ── Elemento: Paginación ────────────────────────────────────────────────────
+
+const pagPaginacion = `
+<p class="pag-intro">Divide un conjunto largo en páginas y dice <strong>dónde estás y cuánto
+queda</strong>. Lo segundo importa más que lo primero: «página 3 de ?» no informa de nada.</p>
+
+<h3 class="sub-seccion">Anatomía</h3>
+<div class="bloque">
+  <div class="pg-demo" id="pg-demo">
+    <span class="tb-rango" id="pg-rango"></span>
+    <div class="tb-pag" id="pg-botones"></div>
+  </div>
+  <ol class="anat-lista" style="margin-top:16px">
+    <li><b>Rango</b> — <code>1–10 de 1 240</code>. Dice el tamaño del problema, no solo la posición.</li>
+    <li><b>Anterior y siguiente</b> — se deshabilitan en los extremos, no desaparecen: si desaparecen, los botones se mueven bajo el cursor.</li>
+    <li><b>Números</b> — primera, última y las vecinas de la actual.</li>
+    <li><b>Elisión</b> — <code>…</code> donde se saltan páginas. No es un botón.</li>
+  </ol>
+</div>
+
+<h3 class="sub-seccion">Paginar, «cargar más» o desplazamiento infinito</h3>
+<table class="tabla-contraste">
+  <thead><tr><th>Patrón</th><th>Cuándo</th><th>Cuándo no</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Paginación</strong></td><td class="motivo">Hay que localizar un registro concreto, volver a él, o saber cuántos hay en total</td><td class="motivo">—</td></tr>
+    <tr><td><strong>Cargar más</strong></td><td class="motivo">Listas donde el orden es cronológico y nadie vuelve a una posición: avisos, historial</td><td class="motivo">Cuando hace falta el total o volver a la página 7</td></tr>
+    <tr><td><strong>Desplazamiento infinito</strong></td><td class="motivo">—</td><td class="motivo"><strong>Nunca en el sistema.</strong> No se llega al pie, se pierde el sitio al volver atrás y no hay forma de decir «está en la página 4»</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Variantes</h3>
+<div class="bloque">
+  <div class="pg-variantes">
+    <div class="pg-var">
+      <div class="tb-pag">
+        <span class="tb-p" aria-disabled="true">‹</span>
+        <span class="tb-p activa">1</span><span class="tb-p">2</span><span class="tb-p">3</span>
+        <span class="tb-elip">…</span><span class="tb-p">124</span>
+        <span class="tb-p">›</span>
+      </div>
+      <span class="mf-et"><b>Completa</b><br>Escritorio, con muchas páginas</span>
+    </div>
+    <div class="pg-var">
+      <div class="tb-pag">
+        <span class="tb-p activa">1</span><span class="tb-p">2</span><span class="tb-p">3</span>
+      </div>
+      <span class="mf-et"><b>Corta</b><br>Tres páginas o menos: sin flechas ni elisión</span>
+    </div>
+    <div class="pg-var">
+      <div class="tb-pag">
+        <span class="tb-p">‹ Anterior</span><span class="pg-pos">Página 3 de 124</span><span class="tb-p">Siguiente ›</span>
+      </div>
+      <span class="mf-et"><b>Móvil</b><br>Sin números: no caben y el dedo falla</span>
+    </div>
+    <div class="pg-var">
+      <button class="btn btn-neutro">Cargar 25 más</button>
+      <span class="mf-et"><b>Cargar más</b><br>Dice <strong>cuántos</strong>, no «Cargar más» a secas</span>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Una sola página: no se pinta</h3>
+<div class="bloque">
+  <div class="enl-comp">
+    <div class="enl-caja bien">
+      <div class="pg-demo-mini"><span class="tb-rango">1–6 de 6</span></div>
+      <span class="bien-et">Queda el rango. Confirma que están todos</span>
+    </div>
+    <div class="enl-caja mal">
+      <div class="pg-demo-mini"><span class="tb-rango">1–6 de 6</span>
+        <div class="tb-pag"><span class="tb-p" aria-disabled="true">‹</span><span class="tb-p activa">1</span><span class="tb-p" aria-disabled="true">›</span></div></div>
+      <span class="mal-et">Controles que no llevan a ninguna parte</span>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Accesibilidad</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>Va dentro de <code>&lt;nav aria-label="Paginación"&gt;</code>. Sin etiqueta, un lector anuncia «navegación» y no dice cuál.</td></tr>
+    <tr><td class="num">2</td><td>La página actual lleva <code>aria-current="page"</code>. El color solo no la marca.</td></tr>
+    <tr><td class="num">3</td><td>Cada número necesita nombre accesible: <code>aria-label="Página 4"</code>. Un «4» suelto no dice nada.</td></tr>
+    <tr><td class="num">4</td><td>Las flechas también: <code>aria-label="Página anterior"</code>. Los símbolos <code>‹</code> y <code>›</code> se leen mal o no se leen.</td></tr>
+    <tr><td class="num">5</td><td>La elisión <code>…</code> va <code>aria-hidden</code>: no es un control.</td></tr>
+    <tr><td class="num">6</td><td>Al cambiar de página, el foco va al inicio de la lista. Si se queda en el botón, hay que recorrer la paginación entera de vuelta.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-contraste">
+  <tbody>
+    <tr><td class="num">1</td><td>El <strong>rango es obligatorio</strong>. Los números de página son opcionales.</td></tr>
+    <tr><td class="num">2</td><td>Con una sola página, <strong>no se pinta la paginación</strong>. El rango se queda.</td></tr>
+    <tr><td class="num">3</td><td>Anterior y siguiente se <strong>deshabilitan</strong> en los extremos, no se ocultan.</td></tr>
+    <tr><td class="num">4</td><td>Nunca desplazamiento infinito.</td></tr>
+    <tr><td class="num">5</td><td>En móvil, sin números: anterior, posición y siguiente.</td></tr>
+    <tr><td class="num">6</td><td>«Cargar más» dice <strong>cuántos</strong> carga.</td></tr>
+    <tr><td class="num">7</td><td>Al filtrar u ordenar, se vuelve a la <strong>página 1</strong>. Quedarse en la 7 de un conjunto que ahora tiene 2 muestra una página vacía.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+${verCodigo(
+  'Uso del componente',
+  `import { Paginacion } from '@ae/sistema';
+
+<Paginacion
+  total={1240}
+  porPagina={10}
+  pagina={pagina}
+  onCambio={setPagina}
+/>
+
+// Móvil: sin números
+<Paginacion total={1240} porPagina={10} pagina={p} onCambio={setP} compacta />
+
+// Cargar más
+<Paginacion variante="cargar-mas" restantes={215} porTanda={25} onCargar={cargar} />`
+)}
+<table class="tabla-contraste" style="margin-top:14px">
+  <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>total</code></td><td class="mono">number</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Sin total no se puede construir el rango</td></tr>
+    <tr><td><code>porPagina</code></td><td class="mono">number</td><td class="mono">10</td><td class="motivo">0 significa todas</td></tr>
+    <tr><td><code>pagina</code></td><td class="mono">number</td><td class="mono">1</td><td class="motivo">Controlado desde fuera</td></tr>
+    <tr><td><code>compacta</code></td><td class="mono">boolean</td><td class="mono">false</td><td class="motivo">Sin números. Se activa sola bajo 640px</td></tr>
+    <tr><td><code>variante</code></td><td class="mono">paginas · cargar-mas</td><td class="mono">paginas</td><td class="motivo">—</td></tr>
+  </tbody>
+</table>`;
+
 // ── Elementos aún no construidos ────────────────────────────────────────────
 
 const pendiente = (nombre) => `
@@ -2119,7 +2249,7 @@ const CATALOGO = [
       { id: 'chip', t: 'Chip de estado', estado: 'listo', c: pagChip },
       { id: 'tarjeta', t: 'Tarjeta', estado: 'listo', c: pagTarjeta },
       { id: 'tabla', t: 'Tabla de datos', estado: 'listo', c: pagTabla },
-      { id: 'paginacion', t: 'Paginación', estado: 'pendiente', c: pendiente('Paginación', 'fase 5') },
+      { id: 'paginacion', t: 'Paginación', estado: 'listo', c: pagPaginacion },
       { id: 'estados', t: 'Estados de pantalla', estado: 'pendiente', c: pendiente('Estados de pantalla', 'fase 5') },
     ],
   },
@@ -2288,6 +2418,16 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .btn-ic { display: inline-flex; align-items: center; gap: 7px; }
 .btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
+
+/* Paginación */
+.pg-demo { display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap; }
+.pg-demo-mini { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.pg-variantes { display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap: 20px; }
+.pg-var { display: flex; flex-direction: column; gap: 9px; align-items: flex-start; }
+.pg-pos { font-size: 12px; color: var(--texto-secundario); padding: 0 8px; }
+.pg-var .tb-p { cursor: default; }
+.pg-var .tb-p[aria-disabled='true'] { color: var(--accion-texto-desh); }
 
 /* Tabla de datos */
 .tb-barra { display: flex; align-items: flex-end; justify-content: space-between;
@@ -3489,6 +3629,40 @@ select.campo:disabled { opacity: .75; }
       URL.revokeObjectURL(a.href);
     });
 
+    pintar();
+  })();
+
+  // ── Paginación suelta ────────────────────────────────────────────────────
+  (function () {
+    var caja = document.getElementById('pg-botones');
+    if (!caja) return;
+    var TOTAL = 1240, POR = 10, pag = 1;
+    var paginas = Math.ceil(TOTAL / POR);
+    var rango = document.getElementById('pg-rango');
+
+    function pintar() {
+      var desde = (pag - 1) * POR;
+      rango.textContent = (desde + 1) + '–' + Math.min(desde + POR, TOTAL) + ' de ' + TOTAL;
+      var b = [];
+      b.push('<button class="tb-p" data-p="' + (pag - 1) + '" aria-label="Página anterior"' +
+        (pag === 1 ? ' disabled' : '') + '>‹</button>');
+      for (var p = 1; p <= paginas; p++) {
+        if (p === 1 || p === paginas || Math.abs(p - pag) <= 1) {
+          b.push('<button class="tb-p' + (p === pag ? ' activa' : '') + '" data-p="' + p +
+            '" aria-label="Página ' + p + '"' + (p === pag ? ' aria-current="page"' : '') + '>' + p + '</button>');
+        } else if (Math.abs(p - pag) === 2) b.push('<span class="tb-elip" aria-hidden="true">…</span>');
+      }
+      b.push('<button class="tb-p" data-p="' + (pag + 1) + '" aria-label="Página siguiente"' +
+        (pag === paginas ? ' disabled' : '') + '>›</button>');
+      caja.innerHTML = b.join('');
+    }
+
+    caja.addEventListener('click', function (e) {
+      var b = e.target.closest('.tb-p');
+      if (!b || b.disabled) return;
+      pag = Number(b.dataset.p);
+      pintar();
+    });
     pintar();
   })();
 
