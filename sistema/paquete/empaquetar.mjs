@@ -132,6 +132,7 @@ const CONTENIDO = [
   ['componentes/src/Campo.tsx', 'componentes/Campo.tsx'],
   ['componentes/src/SelectorBusqueda.tsx', 'componentes/SelectorBusqueda.tsx'],
   ['componentes/src/Chip.tsx', 'componentes/Chip.tsx'],
+  ['componentes/src/Nota.tsx', 'componentes/Nota.tsx'],
   ['componentes/src/Avatar.tsx', 'componentes/Avatar.tsx'],
   ['componentes/src/Interruptor.tsx', 'componentes/Interruptor.tsx'],
   ['componentes/src/Tarjeta.tsx', 'componentes/Tarjeta.tsx'],

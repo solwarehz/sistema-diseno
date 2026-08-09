@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.11.0';
+export const VERSION = '1.11.1';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,22 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.11.1', fecha: '2026-08-09',
+    que: 'Campo con contenido propio, Nota permanente, y los iconos dejan de dibujarse dos veces',
+    porque:
+      'Segunda revision de Control Administrativos V2.0. Campo resolvia el 90 % de los casos ' +
+      'con su input y ante el 10 % restante obligaba a reconstruir el envoltorio o a deformar ' +
+      'el dato: ahora acepta contenido propio conservando rotulo, ayuda, error y el vinculo de ' +
+      'accesibilidad. Nota es texto que EXPLICA y se queda, sin tono de estado: usar un aviso ' +
+      'para algo permanente le quita el significado al ambar —si siempre esta, deja de querer ' +
+      'decir «mira esto»— y reutiliza tokens ya existentes, ningun color nuevo. ' +
+      'Y comprobando su peticion de iconos aparecio que el catalogo dibujaba OCHO a mano ' +
+      'teniendolos publicados. Los trazos coincidian exactamente —se midio— pero eran dos ' +
+      'fuentes para lo mismo, que es lo que este sistema no admite en ningun otro sitio.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.11.0', fecha: '2026-08-09',
     que: 'Los requerimientos de Control Administrativos V2.0, resueltos',

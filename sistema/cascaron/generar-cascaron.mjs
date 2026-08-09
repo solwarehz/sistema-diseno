@@ -1053,7 +1053,7 @@ ${verCodigo(
 // Icono de error propio de esta página: el error nunca se señala solo con
 // color, y un chevron girado no dice «error». Se define aquí y no en ICONOS
 // para no alterar la página de Iconos, que ya está cerrada.
-const ICO_ERROR = ic('<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/>');
+const ICO_ERROR = icono('alerta');
 
 const campoDemo = (o = {}) => `
   <label class="cg ${o.clase || ''}">
@@ -1202,8 +1202,8 @@ ${verCodigo(
 
 // ── Elemento: Selector ──────────────────────────────────────────────────────
 
-const ICO_LUPA = ic('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>');
-const ICO_CHECK = ic('<path d="m5 12 5 5L20 7"/>');
+const ICO_LUPA = icono('lupa');
+const ICO_CHECK = icono('visto');
 
 // Nombres con tilde a propósito: la demostración de búsqueda sin tildes solo
 // significa algo si hay tildes que ignorar.
@@ -1744,11 +1744,11 @@ const COLUMNAS = [
   { k: 'tarde', t: 'Min. tarde', tipo: 'numero', filtro: 'texto' },
 ];
 
-const ICO_DESC = ic('<path d="M12 5v14M6 13l6 6 6-6"/>');
-const ICO_ORD = ic('<path d="m7 15 5 5 5-5M7 9l5-5 5 5"/>');
-const ICO_COLS = ic('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/>');
-const ICO_FILTRO = ic('<path d="M3 5h18l-7 8v6l-4 2v-8Z"/>');
-const ICO_X = ic('<path d="M6 6l12 12M18 6 6 18"/>');
+const ICO_DESC = icono('descargar2');
+const ICO_ORD = icono('ordenar');
+const ICO_COLS = icono('columnas');
+const ICO_FILTRO = icono('filtro');
+const ICO_X = icono('cerrar');
 
 const pagTabla = `
 <p class="pag-intro">Es el <strong>80 % de la superficie del sistema</strong>. Todo lo demás se
@@ -5421,6 +5421,18 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .msj-aviso { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
 .msj-error { background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
 .msj-info  { background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
+/* NOTA PERMANENTE. Los cuatro de arriba son ESTADOS: dicen que algo paso.
+   Esta no dice nada, explica —como se calcula un dato, una advertencia legal
+   que siempre esta ahi—, y por eso no puede vestirse de aviso.
+
+   Usar el ambar para algo permanente le quita el significado al ambar: si
+   siempre esta, deja de querer decir «mira esto». Lo razono asi Control
+   Administrativos V2.0 y es correcto.
+
+   Sin color de estado y sin filete de acento: superficie neutra y borde
+   normal. Tokens ya existentes, ningun color nuevo. */
+.msj-nota { background: var(--fondo-encabezado); color: var(--texto-secundario);
+  border-left-color: var(--borde-fuerte); }
 .chip-info { background: var(--info-fondo); color: var(--info-texto); border-color: var(--info-acento); }
 
 .campos-demo { align-items: flex-start; }

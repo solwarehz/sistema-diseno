@@ -21,3 +21,4 @@ export { EstadoPantalla, Aviso, Progreso, type TipoEstado, type TonoAviso } from
 export { Tarjeta, TarjetaPersona } from './Tarjeta';
 export { Horario, escribirHora, type BloqueHorario } from './Horario';
 export { SelectorBusqueda, type OpcionBusqueda } from './SelectorBusqueda';
+export { Nota } from './Nota';

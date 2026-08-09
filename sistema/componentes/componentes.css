@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.11.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.11.1
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -101,7 +101,7 @@ a.enlace.enl-nosub{ text-decoration: none; }
 .enlace:hover{ text-decoration: underline; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CAMPO DE TEXTO — 31 reglas · clases .campo-*, .cg-*, .msj-*
+   CAMPO DE TEXTO — 32 reglas · clases .campo-*, .cg-*, .msj-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 [data-vista='movil'] .campo{ font-size: 16px; }
@@ -152,6 +152,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .msj-aviso{ background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
 .msj-error{ background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
 .msj-info{ background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
+.msj-nota{ background: var(--fondo-encabezado); color: var(--texto-secundario);
+  border-left-color: var(--borde-fuerte); }
 .campo-grupo{ display: flex; flex-direction: column; gap: 4px; }
 .campo-etiqueta{ font-size: 13px; font-weight: 500; }
 .campo-ayuda{ font-size: 12px; color: var(--texto-pista); }

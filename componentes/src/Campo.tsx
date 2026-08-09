@@ -30,9 +30,25 @@ type Comun = {
   etiquetaOculta?: boolean;
 };
 
-export type CampoProps = Comun & React.InputHTMLAttributes<HTMLInputElement>;
+export type CampoProps = Comun & React.InputHTMLAttributes<HTMLInputElement> & {
+  /**
+   * Contenido propio EN LUGAR del `<input>` que trae dentro.
+   *
+   * El campo resuelve el 90 % de los casos con su control; el 10 % restante
+   * —un control compuesto, dos que comparten rótulo, un dato que no es texto—
+   * obligaba a elegir entre reconstruir el envoltorio o deformar el dato para
+   * que cupiera. Las dos salidas eran malas y separaban el rótulo, la ayuda y
+   * el error del sistema justo en ese sitio.
+   *
+   * Lo que recibe: el `id` que hay que poner en el control para que el rótulo
+   * lo señale, y los `aria-describedby` de la ayuda y el error ya calculados.
+   * Poniéndolos, el envoltorio sigue siendo el mismo para el lector de
+   * pantalla. Lo pidió Control Administrativos V2.0.
+   */
+  children?: (props: { id: string; 'aria-describedby'?: string; 'aria-invalid'?: true }) => React.ReactNode;
+};
 
-export function Campo({ etiqueta, ayuda, error, etiquetaOculta = false, className = '', ...resto }: CampoProps) {
+export function Campo({ etiqueta, ayuda, error, etiquetaOculta = false, className = '', children, ...resto }: CampoProps) {
   const id = useId();
   const idAyuda = ayuda ? `${id}-ayuda` : undefined;
   const idError = error ? `${id}-error` : undefined;
@@ -46,13 +62,17 @@ export function Campo({ etiqueta, ayuda, error, etiquetaOculta = false, classNam
       >
         {etiqueta}
       </label>
-      <input
-        id={id}
-        className={['campo', error ? 'campo-mal' : '', className].filter(Boolean).join(' ')}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={descrito}
-        {...resto}
-      />
+      {children ? (
+        children({ id, 'aria-describedby': descrito, 'aria-invalid': error ? true : undefined })
+      ) : (
+        <input
+          id={id}
+          className={['campo', error ? 'campo-mal' : '', className].filter(Boolean).join(' ')}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={descrito}
+          {...resto}
+        />
+      )}
       {/* El error va PRIMERO en el orden de lectura: es lo que hay que resolver. */}
       {error && <span id={idError} className="campo-error">{error}</span>}
       {ayuda && <span id={idAyuda} className="campo-ayuda">{ayuda}</span>}
