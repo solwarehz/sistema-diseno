@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.11.1
+# Actualizar al sistema de diseño v1.13.0
 
 Para el área de sistemas. Si vienes de la **v1.7.0**, que es la que se entregó
 en su momento, esto es todo lo que cambia y todo lo que hay que hacer.
@@ -8,7 +8,7 @@ en su momento, esto es todo lo que cambia y todo lo que hay que hacer.
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.11.1"
+npm install "github:solwarehz/sistema-diseno#v1.13.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -17,7 +17,7 @@ decidiste tú puede entrar en un despliegue sin que nadie la revise. La etiqueta
 fija la versión y la hace reproducible.
 
 Para actualizar más adelante, cambia el número de la etiqueta. **No uses
-rangos** (`^1.10.0`): npm no los resuelve en dependencias de GitHub, y creerías
+rangos** (`^1.13.0`): npm no los resuelve en dependencias de GitHub, y creerías
 estar en una versión distinta de la real.
 
 Si el comando falla con `404` o `repository not found`, no es un problema del
@@ -26,7 +26,7 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.10.7
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.13.0
 ```
 
 ---
@@ -34,8 +34,8 @@ node -p "require('sistema-diseno-ae/package.json').version"   # 1.10.7
 ## 2 · Lo primero que cambia para ti: ya no reconstruyes componentes
 
 Hasta la v1.9.0 la entrega llevaba **el estilo** y tú ponías el comportamiento.
-Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.11.1
-viajan los trece componentes de React**, con el comportamiento dentro.
+Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.13.0
+viajan los VEINTE componentes de React**, con el comportamiento dentro.
 
 ```jsx
 import 'sistema-diseno-ae/tokens.css';       // SIEMPRE primero
@@ -56,9 +56,13 @@ Lo que traen dentro y ya no tienes que escribir:
 | `Confirmacion` | La devolución del foco al elemento que la abrió, y el anuncio a lector de pantalla |
 | `Horario` | Ejes rotables, 12/24 h y la preferencia recordada |
 | `SelectorBusqueda` | El patrón `combobox` de ARIA completo. **Sin umbral**: si busca, busca siempre |
+| `MarcoApp` `MenuUsuario` `MarcaMenu` | **El marco entero**: menú lateral, barra, menú de usuario con tema y salida, y el logo del cliente que no puede romper el diseño. Con `vista="app"`, pestañas abajo respetando las zonas del teléfono |
+| `Dialogo` | Modal con el foco atrapado, Escape y devolución del foco al cerrar |
+| `Migas` | Migas de pan con el `aria-current` y las barras que el lector no lee |
+| `Nota` | Texto que explica y se queda. **No es un aviso**: si el ámbar siempre está, deja de significar «mira esto» |
 | `Boton` `Campo` `Chip` `Avatar` `Interruptor` `Paginacion` `Tarjeta` `Enlace` `Estados` | El anillo de foco, los estados, la etiqueta vinculada, el tamaño táctil |
 
-### Tres cosas nuevas que conviene que sepas
+### Cuatro cosas nuevas que conviene que sepas
 
 **El botón impide el doble envío solo.** Si `onClick` devuelve una promesa, se
 deshabilita, gira y se libera al terminar —resuelva o falle—. Y descarta los
@@ -78,6 +82,10 @@ de la que se puede salir eligiendo el otro botón, y entonces no garantiza nada.
 proyectos, no solo para quien lo pida: con el foco en la acción, el Enter que
 acababas de pulsar para llegar ahí ejecuta lo irreversible. Si de verdad
 necesitas lo contrario, `focoInicial="accion"`.
+
+**El botón puede decir QUÉ está haciendo.** `textoOcupado="Guardando…"`. Los dos
+textos se dibujan apilados desde el principio, así que el ancho no salta. Sin
+esa propiedad, el comportamiento es el de siempre.
 
 **La tabla tiene modo servidor.** `modo="servidor"` + `total`: la tabla deja de
 tocar los datos, solo emite el estado por `alCambiar` y pinta lo que le des. Y
