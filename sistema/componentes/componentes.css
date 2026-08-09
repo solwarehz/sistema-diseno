@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.15.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.15.1
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -150,11 +150,11 @@ input[type='date'].campo::-webkit-calendar-picker-indicator{
   position: absolute; right: 0; top: 0;
 }
 input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: none; }
+.chip-exito, .msj-exito{ background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.chip-aviso, .msj-aviso{ background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.chip-error, .msj-error{ background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
+.chip-info,  .msj-info{ background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
 .msj{ font-size: 13px; padding: 8px 12px; border-radius: 6px; border-left: 3px solid; }
-.msj-exito{ background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
-.msj-aviso{ background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
-.msj-error{ background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
-.msj-info{ background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
 .msj-nota{ background: var(--fondo-encabezado); color: var(--texto-secundario);
   border-left-color: var(--borde-fuerte); }
 .campo-grupo{ display: flex; flex-direction: column; gap: 4px; }
@@ -404,10 +404,10 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .chip-fila-demo{ display: flex; gap: 8px; align-items: center; }
 .chip{ display: inline-block; font-size: 12px; font-weight: 500;
   padding: 4px 8px; border-radius: 3px; border-left: 3px solid; }
-.chip-exito{ background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
-.chip-aviso{ background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
-.chip-error{ background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
-.chip-info{ background: var(--info-fondo); color: var(--info-texto); border-color: var(--info-acento); }
+.chip-exito, .msj-exito{ background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.chip-aviso, .msj-aviso{ background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.chip-error, .msj-error{ background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
+.chip-info,  .msj-info{ background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
 
 /* ───────────────────────────────────────────────────────────────────────────
    AVATAR — 14 reglas · clases .avatar-*
@@ -831,7 +831,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .esqueleto.corto{ width: 62%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MARCO DE APLICACIÓN — 210 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
+   MARCO DE APLICACIÓN — 208 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 :where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
@@ -858,11 +858,11 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   .app-cascaron .lat.colapsado .nav-hijos{ display: none; }
 }
 .nav-grupo{ margin-bottom: 0; }
-.nav-grupo-tit{ width: 100%; background: transparent; border: 0; cursor: pointer;
+.nav-grupo-tit, .nav-rama-tit{ width: 100%; background: transparent; border: 0; cursor: pointer;
   font: inherit; text-align: left; }
 .nav-grupo-tit .nav-chev .ic{ transition: transform .18s ease; transform: rotate(-90deg); }
 .nav-grupo.abierto .nav-chev .ic{ transform: rotate(0deg); }
-.nav-hijos{ display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
+.nav-hijos, .nav-nietos{ display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
 .nav-grupo.abierto .nav-hijos{ grid-template-rows: 1fr; }
 .nav-hijos-in{ overflow: hidden; visibility: hidden; transition: visibility 0s .18s; }
 .nav-grupo.abierto .nav-hijos-in{ visibility: visible; transition: visibility 0s; }
@@ -876,12 +876,9 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .nav-nietos-in{ background: var(--marco-nivel-2); }
 .nav-rama{ border-top: 1px solid var(--marco-borde); }
 .nav-rama:first-child{ border-top: 0; }
-.nav-rama-tit{ width: 100%; background: transparent; border: 0; cursor: pointer;
-  font: inherit; text-align: left; }
 .nav-rama-tit .nav-chev .ic{ width: 14px; height: 14px;
   transition: transform .18s ease; transform: rotate(-90deg); }
 .nav-rama.abierta .nav-chev .ic{ transform: rotate(0deg); }
-.nav-nietos{ display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
 .nav-rama.abierta .nav-nietos{ grid-template-rows: 1fr; }
 .nav-nietos-in{ overflow: hidden; visibility: hidden; transition: visibility 0s .18s; }
 .nav-rama.abierta .nav-nietos-in{ visibility: visible; transition: visibility 0s; }

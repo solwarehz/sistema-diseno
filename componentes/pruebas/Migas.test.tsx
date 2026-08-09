@@ -174,3 +174,37 @@ describe('Cabecera de pantalla', () => {
     expect(container.querySelector('.pant-desc')).toBeNull();
   });
 });
+
+/**
+ * NOTA PERMANENTE. Se quedó sin pruebas al publicarla, y lo cazó la auditoría
+ * del cascarón. Un componente sin pruebas es un componente que nadie sabe si
+ * sigue haciendo lo que dice.
+ */
+import { Nota } from '../src/Nota';
+
+describe('Nota permanente', () => {
+  it('NO es una región viva: no interrumpe en cada repintado', () => {
+    const { container } = render(<Nota>Las horas se redondean a 15 minutos.</Nota>);
+    const n = container.firstElementChild!;
+    expect(n).not.toHaveAttribute('role');
+    expect(n).not.toHaveAttribute('aria-live');
+  });
+
+  it('lleva el tono NEUTRO, no el de un estado', () => {
+    const { container } = render(<Nota>Texto</Nota>);
+    const n = container.firstElementChild!;
+    expect(n).toHaveClass('msj', 'msj-nota');
+    expect(n.className).not.toMatch(/msj-(aviso|error|exito|info)/);
+  });
+
+  it('el título es parte del texto, no un encabezado que rompa la jerarquía', () => {
+    const { container } = render(<Nota titulo="Cómo se calcula:">Al bloque de 15 min.</Nota>);
+    expect(container.querySelector('h1,h2,h3,h4,h5,h6')).toBeNull();
+    expect(screen.getByText('Cómo se calcula:')).toBeInTheDocument();
+  });
+
+  it('no se cierra: no hay botón para hacerla desaparecer', () => {
+    const { container } = render(<Nota>Texto</Nota>);
+    expect(container.querySelector('button')).toBeNull();
+  });
+});

@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.15.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.15.1
    WCAG 2.2 AA · 134 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -553,3 +553,69 @@
 .color-marca_azul { background-color: var(--marca_azul); }
 .color-marca_rojo_lockup { background-color: var(--marca_rojo_lockup); }
 .color-marca_negro_lockup { background-color: var(--marca_negro_lockup); }
+
+/* Y una por TOKEN SEMANTICO, con el mismo deletreo: `.token-accion`.
+
+   Existen por lo mismo que las de escalon: para poder PINTAR la muestra de un
+   token sin escribir `style="background: var(--accion)"` en el marcado. El
+   catalogo tenia 85 de esos atributos en linea, y un catalogo que se salta la
+   regla de los estilos en linea no puede exigirla.
+
+   NO son para maquetar. En una interfaz se usa el token en la propiedad que
+   toque —fondo, texto o borde—, no una clase que solo sabe pintar fondos. */
+.token-fondo-pagina { background-color: var(--fondo-pagina); }
+.token-fondo-tarjeta { background-color: var(--fondo-tarjeta); }
+.token-fondo-encabezado { background-color: var(--fondo-encabezado); }
+.token-fondo-fila-alt { background-color: var(--fondo-fila-alt); }
+.token-fondo-fila-hover { background-color: var(--fondo-fila-hover); }
+.token-texto-principal { background-color: var(--texto-principal); }
+.token-texto-secundario { background-color: var(--texto-secundario); }
+.token-texto-pista { background-color: var(--texto-pista); }
+.token-texto-invertido { background-color: var(--texto-invertido); }
+.token-borde { background-color: var(--borde); }
+.token-borde-fuerte { background-color: var(--borde-fuerte); }
+.token-borde-campo { background-color: var(--borde-campo); }
+.token-accion { background-color: var(--accion); }
+.token-accion-hover { background-color: var(--accion-hover); }
+.token-accion-activa { background-color: var(--accion-activa); }
+.token-accion-texto { background-color: var(--accion-texto); }
+.token-accion-deshabilitada { background-color: var(--accion-deshabilitada); }
+.token-accion-texto-desh { background-color: var(--accion-texto-desh); }
+.token-accion-2 { background-color: var(--accion-2); }
+.token-enlace { background-color: var(--enlace); }
+.token-accion-2-fondo { background-color: var(--accion-2-fondo); }
+.token-neutra-fondo { background-color: var(--neutra-fondo); }
+.token-neutra-texto { background-color: var(--neutra-texto); }
+.token-destructiva { background-color: var(--destructiva); }
+.token-destructiva-hover { background-color: var(--destructiva-hover); }
+.token-destructiva-texto { background-color: var(--destructiva-texto); }
+.token-marco-fondo { background-color: var(--marco-fondo); }
+.token-marco-texto { background-color: var(--marco-texto); }
+.token-marco-acento { background-color: var(--marco-acento); }
+.token-marco-item-activo { background-color: var(--marco-item-activo); }
+.token-marco-nivel-1 { background-color: var(--marco-nivel-1); }
+.token-marco-nivel-2 { background-color: var(--marco-nivel-2); }
+.token-marco-borde { background-color: var(--marco-borde); }
+.token-marco-texto-tenue { background-color: var(--marco-texto-tenue); }
+.token-foco { background-color: var(--foco); }
+.token-foco-en-marco { background-color: var(--foco-en-marco); }
+.token-exito-fondo { background-color: var(--exito-fondo); }
+.token-exito-texto { background-color: var(--exito-texto); }
+.token-exito-acento { background-color: var(--exito-acento); }
+.token-aviso-fondo { background-color: var(--aviso-fondo); }
+.token-aviso-texto { background-color: var(--aviso-texto); }
+.token-aviso-acento { background-color: var(--aviso-acento); }
+.token-error-fondo { background-color: var(--error-fondo); }
+.token-error-texto { background-color: var(--error-texto); }
+.token-error-acento { background-color: var(--error-acento); }
+.token-info-fondo { background-color: var(--info-fondo); }
+.token-info-texto { background-color: var(--info-texto); }
+.token-info-acento { background-color: var(--info-acento); }
+.token-apagado-fondo { background-color: var(--apagado-fondo); }
+.token-apagado-borde { background-color: var(--apagado-borde); }
+.token-apagado-bolita { background-color: var(--apagado-bolita); }
+.token-identidad-1 { background-color: var(--identidad-1); }
+.token-identidad-2 { background-color: var(--identidad-2); }
+.token-identidad-3 { background-color: var(--identidad-3); }
+.token-identidad-4 { background-color: var(--identidad-4); }
+.token-identidad-texto { background-color: var(--identidad-texto); }

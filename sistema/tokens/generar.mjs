@@ -370,6 +370,17 @@ ${escalones.map(([n, v]) => `  --${n}: ${v};`).join('\n')}
 }
 
 ${escalones.map(([n]) => `.color-${n} { background-color: var(--${n}); }`).join('\n')}
+
+/* Y una por TOKEN SEMANTICO, con el mismo deletreo: \`.token-accion\`.
+
+   Existen por lo mismo que las de escalon: para poder PINTAR la muestra de un
+   token sin escribir \`style="background: var(--accion)"\` en el marcado. El
+   catalogo tenia 85 de esos atributos en linea, y un catalogo que se salta la
+   regla de los estilos en linea no puede exigirla.
+
+   NO son para maquetar. En una interfaz se usa el token en la propiedad que
+   toque —fondo, texto o borde—, no una clase que solo sabe pintar fondos. */
+${Object.keys(semanticos).map((n) => `.token-${n} { background-color: var(--${n}); }`).join('\n')}
 `;
 
 writeFileSync(join(AQUI, 'tokens.css'), css);

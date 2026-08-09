@@ -91,7 +91,8 @@ const SOLO_CATALOGO = new Set([
   // Sacarlas tambien aqui daria DOS declaraciones del mismo color en dos
   // archivos, y el dia que una cambie sin la otra gana la que se importe
   // despues. Un color con dos fuentes es justo lo que este sistema no admite.
-  'color',
+  // Igual las de token semantico: `.token-accion` viaja tambien por tokens.css.
+  'color', 'token',
   // Chrome del propio catalogo, sin equivalente en un producto.
   'maquetas', 'escudo', 'opciones',
 ]);

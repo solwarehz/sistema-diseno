@@ -124,6 +124,54 @@ for (const { sel, decl } of bloques) {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Y LOS ATRIBUTOS `style=` DEL MARCADO.
+//
+// Hasta aquí el auditor solo leía la hoja de estilos, y eso dejaba un agujero
+// del tamaño de lo que se escribe en línea. Se midió: **once espaciados fuera
+// de la rejilla de 4 y cinco pesos prohibidos** llevaban meses ahí, en
+// atributos `style=`, mientras el auditor decía cero.
+//
+// Es el mismo fallo que ya cerró el candado de color, que también empezó
+// mirando solo la hoja. Un auditor que revisa una parte y reporta cero da
+// MENOS confianza que ninguno, porque el cero se cree.
+//
+// Los pesos prohibidos del muestrario tipográfico se exceptúan a mano: esa
+// página existe para ENSEÑAR cuáles no se usan, y sin ellos no puede.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const marcado = html.replace(/<style[^>]*>[\s\S]*?<\/style>/g, '');
+const MUESTRARIO_PESOS = /class="peso-/;
+
+for (const m of marcado.matchAll(/(<[^>]*?)style="([^"]*)"/g)) {
+  const decl = m[2];
+  const contexto = m[1];
+  const donde = `style= (${decl.slice(0, 34)}…)`;
+
+  for (const h of [...decl.matchAll(/(padding|margin|gap)(-[a-z]+)?\s*:\s*([^;]+)/g)]) {
+    for (const v of h[3].match(/\d+(?:\.\d+)?px/g) || []) {
+      const n = parseFloat(v);
+      if (n !== 0 && n % 4 !== 0) anota(hallazgos.espacio, donde, `${h[1]}${h[2] || ''}: ${n}px`);
+    }
+  }
+
+  for (const h of [...decl.matchAll(/font-weight\s*:\s*(\d+)/g)]) {
+    if (PESOS.has(Number(h[1]))) continue;
+    // El muestrario de pesos ENSEÑA los prohibidos. Sin ellos no se ve por qué
+    // no se usan.
+    if (MUESTRARIO_PESOS.test(contexto)) continue;
+    anota(hallazgos.tipo, donde, `peso ${h[1]} fuera de los cuatro`);
+  }
+
+  for (const h of [...decl.matchAll(/font-size\s*:\s*(\d+(?:\.\d+)?)px/g)]) {
+    if (!ESCALA.has(Number(h[1]))) anota(hallazgos.tipo, donde, `tamaño ${h[1]}px fuera de la escala`);
+  }
+
+  for (const v of decl.match(/#[0-9a-fA-F]{3,8}\b/g) || []) {
+    anota(hallazgos.color, donde, `${v} en un atributo style`);
+  }
+}
+
 // ── Reporte ─────────────────────────────────────────────────────────────────
 
 const TITULOS = {

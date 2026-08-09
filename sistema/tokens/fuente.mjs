@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.15.0';
+export const VERSION = '1.15.1';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,27 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.15.1', fecha: '2026-08-09',
+    que: 'Auditoria estricta del cascaron: el propio auditor tenia un agujero',
+    porque:
+      'El hallazgo grave es sobre el candado, no sobre el catalogo: auditar-cascaron.mjs leia ' +
+      'SOLO la hoja de estilos, asi que todo lo escrito en style= le era invisible. Al ' +
+      'ampliarlo apareceieron DOCE infracciones que llevaban meses ahi mientras el auditor ' +
+      'decia cero: once espaciados fuera de la rejilla de 4 y un tamano fuera de la escala. ' +
+      'Es peor que no auditar, porque el cero se cree. ' +
+      'Ademas el catalogo pintaba 85 muestras con style="background: var(--token)", y un ' +
+      'catalogo que se salta la regla de los estilos en linea no puede exigirla: se generan 56 ' +
+      'clases de token semantico. Los estilos en linea bajan de 197 a 112, y los que llevan ' +
+      'color, de 90 a CERO. ' +
+      'Y la misma decision escrita dos veces: chip-exito y msj-exito declaraban lo mismo, y asi ' +
+      'los cuatro estados. No es ahorro de lineas —la pareja fondo/texto/filete de un estado es ' +
+      'UNA decision, y escrita dos veces se separa—. Igual el arbol de navegacion. ' +
+      'Lo que NO se toca tambien se decide: las otras 20 duplicaciones son coincidencia, no ' +
+      'duplicacion, y fundirlas acoplaria elementos ajenos.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.15.0', fecha: '2026-08-09',
     que: 'PanelBarra para mensajes y notificaciones, y el logo con nombre propio',

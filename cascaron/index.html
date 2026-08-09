@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.15.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.15.1</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.15.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.15.1
    WCAG 2.2 AA · 134 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -562,6 +562,72 @@
 .color-marca_rojo_lockup { background-color: var(--marca_rojo_lockup); }
 .color-marca_negro_lockup { background-color: var(--marca_negro_lockup); }
 
+/* Y una por TOKEN SEMANTICO, con el mismo deletreo: `.token-accion`.
+
+   Existen por lo mismo que las de escalon: para poder PINTAR la muestra de un
+   token sin escribir `style="background: var(--accion)"` en el marcado. El
+   catalogo tenia 85 de esos atributos en linea, y un catalogo que se salta la
+   regla de los estilos en linea no puede exigirla.
+
+   NO son para maquetar. En una interfaz se usa el token en la propiedad que
+   toque —fondo, texto o borde—, no una clase que solo sabe pintar fondos. */
+.token-fondo-pagina { background-color: var(--fondo-pagina); }
+.token-fondo-tarjeta { background-color: var(--fondo-tarjeta); }
+.token-fondo-encabezado { background-color: var(--fondo-encabezado); }
+.token-fondo-fila-alt { background-color: var(--fondo-fila-alt); }
+.token-fondo-fila-hover { background-color: var(--fondo-fila-hover); }
+.token-texto-principal { background-color: var(--texto-principal); }
+.token-texto-secundario { background-color: var(--texto-secundario); }
+.token-texto-pista { background-color: var(--texto-pista); }
+.token-texto-invertido { background-color: var(--texto-invertido); }
+.token-borde { background-color: var(--borde); }
+.token-borde-fuerte { background-color: var(--borde-fuerte); }
+.token-borde-campo { background-color: var(--borde-campo); }
+.token-accion { background-color: var(--accion); }
+.token-accion-hover { background-color: var(--accion-hover); }
+.token-accion-activa { background-color: var(--accion-activa); }
+.token-accion-texto { background-color: var(--accion-texto); }
+.token-accion-deshabilitada { background-color: var(--accion-deshabilitada); }
+.token-accion-texto-desh { background-color: var(--accion-texto-desh); }
+.token-accion-2 { background-color: var(--accion-2); }
+.token-enlace { background-color: var(--enlace); }
+.token-accion-2-fondo { background-color: var(--accion-2-fondo); }
+.token-neutra-fondo { background-color: var(--neutra-fondo); }
+.token-neutra-texto { background-color: var(--neutra-texto); }
+.token-destructiva { background-color: var(--destructiva); }
+.token-destructiva-hover { background-color: var(--destructiva-hover); }
+.token-destructiva-texto { background-color: var(--destructiva-texto); }
+.token-marco-fondo { background-color: var(--marco-fondo); }
+.token-marco-texto { background-color: var(--marco-texto); }
+.token-marco-acento { background-color: var(--marco-acento); }
+.token-marco-item-activo { background-color: var(--marco-item-activo); }
+.token-marco-nivel-1 { background-color: var(--marco-nivel-1); }
+.token-marco-nivel-2 { background-color: var(--marco-nivel-2); }
+.token-marco-borde { background-color: var(--marco-borde); }
+.token-marco-texto-tenue { background-color: var(--marco-texto-tenue); }
+.token-foco { background-color: var(--foco); }
+.token-foco-en-marco { background-color: var(--foco-en-marco); }
+.token-exito-fondo { background-color: var(--exito-fondo); }
+.token-exito-texto { background-color: var(--exito-texto); }
+.token-exito-acento { background-color: var(--exito-acento); }
+.token-aviso-fondo { background-color: var(--aviso-fondo); }
+.token-aviso-texto { background-color: var(--aviso-texto); }
+.token-aviso-acento { background-color: var(--aviso-acento); }
+.token-error-fondo { background-color: var(--error-fondo); }
+.token-error-texto { background-color: var(--error-texto); }
+.token-error-acento { background-color: var(--error-acento); }
+.token-info-fondo { background-color: var(--info-fondo); }
+.token-info-texto { background-color: var(--info-texto); }
+.token-info-acento { background-color: var(--info-acento); }
+.token-apagado-fondo { background-color: var(--apagado-fondo); }
+.token-apagado-borde { background-color: var(--apagado-borde); }
+.token-apagado-bolita { background-color: var(--apagado-bolita); }
+.token-identidad-1 { background-color: var(--identidad-1); }
+.token-identidad-2 { background-color: var(--identidad-2); }
+.token-identidad-3 { background-color: var(--identidad-3); }
+.token-identidad-4 { background-color: var(--identidad-4); }
+.token-identidad-texto { background-color: var(--identidad-texto); }
+
 
 /* ── Cascarón. Estilos de la propia página de revisión ───────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
@@ -685,12 +751,14 @@ code { font-family: 'IBM Plex Mono', monospace; }
 /* Sin margen propio: la separación la da el gap del contenedor. Con las dos
    cosas se contaba doble y los grupos quedaban a 8px. */
 .nav-grupo { margin-bottom: 0; }
-.nav-grupo-tit { width: 100%; background: transparent; border: 0; cursor: pointer;
+/* El titulo de grupo y el de rama son el mismo control. */
+.nav-grupo-tit, .nav-rama-tit { width: 100%; background: transparent; border: 0; cursor: pointer;
   font: inherit; text-align: left; }
 .nav-grupo-tit .nav-chev .ic { transition: transform .18s ease; transform: rotate(-90deg); }
 .nav-grupo.abierto .nav-chev .ic { transform: rotate(0deg); }
 /* grid-template-rows de 0fr a 1fr: lo único que anima hasta altura automática. */
-.nav-hijos { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
+/* El arbol tiene dos niveles y se comportan igual: una sola regla. */
+.nav-hijos, .nav-nietos { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
 .nav-grupo.abierto .nav-hijos { grid-template-rows: 1fr; }
 /* El padding va en los hijos, no en la caja: el padding de la caja NO lo
    recorta overflow, y un grupo cerrado se quedaba ocupando 8px. */
@@ -713,12 +781,9 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .nav-nietos-in { background: var(--marco-nivel-2); }
 .nav-rama { border-top: 1px solid var(--marco-borde); }
 .nav-rama:first-child { border-top: 0; }
-.nav-rama-tit { width: 100%; background: transparent; border: 0; cursor: pointer;
-  font: inherit; text-align: left; }
 .nav-rama-tit .nav-chev .ic { width: 14px; height: 14px;
   transition: transform .18s ease; transform: rotate(-90deg); }
 .nav-rama.abierta .nav-chev .ic { transform: rotate(0deg); }
-.nav-nietos { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
 .nav-rama.abierta .nav-nietos { grid-template-rows: 1fr; }
 .nav-nietos-in { overflow: hidden; visibility: hidden; transition: visibility 0s .18s; }
 .nav-rama.abierta .nav-nietos-in { visibility: visible; transition: visibility 0s; }
@@ -2066,9 +2131,15 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
 .chip { display: inline-block; font-size: 12px; font-weight: 500;
   padding: 4px 8px; border-radius: 3px; border-left: 3px solid; }
-.chip-exito { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
-.chip-aviso { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
-.chip-error { background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
+/* EL COLOR DEL ESTADO SE ESCRIBE UNA VEZ, no una por elemento.
+   Estaba en .chip-* y otra vez en .msj-*, identico, y el dia que un tono
+   cambiara habria cambiado en uno de los dos. No es un ahorro de lineas: es
+   que la pareja fondo/texto/filete de un estado es UNA decision, y una
+   decision escrita dos veces se separa. */
+.chip-exito, .msj-exito { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.chip-aviso, .msj-aviso { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.chip-error, .msj-error { background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
+.chip-info,  .msj-info  { background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
 
 /* Escudo pendiente */
 .escudo-falta { color: var(--texto-pista); flex: none; display: grid; place-items: center; }
@@ -2325,6 +2396,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 /* Solo del catalogo: el prefijo demo no viaja. En la barra real los botones
    estan a la derecha del todo y el anclaje a la derecha es el correcto; aqui
    estan a la izquierda de la pagina y el panel se saldria de pantalla. */
+/* ESTADOS DEL BOTON, dibujados sin pasar el raton. Solo del catalogo: un
+   producto no necesita pintar el hover a mano, lo hace el navegador. Estaban
+   en atributos style= y el catalogo no puede saltarse la regla que exige. */
+.demo-hover { background: var(--accion-hover); color: var(--accion-texto); }
+.demo-activa { background: var(--accion-activa); color: var(--accion-texto); }
+.demo-desh { background: var(--accion-deshabilitada); color: var(--accion-texto-desh); cursor: not-allowed; }
+.demo-accion { background: var(--accion); }
 .demo-paneles { display: flex; gap: 24px; }
 .demo-paneles .pb-panel { right: auto; left: 0; }
 .pb-panel { min-width: 320px; max-width: 360px; padding: 4px 0 0; }
@@ -2553,10 +2631,6 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
 .mensajes { display: grid; gap: 8px; margin-top: 12px; }
 .msj { font-size: 13px; padding: 8px 12px; border-radius: 6px; border-left: 3px solid; }
-.msj-exito { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
-.msj-aviso { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
-.msj-error { background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
-.msj-info  { background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
 /* NOTA PERMANENTE. Los cuatro de arriba son ESTADOS: dicen que algo paso.
    Esta no dice nada, explica —como se calcula un dato, una advertencia legal
    que siempre esta ahi—, y por eso no puede vestirse de aviso.
@@ -2569,7 +2643,6 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    normal. Tokens ya existentes, ningun color nuevo. */
 .msj-nota { background: var(--fondo-encabezado); color: var(--texto-secundario);
   border-left-color: var(--borde-fuerte); }
-.chip-info { background: var(--info-fondo); color: var(--info-texto); border-color: var(--info-acento); }
 
 .campos-demo { align-items: flex-start; }
 .campo-grupo { display: flex; flex-direction: column; gap: 4px; }
@@ -2817,7 +2890,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.15.0</option></select></label>
+          <select class="campo cg-in"><option>v1.15.1</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -2878,8 +2951,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.15.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.15.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.15.1.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.15.1</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -2912,8 +2985,7 @@ El menú de la izquierda lo abre por partes.</p>
     <h3>Superficies</h3>
     <div class="rejilla">
   <div class="muestra">
-    <div class="muestra-color" data-claro="#F8F8F6" data-oscuro="#1E1D1C"
-         style="background: var(--fondo-pagina)"></div>
+    <div class="muestra-color token-fondo-pagina" data-claro="#F8F8F6" data-oscuro="#1E1D1C"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">fondo-pagina</code>
       <span class="muestra-clase" data-hex-de="fondo-pagina">gris_50</span>
@@ -2921,8 +2993,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#FFFFFF" data-oscuro="#242422"
-         style="background: var(--fondo-tarjeta)"></div>
+    <div class="muestra-color token-fondo-tarjeta" data-claro="#FFFFFF" data-oscuro="#242422"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">fondo-tarjeta</code>
       <span class="muestra-clase" data-hex-de="fondo-tarjeta">gris_0</span>
@@ -2930,8 +3001,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#F0EFEE" data-oscuro="#2C2B29"
-         style="background: var(--fondo-encabezado)"></div>
+    <div class="muestra-color token-fondo-encabezado" data-claro="#F0EFEE" data-oscuro="#2C2B29"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">fondo-encabezado</code>
       <span class="muestra-clase" data-hex-de="fondo-encabezado">gris_100</span>
@@ -2939,8 +3009,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#F8F8F6" data-oscuro="#2A2927"
-         style="background: var(--fondo-fila-alt)"></div>
+    <div class="muestra-color token-fondo-fila-alt" data-claro="#F8F8F6" data-oscuro="#2A2927"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">fondo-fila-alt</code>
       <span class="muestra-clase" data-hex-de="fondo-fila-alt">gris_50</span>
@@ -2948,8 +3017,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#E9F5FF" data-oscuro="#363532"
-         style="background: var(--fondo-fila-hover)"></div>
+    <div class="muestra-color token-fondo-fila-hover" data-claro="#E9F5FF" data-oscuro="#363532"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">fondo-fila-hover</code>
       <span class="muestra-clase" data-hex-de="fondo-fila-hover">azul_50</span>
@@ -2961,8 +3029,7 @@ El menú de la izquierda lo abre por partes.</p>
     <h3>Texto</h3>
     <div class="rejilla">
   <div class="muestra">
-    <div class="muestra-color" data-claro="#2C2A25" data-oscuro="#EFEEEB"
-         style="background: var(--texto-principal)"></div>
+    <div class="muestra-color token-texto-principal" data-claro="#2C2A25" data-oscuro="#EFEEEB"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">texto-principal</code>
       <span class="muestra-clase" data-hex-de="texto-principal">gris_900</span>
@@ -2970,8 +3037,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#6A6864" data-oscuro="#C3C1BD"
-         style="background: var(--texto-secundario)"></div>
+    <div class="muestra-color token-texto-secundario" data-claro="#6A6864" data-oscuro="#C3C1BD"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">texto-secundario</code>
       <span class="muestra-clase" data-hex-de="texto-secundario">gris_600</span>
@@ -2979,8 +3045,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#6A6864" data-oscuro="#989692"
-         style="background: var(--texto-pista)"></div>
+    <div class="muestra-color token-texto-pista" data-claro="#6A6864" data-oscuro="#989692"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">texto-pista</code>
       <span class="muestra-clase" data-hex-de="texto-pista">gris_600</span>
@@ -2988,8 +3053,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#FFFFFF" data-oscuro="#20201E"
-         style="background: var(--texto-invertido)"></div>
+    <div class="muestra-color token-texto-invertido" data-claro="#FFFFFF" data-oscuro="#20201E"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">texto-invertido</code>
       <span class="muestra-clase" data-hex-de="texto-invertido">gris_0</span>
@@ -3001,8 +3065,7 @@ El menú de la izquierda lo abre por partes.</p>
     <h3>Bordes</h3>
     <div class="rejilla">
   <div class="muestra">
-    <div class="muestra-color" data-claro="#E0DFDE" data-oscuro="#44423F"
-         style="background: var(--borde)"></div>
+    <div class="muestra-color token-borde" data-claro="#E0DFDE" data-oscuro="#44423F"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">borde</code>
       <span class="muestra-clase" data-hex-de="borde">gris_200</span>
@@ -3010,8 +3073,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#C8C6C4" data-oscuro="#575451"
-         style="background: var(--borde-fuerte)"></div>
+    <div class="muestra-color token-borde-fuerte" data-claro="#C8C6C4" data-oscuro="#575451"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">borde-fuerte</code>
       <span class="muestra-clase" data-hex-de="borde-fuerte">gris_300</span>
@@ -3019,8 +3081,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#8B8985" data-oscuro="#8A8681"
-         style="background: var(--borde-campo)"></div>
+    <div class="muestra-color token-borde-campo" data-claro="#8B8985" data-oscuro="#8A8681"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">borde-campo</code>
       <span class="muestra-clase" data-hex-de="borde-campo">gris_500</span>
@@ -3032,8 +3093,7 @@ El menú de la izquierda lo abre por partes.</p>
     <h3>Acción</h3>
     <div class="rejilla">
   <div class="muestra">
-    <div class="muestra-color" data-claro="#0063CB" data-oscuro="#6CB2FF"
-         style="background: var(--accion)"></div>
+    <div class="muestra-color token-accion" data-claro="#0063CB" data-oscuro="#6CB2FF"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">accion</code>
       <span class="muestra-clase" data-hex-de="accion">azul_600</span>
@@ -3041,8 +3101,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#004EB2" data-oscuro="#A0D0FF"
-         style="background: var(--accion-hover)"></div>
+    <div class="muestra-color token-accion-hover" data-claro="#004EB2" data-oscuro="#A0D0FF"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">accion-hover</code>
       <span class="muestra-clase" data-hex-de="accion-hover">azul_700</span>
@@ -3050,8 +3109,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#003B91" data-oscuro="#CFE8FF"
-         style="background: var(--accion-activa)"></div>
+    <div class="muestra-color token-accion-activa" data-claro="#003B91" data-oscuro="#CFE8FF"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">accion-activa</code>
       <span class="muestra-clase" data-hex-de="accion-activa">azul_800</span>
@@ -3059,8 +3117,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#FFFFFF" data-oscuro="#20201E"
-         style="background: var(--accion-texto)"></div>
+    <div class="muestra-color token-accion-texto" data-claro="#FFFFFF" data-oscuro="#20201E"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">accion-texto</code>
       <span class="muestra-clase" data-hex-de="accion-texto">gris_0</span>
@@ -3068,8 +3125,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#C8C6C4" data-oscuro="#44423F"
-         style="background: var(--accion-deshabilitada)"></div>
+    <div class="muestra-color token-accion-deshabilitada" data-claro="#C8C6C4" data-oscuro="#44423F"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">accion-deshabilitada</code>
       <span class="muestra-clase" data-hex-de="accion-deshabilitada">gris_300</span>
@@ -3077,8 +3133,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#8B8985" data-oscuro="#989692"
-         style="background: var(--accion-texto-desh)"></div>
+    <div class="muestra-color token-accion-texto-desh" data-claro="#8B8985" data-oscuro="#989692"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">accion-texto-desh</code>
       <span class="muestra-clase" data-hex-de="accion-texto-desh">gris_500</span>
@@ -3086,8 +3141,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#655000" data-oscuro="#DFCA9C"
-         style="background: var(--accion-2)"></div>
+    <div class="muestra-color token-accion-2" data-claro="#655000" data-oscuro="#DFCA9C"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">accion-2</code>
       <span class="muestra-clase" data-hex-de="accion-2">oro_700</span>
@@ -3095,8 +3149,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#0063CB" data-oscuro="#6CB2FF"
-         style="background: var(--enlace)"></div>
+    <div class="muestra-color token-enlace" data-claro="#0063CB" data-oscuro="#6CB2FF"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">enlace</code>
       <span class="muestra-clase" data-hex-de="enlace">azul_600</span>
@@ -3108,8 +3161,7 @@ El menú de la izquierda lo abre por partes.</p>
     <h3>Marco de aplicación</h3>
     <div class="rejilla">
   <div class="muestra">
-    <div class="muestra-color" data-claro="#2C3D71" data-oscuro="#2C3D71"
-         style="background: var(--marco-fondo)"></div>
+    <div class="muestra-color token-marco-fondo" data-claro="#2C3D71" data-oscuro="#2C3D71"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">marco-fondo</code>
       <span class="muestra-clase" data-hex-de="marco-fondo">indigo_800</span>
@@ -3117,8 +3169,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#FFFFFF" data-oscuro="#FFFFFF"
-         style="background: var(--marco-texto)"></div>
+    <div class="muestra-color token-marco-texto" data-claro="#FFFFFF" data-oscuro="#FFFFFF"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">marco-texto</code>
       <span class="muestra-clase" data-hex-de="marco-texto">gris_0</span>
@@ -3126,8 +3177,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#DFCA9C" data-oscuro="#DFCA9C"
-         style="background: var(--marco-acento)"></div>
+    <div class="muestra-color token-marco-acento" data-claro="#DFCA9C" data-oscuro="#DFCA9C"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">marco-acento</code>
       <span class="muestra-clase" data-hex-de="marco-acento">oro_200</span>
@@ -3135,8 +3185,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#1D3163" data-oscuro="#1D3163"
-         style="background: var(--marco-item-activo)"></div>
+    <div class="muestra-color token-marco-item-activo" data-claro="#1D3163" data-oscuro="#1D3163"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">marco-item-activo</code>
       <span class="muestra-clase" data-hex-de="marco-item-activo">indigo_900</span>
@@ -3148,8 +3197,7 @@ El menú de la izquierda lo abre por partes.</p>
     <h3>Foco</h3>
     <div class="rejilla">
   <div class="muestra">
-    <div class="muestra-color" data-claro="#BE7A14" data-oscuro="#F0C060"
-         style="background: var(--foco)"></div>
+    <div class="muestra-color token-foco" data-claro="#BE7A14" data-oscuro="#F0C060"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">foco</code>
       <span class="muestra-clase" data-hex-de="foco">ambar_600</span>
@@ -3157,8 +3205,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#F0C060" data-oscuro="#F0C060"
-         style="background: var(--foco-en-marco)"></div>
+    <div class="muestra-color token-foco-en-marco" data-claro="#F0C060" data-oscuro="#F0C060"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">foco-en-marco</code>
       <span class="muestra-clase" data-hex-de="foco-en-marco">ambar_300</span>
@@ -3170,8 +3217,7 @@ El menú de la izquierda lo abre por partes.</p>
     <h3>Estados</h3>
     <div class="rejilla">
   <div class="muestra">
-    <div class="muestra-color" data-claro="#E3F4E1" data-oscuro="#233521"
-         style="background: var(--exito-fondo)"></div>
+    <div class="muestra-color token-exito-fondo" data-claro="#E3F4E1" data-oscuro="#233521"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">exito-fondo</code>
       <span class="muestra-clase" data-hex-de="exito-fondo">verde_50</span>
@@ -3179,8 +3225,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#14521A" data-oscuro="#B3DCAE"
-         style="background: var(--exito-texto)"></div>
+    <div class="muestra-color token-exito-texto" data-claro="#14521A" data-oscuro="#B3DCAE"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">exito-texto</code>
       <span class="muestra-clase" data-hex-de="exito-texto">verde_900</span>
@@ -3188,8 +3233,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#338136" data-oscuro="#5FA862"
-         style="background: var(--exito-acento)"></div>
+    <div class="muestra-color token-exito-acento" data-claro="#338136" data-oscuro="#5FA862"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">exito-acento</code>
       <span class="muestra-clase" data-hex-de="exito-acento">verde_700</span>
@@ -3197,8 +3241,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#FFEBD6" data-oscuro="#402C16"
-         style="background: var(--aviso-fondo)"></div>
+    <div class="muestra-color token-aviso-fondo" data-claro="#FFEBD6" data-oscuro="#402C16"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">aviso-fondo</code>
       <span class="muestra-clase" data-hex-de="aviso-fondo">ambar_50</span>
@@ -3206,8 +3249,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#6B3B00" data-oscuro="#FBC894"
-         style="background: var(--aviso-texto)"></div>
+    <div class="muestra-color token-aviso-texto" data-claro="#6B3B00" data-oscuro="#FBC894"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">aviso-texto</code>
       <span class="muestra-clase" data-hex-de="aviso-texto">ambar_900</span>
@@ -3215,8 +3257,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#A46300" data-oscuro="#C88A3C"
-         style="background: var(--aviso-acento)"></div>
+    <div class="muestra-color token-aviso-acento" data-claro="#A46300" data-oscuro="#C88A3C"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">aviso-acento</code>
       <span class="muestra-clase" data-hex-de="aviso-acento">ambar_700</span>
@@ -3224,8 +3265,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#FFE6DF" data-oscuro="#4D241F"
-         style="background: var(--error-fondo)"></div>
+    <div class="muestra-color token-error-fondo" data-claro="#FFE6DF" data-oscuro="#4D241F"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">error-fondo</code>
       <span class="muestra-clase" data-hex-de="error-fondo">alerta_50</span>
@@ -3233,8 +3273,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#8F1017" data-oscuro="#FFB8A9"
-         style="background: var(--error-texto)"></div>
+    <div class="muestra-color token-error-texto" data-claro="#8F1017" data-oscuro="#FFB8A9"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">error-texto</code>
       <span class="muestra-clase" data-hex-de="error-texto">alerta_800</span>
@@ -3242,8 +3281,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#D63231" data-oscuro="#E2665C"
-         style="background: var(--error-acento)"></div>
+    <div class="muestra-color token-error-acento" data-claro="#D63231" data-oscuro="#E2665C"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">error-acento</code>
       <span class="muestra-clase" data-hex-de="error-acento">alerta_500</span>
@@ -3251,8 +3289,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#E9EEFF" data-oscuro="#273048"
-         style="background: var(--info-fondo)"></div>
+    <div class="muestra-color token-info-fondo" data-claro="#E9EEFF" data-oscuro="#273048"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">info-fondo</code>
       <span class="muestra-clase" data-hex-de="info-fondo">informacion_50</span>
@@ -3260,8 +3297,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#02468A" data-oscuro="#BFD0FF"
-         style="background: var(--info-texto)"></div>
+    <div class="muestra-color token-info-texto" data-claro="#02468A" data-oscuro="#BFD0FF"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">info-texto</code>
       <span class="muestra-clase" data-hex-de="info-texto">informacion_800</span>
@@ -3269,8 +3305,7 @@ El menú de la izquierda lo abre por partes.</p>
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#2F71CE" data-oscuro="#6D97DE"
-         style="background: var(--info-acento)"></div>
+    <div class="muestra-color token-info-acento" data-claro="#2F71CE" data-oscuro="#6D97DE"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">info-acento</code>
       <span class="muestra-clase" data-hex-de="info-acento">informacion_500</span>
@@ -3293,7 +3328,7 @@ El menú de la izquierda lo abre por partes.</p>
       <button class="btn btn-1">Guardar</button>
       <button class="btn btn-2">Columnas</button>
       <button class="btn btn-neutro">Exportar</button>
-      <button class="btn" disabled style="background:var(--accion-deshabilitada);color:var(--accion-texto-desh);cursor:not-allowed">Sin permiso</button>
+      <button class="btn" disabled class="demo-desh">Sin permiso</button>
       <a href="#" class="enlace">Editar</a>
     </div>
     <div class="caso-tokens"><code>accion</code> <code>accion-2</code> <code>borde-campo</code> <code>accion-deshabilitada</code> <code>enlace</code></div></div>
@@ -3461,8 +3496,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <h3>Superficies</h3>
     <div class="rejilla">
   <div class="muestra">
-    <div class="muestra-color" data-claro="#F8F8F6" data-oscuro="#1E1D1C"
-         style="background: var(--fondo-pagina)"></div>
+    <div class="muestra-color token-fondo-pagina" data-claro="#F8F8F6" data-oscuro="#1E1D1C"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">fondo-pagina</code>
       <span class="muestra-clase" data-hex-de="fondo-pagina">gris_50</span>
@@ -3470,8 +3504,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#FFFFFF" data-oscuro="#242422"
-         style="background: var(--fondo-tarjeta)"></div>
+    <div class="muestra-color token-fondo-tarjeta" data-claro="#FFFFFF" data-oscuro="#242422"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">fondo-tarjeta</code>
       <span class="muestra-clase" data-hex-de="fondo-tarjeta">gris_0</span>
@@ -3479,8 +3512,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#F0EFEE" data-oscuro="#2C2B29"
-         style="background: var(--fondo-encabezado)"></div>
+    <div class="muestra-color token-fondo-encabezado" data-claro="#F0EFEE" data-oscuro="#2C2B29"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">fondo-encabezado</code>
       <span class="muestra-clase" data-hex-de="fondo-encabezado">gris_100</span>
@@ -3488,8 +3520,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#F8F8F6" data-oscuro="#2A2927"
-         style="background: var(--fondo-fila-alt)"></div>
+    <div class="muestra-color token-fondo-fila-alt" data-claro="#F8F8F6" data-oscuro="#2A2927"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">fondo-fila-alt</code>
       <span class="muestra-clase" data-hex-de="fondo-fila-alt">gris_50</span>
@@ -3497,8 +3528,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#E9F5FF" data-oscuro="#363532"
-         style="background: var(--fondo-fila-hover)"></div>
+    <div class="muestra-color token-fondo-fila-hover" data-claro="#E9F5FF" data-oscuro="#363532"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">fondo-fila-hover</code>
       <span class="muestra-clase" data-hex-de="fondo-fila-hover">azul_50</span>
@@ -3510,8 +3540,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <h3>Texto</h3>
     <div class="rejilla">
   <div class="muestra">
-    <div class="muestra-color" data-claro="#2C2A25" data-oscuro="#EFEEEB"
-         style="background: var(--texto-principal)"></div>
+    <div class="muestra-color token-texto-principal" data-claro="#2C2A25" data-oscuro="#EFEEEB"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">texto-principal</code>
       <span class="muestra-clase" data-hex-de="texto-principal">gris_900</span>
@@ -3519,8 +3548,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#6A6864" data-oscuro="#C3C1BD"
-         style="background: var(--texto-secundario)"></div>
+    <div class="muestra-color token-texto-secundario" data-claro="#6A6864" data-oscuro="#C3C1BD"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">texto-secundario</code>
       <span class="muestra-clase" data-hex-de="texto-secundario">gris_600</span>
@@ -3528,8 +3556,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#6A6864" data-oscuro="#989692"
-         style="background: var(--texto-pista)"></div>
+    <div class="muestra-color token-texto-pista" data-claro="#6A6864" data-oscuro="#989692"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">texto-pista</code>
       <span class="muestra-clase" data-hex-de="texto-pista">gris_600</span>
@@ -3537,8 +3564,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#FFFFFF" data-oscuro="#20201E"
-         style="background: var(--texto-invertido)"></div>
+    <div class="muestra-color token-texto-invertido" data-claro="#FFFFFF" data-oscuro="#20201E"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">texto-invertido</code>
       <span class="muestra-clase" data-hex-de="texto-invertido">gris_0</span>
@@ -3550,8 +3576,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <h3>Bordes</h3>
     <div class="rejilla">
   <div class="muestra">
-    <div class="muestra-color" data-claro="#E0DFDE" data-oscuro="#44423F"
-         style="background: var(--borde)"></div>
+    <div class="muestra-color token-borde" data-claro="#E0DFDE" data-oscuro="#44423F"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">borde</code>
       <span class="muestra-clase" data-hex-de="borde">gris_200</span>
@@ -3559,8 +3584,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#C8C6C4" data-oscuro="#575451"
-         style="background: var(--borde-fuerte)"></div>
+    <div class="muestra-color token-borde-fuerte" data-claro="#C8C6C4" data-oscuro="#575451"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">borde-fuerte</code>
       <span class="muestra-clase" data-hex-de="borde-fuerte">gris_300</span>
@@ -3568,8 +3592,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#8B8985" data-oscuro="#8A8681"
-         style="background: var(--borde-campo)"></div>
+    <div class="muestra-color token-borde-campo" data-claro="#8B8985" data-oscuro="#8A8681"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">borde-campo</code>
       <span class="muestra-clase" data-hex-de="borde-campo">gris_500</span>
@@ -3581,8 +3604,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <h3>Acción</h3>
     <div class="rejilla">
   <div class="muestra">
-    <div class="muestra-color" data-claro="#0063CB" data-oscuro="#6CB2FF"
-         style="background: var(--accion)"></div>
+    <div class="muestra-color token-accion" data-claro="#0063CB" data-oscuro="#6CB2FF"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">accion</code>
       <span class="muestra-clase" data-hex-de="accion">azul_600</span>
@@ -3590,8 +3612,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#004EB2" data-oscuro="#A0D0FF"
-         style="background: var(--accion-hover)"></div>
+    <div class="muestra-color token-accion-hover" data-claro="#004EB2" data-oscuro="#A0D0FF"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">accion-hover</code>
       <span class="muestra-clase" data-hex-de="accion-hover">azul_700</span>
@@ -3599,8 +3620,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#003B91" data-oscuro="#CFE8FF"
-         style="background: var(--accion-activa)"></div>
+    <div class="muestra-color token-accion-activa" data-claro="#003B91" data-oscuro="#CFE8FF"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">accion-activa</code>
       <span class="muestra-clase" data-hex-de="accion-activa">azul_800</span>
@@ -3608,8 +3628,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#FFFFFF" data-oscuro="#20201E"
-         style="background: var(--accion-texto)"></div>
+    <div class="muestra-color token-accion-texto" data-claro="#FFFFFF" data-oscuro="#20201E"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">accion-texto</code>
       <span class="muestra-clase" data-hex-de="accion-texto">gris_0</span>
@@ -3617,8 +3636,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#C8C6C4" data-oscuro="#44423F"
-         style="background: var(--accion-deshabilitada)"></div>
+    <div class="muestra-color token-accion-deshabilitada" data-claro="#C8C6C4" data-oscuro="#44423F"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">accion-deshabilitada</code>
       <span class="muestra-clase" data-hex-de="accion-deshabilitada">gris_300</span>
@@ -3626,8 +3644,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#8B8985" data-oscuro="#989692"
-         style="background: var(--accion-texto-desh)"></div>
+    <div class="muestra-color token-accion-texto-desh" data-claro="#8B8985" data-oscuro="#989692"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">accion-texto-desh</code>
       <span class="muestra-clase" data-hex-de="accion-texto-desh">gris_500</span>
@@ -3635,8 +3652,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#655000" data-oscuro="#DFCA9C"
-         style="background: var(--accion-2)"></div>
+    <div class="muestra-color token-accion-2" data-claro="#655000" data-oscuro="#DFCA9C"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">accion-2</code>
       <span class="muestra-clase" data-hex-de="accion-2">oro_700</span>
@@ -3644,8 +3660,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#0063CB" data-oscuro="#6CB2FF"
-         style="background: var(--enlace)"></div>
+    <div class="muestra-color token-enlace" data-claro="#0063CB" data-oscuro="#6CB2FF"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">enlace</code>
       <span class="muestra-clase" data-hex-de="enlace">azul_600</span>
@@ -3657,8 +3672,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <h3>Marco de aplicación</h3>
     <div class="rejilla">
   <div class="muestra">
-    <div class="muestra-color" data-claro="#2C3D71" data-oscuro="#2C3D71"
-         style="background: var(--marco-fondo)"></div>
+    <div class="muestra-color token-marco-fondo" data-claro="#2C3D71" data-oscuro="#2C3D71"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">marco-fondo</code>
       <span class="muestra-clase" data-hex-de="marco-fondo">indigo_800</span>
@@ -3666,8 +3680,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#FFFFFF" data-oscuro="#FFFFFF"
-         style="background: var(--marco-texto)"></div>
+    <div class="muestra-color token-marco-texto" data-claro="#FFFFFF" data-oscuro="#FFFFFF"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">marco-texto</code>
       <span class="muestra-clase" data-hex-de="marco-texto">gris_0</span>
@@ -3675,8 +3688,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#DFCA9C" data-oscuro="#DFCA9C"
-         style="background: var(--marco-acento)"></div>
+    <div class="muestra-color token-marco-acento" data-claro="#DFCA9C" data-oscuro="#DFCA9C"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">marco-acento</code>
       <span class="muestra-clase" data-hex-de="marco-acento">oro_200</span>
@@ -3684,8 +3696,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#1D3163" data-oscuro="#1D3163"
-         style="background: var(--marco-item-activo)"></div>
+    <div class="muestra-color token-marco-item-activo" data-claro="#1D3163" data-oscuro="#1D3163"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">marco-item-activo</code>
       <span class="muestra-clase" data-hex-de="marco-item-activo">indigo_900</span>
@@ -3697,8 +3708,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <h3>Foco</h3>
     <div class="rejilla">
   <div class="muestra">
-    <div class="muestra-color" data-claro="#BE7A14" data-oscuro="#F0C060"
-         style="background: var(--foco)"></div>
+    <div class="muestra-color token-foco" data-claro="#BE7A14" data-oscuro="#F0C060"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">foco</code>
       <span class="muestra-clase" data-hex-de="foco">ambar_600</span>
@@ -3706,8 +3716,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#F0C060" data-oscuro="#F0C060"
-         style="background: var(--foco-en-marco)"></div>
+    <div class="muestra-color token-foco-en-marco" data-claro="#F0C060" data-oscuro="#F0C060"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">foco-en-marco</code>
       <span class="muestra-clase" data-hex-de="foco-en-marco">ambar_300</span>
@@ -3719,8 +3728,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <h3>Estados</h3>
     <div class="rejilla">
   <div class="muestra">
-    <div class="muestra-color" data-claro="#E3F4E1" data-oscuro="#233521"
-         style="background: var(--exito-fondo)"></div>
+    <div class="muestra-color token-exito-fondo" data-claro="#E3F4E1" data-oscuro="#233521"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">exito-fondo</code>
       <span class="muestra-clase" data-hex-de="exito-fondo">verde_50</span>
@@ -3728,8 +3736,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#14521A" data-oscuro="#B3DCAE"
-         style="background: var(--exito-texto)"></div>
+    <div class="muestra-color token-exito-texto" data-claro="#14521A" data-oscuro="#B3DCAE"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">exito-texto</code>
       <span class="muestra-clase" data-hex-de="exito-texto">verde_900</span>
@@ -3737,8 +3744,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#338136" data-oscuro="#5FA862"
-         style="background: var(--exito-acento)"></div>
+    <div class="muestra-color token-exito-acento" data-claro="#338136" data-oscuro="#5FA862"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">exito-acento</code>
       <span class="muestra-clase" data-hex-de="exito-acento">verde_700</span>
@@ -3746,8 +3752,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#FFEBD6" data-oscuro="#402C16"
-         style="background: var(--aviso-fondo)"></div>
+    <div class="muestra-color token-aviso-fondo" data-claro="#FFEBD6" data-oscuro="#402C16"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">aviso-fondo</code>
       <span class="muestra-clase" data-hex-de="aviso-fondo">ambar_50</span>
@@ -3755,8 +3760,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#6B3B00" data-oscuro="#FBC894"
-         style="background: var(--aviso-texto)"></div>
+    <div class="muestra-color token-aviso-texto" data-claro="#6B3B00" data-oscuro="#FBC894"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">aviso-texto</code>
       <span class="muestra-clase" data-hex-de="aviso-texto">ambar_900</span>
@@ -3764,8 +3768,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#A46300" data-oscuro="#C88A3C"
-         style="background: var(--aviso-acento)"></div>
+    <div class="muestra-color token-aviso-acento" data-claro="#A46300" data-oscuro="#C88A3C"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">aviso-acento</code>
       <span class="muestra-clase" data-hex-de="aviso-acento">ambar_700</span>
@@ -3773,8 +3776,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#FFE6DF" data-oscuro="#4D241F"
-         style="background: var(--error-fondo)"></div>
+    <div class="muestra-color token-error-fondo" data-claro="#FFE6DF" data-oscuro="#4D241F"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">error-fondo</code>
       <span class="muestra-clase" data-hex-de="error-fondo">alerta_50</span>
@@ -3782,8 +3784,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#8F1017" data-oscuro="#FFB8A9"
-         style="background: var(--error-texto)"></div>
+    <div class="muestra-color token-error-texto" data-claro="#8F1017" data-oscuro="#FFB8A9"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">error-texto</code>
       <span class="muestra-clase" data-hex-de="error-texto">alerta_800</span>
@@ -3791,8 +3792,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#D63231" data-oscuro="#E2665C"
-         style="background: var(--error-acento)"></div>
+    <div class="muestra-color token-error-acento" data-claro="#D63231" data-oscuro="#E2665C"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">error-acento</code>
       <span class="muestra-clase" data-hex-de="error-acento">alerta_500</span>
@@ -3800,8 +3800,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#E9EEFF" data-oscuro="#273048"
-         style="background: var(--info-fondo)"></div>
+    <div class="muestra-color token-info-fondo" data-claro="#E9EEFF" data-oscuro="#273048"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">info-fondo</code>
       <span class="muestra-clase" data-hex-de="info-fondo">informacion_50</span>
@@ -3809,8 +3808,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#02468A" data-oscuro="#BFD0FF"
-         style="background: var(--info-texto)"></div>
+    <div class="muestra-color token-info-texto" data-claro="#02468A" data-oscuro="#BFD0FF"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">info-texto</code>
       <span class="muestra-clase" data-hex-de="info-texto">informacion_800</span>
@@ -3818,8 +3816,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div>
   <div class="muestra">
-    <div class="muestra-color" data-claro="#2F71CE" data-oscuro="#6D97DE"
-         style="background: var(--info-acento)"></div>
+    <div class="muestra-color token-info-acento" data-claro="#2F71CE" data-oscuro="#6D97DE"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">info-acento</code>
       <span class="muestra-clase" data-hex-de="info-acento">informacion_500</span>
@@ -4739,7 +4736,7 @@ claridad para que el mismo blanco funcione encima; por eso el paso es un índice
     <span class="peso-uso">Prohibido</span>
   </div>
 </div>
-<p class="seccion-sub" style="margin-top:10px">Fíjate en que Thin, ExtraLight y Light <strong>no se ven distintos</strong> a este tamaño: el navegador no tiene esos cortes y sintetiza o cae al más cercano. Un peso que no existe en el archivo no es una decisión de diseño, es un accidente.</p>
+<p class="seccion-sub" style="margin-top:12px">Fíjate en que Thin, ExtraLight y Light <strong>no se ven distintos</strong> a este tamaño: el navegador no tiene esos cortes y sintetiza o cae al más cercano. Un peso que no existe en el archivo no es una decisión de diseño, es un accidente.</p>
 
 <h3 class="sub-seccion">Cuándo va monoespaciado</h3>
 <p class="seccion-sub">Identificadores: DNI, RUC, códigos, expedientes. <strong>Nunca</strong> texto normal.</p>
@@ -4984,7 +4981,7 @@ Heredan <code>currentColor</code> — que es exactamente lo que el emoji no hace
     <div class="mal-caja bien"><span class="iconos-demo"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/></svg></span><span class="bien-et">Trazo 1,5px, hereda <code>currentColor</code></span></div>
   </div>
 </div>
-<p class="pag-intro" style="margin-top:14px">Es el tercer defecto real que el documento reporta en §1.3, y el único que seguía sin resolver.</p>
+<p class="pag-intro" style="margin-top:16px">Es el tercer defecto real que el documento reporta en §1.3, y el único que seguía sin resolver.</p>
     </section><section class="pagina" id="pg-boton" hidden>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
@@ -5023,7 +5020,7 @@ principal.</p>
     <tr><td><strong>Editar</strong> · Ver detalle (en fila)</td><td><code>enlace</code></td><td><a href="#" class="enlace">Editar</a></td><td class="motivo">Con cinco filas, cinco botones son ruido, no jerarquía</td></tr>
     <tr><td><strong>Columnas</strong> · Filtros avanzados</td><td><code>secundaria</code></td><td><button class="btn btn-mini btn-2">Columnas</button></td><td class="motivo">Le da al oro trabajo funcional y no solo decorativo</td></tr>
     <tr><td><strong>Exportar</strong> · Imprimir · Duplicar</td><td><code>neutra</code></td><td><button class="btn btn-mini btn-neutro">Exportar</button></td><td class="motivo">Apoyo que no necesita reclamar atención</td></tr>
-    <tr><td><strong>Inactivo</strong> — sin permiso o sin datos</td><td><code>deshabilitada</code></td><td><button class="btn btn-mini" disabled style="background:var(--accion-deshabilitada);color:var(--accion-texto-desh);cursor:not-allowed">Guardar</button></td><td class="motivo">Se ve pero no se pulsa. <strong>Di por qué</strong> en un texto al lado</td></tr>
+    <tr><td><strong>Inactivo</strong> — sin permiso o sin datos</td><td><code>deshabilitada</code></td><td><button class="btn btn-mini demo-desh" disabled>Guardar</button></td><td class="motivo">Se ve pero no se pulsa. <strong>Di por qué</strong> en un texto al lado</td></tr>
   </tbody>
 </table>
 
@@ -5055,7 +5052,7 @@ principal.</p>
     </div>
   </div>
 </div>
-<table class="tabla-simple" style="margin-top:10px">
+<table class="tabla-simple" style="margin-top:12px">
   <thead><tr><th>Lo que falla en el segundo</th><th>Regla</th></tr></thead>
   <tbody>
     <tr><td>Dos botones rellenos compitiendo</td><td class="motivo">Cancelar va en terciaria. Solo una acción lleva relleno</td></tr>
@@ -5070,8 +5067,8 @@ principal.</p>
 <div class="bloque">
   <div class="muestra-fila">
     <div class="mf"><button class="btn btn-1">Guardar</button><span class="mf-et">Normal<br><code>accion</code></span></div>
-    <div class="mf"><button class="btn" style="background:var(--accion-hover);color:var(--accion-texto)">Guardar</button><span class="mf-et">Hover<br><code>accion-hover</code></span></div>
-    <div class="mf"><button class="btn" style="background:var(--accion-activa);color:var(--accion-texto)">Guardar</button><span class="mf-et">Presionado<br><code>accion-activa</code></span></div>
+    <div class="mf"><button class="btn" class="demo-hover">Guardar</button><span class="mf-et">Hover<br><code>accion-hover</code></span></div>
+    <div class="mf"><button class="btn" class="demo-activa">Guardar</button><span class="mf-et">Presionado<br><code>accion-activa</code></span></div>
     <div class="mf"><button class="btn btn-1 foco-demo">Guardar</button><span class="mf-et">Con foco<br>anillo <code>foco</code> 2px</span></div>
   </div>
 </div>
@@ -5211,7 +5208,7 @@ contextual, el lector de pantalla y si «abrir en pestaña nueva» funciona.</p>
 <div class="bloque">
   <div class="muestra-fila">
     <div class="mf">
-      <p style="margin:0;font-size:14px;max-width:34ch">Consulta el <a href="#" class="enlace enl-sub">calendario académico</a>.</p>
+      <p style="margin:0;font-size:15px;max-width:34ch">Consulta el <a href="#" class="enlace enl-sub">calendario académico</a>.</p>
       <span class="mf-et"><b>En texto corrido</b><br>Subrayado siempre<br><code>enlace</code></span>
     </div>
     <div class="mf">
@@ -5281,7 +5278,7 @@ contextual, el lector de pantalla y si «abrir en pestaña nueva» funciona.</p>
 &lt;Enlace href="https://minedu.gob.pe" externo&gt;Ministerio de Educación&lt;/Enlace&gt;
 &lt;Enlace href="/ayuda" enMarco&gt;Ayuda&lt;/Enlace&gt;</pre>
   </div>
-<table class="tabla-simple" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td><code>href</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Sin destino no es un enlace</td></tr>
@@ -5509,7 +5506,7 @@ Para un dato que la persona debe <em>ver</em> pero no cambiar, va <strong>solo l
 &lt;CampoTexto etiqueta="Sede" valor="Huaraz" soloLectura /&gt;
 &lt;CampoTexto etiqueta="DNI" valor="7123" error="Faltan 4 dígitos." /&gt;</pre>
   </div>
-<table class="tabla-simple" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td><code>etiqueta</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatoria.</strong> Sin etiqueta el componente no renderiza</td></tr>
@@ -5686,7 +5683,7 @@ mirar</strong>, y por debajo la caja de búsqueda estorba.</p>
   sinResultados={(t) =&gt; `Sin resultados para ${t}. Prueba con menos letras.`}
 /&gt;</pre>
   </div>
-<table class="tabla-simple" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td><code>etiqueta</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatoria</strong></td></tr>
@@ -5911,7 +5908,7 @@ nada y se compara de un vistazo. Escondidas en un desplegable solo compensa cuan
     <label class="ms-op ms-desh"><input type="checkbox" checked disabled><span>Marcada y bloqueada</span></label>
     <label class="ms-op ms-mal"><input type="checkbox"><span>Con error</span></label>
   </div>
-  <p class="cg-error" style="margin-top:10px"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg>Elige al menos un aspecto.</p>
+  <p class="cg-error" style="margin-top:12px"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg>Elige al menos un aspecto.</p>
 </div>
 <p class="pag-intro" style="margin-top:12px">El estado <strong>parcial</strong> es el de
 «Seleccionar todos» cuando hay algunas marcadas y otras no. No es un tercer valor: es un resumen
@@ -6034,7 +6031,7 @@ día.</p>
 
   <p class="fc-resumen" id="fc-resumen">Sin rango elegido.</p>
 </div>
-<table class="tabla-simple" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Detalle</th><th>Por qué</th></tr></thead>
   <tbody>
     <tr><td><strong>Dos meses a la vez</strong></td><td class="motivo">La mayoría de rangos cruzan de mes. Con uno solo hay que navegar a media selección y se pierde el hilo</td></tr>
@@ -6224,7 +6221,7 @@ chip de estado.</p>
 </div>
 <div class="bloque">
   <div class="chip-sup">
-    <div class="chip-sup-caja" style="background: var(--fondo-tarjeta)">
+    <div class="chip-sup-caja token-fondo-tarjeta">
           <span class="chip-sup-et"><code>fondo-tarjeta</code></span>
           <div class="chip-sup-fila">
             <span class="chip chip-exito">Activo</span><span class="chip chip-aviso">Parcial</span><span class="chip chip-error">Deuda</span><span class="chip chip-info">En trámite</span>
@@ -6233,7 +6230,7 @@ chip de estado.</p>
             <span class="chip chip-exito chip-sin-filete">Activo</span><span class="chip chip-aviso chip-sin-filete">Parcial</span><span class="chip chip-error chip-sin-filete">Deuda</span><span class="chip chip-info chip-sin-filete">En trámite</span>
           </div>
           <span class="chip-sup-nota">arriba con filete · abajo sin él</span>
-        </div><div class="chip-sup-caja" style="background: var(--fondo-pagina)">
+        </div><div class="chip-sup-caja token-fondo-pagina">
           <span class="chip-sup-et"><code>fondo-pagina</code></span>
           <div class="chip-sup-fila">
             <span class="chip chip-exito">Activo</span><span class="chip chip-aviso">Parcial</span><span class="chip chip-error">Deuda</span><span class="chip chip-info">En trámite</span>
@@ -6242,7 +6239,7 @@ chip de estado.</p>
             <span class="chip chip-exito chip-sin-filete">Activo</span><span class="chip chip-aviso chip-sin-filete">Parcial</span><span class="chip chip-error chip-sin-filete">Deuda</span><span class="chip chip-info chip-sin-filete">En trámite</span>
           </div>
           <span class="chip-sup-nota">arriba con filete · abajo sin él</span>
-        </div><div class="chip-sup-caja" style="background: var(--fondo-fila-hover)">
+        </div><div class="chip-sup-caja token-fondo-fila-hover">
           <span class="chip-sup-et"><code>fondo-fila-hover</code></span>
           <div class="chip-sup-fila">
             <span class="chip chip-exito">Activo</span><span class="chip chip-aviso">Parcial</span><span class="chip chip-error">Deuda</span><span class="chip chip-info">En trámite</span>
@@ -6251,7 +6248,7 @@ chip de estado.</p>
             <span class="chip chip-exito chip-sin-filete">Activo</span><span class="chip chip-aviso chip-sin-filete">Parcial</span><span class="chip chip-error chip-sin-filete">Deuda</span><span class="chip chip-info chip-sin-filete">En trámite</span>
           </div>
           <span class="chip-sup-nota">arriba con filete · abajo sin él</span>
-        </div><div class="chip-sup-caja" style="background: var(--fondo-encabezado)">
+        </div><div class="chip-sup-caja token-fondo-encabezado">
           <span class="chip-sup-et"><code>fondo-encabezado</code></span>
           <div class="chip-sup-fila">
             <span class="chip chip-exito">Activo</span><span class="chip chip-aviso">Parcial</span><span class="chip chip-error">Deuda</span><span class="chip chip-info">En trámite</span>
@@ -6338,7 +6335,7 @@ completo se lee como algo pulsable, y este componente no se pulsa.</p>
 
 &lt;Chip estado="exito" punto&gt;Activo&lt;/Chip&gt;</pre>
   </div>
-<table class="tabla-simple" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td><code>estado</code></td><td class="mono">exito · aviso · error · info</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Trae el par fondo/texto y su filete</td></tr>
@@ -7315,7 +7312,7 @@ cualquier otro listado: no tiene paginación propia.</p>
 // Cargar más
 &lt;Paginacion variante="cargar-mas" restantes={215} porTanda={25} onCargar={cargar} /&gt;</pre>
   </div>
-<table class="tabla-simple" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td><code>total</code></td><td class="mono">number</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Sin total no se puede construir el rango</td></tr>
@@ -7956,7 +7953,7 @@ antes que la causa técnica.</p>
   &lt;TablaDatos filas={filas} /&gt;
 &lt;/EstadoPantalla&gt;</pre>
   </div>
-<table class="tabla-simple" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Qué resuelve</th></tr></thead>
   <tbody>
     <tr><td><code>consultado</code></td><td class="mono">boolean</td><td class="motivo">Separa «nunca consultado» de «sin resultados»</td></tr>
@@ -8263,7 +8260,7 @@ Lo que cambia es el icono, el titulo y los datos, que es justo lo que se pasa po
       <button class="btn btn-1">Guardar</button>
       <button class="btn btn-2">Columnas</button>
       <button class="btn btn-neutro">Exportar</button>
-      <button class="btn" disabled style="background:var(--accion-deshabilitada);color:var(--accion-texto-desh);cursor:not-allowed">Sin permiso</button>
+      <button class="btn" disabled class="demo-desh">Sin permiso</button>
       <a href="#" class="enlace">Editar</a>
     </div>
     <div class="caso-tokens"><code>accion</code> <code>accion-2</code> <code>borde-campo</code> <code>accion-deshabilitada</code> <code>enlace</code></div></div>
@@ -9089,6 +9086,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.15.1 <span class="cam-fecha">2026-08-09</span></h3>
+<p class="pag-intro"><strong>Auditoria estricta del cascaron: el propio auditor tenia un agujero.</strong> El hallazgo grave es sobre el candado, no sobre el catalogo: auditar-cascaron.mjs leia SOLO la hoja de estilos, asi que todo lo escrito en style= le era invisible. Al ampliarlo apareceieron DOCE infracciones que llevaban meses ahi mientras el auditor decia cero: once espaciados fuera de la rejilla de 4 y un tamano fuera de la escala. Es peor que no auditar, porque el cero se cree. Ademas el catalogo pintaba 85 muestras con style="background: var(--token)", y un catalogo que se salta la regla de los estilos en linea no puede exigirla: se generan 56 clases de token semantico. Los estilos en linea bajan de 197 a 112, y los que llevan color, de 90 a CERO. Y la misma decision escrita dos veces: chip-exito y msj-exito declaraban lo mismo, y asi los cuatro estados. No es ahorro de lineas —la pareja fondo/texto/filete de un estado es UNA decision, y escrita dos veces se separa—. Igual el arbol de navegacion. Lo que NO se toca tambien se decide: las otras 20 duplicaciones son coincidencia, no duplicacion, y fundirlas acoplaria elementos ajenos.</p>
+
 
 
 <h3 class="sub-seccion">v1.15.0 <span class="cam-fecha">2026-08-09</span></h3>

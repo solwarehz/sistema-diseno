@@ -71,8 +71,7 @@ const GRUPOS = {
 
 const muestra = (nombre, tok) => `
   <div class="muestra">
-    <div class="muestra-color" data-claro="${tok.claro}" data-oscuro="${tok.oscuro}"
-         style="background: var(--${nombre})"></div>
+    <div class="muestra-color token-${nombre}" data-claro="${tok.claro}" data-oscuro="${tok.oscuro}"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">${nombre}</code>
       <span class="muestra-clase" data-hex-de="${nombre}">${
@@ -421,7 +420,7 @@ const casosDeUso = `
       <button class="btn btn-1">Guardar</button>
       <button class="btn btn-2">Columnas</button>
       <button class="btn btn-neutro">Exportar</button>
-      <button class="btn" disabled style="background:var(--accion-deshabilitada);color:var(--accion-texto-desh);cursor:not-allowed">Sin permiso</button>
+      <button class="btn" disabled class="demo-desh">Sin permiso</button>
       <a href="#" class="enlace">Editar</a>
     </div>
     <div class="caso-tokens"><code>accion</code> <code>accion-2</code> <code>borde-campo</code> <code>accion-deshabilitada</code> <code>enlace</code></div>`
@@ -626,7 +625,7 @@ ${PESOS.map(
   </div>`
 ).join('')}
 </div>
-<p class="seccion-sub" style="margin-top:10px">Fíjate en que Thin, ExtraLight y Light <strong>no se ven distintos</strong> a este tamaño: el navegador no tiene esos cortes y sintetiza o cae al más cercano. Un peso que no existe en el archivo no es una decisión de diseño, es un accidente.</p>
+<p class="seccion-sub" style="margin-top:12px">Fíjate en que Thin, ExtraLight y Light <strong>no se ven distintos</strong> a este tamaño: el navegador no tiene esos cortes y sintetiza o cae al más cercano. Un peso que no existe en el archivo no es una decisión de diseño, es un accidente.</p>
 
 <h3 class="sub-seccion">Cuándo va monoespaciado</h3>
 <p class="seccion-sub">Identificadores: DNI, RUC, códigos, expedientes. <strong>Nunca</strong> texto normal.</p>
@@ -807,7 +806,7 @@ principal.</p>
     <tr><td><strong>Editar</strong> · Ver detalle (en fila)</td><td><code>enlace</code></td><td><a href="#" class="enlace">Editar</a></td><td class="motivo">Con cinco filas, cinco botones son ruido, no jerarquía</td></tr>
     <tr><td><strong>Columnas</strong> · Filtros avanzados</td><td><code>secundaria</code></td><td><button class="btn btn-mini btn-2">Columnas</button></td><td class="motivo">Le da al oro trabajo funcional y no solo decorativo</td></tr>
     <tr><td><strong>Exportar</strong> · Imprimir · Duplicar</td><td><code>neutra</code></td><td><button class="btn btn-mini btn-neutro">Exportar</button></td><td class="motivo">Apoyo que no necesita reclamar atención</td></tr>
-    <tr><td><strong>Inactivo</strong> — sin permiso o sin datos</td><td><code>deshabilitada</code></td><td><button class="btn btn-mini" disabled style="background:var(--accion-deshabilitada);color:var(--accion-texto-desh);cursor:not-allowed">Guardar</button></td><td class="motivo">Se ve pero no se pulsa. <strong>Di por qué</strong> en un texto al lado</td></tr>
+    <tr><td><strong>Inactivo</strong> — sin permiso o sin datos</td><td><code>deshabilitada</code></td><td><button class="btn btn-mini demo-desh" disabled>Guardar</button></td><td class="motivo">Se ve pero no se pulsa. <strong>Di por qué</strong> en un texto al lado</td></tr>
   </tbody>
 </table>
 
@@ -839,7 +838,7 @@ principal.</p>
     </div>
   </div>
 </div>
-<table class="tabla-simple" style="margin-top:10px">
+<table class="tabla-simple" style="margin-top:12px">
   <thead><tr><th>Lo que falla en el segundo</th><th>Regla</th></tr></thead>
   <tbody>
     <tr><td>Dos botones rellenos compitiendo</td><td class="motivo">Cancelar va en terciaria. Solo una acción lleva relleno</td></tr>
@@ -854,8 +853,8 @@ principal.</p>
 <div class="bloque">
   <div class="muestra-fila">
     <div class="mf"><button class="btn btn-1">Guardar</button><span class="mf-et">Normal<br><code>accion</code></span></div>
-    <div class="mf"><button class="btn" style="background:var(--accion-hover);color:var(--accion-texto)">Guardar</button><span class="mf-et">Hover<br><code>accion-hover</code></span></div>
-    <div class="mf"><button class="btn" style="background:var(--accion-activa);color:var(--accion-texto)">Guardar</button><span class="mf-et">Presionado<br><code>accion-activa</code></span></div>
+    <div class="mf"><button class="btn" class="demo-hover">Guardar</button><span class="mf-et">Hover<br><code>accion-hover</code></span></div>
+    <div class="mf"><button class="btn" class="demo-activa">Guardar</button><span class="mf-et">Presionado<br><code>accion-activa</code></span></div>
     <div class="mf"><button class="btn btn-1 foco-demo">Guardar</button><span class="mf-et">Con foco<br>anillo <code>foco</code> 2px</span></div>
   </div>
 </div>
@@ -975,7 +974,7 @@ contextual, el lector de pantalla y si «abrir en pestaña nueva» funciona.</p>
 <div class="bloque">
   <div class="muestra-fila">
     <div class="mf">
-      <p style="margin:0;font-size:14px;max-width:34ch">Consulta el <a href="#" class="enlace enl-sub">calendario académico</a>.</p>
+      <p style="margin:0;font-size:15px;max-width:34ch">Consulta el <a href="#" class="enlace enl-sub">calendario académico</a>.</p>
       <span class="mf-et"><b>En texto corrido</b><br>Subrayado siempre<br><code>enlace</code></span>
     </div>
     <div class="mf">
@@ -1038,7 +1037,7 @@ ${verCodigo(
 <Enlace href="https://minedu.gob.pe" externo>Ministerio de Educación</Enlace>
 <Enlace href="/ayuda" enMarco>Ayuda</Enlace>`
 )}
-<table class="tabla-simple" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td><code>href</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Sin destino no es un enlace</td></tr>
@@ -1186,7 +1185,7 @@ ${verCodigo(
 <CampoTexto etiqueta="Sede" valor="Huaraz" soloLectura />
 <CampoTexto etiqueta="DNI" valor="7123" error="Faltan 4 dígitos." />`
 )}
-<table class="tabla-simple" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td><code>etiqueta</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatoria.</strong> Sin etiqueta el componente no renderiza</td></tr>
@@ -1364,7 +1363,7 @@ ${verCodigo(
   sinResultados={(t) => \`Sin resultados para \${t}. Prueba con menos letras.\`}
 />`
 )}
-<table class="tabla-simple" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td><code>etiqueta</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatoria</strong></td></tr>
@@ -1424,7 +1423,7 @@ chip de estado.</p>
   <div class="chip-sup">
     ${['fondo-tarjeta', 'fondo-pagina', 'fondo-fila-hover', 'fondo-encabezado']
       .map(
-        (s) => `<div class="chip-sup-caja" style="background: var(--${s})">
+        (s) => `<div class="chip-sup-caja token-${s}">
           <span class="chip-sup-et"><code>${s}</code></span>
           <div class="chip-sup-fila">
             ${ESTADOS_CHIP.map(([c, t]) => chip(c, t)).join('')}
@@ -1506,7 +1505,7 @@ ${verCodigo(
 
 <Chip estado="exito" punto>Activo</Chip>`
 )}
-<table class="tabla-simple" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td><code>estado</code></td><td class="mono">exito · aviso · error · info</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Trae el par fondo/texto y su filete</td></tr>
@@ -2081,7 +2080,7 @@ ${verCodigo(
 // Cargar más
 <Paginacion variante="cargar-mas" restantes={215} porTanda={25} onCargar={cargar} />`
 )}
-<table class="tabla-simple" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
   <tbody>
     <tr><td><code>total</code></td><td class="mono">number</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Sin total no se puede construir el rango</td></tr>
@@ -2330,7 +2329,7 @@ ${verCodigo(
   <TablaDatos filas={filas} />
 </EstadoPantalla>`
 )}
-<table class="tabla-simple" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Prop</th><th>Tipo</th><th>Qué resuelve</th></tr></thead>
   <tbody>
     <tr><td><code>consultado</code></td><td class="mono">boolean</td><td class="motivo">Separa «nunca consultado» de «sin resultados»</td></tr>
@@ -2504,7 +2503,7 @@ nada y se compara de un vistazo. Escondidas en un desplegable solo compensa cuan
     <label class="ms-op ms-desh"><input type="checkbox" checked disabled><span>Marcada y bloqueada</span></label>
     <label class="ms-op ms-mal"><input type="checkbox"><span>Con error</span></label>
   </div>
-  <p class="cg-error" style="margin-top:10px">${ICO_ERROR}Elige al menos un aspecto.</p>
+  <p class="cg-error" style="margin-top:12px">${ICO_ERROR}Elige al menos un aspecto.</p>
 </div>
 <p class="pag-intro" style="margin-top:12px">El estado <strong>parcial</strong> es el de
 «Seleccionar todos» cuando hay algunas marcadas y otras no. No es un tercer valor: es un resumen
@@ -2614,7 +2613,7 @@ día.</p>
 
   <p class="fc-resumen" id="fc-resumen">Sin rango elegido.</p>
 </div>
-<table class="tabla-simple" style="margin-top:14px">
+<table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Detalle</th><th>Por qué</th></tr></thead>
   <tbody>
     <tr><td><strong>Dos meses a la vez</strong></td><td class="motivo">La mayoría de rangos cruzan de mes. Con uno solo hay que navegar a media selección y se pierde el hilo</td></tr>
@@ -3177,7 +3176,7 @@ Heredan <code>currentColor</code> — que es exactamente lo que el emoji no hace
     <div class="mal-caja bien"><span class="iconos-demo">${ICONOS.panel}${ICONOS.tesoreria}${ICONOS.configuracion}</span><span class="bien-et">Trazo 1,5px, hereda <code>currentColor</code></span></div>
   </div>
 </div>
-<p class="pag-intro" style="margin-top:14px">Es el tercer defecto real que el documento reporta en §1.3, y el único que seguía sin resolver.</p>`;
+<p class="pag-intro" style="margin-top:16px">Es el tercer defecto real que el documento reporta en §1.3, y el único que seguía sin resolver.</p>`;
 
 const pagMaquetas = `
 <p class="pag-intro">Los tres contextos. Landing y sistema <strong>comparten valores, no proporciones</strong>.
@@ -4012,12 +4011,14 @@ code { font-family: 'IBM Plex Mono', monospace; }
 /* Sin margen propio: la separación la da el gap del contenedor. Con las dos
    cosas se contaba doble y los grupos quedaban a 8px. */
 .nav-grupo { margin-bottom: 0; }
-.nav-grupo-tit { width: 100%; background: transparent; border: 0; cursor: pointer;
+/* El titulo de grupo y el de rama son el mismo control. */
+.nav-grupo-tit, .nav-rama-tit { width: 100%; background: transparent; border: 0; cursor: pointer;
   font: inherit; text-align: left; }
 .nav-grupo-tit .nav-chev .ic { transition: transform .18s ease; transform: rotate(-90deg); }
 .nav-grupo.abierto .nav-chev .ic { transform: rotate(0deg); }
 /* grid-template-rows de 0fr a 1fr: lo único que anima hasta altura automática. */
-.nav-hijos { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
+/* El arbol tiene dos niveles y se comportan igual: una sola regla. */
+.nav-hijos, .nav-nietos { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
 .nav-grupo.abierto .nav-hijos { grid-template-rows: 1fr; }
 /* El padding va en los hijos, no en la caja: el padding de la caja NO lo
    recorta overflow, y un grupo cerrado se quedaba ocupando 8px. */
@@ -4040,12 +4041,9 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .nav-nietos-in { background: var(--marco-nivel-2); }
 .nav-rama { border-top: 1px solid var(--marco-borde); }
 .nav-rama:first-child { border-top: 0; }
-.nav-rama-tit { width: 100%; background: transparent; border: 0; cursor: pointer;
-  font: inherit; text-align: left; }
 .nav-rama-tit .nav-chev .ic { width: 14px; height: 14px;
   transition: transform .18s ease; transform: rotate(-90deg); }
 .nav-rama.abierta .nav-chev .ic { transform: rotate(0deg); }
-.nav-nietos { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
 .nav-rama.abierta .nav-nietos { grid-template-rows: 1fr; }
 .nav-nietos-in { overflow: hidden; visibility: hidden; transition: visibility 0s .18s; }
 .nav-rama.abierta .nav-nietos-in { visibility: visible; transition: visibility 0s; }
@@ -5393,9 +5391,15 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
 .chip { display: inline-block; font-size: 12px; font-weight: 500;
   padding: 4px 8px; border-radius: 3px; border-left: 3px solid; }
-.chip-exito { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
-.chip-aviso { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
-.chip-error { background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
+/* EL COLOR DEL ESTADO SE ESCRIBE UNA VEZ, no una por elemento.
+   Estaba en .chip-* y otra vez en .msj-*, identico, y el dia que un tono
+   cambiara habria cambiado en uno de los dos. No es un ahorro de lineas: es
+   que la pareja fondo/texto/filete de un estado es UNA decision, y una
+   decision escrita dos veces se separa. */
+.chip-exito, .msj-exito { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.chip-aviso, .msj-aviso { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.chip-error, .msj-error { background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
+.chip-info,  .msj-info  { background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
 
 /* Escudo pendiente */
 .escudo-falta { color: var(--texto-pista); flex: none; display: grid; place-items: center; }
@@ -5652,6 +5656,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 /* Solo del catalogo: el prefijo demo no viaja. En la barra real los botones
    estan a la derecha del todo y el anclaje a la derecha es el correcto; aqui
    estan a la izquierda de la pagina y el panel se saldria de pantalla. */
+/* ESTADOS DEL BOTON, dibujados sin pasar el raton. Solo del catalogo: un
+   producto no necesita pintar el hover a mano, lo hace el navegador. Estaban
+   en atributos style= y el catalogo no puede saltarse la regla que exige. */
+.demo-hover { background: var(--accion-hover); color: var(--accion-texto); }
+.demo-activa { background: var(--accion-activa); color: var(--accion-texto); }
+.demo-desh { background: var(--accion-deshabilitada); color: var(--accion-texto-desh); cursor: not-allowed; }
+.demo-accion { background: var(--accion); }
 .demo-paneles { display: flex; gap: 24px; }
 .demo-paneles .pb-panel { right: auto; left: 0; }
 .pb-panel { min-width: 320px; max-width: 360px; padding: 4px 0 0; }
@@ -5880,10 +5891,6 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
 .mensajes { display: grid; gap: 8px; margin-top: 12px; }
 .msj { font-size: 13px; padding: 8px 12px; border-radius: 6px; border-left: 3px solid; }
-.msj-exito { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
-.msj-aviso { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
-.msj-error { background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
-.msj-info  { background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
 /* NOTA PERMANENTE. Los cuatro de arriba son ESTADOS: dicen que algo paso.
    Esta no dice nada, explica —como se calcula un dato, una advertencia legal
    que siempre esta ahi—, y por eso no puede vestirse de aviso.
@@ -5896,7 +5903,6 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    normal. Tokens ya existentes, ningun color nuevo. */
 .msj-nota { background: var(--fondo-encabezado); color: var(--texto-secundario);
   border-left-color: var(--borde-fuerte); }
-.chip-info { background: var(--info-fondo); color: var(--info-texto); border-color: var(--info-acento); }
 
 .campos-demo { align-items: flex-start; }
 .campo-grupo { display: flex; flex-direction: column; gap: 4px; }
