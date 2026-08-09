@@ -47,9 +47,27 @@ const reglas = [
   [PESO_PROHIBIDO,       'Peso tipográfico prohibido (§3.2). Solo Regular 400, Medium 500, SemiBold 600 y Bold 700.'],
 ];
 
-/** Construye los selectores de no-restricted-syntax para un patrón dado. */
+/**
+ * Construye los selectores de no-restricted-syntax para un patrón dado.
+ *
+ * SOLO SE ESCAPA LA BARRA. El patrón se incrusta entre barras dentro del
+ * selector —`Literal[value=/…/]`—, así que lo único que hay que escapar es la
+ * barra que cerraría el literal antes de tiempo.
+ *
+ * Antes se DUPLICABAN las barras invertidas, y eso rompía el candado entero sin
+ * que se notara. Medido sobre los ocho patrones: siete cambiaban de significado
+ * —`\b` pasaba a ser «barra invertida seguida de b», que no caza nada— y el
+ * octavo hacía reventar a ESLint con «Unterminated group» por el `\(` de las
+ * funciones de color.
+ *
+ * Es el peor tipo de fallo: silencioso. Quien lo adoptaba creía estar protegido
+ * y no lo estaba. Lo reportó el equipo de Control Administrativos V2.0 tras
+ * usarlo un día en una aplicación real, y llevaba siete versiones entregándose
+ * así. La prueba de `probar-candado.mjs` no lo cazaba porque probaba los
+ * patrones y no su incrustación; ahora prueba las dos cosas.
+ */
 const selectores = ([patron, mensaje]) => {
-  const fuente = patron.source.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  const fuente = patron.source.replace(/\//g, '\\/');
   return [
     { selector: `Literal[value=/${fuente}/]`, message: mensaje },
     { selector: `TemplateElement[value.raw=/${fuente}/]`, message: mensaje },

@@ -79,6 +79,22 @@ export const TRAZOS = {
   // v1.7.0 — fallo de dibujado. Es el único icono de alarma del conjunto y por
   // eso va aparte: no se usa decorativamente en ningún otro sitio.
   roto: '<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/>',
+
+  // ── v1.9.0 · los que el catálogo usaba y este módulo no publicaba ─────────
+  // Reportados por Control Administrativos V2.0: salían en la demostración y no
+  // se podían importar, así que eran huecos en pantallas reales. Hicieron bien
+  // en NO dibujarlos: un trazo hecho a mano se separa del conjunto a la primera
+  // revisión, y entonces hay dos iconos distintos para la misma idea.
+  candado: '<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+  lupa: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  cerrar: '<path d="M6 6l12 12M18 6 6 18"/>',
+  visto: '<path d="m5 12 5 5L20 7"/>',
+  alerta: '<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/>',
+  // Los de la tabla, por el mismo motivo: sin ellos no se puede reconstruir.
+  filtro: '<path d="M3 5h18l-7 8v6l-4 2v-8Z"/>',
+  columnas: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/>',
+  ordenar: '<path d="m7 15 5 5 5-5M7 9l5-5 5 5"/>',
+  descargar2: '<path d="M12 5v14M6 13l6 6 6-6"/>',
   camara: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/>',
   filas: '<rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="13" width="18" height="5" rx="1"/>',
   filasFinas: '<rect x="3" y="4" width="18" height="3" rx="1"/><rect x="3" y="10" width="18" height="3" rx="1"/><rect x="3" y="16" width="18" height="3" rx="1"/>',

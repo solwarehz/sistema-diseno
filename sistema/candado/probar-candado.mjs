@@ -22,7 +22,7 @@
  * que deje de cazar su propio ejemplo hace fallar esto con salida 1.
  */
 
-import { patrones } from './candado.eslint.config.mjs';
+import config, { patrones } from './candado.eslint.config.mjs';
 
 // Para cada patrón: lo que tiene que cazar y lo que tiene que dejar pasar.
 // Los «pasa» son la mitad que de verdad importa: un patrón demasiado ancho
@@ -107,6 +107,43 @@ patrones.forEach(({ patron, mensaje }, i) => {
   if (!mensaje || mensaje.length < 20) fallos.push(`${caso.nombre}: mensaje ausente o demasiado corto`);
 });
 
-const total = CASOS.reduce((n, c) => n + c.caza.length + c.pasa.length, 0);
+// ── El patrón, YA INCRUSTADO EN EL SELECTOR ─────────────────────────────────
+//
+// Esta es la mitad que faltaba, y la que de verdad rompió. Probar el patrón
+// suelto no sirve de nada si al meterlo en el selector de esquery cambia de
+// significado: durante siete versiones `\b` se convertía en «barra invertida
+// seguida de b» y el candado no cazaba nada, en silencio.
+//
+// Aquí se extrae el patrón del selector generado y se comprueba que reconstruya
+// EXACTAMENTE el original. Lo reportó el equipo de Control Administrativos V2.0
+// usándolo en producción; el sistema debería haberlo cazado solo.
+
+console.log('  El patrón, ya dentro del selector\n');
+
+const reglas = config.at(-1)?.rules?.['no-restricted-syntax'] ?? [];
+const selectoresLiteral = reglas
+  .filter((r) => typeof r === 'object' && /^Literal\[value=\//.test(r.selector || ''))
+  .map((r) => r.selector);
+
+if (selectoresLiteral.length !== patrones.length) {
+  fallos.push(`hay ${patrones.length} patrones y ${selectoresLiteral.length} selectores de Literal`);
+  console.log(`  ✗ ${patrones.length} patrones → ${selectoresLiteral.length} selectores`);
+} else {
+  patrones.forEach(({ patron }, i) => {
+    const dentro = selectoresLiteral[i].replace(/^Literal\[value=\//, '').replace(/\/\]$/, '');
+    let veredicto;
+    try {
+      // Se deshace solo el escape de barra, que es lo único que se escapa.
+      const rehecho = new RegExp(dentro.replace(/\\\//g, '/'));
+      veredicto = rehecho.source === patron.source ? null : `reconstruye "${rehecho.source.slice(0, 40)}"`;
+    } catch (e) {
+      veredicto = `no compila: ${e.message}`;
+    }
+    console.log(`  ${veredicto ? '✗' : '✓'} ${patron.source.slice(0, 40).padEnd(42)}${veredicto || 'idéntico'}`);
+    if (veredicto) fallos.push(`selector ${i}: ${veredicto}`);
+  });
+}
+
+const total = CASOS.reduce((n, c) => n + c.caza.length + c.pasa.length, 0) + patrones.length;
 console.log(`\n  ${total} casos, ${fallos.length} fallos\n`);
 if (fallos.length) process.exit(1);

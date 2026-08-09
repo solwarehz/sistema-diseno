@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.8.0';
+export const VERSION = '1.9.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,21 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.9.0', fecha: '2026-08-08',
+    que: 'Los componentes se entregan, y el candado de lint por fin funciona',
+    porque:
+      'Control Administrativos V2.0 adoptó la v1.7.0 en una aplicación real y midió ' +
+      'el coste: construyeron 3.983 líneas para consumir 1.464. Ahora se entregan ' +
+      'componentes.css con 627 reglas de 20 elementos y comportamiento.md con el ' +
+      'contrato de comportamiento. Además reportaron que el candado de ESLint no ' +
+      'funcionaba tal como se distribuía: duplicaba las barras invertidas al ' +
+      'incrustar el patrón en el selector, y siete de los ocho patrones cambiaban de ' +
+      'significado mientras el octavo hacía reventar a ESLint. Fallaba en silencio ' +
+      'desde la v1.1.0. Nueve iconos más, que el catálogo usaba y el módulo no publicaba.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.8.0', fecha: '2026-08-08',
     que: 'El origen de cada token se verifica en vez de documentarse',

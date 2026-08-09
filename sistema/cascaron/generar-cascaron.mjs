@@ -4376,6 +4376,10 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 .tb-f { width: 100%; font-size: 12px; padding: 4px 8px; }
 select.tb-f { padding-right: 24px; background-position: right 7px center; background-size: 13px 13px; }
 
+/* [hidden] tiene que ganar al display, o la tira de filtros activos ocupa
+   16px vacia y se ve como una banda azul sin contenido. Lo reporto Control
+   Administrativos V2.0 sobre nuestra propia demostracion. */
+.tb-activos[hidden] { display: none; }
 .tb-activos { display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
   margin-bottom: 8px; padding: 8px 8px; border-radius: 6px;
   background: var(--info-fondo); border-left: 3px solid var(--info-acento); }
