@@ -75,7 +75,12 @@ const muestra = (nombre, tok) => `
          style="background: var(--${nombre})"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">${nombre}</code>
-      <span class="muestra-hex" data-hex-de="${nombre}">${tok.claro}</span>
+      <span class=muestra-hex data-hex-de=${nombre}>${tok.claro}</span>
+      <span class=muestra-origen>${
+        tok.origen.claro === 'directo'
+          ? 'sin rampa'
+          : 'de <code>' + tok.origen.claro + '</code>'
+      }</span>
       <span class="muestra-uso">${tok.uso}</span>
     </div>
   </div>`;
@@ -86,18 +91,41 @@ const grupoMuestras = ([titulo, claves]) => `
     <div class="rejilla">${claves.map((k) => muestra(k, semanticos[k])).join('')}</div>
   </section>`;
 
+/**
+ * Qué tokens se apoyan en cada valor. Se calcula una vez y se consulta por hex:
+ * un escalonado se aprueba viendo QUIÉN lo usa, no mirando cuadritos de color.
+ * Un paso sin nadie encima es sitio libre; uno con tres es una concentración
+ * que conviene mirar.
+ */
+const QUIEN_USA = (() => {
+  const mapa = {};
+  for (const [nombre, t] of Object.entries(semanticos)) {
+    for (const modo of ['claro', 'oscuro']) {
+      const k = t[modo].toUpperCase();
+      (mapa[k] ??= []).push(`${nombre}·${modo[0]}`);
+    }
+  }
+  return mapa;
+})();
+
 const escala = (nombre, pasos) => `
   <div class="escala">
     <div class="escala-nombre">${nombre}</div>
     <div class="escala-tiras">
       ${Object.entries(pasos)
-        .map(
-          ([paso, hex]) => `
-        <div class="tira">
+        .map(([paso, hex]) => {
+          // La tira dice DOS cosas: cómo se llama el color y cuánto vale. Antes
+          // listaba además qué tokens se apoyaban en él, y era ruido: para
+          // escoger un escalón hace falta verlo y saber nombrarlo, no saber
+          // quién lo usaba ya.
+          const usan = QUIEN_USA[hex.toUpperCase()] ?? [];
+          return `
+        <div class="tira${usan.length ? ' tira-usada' : ''}">
           <span class="tira-color" style="background:${hex}"></span>
-          <span class="tira-paso">${paso}</span><span class="tira-hex">${hex}</span>
-        </div>`
-        )
+          <code class="tira-nombre">${nombre}_${paso}</code>
+          <span class="tira-hex">${hex}</span>
+        </div>`;
+        })
         .join('')}
     </div>
   </div>`;

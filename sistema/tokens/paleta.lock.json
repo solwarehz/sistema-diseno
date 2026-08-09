@@ -1,6 +1,6 @@
 {
   "documento": "MMI-DS",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "norma": "WCAG 2.2 AA",
   "generado": "node sistema/tokens/generar.mjs",
   "modos": [
@@ -81,6 +81,86 @@
       "800": "#4F3E00",
       "900": "#3B2D00"
     },
+    "verde": {
+      "50": "#E3F4E1",
+      "100": "#D3EDCF",
+      "200": "#B3DCAE",
+      "300": "#96CC92",
+      "400": "#78BB78",
+      "500": "#5FA862",
+      "600": "#46974A",
+      "700": "#338136",
+      "800": "#226B27",
+      "900": "#14521A",
+      "950": "#233521"
+    },
+    "ambar": {
+      "50": "#FFEBD6",
+      "100": "#FEDFBF",
+      "200": "#FBC894",
+      "300": "#F0C060",
+      "400": "#DFA54B",
+      "500": "#C88A3C",
+      "600": "#BE7A14",
+      "700": "#A46300",
+      "800": "#884E00",
+      "900": "#6B3B00",
+      "950": "#402C16"
+    },
+    "indigo": {
+      "50": "#F8F9FC",
+      "100": "#E5E8F2",
+      "200": "#B9C2DC",
+      "300": "#8D9BC6",
+      "400": "#6174B0",
+      "500": "#45558A",
+      "600": "#41507F",
+      "700": "#39497A",
+      "800": "#2C3D71",
+      "900": "#1D3163"
+    },
+    "alerta": {
+      "50": "#FFE6DF",
+      "100": "#FFB8A9",
+      "200": "#F99B8C",
+      "300": "#EF8072",
+      "400": "#E2665C",
+      "500": "#D63231",
+      "600": "#C32123",
+      "700": "#AA181D",
+      "800": "#8F1017",
+      "900": "#4D241F",
+      "950": "#33231F"
+    },
+    "informacion": {
+      "50": "#E9EEFF",
+      "100": "#BFD0FF",
+      "200": "#9FBAF9",
+      "300": "#84A7EE",
+      "400": "#6D97DE",
+      "500": "#2F71CE",
+      "600": "#1C63BC",
+      "700": "#0D55A5",
+      "800": "#02468A",
+      "900": "#273048",
+      "950": "#303030"
+    },
+    "negro": {
+      "50": "#EFEEEB",
+      "100": "#C3C1BD",
+      "200": "#989692",
+      "300": "#8A8681",
+      "400": "#6E6B67",
+      "500": "#575451",
+      "600": "#44423F",
+      "650": "#3A3835",
+      "700": "#363532",
+      "750": "#2C2B29",
+      "800": "#2A2927",
+      "850": "#242422",
+      "900": "#20201E",
+      "950": "#1E1D1C"
+    },
     "gris": {
       "0": "#FFFFFF",
       "50": "#F8F8F6",
@@ -100,8 +180,8 @@
       "claro": "#F8F8F6",
       "oscuro": "#1E1D1C",
       "origen": {
-        "claro": "gris.50",
-        "oscuro": "directo"
+        "claro": "gris_50",
+        "oscuro": "negro_950"
       },
       "uso": "Fondo detrás de las tarjetas"
     },
@@ -109,8 +189,8 @@
       "claro": "#FFFFFF",
       "oscuro": "#242422",
       "origen": {
-        "claro": "gris.0",
-        "oscuro": "directo"
+        "claro": "gris_0",
+        "oscuro": "negro_850"
       },
       "uso": "Tarjeta, panel, cuerpo de tabla, modal"
     },
@@ -118,8 +198,8 @@
       "claro": "#F0EFEE",
       "oscuro": "#2C2B29",
       "origen": {
-        "claro": "gris.100",
-        "oscuro": "directo"
+        "claro": "gris_100",
+        "oscuro": "negro_750"
       },
       "uso": "Encabezado de tabla"
     },
@@ -127,8 +207,8 @@
       "claro": "#F8F8F6",
       "oscuro": "#2A2927",
       "origen": {
-        "claro": "gris.50",
-        "oscuro": "directo"
+        "claro": "gris_50",
+        "oscuro": "negro_800"
       },
       "uso": "Fila alterna de la banda cebra"
     },
@@ -136,8 +216,8 @@
       "claro": "#E9F5FF",
       "oscuro": "#363532",
       "origen": {
-        "claro": "azul.50",
-        "oscuro": "directo"
+        "claro": "azul_50",
+        "oscuro": "negro_700"
       },
       "uso": "Fila bajo el cursor y fila seleccionada. Acompañado de filete `accion` de 3px"
     },
@@ -145,8 +225,8 @@
       "claro": "#2C2A25",
       "oscuro": "#EFEEEB",
       "origen": {
-        "claro": "gris.900",
-        "oscuro": "directo"
+        "claro": "gris_900",
+        "oscuro": "negro_50"
       },
       "uso": "Contenido, títulos, celdas de tabla"
     },
@@ -154,8 +234,8 @@
       "claro": "#6A6864",
       "oscuro": "#C3C1BD",
       "origen": {
-        "claro": "gris.600",
-        "oscuro": "directo"
+        "claro": "gris_600",
+        "oscuro": "negro_100"
       },
       "uso": "Datos de apoyo, columnas no primarias"
     },
@@ -163,8 +243,8 @@
       "claro": "#6A6864",
       "oscuro": "#989692",
       "origen": {
-        "claro": "gris.600",
-        "oscuro": "directo"
+        "claro": "gris_600",
+        "oscuro": "negro_200"
       },
       "uso": "Solo placeholder y ayuda. Nunca contenido real"
     },
@@ -172,8 +252,8 @@
       "claro": "#FFFFFF",
       "oscuro": "#20201E",
       "origen": {
-        "claro": "gris.0",
-        "oscuro": "directo"
+        "claro": "gris_0",
+        "oscuro": "negro_900"
       },
       "uso": "Sobre acción. NUNCA sobre el marco: ahí va marco-texto"
     },
@@ -181,8 +261,8 @@
       "claro": "#E0DFDE",
       "oscuro": "#44423F",
       "origen": {
-        "claro": "gris.200",
-        "oscuro": "directo"
+        "claro": "gris_200",
+        "oscuro": "negro_600"
       },
       "uso": "Divisor de filas, contorno de tarjeta"
     },
@@ -190,8 +270,8 @@
       "claro": "#C8C6C4",
       "oscuro": "#575451",
       "origen": {
-        "claro": "gris.300",
-        "oscuro": "directo"
+        "claro": "gris_300",
+        "oscuro": "negro_500"
       },
       "uso": "Hover de contorno, separadores con peso"
     },
@@ -199,8 +279,8 @@
       "claro": "#8B8985",
       "oscuro": "#8A8681",
       "origen": {
-        "claro": "gris.500",
-        "oscuro": "directo"
+        "claro": "gris_500",
+        "oscuro": "negro_300"
       },
       "uso": "Contorno de input, select, textarea"
     },
@@ -208,8 +288,8 @@
       "claro": "#0063CB",
       "oscuro": "#6CB2FF",
       "origen": {
-        "claro": "azul.600",
-        "oscuro": "azul.300"
+        "claro": "azul_600",
+        "oscuro": "azul_300"
       },
       "uso": "Botón principal. UNO por pantalla"
     },
@@ -217,8 +297,8 @@
       "claro": "#004EB2",
       "oscuro": "#A0D0FF",
       "origen": {
-        "claro": "azul.700",
-        "oscuro": "azul.200"
+        "claro": "azul_700",
+        "oscuro": "azul_200"
       },
       "uso": "Hover del botón principal"
     },
@@ -226,8 +306,8 @@
       "claro": "#003B91",
       "oscuro": "#CFE8FF",
       "origen": {
-        "claro": "azul.800",
-        "oscuro": "azul.100"
+        "claro": "azul_800",
+        "oscuro": "azul_100"
       },
       "uso": "Estado presionado"
     },
@@ -235,8 +315,8 @@
       "claro": "#FFFFFF",
       "oscuro": "#20201E",
       "origen": {
-        "claro": "gris.0",
-        "oscuro": "directo"
+        "claro": "gris_0",
+        "oscuro": "negro_900"
       },
       "uso": "Texto dentro del botón principal"
     },
@@ -244,8 +324,8 @@
       "claro": "#C8C6C4",
       "oscuro": "#44423F",
       "origen": {
-        "claro": "gris.300",
-        "oscuro": "directo"
+        "claro": "gris_300",
+        "oscuro": "negro_600"
       },
       "uso": "Sin permiso o sin datos válidos"
     },
@@ -253,8 +333,8 @@
       "claro": "#8B8985",
       "oscuro": "#989692",
       "origen": {
-        "claro": "gris.500",
-        "oscuro": "directo"
+        "claro": "gris_500",
+        "oscuro": "negro_200"
       },
       "uso": "Texto del botón deshabilitado"
     },
@@ -262,8 +342,8 @@
       "claro": "#655000",
       "oscuro": "#DFCA9C",
       "origen": {
-        "claro": "oro.700",
-        "oscuro": "oro.200"
+        "claro": "oro_700",
+        "oscuro": "oro_200"
       },
       "uso": "Acción secundaria: borde y texto, sin relleno"
     },
@@ -271,8 +351,8 @@
       "claro": "#0063CB",
       "oscuro": "#6CB2FF",
       "origen": {
-        "claro": "azul.600",
-        "oscuro": "azul.300"
+        "claro": "azul_600",
+        "oscuro": "azul_300"
       },
       "uso": "Enlaces y acciones de fila tipo «Editar»"
     },
@@ -280,8 +360,8 @@
       "claro": "#F1E4CA",
       "oscuro": "#4F3E00",
       "origen": {
-        "claro": "oro.100",
-        "oscuro": "oro.800"
+        "claro": "oro_100",
+        "oscuro": "oro_800"
       },
       "uso": "Relleno de la acción secundaria. El borde sigue siendo obligatorio"
     },
@@ -289,8 +369,8 @@
       "claro": "#F0EFEE",
       "oscuro": "#3A3835",
       "origen": {
-        "claro": "gris.100",
-        "oscuro": "directo"
+        "claro": "gris_100",
+        "oscuro": "negro_650"
       },
       "uso": "Relleno de la acción neutra. El borde sigue siendo obligatorio"
     },
@@ -298,8 +378,8 @@
       "claro": "#2C2A25",
       "oscuro": "#EFEEEB",
       "origen": {
-        "claro": "gris.900",
-        "oscuro": "directo"
+        "claro": "gris_900",
+        "oscuro": "negro_50"
       },
       "uso": "Texto de la acción neutra"
     },
@@ -307,8 +387,8 @@
       "claro": "#D40006",
       "oscuro": "#FF7D62",
       "origen": {
-        "claro": "rojo.600",
-        "oscuro": "rojo.300"
+        "claro": "rojo_600",
+        "oscuro": "rojo_300"
       },
       "uso": "Botón de acción irreversible: Eliminar, Anular"
     },
@@ -316,8 +396,8 @@
       "claro": "#B40000",
       "oscuro": "#FFAD95",
       "origen": {
-        "claro": "rojo.700",
-        "oscuro": "rojo.200"
+        "claro": "rojo_700",
+        "oscuro": "rojo_200"
       },
       "uso": "Hover del botón destructivo"
     },
@@ -325,8 +405,8 @@
       "claro": "#FFFFFF",
       "oscuro": "#20201E",
       "origen": {
-        "claro": "gris.0",
-        "oscuro": "directo"
+        "claro": "gris_0",
+        "oscuro": "negro_900"
       },
       "uso": "Texto dentro del botón destructivo"
     },
@@ -334,8 +414,8 @@
       "claro": "#2C3D71",
       "oscuro": "#2C3D71",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "indigo_800",
+        "oscuro": "indigo_800"
       },
       "uso": "Barra de navegación. ÚNICO azul en superficie grande"
     },
@@ -343,8 +423,8 @@
       "claro": "#FFFFFF",
       "oscuro": "#FFFFFF",
       "origen": {
-        "claro": "gris.0",
-        "oscuro": "gris.0"
+        "claro": "gris_0",
+        "oscuro": "gris_0"
       },
       "uso": "Nombre del colegio e ítems de navegación"
     },
@@ -352,8 +432,8 @@
       "claro": "#DFCA9C",
       "oscuro": "#DFCA9C",
       "origen": {
-        "claro": "oro.200",
-        "oscuro": "oro.200"
+        "claro": "oro_200",
+        "oscuro": "oro_200"
       },
       "uso": "Ítem activo: texto y filete inferior. También avatar"
     },
@@ -361,8 +441,8 @@
       "claro": "#1D3163",
       "oscuro": "#1D3163",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "indigo_900",
+        "oscuro": "indigo_900"
       },
       "uso": "Fondo del ítem activo en desplegable"
     },
@@ -370,8 +450,8 @@
       "claro": "#39497A",
       "oscuro": "#39497A",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "indigo_700",
+        "oscuro": "indigo_700"
       },
       "uso": "Fondo de las subopciones de primer nivel del menú"
     },
@@ -379,8 +459,8 @@
       "claro": "#41507F",
       "oscuro": "#41507F",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "indigo_600",
+        "oscuro": "indigo_600"
       },
       "uso": "Fondo de las subopciones de segundo nivel. No hay tercero: el acento dejaría de cumplir"
     },
@@ -388,8 +468,8 @@
       "claro": "#45558A",
       "oscuro": "#45558A",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "indigo_500",
+        "oscuro": "indigo_500"
       },
       "uso": "Separador dentro del marco"
     },
@@ -397,8 +477,8 @@
       "claro": "#B9C2DC",
       "oscuro": "#B9C2DC",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "indigo_200",
+        "oscuro": "indigo_200"
       },
       "uso": "Correo del usuario y textos de apoyo dentro del marco"
     },
@@ -406,8 +486,8 @@
       "claro": "#BE7A14",
       "oscuro": "#F0C060",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "ambar_600",
+        "oscuro": "ambar_300"
       },
       "uso": "Anillo sobre superficies de contenido"
     },
@@ -415,8 +495,8 @@
       "claro": "#F0C060",
       "oscuro": "#F0C060",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "ambar_300",
+        "oscuro": "ambar_300"
       },
       "uso": "Anillo dentro del marco de navegación"
     },
@@ -424,8 +504,8 @@
       "claro": "#E3F4E1",
       "oscuro": "#233521",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "verde_50",
+        "oscuro": "verde_950"
       },
       "uso": "Chip «Activo», confirmación"
     },
@@ -433,8 +513,8 @@
       "claro": "#14521A",
       "oscuro": "#B3DCAE",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "verde_900",
+        "oscuro": "verde_200"
       },
       "uso": "Texto sobre exito-fondo"
     },
@@ -442,8 +522,8 @@
       "claro": "#338136",
       "oscuro": "#5FA862",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "verde_700",
+        "oscuro": "verde_500"
       },
       "uso": "Solo filete del borde. Adorno"
     },
@@ -451,8 +531,8 @@
       "claro": "#FFEBD6",
       "oscuro": "#402C16",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "ambar_50",
+        "oscuro": "ambar_950"
       },
       "uso": "Chip «Parcial», advertencia recuperable"
     },
@@ -460,8 +540,8 @@
       "claro": "#6B3B00",
       "oscuro": "#FBC894",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "ambar_900",
+        "oscuro": "ambar_200"
       },
       "uso": "Texto sobre aviso-fondo"
     },
@@ -469,8 +549,8 @@
       "claro": "#A46300",
       "oscuro": "#C88A3C",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "ambar_700",
+        "oscuro": "ambar_500"
       },
       "uso": "Solo filete del borde. Adorno"
     },
@@ -478,8 +558,8 @@
       "claro": "#FFE6DF",
       "oscuro": "#4D241F",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "alerta_50",
+        "oscuro": "alerta_900"
       },
       "uso": "Chip «Deuda», validación fallida"
     },
@@ -487,8 +567,8 @@
       "claro": "#8F1017",
       "oscuro": "#FFB8A9",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "alerta_800",
+        "oscuro": "alerta_100"
       },
       "uso": "Texto sobre error-fondo"
     },
@@ -496,8 +576,8 @@
       "claro": "#D63231",
       "oscuro": "#E2665C",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "alerta_500",
+        "oscuro": "alerta_400"
       },
       "uso": "Solo filete del borde. Adorno"
     },
@@ -505,8 +585,8 @@
       "claro": "#E9EEFF",
       "oscuro": "#273048",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "informacion_50",
+        "oscuro": "informacion_900"
       },
       "uso": "Aviso neutro, ayuda contextual"
     },
@@ -514,8 +594,8 @@
       "claro": "#02468A",
       "oscuro": "#BFD0FF",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "informacion_800",
+        "oscuro": "informacion_100"
       },
       "uso": "Texto sobre info-fondo"
     },
@@ -523,8 +603,8 @@
       "claro": "#2F71CE",
       "oscuro": "#6D97DE",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "informacion_500",
+        "oscuro": "informacion_400"
       },
       "uso": "Solo filete del borde. Adorno"
     },
@@ -568,8 +648,8 @@
       "claro": "#FFFFFF",
       "oscuro": "#FFFFFF",
       "origen": {
-        "claro": "gris.0",
-        "oscuro": "gris.0"
+        "claro": "gris_0",
+        "oscuro": "gris_0"
       },
       "uso": "Iniciales sobre cualquier color de identidad"
     }

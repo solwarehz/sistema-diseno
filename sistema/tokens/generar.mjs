@@ -191,32 +191,6 @@ if (malCambios.length) {
   process.exit(1);
 }
 
-const malOrigen = [];
-for (const [nombre, t] of Object.entries(semanticos)) {
-  if (!t.origen || typeof t.origen !== 'object') {
-    malOrigen.push(`${nombre}  origen no es { claro, oscuro }`);
-    continue;
-  }
-  for (const modo of ['claro', 'oscuro']) {
-    const ref = t.origen[modo];
-    if (ref === 'directo') continue;
-    const [familia, paso] = String(ref).split('.');
-    const valor = primitivas[familia]?.[paso];
-    if (!valor) {
-      malOrigen.push(`${nombre}.${modo}  apunta a "${ref}", que no existe`);
-    } else if (valor.toUpperCase() !== t[modo].toUpperCase()) {
-      malOrigen.push(`${nombre}.${modo}  dice "${ref}" (${valor}) y vale ${t[modo]}`);
-    }
-  }
-}
-if (malOrigen.length) {
-  console.error('\n  El origen declarado no cuadra con las primitivas:\n');
-  malOrigen.forEach((m) => console.error(`    ${m}`));
-  console.error('\n  Un origen que no se puede resolver es un comentario, no una');
-  console.error('  referencia. Corrígelo o ponlo en "directo".\n');
-  process.exit(1);
-}
-
 const agrupados = new Set(Object.values(grupos).flat());
 const huerfanos = Object.keys(semanticos).filter((k) => !agrupados.has(k));
 const inventados = [...agrupados].filter((k) => !semanticos[k]);

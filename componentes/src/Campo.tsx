@@ -19,6 +19,15 @@ type Comun = {
   ayuda?: string;
   /** Mensaje de error. Marca el campo como inválido y lo vincula. */
   error?: string;
+  /**
+   * Oculta la etiqueta A LA VISTA, no al lector. Para cuando el sitio ya la
+   * dice: el filtro que vive bajo la cabecera «Cargo» no necesita repetir
+   * «Cargo» debajo.
+   *
+   * Sigue siendo obligatoria, y por eso esto NO es una puerta trasera para
+   * quedarse sin etiqueta: es la diferencia entre no mostrarla y no tenerla.
+   */
+  etiquetaOculta?: boolean;
 };
 
 export type CampoProps = Comun & React.InputHTMLAttributes<HTMLInputElement>;
