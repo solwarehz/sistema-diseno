@@ -1,0 +1,22 @@
+/**
+ * Punto de entrada del sistema de diseño.
+ *
+ *   import { TablaDatos, Boton, Chip } from 'sistema-diseno-ae/componentes';
+ *
+ * Los estilos NO se importan desde aquí: van aparte y en este orden.
+ *   import 'sistema-diseno-ae/tokens.css';
+ *   import 'sistema-diseno-ae/componentes.css';
+ */
+export { TablaDatos, type Columna, type EstadoTabla } from './TablaDatos';
+export { RangoFecha } from './RangoFecha';
+export { Confirmacion } from './Confirmacion';
+export { Boton, type VarianteBoton } from './Boton';
+export { Chip, type TonoChip } from './Chip';
+export { Enlace } from './Enlace';
+export { Campo, Selector } from './Campo';
+export { Avatar, colorIdentidad, iniciales } from './Avatar';
+export { Paginacion } from './Paginacion';
+export { Interruptor, SeleccionMultiple, type Opcion } from './Interruptor';
+export { EstadoPantalla, Aviso, Progreso, type TipoEstado, type TonoAviso } from './Estados';
+export { Tarjeta, TarjetaPersona } from './Tarjeta';
+export { Horario, escribirHora, type BloqueHorario } from './Horario';
