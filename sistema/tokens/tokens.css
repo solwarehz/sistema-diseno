@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.17.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.18.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -130,14 +130,14 @@
   --destructiva-texto: #20201E;
 
   /* Marco de aplicación */
-  --marco-fondo: #2C3D71;
+  --marco-fondo: #363532;
   --marco-texto: #FFFFFF;
   --marco-acento: #DFCA9C;
-  --marco-item-activo: #1D3163;
-  --marco-nivel-1: #39497A;
-  --marco-nivel-2: #41507F;
-  --marco-borde: #45558A;
-  --marco-texto-tenue: #B9C2DC;
+  --marco-item-activo: #2A2927;
+  --marco-nivel-1: #44423F;
+  --marco-nivel-2: #575451;
+  --marco-borde: #575451;
+  --marco-texto-tenue: #C3C1BD;
 
   /* Foco */
   --foco: #F0C060;
@@ -216,14 +216,14 @@
     --destructiva-texto: #20201E;
 
     /* Marco de aplicación */
-    --marco-fondo: #2C3D71;
+    --marco-fondo: #363532;
     --marco-texto: #FFFFFF;
     --marco-acento: #DFCA9C;
-    --marco-item-activo: #1D3163;
-    --marco-nivel-1: #39497A;
-    --marco-nivel-2: #41507F;
-    --marco-borde: #45558A;
-    --marco-texto-tenue: #B9C2DC;
+    --marco-item-activo: #2A2927;
+    --marco-nivel-1: #44423F;
+    --marco-nivel-2: #575451;
+    --marco-borde: #575451;
+    --marco-texto-tenue: #C3C1BD;
 
     /* Foco */
     --foco: #F0C060;

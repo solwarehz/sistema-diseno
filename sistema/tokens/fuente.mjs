@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.17.0';
+export const VERSION = '1.18.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,30 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.18.0', fecha: '2026-08-09',
+    que: 'En modo oscuro el marco pasa a la escala de negros: el azul se va',
+    porque:
+      'Decision del responsable, y es la correcta: un azul saturado sobre una pagina casi ' +
+      'negra NO LEE COMO MODO OSCURO. Hasta aqui el marco se conservaba identico al claro ' +
+      '«porque se distingue por matiz», y eso era verdad y aun asi estaba mal. ' +
+      'Ademas la separacion tampoco la daba el matiz: el marco quedaba a 1,49:1 de la tarjeta. ' +
+      'Se probaron los DIEZ escalones de indigo y los CATORCE de negro, y ninguno separa. La ' +
+      'pagina en oscuro es #1E1D1C, y cualquier marco lo bastante oscuro para leer como modo ' +
+      'oscuro queda a menos de 1,6:1 de ella. Quien separa es la ELEVACION que entro en la ' +
+      'v1.16.0, no el color; y aceptado eso, el color queda libre para ser neutro. ' +
+      'Seis tokens cambian SOLO en oscuro —el claro no se toca—: fondo negro_700, activo ' +
+      'negro_800, nivel-1 negro_600, nivel-2 negro_500, borde negro_500 y texto-tenue ' +
+      'negro_100. El tenue tuvo que subir de indigo_200: sobre los neutros mas claros caia a ' +
+      '3,39:1 y era el unico par que impedia el cambio. ' +
+      'EL ACENTO DORADO SE QUEDA: es lo unico que sigue diciendo de quien es el producto ' +
+      'cuando el azul se va. Da entre 7,6 y 9:1 sobre los cuatro neutros. ' +
+      'Ningun color nuevo: los seis salen de la familia negro, ya autorizada.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'El marco en modo oscuro cambia de azul a neutro. Es visible y es a proposito',
+    ],
+  },
   {
     v: '1.17.0', fecha: '2026-08-09',
     que: 'Los ocho de Control Administrativos V2.0, y DOS textos invisibles',
@@ -738,12 +762,35 @@ const declarados = {
 
   // ── Marco de aplicación ──────────────────────────────────────────────────
   // #2C3D71 se eligió por intensidad medida: separa navegación de contenido
-  // sin borde y sin dominar la pantalla. En oscuro SE CONSERVA IDÉNTICO: se
-  // distingue por diferencia de matiz, no de luminancia (§2.3).
-  'marco-fondo':       { claro: 'indigo_800', oscuro: 'indigo_800',  uso: 'Barra de navegación. ÚNICO azul en superficie grande' },
+  // sin borde y sin dominar la pantalla.
+  //
+  // EN OSCURO EL AZUL SE VA, y pasa a la familia `negro`. Hasta la v1.17.0 se
+  // conservaba idéntico al claro «porque se distingue por matiz». Eso era
+  // verdad y aun así estaba mal:
+  //
+  //   · un azul saturado sobre una página casi negra NO LEE COMO MODO OSCURO.
+  //     Es la decisión del usuario y es la correcta: en oscuro las superficies
+  //     van a neutro.
+  //   · y la separación tampoco la daba el matiz. Medido: el marco quedaba a
+  //     1,49:1 de la tarjeta. Se probaron los DIEZ escalones de indigo y los
+  //     CATORCE de negro, y ninguno separa: la página en oscuro es #1E1D1C, y
+  //     cualquier marco lo bastante oscuro para leer como modo oscuro queda a
+  //     menos de 1,6:1 de ella.
+  //
+  // Lo que separa es la ELEVACIÓN —`--sombra-marco` con su filete, v1.16.0—, no
+  // el color. Una vez aceptado eso, el color queda libre para ser lo que debe
+  // ser: neutro.
+  //
+  // EL ACENTO DORADO SE QUEDA. Es lo único que sigue diciendo de quién es el
+  // producto cuando el azul se va; sin él, el marco es un gris cualquiera. Da
+  // entre 7,6 y 9:1 sobre los cuatro neutros.
+  //
+  // Y `marco-texto-tenue` sube de `indigo_200` a `negro_100`: en los neutros
+  // más claros caía a 3,39:1 y era el único par que impedía el cambio.
+  'marco-fondo':       { claro: 'indigo_800', oscuro: 'negro_700',  uso: 'Barra de navegación. ÚNICO azul en superficie grande' },
   'marco-texto':       { claro: 'gris_0', oscuro: 'gris_0',   uso: 'Nombre del colegio e ítems de navegación' },
   'marco-acento':      { claro: 'oro_200', oscuro: 'oro_200',  uso: 'Ítem activo: texto y filete inferior. También avatar' },
-  'marco-item-activo': { claro: 'indigo_900', oscuro: 'indigo_900',  uso: 'Fondo del ítem activo en desplegable' },
+  'marco-item-activo': { claro: 'indigo_900', oscuro: 'negro_800',  uso: 'Fondo del ítem activo en desplegable' },
 
   // v1.6.0 — Cierra el hueco P-11. El marco es una superficie oscura y encima
   // vivían tres cosas sin token: los niveles de anidamiento del menú, el
@@ -752,10 +799,10 @@ const declarados = {
   // El TECHO lo pone el acento dorado, no el texto blanco: aclarando el marco
   // hacia blanco, `marco-acento` cae por debajo de 4,5:1 pasado el 10 %.
   // Por eso hay sitio para exactamente dos niveles y no para tres.
-  'marco-nivel-1':     { claro: 'indigo_700', oscuro: 'indigo_700', uso: 'Fondo de las subopciones de primer nivel del menú' },
-  'marco-nivel-2':     { claro: 'indigo_600', oscuro: 'indigo_600', uso: 'Fondo de las subopciones de segundo nivel. No hay tercero: el acento dejaría de cumplir' },
-  'marco-borde':       { claro: 'indigo_500', oscuro: 'indigo_500', uso: 'Separador dentro del marco' },
-  'marco-texto-tenue': { claro: 'indigo_200', oscuro: 'indigo_200', uso: 'Correo del usuario y textos de apoyo dentro del marco' },
+  'marco-nivel-1':     { claro: 'indigo_700', oscuro: 'negro_600', uso: 'Fondo de las subopciones de primer nivel del menú' },
+  'marco-nivel-2':     { claro: 'indigo_600', oscuro: 'negro_500', uso: 'Fondo de las subopciones de segundo nivel. No hay tercero: el acento dejaría de cumplir' },
+  'marco-borde':       { claro: 'indigo_500', oscuro: 'negro_500', uso: 'Separador dentro del marco' },
+  'marco-texto-tenue': { claro: 'indigo_200', oscuro: 'negro_100', uso: 'Correo del usuario y textos de apoyo dentro del marco' },
 
   // ── Foco ─────────────────────────────────────────────────────────────────
   // Son dos tokens y no uno por una razón medida: el ámbar oscuro no alcanza
