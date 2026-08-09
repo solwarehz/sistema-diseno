@@ -8,9 +8,21 @@ cinco pruebas, un día** — y el siguiente proyecto las habría vuelto a descub
 una por una. Cada regla de aquí está leída del código del catálogo, no de la
 memoria de nadie.
 
-> **Cómo leerlo.** Lo que dice «obligatorio» es del sistema y no se negocia: si
-> se cambia, dos productos dejan de comportarse igual. Lo que dice «del
-> proyecto» lo decide cada aplicación.
+> **Cómo leerlo.**
+>
+> · **Obligatorio** — del sistema, no se negocia, **y el componente lo hace**.
+>   Si se cambia, dos productos dejan de comportarse igual.
+> · **PENDIENTE** — está decidido y escrito, pero **el componente todavía no lo
+>   hace**. Si su proyecto lo necesita hoy, lo resuelve usted y nos lo dice.
+> · **Del proyecto** — lo decide cada aplicación.
+>
+> La segunda categoría existe desde la v1.13.2 y es una corrección, no una
+> comodidad. Control Administrativos V2.0 encontró **cinco reglas que este
+> documento daba por obligatorias y el código no cumplía**, y tenían razón en lo
+> importante: si el documento al que les remitimos promete lo que no hay, no se
+> puede confiar en él. Ahora lo comprueba un candado —`verificar-contrato.mjs`—
+> que falla la publicación si una regla obligatoria no tiene prueba que la
+> respalde.
 
 ---
 
@@ -34,7 +46,7 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 | | Regla |
 |---|---|
 | **7** | **Obligatorio.** Con **una sola página no se pinta la paginación**, pero **el rango sí se queda** («1–8 de 8»). El número de resultados es información aunque no haya que navegar. |
-| **8** | **Obligatorio.** El tamaño de página elegido **se recuerda**. Es una preferencia de la persona, no de la pantalla. |
+| **8** | **PENDIENTE — el componente NO lo hace todavía.** El tamaño de página elegido **se recuerda**. Es una preferencia de la persona, no de la pantalla. |
 | **9** | **Obligatorio.** La paginación es **un solo componente compartido** con el resto del sistema. Hubo dos y divergieron; no se vuelve a hacer. |
 | **10** | Del proyecto: los tamaños ofrecidos. El catálogo usa 10 · 25 · 50 · todas. |
 
@@ -50,15 +62,15 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 | | Regla |
 |---|---|
-| **14** | **Obligatorio.** Las columnas ocultas **se recuerdan**, como el tamaño de página. |
-| **15** | **Obligatorio.** La descarga a CSV exporta **lo que se ve**: filtros aplicados y columnas visibles. Exportar todo cuando la pantalla muestra un subconjunto es el fallo clásico de este control. |
+| **14** | **PENDIENTE — el componente NO lo hace todavía.** Las columnas ocultas **se recuerdan**, como el tamaño de página. |
+| **15** | **PENDIENTE — el componente NO lo hace todavía.** La descarga a CSV exporta **lo que se ve**: filtros aplicados y columnas visibles. Exportar todo cuando la pantalla muestra un subconjunto es el fallo clásico de este control. |
 
 ### Filas desplegables
 
 | | Regla |
 |---|---|
-| **16** | **Obligatorio.** El chevron es un `<button>` con `aria-expanded` y `aria-controls`, y su nombre accesible **cambia** entre «Mostrar» y «Ocultar». |
-| **17** | **Obligatorio.** El detalle plegado **se oculta de verdad** (`visibility: hidden`), no solo a altura cero. Con altura cero los enlaces siguen siendo paradas de tabulación invisibles y el lector de pantalla lee el contenido de todas las filas cerradas. |
+| **16** | **PENDIENTE — el componente NO lo hace todavía.** El chevron es un `<button>` con `aria-expanded` y `aria-controls`, y su nombre accesible **cambia** entre «Mostrar» y «Ocultar». |
+| **17** | **PENDIENTE — el componente NO lo hace todavía.** El detalle plegado **se oculta de verdad** (`visibility: hidden`), no solo a altura cero. Con altura cero los enlaces siguen siendo paradas de tabulación invisibles y el lector de pantalla lee el contenido de todas las filas cerradas. |
 
 ---
 

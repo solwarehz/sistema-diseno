@@ -132,7 +132,13 @@ export function SelectorBusqueda({
     <div className="campo-grupo" ref={caja}>
       <label className="campo-etiqueta" htmlFor={id} id={`${id}-et`}>{etiqueta}</label>
 
-      <div className="sel-caja">
+      {/* `.sel` es el ancla. Faltaba, y sin ella la lista —que es
+          `position: absolute`— no encontraba antepasado posicionado y se
+          colocaba contra el viewport: se desplegaba fuera de la pantalla.
+          El catálogo sí la emite; al portar el componente se perdió.
+          Lo encontró Control Administrativos V2.0, con las coordenadas medidas. */}
+      <div className="sel">
+        <div className="sel-caja">
         <input
           id={id}
           ref={campo}
@@ -152,9 +158,9 @@ export function SelectorBusqueda({
           onFocus={() => setAbierto(true)}
           onKeyDown={alTeclado}
         />
-      </div>
+        </div>
 
-      <ul className="sel-lista" id={idLista} role="listbox" aria-labelledby={`${id}-et`} hidden={!abierto}>
+        <ul className="sel-lista" id={idLista} role="listbox" aria-labelledby={`${id}-et`} hidden={!abierto}>
         {filtradas.length === 0 ? (
           <li className="sel-vacio">{textoVacio}</li>
         ) : (
@@ -174,8 +180,9 @@ export function SelectorBusqueda({
               {o.ayuda && <span className="sel-notas">{o.ayuda}</span>}
             </li>
           ))
-        )}
-      </ul>
+          )}
+        </ul>
+      </div>
 
       {error && <span id={idError} className="campo-error">{error}</span>}
       {ayuda && <span id={idAyuda} className="campo-ayuda">{ayuda}</span>}

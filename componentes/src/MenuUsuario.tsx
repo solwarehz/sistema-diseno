@@ -20,6 +20,7 @@
 
 import { useEffect, useId, useRef, useState } from 'react';
 import { Avatar } from './Avatar';
+import { Icono } from './Icono';
 
 export type Tema = 'claro' | 'oscuro';
 
@@ -115,7 +116,7 @@ export function MenuUsuario({ id: idPersona, nombre, correo, foto, onSalir, tema
                 title="Claro"
                 onClick={() => onTema('claro')}
               >
-                <IconoSol />
+                <Icono nombre="sol" tam="control" />
               </button>
               <button
                 className="us-tema-b"
@@ -124,7 +125,7 @@ export function MenuUsuario({ id: idPersona, nombre, correo, foto, onSalir, tema
                 title="Oscuro"
                 onClick={() => onTema('oscuro')}
               >
-                <IconoLuna />
+                <Icono nombre="luna" tam="control" />
               </button>
             </div>
           </div>
@@ -136,7 +137,7 @@ export function MenuUsuario({ id: idPersona, nombre, correo, foto, onSalir, tema
             opciones: se busca cuando se busca, y estar arriba solo consigue
             que se pulse sin querer. */}
         <button className="us-op us-salir" role="menuitem" onClick={onSalir}>
-          <IconoSalir />
+          <Icono nombre="salir" tam="control" />
           <span>Salir del sistema</span>
         </button>
       </div>
@@ -149,25 +150,5 @@ export function MenuUsuario({ id: idPersona, nombre, correo, foto, onSalir, tema
    React. Los trazos son LOS MISMOS —`sol`, `luna` y `salir`—; si cambian allí,
    cambian aquí, y por eso llevan el nombre del icono escrito al lado. */
 
-const IconoSol = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-       strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <circle cx="12" cy="12" r="4" />
-    <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4" />
-  </svg>
-);
 
-const IconoLuna = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-       strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
-  </svg>
-);
 
-const IconoSalir = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-       strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-    <path d="m16 17 5-5-5-5M21 12H9" />
-  </svg>
-);

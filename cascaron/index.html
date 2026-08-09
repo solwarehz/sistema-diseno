@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.13.1</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.13.2</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.13.1
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.13.2
    WCAG 2.2 AA · 134 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -2737,7 +2737,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.13.1</option></select></label>
+          <select class="campo cg-in"><option>v1.13.2</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -2798,8 +2798,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.13.1.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.13.1</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.13.2.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.13.2</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -8734,6 +8734,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.13.2 <span class="cam-fecha">2026-08-09</span></h3>
+<p class="pag-intro"><strong>Tres defectos de portado, el contrato con candado, y los iconos sin puerta insegura.</strong> Segundo lote de Control Administrativos V2.0, montando el sistema en un producto real. Los tres defectos son el mismo fallo: clases que el catalogo emite y el componente perdio al portarse. MarcoApp emitia app-cascaron y no `app`, que es la que lleva el display flex: sin ella la lateral ocupaba todo el ancho y el contenido caia bajo el pliegue. SelectorBusqueda perdio el envoltorio `.sel`, que es el ancla: la lista es absolute y sin antepasado posicionado se desplegaba contra el viewport. Y el CONTRATO. comportamiento.md prometia cinco cosas que el codigo no hacia, y su peticion era la correcta: no que se implementaran hoy, sino que el contrato se verificara antes de publicar igual que se verifica el contraste. Entra verificar-contrato.mjs, y al primer intento encontro DOS MAS que ellos no vieron —R9 y R12, implementadas pero sin prueba—. Las cinco quedan marcadas PENDIENTE, que es decir la verdad. Y los iconos: el modulo devuelve cadenas y en React eso obliga a dangerouslySetInnerHTML, doce veces en su codigo. Hoy inofensivo porque el contenido es nuestro; el problema es que normaliza el patron. Se genera Icono.tsx desde los MISMOS trazos, con elementos de React de verdad. Envolver la cadena habria escondido la puerta sin cerrarla.</p>
+
 
 
 <h3 class="sub-seccion">v1.13.1 <span class="cam-fecha">2026-08-09</span></h3>

@@ -136,6 +136,7 @@ const CONTENIDO = [
   ['componentes/src/Dialogo.tsx', 'componentes/Dialogo.tsx'],
   ['componentes/src/Nota.tsx', 'componentes/Nota.tsx'],
   ['componentes/src/Avatar.tsx', 'componentes/Avatar.tsx'],
+  ['componentes/src/Icono.tsx', 'componentes/Icono.tsx'],
   ['componentes/src/MarcoApp.tsx', 'componentes/MarcoApp.tsx'],
   ['componentes/src/MarcaMenu.tsx', 'componentes/MarcaMenu.tsx'],
   ['componentes/src/MenuUsuario.tsx', 'componentes/MenuUsuario.tsx'],
@@ -150,6 +151,7 @@ const CONTENIDO = [
   // Los candados. Sin ellos el sistema es una sugerencia.
   ['sistema/candado/verificar-contraste.mjs', 'sistema/candado/verificar-contraste.mjs'],
   ['sistema/candado/verificar-color.mjs', 'sistema/candado/verificar-color.mjs'],
+  ['sistema/candado/verificar-contrato.mjs', 'sistema/candado/verificar-contrato.mjs'],
   ['sistema/candado/candado.eslint.config.mjs', 'sistema/candado/candado.eslint.config.mjs'],
   ['sistema/candado/probar-candado.mjs', 'sistema/candado/probar-candado.mjs'],
   // La documentación.

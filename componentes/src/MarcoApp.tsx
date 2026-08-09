@@ -26,6 +26,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { MenuUsuario, type MenuUsuarioProps } from './MenuUsuario';
 import { MarcaMenu } from './MarcaMenu';
+import { Icono } from './Icono';
 
 export type OpcionNav = {
   /** Identificador estable. Es lo que se compara con `activa`. */
@@ -156,7 +157,13 @@ export function MarcoApp({
   const sobran = enApp ? navegacion.slice(pestanas.length) : [];
 
   return (
-    <div className={['app-cascaron', enApp ? 'app-marco' : ''].filter(Boolean).join(' ')}>
+    // `app` Y `app-cascaron`, las DOS. Faltaba la primera, y es la que lleva el
+    // `display: flex` que pone la lateral y el contenido uno al lado del otro.
+    // Sin ella se apilaban: la lateral ocupaba todo el ancho y el contenido caía
+    // bajo el pliegue. El catálogo emite las dos —`class="app app-cascaron"`— y
+    // el componente solo emitía una: un olvido al portarlo, no una decisión.
+    // Lo encontró Control Administrativos V2.0 montándolo.
+    <div className={['app', 'app-cascaron', enApp ? 'app-marco' : ''].filter(Boolean).join(' ')}>
       {/* En `app` NO se dibujan ni la lateral ni el velo ni el botón de plegar.
           Se podrían ocultar con CSS —y la hoja lo hace—, pero entonces la
           garantía depende de que la hoja cargue: sin ella quedaría un botón
@@ -207,7 +214,7 @@ export function MarcoApp({
                 >
                   {g.icono && <span className="nav-ic">{g.icono}</span>}
                   <span className="nav-txt">{g.texto}</span>
-                  <span className="nav-chev" aria-hidden="true"><Chevron /></span>
+                  <span className="nav-chev" aria-hidden="true"><Icono nombre="chevron" tam="control" /></span>
                 </button>
 
                 {/* `hidden` y no desmontar: desmontar pierde el foco si estaba
@@ -252,8 +259,8 @@ export function MarcoApp({
             >
               {/* Un icono por vista: la hamburguesa es lo que se reconoce en un
                   teléfono; el de plegar panel no significa nada ahí. */}
-              <span className="ic-escritorio"><IconoPanel /></span>
-              <span className="ic-movil"><IconoHamburguesa /></span>
+              <span className="ic-escritorio"><Icono nombre="panelIzq" tam="control" /></span>
+              <span className="ic-movil"><Icono nombre="hamburguesa" tam="control" /></span>
             </button>
           )}
 
@@ -308,7 +315,7 @@ export function MarcoApp({
               aria-controls="app-mas"
               onClick={() => setMasAbierto((v) => !v)}
             >
-              <span className="nav-ic" aria-hidden="true"><IconoMas /></span>
+              <span className="nav-ic" aria-hidden="true"><Icono nombre="mas" tam="control" /></span>
               <span className="app-tab-txt">Más</span>
             </button>
           )}
@@ -318,35 +325,7 @@ export function MarcoApp({
   );
 }
 
-/* Mismos trazos que `chevron`, `panelIzq` y `hamburguesa` de `iconos.mjs`. Se
-   dibujan aquí porque ese módulo devuelve cadenas para plantillas, no elementos
-   de React. */
 
-const Chevron = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-       strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="m6 9 6 6 6-6" />
-  </svg>
-);
 
-const IconoPanel = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-       strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <rect x="3" y="3" width="18" height="18" rx="2" />
-    <path d="M9 3v18" />
-  </svg>
-);
 
-const IconoMas = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-       strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <circle cx="5" cy="12" r="1" /><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" />
-  </svg>
-);
 
-const IconoHamburguesa = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-       strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M4 6h16M4 12h16M4 18h16" />
-  </svg>
-);

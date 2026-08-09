@@ -71,3 +71,56 @@ describe('Migas de pan', () => {
     expect(container.firstChild).toBeNull();
   });
 });
+
+/**
+ * SELECTOR CON BÚSQUEDA — el ancla de la lista.
+ *
+ * Va aquí y no en su archivo porque prueba lo mismo que el resto: una clase que
+ * se perdió al portar. Sin `.sel`, la lista no tiene antepasado posicionado y
+ * se despliega contra el viewport, fuera de la pantalla.
+ */
+import { SelectorBusqueda } from '../src/SelectorBusqueda';
+
+describe('Selector con búsqueda — posicionamiento', () => {
+  it('la lista vive DENTRO del ancla `.sel`, no suelta en el grupo', () => {
+    const { container } = render(
+      <SelectorBusqueda etiqueta="Apoderado" opciones={[{ valor: 'a', texto: 'Ana' }]} valor={null} onCambio={() => {}} />
+    );
+    const ancla = container.querySelector('.sel');
+    expect(ancla).toBeTruthy();
+    expect(ancla!.querySelector('.sel-lista')).toBeTruthy();
+    expect(ancla!.querySelector('.sel-caja')).toBeTruthy();
+  });
+});
+
+/**
+ * ICONOS COMO COMPONENTE. Lo pidió Control Administrativos V2.0: el módulo
+ * devuelve cadenas y en React eso obliga a `dangerouslySetInnerHTML`, la única
+ * puerta insegura del lenguaje. Hoy inofensiva —el contenido es nuestro— pero
+ * normaliza el patrón.
+ */
+import { Icono, NOMBRES_ICONO } from '../src/Icono';
+
+describe('Icono', () => {
+  it('dibuja SVG de verdad, sin la puerta insegura', () => {
+    const { container } = render(<Icono nombre="candado" />);
+    const svg = container.querySelector('svg')!;
+    expect(svg).toBeTruthy();
+    expect(svg.querySelector('rect')).toBeTruthy();
+    expect(svg).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('los cuatro tamaños y ninguno más', () => {
+    const { container, rerender } = render(<Icono nombre="lupa" tam="etiqueta" />);
+    expect(container.querySelector('svg')).toHaveAttribute('width', '14');
+    rerender(<Icono nombre="lupa" tam="estado" />);
+    expect(container.querySelector('svg')).toHaveAttribute('width', '32');
+  });
+
+  it('están los 39, los mismos que el catálogo', () => {
+    expect(NOMBRES_ICONO).toHaveLength(39);
+    for (const n of ['candado', 'lupa', 'cerrar', 'visto', 'alerta']) {
+      expect(NOMBRES_ICONO).toContain(n);
+    }
+  });
+});

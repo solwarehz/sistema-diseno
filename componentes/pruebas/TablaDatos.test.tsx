@@ -211,3 +211,30 @@ describe('Tabla de datos · accesibilidad', () => {
     expect(flecha.textContent).toBe('↑');
   });
 });
+
+/**
+ * Las dos reglas que el candado del contrato encontró sin prueba. Estaban
+ * implementadas —lo que faltaba era comprobarlo—, y una regla obligatoria que
+ * nadie comprueba es una promesa.
+ */
+describe('Contrato de comportamiento', () => {
+  it('R9 · la paginación es UN SOLO componente compartido, no una copia', () => {
+    pintar({ porPagina: 2 });
+    // `.pgn` es la clase del componente compartido. Si la tabla tuviera su
+    // propia paginación, esta clase no estaría o sería otra.
+    expect(document.querySelector('nav.pgn')).toBeTruthy();
+  });
+
+  it('R12 · la dirección de orden se indica con FLECHA además de color', async () => {
+    const u = userEvent.setup();
+    pintar();
+    const th = screen.getAllByRole('columnheader')[0];
+    await u.click(within(th).getByRole('button'));
+    // SC 1.4.1: el color no puede ser el único portador. La flecha va aparte,
+    // oculta al lector porque `aria-sort` ya lo dice.
+    const flecha = th.querySelector('.tb-th-flecha');
+    expect(flecha).toBeTruthy();
+    expect(flecha!.textContent).toMatch(/[↑↓]/);
+    expect(flecha).toHaveAttribute('aria-hidden', 'true');
+  });
+});

@@ -80,6 +80,17 @@ describe('Marco de aplicación', () => {
     expect(ir).toHaveBeenCalledWith('matricula', '/matricula');
   });
 
+  // Lo reporto Control Administrativos V2.0: sin la clase `app` no hay
+  // `display: flex`, la lateral ocupa todo el ancho y el contenido cae bajo el
+  // pliegue. Se prueba la CLASE y no el diseno porque jsdom no calcula diseno,
+  // y decirlo importa: esto fija el olvido, no la maquetacion.
+  it('el cascaron lleva las DOS clases: sin `app` el contenido cae fuera', () => {
+    const { container } = montar();
+    const raiz = container.firstElementChild!;
+    expect(raiz).toHaveClass('app');
+    expect(raiz).toHaveClass('app-cascaron');
+  });
+
   it('la marca lleva al inicio desde cualquier pantalla', () => {
     montar();
     expect(screen.getByRole('link', { name: /ir al inicio/ })).toHaveAttribute('href', '/');

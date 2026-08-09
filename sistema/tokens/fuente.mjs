@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.13.1';
+export const VERSION = '1.13.2';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,30 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.13.2', fecha: '2026-08-09',
+    que: 'Tres defectos de portado, el contrato con candado, y los iconos sin puerta insegura',
+    porque:
+      'Segundo lote de Control Administrativos V2.0, montando el sistema en un producto real. ' +
+      'Los tres defectos son el mismo fallo: clases que el catalogo emite y el componente ' +
+      'perdio al portarse. MarcoApp emitia app-cascaron y no `app`, que es la que lleva el ' +
+      'display flex: sin ella la lateral ocupaba todo el ancho y el contenido caia bajo el ' +
+      'pliegue. SelectorBusqueda perdio el envoltorio `.sel`, que es el ancla: la lista es ' +
+      'absolute y sin antepasado posicionado se desplegaba contra el viewport. ' +
+      'Y el CONTRATO. comportamiento.md prometia cinco cosas que el codigo no hacia, y su ' +
+      'peticion era la correcta: no que se implementaran hoy, sino que el contrato se ' +
+      'verificara antes de publicar igual que se verifica el contraste. Entra ' +
+      'verificar-contrato.mjs, y al primer intento encontro DOS MAS que ellos no vieron ' +
+      '—R9 y R12, implementadas pero sin prueba—. Las cinco quedan marcadas PENDIENTE, que ' +
+      'es decir la verdad. ' +
+      'Y los iconos: el modulo devuelve cadenas y en React eso obliga a ' +
+      'dangerouslySetInnerHTML, doce veces en su codigo. Hoy inofensivo porque el contenido ' +
+      'es nuestro; el problema es que normaliza el patron. Se genera Icono.tsx desde los ' +
+      'MISMOS trazos, con elementos de React de verdad. Envolver la cadena habria escondido ' +
+      'la puerta sin cerrarla.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.13.1', fecha: '2026-08-09',
     que: 'ARREGLO URGENTE: el boton se quedaba deshabilitado para siempre en modo estricto',
