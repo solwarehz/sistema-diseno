@@ -130,6 +130,7 @@ const CONTENIDO = [
   ['componentes/src/Boton.tsx', 'componentes/Boton.tsx'],
   ['componentes/src/Enlace.tsx', 'componentes/Enlace.tsx'],
   ['componentes/src/Campo.tsx', 'componentes/Campo.tsx'],
+  ['componentes/src/SelectorBusqueda.tsx', 'componentes/SelectorBusqueda.tsx'],
   ['componentes/src/Chip.tsx', 'componentes/Chip.tsx'],
   ['componentes/src/Avatar.tsx', 'componentes/Avatar.tsx'],
   ['componentes/src/Interruptor.tsx', 'componentes/Interruptor.tsx'],

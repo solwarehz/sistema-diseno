@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.10.7
+# Actualizar al sistema de diseño v1.11.0
 
 Para el área de sistemas. Si vienes de la **v1.7.0**, que es la que se entregó
 en su momento, esto es todo lo que cambia y todo lo que hay que hacer.
@@ -8,7 +8,7 @@ en su momento, esto es todo lo que cambia y todo lo que hay que hacer.
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.10.7"
+npm install "github:solwarehz/sistema-diseno#v1.11.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -34,7 +34,7 @@ node -p "require('sistema-diseno-ae/package.json').version"   # 1.10.7
 ## 2 · Lo primero que cambia para ti: ya no reconstruyes componentes
 
 Hasta la v1.9.0 la entrega llevaba **el estilo** y tú ponías el comportamiento.
-Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.10.7
+Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.11.0
 viajan los trece componentes de React**, con el comportamiento dentro.
 
 ```jsx
@@ -55,11 +55,81 @@ Lo que traen dentro y ya no tienes que escribir:
 | `RangoFecha` | El calendario entero por teclado, el anuncio del cambio de mes, el foco al abrir y al cerrar |
 | `Confirmacion` | La devolución del foco al elemento que la abrió, y el anuncio a lector de pantalla |
 | `Horario` | Ejes rotables, 12/24 h y la preferencia recordada |
+| `SelectorBusqueda` | El patrón `combobox` de ARIA completo. **Sin umbral**: si busca, busca siempre |
 | `Boton` `Campo` `Chip` `Avatar` `Interruptor` `Paginacion` `Tarjeta` `Enlace` `Estados` | El anillo de foco, los estados, la etiqueta vinculada, el tamaño táctil |
 
-Los archivos viajan como **`.tsx` sin compilar**. Tu empaquetador tiene que
-entender TSX —Vite, Next y Webpack con `ts-loader` lo hacen—. Si tu proyecto no
-compila TypeScript, usa `componentes.css` y el marcado de `comportamiento.md`.
+### Tres cosas nuevas que conviene que sepas
+
+**El botón impide el doble envío solo.** Si `onClick` devuelve una promesa, se
+deshabilita, gira y se libera al terminar —resuelva o falle—. Y descarta los
+clics que lleguen mientras tanto: entre pulsar y repintar caben dos clics de
+alguien impaciente. No hace falta poner nada.
+
+```jsx
+<Boton variante="principal" onClick={() => fetch('/api/guardar', {...})}>
+  Guardar
+</Boton>
+```
+
+No es otro componente a propósito. Un `BotonServidor` aparte sería una garantía
+de la que se puede salir eligiendo el otro botón, y entonces no garantiza nada.
+
+**La confirmación arranca el foco en «Cancelar».** Cambia para todos los
+proyectos, no solo para quien lo pida: con el foco en la acción, el Enter que
+acababas de pulsar para llegar ahí ejecuta lo irreversible. Si de verdad
+necesitas lo contrario, `focoInicial="accion"`.
+
+**La tabla tiene modo servidor.** `modo="servidor"` + `total`: la tabla deja de
+tocar los datos, solo emite el estado por `alCambiar` y pinta lo que le des. Y
+`columnasFijas` marca la columna que identifica cada fila para que el selector
+de columnas no pueda quitarla.
+
+### Los archivos viajan como `.tsx` sin compilar
+
+Decir «Vite y Next lo entienden» era **inexacto y costaba una tarde**: lo
+entienden en el código del proyecto, **no dentro de `node_modules`**, que es
+donde va a estar esto. Hay que decírselo. Lo reportó Control Administrativos
+V2.0 tras chocarse.
+
+**Next** — sin esto el import falla:
+
+```js
+// next.config.mjs
+const nextConfig = { transpilePackages: ['sistema-diseno-ae'] };
+export default nextConfig;
+```
+
+**Vite** — no excluye la dependencia del proceso de compilación:
+
+```js
+// vite.config.ts
+export default defineConfig({
+  optimizeDeps: { exclude: ['sistema-diseno-ae'] },
+});
+```
+
+**Webpack** — la regla de TS suele excluir `node_modules`; hay que dejar pasar
+este paquete:
+
+```js
+{ test: /\.tsx?$/, include: [/src/, /node_modules\/sistema-diseno-ae/], use: 'ts-loader' }
+```
+
+Si tu proyecto no compila TypeScript, usa `componentes.css` con el marcado de
+`comportamiento.md`.
+
+### El nombre del repositorio y el del paquete no son el mismo
+
+No es un error: **se instala desde el repositorio y se importa por el nombre del
+paquete.** npm resuelve el segundo leyendo el `package.json` del primero.
+
+| | |
+|---|---|
+| Repositorio en GitHub | `solwarehz/sistema-diseno` |
+| Nombre del paquete | `sistema-diseno-ae` |
+
+Así que se instala `github:solwarehz/sistema-diseno#v…` y se importa de
+`sistema-diseno-ae`. Las dos cosas son correctas a la vez.
 
 ### Los componentes se componen entre ellos
 

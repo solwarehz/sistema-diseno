@@ -36,6 +36,20 @@ export type ConfirmacionProps = {
   onCancelar: () => void;
   /** Solo para lo irreversible. Lo reversible se hace y se ofrece «Deshacer». */
   destructiva?: boolean;
+  /**
+   * Dónde arranca el foco al abrirse. **Por omisión, «cancelar».**
+   *
+   * No es una preferencia: es una salvaguarda. Con el foco en la acción, un
+   * Enter por costumbre —la tecla que acababa de pulsarse para llegar aquí—
+   * ejecuta lo irreversible, y nadie lo nota hasta que alguien borra algo.
+   * Arrancando en cancelar, llegar a la acción exige ir a propósito.
+   *
+   * Lo reportó Control Administrativos V2.0: su versión ya lo hacía así y
+   * adoptar la nuestra les habría quitado la protección. Tenían razón, y por
+   * eso el valor por omisión cambia para TODOS los proyectos en vez de quedar
+   * en una opción que hay que acordarse de poner.
+   */
+  focoInicial?: 'accion' | 'cancelar';
 };
 
 export function Confirmacion({
@@ -47,15 +61,20 @@ export function Confirmacion({
   onConfirmar,
   onCancelar,
   destructiva = true,
+  focoInicial = 'cancelar',
 }: ConfirmacionProps) {
   const id = useId();
   const banda = useRef<HTMLDivElement>(null);
-  const primerBoton = useRef<HTMLButtonElement>(null);
+  const botonAccion = useRef<HTMLButtonElement>(null);
+  const botonCancelar = useRef<HTMLButtonElement>(null);
 
   // El foco entra en la banda al aparecer. Regla 2 del documento.
+  // Y entra en la opción SEGURA salvo que se pida lo contrario.
   useEffect(() => {
-    if (abierta) primerBoton.current?.focus();
-  }, [abierta]);
+    if (!abierta) return;
+    const destino = focoInicial === 'accion' ? botonAccion : botonCancelar;
+    destino.current?.focus();
+  }, [abierta, focoInicial]);
 
   /** Cerrar SIEMPRE devuelve el foco. Es la regla que el catálogo incumplía en
    *  sus tres salidas. */
@@ -91,14 +110,14 @@ export function Confirmacion({
         </div>
         <div className="cf-acciones">
           <Boton
-            ref={primerBoton}
+            ref={botonAccion}
             mini
             variante={destructiva ? 'destructiva' : 'principal'}
             onClick={() => cerrar(onConfirmar)}
           >
             {accion}
           </Boton>
-          <Boton mini variante="neutra" onClick={() => cerrar(onCancelar)}>
+          <Boton ref={botonCancelar} mini variante="neutra" onClick={() => cerrar(onCancelar)}>
             Cancelar
           </Boton>
         </div>

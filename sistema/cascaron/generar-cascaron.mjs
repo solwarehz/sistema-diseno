@@ -4466,6 +4466,11 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
    16px vacia y se ve como una banda azul sin contenido. Lo reporto Control
    Administrativos V2.0 sobre nuestra propia demostracion. */
 .tb-activos[hidden] { display: none; }
+/* Panel de columnas. Mismo tratamiento que la tira de filtros: sin esto el
+   [hidden] pierde contra el display y queda una banda vacia. */
+.tb-columnas { padding: 12px; border-bottom: 1px solid var(--borde);
+  background: var(--fondo-encabezado); }
+.tb-columnas[hidden] { display: none; }
 .tb-activos { display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
   margin-bottom: 8px; padding: 8px 8px; border-radius: 6px;
   background: var(--info-fondo); border-left: 3px solid var(--info-acento); }
@@ -4949,6 +4954,25 @@ h2.seccion {
 .btn-destr { background: var(--destructiva); color: var(--destructiva-texto); }
 .btn-destr:hover { background: var(--destructiva-hover); }
 .btn-mini { font-size: 12px; padding: 4px 12px; }
+
+/* ACCION DE SERVIDOR. No es otro boton: es el MISMO ocupado.
+   Se resolvio dentro de .btn a proposito. Un BotonServidor aparte seria una
+   garantia de la que se puede salir eligiendo el otro componente, y entonces
+   no garantiza nada: el dia que alguien pone el boton normal en Guardar, el
+   doble envio vuelve. Ademas el sistema ya tuvo dos paginaciones y divergieron.
+
+   El giro NO sustituye al texto: cambiar «Guardar» por «Enviando…» mueve el
+   ancho del boton y la fila entera baila. Gira, se apaga, y lo dice aria-busy. */
+.btn-ocupado { cursor: progress; }
+.btn-giro { width: 14px; height: 14px; flex: none; border-radius: 50%;
+  border: 2px solid currentColor; border-top-color: transparent;
+  animation: btn-girar .7s linear infinite; }
+@keyframes btn-girar { to { transform: rotate(360deg); } }
+/* Quien pide menos movimiento no ve un aspa girando: se queda quieta y sigue
+   diciendo que hay algo en marcha. WCAG 2.2, y ademas marea. */
+@media (prefers-reduced-motion: reduce) {
+  .btn-giro { animation: none; border-top-color: currentColor; opacity: .5; }
+}
 .enlace { color: var(--enlace); text-decoration: none; font-size: 13px; }
 .enlace:hover { text-decoration: underline; }
 .mono { font-family: 'IBM Plex Mono', monospace; }

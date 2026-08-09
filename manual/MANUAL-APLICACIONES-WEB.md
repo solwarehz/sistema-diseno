@@ -2,7 +2,7 @@
 
 **Colegio Albert Einstein, Huaraz**
 Documento MMI-MAN-01 · Versión 1.1.0 · 9 de agosto de 2026
-Sistema de referencia: MMI-DS v1.10.7 · Color modo claro **bloqueado**
+Sistema de referencia: MMI-DS v1.11.0 · Color modo claro **bloqueado**
 
 > Para actualizar un proyecto que ya usa el sistema, empieza por
 > [`ACTUALIZAR.md`](ACTUALIZAR.md): dice qué cambió, qué se rompe y cómo instalarlo.
@@ -388,6 +388,32 @@ El botón dice el verbo, no «Aceptar»: **Eliminar** / **Cancelar**.
 
 ---
 
+## 9bis · Dos reglas de composición que llegaron de un proyecto
+
+Las propuso Control Administrativos V2.0 desde su producto. No son de estilo, y
+por eso están aquí y no en un componente: no se pueden imponer con código.
+
+### El diálogo de confirmación no nombra a la persona
+
+«¿Seguro que quieres cambiar la foto?», **no** «Se reemplazará la foto de
+Zapata, Rosa María».
+
+Es protección de datos, no economía de palabras: el diálogo puede quedar en
+pantalla a la vista de quien pase por detrás, y el nombre de un menor o de un
+trabajador no tiene por qué estar ahí. El contexto ya lo da la fila desde la que
+se abrió.
+
+### Quien no puede hacer algo, no ve el botón
+
+**Ausente, no deshabilitado.** Un botón apagado invita a averiguar por qué, y
+esa averiguación termina en alguien pidiendo un permiso que no necesita.
+
+Es distinto de un control deshabilitado por el ESTADO de la pantalla —un
+«Guardar» que espera a que el formulario sea válido—: eso sí se deshabilita,
+porque la persona puede resolverlo sola.
+
+---
+
 ## 10 · Lo que este manual todavía no cubre
 
 Honestidad sobre los límites, para que nadie asuma cobertura que no existe.
@@ -412,7 +438,7 @@ comporta distinto y nadie sabrá por qué.
 
 | Versión | Fecha | Cambio |
 |---|---|---|
-| 1.1.0 | 2026-08-09 | Sobre MMI-DS v1.10.7. §2.4 pasa de «cuatro colores de marca» a la familia `marca`, con la distinción entre conocido y autorizado. De §10 se BORRAN iconografía y densidad, que ya están hechas. Se añade `ACTUALIZAR.md` |
+| 1.1.0 | 2026-08-09 | Sobre MMI-DS v1.11.0. §2.4 pasa de «cuatro colores de marca» a la familia `marca`, con la distinción entre conocido y autorizado. De §10 se BORRAN iconografía y densidad, que ya están hechas. Se añade `ACTUALIZAR.md` |
 | 1.0.0 | 2026-08-07 | Primera edición. Sobre MMI-DS v1.1.0 |
 
 **Este manual se corrige cuando cambia el sistema, no al revés.**

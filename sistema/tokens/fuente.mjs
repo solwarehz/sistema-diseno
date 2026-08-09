@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.10.7';
+export const VERSION = '1.11.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,29 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.11.0', fecha: '2026-08-09',
+    que: 'Los requerimientos de Control Administrativos V2.0, resueltos',
+    porque:
+      'Primer lote bajo su regla nueva de «100 % sistema de diseño»: lo que les falta llega ' +
+      'como requerimiento en vez de convertirse en CSS suyo. Se atiende lo que es del ' +
+      'sistema y se rechaza con medicion lo que no. ' +
+      'Boton impide el DOBLE ENVIO por si mismo: si onClick devuelve una promesa se ocupa y ' +
+      'se libera al terminar, resuelva o falle, y descarta los clics que lleguen mientras ' +
+      'tanto. No es otro componente a proposito: un BotonServidor aparte seria una garantia ' +
+      'de la que se puede salir eligiendo el otro boton. ' +
+      'Confirmacion arranca el foco en CANCELAR, y cambia para todos: con el foco en la ' +
+      'accion, el Enter que se acababa de pulsar para llegar ahi ejecuta lo irreversible. ' +
+      'TablaDatos gana modo servidor —ordenar en el navegador con paginacion de servidor ' +
+      'ordena solo la pagina visible y el resultado parece ordenado sin estarlo— y selector ' +
+      'de columnas con columnas fijas. Y SelectorBusqueda, que el catalogo documentaba desde ' +
+      'el principio y no existia como componente.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'Confirmacion arranca el foco en «Cancelar» y ya no en la accion. Es a proposito y ' +
+        'es mas seguro; quien necesite lo anterior pasa `focoInicial="accion"`',
+    ],
+  },
   {
     v: '1.10.7', fecha: '2026-08-09',
     que: 'Cero clases huerfanas: los componentes dejan de invocar estilos que no existen',

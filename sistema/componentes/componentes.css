@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.10.7
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.11.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -30,7 +30,7 @@
 :root{ --sombra-capa: 0 8px 24px rgba(0,0,0,.16); --sombra-aviso: 0 8px 24px rgba(0,0,0,.18); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   BOTÓN — 20 reglas · clases .btn-*
+   BOTÓN — 23 reglas · clases .btn-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .btn-ic{ display: inline-flex; align-items: center; gap: 8px; }
@@ -48,6 +48,13 @@
 .btn-destr{ background: var(--destructiva); color: var(--destructiva-texto); }
 .btn-destr:hover{ background: var(--destructiva-hover); }
 .btn-mini{ font-size: 12px; padding: 4px 12px; }
+.btn-ocupado{ cursor: progress; }
+.btn-giro{ width: 14px; height: 14px; flex: none; border-radius: 50%;
+  border: 2px solid currentColor; border-top-color: transparent;
+  animation: btn-girar .7s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .btn-giro{ animation: none; border-top-color: currentColor; opacity: .5; }
+}
 .btn-op{ font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
   border-radius: 6px; border: 1px solid transparent; padding-block: 0;
   display: inline-flex; align-items: center; justify-content: center; }
@@ -493,7 +500,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .tp-rejilla > *, .tn-rejilla > *, .ep-rejilla > *{ min-width: 0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TABLA DE DATOS — 80 reglas · clases .tb-*
+   TABLA DE DATOS — 82 reglas · clases .tb-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tabla-simple, .tb-sub{ display: block; overflow-x: auto; }
@@ -555,6 +562,9 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .tb-f{ width: 100%; font-size: 12px; padding: 4px 8px; }
 select.tb-f{ padding-right: 24px; background-position: right 7px center; background-size: 13px 13px; }
 .tb-activos[hidden]{ display: none; }
+.tb-columnas{ padding: 12px; border-bottom: 1px solid var(--borde);
+  background: var(--fondo-encabezado); }
+.tb-columnas[hidden]{ display: none; }
 .tb-activos{ display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
   margin-bottom: 8px; padding: 8px 8px; border-radius: 6px;
   background: var(--info-fondo); border-left: 3px solid var(--info-acento); }

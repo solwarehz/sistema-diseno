@@ -24,6 +24,7 @@ import { Boton } from './Boton';
 import { Chip } from './Chip';
 import { Campo } from './Campo';
 import { Paginacion } from './Paginacion';
+import { SeleccionMultiple } from './Interruptor';
 
 export type Columna<T> = {
   /** Clave estable. Se usa para ordenar, filtrar y ocultar. */
@@ -55,6 +56,28 @@ export type TablaDatosProps<T> = {
   /** Se llama al cambiar orden, filtros o página. Para persistir la
    *  preferencia donde corresponda —el perfil del usuario, no el navegador—. */
   alCambiar?: (estado: EstadoTabla) => void;
+  /**
+   * DÓNDE se ordena y se filtra.
+   *
+   *   `navegador` — sobre las filas recibidas. Vale cuando `filas` trae TODO.
+   *   `servidor`  — la tabla no toca los datos: solo emite el estado por
+   *                 `alCambiar` y pinta lo que le den.
+   *
+   * La distinción no es de rendimiento. Con paginación de servidor, ordenar en
+   * el navegador ordena SOLO la página que se está viendo: el resultado parece
+   * ordenado y no lo está. Lo midió Control Administrativos V2.0 en un registro
+   * de asistencia que se exhibe ante inspección de trabajo — ahí una tabla que
+   * miente tiene consecuencia legal.
+   *
+   * En `servidor` hay que pasar `total`, porque la tabla ya no puede contarlo.
+   */
+  modo?: 'navegador' | 'servidor';
+  /** Obligatorio con `modo="servidor"`: cuántas filas hay EN TOTAL, no en esta
+   *  página. Sin esto el pie diría «1–10 de 10» teniendo 380. */
+  total?: number;
+  /** Columnas que no se pueden ocultar. La que identifica cada fila va aquí:
+   *  una tabla sin su identificador no identifica nada. */
+  columnasFijas?: string[];
 };
 
 export type EstadoTabla = {
@@ -83,7 +106,16 @@ export function TablaDatos<T>({
   titulo,
   porPagina: porPaginaInicial = 10,
   alCambiar,
+  modo = 'navegador',
+  total,
+  columnasFijas = [],
 }: TablaDatosProps<T>) {
+  if (process.env.NODE_ENV !== 'production' && modo === 'servidor' && total === undefined) {
+    console.warn(
+      'TablaDatos: con modo="servidor" hace falta `total`. Sin él el pie cuenta ' +
+      'solo la página recibida y dice un número que no es.'
+    );
+  }
   const id = useId();
   const [orden, setOrden] = useState<EstadoTabla['orden']>(null);
   const [filtros, setFiltros] = useState<Record<string, string>>({});
@@ -93,6 +125,17 @@ export function TablaDatos<T>({
   // distintos a propósito. Plegar es dejar de ver el control, no dejar de
   // filtrar.
   const [filtrosVisibles, setFiltrosVisibles] = useState(false);
+  // R5 · qué columnas se ven. Arranca con todas: ocultar por omisión esconde
+  // datos que nadie pidió esconder.
+  const [ocultas, setOcultas] = useState<Set<string>>(new Set());
+  const [columnasAbierto, setColumnasAbierto] = useState(false);
+
+  // Una columna FIJA no se puede quitar. No es un tope —cuántos datos quiere
+  // ver cada persona es decisión suya— es un mínimo: una tabla sin la columna
+  // que identifica cada fila no identifica nada.
+  const esFija = (clave: string) => columnasFijas.includes(clave);
+  const visiblesCols = columnas.filter((c) => !ocultas.has(c.clave) || esFija(c.clave));
+
 
   const hayFiltro = Object.values(filtros).some((v) => v !== SIN_FILTRO);
 
@@ -100,6 +143,9 @@ export function TablaDatos<T>({
     alCambiar?.({ orden, filtros, pagina, porPagina, ...parcial });
 
   const filtradas = useMemo(() => {
+    // En `servidor` la tabla NO toca los datos: filtrar aquí sobre la página
+    // recibida es justo el error que este modo existe para impedir.
+    if (modo === 'servidor') return filas;
     const activos = Object.entries(filtros).filter(([, v]) => v !== SIN_FILTRO);
     if (!activos.length) return filas;
     return filas.filter((fila) =>
@@ -109,9 +155,10 @@ export function TablaDatos<T>({
         return normalizar(String(col.valor(fila))).includes(normalizar(texto));
       })
     );
-  }, [filas, filtros, columnas]);
+  }, [filas, filtros, columnas, modo]);
 
   const ordenadas = useMemo(() => {
+    if (modo === 'servidor') return filtradas;
     if (!orden) return filtradas;
     const col = columnas.find((c) => c.clave === orden.clave);
     if (!col) return filtradas;
@@ -121,14 +168,19 @@ export function TablaDatos<T>({
       return orden.dir === 'asc' ? r : -r;
     });
     return copia;
-  }, [filtradas, orden, columnas]);
+  }, [filtradas, orden, columnas, modo]);
 
-  const totalPaginas = Math.max(1, Math.ceil(ordenadas.length / porPagina));
+  // En `servidor` el total lo dice quien consulta; en `navegador` lo cuenta la
+  // tabla. Y en `servidor` NO se recorta: lo recibido ES la página.
+  const cuantas = modo === 'servidor' ? (total ?? filas.length) : ordenadas.length;
+  const totalPaginas = Math.max(1, Math.ceil(cuantas / porPagina));
   const paginaSegura = Math.min(pagina, totalPaginas);
-  const visibles = ordenadas.slice((paginaSegura - 1) * porPagina, paginaSegura * porPagina);
+  const visibles = modo === 'servidor'
+    ? ordenadas
+    : ordenadas.slice((paginaSegura - 1) * porPagina, paginaSegura * porPagina);
 
-  const desde = ordenadas.length === 0 ? 0 : (paginaSegura - 1) * porPagina + 1;
-  const hasta = Math.min(paginaSegura * porPagina, ordenadas.length);
+  const desde = cuantas === 0 ? 0 : (paginaSegura - 1) * porPagina + 1;
+  const hasta = Math.min(paginaSegura * porPagina, cuantas);
 
   function cambiarOrden(clave: string) {
     // R13 · ordenar no cambia de página ni pierde los filtros.
@@ -163,13 +215,43 @@ export function TablaDatos<T>({
           >
             Filtros
           </Boton>
+
+          {/* R5 · elegir columnas. Se compone con SeleccionMultiple, que ya
+              existe: un panel de casillas escrito aquí seria el mismo control
+              con otro nombre. */}
+          <Boton
+            variante="neutra"
+            aria-expanded={columnasAbierto}
+            aria-controls={`${id}-columnas`}
+            onClick={() => setColumnasAbierto((v) => !v)}
+          >
+            Columnas
+          </Boton>
         </div>
         <div className="tb-barra-der">
           <span className="tb-rango">
             {/* R7 · el rango se queda aunque no haya paginación. */}
-            {ordenadas.length === 0 ? 'Sin resultados' : `${desde}–${hasta} de ${ordenadas.length}`}
+            {cuantas === 0 ? 'Sin resultados' : `${desde}–${hasta} de ${cuantas}`}
           </span>
         </div>
+      </div>
+
+      <div id={`${id}-columnas`} className="tb-columnas" hidden={!columnasAbierto}>
+        <SeleccionMultiple
+          titulo="Columnas visibles"
+          opciones={columnas.map((c) => ({
+            valor: c.clave,
+            texto: c.titulo,
+            ayuda: esFija(c.clave) ? 'Identifica la fila: no se puede quitar' : undefined,
+          }))}
+          valores={visiblesCols.map((c) => c.clave)}
+          // Las fijas se reponen SIEMPRE. No se confía en deshabilitar el
+          // control: un `disabled` se puede quitar desde el inspector, y esto
+          // es un minimo de la tabla, no una sugerencia.
+          onCambio={(elegidas) =>
+            setOcultas(new Set(columnas.filter((c) => !elegidas.includes(c.clave) && !esFija(c.clave)).map((c) => c.clave)))
+          }
+        />
       </div>
 
       {/* R4 · los filtros puestos se listan encima: el botón dice «hay
@@ -190,7 +272,7 @@ export function TablaDatos<T>({
       <table className="tb" aria-label={titulo}>
         <thead>
           <tr>
-            {columnas.map((col) => {
+            {visiblesCols.map((col) => {
               const activa = orden?.clave === col.clave;
               const ordenable = col.ordenable !== false;
               return (
@@ -230,7 +312,7 @@ export function TablaDatos<T>({
                 defecto quedaba tapado.
                 Y la clase es la que el catálogo estiliza; el componente no la
                 ponía, así que la fila salía sin fondo ni relleno. */}
-            {columnas.map((col) => (
+            {visiblesCols.map((col) => (
               <td key={col.clave} className="tb-f-celda">
                 {col.filtrable !== false && (
                   <Campo
@@ -248,7 +330,7 @@ export function TablaDatos<T>({
         <tbody>
           {visibles.map((fila, i) => (
             <tr key={claveFila(fila)} className={i % 2 === 1 ? 'tb-alt' : undefined}>
-              {columnas.map((col) => (
+              {visiblesCols.map((col) => (
                 <td key={col.clave} className={col.numerica ? 'tb-num' : undefined}>
                   {col.pintar ? col.pintar(fila) : col.valor(fila)}
                 </td>
