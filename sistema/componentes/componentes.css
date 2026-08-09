@@ -454,7 +454,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .tp-pie{ display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .tp-hora{ font-size: 12px; color: var(--texto-secundario); }
 .tp-opaca{ opacity: .5; }
-.rejilla > *, .marca-rejilla > *, .campos-rejilla > *,
+.rejilla > *, .campos-rejilla > *,
 .tp-rejilla > *, .tn-rejilla > *, .ep-rejilla > *{ min-width: 0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
@@ -487,7 +487,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
   border-top: 1px solid var(--borde); }
 .tn-pulsable:hover{ border-color: var(--accion); }
 .tn-pulsable:hover h4{ color: var(--accion); }
-.rejilla > *, .marca-rejilla > *, .campos-rejilla > *,
+.rejilla > *, .campos-rejilla > *,
 .tp-rejilla > *, .tn-rejilla > *, .ep-rejilla > *{ min-width: 0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
@@ -801,7 +801,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .ep-marco-demo{ border: 1px solid var(--borde); border-radius: 6px; overflow: hidden; }
 .ep-mini-cab{ height: 34px; background: var(--marco-fondo); }
 .ep-ambito .tn .ep{ min-height: 128px; }
-.rejilla > *, .marca-rejilla > *, .campos-rejilla > *,
+.rejilla > *, .campos-rejilla > *,
 .tp-rejilla > *, .tn-rejilla > *, .ep-rejilla > *{ min-width: 0; }
 .esqueleto{ height: 11px; border-radius: 3px; background: var(--fondo-encabezado); }
 .esqueleto.corto{ width: 62%; }

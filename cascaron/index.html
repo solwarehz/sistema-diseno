@@ -1745,7 +1745,7 @@ h2.seccion {
   line-height: 1.4; }
 /* Los ítems de una rejilla tienen min-width auto y no bajan de su contenido:
    sin esto, cualquier texto largo estira la columna. */
-.rejilla > *, .marca-rejilla > *, .campos-rejilla > *,
+.rejilla > *, .campos-rejilla > *,
 .tp-rejilla > *, .tn-rejilla > *, .ep-rejilla > * { min-width: 0; }
 
 /* Escalas */
@@ -1774,19 +1774,6 @@ h2.seccion {
 .tira-paso { font-weight: 600; }
 .tira-hex { font-size: 12px; color: var(--texto-secundario); }
 
-/* Marca */
-.marca-rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 12px; }
-.marca-item { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
-  border-radius: 6px; overflow: hidden; }
-.marca-tapa { height: 62px; }
-.marca-cuerpo { padding: 8px 12px; }
-.marca-cuerpo code { font-size: 12px; font-weight: 500; }
-.marca-escalon { font-size: 11px; color: var(--texto-secundario); margin-top: 4px; }
-.marca-escalon code { font-weight: 400; }
-.marca-cuerpo p { margin: 4px 0 0; font-size: 12px; color: var(--texto-secundario); }
-.marca-prohibido { margin-top: 4px; font-size: 12px; color: var(--error-texto);
-  background: var(--error-fondo); border-left: 3px solid var(--error-acento);
-  padding: 4px 8px; border-radius: 3px; }
 
 /* Maquetas */
 .maquetas { display: grid; gap: 28px; }
@@ -4161,51 +4148,44 @@ claridad para que el mismo blanco funcione encima; por eso el paso es un índice
         </div>
     </div>
   </div>
-<h3 class="sub-seccion">Marca — conocida por el sistema, no autorizada en él</h3>
-<p class="seccion-sub"><strong>No forma parte del panel de arriba</strong>, y por eso está aquí abajo y aparte.
-Esta sección existe por una sola razón: para que nadie saque el rojo del escudo con un cuentagotas y lo
-escriba a mano. Lo que no tiene nombre no se puede vigilar, así que los cinco se nombran
-—<code>marca_rojo</code>, <code>marca_oro</code>…— y con ese nombre el candado los persigue: un valor de
-marca fuera de la declaración de su propia variable falla el build.
-<br>Tienen nombre. No tienen permiso. Y aquí está medido por qué.</p>
-<div class="marca-rejilla">
+<h3 class="sub-seccion">Marca</h3>
 
-  <div class="marca-item">
-    <div class="marca-tapa color-marca_rojo"></div>
-    <div class="marca-cuerpo"><code>marca-rojo</code>
-      <div class="marca-escalon">claro <code>marca_rojo</code> · oscuro <code>marca_rojo_claro</code></div>
-      <p>Escudo, titulares de landing, impresos</p>
-      <div class="marca-prohibido">Prohibido en: Interfaz</div></div>
+  <div class="escala">
+    <div class="escala-nombre">marca</div>
+    <div class="escala-tiras">
+      
+        <div class="tira">
+          <span class="tira-color color-marca_rojo"></span>
+          <code class="tira-nombre">marca_rojo</code>
+          <span class="tira-hex">#E30613</span>
+        </div>
+        <div class="tira">
+          <span class="tira-color color-marca_rojo_claro"></span>
+          <code class="tira-nombre">marca_rojo_claro</code>
+          <span class="tira-hex">#FF4C37</span>
+        </div>
+        <div class="tira">
+          <span class="tira-color color-marca_rojo_panel"></span>
+          <code class="tira-nombre">marca_rojo_panel</code>
+          <span class="tira-hex">#930000</span>
+        </div>
+        <div class="tira">
+          <span class="tira-color color-marca_oro"></span>
+          <code class="tira-nombre">marca_oro</code>
+          <span class="tira-hex">#DEBD68</span>
+        </div>
+        <div class="tira">
+          <span class="tira-color color-marca_amarillo"></span>
+          <code class="tira-nombre">marca_amarillo</code>
+          <span class="tira-hex">#FDF200</span>
+        </div>
+        <div class="tira">
+          <span class="tira-color color-marca_celeste"></span>
+          <code class="tira-nombre">marca_celeste</code>
+          <span class="tira-hex">#01ADED</span>
+        </div>
+    </div>
   </div>
-  <div class="marca-item">
-    <div class="marca-tapa color-marca_rojo"></div>
-    <div class="marca-cuerpo"><code>marca-rojo-panel</code>
-      <div class="marca-escalon">claro <code>marca_rojo</code> · oscuro <code>marca_rojo_panel</code></div>
-      <p>Panel de marca de la landing</p>
-      <div class="marca-prohibido">Prohibido en: Interfaz</div></div>
-  </div>
-  <div class="marca-item">
-    <div class="marca-tapa color-marca_oro"></div>
-    <div class="marca-cuerpo"><code>marca-oro</code>
-      <div class="marca-escalon">claro <code>marca_oro</code> · oscuro <code>marca_oro</code></div>
-      <p>Escudo, filete de landing</p>
-      <div class="marca-prohibido">Prohibido en: Interfaz. En sistema usar accion-2 o marco-acento</div></div>
-  </div>
-  <div class="marca-item">
-    <div class="marca-tapa color-marca_amarillo"></div>
-    <div class="marca-cuerpo"><code>marca-amarillo</code>
-      <div class="marca-escalon">claro <code>marca_amarillo</code> · oscuro <code>marca_amarillo</code></div>
-      <p>Campaña, afiches, redes</p>
-      <div class="marca-prohibido">Prohibido en: Todo el sistema. 1,2:1 — no admite texto</div></div>
-  </div>
-  <div class="marca-item">
-    <div class="marca-tapa color-marca_celeste"></div>
-    <div class="marca-cuerpo"><code>marca-celeste</code>
-      <div class="marca-escalon">claro <code>marca_celeste</code> · oscuro <code>marca_celeste</code></div>
-      <p>Campaña</p>
-      <div class="marca-prohibido">Prohibido en: Todo el sistema. 2,6:1 — no admite texto</div></div>
-  </div>
-</div>
     </section><section class="pagina" id="pg-tipografia" hidden>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>

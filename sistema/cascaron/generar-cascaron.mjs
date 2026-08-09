@@ -15,7 +15,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { VERSION, primitivas, categoricas, autorizados, restringidos, semanticos, marca, correcciones, CAMBIOS } from '../tokens/fuente.mjs';
+import { VERSION, primitivas, categoricas, autorizados, restringidos, semanticos, correcciones, CAMBIOS } from '../tokens/fuente.mjs';
 import { empaquetar, NOMBRE_ZIP } from '../paquete/empaquetar.mjs';
 import { ICONOS, ic, icono, TAMANOS } from '../iconos/iconos.mjs';
 
@@ -3137,23 +3137,8 @@ ${Object.entries(primitivas).map(([n, p]) => escala(n, p)).join('')}
 claridad para que el mismo blanco funcione encima; por eso el paso es un índice sin significado
 —el 3 no es «más» que el 2—.</p>
 ${escala('identidad', categoricas.identidad)}
-<h3 class="sub-seccion">Marca — conocida por el sistema, no autorizada en él</h3>
-<p class="seccion-sub"><strong>No forma parte del panel de arriba</strong>, y por eso está aquí abajo y aparte.
-Esta sección existe por una sola razón: para que nadie saque el rojo del escudo con un cuentagotas y lo
-escriba a mano. Lo que no tiene nombre no se puede vigilar, así que los cinco se nombran
-—<code>marca_rojo</code>, <code>marca_oro</code>…— y con ese nombre el candado los persigue: un valor de
-marca fuera de la declaración de su propia variable falla el build.
-<br>Tienen nombre. No tienen permiso. Y aquí está medido por qué.</p>
-<div class="marca-rejilla">
-${Object.entries(marca).map(([k, v]) => `
-  <div class="marca-item">
-    <div class="marca-tapa color-${v.origen.claro}"></div>
-    <div class="marca-cuerpo"><code>${k}</code>
-      <div class="marca-escalon">claro <code>${v.origen.claro}</code> · oscuro <code>${v.origen.oscuro}</code></div>
-      <p>${v.uso}</p>
-      <div class="marca-prohibido">Prohibido en: ${v.prohibidoEn}</div></div>
-  </div>`).join('')}
-</div>`;
+<h3 class="sub-seccion">Marca</h3>
+${escala('marca', categoricas.marca)}`;
 
 const pagContraste = `
 <p class="pag-intro">${lock.resumen.paresBloqueantes} pares bloqueantes en los dos modos ·
@@ -4848,7 +4833,7 @@ h2.seccion {
   line-height: 1.4; }
 /* Los ítems de una rejilla tienen min-width auto y no bajan de su contenido:
    sin esto, cualquier texto largo estira la columna. */
-.rejilla > *, .marca-rejilla > *, .campos-rejilla > *,
+.rejilla > *, .campos-rejilla > *,
 .tp-rejilla > *, .tn-rejilla > *, .ep-rejilla > * { min-width: 0; }
 
 /* Escalas */
@@ -4877,19 +4862,6 @@ h2.seccion {
 .tira-paso { font-weight: 600; }
 .tira-hex { font-size: 12px; color: var(--texto-secundario); }
 
-/* Marca */
-.marca-rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 12px; }
-.marca-item { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
-  border-radius: 6px; overflow: hidden; }
-.marca-tapa { height: 62px; }
-.marca-cuerpo { padding: 8px 12px; }
-.marca-cuerpo code { font-size: 12px; font-weight: 500; }
-.marca-escalon { font-size: 11px; color: var(--texto-secundario); margin-top: 4px; }
-.marca-escalon code { font-weight: 400; }
-.marca-cuerpo p { margin: 4px 0 0; font-size: 12px; color: var(--texto-secundario); }
-.marca-prohibido { margin-top: 4px; font-size: 12px; color: var(--error-texto);
-  background: var(--error-fondo); border-left: 3px solid var(--error-acento);
-  padding: 4px 8px; border-radius: 3px; }
 
 /* Maquetas */
 .maquetas { display: grid; gap: 28px; }
