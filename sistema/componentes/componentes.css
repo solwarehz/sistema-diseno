@@ -1221,10 +1221,9 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   PANEL DE LA BARRA — 13 reglas · clases .pb-*
+   PANEL DE LA BARRA — 12 reglas · clases .pb-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-.pb-demo{ display: flex; gap: 24px; }
 .pb-panel{ min-width: 320px; max-width: 360px; padding: 4px 0 0; }
 .pb-lista{ list-style: none; margin: 0; padding: 0; max-height: 320px; overflow-y: auto; }
 .pb-item{ display: flex; align-items: flex-start; gap: 8px; width: 100%;

@@ -2322,7 +2322,11 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
    Mas ancho que el menu de usuario a proposito: aqui hay texto que leer, no
    opciones que elegir, y a 248px un aviso de dos lineas se parte en cuatro. */
-.pb-demo { display: flex; gap: 24px; }
+/* Solo del catalogo: el prefijo demo no viaja. En la barra real los botones
+   estan a la derecha del todo y el anclaje a la derecha es el correcto; aqui
+   estan a la izquierda de la pagina y el panel se saldria de pantalla. */
+.demo-paneles { display: flex; gap: 24px; }
+.demo-paneles .pb-panel { right: auto; left: 0; }
 .pb-panel { min-width: 320px; max-width: 360px; padding: 4px 0 0; }
 .pb-lista { list-style: none; margin: 0; padding: 0; max-height: 320px; overflow-y: auto; }
 .pb-item { display: flex; align-items: flex-start; gap: 8px; width: 100%;
@@ -8169,7 +8173,7 @@ Lo que cambia es el icono, el titulo y los datos, que es justo lo que se pasa po
 
 <h3 class="sub-seccion">Pruebalo</h3>
 <div class="bloque">
-  <div class="pb-demo">
+  <div class="demo-paneles">
     <div class="us" data-pb>
       <button class="top-btn" aria-expanded="false" aria-haspopup="dialog"
               aria-controls="pb-msj" aria-label="Mensajes, 2 sin leer" data-pb-btn>
