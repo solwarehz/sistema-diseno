@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.10.3';
+export const VERSION = '1.10.4';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,22 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.10.4', fecha: '2026-08-09',
+    que: 'El aviso temporal se pinta como lo describe su propia tabla de tonos',
+    porque:
+      'La documentación define el aviso como filete intenso MÁS fondo tenue, igual que el ' +
+      'chip del mismo estado. En pantalla solo cambiaba el filete: era una tarjeta blanca ' +
+      'con una raya de color. El sistema describía una cosa y pintaba otra, y el candado no ' +
+      'podía verlo porque verifica PARES DE TOKENS, no si el token correcto está enchufado. ' +
+      'El texto se queda en `texto-principal` y no pasa al del estado: medido, 12,03:1 en el ' +
+      'peor tono frente a 7,82:1. El chip usa el del estado porque es una etiqueta corta ' +
+      'donde el color refuerza; el aviso lleva una frase, y ahí manda la legibilidad. Entran ' +
+      'nueve pares al contrato —la frase, el botón «Deshacer» y el aspa sobre cada fondo—, ' +
+      'que hasta ahora no medía nadie.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.10.3', fecha: '2026-08-09',
     que: 'negro_1000 autorizado y las funciones de color permitidas SOLO en sombras',
@@ -762,6 +778,21 @@ export const pares = [
   ['apagado-borde',    'fondo-pagina',     3.0, 'Contorno del interruptor sobre página'],
   ['apagado-borde',    'fondo-encabezado', 3.0, 'Contorno del interruptor sobre encabezado'],
   ['apagado-fondo',    'fondo-tarjeta',    'informativo', 'Vía contra la tarjeta. Relleno, no delimita'],
+
+  // El aviso temporal comparte el fondo del estado con el chip, pero NO su
+  // texto: lleva una frase entera, no una etiqueta. Con `texto-principal` el
+  // peor de los cuatro da 12,03:1 frente a 7,82:1 del texto del estado.
+  // Sin estos pares, el aviso se pintaba sobre un fondo que nadie medía.
+  ['texto-principal',  'exito-fondo',      4.5, 'Frase del aviso temporal de éxito'],
+  ['texto-principal',  'aviso-fondo',      4.5, 'Frase del aviso temporal de advertencia'],
+  ['texto-principal',  'error-fondo',      4.5, 'Frase del aviso temporal de error'],
+  ['texto-principal',  'info-fondo',       4.5, 'Frase del aviso temporal informativo'],
+  // El botón «Deshacer» y la aspa de cerrar viven sobre ese mismo fondo.
+  ['accion',           'exito-fondo',      4.5, '«Deshacer» sobre el aviso de éxito'],
+  ['texto-secundario', 'exito-fondo',      4.5, 'Aspa de cerrar sobre el aviso de éxito'],
+  ['texto-secundario', 'aviso-fondo',      4.5, 'Aspa de cerrar sobre el aviso de advertencia'],
+  ['texto-secundario', 'error-fondo',      4.5, 'Aspa de cerrar sobre el aviso de error'],
+  ['texto-secundario', 'info-fondo',       4.5, 'Aspa de cerrar sobre el aviso informativo'],
 
   // Deshabilitado — WCAG 2.2 exime a los controles inactivos (1.4.3)
   ['accion-texto-desh','accion-deshabilitada', 'informativo', 'Botón deshabilitado. Exento por 1.4.3'],

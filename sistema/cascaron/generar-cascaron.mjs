@@ -3919,10 +3919,20 @@ code { font-family: 'IBM Plex Mono', monospace; }
   transform: translateY(-16px); opacity: 0;
   transition: transform .22s ease, opacity .22s ease; }
 .av-dentro { transform: translateY(0); opacity: 1; }
-.av-exito { border-color: var(--exito-acento); }
-.av-info  { border-color: var(--info-acento); }
-.av-aviso { border-color: var(--aviso-acento); }
-.av-error { border-color: var(--error-acento); }
+/* FILETE INTENSO Y FONDO TENUE, los dos. El aviso solo cambiaba el filete y se
+   quedaba sobre fondo-tarjeta, así que en pantalla era una tarjeta blanca con
+   una raya de color: no se parecía a lo que la tabla de tonos documenta ni al
+   chip del mismo estado. El sistema describía una cosa y pintaba otra.
+
+   El texto se queda en texto-principal y NO pasa a exito-texto. Medido: 12,03:1
+   en el peor de los cuatro tonos frente a 7,82:1 del texto del estado. El chip usa
+   el del estado porque es una etiqueta corta donde el color refuerza el
+   significado; el aviso lleva una frase, y ahí manda la legibilidad. Los ocho
+   pares están en el contrato. */
+.av-exito { border-color: var(--exito-acento); background: var(--exito-fondo); }
+.av-info  { border-color: var(--info-acento);  background: var(--info-fondo); }
+.av-aviso { border-color: var(--aviso-acento); background: var(--aviso-fondo); }
+.av-error { border-color: var(--error-acento); background: var(--error-fondo); }
 .av-txt { flex: 1; line-height: 1.45; }
 .av-accion { font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
   background: transparent; border: 0; color: var(--enlace); text-decoration: underline;

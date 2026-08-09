@@ -1,6 +1,6 @@
 {
   "documento": "MMI-DS",
-  "version": "1.10.3",
+  "version": "1.10.4",
   "norma": "WCAG 2.2 AA",
   "generado": "node sistema/tokens/generar.mjs",
   "modos": [
@@ -9,17 +9,17 @@
   ],
   "aviso": "Archivo generado. No editar a mano. La fuente es sistema/tokens/fuente.mjs. Cambiar un valor exige regenerar, re-verificar y subir versión (§2.5 regla 8).",
   "resumen": {
-    "paresTotales": 156,
-    "paresBloqueantes": 116,
+    "paresTotales": 174,
+    "paresBloqueantes": 134,
     "paresInformativos": 40,
     "fallos": 0,
     "porModo": {
       "claro": {
-        "bloqueantes": 58,
+        "bloqueantes": 67,
         "fallos": 0
       },
       "oscuro": {
-        "bloqueantes": 58,
+        "bloqueantes": 67,
         "fallos": 0
       }
     }
@@ -1507,6 +1507,105 @@
     },
     {
       "modo": "claro",
+      "frente": "texto-principal",
+      "fondo": "exito-fondo",
+      "hexFrente": "#2C2A25",
+      "hexFondo": "#E3F4E1",
+      "ratio": 12.48,
+      "minimo": 4.5,
+      "motivo": "Frase del aviso temporal de éxito",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "texto-principal",
+      "fondo": "aviso-fondo",
+      "hexFrente": "#2C2A25",
+      "hexFondo": "#FFEBD6",
+      "ratio": 12.35,
+      "minimo": 4.5,
+      "motivo": "Frase del aviso temporal de advertencia",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "texto-principal",
+      "fondo": "error-fondo",
+      "hexFrente": "#2C2A25",
+      "hexFondo": "#FFE6DF",
+      "ratio": 12.03,
+      "minimo": 4.5,
+      "motivo": "Frase del aviso temporal de error",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "texto-principal",
+      "fondo": "info-fondo",
+      "hexFrente": "#2C2A25",
+      "hexFondo": "#E9EEFF",
+      "ratio": 12.38,
+      "minimo": 4.5,
+      "motivo": "Frase del aviso temporal informativo",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "accion",
+      "fondo": "exito-fondo",
+      "hexFrente": "#0063CB",
+      "hexFondo": "#E3F4E1",
+      "ratio": 5.01,
+      "minimo": 4.5,
+      "motivo": "«Deshacer» sobre el aviso de éxito",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "texto-secundario",
+      "fondo": "exito-fondo",
+      "hexFrente": "#6A6864",
+      "hexFondo": "#E3F4E1",
+      "ratio": 4.84,
+      "minimo": 4.5,
+      "motivo": "Aspa de cerrar sobre el aviso de éxito",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "texto-secundario",
+      "fondo": "aviso-fondo",
+      "hexFrente": "#6A6864",
+      "hexFondo": "#FFEBD6",
+      "ratio": 4.79,
+      "minimo": 4.5,
+      "motivo": "Aspa de cerrar sobre el aviso de advertencia",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "texto-secundario",
+      "fondo": "error-fondo",
+      "hexFrente": "#6A6864",
+      "hexFondo": "#FFE6DF",
+      "ratio": 4.66,
+      "minimo": 4.5,
+      "motivo": "Aspa de cerrar sobre el aviso de error",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "texto-secundario",
+      "fondo": "info-fondo",
+      "hexFrente": "#6A6864",
+      "hexFondo": "#E9EEFF",
+      "ratio": 4.8,
+      "minimo": 4.5,
+      "motivo": "Aspa de cerrar sobre el aviso informativo",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
       "frente": "accion-texto-desh",
       "fondo": "accion-deshabilitada",
       "hexFrente": "#8B8985",
@@ -2362,6 +2461,105 @@
       "minimo": "informativo",
       "motivo": "Vía contra la tarjeta. Relleno, no delimita",
       "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-principal",
+      "fondo": "exito-fondo",
+      "hexFrente": "#EFEEEB",
+      "hexFondo": "#233521",
+      "ratio": 11.29,
+      "minimo": 4.5,
+      "motivo": "Frase del aviso temporal de éxito",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-principal",
+      "fondo": "aviso-fondo",
+      "hexFrente": "#EFEEEB",
+      "hexFondo": "#402C16",
+      "ratio": 11.38,
+      "minimo": 4.5,
+      "motivo": "Frase del aviso temporal de advertencia",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-principal",
+      "fondo": "error-fondo",
+      "hexFrente": "#EFEEEB",
+      "hexFondo": "#4D241F",
+      "ratio": 11.39,
+      "minimo": 4.5,
+      "motivo": "Frase del aviso temporal de error",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-principal",
+      "fondo": "info-fondo",
+      "hexFrente": "#EFEEEB",
+      "hexFondo": "#273048",
+      "ratio": 11.29,
+      "minimo": 4.5,
+      "motivo": "Frase del aviso temporal informativo",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "accion",
+      "fondo": "exito-fondo",
+      "hexFrente": "#6CB2FF",
+      "hexFondo": "#233521",
+      "ratio": 5.89,
+      "minimo": 4.5,
+      "motivo": "«Deshacer» sobre el aviso de éxito",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-secundario",
+      "fondo": "exito-fondo",
+      "hexFrente": "#C3C1BD",
+      "hexFondo": "#233521",
+      "ratio": 7.28,
+      "minimo": 4.5,
+      "motivo": "Aspa de cerrar sobre el aviso de éxito",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-secundario",
+      "fondo": "aviso-fondo",
+      "hexFrente": "#C3C1BD",
+      "hexFondo": "#402C16",
+      "ratio": 7.34,
+      "minimo": 4.5,
+      "motivo": "Aspa de cerrar sobre el aviso de advertencia",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-secundario",
+      "fondo": "error-fondo",
+      "hexFrente": "#C3C1BD",
+      "hexFondo": "#4D241F",
+      "ratio": 7.35,
+      "minimo": 4.5,
+      "motivo": "Aspa de cerrar sobre el aviso de error",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-secundario",
+      "fondo": "info-fondo",
+      "hexFrente": "#C3C1BD",
+      "hexFondo": "#273048",
+      "ratio": 7.29,
+      "minimo": 4.5,
+      "motivo": "Aspa de cerrar sobre el aviso informativo",
+      "cumple": true
     },
     {
       "modo": "oscuro",

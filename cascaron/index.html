@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.10.3</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.10.4</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.3
-   WCAG 2.2 AA · 116 pares verificados en los dos modos, 0 fallos
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.4
+   WCAG 2.2 AA · 134 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -839,10 +839,20 @@ code { font-family: 'IBM Plex Mono', monospace; }
   transform: translateY(-16px); opacity: 0;
   transition: transform .22s ease, opacity .22s ease; }
 .av-dentro { transform: translateY(0); opacity: 1; }
-.av-exito { border-color: var(--exito-acento); }
-.av-info  { border-color: var(--info-acento); }
-.av-aviso { border-color: var(--aviso-acento); }
-.av-error { border-color: var(--error-acento); }
+/* FILETE INTENSO Y FONDO TENUE, los dos. El aviso solo cambiaba el filete y se
+   quedaba sobre fondo-tarjeta, así que en pantalla era una tarjeta blanca con
+   una raya de color: no se parecía a lo que la tabla de tonos documenta ni al
+   chip del mismo estado. El sistema describía una cosa y pintaba otra.
+
+   El texto se queda en texto-principal y NO pasa a exito-texto. Medido: 12,03:1
+   en el peor de los cuatro tonos frente a 7,82:1 del texto del estado. El chip usa
+   el del estado porque es una etiqueta corta donde el color refuerza el
+   significado; el aviso lleva una frase, y ahí manda la legibilidad. Los ocho
+   pares están en el contrato. */
+.av-exito { border-color: var(--exito-acento); background: var(--exito-fondo); }
+.av-info  { border-color: var(--info-acento);  background: var(--info-fondo); }
+.av-aviso { border-color: var(--aviso-acento); background: var(--aviso-fondo); }
+.av-error { border-color: var(--error-acento); background: var(--error-fondo); }
 .av-txt { flex: 1; line-height: 1.45; }
 .av-accion { font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
   background: transparent; border: 0; color: var(--enlace); text-decoration: underline;
@@ -2511,7 +2521,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.10.3</option></select></label>
+          <select class="campo cg-in"><option>v1.10.4</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -2572,8 +2582,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.10.3.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.10.3</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.10.4.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.10.4</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -2595,7 +2605,7 @@ El menú de la izquierda lo abre por partes.</p>
 
 <div class="estado-rejilla">
   <div class="est"><b>56</b><span>tokens semánticos</span></div>
-  <div class="est"><b>116</b><span>pares verificados</span></div>
+  <div class="est"><b>134</b><span>pares verificados</span></div>
   <div class="est est-ok"><b>0</b><span>fallos de contraste</span></div>
   <div class="est"><b>2</b><span>modos, claro y oscuro</span></div>
 </div>
@@ -3136,7 +3146,7 @@ El menú de la izquierda lo abre por partes.</p>
   <a href="#espaciado" data-ir="espaciado" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
     <span><strong>Espaciado</strong>Rejilla de 4px y tamaños de control</span></a>
   <a href="#contraste" data-ir="contraste" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg></span>
-    <span><strong>Contrastes</strong>Los 116 pares medidos</span></a>
+    <span><strong>Contrastes</strong>Los 134 pares medidos</span></a>
 </div>
     </section><section class="pagina" id="pg-color" hidden>
       <nav class="migas" aria-label="Ubicación">
@@ -8491,6 +8501,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
 
 
+<h3 class="sub-seccion">v1.10.4 <span class="cam-fecha">2026-08-09</span></h3>
+<p class="pag-intro"><strong>El aviso temporal se pinta como lo describe su propia tabla de tonos.</strong> La documentación define el aviso como filete intenso MÁS fondo tenue, igual que el chip del mismo estado. En pantalla solo cambiaba el filete: era una tarjeta blanca con una raya de color. El sistema describía una cosa y pintaba otra, y el candado no podía verlo porque verifica PARES DE TOKENS, no si el token correcto está enchufado. El texto se queda en `texto-principal` y no pasa al del estado: medido, 12,03:1 en el peor tono frente a 7,82:1. El chip usa el del estado porque es una etiqueta corta donde el color refuerza; el aviso lleva una frase, y ahí manda la legibilidad. Entran nueve pares al contrato —la frase, el botón «Deshacer» y el aspa sobre cada fondo—, que hasta ahora no medía nadie.</p>
+
+
+
 <h3 class="sub-seccion">v1.10.3 <span class="cam-fecha">2026-08-09</span></h3>
 <p class="pag-intro"><strong>negro_1000 autorizado y las funciones de color permitidas SOLO en sombras.</strong> El sistema incumplia su propia regla: el candado de lint prohibe rgb() y hsl(), y las sombras del catalogo eran rgba(0,0,0,.16) con un negro que ademas no estaba en la rampa. Prohibirlas del todo obligaba a esa contradiccion, porque una sombra no es color de superficie: no lleva texto encima y ningun criterio de WCAG la mide. El usuario autorizo las dos cosas. Al relajarlo se cerro un agujero mayor: el candado de color solo miraba HEXADECIMALES, asi que un background: rgb(59,130,246) se le escapaba entero, y el de lint no lo veia porque solo lee JS y TS. Ahora las funciones de color se resuelven a hexadecimal y se comprueban contra las familias. El blanco NO se anadio: ya existia como gris_0, y duplicarlo seria el mismo valor con dos nombres.</p>
 
@@ -8576,7 +8591,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       </nav>
       <div class="pag-cab"><h1>Contrastes</h1></div>
       
-<p class="pag-intro">116 pares bloqueantes en los dos modos ·
+<p class="pag-intro">134 pares bloqueantes en los dos modos ·
 <strong>0 fallos</strong> · WCAG 2.2 AA. Recalculados en cada build por
 <code>verificar-contraste.mjs</code>: si el contrato miente, el build falla.</p>
 <h3 class="sub-seccion">Modo claro</h3>
@@ -9006,6 +9021,78 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       <td class="num">3</td>
       <td class="ok">cumple</td>
       <td class="motivo">Contorno del interruptor sobre encabezado</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>exito-fondo</code></td>
+      <td class="num">12.48:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Frase del aviso temporal de éxito</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>aviso-fondo</code></td>
+      <td class="num">12.35:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Frase del aviso temporal de advertencia</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>error-fondo</code></td>
+      <td class="num">12.03:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Frase del aviso temporal de error</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>info-fondo</code></td>
+      <td class="num">12.38:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Frase del aviso temporal informativo</td>
+    </tr>
+    <tr>
+      <td><code>accion</code></td>
+      <td><code>exito-fondo</code></td>
+      <td class="num">5.01:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">«Deshacer» sobre el aviso de éxito</td>
+    </tr>
+    <tr>
+      <td><code>texto-secundario</code></td>
+      <td><code>exito-fondo</code></td>
+      <td class="num">4.84:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Aspa de cerrar sobre el aviso de éxito</td>
+    </tr>
+    <tr>
+      <td><code>texto-secundario</code></td>
+      <td><code>aviso-fondo</code></td>
+      <td class="num">4.79:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Aspa de cerrar sobre el aviso de advertencia</td>
+    </tr>
+    <tr>
+      <td><code>texto-secundario</code></td>
+      <td><code>error-fondo</code></td>
+      <td class="num">4.66:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Aspa de cerrar sobre el aviso de error</td>
+    </tr>
+    <tr>
+      <td><code>texto-secundario</code></td>
+      <td><code>info-fondo</code></td>
+      <td class="num">4.80:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Aspa de cerrar sobre el aviso informativo</td>
     </tr>
     <tr>
       <td><code>texto-invertido</code></td>
@@ -9475,6 +9562,78 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       <td class="num">3</td>
       <td class="ok">cumple</td>
       <td class="motivo">Contorno del interruptor sobre encabezado</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>exito-fondo</code></td>
+      <td class="num">11.29:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Frase del aviso temporal de éxito</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>aviso-fondo</code></td>
+      <td class="num">11.38:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Frase del aviso temporal de advertencia</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>error-fondo</code></td>
+      <td class="num">11.39:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Frase del aviso temporal de error</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>info-fondo</code></td>
+      <td class="num">11.29:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Frase del aviso temporal informativo</td>
+    </tr>
+    <tr>
+      <td><code>accion</code></td>
+      <td><code>exito-fondo</code></td>
+      <td class="num">5.89:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">«Deshacer» sobre el aviso de éxito</td>
+    </tr>
+    <tr>
+      <td><code>texto-secundario</code></td>
+      <td><code>exito-fondo</code></td>
+      <td class="num">7.28:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Aspa de cerrar sobre el aviso de éxito</td>
+    </tr>
+    <tr>
+      <td><code>texto-secundario</code></td>
+      <td><code>aviso-fondo</code></td>
+      <td class="num">7.34:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Aspa de cerrar sobre el aviso de advertencia</td>
+    </tr>
+    <tr>
+      <td><code>texto-secundario</code></td>
+      <td><code>error-fondo</code></td>
+      <td class="num">7.35:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Aspa de cerrar sobre el aviso de error</td>
+    </tr>
+    <tr>
+      <td><code>texto-secundario</code></td>
+      <td><code>info-fondo</code></td>
+      <td class="num">7.29:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Aspa de cerrar sobre el aviso informativo</td>
     </tr>
     <tr>
       <td><code>texto-invertido</code></td>

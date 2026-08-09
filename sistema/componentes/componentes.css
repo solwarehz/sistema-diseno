@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.10.3
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.10.4
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -710,10 +710,10 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   transform: translateY(-16px); opacity: 0;
   transition: transform .22s ease, opacity .22s ease; }
 .av-dentro{ transform: translateY(0); opacity: 1; }
-.av-exito{ border-color: var(--exito-acento); }
-.av-info{ border-color: var(--info-acento); }
-.av-aviso{ border-color: var(--aviso-acento); }
-.av-error{ border-color: var(--error-acento); }
+.av-exito{ border-color: var(--exito-acento); background: var(--exito-fondo); }
+.av-info{ border-color: var(--info-acento);  background: var(--info-fondo); }
+.av-aviso{ border-color: var(--aviso-acento); background: var(--aviso-fondo); }
+.av-error{ border-color: var(--error-acento); background: var(--error-fondo); }
 .av-txt{ flex: 1; line-height: 1.45; }
 .av-accion{ font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
   background: transparent; border: 0; color: var(--enlace); text-decoration: underline;
