@@ -1,0 +1,35 @@
+# Entorno de desarrollo del sistema de diseño.
+#
+# Existe para poder hacer dos cosas que en la máquina no se pueden:
+#   1 · ejecutar ESLint DE VERDAD sobre el candado, que lleva nueve versiones
+#       entregándose sin haberse ejecutado nunca
+#   2 · compilar y PROBAR los componentes de React
+#
+# Nada se instala en la máquina. `node_modules` vive en un volumen con nombre,
+# no en la carpeta ni en el disco del usuario. Se deshace entero con:
+#     docker compose down -v
+#
+# Sin puertos publicados por defecto. El servidor de Vite se levanta a mano y
+# solo en loopback cuando hace falta mirar algo.
+
+services:
+  ds:
+    # Node 20 y no 22: el sistema declara `engines: node >=20.15`, y el
+    # empaquetado usa `zlib.crc32`, que existe desde esa versión.
+    image: node:20-alpine
+    working_dir: /trabajo
+    volumes:
+      # El repositorio entra montado; lo que se genera dentro sale al repo.
+      - .:/trabajo
+      # node_modules NO sale: volumen con nombre, para no ensuciar la carpeta
+      # ni chocar con el sistema de archivos del anfitrión.
+      - modulos_raiz:/trabajo/node_modules
+      - modulos_componentes:/trabajo/componentes/node_modules
+    # Sin esto el contenedor arranca y muere: no hay proceso que sostenerlo.
+    command: sh -c "tail -f /dev/null"
+    environment:
+      - CI=true
+
+volumes:
+  modulos_raiz:
+  modulos_componentes:

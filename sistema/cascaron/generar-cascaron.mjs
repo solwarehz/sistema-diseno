@@ -514,7 +514,7 @@ const casosDeUso = `
       <span class="bien-et">Acción de fila como <code>enlace</code></span></div>
   </div>
   <div class="mal-par">
-    <div class="mal-caja mal"><input class="campo sin-foco" value="Sin anillo de foco">
+    <div class="mal-caja mal"><input class="campo sin-foco" value="Sin anillo de foco" tabindex="-1" readonly aria-hidden="true">
       <span class="mal-et"><code>outline:none</code> — con teclado te pierdes</span></div>
     <div class="mal-caja bien"><input class="campo foco-demo" value="Con anillo">
       <span class="bien-et">2px con 2px de separación</span></div>
@@ -5321,6 +5321,11 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .filas-boton { display: flex; gap: 4px; }
 .filas-boton.col { flex-direction: column; gap: 8px; align-items: center; }
 .btn.mini { font-size: 12px; padding: 4px 8px; }
+/* Contraejemplo didactico. Lleva tabindex=-1, readonly y aria-hidden porque
+   ANTES era un input vivo en el orden de tabulacion sin indicador de foco: un
+   incumplimiento real de SC 2.4.7 dentro de la pagina que lo denuncia. Ensenar
+   el defecto no autoriza a cometerlo -§5.2.2: la conformidad es de pagina
+   completa-. */
 .sin-foco { outline: none; }
 
 .aviso { background: var(--info-fondo); color: var(--info-texto);

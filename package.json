@@ -39,6 +39,14 @@
     "auditar": "node sistema/candado/auditar-cascaron.mjs",
     "servir": "node sistema/cascaron/servir.mjs",
     "probar-candado": "node sistema/candado/probar-candado.mjs",
-    "componentes": "node sistema/componentes/extraer.mjs"
+    "componentes": "node sistema/componentes/extraer.mjs",
+    "lint": "eslint .",
+    "lint-real": "sh sistema/candado/probar-con-eslint.sh",
+    "componentes-probar": "cd componentes && vitest run"
+  },
+  "devDependencies": {
+    "eslint": "^9.14.0",
+    "typescript-eslint": "^8.13.0",
+    "typescript": "^5.6.3"
   }
 }

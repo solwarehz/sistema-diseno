@@ -99,6 +99,14 @@ export default [
       'sistema/tokens/fuente.mjs',
       'sistema/tokens/generar.mjs',
       'sistema/candado/**',
+      // Las herramientas que ESCRIBEN el sistema, no las que lo consumen. El
+      // generador del catalogo lleva todo el CSS dentro de plantillas -hex
+      // incluido, que es su trabajo- y el empaquetado lleva el LEEME, que
+      // DOCUMENTA las prohibiciones y por tanto las nombra. Su salida no queda
+      // sin verificar: la revisa auditar-cascaron.mjs, que es mas estricto.
+      'sistema/cascaron/**',
+      'sistema/paquete/**',
+      'sistema/componentes/extraer.mjs',
     ],
     rules: {
       'no-restricted-syntax': ['error', ...restringidos],
