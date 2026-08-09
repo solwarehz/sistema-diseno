@@ -119,12 +119,34 @@ const CONTENIDO = [
   // Los estilos de los elementos, para importar en vez de replicar.
   ['sistema/componentes/componentes.css', 'sistema/componentes/componentes.css'],
   ['sistema/componentes/comportamiento.md', 'sistema/componentes/comportamiento.md'],
+  // Los COMPONENTES DE REACT. Trece archivos que se construyeron para que nadie
+  // reconstruya el comportamiento —ordenar, filtrar, plegar, el teclado del
+  // calendario, el foco del diálogo— y que no viajaban en la entrega: el ZIP
+  // llevaba catorce archivos y ninguno era uno de estos. Se entregaba el ESTILO
+  // y se seguía pidiendo al proyecto que rehiciera lo demás, que es justo el
+  // coste que Control Administrativos V2.0 midió en 3.983 líneas.
+  ['componentes/src/index.ts', 'componentes/index.ts'],
+  ['componentes/src/Boton.tsx', 'componentes/Boton.tsx'],
+  ['componentes/src/Enlace.tsx', 'componentes/Enlace.tsx'],
+  ['componentes/src/Campo.tsx', 'componentes/Campo.tsx'],
+  ['componentes/src/Chip.tsx', 'componentes/Chip.tsx'],
+  ['componentes/src/Avatar.tsx', 'componentes/Avatar.tsx'],
+  ['componentes/src/Interruptor.tsx', 'componentes/Interruptor.tsx'],
+  ['componentes/src/Tarjeta.tsx', 'componentes/Tarjeta.tsx'],
+  ['componentes/src/TablaDatos.tsx', 'componentes/TablaDatos.tsx'],
+  ['componentes/src/Paginacion.tsx', 'componentes/Paginacion.tsx'],
+  ['componentes/src/RangoFecha.tsx', 'componentes/RangoFecha.tsx'],
+  ['componentes/src/Horario.tsx', 'componentes/Horario.tsx'],
+  ['componentes/src/Estados.tsx', 'componentes/Estados.tsx'],
+  ['componentes/src/Confirmacion.tsx', 'componentes/Confirmacion.tsx'],
   // Los candados. Sin ellos el sistema es una sugerencia.
   ['sistema/candado/verificar-contraste.mjs', 'sistema/candado/verificar-contraste.mjs'],
+  ['sistema/candado/verificar-color.mjs', 'sistema/candado/verificar-color.mjs'],
   ['sistema/candado/candado.eslint.config.mjs', 'sistema/candado/candado.eslint.config.mjs'],
   ['sistema/candado/probar-candado.mjs', 'sistema/candado/probar-candado.mjs'],
   // La documentación.
   ['manual/MANUAL-APLICACIONES-WEB.md', 'manual/MANUAL-APLICACIONES-WEB.md'],
+  ['sistema/componentes/POLITICA-DE-CREACION.md', 'sistema/componentes/POLITICA-DE-CREACION.md'],
   // El catálogo navegable, para consultar cada elemento.
   ['cascaron/index.html', 'catalogo/index.html'],
 ];

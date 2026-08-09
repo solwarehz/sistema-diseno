@@ -17,6 +17,7 @@
     "sistema/candado",
     "sistema/iconos",
     "sistema/componentes",
+    "componentes/src",
     "manual",
     "CLAUDE.md"
   ],
@@ -30,7 +31,11 @@
     "./eslint": "./sistema/candado/candado.eslint.config.mjs",
     "./package.json": "./package.json",
     "./componentes.css": "./sistema/componentes/componentes.css",
-    "./comportamiento.md": "./sistema/componentes/comportamiento.md"
+    "./comportamiento.md": "./sistema/componentes/comportamiento.md",
+    "./componentes": "./componentes/src/index.ts",
+    "./componentes/*": "./componentes/src/*.tsx",
+    "./verificar-color": "./sistema/candado/verificar-color.mjs",
+    "./politica": "./sistema/componentes/POLITICA-DE-CREACION.md"
   },
   "scripts": {
     "generar": "node sistema/tokens/generar.mjs",
@@ -42,7 +47,8 @@
     "componentes": "node sistema/componentes/extraer.mjs",
     "lint": "eslint .",
     "lint-real": "sh sistema/candado/probar-con-eslint.sh",
-    "componentes-probar": "cd componentes && vitest run"
+    "componentes-probar": "cd componentes && vitest run",
+    "verificar-color": "node sistema/candado/verificar-color.mjs"
   },
   "devDependencies": {
     "eslint": "^9.14.0",
