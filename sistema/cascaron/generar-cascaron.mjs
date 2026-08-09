@@ -15,7 +15,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { VERSION, primitivas, categoricas, escalones, semanticos, marca, correcciones, CAMBIOS } from '../tokens/fuente.mjs';
+import { VERSION, primitivas, categoricas, autorizados, restringidos, semanticos, marca, correcciones, CAMBIOS } from '../tokens/fuente.mjs';
 import { empaquetar, NOMBRE_ZIP } from '../paquete/empaquetar.mjs';
 import { ICONOS, ic, icono, TAMANOS } from '../iconos/iconos.mjs';
 
@@ -3121,8 +3121,9 @@ ${Object.entries(GRUPOS).map(grupoMuestras).join('')}
 <h3 class="sub-seccion">Colores autorizados</h3>
 <p class="seccion-sub">Los de este panel y ninguno más. Un color que no esté aquí no vive en el sistema:
 no tiene nombre, no se puede volver a encontrar y el candado no lo protege.
-Son <strong>${escalones.length} valores</strong> en ${Object.keys(primitivas).length} rampas y ${Object.keys(categoricas).length} familias categóricas,
-y <code>verificar-color.mjs</code> falla el build si aparece uno fuera de la lista.</p>
+Son <strong>${autorizados.length} valores</strong> en ${Object.keys(primitivas).length} rampas y 1 familia categórica,
+y <code>verificar-color.mjs</code> falla el build si aparece uno fuera de la lista.
+Los ${restringidos.length} de <strong>marca</strong> no están aquí: el sistema los conoce para poder vigilarlos, no para usarlos.</p>
 <p class="seccion-sub">Un solo deletreo en los tres sitios: el escalón se llama <code>ambar_900</code>,
 la variable es <code>--ambar_900</code> y la clase <code>.color-ambar_900</code>. La misma cadena, sin traducir nada.
 Autorizado no es lo mismo que libre: en un componente se usan los <strong>tokens semánticos</strong> de arriba,
@@ -3131,18 +3132,18 @@ que son los que están medidos contra un fondo concreto.</p>
 <p class="seccion-sub">Un tono a muchas claridades. Existen para que los semánticos elijan. No se consumen directamente.</p>
 ${Object.entries(primitivas).map(([n, p]) => escala(n, p)).join('')}
 <h3 class="sub-seccion">Familias categóricas</h3>
-<p class="seccion-sub">No son rampas y forzarlas a serlo sería mentir sobre lo que son.
-<code>marca</code> se mide del escudo impreso: cada valor es un tono distinto, no un escalón de otro.
+<p class="seccion-sub">No es una rampa y forzarla a serlo sería mentir sobre lo que es.
 <code>identidad</code> son colores que solo tienen que distinguirse <em>entre sí</em>, todos a la misma
 claridad para que el mismo blanco funcione encima; por eso el paso es un índice sin significado
 —el 3 no es «más» que el 2—.</p>
-${Object.entries(categoricas).map(([n, p]) => escala(n, p)).join('')}
-<h3 class="sub-seccion">Marca — definida, y aun así prohibida en interfaz</h3>
-<p class="seccion-sub">Están en la escala: son la familia <code>marca</code> de arriba, con su escalón y su clase.
-Tenían que estarlo, porque se usan de verdad —en el escudo, en la landing y en los impresos— y lo que
-no pasa por una familia es un hexadecimal que nadie puede volver a encontrar.
-<strong>Estar definido y estar autorizado no son lo mismo:</strong> el sistema ahora dice las dos cosas
-por separado. Estos cinco tienen nombre y no tienen permiso.</p>
+${escala('identidad', categoricas.identidad)}
+<h3 class="sub-seccion">Marca — conocida por el sistema, no autorizada en él</h3>
+<p class="seccion-sub"><strong>No forma parte del panel de arriba</strong>, y por eso está aquí abajo y aparte.
+Esta sección existe por una sola razón: para que nadie saque el rojo del escudo con un cuentagotas y lo
+escriba a mano. Lo que no tiene nombre no se puede vigilar, así que los cinco se nombran
+—<code>marca_rojo</code>, <code>marca_oro</code>…— y con ese nombre el candado los persigue: un valor de
+marca fuera de la declaración de su propia variable falla el build.
+<br>Tienen nombre. No tienen permiso. Y aquí está medido por qué.</p>
 <div class="marca-rejilla">
 ${Object.entries(marca).map(([k, v]) => `
   <div class="marca-item">

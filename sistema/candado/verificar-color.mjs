@@ -32,7 +32,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { primitivas, categoricas, semanticos, marca, VERSION } from '../tokens/fuente.mjs';
+import { primitivas, categoricas, autorizados, restringidos, semanticos, marca, VERSION } from '../tokens/fuente.mjs';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 const RAIZ = join(AQUI, '..', '..');
@@ -41,13 +41,28 @@ const HEX = /#[0-9a-fA-F]{3,8}\b/g;
 
 // ── Lista blanca: todo color que el sistema reconoce ───────────────────────
 
+// DEFINIDOS son los que el sistema sabe nombrar. AUTORIZADOS son los que
+// además pueden usarse. La diferencia son los cinco de `marca`: se nombran
+// —si no, nadie puede vigilarlos— pero no se pintan fuera de su sitio.
 const DEFINIDOS = new Map(); // hex en mayúsculas → nombre del escalón
-for (const [familia, pasos] of [...Object.entries(primitivas), ...Object.entries(categoricas)]) {
-  for (const [paso, hex] of Object.entries(pasos)) {
-    const k = hex.toUpperCase();
-    if (!DEFINIDOS.has(k)) DEFINIDOS.set(k, `${familia}_${paso}`);
-  }
+for (const [nombre, hex] of [...autorizados, ...restringidos]) {
+  const k = hex.toUpperCase();
+  if (!DEFINIDOS.has(k)) DEFINIDOS.set(k, nombre);
 }
+
+const AUTORIZADOS = new Set(autorizados.map(([, h]) => h.toUpperCase()));
+
+// Un valor restringido solo puede aparecer declarando SU PROPIA variable. Son
+// dos, y las dos legítimas: el escalón `--marca_rojo`, que existe para poder
+// PINTAR la muestra del color prohibido en el catálogo, y el token semántico
+// `--marca-rojo`, que es lo que consume la landing.
+//
+// En cualquier otro sitio —una regla, un componente, un `style=`— es un color
+// de marca metido en la interfaz, que es justo lo que §2.3 prohíbe.
+const declaraSuVariable = (linea, hex) => {
+  const familia = (DEFINIDOS.get(hex.toUpperCase()) ?? '').split('_')[0];
+  return new RegExp(`--${familia}[_-][A-Za-z0-9_-]*\\s*:`).test(linea);
+};
 
 const fallos = [];
 const apunta = (archivo, linea, texto, motivo) =>
@@ -100,6 +115,9 @@ const revisarCss = (cssCrudo, archivo, desplazamiento = 0) => {
       for (const h of linea.match(HEX) ?? []) {
         if (!DEFINIDOS.has(h.toUpperCase())) {
           apunta(archivo, desplazamiento + i + 1, linea, `${h} no pertenece a ninguna familia`);
+        } else if (!AUTORIZADOS.has(h.toUpperCase()) && !declaraSuVariable(linea, h)) {
+          apunta(archivo, desplazamiento + i + 1, linea,
+            `${h} es ${DEFINIDOS.get(h.toUpperCase())}: conocido, no autorizado fuera de --marca-*`);
         }
       }
       return;
@@ -168,7 +186,8 @@ if (existsSync(src)) {
 
 console.log(`\n  Candado de color — MMI-DS v${VERSION}\n`);
 console.log(`  Familias:     ${Object.keys(primitivas).length} rampas · ${Object.keys(categoricas).length} categóricas`);
-console.log(`  Escalones:    ${DEFINIDOS.size} valores definidos`);
+console.log(`  Autorizados:  ${autorizados.length} escalones — pueden vivir en el sistema`);
+console.log(`  Restringidos: ${restringidos.length} de marca — se nombran para poder vigilarlos, no para usarlos`);
 console.log(`  Tokens:       ${tokensRevisados} valores comprobados contra las familias`);
 console.log(`  Fallos:       ${fallos.length}\n`);
 

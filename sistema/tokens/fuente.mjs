@@ -511,12 +511,36 @@ export const categoricas = {
 // aparece por ahí está autorizado o se coló.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const escalones = [
+const aplanar = (tablas) =>
+  tablas.flatMap(([familia, pasos]) =>
+    Object.entries(pasos).map(([paso, hex]) => [`${familia}_${paso}`, hex])
+  );
+
+// AUTORIZADOS — los que pueden vivir en el sistema de diseño.
+// Las diez rampas y la familia `identidad`. `identidad` entra porque el avatar
+// es interfaz: si se queda fuera del panel vuelve a ser un hexadecimal suelto.
+export const autorizados = aplanar([
   ...Object.entries(primitivas),
-  ...Object.entries(categoricas),
-].flatMap(([familia, pasos]) =>
-  Object.entries(pasos).map(([paso, hex]) => [`${familia}_${paso}`, hex])
-);
+  ['identidad', categoricas.identidad],
+]);
+
+// CONOCIDOS PERO NO AUTORIZADOS — la familia `marca`.
+//
+// Estar definido y estar autorizado no son lo mismo, y usar una sola palabra
+// para las dos cosas era el error: un panel llamado «autorizados» no puede
+// contener cinco colores prohibidos.
+//
+// Tienen que estar NOMBRADOS igualmente. Si el sistema no sabe que `#E30613`
+// se llama `marca_rojo`, tampoco puede impedir que alguien lo escriba a mano
+// en una hoja de estilos: lo que no tiene nombre no se puede vigilar. Lo que
+// cambia es el permiso, no el conocimiento — y el candado de color lo hace
+// cumplir: un valor de marca fuera de la declaración de su propia variable es
+// un fallo de build.
+export const restringidos = aplanar([['marca', categoricas.marca]]);
+
+// El inventario completo. De aquí salen las variables y las clases `.color-*`:
+// para PINTAR la muestra de un color prohibido también hace falta el color.
+export const escalones = [...autorizados, ...restringidos];
 
 const REF = /^([a-z]+)_([a-z0-9_]+)$/;
 
