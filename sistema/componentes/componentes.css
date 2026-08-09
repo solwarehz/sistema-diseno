@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.12.1
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.13.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -30,7 +30,7 @@
 :root{ --sombra-capa: 0 8px 24px rgba(0,0,0,.16); --sombra-aviso: 0 8px 24px rgba(0,0,0,.18); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   BOTÓN — 23 reglas · clases .btn-*
+   BOTÓN — 26 reglas · clases .btn-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .btn-ic{ display: inline-flex; align-items: center; gap: 8px; }
@@ -49,6 +49,9 @@
 .btn-destr:hover{ background: var(--destructiva-hover); }
 .btn-mini{ font-size: 12px; padding: 4px 12px; }
 .btn-ocupado{ cursor: progress; }
+.btn-textos{ display: inline-grid; }
+.btn-textos > *{ grid-area: 1 / 1; }
+.btn-texto-oculto{ visibility: hidden; }
 .btn-giro{ width: 14px; height: 14px; flex: none; border-radius: 50%;
   border: 2px solid currentColor; border-top-color: transparent;
   animation: btn-girar .7s linear infinite; }
@@ -828,7 +831,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .esqueleto.corto{ width: 62%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MARCO DE APLICACIÓN — 203 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
+   MARCO DE APLICACIÓN — 209 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 :where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
@@ -981,6 +984,18 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 [data-app] .app-tabs{ display: flex; position: absolute; left: 0; right: 0;
   bottom: 36px; z-index: 44; background: var(--fondo-tarjeta);
   border-top: 1px solid var(--borde); }
+.app-marco .app-tabs{ display: flex; position: fixed; left: 0; right: 0;
+  bottom: 0; z-index: 44; background: var(--fondo-tarjeta);
+  border-top: 1px solid var(--borde);
+  padding-bottom: env(safe-area-inset-bottom, 0px); }
+.app-marco .top{ padding-top: calc(12px + env(safe-area-inset-top, 0px)); }
+.app-marco .app-contenido{ padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
+.app-marco .lat, .app-marco .velo, .app-marco .top-plegar{ display: none; }
+.app-marco .app-lista{ position: fixed; left: 0; right: 0; z-index: 43;
+  bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  background: var(--fondo-tarjeta); border-top: 1px solid var(--borde);
+  box-shadow: var(--sombra-capa); max-height: 50vh; overflow-y: auto; }
+.app-marco .app-lista[hidden]{ display: none; }
 .app-tab{ flex: 1 1 0; min-width: 0; display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 4px; padding: 8px 4px;
   background: transparent; border: 0; cursor: pointer; min-height: 56px;
@@ -1168,6 +1183,45 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   border-radius: 50%; border: 0; cursor: pointer; font-size: 24px;
   background: var(--accion); color: var(--accion-texto);
   box-shadow: 0 4px 14px rgba(0,0,0,.28); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   MIGAS DE PAN — 11 reglas · clases .migas-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.migas{ display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-size: 12px; margin-bottom: 8px; }
+.migas a{ color: var(--enlace); text-decoration: none; border-radius: 3px; }
+.migas a:hover{ text-decoration: underline; }
+.migas a:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px; }
+.migas-sep{ color: var(--texto-pista); }
+.migas a.migas-actual{ color: var(--texto-principal); font-weight: 500; }
+.migas a.migas-actual:hover{ color: var(--enlace); }
+.migas-tramo{ display: inline-flex; align-items: center; gap: 8px; }
+.migas > .migas-tramo > .migas-actual{ color: var(--texto-principal); font-weight: 500; }
+@media (max-width: 640px) {
+  .migas-tramo:has(> .migas-atras){ position: absolute; width: 1px; height: 1px;
+    margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+[data-app] .migas{ display: none; }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   DIÁLOGO — 8 reglas · clases .dialogo-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.dialogo{ border: 0; padding: 0; background: transparent; max-width: 100%;
+  max-height: 100%; }
+.dialogo::backdrop{ background: var(--marco-fondo); opacity: .5; }
+.dialogo-caja{ background: var(--fondo-tarjeta); border-radius: 6px;
+  box-shadow: var(--sombra-capa); width: min(520px, calc(100vw - 32px));
+  max-height: calc(100vh - 64px); display: flex; flex-direction: column; }
+.dialogo-cab{ padding: 20px 20px 0; }
+.dialogo-tit{ font-size: 20px; font-weight: 600; margin: 0;
+  color: var(--texto-principal); }
+.dialogo-tit:focus{ outline: none; }
+.dialogo-cuerpo{ padding: 12px 20px; overflow-y: auto; min-height: 0;
+  color: var(--texto-principal); }
+.dialogo-pie{ display: flex; justify-content: flex-end; gap: 8px;
+  padding: 12px 20px 20px; border-top: 1px solid var(--borde); }
 
 /* ───────────────────────────────────────────────────────────────────────────
    UTILIDADES — 8 reglas · clases .sr-*, .mono-*

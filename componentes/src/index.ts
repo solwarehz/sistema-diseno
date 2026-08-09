@@ -25,3 +25,5 @@ export { Nota } from './Nota';
 export { MarcoApp, type GrupoNav, type OpcionNav } from './MarcoApp';
 export { MenuUsuario, type Tema } from './MenuUsuario';
 export { MarcaMenu } from './MarcaMenu';
+export { Migas, type Miga } from './Migas';
+export { Dialogo } from './Dialogo';

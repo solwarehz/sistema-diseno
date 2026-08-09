@@ -79,6 +79,42 @@ describe('Botón — acción de servidor', () => {
     expect(b).not.toBeDisabled();
   });
 
+  it('con textoOcupado, LOS DOS textos existen: el ancho no salta', async () => {
+    const u = userEvent.setup();
+    const enVuelo = new Promise<void>(() => {});
+    render(<Boton textoOcupado="Consultando…" onClick={() => enVuelo}>Consultar</Boton>);
+    const b = screen.getByRole('button');
+
+    // Antes de pulsar: los dos en el DOM, uno reservando sitio.
+    expect(b.textContent).toContain('Consultar');
+    expect(b.textContent).toContain('Consultando…');
+    expect(b.querySelectorAll('.btn-texto-oculto')).toHaveLength(1);
+
+    await u.click(b);
+    // Después: siguen los dos, y sigue habiendo exactamente uno oculto.
+    expect(b.querySelectorAll('.btn-texto-oculto')).toHaveLength(1);
+  });
+
+  it('el lector NO oye los dos textos a la vez', async () => {
+    const u = userEvent.setup();
+    const enVuelo = new Promise<void>(() => {});
+    render(<Boton textoOcupado="Guardando…" onClick={() => enVuelo}>Guardar</Boton>);
+    const b = screen.getByRole('button');
+
+    expect(b).toHaveAccessibleName('Guardar');
+    await u.click(b);
+    expect(b).toHaveAccessibleName('Guardando…');
+  });
+
+  it('SIN textoOcupado el estado se anuncia igual, por el texto de solo-lector', async () => {
+    const u = userEvent.setup();
+    const enVuelo = new Promise<void>(() => {});
+    render(<Boton onClick={() => enVuelo}>Guardar</Boton>);
+    const b = screen.getByRole('button');
+    await u.click(b);
+    expect(b).toHaveAccessibleName(/enviando/);
+  });
+
   it('un `disabled={false}` del proyecto NO puede quitar el bloqueo', async () => {
     const u = userEvent.setup();
     const enVuelo = new Promise<void>(() => {});

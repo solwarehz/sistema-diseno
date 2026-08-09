@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.12.1</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.13.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.12.1
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.13.0
    WCAG 2.2 AA · 134 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -805,6 +805,50 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .migas-sep { color: var(--texto-pista); }
 .migas a.migas-actual { color: var(--texto-principal); font-weight: 500; }
 .migas a.migas-actual:hover { color: var(--enlace); }
+/* El nivel actual NO es enlace en el componente: un enlace a la pagina en la
+   que ya estas no lleva a ninguna parte y quien tabula pasa por el sin ganar
+   nada. La regla de arriba se queda para el catalogo, que si lo pinta como
+   enlace por su navegacion interna. */
+/* ───────────────────────────────────────────────────────────────────────────
+   DIALOGO MODAL. Se apoya en <dialog> del navegador, que ya resuelve el foco
+   inerte por detras, Escape y la capa superior. Aqui solo va el aspecto.
+
+   El fondo del ::backdrop se resuelve como YA lo resuelve el velo del marco:
+   token mas opacity, no rgba(). El candado de color lo caza al primer intento
+   —rgba solo se admite en sombras— y tiene razon: un rgba a mano es un color
+   que no pasa por ningun par verificado.
+   Y el tono no se elige de nuevo: es el mismo marco-fondo al 50 % que ya usa
+   el velo en vista movil. Dos velos del mismo sistema con distinto color serian
+   dos decisiones donde solo hace falta una. */
+.dialogo { border: 0; padding: 0; background: transparent; max-width: 100%;
+  max-height: 100%; }
+.dialogo::backdrop { background: var(--marco-fondo); opacity: .5; }
+.dialogo-caja { background: var(--fondo-tarjeta); border-radius: 6px;
+  box-shadow: var(--sombra-capa); width: min(520px, calc(100vw - 32px));
+  max-height: calc(100vh - 64px); display: flex; flex-direction: column; }
+.dialogo-cab { padding: 20px 20px 0; }
+.dialogo-tit { font-size: 20px; font-weight: 600; margin: 0;
+  color: var(--texto-principal); }
+/* Sin anillo al enfocar el titulo: se enfoca al ABRIR, no al tabular, y un
+   anillo que aparece solo confunde. El foco sigue estando, que es lo que
+   importa para el lector. */
+.dialogo-tit:focus { outline: none; }
+.dialogo-cuerpo { padding: 12px 20px; overflow-y: auto; min-height: 0;
+  color: var(--texto-principal); }
+/* El pie NO se desplaza con el cuerpo: los botones tienen que estar siempre a
+   la vista, tambien en un dialogo largo. */
+.dialogo-pie { display: flex; justify-content: flex-end; gap: 8px;
+  padding: 12px 20px 20px; border-top: 1px solid var(--borde); }
+
+.migas-tramo { display: inline-flex; align-items: center; gap: 8px; }
+.migas > .migas-tramo > .migas-actual { color: var(--texto-principal); font-weight: 500; }
+/* En un telefono las migas no caben con tres o mas niveles. Se ocultan los de
+   mas atras A LA VISTA, no del lector: la ubicacion completa sigue siendo
+   informacion aunque no quepa. */
+@media (max-width: 640px) {
+  .migas-tramo:has(> .migas-atras) { position: absolute; width: 1px; height: 1px;
+    margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
 .pag-cab { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--borde); }
 .pag-cab h1 { font-size: 28px; font-weight: 600; }
 .pag-intro { font-size: 15px; color: var(--texto-secundario); max-width: 90ch; margin: 0 0 20px; }
@@ -1167,6 +1211,40 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 [data-app] .app-tabs { display: flex; position: absolute; left: 0; right: 0;
   bottom: 36px; z-index: 44; background: var(--fondo-tarjeta);
   border-top: 1px solid var(--borde); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   EN UN TELEFONO DE VERDAD las zonas del dispositivo NO se dibujan: existen.
+   Lo de arriba es la SIMULACION del catalogo, que las pinta para que se vea
+   donde no se puede poner nada. Un producto que las dibujara estaria tapando
+   con un rectangulo gris justo la franja que el sistema operativo ya ocupa.
+
+   Lo que un producto necesita es RESPETARLAS, y eso lo dan las variables de
+   entorno del navegador. Sin esto, la barra de gestos del telefono se come la
+   fila de pestanas y la ultima no se puede pulsar.
+
+   La clase app-marco la pone el componente; data-app es el modo del catalogo.
+   Las dos reglas conviven porque hacen cosas distintas en sitios distintos. */
+.app-marco .app-tabs { display: flex; position: fixed; left: 0; right: 0;
+  bottom: 0; z-index: 44; background: var(--fondo-tarjeta);
+  border-top: 1px solid var(--borde);
+  padding-bottom: env(safe-area-inset-bottom, 0px); }
+/* Y arriba, la muesca de la camara. El relleno se suma al que ya tenga la
+   barra, no lo sustituye. */
+.app-marco .top { padding-top: calc(12px + env(safe-area-inset-top, 0px)); }
+/* El contenido termina POR ENCIMA de las pestanas. Sin esto, la ultima fila de
+   una tabla queda debajo de la barra y parece que la lista se corta. */
+.app-marco .app-contenido { padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
+/* En la app no hay lateral: si se pudiera abrir habria dos navegaciones
+   compitiendo y ninguna seria la de verdad. */
+.app-marco .lat, .app-marco .velo, .app-marco .top-plegar { display: none; }
+/* La lista de «Mas» se abre SOBRE las pestanas, no las sustituye: quien la
+   abre tiene que seguir viendo donde estaba. Y termina por encima de la barra
+   de gestos, igual que las pestanas. */
+.app-marco .app-lista { position: fixed; left: 0; right: 0; z-index: 43;
+  bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  background: var(--fondo-tarjeta); border-top: 1px solid var(--borde);
+  box-shadow: var(--sombra-capa); max-height: 50vh; overflow-y: auto; }
+.app-marco .app-lista[hidden] { display: none; }
 .app-tab { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 4px; padding: 8px 4px;
   background: transparent; border: 0; cursor: pointer; min-height: 56px;
@@ -1884,6 +1962,17 @@ h2.seccion {
    El giro NO sustituye al texto: cambiar «Guardar» por «Enviando…» mueve el
    ancho del boton y la fila entera baila. Gira, se apaga, y lo dice aria-busy. */
 .btn-ocupado { cursor: progress; }
+/* LOS DOS TEXTOS APILADOS. El botón reserva el ancho del más largo desde el
+   principio, asi que pasar a «Guardando…» no mueve nada. Es la unica forma de
+   dar el texto de espera sin que la fila baile, y por eso vive aqui y no en
+   cada proyecto: fuera, cada uno lo resolveria a su manera o no lo resolveria.
+   Sale de un requerimiento de Control Administrativos V2.0. */
+.btn-textos { display: inline-grid; }
+.btn-textos > * { grid-area: 1 / 1; }
+/* visibility y no opacity: opacity deja el texto seleccionable y
+   copiable aunque no se vea. Y no display none, que dejaria de reservar el
+   ancho, que es todo el proposito. */
+.btn-texto-oculto { visibility: hidden; }
 .btn-giro { width: 14px; height: 14px; flex: none; border-radius: 50%;
   border: 2px solid currentColor; border-top-color: transparent;
   animation: btn-girar .7s linear infinite; }
@@ -2648,7 +2737,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.12.1</option></select></label>
+          <select class="campo cg-in"><option>v1.13.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -2709,8 +2798,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.12.1.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.12.1</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.13.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.13.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -8645,6 +8734,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.13.0 <span class="cam-fecha">2026-08-09</span></h3>
+<p class="pag-intro"><strong>Dialogo, Migas, la vista de app, y el aviso del extractor vuelve a significar algo.</strong> Revisando el cascaron aparecieron tres cosas que estaban EN el catalogo y no eran componente, mas un aviso que llevaba dias saliendo y nadie atendia. DIALOGO: §7 dice que el sistema acepta primitiva accesible para exactamente tres casos —dialogo, menu y selector con busqueda—. Los otros dos existian y este no, asi que el sistema pedia algo que no daba. Se apoya en <dialog> del navegador, que ya resuelve el foco inerte, Escape y la capa superior; lo que se anade a mano es que el foco ENTRE en el titulo y VUELVA al origen al cerrar. MIGAS: 6 reglas y ningun comportamiento, y aun asi se reconstruian mal porque lo que hay que copiar no se ve —el rotulo de la region, las barras con aria-hidden y el aria-current del nivel actual—. Decision cerrada: el ultimo nivel NUNCA es enlace. VISTA DE APP: los estilos ya viajaban pero MarcoApp no los usaba. Ahora vista="app" da pestanas abajo, sin lateral, con tope de cinco y el resto en «Mas». Y respeta las zonas del dispositivo con env(safe-area-inset-*) en vez de DIBUJARLAS: el catalogo las pinta para ensenar donde no poner nada, pero un producto que las pintara estaria tapando con un rectangulo justo lo que el sistema operativo ya ocupa. Y los 15 prefijos sin clasificar del extractor, decididos: los .color-* no se extraen porque ya viajan por tokens.css, y sacarlos aqui daria dos declaraciones del mismo color en dos archivos. Y `textoOcupado` en Boton, pedido por Control Administrativos V2.0: con dos acciones cerca —Consultar y Guardar— el giro solo dice que algo pasa, no CUAL, y quien pulso una y ve girar la otra lee mal el estado del sistema. La objecion de que cambiar el texto mueve el ancho era real pero no tumbaba el requerimiento: se resuelve dibujando LOS DOS textos apilados desde el principio, uno visible y otro reservando sitio. El boton mide igual antes, durante y despues. Y se resuelve dentro porque fuera cada proyecto tendria que envolver el boton y duplicar un estado que ya vive aqui.</p>
+
 
 
 <h3 class="sub-seccion">v1.12.1 <span class="cam-fecha">2026-08-09</span></h3>

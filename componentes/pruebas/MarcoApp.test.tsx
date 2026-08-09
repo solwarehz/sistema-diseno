@@ -86,6 +86,44 @@ describe('Marco de aplicación', () => {
   });
 });
 
+describe('Marco en vista de app', () => {
+  const CINCO_Y_PICO = Array.from({ length: 7 }, (_, i) => ({
+    clave: `s${i}`, texto: `Sección ${i}`, href: `/s${i}`,
+  }));
+
+  it('en app NO hay lateral ni botón de plegar: dos navegaciones compitiendo', () => {
+    montar({ vista: 'app' });
+    expect(screen.queryByRole('button', { name: /plegar menú/i })).toBeNull();
+    expect(screen.getByRole('navigation', { name: 'Secciones' })).toBeInTheDocument();
+  });
+
+  it('las pestañas anuncian en cuál estás', () => {
+    montar({ vista: 'app', activa: 'inicio' });
+    const tabs = screen.getByRole('navigation', { name: 'Secciones' });
+    expect(within(tabs).getByRole('link', { name: 'Inicio' })).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('CINCO pestañas como máximo: el resto entra en «Más»', () => {
+    montar({ vista: 'app', navegacion: CINCO_Y_PICO });
+    const tabs = screen.getByRole('navigation', { name: 'Secciones' });
+    // Cuatro secciones + «Más» = cinco elementos pulsables.
+    expect(within(tabs).getAllByRole('link')).toHaveLength(4);
+    expect(within(tabs).getByRole('button', { name: /Más/ })).toBeInTheDocument();
+  });
+
+  it('con cinco o menos NO aparece «Más»', () => {
+    montar({ vista: 'app', navegacion: CINCO_Y_PICO.slice(0, 5) });
+    const tabs = screen.getByRole('navigation', { name: 'Secciones' });
+    expect(within(tabs).getAllByRole('link')).toHaveLength(5);
+    expect(within(tabs).queryByRole('button', { name: /Más/ })).toBeNull();
+  });
+
+  it('en vista web NO hay pestañas', () => {
+    montar();
+    expect(screen.queryByRole('navigation', { name: 'Secciones' })).toBeNull();
+  });
+});
+
 describe('Menú de usuario', () => {
   it('arranca cerrado y se abre al pulsar el avatar', async () => {
     const u = userEvent.setup();

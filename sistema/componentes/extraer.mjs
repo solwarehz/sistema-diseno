@@ -63,6 +63,8 @@ const ELEMENTOS = [
   { n: 'Marco de aplicación',   p: ['lat', 'nav', 'top', 'us', 'app', 'm', 'fg', 'velo', 'badge'] },
   // No es un elemento: es una utilidad transversal. Va en la lista porque lo
   // que no este aqui NO VIAJA, y sin ella los textos de solo-lector se ven.
+  { n: 'Migas de pan',          p: ['migas'] },
+  { n: 'Diálogo',               p: ['dialogo'] },
   { n: 'Utilidades',            p: ['sr', 'mono'] },
 ];
 
@@ -73,7 +75,7 @@ const ELEMENTOS = [
 // de las dos listas.
 // `sr-solo` NO va aqui: es una utilidad del SISTEMA y tiene que viajar.
 const SOLO_CATALOGO = new Set([
-  'w', 'pag', 'cat', 'caso', 'bloque', 'sub', 'mal', 'tira', 'cam', 'migas',
+  'w', 'pag', 'cat', 'caso', 'bloque', 'sub', 'mal', 'tira', 'cam',
   'atajo', 'cod', 'anatomia', 'anat', 'muestra', 'foco', 'op', 's', 'dialogos',
   'aviso', 'ic', 'ico', 'sin', 'filas', 'grupo', 'leyenda', 'pt', 'num',
   'motivo', 'conmutador', 'esc', 'esp', 'rejilla', 'rej', 'campos', 'estado',
@@ -82,6 +84,14 @@ const SOLO_CATALOGO = new Set([
   'pg-demo', 'pg-variantes', 'pg-var', 'envoltorio', 'movil', 'codigo', 'atajos',
   'manual', 'escala', 'maqueta', 'apagado', 'deuda', 'pesos', 'anchos', 'casos',
   'fila', 'mensajes', 'bien', 'emoji',
+  // Las clases de escalon —`.color-azul_600`— NO se extraen, y no porque sean
+  // del catalogo: es que ya viajan por `tokens.css`, que se entrega aparte.
+  // Sacarlas tambien aqui daria DOS declaraciones del mismo color en dos
+  // archivos, y el dia que una cambie sin la otra gana la que se importe
+  // despues. Un color con dos fuentes es justo lo que este sistema no admite.
+  'color',
+  // Chrome del propio catalogo, sin equivalente en un producto.
+  'maquetas', 'escudo', 'opciones',
 ]);
 
 // ── Troceado del CSS respetando las @media ──────────────────────────────────

@@ -3885,6 +3885,50 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .migas-sep { color: var(--texto-pista); }
 .migas a.migas-actual { color: var(--texto-principal); font-weight: 500; }
 .migas a.migas-actual:hover { color: var(--enlace); }
+/* El nivel actual NO es enlace en el componente: un enlace a la pagina en la
+   que ya estas no lleva a ninguna parte y quien tabula pasa por el sin ganar
+   nada. La regla de arriba se queda para el catalogo, que si lo pinta como
+   enlace por su navegacion interna. */
+/* ───────────────────────────────────────────────────────────────────────────
+   DIALOGO MODAL. Se apoya en <dialog> del navegador, que ya resuelve el foco
+   inerte por detras, Escape y la capa superior. Aqui solo va el aspecto.
+
+   El fondo del ::backdrop se resuelve como YA lo resuelve el velo del marco:
+   token mas opacity, no rgba(). El candado de color lo caza al primer intento
+   —rgba solo se admite en sombras— y tiene razon: un rgba a mano es un color
+   que no pasa por ningun par verificado.
+   Y el tono no se elige de nuevo: es el mismo marco-fondo al 50 % que ya usa
+   el velo en vista movil. Dos velos del mismo sistema con distinto color serian
+   dos decisiones donde solo hace falta una. */
+.dialogo { border: 0; padding: 0; background: transparent; max-width: 100%;
+  max-height: 100%; }
+.dialogo::backdrop { background: var(--marco-fondo); opacity: .5; }
+.dialogo-caja { background: var(--fondo-tarjeta); border-radius: 6px;
+  box-shadow: var(--sombra-capa); width: min(520px, calc(100vw - 32px));
+  max-height: calc(100vh - 64px); display: flex; flex-direction: column; }
+.dialogo-cab { padding: 20px 20px 0; }
+.dialogo-tit { font-size: 20px; font-weight: 600; margin: 0;
+  color: var(--texto-principal); }
+/* Sin anillo al enfocar el titulo: se enfoca al ABRIR, no al tabular, y un
+   anillo que aparece solo confunde. El foco sigue estando, que es lo que
+   importa para el lector. */
+.dialogo-tit:focus { outline: none; }
+.dialogo-cuerpo { padding: 12px 20px; overflow-y: auto; min-height: 0;
+  color: var(--texto-principal); }
+/* El pie NO se desplaza con el cuerpo: los botones tienen que estar siempre a
+   la vista, tambien en un dialogo largo. */
+.dialogo-pie { display: flex; justify-content: flex-end; gap: 8px;
+  padding: 12px 20px 20px; border-top: 1px solid var(--borde); }
+
+.migas-tramo { display: inline-flex; align-items: center; gap: 8px; }
+.migas > .migas-tramo > .migas-actual { color: var(--texto-principal); font-weight: 500; }
+/* En un telefono las migas no caben con tres o mas niveles. Se ocultan los de
+   mas atras A LA VISTA, no del lector: la ubicacion completa sigue siendo
+   informacion aunque no quepa. */
+@media (max-width: 640px) {
+  .migas-tramo:has(> .migas-atras) { position: absolute; width: 1px; height: 1px;
+    margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
 .pag-cab { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--borde); }
 .pag-cab h1 { font-size: 28px; font-weight: 600; }
 .pag-intro { font-size: 15px; color: var(--texto-secundario); max-width: 90ch; margin: 0 0 20px; }
@@ -4247,6 +4291,40 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 [data-app] .app-tabs { display: flex; position: absolute; left: 0; right: 0;
   bottom: 36px; z-index: 44; background: var(--fondo-tarjeta);
   border-top: 1px solid var(--borde); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   EN UN TELEFONO DE VERDAD las zonas del dispositivo NO se dibujan: existen.
+   Lo de arriba es la SIMULACION del catalogo, que las pinta para que se vea
+   donde no se puede poner nada. Un producto que las dibujara estaria tapando
+   con un rectangulo gris justo la franja que el sistema operativo ya ocupa.
+
+   Lo que un producto necesita es RESPETARLAS, y eso lo dan las variables de
+   entorno del navegador. Sin esto, la barra de gestos del telefono se come la
+   fila de pestanas y la ultima no se puede pulsar.
+
+   La clase app-marco la pone el componente; data-app es el modo del catalogo.
+   Las dos reglas conviven porque hacen cosas distintas en sitios distintos. */
+.app-marco .app-tabs { display: flex; position: fixed; left: 0; right: 0;
+  bottom: 0; z-index: 44; background: var(--fondo-tarjeta);
+  border-top: 1px solid var(--borde);
+  padding-bottom: env(safe-area-inset-bottom, 0px); }
+/* Y arriba, la muesca de la camara. El relleno se suma al que ya tenga la
+   barra, no lo sustituye. */
+.app-marco .top { padding-top: calc(12px + env(safe-area-inset-top, 0px)); }
+/* El contenido termina POR ENCIMA de las pestanas. Sin esto, la ultima fila de
+   una tabla queda debajo de la barra y parece que la lista se corta. */
+.app-marco .app-contenido { padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
+/* En la app no hay lateral: si se pudiera abrir habria dos navegaciones
+   compitiendo y ninguna seria la de verdad. */
+.app-marco .lat, .app-marco .velo, .app-marco .top-plegar { display: none; }
+/* La lista de «Mas» se abre SOBRE las pestanas, no las sustituye: quien la
+   abre tiene que seguir viendo donde estaba. Y termina por encima de la barra
+   de gestos, igual que las pestanas. */
+.app-marco .app-lista { position: fixed; left: 0; right: 0; z-index: 43;
+  bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  background: var(--fondo-tarjeta); border-top: 1px solid var(--borde);
+  box-shadow: var(--sombra-capa); max-height: 50vh; overflow-y: auto; }
+.app-marco .app-lista[hidden] { display: none; }
 .app-tab { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 4px; padding: 8px 4px;
   background: transparent; border: 0; cursor: pointer; min-height: 56px;
@@ -4964,6 +5042,17 @@ h2.seccion {
    El giro NO sustituye al texto: cambiar «Guardar» por «Enviando…» mueve el
    ancho del boton y la fila entera baila. Gira, se apaga, y lo dice aria-busy. */
 .btn-ocupado { cursor: progress; }
+/* LOS DOS TEXTOS APILADOS. El botón reserva el ancho del más largo desde el
+   principio, asi que pasar a «Guardando…» no mueve nada. Es la unica forma de
+   dar el texto de espera sin que la fila baile, y por eso vive aqui y no en
+   cada proyecto: fuera, cada uno lo resolveria a su manera o no lo resolveria.
+   Sale de un requerimiento de Control Administrativos V2.0. */
+.btn-textos { display: inline-grid; }
+.btn-textos > * { grid-area: 1 / 1; }
+/* visibility y no opacity: opacity deja el texto seleccionable y
+   copiable aunque no se vea. Y no display none, que dejaria de reservar el
+   ancho, que es todo el proposito. */
+.btn-texto-oculto { visibility: hidden; }
 .btn-giro { width: 14px; height: 14px; flex: none; border-radius: 50%;
   border: 2px solid currentColor; border-top-color: transparent;
   animation: btn-girar .7s linear infinite; }

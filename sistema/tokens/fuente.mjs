@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.12.1';
+export const VERSION = '1.13.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,38 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.13.0', fecha: '2026-08-09',
+    que: 'Dialogo, Migas, la vista de app, y el aviso del extractor vuelve a significar algo',
+    porque:
+      'Revisando el cascaron aparecieron tres cosas que estaban EN el catalogo y no eran ' +
+      'componente, mas un aviso que llevaba dias saliendo y nadie atendia. ' +
+      'DIALOGO: §7 dice que el sistema acepta primitiva accesible para exactamente tres ' +
+      'casos —dialogo, menu y selector con busqueda—. Los otros dos existian y este no, asi ' +
+      'que el sistema pedia algo que no daba. Se apoya en <dialog> del navegador, que ya ' +
+      'resuelve el foco inerte, Escape y la capa superior; lo que se anade a mano es que el ' +
+      'foco ENTRE en el titulo y VUELVA al origen al cerrar. ' +
+      'MIGAS: 6 reglas y ningun comportamiento, y aun asi se reconstruian mal porque lo que ' +
+      'hay que copiar no se ve —el rotulo de la region, las barras con aria-hidden y el ' +
+      'aria-current del nivel actual—. Decision cerrada: el ultimo nivel NUNCA es enlace. ' +
+      'VISTA DE APP: los estilos ya viajaban pero MarcoApp no los usaba. Ahora vista="app" ' +
+      'da pestanas abajo, sin lateral, con tope de cinco y el resto en «Mas». Y respeta las ' +
+      'zonas del dispositivo con env(safe-area-inset-*) en vez de DIBUJARLAS: el catalogo ' +
+      'las pinta para ensenar donde no poner nada, pero un producto que las pintara estaria ' +
+      'tapando con un rectangulo justo lo que el sistema operativo ya ocupa. ' +
+      'Y los 15 prefijos sin clasificar del extractor, decididos: los .color-* no se ' +
+      'extraen porque ya viajan por tokens.css, y sacarlos aqui daria dos declaraciones del ' +
+      'mismo color en dos archivos. ' +
+      'Y `textoOcupado` en Boton, pedido por Control Administrativos V2.0: con dos acciones ' +
+      'cerca —Consultar y Guardar— el giro solo dice que algo pasa, no CUAL, y quien pulso ' +
+      'una y ve girar la otra lee mal el estado del sistema. La objecion de que cambiar el ' +
+      'texto mueve el ancho era real pero no tumbaba el requerimiento: se resuelve dibujando ' +
+      'LOS DOS textos apilados desde el principio, uno visible y otro reservando sitio. El ' +
+      'boton mide igual antes, durante y despues. Y se resuelve dentro porque fuera cada ' +
+      'proyecto tendria que envolver el boton y duplicar un estado que ya vive aqui.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.12.1', fecha: '2026-08-09',
     que: 'La marca del cliente es componente y ya no puede romper el marco',

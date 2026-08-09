@@ -43,10 +43,33 @@ export type BotonProps = {
    * estado vive fuera —por ejemplo, en un formulario que envía otro—.
    */
   ocupado?: boolean;
+  /**
+   * Qué decir mientras la acción viaja. «Guardando…», «Consultando…».
+   *
+   * POR QUÉ EXISTE, y por qué antes decíamos que no. La objeción era real:
+   * cambiar el texto mueve el ancho del botón y la fila entera baila. Pero la
+   * objeción no tumbaba el requerimiento, solo obligaba a resolverlo bien.
+   *
+   * Con dos acciones cerca —«Consultar» y «Guardar»— el giro solo dice que
+   * algo pasa, no CUÁL. Quien pulsó una y ve girar la otra lee mal el estado
+   * del sistema, y eso pasa justo cuando la red va lenta, que es cuando más se
+   * mira la pantalla. Lo reportó Control Administrativos V2.0.
+   *
+   * El salto de ancho se resuelve reservando el del texto MÁS LARGO de los dos
+   * desde el principio: los dos se dibujan siempre, uno visible y el otro
+   * transparente ocupando sitio. El botón mide igual antes, durante y después.
+   *
+   * Y se resuelve AQUÍ porque fuera no puede resolverse bien: un proyecto que
+   * lo quisiera tendría que envolver el botón y duplicar por fuera un estado
+   * que ya vive dentro. Dos fuentes para lo mismo, en cada pantalla.
+   *
+   * Sin `textoOcupado`, el comportamiento es el de siempre.
+   */
+  textoOcupado?: React.ReactNode;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const Boton = forwardRef<HTMLButtonElement, BotonProps>(function Boton(
-  { variante = 'neutra', icono, soloIcono = false, mini = false, ocupado = false, className = '', children, onClick, ...resto },
+  { variante = 'neutra', icono, soloIcono = false, mini = false, ocupado = false, textoOcupado, className = '', children, onClick, ...resto },
   ref
 ) {
   // ───────────────────────────────────────────────────────────────────────────
@@ -120,10 +143,30 @@ export const Boton = forwardRef<HTMLButtonElement, BotonProps>(function Boton(
       {trabajando
         ? <span className="btn-giro" aria-hidden="true" />
         : icono && <span aria-hidden="true">{icono}</span>}
-      {children}
-      {/* El texto NO cambia a «Enviando…»: cambiarlo mueve el ancho del botón y
-          la fila entera baila. El giro y `aria-busy` ya lo dicen. */}
-      {trabajando && <span className="sr-solo">, enviando</span>}
+
+      {textoOcupado === undefined ? (
+        children
+      ) : (
+        // LOS DOS TEXTOS SE DIBUJAN SIEMPRE, apilados: el que toca se ve y el
+        // otro queda transparente ocupando su sitio. La caja mide lo que el más
+        // largo, así que el ancho NO CAMBIA al pasar a ocupado.
+        //
+        // `aria-hidden` en el que no toca, y no `visibility`: hace falta que
+        // siga ocupando espacio —que es todo el propósito— pero que el lector
+        // no lea las dos versiones seguidas.
+        <span className="btn-textos">
+          <span className={trabajando ? 'btn-texto-oculto' : undefined} aria-hidden={trabajando || undefined}>
+            {children}
+          </span>
+          <span className={trabajando ? undefined : 'btn-texto-oculto'} aria-hidden={!trabajando || undefined}>
+            {textoOcupado}
+          </span>
+        </span>
+      )}
+      {/* Sin `textoOcupado`, el estado solo lo dicen el giro y `aria-busy`, así
+          que hace falta decirlo también para el lector. CON `textoOcupado` ya
+          lo dice el propio texto y repetirlo sería oírlo dos veces. */}
+      {trabajando && textoOcupado === undefined && <span className="sr-solo">, enviando</span>}
     </button>
   );
 });
