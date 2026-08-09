@@ -116,6 +116,8 @@ const CONTENIDO = [
   ['sistema/tokens/tailwind-preset.ts', 'sistema/tokens/tailwind-preset.ts'],
   // El conjunto de iconos, con su regla de tamaño y de significado.
   ['sistema/iconos/iconos.mjs', 'sistema/iconos/iconos.mjs'],
+  // Los estilos de los elementos, para importar en vez de replicar.
+  ['sistema/componentes/componentes.css', 'sistema/componentes/componentes.css'],
   // Los candados. Sin ellos el sistema es una sugerencia.
   ['sistema/candado/verificar-contraste.mjs', 'sistema/candado/verificar-contraste.mjs'],
   ['sistema/candado/candado.eslint.config.mjs', 'sistema/candado/candado.eslint.config.mjs'],

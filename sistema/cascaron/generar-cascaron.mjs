@@ -6949,6 +6949,12 @@ console.log(`  ${Object.keys(semanticos).length} semánticos · ${Object.keys(pr
 // El inventario del LEEME sale del MISMO índice que el menú, no de una lista
 // escrita a mano: si se copiara, envejecería en cuanto se añada un elemento y
 // quien recibe la entrega creería que el sistema es más pequeño de lo que es.
+// Los estilos de componente se extraen del catalogo RECIEN escrito. Corre aqui
+// y no aparte para que no puedan quedarse atras: si el catalogo cambia, la hoja
+// entregada cambia en el mismo comando.
+const { execFileSync } = await import('node:child_process');
+execFileSync(process.execPath, [join(AQUI, '..', 'componentes', 'extraer.mjs')], { stdio: 'inherit' });
+
 const entrega = empaquetar({
   silencioso: true,
   inventario: CATALOGO.map((g) => ({
