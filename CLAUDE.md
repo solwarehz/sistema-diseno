@@ -175,7 +175,30 @@ No las «mejores» por iniciativa propia. Están razonadas:
 ## 8 · Git
 
 - Repositorio: **`solwarehz/sistema-diseno`** · privado.
-- Se trabaja en ramas **`feat/*`**. **Nadie toca `main`.**
+- Se trabaja en ramas **`feat/*`**.
+- **`main` sí se actualiza en este proyecto** —y solo en este—, pero **únicamente
+  cuando está verificado y sin errores**. La condición no es una formalidad: es
+  lo que hace que la regla sea segura, porque `main` es de donde instala el área
+  de sistemas. Antes de subir, los cinco candados **en verde** y las pruebas
+  pasando:
+
+  ```bash
+  node sistema/tokens/generar.mjs
+  node sistema/candado/verificar-contraste.mjs
+  node sistema/candado/verificar-color.mjs
+  node sistema/candado/auditar-cascaron.mjs
+  node sistema/candado/probar-candado.mjs
+  node sistema/componentes/extraer.mjs        # incluye el candado de huérfanas
+  ```
+
+  Se sube por **avance directo**, sin `checkout` y sin reescribir historia:
+
+  ```bash
+  git push origin feat/sistema-base-v1:main
+  ```
+
+  Si algo sale en rojo, **no se sube**. Un `main` roto es un proyecto ajeno roto.
+  Y **nunca** con `--force`: eso sigue necesitando permiso expreso.
 - En este proyecto **se commitea y se hace push al avanzar** — no se espera a que
   el usuario lo pida.
 - **Antes de cada commit, revisa el diff.** Si aparece `.env`, una clave o una
