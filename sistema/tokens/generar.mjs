@@ -191,6 +191,43 @@ if (malCambios.length) {
   process.exit(1);
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// CANDADO DEL HEXADECIMAL SUELTO
+//
+// Ningún token de estos grupos puede declarar un valor literal: todos salen de
+// un escalón de rampa. Si hace falta un tono que no existe, se añade a la
+// rampa —y entonces tiene nombre, sitio y vecinos— en vez de escribir un
+// hexadecimal que nadie puede volver a encontrar.
+//
+// `Identidad` queda fuera a propósito y es la única excepción: sus cuatro
+// colores son de UN SOLO PASO. Un `identidad-1` más claro dejaría de ser el
+// mismo identificador, así que una rampa de diez pasos serían nueve valores
+// que nadie va a consumir nunca.
+// ─────────────────────────────────────────────────────────────────────────────
+const SIN_LITERALES = [
+  'Superficies', 'Texto', 'Bordes', 'Acción',
+  'Marco de aplicación', 'Foco', 'Estados — siempre en pares fondo/texto',
+];
+
+const literales = [];
+for (const titulo of SIN_LITERALES) {
+  for (const k of grupos[titulo] ?? []) {
+    for (const modo of ['claro', 'oscuro']) {
+      if (semanticos[k].origen[modo] === 'directo') {
+        literales.push(`${titulo} › ${k}.${modo} = ${semanticos[k][modo]}`);
+      }
+    }
+  }
+}
+if (literales.length) {
+  console.error('\n  Hay hexadecimales sueltos donde no puede haberlos:\n');
+  literales.forEach((l) => console.error(`    ${l}`));
+  console.error('\n  Cada uno tiene que salir de un escalón: claro: \'ambar_900\'.');
+  console.error('  Si el tono que necesitas no existe, añádelo a la rampa —así');
+  console.error('  tiene nombre y vecinos— en vez de escribir el valor a mano.\n');
+  process.exit(1);
+}
+
 const agrupados = new Set(Object.values(grupos).flat());
 const huerfanos = Object.keys(semanticos).filter((k) => !agrupados.has(k));
 const inventados = [...agrupados].filter((k) => !semanticos[k]);

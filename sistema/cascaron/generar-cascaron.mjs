@@ -75,11 +75,8 @@ const muestra = (nombre, tok) => `
          style="background: var(--${nombre})"></div>
     <div class="muestra-txt">
       <code class="muestra-nombre">${nombre}</code>
-      <span class=muestra-hex data-hex-de=${nombre}>${tok.claro}</span>
-      <span class=muestra-origen>${
-        tok.origen.claro === 'directo'
-          ? 'sin rampa'
-          : 'de <code>' + tok.origen.claro + '</code>'
+      <span class="muestra-clase" data-hex-de="${nombre}">${
+        tok.origen.claro === 'directo' ? 'sin rampa' : tok.origen.claro
       }</span>
       <span class="muestra-uso">${tok.uso}</span>
     </div>
@@ -5620,18 +5617,21 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     return api;
   };
 
-  var hex = ${JSON.stringify(
-    Object.fromEntries(Object.entries(semanticos).map(([k, v]) => [k, { claro: v.claro, oscuro: v.oscuro }]))
+  // La CLASE de cada token en cada modo. Antes era el hexadecimal, pero un
+  // hexadecimal no se puede escribir en el codigo: lo que se aplica es la clase.
+  var clases = ${JSON.stringify(
+    Object.fromEntries(Object.entries(semanticos).map(([k, v]) => [k, v.origen]))
   )};
 
   function aplicar(modo) {
     raiz.setAttribute('data-tema', modo);
     bClaro.setAttribute('aria-pressed', String(modo === 'claro'));
     bOscuro.setAttribute('aria-pressed', String(modo === 'oscuro'));
-    // El hex mostrado bajo cada muestra sigue al modo.
+    // La clase mostrada bajo cada muestra sigue al modo: en oscuro un token
+    // sale de otro escalon, y decir el de claro seria mentir.
     document.querySelectorAll('[data-hex-de]').forEach(function (el) {
-      var t = hex[el.getAttribute('data-hex-de')];
-      if (t) el.textContent = t[modo];
+      var t = clases[el.getAttribute('data-hex-de')];
+      if (t) el.textContent = t[modo] === 'directo' ? 'sin rampa' : t[modo];
     });
     try { localStorage.setItem('mmi-tema', modo); } catch (e) {}
   }
