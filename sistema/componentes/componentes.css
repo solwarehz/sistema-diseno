@@ -629,7 +629,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .tabla-simple code{ background: var(--fondo-encabezado); padding: 0 4px; border-radius: 3px; font-size: 12px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   PAGINACIÓN — 9 reglas · clases .pgn-*, .pg-pos-*
+   PAGINACIÓN — 11 reglas · clases .pgn-*, .pg-pos-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .pg-pos{ font-size: 12px; color: var(--texto-secundario); padding: 4px 8px; }
@@ -644,6 +644,8 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .pgn-elip{ color: var(--texto-pista); padding: 4px; display: inline-flex; align-items: center; }
 .pgn-flecha{ gap: 4px; padding: 4px 12px; }
 .pgn-flecha .ic{ width: 14px; height: 14px; }
+.pgn .campo-grupo{ flex-direction: row; align-items: center; gap: 8px; }
+.pgn .campo-grupo .campo{ width: auto; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BARRA DE PROGRESO — 23 reglas · clases .pr-*
@@ -1137,3 +1139,17 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   border-radius: 50%; border: 0; cursor: pointer; font-size: 24px;
   background: var(--accion); color: var(--accion-texto);
   box-shadow: 0 4px 14px rgba(0,0,0,.28); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   UTILIDADES — 1 reglas · clases .sr-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.sr-solo{
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

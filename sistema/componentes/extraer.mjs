@@ -61,6 +61,9 @@ const ELEMENTOS = [
   { n: 'Confirmación en línea', p: ['cf'] },
   { n: 'Estados de pantalla',   p: ['ep', 'esqueleto'] },
   { n: 'Marco de aplicación',   p: ['lat', 'nav', 'top', 'us', 'app', 'm', 'fg', 'velo', 'badge'] },
+  // No es un elemento: es una utilidad transversal. Va en la lista porque lo
+  // que no este aqui NO VIAJA, y sin ella los textos de solo-lector se ven.
+  { n: 'Utilidades',            p: ['sr'] },
 ];
 
 // Clases que son SOLO del catálogo. Se listan una a una para poder distinguir
@@ -68,6 +71,7 @@ const ELEMENTOS = [
 // caiga aquí por descuido se quedaría fuera de la entrega sin que se note, y
 // por eso el extractor grita cuando aparece un prefijo que no está en ninguna
 // de las dos listas.
+// `sr-solo` NO va aqui: es una utilidad del SISTEMA y tiene que viajar.
 const SOLO_CATALOGO = new Set([
   'w', 'pag', 'cat', 'caso', 'bloque', 'sub', 'mal', 'tira', 'cam', 'migas',
   'atajo', 'cod', 'anatomia', 'anat', 'muestra', 'foco', 'op', 's', 'dialogos',

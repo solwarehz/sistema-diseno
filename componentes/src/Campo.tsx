@@ -32,7 +32,7 @@ type Comun = {
 
 export type CampoProps = Comun & React.InputHTMLAttributes<HTMLInputElement>;
 
-export function Campo({ etiqueta, ayuda, error, className = '', ...resto }: CampoProps) {
+export function Campo({ etiqueta, ayuda, error, etiquetaOculta = false, className = '', ...resto }: CampoProps) {
   const id = useId();
   const idAyuda = ayuda ? `${id}-ayuda` : undefined;
   const idError = error ? `${id}-error` : undefined;
@@ -40,7 +40,12 @@ export function Campo({ etiqueta, ayuda, error, className = '', ...resto }: Camp
 
   return (
     <div className="campo-grupo">
-      <label className="campo-etiqueta" htmlFor={id}>{etiqueta}</label>
+      <label
+        className={['campo-etiqueta', etiquetaOculta ? 'sr-solo' : ''].filter(Boolean).join(' ')}
+        htmlFor={id}
+      >
+        {etiqueta}
+      </label>
       <input
         id={id}
         className={['campo', error ? 'campo-mal' : '', className].filter(Boolean).join(' ')}
@@ -62,7 +67,7 @@ export type SelectorProps = Comun & React.SelectHTMLAttributes<HTMLSelectElement
   vacio?: string;
 };
 
-export function Selector({ etiqueta, ayuda, error, opciones, vacio, className = '', ...resto }: SelectorProps) {
+export function Selector({ etiqueta, ayuda, error, opciones, vacio, etiquetaOculta = false, className = '', ...resto }: SelectorProps) {
   const id = useId();
   const idAyuda = ayuda ? `${id}-ayuda` : undefined;
   const idError = error ? `${id}-error` : undefined;
@@ -70,7 +75,12 @@ export function Selector({ etiqueta, ayuda, error, opciones, vacio, className = 
 
   return (
     <div className="campo-grupo">
-      <label className="campo-etiqueta" htmlFor={id}>{etiqueta}</label>
+      <label
+        className={['campo-etiqueta', etiquetaOculta ? 'sr-solo' : ''].filter(Boolean).join(' ')}
+        htmlFor={id}
+      >
+        {etiqueta}
+      </label>
       <select
         id={id}
         className={['campo', error ? 'campo-mal' : '', className].filter(Boolean).join(' ')}

@@ -6,6 +6,7 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
+import { Boton } from './Boton';
 
 /* ── Estados de pantalla ─────────────────────────────────────────────────── */
 
@@ -51,9 +52,9 @@ export function EstadoPantalla({ tipo, titulo, linea, accion, referencia }: Esta
           {linea && <p className="ep-linea">{linea}</p>}
           {referencia && <p className="ep-ref">Referencia: {referencia}</p>}
           {accion && (
-            <button type="button" className="btn btn-1 btn-mini" onClick={accion.onClick}>
+            <Boton mini variante="principal" onClick={accion.onClick}>
               {accion.texto}
-            </button>
+            </Boton>
           )}
         </>
       )}
@@ -101,9 +102,9 @@ export function Aviso({ tono, texto, accion, onCerrar, duracion }: AvisoProps) {
     >
       <span className="av-txt">{texto}</span>
       {accion && (
-        <button type="button" className="btn btn-terc btn-mini av-accion" onClick={accion.onClick}>
+        <Boton mini variante="terciaria" className="av-accion" onClick={accion.onClick}>
           {accion.texto}
-        </button>
+        </Boton>
       )}
       <button type="button" className="av-x" aria-label="Cerrar aviso" onClick={onCerrar}>×</button>
     </div>

@@ -3649,6 +3649,27 @@ ${tokensCss}
    token de color -no se mide contraste sobre ella- pero sí un valor del
    sistema: tres sombras distintas se notan. */
 :root { --sombra-capa: 0 8px 24px rgba(0,0,0,.16); --sombra-aviso: 0 8px 24px rgba(0,0,0,.18); }
+
+/* SOLO PARA EL LECTOR. Oculta a la vista sin sacar del árbol de accesibilidad.
+   No es display:none ni visibility:hidden: los dos lo quitan también del
+   lector, que es justo lo contrario de lo que hace falta.
+
+   Los componentes la usaban desde el principio —«Cargando» del esqueleto, el
+   «(se abre en una pestaña nueva)» del enlace externo, la etiqueta oculta del
+   filtro de la tabla— y NO EXISTÍA en ninguna hoja. El texto salía en pantalla,
+   suelto, sin que nadie entendiera de dónde venía.
+
+   No lleva la propiedad clip, que esta obsoleta: clip-path con inset(50%) hace lo mismo y
+   es lo que la especificación mantiene. */
+.sr-solo {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
 body {
   margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif;
   background: var(--fondo-pagina); color: var(--texto-principal);
@@ -5366,6 +5387,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
 .campos-demo { align-items: flex-start; }
 .campo-grupo { display: flex; flex-direction: column; gap: 4px; }
+/* Dentro de la paginacion el grupo va EN LINEA: apilar etiqueta y control
+   duplicaria la altura de la barra. Es el mismo componente, otra disposicion. */
+.pgn .campo-grupo { flex-direction: row; align-items: center; gap: 8px; }
+.pgn .campo-grupo .campo { width: auto; }
 .campo-etiqueta { font-size: 13px; font-weight: 500; }
 .campo-ayuda { font-size: 12px; color: var(--texto-pista); }
 .campo-error { font-size: 12px; color: var(--error-texto); font-weight: 500; }

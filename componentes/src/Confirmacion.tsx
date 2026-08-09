@@ -18,6 +18,7 @@
  */
 
 import { useEffect, useRef, useId } from 'react';
+import { Boton } from './Boton';
 
 export type ConfirmacionProps = {
   abierta: boolean;
@@ -89,17 +90,17 @@ export function Confirmacion({
           {detalle && <span className="cf-meta">{detalle}</span>}
         </div>
         <div className="cf-acciones">
-          <button
-            type="button"
+          <Boton
             ref={primerBoton}
-            className={`btn btn-mini ${destructiva ? 'btn-destr' : 'btn-1'}`}
+            mini
+            variante={destructiva ? 'destructiva' : 'principal'}
             onClick={() => cerrar(onConfirmar)}
           >
             {accion}
-          </button>
-          <button type="button" className="btn btn-neutro btn-mini" onClick={() => cerrar(onCancelar)}>
+          </Boton>
+          <Boton mini variante="neutra" onClick={() => cerrar(onCancelar)}>
             Cancelar
-          </button>
+          </Boton>
         </div>
       </div>
     </div>

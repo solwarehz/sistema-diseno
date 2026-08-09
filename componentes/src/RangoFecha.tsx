@@ -15,6 +15,7 @@
  */
 
 import { useEffect, useMemo, useRef, useState, useId } from 'react';
+import { Boton } from './Boton';
 
 export type RangoFechaProps = {
   /** Etiqueta del conjunto. Obligatoria: dos campos sin nombre común no se
@@ -177,6 +178,12 @@ export function RangoFecha({
 
   return (
     <div className="fc">
+      {/* Los dos disparadores NO son <Campo>, y es a proposito. Campo renderiza
+          un <input>, y un input no abre un dialogo: esto tiene que SER un
+          boton -aria-haspopup, aria-expanded, teclado de boton- y PARECER un
+          campo. Se toma la superficie de .campo, que es estilo, no componente.
+          Es la unica excepcion a la regla 1 de la politica, y esta aqui escrita
+          para que se discuta si alguien la ve, no para que pase inadvertida. */}
       <div className="fc-campos" role="group" aria-label={titulo}>
         <button
           type="button"
@@ -205,15 +212,15 @@ export function RangoFecha({
       {abierto && (
         <div className="fc-cal" role="dialog" aria-modal="false" aria-label={`Elegir fecha ${modo}`}>
           <div className="fc-cal-cab">
-            <button type="button" className="btn btn-terc btn-mini"
+            <Boton mini variante="terciaria"
               aria-label="Mes anterior"
-              onClick={() => { setFoco((f) => sumarMeses(f, -1)); debeEnfocar.current = true; }}>‹</button>
+              onClick={() => { setFoco((f) => sumarMeses(f, -1)); debeEnfocar.current = true; }}>‹</Boton>
             {/* El cambio de mes se anuncia: sin esto, con lector de pantalla la
                 rejilla cambia entera en silencio. */}
             <span className="fc-titulo" id={`${id}-mes`} aria-live="polite">{cabecera}</span>
-            <button type="button" className="btn btn-terc btn-mini"
+            <Boton mini variante="terciaria"
               aria-label="Mes siguiente"
-              onClick={() => { setFoco((f) => sumarMeses(f, 1)); debeEnfocar.current = true; }}>›</button>
+              onClick={() => { setFoco((f) => sumarMeses(f, 1)); debeEnfocar.current = true; }}>›</Boton>
           </div>
 
           <div
@@ -271,10 +278,10 @@ export function RangoFecha({
           </div>
 
           <div className="fc-pie">
-            <button type="button" className="btn btn-destr btn-mini"
+            <Boton mini variante="destructiva"
               onClick={() => { setDesde(null); setHasta(null); onCambio?.({ desde: null, hasta: null }); setModo('desde'); }}>
               Limpiar
-            </button>
+            </Boton>
           </div>
         </div>
       )}

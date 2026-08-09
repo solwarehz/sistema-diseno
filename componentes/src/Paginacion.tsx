@@ -10,6 +10,8 @@
  * fuera, en el perfil de la persona.
  */
 
+import { Selector } from './Campo';
+
 export type PaginacionProps = {
   pagina: number;
   totalPaginas: number;
@@ -94,13 +96,18 @@ export function Paginacion({
         Siguiente
       </button>
 
+      {/* Se IMPORTA Selector. Antes era un <select className="campo"> a mano
+          dentro de un <label className="pgn-tam">, y `pgn-tam` NO EXISTÍA en
+          ninguna hoja: reusaba la clase del campo pero no el componente, así
+          que se quedaba sin la etiqueta vinculada por `htmlFor` y sin el
+          contenedor. La disposición en línea la pone `.pgn .campo-grupo`. */}
       {onPorPagina && porPagina !== undefined && (
-        <label className="pgn-tam">
-          <span>Filas</span>
-          <select className="campo" value={porPagina} onChange={(e) => onPorPagina(Number(e.target.value))}>
-            {tamanos.map((n) => <option key={n} value={n}>{n}</option>)}
-          </select>
-        </label>
+        <Selector
+          etiqueta="Filas"
+          value={porPagina}
+          onChange={(e) => onPorPagina(Number(e.target.value))}
+          opciones={tamanos.map((n) => ({ valor: String(n), texto: String(n) }))}
+        />
       )}
     </nav>
   );

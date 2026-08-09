@@ -20,6 +20,10 @@
  */
 
 import { useMemo, useState, useId } from 'react';
+import { Boton } from './Boton';
+import { Chip } from './Chip';
+import { Campo } from './Campo';
+import { Paginacion } from './Paginacion';
 
 export type Columna<T> = {
   /** Clave estable. Se usa para ordenar, filtrar y ocultar. */
@@ -147,18 +151,18 @@ export function TablaDatos<T>({
     <div className="tb-caja">
       <div className="tb-barra">
         <div className="tb-barra-izq">
-          <button
-            type="button"
+          <Boton
+            variante="neutra"
             /* R3 · el botón queda marcado mientras haya filtro: con la fila
                plegada nada más lo indicaría, y una tabla filtrada que parece
                completa es un error de lectura. */
-            className={`btn btn-neutro btn-ic${hayFiltro ? ' activo' : ''}`}
+            className={hayFiltro ? 'activo' : ''}
             aria-expanded={filtrosVisibles}
             aria-controls={`${id}-filtros`}
             onClick={() => setFiltrosVisibles((v) => !v)}
           >
             Filtros
-          </button>
+          </Boton>
         </div>
         <div className="tb-barra-der">
           <span className="tb-rango">
@@ -176,9 +180,9 @@ export function TablaDatos<T>({
           .map(([clave, v]) => {
             const col = columnas.find((c) => c.clave === clave);
             return (
-              <span className="chip chip-info" key={clave}>
+              <Chip tono="info" key={clave}>
                 {col?.titulo}: {v}
-              </span>
+              </Chip>
             );
           })}
       </div>
@@ -218,18 +222,26 @@ export function TablaDatos<T>({
               filtro vive sobre la columna que filtra o hay que recordar cuál
               era cuál. */}
           <tr id={`${id}-filtros`} className="tb-fila-filtros" hidden={!filtrosVisibles}>
+            {/* `td` y no `th`: una celda de filtro NO es un encabezado de
+                columna. Con `th` cada columna se anunciaba DOS VECES —«Horas» y
+                «Filtrar por Horas»— y quien navega por encabezados tenía que
+                pasar por el doble de paradas. Se vio al ponerle etiqueta de
+                verdad: antes el `aria-label` del input no subía al `th` y el
+                defecto quedaba tapado.
+                Y la clase es la que el catálogo estiliza; el componente no la
+                ponía, así que la fila salía sin fondo ni relleno. */}
             {columnas.map((col) => (
-              <th key={col.clave} scope="col">
+              <td key={col.clave} className="tb-f-celda">
                 {col.filtrable !== false && (
-                  <input
-                    className="campo"
+                  <Campo
+                    etiqueta={`Filtrar por ${col.titulo}`}
+                    etiquetaOculta
                     type="text"
-                    aria-label={`Filtrar por ${col.titulo}`}
                     value={filtros[col.clave] ?? SIN_FILTRO}
                     onChange={(e) => cambiarFiltro(col.clave, e.target.value)}
                   />
                 )}
-              </th>
+              </td>
             ))}
           </tr>
         </thead>
@@ -248,46 +260,21 @@ export function TablaDatos<T>({
 
       {/* R7 · con una sola página NO se pinta la paginación. El rango sí, y
           está arriba. */}
-      {totalPaginas > 1 && (
-        <nav className="pgn" aria-label={`Paginación de ${titulo}`}>
-          <button
-            type="button"
-            className="pgn-btn pgn-flecha"
-            disabled={paginaSegura === 1}
-            onClick={() => { setPagina(paginaSegura - 1); avisar({ pagina: paginaSegura - 1 }); }}
-          >
-            Anterior
-          </button>
-          <span className="pgn-pos">
-            {paginaSegura} de {totalPaginas}
-          </span>
-          <button
-            type="button"
-            className="pgn-btn pgn-flecha"
-            disabled={paginaSegura === totalPaginas}
-            onClick={() => { setPagina(paginaSegura + 1); avisar({ pagina: paginaSegura + 1 }); }}
-          >
-            Siguiente
-          </button>
-          <label className="pgn-tam">
-            <span>Filas</span>
-            <select
-              className="campo"
-              value={porPagina}
-              onChange={(e) => {
-                const n = Number(e.target.value);
-                setPorPagina(n);
-                setPagina(1);
-                avisar({ porPagina: n, pagina: 1 });
-              }}
-            >
-              {[10, 25, 50].map((n) => (
-                <option key={n} value={n}>{n}</option>
-              ))}
-            </select>
-          </label>
-        </nav>
-      )}
+      {/* Se IMPORTA Paginacion en vez de rehacerla. Estaban las dos: 38 líneas
+          aquí que reproducían lo que `Paginacion compacta` ya hacía, clase por
+          clase. Copiar el aspecto no copia el resto —`aria-current` en la
+          página en curso, la ventana con elipsis, la regla de no pintarse con
+          una sola página— y el día que la paginación mejore, la de la tabla se
+          queda como está. */}
+      <Paginacion
+        compacta
+        de={titulo}
+        pagina={paginaSegura}
+        totalPaginas={totalPaginas}
+        onPagina={(n) => { setPagina(n); avisar({ pagina: n }); }}
+        porPagina={porPagina}
+        onPorPagina={(n) => { setPorPagina(n); setPagina(1); avisar({ porPagina: n, pagina: 1 }); }}
+      />
     </div>
   );
 }
