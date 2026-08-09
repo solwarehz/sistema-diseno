@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.16.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.17.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.16.0
-   WCAG 2.2 AA · 134 pares verificados en los dos modos, 0 fallos
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.17.0
+   WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -1270,6 +1270,15 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
   box-shadow: var(--sombra-capa); }
 .fg-panel .top-filtros { flex-direction: column; gap: 12px; padding: 12px; width: 100%; }
 .fg-panel .cg { width: 100%; }
+/* R22 · la barra tiene DOS rotuladores —.cg del catalogo y .campo-grupo de los
+   componentes— y sus reglas solo alcanzaban al primero. Un SelectorBusqueda con
+   rotulo mide 71,7px en una barra de 64: se sale por arriba y por abajo.
+   Lo reporto Control Administrativos V2.0, que ya lo estaba apanando con
+   .top-filtros. Que la clase de la barra no alcance al componente de la barra
+   es un fallo nuestro, no un apano suyo. */
+.top-filtros .campo-grupo { flex-direction: row; align-items: center; gap: 8px; min-width: 0; }
+.top-filtros .campo-etiqueta { font-size: 12px; color: var(--texto-secundario); white-space: nowrap; }
+.top-filtros .campo-grupo .campo { padding: 4px 8px; width: auto; min-width: 0; }
 .fg-panel .campo { width: 100%; min-width: 0; font-size: 16px; }
 #fg-btn.activo { color: var(--accion); background: var(--fondo-fila-hover); }
 /* LA MARCA EN MÓVIL. Con la lateral fuera de pantalla, la barra superior es lo
@@ -2056,7 +2065,14 @@ h2.seccion {
    a 3:1 contra la tarjeta y no tiene por qué: quien identifica el control es
    el borde (SC 1.4.11). Por eso el borde no se quita. */
 .btn-2, .btn-oro { background: var(--accion-2-fondo); color: var(--accion-2); border-color: var(--accion-2); }
-.btn-2:hover, .btn-oro:hover { background: var(--marco-acento); }
+/* R20 · el hover se queda DENTRO de la familia de la accion secundaria.
+   Usaba marco-acento, y en oscuro marco-acento vale EXACTAMENTE lo mismo que
+   accion-2: el rotulo desaparecia sobre su propio fondo, 1,00:1.
+   El candado no podia verlo, y eso es lo interesante: verifica los pares del
+   CONTRATO, y este par no lo declaro nadie —nace de una regla :hover que cruza
+   dos familias—. Ahora invierte dentro de su familia: 7,77:1 en claro,
+   10,15:1 en oscuro. */
+.btn-2:hover, .btn-oro:hover { background: var(--accion-2); color: var(--accion-texto); }
 .btn-neutro { background: var(--neutra-fondo); color: var(--neutra-texto); border-color: var(--borde-campo); }
 .btn-neutro:hover { background: var(--borde); }
 /* Terciaria: ni relleno ni borde. Cancelar es retroceder, y retroceder no debe
@@ -2223,8 +2239,15 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    que irían directos sobre el azul y no se leerían. El escudo solo sí funciona
    sobre azul —tiene cuerpo blanco propio—, pero se usa la misma banda en los
    dos estados para que el plegado no cambie de fondo. */
+/* R19 · el fondo es el del MARCO, no el de la tarjeta.
+   Con fondo-tarjeta, el respaldo en texto —marco-texto, blanco— quedaba a
+   1,00:1 en modo claro: INVISIBLE. Y el respaldo existe justo para el producto
+   que todavia no tiene logotipo, que es como se monta un sistema nuevo. Lo que
+   no se leia era de quien son los datos que se estan mirando.
+   Con marco-fondo da 10,43:1 en los dos modos. Lo reporto Control
+   Administrativos V2.0 midiendolo en la pantalla pintada. */
 .lat-marca { display: flex; align-items: center; justify-content: center;
-  padding: 8px 12px; background: var(--fondo-tarjeta);
+  padding: 8px 12px; background: var(--marco-fondo);
   border-bottom: 1px solid var(--marco-borde); height: 64px; flex: none; }
 /* El logo crece hasta llenar la banda: 44px de alto en 64px de caja. */
 /* La marca lleva al inicio, que es lo que todo el mundo espera de un logo en la
@@ -2295,7 +2318,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .lat-colegio { font-size: 12px; letter-spacing: .13em; color: var(--marco-acento); font-weight: 500; }
 .lat-nombre { font-size: 12px; font-weight: 600; white-space: nowrap; }
 
-.lat-nav { flex: 1; padding: 8px 8px; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
+/* R18 · el grupo del pie se empuja al fondo y se separa con una linea. Va aqui
+   y no en el componente: es aspecto, y el componente solo pone la clase. */
+.nav-al-pie { margin-top: auto; border-top: 1px solid var(--marco-borde); padding-top: 4px; }
+.lat-nav { display: flex; flex-direction: column; flex: 1; padding: 8px 8px; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
 .nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 8px;
   border-radius: 6px; color: var(--marco-texto); text-decoration: none;
   font-size: 13px; opacity: .84; white-space: nowrap; }
@@ -2922,7 +2948,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.16.0</option></select></label>
+          <select class="campo cg-in"><option>v1.17.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3010,8 +3036,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.16.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.16.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.17.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.17.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -3033,7 +3059,7 @@ El menú de la izquierda lo abre por partes.</p>
 
 <div class="estado-rejilla">
   <div class="est"><b>56</b><span>tokens semánticos</span></div>
-  <div class="est"><b>134</b><span>pares verificados</span></div>
+  <div class="est"><b>138</b><span>pares verificados</span></div>
   <div class="est est-ok"><b>0</b><span>fallos de contraste</span></div>
   <div class="est"><b>2</b><span>modos, claro y oscuro</span></div>
 </div>
@@ -3536,7 +3562,7 @@ El menú de la izquierda lo abre por partes.</p>
   <a href="#espaciado" data-ir="espaciado" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
     <span><strong>Espaciado</strong>Rejilla de 4px y tamaños de control</span></a>
   <a href="#contraste" data-ir="contraste" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg></span>
-    <span><strong>Contrastes</strong>Los 134 pares medidos</span></a>
+    <span><strong>Contrastes</strong>Los 138 pares medidos</span></a>
 </div>
     </section><section class="pagina" id="pg-color" hidden>
       <nav class="migas" aria-label="Ubicación">
@@ -9147,6 +9173,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
 
 
+<h3 class="sub-seccion">v1.17.0 <span class="cam-fecha">2026-08-09</span></h3>
+<p class="pag-intro"><strong>Los ocho de Control Administrativos V2.0, y DOS textos invisibles.</strong> Lote salido de migrar su marco a MarcoApp en once pantallas con datos reales. Dos son de contraste 1,00:1 —texto del color exacto de su fondo— y ninguno lo cazaba el candado. R19: la caja de la marca usaba fondo-tarjeta y el respaldo en texto usa marco-texto —blanco sobre blanco en modo claro—. El respaldo existe justo para el producto que aun no tiene logotipo, que es como se monta un sistema nuevo, y lo que no se leia era de quien son los datos. Pasa a marco-fondo: 10,43:1 en los dos modos. R20: el hover del boton secundario usaba marco-acento, y en oscuro marco-acento vale EXACTAMENTE lo mismo que accion-2. El rotulo desaparecia sobre su propio fondo. Ahora invierte dentro de su familia: 7,77:1 y 10,15:1. Y su observacion sobre el metodo es la parte que mas vale: el candado daba 174 de 174 en verde y tenia razon, porque verifica los pares DECLARADOS. Una regla :hover que cruza dos familias fabrica un par que nadie declaro. Los dos pares entran al contrato. R16: el grupo de navegacion no se abria NUNCA. El componente marcaba el estado con hidden sobre los hijos y la hoja lo abre con la clase `abierto` sobre el grupo: dos piezas que no se hablaban. Y el hidden tampoco ocultaba, porque display grid gana a la regla del navegador. Un menu de dos niveles roto entero. R17 icono en las opciones hijas · R18 grupo al pie con separador · R21 plegado controlable y persistible · R22 la clase de la barra alcanza al componente de la barra · R23 iniciales de dos palabras cuando el nombre no lleva coma.</p>
+
+
+
 <h3 class="sub-seccion">v1.16.0 <span class="cam-fecha">2026-08-09</span></h3>
 <p class="pag-intro"><strong>El marco y la barra se elevan, y los paneles de la barra por fin se abren.</strong> Sale de una medicion incomoda. En modo oscuro la pagina es casi negra, y CUALQUIER marco lo bastante oscuro para leer como modo oscuro queda a menos de 1,6:1 de ella: se probaron los diez escalones de indigo y los catorce de negro, y ninguno separa. La luminancia no puede hacerlo ahi. La SOMBRA si, porque no depende del contraste entre los dos colores: es una pista de profundidad y funciona igual sobre negro que sobre blanco. Entran --sombra-marco y --sombra-barra, con DOS valores: en oscuro una sombra al 18 % sobre casi negro no existe, asi que sube al 55 % y se acompana de un filete claro en el canto que da al contenido —luz arriba, sombra abajo, que es como se dibuja el relieve en una interfaz oscura—. La elevacion va en el lateral y no en un pseudoelemento, asi que acompana al panel extendido Y plegado sin una regla por estado. Y los botones de mensajes y notificaciones de la barra del cascaron, que estaban dibujados y no hacian nada: ahora abren su panel. Un catalogo que dibuja un boton muerto ensena a construir botones muertos.</p>
 
@@ -9307,7 +9338,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       </nav>
       <div class="pant-cab"><h1>Contrastes</h1></div>
       
-<p class="pag-intro">134 pares bloqueantes en los dos modos ·
+<p class="pag-intro">138 pares bloqueantes en los dos modos ·
 <strong>0 fallos</strong> · WCAG 2.2 AA. Recalculados en cada build por
 <code>verificar-contraste.mjs</code>: si el contrato miente, el build falla.</p>
 <h3 class="sub-seccion">Modo claro</h3>
@@ -9737,6 +9768,22 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       <td class="num">3</td>
       <td class="ok">cumple</td>
       <td class="motivo">Contorno del interruptor sobre encabezado</td>
+    </tr>
+    <tr>
+      <td><code>accion-texto</code></td>
+      <td><code>accion-2</code></td>
+      <td class="num">7.77:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Rótulo del secundario al pasar el ratón</td>
+    </tr>
+    <tr>
+      <td><code>marco-texto</code></td>
+      <td><code>marco-fondo</code></td>
+      <td class="num">10.43:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Nombre del cliente cuando no hay logo</td>
     </tr>
     <tr>
       <td><code>texto-principal</code></td>
@@ -10278,6 +10325,22 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       <td class="num">3</td>
       <td class="ok">cumple</td>
       <td class="motivo">Contorno del interruptor sobre encabezado</td>
+    </tr>
+    <tr>
+      <td><code>accion-texto</code></td>
+      <td><code>accion-2</code></td>
+      <td class="num">10.15:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Rótulo del secundario al pasar el ratón</td>
+    </tr>
+    <tr>
+      <td><code>marco-texto</code></td>
+      <td><code>marco-fondo</code></td>
+      <td class="num">10.43:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Nombre del cliente cuando no hay logo</td>
     </tr>
     <tr>
       <td><code>texto-principal</code></td>

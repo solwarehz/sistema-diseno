@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.16.0';
+export const VERSION = '1.17.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,32 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.17.0', fecha: '2026-08-09',
+    que: 'Los ocho de Control Administrativos V2.0, y DOS textos invisibles',
+    porque:
+      'Lote salido de migrar su marco a MarcoApp en once pantallas con datos reales. Dos son ' +
+      'de contraste 1,00:1 —texto del color exacto de su fondo— y ninguno lo cazaba el candado. ' +
+      'R19: la caja de la marca usaba fondo-tarjeta y el respaldo en texto usa marco-texto ' +
+      '—blanco sobre blanco en modo claro—. El respaldo existe justo para el producto que aun ' +
+      'no tiene logotipo, que es como se monta un sistema nuevo, y lo que no se leia era de ' +
+      'quien son los datos. Pasa a marco-fondo: 10,43:1 en los dos modos. ' +
+      'R20: el hover del boton secundario usaba marco-acento, y en oscuro marco-acento vale ' +
+      'EXACTAMENTE lo mismo que accion-2. El rotulo desaparecia sobre su propio fondo. Ahora ' +
+      'invierte dentro de su familia: 7,77:1 y 10,15:1. ' +
+      'Y su observacion sobre el metodo es la parte que mas vale: el candado daba 174 de 174 ' +
+      'en verde y tenia razon, porque verifica los pares DECLARADOS. Una regla :hover que cruza ' +
+      'dos familias fabrica un par que nadie declaro. Los dos pares entran al contrato. ' +
+      'R16: el grupo de navegacion no se abria NUNCA. El componente marcaba el estado con ' +
+      'hidden sobre los hijos y la hoja lo abre con la clase `abierto` sobre el grupo: dos ' +
+      'piezas que no se hablaban. Y el hidden tampoco ocultaba, porque display grid gana a la ' +
+      'regla del navegador. Un menu de dos niveles roto entero. ' +
+      'R17 icono en las opciones hijas · R18 grupo al pie con separador · R21 plegado ' +
+      'controlable y persistible · R22 la clase de la barra alcanza al componente de la barra ' +
+      '· R23 iniciales de dos palabras cuando el nombre no lleva coma.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.16.0', fecha: '2026-08-09',
     que: 'El marco y la barra se elevan, y los paneles de la barra por fin se abren',
@@ -1096,6 +1122,17 @@ export const pares = [
   ['apagado-borde',    'fondo-pagina',     3.0, 'Contorno del interruptor sobre página'],
   ['apagado-borde',    'fondo-encabezado', 3.0, 'Contorno del interruptor sobre encabezado'],
   ['apagado-fondo',    'fondo-tarjeta',    'informativo', 'Vía contra la tarjeta. Relleno, no delimita'],
+
+  // R20 · El hover del botón secundario. Este par NO EXISTÍA en el contrato, y
+  // por eso el candado daba 174 de 174 en verde mientras el rótulo desaparecía
+  // sobre su propio fondo en oscuro —1,00:1—. Lo midió Control Administrativos
+  // V2.0 en el navegador.
+  //
+  // La lección va más allá del par: el candado verifica los pares DECLARADOS, y
+  // una regla `:hover` que cruza dos familias fabrica un par que nadie declaró.
+  ['accion-texto',     'accion-2',         4.5, 'Rótulo del secundario al pasar el ratón'],
+  // Y la marca del menú, que se pintaba sobre `fondo-tarjeta` con texto blanco.
+  ['marco-texto',      'marco-fondo',      4.5, 'Nombre del cliente cuando no hay logo'],
 
   // El aviso temporal comparte el fondo del estado con el chip, pero NO su
   // texto: lleva una frase entera, no una etiqueta. Con `texto-principal` el

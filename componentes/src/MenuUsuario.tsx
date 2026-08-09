@@ -53,7 +53,7 @@ export function MenuUsuario({ id: idPersona, nombre, correo, foto, onSalir, tema
   // El abrir, el cerrar al pulsar fuera, el Escape y la devolución del foco
   // viven en `interno/desplegable`: los comparte con `PanelBarra` y estaban
   // escritos dos veces. Dos copias de un comportamiento divergen.
-  const { abierto, setAbierto, caja, disparador } = usarDesplegable();
+  const { abierto, setAbierto, alternar, caja, disparador } = usarDesplegable();
 
   const idMenu = `${id}-menu`;
 
@@ -68,7 +68,7 @@ export function MenuUsuario({ id: idPersona, nombre, correo, foto, onSalir, tema
         aria-controls={idMenu}
         aria-haspopup="menu"
         aria-label={`Menú de ${nombre}`}
-        onClick={() => setAbierto((v) => !v)}
+        onClick={alternar}
       >
         <Avatar id={idPersona} nombre={nombre} foto={foto} tamano="m" />
       </button>

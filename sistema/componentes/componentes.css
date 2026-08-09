@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.16.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.17.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -60,7 +60,7 @@
 .btn-1{ background: var(--accion); color: var(--accion-texto); }
 .btn-1:hover{ background: var(--accion-hover); }
 .btn-2, .btn-oro{ background: var(--accion-2-fondo); color: var(--accion-2); border-color: var(--accion-2); }
-.btn-2:hover, .btn-oro:hover{ background: var(--marco-acento); }
+.btn-2:hover, .btn-oro:hover{ background: var(--accion-2); color: var(--accion-texto); }
 .btn-neutro{ background: var(--neutra-fondo); color: var(--neutra-texto); border-color: var(--borde-campo); }
 .btn-neutro:hover{ background: var(--borde); }
 .btn-terc{ background: transparent; color: var(--texto-principal); border-color: transparent; }
@@ -851,7 +851,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .esqueleto.corto{ width: 62%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MARCO DE APLICACIÓN — 208 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
+   MARCO DE APLICACIÓN — 212 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 :where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
@@ -980,6 +980,9 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   box-shadow: var(--sombra-capa); }
 .fg-panel .top-filtros{ flex-direction: column; gap: 12px; padding: 12px; width: 100%; }
 .fg-panel .cg{ width: 100%; }
+.top-filtros .campo-grupo{ flex-direction: row; align-items: center; gap: 8px; min-width: 0; }
+.top-filtros .campo-etiqueta{ font-size: 12px; color: var(--texto-secundario); white-space: nowrap; }
+.top-filtros .campo-grupo .campo{ padding: 4px 8px; width: auto; min-width: 0; }
 .fg-panel .campo{ width: 100%; min-width: 0; font-size: 16px; }
 [data-vista='movil'] .top-marca{ display: block; position: absolute;
   left: 50%; transform: translateX(-50%); border-radius: 6px; }
@@ -1053,7 +1056,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .lat.colapsado .lat-marca, .lat.colapsado .lat-usuario{ justify-content: center; }
 .lat.colapsado .nav-item{ justify-content: center; padding-inline: 0; }
 .lat-marca{ display: flex; align-items: center; justify-content: center;
-  padding: 8px 12px; background: var(--fondo-tarjeta);
+  padding: 8px 12px; background: var(--marco-fondo);
   border-bottom: 1px solid var(--marco-borde); height: 64px; flex: none; }
 .lat-marca-enl{ display: flex; align-items: center; justify-content: center;
   min-width: 0; border-radius: 6px; }
@@ -1076,7 +1079,8 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .lat-id{ display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
 .lat-colegio{ font-size: 12px; letter-spacing: .13em; color: var(--marco-acento); font-weight: 500; }
 .lat-nombre{ font-size: 12px; font-weight: 600; white-space: nowrap; }
-.lat-nav{ flex: 1; padding: 8px 8px; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
+.nav-al-pie{ margin-top: auto; border-top: 1px solid var(--marco-borde); padding-top: 4px; }
+.lat-nav{ display: flex; flex-direction: column; flex: 1; padding: 8px 8px; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
 .nav-item{ display: flex; align-items: center; gap: 8px; padding: 8px 8px;
   border-radius: 6px; color: var(--marco-texto); text-decoration: none;
   font-size: 13px; opacity: .84; white-space: nowrap; }

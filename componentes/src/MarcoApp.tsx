@@ -34,6 +34,15 @@ export type OpcionNav = {
   texto: string;
   /** A dónde lleva. Si falta, la opción solo agrupa. */
   href?: string;
+  /**
+   * R17 · Icono de la opción hija.
+   *
+   * Faltaba, y obligaba a una elección que no debería existir: cuando es el
+   * SEGUNDO nivel el que lleva las pantallas, el icono pertenece al hijo. Sin
+   * esto había que elegir entre conservar la jerarquía y perder los iconos, o
+   * aplanar el menú y perder los rótulos de grupo.
+   */
+  icono?: React.ReactNode;
 };
 
 export type GrupoNav = {
@@ -43,6 +52,15 @@ export type GrupoNav = {
   icono?: React.ReactNode;
   href?: string;
   hijos?: OpcionNav[];
+  /**
+   * R18 · Este grupo va al FONDO del panel, con un separador encima.
+   *
+   * Casi toda aplicación tiene uno que va el último y aparte —ajustes,
+   * administración—. Es convención, no gusto: quien busca configurar mira
+   * abajo. Es lo mismo que `MenuUsuario` hace con «Salir del sistema», y por
+   * la misma razón.
+   */
+  alPie?: boolean;
 };
 
 export type MarcoAppProps = {
@@ -89,6 +107,18 @@ export type MarcoAppProps = {
    * rectángulo justo lo que el sistema operativo ya ocupa.
    */
   vista?: 'web' | 'app';
+  /**
+   * R21 · Estado del panel, si el producto quiere mandarlo.
+   *
+   * Sin esto no se podía recordar: un producto que guarda las preferencias en
+   * el perfil de la persona —para que le sigan de un equipo a otro— no tenía
+   * forma de leer ni de fijar el plegado.
+   *
+   * Mismo patrón que `activa` / `onNavegar`: **si no se pasa, el marco se
+   * gobierna solo**. Pasarlo lo convierte en controlado.
+   */
+  plegado?: boolean;
+  onPlegar?: (plegado: boolean) => void;
   children: React.ReactNode;
 };
 
@@ -104,10 +134,20 @@ export function MarcoApp({
   opcionesUsuario,
   accionesBarra,
   vista = 'web',
+  plegado: plegadoFuera,
+  onPlegar,
   children,
 }: MarcoAppProps) {
   const id = useId();
-  const [plegado, setPlegado] = useState(false);
+  const [plegadoDentro, setPlegadoDentro] = useState(false);
+  // Controlado si llega de fuera; si no, se gobierna solo. El aviso sale en los
+  // dos casos: un producto puede querer PERSISTIR sin querer MANDAR.
+  const plegado = plegadoFuera ?? plegadoDentro;
+  const setPlegado = (v: boolean | ((p: boolean) => boolean)) => {
+    const nuevo = typeof v === 'function' ? v(plegado) : v;
+    if (plegadoFuera === undefined) setPlegadoDentro(nuevo);
+    onPlegar?.(nuevo);
+  };
   // «Más» en la vista de app: la lista de lo que no cupo en las cinco pestañas.
   const [masAbierto, setMasAbierto] = useState(false);
   // Qué grupos están abiertos. Arrancan ABIERTOS: un menú que empieza cerrado
@@ -181,7 +221,7 @@ export function MarcoApp({
         />
 
         <nav className="lat-nav" aria-label="Navegación principal">
-          {navegacion.map((g) => {
+          {[...navegacion.filter((g) => !g.alPie), ...navegacion.filter((g) => g.alPie)].map((g) => {
             const abierto = abiertos.has(g.clave);
             const tieneHijos = !!g.hijos?.length;
             const idHijos = `${id}-${g.clave}`;
@@ -190,7 +230,10 @@ export function MarcoApp({
               return (
                 <a
                   key={g.clave}
-                  className={['nav-item', activa === g.clave ? 'activo' : ''].filter(Boolean).join(' ')}
+                  // `nav-al-pie` va tambien aqui: un grupo del pie puede no
+                  // tener hijos —«Configuracion» suele ser una sola pantalla— y
+                  // entonces se dibuja como enlace, no como grupo.
+                  className={['nav-item', activa === g.clave ? 'activo' : '', g.alPie ? 'nav-al-pie' : ''].filter(Boolean).join(' ')}
                   href={g.href}
                   // `aria-current` y no solo el color: quien usa lector de
                   // pantalla no ve el sombreado, y saber dónde está es lo
@@ -205,7 +248,19 @@ export function MarcoApp({
             }
 
             return (
-              <div className="nav-grupo" key={g.clave}>
+              // R16 · la hoja abre el grupo con `.abierto` sobre `.nav-grupo`,
+              // y el componente marcaba el estado con `hidden` sobre los hijos.
+              // Dos piezas que no se hablaban: el grupo no se abria NUNCA.
+              //
+              // Y el `hidden` tampoco ocultaba, que es lo que lo hacia dificil
+              // de ver: `.nav-hijos { display: grid }` gana a la regla
+              // `[hidden] { display: none }` del navegador. Un grupo que ni se
+              // abria ni se cerraba. Lo midio Control Administrativos V2.0 en el
+              // navegador: 0px de alto sin la clase, 39,5px con ella.
+              <div
+                className={['nav-grupo', abierto ? 'abierto' : '', g.alPie ? 'nav-al-pie' : ''].filter(Boolean).join(' ')}
+                key={g.clave}
+              >
                 <button
                   className="nav-item nav-grupo-tit"
                   aria-expanded={abierto}
@@ -229,6 +284,7 @@ export function MarcoApp({
                         aria-current={activa === h.clave ? 'page' : undefined}
                         onClick={(e) => navegar(e, h.clave, h.href)}
                       >
+                        {h.icono && <span className="nav-ic">{h.icono}</span>}
                         <span className="nav-txt">{h.texto}</span>
                       </a>
                     ))}

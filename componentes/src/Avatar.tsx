@@ -31,9 +31,18 @@ export function colorIdentidad(id: string): 1 | 2 | 3 | 4 {
 
 /** Primera del apellido y primera del nombre: «QUISPE MAMANI, Rosa» → QR. */
 export function iniciales(nombre: string): string {
-  const [ap, no] = nombre.split(',');
-  const a = ap?.trim()[0] ?? '';
-  const b = no?.trim()[0] ?? '';
+  // R23 · SIN COMA, las dos primeras palabras.
+  //
+  // Antes se partía siempre por la coma, así que «Ada Lovelace» daba UNA letra.
+  // Y no es un caso raro: un mismo producto formatea «Apellidos, Nombres» en
+  // las fichas de personal y no lo hace en las cuentas de sistema, así que el
+  // mismo avatar daba una letra en la barra y dos en la tabla de al lado.
+  // Lo reportó Control Administrativos V2.0.
+  const partes = nombre.includes(',')
+    ? nombre.split(',')
+    : nombre.trim().split(/\s+/);
+  const a = partes[0]?.trim()[0] ?? '';
+  const b = partes[1]?.trim()[0] ?? '';
   return (a + b).toUpperCase();
 }
 

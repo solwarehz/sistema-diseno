@@ -197,3 +197,61 @@ describe('Menú de usuario', () => {
     expect(screen.queryByText(/Descargar el sistema/)).toBeNull();
   });
 });
+
+/**
+ * LOS OCHO DE CONTROL ADMINISTRATIVOS V2.0, del lote sobre la v1.15.0.
+ * Cada prueba lleva el número del requerimiento que fija.
+ */
+describe('Marco — requerimientos R16 a R23', () => {
+  it('R16 · el grupo abierto lleva la clase `abierto`, que es la que la hoja espera', () => {
+    const { container } = montar();
+    const grupo = container.querySelector('.nav-grupo')!;
+    expect(grupo).toHaveClass('abierto');
+  });
+
+  it('R16 · al plegarlo, la clase se va', async () => {
+    const u = userEvent.setup();
+    const { container } = montar();
+    await u.click(screen.getByRole('button', { name: /Académico/ }));
+    expect(container.querySelector('.nav-grupo')).not.toHaveClass('abierto');
+  });
+
+  it('R17 · las opciones hijas admiten icono', () => {
+    const { container } = montar({
+      navegacion: [{
+        clave: 'a', texto: 'Académico',
+        hijos: [{ clave: 'm', texto: 'Matrícula', href: '/m', icono: <i data-testid="ic-hijo" /> }],
+      }],
+    });
+    expect(screen.getByTestId('ic-hijo')).toBeInTheDocument();
+    expect(container.querySelector('.nav-hijo .nav-ic')).toBeTruthy();
+  });
+
+  it('R18 · el grupo marcado `alPie` se va al fondo, sea cual sea su orden', () => {
+    const { container } = montar({
+      navegacion: [
+        { clave: 'cfg', texto: 'Configuración', href: '/cfg', alPie: true },
+        { clave: 'ini', texto: 'Inicio', href: '/' },
+      ],
+    });
+    const items = [...container.querySelectorAll('.lat-nav > *')];
+    expect(items[items.length - 1]).toHaveClass('nav-al-pie');
+  });
+
+  it('R21 · sin `plegado` el marco se gobierna solo', async () => {
+    const u = userEvent.setup();
+    montar();
+    await u.click(screen.getByRole('button', { name: 'Plegar menú' }));
+    expect(screen.getByRole('button', { name: 'Desplegar menú' })).toBeInTheDocument();
+  });
+
+  it('R21 · con `plegado` manda el producto, y se le avisa del cambio', async () => {
+    const u = userEvent.setup();
+    const avisar = vi.fn();
+    montar({ plegado: false, onPlegar: avisar });
+    await u.click(screen.getByRole('button', { name: 'Plegar menú' }));
+    expect(avisar).toHaveBeenCalledWith(true);
+    // Controlado: no cambia por su cuenta. Lo decide quien manda el valor.
+    expect(screen.getByRole('button', { name: 'Plegar menú' })).toBeInTheDocument();
+  });
+});

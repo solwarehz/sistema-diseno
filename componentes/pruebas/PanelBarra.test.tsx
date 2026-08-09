@@ -91,3 +91,57 @@ describe('Panel de la barra', () => {
     expect(nuevo.querySelector('.pb-punto')).toHaveAttribute('aria-hidden', 'true');
   });
 });
+
+/**
+ * SOLO UNO ABIERTO A LA VEZ.
+ *
+ * Lo reportó el usuario probando el cascarón: abrir el menú de usuario y luego
+ * el de notificaciones dejaba los DOS encima del contenido. Y no era del
+ * catálogo — los dos componentes comparten el gancho y ninguno sabía del otro,
+ * así que cualquier proyecto con los tres en la barra tenía lo mismo.
+ */
+import { MenuUsuario } from '../src/MenuUsuario';
+
+describe('Desplegables de la barra', () => {
+  const Barra = () => (
+    <>
+      <PanelBarra icono="campana" titulo="Notificaciones" items={ITEMS} />
+      <MenuUsuario id="u-1" nombre="PINEDA, José" onSalir={() => {}} />
+    </>
+  );
+
+  it('abrir el segundo CIERRA el primero', async () => {
+    const u = userEvent.setup();
+    render(<Barra />);
+    const avatar = screen.getByRole('button', { name: /Menú de PINEDA/ });
+    const campana = screen.getByRole('button', { name: /Notificaciones/ });
+
+    await u.click(avatar);
+    expect(avatar).toHaveAttribute('aria-expanded', 'true');
+
+    await u.click(campana);
+    expect(campana).toHaveAttribute('aria-expanded', 'true');
+    expect(avatar).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('y al revés: abrir el usuario cierra el panel', async () => {
+    const u = userEvent.setup();
+    render(<Barra />);
+    const avatar = screen.getByRole('button', { name: /Menú de PINEDA/ });
+    const campana = screen.getByRole('button', { name: /Notificaciones/ });
+
+    await u.click(campana);
+    await u.click(avatar);
+    expect(avatar).toHaveAttribute('aria-expanded', 'true');
+    expect(campana).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('pulsar el mismo dos veces lo cierra, no lo deja abierto', async () => {
+    const u = userEvent.setup();
+    render(<Barra />);
+    const campana = screen.getByRole('button', { name: /Notificaciones/ });
+    await u.click(campana);
+    await u.click(campana);
+    expect(campana).toHaveAttribute('aria-expanded', 'false');
+  });
+});

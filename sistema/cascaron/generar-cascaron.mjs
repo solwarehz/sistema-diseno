@@ -4530,6 +4530,15 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
   box-shadow: var(--sombra-capa); }
 .fg-panel .top-filtros { flex-direction: column; gap: 12px; padding: 12px; width: 100%; }
 .fg-panel .cg { width: 100%; }
+/* R22 · la barra tiene DOS rotuladores —.cg del catalogo y .campo-grupo de los
+   componentes— y sus reglas solo alcanzaban al primero. Un SelectorBusqueda con
+   rotulo mide 71,7px en una barra de 64: se sale por arriba y por abajo.
+   Lo reporto Control Administrativos V2.0, que ya lo estaba apanando con
+   .top-filtros. Que la clase de la barra no alcance al componente de la barra
+   es un fallo nuestro, no un apano suyo. */
+.top-filtros .campo-grupo { flex-direction: row; align-items: center; gap: 8px; min-width: 0; }
+.top-filtros .campo-etiqueta { font-size: 12px; color: var(--texto-secundario); white-space: nowrap; }
+.top-filtros .campo-grupo .campo { padding: 4px 8px; width: auto; min-width: 0; }
 .fg-panel .campo { width: 100%; min-width: 0; font-size: 16px; }
 #fg-btn.activo { color: var(--accion); background: var(--fondo-fila-hover); }
 /* LA MARCA EN MÓVIL. Con la lateral fuera de pantalla, la barra superior es lo
@@ -5316,7 +5325,14 @@ h2.seccion {
    a 3:1 contra la tarjeta y no tiene por qué: quien identifica el control es
    el borde (SC 1.4.11). Por eso el borde no se quita. */
 .btn-2, .btn-oro { background: var(--accion-2-fondo); color: var(--accion-2); border-color: var(--accion-2); }
-.btn-2:hover, .btn-oro:hover { background: var(--marco-acento); }
+/* R20 · el hover se queda DENTRO de la familia de la accion secundaria.
+   Usaba marco-acento, y en oscuro marco-acento vale EXACTAMENTE lo mismo que
+   accion-2: el rotulo desaparecia sobre su propio fondo, 1,00:1.
+   El candado no podia verlo, y eso es lo interesante: verifica los pares del
+   CONTRATO, y este par no lo declaro nadie —nace de una regla :hover que cruza
+   dos familias—. Ahora invierte dentro de su familia: 7,77:1 en claro,
+   10,15:1 en oscuro. */
+.btn-2:hover, .btn-oro:hover { background: var(--accion-2); color: var(--accion-texto); }
 .btn-neutro { background: var(--neutra-fondo); color: var(--neutra-texto); border-color: var(--borde-campo); }
 .btn-neutro:hover { background: var(--borde); }
 /* Terciaria: ni relleno ni borde. Cancelar es retroceder, y retroceder no debe
@@ -5483,8 +5499,15 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    que irían directos sobre el azul y no se leerían. El escudo solo sí funciona
    sobre azul —tiene cuerpo blanco propio—, pero se usa la misma banda en los
    dos estados para que el plegado no cambie de fondo. */
+/* R19 · el fondo es el del MARCO, no el de la tarjeta.
+   Con fondo-tarjeta, el respaldo en texto —marco-texto, blanco— quedaba a
+   1,00:1 en modo claro: INVISIBLE. Y el respaldo existe justo para el producto
+   que todavia no tiene logotipo, que es como se monta un sistema nuevo. Lo que
+   no se leia era de quien son los datos que se estan mirando.
+   Con marco-fondo da 10,43:1 en los dos modos. Lo reporto Control
+   Administrativos V2.0 midiendolo en la pantalla pintada. */
 .lat-marca { display: flex; align-items: center; justify-content: center;
-  padding: 8px 12px; background: var(--fondo-tarjeta);
+  padding: 8px 12px; background: var(--marco-fondo);
   border-bottom: 1px solid var(--marco-borde); height: 64px; flex: none; }
 /* El logo crece hasta llenar la banda: 44px de alto en 64px de caja. */
 /* La marca lleva al inicio, que es lo que todo el mundo espera de un logo en la
@@ -5555,7 +5578,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .lat-colegio { font-size: 12px; letter-spacing: .13em; color: var(--marco-acento); font-weight: 500; }
 .lat-nombre { font-size: 12px; font-weight: 600; white-space: nowrap; }
 
-.lat-nav { flex: 1; padding: 8px 8px; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
+/* R18 · el grupo del pie se empuja al fondo y se separa con una linea. Va aqui
+   y no en el componente: es aspecto, y el componente solo pone la clase. */
+.nav-al-pie { margin-top: auto; border-top: 1px solid var(--marco-borde); padding-top: 4px; }
+.lat-nav { display: flex; flex-direction: column; flex: 1; padding: 8px 8px; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
 .nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 8px;
   border-radius: 6px; color: var(--marco-texto); text-decoration: none;
   font-size: 13px; opacity: .84; white-space: nowrap; }

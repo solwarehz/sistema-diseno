@@ -96,3 +96,25 @@ describe('Marca del menú', () => {
     expect(ir).toHaveBeenCalled();
   });
 });
+
+/**
+ * R23 · Las iniciales cuando el nombre no lleva coma. Lo reportó Control
+ * Administrativos V2.0: el mismo avatar daba UNA letra en la barra y dos en la
+ * tabla de al lado, según cómo viniera formateado el nombre.
+ */
+import { iniciales } from '../src/Avatar';
+
+describe('Iniciales', () => {
+  it('R23 · con coma, apellido y nombre', () => {
+    expect(iniciales('QUISPE MAMANI, Rosa')).toBe('QR');
+  });
+
+  it('R23 · SIN coma, las dos primeras palabras', () => {
+    expect(iniciales('Ada Lovelace')).toBe('AL');
+    expect(iniciales('José Isidro Pineda')).toBe('JI');
+  });
+
+  it('R23 · una sola palabra da una letra, que es todo lo que hay', () => {
+    expect(iniciales('Soporte')).toBe('S');
+  });
+});

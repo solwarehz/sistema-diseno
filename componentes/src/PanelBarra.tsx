@@ -57,7 +57,7 @@ export function PanelBarra({
   onVerTodos,
   textoVerTodos = 'Ver todos',
 }: PanelBarraProps) {
-  const { abierto, setAbierto, caja, disparador, cerrarYDevolverFoco } = usarDesplegable();
+  const { abierto, setAbierto, alternar, caja, disparador, cerrarYDevolverFoco } = usarDesplegable();
   const sinLeer = items.filter((i) => i.sinLeer).length;
   const idPanel = `panel-${icono}`;
 
@@ -73,7 +73,7 @@ export function PanelBarra({
         // lector de pantalla no ve la burbuja, y saber que hay tres sin leer es
         // justo lo que hace que merezca la pena abrir.
         aria-label={sinLeer > 0 ? `${titulo}, ${sinLeer} sin leer` : titulo}
-        onClick={() => setAbierto((v) => !v)}
+        onClick={alternar}
       >
         <Icono nombre={icono} tam="control" />
         {/* La burbuja va oculta al lector: lo que dice ya está en el nombre del

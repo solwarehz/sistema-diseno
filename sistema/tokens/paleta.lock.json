@@ -1,6 +1,6 @@
 {
   "documento": "MMI-DS",
-  "version": "1.16.0",
+  "version": "1.17.0",
   "norma": "WCAG 2.2 AA",
   "generado": "node sistema/tokens/generar.mjs",
   "modos": [
@@ -9,17 +9,17 @@
   ],
   "aviso": "Archivo generado. No editar a mano. La fuente es sistema/tokens/fuente.mjs. Cambiar un valor exige regenerar, re-verificar y subir versión (§2.5 regla 8).",
   "resumen": {
-    "paresTotales": 174,
-    "paresBloqueantes": 134,
+    "paresTotales": 178,
+    "paresBloqueantes": 138,
     "paresInformativos": 40,
     "fallos": 0,
     "porModo": {
       "claro": {
-        "bloqueantes": 67,
+        "bloqueantes": 69,
         "fallos": 0
       },
       "oscuro": {
-        "bloqueantes": 67,
+        "bloqueantes": 69,
         "fallos": 0
       }
     }
@@ -1507,6 +1507,28 @@
     },
     {
       "modo": "claro",
+      "frente": "accion-texto",
+      "fondo": "accion-2",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#655000",
+      "ratio": 7.77,
+      "minimo": 4.5,
+      "motivo": "Rótulo del secundario al pasar el ratón",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "marco-texto",
+      "fondo": "marco-fondo",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#2C3D71",
+      "ratio": 10.43,
+      "minimo": 4.5,
+      "motivo": "Nombre del cliente cuando no hay logo",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
       "frente": "texto-principal",
       "fondo": "exito-fondo",
       "hexFrente": "#2C2A25",
@@ -2461,6 +2483,28 @@
       "minimo": "informativo",
       "motivo": "Vía contra la tarjeta. Relleno, no delimita",
       "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "accion-texto",
+      "fondo": "accion-2",
+      "hexFrente": "#20201E",
+      "hexFondo": "#DFCA9C",
+      "ratio": 10.15,
+      "minimo": 4.5,
+      "motivo": "Rótulo del secundario al pasar el ratón",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "marco-texto",
+      "fondo": "marco-fondo",
+      "hexFrente": "#FFFFFF",
+      "hexFondo": "#2C3D71",
+      "ratio": 10.43,
+      "minimo": 4.5,
+      "motivo": "Nombre del cliente cuando no hay logo",
+      "cumple": true
     },
     {
       "modo": "oscuro",
