@@ -80,19 +80,49 @@ práctica de sistema maduro, y llegó antes que el proceso.
 
 ## 2 · Lo que se corrigió durante la auditoría
 
-Todo medido antes y después.
+> ### ⚠️ Corrección de este informe — 2026-08-09
+>
+> **Tres filas de esta tabla eran falsas y se corrigen aquí.** Se escribieron
+> dando por aplicado un arreglo que no llegó a aplicarse, sin volver a medir
+> después. Es exactamente el fallo que este sistema existe para evitar, y lo
+> cometió su propio informe.
+>
+> | Se afirmó | La verdad, medida el 2026-08-09 |
+> |---|---|
+> | Reflujo a 320 px «0 desborde ✅» | **Sigue abierto.** No hay desplazamiento del documento, pero **la lateral de 236px tapa el contenido**: el 74 % de la pantalla queda inservible y el texto sale cortado |
+> | Ancho útil a 320 px «84 → 320 px ✅» | Engañoso. `.cat-cuerpo` sí mide 320, pero **queda debajo de la lateral** |
+> | Rampa de primitivas «2,00 → 5,22:1 ✅» | **Sigue abierto.** La función `tintaPara` no existe en el código: el arreglo se escribió y se perdió |
+> | Anillo de foco «6,49:1» | Cerrado, pero **la cifra estaba mal: es 5,42:1** medido sobre el fondo real |
+>
+> Lo que sí quedó cerrado se ha vuelto a verificar una a una, abajo.
+
+### Cerrado y verificado
 
 | Hallazgo | Antes | Ahora |
 |---|---|---|
-| Anillo de foco sobre el marco (SC 1.4.11) | 2,48:1 ❌ | **6,49:1** ✅ |
-| Reflujo a 320 px (SC 1.4.10) | 470 px de desplazamiento, 38/38 páginas | **0 desborde, 38/38** ✅ |
-| Ancho útil a 320 px | 84 px | **320 px** ✅ |
+| Anillo de foco sobre el marco (SC 1.4.11) | 2,48:1 ❌ | **5,42:1** ✅ medido sobre `marco-nivel-1` |
 | Nombre accesible del interruptor (SC 4.1.2) | 0 de 8 | **7 de 7** ✅ |
-| Peor contraste en la rampa de primitivas | 2,00:1 ❌ | **5,22:1** ✅ |
 | Contenido plegado en el orden de tabulación | menú y tablas expuestos | **oculto de verdad** ✅ |
+| Barra superior que decía ser pegajosa y no lo era | `position: relative` ganaba | **sticky, con reserva de desplazamiento** ✅ |
+| Opacidad sobre texto en `.hor-rango` | 4,35:1 ❌ | **sin opacidad** ✅ |
+| Contraejemplo `.sin-foco` en el orden de tabulación | `input` vivo sin anillo | **fuera del orden** ✅ |
 | Origen de un token | `unicornio.999` pasaba en verde | **corta con salida 1** ✅ |
-| Candado de lint | nunca ejecutado en 7 versiones | **54 casos, probado en fallo** ✅ |
-| Registro de cambios | promesa falsa en cada entrega | **generado, 8 versiones** ✅ |
+| Candado de lint | nunca ejecutado en 9 versiones | **ejecutado con ESLint · bloquea, probado** ✅ |
+| Registro de cambios | promesa falsa en cada entrega | **generado, 9 versiones** ✅ |
+| Estilos de componente | solo dentro del catálogo | **`componentes.css`, 627 reglas, 20 elementos** ✅ |
+
+### Sigue abierto
+
+| Hallazgo | Estado medido |
+|---|---|
+| **Reflujo a 320 px** (SC 1.4.10) y texto al 200 % (SC 1.4.4) | La lateral no colapsa por ancho. **No existe ninguna media query que la toque** |
+| **Rampa de primitivas** (SC 1.4.3) | Sigue eligiendo la tinta por umbral de luminancia, no midiendo |
+| Contraejemplos didácticos (§5.2.2) | El botón a 2,56:1 y la tarjeta atenuada siguen siendo texto real de la página |
+| Teclado del calendario, y «Desde» que borra el rango | Sin empezar |
+| Confirmación que nunca devuelve el foco | Sin empezar |
+| `aria-current` en la lateral | Sin empezar |
+| Anuncios en vivo al ordenar y filtrar | Sin empezar |
+| Deriva documental | Corregidos unos pocos de los trece |
 
 ### El hallazgo más instructivo
 
