@@ -5101,6 +5101,46 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .lat-marca-enl { display: flex; align-items: center; justify-content: center;
   min-width: 0; border-radius: 6px; }
 .lat-marca-enl:focus-visible { outline: 2px solid var(--foco-en-marco); outline-offset: 2px; }
+/* ───────────────────────────────────────────────────────────────────────────
+   LA MARCA DEL CLIENTE. La sube el, y no puede romper el marco.
+
+   Antes era height 44px con width auto y max-width 100 %, y eso NO lo
+   garantiza: con una imagen ancha, max-width recorta el ancho mientras la
+   altura sigue clavada en 44px, y la imagen sale DEFORMADA. Con una muy ancha,
+   ademas desborda el carril plegado de 64px.
+
+   Y no es hipotetico: en este mismo proyecto el escudo llego a dibujarse a
+   1063px porque la altura solo estaba puesta bajo .lat.colapsado.
+
+   La combinacion de abajo es la unica que no puede fallar:
+
+     · la CAJA tiene tamano fijo, asi que el hueco existe antes de que la
+       imagen cargue y el menu no da un salto al aparecer;
+     · max-width y max-height al 100 % con width y height en auto
+       hacen que la imagen se ENCOJA hasta caber, nunca al reves;
+     · object-fit contain conserva la proporcion pase lo que pase;
+     · overflow hidden en la caja es el cinturon: aunque llegara algo raro
+       —un SVG con tamano intrinseco absurdo—, no sale de su sitio.
+
+   Da igual lo que suban: 4000x40, 40x4000 o un cuadrado. Cabe o se encoge.
+   Lo unico que el sistema NO puede arreglar es un logo ilegible a 40px, y por
+   eso el componente avisa en desarrollo cuando la imagen es muy apaisada. */
+/* El prefijo es lat- y no marca- porque marca esta reservado al catalogo
+   —es la pagina de los colores de marca— y lo que empieza asi NO VIAJA en la
+   entrega. Lo cazo el candado de huerfanas al primer intento. */
+.lat-marca-caja { display: grid; place-items: center; overflow: hidden; flex: none; }
+.lat-marca-caja img { display: block; max-width: 100%; max-height: 100%;
+  width: auto; height: auto; object-fit: contain; }
+/* Desplegado: ancho el del carril menos su relleno; alto el del lockup. */
+.lat-marca-ancha { width: 100%; height: 44px; }
+/* Plegado: cuadrado. Un lockup apaisado se encoge hasta caber, y por eso se
+   pide una version compacta aparte —el escudo— en vez de reusar el mismo. */
+.lat-marca-estrecha { width: 40px; height: 40px; }
+/* Si la imagen no carga, queda el texto. Un alt vacio y una imagen rota dejan
+   el menu sin identidad y sin explicacion. */
+.lat-marca-texto { font-size: 13px; font-weight: 600; line-height: 1.2;
+  color: var(--marco-texto); text-align: center; }
+
 .lat-lockup { display: block; height: 44px; width: auto; max-width: 100%; }
 .lat-escudo { display: none; height: 40px; width: auto; }
 /* Plegada: el lockup no cabe, queda el escudo. */

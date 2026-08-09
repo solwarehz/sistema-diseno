@@ -25,6 +25,7 @@
 
 import { useEffect, useId, useRef, useState } from 'react';
 import { MenuUsuario, type MenuUsuarioProps } from './MenuUsuario';
+import { MarcaMenu } from './MarcaMenu';
 
 export type OpcionNav = {
   /** Identificador estable. Es lo que se compara con `activa`. */
@@ -46,9 +47,19 @@ export type GrupoNav = {
 export type MarcoAppProps = {
   /** El nombre del producto o del colegio, junto al escudo. */
   titulo: string;
-  /** El escudo o el lockup. Lo pone el proyecto: es propiedad del cliente y no
-   *  viaja en el sistema (ver §4 del CLAUDE.md del repositorio). */
-  marca?: React.ReactNode;
+  /**
+   * Logotipo horizontal del cliente, para el menú desplegado.
+   *
+   * Se pasa la URL, NO un elemento. Antes era `React.ReactNode` y eso dejaba
+   * abierta la decisión que este componente existe para cerrar: con un nodo
+   * libre, cada proyecto ponía su `<img>` con sus medidas y la imagen del
+   * cliente volvía a poder romper el marco. Ahora el sistema decide el tamaño,
+   * la proporción y el respaldo, y el proyecto solo aporta el archivo.
+   */
+  marca?: string;
+  /** Versión compacta —el escudo— para el menú plegado. Sin ella se encoge la
+   *  otra en un cuadrado de 40px, que funciona pero rara vez se lee. */
+  marcaCompacta?: string;
   /** A dónde lleva pulsar la marca. Siempre existe: sin ella, no hay vuelta a
    *  casa desde ninguna pantalla. */
   hrefInicio: string;
@@ -67,6 +78,7 @@ export type MarcoAppProps = {
 export function MarcoApp({
   titulo,
   marca,
+  marcaCompacta,
   hrefInicio,
   navegacion,
   activa,
@@ -115,14 +127,14 @@ export function MarcoApp({
   return (
     <div className="app-cascaron">
       <aside className={['lat', plegado ? 'colapsado' : ''].filter(Boolean).join(' ')} ref={lateral}>
-        <div className="lat-marca">
-          <a className="lat-marca-enl" href={hrefInicio} aria-label={`${titulo} — ir al inicio`}>
-            {marca}
-            <span className="lat-id">
-              <span className="lat-nombre">{titulo}</span>
-            </span>
-          </a>
-        </div>
+        <MarcaMenu
+          titulo={titulo}
+          expandida={marca}
+          comprimida={marcaCompacta}
+          plegado={plegado}
+          href={hrefInicio}
+          onIr={onNavegar ? () => onNavegar('inicio', hrefInicio) : undefined}
+        />
 
         <nav className="lat-nav" aria-label="Navegación principal">
           {navegacion.map((g) => {

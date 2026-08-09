@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.12.0';
+export const VERSION = '1.12.1';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,30 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.12.1', fecha: '2026-08-09',
+    que: 'La marca del cliente es componente y ya no puede romper el marco',
+    porque:
+      'El logo lo sube el cliente, asi que es un archivo de fuera y no se puede confiar en ' +
+      'que sea razonable. Ya rompio el diseno una vez en este proyecto: el escudo llego a ' +
+      'dibujarse a 1063px porque su altura solo estaba declarada bajo el estado plegado. ' +
+      'Y lo que habia tampoco lo garantizaba —height 44px con max-width 100 % DEFORMA una ' +
+      'imagen ancha, porque recorta el ancho dejando la altura clavada—. ' +
+      'MarcaMenu cierra la decision: caja de tamano fijo, la imagen con max-width y ' +
+      'max-height al 100 % y las dimensiones en auto —solo puede encogerse—, object-fit ' +
+      'contain y overflow hidden de cinturon. Da igual lo que suban: 4000x40, 40x4000 o un ' +
+      'cuadrado. Cabe o se encoge. ' +
+      'Y `marca` deja de ser React.ReactNode para ser una URL: con un nodo libre cada ' +
+      'proyecto ponia su img con sus medidas y la garantia se evaporaba. ' +
+      'Lo que el CSS no puede arreglar se avisa en vez de callarse: un logo muy apaisado no ' +
+      'se lee a 40px, y el componente lo dice en desarrollo. Si la imagen no carga, cae al ' +
+      'nombre —plegado, a sus iniciales— en vez de dejar el icono roto.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'MarcoApp: `marca` pasa de React.ReactNode a string con la URL, y se anade ' +
+        '`marcaCompacta` para el menu plegado',
+    ],
+  },
   {
     v: '1.12.0', fecha: '2026-08-09',
     que: 'El marco de aplicacion es componente: menu lateral, barra y menu de usuario',

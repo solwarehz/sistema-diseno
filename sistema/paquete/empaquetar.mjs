@@ -135,6 +135,7 @@ const CONTENIDO = [
   ['componentes/src/Nota.tsx', 'componentes/Nota.tsx'],
   ['componentes/src/Avatar.tsx', 'componentes/Avatar.tsx'],
   ['componentes/src/MarcoApp.tsx', 'componentes/MarcoApp.tsx'],
+  ['componentes/src/MarcaMenu.tsx', 'componentes/MarcaMenu.tsx'],
   ['componentes/src/MenuUsuario.tsx', 'componentes/MenuUsuario.tsx'],
   ['componentes/src/Interruptor.tsx', 'componentes/Interruptor.tsx'],
   ['componentes/src/Tarjeta.tsx', 'componentes/Tarjeta.tsx'],
