@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.11.1';
+export const VERSION = '1.12.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,26 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.12.0', fecha: '2026-08-09',
+    que: 'El marco de aplicacion es componente: menu lateral, barra y menu de usuario',
+    porque:
+      'Era el hueco mas grande que quedaba y el que mas costaba: 198 de las 652 reglas del ' +
+      'paquete son del marco, y hasta hoy se entregaba COMO SE VE y cada proyecto rehacia ' +
+      'COMO SE COMPORTA. Todos los productos tienen menu y barra, asi que ese trabajo se ' +
+      'repetia entero en cada uno. Entran MarcoApp y MenuUsuario con el plegado, los grupos ' +
+      'con aria-expanded, la opcion activa anunciada con aria-current -no solo pintada-, el ' +
+      'velo, Escape con devolucion del foco, y el selector de tema. ' +
+      'Densidad, vista y descarga de la entrega NO viajan: son del catalogo, que existe para ' +
+      'exhibir el sistema, no para operar un producto. «Salir del sistema» SI viaja, porque ' +
+      'esta en todos y debe estar siempre en el mismo sitio. El selector de tema es opt-in: ' +
+      'el modo oscuro sigue CALCULADO Y NO APROBADO (§9), y ofrecerlo por omision seria ' +
+      'saltarse esa decision desde el componente. ' +
+      'Con esto los 21 elementos del catalogo tienen componente, salvo dos que son solo ' +
+      'estilo a proposito: la tabla simple y las utilidades.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.11.1', fecha: '2026-08-09',
     que: 'Campo con contenido propio, Nota permanente, y los iconos dejan de dibujarse dos veces',

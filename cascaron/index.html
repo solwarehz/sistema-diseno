@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.11.1</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.12.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.11.1
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.12.0
    WCAG 2.2 AA · 134 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -2059,6 +2059,18 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   overflow: hidden; text-overflow: ellipsis; }
 
 .app-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+/* LA ZONA DE CONTENIDO del marco. No existia como clase del sistema: el
+   catalogo usaba .cat-cuerpo, que es suya y no viaja, asi que un proyecto que
+   montara el marco se quedaba sin margenes ni ancho maximo y el texto le salia
+   de borde a borde.
+
+   El ancho maximo NO es estetico: por encima de ~75 caracteres el ojo pierde
+   el renglon al volver (§ Ancho de linea del manual). El relleno inferior es
+   generoso a proposito, para que la ultima fila de una tabla no quede pegada
+   al borde y parezca cortada. */
+.app-contenido { flex: 1; min-width: 0; overflow-y: auto;
+  padding: 24px 32px 80px; max-width: 1120px; width: 100%; }
+@media (max-width: 700px) { .app-contenido { padding: 16px 16px 64px; } }
 
 /* ── REFLUJO ─────────────────────────────────────────────────────────────────
    SC 1.4.10 exige que el contenido fluya a 320 CSS px. El sistema solo se había
@@ -2596,7 +2608,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.11.1</option></select></label>
+          <select class="campo cg-in"><option>v1.12.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -2657,8 +2669,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.11.1.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.11.1</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.12.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.12.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -8593,6 +8605,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.12.0 <span class="cam-fecha">2026-08-09</span></h3>
+<p class="pag-intro"><strong>El marco de aplicacion es componente: menu lateral, barra y menu de usuario.</strong> Era el hueco mas grande que quedaba y el que mas costaba: 198 de las 652 reglas del paquete son del marco, y hasta hoy se entregaba COMO SE VE y cada proyecto rehacia COMO SE COMPORTA. Todos los productos tienen menu y barra, asi que ese trabajo se repetia entero en cada uno. Entran MarcoApp y MenuUsuario con el plegado, los grupos con aria-expanded, la opcion activa anunciada con aria-current -no solo pintada-, el velo, Escape con devolucion del foco, y el selector de tema. Densidad, vista y descarga de la entrega NO viajan: son del catalogo, que existe para exhibir el sistema, no para operar un producto. «Salir del sistema» SI viaja, porque esta en todos y debe estar siempre en el mismo sitio. El selector de tema es opt-in: el modo oscuro sigue CALCULADO Y NO APROBADO (§9), y ofrecerlo por omision seria saltarse esa decision desde el componente. Con esto los 21 elementos del catalogo tienen componente, salvo dos que son solo estilo a proposito: la tabla simple y las utilidades.</p>
+
 
 
 <h3 class="sub-seccion">v1.11.1 <span class="cam-fecha">2026-08-09</span></h3>

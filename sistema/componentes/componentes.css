@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.11.1
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.12.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -828,7 +828,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .esqueleto.corto{ width: 62%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MARCO DE APLICACIÓN — 196 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
+   MARCO DE APLICACIÓN — 198 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 :where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
@@ -1056,6 +1056,11 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .lat-user-mail{ font-size: 12px; color: var(--marco-texto-tenue); white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis; }
 .app-main{ flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.app-contenido{ flex: 1; min-width: 0; overflow-y: auto;
+  padding: 24px 32px 80px; max-width: 1120px; width: 100%; }
+@media (max-width: 700px) {
+  .app-contenido{ padding: 16px 16px 64px; }
+}
 @media (max-width: 900px) and (min-width: 701px) {
   .app-cascaron .lat:not(.colapsado){ width: 56px; }
   .app-cascaron .lat:not(.colapsado) .nav-txt,

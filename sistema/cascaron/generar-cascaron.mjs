@@ -5139,6 +5139,18 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   overflow: hidden; text-overflow: ellipsis; }
 
 .app-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+/* LA ZONA DE CONTENIDO del marco. No existia como clase del sistema: el
+   catalogo usaba .cat-cuerpo, que es suya y no viaja, asi que un proyecto que
+   montara el marco se quedaba sin margenes ni ancho maximo y el texto le salia
+   de borde a borde.
+
+   El ancho maximo NO es estetico: por encima de ~75 caracteres el ojo pierde
+   el renglon al volver (§ Ancho de linea del manual). El relleno inferior es
+   generoso a proposito, para que la ultima fila de una tabla no quede pegada
+   al borde y parezca cortada. */
+.app-contenido { flex: 1; min-width: 0; overflow-y: auto;
+  padding: 24px 32px 80px; max-width: 1120px; width: 100%; }
+@media (max-width: 700px) { .app-contenido { padding: 16px 16px 64px; } }
 
 /* ── REFLUJO ─────────────────────────────────────────────────────────────────
    SC 1.4.10 exige que el contenido fluya a 320 CSS px. El sistema solo se había

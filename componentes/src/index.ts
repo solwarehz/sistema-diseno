@@ -22,3 +22,5 @@ export { Tarjeta, TarjetaPersona } from './Tarjeta';
 export { Horario, escribirHora, type BloqueHorario } from './Horario';
 export { SelectorBusqueda, type OpcionBusqueda } from './SelectorBusqueda';
 export { Nota } from './Nota';
+export { MarcoApp, type GrupoNav, type OpcionNav } from './MarcoApp';
+export { MenuUsuario, type Tema } from './MenuUsuario';
