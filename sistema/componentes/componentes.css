@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.15.1
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.16.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -27,7 +27,27 @@
    ─────────────────────────────────────────────────────────────────────────── */
 
 /* Dependencias del paquete que no pertenecen a ningun elemento */
-:root{ --sombra-capa: 0 8px 24px rgba(0,0,0,.16); --sombra-aviso: 0 8px 24px rgba(0,0,0,.18); }
+:root{ --sombra-capa: 0 8px 24px rgba(0,0,0,.16); --sombra-aviso: 0 8px 24px rgba(0,0,0,.18);
+  /* ── PROFUNDIDAD DEL MARCO ────────────────────────────────────────────────
+     El marco y la barra se separan del contenido por ELEVACION, no por color.
+
+     Sale de una medicion incomoda: en modo oscuro la pagina es casi negra, y
+     CUALQUIER marco lo bastante oscuro para leer como modo oscuro queda a menos
+     de 1,6:1 de ella. Da igual que sea azul o gris —se probaron los diez
+     escalones de indigo y los catorce de negro—. La luminancia no puede
+     separarlos ahi.
+
+     La sombra si, porque no depende del contraste entre los dos colores: es
+     una pista de profundidad, y funciona igual sobre negro que sobre blanco.
+
+     DOS VALORES, no uno. En claro basta la sombra. En oscuro una sombra negra
+     sobre casi negro no se ve, asi que se acompana de un FILETE CLARO en el
+     canto que da al contenido: es como se dibuja el relieve en una interfaz
+     oscura —luz arriba, sombra abajo—. */
+  --sombra-marco: 2px 0 12px rgba(0,0,0,.18);
+  --sombra-barra: 0 2px 10px rgba(0,0,0,.14);
+  --canto-marco: none;
+}
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 26 reglas · clases .btn-*
@@ -1019,7 +1039,8 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .app-lista-ch{ flex: none; color: var(--texto-secundario); transform: rotate(-90deg); }
 .cat-cuerpo, .pagina, .bloque, .app-main{ min-width: 0; }
 .app{ display: flex; min-height: 520px; }
-.lat{ flex: 0 0 auto; width: 236px; min-width: 0; overflow: hidden;
+.lat{ box-shadow: var(--sombra-marco), var(--canto-marco); position: relative; z-index: 20;
+  flex: 0 0 auto; width: 236px; min-width: 0; overflow: hidden;
   background: var(--marco-fondo); color: var(--marco-texto);
   display: flex; flex-direction: column;
   transition: width .22s ease; }
@@ -1099,7 +1120,8 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   .top-filtros{ flex-wrap: wrap; }
   .top-filtros .campo{ min-width: 0; }
 }
-.top{ display: flex; align-items: center; gap: 12px; padding: 8px 16px; position: relative;
+.top{ box-shadow: var(--sombra-barra); z-index: 10;
+  display: flex; align-items: center; gap: 12px; padding: 8px 16px; position: relative;
   height: 64px; flex: none;
   background: var(--fondo-tarjeta); border-bottom: 1px solid var(--borde); }
 .top-marca{ display: none; }

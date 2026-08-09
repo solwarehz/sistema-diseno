@@ -3894,7 +3894,33 @@ ${tokensCss}
 /* La sombra de las capas flotantes se define una vez y se reutiliza. No es un
    token de color -no se mide contraste sobre ella- pero sí un valor del
    sistema: tres sombras distintas se notan. */
-:root { --sombra-capa: 0 8px 24px rgba(0,0,0,.16); --sombra-aviso: 0 8px 24px rgba(0,0,0,.18); }
+:root { --sombra-capa: 0 8px 24px rgba(0,0,0,.16); --sombra-aviso: 0 8px 24px rgba(0,0,0,.18);
+  /* ── PROFUNDIDAD DEL MARCO ────────────────────────────────────────────────
+     El marco y la barra se separan del contenido por ELEVACION, no por color.
+
+     Sale de una medicion incomoda: en modo oscuro la pagina es casi negra, y
+     CUALQUIER marco lo bastante oscuro para leer como modo oscuro queda a menos
+     de 1,6:1 de ella. Da igual que sea azul o gris —se probaron los diez
+     escalones de indigo y los catorce de negro—. La luminancia no puede
+     separarlos ahi.
+
+     La sombra si, porque no depende del contraste entre los dos colores: es
+     una pista de profundidad, y funciona igual sobre negro que sobre blanco.
+
+     DOS VALORES, no uno. En claro basta la sombra. En oscuro una sombra negra
+     sobre casi negro no se ve, asi que se acompana de un FILETE CLARO en el
+     canto que da al contenido: es como se dibuja el relieve en una interfaz
+     oscura —luz arriba, sombra abajo—. */
+  --sombra-marco: 2px 0 12px rgba(0,0,0,.18);
+  --sombra-barra: 0 2px 10px rgba(0,0,0,.14);
+  --canto-marco: none;
+}
+[data-tema='oscuro'], :root:not([data-tema]) {
+  /* Mas opaca y con canto: sobre negro, una sombra al 18 % no existe. */
+  --sombra-marco: 2px 0 16px rgba(0,0,0,.55);
+  --sombra-barra: 0 2px 12px rgba(0,0,0,.45);
+  --canto-marco: inset -1px 0 0 var(--marco-borde);
+}
 
 /* SOLO PARA EL LECTOR. Oculta a la vista sin sacar del árbol de accesibilidad.
    No es display:none ni visibility:hidden: los dos lo quitan también del
@@ -5438,7 +5464,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    mínimo automático, que si no impide encoger por debajo del contenido. */
 /* El plegado se anima sobre width con flex-basis auto: animar flex-basis
    directamente dejaba el ancho desincronizado de la clase. */
-.lat { flex: 0 0 auto; width: 236px; min-width: 0; overflow: hidden;
+/* La elevacion va en el LATERAL, no en un pseudoelemento: asi acompana al
+   panel tanto extendido como plegado, sin una regla por estado. */
+.lat { box-shadow: var(--sombra-marco), var(--canto-marco); position: relative; z-index: 20;
+  flex: 0 0 auto; width: 236px; min-width: 0; overflow: hidden;
   background: var(--marco-fondo); color: var(--marco-texto);
   display: flex; flex-direction: column;
   transition: width .22s ease; }
@@ -5611,7 +5640,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    cuando el contenido desborda, y en móvil se encogía de 64px a 51px. La
    altura declarada tiene que cumplirse o la línea divisoria deja de caer donde
    dice el comentario de arriba. */
-.top { display: flex; align-items: center; gap: 12px; padding: 8px 16px; position: relative;
+/* La barra se eleva sobre el contenido que se desplaza por debajo. z-index
+   MENOR que el del lateral: donde se cruzan, manda el lateral. */
+.top { box-shadow: var(--sombra-barra); z-index: 10;
+  display: flex; align-items: center; gap: 12px; padding: 8px 16px; position: relative;
   height: 64px; flex: none;
   background: var(--fondo-tarjeta); border-bottom: 1px solid var(--borde); }
 /* La marca de la barra solo existe en móvil: en escritorio ya la lleva la
@@ -6031,8 +6063,35 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
               aria-label="Colegio Albert Einstein — ir al inicio"><img src="${ESCUDO_PNG}" alt=""></a>`
         : ''}
       <div class="top-acciones">
-        <button class="top-btn" aria-label="Mensajes">${ICONOS.sobre}</button>
-        <button class="top-btn" aria-label="Notificaciones">${ICONOS.campana}<span class="badge">1</span></button>
+        <!-- Los dos paneles de la barra. Antes eran botones que no hacian nada:
+             el catalogo dibujaba el icono y ahi acababa. Ahora se abren, que es
+             como se comprueba que el componente funciona. -->
+        <div class="us" data-pb>
+          <button class="top-btn" data-pb-btn aria-expanded="false" aria-haspopup="dialog"
+                  aria-controls="pb-msj-top" aria-label="Mensajes, 2 sin leer">${ICONOS.sobre}<span class="badge" aria-hidden="true">2</span></button>
+          <div class="us-menu pb-panel" id="pb-msj-top" role="dialog" aria-label="Mensajes" hidden>
+            <div class="us-sec"><span class="us-et">Mensajes</span></div>
+            <ul class="pb-lista">
+              <li><button class="pb-item pb-nuevo"><span class="pb-txt"><span class="pb-tit">QUISPE MAMANI, Rosa</span><span class="pb-det">Justificacion de tardanza del 12 de agosto</span></span><span class="pb-cuando">hace 5 min</span><span class="pb-punto" aria-hidden="true"></span></button></li>
+              <li><button class="pb-item pb-nuevo"><span class="pb-txt"><span class="pb-tit">HUAMAN LOPEZ, Luis</span><span class="pb-det">Consulta sobre el horario de tutoria</span></span><span class="pb-cuando">hace 2 h</span><span class="pb-punto" aria-hidden="true"></span></button></li>
+              <li><button class="pb-item"><span class="pb-txt"><span class="pb-tit">Direccion academica</span><span class="pb-det">Recordatorio de la reunion del viernes</span></span><span class="pb-cuando">ayer</span></button></li>
+            </ul>
+            <button class="us-op pb-todos">Ver todos</button>
+          </div>
+        </div>
+
+        <div class="us" data-pb>
+          <button class="top-btn" data-pb-btn aria-expanded="false" aria-haspopup="dialog"
+                  aria-controls="pb-not-top" aria-label="Notificaciones, 1 sin leer">${ICONOS.campana}<span class="badge" aria-hidden="true">1</span></button>
+          <div class="us-menu pb-panel" id="pb-not-top" role="dialog" aria-label="Notificaciones" hidden>
+            <div class="us-sec"><span class="us-et">Notificaciones</span></div>
+            <ul class="pb-lista">
+              <li><button class="pb-item pb-nuevo"><span class="pb-txt"><span class="pb-tit">Cierre de matricula</span><span class="pb-det">Quedan 3 dias para el cierre del periodo</span></span><span class="pb-cuando">hace 1 h</span><span class="pb-punto" aria-hidden="true"></span></button></li>
+              <li><button class="pb-item"><span class="pb-txt"><span class="pb-tit">Copia de seguridad</span><span class="pb-det">Se completo correctamente</span></span><span class="pb-cuando">ayer</span></button></li>
+            </ul>
+            <button class="us-op pb-todos">Ver todas</button>
+          </div>
+        </div>
 
         <div class="us">
           <button class="avatar avatar-m avatar-2 top-avatar" id="us-btn" aria-expanded="false" aria-controls="us-menu"

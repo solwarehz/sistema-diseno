@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.15.1
+# Actualizar al sistema de diseño v1.16.0
 
 Para el área de sistemas. Si vienes de la **v1.7.0**, que es la que se entregó
 en su momento, esto es todo lo que cambia y todo lo que hay que hacer.
@@ -8,7 +8,7 @@ en su momento, esto es todo lo que cambia y todo lo que hay que hacer.
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.15.1"
+npm install "github:solwarehz/sistema-diseno#v1.16.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -34,7 +34,7 @@ node -p "require('sistema-diseno-ae/package.json').version"   # 1.13.1
 ## 2 · Lo primero que cambia para ti: ya no reconstruyes componentes
 
 Hasta la v1.9.0 la entrega llevaba **el estilo** y tú ponías el comportamiento.
-Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.15.1
+Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.16.0
 viajan los VEINTE componentes de React**, con el comportamiento dentro.
 
 ```jsx

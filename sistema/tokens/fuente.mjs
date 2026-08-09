@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.15.1';
+export const VERSION = '1.16.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,27 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.16.0', fecha: '2026-08-09',
+    que: 'El marco y la barra se elevan, y los paneles de la barra por fin se abren',
+    porque:
+      'Sale de una medicion incomoda. En modo oscuro la pagina es casi negra, y CUALQUIER ' +
+      'marco lo bastante oscuro para leer como modo oscuro queda a menos de 1,6:1 de ella: se ' +
+      'probaron los diez escalones de indigo y los catorce de negro, y ninguno separa. La ' +
+      'luminancia no puede hacerlo ahi. ' +
+      'La SOMBRA si, porque no depende del contraste entre los dos colores: es una pista de ' +
+      'profundidad y funciona igual sobre negro que sobre blanco. Entran --sombra-marco y ' +
+      '--sombra-barra, con DOS valores: en oscuro una sombra al 18 % sobre casi negro no ' +
+      'existe, asi que sube al 55 % y se acompana de un filete claro en el canto que da al ' +
+      'contenido —luz arriba, sombra abajo, que es como se dibuja el relieve en una interfaz ' +
+      'oscura—. La elevacion va en el lateral y no en un pseudoelemento, asi que acompana al ' +
+      'panel extendido Y plegado sin una regla por estado. ' +
+      'Y los botones de mensajes y notificaciones de la barra del cascaron, que estaban ' +
+      'dibujados y no hacian nada: ahora abren su panel. Un catalogo que dibuja un boton ' +
+      'muerto ensena a construir botones muertos.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.15.1', fecha: '2026-08-09',
     que: 'Auditoria estricta del cascaron: el propio auditor tenia un agujero',
