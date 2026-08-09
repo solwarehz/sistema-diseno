@@ -142,6 +142,9 @@ const todos = bloques(css);
 
 const porElemento = new Map(ELEMENTOS.map((e) => [e.n, []]));
 const sinClasificar = new Map();
+// Reglas que no son de ningun elemento pero SIN LAS CUALES el paquete no
+// funciona: hoy, la declaracion de las sombras.
+const dependenciasSueltas = [];
 let dentroDeMedia = 0;
 
 for (const b of todos) {
@@ -154,6 +157,15 @@ for (const b of todos) {
         dentroDeMedia += dentro.length;
       }
     }
+    continue;
+  }
+  // Los `:root` se saltan porque los tokens de color los entrega `tokens.css`.
+  // PERO había uno que no es de color y no lo entrega nadie: el de las sombras.
+  // Nueve reglas del paquete escriben `box-shadow: var(--sombra-capa)` y el
+  // consumidor recibía la variable sin declarar —la capa flotante, el menú y
+  // el aviso salían planos y nadie sabía por qué—. Se acompaña al paquete.
+  if (b.sel && b.sel.startsWith(':root') && /--sombra-/.test(b.entero)) {
+    dependenciasSueltas.push(b.entero);
     continue;
   }
   if (!b.sel || b.sel.startsWith('@') || b.sel.startsWith(':root') || b.sel.startsWith('[data-tema')) continue;
@@ -212,7 +224,7 @@ const salida = `/* ────────────────────�
            \`componentes.md\`, junto a esta hoja.
    ─────────────────────────────────────────────────────────────────────────── */
 
-${secciones.join('\n')}`;
+${dependenciasSueltas.length ? '/* Dependencias del paquete que no pertenecen a ningun elemento */\n' + dependenciasSueltas.join('\n') + '\n\n' : ''}${secciones.join('\n')}`;
 
 mkdirSync(AQUI, { recursive: true });
 writeFileSync(join(AQUI, 'componentes.css'), salida);

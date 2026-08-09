@@ -92,6 +92,30 @@ Y un defecto de identidad abierto (§8.5): el escudo usa `#E30613`, el lockup us
 
 ---
 
+## 4bis · Dos reglas que el usuario fijó expresamente
+
+**Ningún color autorizado más sin autorización.** Los «colores autorizados» son
+el panel de escalas: los únicos que pueden vivir en el sistema. Ampliarlo **no
+es decisión del agente**. Lo que sí es libre es *nombrar*: un valor que existe
+pero no se usa entra en la familia `marca` —conocida y **no** autorizada— para
+que el candado pueda vigilarlo. Lo que no tiene nombre no se puede bloquear.
+
+> Conocido ≠ autorizado. Nombrar mete el color bajo vigilancia; autorizar le da
+> permiso de uso, y eso lo decide el usuario.
+
+Y cuando un hexadecimal aparezca en documentación como **valor probado y
+rechazado, con su medición al lado**, no se sustituye por el autorizado más
+cercano: cambiaría lo que el registro dice que se midió.
+
+**Todo componente nuevo se compone, no se reconstruye.** Ante un requerimiento
+de un proyecto: reutiliza los componentes ya definidos, usa las clases de color
+del sistema, y crea elemento nuevo **solo** para lo que no puede expresarse con
+lo existente. Un componente reconstruido por dentro pierde lo que no se ve —el
+anillo de foco, el filete, la altura de fila— y deja de moverse cuando el
+original cambia.
+
+---
+
 ## 5 · Cómo se cambia un color
 
 Hay **un solo** sitio donde se escribe un valor: `sistema/tokens/fuente.mjs`.

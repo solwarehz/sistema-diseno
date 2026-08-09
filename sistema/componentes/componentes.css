@@ -26,8 +26,11 @@
            `componentes.md`, junto a esta hoja.
    ─────────────────────────────────────────────────────────────────────────── */
 
+/* Dependencias del paquete que no pertenecen a ningun elemento */
+:root{ --sombra-capa: 0 8px 24px rgba(0,0,0,.16); --sombra-aviso: 0 8px 24px rgba(0,0,0,.18); }
+
 /* ───────────────────────────────────────────────────────────────────────────
-   BOTÓN — 21 reglas · clases .btn-*
+   BOTÓN — 20 reglas · clases .btn-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .btn-ic{ display: inline-flex; align-items: center; gap: 8px; }
@@ -52,7 +55,6 @@
 .btn-op-2{ background: transparent; color: var(--accion-2); border-color: var(--accion-2); }
 .btn-op-n{ background: transparent; color: var(--texto-principal); border-color: var(--borde-campo); }
 .btn-marco{ background: transparent; color: var(--marco-texto); border-color: var(--marco-acento); }
-.btn-mal-celeste{ background: var(--marca-celeste); color: var(--texto-invertido); }
 .btn.mini{ font-size: 12px; padding: 4px 8px; }
 
 /* ───────────────────────────────────────────────────────────────────────────

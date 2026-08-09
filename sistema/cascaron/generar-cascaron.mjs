@@ -518,7 +518,7 @@ const casosDeUso = `
 
 <div class="mal-rejilla">
   <div class="mal-par">
-    <div class="mal-caja mal"><button class="btn btn-mal-celeste">Agregar +</button>
+    <div class="mal-caja mal"><button class="btn mal-btn-celeste">Agregar +</button>
       <span class="mal-et">2,56:1 — ilegible</span></div>
     <div class="mal-caja bien"><button class="btn btn-1">Agregar +</button>
       <span class="bien-et">8,13:1 con <code>accion</code></span></div>
@@ -5390,7 +5390,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 /* El contraejemplo tambien se pinta con tokens. Ensenar el error no autoriza
    a cometer otro: si el unico atributo style del catalogo vive justo en la
    pagina que prohibe ese atributo, la pagina no se cree. */
-.btn-mal-celeste { background: var(--marca-celeste); color: var(--texto-invertido); }
+.mal-btn-celeste { background: var(--marca-celeste); color: var(--texto-invertido); }
 .mal-et, .bien-et { text-align: center; font-size: 12px; line-height: 1.4; }
 .mal-et { color: var(--error-texto); font-weight: 500; }
 .bien-et { color: var(--exito-texto); font-weight: 500; }

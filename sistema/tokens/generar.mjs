@@ -11,10 +11,10 @@
  * Cálculo puro. No toca red. Escribe solo en esta carpeta.
  */
 
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { VERSION, NORMA, primitivas, categoricas, escalones, semanticos, marca, pares, correcciones , CAMBIOS } from './fuente.mjs';
+import { VERSION, NORMA, primitivas, categoricas, escalones, autorizados, semanticos, marca, pares, correcciones , CAMBIOS } from './fuente.mjs';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 
@@ -210,6 +210,47 @@ if (malCambios.length) {
 // Lo que este archivo NO puede ver es el hexadecimal escrito en una hoja de
 // estilos o en un `style=`. De eso se ocupa `candado/verificar-color.mjs`.
 // ─────────────────────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CANDADO DE LOS COLORES AUTORIZADOS
+//
+// El usuario fijó la regla: no se añade ningún color AUTORIZADO sin permiso
+// suyo. Nombrar sí es libre —un valor puede entrar en `marca`, que es conocida
+// y no autorizada, para que el candado pueda vigilarlo—; autorizar no.
+//
+// Una regla que solo está escrita se salta sin querer, así que la lista va
+// congelada en `autorizados.lock.json` y esto compara. Aparecer un escalón
+// nuevo detiene la generación.
+//
+// No pretende ser infranqueable: quien añada el color puede regenerar el
+// archivo. Lo que garantiza es que NO PASE POR DESCUIDO, y que quede escrito
+// en el diff con su fecha. Es la misma garantía que el candado del registro
+// de cambios, y ha bastado.
+// ─────────────────────────────────────────────────────────────────────────────
+const RUTA_AUT = join(AQUI, 'autorizados.lock.json');
+const congelado = existsSync(RUTA_AUT) ? JSON.parse(readFileSync(RUTA_AUT, 'utf8')) : null;
+
+if (congelado) {
+  const antes = new Set(Object.keys(congelado.escalones));
+  const ahora = new Map(autorizados);
+  const nuevos = [...ahora.keys()].filter((k) => !antes.has(k));
+  const idos = [...antes].filter((k) => !ahora.has(k));
+  const movidos = [...ahora].filter(([k, v]) => antes.has(k) && congelado.escalones[k] !== v);
+
+  if (nuevos.length || idos.length || movidos.length) {
+    console.error('\n  La lista de COLORES AUTORIZADOS ha cambiado.\n');
+    nuevos.forEach((k) => console.error(`    + ${k}  ${ahora.get(k)}   nuevo`));
+    idos.forEach((k) => console.error(`    - ${k}  ${congelado.escalones[k]}   desaparece`));
+    movidos.forEach(([k, v]) => console.error(`    ~ ${k}  ${congelado.escalones[k]} → ${v}`));
+    console.error('\n  Autorizar un color es decisión del usuario, no del agente.');
+    console.error('  Si NO hay autorización: deshaz el cambio. Si el color hace falta');
+    console.error('  pero no se usa, va a `categoricas.marca` —conocida y no');
+    console.error('  autorizada—, que sí puede crecer sin permiso.');
+    console.error('\n  Con autorización: regenera el congelado y que se vea en el diff.');
+    console.error('    node sistema/tokens/congelar-autorizados.mjs\n');
+    process.exit(1);
+  }
+}
 
 const agrupados = new Set(Object.values(grupos).flat());
 const huerfanos = Object.keys(semanticos).filter((k) => !agrupados.has(k));
