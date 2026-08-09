@@ -360,6 +360,13 @@ code { font-family: 'IBM Plex Mono', monospace; }
   /* El icono del botón cambia: en estrecho la hamburguesa es lo que se reconoce. */
   .ic-escritorio { display: none; }
   .ic-movil { display: grid; }
+  /* La barra deja de tener altura fija: con los filtros envolviendo, 64px la
+     obligaban a solaparse con el contenido de debajo. */
+  .top.top-cascaron { height: auto; flex-wrap: wrap; row-gap: 8px; }
+  /* El panel flotante del menú plegado NO tiene sentido con la lateral fuera de
+     pantalla: se quedaba colgado sobre el contenido, y además su ancho de 216px
+     no cabe en 320. */
+  .app-cascaron .lat.colapsado .nav-hijos { display: none; }
 }
 .cat-cuerpo :where(a, button, input, select, textarea, [tabindex]) { scroll-margin-top: 72px; }
 
@@ -1696,6 +1703,44 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   overflow: hidden; text-overflow: ellipsis; }
 
 .app-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+/* ── REFLUJO ─────────────────────────────────────────────────────────────────
+   SC 1.4.10 exige que el contenido fluya a 320 CSS px. El sistema solo se había
+   probado a 390, y a 320 pasaba algo peor que desbordar: la lateral de 236px NO
+   colapsaba y TAPABA el contenido. El documento no se desplazaba —parecía
+   correcto medido con scrollWidth— pero el 74 % de la pantalla quedaba
+   inservible y los títulos salían cortados. Solo se ve mirándolo.
+
+   El corte va en 900px: por debajo, la lateral de 236 ya estrecha demasiado la
+   tabla, que es el 80 % de la superficie. Se pliega al carril de iconos, que es
+   exactamente lo que ya hace el botón de plegar.
+
+   La altura del escudo se repite aquí a propósito: vive bajo .lat.colapsado,
+   y esta regla NO añade esa clase. Sin repetirla, el escudo se dibuja a tamaño
+   natural —1063px— y revienta la página entera. Pasó, y no lo cazó ninguna
+   medida: el documento no desbordaba porque overflow lo recortaba. */
+/* Se corta en 701 por abajo: de 700 hacia abajo YA existe una regla que saca la
+   lateral del flujo y la trae con el botón. Sin ese límite, esta le imponía un
+   ancho de 56px y la dejaba visible ENCIMA del contenido, cortando los títulos.
+   Dos reglas peleando por el mismo elemento en el mismo rango. */
+@media (max-width: 900px) and (min-width: 701px) {
+  .app-cascaron .lat:not(.colapsado) { width: 56px; }
+  .app-cascaron .lat:not(.colapsado) .nav-txt,
+  .app-cascaron .lat:not(.colapsado) .nav-chev,
+  .app-cascaron .lat:not(.colapsado) .lat-id,
+  .app-cascaron .lat:not(.colapsado) .lat-user-txt,
+  .app-cascaron .lat:not(.colapsado) .lat-lockup { display: none; }
+  .app-cascaron .lat:not(.colapsado) .lat-escudo { display: block; height: 40px; width: auto; }
+  .app-cascaron .lat:not(.colapsado) .lat-marca,
+  .app-cascaron .lat:not(.colapsado) .lat-usuario { padding: 8px; justify-content: center; }
+}
+@media (max-width: 640px) {
+  /* Tres selectores globales de 120px suman 360 y por sí solos impedían bajar
+     de 320. Sueltan su ancho mínimo y la barra envuelve. */
+  .top { flex-wrap: wrap; height: auto; }
+  .top-filtros { flex-wrap: wrap; }
+  .top-filtros .campo { min-width: 0; }
+}
 
 /* Altura fija y COMPARTIDA con la banda de marca: así la línea divisoria del
    header y el inicio del menú caen en la misma y. 64px, en rejilla. */
@@ -10096,6 +10141,26 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
   document.addEventListener('click', function (e) {
     if (e.target.closest('[data-ir]')) appSincronizar();
   });
+
+  // ── Reflujo: la lateral arranca plegada en pantalla estrecha ──────────────
+  // La regla de 700px saca la lateral del flujo y la trae con el botón, que es
+  // correcto. Lo que faltaba es el estado INICIAL: en escritorio la lateral
+  // nace desplegada, y esa clase viajaba al estrechar, así que a 320px entraba
+  // sola y tapaba el contenido. Los títulos salían cortados.
+  //
+  // Se pliega al arrancar y al cruzar el umbral, no en cada píxel de
+  // redimensionado: quien ya la abrió a mano no quiere que se le cierre sola
+  // mientras ajusta la ventana.
+  (function () {
+    var lateral = document.getElementById('lateral');
+    if (!lateral) return;
+    var estrecho = window.matchMedia('(max-width: 700px)');
+    var aplicar = function (e) {
+      if (e.matches) lateral.classList.add('colapsado');
+    };
+    aplicar(estrecho);
+    if (estrecho.addEventListener) estrecho.addEventListener('change', aplicar);
+  })();
 
   // ── Vista guardada ────────────────────────────────────────────────────────
   // Va AL FINAL a propósito. Aplicar la vista muda la zona de avisos y repinta

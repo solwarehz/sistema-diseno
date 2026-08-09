@@ -806,7 +806,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .esqueleto.corto{ width: 62%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MARCO DE APLICACIÓN — 194 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
+   MARCO DE APLICACIÓN — 196 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 :where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
@@ -827,6 +827,8 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   .top-filtros{ flex-wrap: wrap; }
   .top-filtros .campo{ min-width: 0; }
   .top-filtros .cg{ min-width: 0; flex: 1 1 120px; }
+  .top.top-cascaron{ height: auto; flex-wrap: wrap; row-gap: 8px; }
+  .app-cascaron .lat.colapsado .nav-hijos{ display: none; }
 }
 .nav-grupo{ margin-bottom: 0; }
 .nav-grupo-tit{ width: 100%; background: transparent; border: 0; cursor: pointer;
@@ -1030,6 +1032,22 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .lat-user-mail{ font-size: 12px; color: var(--marco-texto-tenue); white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis; }
 .app-main{ flex: 1; min-width: 0; display: flex; flex-direction: column; }
+@media (max-width: 900px) and (min-width: 701px) {
+  .app-cascaron .lat:not(.colapsado){ width: 56px; }
+  .app-cascaron .lat:not(.colapsado) .nav-txt,
+  .app-cascaron .lat:not(.colapsado) .nav-chev,
+  .app-cascaron .lat:not(.colapsado) .lat-id,
+  .app-cascaron .lat:not(.colapsado) .lat-user-txt,
+  .app-cascaron .lat:not(.colapsado) .lat-lockup{ display: none; }
+  .app-cascaron .lat:not(.colapsado) .lat-escudo{ display: block; height: 40px; width: auto; }
+  .app-cascaron .lat:not(.colapsado) .lat-marca,
+  .app-cascaron .lat:not(.colapsado) .lat-usuario{ padding: 8px; justify-content: center; }
+}
+@media (max-width: 640px) {
+  .top{ flex-wrap: wrap; height: auto; }
+  .top-filtros{ flex-wrap: wrap; }
+  .top-filtros .campo{ min-width: 0; }
+}
 .top{ display: flex; align-items: center; gap: 12px; padding: 8px 16px; position: relative;
   height: 64px; flex: none;
   background: var(--fondo-tarjeta); border-bottom: 1px solid var(--borde); }
