@@ -15,12 +15,16 @@ ustedes. Va todo lo que necesitan para pasar de la v1.7.0 a esta.
 npm install "github:solwarehz/sistema-diseno#v1.10.7"
 ```
 
-La etiqueta es **obligatoria**. Sin `#v1.10.7` npm instala la rama por omisión,
-que no tiene el sistema. Si sale `404` o `repository not found`, no es el
-comando: es acceso al repositorio, que es privado — pídanmelo.
+**Usen la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
+versión pero avanzará: quedarían atados a «lo último», y una actualización que
+no decidieron ustedes puede entrar en un despliegue sin que nadie la revise. La
+etiqueta fija la versión y la hace reproducible.
 
 No usen rangos (`^1.10.0`): npm no los resuelve en dependencias de GitHub y
 creerían estar en una versión distinta de la real.
+
+Si sale `404` o `repository not found`, no es el comando: es acceso al
+repositorio, que es privado — pídanmelo.
 
 Comprueben que quedó lo que esperaban:
 

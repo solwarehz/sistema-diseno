@@ -11,13 +11,17 @@ en su momento, esto es todo lo que cambia y todo lo que hay que hacer.
 npm install "github:solwarehz/sistema-diseno#v1.10.7"
 ```
 
-**La etiqueta es obligatoria.** Sin `#v1.10.7` npm instala la rama por omisión,
-que no tiene el sistema. Si el comando falla con `404` o `repository not found`,
-no es un problema del comando: es acceso al repositorio, que es privado. Pídelo.
+**Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
+versión pero avanzará: quedarías atado a «lo último», y una actualización que no
+decidiste tú puede entrar en un despliegue sin que nadie la revise. La etiqueta
+fija la versión y la hace reproducible.
 
 Para actualizar más adelante, cambia el número de la etiqueta. **No uses
 rangos** (`^1.10.0`): npm no los resuelve en dependencias de GitHub, y creerías
 estar en una versión distinta de la real.
+
+Si el comando falla con `404` o `repository not found`, no es un problema del
+comando: es acceso al repositorio, que es privado. Pídelo.
 
 Comprueba que quedó lo que esperabas:
 
