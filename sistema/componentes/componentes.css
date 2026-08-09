@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.10.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.10.1
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -27,7 +27,7 @@
    ─────────────────────────────────────────────────────────────────────────── */
 
 /* ───────────────────────────────────────────────────────────────────────────
-   BOTÓN — 20 reglas · clases .btn-*
+   BOTÓN — 21 reglas · clases .btn-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .btn-ic{ display: inline-flex; align-items: center; gap: 8px; }
@@ -52,6 +52,7 @@
 .btn-op-2{ background: transparent; color: var(--accion-2); border-color: var(--accion-2); }
 .btn-op-n{ background: transparent; color: var(--texto-principal); border-color: var(--borde-campo); }
 .btn-marco{ background: transparent; color: var(--marco-texto); border-color: var(--marco-acento); }
+.btn-mal-celeste{ background: var(--marca-celeste); color: var(--texto-invertido); }
 .btn.mini{ font-size: 12px; padding: 4px 8px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
@@ -191,12 +192,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .sw-fila{ display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
 .sw-desh{ cursor: not-allowed; }
 .sw{ width: 40px; height: 24px; flex: none; padding: 0; cursor: pointer;
-  border: 1px solid var(--error-acento); border-radius: 999px;
-  background: var(--error-fondo); position: relative;
+  border: 1px solid var(--apagado-borde); border-radius: 999px;
+  background: var(--apagado-fondo); position: relative;
   transition: background-color .18s ease, border-color .18s ease; }
 .sw-bolita{ position: absolute; top: 2px; left: 2px; width: 18px; height: 18px;
-  border-radius: 999px; background: var(--error-texto);
-  border: 1px solid var(--error-texto);
+  border-radius: 999px; background: var(--apagado-bolita);
+  border: 1px solid var(--apagado-bolita);
   /* El desplazamiento y el color van al MISMO tiempo: desacompasados parecen fallo. */
   transition: transform .18s ease, background-color .18s ease, border-color .18s ease; }
 .sw[aria-checked='true']{ background: var(--accion); border-color: var(--accion); }

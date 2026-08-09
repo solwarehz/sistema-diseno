@@ -15,7 +15,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { VERSION, primitivas, semanticos, marca, correcciones, CAMBIOS } from '../tokens/fuente.mjs';
+import { VERSION, primitivas, categoricas, escalones, semanticos, marca, correcciones, CAMBIOS } from '../tokens/fuente.mjs';
 import { empaquetar, NOMBRE_ZIP } from '../paquete/empaquetar.mjs';
 import { ICONOS, ic, icono, TAMANOS } from '../iconos/iconos.mjs';
 
@@ -118,7 +118,7 @@ const escala = (nombre, pasos) => `
           const usan = QUIEN_USA[hex.toUpperCase()] ?? [];
           return `
         <div class="tira${usan.length ? ' tira-usada' : ''}">
-          <span class="tira-color" style="background:${hex}"></span>
+          <span class="tira-color color-${nombre}_${paso}"></span>
           <code class="tira-nombre">${nombre}_${paso}</code>
           <span class="tira-hex">${hex}</span>
         </div>`;
@@ -518,7 +518,7 @@ const casosDeUso = `
 
 <div class="mal-rejilla">
   <div class="mal-par">
-    <div class="mal-caja mal"><button class="btn" style="background:var(--marca-celeste);color:#fff">Agregar +</button>
+    <div class="mal-caja mal"><button class="btn btn-mal-celeste">Agregar +</button>
       <span class="mal-et">2,56:1 — ilegible</span></div>
     <div class="mal-caja bien"><button class="btn btn-1">Agregar +</button>
       <span class="bien-et">8,13:1 con <code>accion</code></span></div>
@@ -3115,19 +3115,41 @@ const seccionesManual = trozos.map((t) => {
 // ── Jerarquía del catálogo ──────────────────────────────────────────────────
 
 const pagColor = `
-<p class="pag-intro">${Object.keys(semanticos).length} tokens semánticos sobre 4 escalas primitivas.
+<p class="pag-intro">${Object.keys(semanticos).length} tokens semánticos sobre ${Object.keys(primitivas).length} rampas y ${Object.keys(categoricas).length} familias categóricas.
 Es lo único que un componente consume. <strong>Las primitivas están prohibidas dentro de un componente.</strong></p>
 ${Object.entries(GRUPOS).map(grupoMuestras).join('')}
-<h3 class="sub-seccion">Primitivas</h3>
-<p class="seccion-sub">Existen para que los semánticos elijan. No se consumen directamente.</p>
+<h3 class="sub-seccion">Colores autorizados</h3>
+<p class="seccion-sub">Los de este panel y ninguno más. Un color que no esté aquí no vive en el sistema:
+no tiene nombre, no se puede volver a encontrar y el candado no lo protege.
+Son <strong>${escalones.length} valores</strong> en ${Object.keys(primitivas).length} rampas y ${Object.keys(categoricas).length} familias categóricas,
+y <code>verificar-color.mjs</code> falla el build si aparece uno fuera de la lista.</p>
+<p class="seccion-sub">Un solo deletreo en los tres sitios: el escalón se llama <code>ambar_900</code>,
+la variable es <code>--ambar_900</code> y la clase <code>.color-ambar_900</code>. La misma cadena, sin traducir nada.
+Autorizado no es lo mismo que libre: en un componente se usan los <strong>tokens semánticos</strong> de arriba,
+que son los que están medidos contra un fondo concreto.</p>
+<h3 class="sub-seccion">Rampas</h3>
+<p class="seccion-sub">Un tono a muchas claridades. Existen para que los semánticos elijan. No se consumen directamente.</p>
 ${Object.entries(primitivas).map(([n, p]) => escala(n, p)).join('')}
-<h3 class="sub-seccion">Marca — fuera del sistema</h3>
-<p class="seccion-sub">Viven en el escudo, la landing y los impresos. No en la interfaz.</p>
+<h3 class="sub-seccion">Familias categóricas</h3>
+<p class="seccion-sub">No son rampas y forzarlas a serlo sería mentir sobre lo que son.
+<code>marca</code> se mide del escudo impreso: cada valor es un tono distinto, no un escalón de otro.
+<code>identidad</code> son colores que solo tienen que distinguirse <em>entre sí</em>, todos a la misma
+claridad para que el mismo blanco funcione encima; por eso el paso es un índice sin significado
+—el 3 no es «más» que el 2—.</p>
+${Object.entries(categoricas).map(([n, p]) => escala(n, p)).join('')}
+<h3 class="sub-seccion">Marca — definida, y aun así prohibida en interfaz</h3>
+<p class="seccion-sub">Están en la escala: son la familia <code>marca</code> de arriba, con su escalón y su clase.
+Tenían que estarlo, porque se usan de verdad —en el escudo, en la landing y en los impresos— y lo que
+no pasa por una familia es un hexadecimal que nadie puede volver a encontrar.
+<strong>Estar definido y estar autorizado no son lo mismo:</strong> el sistema ahora dice las dos cosas
+por separado. Estos cinco tienen nombre y no tienen permiso.</p>
 <div class="marca-rejilla">
 ${Object.entries(marca).map(([k, v]) => `
   <div class="marca-item">
-    <div class="marca-tapa" style="background: var(--${k})"></div>
-    <div class="marca-cuerpo"><code>${k}</code><p>${v.uso}</p>
+    <div class="marca-tapa color-${v.origen.claro}"></div>
+    <div class="marca-cuerpo"><code>${k}</code>
+      <div class="marca-escalon">claro <code>${v.origen.claro}</code> · oscuro <code>${v.origen.oscuro}</code></div>
+      <p>${v.uso}</p>
       <div class="marca-prohibido">Prohibido en: ${v.prohibidoEn}</div></div>
   </div>`).join('')}
 </div>`;
@@ -3924,18 +3946,18 @@ code { font-family: 'IBM Plex Mono', monospace; }
    Queda admitido en el auditor como valor del sistema, no como número suelto.
    El barrido a la rejilla lo había llevado de 12px a 6px y le quitó la forma. */
 .sw { width: 40px; height: 24px; flex: none; padding: 0; cursor: pointer;
-  border: 1px solid var(--error-acento); border-radius: 999px;
-  background: var(--error-fondo); position: relative;
+  border: 1px solid var(--apagado-borde); border-radius: 999px;
+  background: var(--apagado-fondo); position: relative;
   transition: background-color .18s ease, border-color .18s ease; }
 /* La bolita NO usa la superficie: usa el token hecho para ir sobre SU vía.
    Con fondo-tarjeta quedaba a 1,19:1 sobre el rojo claro y a 1,17:1 sobre el
    rojo oscuro —invisible en los dos modos—. Ahora:
-       apagado    error-texto  sobre error-fondo   7,82 claro · 7,98 oscuro
-       encendido  accion-texto sobre accion        5,75 claro · 7,34 oscuro
-   El peor caso pasa de 1,17 a 5,75. */
+       apagado    apagado-bolita sobre apagado-fondo  5,62 claro · 7,98 oscuro
+       encendido  accion-texto   sobre accion         5,75 claro · 7,34 oscuro
+   El peor caso pasa de 1,17 a 5,62. */
 .sw-bolita { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px;
-  border-radius: 999px; background: var(--error-texto);
-  border: 1px solid var(--error-texto);
+  border-radius: 999px; background: var(--apagado-bolita);
+  border: 1px solid var(--apagado-bolita);
   /* El desplazamiento y el color van al MISMO tiempo: desacompasados parecen fallo. */
   transition: transform .18s ease, background-color .18s ease, border-color .18s ease; }
 .sw[aria-checked='true'] { background: var(--accion); border-color: var(--accion); }
@@ -4861,6 +4883,8 @@ h2.seccion {
 .marca-tapa { height: 62px; }
 .marca-cuerpo { padding: 8px 12px; }
 .marca-cuerpo code { font-size: 12px; font-weight: 500; }
+.marca-escalon { font-size: 11px; color: var(--texto-secundario); margin-top: 4px; }
+.marca-escalon code { font-weight: 400; }
 .marca-cuerpo p { margin: 4px 0 0; font-size: 12px; color: var(--texto-secundario); }
 .marca-prohibido { margin-top: 4px; font-size: 12px; color: var(--error-texto);
   background: var(--error-fondo); border-left: 3px solid var(--error-acento);
@@ -5382,6 +5406,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   align-items: center; justify-content: space-between; gap: 12px; min-height: 92px; }
 .mal-caja.mal { background: var(--error-fondo); }
 .mal-caja.bien { background: var(--exito-fondo); border-left: 1px solid var(--borde); }
+/* El contraejemplo tambien se pinta con tokens. Ensenar el error no autoriza
+   a cometer otro: si el unico atributo style del catalogo vive justo en la
+   pagina que prohibe ese atributo, la pagina no se cree. */
+.btn-mal-celeste { background: var(--marca-celeste); color: var(--texto-invertido); }
 .mal-et, .bien-et { text-align: center; font-size: 12px; line-height: 1.4; }
 .mal-et { color: var(--error-texto); font-weight: 500; }
 .bien-et { color: var(--exito-texto); font-weight: 500; }

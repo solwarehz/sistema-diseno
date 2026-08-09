@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.10.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.10.1</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.0
-   WCAG 2.2 AA · 108 pares verificados en los dos modos, 0 fallos
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.1
+   WCAG 2.2 AA · 116 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -81,6 +81,11 @@
   --info-fondo: #E9EEFF;
   --info-texto: #02468A;
   --info-acento: #2F71CE;
+
+  /* Interruptor apagado — es un estado elegido, no un error */
+  --apagado-fondo: #FFB8A9;
+  --apagado-borde: #D63231;
+  --apagado-bolita: #8F1017;
 
   /* Identidad — avatar. NO significan nada */
   --identidad-1: #0E6F63;
@@ -159,6 +164,11 @@
   --info-fondo: #273048;
   --info-texto: #BFD0FF;
   --info-acento: #6D97DE;
+
+  /* Interruptor apagado — es un estado elegido, no un error */
+  --apagado-fondo: #4D241F;
+  --apagado-borde: #E2665C;
+  --apagado-bolita: #FFB8A9;
 
   /* Identidad — avatar. NO significan nada */
   --identidad-1: #0E6F63;
@@ -241,6 +251,11 @@
     --info-texto: #BFD0FF;
     --info-acento: #6D97DE;
 
+    /* Interruptor apagado — es un estado elegido, no un error */
+    --apagado-fondo: #4D241F;
+    --apagado-borde: #E2665C;
+    --apagado-bolita: #FFB8A9;
+
     /* Identidad — avatar. NO significan nada */
     --identidad-1: #0E6F63;
     --identidad-2: #6A3FA0;
@@ -278,6 +293,266 @@
 :where([data-marco], .marco, .lat):focus-visible {
   outline-color: var(--foco-en-marco);
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   RAMPAS Y FAMILIAS CATEGÓRICAS — el inventario completo, 119 escalones.
+
+   Un solo deletreo en todo el sistema. El escalón se llama `ambar_900` y esa
+   MISMA cadena es la variable `--ambar_900` y la clase `.color-ambar_900`.
+   No hay que traducir guiones bajos a guiones en ningún sitio.
+
+   ESTO NO ES PARA MAQUETAR. En interfaz se usan los tokens semánticos de
+   arriba: son los que están medidos contra un fondo concreto y los que el
+   candado de contraste protege. Una primitiva no sabe sobre qué la vas a
+   poner, así que nadie puede garantizar que se lea (§2.5.1, y el candado de
+   lint lo bloquea en `componentes/`).
+
+   Existen por dos razones legítimas:
+     · el catálogo tiene que PINTAR la rampa para poder elegir un escalón;
+     · un token nuevo necesita ver qué escalones hay antes de apuntar a uno.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --azul_50: #E9F5FF;
+  --azul_100: #CFE8FF;
+  --azul_200: #A0D0FF;
+  --azul_300: #6CB2FF;
+  --azul_400: #3A92F4;
+  --azul_500: #1A79E1;
+  --azul_600: #0063CB;
+  --azul_700: #004EB2;
+  --azul_800: #003B91;
+  --azul_900: #002A6F;
+  --rojo_50: #FFECE5;
+  --rojo_100: #FFD5C6;
+  --rojo_200: #FFAD95;
+  --rojo_300: #FF7D62;
+  --rojo_400: #FF4C37;
+  --rojo_500: #EE1F1B;
+  --rojo_600: #D40006;
+  --rojo_700: #B40000;
+  --rojo_800: #930000;
+  --rojo_900: #700000;
+  --oro_50: #F9F3E7;
+  --oro_100: #F1E4CA;
+  --oro_200: #DFCA9C;
+  --oro_300: #C6AB6B;
+  --oro_400: #AA8E41;
+  --oro_500: #917724;
+  --oro_600: #7B630D;
+  --oro_700: #655000;
+  --oro_800: #4F3E00;
+  --oro_900: #3B2D00;
+  --verde_50: #E3F4E1;
+  --verde_100: #D3EDCF;
+  --verde_200: #B3DCAE;
+  --verde_300: #96CC92;
+  --verde_400: #78BB78;
+  --verde_500: #5FA862;
+  --verde_600: #46974A;
+  --verde_700: #338136;
+  --verde_800: #226B27;
+  --verde_900: #14521A;
+  --verde_950: #233521;
+  --ambar_50: #FFEBD6;
+  --ambar_100: #FEDFBF;
+  --ambar_200: #FBC894;
+  --ambar_300: #F0C060;
+  --ambar_400: #DFA54B;
+  --ambar_500: #C88A3C;
+  --ambar_600: #BE7A14;
+  --ambar_700: #A46300;
+  --ambar_800: #884E00;
+  --ambar_900: #6B3B00;
+  --ambar_950: #402C16;
+  --indigo_50: #F8F9FC;
+  --indigo_100: #E5E8F2;
+  --indigo_200: #B9C2DC;
+  --indigo_300: #8D9BC6;
+  --indigo_400: #6174B0;
+  --indigo_500: #45558A;
+  --indigo_600: #41507F;
+  --indigo_700: #39497A;
+  --indigo_800: #2C3D71;
+  --indigo_900: #1D3163;
+  --alerta_50: #FFE6DF;
+  --alerta_100: #FFB8A9;
+  --alerta_200: #F99B8C;
+  --alerta_300: #EF8072;
+  --alerta_400: #E2665C;
+  --alerta_500: #D63231;
+  --alerta_600: #C32123;
+  --alerta_700: #AA181D;
+  --alerta_800: #8F1017;
+  --alerta_900: #4D241F;
+  --alerta_950: #33231F;
+  --informacion_50: #E9EEFF;
+  --informacion_100: #BFD0FF;
+  --informacion_200: #9FBAF9;
+  --informacion_300: #84A7EE;
+  --informacion_400: #6D97DE;
+  --informacion_500: #2F71CE;
+  --informacion_600: #1C63BC;
+  --informacion_700: #0D55A5;
+  --informacion_800: #02468A;
+  --informacion_900: #273048;
+  --informacion_950: #303030;
+  --negro_50: #EFEEEB;
+  --negro_100: #C3C1BD;
+  --negro_200: #989692;
+  --negro_300: #8A8681;
+  --negro_400: #6E6B67;
+  --negro_500: #575451;
+  --negro_600: #44423F;
+  --negro_650: #3A3835;
+  --negro_700: #363532;
+  --negro_750: #2C2B29;
+  --negro_800: #2A2927;
+  --negro_850: #242422;
+  --negro_900: #20201E;
+  --negro_950: #1E1D1C;
+  --gris_0: #FFFFFF;
+  --gris_50: #F8F8F6;
+  --gris_100: #F0EFEE;
+  --gris_200: #E0DFDE;
+  --gris_300: #C8C6C4;
+  --gris_400: #A7A6A3;
+  --gris_500: #8B8985;
+  --gris_600: #6A6864;
+  --gris_700: #5C5955;
+  --gris_800: #474440;
+  --gris_900: #2C2A25;
+  --marca_rojo: #E30613;
+  --marca_rojo_claro: #FF4C37;
+  --marca_rojo_panel: #930000;
+  --marca_oro: #DEBD68;
+  --marca_amarillo: #FDF200;
+  --marca_celeste: #01ADED;
+  --identidad_1: #0E6F63;
+  --identidad_2: #6A3FA0;
+  --identidad_3: #9B3B6E;
+  --identidad_4: #4A5568;
+}
+
+.color-azul_50 { background-color: var(--azul_50); }
+.color-azul_100 { background-color: var(--azul_100); }
+.color-azul_200 { background-color: var(--azul_200); }
+.color-azul_300 { background-color: var(--azul_300); }
+.color-azul_400 { background-color: var(--azul_400); }
+.color-azul_500 { background-color: var(--azul_500); }
+.color-azul_600 { background-color: var(--azul_600); }
+.color-azul_700 { background-color: var(--azul_700); }
+.color-azul_800 { background-color: var(--azul_800); }
+.color-azul_900 { background-color: var(--azul_900); }
+.color-rojo_50 { background-color: var(--rojo_50); }
+.color-rojo_100 { background-color: var(--rojo_100); }
+.color-rojo_200 { background-color: var(--rojo_200); }
+.color-rojo_300 { background-color: var(--rojo_300); }
+.color-rojo_400 { background-color: var(--rojo_400); }
+.color-rojo_500 { background-color: var(--rojo_500); }
+.color-rojo_600 { background-color: var(--rojo_600); }
+.color-rojo_700 { background-color: var(--rojo_700); }
+.color-rojo_800 { background-color: var(--rojo_800); }
+.color-rojo_900 { background-color: var(--rojo_900); }
+.color-oro_50 { background-color: var(--oro_50); }
+.color-oro_100 { background-color: var(--oro_100); }
+.color-oro_200 { background-color: var(--oro_200); }
+.color-oro_300 { background-color: var(--oro_300); }
+.color-oro_400 { background-color: var(--oro_400); }
+.color-oro_500 { background-color: var(--oro_500); }
+.color-oro_600 { background-color: var(--oro_600); }
+.color-oro_700 { background-color: var(--oro_700); }
+.color-oro_800 { background-color: var(--oro_800); }
+.color-oro_900 { background-color: var(--oro_900); }
+.color-verde_50 { background-color: var(--verde_50); }
+.color-verde_100 { background-color: var(--verde_100); }
+.color-verde_200 { background-color: var(--verde_200); }
+.color-verde_300 { background-color: var(--verde_300); }
+.color-verde_400 { background-color: var(--verde_400); }
+.color-verde_500 { background-color: var(--verde_500); }
+.color-verde_600 { background-color: var(--verde_600); }
+.color-verde_700 { background-color: var(--verde_700); }
+.color-verde_800 { background-color: var(--verde_800); }
+.color-verde_900 { background-color: var(--verde_900); }
+.color-verde_950 { background-color: var(--verde_950); }
+.color-ambar_50 { background-color: var(--ambar_50); }
+.color-ambar_100 { background-color: var(--ambar_100); }
+.color-ambar_200 { background-color: var(--ambar_200); }
+.color-ambar_300 { background-color: var(--ambar_300); }
+.color-ambar_400 { background-color: var(--ambar_400); }
+.color-ambar_500 { background-color: var(--ambar_500); }
+.color-ambar_600 { background-color: var(--ambar_600); }
+.color-ambar_700 { background-color: var(--ambar_700); }
+.color-ambar_800 { background-color: var(--ambar_800); }
+.color-ambar_900 { background-color: var(--ambar_900); }
+.color-ambar_950 { background-color: var(--ambar_950); }
+.color-indigo_50 { background-color: var(--indigo_50); }
+.color-indigo_100 { background-color: var(--indigo_100); }
+.color-indigo_200 { background-color: var(--indigo_200); }
+.color-indigo_300 { background-color: var(--indigo_300); }
+.color-indigo_400 { background-color: var(--indigo_400); }
+.color-indigo_500 { background-color: var(--indigo_500); }
+.color-indigo_600 { background-color: var(--indigo_600); }
+.color-indigo_700 { background-color: var(--indigo_700); }
+.color-indigo_800 { background-color: var(--indigo_800); }
+.color-indigo_900 { background-color: var(--indigo_900); }
+.color-alerta_50 { background-color: var(--alerta_50); }
+.color-alerta_100 { background-color: var(--alerta_100); }
+.color-alerta_200 { background-color: var(--alerta_200); }
+.color-alerta_300 { background-color: var(--alerta_300); }
+.color-alerta_400 { background-color: var(--alerta_400); }
+.color-alerta_500 { background-color: var(--alerta_500); }
+.color-alerta_600 { background-color: var(--alerta_600); }
+.color-alerta_700 { background-color: var(--alerta_700); }
+.color-alerta_800 { background-color: var(--alerta_800); }
+.color-alerta_900 { background-color: var(--alerta_900); }
+.color-alerta_950 { background-color: var(--alerta_950); }
+.color-informacion_50 { background-color: var(--informacion_50); }
+.color-informacion_100 { background-color: var(--informacion_100); }
+.color-informacion_200 { background-color: var(--informacion_200); }
+.color-informacion_300 { background-color: var(--informacion_300); }
+.color-informacion_400 { background-color: var(--informacion_400); }
+.color-informacion_500 { background-color: var(--informacion_500); }
+.color-informacion_600 { background-color: var(--informacion_600); }
+.color-informacion_700 { background-color: var(--informacion_700); }
+.color-informacion_800 { background-color: var(--informacion_800); }
+.color-informacion_900 { background-color: var(--informacion_900); }
+.color-informacion_950 { background-color: var(--informacion_950); }
+.color-negro_50 { background-color: var(--negro_50); }
+.color-negro_100 { background-color: var(--negro_100); }
+.color-negro_200 { background-color: var(--negro_200); }
+.color-negro_300 { background-color: var(--negro_300); }
+.color-negro_400 { background-color: var(--negro_400); }
+.color-negro_500 { background-color: var(--negro_500); }
+.color-negro_600 { background-color: var(--negro_600); }
+.color-negro_650 { background-color: var(--negro_650); }
+.color-negro_700 { background-color: var(--negro_700); }
+.color-negro_750 { background-color: var(--negro_750); }
+.color-negro_800 { background-color: var(--negro_800); }
+.color-negro_850 { background-color: var(--negro_850); }
+.color-negro_900 { background-color: var(--negro_900); }
+.color-negro_950 { background-color: var(--negro_950); }
+.color-gris_0 { background-color: var(--gris_0); }
+.color-gris_50 { background-color: var(--gris_50); }
+.color-gris_100 { background-color: var(--gris_100); }
+.color-gris_200 { background-color: var(--gris_200); }
+.color-gris_300 { background-color: var(--gris_300); }
+.color-gris_400 { background-color: var(--gris_400); }
+.color-gris_500 { background-color: var(--gris_500); }
+.color-gris_600 { background-color: var(--gris_600); }
+.color-gris_700 { background-color: var(--gris_700); }
+.color-gris_800 { background-color: var(--gris_800); }
+.color-gris_900 { background-color: var(--gris_900); }
+.color-marca_rojo { background-color: var(--marca_rojo); }
+.color-marca_rojo_claro { background-color: var(--marca_rojo_claro); }
+.color-marca_rojo_panel { background-color: var(--marca_rojo_panel); }
+.color-marca_oro { background-color: var(--marca_oro); }
+.color-marca_amarillo { background-color: var(--marca_amarillo); }
+.color-marca_celeste { background-color: var(--marca_celeste); }
+.color-identidad_1 { background-color: var(--identidad_1); }
+.color-identidad_2 { background-color: var(--identidad_2); }
+.color-identidad_3 { background-color: var(--identidad_3); }
+.color-identidad_4 { background-color: var(--identidad_4); }
 
 
 /* ── Cascarón. Estilos de la propia página de revisión ───────────────────── */
@@ -569,18 +844,18 @@ code { font-family: 'IBM Plex Mono', monospace; }
    Queda admitido en el auditor como valor del sistema, no como número suelto.
    El barrido a la rejilla lo había llevado de 12px a 6px y le quitó la forma. */
 .sw { width: 40px; height: 24px; flex: none; padding: 0; cursor: pointer;
-  border: 1px solid var(--error-acento); border-radius: 999px;
-  background: var(--error-fondo); position: relative;
+  border: 1px solid var(--apagado-borde); border-radius: 999px;
+  background: var(--apagado-fondo); position: relative;
   transition: background-color .18s ease, border-color .18s ease; }
 /* La bolita NO usa la superficie: usa el token hecho para ir sobre SU vía.
    Con fondo-tarjeta quedaba a 1,19:1 sobre el rojo claro y a 1,17:1 sobre el
    rojo oscuro —invisible en los dos modos—. Ahora:
-       apagado    error-texto  sobre error-fondo   7,82 claro · 7,98 oscuro
-       encendido  accion-texto sobre accion        5,75 claro · 7,34 oscuro
-   El peor caso pasa de 1,17 a 5,75. */
+       apagado    apagado-bolita sobre apagado-fondo  5,62 claro · 7,98 oscuro
+       encendido  accion-texto   sobre accion         5,75 claro · 7,34 oscuro
+   El peor caso pasa de 1,17 a 5,62. */
 .sw-bolita { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px;
-  border-radius: 999px; background: var(--error-texto);
-  border: 1px solid var(--error-texto);
+  border-radius: 999px; background: var(--apagado-bolita);
+  border: 1px solid var(--apagado-bolita);
   /* El desplazamiento y el color van al MISMO tiempo: desacompasados parecen fallo. */
   transition: transform .18s ease, background-color .18s ease, border-color .18s ease; }
 .sw[aria-checked='true'] { background: var(--accion); border-color: var(--accion); }
@@ -1506,6 +1781,8 @@ h2.seccion {
 .marca-tapa { height: 62px; }
 .marca-cuerpo { padding: 8px 12px; }
 .marca-cuerpo code { font-size: 12px; font-weight: 500; }
+.marca-escalon { font-size: 11px; color: var(--texto-secundario); margin-top: 4px; }
+.marca-escalon code { font-weight: 400; }
 .marca-cuerpo p { margin: 4px 0 0; font-size: 12px; color: var(--texto-secundario); }
 .marca-prohibido { margin-top: 4px; font-size: 12px; color: var(--error-texto);
   background: var(--error-fondo); border-left: 3px solid var(--error-acento);
@@ -2027,6 +2304,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   align-items: center; justify-content: space-between; gap: 12px; min-height: 92px; }
 .mal-caja.mal { background: var(--error-fondo); }
 .mal-caja.bien { background: var(--exito-fondo); border-left: 1px solid var(--borde); }
+/* El contraejemplo tambien se pinta con tokens. Ensenar el error no autoriza
+   a cometer otro: si el unico atributo style del catalogo vive justo en la
+   pagina que prohibe ese atributo, la pagina no se cree. */
+.btn-mal-celeste { background: var(--marca-celeste); color: var(--texto-invertido); }
 .mal-et, .bien-et { text-align: center; font-size: 12px; line-height: 1.4; }
 .mal-et { color: var(--error-texto); font-weight: 500; }
 .bien-et { color: var(--exito-texto); font-weight: 500; }
@@ -2220,7 +2501,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.10.0</option></select></label>
+          <select class="campo cg-in"><option>v1.10.1</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -2281,8 +2562,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.10.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.10.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.10.1.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.10.1</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -2303,8 +2584,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 El menú de la izquierda lo abre por partes.</p>
 
 <div class="estado-rejilla">
-  <div class="est"><b>53</b><span>tokens semánticos</span></div>
-  <div class="est"><b>108</b><span>pares verificados</span></div>
+  <div class="est"><b>56</b><span>tokens semánticos</span></div>
+  <div class="est"><b>116</b><span>pares verificados</span></div>
   <div class="est est-ok"><b>0</b><span>fallos de contraste</span></div>
   <div class="est"><b>2</b><span>modos, claro y oscuro</span></div>
 </div>
@@ -2808,7 +3089,7 @@ El menú de la izquierda lo abre por partes.</p>
 
 <div class="mal-rejilla">
   <div class="mal-par">
-    <div class="mal-caja mal"><button class="btn" style="background:var(--marca-celeste);color:#fff">Agregar +</button>
+    <div class="mal-caja mal"><button class="btn btn-mal-celeste">Agregar +</button>
       <span class="mal-et">2,56:1 — ilegible</span></div>
     <div class="mal-caja bien"><button class="btn btn-1">Agregar +</button>
       <span class="bien-et">8,13:1 con <code>accion</code></span></div>
@@ -2845,7 +3126,7 @@ El menú de la izquierda lo abre por partes.</p>
   <a href="#espaciado" data-ir="espaciado" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
     <span><strong>Espaciado</strong>Rejilla de 4px y tamaños de control</span></a>
   <a href="#contraste" data-ir="contraste" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg></span>
-    <span><strong>Contrastes</strong>Los 108 pares medidos</span></a>
+    <span><strong>Contrastes</strong>Los 116 pares medidos</span></a>
 </div>
     </section><section class="pagina" id="pg-color" hidden>
       <nav class="migas" aria-label="Ubicación">
@@ -2857,7 +3138,7 @@ El menú de la izquierda lo abre por partes.</p>
       </nav>
       <div class="pag-cab"><h1>Color</h1></div>
       
-<p class="pag-intro">53 tokens semánticos sobre 4 escalas primitivas.
+<p class="pag-intro">56 tokens semánticos sobre 10 rampas y 2 familias categóricas.
 Es lo único que un componente consume. <strong>Las primitivas están prohibidas dentro de un componente.</strong></p>
 
   <section class="grupo">
@@ -3230,60 +3511,69 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     </div>
   </div></div>
   </section>
-<h3 class="sub-seccion">Primitivas</h3>
-<p class="seccion-sub">Existen para que los semánticos elijan. No se consumen directamente.</p>
+<h3 class="sub-seccion">Colores autorizados</h3>
+<p class="seccion-sub">Los de este panel y ninguno más. Un color que no esté aquí no vive en el sistema:
+no tiene nombre, no se puede volver a encontrar y el candado no lo protege.
+Son <strong>119 valores</strong> en 10 rampas y 2 familias categóricas,
+y <code>verificar-color.mjs</code> falla el build si aparece uno fuera de la lista.</p>
+<p class="seccion-sub">Un solo deletreo en los tres sitios: el escalón se llama <code>ambar_900</code>,
+la variable es <code>--ambar_900</code> y la clase <code>.color-ambar_900</code>. La misma cadena, sin traducir nada.
+Autorizado no es lo mismo que libre: en un componente se usan los <strong>tokens semánticos</strong> de arriba,
+que son los que están medidos contra un fondo concreto.</p>
+<h3 class="sub-seccion">Rampas</h3>
+<p class="seccion-sub">Un tono a muchas claridades. Existen para que los semánticos elijan. No se consumen directamente.</p>
 
   <div class="escala">
     <div class="escala-nombre">azul</div>
     <div class="escala-tiras">
       
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#E9F5FF"></span>
+          <span class="tira-color color-azul_50"></span>
           <code class="tira-nombre">azul_50</code>
           <span class="tira-hex">#E9F5FF</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#CFE8FF"></span>
+          <span class="tira-color color-azul_100"></span>
           <code class="tira-nombre">azul_100</code>
           <span class="tira-hex">#CFE8FF</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#A0D0FF"></span>
+          <span class="tira-color color-azul_200"></span>
           <code class="tira-nombre">azul_200</code>
           <span class="tira-hex">#A0D0FF</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#6CB2FF"></span>
+          <span class="tira-color color-azul_300"></span>
           <code class="tira-nombre">azul_300</code>
           <span class="tira-hex">#6CB2FF</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#3A92F4"></span>
+          <span class="tira-color color-azul_400"></span>
           <code class="tira-nombre">azul_400</code>
           <span class="tira-hex">#3A92F4</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#1A79E1"></span>
+          <span class="tira-color color-azul_500"></span>
           <code class="tira-nombre">azul_500</code>
           <span class="tira-hex">#1A79E1</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#0063CB"></span>
+          <span class="tira-color color-azul_600"></span>
           <code class="tira-nombre">azul_600</code>
           <span class="tira-hex">#0063CB</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#004EB2"></span>
+          <span class="tira-color color-azul_700"></span>
           <code class="tira-nombre">azul_700</code>
           <span class="tira-hex">#004EB2</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#003B91"></span>
+          <span class="tira-color color-azul_800"></span>
           <code class="tira-nombre">azul_800</code>
           <span class="tira-hex">#003B91</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#002A6F"></span>
+          <span class="tira-color color-azul_900"></span>
           <code class="tira-nombre">azul_900</code>
           <span class="tira-hex">#002A6F</span>
         </div>
@@ -3294,52 +3584,52 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <div class="escala-tiras">
       
         <div class="tira">
-          <span class="tira-color" style="background:#FFECE5"></span>
+          <span class="tira-color color-rojo_50"></span>
           <code class="tira-nombre">rojo_50</code>
           <span class="tira-hex">#FFECE5</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#FFD5C6"></span>
+          <span class="tira-color color-rojo_100"></span>
           <code class="tira-nombre">rojo_100</code>
           <span class="tira-hex">#FFD5C6</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#FFAD95"></span>
+          <span class="tira-color color-rojo_200"></span>
           <code class="tira-nombre">rojo_200</code>
           <span class="tira-hex">#FFAD95</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#FF7D62"></span>
+          <span class="tira-color color-rojo_300"></span>
           <code class="tira-nombre">rojo_300</code>
           <span class="tira-hex">#FF7D62</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#FF4C37"></span>
+          <span class="tira-color color-rojo_400"></span>
           <code class="tira-nombre">rojo_400</code>
           <span class="tira-hex">#FF4C37</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#EE1F1B"></span>
+          <span class="tira-color color-rojo_500"></span>
           <code class="tira-nombre">rojo_500</code>
           <span class="tira-hex">#EE1F1B</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#D40006"></span>
+          <span class="tira-color color-rojo_600"></span>
           <code class="tira-nombre">rojo_600</code>
           <span class="tira-hex">#D40006</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#B40000"></span>
+          <span class="tira-color color-rojo_700"></span>
           <code class="tira-nombre">rojo_700</code>
           <span class="tira-hex">#B40000</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#930000"></span>
+          <span class="tira-color color-rojo_800"></span>
           <code class="tira-nombre">rojo_800</code>
           <span class="tira-hex">#930000</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#700000"></span>
+          <span class="tira-color color-rojo_900"></span>
           <code class="tira-nombre">rojo_900</code>
           <span class="tira-hex">#700000</span>
         </div>
@@ -3350,52 +3640,52 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <div class="escala-tiras">
       
         <div class="tira">
-          <span class="tira-color" style="background:#F9F3E7"></span>
+          <span class="tira-color color-oro_50"></span>
           <code class="tira-nombre">oro_50</code>
           <span class="tira-hex">#F9F3E7</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#F1E4CA"></span>
+          <span class="tira-color color-oro_100"></span>
           <code class="tira-nombre">oro_100</code>
           <span class="tira-hex">#F1E4CA</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#DFCA9C"></span>
+          <span class="tira-color color-oro_200"></span>
           <code class="tira-nombre">oro_200</code>
           <span class="tira-hex">#DFCA9C</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#C6AB6B"></span>
+          <span class="tira-color color-oro_300"></span>
           <code class="tira-nombre">oro_300</code>
           <span class="tira-hex">#C6AB6B</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#AA8E41"></span>
+          <span class="tira-color color-oro_400"></span>
           <code class="tira-nombre">oro_400</code>
           <span class="tira-hex">#AA8E41</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#917724"></span>
+          <span class="tira-color color-oro_500"></span>
           <code class="tira-nombre">oro_500</code>
           <span class="tira-hex">#917724</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#7B630D"></span>
+          <span class="tira-color color-oro_600"></span>
           <code class="tira-nombre">oro_600</code>
           <span class="tira-hex">#7B630D</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#655000"></span>
+          <span class="tira-color color-oro_700"></span>
           <code class="tira-nombre">oro_700</code>
           <span class="tira-hex">#655000</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#4F3E00"></span>
+          <span class="tira-color color-oro_800"></span>
           <code class="tira-nombre">oro_800</code>
           <span class="tira-hex">#4F3E00</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#3B2D00"></span>
+          <span class="tira-color color-oro_900"></span>
           <code class="tira-nombre">oro_900</code>
           <span class="tira-hex">#3B2D00</span>
         </div>
@@ -3406,57 +3696,57 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <div class="escala-tiras">
       
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#E3F4E1"></span>
+          <span class="tira-color color-verde_50"></span>
           <code class="tira-nombre">verde_50</code>
           <span class="tira-hex">#E3F4E1</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#D3EDCF"></span>
+          <span class="tira-color color-verde_100"></span>
           <code class="tira-nombre">verde_100</code>
           <span class="tira-hex">#D3EDCF</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#B3DCAE"></span>
+          <span class="tira-color color-verde_200"></span>
           <code class="tira-nombre">verde_200</code>
           <span class="tira-hex">#B3DCAE</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#96CC92"></span>
+          <span class="tira-color color-verde_300"></span>
           <code class="tira-nombre">verde_300</code>
           <span class="tira-hex">#96CC92</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#78BB78"></span>
+          <span class="tira-color color-verde_400"></span>
           <code class="tira-nombre">verde_400</code>
           <span class="tira-hex">#78BB78</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#5FA862"></span>
+          <span class="tira-color color-verde_500"></span>
           <code class="tira-nombre">verde_500</code>
           <span class="tira-hex">#5FA862</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#46974A"></span>
+          <span class="tira-color color-verde_600"></span>
           <code class="tira-nombre">verde_600</code>
           <span class="tira-hex">#46974A</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#338136"></span>
+          <span class="tira-color color-verde_700"></span>
           <code class="tira-nombre">verde_700</code>
           <span class="tira-hex">#338136</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#226B27"></span>
+          <span class="tira-color color-verde_800"></span>
           <code class="tira-nombre">verde_800</code>
           <span class="tira-hex">#226B27</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#14521A"></span>
+          <span class="tira-color color-verde_900"></span>
           <code class="tira-nombre">verde_900</code>
           <span class="tira-hex">#14521A</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#233521"></span>
+          <span class="tira-color color-verde_950"></span>
           <code class="tira-nombre">verde_950</code>
           <span class="tira-hex">#233521</span>
         </div>
@@ -3467,57 +3757,57 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <div class="escala-tiras">
       
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#FFEBD6"></span>
+          <span class="tira-color color-ambar_50"></span>
           <code class="tira-nombre">ambar_50</code>
           <span class="tira-hex">#FFEBD6</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#FEDFBF"></span>
+          <span class="tira-color color-ambar_100"></span>
           <code class="tira-nombre">ambar_100</code>
           <span class="tira-hex">#FEDFBF</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#FBC894"></span>
+          <span class="tira-color color-ambar_200"></span>
           <code class="tira-nombre">ambar_200</code>
           <span class="tira-hex">#FBC894</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#F0C060"></span>
+          <span class="tira-color color-ambar_300"></span>
           <code class="tira-nombre">ambar_300</code>
           <span class="tira-hex">#F0C060</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#DFA54B"></span>
+          <span class="tira-color color-ambar_400"></span>
           <code class="tira-nombre">ambar_400</code>
           <span class="tira-hex">#DFA54B</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#C88A3C"></span>
+          <span class="tira-color color-ambar_500"></span>
           <code class="tira-nombre">ambar_500</code>
           <span class="tira-hex">#C88A3C</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#BE7A14"></span>
+          <span class="tira-color color-ambar_600"></span>
           <code class="tira-nombre">ambar_600</code>
           <span class="tira-hex">#BE7A14</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#A46300"></span>
+          <span class="tira-color color-ambar_700"></span>
           <code class="tira-nombre">ambar_700</code>
           <span class="tira-hex">#A46300</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#884E00"></span>
+          <span class="tira-color color-ambar_800"></span>
           <code class="tira-nombre">ambar_800</code>
           <span class="tira-hex">#884E00</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#6B3B00"></span>
+          <span class="tira-color color-ambar_900"></span>
           <code class="tira-nombre">ambar_900</code>
           <span class="tira-hex">#6B3B00</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#402C16"></span>
+          <span class="tira-color color-ambar_950"></span>
           <code class="tira-nombre">ambar_950</code>
           <span class="tira-hex">#402C16</span>
         </div>
@@ -3528,52 +3818,52 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <div class="escala-tiras">
       
         <div class="tira">
-          <span class="tira-color" style="background:#F8F9FC"></span>
+          <span class="tira-color color-indigo_50"></span>
           <code class="tira-nombre">indigo_50</code>
           <span class="tira-hex">#F8F9FC</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#E5E8F2"></span>
+          <span class="tira-color color-indigo_100"></span>
           <code class="tira-nombre">indigo_100</code>
           <span class="tira-hex">#E5E8F2</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#B9C2DC"></span>
+          <span class="tira-color color-indigo_200"></span>
           <code class="tira-nombre">indigo_200</code>
           <span class="tira-hex">#B9C2DC</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#8D9BC6"></span>
+          <span class="tira-color color-indigo_300"></span>
           <code class="tira-nombre">indigo_300</code>
           <span class="tira-hex">#8D9BC6</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#6174B0"></span>
+          <span class="tira-color color-indigo_400"></span>
           <code class="tira-nombre">indigo_400</code>
           <span class="tira-hex">#6174B0</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#45558A"></span>
+          <span class="tira-color color-indigo_500"></span>
           <code class="tira-nombre">indigo_500</code>
           <span class="tira-hex">#45558A</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#41507F"></span>
+          <span class="tira-color color-indigo_600"></span>
           <code class="tira-nombre">indigo_600</code>
           <span class="tira-hex">#41507F</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#39497A"></span>
+          <span class="tira-color color-indigo_700"></span>
           <code class="tira-nombre">indigo_700</code>
           <span class="tira-hex">#39497A</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#2C3D71"></span>
+          <span class="tira-color color-indigo_800"></span>
           <code class="tira-nombre">indigo_800</code>
           <span class="tira-hex">#2C3D71</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#1D3163"></span>
+          <span class="tira-color color-indigo_900"></span>
           <code class="tira-nombre">indigo_900</code>
           <span class="tira-hex">#1D3163</span>
         </div>
@@ -3584,57 +3874,57 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <div class="escala-tiras">
       
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#FFE6DF"></span>
+          <span class="tira-color color-alerta_50"></span>
           <code class="tira-nombre">alerta_50</code>
           <span class="tira-hex">#FFE6DF</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#FFB8A9"></span>
+          <span class="tira-color color-alerta_100"></span>
           <code class="tira-nombre">alerta_100</code>
           <span class="tira-hex">#FFB8A9</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#F99B8C"></span>
+          <span class="tira-color color-alerta_200"></span>
           <code class="tira-nombre">alerta_200</code>
           <span class="tira-hex">#F99B8C</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#EF8072"></span>
+          <span class="tira-color color-alerta_300"></span>
           <code class="tira-nombre">alerta_300</code>
           <span class="tira-hex">#EF8072</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#E2665C"></span>
+          <span class="tira-color color-alerta_400"></span>
           <code class="tira-nombre">alerta_400</code>
           <span class="tira-hex">#E2665C</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#D63231"></span>
+          <span class="tira-color color-alerta_500"></span>
           <code class="tira-nombre">alerta_500</code>
           <span class="tira-hex">#D63231</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#C32123"></span>
+          <span class="tira-color color-alerta_600"></span>
           <code class="tira-nombre">alerta_600</code>
           <span class="tira-hex">#C32123</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#AA181D"></span>
+          <span class="tira-color color-alerta_700"></span>
           <code class="tira-nombre">alerta_700</code>
           <span class="tira-hex">#AA181D</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#8F1017"></span>
+          <span class="tira-color color-alerta_800"></span>
           <code class="tira-nombre">alerta_800</code>
           <span class="tira-hex">#8F1017</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#4D241F"></span>
+          <span class="tira-color color-alerta_900"></span>
           <code class="tira-nombre">alerta_900</code>
           <span class="tira-hex">#4D241F</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#33231F"></span>
+          <span class="tira-color color-alerta_950"></span>
           <code class="tira-nombre">alerta_950</code>
           <span class="tira-hex">#33231F</span>
         </div>
@@ -3645,57 +3935,57 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <div class="escala-tiras">
       
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#E9EEFF"></span>
+          <span class="tira-color color-informacion_50"></span>
           <code class="tira-nombre">informacion_50</code>
           <span class="tira-hex">#E9EEFF</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#BFD0FF"></span>
+          <span class="tira-color color-informacion_100"></span>
           <code class="tira-nombre">informacion_100</code>
           <span class="tira-hex">#BFD0FF</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#9FBAF9"></span>
+          <span class="tira-color color-informacion_200"></span>
           <code class="tira-nombre">informacion_200</code>
           <span class="tira-hex">#9FBAF9</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#84A7EE"></span>
+          <span class="tira-color color-informacion_300"></span>
           <code class="tira-nombre">informacion_300</code>
           <span class="tira-hex">#84A7EE</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#6D97DE"></span>
+          <span class="tira-color color-informacion_400"></span>
           <code class="tira-nombre">informacion_400</code>
           <span class="tira-hex">#6D97DE</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#2F71CE"></span>
+          <span class="tira-color color-informacion_500"></span>
           <code class="tira-nombre">informacion_500</code>
           <span class="tira-hex">#2F71CE</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#1C63BC"></span>
+          <span class="tira-color color-informacion_600"></span>
           <code class="tira-nombre">informacion_600</code>
           <span class="tira-hex">#1C63BC</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#0D55A5"></span>
+          <span class="tira-color color-informacion_700"></span>
           <code class="tira-nombre">informacion_700</code>
           <span class="tira-hex">#0D55A5</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#02468A"></span>
+          <span class="tira-color color-informacion_800"></span>
           <code class="tira-nombre">informacion_800</code>
           <span class="tira-hex">#02468A</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#273048"></span>
+          <span class="tira-color color-informacion_900"></span>
           <code class="tira-nombre">informacion_900</code>
           <span class="tira-hex">#273048</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#303030"></span>
+          <span class="tira-color color-informacion_950"></span>
           <code class="tira-nombre">informacion_950</code>
           <span class="tira-hex">#303030</span>
         </div>
@@ -3706,72 +3996,72 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <div class="escala-tiras">
       
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#EFEEEB"></span>
+          <span class="tira-color color-negro_50"></span>
           <code class="tira-nombre">negro_50</code>
           <span class="tira-hex">#EFEEEB</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#C3C1BD"></span>
+          <span class="tira-color color-negro_100"></span>
           <code class="tira-nombre">negro_100</code>
           <span class="tira-hex">#C3C1BD</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#989692"></span>
+          <span class="tira-color color-negro_200"></span>
           <code class="tira-nombre">negro_200</code>
           <span class="tira-hex">#989692</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#8A8681"></span>
+          <span class="tira-color color-negro_300"></span>
           <code class="tira-nombre">negro_300</code>
           <span class="tira-hex">#8A8681</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#6E6B67"></span>
+          <span class="tira-color color-negro_400"></span>
           <code class="tira-nombre">negro_400</code>
           <span class="tira-hex">#6E6B67</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#575451"></span>
+          <span class="tira-color color-negro_500"></span>
           <code class="tira-nombre">negro_500</code>
           <span class="tira-hex">#575451</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#44423F"></span>
+          <span class="tira-color color-negro_600"></span>
           <code class="tira-nombre">negro_600</code>
           <span class="tira-hex">#44423F</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#3A3835"></span>
+          <span class="tira-color color-negro_650"></span>
           <code class="tira-nombre">negro_650</code>
           <span class="tira-hex">#3A3835</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#363532"></span>
+          <span class="tira-color color-negro_700"></span>
           <code class="tira-nombre">negro_700</code>
           <span class="tira-hex">#363532</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#2C2B29"></span>
+          <span class="tira-color color-negro_750"></span>
           <code class="tira-nombre">negro_750</code>
           <span class="tira-hex">#2C2B29</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#2A2927"></span>
+          <span class="tira-color color-negro_800"></span>
           <code class="tira-nombre">negro_800</code>
           <span class="tira-hex">#2A2927</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#242422"></span>
+          <span class="tira-color color-negro_850"></span>
           <code class="tira-nombre">negro_850</code>
           <span class="tira-hex">#242422</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#20201E"></span>
+          <span class="tira-color color-negro_900"></span>
           <code class="tira-nombre">negro_900</code>
           <span class="tira-hex">#20201E</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#1E1D1C"></span>
+          <span class="tira-color color-negro_950"></span>
           <code class="tira-nombre">negro_950</code>
           <span class="tira-hex">#1E1D1C</span>
         </div>
@@ -3782,89 +4072,172 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
     <div class="escala-tiras">
       
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#FFFFFF"></span>
+          <span class="tira-color color-gris_0"></span>
           <code class="tira-nombre">gris_0</code>
           <span class="tira-hex">#FFFFFF</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#F8F8F6"></span>
+          <span class="tira-color color-gris_50"></span>
           <code class="tira-nombre">gris_50</code>
           <span class="tira-hex">#F8F8F6</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#F0EFEE"></span>
+          <span class="tira-color color-gris_100"></span>
           <code class="tira-nombre">gris_100</code>
           <span class="tira-hex">#F0EFEE</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#E0DFDE"></span>
+          <span class="tira-color color-gris_200"></span>
           <code class="tira-nombre">gris_200</code>
           <span class="tira-hex">#E0DFDE</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#C8C6C4"></span>
+          <span class="tira-color color-gris_300"></span>
           <code class="tira-nombre">gris_300</code>
           <span class="tira-hex">#C8C6C4</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#A7A6A3"></span>
+          <span class="tira-color color-gris_400"></span>
           <code class="tira-nombre">gris_400</code>
           <span class="tira-hex">#A7A6A3</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#8B8985"></span>
+          <span class="tira-color color-gris_500"></span>
           <code class="tira-nombre">gris_500</code>
           <span class="tira-hex">#8B8985</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#6A6864"></span>
+          <span class="tira-color color-gris_600"></span>
           <code class="tira-nombre">gris_600</code>
           <span class="tira-hex">#6A6864</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#5C5955"></span>
+          <span class="tira-color color-gris_700"></span>
           <code class="tira-nombre">gris_700</code>
           <span class="tira-hex">#5C5955</span>
         </div>
         <div class="tira">
-          <span class="tira-color" style="background:#474440"></span>
+          <span class="tira-color color-gris_800"></span>
           <code class="tira-nombre">gris_800</code>
           <span class="tira-hex">#474440</span>
         </div>
         <div class="tira tira-usada">
-          <span class="tira-color" style="background:#2C2A25"></span>
+          <span class="tira-color color-gris_900"></span>
           <code class="tira-nombre">gris_900</code>
           <span class="tira-hex">#2C2A25</span>
         </div>
     </div>
   </div>
-<h3 class="sub-seccion">Marca — fuera del sistema</h3>
-<p class="seccion-sub">Viven en el escudo, la landing y los impresos. No en la interfaz.</p>
+<h3 class="sub-seccion">Familias categóricas</h3>
+<p class="seccion-sub">No son rampas y forzarlas a serlo sería mentir sobre lo que son.
+<code>marca</code> se mide del escudo impreso: cada valor es un tono distinto, no un escalón de otro.
+<code>identidad</code> son colores que solo tienen que distinguirse <em>entre sí</em>, todos a la misma
+claridad para que el mismo blanco funcione encima; por eso el paso es un índice sin significado
+—el 3 no es «más» que el 2—.</p>
+
+  <div class="escala">
+    <div class="escala-nombre">marca</div>
+    <div class="escala-tiras">
+      
+        <div class="tira">
+          <span class="tira-color color-marca_rojo"></span>
+          <code class="tira-nombre">marca_rojo</code>
+          <span class="tira-hex">#E30613</span>
+        </div>
+        <div class="tira">
+          <span class="tira-color color-marca_rojo_claro"></span>
+          <code class="tira-nombre">marca_rojo_claro</code>
+          <span class="tira-hex">#FF4C37</span>
+        </div>
+        <div class="tira">
+          <span class="tira-color color-marca_rojo_panel"></span>
+          <code class="tira-nombre">marca_rojo_panel</code>
+          <span class="tira-hex">#930000</span>
+        </div>
+        <div class="tira">
+          <span class="tira-color color-marca_oro"></span>
+          <code class="tira-nombre">marca_oro</code>
+          <span class="tira-hex">#DEBD68</span>
+        </div>
+        <div class="tira">
+          <span class="tira-color color-marca_amarillo"></span>
+          <code class="tira-nombre">marca_amarillo</code>
+          <span class="tira-hex">#FDF200</span>
+        </div>
+        <div class="tira">
+          <span class="tira-color color-marca_celeste"></span>
+          <code class="tira-nombre">marca_celeste</code>
+          <span class="tira-hex">#01ADED</span>
+        </div>
+    </div>
+  </div>
+  <div class="escala">
+    <div class="escala-nombre">identidad</div>
+    <div class="escala-tiras">
+      
+        <div class="tira tira-usada">
+          <span class="tira-color color-identidad_1"></span>
+          <code class="tira-nombre">identidad_1</code>
+          <span class="tira-hex">#0E6F63</span>
+        </div>
+        <div class="tira tira-usada">
+          <span class="tira-color color-identidad_2"></span>
+          <code class="tira-nombre">identidad_2</code>
+          <span class="tira-hex">#6A3FA0</span>
+        </div>
+        <div class="tira tira-usada">
+          <span class="tira-color color-identidad_3"></span>
+          <code class="tira-nombre">identidad_3</code>
+          <span class="tira-hex">#9B3B6E</span>
+        </div>
+        <div class="tira tira-usada">
+          <span class="tira-color color-identidad_4"></span>
+          <code class="tira-nombre">identidad_4</code>
+          <span class="tira-hex">#4A5568</span>
+        </div>
+    </div>
+  </div>
+<h3 class="sub-seccion">Marca — definida, y aun así prohibida en interfaz</h3>
+<p class="seccion-sub">Están en la escala: son la familia <code>marca</code> de arriba, con su escalón y su clase.
+Tenían que estarlo, porque se usan de verdad —en el escudo, en la landing y en los impresos— y lo que
+no pasa por una familia es un hexadecimal que nadie puede volver a encontrar.
+<strong>Estar definido y estar autorizado no son lo mismo:</strong> el sistema ahora dice las dos cosas
+por separado. Estos cinco tienen nombre y no tienen permiso.</p>
 <div class="marca-rejilla">
 
   <div class="marca-item">
-    <div class="marca-tapa" style="background: var(--marca-rojo)"></div>
-    <div class="marca-cuerpo"><code>marca-rojo</code><p>Escudo, titulares de landing, impresos</p>
+    <div class="marca-tapa color-marca_rojo"></div>
+    <div class="marca-cuerpo"><code>marca-rojo</code>
+      <div class="marca-escalon">claro <code>marca_rojo</code> · oscuro <code>marca_rojo_claro</code></div>
+      <p>Escudo, titulares de landing, impresos</p>
       <div class="marca-prohibido">Prohibido en: Interfaz</div></div>
   </div>
   <div class="marca-item">
-    <div class="marca-tapa" style="background: var(--marca-rojo-panel)"></div>
-    <div class="marca-cuerpo"><code>marca-rojo-panel</code><p>Panel de marca de la landing</p>
+    <div class="marca-tapa color-marca_rojo"></div>
+    <div class="marca-cuerpo"><code>marca-rojo-panel</code>
+      <div class="marca-escalon">claro <code>marca_rojo</code> · oscuro <code>marca_rojo_panel</code></div>
+      <p>Panel de marca de la landing</p>
       <div class="marca-prohibido">Prohibido en: Interfaz</div></div>
   </div>
   <div class="marca-item">
-    <div class="marca-tapa" style="background: var(--marca-oro)"></div>
-    <div class="marca-cuerpo"><code>marca-oro</code><p>Escudo, filete de landing</p>
+    <div class="marca-tapa color-marca_oro"></div>
+    <div class="marca-cuerpo"><code>marca-oro</code>
+      <div class="marca-escalon">claro <code>marca_oro</code> · oscuro <code>marca_oro</code></div>
+      <p>Escudo, filete de landing</p>
       <div class="marca-prohibido">Prohibido en: Interfaz. En sistema usar accion-2 o marco-acento</div></div>
   </div>
   <div class="marca-item">
-    <div class="marca-tapa" style="background: var(--marca-amarillo)"></div>
-    <div class="marca-cuerpo"><code>marca-amarillo</code><p>Campaña, afiches, redes</p>
+    <div class="marca-tapa color-marca_amarillo"></div>
+    <div class="marca-cuerpo"><code>marca-amarillo</code>
+      <div class="marca-escalon">claro <code>marca_amarillo</code> · oscuro <code>marca_amarillo</code></div>
+      <p>Campaña, afiches, redes</p>
       <div class="marca-prohibido">Prohibido en: Todo el sistema. 1,2:1 — no admite texto</div></div>
   </div>
   <div class="marca-item">
-    <div class="marca-tapa" style="background: var(--marca-celeste)"></div>
-    <div class="marca-cuerpo"><code>marca-celeste</code><p>Campaña</p>
+    <div class="marca-tapa color-marca_celeste"></div>
+    <div class="marca-cuerpo"><code>marca-celeste</code>
+      <div class="marca-escalon">claro <code>marca_celeste</code> · oscuro <code>marca_celeste</code></div>
+      <p>Campaña</p>
       <div class="marca-prohibido">Prohibido en: Todo el sistema. 2,6:1 — no admite texto</div></div>
   </div>
 </div>
@@ -7433,7 +7806,7 @@ antes que la causa técnica.</p>
 
 <div class="mal-rejilla">
   <div class="mal-par">
-    <div class="mal-caja mal"><button class="btn" style="background:var(--marca-celeste);color:#fff">Agregar +</button>
+    <div class="mal-caja mal"><button class="btn btn-mal-celeste">Agregar +</button>
       <span class="mal-et">2,56:1 — ilegible</span></div>
     <div class="mal-caja bien"><button class="btn btn-1">Agregar +</button>
       <span class="bien-et">8,13:1 con <code>accion</code></span></div>
@@ -8130,6 +8503,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
 
 
+<h3 class="sub-seccion">v1.10.1 <span class="cam-fecha">2026-08-09</span></h3>
+<p class="pag-intro"><strong>El interruptor apagado deja de pedir prestada la paleta de error.</strong> Usaba `error-*` para pintarse: rojo correcto, significado equivocado. Un chip «Deuda» avisa de un problema; un interruptor en «no» es una elección del usuario. Compartir token ataba dos cosas que no tienen por qué moverse juntas. Separarlos permitió además atender la petición de un rojo más vivo donde sí cabe: el RELLENO sube de `alerta_50` a `alerta_100`. El CONTORNO se queda en `alerta_500` porque es límite de control (SC 1.4.11, 3:1) y el `#FF4C37` pedido mide 2,88:1 sobre `fondo-encabezado` —no entra, y `alerta_400` tampoco con 2,90:1—. El contorno pasa a medirse contra los TRES fondos donde aparece, no solo la tarjeta.</p>
+
+<p class="cam-tok"><strong>Tokens nuevos:</strong> <code>apagado-fondo</code> · <code>apagado-borde</code> · <code>apagado-bolita</code></p>
+
 <h3 class="sub-seccion">v1.10.0 <span class="cam-fecha">2026-08-09</span></h3>
 <p class="pag-intro"><strong>Seis rampas nuevas, y el token declara el escalón en vez del hexadecimal.</strong> Solo existían las cuatro rampas de la MARCA, y el resto del sistema elegía valores sueltos verificados uno a uno: 29 de 53 salían de rampa en claro y 11 de 53 en oscuro. Funcionaba, pero no era derivable, y por eso pedir un rojo para el interruptor no tenía respuesta: la única fuente era una primitiva prohibida o un token de marca prohibido. Ahora son 49 de 53 en los DOS modos. Las seis rampas se construyeron hacia atrás alrededor de los valores ya verificados, así que ningún color cambió.</p>
 <table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td><code>semanticos</code> declara el ESCALÓN —<code>ambar_900</code>— en vez del hexadecimal, y <code>origen</code> se deriva en vez de escribirse. Quien lea <code>./fuente</code> en crudo verá referencias en lugar de valores; los valores resueltos siguen igual en <code>./lock</code>, en <code>tokens.css</code> y en el preset, que es lo que consume un proyecto</td></tr></tbody></table>
@@ -8200,7 +8578,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       </nav>
       <div class="pag-cab"><h1>Contrastes</h1></div>
       
-<p class="pag-intro">108 pares bloqueantes en los dos modos ·
+<p class="pag-intro">116 pares bloqueantes en los dos modos ·
 <strong>0 fallos</strong> · WCAG 2.2 AA. Recalculados en cada build por
 <code>verificar-contraste.mjs</code>: si el contrato miente, el build falla.</p>
 <h3 class="sub-seccion">Modo claro</h3>
@@ -8598,6 +8976,38 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       <td class="num">4.5</td>
       <td class="ok">cumple</td>
       <td class="motivo">Aviso neutro</td>
+    </tr>
+    <tr>
+      <td><code>apagado-bolita</code></td>
+      <td><code>apagado-fondo</code></td>
+      <td class="num">5.62:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Bolita sobre la vía del interruptor</td>
+    </tr>
+    <tr>
+      <td><code>apagado-borde</code></td>
+      <td><code>fondo-tarjeta</code></td>
+      <td class="num">4.81:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Contorno del interruptor sobre tarjeta</td>
+    </tr>
+    <tr>
+      <td><code>apagado-borde</code></td>
+      <td><code>fondo-pagina</code></td>
+      <td class="num">4.52:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Contorno del interruptor sobre página</td>
+    </tr>
+    <tr>
+      <td><code>apagado-borde</code></td>
+      <td><code>fondo-encabezado</code></td>
+      <td class="num">4.19:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Contorno del interruptor sobre encabezado</td>
     </tr>
     <tr>
       <td><code>texto-invertido</code></td>
@@ -9037,6 +9447,38 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       <td class="motivo">Aviso neutro</td>
     </tr>
     <tr>
+      <td><code>apagado-bolita</code></td>
+      <td><code>apagado-fondo</code></td>
+      <td class="num">7.98:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Bolita sobre la vía del interruptor</td>
+    </tr>
+    <tr>
+      <td><code>apagado-borde</code></td>
+      <td><code>fondo-tarjeta</code></td>
+      <td class="num">4.65:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Contorno del interruptor sobre tarjeta</td>
+    </tr>
+    <tr>
+      <td><code>apagado-borde</code></td>
+      <td><code>fondo-pagina</code></td>
+      <td class="num">5.04:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Contorno del interruptor sobre página</td>
+    </tr>
+    <tr>
+      <td><code>apagado-borde</code></td>
+      <td><code>fondo-encabezado</code></td>
+      <td class="num">4.23:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Contorno del interruptor sobre encabezado</td>
+    </tr>
+    <tr>
       <td><code>texto-invertido</code></td>
       <td><code>accion</code></td>
       <td class="num">7.34:1</td>
@@ -9187,7 +9629,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
 
   // La CLASE de cada token en cada modo. Antes era el hexadecimal, pero un
   // hexadecimal no se puede escribir en el codigo: lo que se aplica es la clase.
-  var clases = {"fondo-pagina":{"claro":"gris_50","oscuro":"negro_950"},"fondo-tarjeta":{"claro":"gris_0","oscuro":"negro_850"},"fondo-encabezado":{"claro":"gris_100","oscuro":"negro_750"},"fondo-fila-alt":{"claro":"gris_50","oscuro":"negro_800"},"fondo-fila-hover":{"claro":"azul_50","oscuro":"negro_700"},"texto-principal":{"claro":"gris_900","oscuro":"negro_50"},"texto-secundario":{"claro":"gris_600","oscuro":"negro_100"},"texto-pista":{"claro":"gris_600","oscuro":"negro_200"},"texto-invertido":{"claro":"gris_0","oscuro":"negro_900"},"borde":{"claro":"gris_200","oscuro":"negro_600"},"borde-fuerte":{"claro":"gris_300","oscuro":"negro_500"},"borde-campo":{"claro":"gris_500","oscuro":"negro_300"},"accion":{"claro":"azul_600","oscuro":"azul_300"},"accion-hover":{"claro":"azul_700","oscuro":"azul_200"},"accion-activa":{"claro":"azul_800","oscuro":"azul_100"},"accion-texto":{"claro":"gris_0","oscuro":"negro_900"},"accion-deshabilitada":{"claro":"gris_300","oscuro":"negro_600"},"accion-texto-desh":{"claro":"gris_500","oscuro":"negro_200"},"accion-2":{"claro":"oro_700","oscuro":"oro_200"},"enlace":{"claro":"azul_600","oscuro":"azul_300"},"accion-2-fondo":{"claro":"oro_100","oscuro":"oro_800"},"neutra-fondo":{"claro":"gris_100","oscuro":"negro_650"},"neutra-texto":{"claro":"gris_900","oscuro":"negro_50"},"destructiva":{"claro":"rojo_600","oscuro":"rojo_300"},"destructiva-hover":{"claro":"rojo_700","oscuro":"rojo_200"},"destructiva-texto":{"claro":"gris_0","oscuro":"negro_900"},"marco-fondo":{"claro":"indigo_800","oscuro":"indigo_800"},"marco-texto":{"claro":"gris_0","oscuro":"gris_0"},"marco-acento":{"claro":"oro_200","oscuro":"oro_200"},"marco-item-activo":{"claro":"indigo_900","oscuro":"indigo_900"},"marco-nivel-1":{"claro":"indigo_700","oscuro":"indigo_700"},"marco-nivel-2":{"claro":"indigo_600","oscuro":"indigo_600"},"marco-borde":{"claro":"indigo_500","oscuro":"indigo_500"},"marco-texto-tenue":{"claro":"indigo_200","oscuro":"indigo_200"},"foco":{"claro":"ambar_600","oscuro":"ambar_300"},"foco-en-marco":{"claro":"ambar_300","oscuro":"ambar_300"},"exito-fondo":{"claro":"verde_50","oscuro":"verde_950"},"exito-texto":{"claro":"verde_900","oscuro":"verde_200"},"exito-acento":{"claro":"verde_700","oscuro":"verde_500"},"aviso-fondo":{"claro":"ambar_50","oscuro":"ambar_950"},"aviso-texto":{"claro":"ambar_900","oscuro":"ambar_200"},"aviso-acento":{"claro":"ambar_700","oscuro":"ambar_500"},"error-fondo":{"claro":"alerta_50","oscuro":"alerta_900"},"error-texto":{"claro":"alerta_800","oscuro":"alerta_100"},"error-acento":{"claro":"alerta_500","oscuro":"alerta_400"},"info-fondo":{"claro":"informacion_50","oscuro":"informacion_900"},"info-texto":{"claro":"informacion_800","oscuro":"informacion_100"},"info-acento":{"claro":"informacion_500","oscuro":"informacion_400"},"identidad-1":{"claro":"directo","oscuro":"directo"},"identidad-2":{"claro":"directo","oscuro":"directo"},"identidad-3":{"claro":"directo","oscuro":"directo"},"identidad-4":{"claro":"directo","oscuro":"directo"},"identidad-texto":{"claro":"gris_0","oscuro":"gris_0"}};
+  var clases = {"fondo-pagina":{"claro":"gris_50","oscuro":"negro_950"},"fondo-tarjeta":{"claro":"gris_0","oscuro":"negro_850"},"fondo-encabezado":{"claro":"gris_100","oscuro":"negro_750"},"fondo-fila-alt":{"claro":"gris_50","oscuro":"negro_800"},"fondo-fila-hover":{"claro":"azul_50","oscuro":"negro_700"},"texto-principal":{"claro":"gris_900","oscuro":"negro_50"},"texto-secundario":{"claro":"gris_600","oscuro":"negro_100"},"texto-pista":{"claro":"gris_600","oscuro":"negro_200"},"texto-invertido":{"claro":"gris_0","oscuro":"negro_900"},"borde":{"claro":"gris_200","oscuro":"negro_600"},"borde-fuerte":{"claro":"gris_300","oscuro":"negro_500"},"borde-campo":{"claro":"gris_500","oscuro":"negro_300"},"accion":{"claro":"azul_600","oscuro":"azul_300"},"accion-hover":{"claro":"azul_700","oscuro":"azul_200"},"accion-activa":{"claro":"azul_800","oscuro":"azul_100"},"accion-texto":{"claro":"gris_0","oscuro":"negro_900"},"accion-deshabilitada":{"claro":"gris_300","oscuro":"negro_600"},"accion-texto-desh":{"claro":"gris_500","oscuro":"negro_200"},"accion-2":{"claro":"oro_700","oscuro":"oro_200"},"enlace":{"claro":"azul_600","oscuro":"azul_300"},"accion-2-fondo":{"claro":"oro_100","oscuro":"oro_800"},"neutra-fondo":{"claro":"gris_100","oscuro":"negro_650"},"neutra-texto":{"claro":"gris_900","oscuro":"negro_50"},"destructiva":{"claro":"rojo_600","oscuro":"rojo_300"},"destructiva-hover":{"claro":"rojo_700","oscuro":"rojo_200"},"destructiva-texto":{"claro":"gris_0","oscuro":"negro_900"},"marco-fondo":{"claro":"indigo_800","oscuro":"indigo_800"},"marco-texto":{"claro":"gris_0","oscuro":"gris_0"},"marco-acento":{"claro":"oro_200","oscuro":"oro_200"},"marco-item-activo":{"claro":"indigo_900","oscuro":"indigo_900"},"marco-nivel-1":{"claro":"indigo_700","oscuro":"indigo_700"},"marco-nivel-2":{"claro":"indigo_600","oscuro":"indigo_600"},"marco-borde":{"claro":"indigo_500","oscuro":"indigo_500"},"marco-texto-tenue":{"claro":"indigo_200","oscuro":"indigo_200"},"foco":{"claro":"ambar_600","oscuro":"ambar_300"},"foco-en-marco":{"claro":"ambar_300","oscuro":"ambar_300"},"exito-fondo":{"claro":"verde_50","oscuro":"verde_950"},"exito-texto":{"claro":"verde_900","oscuro":"verde_200"},"exito-acento":{"claro":"verde_700","oscuro":"verde_500"},"aviso-fondo":{"claro":"ambar_50","oscuro":"ambar_950"},"aviso-texto":{"claro":"ambar_900","oscuro":"ambar_200"},"aviso-acento":{"claro":"ambar_700","oscuro":"ambar_500"},"error-fondo":{"claro":"alerta_50","oscuro":"alerta_900"},"error-texto":{"claro":"alerta_800","oscuro":"alerta_100"},"error-acento":{"claro":"alerta_500","oscuro":"alerta_400"},"info-fondo":{"claro":"informacion_50","oscuro":"informacion_900"},"info-texto":{"claro":"informacion_800","oscuro":"informacion_100"},"info-acento":{"claro":"informacion_500","oscuro":"informacion_400"},"apagado-fondo":{"claro":"alerta_100","oscuro":"alerta_900"},"apagado-borde":{"claro":"alerta_500","oscuro":"alerta_400"},"apagado-bolita":{"claro":"alerta_800","oscuro":"alerta_100"},"identidad-1":{"claro":"identidad_1","oscuro":"identidad_1"},"identidad-2":{"claro":"identidad_2","oscuro":"identidad_2"},"identidad-3":{"claro":"identidad_3","oscuro":"identidad_3"},"identidad-4":{"claro":"identidad_4","oscuro":"identidad_4"},"identidad-texto":{"claro":"gris_0","oscuro":"gris_0"}};
 
   function aplicar(modo) {
     raiz.setAttribute('data-tema', modo);

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.10.0';
+export const VERSION = '1.10.1';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,21 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.10.1', fecha: '2026-08-09',
+    que: 'El interruptor apagado deja de pedir prestada la paleta de error',
+    porque:
+      'Usaba `error-*` para pintarse: rojo correcto, significado equivocado. Un chip ' +
+      '«Deuda» avisa de un problema; un interruptor en «no» es una elección del ' +
+      'usuario. Compartir token ataba dos cosas que no tienen por qué moverse juntas. ' +
+      'Separarlos permitió además atender la petición de un rojo más vivo donde sí ' +
+      'cabe: el RELLENO sube de `alerta_50` a `alerta_100`. El CONTORNO se queda en ' +
+      '`alerta_500` porque es límite de control (SC 1.4.11, 3:1) y el `#FF4C37` pedido ' +
+      'mide 2,88:1 sobre `fondo-encabezado` —no entra, y `alerta_400` tampoco con 2,90:1—. ' +
+      'El contorno pasa a medirse contra los TRES fondos donde aparece, no solo la tarjeta.',
+    tokens: { alta: ['apagado-fondo', 'apagado-borde', 'apagado-bolita'], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.10.0', fecha: '2026-08-09',
     que: 'Seis rampas nuevas, y el token declara el escalón en vez del hexadecimal',
@@ -385,6 +400,28 @@ const declarados = {
   'info-texto':   { claro: 'informacion_800', oscuro: 'informacion_100', uso: 'Texto sobre info-fondo' },
   'info-acento':  { claro: 'informacion_500', oscuro: 'informacion_400', uso: 'Solo filete del borde. Adorno' },
 
+  // ── Interruptor apagado · v1.10.1 ─────────────────────────────────────────
+  //
+  // Antes el interruptor apagado pedía prestados `error-*`. Rojo, sí, pero con
+  // el significado equivocado: «apagado» es un estado que el usuario eligió, no
+  // un fallo. Un chip «Deuda» y un interruptor en «no» no son la misma cosa y no
+  // deben compartir token, porque el día que la deuda cambie de rojo el
+  // interruptor cambiará con ella sin que nadie lo haya decidido.
+  //
+  // Separarlos permite además subir el rojo del RELLENO, que es donde cabe:
+  //
+  //   · el CONTORNO es límite de control → SC 1.4.11, mínimo 3:1. Ahí `#FF4C37`
+  //     no entra: mide 2,88:1 sobre `fondo-encabezado`. `alerta_500` es el rojo
+  //     más vivo que pasa (4,19:1 en el peor fondo claro).
+  //   · el RELLENO no delimita nada → es informativo, sin umbral propio. Sube de
+  //     `alerta_50` a `alerta_100` y el apagado se lee rojo de un vistazo.
+  //
+  // Lo único que el relleno sí condiciona es la bolita que va encima, y ese par
+  // está en el contrato: 5,62:1 claro · 7,98:1 oscuro.
+  'apagado-fondo':  { claro: 'alerta_100', oscuro: 'alerta_900', uso: 'Vía del interruptor en «no»' },
+  'apagado-borde':  { claro: 'alerta_500', oscuro: 'alerta_400', uso: 'Contorno del interruptor en «no». Límite de control' },
+  'apagado-bolita': { claro: 'alerta_800', oscuro: 'alerta_100', uso: 'Bolita sobre apagado-fondo' },
+
   // ── IDENTIDAD · v1.7.0 ────────────────────────────────────────────────────
   // Colores del avatar sin foto. Existen porque NO se puede reutilizar la
   // paleta de estado: un avatar rojo diría que esa persona tiene un problema
@@ -399,10 +436,10 @@ const declarados = {
   //
   // Mismo valor en los dos modos, como el marco: es un disco relleno con texto
   // blanco encima, y cambiarlo por tema no aporta nada.
-  'identidad-1':     { claro: '#0E6F63', oscuro: '#0E6F63', uso: 'Avatar sin foto. Verde azulado, tono 173°' },
-  'identidad-2':     { claro: '#6A3FA0', oscuro: '#6A3FA0', uso: 'Avatar sin foto. Violeta, tono 267°' },
-  'identidad-3':     { claro: '#9B3B6E', oscuro: '#9B3B6E', uso: 'Avatar sin foto. Magenta, tono 328°' },
-  'identidad-4':     { claro: '#4A5568', oscuro: '#4A5568', uso: 'Avatar sin foto. Pizarra, saturación 17 %' },
+  'identidad-1':     { claro: 'identidad_1', oscuro: 'identidad_1', uso: 'Avatar sin foto. Verde azulado, tono 173°' },
+  'identidad-2':     { claro: 'identidad_2', oscuro: 'identidad_2', uso: 'Avatar sin foto. Violeta, tono 267°' },
+  'identidad-3':     { claro: 'identidad_3', oscuro: 'identidad_3', uso: 'Avatar sin foto. Magenta, tono 328°' },
+  'identidad-4':     { claro: 'identidad_4', oscuro: 'identidad_4', uso: 'Avatar sin foto. Pizarra, saturación 17 %' },
   // Blanco en los DOS modos. texto-invertido no sirve: en oscuro vale #20201E
   // y las iniciales quedarían oscuras sobre un disco oscuro.
   'identidad-texto': { claro: 'gris_0', oscuro: 'gris_0',  uso: 'Iniciales sobre cualquier color de identidad' },
@@ -418,22 +455,89 @@ const declarados = {
 // Cambiar un token de ambar_800 a ambar_900 es ahora editar UNA PALABRA. Antes
 // habia que copiar el hexadecimal a mano y confiar en no equivocarse.
 //
-// Se admite un valor literal para lo que no esta en ninguna rampa —los cuatro
-// colores de identidad, que son de un solo paso a proposito—. Cualquier otra
-// cosa que no resuelva hace fallar la generacion: una referencia que nadie
-// puede resolver es un comentario, no una referencia.
+// YA NO se admite el valor literal. Hasta la v1.10.1 se dejaba pasar «para lo
+// que no esta en ninguna rampa», y ese hueco dejaba ocho hexadecimales sueltos:
+// los cuatro de marca y los cuatro de identidad. Un hueco con buena excusa
+// sigue siendo un hueco, y el candado no puede proteger lo que no pasa por el.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const REF = /^([a-z]+)_(\d+)$/;
+// ─────────────────────────────────────────────────────────────────────────────
+// FAMILIAS CATEGORICAS
+//
+// Una RAMPA es un tono a muchas claridades: `ambar_50 … ambar_950`. Sirve para
+// elegir contraste. Estas dos familias NO son eso, y forzarlas a rampa habria
+// sido mentir sobre lo que son:
+//
+//   · `marca`      son medidas del escudo impreso. No se derivan de nada
+//                  nuestro: se copian del original. Cada una es un tono
+//                  distinto, no un escalon de otro.
+//   · `identidad`  son colores CATEGORICOS. El avatar necesita tonos que se
+//                  distingan ENTRE SI, todos a la misma claridad para que el
+//                  mismo blanco funcione encima. Eso es una paleta categorica,
+//                  no una secuencial, y por eso el paso es un indice sin
+//                  significado —el 3 no es «mas» que el 2—.
+//
+// El escalon se escribe igual —`familia_paso`— para que haya UNA sola forma de
+// nombrar un color en todo el sistema. Lo que cambia es que el paso puede ser
+// palabra: `marca_rojo`, `identidad_3`.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const categoricas = {
+  marca: {
+    rojo:          '#E30613', // el del escudo. §8.5: el lockup usa #EC2027 y no coinciden
+    rojo_claro:    '#FF4C37', // titular sobre pagina oscura
+    rojo_panel:    '#930000', // panel de marca en oscuro
+    oro:           '#DEBD68',
+    amarillo:      '#FDF200',
+    celeste:       '#01ADED',
+  },
+  identidad: {
+    1: '#0E6F63', // verde azulado
+    2: '#6A3FA0', // morado
+    3: '#9B3B6E', // magenta
+    4: '#4A5568', // pizarra
+  },
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// COLORES AUTORIZADOS
+//
+// El inventario plano de TODO color que existe en el sistema: rampas y
+// familias categóricas, aplanadas a `familia_paso`. Estos y ninguno más.
+//
+// De aquí salen tres cosas, y por eso vive junto a la fuente y no en el
+// generador: las variables CSS, las clases `.color-*` y la lista blanca que
+// usa `candado/verificar-color.mjs` para decidir si un hexadecimal que
+// aparece por ahí está autorizado o se coló.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const escalones = [
+  ...Object.entries(primitivas),
+  ...Object.entries(categoricas),
+].flatMap(([familia, pasos]) =>
+  Object.entries(pasos).map(([paso, hex]) => [`${familia}_${paso}`, hex])
+);
+
+const REF = /^([a-z]+)_([a-z0-9_]+)$/;
+
+const escalon = (v) => {
+  const m = REF.exec(v);
+  if (!m) return undefined;
+  return primitivas[m[1]]?.[m[2]] ?? categoricas[m[1]]?.[m[2]];
+};
 
 const resolver = (v, token, modo) => {
-  if (v.startsWith('#')) return v;
-  const m = REF.exec(v);
-  const paso = m && primitivas[m[1]]?.[m[2]];
+  const paso = escalon(v);
   if (!paso) {
     throw new Error(
-      `${token}.${modo} apunta a ${v}, que no existe. Los escalones se llaman ` +
-      `familia_paso: ambar_900, negro_950, azul_600.`
+      `${token}.${modo} apunta a "${v}", que no existe.\n` +
+      `  Todo color se nombra familia_paso. Familias disponibles:\n` +
+      `    rampas      ${Object.keys(primitivas).join(' ')}\n` +
+      `    categoricas ${Object.keys(categoricas).join(' ')}\n` +
+      (v.startsWith('#')
+        ? `  "${v}" es un hexadecimal suelto. Si de verdad hace falta un color\n` +
+          `  nuevo, se anade a una familia y se referencia por su escalon.`
+        : '')
     );
   }
   return paso;
@@ -445,12 +549,9 @@ export const semanticos = Object.fromEntries(
     {
       claro: resolver(t.claro, k, 'claro'),
       oscuro: resolver(t.oscuro, k, 'oscuro'),
-      // El origen ya no se escribe: se deriva de lo declarado. Si es literal,
-      // se dice que no tiene rampa en vez de inventarle una.
-      origen: {
-        claro: t.claro.startsWith('#') ? 'directo' : t.claro,
-        oscuro: t.oscuro.startsWith('#') ? 'directo' : t.oscuro,
-      },
+      // El origen ya no se escribe: ES lo declarado. Desde la v1.10.1 no hay
+      // literales, asi que todo token tiene escalon y `directo` ya no existe.
+      origen: { claro: t.claro, oscuro: t.oscuro },
       uso: t.uso,
     },
   ])
@@ -462,15 +563,31 @@ export const semanticos = Object.fromEntries(
 // Se exponen aparte para que el candado pueda distinguirlos.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const marca = {
+const marcaDeclarada = {
   // En oscuro el titular sube a rojo-400: el #E30613 sobre página oscura
   // pierde legibilidad y el panel de marca se aplana (§2.4).
-  'marca-rojo':       { claro: '#E30613', oscuro: '#FF4C37', uso: 'Escudo, titulares de landing, impresos', prohibidoEn: 'Interfaz' },
-  'marca-rojo-panel': { claro: '#E30613', oscuro: '#930000', uso: 'Panel de marca de la landing',           prohibidoEn: 'Interfaz' },
-  'marca-oro':        { claro: '#DEBD68', oscuro: '#DEBD68', uso: 'Escudo, filete de landing',              prohibidoEn: 'Interfaz. En sistema usar accion-2 o marco-acento' },
-  'marca-amarillo':   { claro: '#FDF200', oscuro: '#FDF200', uso: 'Campaña, afiches, redes',                prohibidoEn: 'Todo el sistema. 1,2:1 — no admite texto' },
-  'marca-celeste':    { claro: '#01ADED', oscuro: '#01ADED', uso: 'Campaña',                                prohibidoEn: 'Todo el sistema. 2,6:1 — no admite texto' },
+  'marca-rojo':       { claro: 'marca_rojo', oscuro: 'marca_rojo_claro', uso: 'Escudo, titulares de landing, impresos', prohibidoEn: 'Interfaz' },
+  'marca-rojo-panel': { claro: 'marca_rojo', oscuro: 'marca_rojo_panel', uso: 'Panel de marca de la landing',           prohibidoEn: 'Interfaz' },
+  'marca-oro':        { claro: 'marca_oro',      oscuro: 'marca_oro',      uso: 'Escudo, filete de landing',            prohibidoEn: 'Interfaz. En sistema usar accion-2 o marco-acento' },
+  'marca-amarillo':   { claro: 'marca_amarillo', oscuro: 'marca_amarillo', uso: 'Campaña, afiches, redes',              prohibidoEn: 'Todo el sistema. 1,2:1 — no admite texto' },
+  'marca-celeste':    { claro: 'marca_celeste',  oscuro: 'marca_celeste',  uso: 'Campaña',                              prohibidoEn: 'Todo el sistema. 2,6:1 — no admite texto' },
 };
+
+// La marca pasa por el MISMO resolutor que el resto. Antes era la excepción que
+// escribía hexadecimales a mano, y una excepción sin vigilancia es por donde
+// vuelve el desorden.
+export const marca = Object.fromEntries(
+  Object.entries(marcaDeclarada).map(([k, t]) => [
+    k,
+    {
+      claro: resolver(t.claro, k, 'claro'),
+      oscuro: resolver(t.oscuro, k, 'oscuro'),
+      origen: { claro: t.claro, oscuro: t.oscuro },
+      uso: t.uso,
+      prohibidoEn: t.prohibidoEn,
+    },
+  ])
+);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PARES A VERIFICAR — el contrato.
@@ -562,6 +679,15 @@ export const pares = [
   ['aviso-acento',     'aviso-fondo',      'informativo', 'Filete del chip. Adorno, exento'],
   ['error-acento',     'error-fondo',      'informativo', 'Filete del chip. Adorno, exento'],
   ['info-acento',      'info-fondo',       'informativo', 'Filete del chip. Adorno, exento'],
+
+  // Interruptor apagado — el contorno NO está exento: es límite de control
+  // identificable (SC 1.4.11) y por eso se mide contra los tres fondos donde
+  // llega a aparecer un interruptor, no solo contra la tarjeta.
+  ['apagado-bolita',   'apagado-fondo',    4.5, 'Bolita sobre la vía del interruptor'],
+  ['apagado-borde',    'fondo-tarjeta',    3.0, 'Contorno del interruptor sobre tarjeta'],
+  ['apagado-borde',    'fondo-pagina',     3.0, 'Contorno del interruptor sobre página'],
+  ['apagado-borde',    'fondo-encabezado', 3.0, 'Contorno del interruptor sobre encabezado'],
+  ['apagado-fondo',    'fondo-tarjeta',    'informativo', 'Vía contra la tarjeta. Relleno, no delimita'],
 
   // Deshabilitado — WCAG 2.2 exime a los controles inactivos (1.4.3)
   ['accion-texto-desh','accion-deshabilitada', 'informativo', 'Botón deshabilitado. Exento por 1.4.3'],

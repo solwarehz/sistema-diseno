@@ -1,6 +1,6 @@
 {
   "documento": "MMI-DS",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "norma": "WCAG 2.2 AA",
   "generado": "node sistema/tokens/generar.mjs",
   "modos": [
@@ -9,17 +9,17 @@
   ],
   "aviso": "Archivo generado. No editar a mano. La fuente es sistema/tokens/fuente.mjs. Cambiar un valor exige regenerar, re-verificar y subir versión (§2.5 regla 8).",
   "resumen": {
-    "paresTotales": 146,
-    "paresBloqueantes": 108,
-    "paresInformativos": 38,
+    "paresTotales": 156,
+    "paresBloqueantes": 116,
+    "paresInformativos": 40,
     "fallos": 0,
     "porModo": {
       "claro": {
-        "bloqueantes": 54,
+        "bloqueantes": 58,
         "fallos": 0
       },
       "oscuro": {
-        "bloqueantes": 54,
+        "bloqueantes": 58,
         "fallos": 0
       }
     }
@@ -608,12 +608,39 @@
       },
       "uso": "Solo filete del borde. Adorno"
     },
+    "apagado-fondo": {
+      "claro": "#FFB8A9",
+      "oscuro": "#4D241F",
+      "origen": {
+        "claro": "alerta_100",
+        "oscuro": "alerta_900"
+      },
+      "uso": "Vía del interruptor en «no»"
+    },
+    "apagado-borde": {
+      "claro": "#D63231",
+      "oscuro": "#E2665C",
+      "origen": {
+        "claro": "alerta_500",
+        "oscuro": "alerta_400"
+      },
+      "uso": "Contorno del interruptor en «no». Límite de control"
+    },
+    "apagado-bolita": {
+      "claro": "#8F1017",
+      "oscuro": "#FFB8A9",
+      "origen": {
+        "claro": "alerta_800",
+        "oscuro": "alerta_100"
+      },
+      "uso": "Bolita sobre apagado-fondo"
+    },
     "identidad-1": {
       "claro": "#0E6F63",
       "oscuro": "#0E6F63",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "identidad_1",
+        "oscuro": "identidad_1"
       },
       "uso": "Avatar sin foto. Verde azulado, tono 173°"
     },
@@ -621,8 +648,8 @@
       "claro": "#6A3FA0",
       "oscuro": "#6A3FA0",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "identidad_2",
+        "oscuro": "identidad_2"
       },
       "uso": "Avatar sin foto. Violeta, tono 267°"
     },
@@ -630,8 +657,8 @@
       "claro": "#9B3B6E",
       "oscuro": "#9B3B6E",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "identidad_3",
+        "oscuro": "identidad_3"
       },
       "uso": "Avatar sin foto. Magenta, tono 328°"
     },
@@ -639,8 +666,8 @@
       "claro": "#4A5568",
       "oscuro": "#4A5568",
       "origen": {
-        "claro": "directo",
-        "oscuro": "directo"
+        "claro": "identidad_4",
+        "oscuro": "identidad_4"
       },
       "uso": "Avatar sin foto. Pizarra, saturación 17 %"
     },
@@ -658,30 +685,50 @@
     "marca-rojo": {
       "claro": "#E30613",
       "oscuro": "#FF4C37",
+      "origen": {
+        "claro": "marca_rojo",
+        "oscuro": "marca_rojo_claro"
+      },
       "uso": "Escudo, titulares de landing, impresos",
       "prohibidoEn": "Interfaz"
     },
     "marca-rojo-panel": {
       "claro": "#E30613",
       "oscuro": "#930000",
+      "origen": {
+        "claro": "marca_rojo",
+        "oscuro": "marca_rojo_panel"
+      },
       "uso": "Panel de marca de la landing",
       "prohibidoEn": "Interfaz"
     },
     "marca-oro": {
       "claro": "#DEBD68",
       "oscuro": "#DEBD68",
+      "origen": {
+        "claro": "marca_oro",
+        "oscuro": "marca_oro"
+      },
       "uso": "Escudo, filete de landing",
       "prohibidoEn": "Interfaz. En sistema usar accion-2 o marco-acento"
     },
     "marca-amarillo": {
       "claro": "#FDF200",
       "oscuro": "#FDF200",
+      "origen": {
+        "claro": "marca_amarillo",
+        "oscuro": "marca_amarillo"
+      },
       "uso": "Campaña, afiches, redes",
       "prohibidoEn": "Todo el sistema. 1,2:1 — no admite texto"
     },
     "marca-celeste": {
       "claro": "#01ADED",
       "oscuro": "#01ADED",
+      "origen": {
+        "claro": "marca_celeste",
+        "oscuro": "marca_celeste"
+      },
       "uso": "Campaña",
       "prohibidoEn": "Todo el sistema. 2,6:1 — no admite texto"
     }
@@ -1400,6 +1447,61 @@
       "ratio": 4.14,
       "minimo": "informativo",
       "motivo": "Filete del chip. Adorno, exento",
+      "cumple": null
+    },
+    {
+      "modo": "claro",
+      "frente": "apagado-bolita",
+      "fondo": "apagado-fondo",
+      "hexFrente": "#8F1017",
+      "hexFondo": "#FFB8A9",
+      "ratio": 5.62,
+      "minimo": 4.5,
+      "motivo": "Bolita sobre la vía del interruptor",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "apagado-borde",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#D63231",
+      "hexFondo": "#FFFFFF",
+      "ratio": 4.81,
+      "minimo": 3,
+      "motivo": "Contorno del interruptor sobre tarjeta",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "apagado-borde",
+      "fondo": "fondo-pagina",
+      "hexFrente": "#D63231",
+      "hexFondo": "#F8F8F6",
+      "ratio": 4.52,
+      "minimo": 3,
+      "motivo": "Contorno del interruptor sobre página",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "apagado-borde",
+      "fondo": "fondo-encabezado",
+      "hexFrente": "#D63231",
+      "hexFondo": "#F0EFEE",
+      "ratio": 4.19,
+      "minimo": 3,
+      "motivo": "Contorno del interruptor sobre encabezado",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "apagado-fondo",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#FFB8A9",
+      "hexFondo": "#FFFFFF",
+      "ratio": 1.65,
+      "minimo": "informativo",
+      "motivo": "Vía contra la tarjeta. Relleno, no delimita",
       "cumple": null
     },
     {
@@ -2203,6 +2305,61 @@
       "ratio": 4.44,
       "minimo": "informativo",
       "motivo": "Filete del chip. Adorno, exento",
+      "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "apagado-bolita",
+      "fondo": "apagado-fondo",
+      "hexFrente": "#FFB8A9",
+      "hexFondo": "#4D241F",
+      "ratio": 7.98,
+      "minimo": 4.5,
+      "motivo": "Bolita sobre la vía del interruptor",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "apagado-borde",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#E2665C",
+      "hexFondo": "#242422",
+      "ratio": 4.65,
+      "minimo": 3,
+      "motivo": "Contorno del interruptor sobre tarjeta",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "apagado-borde",
+      "fondo": "fondo-pagina",
+      "hexFrente": "#E2665C",
+      "hexFondo": "#1E1D1C",
+      "ratio": 5.04,
+      "minimo": 3,
+      "motivo": "Contorno del interruptor sobre página",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "apagado-borde",
+      "fondo": "fondo-encabezado",
+      "hexFrente": "#E2665C",
+      "hexFondo": "#2C2B29",
+      "ratio": 4.23,
+      "minimo": 3,
+      "motivo": "Contorno del interruptor sobre encabezado",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "apagado-fondo",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#4D241F",
+      "hexFondo": "#242422",
+      "ratio": 1.17,
+      "minimo": "informativo",
+      "motivo": "Vía contra la tarjeta. Relleno, no delimita",
       "cumple": null
     },
     {

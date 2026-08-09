@@ -1,6 +1,6 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.0
-   WCAG 2.2 AA · 108 pares verificados en los dos modos, 0 fallos
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.1
+   WCAG 2.2 AA · 116 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -73,6 +73,11 @@
   --info-fondo: #E9EEFF;
   --info-texto: #02468A;
   --info-acento: #2F71CE;
+
+  /* Interruptor apagado — es un estado elegido, no un error */
+  --apagado-fondo: #FFB8A9;
+  --apagado-borde: #D63231;
+  --apagado-bolita: #8F1017;
 
   /* Identidad — avatar. NO significan nada */
   --identidad-1: #0E6F63;
@@ -151,6 +156,11 @@
   --info-fondo: #273048;
   --info-texto: #BFD0FF;
   --info-acento: #6D97DE;
+
+  /* Interruptor apagado — es un estado elegido, no un error */
+  --apagado-fondo: #4D241F;
+  --apagado-borde: #E2665C;
+  --apagado-bolita: #FFB8A9;
 
   /* Identidad — avatar. NO significan nada */
   --identidad-1: #0E6F63;
@@ -233,6 +243,11 @@
     --info-texto: #BFD0FF;
     --info-acento: #6D97DE;
 
+    /* Interruptor apagado — es un estado elegido, no un error */
+    --apagado-fondo: #4D241F;
+    --apagado-borde: #E2665C;
+    --apagado-bolita: #FFB8A9;
+
     /* Identidad — avatar. NO significan nada */
     --identidad-1: #0E6F63;
     --identidad-2: #6A3FA0;
@@ -270,3 +285,263 @@
 :where([data-marco], .marco, .lat):focus-visible {
   outline-color: var(--foco-en-marco);
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   RAMPAS Y FAMILIAS CATEGÓRICAS — el inventario completo, 119 escalones.
+
+   Un solo deletreo en todo el sistema. El escalón se llama `ambar_900` y esa
+   MISMA cadena es la variable `--ambar_900` y la clase `.color-ambar_900`.
+   No hay que traducir guiones bajos a guiones en ningún sitio.
+
+   ESTO NO ES PARA MAQUETAR. En interfaz se usan los tokens semánticos de
+   arriba: son los que están medidos contra un fondo concreto y los que el
+   candado de contraste protege. Una primitiva no sabe sobre qué la vas a
+   poner, así que nadie puede garantizar que se lea (§2.5.1, y el candado de
+   lint lo bloquea en `componentes/`).
+
+   Existen por dos razones legítimas:
+     · el catálogo tiene que PINTAR la rampa para poder elegir un escalón;
+     · un token nuevo necesita ver qué escalones hay antes de apuntar a uno.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --azul_50: #E9F5FF;
+  --azul_100: #CFE8FF;
+  --azul_200: #A0D0FF;
+  --azul_300: #6CB2FF;
+  --azul_400: #3A92F4;
+  --azul_500: #1A79E1;
+  --azul_600: #0063CB;
+  --azul_700: #004EB2;
+  --azul_800: #003B91;
+  --azul_900: #002A6F;
+  --rojo_50: #FFECE5;
+  --rojo_100: #FFD5C6;
+  --rojo_200: #FFAD95;
+  --rojo_300: #FF7D62;
+  --rojo_400: #FF4C37;
+  --rojo_500: #EE1F1B;
+  --rojo_600: #D40006;
+  --rojo_700: #B40000;
+  --rojo_800: #930000;
+  --rojo_900: #700000;
+  --oro_50: #F9F3E7;
+  --oro_100: #F1E4CA;
+  --oro_200: #DFCA9C;
+  --oro_300: #C6AB6B;
+  --oro_400: #AA8E41;
+  --oro_500: #917724;
+  --oro_600: #7B630D;
+  --oro_700: #655000;
+  --oro_800: #4F3E00;
+  --oro_900: #3B2D00;
+  --verde_50: #E3F4E1;
+  --verde_100: #D3EDCF;
+  --verde_200: #B3DCAE;
+  --verde_300: #96CC92;
+  --verde_400: #78BB78;
+  --verde_500: #5FA862;
+  --verde_600: #46974A;
+  --verde_700: #338136;
+  --verde_800: #226B27;
+  --verde_900: #14521A;
+  --verde_950: #233521;
+  --ambar_50: #FFEBD6;
+  --ambar_100: #FEDFBF;
+  --ambar_200: #FBC894;
+  --ambar_300: #F0C060;
+  --ambar_400: #DFA54B;
+  --ambar_500: #C88A3C;
+  --ambar_600: #BE7A14;
+  --ambar_700: #A46300;
+  --ambar_800: #884E00;
+  --ambar_900: #6B3B00;
+  --ambar_950: #402C16;
+  --indigo_50: #F8F9FC;
+  --indigo_100: #E5E8F2;
+  --indigo_200: #B9C2DC;
+  --indigo_300: #8D9BC6;
+  --indigo_400: #6174B0;
+  --indigo_500: #45558A;
+  --indigo_600: #41507F;
+  --indigo_700: #39497A;
+  --indigo_800: #2C3D71;
+  --indigo_900: #1D3163;
+  --alerta_50: #FFE6DF;
+  --alerta_100: #FFB8A9;
+  --alerta_200: #F99B8C;
+  --alerta_300: #EF8072;
+  --alerta_400: #E2665C;
+  --alerta_500: #D63231;
+  --alerta_600: #C32123;
+  --alerta_700: #AA181D;
+  --alerta_800: #8F1017;
+  --alerta_900: #4D241F;
+  --alerta_950: #33231F;
+  --informacion_50: #E9EEFF;
+  --informacion_100: #BFD0FF;
+  --informacion_200: #9FBAF9;
+  --informacion_300: #84A7EE;
+  --informacion_400: #6D97DE;
+  --informacion_500: #2F71CE;
+  --informacion_600: #1C63BC;
+  --informacion_700: #0D55A5;
+  --informacion_800: #02468A;
+  --informacion_900: #273048;
+  --informacion_950: #303030;
+  --negro_50: #EFEEEB;
+  --negro_100: #C3C1BD;
+  --negro_200: #989692;
+  --negro_300: #8A8681;
+  --negro_400: #6E6B67;
+  --negro_500: #575451;
+  --negro_600: #44423F;
+  --negro_650: #3A3835;
+  --negro_700: #363532;
+  --negro_750: #2C2B29;
+  --negro_800: #2A2927;
+  --negro_850: #242422;
+  --negro_900: #20201E;
+  --negro_950: #1E1D1C;
+  --gris_0: #FFFFFF;
+  --gris_50: #F8F8F6;
+  --gris_100: #F0EFEE;
+  --gris_200: #E0DFDE;
+  --gris_300: #C8C6C4;
+  --gris_400: #A7A6A3;
+  --gris_500: #8B8985;
+  --gris_600: #6A6864;
+  --gris_700: #5C5955;
+  --gris_800: #474440;
+  --gris_900: #2C2A25;
+  --marca_rojo: #E30613;
+  --marca_rojo_claro: #FF4C37;
+  --marca_rojo_panel: #930000;
+  --marca_oro: #DEBD68;
+  --marca_amarillo: #FDF200;
+  --marca_celeste: #01ADED;
+  --identidad_1: #0E6F63;
+  --identidad_2: #6A3FA0;
+  --identidad_3: #9B3B6E;
+  --identidad_4: #4A5568;
+}
+
+.color-azul_50 { background-color: var(--azul_50); }
+.color-azul_100 { background-color: var(--azul_100); }
+.color-azul_200 { background-color: var(--azul_200); }
+.color-azul_300 { background-color: var(--azul_300); }
+.color-azul_400 { background-color: var(--azul_400); }
+.color-azul_500 { background-color: var(--azul_500); }
+.color-azul_600 { background-color: var(--azul_600); }
+.color-azul_700 { background-color: var(--azul_700); }
+.color-azul_800 { background-color: var(--azul_800); }
+.color-azul_900 { background-color: var(--azul_900); }
+.color-rojo_50 { background-color: var(--rojo_50); }
+.color-rojo_100 { background-color: var(--rojo_100); }
+.color-rojo_200 { background-color: var(--rojo_200); }
+.color-rojo_300 { background-color: var(--rojo_300); }
+.color-rojo_400 { background-color: var(--rojo_400); }
+.color-rojo_500 { background-color: var(--rojo_500); }
+.color-rojo_600 { background-color: var(--rojo_600); }
+.color-rojo_700 { background-color: var(--rojo_700); }
+.color-rojo_800 { background-color: var(--rojo_800); }
+.color-rojo_900 { background-color: var(--rojo_900); }
+.color-oro_50 { background-color: var(--oro_50); }
+.color-oro_100 { background-color: var(--oro_100); }
+.color-oro_200 { background-color: var(--oro_200); }
+.color-oro_300 { background-color: var(--oro_300); }
+.color-oro_400 { background-color: var(--oro_400); }
+.color-oro_500 { background-color: var(--oro_500); }
+.color-oro_600 { background-color: var(--oro_600); }
+.color-oro_700 { background-color: var(--oro_700); }
+.color-oro_800 { background-color: var(--oro_800); }
+.color-oro_900 { background-color: var(--oro_900); }
+.color-verde_50 { background-color: var(--verde_50); }
+.color-verde_100 { background-color: var(--verde_100); }
+.color-verde_200 { background-color: var(--verde_200); }
+.color-verde_300 { background-color: var(--verde_300); }
+.color-verde_400 { background-color: var(--verde_400); }
+.color-verde_500 { background-color: var(--verde_500); }
+.color-verde_600 { background-color: var(--verde_600); }
+.color-verde_700 { background-color: var(--verde_700); }
+.color-verde_800 { background-color: var(--verde_800); }
+.color-verde_900 { background-color: var(--verde_900); }
+.color-verde_950 { background-color: var(--verde_950); }
+.color-ambar_50 { background-color: var(--ambar_50); }
+.color-ambar_100 { background-color: var(--ambar_100); }
+.color-ambar_200 { background-color: var(--ambar_200); }
+.color-ambar_300 { background-color: var(--ambar_300); }
+.color-ambar_400 { background-color: var(--ambar_400); }
+.color-ambar_500 { background-color: var(--ambar_500); }
+.color-ambar_600 { background-color: var(--ambar_600); }
+.color-ambar_700 { background-color: var(--ambar_700); }
+.color-ambar_800 { background-color: var(--ambar_800); }
+.color-ambar_900 { background-color: var(--ambar_900); }
+.color-ambar_950 { background-color: var(--ambar_950); }
+.color-indigo_50 { background-color: var(--indigo_50); }
+.color-indigo_100 { background-color: var(--indigo_100); }
+.color-indigo_200 { background-color: var(--indigo_200); }
+.color-indigo_300 { background-color: var(--indigo_300); }
+.color-indigo_400 { background-color: var(--indigo_400); }
+.color-indigo_500 { background-color: var(--indigo_500); }
+.color-indigo_600 { background-color: var(--indigo_600); }
+.color-indigo_700 { background-color: var(--indigo_700); }
+.color-indigo_800 { background-color: var(--indigo_800); }
+.color-indigo_900 { background-color: var(--indigo_900); }
+.color-alerta_50 { background-color: var(--alerta_50); }
+.color-alerta_100 { background-color: var(--alerta_100); }
+.color-alerta_200 { background-color: var(--alerta_200); }
+.color-alerta_300 { background-color: var(--alerta_300); }
+.color-alerta_400 { background-color: var(--alerta_400); }
+.color-alerta_500 { background-color: var(--alerta_500); }
+.color-alerta_600 { background-color: var(--alerta_600); }
+.color-alerta_700 { background-color: var(--alerta_700); }
+.color-alerta_800 { background-color: var(--alerta_800); }
+.color-alerta_900 { background-color: var(--alerta_900); }
+.color-alerta_950 { background-color: var(--alerta_950); }
+.color-informacion_50 { background-color: var(--informacion_50); }
+.color-informacion_100 { background-color: var(--informacion_100); }
+.color-informacion_200 { background-color: var(--informacion_200); }
+.color-informacion_300 { background-color: var(--informacion_300); }
+.color-informacion_400 { background-color: var(--informacion_400); }
+.color-informacion_500 { background-color: var(--informacion_500); }
+.color-informacion_600 { background-color: var(--informacion_600); }
+.color-informacion_700 { background-color: var(--informacion_700); }
+.color-informacion_800 { background-color: var(--informacion_800); }
+.color-informacion_900 { background-color: var(--informacion_900); }
+.color-informacion_950 { background-color: var(--informacion_950); }
+.color-negro_50 { background-color: var(--negro_50); }
+.color-negro_100 { background-color: var(--negro_100); }
+.color-negro_200 { background-color: var(--negro_200); }
+.color-negro_300 { background-color: var(--negro_300); }
+.color-negro_400 { background-color: var(--negro_400); }
+.color-negro_500 { background-color: var(--negro_500); }
+.color-negro_600 { background-color: var(--negro_600); }
+.color-negro_650 { background-color: var(--negro_650); }
+.color-negro_700 { background-color: var(--negro_700); }
+.color-negro_750 { background-color: var(--negro_750); }
+.color-negro_800 { background-color: var(--negro_800); }
+.color-negro_850 { background-color: var(--negro_850); }
+.color-negro_900 { background-color: var(--negro_900); }
+.color-negro_950 { background-color: var(--negro_950); }
+.color-gris_0 { background-color: var(--gris_0); }
+.color-gris_50 { background-color: var(--gris_50); }
+.color-gris_100 { background-color: var(--gris_100); }
+.color-gris_200 { background-color: var(--gris_200); }
+.color-gris_300 { background-color: var(--gris_300); }
+.color-gris_400 { background-color: var(--gris_400); }
+.color-gris_500 { background-color: var(--gris_500); }
+.color-gris_600 { background-color: var(--gris_600); }
+.color-gris_700 { background-color: var(--gris_700); }
+.color-gris_800 { background-color: var(--gris_800); }
+.color-gris_900 { background-color: var(--gris_900); }
+.color-marca_rojo { background-color: var(--marca_rojo); }
+.color-marca_rojo_claro { background-color: var(--marca_rojo_claro); }
+.color-marca_rojo_panel { background-color: var(--marca_rojo_panel); }
+.color-marca_oro { background-color: var(--marca_oro); }
+.color-marca_amarillo { background-color: var(--marca_amarillo); }
+.color-marca_celeste { background-color: var(--marca_celeste); }
+.color-identidad_1 { background-color: var(--identidad_1); }
+.color-identidad_2 { background-color: var(--identidad_2); }
+.color-identidad_3 { background-color: var(--identidad_3); }
+.color-identidad_4 { background-color: var(--identidad_4); }

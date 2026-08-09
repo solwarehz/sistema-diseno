@@ -14,7 +14,7 @@
 import { writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { VERSION, NORMA, primitivas, semanticos, marca, pares, correcciones , CAMBIOS } from './fuente.mjs';
+import { VERSION, NORMA, primitivas, categoricas, escalones, semanticos, marca, pares, correcciones , CAMBIOS } from './fuente.mjs';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 
@@ -128,6 +128,9 @@ const grupos = {
     'error-fondo', 'error-texto', 'error-acento',
     'info-fondo', 'info-texto', 'info-acento',
   ],
+  'Interruptor apagado — es un estado elegido, no un error': [
+    'apagado-fondo', 'apagado-borde', 'apagado-bolita',
+  ],
   'Identidad — avatar. NO significan nada': [
     'identidad-1', 'identidad-2', 'identidad-3', 'identidad-4', 'identidad-texto',
   ],
@@ -192,41 +195,21 @@ if (malCambios.length) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CANDADO DEL HEXADECIMAL SUELTO
+// CANDADO DEL HEXADECIMAL SUELTO — ahora vive en `fuente.mjs`
 //
-// Ningún token de estos grupos puede declarar un valor literal: todos salen de
-// un escalón de rampa. Si hace falta un tono que no existe, se añade a la
-// rampa —y entonces tiene nombre, sitio y vecinos— en vez de escribir un
-// hexadecimal que nadie puede volver a encontrar.
+// Hasta la v1.10.1 esto recorría siete grupos buscando `origen === 'directo'`,
+// y dejaba fuera a propósito los de identidad y los de marca. Un candado con
+// lista de exentos protege lo que ya estaba bien y calla justo donde falla:
+// los ocho hexadecimales sueltos del sistema estaban TODOS en los exentos.
 //
-// `Identidad` queda fuera a propósito y es la única excepción: sus cuatro
-// colores son de UN SOLO PASO. Un `identidad-1` más claro dejaría de ser el
-// mismo identificador, así que una rampa de diez pasos serían nueve valores
-// que nadie va a consumir nunca.
+// Se sustituyó por algo más simple y sin excepciones: el resolutor de
+// `fuente.mjs` ya no acepta literales de ninguna clase, así que un token sin
+// escalón no llega hasta aquí —revienta al importar—. `identidad` y `marca`
+// pasaron a ser familias categóricas y se nombran igual que todo lo demás.
+//
+// Lo que este archivo NO puede ver es el hexadecimal escrito en una hoja de
+// estilos o en un `style=`. De eso se ocupa `candado/verificar-color.mjs`.
 // ─────────────────────────────────────────────────────────────────────────────
-const SIN_LITERALES = [
-  'Superficies', 'Texto', 'Bordes', 'Acción',
-  'Marco de aplicación', 'Foco', 'Estados — siempre en pares fondo/texto',
-];
-
-const literales = [];
-for (const titulo of SIN_LITERALES) {
-  for (const k of grupos[titulo] ?? []) {
-    for (const modo of ['claro', 'oscuro']) {
-      if (semanticos[k].origen[modo] === 'directo') {
-        literales.push(`${titulo} › ${k}.${modo} = ${semanticos[k][modo]}`);
-      }
-    }
-  }
-}
-if (literales.length) {
-  console.error('\n  Hay hexadecimales sueltos donde no puede haberlos:\n');
-  literales.forEach((l) => console.error(`    ${l}`));
-  console.error('\n  Cada uno tiene que salir de un escalón: claro: \'ambar_900\'.');
-  console.error('  Si el tono que necesitas no existe, añádelo a la rampa —así');
-  console.error('  tiene nombre y vecinos— en vez de escribir el valor a mano.\n');
-  process.exit(1);
-}
 
 const agrupados = new Set(Object.values(grupos).flat());
 const huerfanos = Object.keys(semanticos).filter((k) => !agrupados.has(k));
@@ -254,6 +237,8 @@ const variables = (modo) =>
       )
     )
     .join('\n');
+
+const totalEscalones = escalones.length;
 
 const css = `/* ───────────────────────────────────────────────────────────────────────────
    TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v${VERSION}
@@ -320,6 +305,30 @@ ${Object.entries(marca)
 :where([data-marco], .marco, .lat):focus-visible {
   outline-color: var(--foco-en-marco);
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   RAMPAS Y FAMILIAS CATEGÓRICAS — el inventario completo, ${totalEscalones} escalones.
+
+   Un solo deletreo en todo el sistema. El escalón se llama \`ambar_900\` y esa
+   MISMA cadena es la variable \`--ambar_900\` y la clase \`.color-ambar_900\`.
+   No hay que traducir guiones bajos a guiones en ningún sitio.
+
+   ESTO NO ES PARA MAQUETAR. En interfaz se usan los tokens semánticos de
+   arriba: son los que están medidos contra un fondo concreto y los que el
+   candado de contraste protege. Una primitiva no sabe sobre qué la vas a
+   poner, así que nadie puede garantizar que se lea (§2.5.1, y el candado de
+   lint lo bloquea en \`componentes/\`).
+
+   Existen por dos razones legítimas:
+     · el catálogo tiene que PINTAR la rampa para poder elegir un escalón;
+     · un token nuevo necesita ver qué escalones hay antes de apuntar a uno.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+:root {
+${escalones.map(([n, v]) => `  --${n}: ${v};`).join('\n')}
+}
+
+${escalones.map(([n]) => `.color-${n} { background-color: var(--${n}); }`).join('\n')}
 `;
 
 writeFileSync(join(AQUI, 'tokens.css'), css);
