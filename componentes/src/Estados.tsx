@@ -50,7 +50,7 @@ export function EstadoPantalla({ tipo, titulo, linea, accion, referencia }: Esta
         <>
           <p className="ep-titulo">{titulo}</p>
           {linea && <p className="ep-linea">{linea}</p>}
-          {referencia && <p className="ep-ref">Referencia: {referencia}</p>}
+          {referencia && <p className="ep-linea">Referencia: {referencia}</p>}
           {accion && (
             <Boton mini variante="principal" onClick={accion.onClick}>
               {accion.texto}

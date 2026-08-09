@@ -75,8 +75,8 @@ export function SeleccionMultiple({
   return (
     // fieldset y legend, no un div con texto: es lo que agrupa las casillas
     // para quien navega por formulario.
-    <fieldset className="ms">
-      <legend className="ms-titulo">{titulo}</legend>
+    <fieldset className="ms-grupo">
+      <legend className="ms-leyenda">{titulo}</legend>
       {opciones.map((o) => {
         const idOp = `${id}-${o.valor}`;
         return (
@@ -89,7 +89,7 @@ export function SeleccionMultiple({
               onChange={() => alternar(o.valor)}
               aria-describedby={o.ayuda ? `${idOp}-ayuda` : undefined}
             />
-            <span className="ms-txt">
+            <span >
               <span>{o.texto}</span>
               {o.ayuda && <span className="ms-ayuda" id={`${idOp}-ayuda`}>{o.ayuda}</span>}
             </span>

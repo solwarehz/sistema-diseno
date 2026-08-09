@@ -4508,6 +4508,20 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 /* Tabla con filas desplegables */
 .tb-desp .tb-th-txt { display: block; padding: 8px 12px; font-weight: 500; }
 .tb-th-chev { width: 42px; }
+
+/* EL DISPARADOR DE ORDEN. No existia porque la tabla del catalogo es estatica:
+   nunca hubo nada que pulsar. El componente si ordena, y su boton se quedaba
+   sin estilo en cualquier proyecto que importara la hoja —salia con el aspecto
+   de boton del navegador dentro del encabezado—.
+   Se crea aqui, que es donde vive el estilo, y no en el componente: dos fuentes
+   para lo mismo divergen. */
+.tb-th-btn { display: flex; align-items: center; gap: 4px; width: 100%;
+  font: inherit; color: inherit; text-align: inherit; background: none;
+  border: 0; padding: 0; cursor: pointer; }
+.tb-th-btn:hover .tb-th-txt { text-decoration: underline; }
+/* La flecha ocupa sitio SIEMPRE, tambien sin ordenar: si apareciera al pulsar,
+   el encabezado se movaria y la columna bailaria a cada clic. */
+.tb-th-flecha { flex: none; width: 12px; color: var(--accion); }
 .tb-chev-celda { width: 42px; padding: 0 !important; }
 .tb-chev { width: 100%; height: 34px; display: grid; place-items: center;
   background: transparent; border: 0; cursor: pointer; color: var(--texto-secundario); }

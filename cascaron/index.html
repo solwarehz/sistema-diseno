@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.10.6</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.10.7</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.6
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.7
    WCAG 2.2 AA · 134 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -1428,6 +1428,20 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 /* Tabla con filas desplegables */
 .tb-desp .tb-th-txt { display: block; padding: 8px 12px; font-weight: 500; }
 .tb-th-chev { width: 42px; }
+
+/* EL DISPARADOR DE ORDEN. No existia porque la tabla del catalogo es estatica:
+   nunca hubo nada que pulsar. El componente si ordena, y su boton se quedaba
+   sin estilo en cualquier proyecto que importara la hoja —salia con el aspecto
+   de boton del navegador dentro del encabezado—.
+   Se crea aqui, que es donde vive el estilo, y no en el componente: dos fuentes
+   para lo mismo divergen. */
+.tb-th-btn { display: flex; align-items: center; gap: 4px; width: 100%;
+  font: inherit; color: inherit; text-align: inherit; background: none;
+  border: 0; padding: 0; cursor: pointer; }
+.tb-th-btn:hover .tb-th-txt { text-decoration: underline; }
+/* La flecha ocupa sitio SIEMPRE, tambien sin ordenar: si apareciera al pulsar,
+   el encabezado se movaria y la columna bailaria a cada clic. */
+.tb-th-flecha { flex: none; width: 12px; color: var(--accion); }
 .tb-chev-celda { width: 42px; padding: 0 !important; }
 .tb-chev { width: 100%; height: 34px; display: grid; place-items: center;
   background: transparent; border: 0; cursor: pointer; color: var(--texto-secundario); }
@@ -2546,7 +2560,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.10.6</option></select></label>
+          <select class="campo cg-in"><option>v1.10.7</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -2607,8 +2621,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.10.6.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.10.6</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.10.7.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.10.7</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -8508,7 +8522,7 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
         <a href="#man-historial" data-ir="man-historial" class="migas-actual" aria-current="page">Historial</a>
       </nav>
       <div class="pag-cab"><h1>Historial</h1></div>
-      <div class="manual"><table class="tabla-simple tabla-manual"><thead><tr><th>Versión</th><th>Fecha</th><th>Cambio</th></tr></thead><tbody><tr><td>1.1.0</td><td>2026-08-09</td><td>Sobre MMI-DS v1.10.5. §2.4 pasa de «cuatro colores de marca» a la familia <code>marca</code>, con la distinción entre conocido y autorizado. De §10 se BORRAN iconografía y densidad, que ya están hechas. Se añade <code>ACTUALIZAR.md</code></td></tr><tr><td>1.0.0</td><td>2026-08-07</td><td>Primera edición. Sobre MMI-DS v1.1.0</td></tr></tbody></table>
+      <div class="manual"><table class="tabla-simple tabla-manual"><thead><tr><th>Versión</th><th>Fecha</th><th>Cambio</th></tr></thead><tbody><tr><td>1.1.0</td><td>2026-08-09</td><td>Sobre MMI-DS v1.10.7. §2.4 pasa de «cuatro colores de marca» a la familia <code>marca</code>, con la distinción entre conocido y autorizado. De §10 se BORRAN iconografía y densidad, que ya están hechas. Se añade <code>ACTUALIZAR.md</code></td></tr><tr><td>1.0.0</td><td>2026-08-07</td><td>Primera edición. Sobre MMI-DS v1.1.0</td></tr></tbody></table>
 <p class="man-p"><strong>Este manual se corrige cuando cambia el sistema, no al revés.</strong></p></div>
     </section><section class="pagina" id="pg-cambios" hidden>
       <nav class="migas" aria-label="Ubicación">
@@ -8526,6 +8540,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.10.7 <span class="cam-fecha">2026-08-09</span></h3>
+<p class="pag-intro"><strong>Cero clases huerfanas: los componentes dejan de invocar estilos que no existen.</strong> Dieciocho clases que un componente escribia y NADIE definia. El elemento salia sin estilo en cualquier proyecto que importara la hoja, y no daba ningun error: React la escribe, el navegador no protesta. Casi todas existian con OTRO nombre —.tb-caja por .tb-envoltura, .ms por .ms-grupo, .fc-titulo por .fc-mes-tit—, que es lo que pasa cuando el marcado se escribe mirando en vez de copiando. Se renombran, no se crean. Solo DOS faltaban de verdad y se crean: .tb-th-btn y .tb-th-flecha, el disparador de orden y su flecha, que el catalogo nunca tuvo porque su tabla es estatica. Y queda candado: extraer.mjs falla si un componente invoca una clase que nadie declara.</p>
+
 
 
 <h3 class="sub-seccion">v1.10.6 <span class="cam-fecha">2026-08-09</span></h3>

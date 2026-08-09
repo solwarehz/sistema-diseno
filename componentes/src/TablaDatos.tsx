@@ -148,7 +148,7 @@ export function TablaDatos<T>({
   }
 
   return (
-    <div className="tb-caja">
+    <div className="tb-envoltura">
       <div className="tb-barra">
         <div className="tb-barra-izq">
           <Boton

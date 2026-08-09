@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   PRESET DE TAILWIND 3.4 — Colegio Albert Einstein · MMI-DS v1.10.6
+   PRESET DE TAILWIND 3.4 — Colegio Albert Einstein · MMI-DS v1.10.7
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs

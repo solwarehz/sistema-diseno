@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.10.6';
+export const VERSION = '1.10.7';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,21 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.10.7', fecha: '2026-08-09',
+    que: 'Cero clases huerfanas: los componentes dejan de invocar estilos que no existen',
+    porque:
+      'Dieciocho clases que un componente escribia y NADIE definia. El elemento salia sin ' +
+      'estilo en cualquier proyecto que importara la hoja, y no daba ningun error: React la ' +
+      'escribe, el navegador no protesta. Casi todas existian con OTRO nombre —.tb-caja por ' +
+      '.tb-envoltura, .ms por .ms-grupo, .fc-titulo por .fc-mes-tit—, que es lo que pasa ' +
+      'cuando el marcado se escribe mirando en vez de copiando. Se renombran, no se crean. ' +
+      'Solo DOS faltaban de verdad y se crean: .tb-th-btn y .tb-th-flecha, el disparador de ' +
+      'orden y su flecha, que el catalogo nunca tuvo porque su tabla es estatica. Y queda ' +
+      'candado: extraer.mjs falla si un componente invoca una clase que nadie declara.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.10.6', fecha: '2026-08-09',
     que: 'La entrega explica como usarse, y el manual deja de dar por pendiente lo hecho',

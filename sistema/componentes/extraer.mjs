@@ -27,7 +27,7 @@
  * comportamiento sigue siendo del proyecto hasta que haya dónde compilarlo.
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { VERSION } from '../tokens/fuente.mjs';
@@ -63,7 +63,7 @@ const ELEMENTOS = [
   { n: 'Marco de aplicación',   p: ['lat', 'nav', 'top', 'us', 'app', 'm', 'fg', 'velo', 'badge'] },
   // No es un elemento: es una utilidad transversal. Va en la lista porque lo
   // que no este aqui NO VIAJA, y sin ella los textos de solo-lector se ven.
-  { n: 'Utilidades',            p: ['sr'] },
+  { n: 'Utilidades',            p: ['sr', 'mono'] },
 ];
 
 // Clases que son SOLO del catálogo. Se listan una a una para poder distinguir
@@ -252,6 +252,56 @@ if (sinClasificar.size) {
   console.log('  o es del catálogo y entra en SOLO_CATALOGO. Callarlos hace que');
   console.log('  un elemento nuevo se quede fuera de la entrega sin que se note.\n');
 }
-console.log('');
+// ─────────────────────────────────────────────────────────────────────────────
+// CANDADO DE LA CLASE HUÉRFANA
+//
+// Un componente puede invocar una clase que no existe en ninguna hoja, y no se
+// nota: React la escribe en el atributo, el navegador no protesta y el elemento
+// sale sin estilo. Solo se descubre mirándolo, y solo si sabes cómo debería
+// verse.
+//
+// Había DIECIOCHO. Las peores no eran de estilo:
+//   · `.sr-solo` no existía, y tres componentes la usaban para OCULTAR texto a
+//     la vista. Los «Cargando» y los «(se abre en una pestaña nueva)» se veían.
+//   · `.tb-th-btn` dejaba el disparador de orden con el aspecto de botón del
+//     navegador dentro del encabezado de la tabla.
+//
+// Casi todas existían con OTRO nombre —`.tb-caja` por `.tb-envoltura`, `.ms`
+// por `.ms-grupo`, `.fc-titulo` por `.fc-mes-tit`—, que es lo que pasa cuando
+// el marcado se escribe mirando en vez de copiando.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const dirComponentes = join(RAIZ, 'componentes', 'src');
+if (existsSync(dirComponentes)) {
+  const declaradas = new Set();
+  for (const m of salida.matchAll(/\.([a-zA-Z][a-zA-Z0-9_-]*)/g)) declaradas.add(m[1]);
+
+  const huerfanas = [];
+  for (const f of readdirSync(dirComponentes).filter((f) => /\.tsx$/.test(f))) {
+    const fuente = readFileSync(join(dirComponentes, f), 'utf8');
+    for (const m of fuente.matchAll(/className=[{]?['"`]([^'"`]+)['"`]/g)) {
+      for (const c of m[1].split(/\s+/)) {
+        // LÍMITE CONOCIDO, comprobado rompiéndolo: esto ve `className="x"` y
+        // `className={\`x\`}`, pero NO las clases dentro de un array
+        // —`className={['chip', CLASE[tono]].join(' ')}`—. Se probó metiendo
+        // una clase inexistente en `Chip` de esa forma y el candado salió en
+        // verde. Cubre la mayoría, no todo, y decirlo importa: un candado del
+        // que se cree que ve más de lo que ve es peor que no tenerlo.
+        if (!/^[a-z][a-z0-9-]*$/.test(c)) continue;
+        if (!declaradas.has(c)) huerfanas.push([f.replace('.tsx', ''), c]);
+      }
+    }
+  }
+
+  if (huerfanas.length) {
+    console.error(`  ${huerfanas.length} clase(s) que un componente invoca y NADIE define:\n`);
+    for (const [comp, c] of huerfanas) console.error(`    ${comp.padEnd(16)} .${c}`);
+    console.error('\n  El elemento sale SIN ESTILO en cualquier proyecto que importe');
+    console.error('  esta hoja, y no da ningún error. Antes de crear la regla, busca:');
+    console.error('  casi siempre existe con otro nombre y lo que falla es el marcado.\n');
+    process.exit(1);
+  }
+  console.log(`  ✓ ${declaradas.size} clases declaradas · 0 huérfanas en los componentes\n`);
+}
 
 export { ELEMENTOS };

@@ -177,7 +177,7 @@ export function RangoFecha({
   const cabecera = `${MESES[foco.getMonth()]} de ${foco.getFullYear()}`;
 
   return (
-    <div className="fc">
+    <div className="fc-zona">
       {/* Los dos disparadores NO son <Campo>, y es a proposito. Campo renderiza
           un <input>, y un input no abre un dialogo: esto tiene que SER un
           boton -aria-haspopup, aria-expanded, teclado de boton- y PARECER un
@@ -193,8 +193,8 @@ export function RangoFecha({
           aria-expanded={abierto && modo === 'desde'}
           onClick={() => abrir('desde')}
         >
-          <span className="fc-campo-et">Desde</span>
-          <span className="fc-campo-val">{desde ?? 'Elegir fecha'}</span>
+          <span className="cg-et">Desde</span>
+          <span className="cg-in">{desde ?? 'Elegir fecha'}</span>
         </button>
         <button
           type="button"
@@ -204,8 +204,8 @@ export function RangoFecha({
           aria-expanded={abierto && modo === 'hasta'}
           onClick={() => abrir('hasta')}
         >
-          <span className="fc-campo-et">Hasta</span>
-          <span className="fc-campo-val">{hasta ?? 'Elegir fecha'}</span>
+          <span className="cg-et">Hasta</span>
+          <span className="cg-in">{hasta ?? 'Elegir fecha'}</span>
         </button>
       </div>
 
@@ -217,7 +217,7 @@ export function RangoFecha({
               onClick={() => { setFoco((f) => sumarMeses(f, -1)); debeEnfocar.current = true; }}>‹</Boton>
             {/* El cambio de mes se anuncia: sin esto, con lector de pantalla la
                 rejilla cambia entera en silencio. */}
-            <span className="fc-titulo" id={`${id}-mes`} aria-live="polite">{cabecera}</span>
+            <span className="fc-mes-tit" id={`${id}-mes`} aria-live="polite">{cabecera}</span>
             <Boton mini variante="terciaria"
               aria-label="Mes siguiente"
               onClick={() => { setFoco((f) => sumarMeses(f, 1)); debeEnfocar.current = true; }}>›</Boton>
@@ -230,11 +230,11 @@ export function RangoFecha({
             ref={rejilla}
             onKeyDown={teclas}
           >
-            <div role="row" className="fc-cabeceras">
+            <div role="row" className="fc-sem">
               {Array.from({ length: 7 }, (_, i) => {
                 const dow = (primerDia + i) % 7;
                 return (
-                  <span role="columnheader" key={dow} className="fc-dow" aria-label={DIAS_LARGOS[dow]}>
+                  <span role="columnheader" key={dow} aria-label={DIAS_LARGOS[dow]}>
                     {DIAS_CORTOS[dow]}
                   </span>
                 );
@@ -277,7 +277,7 @@ export function RangoFecha({
             ))}
           </div>
 
-          <div className="fc-pie">
+          <div className="fc-cal-pie">
             <Boton mini variante="destructiva"
               onClick={() => { setDesde(null); setHasta(null); onCambio?.({ desde: null, hasta: null }); setModo('desde'); }}>
               Limpiar

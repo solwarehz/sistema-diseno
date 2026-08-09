@@ -67,7 +67,7 @@ export function Paginacion({
       </button>
 
       {compacta ? (
-        <span className="pgn-pos">{pagina} de {totalPaginas}</span>
+        <span className="pgn-elip">{pagina} de {totalPaginas}</span>
       ) : (
         ventana(pagina, totalPaginas).map((n, i) =>
           n === '…' ? (
@@ -97,7 +97,7 @@ export function Paginacion({
       </button>
 
       {/* Se IMPORTA Selector. Antes era un <select className="campo"> a mano
-          dentro de un <label className="pgn-tam">, y `pgn-tam` NO EXISTÍA en
+          dentro de un label con la clase pgn-tam, que NO EXISTÍA en
           ninguna hoja: reusaba la clase del campo pero no el componente, así
           que se quedaba sin la etiqueta vinculada por `htmlFor` y sin el
           contenedor. La disposición en línea la pone `.pgn .campo-grupo`. */}

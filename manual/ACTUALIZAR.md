@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.10.6
+# Actualizar al sistema de diseño v1.10.7
 
 Para el área de sistemas. Si vienes de la **v1.7.0**, que es la que se entregó
 en su momento, esto es todo lo que cambia y todo lo que hay que hacer.
@@ -8,10 +8,10 @@ en su momento, esto es todo lo que cambia y todo lo que hay que hacer.
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.10.6"
+npm install "github:solwarehz/sistema-diseno#v1.10.7"
 ```
 
-**La etiqueta es obligatoria.** Sin `#v1.10.6` npm instala la rama por omisión,
+**La etiqueta es obligatoria.** Sin `#v1.10.7` npm instala la rama por omisión,
 que no tiene el sistema. Si el comando falla con `404` o `repository not found`,
 no es un problema del comando: es acceso al repositorio, que es privado. Pídelo.
 
@@ -22,7 +22,7 @@ estar en una versión distinta de la real.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.10.6
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.10.7
 ```
 
 ---
@@ -30,7 +30,7 @@ node -p "require('sistema-diseno-ae/package.json').version"   # 1.10.6
 ## 2 · Lo primero que cambia para ti: ya no reconstruyes componentes
 
 Hasta la v1.9.0 la entrega llevaba **el estilo** y tú ponías el comportamiento.
-Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.10.6
+Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.10.7
 viajan los trece componentes de React**, con el comportamiento dentro.
 
 ```jsx

@@ -2,7 +2,7 @@
 
 **Colegio Albert Einstein, Huaraz**
 Documento MMI-MAN-01 · Versión 1.1.0 · 9 de agosto de 2026
-Sistema de referencia: MMI-DS v1.10.6 · Color modo claro **bloqueado**
+Sistema de referencia: MMI-DS v1.10.7 · Color modo claro **bloqueado**
 
 > Para actualizar un proyecto que ya usa el sistema, empieza por
 > [`ACTUALIZAR.md`](ACTUALIZAR.md): dice qué cambió, qué se rompe y cómo instalarlo.
@@ -412,7 +412,7 @@ comporta distinto y nadie sabrá por qué.
 
 | Versión | Fecha | Cambio |
 |---|---|---|
-| 1.1.0 | 2026-08-09 | Sobre MMI-DS v1.10.6. §2.4 pasa de «cuatro colores de marca» a la familia `marca`, con la distinción entre conocido y autorizado. De §10 se BORRAN iconografía y densidad, que ya están hechas. Se añade `ACTUALIZAR.md` |
+| 1.1.0 | 2026-08-09 | Sobre MMI-DS v1.10.7. §2.4 pasa de «cuatro colores de marca» a la familia `marca`, con la distinción entre conocido y autorizado. De §10 se BORRAN iconografía y densidad, que ya están hechas. Se añade `ACTUALIZAR.md` |
 | 1.0.0 | 2026-08-07 | Primera edición. Sobre MMI-DS v1.1.0 |
 
 **Este manual se corrige cuando cambia el sistema, no al revés.**

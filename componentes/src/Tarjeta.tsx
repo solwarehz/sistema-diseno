@@ -23,7 +23,7 @@ export type TarjetaProps = {
 export function Tarjeta({ titulo, pie, onClick, children, className = '' }: TarjetaProps) {
   const contenido = (
     <>
-      {titulo && <div className="tn-cab"><h3 className="tn-tit">{titulo}</h3></div>}
+      {titulo && <div className="tn-cab"><h3 >{titulo}</h3></div>}
       <div className="tn-cuerpo">{children}</div>
       {pie && <div className="tn-pie">{pie}</div>}
     </>

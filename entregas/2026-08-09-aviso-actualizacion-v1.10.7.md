@@ -1,4 +1,4 @@
-# Sistema de diseño v1.10.6 — actualización disponible
+# Sistema de diseño v1.10.7 — actualización disponible
 
 Colegio Albert Einstein · 9 de agosto de 2026
 
@@ -12,10 +12,10 @@ ustedes. Va todo lo que necesitan para pasar de la v1.7.0 a esta.
 ## 1 · Instalación
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.10.6"
+npm install "github:solwarehz/sistema-diseno#v1.10.7"
 ```
 
-La etiqueta es **obligatoria**. Sin `#v1.10.6` npm instala la rama por omisión,
+La etiqueta es **obligatoria**. Sin `#v1.10.7` npm instala la rama por omisión,
 que no tiene el sistema. Si sale `404` o `repository not found`, no es el
 comando: es acceso al repositorio, que es privado — pídanmelo.
 
@@ -25,7 +25,7 @@ creerían estar en una versión distinta de la real.
 Comprueben que quedó lo que esperaban:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.10.6
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.10.7
 ```
 
 ## 2 · Lo principal: ya no reconstruyen componentes
