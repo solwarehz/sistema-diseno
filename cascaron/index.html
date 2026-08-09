@@ -2664,7 +2664,11 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                   <span class="nav-txt">Barra de progreso</span></a><a class="nav-hijo" href="#aviso" data-ir="aviso" title="Aviso temporal">
                   <span class="nav-txt">Aviso temporal</span></a><a class="nav-hijo" href="#confirmar" data-ir="confirmar" title="Confirmación">
                   <span class="nav-txt">Confirmación</span></a><a class="nav-hijo" href="#estados" data-ir="estados" title="Estados de pantalla">
-                  <span class="nav-txt">Estados de pantalla</span></a>
+                  <span class="nav-txt">Estados de pantalla</span></a><a class="nav-hijo" href="#nota" data-ir="nota" title="Nota permanente">
+                  <span class="nav-txt">Nota permanente</span></a><a class="nav-hijo" href="#dialogo" data-ir="dialogo" title="Diálogo">
+                  <span class="nav-txt">Diálogo</span></a><a class="nav-hijo" href="#migas" data-ir="migas" title="Migas de pan">
+                  <span class="nav-txt">Migas de pan</span></a><a class="nav-hijo" href="#cabecera" data-ir="cabecera" title="Cabecera de pantalla">
+                  <span class="nav-txt">Cabecera de pantalla</span></a>
       </div>
     </div>
   </div>
@@ -7909,6 +7913,192 @@ antes que la causa técnica.</p>
     <tr><td><code>esqueleto</code></td><td class="mono">ReactNode</td><td class="motivo">La forma de lo que viene. Por defecto, filas</td></tr>
   </tbody>
 </table>
+    </section><section class="pagina" id="pg-nota" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#nota" data-ir="nota" class="migas-actual" aria-current="page">Nota permanente</a>
+      </nav>
+      <div class="pant-cab"><h1>Nota permanente</h1></div>
+      
+<p class="pag-intro">Texto que <strong>explica y se queda</strong>: como se calcula un dato, una
+aclaracion bajo un formulario, una advertencia legal que siempre esta.</p>
+
+<h3 class="sub-seccion">No es un aviso, y la diferencia importa</h3>
+<p class="seccion-sub">El aviso aparece y desaparece, y su color ensena a la gente que algo requiere
+atencion. Usarlo para algo permanente tiene dos costes: <strong>grita mas de lo que debe</strong>, y
+<strong>si el ambar siempre esta, deja de significar <q>mira esto</q></strong>.</p>
+<p class="seccion-sub">El razonamiento es de Control Administrativos V2.0 y es correcto.</p>
+
+<div class="bloque">
+  <div class="msj msj-nota"><strong>Como se calcula:</strong> las horas se redondean al bloque de 15 minutos mas cercano.</div>
+  <div style="height:12px"></div>
+  <div class="msj msj-aviso">Se envio con 3 faltas sin justificar.</div>
+</div>
+<p class="seccion-sub">Arriba, la nota. Abajo, el aviso. La nota no reclama nada: solo esta.</p>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Regla</th><th>Por que</th></tr></thead>
+  <tbody>
+    <tr><td>Superficie neutra, sin tono de estado</td><td class="motivo">El color de estado significa algo; una nota no significa, explica</td></tr>
+    <tr><td>Sin <code>role</code></td><td class="motivo">Una nota permanente no es una region viva. Anunciarla la haria interrumpir en cada repintado</td></tr>
+    <tr><td>No se cierra ni se desvanece</td><td class="motivo">Si se pudiera cerrar, la mitad de la gente no la veria nunca</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Codigo</h3>
+<pre class="cod"><code>&lt;Nota titulo="Como se calcula:"&gt;
+  Las horas se redondean al bloque de 15 minutos mas cercano.
+&lt;/Nota&gt;</code></pre>
+    </section><section class="pagina" id="pg-dialogo" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#dialogo" data-ir="dialogo" class="migas-actual" aria-current="page">Diálogo</a>
+      </nav>
+      <div class="pant-cab"><h1>Diálogo</h1></div>
+      
+<p class="pag-intro">Modal con el foco atrapado. El sistema acepta primitiva accesible para
+<strong>exactamente tres casos</strong> &mdash;dialogo, menu y selector con busqueda&mdash; y este
+es uno.</p>
+
+<h3 class="sub-seccion">Cuando NO usarlo, que importa mas</h3>
+<p class="seccion-sub">Para confirmar una accion esta <a href="#confirmar" data-ir="confirmar">Confirmacion</a>,
+que es una banda en linea y <strong>no tapa</strong>. Un dialogo detiene la tarea entera, y eso solo
+se justifica cuando lo que hay dentro <strong>ES la tarea</strong>: un formulario que no cabe en la
+fila, o elegir entre opciones que hay que ver juntas.</p>
+
+<h3 class="sub-seccion">Que resuelve el navegador y que ponemos nosotros</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Lo pone</th><th>Que</th></tr></thead>
+  <tbody>
+    <tr><td><code>&lt;dialog&gt;</code></td><td class="motivo">El foco no se escapa por detras, Escape cierra, y queda en la capa superior por encima de cualquier <code>z-index</code></td></tr>
+    <tr><td>El componente</td><td class="motivo">Que el foco <strong>entre</strong> en el titulo &mdash;no en un campo sin contexto&mdash; y <strong>vuelva</strong> al origen al cerrar</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">El pie</h3>
+<p class="seccion-sub"><strong>Cancelar a la izquierda y la accion a la derecha.</strong> No es
+estetica: es el orden que la gente ya tiene aprendido, e invertirlo hace que se pulse el que no era.</p>
+<div class="bloque">
+  <div class="dlg">
+    <div class="dlg-cuerpo"><strong>Editar los datos de contacto</strong><p>Telefono y correo de la persona.</p></div>
+    <div class="dlg-pie"><button class="btn btn-neutro">Cancelar</button><button class="btn btn-1">Guardar</button></div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Cerrar al pulsar el fondo</h3>
+<p class="seccion-sub">Viene puesto, y <strong>hay que quitarlo cuando haya datos sin guardar</strong>:
+perder lo escrito por un clic fuera es peor que un clic de mas.</p>
+
+<h3 class="sub-seccion">Codigo</h3>
+<pre class="cod"><code>&lt;Dialogo
+  abierto={abierto}
+  titulo="Editar los datos de contacto"
+  origen={botonQueLoAbrio}
+  onCerrar={() =&gt; setAbierto(false)}
+  accion={{ texto: 'Guardar', onClick: guardar }}
+  cerrarAlPulsarFuera={false}
+&gt;
+  {formulario}
+&lt;/Dialogo&gt;</code></pre>
+    </section><section class="pagina" id="pg-migas" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#migas" data-ir="migas" class="migas-actual" aria-current="page">Migas de pan</a>
+      </nav>
+      <div class="pant-cab"><h1>Migas de pan</h1></div>
+      
+<p class="pag-intro">Donde estas dentro de la jerarquia. Seis reglas de estilo y ningun
+comportamiento &mdash; y aun asi se reconstruian mal, porque <strong>lo que hay que copiar no se
+ve</strong>.</p>
+
+<h3 class="sub-seccion">Las tres cosas que no se ven</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Que</th><th>Por que</th></tr></thead>
+  <tbody>
+    <tr><td><code>aria-label</code> en el <code>&lt;nav&gt;</code></td><td class="motivo">Sin el, quien navega por regiones oye <q>navegacion</q> dos veces y no sabe cual es cual</td></tr>
+    <tr><td><code>aria-hidden</code> en las barras</td><td class="motivo">Sin eso el lector lee <q>Inicio, barra inclinada, Personal</q></td></tr>
+    <tr><td><code>aria-current="page"</code> en el ultimo</td><td class="motivo">Es lo que dice que ahi estas. Es lo que mas se pierde al copiar solo el sombreado</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">El ultimo nivel NUNCA es enlace</h3>
+<p class="seccion-sub">Un enlace a la pagina en la que ya estas no lleva a ninguna parte, y quien
+tabula pasa por el sin ganar nada. Aunque se pase <code>href</code>, se ignora.</p>
+<div class="bloque">
+  <nav class="migas" aria-label="Ubicacion">
+    <span class="migas-tramo"><a href="#inicio" data-ir="inicio">Sistema de diseno</a></span>
+    <span class="migas-tramo"><span class="migas-sep" aria-hidden="true">/</span><a href="#boton" data-ir="boton">Elementos</a></span>
+    <span class="migas-tramo"><span class="migas-sep" aria-hidden="true">/</span><span class="migas-actual" aria-current="page">Interruptor</span></span>
+  </nav>
+</div>
+
+<h3 class="sub-seccion">En movil</h3>
+<p class="seccion-sub">Con tres o mas niveles no caben en un telefono. Los de mas atras se ocultan
+<strong>a la vista</strong>, no del lector: la ubicacion completa sigue siendo informacion aunque
+no quepa. Se eligio quedarse con el anterior en vez de colapsar en <q>...</q> porque en un
+telefono lo que se busca es <strong>volver</strong>, no situarse.</p>
+
+<h3 class="sub-seccion">Codigo</h3>
+<pre class="cod"><code>&lt;Migas ruta={[
+  { texto: 'Inicio', href: '/' },
+  { texto: 'Elementos', href: '/elementos' },
+  { texto: 'Interruptor' },
+]} /&gt;</code></pre>
+    </section><section class="pagina" id="pg-cabecera" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#cabecera" data-ir="cabecera" class="migas-actual" aria-current="page">Cabecera de pantalla</a>
+      </nav>
+      <div class="pant-cab"><h1>Cabecera de pantalla</h1></div>
+      
+<p class="pag-intro">Migas, titulo, accion y descripcion. El bloque con el que abre
+<strong>toda</strong> pantalla, y con el que abren las 39 paginas de este catalogo.</p>
+
+<h3 class="sub-seccion">Por que es componente y no una convencion</h3>
+<p class="seccion-sub">El titulo de pantalla es el <code>&lt;h1&gt;</code> del documento, y
+<strong>debe haber uno solo por pagina</strong>. Un componente lo garantiza; una nota en un
+comentario pidiendo que no se usen dos a la vez es disciplina, y la disciplina se rompe el dia
+que entra alguien nuevo.</p>
+<p class="seccion-sub">Por eso el titulo es <strong>texto y no marcado libre</strong>: si aceptara
+marcado, un proyecto podria meter otro encabezado dentro y volveriamos al principio.</p>
+
+<h3 class="sub-seccion">Anatomia</h3>
+<div class="bloque">
+  <header class="pant-cab">
+    <nav class="migas" aria-label="Ubicacion">
+      <span class="migas-tramo"><a href="#inicio" data-ir="inicio">Inicio</a></span>
+      <span class="migas-tramo"><span class="migas-sep" aria-hidden="true">/</span><span class="migas-actual" aria-current="page">Personal</span></span>
+    </nav>
+    <div class="pant-fila">
+      <h2 style="font-size:28px;font-weight:600;margin:0">Personal</h2>
+      <div class="pant-accion"><button class="btn btn-1">Nuevo</button></div>
+    </div>
+    <p class="pant-desc">Docentes y administrativos con contrato vigente.</p>
+  </header>
+</div>
+<p class="seccion-sub">La descripcion va <strong>debajo</strong> de la accion, no en medio: entre
+las dos separaria la accion de aquello sobre lo que actua.</p>
+
+<h3 class="sub-seccion">Codigo</h3>
+<pre class="cod"><code>&lt;CabeceraPantalla
+  migas={[{ texto: 'Inicio', href: '/' }, { texto: 'Personal' }]}
+  titulo="Personal"
+  descripcion="Docentes y administrativos con contrato vigente."
+  accion={&lt;Boton variante="principal"&gt;Nuevo&lt;/Boton&gt;}
+/&gt;</code></pre>
     </section><section class="pagina" id="pg-casos" hidden>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
@@ -8760,7 +8950,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
 
 
 <h3 class="sub-seccion">v1.14.0 <span class="cam-fecha">2026-08-09</span></h3>
-<p class="pag-intro"><strong>CabeceraPantalla, y un candado para que no se repita lo que ya paso tres veces.</strong> Control Administrativos V2.0 senalo un PATRON, no solo una pieza: tres veces algo se veia en el catalogo, un proyecto lo daba por disponible y acababa reconstruyendolo —la tabla, los iconos y ahora la cabecera de pantalla—. Reconstruido diverge, que es lo que el sistema existe para impedir. Entra verificar-entrega.mjs. La frecuencia bruta no servia: .num sale 515 veces y es una celda de tabla comparativa. Lo que distingue un patron ESTRUCTURAL es aparecer en casi todas las PAGINAS, y con ese criterio .pag-cab —39 de 39— salta y .num no. Lo que salta se decide: se publica, o se declara ESTRUCTURA_CATALOGO con su motivo escrito. Lo que no se puede es dejarlo en silencio. Y CabeceraPantalla: migas, titulo, accion y descripcion. El argumento que decide es suyo y es el bueno: el titulo de pantalla es el <h1> y debe haber UNO por pagina. Un componente lo garantiza; una nota pidiendo que no se usen dos a la vez es disciplina, no mecanismo. Por eso el titulo es texto y no children: con marcado libre, un proyecto podria meter otro encabezado dentro y volveriamos al principio. El catalogo pasa a usar la MISMA clase que viaja: dos clases para lo mismo era el problema, no la solucion.</p>
+<p class="pag-intro"><strong>CabeceraPantalla, y un candado para que no se repita lo que ya paso tres veces.</strong> Control Administrativos V2.0 senalo un PATRON, no solo una pieza: tres veces algo se veia en el catalogo, un proyecto lo daba por disponible y acababa reconstruyendolo —la tabla, los iconos y ahora la cabecera de pantalla—. Reconstruido diverge, que es lo que el sistema existe para impedir. Entra verificar-entrega.mjs. La frecuencia bruta no servia: .num sale 515 veces y es una celda de tabla comparativa. Lo que distingue un patron ESTRUCTURAL es aparecer en casi todas las PAGINAS, y con ese criterio .pag-cab —39 de 39— salta y .num no. Lo que salta se decide: se publica, o se declara ESTRUCTURA_CATALOGO con su motivo escrito. Lo que no se puede es dejarlo en silencio. Y CabeceraPantalla: migas, titulo, accion y descripcion. El argumento que decide es suyo y es el bueno: el titulo de pantalla es el <h1> y debe haber UNO por pagina. Un componente lo garantiza; una nota pidiendo que no se usen dos a la vez es disciplina, no mecanismo. Por eso el titulo es texto y no children: con marcado libre, un proyecto podria meter otro encabezado dentro y volveriamos al principio. El catalogo pasa a usar la MISMA clase que viaja: dos clases para lo mismo era el problema, no la solucion. Y la comprobacion INVERSA, que salio de aplicarme a mi mismo lo que ellos pedian: CUATRO componentes publicados que el catalogo no ensenaba —Nota, Dialogo, Migas y CabeceraPantalla—. Es el mismo fallo del reves y hace el mismo dano: el area de sistemas se guia del catalogo, asi que lo que no aparece ahi no existe para ellos y lo reconstruyen aunque este publicado. Las cuatro paginas escritas, y el candado ahora vigila los dos sentidos.</p>
 
 
 

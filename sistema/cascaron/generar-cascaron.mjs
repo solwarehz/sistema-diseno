@@ -3495,6 +3495,166 @@ responden a la vez.</p>
 </table>
 `;
 
+
+// ── Cuatro elementos que el sistema PUBLICA y el catalogo no ensenaba ───────
+// Un componente sin pagina es un componente que nadie encuentra: el area de
+// sistemas se guia del catalogo, y lo que no esta ahi lo reconstruye. Es el
+// mismo fallo que denuncio Control Administrativos V2.0 al reves.
+
+const pagCabecera = `
+<p class="pag-intro">Migas, titulo, accion y descripcion. El bloque con el que abre
+<strong>toda</strong> pantalla, y con el que abren las 39 paginas de este catalogo.</p>
+
+<h3 class="sub-seccion">Por que es componente y no una convencion</h3>
+<p class="seccion-sub">El titulo de pantalla es el <code>&lt;h1&gt;</code> del documento, y
+<strong>debe haber uno solo por pagina</strong>. Un componente lo garantiza; una nota en un
+comentario pidiendo que no se usen dos a la vez es disciplina, y la disciplina se rompe el dia
+que entra alguien nuevo.</p>
+<p class="seccion-sub">Por eso el titulo es <strong>texto y no marcado libre</strong>: si aceptara
+marcado, un proyecto podria meter otro encabezado dentro y volveriamos al principio.</p>
+
+<h3 class="sub-seccion">Anatomia</h3>
+<div class="bloque">
+  <header class="pant-cab">
+    <nav class="migas" aria-label="Ubicacion">
+      <span class="migas-tramo"><a href="#inicio" data-ir="inicio">Inicio</a></span>
+      <span class="migas-tramo"><span class="migas-sep" aria-hidden="true">/</span><span class="migas-actual" aria-current="page">Personal</span></span>
+    </nav>
+    <div class="pant-fila">
+      <h2 style="font-size:28px;font-weight:600;margin:0">Personal</h2>
+      <div class="pant-accion"><button class="btn btn-1">Nuevo</button></div>
+    </div>
+    <p class="pant-desc">Docentes y administrativos con contrato vigente.</p>
+  </header>
+</div>
+<p class="seccion-sub">La descripcion va <strong>debajo</strong> de la accion, no en medio: entre
+las dos separaria la accion de aquello sobre lo que actua.</p>
+
+<h3 class="sub-seccion">Codigo</h3>
+<pre class="cod"><code>&lt;CabeceraPantalla
+  migas={[{ texto: 'Inicio', href: '/' }, { texto: 'Personal' }]}
+  titulo="Personal"
+  descripcion="Docentes y administrativos con contrato vigente."
+  accion={&lt;Boton variante="principal"&gt;Nuevo&lt;/Boton&gt;}
+/&gt;</code></pre>`;
+
+const pagMigas = `
+<p class="pag-intro">Donde estas dentro de la jerarquia. Seis reglas de estilo y ningun
+comportamiento &mdash; y aun asi se reconstruian mal, porque <strong>lo que hay que copiar no se
+ve</strong>.</p>
+
+<h3 class="sub-seccion">Las tres cosas que no se ven</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Que</th><th>Por que</th></tr></thead>
+  <tbody>
+    <tr><td><code>aria-label</code> en el <code>&lt;nav&gt;</code></td><td class="motivo">Sin el, quien navega por regiones oye <q>navegacion</q> dos veces y no sabe cual es cual</td></tr>
+    <tr><td><code>aria-hidden</code> en las barras</td><td class="motivo">Sin eso el lector lee <q>Inicio, barra inclinada, Personal</q></td></tr>
+    <tr><td><code>aria-current="page"</code> en el ultimo</td><td class="motivo">Es lo que dice que ahi estas. Es lo que mas se pierde al copiar solo el sombreado</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">El ultimo nivel NUNCA es enlace</h3>
+<p class="seccion-sub">Un enlace a la pagina en la que ya estas no lleva a ninguna parte, y quien
+tabula pasa por el sin ganar nada. Aunque se pase <code>href</code>, se ignora.</p>
+<div class="bloque">
+  <nav class="migas" aria-label="Ubicacion">
+    <span class="migas-tramo"><a href="#inicio" data-ir="inicio">Sistema de diseno</a></span>
+    <span class="migas-tramo"><span class="migas-sep" aria-hidden="true">/</span><a href="#boton" data-ir="boton">Elementos</a></span>
+    <span class="migas-tramo"><span class="migas-sep" aria-hidden="true">/</span><span class="migas-actual" aria-current="page">Interruptor</span></span>
+  </nav>
+</div>
+
+<h3 class="sub-seccion">En movil</h3>
+<p class="seccion-sub">Con tres o mas niveles no caben en un telefono. Los de mas atras se ocultan
+<strong>a la vista</strong>, no del lector: la ubicacion completa sigue siendo informacion aunque
+no quepa. Se eligio quedarse con el anterior en vez de colapsar en <q>...</q> porque en un
+telefono lo que se busca es <strong>volver</strong>, no situarse.</p>
+
+<h3 class="sub-seccion">Codigo</h3>
+<pre class="cod"><code>&lt;Migas ruta={[
+  { texto: 'Inicio', href: '/' },
+  { texto: 'Elementos', href: '/elementos' },
+  { texto: 'Interruptor' },
+]} /&gt;</code></pre>`;
+
+const pagNota = `
+<p class="pag-intro">Texto que <strong>explica y se queda</strong>: como se calcula un dato, una
+aclaracion bajo un formulario, una advertencia legal que siempre esta.</p>
+
+<h3 class="sub-seccion">No es un aviso, y la diferencia importa</h3>
+<p class="seccion-sub">El aviso aparece y desaparece, y su color ensena a la gente que algo requiere
+atencion. Usarlo para algo permanente tiene dos costes: <strong>grita mas de lo que debe</strong>, y
+<strong>si el ambar siempre esta, deja de significar <q>mira esto</q></strong>.</p>
+<p class="seccion-sub">El razonamiento es de Control Administrativos V2.0 y es correcto.</p>
+
+<div class="bloque">
+  <div class="msj msj-nota"><strong>Como se calcula:</strong> las horas se redondean al bloque de 15 minutos mas cercano.</div>
+  <div style="height:12px"></div>
+  <div class="msj msj-aviso">Se envio con 3 faltas sin justificar.</div>
+</div>
+<p class="seccion-sub">Arriba, la nota. Abajo, el aviso. La nota no reclama nada: solo esta.</p>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Regla</th><th>Por que</th></tr></thead>
+  <tbody>
+    <tr><td>Superficie neutra, sin tono de estado</td><td class="motivo">El color de estado significa algo; una nota no significa, explica</td></tr>
+    <tr><td>Sin <code>role</code></td><td class="motivo">Una nota permanente no es una region viva. Anunciarla la haria interrumpir en cada repintado</td></tr>
+    <tr><td>No se cierra ni se desvanece</td><td class="motivo">Si se pudiera cerrar, la mitad de la gente no la veria nunca</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Codigo</h3>
+<pre class="cod"><code>&lt;Nota titulo="Como se calcula:"&gt;
+  Las horas se redondean al bloque de 15 minutos mas cercano.
+&lt;/Nota&gt;</code></pre>`;
+
+const pagDialogo = `
+<p class="pag-intro">Modal con el foco atrapado. El sistema acepta primitiva accesible para
+<strong>exactamente tres casos</strong> &mdash;dialogo, menu y selector con busqueda&mdash; y este
+es uno.</p>
+
+<h3 class="sub-seccion">Cuando NO usarlo, que importa mas</h3>
+<p class="seccion-sub">Para confirmar una accion esta <a href="#confirmar" data-ir="confirmar">Confirmacion</a>,
+que es una banda en linea y <strong>no tapa</strong>. Un dialogo detiene la tarea entera, y eso solo
+se justifica cuando lo que hay dentro <strong>ES la tarea</strong>: un formulario que no cabe en la
+fila, o elegir entre opciones que hay que ver juntas.</p>
+
+<h3 class="sub-seccion">Que resuelve el navegador y que ponemos nosotros</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Lo pone</th><th>Que</th></tr></thead>
+  <tbody>
+    <tr><td><code>&lt;dialog&gt;</code></td><td class="motivo">El foco no se escapa por detras, Escape cierra, y queda en la capa superior por encima de cualquier <code>z-index</code></td></tr>
+    <tr><td>El componente</td><td class="motivo">Que el foco <strong>entre</strong> en el titulo &mdash;no en un campo sin contexto&mdash; y <strong>vuelva</strong> al origen al cerrar</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">El pie</h3>
+<p class="seccion-sub"><strong>Cancelar a la izquierda y la accion a la derecha.</strong> No es
+estetica: es el orden que la gente ya tiene aprendido, e invertirlo hace que se pulse el que no era.</p>
+<div class="bloque">
+  <div class="dlg">
+    <div class="dlg-cuerpo"><strong>Editar los datos de contacto</strong><p>Telefono y correo de la persona.</p></div>
+    <div class="dlg-pie"><button class="btn btn-neutro">Cancelar</button><button class="btn btn-1">Guardar</button></div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Cerrar al pulsar el fondo</h3>
+<p class="seccion-sub">Viene puesto, y <strong>hay que quitarlo cuando haya datos sin guardar</strong>:
+perder lo escrito por un clic fuera es peor que un clic de mas.</p>
+
+<h3 class="sub-seccion">Codigo</h3>
+<pre class="cod"><code>&lt;Dialogo
+  abierto={abierto}
+  titulo="Editar los datos de contacto"
+  origen={botonQueLoAbrio}
+  onCerrar={() =&gt; setAbierto(false)}
+  accion={{ texto: 'Guardar', onClick: guardar }}
+  cerrarAlPulsarFuera={false}
+&gt;
+  {formulario}
+&lt;/Dialogo&gt;</code></pre>`;
+
 const CATALOGO = [
   {
     grupo: 'Inicio',
@@ -3532,6 +3692,10 @@ const CATALOGO = [
       { id: 'aviso', t: 'Aviso temporal', estado: 'listo', c: pagAviso },
       { id: 'confirmar', t: 'Confirmación', estado: 'listo', c: pagConfirmar },
       { id: 'estados', t: 'Estados de pantalla', estado: 'listo', c: pagEstados },
+      { id: 'nota', t: 'Nota permanente', estado: 'listo', c: pagNota },
+      { id: 'dialogo', t: 'Diálogo', estado: 'listo', c: pagDialogo },
+      { id: 'migas', t: 'Migas de pan', estado: 'listo', c: pagMigas },
+      { id: 'cabecera', t: 'Cabecera de pantalla', estado: 'listo', c: pagCabecera },
     ],
   },
   {

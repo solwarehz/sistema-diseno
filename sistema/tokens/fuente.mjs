@@ -89,7 +89,13 @@ export const CAMBIOS = [
       'no mecanismo. Por eso el titulo es texto y no children: con marcado libre, un proyecto ' +
       'podria meter otro encabezado dentro y volveriamos al principio. ' +
       'El catalogo pasa a usar la MISMA clase que viaja: dos clases para lo mismo era el ' +
-      'problema, no la solucion.',
+      'problema, no la solucion. ' +
+      'Y la comprobacion INVERSA, que salio de aplicarme a mi mismo lo que ellos pedian: ' +
+      'CUATRO componentes publicados que el catalogo no ensenaba —Nota, Dialogo, Migas y ' +
+      'CabeceraPantalla—. Es el mismo fallo del reves y hace el mismo dano: el area de ' +
+      'sistemas se guia del catalogo, asi que lo que no aparece ahi no existe para ellos y ' +
+      'lo reconstruyen aunque este publicado. Las cuatro paginas escritas, y el candado ' +
+      'ahora vigila los dos sentidos.',
     tokens: { alta: [], baja: [] },
     rompe: [],
   },

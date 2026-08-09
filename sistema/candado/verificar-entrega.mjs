@@ -109,4 +109,57 @@ if (sospechosas.length) {
   process.exit(1);
 }
 
-console.log('  Nada estructural se queda sin decidir.\n');
+// ─────────────────────────────────────────────────────────────────────────────
+// Y LA COMPROBACIÓN INVERSA: componentes publicados que el catálogo no enseña.
+//
+// Es el mismo fallo del revés, y hace el mismo daño. El área de sistemas se
+// guía del catálogo: lo que no aparece ahí, no existe para ellos, y acaban
+// reconstruyéndolo aunque esté publicado. Pasó con `Nota`, `Migas`, `Dialogo`
+// y `CabeceraPantalla`, que se escribieron y no se enseñaron.
+//
+// El nombre de la página se declara aquí junto al del componente, porque no se
+// deriva: `SeleccionMultiple` vive en la página «Selección múltiple» y
+// `MenuUsuario` no tiene página propia —vive dentro del marco—.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const PAGINA_DE = new Map([
+  ['Boton', 'Botón'], ['Enlace', 'Enlace'], ['Campo', 'Campo de texto'],
+  ['Selector', 'Selector'], ['SelectorBusqueda', 'Selector'],
+  ['Interruptor', 'Interruptor'], ['SeleccionMultiple', 'Selección múltiple'],
+  ['RangoFecha', 'Fecha y rango'], ['Horario', 'Horario'], ['Chip', 'Chip de estado'],
+  ['Avatar', 'Avatar'], ['Tarjeta', 'Tarjeta'], ['TarjetaPersona', 'Tarjeta'],
+  ['TablaDatos', 'Tabla de datos'], ['Paginacion', 'Paginación'],
+  ['Progreso', 'Barra de progreso'], ['Aviso', 'Aviso temporal'],
+  ['EstadoPantalla', 'Estados de pantalla'], ['Confirmacion', 'Confirmación'],
+  ['Nota', 'Nota permanente'], ['Dialogo', 'Diálogo'], ['Migas', 'Migas de pan'],
+  ['CabeceraPantalla', 'Cabecera de pantalla'], ['Icono', 'Iconos'],
+  // Los tres del marco comparten pagina: se demuestran juntos o no se entienden.
+  ['MarcoApp', 'Maquetas'], ['MenuUsuario', 'Maquetas'], ['MarcaMenu', 'Maquetas'],
+]);
+
+const indice = join(RAIZ, 'componentes/src/index.ts');
+if (existsSync(indice)) {
+  const exportados = [...new Set(
+    [...readFileSync(indice, 'utf8').matchAll(/export \{\s*([A-Za-z]+)/g)].map((m) => m[1])
+  )];
+  const titulos = [...html.matchAll(/class="nav-txt">([^<]+)</g)].map((m) => m[1].trim());
+
+  const sinPagina = exportados.filter((c) => {
+    const pag = PAGINA_DE.get(c);
+    return !pag || !titulos.includes(pag);
+  });
+
+  if (sinPagina.length) {
+    console.error(`  ${sinPagina.length} componente(s) publicado(s) que el catálogo NO enseña:\n`);
+    for (const c of sinPagina) {
+      console.error(`    ${c.padEnd(20)} ${PAGINA_DE.has(c) ? 'la página «' + PAGINA_DE.get(c) + '» no existe' : 'sin página declarada'}`);
+    }
+    console.error('\n  El área de sistemas se guía del catálogo: lo que no está ahí no');
+    console.error('  existe para ellos, y lo reconstruyen aunque esté publicado.\n');
+    console.error('  Escribe su página, o declara con qué otra la comparte.\n');
+    process.exit(1);
+  }
+  console.log(`  ${exportados.length} componentes publicados, todos con página en el catálogo.`);
+}
+
+console.log('\n  Nada estructural se queda sin decidir.\n');
