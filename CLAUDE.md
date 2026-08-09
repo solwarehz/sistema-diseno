@@ -107,12 +107,11 @@ Y cuando un hexadecimal aparezca en documentación como **valor probado y
 rechazado, con su medición al lado**, no se sustituye por el autorizado más
 cercano: cambiaría lo que el registro dice que se midió.
 
-**Todo componente nuevo se compone, no se reconstruye.** Ante un requerimiento
-de un proyecto: reutiliza los componentes ya definidos, usa las clases de color
-del sistema, y crea elemento nuevo **solo** para lo que no puede expresarse con
-lo existente. Un componente reconstruido por dentro pierde lo que no se ve —el
-anillo de foco, el filete, la altura de fila— y deja de moverse cuando el
-original cambia.
+**Todo componente nuevo se compone, no se reconstruye.** Cuatro reglas, en este
+orden: se usan los componentes ya creados · se usan los colores autorizados · si
+falta un componente se crea · con el conjunto se crean los siguientes. Está
+desarrollado en [`sistema/componentes/POLITICA-DE-CREACION.md`](sistema/componentes/POLITICA-DE-CREACION.md)
+y es vinculante: lo que no la cumpla no entra en la entrega.
 
 ---
 

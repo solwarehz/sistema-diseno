@@ -3839,9 +3839,16 @@ code { font-family: 'IBM Plex Mono', monospace; }
 
 .pt { width: 7px; height: 7px; border-radius: 50%; flex: none; }
 .pt-decidir { background: var(--aviso-acento); }
-.pt-pend { background: rgba(255,255,255,.34); }
-.lat-leyenda { border-top: 1px solid rgba(255,255,255,.10); margin: 0 8px;
-  padding: 12px 4px; font-size: 12px; color: rgba(255,255,255,.62);
+/* Los tres viven SOBRE el marco oscuro y se pintaban con blanco translúcido.
+   Los tokens para esto existen desde la v1.6.0 —se añadieron justo para las
+   capas del marco— y el CSS nunca se cambió: el sistema tenía la respuesta
+   escrita y seguía usando la mano.
+   El del 62 % además era TEXTO, y un texto en rgba no está en ningún par del
+   contrato: su contraste no lo medía nadie. Ahora es marco-texto-tenue, que
+   sí está medido contra las tres capas del marco. */
+.pt-pend { background: var(--marco-texto-tenue); }
+.lat-leyenda { border-top: 1px solid var(--marco-borde); margin: 0 8px;
+  padding: 12px 4px; font-size: 12px; color: var(--marco-texto-tenue);
   display: grid; gap: 4px; }
 .lat-leyenda div { display: flex; align-items: center; gap: 8px; }
 

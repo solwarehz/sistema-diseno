@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   PRESET DE TAILWIND 3.4 — Colegio Albert Einstein · MMI-DS v1.10.2
+   PRESET DE TAILWIND 3.4 — Colegio Albert Einstein · MMI-DS v1.10.3
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -130,7 +130,8 @@ export const primitivas = {
     "800": "#2A2927",
     "850": "#242422",
     "900": "#20201E",
-    "950": "#1E1D1C"
+    "950": "#1E1D1C",
+    "1000": "#000000"
   },
   "gris": {
     "0": "#FFFFFF",

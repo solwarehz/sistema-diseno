@@ -1,6 +1,6 @@
 {
   "documento": "MMI-DS",
-  "version": "1.10.2",
+  "version": "1.10.3",
   "norma": "WCAG 2.2 AA",
   "generado": "node sistema/tokens/generar.mjs",
   "modos": [
@@ -159,7 +159,8 @@
       "800": "#2A2927",
       "850": "#242422",
       "900": "#20201E",
-      "950": "#1E1D1C"
+      "950": "#1E1D1C",
+      "1000": "#000000"
     },
     "gris": {
       "0": "#FFFFFF",

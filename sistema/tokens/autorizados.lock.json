@@ -1,7 +1,7 @@
 {
-  "aviso": "Archivo generado. La lista de colores AUTORIZADOS del sistema, congelada. Anadir uno exige una entrada en AUTORIZACIONES dentro de fuente.mjs: es decision del usuario, no del agente.",
-  "version": "1.10.2",
-  "total": 113,
+  "aviso": "Archivo generado. La lista de colores AUTORIZADOS del sistema, congelada. Ampliarla es decisión del usuario, no del agente: regenerar esto sin su permiso expreso salta la regla. Un color que hace falta pero no se usa va a `categoricas.marca` —conocida y no autorizada—, que sí puede crecer sola.",
+  "version": "1.10.3",
+  "total": 114,
   "escalones": {
     "azul_50": "#E9F5FF",
     "azul_100": "#CFE8FF",
@@ -101,6 +101,7 @@
     "negro_850": "#242422",
     "negro_900": "#20201E",
     "negro_950": "#1E1D1C",
+    "negro_1000": "#000000",
     "gris_0": "#FFFFFF",
     "gris_50": "#F8F8F6",
     "gris_100": "#F0EFEE",

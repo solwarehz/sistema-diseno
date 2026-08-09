@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.10.2';
+export const VERSION = '1.10.3';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,22 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.10.3', fecha: '2026-08-09',
+    que: 'negro_1000 autorizado y las funciones de color permitidas SOLO en sombras',
+    porque:
+      'El sistema incumplia su propia regla: el candado de lint prohibe rgb() y hsl(), y las ' +
+      'sombras del catalogo eran rgba(0,0,0,.16) con un negro que ademas no estaba en la rampa. ' +
+      'Prohibirlas del todo obligaba a esa contradiccion, porque una sombra no es color de ' +
+      'superficie: no lleva texto encima y ningun criterio de WCAG la mide. El usuario autorizo ' +
+      'las dos cosas. Al relajarlo se cerro un agujero mayor: el candado de color solo miraba ' +
+      'HEXADECIMALES, asi que un background: rgb(59,130,246) se le escapaba entero, y el de lint ' +
+      'no lo veia porque solo lee JS y TS. Ahora las funciones de color se resuelven a hexadecimal ' +
+      'y se comprueban contra las familias. El blanco NO se anadio: ya existia como gris_0, y ' +
+      'duplicarlo seria el mismo valor con dos nombres.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.10.2', fecha: '2026-08-09',
     que: 'Los tres hexadecimales de marca que vivían solo en prosa reciben nombre',
@@ -291,7 +307,7 @@ export const primitivas = {
   negro: {
     50: '#EFEEEB', 100: '#C3C1BD', 200: '#989692', 300: '#8A8681', 400: '#6E6B67',
     500: '#575451', 600: '#44423F', 650: '#3A3835', 700: '#363532',
-    750: '#2C2B29', 800: '#2A2927', 850: '#242422', 900: '#20201E', 950: '#1E1D1C',
+    750: '#2C2B29', 800: '#2A2927', 850: '#242422', 900: '#20201E', 950: '#1E1D1C', 1000: '#000000',
   },
 
   // Gris cálido — matiz del oro, croma mínimo. No es neutro: el azul frío sobre

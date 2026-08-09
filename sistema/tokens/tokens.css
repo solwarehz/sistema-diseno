@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.2
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.3
    WCAG 2.2 AA · 116 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -287,7 +287,7 @@
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   RAMPAS Y FAMILIAS CATEGÓRICAS — el inventario completo, 122 escalones.
+   RAMPAS Y FAMILIAS CATEGÓRICAS — el inventario completo, 123 escalones.
 
    Un solo deletreo en todo el sistema. El escalón se llama `ambar_900` y esa
    MISMA cadena es la variable `--ambar_900` y la clase `.color-ambar_900`.
@@ -403,6 +403,7 @@
   --negro_850: #242422;
   --negro_900: #20201E;
   --negro_950: #1E1D1C;
+  --negro_1000: #000000;
   --gris_0: #FFFFFF;
   --gris_50: #F8F8F6;
   --gris_100: #F0EFEE;
@@ -527,6 +528,7 @@
 .color-negro_850 { background-color: var(--negro_850); }
 .color-negro_900 { background-color: var(--negro_900); }
 .color-negro_950 { background-color: var(--negro_950); }
+.color-negro_1000 { background-color: var(--negro_1000); }
 .color-gris_0 { background-color: var(--gris_0); }
 .color-gris_50 { background-color: var(--gris_50); }
 .color-gris_100 { background-color: var(--gris_100); }

@@ -106,9 +106,55 @@ const DECLARA_VARIABLE = /^\s*--[A-Za-z0-9_-]+\s*:/;
 const sinComentarios = (css) =>
   css.replace(/\/\*[\s\S]*?\*\//g, (c) => '\n'.repeat((c.match(/\n/g) ?? []).length));
 
+// ─────────────────────────────────────────────────────────────────────────────
+// FUNCIONES DE COLOR
+//
+// Este candado solo miraba hexadecimales, y era un agujero del tamaño de la
+// puerta: `background: rgb(59,130,246)` se le escapaba entero. El de lint las
+// prohíbe, pero solo lee JS y TS —no toca una hoja de estilos—, así que en CSS
+// no las vigilaba nadie.
+//
+// Se cierra al mismo tiempo que se relajan, que es cuando toca: el usuario
+// autorizó `rgba()` PARA SOMBRAS. Una sombra no es color de superficie, no
+// lleva texto encima y ningún criterio de WCAG la mide; prohibirla obligaba a
+// que el propio sistema incumpliera su regla —lo hacía, con
+// `rgba(0,0,0,.16)`—.
+//
+// Fuera de una sombra siguen prohibidas, y ahora de verdad.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const FUNCION_COLOR = /\b(rgba?|hsla?|color-mix|oklch|lab)\s*\(([^)]*)\)/g;
+// Sin \b delante: `--sombra` empieza por guion, que no es caracter de
+// palabra, y el limite no casaba nunca. La declaracion de las sombras se
+// denunciaba a si misma.
+const ES_SOMBRA = /(box-shadow|text-shadow|drop-shadow|--sombra-[a-z-]+)\s*:/;
+
+const aHex = (canales) => {
+  const n = canales.split(/[,\s/]+/).filter(Boolean).map(Number);
+  if (n.length < 3 || n.slice(0, 3).some((x) => !Number.isFinite(x))) return null;
+  return '#' + n.slice(0, 3).map((x) => Math.round(x).toString(16).padStart(2, '0')).join('').toUpperCase();
+};
+
+const revisarFunciones = (linea, archivo, nLinea) => {
+  FUNCION_COLOR.lastIndex = 0;
+  for (const m of linea.matchAll(FUNCION_COLOR)) {
+    if (ES_SOMBRA.test(linea)) {
+      // Permitida, pero el color de la sombra tampoco se inventa.
+      const hex = aHex(m[2]);
+      if (hex && !DEFINIDOS.has(hex)) {
+        apunta(archivo, nLinea, linea, `${m[0]} en una sombra, pero ${hex} no pertenece a ninguna familia`);
+      }
+      continue;
+    }
+    apunta(archivo, nLinea, linea,
+      `${m[1]}() fuera de una sombra; el candado de contraste no puede verificar lo que no pasa por el token`);
+  }
+};
+
 const revisarCss = (cssCrudo, archivo, desplazamiento = 0) => {
   const css = sinComentarios(cssCrudo);
   css.split('\n').forEach((linea, i) => {
+    revisarFunciones(linea, archivo, desplazamiento + i + 1);
     if (!HEX.test(linea)) { HEX.lastIndex = 0; return; }
     HEX.lastIndex = 0;
     if (DECLARA_VARIABLE.test(linea)) {

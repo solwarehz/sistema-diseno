@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.10.2</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.10.3</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.2
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.3
    WCAG 2.2 AA · 116 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -295,7 +295,7 @@
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   RAMPAS Y FAMILIAS CATEGÓRICAS — el inventario completo, 122 escalones.
+   RAMPAS Y FAMILIAS CATEGÓRICAS — el inventario completo, 123 escalones.
 
    Un solo deletreo en todo el sistema. El escalón se llama `ambar_900` y esa
    MISMA cadena es la variable `--ambar_900` y la clase `.color-ambar_900`.
@@ -411,6 +411,7 @@
   --negro_850: #242422;
   --negro_900: #20201E;
   --negro_950: #1E1D1C;
+  --negro_1000: #000000;
   --gris_0: #FFFFFF;
   --gris_50: #F8F8F6;
   --gris_100: #F0EFEE;
@@ -535,6 +536,7 @@
 .color-negro_850 { background-color: var(--negro_850); }
 .color-negro_900 { background-color: var(--negro_900); }
 .color-negro_950 { background-color: var(--negro_950); }
+.color-negro_1000 { background-color: var(--negro_1000); }
 .color-gris_0 { background-color: var(--gris_0); }
 .color-gris_50 { background-color: var(--gris_50); }
 .color-gris_100 { background-color: var(--gris_100); }
@@ -757,9 +759,16 @@ code { font-family: 'IBM Plex Mono', monospace; }
 
 .pt { width: 7px; height: 7px; border-radius: 50%; flex: none; }
 .pt-decidir { background: var(--aviso-acento); }
-.pt-pend { background: rgba(255,255,255,.34); }
-.lat-leyenda { border-top: 1px solid rgba(255,255,255,.10); margin: 0 8px;
-  padding: 12px 4px; font-size: 12px; color: rgba(255,255,255,.62);
+/* Los tres viven SOBRE el marco oscuro y se pintaban con blanco translúcido.
+   Los tokens para esto existen desde la v1.6.0 —se añadieron justo para las
+   capas del marco— y el CSS nunca se cambió: el sistema tenía la respuesta
+   escrita y seguía usando la mano.
+   El del 62 % además era TEXTO, y un texto en rgba no está en ningún par del
+   contrato: su contraste no lo medía nadie. Ahora es marco-texto-tenue, que
+   sí está medido contra las tres capas del marco. */
+.pt-pend { background: var(--marco-texto-tenue); }
+.lat-leyenda { border-top: 1px solid var(--marco-borde); margin: 0 8px;
+  padding: 12px 4px; font-size: 12px; color: var(--marco-texto-tenue);
   display: grid; gap: 4px; }
 .lat-leyenda div { display: flex; align-items: center; gap: 8px; }
 
@@ -2502,7 +2511,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.10.2</option></select></label>
+          <select class="campo cg-in"><option>v1.10.3</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -2563,8 +2572,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.10.2.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.10.2</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.10.3.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.10.3</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -3515,7 +3524,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
 <h3 class="sub-seccion">Colores autorizados</h3>
 <p class="seccion-sub">Los de este panel y ninguno más. Un color que no esté aquí no vive en el sistema:
 no tiene nombre, no se puede volver a encontrar y el candado no lo protege.
-Son <strong>113 valores</strong> en 10 rampas y 1 familia categórica,
+Son <strong>114 valores</strong> en 10 rampas y 1 familia categórica,
 y <code>verificar-color.mjs</code> falla el build si aparece uno fuera de la lista.
 Los 9 de <strong>marca</strong> no están aquí: el sistema los conoce para poder vigilarlos, no para usarlos.</p>
 <p class="seccion-sub">Un solo deletreo en los tres sitios: el escalón se llama <code>ambar_900</code>,
@@ -4066,6 +4075,11 @@ que son los que están medidos contra un fondo concreto.</p>
           <span class="tira-color color-negro_950"></span>
           <code class="tira-nombre">negro_950</code>
           <span class="tira-hex">#1E1D1C</span>
+        </div>
+        <div class="tira">
+          <span class="tira-color color-negro_1000"></span>
+          <code class="tira-nombre">negro_1000</code>
+          <span class="tira-hex">#000000</span>
         </div>
     </div>
   </div>
@@ -8475,6 +8489,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.10.3 <span class="cam-fecha">2026-08-09</span></h3>
+<p class="pag-intro"><strong>negro_1000 autorizado y las funciones de color permitidas SOLO en sombras.</strong> El sistema incumplia su propia regla: el candado de lint prohibe rgb() y hsl(), y las sombras del catalogo eran rgba(0,0,0,.16) con un negro que ademas no estaba en la rampa. Prohibirlas del todo obligaba a esa contradiccion, porque una sombra no es color de superficie: no lleva texto encima y ningun criterio de WCAG la mide. El usuario autorizo las dos cosas. Al relajarlo se cerro un agujero mayor: el candado de color solo miraba HEXADECIMALES, asi que un background: rgb(59,130,246) se le escapaba entero, y el de lint no lo veia porque solo lee JS y TS. Ahora las funciones de color se resuelven a hexadecimal y se comprueban contra las familias. El blanco NO se anadio: ya existia como gris_0, y duplicarlo seria el mismo valor con dos nombres.</p>
+
 
 
 <h3 class="sub-seccion">v1.10.2 <span class="cam-fecha">2026-08-09</span></h3>

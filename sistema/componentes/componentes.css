@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.10.2
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.10.3
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -906,8 +906,8 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   .lat.colapsado .nav-hijos{ transition: none; }
 }
 .lat.colapsado .nav-grupo-tit{ justify-content: center; padding-inline: 0; }
-.lat-leyenda{ border-top: 1px solid rgba(255,255,255,.10); margin: 0 8px;
-  padding: 12px 4px; font-size: 12px; color: rgba(255,255,255,.62);
+.lat-leyenda{ border-top: 1px solid var(--marco-borde); margin: 0 8px;
+  padding: 12px 4px; font-size: 12px; color: var(--marco-texto-tenue);
   display: grid; gap: 4px; }
 .lat-leyenda div{ display: flex; align-items: center; gap: 8px; }
 [data-vista='movil'] .app-cascaron{

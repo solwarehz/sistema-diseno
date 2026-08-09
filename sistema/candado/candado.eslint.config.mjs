@@ -38,7 +38,7 @@ const PESO_PROHIBIDO = /\bfont-(?:thin|extralight|light|extrabold|black)\b/;
 
 const reglas = [
   [HEX_CRUDO,            'Color hex crudo. Usa un token semántico del preset (§2.5.6). Si el token no existe, se añade en sistema/tokens/fuente.mjs y se regenera.'],
-  [FUNCION_COLOR,        'rgb()/hsl() y funciones de color están prohibidas (§2.5.6). El candado de contraste no puede verificar lo que no pasa por el token.'],
+  [FUNCION_COLOR,        'rgb()/hsl() y funciones de color están prohibidas (§2.5.6). El candado de contraste no puede verificar lo que no pasa por el token. ÚNICA excepción, y solo en hojas de estilo: la sombra —box-shadow, text-shadow, drop-shadow—, que no lleva texto encima y ningún criterio de WCAG mide. En componentes la sombra viene por clase: usa var(--sombra-capa).'],
   [ARBITRARIO_TAILWIND,  'Valor arbitrario de Tailwind. Evade el preset y por tanto el contrato de color (§2.5.6).'],
   [TAMANO_ARBITRARIO,    'text-[Npx] está prohibido (§3.6.3). Usa un paso de la escala: text-s-cuerpo, text-s-interfaz, text-s-etiqueta…'],
   [SIN_CONTORNO,         'outline:none sin reemplazo de contraste equivalente está prohibido (§2.5.7). Es el defecto de §1.3: quien navega con teclado se pierde. Usa outline-foco / outline-foco-en-marco.'],
