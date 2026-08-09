@@ -18,9 +18,10 @@
  * Lo demás lo pone el proyecto por `children`, con componentes del sistema.
  */
 
-import { useEffect, useId, useRef, useState } from 'react';
+import { useId } from 'react';
 import { Avatar } from './Avatar';
 import { Icono } from './Icono';
+import { usarDesplegable } from './interno/desplegable';
 
 export type Tema = 'claro' | 'oscuro';
 
@@ -49,32 +50,10 @@ export type MenuUsuarioProps = {
 
 export function MenuUsuario({ id: idPersona, nombre, correo, foto, onSalir, tema, onTema, children }: MenuUsuarioProps) {
   const id = useId();
-  const [abierto, setAbierto] = useState(false);
-  const caja = useRef<HTMLDivElement>(null);
-  const disparador = useRef<HTMLButtonElement>(null);
-
-  // Cerrar al pulsar fuera y con Escape. Las dos, no una: sin Escape el menú
-  // atrapa a quien navega con teclado, y sin el clic fuera se queda abierto
-  // sobre el contenido.
-  useEffect(() => {
-    if (!abierto) return;
-    const fuera = (e: MouseEvent) => {
-      if (!caja.current?.contains(e.target as Node)) setAbierto(false);
-    };
-    const tecla = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return;
-      setAbierto(false);
-      // El foco VUELVE al avatar. Cerrar y dejar el foco en el limbo obliga a
-      // tabular desde el principio de la página.
-      disparador.current?.focus();
-    };
-    document.addEventListener('mousedown', fuera);
-    document.addEventListener('keydown', tecla);
-    return () => {
-      document.removeEventListener('mousedown', fuera);
-      document.removeEventListener('keydown', tecla);
-    };
-  }, [abierto]);
+  // El abrir, el cerrar al pulsar fuera, el Escape y la devolución del foco
+  // viven en `interno/desplegable`: los comparte con `PanelBarra` y estaban
+  // escritos dos veces. Dos copias de un comportamiento divergen.
+  const { abierto, setAbierto, caja, disparador } = usarDesplegable();
 
   const idMenu = `${id}-menu`;
 

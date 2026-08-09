@@ -65,6 +65,7 @@ const ELEMENTOS = [
   // que no este aqui NO VIAJA, y sin ella los textos de solo-lector se ven.
   { n: 'Migas de pan',          p: ['migas'] },
   { n: 'Cabecera de pantalla',  p: ['pant'] },
+  { n: 'Panel de la barra',     p: ['pb'] },
   { n: 'Diálogo',               p: ['dialogo'] },
   { n: 'Utilidades',            p: ['sr', 'mono'] },
 ];

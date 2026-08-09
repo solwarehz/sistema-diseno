@@ -141,6 +141,8 @@ const CONTENIDO = [
   ['componentes/src/MarcoApp.tsx', 'componentes/MarcoApp.tsx'],
   ['componentes/src/MarcaMenu.tsx', 'componentes/MarcaMenu.tsx'],
   ['componentes/src/MenuUsuario.tsx', 'componentes/MenuUsuario.tsx'],
+  ['componentes/src/PanelBarra.tsx', 'componentes/PanelBarra.tsx'],
+  ['componentes/src/interno/desplegable.ts', 'componentes/interno/desplegable.ts'],
   ['componentes/src/Interruptor.tsx', 'componentes/Interruptor.tsx'],
   ['componentes/src/Tarjeta.tsx', 'componentes/Tarjeta.tsx'],
   ['componentes/src/TablaDatos.tsx', 'componentes/TablaDatos.tsx'],

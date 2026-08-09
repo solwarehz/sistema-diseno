@@ -133,6 +133,7 @@ const PAGINA_DE = new Map([
   ['EstadoPantalla', 'Estados de pantalla'], ['Confirmacion', 'Confirmación'],
   ['Nota', 'Nota permanente'], ['Dialogo', 'Diálogo'], ['Migas', 'Migas de pan'],
   ['CabeceraPantalla', 'Cabecera de pantalla'], ['Icono', 'Iconos'],
+  ['PanelBarra', 'Panel de la barra'],
   // Los tres del marco comparten pagina: se demuestran juntos o no se entienden.
   ['MarcoApp', 'Maquetas'], ['MenuUsuario', 'Maquetas'], ['MarcaMenu', 'Maquetas'],
 ]);

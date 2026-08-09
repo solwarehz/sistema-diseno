@@ -37,23 +37,23 @@ export type MarcaMenuProps = {
   /** Nombre del colegio o del producto. Es el nombre accesible del enlace y el
    *  respaldo si la imagen no carga, así que es obligatorio. */
   titulo: string;
-  /** Logotipo horizontal, para el menú desplegado. */
-  expandida?: string;
-  /** Versión compacta —el escudo—, para el menú plegado.
+  /** Logo horizontal, para el menú desplegado. */
+  logo?: string;
+  /** Versión compacta del logo —el escudo—, para el menú plegado.
    *
-   *  Si no se pasa, se usa `expandida` encogida en un cuadrado de 40px. Funciona
+   *  Si no se pasa, se usa `logo` encogido en un cuadrado de 40px. Funciona
    *  y no rompe nada, pero un lockup apaisado a 40px casi nunca se lee: por eso
    *  se pide aparte. */
-  comprimida?: string;
+  logoCompacto?: string;
   /** `true` cuando el menú está plegado. Lo pasa `MarcoApp`. */
   plegado?: boolean;
   href: string;
   onIr?: () => void;
 };
 
-export function MarcaMenu({ titulo, expandida, comprimida, plegado = false, href, onIr }: MarcaMenuProps) {
+export function MarcaMenu({ titulo, logo, logoCompacto, plegado = false, href, onIr }: MarcaMenuProps) {
   const [rota, setRota] = useState(false);
-  const fuente = plegado ? comprimida ?? expandida : expandida;
+  const fuente = plegado ? logoCompacto ?? logo : logo;
 
   // Una imagen nueva merece otra oportunidad: sin esto, un fallo temporal de
   // red dejaría el texto para siempre aunque la imagen ya cargue.
@@ -64,19 +64,19 @@ export function MarcaMenu({ titulo, expandida, comprimida, plegado = false, href
   // ilegible y nadie sabe por qué.
   useEffect(() => {
     if (process.env.NODE_ENV === 'production') return;
-    if (!expandida || comprimida) return;
+    if (!logo || logoCompacto) return;
     const img = new Image();
     img.onload = () => {
       if (img.naturalWidth > img.naturalHeight * 2.5) {
         console.warn(
           'MarcaMenu: la imagen es muy apaisada y con el menú plegado se encogerá ' +
-          'hasta 40px de ancho, donde no se leerá. Pasa `comprimida` con una ' +
-          'versión compacta —el escudo—.'
+          'hasta 40px de ancho, donde no se leerá. Pasa `logoCompacto` con una ' +
+          'versión compacta —el escudo— en `logoCompacto`.'
         );
       }
     };
-    img.src = expandida;
-  }, [expandida, comprimida]);
+    img.src = logo;
+  }, [logo, logoCompacto]);
 
   return (
     <div className="lat-marca">

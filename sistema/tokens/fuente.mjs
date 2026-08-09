@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.14.0';
+export const VERSION = '1.15.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,32 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.15.0', fecha: '2026-08-09',
+    que: 'PanelBarra para mensajes y notificaciones, y el logo con nombre propio',
+    porque:
+      'Los dos botones de la barra —el sobre y la campana— estaban dibujados y no hacian nada. ' +
+      'Entra PanelBarra: la misma ventana del menu de usuario, con el contador anunciado en el ' +
+      'NOMBRE del boton y no solo en la burbuja, porque quien usa lector no ve la burbuja y ' +
+      'saber que hay tres sin leer es lo que hace que merezca la pena abrir. ' +
+      'UN SOLO componente para los dos, y es decision: tienen la misma forma, y hacer ' +
+      'PanelMensajes y PanelNotificaciones por separado seria tener dos y verlos divergir. ' +
+      'Es role="dialog" y no menu: dentro hay texto que se lee, no opciones entre las que se ' +
+      'elige, y con menu el lector entra en modo de opciones y el texto de cada aviso deja de ' +
+      'leerse. ' +
+      'De paso se saca a interno/desplegable el abrir, cerrar fuera, Escape y devolver el foco, ' +
+      'que estaban escritos dos veces entre el menu de usuario y esto. Dos copias divergen. ' +
+      'Y el LOGO: las propiedades pasan a llamarse `logo` y `logoCompacto`, que es la palabra ' +
+      'que usa la gente. Ademas el texto de respaldo tampoco podia romper el marco —era el ' +
+      'mismo agujero que la imagen, cerrado tarde—: un nombre largo se recorta a dos lineas ' +
+      'con line-clamp, y overflow-wrap anywhere cubre el caso peor, una sola palabra sin ' +
+      'espacios que no parte por ningun sitio.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'MarcoApp: `marca` y `marcaCompacta` pasan a `logo` y `logoCompacto`. MarcaMenu: ' +
+        '`expandida` y `comprimida`, a lo mismo',
+    ],
+  },
   {
     v: '1.14.0', fecha: '2026-08-09',
     que: 'CabeceraPantalla, y un candado para que no se repita lo que ya paso tres veces',

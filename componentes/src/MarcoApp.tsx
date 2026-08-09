@@ -49,7 +49,7 @@ export type MarcoAppProps = {
   /** El nombre del producto o del colegio, junto al escudo. */
   titulo: string;
   /**
-   * Logotipo horizontal del cliente, para el menú desplegado.
+   * Logo del cliente, horizontal, para el menú desplegado.
    *
    * Se pasa la URL, NO un elemento. Antes era `React.ReactNode` y eso dejaba
    * abierta la decisión que este componente existe para cerrar: con un nodo
@@ -57,10 +57,10 @@ export type MarcoAppProps = {
    * cliente volvía a poder romper el marco. Ahora el sistema decide el tamaño,
    * la proporción y el respaldo, y el proyecto solo aporta el archivo.
    */
-  marca?: string;
+  logo?: string;
   /** Versión compacta —el escudo— para el menú plegado. Sin ella se encoge la
    *  otra en un cuadrado de 40px, que funciona pero rara vez se lee. */
-  marcaCompacta?: string;
+  logoCompacto?: string;
   /** A dónde lleva pulsar la marca. Siempre existe: sin ella, no hay vuelta a
    *  casa desde ninguna pantalla. */
   hrefInicio: string;
@@ -94,8 +94,8 @@ export type MarcoAppProps = {
 
 export function MarcoApp({
   titulo,
-  marca,
-  marcaCompacta,
+  logo,
+  logoCompacto,
   hrefInicio,
   navegacion,
   activa,
@@ -173,8 +173,8 @@ export function MarcoApp({
       <aside className={['lat', plegado ? 'colapsado' : ''].filter(Boolean).join(' ')} ref={lateral}>
         <MarcaMenu
           titulo={titulo}
-          expandida={marca}
-          comprimida={marcaCompacta}
+          logo={logo}
+          logoCompacto={logoCompacto}
           plegado={plegado}
           href={hrefInicio}
           onIr={onNavegar ? () => onNavegar('inicio', hrefInicio) : undefined}

@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.14.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.15.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -831,7 +831,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .esqueleto.corto{ width: 62%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MARCO DE APLICACIÓN — 209 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
+   MARCO DE APLICACIÓN — 210 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 :where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
@@ -1046,7 +1046,10 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .lat-marca-ancha{ width: 100%; height: 44px; }
 .lat-marca-estrecha{ width: 40px; height: 40px; }
 .lat-marca-texto{ font-size: 13px; font-weight: 600; line-height: 1.2;
-  color: var(--marco-texto); text-align: center; }
+  color: var(--marco-texto); text-align: center; max-width: 100%;
+  overflow-wrap: anywhere; overflow: hidden;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.lat-marca-estrecha .lat-marca-texto{ -webkit-line-clamp: 1; font-size: 14px; }
 .lat-lockup{ display: block; height: 44px; width: auto; max-width: 100%; }
 .lat-escudo{ display: none; height: 40px; width: auto; }
 .lat.colapsado .lat-lockup{ display: none; }
@@ -1216,6 +1219,30 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   .pant-fila{ flex-direction: column; }
   .pant-fila > .pant-accion{ width: 100%; }
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   PANEL DE LA BARRA — 13 reglas · clases .pb-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.pb-demo{ display: flex; gap: 24px; }
+.pb-panel{ min-width: 320px; max-width: 360px; padding: 4px 0 0; }
+.pb-lista{ list-style: none; margin: 0; padding: 0; max-height: 320px; overflow-y: auto; }
+.pb-item{ display: flex; align-items: flex-start; gap: 8px; width: 100%;
+  padding: 8px 12px; background: none; border: 0; text-align: left;
+  font: inherit; color: var(--texto-principal); cursor: pointer; }
+.pb-item:hover{ background: var(--fondo-encabezado); }
+.pb-txt{ flex: 1; min-width: 0; display: grid; gap: 4px; }
+.pb-tit{ font-size: 13px; font-weight: 500; }
+.pb-det{ font-size: 12px; color: var(--texto-secundario);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; }
+.pb-cuando{ font-size: 12px; color: var(--texto-pista); flex: none; }
+.pb-nuevo .pb-tit{ font-weight: 600; }
+.pb-punto{ width: 8px; height: 8px; border-radius: 999px; flex: none;
+  margin-top: 4px; background: var(--accion); }
+.pb-vacio{ margin: 0; padding: 16px 12px; font-size: 13px;
+  color: var(--texto-secundario); text-align: center; }
+.pb-todos{ justify-content: center; border-top: 1px solid var(--borde); }
 
 /* ───────────────────────────────────────────────────────────────────────────
    DIÁLOGO — 8 reglas · clases .dialogo-*

@@ -29,3 +29,4 @@ export { Migas, type Miga } from './Migas';
 export { Dialogo } from './Dialogo';
 export { Icono, NOMBRES_ICONO, type NombreIcono, type TamanoIcono } from './Icono';
 export { CabeceraPantalla } from './CabeceraPantalla';
+export { PanelBarra, type ItemPanel } from './PanelBarra';
