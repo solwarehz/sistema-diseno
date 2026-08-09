@@ -30,6 +30,7 @@
  */
 
 import { readFileSync, existsSync } from 'node:fs';
+import * as fsSync from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { primitivas, categoricas, autorizados, restringidos, semanticos, marca, VERSION } from '../tokens/fuente.mjs';
@@ -126,52 +127,108 @@ const revisarCss = (cssCrudo, archivo, desplazamiento = 0) => {
   });
 };
 
-const tokensCss = join(RAIZ, 'sistema/tokens/tokens.css');
-if (existsSync(tokensCss)) {
-  revisarCss(readFileSync(tokensCss, 'utf8'), 'sistema/tokens/tokens.css');
+// ─────────────────────────────────────────────────────────────────────────────
+// QUÉ SE RECORRE
+//
+// Hasta ahora eran tres rutas escritas a mano, y por eso no veía
+// `cascaron/prueba-componentes.html` —175 hexadecimales— ni vería el próximo
+// archivo que alguien añada. Un candado con la lista de sitios escrita a mano
+// solo protege los sitios que ya existían el día que se escribió.
+//
+// Ahora se recorre el repositorio entero y se examina TODO .css y TODO .html.
+// Lo que se salta es explícito y corto:
+//
+//   · `node_modules`, `.git` y las carpetas de salida — no son nuestros.
+//   · los `.md` — son prosa. Media docena de documentos explican POR QUÉ se
+//     rechazó un tono, y esos textos tienen que poder decir cuál era. Se
+//     censan al final para que no queden invisibles, pero no bloquean.
+//   · las bancadas de prueba de los propios candados, declaradas abajo: su
+//     trabajo es contener color prohibido para demostrar que el candado falla.
+//     Sin esta exención, probar un candado lo rompería.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const SALTAR_CARPETA = new Set(['node_modules', '.git', 'dist', 'build', 'cobertura']);
+
+const BANCADAS = new Set([
+  'pruebas/infracciones.tsx',               // las 10 infracciones que el lint debe bloquear
+  'sistema/candado/probar-candado.mjs',     // 62 casos, con los valores prohibidos dentro
+  'sistema/candado/verificar-color.mjs',    // este archivo: los ejemplos de su propia doc
+  'sistema/candado/candado.eslint.config.mjs',
+]);
+
+const listar = (dir) => {
+  const { readdirSync } = fsSync;
+  const salida = [];
+  for (const e of readdirSync(dir, { withFileTypes: true })) {
+    if (SALTAR_CARPETA.has(e.name)) continue;
+    const p = join(dir, e.name);
+    if (e.isDirectory()) salida.push(...listar(p));
+    else salida.push(p);
+  }
+  return salida;
+};
+
+const todos = listar(RAIZ).map((p) => [p, relative(RAIZ, p)]);
+const censoProsa = [];
+
+// ── Toda hoja de estilos del repositorio ───────────────────────────────────
+
+let cssRevisados = 0;
+for (const [abs, rel] of todos) {
+  if (!rel.endsWith('.css') || BANCADAS.has(rel)) continue;
+  cssRevisados++;
+  revisarCss(readFileSync(abs, 'utf8'), rel);
 }
 
-const componentesCss = join(RAIZ, 'sistema/componentes/componentes.css');
-if (existsSync(componentesCss)) {
-  revisarCss(readFileSync(componentesCss, 'utf8'), 'sistema/componentes/componentes.css');
-}
+// ── Todo documento HTML del repositorio ────────────────────────────────────
 
-// ── 4 · El marcado del catálogo ────────────────────────────────────────────
+let htmlRevisados = 0;
+for (const [abs, rel] of todos) {
+  if (!rel.endsWith('.html') || BANCADAS.has(rel)) continue;
+  htmlRevisados++;
+  const html = readFileSync(abs, 'utf8');
 
-const catalogo = join(RAIZ, 'cascaron/index.html');
-if (existsSync(catalogo)) {
-  const html = readFileSync(catalogo, 'utf8');
-
-  // 4a · el CSS incrustado, con el mismo criterio que un archivo .css
+  // el CSS incrustado, con el mismo criterio que un archivo .css
   for (const m of html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)) {
     const antes = html.slice(0, m.index).split('\n').length;
-    revisarCss(m[1], 'cascaron/index.html <style>', antes - 1);
+    revisarCss(m[1], `${rel} <style>`, antes - 1);
   }
 
-  // 4b · atributos style= del marcado
   const sinEstilos = html.replace(/<style[^>]*>[\s\S]*?<\/style>/g, (s) => '\n'.repeat(s.split('\n').length - 1));
+
+  // atributos style= del marcado
   for (const m of sinEstilos.matchAll(/style="([^"]*)"/g)) {
     const hs = m[1].match(HEX);
     if (!hs) continue;
-    const linea = sinEstilos.slice(0, m.index).split('\n').length;
-    apunta('cascaron/index.html', linea, `style="${m[1]}"`,
+    apunta(rel, sinEstilos.slice(0, m.index).split('\n').length, `style="${m[1]}"`,
       `${hs.join(' ')} en un atributo style; usa una clase`);
   }
 
-  // 4c · atributos de color de SVG
+  // atributos de color de SVG
   for (const m of sinEstilos.matchAll(/(?:fill|stroke)="(#[0-9a-fA-F]{3,8})"/g)) {
-    const linea = sinEstilos.slice(0, m.index).split('\n').length;
-    apunta('cascaron/index.html', linea, m[0],
+    apunta(rel, sinEstilos.slice(0, m.index).split('\n').length, m[0],
       `${m[1]} en un atributo SVG; usa currentColor o var(--token)`);
   }
 }
 
+// ── Censo de la prosa — no bloquea, pero deja de ser invisible ─────────────
+
+for (const [abs, rel] of todos) {
+  if (!/\.(md|mjs|js|ts|tsx|json|sh)$/.test(rel) || BANCADAS.has(rel)) continue;
+  if (rel.startsWith('componentes/src/')) continue; // se revisan aparte, y sí bloquean
+  const hs = readFileSync(abs, 'utf8').match(HEX) ?? [];
+  const fuera = [...new Set(hs.map((h) => h.toUpperCase()))].filter((h) => !DEFINIDOS.has(h));
+  if (fuera.length) censoProsa.push([rel, fuera]);
+}
+
 // ── 5 · Los componentes de React ───────────────────────────────────────────
 
+let componentesRevisados = 0;
 const src = join(RAIZ, 'componentes/src');
 if (existsSync(src)) {
   const { readdirSync } = await import('node:fs');
   for (const f of readdirSync(src).filter((f) => /\.tsx?$/.test(f))) {
+    componentesRevisados++;
     const ruta = join(src, f);
     readFileSync(ruta, 'utf8').split('\n').forEach((linea, i) => {
       if (/^\s*(\*|\/\/|\/\*)/.test(linea)) return;
@@ -189,7 +246,17 @@ console.log(`  Familias:     ${Object.keys(primitivas).length} rampas · ${Objec
 console.log(`  Autorizados:  ${autorizados.length} escalones — pueden vivir en el sistema`);
 console.log(`  Restringidos: ${restringidos.length} de marca — se nombran para poder vigilarlos, no para usarlos`);
 console.log(`  Tokens:       ${tokensRevisados} valores comprobados contra las familias`);
+console.log(`  Recorrido:    ${cssRevisados} hojas de estilo · ${htmlRevisados} documentos HTML · ${componentesRevisados} componentes`);
+console.log(`                de ${todos.length} archivos del repositorio`);
 console.log(`  Fallos:       ${fallos.length}\n`);
+
+if (censoProsa.length) {
+  console.log('  Citados en prosa o comentarios — explican, no pintan:\n');
+  for (const [rel, fuera] of censoProsa) {
+    console.log(`    ${rel.padEnd(48)} ${fuera.slice(0, 4).join(' ')}${fuera.length > 4 ? ` +${fuera.length - 4}` : ''}`);
+  }
+  console.log('');
+}
 
 if (fallos.length) {
   console.error('  Hay color fuera del sistema:\n');
