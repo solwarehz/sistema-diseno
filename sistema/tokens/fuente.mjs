@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.10.5';
+export const VERSION = '1.10.6';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,22 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.10.6', fecha: '2026-08-09',
+    que: 'La entrega explica como usarse, y el manual deja de dar por pendiente lo hecho',
+    porque:
+      'La v1.10.5 metio los trece componentes en el ZIP pero no decia como consumirlos. ' +
+      'Entra `manual/ACTUALIZAR.md`: el comando con la etiqueta, por que la etiqueta es ' +
+      'obligatoria, el orden de los dos import de CSS, que resuelve cada componente, la ' +
+      'diferencia entre color autorizado y conocido, lo que se rompe al subir desde la ' +
+      'v1.7.0 y los tres candados que hay que pasar. El manual pasa a 1.1.0: decia ' +
+      '«MMI-DS v1.1.0» estando en la 1.10.5 y daba por PENDIENTE la iconografia y la ' +
+      'densidad, que salieron en la v1.7.0 —se borran en vez de dejarlas de pendiente ' +
+      'eterno—. Version nueva y no reetiquetado: cambiar el contenido de una entrega ya ' +
+      'publicada sin subir version es exactamente lo que prohibe la regla 8.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.10.5', fecha: '2026-08-09',
     que: 'El interruptor apagado pasa entero a la familia `rojo`',
