@@ -1,8 +1,11 @@
 # Manual de marca — Aplicaciones web
 
 **Colegio Albert Einstein, Huaraz**
-Documento MMI-MAN-01 · Versión 1.0.0 · 7 de agosto de 2026
-Sistema de referencia: MMI-DS v1.1.0 · Color modo claro **bloqueado**
+Documento MMI-MAN-01 · Versión 1.1.0 · 9 de agosto de 2026
+Sistema de referencia: MMI-DS v1.10.5 · Color modo claro **bloqueado**
+
+> Para actualizar un proyecto que ya usa el sistema, empieza por
+> [`ACTUALIZAR.md`](ACTUALIZAR.md): dice qué cambió, qué se rompe y cómo instalarlo.
 
 ---
 
@@ -97,18 +100,27 @@ Nunca un color de estado suelto. Fondo y texto salen juntos o no salen:
 El token `-acento` de cada estado va **solo en el filete del borde**. Es adorno.
 No lo uses para texto: por eso conserva el tono saturado.
 
-### 2.4 Los cuatro colores de marca — y dónde están prohibidos
+### 2.4 Los colores de marca — definidos y aun así prohibidos
 
-| Token | Sí | **No** |
-|---|---|---|
-| `marca-rojo` `#E30613` | Escudo, titular de landing, impresos | **Interfaz** |
-| `marca-oro` `#DEBD68` | Escudo, filete de landing | **Interfaz.** En sistema usa `accion-2` o `marco-acento` |
-| `marca-amarillo` `#FDF200` | Campaña, afiches, redes | **Todo el sistema.** 1,2:1 — no admite texto encima |
-| `marca-celeste` `#01ADED` | Campaña | **Todo el sistema.** 2,6:1 — no admite texto encima |
+Son la familia `marca`: **conocida por el sistema y no autorizada en él.** Están
+nombradas para poder bloquearlas —lo que no tiene nombre no se puede vigilar— y
+un valor de marca fuera de su propia variable **falla el build**.
+
+| Token | Escalón | Sí | **No** |
+|---|---|---|---|
+| `marca-rojo` | `marca_rojo` | Escudo, titular de landing, impresos | **Interfaz** |
+| `marca-oro` | `marca_oro` | Escudo, filete de landing | **Interfaz.** En sistema usa `accion-2` o `marco-acento` |
+| `marca-amarillo` | `marca_amarillo` | Campaña, afiches, redes | **Todo el sistema.** 1,2:1 — no admite texto encima |
+| `marca-celeste` | `marca_celeste` | Campaña | **Todo el sistema.** 2,6:1 — no admite texto encima |
 
 El celeste es el que más se cuela, porque venía de campaña y se usó en botones.
 Un botón celeste con texto blanco es ilegible: 2,6:1 contra el 4,5:1 que exige la
 norma. Si ves uno, es un defecto, no una decisión.
+
+La familia tiene además `marca_azul` —el azul institucional del que deriva la
+rampa `azul`— y los dos del **lockup**, `marca_rojo_lockup` y
+`marca_negro_lockup`. Esos dos documentan un defecto de identidad abierto: el
+escudo usa un rojo y el lockup usa **otro**. El sistema adopta el del escudo.
 
 ---
 
@@ -378,13 +390,14 @@ El botón dice el verbo, no «Aceptar»: **Eliminar** / **Cancelar**.
 
 ## 10 · Lo que este manual todavía no cubre
 
-Honestidad sobre los límites, para que nadie asuma cobertura que no existe:
+Honestidad sobre los límites, para que nadie asuma cobertura que no existe.
+**Lo que estaba aquí y ya está hecho se ha borrado en vez de dejarlo como
+pendiente eterno:** la iconografía —39 iconos, cuatro tamaños y regla de
+significado— y la densidad, que salieron en la v1.7.0.
 
 | Pendiente | Estado |
 |---|---|
-| **Iconografía** | Decidido Lucide, trazo 1.5px a 18px. Sin implementar |
-| **Densidad** | Token definido (34px / 28px). Falta el conmutador y que se recuerde por sesión |
-| **Contrato completo de tabla** | Orden, selección múltiple, encabezado fijo, columnas visibles |
+| **Tabla — lo que aún no trae** | `TablaDatos` resuelve orden, filtros y paginación. **No** trae selección múltiple, encabezado fijo ni elegir columnas visibles |
 | **Primitivas de dominio** | DNI y RUC con dígito verificador, dos apellidos, ubigeo en cascada, soles, fechas peruanas |
 | **Modo oscuro** | Calculado, **no aprobado**. No implementar |
 
@@ -399,6 +412,7 @@ comporta distinto y nadie sabrá por qué.
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 1.1.0 | 2026-08-09 | Sobre MMI-DS v1.10.5. §2.4 pasa de «cuatro colores de marca» a la familia `marca`, con la distinción entre conocido y autorizado. De §10 se BORRAN iconografía y densidad, que ya están hechas. Se añade `ACTUALIZAR.md` |
 | 1.0.0 | 2026-08-07 | Primera edición. Sobre MMI-DS v1.1.0 |
 
 **Este manual se corrige cuando cambia el sistema, no al revés.**

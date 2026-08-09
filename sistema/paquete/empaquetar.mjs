@@ -18,6 +18,7 @@
 
 import { readFileSync, writeFileSync, statSync, mkdirSync, readdirSync } from 'node:fs';
 import { deflateRawSync, crc32 } from 'node:zlib';
+import { execFileSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { VERSION, NORMA, primitivas, semanticos, marca, pares } from '../tokens/fuente.mjs';
@@ -146,6 +147,7 @@ const CONTENIDO = [
   ['sistema/candado/probar-candado.mjs', 'sistema/candado/probar-candado.mjs'],
   // La documentación.
   ['manual/MANUAL-APLICACIONES-WEB.md', 'manual/MANUAL-APLICACIONES-WEB.md'],
+  ['manual/ACTUALIZAR.md', 'manual/ACTUALIZAR.md'],
   ['sistema/componentes/POLITICA-DE-CREACION.md', 'sistema/componentes/POLITICA-DE-CREACION.md'],
   // El catálogo navegable, para consultar cada elemento.
   ['cascaron/index.html', 'catalogo/index.html'],
@@ -211,16 +213,43 @@ export function empaquetar({ silencioso = false, inventario } = {}) {
   mkdirSync(dirname(salida), { recursive: true });
   writeFileSync(salida, zip);
 
-  // ENTREGAS VIEJAS. Se AVISA, no se borran: este proyecto no borra archivos
-  // por su cuenta, ni siquiera los que genera él mismo. Pero callarlas tampoco
-  // vale: el botón del catálogo apunta a la última, y quien mire la carpeta en
-  // vez de usar el botón puede llevarse una versión anterior sin enterarse.
+  // ENTREGAS VIEJAS → A LA PAPELERA.
+  //
+  // Antes solo se avisaba, y llegaron a acumularse SIETE. El aviso no bastaba:
+  // el botón del catálogo apunta a la última, pero quien abre la carpeta en vez
+  // de usar el botón se lleva la que pille. Una entrega vieja al lado de la
+  // nueva no es historial, es una trampa.
+  //
+  // Autorizado como regla permanente: siempre a la papelera lo antiguo, solo se
+  // conserva lo reciente. A la PAPELERA, nunca borrado directo —son
+  // recuperables y el «Devolver» del Finder sigue funcionando—.
+  //
+  // Solo toca `cascaron/sistema-diseno-v*.zip`, que son archivos que genera
+  // este mismo script. Nunca nada escrito por una persona.
   const viejas = readdirSync(join(RAIZ, 'cascaron'))
     .filter((f) => /^sistema-diseno-v.+\.zip$/.test(f) && f !== `${CARPETA}.zip`);
+
   if (viejas.length) {
-    console.log(`\n  Hay ${viejas.length} entrega(s) de versiones anteriores en cascaron/:`);
+    const rutas = viejas.map((f) => join(RAIZ, 'cascaron', f));
+    let aPapelera = false;
+    try {
+      // `trash` mueve a la papelera del sistema. Si no está, NO se cae hacia
+      // un borrado directo: se avisa y se deja el archivo. Preferimos ruido
+      // antes que un borrado que nadie puede deshacer.
+      execFileSync('trash', rutas, { stdio: 'ignore' });
+      aPapelera = true;
+    } catch {
+      aPapelera = false;
+    }
+    console.log(
+      aPapelera
+        ? `\n  ${viejas.length} entrega(s) anterior(es) a la papelera —recuperables—:`
+        : `\n  ${viejas.length} entrega(s) anterior(es), y NO pude moverlas a la papelera:`
+    );
     viejas.forEach((f) => console.log(`    ${f}`));
-    console.log('  Se avisan, no se borran. Bórralas tú si ya no hacen falta.');
+    if (!aPapelera) {
+      console.log('  Falta la orden `trash`. No se borran a mano: muévelas tú.');
+    }
   }
 
   if (!silencioso) {
