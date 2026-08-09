@@ -632,9 +632,13 @@ code { font-family: 'IBM Plex Mono', monospace; }
   .top-filtros { flex-wrap: wrap; }
   .top-filtros .campo { min-width: 0; }
   .top-filtros .cg { min-width: 0; flex: 1 1 120px; }
-  /* El icono del botón cambia: en estrecho la hamburguesa es lo que se reconoce. */
-  .ic-escritorio { display: none; }
-  .ic-movil { display: grid; }
+  /* El icono del botón cambia: en estrecho la hamburguesa es lo que se reconoce.
+     Van calificadas por el botón —.top-plegar— a propósito. Sin eso ganaban las
+     reglas base, que viven 400 líneas más abajo, y a igual especificidad manda
+     la última: esta consulta de medios no hacía nada. Un @media que pierde por
+     orden es peor que no tenerlo, porque parece que el caso está cubierto. */
+  .top-plegar .ic-escritorio { display: none; }
+  .top-plegar .ic-movil { display: grid; }
   /* La barra deja de tener altura fija: con los filtros envolviendo, 64px la
      obligaban a solaparse con el contenido de debajo. */
   .top.top-cascaron { height: auto; flex-wrap: wrap; row-gap: 8px; }
@@ -1032,9 +1036,13 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 /* Los filtros globales no caben en fila: se deslizan. */
 /* Un icono por vista: en móvil la hamburguesa es lo que la gente reconoce como
    «aquí está el menú». El de plegar panel no significa nada en un teléfono. */
-.ic-movil { display: none; }
-.ic-escritorio, .ic-movil { display: grid; place-items: center; }
+/* El centrado es común a los dos; el display NO, porque es justo lo que decide
+   cuál se ve. Estaban juntos en la misma regla —.ic-escritorio y .ic-movil
+   compartiendo display:grid— y esa línea deshacía el display:none de la
+   anterior: en escritorio salían el icono de plegar Y la hamburguesa a la vez. */
+.ic-escritorio, .ic-movil { place-items: center; }
 .ic-escritorio { display: grid; }
+.ic-movil { display: none; }
 [data-vista='movil'] .ic-escritorio { display: none; }
 [data-vista='movil'] .ic-movil { display: grid; }
 /* Los filtros globales se MUDAN al menú de usuario: en 390px, tres selectores
