@@ -133,6 +133,7 @@ const CONTENIDO = [
   ['componentes/src/SelectorBusqueda.tsx', 'componentes/SelectorBusqueda.tsx'],
   ['componentes/src/Chip.tsx', 'componentes/Chip.tsx'],
   ['componentes/src/Migas.tsx', 'componentes/Migas.tsx'],
+  ['componentes/src/CabeceraPantalla.tsx', 'componentes/CabeceraPantalla.tsx'],
   ['componentes/src/Dialogo.tsx', 'componentes/Dialogo.tsx'],
   ['componentes/src/Nota.tsx', 'componentes/Nota.tsx'],
   ['componentes/src/Avatar.tsx', 'componentes/Avatar.tsx'],
@@ -152,6 +153,7 @@ const CONTENIDO = [
   ['sistema/candado/verificar-contraste.mjs', 'sistema/candado/verificar-contraste.mjs'],
   ['sistema/candado/verificar-color.mjs', 'sistema/candado/verificar-color.mjs'],
   ['sistema/candado/verificar-contrato.mjs', 'sistema/candado/verificar-contrato.mjs'],
+  ['sistema/candado/verificar-entrega.mjs', 'sistema/candado/verificar-entrega.mjs'],
   ['sistema/candado/candado.eslint.config.mjs', 'sistema/candado/candado.eslint.config.mjs'],
   ['sistema/candado/probar-candado.mjs', 'sistema/candado/probar-candado.mjs'],
   // La documentación.

@@ -64,6 +64,7 @@ const ELEMENTOS = [
   // No es un elemento: es una utilidad transversal. Va en la lista porque lo
   // que no este aqui NO VIAJA, y sin ella los textos de solo-lector se ven.
   { n: 'Migas de pan',          p: ['migas'] },
+  { n: 'Cabecera de pantalla',  p: ['pant'] },
   { n: 'Diálogo',               p: ['dialogo'] },
   { n: 'Utilidades',            p: ['sr', 'mono'] },
 ];

@@ -1,0 +1,112 @@
+/**
+ * CANDADO DE LA ENTREGA — lo que el catálogo enseña y no viaja
+ *
+ *   node sistema/candado/verificar-entrega.mjs
+ *
+ * Tres veces ha pasado lo mismo, y las tres las reportó Control Administrativos
+ * V2.0 desde un producto real:
+ *
+ *   · la TABLA vivía solo como ejemplo dentro del catálogo → se publicó TablaDatos
+ *   · los ICONOS viajaban como cadenas, sin componente     → se publicó Icono
+ *   · la CABECERA DE PANTALLA se ve en las 39 páginas      → no viajaba
+ *
+ * El efecto es siempre el mismo: un proyecto ve la pieza, la da por disponible,
+ * y acaba reconstruyéndola. Reconstruida diverge, que es lo que el sistema
+ * existe para impedir.
+ *
+ * CÓMO LO DETECTA. La frecuencia bruta no sirve: `.num` aparece 515 veces y es
+ * una celda de tabla comparativa, puro catálogo. Lo que distingue un patrón
+ * ESTRUCTURAL es aparecer en CASI TODAS LAS PÁGINAS: si el catálogo lo repite
+ * en cada una, es que forma parte de cómo se arma una pantalla, no de cómo se
+ * demuestra un elemento.
+ *
+ * Con ese criterio, `.pag-cab` —40 usos en 39 páginas— salta. `.num` no.
+ *
+ * QUÉ NO HACE. Decidir. Lo que salta se mira y se decide: o se publica como
+ * componente, o se declara ESTRUCTURA_CATALOGO con su motivo. Lo que no se
+ * puede es dejarlo en silencio, que es lo que pasó tres veces.
+ *
+ * Cálculo puro. No toca red. No escribe nada.
+ */
+
+import { readFileSync, existsSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { VERSION } from '../tokens/fuente.mjs';
+import { ELEMENTOS } from '../componentes/extraer.mjs';
+
+const AQUI = dirname(fileURLToPath(import.meta.url));
+const RAIZ = join(AQUI, '..', '..');
+
+/**
+ * Clases que aparecen en casi todas las páginas y NO son un patrón de producto:
+ * son la estructura del propio catálogo. Se listan una a una, con su motivo,
+ * para que la exención sea una decisión y no un descuido.
+ */
+const ESTRUCTURA_CATALOGO = new Map([
+  ['pagina', 'El contenedor de cada página del catálogo. No existe en un producto.'],
+  ['pag-intro', 'La entradilla que explica el ELEMENTO. Es documentación, no interfaz.'],
+  ['sub-seccion', 'Los apartados de la documentación de cada elemento.'],
+  ['seccion-sub', 'El subtítulo de un apartado de documentación.'],
+  ['bloque', 'La caja donde el catálogo monta sus demostraciones.'],
+  ['w', 'El armazón del propio catálogo.'],
+  ['ic', 'Envoltorio del SVG en plantilla. En React lo pone `Icono`.'],
+]);
+
+const catalogo = join(RAIZ, 'cascaron/index.html');
+if (!existsSync(catalogo)) {
+  console.error('\n  No existe cascaron/index.html. Genera el catálogo primero.\n');
+  process.exit(1);
+}
+
+const html = readFileSync(catalogo, 'utf8').replace(/<style[^>]*>[\s\S]*?<\/style>/g, '');
+
+// Se trocea por páginas. Cada `<section class="pagina">` es una pantalla del
+// catálogo, y lo que aparece en casi todas es estructura, no demostración.
+const paginas = html.split(/<section class="pagina"/).slice(1);
+if (paginas.length < 5) {
+  console.error('\n  No se reconocen las páginas del catálogo; el candado no puede medir.\n');
+  process.exit(1);
+}
+
+const enPaginas = new Map(); // clase → nº de páginas donde aparece
+for (const pag of paginas) {
+  const vistas = new Set();
+  for (const m of pag.matchAll(/class="([^"]+)"/g)) {
+    for (const c of m[1].split(/\s+/)) if (/^[a-z][a-z0-9-]*$/.test(c)) vistas.add(c);
+  }
+  for (const c of vistas) enPaginas.set(c, (enPaginas.get(c) ?? 0) + 1);
+}
+
+const prefijos = ELEMENTOS.flatMap((e) => e.p);
+const viaja = (c) => prefijos.some((p) => c === p || c.startsWith(p + '-'));
+
+// 80 %: por debajo empiezan a colarse patrones que solo usan las páginas de un
+// tipo de elemento, y eso es demostración, no estructura.
+const UMBRAL = Math.ceil(paginas.length * 0.8);
+
+const sospechosas = [...enPaginas]
+  .filter(([c, n]) => n >= UMBRAL && !viaja(c) && !ESTRUCTURA_CATALOGO.has(c))
+  .sort((a, b) => b[1] - a[1]);
+
+console.log(`\n  Candado de la entrega — MMI-DS v${VERSION}\n`);
+console.log(`  Páginas del catálogo:  ${paginas.length}`);
+console.log(`  Umbral de estructura:  ${UMBRAL} páginas (80 %)`);
+console.log(`  Exentas declaradas:    ${ESTRUCTURA_CATALOGO.size}`);
+console.log(`  Sin decidir:           ${sospechosas.length}\n`);
+
+if (sospechosas.length) {
+  console.error('  El catálogo repite esto en casi todas sus páginas y NO viaja:\n');
+  for (const [c, n] of sospechosas) {
+    console.error(`    .${c.padEnd(18)} ${n} de ${paginas.length} páginas`);
+  }
+  console.error('\n  Un proyecto que lo vea lo dará por disponible y acabará');
+  console.error('  reconstruyéndolo. Ha pasado tres veces: la tabla, los iconos y');
+  console.error('  la cabecera de pantalla.\n');
+  console.error('  Dos salidas, y las dos son decisiones:');
+  console.error('    · publicarlo como componente y añadir su prefijo a ELEMENTOS;');
+  console.error('    · o declararlo en ESTRUCTURA_CATALOGO, con el motivo escrito.\n');
+  process.exit(1);
+}
+
+console.log('  Nada estructural se queda sin decidir.\n');

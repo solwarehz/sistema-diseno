@@ -6,7 +6,7 @@
  * debe leer, y el `aria-current` del nivel actual.
  */
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { Migas } from '../src/Migas';
@@ -122,5 +122,55 @@ describe('Icono', () => {
     for (const n of ['candado', 'lupa', 'cerrar', 'visto', 'alerta']) {
       expect(NOMBRES_ICONO).toContain(n);
     }
+  });
+});
+
+/**
+ * CABECERA DE PANTALLA. Lo pidió Control Administrativos V2.0 con once
+ * pantallas montadas. La prueba del `<h1>` único es la que sostiene el
+ * componente: hoy ellos tienen dos sitios que lo pintan y se salvan porque
+ * alguien dejó una nota. Eso es disciplina, no mecanismo.
+ */
+import { CabeceraPantalla } from '../src/CabeceraPantalla';
+
+describe('Cabecera de pantalla', () => {
+  it('emite UN h1, y solo uno', () => {
+    render(<CabeceraPantalla titulo="Clientes" />);
+    const h1 = screen.getAllByRole('heading', { level: 1 });
+    expect(h1).toHaveLength(1);
+    expect(h1[0]).toHaveTextContent('Clientes');
+  });
+
+  it('las migas van ENCIMA del título', () => {
+    const { container } = render(
+      <CabeceraPantalla titulo="Clientes" migas={[{ texto: 'Inicio', href: '/' }, { texto: 'Clientes' }]} />
+    );
+    const cab = container.querySelector('.pant-cab')!;
+    const orden = [...cab.children].map((e) => e.className || e.tagName);
+    expect(orden[0]).toContain('migas');
+  });
+
+  it('la acción va junto al título, no debajo de la descripción', () => {
+    const { container } = render(
+      <CabeceraPantalla titulo="Clientes" descripcion="Todos los clientes." accion={<button>Nuevo</button>} />
+    );
+    const fila = container.querySelector('.pant-fila')!;
+    expect(fila.querySelector('h1')).toBeTruthy();
+    expect(within(fila as HTMLElement).getByRole('button', { name: 'Nuevo' })).toBeTruthy();
+  });
+
+  it('la descripción va DEBAJO: en medio separaría la acción de su objeto', () => {
+    const { container } = render(
+      <CabeceraPantalla titulo="Clientes" descripcion="Todos los clientes." accion={<button>Nuevo</button>} />
+    );
+    const cab = container.querySelector('.pant-cab')!;
+    const hijos = [...cab.children];
+    expect(hijos[hijos.length - 1]).toHaveClass('pant-desc');
+  });
+
+  it('sin migas ni descripción no pinta huecos', () => {
+    const { container } = render(<CabeceraPantalla titulo="Clientes" />);
+    expect(container.querySelector('.migas')).toBeNull();
+    expect(container.querySelector('.pant-desc')).toBeNull();
   });
 });

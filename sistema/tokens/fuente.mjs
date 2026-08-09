@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.13.2';
+export const VERSION = '1.14.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,29 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.14.0', fecha: '2026-08-09',
+    que: 'CabeceraPantalla, y un candado para que no se repita lo que ya paso tres veces',
+    porque:
+      'Control Administrativos V2.0 senalo un PATRON, no solo una pieza: tres veces algo se ' +
+      'veia en el catalogo, un proyecto lo daba por disponible y acababa reconstruyendolo ' +
+      '—la tabla, los iconos y ahora la cabecera de pantalla—. Reconstruido diverge, que es ' +
+      'lo que el sistema existe para impedir. ' +
+      'Entra verificar-entrega.mjs. La frecuencia bruta no servia: .num sale 515 veces y es ' +
+      'una celda de tabla comparativa. Lo que distingue un patron ESTRUCTURAL es aparecer en ' +
+      'casi todas las PAGINAS, y con ese criterio .pag-cab —39 de 39— salta y .num no. Lo que ' +
+      'salta se decide: se publica, o se declara ESTRUCTURA_CATALOGO con su motivo escrito. ' +
+      'Lo que no se puede es dejarlo en silencio. ' +
+      'Y CabeceraPantalla: migas, titulo, accion y descripcion. El argumento que decide es ' +
+      'suyo y es el bueno: el titulo de pantalla es el <h1> y debe haber UNO por pagina. Un ' +
+      'componente lo garantiza; una nota pidiendo que no se usen dos a la vez es disciplina, ' +
+      'no mecanismo. Por eso el titulo es texto y no children: con marcado libre, un proyecto ' +
+      'podria meter otro encabezado dentro y volveriamos al principio. ' +
+      'El catalogo pasa a usar la MISMA clase que viaja: dos clases para lo mismo era el ' +
+      'problema, no la solucion.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.13.2', fecha: '2026-08-09',
     que: 'Tres defectos de portado, el contrato con candado, y los iconos sin puerta insegura',

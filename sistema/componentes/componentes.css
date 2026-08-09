@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.13.2
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.14.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -1203,6 +1203,19 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
     margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 }
 [data-app] .migas{ display: none; }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   CABECERA DE PANTALLA — 5 reglas · clases .pant-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.pant-cab{ margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--borde); }
+.pant-cab h1{ font-size: 28px; font-weight: 600; margin: 0; }
+.pant-fila{ display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.pant-desc{ margin: 8px 0 0; color: var(--texto-secundario); max-width: 75ch; }
+@media (max-width: 640px) {
+  .pant-fila{ flex-direction: column; }
+  .pant-fila > .pant-accion{ width: 100%; }
+}
 
 /* ───────────────────────────────────────────────────────────────────────────
    DIÁLOGO — 8 reglas · clases .dialogo-*

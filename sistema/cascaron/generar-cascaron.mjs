@@ -3627,7 +3627,7 @@ const paginasCatalogo = CATALOGO.flatMap((g) =>
         <span class="migas-sep" aria-hidden="true">/</span>
         <a href="#${i.id}" data-ir="${i.id}" class="migas-actual" aria-current="page">${i.t}</a>
       </nav>
-      <div class="pag-cab"><h1>${i.t}</h1></div>
+      <div class="pant-cab"><h1>${i.t}</h1></div>
       ${i.c}
     </section>`
   )
@@ -3929,8 +3929,31 @@ code { font-family: 'IBM Plex Mono', monospace; }
   .migas-tramo:has(> .migas-atras) { position: absolute; width: 1px; height: 1px;
     margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 }
-.pag-cab { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--borde); }
-.pag-cab h1 { font-size: 28px; font-weight: 600; }
+/* ───────────────────────────────────────────────────────────────────────────
+   CABECERA DE PANTALLA. Estaba en las 39 paginas del catalogo y NO viajaba:
+   cada proyecto la montaba a mano y cada pantalla salia un poco distinta —una
+   con linea, otra sin; una a 16px, otra a 24—. La deriva no se ve pantalla a
+   pantalla, solo al ponerlas juntas, que es cuando ya cuesta arreglarla.
+
+   Lo reporto Control Administrativos V2.0 con once pantallas montadas, y con
+   el argumento que decide: el titulo de pantalla es el <h1> y debe haber UNO
+   por pagina. Un componente lo garantiza; una nota en un comentario pidiendo
+   que no se usen dos a la vez es disciplina, no mecanismo.
+
+   La clase se renombra a pant- porque pag- es del catalogo y no viaja. */
+.pant-cab { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--borde); }
+.pant-cab h1 { font-size: 28px; font-weight: 600; margin: 0; }
+/* El titulo y la accion en la misma linea, y la accion a la derecha. Con la
+   accion debajo, la vista arranca con un boton antes que con el contenido. */
+.pant-fila { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.pant-desc { margin: 8px 0 0; color: var(--texto-secundario); max-width: 75ch; }
+/* En movil la accion baja y ocupa el ancho: a 375px no cabe al lado del titulo
+   sin partir una de las dos cosas. */
+@media (max-width: 640px) {
+  .pant-fila { flex-direction: column; }
+  .pant-fila > .pant-accion { width: 100%; }
+}
+
 .pag-intro { font-size: 15px; color: var(--texto-secundario); max-width: 90ch; margin: 0 0 20px; }
 
 .bloque { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
@@ -7192,7 +7215,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   // se inventa tipografía nueva para una pantalla nueva.
   function pintarLista(i) {
     var p = pestanas[i];
-    var h = '<div class="pag-cab"><h1>' + p.titulo + '</h1></div><div class="app-lista">';
+    var h = '<div class="pant-cab"><h1>' + p.titulo + '</h1></div><div class="app-lista">';
     p.secciones.forEach(function (s) {
       if (p.secciones.length > 1) h += '</div><h2 class="sub-seccion">' + s.titulo + '</h2><div class="app-lista">';
       s.items.forEach(function (it) {
