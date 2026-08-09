@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.13.0';
+export const VERSION = '1.13.1';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,29 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.13.1', fecha: '2026-08-09',
+    que: 'ARREGLO URGENTE: el boton se quedaba deshabilitado para siempre en modo estricto',
+    porque:
+      'Lo reporto Control Administrativos V2.0 tras migrar a la v1.13.0, y midiendo el ' +
+      'estado interno del componente montado: enVuelo=true y vivo=false a la vez, con el ' +
+      'boton vivo en pantalla. ' +
+      'La causa es una linea que escribi mal: `useEffect(() => () => { vivo.current = false }, [])` ' +
+      'apaga la bandera en la limpieza y NADA la vuelve a encender. En modo estricto —activado ' +
+      'por omision— React monta, limpia y vuelve a montar, asi que desde el primer segundo la ' +
+      'bandera ya estaba en false y la liberacion no ocurria nunca. Tras la primera accion, el ' +
+      'boton quedaba muerto. ' +
+      'Y no se podia sortear desde fuera, como bien senalan: `trabajando` es `ocupado || enVuelo` ' +
+      'y enVuelo solo baja por ese camino. ' +
+      'El arreglo es poner la bandera a true EN EL CUERPO del efecto, no solo al declararla. ' +
+      'Va con prueba en <StrictMode> vista en rojo antes de arreglar: sin verla fallar no ' +
+      'protegeria de la reaparicion. Se comprobo que el mismo patron no estuviera en ningun ' +
+      'otro componente; no lo estaba. ' +
+      'AFECTA A LA v1.13.0 UNICAMENTE, y solo a quien use `Boton` con una accion que devuelva ' +
+      'promesa. Quien este en esa version debe actualizar.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.13.0', fecha: '2026-08-09',
     que: 'Dialogo, Migas, la vista de app, y el aviso del extractor vuelve a significar algo',

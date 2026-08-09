@@ -93,8 +93,23 @@ export const Boton = forwardRef<HTMLButtonElement, BotonProps>(function Boton(
   // `return`— la capa 1 no se entera. Por eso existe también `ocupado`.
   // ───────────────────────────────────────────────────────────────────────────
   const [enVuelo, setEnVuelo] = useState(false);
+  // `vivo` evita tocar el estado de un componente ya desmontado. Y se pone a
+  // `true` EN EL CUERPO del efecto, no solo al declararlo.
+  //
+  // Esa línea de más es el arreglo de un fallo real, reportado por Control
+  // Administrativos V2.0 tras migrar: en modo estricto —activado por omisión—
+  // React monta, limpia y vuelve a montar. La limpieza dejaba `vivo` en
+  // `false` y nada lo devolvía a `true`, así que desde ese momento la
+  // liberación NO OCURRÍA NUNCA y el botón se quedaba deshabilitado para
+  // siempre tras la primera acción.
+  //
+  // Y no se podía sortear desde fuera: `trabajando` es `ocupado || enVuelo`, y
+  // `enVuelo` solo baja por aquí. La prueba de modo estricto lo fija.
   const vivo = useRef(true);
-  useEffect(() => () => { vivo.current = false; }, []);
+  useEffect(() => {
+    vivo.current = true;
+    return () => { vivo.current = false; };
+  }, []);
 
   const trabajando = ocupado || enVuelo;
 

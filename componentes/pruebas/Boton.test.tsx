@@ -8,11 +8,40 @@
  */
 
 import { render, screen, waitFor } from '@testing-library/react';
+import { StrictMode } from 'react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { Boton } from '../src/Boton';
 
 describe('Botón — acción de servidor', () => {
+  // EL FALLO QUE REPORTÓ CONTROL ADMINISTRATIVOS V2.0.
+  //
+  // En modo estricto —que viene activado por omisión— React monta, limpia y
+  // vuelve a montar. La limpieza ponía `vivo = false` y NADA lo devolvía a
+  // `true`, así que a partir de ahí la liberación no ocurría nunca: el botón se
+  // quedaba deshabilitado para siempre tras la primera acción.
+  //
+  // Y no se podía arreglar desde fuera, porque `trabajando` es
+  // `ocupado || enVuelo` y `enVuelo` solo lo baja ese camino.
+  it('en MODO ESTRICTO el botón se libera: no se queda muerto tras la primera vez', async () => {
+    const u = userEvent.setup();
+    let soltar: () => void = () => {};
+    const enVuelo = new Promise<void>((r) => { soltar = r; });
+
+    render(
+      <StrictMode>
+        <Boton onClick={() => enVuelo}>Consultar</Boton>
+      </StrictMode>
+    );
+    const b = screen.getByRole('button');
+
+    await u.click(b);
+    expect(b).toBeDisabled();
+
+    soltar();
+    await waitFor(() => expect(b).not.toBeDisabled());
+  });
+
   it('con una acción que tarda, el segundo clic NO llega', async () => {
     const u = userEvent.setup();
     let soltar: () => void = () => {};
