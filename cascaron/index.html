@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.10.1</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.10.2</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.1
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.2
    WCAG 2.2 AA · 116 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -295,7 +295,7 @@
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   RAMPAS Y FAMILIAS CATEGÓRICAS — el inventario completo, 119 escalones.
+   RAMPAS Y FAMILIAS CATEGÓRICAS — el inventario completo, 122 escalones.
 
    Un solo deletreo en todo el sistema. El escalón se llama `ambar_900` y esa
    MISMA cadena es la variable `--ambar_900` y la clase `.color-ambar_900`.
@@ -422,16 +422,19 @@
   --gris_700: #5C5955;
   --gris_800: #474440;
   --gris_900: #2C2A25;
+  --identidad_1: #0E6F63;
+  --identidad_2: #6A3FA0;
+  --identidad_3: #9B3B6E;
+  --identidad_4: #4A5568;
   --marca_rojo: #E30613;
   --marca_rojo_claro: #FF4C37;
   --marca_rojo_panel: #930000;
   --marca_oro: #DEBD68;
   --marca_amarillo: #FDF200;
   --marca_celeste: #01ADED;
-  --identidad_1: #0E6F63;
-  --identidad_2: #6A3FA0;
-  --identidad_3: #9B3B6E;
-  --identidad_4: #4A5568;
+  --marca_azul: #004AAD;
+  --marca_rojo_lockup: #EC2027;
+  --marca_negro_lockup: #1D1D1B;
 }
 
 .color-azul_50 { background-color: var(--azul_50); }
@@ -543,16 +546,19 @@
 .color-gris_700 { background-color: var(--gris_700); }
 .color-gris_800 { background-color: var(--gris_800); }
 .color-gris_900 { background-color: var(--gris_900); }
+.color-identidad_1 { background-color: var(--identidad_1); }
+.color-identidad_2 { background-color: var(--identidad_2); }
+.color-identidad_3 { background-color: var(--identidad_3); }
+.color-identidad_4 { background-color: var(--identidad_4); }
 .color-marca_rojo { background-color: var(--marca_rojo); }
 .color-marca_rojo_claro { background-color: var(--marca_rojo_claro); }
 .color-marca_rojo_panel { background-color: var(--marca_rojo_panel); }
 .color-marca_oro { background-color: var(--marca_oro); }
 .color-marca_amarillo { background-color: var(--marca_amarillo); }
 .color-marca_celeste { background-color: var(--marca_celeste); }
-.color-identidad_1 { background-color: var(--identidad_1); }
-.color-identidad_2 { background-color: var(--identidad_2); }
-.color-identidad_3 { background-color: var(--identidad_3); }
-.color-identidad_4 { background-color: var(--identidad_4); }
+.color-marca_azul { background-color: var(--marca_azul); }
+.color-marca_rojo_lockup { background-color: var(--marca_rojo_lockup); }
+.color-marca_negro_lockup { background-color: var(--marca_negro_lockup); }
 
 
 /* ── Cascarón. Estilos de la propia página de revisión ───────────────────── */
@@ -2496,7 +2502,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.10.1</option></select></label>
+          <select class="campo cg-in"><option>v1.10.2</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -2557,8 +2563,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.10.1.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.10.1</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.10.2.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.10.2</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -3511,7 +3517,7 @@ Es lo único que un componente consume. <strong>Las primitivas están prohibidas
 no tiene nombre, no se puede volver a encontrar y el candado no lo protege.
 Son <strong>113 valores</strong> en 10 rampas y 1 familia categórica,
 y <code>verificar-color.mjs</code> falla el build si aparece uno fuera de la lista.
-Los 6 de <strong>marca</strong> no están aquí: el sistema los conoce para poder vigilarlos, no para usarlos.</p>
+Los 9 de <strong>marca</strong> no están aquí: el sistema los conoce para poder vigilarlos, no para usarlos.</p>
 <p class="seccion-sub">Un solo deletreo en los tres sitios: el escalón se llama <code>ambar_900</code>,
 la variable es <code>--ambar_900</code> y la clase <code>.color-ambar_900</code>. La misma cadena, sin traducir nada.
 Autorizado no es lo mismo que libre: en un componente se usan los <strong>tokens semánticos</strong> de arriba,
@@ -4191,6 +4197,21 @@ claridad para que el mismo blanco funcione encima; por eso el paso es un índice
           <span class="tira-color color-marca_celeste"></span>
           <code class="tira-nombre">marca_celeste</code>
           <span class="tira-hex">#01ADED</span>
+        </div>
+        <div class="tira">
+          <span class="tira-color color-marca_azul"></span>
+          <code class="tira-nombre">marca_azul</code>
+          <span class="tira-hex">#004AAD</span>
+        </div>
+        <div class="tira">
+          <span class="tira-color color-marca_rojo_lockup"></span>
+          <code class="tira-nombre">marca_rojo_lockup</code>
+          <span class="tira-hex">#EC2027</span>
+        </div>
+        <div class="tira">
+          <span class="tira-color color-marca_negro_lockup"></span>
+          <code class="tira-nombre">marca_negro_lockup</code>
+          <span class="tira-hex">#1D1D1B</span>
         </div>
     </div>
   </div>
@@ -8454,6 +8475,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.10.2 <span class="cam-fecha">2026-08-09</span></h3>
+<p class="pag-intro"><strong>Los tres hexadecimales de marca que vivían solo en prosa reciben nombre.</strong> El barrido del repositorio los sacó a la luz: `#004AAD` —el azul institucional del que deriva la rampa `azul`— estaba citado en cuatro documentos y un comentario sin escalón, y `#EC2027` y `#1D1D1B` —los dos del lockup— vivían en prosa de cinco. Nada impedía sacarlos del PNG y escribirlos a mano: lo que no tiene nombre no se puede vigilar. Entran en la familia `marca`, que es CONOCIDA y NO autorizada, así que quedan bajo el candado sin ganar permiso. Sustituirlos por el color autorizado más cercano habría borrado el hecho que documentan: el defecto §8.5 es justamente que el rojo del lockup NO coincide con el del escudo.</p>
+
 
 
 <h3 class="sub-seccion">v1.10.1 <span class="cam-fecha">2026-08-09</span></h3>

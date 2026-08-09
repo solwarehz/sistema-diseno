@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.1
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.2
    WCAG 2.2 AA · 116 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -287,7 +287,7 @@
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   RAMPAS Y FAMILIAS CATEGÓRICAS — el inventario completo, 119 escalones.
+   RAMPAS Y FAMILIAS CATEGÓRICAS — el inventario completo, 122 escalones.
 
    Un solo deletreo en todo el sistema. El escalón se llama `ambar_900` y esa
    MISMA cadena es la variable `--ambar_900` y la clase `.color-ambar_900`.
@@ -414,16 +414,19 @@
   --gris_700: #5C5955;
   --gris_800: #474440;
   --gris_900: #2C2A25;
+  --identidad_1: #0E6F63;
+  --identidad_2: #6A3FA0;
+  --identidad_3: #9B3B6E;
+  --identidad_4: #4A5568;
   --marca_rojo: #E30613;
   --marca_rojo_claro: #FF4C37;
   --marca_rojo_panel: #930000;
   --marca_oro: #DEBD68;
   --marca_amarillo: #FDF200;
   --marca_celeste: #01ADED;
-  --identidad_1: #0E6F63;
-  --identidad_2: #6A3FA0;
-  --identidad_3: #9B3B6E;
-  --identidad_4: #4A5568;
+  --marca_azul: #004AAD;
+  --marca_rojo_lockup: #EC2027;
+  --marca_negro_lockup: #1D1D1B;
 }
 
 .color-azul_50 { background-color: var(--azul_50); }
@@ -535,13 +538,16 @@
 .color-gris_700 { background-color: var(--gris_700); }
 .color-gris_800 { background-color: var(--gris_800); }
 .color-gris_900 { background-color: var(--gris_900); }
+.color-identidad_1 { background-color: var(--identidad_1); }
+.color-identidad_2 { background-color: var(--identidad_2); }
+.color-identidad_3 { background-color: var(--identidad_3); }
+.color-identidad_4 { background-color: var(--identidad_4); }
 .color-marca_rojo { background-color: var(--marca_rojo); }
 .color-marca_rojo_claro { background-color: var(--marca_rojo_claro); }
 .color-marca_rojo_panel { background-color: var(--marca_rojo_panel); }
 .color-marca_oro { background-color: var(--marca_oro); }
 .color-marca_amarillo { background-color: var(--marca_amarillo); }
 .color-marca_celeste { background-color: var(--marca_celeste); }
-.color-identidad_1 { background-color: var(--identidad_1); }
-.color-identidad_2 { background-color: var(--identidad_2); }
-.color-identidad_3 { background-color: var(--identidad_3); }
-.color-identidad_4 { background-color: var(--identidad_4); }
+.color-marca_azul { background-color: var(--marca_azul); }
+.color-marca_rojo_lockup { background-color: var(--marca_rojo_lockup); }
+.color-marca_negro_lockup { background-color: var(--marca_negro_lockup); }

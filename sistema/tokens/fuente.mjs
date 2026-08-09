@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.10.1';
+export const VERSION = '1.10.2';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,21 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.10.2', fecha: '2026-08-09',
+    que: 'Los tres hexadecimales de marca que vivían solo en prosa reciben nombre',
+    porque:
+      'El barrido del repositorio los sacó a la luz: `#004AAD` —el azul institucional ' +
+      'del que deriva la rampa `azul`— estaba citado en cuatro documentos y un comentario ' +
+      'sin escalón, y `#EC2027` y `#1D1D1B` —los dos del lockup— vivían en prosa de cinco. ' +
+      'Nada impedía sacarlos del PNG y escribirlos a mano: lo que no tiene nombre no se ' +
+      'puede vigilar. Entran en la familia `marca`, que es CONOCIDA y NO autorizada, así ' +
+      'que quedan bajo el candado sin ganar permiso. Sustituirlos por el color autorizado ' +
+      'más cercano habría borrado el hecho que documentan: el defecto §8.5 es justamente ' +
+      'que el rojo del lockup NO coincide con el del escudo.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.10.1', fecha: '2026-08-09',
     que: 'El interruptor apagado deja de pedir prestada la paleta de error',
@@ -484,12 +499,31 @@ const declarados = {
 
 export const categoricas = {
   marca: {
-    rojo:          '#E30613', // el del escudo. §8.5: el lockup usa #EC2027 y no coinciden
+    rojo:          '#E30613', // el del escudo
     rojo_claro:    '#FF4C37', // titular sobre pagina oscura
     rojo_panel:    '#930000', // panel de marca en oscuro
     oro:           '#DEBD68',
     amarillo:      '#FDF200',
     celeste:       '#01ADED',
+
+    // El azul institucional del que sale la rampa `azul`, con correccion de
+    // matiz. Estaba citado en cuatro documentos y en un comentario, y no tenia
+    // nombre: era el hexadecimal mas repetido del repositorio sin escalon.
+    azul:          '#004AAD',
+
+    // LOS DOS DEL LOCKUP — el defecto de identidad §8.5, ahora con nombre.
+    //
+    // El escudo usa `marca_rojo` y el lockup usa OTRO rojo. Son dos rojos
+    // distintos en la misma identidad, y el sistema adopta el del escudo por
+    // ser el elemento primario. Nombrarlos no los autoriza: los mete bajo
+    // vigilancia. Antes `#EC2027` solo vivia en prosa de cinco documentos, asi
+    // que nada impedia que alguien lo sacara del PNG y lo escribiera a mano.
+    //
+    // Sustituirlos por el color autorizado mas cercano habria borrado el
+    // hecho: lo que estos dos valores documentan es justamente que NO
+    // coinciden con los nuestros.
+    rojo_lockup:   '#EC2027',
+    negro_lockup:  '#1D1D1B', // texto del lockup. 1,08:1 sobre pagina oscura
   },
   identidad: {
     1: '#0E6F63', // verde azulado
