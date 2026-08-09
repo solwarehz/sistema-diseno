@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.4
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.5
    WCAG 2.2 AA · 134 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -75,9 +75,9 @@
   --info-acento: #2F71CE;
 
   /* Interruptor apagado — es un estado elegido, no un error */
-  --apagado-fondo: #FFB8A9;
-  --apagado-borde: #D63231;
-  --apagado-bolita: #8F1017;
+  --apagado-fondo: #FF7D62;
+  --apagado-borde: #EE1F1B;
+  --apagado-bolita: #700000;
 
   /* Identidad — avatar. NO significan nada */
   --identidad-1: #0E6F63;
@@ -158,9 +158,9 @@
   --info-acento: #6D97DE;
 
   /* Interruptor apagado — es un estado elegido, no un error */
-  --apagado-fondo: #4D241F;
-  --apagado-borde: #E2665C;
-  --apagado-bolita: #FFB8A9;
+  --apagado-fondo: #700000;
+  --apagado-borde: #FF7D62;
+  --apagado-bolita: #FFD5C6;
 
   /* Identidad — avatar. NO significan nada */
   --identidad-1: #0E6F63;
@@ -244,9 +244,9 @@
     --info-acento: #6D97DE;
 
     /* Interruptor apagado — es un estado elegido, no un error */
-    --apagado-fondo: #4D241F;
-    --apagado-borde: #E2665C;
-    --apagado-bolita: #FFB8A9;
+    --apagado-fondo: #700000;
+    --apagado-borde: #FF7D62;
+    --apagado-bolita: #FFD5C6;
 
     /* Identidad — avatar. NO significan nada */
     --identidad-1: #0E6F63;

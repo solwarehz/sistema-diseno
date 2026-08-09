@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.10.4</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.10.5</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.4
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.10.5
    WCAG 2.2 AA · 134 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -83,9 +83,9 @@
   --info-acento: #2F71CE;
 
   /* Interruptor apagado — es un estado elegido, no un error */
-  --apagado-fondo: #FFB8A9;
-  --apagado-borde: #D63231;
-  --apagado-bolita: #8F1017;
+  --apagado-fondo: #FF7D62;
+  --apagado-borde: #EE1F1B;
+  --apagado-bolita: #700000;
 
   /* Identidad — avatar. NO significan nada */
   --identidad-1: #0E6F63;
@@ -166,9 +166,9 @@
   --info-acento: #6D97DE;
 
   /* Interruptor apagado — es un estado elegido, no un error */
-  --apagado-fondo: #4D241F;
-  --apagado-borde: #E2665C;
-  --apagado-bolita: #FFB8A9;
+  --apagado-fondo: #700000;
+  --apagado-borde: #FF7D62;
+  --apagado-bolita: #FFD5C6;
 
   /* Identidad — avatar. NO significan nada */
   --identidad-1: #0E6F63;
@@ -252,9 +252,9 @@
     --info-acento: #6D97DE;
 
     /* Interruptor apagado — es un estado elegido, no un error */
-    --apagado-fondo: #4D241F;
-    --apagado-borde: #E2665C;
-    --apagado-bolita: #FFB8A9;
+    --apagado-fondo: #700000;
+    --apagado-borde: #FF7D62;
+    --apagado-bolita: #FFD5C6;
 
     /* Identidad — avatar. NO significan nada */
     --identidad-1: #0E6F63;
@@ -2546,7 +2546,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.10.4</option></select></label>
+          <select class="campo cg-in"><option>v1.10.5</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -2607,8 +2607,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.10.4.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.10.4</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.10.5.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.10.5</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -3634,7 +3634,7 @@ que son los que están medidos contra un fondo concreto.</p>
           <code class="tira-nombre">rojo_50</code>
           <span class="tira-hex">#FFECE5</span>
         </div>
-        <div class="tira">
+        <div class="tira tira-usada">
           <span class="tira-color color-rojo_100"></span>
           <code class="tira-nombre">rojo_100</code>
           <span class="tira-hex">#FFD5C6</span>
@@ -3654,7 +3654,7 @@ que son los que están medidos contra un fondo concreto.</p>
           <code class="tira-nombre">rojo_400</code>
           <span class="tira-hex">#FF4C37</span>
         </div>
-        <div class="tira">
+        <div class="tira tira-usada">
           <span class="tira-color color-rojo_500"></span>
           <code class="tira-nombre">rojo_500</code>
           <span class="tira-hex">#EE1F1B</span>
@@ -3674,7 +3674,7 @@ que son los que están medidos contra un fondo concreto.</p>
           <code class="tira-nombre">rojo_800</code>
           <span class="tira-hex">#930000</span>
         </div>
-        <div class="tira">
+        <div class="tira tira-usada">
           <span class="tira-color color-rojo_900"></span>
           <code class="tira-nombre">rojo_900</code>
           <span class="tira-hex">#700000</span>
@@ -8526,6 +8526,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
 
 
+<h3 class="sub-seccion">v1.10.5 <span class="cam-fecha">2026-08-09</span></h3>
+<p class="pag-intro"><strong>El interruptor apagado pasa entero a la familia `rojo`.</strong> Se pidio `rojo_300` para el estado en falso. El relleno lo toma tal cual. El CONTORNO no puede: `rojo_300` mide 2,18:1 sobre `fondo-encabezado` y SC 1.4.11 exige 3:1 para el limite de un control, asi que sube a `rojo_500` —3,77:1 en el peor fondo—. Y la bolita tuvo que bajar a `rojo_900`: sobre un relleno mas brillante, el `alerta_800` de antes se quedaba en 3,70:1 y el blanco en 2,51:1. Subir el brillo del relleno OBLIGA a oscurecer lo que va encima; no son tres decisiones sueltas. Los tres escalones salen de la misma rampa: mezclar `rojo` de relleno con `alerta` de contorno habria dejado un interruptor de dos familias.</p>
+
+
+
 <h3 class="sub-seccion">v1.10.4 <span class="cam-fecha">2026-08-09</span></h3>
 <p class="pag-intro"><strong>El aviso temporal se pinta como lo describe su propia tabla de tonos.</strong> La documentación define el aviso como filete intenso MÁS fondo tenue, igual que el chip del mismo estado. En pantalla solo cambiaba el filete: era una tarjeta blanca con una raya de color. El sistema describía una cosa y pintaba otra, y el candado no podía verlo porque verifica PARES DE TOKENS, no si el token correcto está enchufado. El texto se queda en `texto-principal` y no pasa al del estado: medido, 12,03:1 en el peor tono frente a 7,82:1. El chip usa el del estado porque es una etiqueta corta donde el color refuerza; el aviso lleva una frase, y ahí manda la legibilidad. Entran nueve pares al contrato —la frase, el botón «Deshacer» y el aspa sobre cada fondo—, que hasta ahora no medía nadie.</p>
 
@@ -9018,7 +9023,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
     <tr>
       <td><code>apagado-bolita</code></td>
       <td><code>apagado-fondo</code></td>
-      <td class="num">5.62:1</td>
+      <td class="num">4.95:1</td>
       <td class="num">4.5</td>
       <td class="ok">cumple</td>
       <td class="motivo">Bolita sobre la vía del interruptor</td>
@@ -9026,7 +9031,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
     <tr>
       <td><code>apagado-borde</code></td>
       <td><code>fondo-tarjeta</code></td>
-      <td class="num">4.81:1</td>
+      <td class="num">4.33:1</td>
       <td class="num">3</td>
       <td class="ok">cumple</td>
       <td class="motivo">Contorno del interruptor sobre tarjeta</td>
@@ -9034,7 +9039,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
     <tr>
       <td><code>apagado-borde</code></td>
       <td><code>fondo-pagina</code></td>
-      <td class="num">4.52:1</td>
+      <td class="num">4.07:1</td>
       <td class="num">3</td>
       <td class="ok">cumple</td>
       <td class="motivo">Contorno del interruptor sobre página</td>
@@ -9042,7 +9047,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
     <tr>
       <td><code>apagado-borde</code></td>
       <td><code>fondo-encabezado</code></td>
-      <td class="num">4.19:1</td>
+      <td class="num">3.77:1</td>
       <td class="num">3</td>
       <td class="ok">cumple</td>
       <td class="motivo">Contorno del interruptor sobre encabezado</td>
@@ -9559,7 +9564,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
     <tr>
       <td><code>apagado-bolita</code></td>
       <td><code>apagado-fondo</code></td>
-      <td class="num">7.98:1</td>
+      <td class="num">9.22:1</td>
       <td class="num">4.5</td>
       <td class="ok">cumple</td>
       <td class="motivo">Bolita sobre la vía del interruptor</td>
@@ -9567,7 +9572,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
     <tr>
       <td><code>apagado-borde</code></td>
       <td><code>fondo-tarjeta</code></td>
-      <td class="num">4.65:1</td>
+      <td class="num">6.19:1</td>
       <td class="num">3</td>
       <td class="ok">cumple</td>
       <td class="motivo">Contorno del interruptor sobre tarjeta</td>
@@ -9575,7 +9580,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
     <tr>
       <td><code>apagado-borde</code></td>
       <td><code>fondo-pagina</code></td>
-      <td class="num">5.04:1</td>
+      <td class="num">6.70:1</td>
       <td class="num">3</td>
       <td class="ok">cumple</td>
       <td class="motivo">Contorno del interruptor sobre página</td>
@@ -9583,7 +9588,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
     <tr>
       <td><code>apagado-borde</code></td>
       <td><code>fondo-encabezado</code></td>
-      <td class="num">4.23:1</td>
+      <td class="num">5.63:1</td>
       <td class="num">3</td>
       <td class="ok">cumple</td>
       <td class="motivo">Contorno del interruptor sobre encabezado</td>
@@ -9811,7 +9816,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
 
   // La CLASE de cada token en cada modo. Antes era el hexadecimal, pero un
   // hexadecimal no se puede escribir en el codigo: lo que se aplica es la clase.
-  var clases = {"fondo-pagina":{"claro":"gris_50","oscuro":"negro_950"},"fondo-tarjeta":{"claro":"gris_0","oscuro":"negro_850"},"fondo-encabezado":{"claro":"gris_100","oscuro":"negro_750"},"fondo-fila-alt":{"claro":"gris_50","oscuro":"negro_800"},"fondo-fila-hover":{"claro":"azul_50","oscuro":"negro_700"},"texto-principal":{"claro":"gris_900","oscuro":"negro_50"},"texto-secundario":{"claro":"gris_600","oscuro":"negro_100"},"texto-pista":{"claro":"gris_600","oscuro":"negro_200"},"texto-invertido":{"claro":"gris_0","oscuro":"negro_900"},"borde":{"claro":"gris_200","oscuro":"negro_600"},"borde-fuerte":{"claro":"gris_300","oscuro":"negro_500"},"borde-campo":{"claro":"gris_500","oscuro":"negro_300"},"accion":{"claro":"azul_600","oscuro":"azul_300"},"accion-hover":{"claro":"azul_700","oscuro":"azul_200"},"accion-activa":{"claro":"azul_800","oscuro":"azul_100"},"accion-texto":{"claro":"gris_0","oscuro":"negro_900"},"accion-deshabilitada":{"claro":"gris_300","oscuro":"negro_600"},"accion-texto-desh":{"claro":"gris_500","oscuro":"negro_200"},"accion-2":{"claro":"oro_700","oscuro":"oro_200"},"enlace":{"claro":"azul_600","oscuro":"azul_300"},"accion-2-fondo":{"claro":"oro_100","oscuro":"oro_800"},"neutra-fondo":{"claro":"gris_100","oscuro":"negro_650"},"neutra-texto":{"claro":"gris_900","oscuro":"negro_50"},"destructiva":{"claro":"rojo_600","oscuro":"rojo_300"},"destructiva-hover":{"claro":"rojo_700","oscuro":"rojo_200"},"destructiva-texto":{"claro":"gris_0","oscuro":"negro_900"},"marco-fondo":{"claro":"indigo_800","oscuro":"indigo_800"},"marco-texto":{"claro":"gris_0","oscuro":"gris_0"},"marco-acento":{"claro":"oro_200","oscuro":"oro_200"},"marco-item-activo":{"claro":"indigo_900","oscuro":"indigo_900"},"marco-nivel-1":{"claro":"indigo_700","oscuro":"indigo_700"},"marco-nivel-2":{"claro":"indigo_600","oscuro":"indigo_600"},"marco-borde":{"claro":"indigo_500","oscuro":"indigo_500"},"marco-texto-tenue":{"claro":"indigo_200","oscuro":"indigo_200"},"foco":{"claro":"ambar_600","oscuro":"ambar_300"},"foco-en-marco":{"claro":"ambar_300","oscuro":"ambar_300"},"exito-fondo":{"claro":"verde_50","oscuro":"verde_950"},"exito-texto":{"claro":"verde_900","oscuro":"verde_200"},"exito-acento":{"claro":"verde_700","oscuro":"verde_500"},"aviso-fondo":{"claro":"ambar_50","oscuro":"ambar_950"},"aviso-texto":{"claro":"ambar_900","oscuro":"ambar_200"},"aviso-acento":{"claro":"ambar_700","oscuro":"ambar_500"},"error-fondo":{"claro":"alerta_50","oscuro":"alerta_900"},"error-texto":{"claro":"alerta_800","oscuro":"alerta_100"},"error-acento":{"claro":"alerta_500","oscuro":"alerta_400"},"info-fondo":{"claro":"informacion_50","oscuro":"informacion_900"},"info-texto":{"claro":"informacion_800","oscuro":"informacion_100"},"info-acento":{"claro":"informacion_500","oscuro":"informacion_400"},"apagado-fondo":{"claro":"alerta_100","oscuro":"alerta_900"},"apagado-borde":{"claro":"alerta_500","oscuro":"alerta_400"},"apagado-bolita":{"claro":"alerta_800","oscuro":"alerta_100"},"identidad-1":{"claro":"identidad_1","oscuro":"identidad_1"},"identidad-2":{"claro":"identidad_2","oscuro":"identidad_2"},"identidad-3":{"claro":"identidad_3","oscuro":"identidad_3"},"identidad-4":{"claro":"identidad_4","oscuro":"identidad_4"},"identidad-texto":{"claro":"gris_0","oscuro":"gris_0"}};
+  var clases = {"fondo-pagina":{"claro":"gris_50","oscuro":"negro_950"},"fondo-tarjeta":{"claro":"gris_0","oscuro":"negro_850"},"fondo-encabezado":{"claro":"gris_100","oscuro":"negro_750"},"fondo-fila-alt":{"claro":"gris_50","oscuro":"negro_800"},"fondo-fila-hover":{"claro":"azul_50","oscuro":"negro_700"},"texto-principal":{"claro":"gris_900","oscuro":"negro_50"},"texto-secundario":{"claro":"gris_600","oscuro":"negro_100"},"texto-pista":{"claro":"gris_600","oscuro":"negro_200"},"texto-invertido":{"claro":"gris_0","oscuro":"negro_900"},"borde":{"claro":"gris_200","oscuro":"negro_600"},"borde-fuerte":{"claro":"gris_300","oscuro":"negro_500"},"borde-campo":{"claro":"gris_500","oscuro":"negro_300"},"accion":{"claro":"azul_600","oscuro":"azul_300"},"accion-hover":{"claro":"azul_700","oscuro":"azul_200"},"accion-activa":{"claro":"azul_800","oscuro":"azul_100"},"accion-texto":{"claro":"gris_0","oscuro":"negro_900"},"accion-deshabilitada":{"claro":"gris_300","oscuro":"negro_600"},"accion-texto-desh":{"claro":"gris_500","oscuro":"negro_200"},"accion-2":{"claro":"oro_700","oscuro":"oro_200"},"enlace":{"claro":"azul_600","oscuro":"azul_300"},"accion-2-fondo":{"claro":"oro_100","oscuro":"oro_800"},"neutra-fondo":{"claro":"gris_100","oscuro":"negro_650"},"neutra-texto":{"claro":"gris_900","oscuro":"negro_50"},"destructiva":{"claro":"rojo_600","oscuro":"rojo_300"},"destructiva-hover":{"claro":"rojo_700","oscuro":"rojo_200"},"destructiva-texto":{"claro":"gris_0","oscuro":"negro_900"},"marco-fondo":{"claro":"indigo_800","oscuro":"indigo_800"},"marco-texto":{"claro":"gris_0","oscuro":"gris_0"},"marco-acento":{"claro":"oro_200","oscuro":"oro_200"},"marco-item-activo":{"claro":"indigo_900","oscuro":"indigo_900"},"marco-nivel-1":{"claro":"indigo_700","oscuro":"indigo_700"},"marco-nivel-2":{"claro":"indigo_600","oscuro":"indigo_600"},"marco-borde":{"claro":"indigo_500","oscuro":"indigo_500"},"marco-texto-tenue":{"claro":"indigo_200","oscuro":"indigo_200"},"foco":{"claro":"ambar_600","oscuro":"ambar_300"},"foco-en-marco":{"claro":"ambar_300","oscuro":"ambar_300"},"exito-fondo":{"claro":"verde_50","oscuro":"verde_950"},"exito-texto":{"claro":"verde_900","oscuro":"verde_200"},"exito-acento":{"claro":"verde_700","oscuro":"verde_500"},"aviso-fondo":{"claro":"ambar_50","oscuro":"ambar_950"},"aviso-texto":{"claro":"ambar_900","oscuro":"ambar_200"},"aviso-acento":{"claro":"ambar_700","oscuro":"ambar_500"},"error-fondo":{"claro":"alerta_50","oscuro":"alerta_900"},"error-texto":{"claro":"alerta_800","oscuro":"alerta_100"},"error-acento":{"claro":"alerta_500","oscuro":"alerta_400"},"info-fondo":{"claro":"informacion_50","oscuro":"informacion_900"},"info-texto":{"claro":"informacion_800","oscuro":"informacion_100"},"info-acento":{"claro":"informacion_500","oscuro":"informacion_400"},"apagado-fondo":{"claro":"rojo_300","oscuro":"rojo_900"},"apagado-borde":{"claro":"rojo_500","oscuro":"rojo_300"},"apagado-bolita":{"claro":"rojo_900","oscuro":"rojo_100"},"identidad-1":{"claro":"identidad_1","oscuro":"identidad_1"},"identidad-2":{"claro":"identidad_2","oscuro":"identidad_2"},"identidad-3":{"claro":"identidad_3","oscuro":"identidad_3"},"identidad-4":{"claro":"identidad_4","oscuro":"identidad_4"},"identidad-texto":{"claro":"gris_0","oscuro":"gris_0"}};
 
   function aplicar(modo) {
     raiz.setAttribute('data-tema', modo);

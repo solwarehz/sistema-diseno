@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.10.4';
+export const VERSION = '1.10.5';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,21 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.10.5', fecha: '2026-08-09',
+    que: 'El interruptor apagado pasa entero a la familia `rojo`',
+    porque:
+      'Se pidio `rojo_300` para el estado en falso. El relleno lo toma tal cual. El ' +
+      'CONTORNO no puede: `rojo_300` mide 2,18:1 sobre `fondo-encabezado` y SC 1.4.11 ' +
+      'exige 3:1 para el limite de un control, asi que sube a `rojo_500` —3,77:1 en el ' +
+      'peor fondo—. Y la bolita tuvo que bajar a `rojo_900`: sobre un relleno mas ' +
+      'brillante, el `alerta_800` de antes se quedaba en 3,70:1 y el blanco en 2,51:1. ' +
+      'Subir el brillo del relleno OBLIGA a oscurecer lo que va encima; no son tres ' +
+      'decisiones sueltas. Los tres escalones salen de la misma rampa: mezclar `rojo` de ' +
+      'relleno con `alerta` de contorno habria dejado un interruptor de dos familias.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.10.4', fecha: '2026-08-09',
     que: 'El aviso temporal se pinta como lo describe su propia tabla de tonos',
@@ -465,9 +480,22 @@ const declarados = {
   //
   // Lo único que el relleno sí condiciona es la bolita que va encima, y ese par
   // está en el contrato: 5,62:1 claro · 7,98:1 oscuro.
-  'apagado-fondo':  { claro: 'alerta_100', oscuro: 'alerta_900', uso: 'Vía del interruptor en «no»' },
-  'apagado-borde':  { claro: 'alerta_500', oscuro: 'alerta_400', uso: 'Contorno del interruptor en «no». Límite de control' },
-  'apagado-bolita': { claro: 'alerta_800', oscuro: 'alerta_100', uso: 'Bolita sobre apagado-fondo' },
+  // v1.10.5 — pasa a la familia `rojo`, que es el rojo pedido para el apagado.
+  // Los tres escalones salen de la MISMA rampa: mezclar `rojo` de relleno con
+  // `alerta` de contorno habría sido un interruptor de dos familias.
+  //
+  // El relleno es `rojo_300` tal cual se pidió. Lo que NO puede ser `rojo_300`
+  // es el contorno: mide 2,18:1 sobre `fondo-encabezado` y SC 1.4.11 exige 3:1
+  // para el límite de un control. Sube a `rojo_500`, que da 3,77:1 en el peor
+  // de los tres fondos y sigue siendo el mismo rojo.
+  //
+  // Y la bolita tuvo que bajar: sobre `rojo_300`, el `alerta_800` de antes daba
+  // 3,70:1 —por debajo del 4,5:1 de texto— y el blanco 2,51:1. `rojo_900` da
+  // 4,95:1. Subir el brillo del relleno OBLIGA a oscurecer lo que va encima:
+  // no son tres decisiones sueltas, es una sola.
+  'apagado-fondo':  { claro: 'rojo_300', oscuro: 'rojo_900', uso: 'Vía del interruptor en «no»' },
+  'apagado-borde':  { claro: 'rojo_500', oscuro: 'rojo_300', uso: 'Contorno del interruptor en «no». Límite de control' },
+  'apagado-bolita': { claro: 'rojo_900', oscuro: 'rojo_100', uso: 'Bolita sobre apagado-fondo' },
 
   // ── IDENTIDAD · v1.7.0 ────────────────────────────────────────────────────
   // Colores del avatar sin foto. Existen porque NO se puede reutilizar la
