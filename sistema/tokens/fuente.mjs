@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.26.0';
+export const VERSION = '1.27.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,29 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.27.0', fecha: '2026-08-10',
+    que: 'R34: TablaDatos pinta lo que su catalogo promete — busqueda global, Mostrar con recuento, iconos, N.o y el pie',
+    porque:
+      'R34 de Control Administrativos, medido lado a lado: el catalogo es la promesa y el '
+      + 'componente es la entrega, y se contaban distinto en cinco piezas. Todas eran del '
+      + 'componente, ninguna deliberada del catalogo. Entra la BUSQUEDA GLOBAL (mira todas las '
+      + 'columnas, se SUMA a los filtros y vuelve a la pagina 1; en servidor solo se emite), el '
+      + '«Mostrar [N]» sube del pie a la barra con el recuento CON SUSTANTIVO al lado -«X de Y '
+      + 'trabajadores» siempre que haya criba, aunque X sea igual que Y: un filtro que no '
+      + 'descarta nada parece no haber hecho nada-, Filtros y Columnas ganan su icono y se van a '
+      + 'la DERECHA con la ranura de acciones (donde el catalogo pone su CSV), la columna N.o '
+      + 'localizadora y CONTINUA entre paginas (con numerada={false} para quitarla), y el pie '
+      + 'queda rango izquierda + paginacion derecha. porPagina=0 significa «Todas». Reglas 22-25 '
+      + 'del contrato, diez pruebas nuevas: 205.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'La barra cambia de disposicion: los mandos pasan a la derecha y el rango baja al pie. '
+      + 'EstadoTabla gana el campo busqueda, y alCambiar lo emite. La tabla trae N.o y busqueda '
+      + 'por omision -es lo que el catalogo prometia-; quien no los quiera: numerada={false}, '
+      + 'buscable={false}. El selector «Filas» del pie desaparece: «Mostrar» vive arriba.',
+    ],
+  },
   {
     v: '1.26.0', fecha: '2026-08-10',
     que: 'El flotante del plegado gana hover y titulo, y los dos candados que faltaban en la lista vuelven a correr',

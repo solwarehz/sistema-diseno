@@ -25,6 +25,7 @@ import { Chip } from './Chip';
 import { Campo, Selector } from './Campo';
 import { Paginacion } from './Paginacion';
 import { SeleccionMultiple } from './Interruptor';
+import { Icono } from './Icono';
 
 export type Columna<T> = {
   /** Clave estable. Se usa para ordenar, filtrar y ocultar. */
@@ -95,12 +96,24 @@ export type TablaDatosProps<T> = {
    *  producto. Sin ranura, el CSV de cada consumidor flota encima de la
    *  tarjeta y se nota que no pertenece. */
   acciones?: React.ReactNode;
+  /** R34 · el sustantivo del recuento: «38 trabajadores» dice qué se cuenta;
+   *  «38 filas» solo dice que hay una tabla. En plural. */
+  sustantivo?: string;
+  /** R34 · la búsqueda global de la barra. Viene puesta, como en el catálogo;
+   *  `false` la quita cuando el producto tiene su propio buscador. */
+  buscable?: boolean;
+  /** R34 · la columna N.º, localizadora y CONTINUA entre páginas («¿cuál era?
+   *  la 34») . Viene puesta, como en el catálogo. */
+  numerada?: boolean;
 };
 
 export type EstadoTabla = {
   orden: { clave: string; dir: 'asc' | 'desc' } | null;
   filtros: Record<string, string>;
+  /** R34 · la búsqueda global. En `servidor`, quien consulta la aplica. */
+  busqueda: string;
   pagina: number;
+  /** 0 significa «todas». */
   porPagina: number;
 };
 
@@ -129,6 +142,9 @@ export function TablaDatos<T>({
   ocultas: ocultasFuera,
   onOcultas,
   acciones,
+  sustantivo = 'filas',
+  buscable = true,
+  numerada = true,
 }: TablaDatosProps<T>) {
   if (process.env.NODE_ENV !== 'production' && modo === 'servidor' && total === undefined) {
     console.warn(
@@ -139,6 +155,7 @@ export function TablaDatos<T>({
   const id = useId();
   const [orden, setOrden] = useState<EstadoTabla['orden']>(null);
   const [filtros, setFiltros] = useState<Record<string, string>>({});
+  const [busqueda, setBusqueda] = useState('');
   const [pagina, setPagina] = useState(1);
   const [porPagina, setPorPagina] = useState(porPaginaInicial);
   // R1/R2 · plegar la fila de filtros NO borra los valores: son dos estados
@@ -168,16 +185,20 @@ export function TablaDatos<T>({
   const hayFiltro = Object.values(filtros).some((v) => v !== SIN_FILTRO);
 
   const avisar = (parcial: Partial<EstadoTabla>) =>
-    alCambiar?.({ orden, filtros, pagina, porPagina, ...parcial });
+    alCambiar?.({ orden, filtros, busqueda, pagina, porPagina, ...parcial });
 
   const filtradas = useMemo(() => {
     // En `servidor` la tabla NO toca los datos: filtrar aquí sobre la página
     // recibida es justo el error que este modo existe para impedir.
     if (modo === 'servidor') return filas;
     const activos = Object.entries(filtros).filter(([, v]) => v !== SIN_FILTRO);
-    if (!activos.length) return filas;
-    return filas.filter((fila) =>
-      activos.every(([clave, texto]) => {
+    const busca = normalizar(busqueda.trim());
+    if (!activos.length && !busca) return filas;
+    return filas.filter((fila) => {
+      // R34 · la búsqueda global mira TODAS las columnas: es para cuando no se
+      // sabe en cuál está lo que se busca. Se suma a los filtros, no los pisa.
+      if (busca && !columnas.some((c) => normalizar(String(c.valor(fila))).includes(busca))) return false;
+      return activos.every(([clave, texto]) => {
         const col = columnas.find((c) => c.clave === clave);
         if (!col) return true;
         // R33 · dominio cerrado casa por IGUALDAD: con inclusión, elegir
@@ -185,9 +206,9 @@ export function TablaDatos<T>({
         return col.opcionesFiltro
           ? normalizar(String(col.valor(fila))) === normalizar(texto)
           : normalizar(String(col.valor(fila))).includes(normalizar(texto));
-      })
-    );
-  }, [filas, filtros, columnas, modo]);
+      });
+    });
+  }, [filas, filtros, busqueda, columnas, modo]);
 
   const ordenadas = useMemo(() => {
     if (modo === 'servidor') return filtradas;
@@ -205,14 +226,21 @@ export function TablaDatos<T>({
   // En `servidor` el total lo dice quien consulta; en `navegador` lo cuenta la
   // tabla. Y en `servidor` NO se recorta: lo recibido ES la página.
   const cuantas = modo === 'servidor' ? (total ?? filas.length) : ordenadas.length;
-  const totalPaginas = Math.max(1, Math.ceil(cuantas / porPagina));
+  // R34 · porPagina 0 es «Todas»: una página con todo dentro.
+  const tam = porPagina > 0 ? porPagina : Math.max(cuantas, 1);
+  const totalPaginas = Math.max(1, Math.ceil(cuantas / tam));
   const paginaSegura = Math.min(pagina, totalPaginas);
   const visibles = modo === 'servidor'
     ? ordenadas
-    : ordenadas.slice((paginaSegura - 1) * porPagina, paginaSegura * porPagina);
+    : ordenadas.slice((paginaSegura - 1) * tam, paginaSegura * tam);
 
-  const desde = cuantas === 0 ? 0 : (paginaSegura - 1) * porPagina + 1;
-  const hasta = Math.min(paginaSegura * porPagina, cuantas);
+  const desde = cuantas === 0 ? 0 : (paginaSegura - 1) * tam + 1;
+  const hasta = Math.min(paginaSegura * tam, cuantas);
+  // R34 · «X de Y trabajadores» siempre que haya criba, aunque X sea igual que
+  // Y: un filtro que no descarta nada parece no haber hecho nada.
+  const hayCriba = hayFiltro || busqueda.trim() !== '';
+  const totalSinCriba = modo === 'servidor' ? (total ?? filas.length) : filas.length;
+  const conteo = hayCriba ? `${cuantas} de ${totalSinCriba} ${sustantivo}` : `${cuantas} ${sustantivo}`;
 
   function cambiarOrden(clave: string) {
     // R13 · ordenar no cambia de página ni pierde los filtros.
@@ -233,18 +261,66 @@ export function TablaDatos<T>({
 
   return (
     <div className="tb-envoltura">
+      {/* R34 · la barra ES la del catálogo: buscar + Mostrar + recuento a la
+          izquierda, mandos con icono a la derecha. La promesa y la entrega no
+          pueden contarse distinto. */}
       <div className="tb-barra">
         <div className="tb-barra-izq">
+          {buscable && (
+            /* No es un <Campo> a propósito: la barra usa la etiqueta mini
+               visible del catálogo (tb-mini), no el grupo de formulario. El
+               <label> envolvente da el nombre accesible de forma nativa. */
+            <label className="tb-mini tb-buscar">
+              <span>Buscar en toda la tabla</span>
+              <span className="sel-caja">
+                <span className="sel-lupa"><Icono nombre="lupa" tam="control" /></span>
+                <input
+                  className="campo sel-in"
+                  autoComplete="off"
+                  placeholder={`${columnas.slice(0, 3).map((c) => c.titulo).join(', ')}…`}
+                  value={busqueda}
+                  onChange={(e) => {
+                    setBusqueda(e.target.value);
+                    // R5 · toda criba vuelve a la página 1.
+                    setPagina(1);
+                    avisar({ busqueda: e.target.value, pagina: 1 });
+                  }}
+                />
+              </span>
+            </label>
+          )}
+          <label className="tb-mini">
+            <span>Mostrar</span>
+            <select
+              className="campo"
+              value={porPagina}
+              onChange={(e) => {
+                const n = Number(e.target.value);
+                setPorPagina(n);
+                setPagina(1);
+                avisar({ porPagina: n, pagina: 1 });
+              }}
+            >
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="0">Todas</option>
+            </select>
+          </label>
+          <span className="tb-conteo">{conteo}</span>
+        </div>
+        <div className="tb-barra-der">
           <Boton
             variante="neutra"
             /* R3 · el botón queda marcado mientras haya filtro: con la fila
                plegada nada más lo indicaría, y una tabla filtrada que parece
                completa es un error de lectura. */
-            className={hayFiltro ? 'activo' : ''}
+            className={['btn-ic', hayFiltro ? 'activo' : ''].filter(Boolean).join(' ')}
             aria-expanded={filtrosVisibles}
             aria-controls={`${id}-filtros`}
             onClick={() => setFiltrosVisibles((v) => !v)}
           >
+            <Icono nombre="filtro" tam="control" />
             Filtros
           </Boton>
 
@@ -253,21 +329,17 @@ export function TablaDatos<T>({
               con otro nombre. */}
           <Boton
             variante="neutra"
+            className="btn-ic"
             aria-expanded={columnasAbierto}
             aria-controls={`${id}-columnas`}
             onClick={() => setColumnasAbierto((v) => !v)}
           >
+            <Icono nombre="columnas" tam="control" />
             Columnas
           </Boton>
-          {/* R32 · la ranura del producto: exportar, imprimir, por lotes.
+          {/* R32 · la ranura del producto, donde el catálogo pone su CSV.
               Solo el sitio — el comportamiento es de quien la llena. */}
           {acciones}
-        </div>
-        <div className="tb-barra-der">
-          <span className="tb-rango">
-            {/* R7 · el rango se queda aunque no haya paginación. */}
-            {cuantas === 0 ? 'Sin resultados' : `${desde}–${hasta} de ${cuantas}`}
-          </span>
         </div>
       </div>
 
@@ -307,6 +379,14 @@ export function TablaDatos<T>({
       <table className="tb" aria-label={titulo}>
         <thead>
           <tr>
+            {/* R34 · N.º localizadora y CONTINUA entre páginas: «era la 34»
+                sigue siendo la 34 en la página 4. No ordena ni filtra: no es
+                un dato, es un dedo puesto en la fila. */}
+            {numerada && (
+              <th scope="col" className="tb-th tb-th-indice">
+                <span className="tb-th-txt tb-num">N.º</span>
+              </th>
+            )}
             {visiblesCols.map((col) => {
               const activa = orden?.clave === col.clave;
               const ordenable = col.ordenable !== false;
@@ -339,6 +419,7 @@ export function TablaDatos<T>({
               filtro vive sobre la columna que filtra o hay que recordar cuál
               era cuál. */}
           <tr id={`${id}-filtros`} className="tb-fila-filtros" hidden={!filtrosVisibles}>
+            {numerada && <td className="tb-f-celda" />}
             {/* `td` y no `th`: una celda de filtro NO es un encabezado de
                 columna. Con `th` cada columna se anunciaba DOS VECES —«Horas» y
                 «Filtrar por Horas»— y quien navega por encabezados tenía que
@@ -379,6 +460,7 @@ export function TablaDatos<T>({
         <tbody>
           {visibles.map((fila, i) => (
             <tr key={claveFila(fila)} className={i % 2 === 1 ? 'tb-alt' : undefined}>
+              {numerada && <td className="tb-indice mono">{(paginaSegura - 1) * tam + i + 1}</td>}
               {visiblesCols.map((col) => (
                 <td key={col.clave} className={col.numerica ? 'tb-num' : undefined}>
                   {col.pintar ? col.pintar(fila) : col.valor(fila)}
@@ -392,7 +474,7 @@ export function TablaDatos<T>({
               qué columnas habría. */}
           {visibles.length === 0 && (
             <tr>
-              <td colSpan={visiblesCols.length} className="tb-vacio">
+              <td colSpan={visiblesCols.length + (numerada ? 1 : 0)} className="tb-vacio">
                 <strong>Sin resultados.</strong><br />
                 {hayFiltro ? (
                   <>
@@ -418,23 +500,29 @@ export function TablaDatos<T>({
         </tbody>
       </table>
 
-      {/* R7 · con una sola página NO se pinta la paginación. El rango sí, y
-          está arriba. */}
-      {/* Se IMPORTA Paginacion en vez de rehacerla. Estaban las dos: 38 líneas
-          aquí que reproducían lo que `Paginacion compacta` ya hacía, clase por
-          clase. Copiar el aspecto no copia el resto —`aria-current` en la
-          página en curso, la ventana con elipsis, la regla de no pintarse con
-          una sola página— y el día que la paginación mejore, la de la tabla se
-          queda como está. */}
-      <Paginacion
-        compacta
-        de={titulo}
-        pagina={paginaSegura}
-        totalPaginas={totalPaginas}
-        onPagina={(n) => { setPagina(n); avisar({ pagina: n }); }}
-        porPagina={porPagina}
-        onPorPagina={(n) => { setPorPagina(n); setPagina(1); avisar({ porPagina: n, pagina: 1 }); }}
-      />
+      {/* R34 · el pie del catálogo: rango a la izquierda, paginación a la
+          derecha. El «Mostrar» ya no va aquí — vive arriba, en la barra. */}
+      <div className="tb-pie">
+        <span className="tb-rango">
+          {/* R7 · el rango se queda aunque no haya paginación. */}
+          {cuantas === 0 ? '0 de 0' : `${desde}–${hasta} de ${cuantas}`}
+        </span>
+        {/* Se IMPORTA Paginacion en vez de rehacerla. Estaban las dos: 38
+            líneas aquí que reproducían lo que `Paginacion compacta` ya hacía,
+            clase por clase. Copiar el aspecto no copia el resto —`aria-current`
+            en la página en curso, la ventana con elipsis, la regla de no
+            pintarse con una sola página— y el día que la paginación mejore, la
+            de la tabla se queda como está. */}
+        <div className="tb-pag">
+          <Paginacion
+            compacta
+            de={titulo}
+            pagina={paginaSegura}
+            totalPaginas={totalPaginas}
+            onPagina={(n) => { setPagina(n); avisar({ pagina: n }); }}
+          />
+        </div>
+      </div>
     </div>
   );
 }

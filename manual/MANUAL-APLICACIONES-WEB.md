@@ -458,7 +458,7 @@ significado— y la densidad, que salieron en la v1.7.0.
 
 | Pendiente | Estado |
 |---|---|
-| **Tabla — lo que aún no trae** | `TablaDatos` resuelve orden, filtros —texto libre y dominio cerrado—, paginación, columnas visibles (controlables desde el perfil), ranura de acciones y estado vacío. **No** trae selección múltiple ni encabezado fijo |
+| **Tabla — lo que aún no trae** | `TablaDatos` resuelve orden, filtros —texto libre y dominio cerrado—, búsqueda global, «Mostrar» con recuento, columna N.º, paginación, columnas visibles (controlables desde el perfil), ranura de acciones y estado vacío. **No** trae selección múltiple ni encabezado fijo |
 | **Primitivas de dominio** | DNI y RUC con dígito verificador, dos apellidos, ubigeo en cascada, soles, fechas peruanas |
 | ~~**Modo oscuro**~~ | **Aprobado.** Ya no es un pendiente: se pasa `tema` y `onTema` a `MenuUsuario` y el producto guarda la preferencia. El marco va en escala de negros |
 

@@ -144,7 +144,7 @@ describe('Tabla de datos · paginación', () => {
     pintar();
     await u.click(screen.getByRole('button', { name: 'Filtros' }));
     await u.type(screen.getByLabelText('Filtrar por Cargo'), 'zzz');
-    expect(screen.getByText('Sin resultados')).toBeInTheDocument();
+    expect(screen.getByText(/Sin resultados/)).toBeInTheDocument();
   });
 });
 
@@ -168,7 +168,7 @@ describe('Tabla de datos · orden', () => {
     const th = screen.getByRole('columnheader', { name: /Horas/ });
     await u.click(within(th).getByRole('button'));
 
-    const primeras = filasCuerpo().map((f) => within(f).getAllByRole('cell')[2].textContent);
+    const primeras = filasCuerpo().map((f) => within(f).getAllByRole('cell')[3].textContent);
     expect(primeras).toEqual(['20', '25', '30', '35', '40', '45']);
   });
 
@@ -228,7 +228,8 @@ describe('Contrato de comportamiento', () => {
   it('R12 · la dirección de orden se indica con FLECHA además de color', async () => {
     const u = userEvent.setup();
     pintar();
-    const th = screen.getAllByRole('columnheader')[0];
+    // La [0] ya no vale: es N.º, que no ordena a propósito (regla 24).
+    const th = screen.getByRole('columnheader', { name: /Apellidos/ });
     await u.click(within(th).getByRole('button'));
     // SC 1.4.1: el color no puede ser el único portador. La flecha va aparte,
     // oculta al lector porque `aria-sort` ya lo dice.
@@ -263,7 +264,7 @@ describe('R19 (pedido R32) · ranura de acciones en la barra', () => {
   it('lo que se pasa aparece junto a Filtros y Columnas', () => {
     pintar({ acciones: <button type="button">Exportar CSV</button> });
     const exportar = screen.getByRole('button', { name: 'Exportar CSV' });
-    expect(exportar.closest('.tb-barra-izq')).not.toBeNull();
+    expect(exportar.closest('.tb-barra-der')).not.toBeNull();
   });
 });
 
@@ -304,5 +305,60 @@ describe('R21 · la tabla vacía dice por qué', () => {
     pintar({ filas: [] });
     expect(screen.getByText(/No hay datos registrados todavía/)).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'quítalos todos' })).toBeNull();
+  });
+});
+
+describe('R34 · la tabla pinta lo que el catálogo promete', () => {
+  it('R22 · la búsqueda global mira TODAS las columnas y vuelve a la página 1', async () => {
+    const u = userEvent.setup();
+    pintar({ porPagina: 2 });
+    await u.click(screen.getByRole('button', { name: 'Siguiente' }));
+    // «Directora» está en la columna Cargo; se busca sin decir en cuál.
+    await u.type(screen.getByRole('textbox', { name: /Buscar en toda la tabla/ }), 'directora');
+    expect(filasCuerpo()).toHaveLength(1);
+    expect(filasCuerpo()[0].textContent).toContain('VARGAS SOTO, Ana');
+  });
+
+  it('R22 · la búsqueda se SUMA a los filtros, no los pisa', async () => {
+    const u = userEvent.setup();
+    pintar();
+    await u.click(screen.getByRole('button', { name: /Filtros/ }));
+    await u.type(screen.getByLabelText('Filtrar por Cargo'), 'Docente');
+    await u.type(screen.getByRole('textbox', { name: /Buscar en toda la tabla/ }), 'jose');
+    expect(filasCuerpo()).toHaveLength(1);
+  });
+
+  it('R23 · «Mostrar» vive en la barra y el recuento lleva sustantivo', async () => {
+    const u = userEvent.setup();
+    const { container } = pintar({ sustantivo: 'trabajadores' });
+    expect(container.querySelector('.tb-conteo')!.textContent).toBe('6 trabajadores');
+    // Con criba, «X de Y» aunque X sea igual que Y: un filtro que no descarta
+    // nada parece no haber hecho nada.
+    await u.type(screen.getByRole('textbox', { name: /Buscar en toda la tabla/ }), 'a');
+    expect(container.querySelector('.tb-conteo')!.textContent).toMatch(/de 6 trabajadores$/);
+    // Y «Mostrar» cambia el tamaño de página desde arriba.
+    await u.selectOptions(within(container.querySelectorAll('.tb-mini')[1] as HTMLElement).getByRole('combobox'), '0');
+    expect(container.querySelector('.tb-rango')!.textContent).toContain('1–6 de 6');
+  });
+
+  it('R24 · la columna N.º es CONTINUA entre páginas', async () => {
+    const u = userEvent.setup();
+    pintar({ porPagina: 2 });
+    expect(filasCuerpo()[0].querySelector('.tb-indice')!.textContent).toBe('1');
+    await u.click(screen.getByRole('button', { name: 'Siguiente' }));
+    // Página 2: sigue en 3, no vuelve a 1. Es un dedo en la fila, no un dato.
+    expect(filasCuerpo()[0].querySelector('.tb-indice')!.textContent).toBe('3');
+  });
+
+  it('R24 · numerada={false} la quita para quien no la quiera', () => {
+    const { container } = pintar({ numerada: false });
+    expect(container.querySelector('.tb-indice')).toBeNull();
+  });
+
+  it('R25 · el pie lleva el rango a la izquierda y la paginación a la derecha', () => {
+    const { container } = pintar({ porPagina: 2 });
+    const pie = container.querySelector('.tb-pie')!;
+    expect(pie.querySelector('.tb-rango')!.textContent).toBe('1–2 de 6');
+    expect(pie.querySelector('.tb-pag nav')).not.toBeNull();
   });
 });

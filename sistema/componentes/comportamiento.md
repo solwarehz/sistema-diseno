@@ -75,6 +75,10 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 | **19** | Del proyecto. (R32, v1.25.0) La ranura `acciones` pone la exportación o la acción por lotes **dentro de la barra**, junto a «Filtros» y «Columnas». El sitio es del sistema; el comportamiento, de quien la llena. |
 | **20** | **Obligatorio.** (R33, v1.25.0) Columna con `opcionesFiltro` filtra con **selector** y casa por **igualdad**, no por texto contenido: «activo» está *contenido* en «inactivo», y quien teclea el sinónimo concluye que no hay resultados. |
 | **21** | **Obligatorio.** (v1.25.0) La tabla vacía **dice por qué y da la salida**: con filtros puestos, «Prueba con menos filtros, o quítalos todos» en un clic; sin filtros, «No hay datos registrados todavía». El encabezado se queda — dice qué columnas habría. Cero filas sin explicación parece un fallo. |
+| **22** | **Obligatorio.** (R34, v1.27.0) La **búsqueda global** mira todas las columnas —es para cuando no se sabe en cuál está lo que se busca—, se **suma** a los filtros de columna y vuelve a la página 1. En `servidor` solo se emite por `alCambiar`. |
+| **23** | **Obligatorio.** (R34, v1.27.0) «Mostrar [N]» vive en la **barra**, con el recuento al lado y **con sustantivo** («38 trabajadores»). Con cualquier criba el recuento dice «X de Y» aunque X sea igual que Y: un filtro que no descarta nada parece no haber hecho nada. |
+| **24** | **Obligatorio.** (R34, v1.27.0) La columna **N.º** es localizadora y **continua entre páginas**: «era la 34» sigue siendo la 34 en la página 4. No ordena ni filtra — no es un dato, es un dedo puesto en la fila. `numerada={false}` la quita. |
+| **25** | **Obligatorio.** (R34, v1.27.0) El **pie** lleva el rango a la izquierda y la paginación a la derecha, como el catálogo. El tamaño de página no se repite ahí: ya vive arriba. |
 
 ---
 
