@@ -49,8 +49,11 @@ El usuario los fijó de forma expresa:
   fuera. Si necesitas un archivo de fuera, **pídelo por el chat**: el usuario lo
   manda y se guarda dentro.
 - ❌ **No instalar nada en la máquina.** Ni node global, ni fuentes, ni Homebrew.
-- ⏸️ **Docker requiere autorización aparte**, cada vez. Descargar una imagen o
-  levantar un contenedor no está cubierto por el permiso general.
+- ✅ **Docker: autorizado de forma permanente para este proyecto** (2026-08-10,
+  por el responsable). El agente puede levantar y apagar los contenedores del
+  proyecto según lo necesite, sin pedir permiso cada vez. El límite sigue siendo
+  el ambiente del proyecto: contenedores, volúmenes e imágenes que sirven a este
+  repositorio — nada fuera de él.
 - ❌ **Nunca borres un archivo del usuario sin permiso explícito.** Y cuando lo
   autorice, va a la papelera, no a `rm -rf`.
 
