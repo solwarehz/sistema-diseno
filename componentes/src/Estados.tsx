@@ -5,8 +5,9 @@
  * el cuidado está en CUÁNDO hablan y en qué NO dicen.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Boton } from './Boton';
+import { EnZonaAvisos } from './ZonaAvisos';
 
 /* ── Estados de pantalla ─────────────────────────────────────────────────── */
 
@@ -88,13 +89,17 @@ export function Aviso({ tono, texto, accion, onCerrar, duracion }: AvisoProps) {
     return () => clearTimeout(t);
   }, [ms, pausado, onCerrar]);
 
+  // Dentro de ZonaAvisos el rol lo pone la zona —dos regiones hermanas que
+  // existen desde la carga— y repetirlo aquí anidaría regiones vivas.
+  const enZona = useContext(EnZonaAvisos);
+
   return (
     <div
       className={`av av-${tono}`}
       // Error interrumpe; el resto espera turno. Y van en zonas hermanas, no
       // anidadas: un role=alert dentro de una región polite se comporta distinto
       // en cada lector.
-      role={tono === 'error' ? 'alert' : 'status'}
+      role={enZona ? undefined : tono === 'error' ? 'alert' : 'status'}
       onMouseEnter={() => setPausado(true)}
       onMouseLeave={() => setPausado(false)}
       onFocus={() => setPausado(true)}

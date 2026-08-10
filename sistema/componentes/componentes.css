@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.22.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.23.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -661,12 +661,13 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .pr-paso div b + span{ display: block; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   AVISO TEMPORAL — 15 reglas · clases .av-*
+   AVISO TEMPORAL — 16 reglas · clases .av-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .av-botones{ display: flex; gap: 8px; flex-wrap: wrap; }
 .av-zona{ position: fixed; right: 20px; top: 76px; z-index: 100;
   display: flex; flex-direction: column; gap: 8px; max-width: 380px; }
+.av-grupo{ display: flex; flex-direction: column; gap: 8px; }
 .av{ display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px;
   border-radius: 6px; border-left: 4px solid; font-size: 13px;
   background: var(--fondo-tarjeta); box-shadow: var(--sombra-aviso);

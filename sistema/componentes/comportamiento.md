@@ -78,6 +78,8 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 | | Regla |
 |---|---|
+| **0** | **Obligatorio.** Los avisos viven en `ZonaAvisos`, que se monta **con la aplicación** — no cuando llega el primer aviso. Sus dos regiones (`alert` para error, `status` para el resto) existen desde la carga: una región viva creada en el momento del fallo no la anuncian la mayoría de lectores de pantalla. Dentro de la zona el aviso no lleva rol propio; suelto, lo conserva. |
+| **0b** | Del proyecto: cuántos avisos a la vez. El criterio de referencia del cascarón: **tres, y el cuarto expulsa al más antiguo que no sea un error** — un error expulsado en silencio es un error que nadie leyó. |
 | **1** | **Obligatorio.** Éxito, información y advertencia son **`aria-live="polite"`**. Confirman algo ya hecho; interrumpir la lectura para decir «se guardó» roba la frase que se estaba leyendo. |
 | **2** | **Obligatorio.** El error es **`role="alert"`** y **no se va solo**: duración cero. Algo no se hizo, y anunciarlo tarde deja seguir adelante sobre un estado falso. |
 | **3** | **Obligatorio.** El aviso **se pausa** al pasar el cursor o al recibir el foco. |

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.22.0';
+export const VERSION = '1.23.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,25 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.23.0', fecha: '2026-08-10',
+    que: 'R29: ZonaAvisos — la zona existe desde la carga y son dos regiones hermanas',
+    porque:
+      'R29 de Control Administrativos: el Aviso estaba publicado pero su zona no, y cada producto '
+      + 'la reescribia perdiendo lo que no es de estilo. Dos exigencias: la region viva existe '
+      + 'DESDE LA CARGA aunque este vacia -una creada en el momento del fallo no la anuncian la '
+      + 'mayoria de lectores de pantalla- y son DOS regiones hermanas, alert para el error que '
+      + 'interrumpe y status para lo que espera turno. La advertencia estaba escrita en el propio '
+      + 'Aviso desde su creacion («van en zonas hermanas, no anidadas») y el CATALOGO la incumplia: '
+      + 'una sola zona aria-live=polite con el role=alert del error anidado dentro. Corregido en '
+      + 'los dos lados a la vez. El Aviso dentro de la zona no repite rol -se lo quita por '
+      + 'contexto- y suelto conserva el suyo: cero cambios para quien ya lo usaba. El reparto de '
+      + 'referencia queda en el contrato: tres a la vista y el cuarto expulsa al mas antiguo QUE '
+      + 'NO SEA UN ERROR, porque un error expulsado en silencio es un error que nadie leyo. '
+      + 'Cinco pruebas nuevas: 185.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.22.0', fecha: '2026-08-10',
     que: 'R27: tokens de movimiento — el tiempo entra al sistema y reduced-motion se resuelve una vez',

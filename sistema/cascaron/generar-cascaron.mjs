@@ -4311,6 +4311,10 @@ code { font-family: 'IBM Plex Mono', monospace; }
    vuelve tras pulsar, y no tapa el contenido que se acaba de tocar. */
 .av-zona { position: fixed; right: 20px; top: 76px; z-index: 100;
   display: flex; flex-direction: column; gap: 8px; max-width: 380px; }
+/* R29: las dos regiones hermanas de dentro —alert para el error, status para
+   el resto—. Existen desde la carga aunque estén vacías: una región viva
+   creada en el momento del fallo no la anuncian la mayoría de lectores. */
+.av-grupo { display: flex; flex-direction: column; gap: 8px; }
 .av { display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px;
   border-radius: 6px; border-left: 4px solid; font-size: 13px;
   background: var(--fondo-tarjeta); box-shadow: var(--sombra-aviso);
@@ -7305,9 +7309,20 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   (function () {
     var botones = document.querySelectorAll('[data-av]');
 
+    // R29: la zona son DOS regiones hermanas que existen desde la carga.
+    // Antes era una sola con aria-live=polite y el error metía su role=alert
+    // DENTRO: la anidación que el propio Aviso advierte. El catálogo cometía
+    // el antipatrón que la entrega prohíbe.
     var zona = document.createElement('div');
     zona.className = 'av-zona';
-    zona.setAttribute('aria-live', 'polite');
+    var zonaAlerta = document.createElement('div');
+    zonaAlerta.className = 'av-grupo';
+    zonaAlerta.setAttribute('role', 'alert');
+    var zonaEstado = document.createElement('div');
+    zonaEstado.className = 'av-grupo';
+    zonaEstado.setAttribute('role', 'status');
+    zona.appendChild(zonaAlerta);
+    zona.appendChild(zonaEstado);
     document.body.appendChild(zona);
 
     var TEXTOS = {
@@ -7324,13 +7339,16 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       if (texto) d = [d[0], texto, d[2]];
       var el = document.createElement('div');
       el.className = 'av av-' + d[0];
-      if (d[0] === 'error') el.setAttribute('role', 'alert');
+      // El rol lo pone la REGIÓN, no el aviso: la de alert interrumpe, la de
+      // status espera turno, y las dos ya existían al cargar.
       el.innerHTML = '<span class="av-txt">' + d[1] + '</span>' +
         (conAccion || tono === 'deshacer' ? '<button class="av-accion">Deshacer</button>' : '') +
         '<button class="av-x" aria-label="Cerrar aviso">' + '${ICO_X.replace(/'/g, "\\'")}' + '</button>';
-      zona.appendChild(el);
-      // Máximo tres: el cuarto expulsa al más antiguo.
-      while (zona.children.length > 3) zona.firstChild.remove();
+      (d[0] === 'error' ? zonaAlerta : zonaEstado).appendChild(el);
+      // Máximo tres a la vista: el cuarto expulsa al más antiguo QUE NO SEA UN
+      // ERROR. Un error expulsado en silencio es un error que nadie leyó.
+      while (zonaAlerta.children.length + zonaEstado.children.length > 3
+        && zonaEstado.children.length) zonaEstado.firstChild.remove();
       requestAnimationFrame(function () { el.classList.add('av-dentro'); });
 
       var t = null;
