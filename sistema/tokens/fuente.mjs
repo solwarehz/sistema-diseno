@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.21.0';
+export const VERSION = '1.22.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,32 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.22.0', fecha: '2026-08-10',
+    que: 'R27: tokens de movimiento — el tiempo entra al sistema y reduced-motion se resuelve una vez',
+    porque:
+      'R27 de Control Administrativos: el sistema definia color, tipografia y espacio pero no '
+      + 'tiempo, asi que cada producto inventaba duraciones y reimplementaba prefers-reduced-motion '
+      + 'regla a regla — la misma deriva que los hex a mano. La escala NO se invento: el inventario '
+      + 'del catalogo tenia seis duraciones (.14/.15/.18/.22/.24/.3s) para tres intenciones, y se '
+      + 'consolidan en rapida 140ms, media 180ms y lenta 220ms — los 220ms del lateral que Control '
+      + 'Administrativos midio en R26 siguen siendo 220ms. Las dos animaciones infinitas conservan '
+      + 'su tiempo con nombre (giro 700ms, onda 1300ms). La curva estandar es la que el sistema ya '
+      + 'usaba en todas partes: ease, tokenizada como --curva; adoptar otra es decision de diseno '
+      + 'pendiente y el token es el asidero. prefers-reduced-motion cae a 0.01ms en el mismo :root '
+      + 'que define los tokens —no a 0: un transitionend que nunca llega cuelga a quien lo espera— '
+      + 'y la permanencia del aviso (5s) no se reduce, porque leer no es moverse. Todo viaja en '
+      + 'componentes.css por la via de las sombras, y el auditor del cascaron gana el chequeo '
+      + 'MOVIMIENTO: una duracion literal bloquea igual que un hex crudo. Probado en fallo con un '
+      + '.22s a mano: rojo, senalando la regla exacta.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'Las duraciones del sistema cambian de valor donde estaban repartidas: .14/.15s pasan a '
+      + '140ms, .24/.3s pasan a 220ms. Diferencias de 10 a 80ms en transiciones; ningun cambio '
+      + 'de comportamiento. Quien copiara una duracion literal del catalogo puede sustituirla '
+      + 'por su token.',
+    ],
+  },
   {
     v: '1.21.0', fecha: '2026-08-10',
     que: 'R28: .bloque viaja · el andamiaje del catalogo deja de viajar, por regla y no por lista',

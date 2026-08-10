@@ -202,6 +202,13 @@ let dentroDeMedia = 0;
 
 for (const b of todos) {
   if (b.sel.startsWith('@media')) {
+    // R27: la politica de movimiento reducido es UNA regla resuelta una vez;
+    // sin ella los tokens de duracion viajarian sin su apagado y cada producto
+    // volveria a escribirlo. Va con las dependencias, no con un elemento.
+    if (b.sel.includes('prefers-reduced-motion') && /--dur-/.test(b.cuerpo)) {
+      dependenciasSueltas.push(b.entero);
+      continue;
+    }
     // Se conserva la envoltura: una regla de @media sin su @media no vale nada.
     for (const e of ELEMENTOS) {
       const dentro = bloques(b.cuerpo).map(sinAndamio).filter(Boolean)
@@ -218,7 +225,8 @@ for (const b of todos) {
   // Nueve reglas del paquete escriben `box-shadow: var(--sombra-capa)` y el
   // consumidor recibía la variable sin declarar —la capa flotante, el menú y
   // el aviso salían planos y nadie sabía por qué—. Se acompaña al paquete.
-  if (b.sel && b.sel.startsWith(':root') && /--sombra-/.test(b.entero)) {
+  // R27: los tokens de movimiento viajan por la misma via que las sombras.
+  if (b.sel && b.sel.startsWith(':root') && /--sombra-|--dur-|--curva|--permanencia-/.test(b.entero)) {
     dependenciasSueltas.push(b.entero);
     continue;
   }

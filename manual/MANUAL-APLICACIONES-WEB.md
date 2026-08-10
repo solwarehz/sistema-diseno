@@ -272,6 +272,41 @@ alcance del pulgar.
 
 ---
 
+## 5bis · Movimiento — el tiempo también es del sistema
+
+Desde la v1.22.0 (pedido R27 de Control Administrativos). Antes cada producto
+inventaba duraciones y reimplementaba `prefers-reduced-motion` regla a regla —
+la misma deriva que los hex a mano.
+
+| Token | Valor | Para qué |
+|---|---|---|
+| `--dur-rapida` | 140ms | Microinteracción: hover, opacidad, aparecer una capa |
+| `--dur-media` | 180ms | Lo normal: transform, plegados pequeños, diálogos |
+| `--dur-lenta` | 220ms | Paneles, lateral, acordeones |
+| `--curva` | `ease` | La curva estándar de toda transición |
+| `--permanencia-aviso` | 5s | Cuánto queda en pantalla un aviso temporal |
+
+```css
+/* SÍ */  transition: transform var(--dur-media) var(--curva);
+/* NO */  transition: transform .2s cubic-bezier(0.16, 0.84, 0.44, 1);
+```
+
+Tres reglas:
+
+1. **Ninguna duración se escribe a mano.** El auditor del cascarón lo bloquea
+   igual que un hex crudo. `0s` se admite: no es tiempo, es el truco de la
+   visibilidad diferida.
+2. **`prefers-reduced-motion` ya está resuelto.** Los tokens caen a `0.01ms`
+   solos — no a 0: un `transitionend` que nunca llega cuelga a quien lo espera.
+   No lo reimplementes por regla.
+3. **La permanencia del aviso no es movimiento** y no se reduce: leer no es
+   moverse, y quien pide menos movimiento no pide menos tiempo de lectura.
+
+Los tokens viajan en `componentes.css` junto a las sombras — no hace falta
+importar nada más.
+
+---
+
 ## 6 · Formularios
 
 ### 6.1 El formulario trabaja, no enseña

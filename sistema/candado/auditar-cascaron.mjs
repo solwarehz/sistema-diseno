@@ -55,7 +55,7 @@ const bloques = css.split('}').map((b) => {
 const sinURI = (d) => d.replace(/url\("data:[^"]*"\)/g, 'URI');
 const corto = (s) => (s.length > 46 ? s.slice(0, 43) + '…' : s);
 
-const hallazgos = { color: [], tipo: [], espacio: [], radio: [], familia: [] };
+const hallazgos = { color: [], tipo: [], espacio: [], radio: [], familia: [], movimiento: [] };
 const pendientes = new Map();
 
 const anota = (lista, sel, msg) => lista.push(`${corto(sel).padEnd(46)} ${msg}`);
@@ -81,7 +81,10 @@ for (const { sel, decl } of bloques) {
     }
     for (const m of d.match(/\bvar\(--([a-z0-9-]+)\)/g) || []) {
       const t = m.slice(6, -1);
-      if (!TOKENS.has(t) && !t.startsWith('sombra')) anota(hallazgos.color, sel, `token inexistente --${t}`);
+      // sombra/canto son la elevación; dur/curva/permanencia, el movimiento
+      // (R27). No son tokens de color pero sí del sistema, con su definición
+      // en el mismo :root que las sombras.
+      if (!TOKENS.has(t) && !/^(sombra|canto|dur|curva|permanencia)(-|$)/.test(t)) anota(hallazgos.color, sel, `token inexistente --${t}`);
     }
   }
 
@@ -121,6 +124,20 @@ for (const { sel, decl } of bloques) {
   // 5 · Familia ─────────────────────────────────────────────────────────────
   for (const h of [...d.matchAll(/font-family\s*:\s*([^;]+)/g)]) {
     if (!/IBM Plex (Sans|Mono)|inherit/.test(h[1])) anota(hallazgos.familia, sel, `familia ${h[1].trim().slice(0, 30)}`);
+  }
+
+  // 6 · Movimiento ──────────────────────────────────────────────────────────
+  // R27: el tiempo también es del sistema. Toda duración de transition y
+  // animation pasa por var(--dur-*); un literal suelto es la misma deriva que
+  // un hex a mano. `0s` se admite: no es tiempo, es el truco de la visibilidad
+  // diferida (`transition: visibility 0s var(--dur-media)`).
+  if (!ES_DEFINICION(sel)) {
+    for (const h of [...d.matchAll(/(transition|animation)(-[a-z-]+)?\s*:\s*([^;]+)/g)]) {
+      for (const v of h[3].match(/(?<![\w.-])\d*\.?\d+m?s\b/g) || []) {
+        if (parseFloat(v) === 0) continue;
+        anota(hallazgos.movimiento, sel, `${h[1]}${h[2] || ''}: ${v} sin token de duración`);
+      }
+    }
   }
 }
 
@@ -180,6 +197,7 @@ const TITULOS = {
   espacio: 'ESPACIADO — múltiplos de 4',
   radio: 'RADIO — solo los definidos',
   familia: 'FAMILIA — solo IBM Plex',
+  movimiento: 'MOVIMIENTO — toda duración viene de un token',
 };
 
 console.log(`\n  Auditoría del cascarón — ${(html.length / 1024).toFixed(0)} KB, ${bloques.length} reglas\n`);

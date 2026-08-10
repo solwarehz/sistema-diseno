@@ -3922,6 +3922,50 @@ ${tokensCss}
   --canto-marco: inset -1px 0 0 var(--marco-borde);
 }
 
+/* ── MOVIMIENTO — R27 ────────────────────────────────────────────────────────
+   El sistema definia color, tipografia y espacio, pero no TIEMPO, asi que cada
+   producto inventaba duraciones y reimplementaba prefers-reduced-motion regla
+   a regla (R27, Control Administrativos 2026-08-10).
+
+   La escala NO se invento: sale del inventario de lo que el catalogo ya
+   animaba. Habia seis duraciones (.14/.15/.18/.22/.24/.3s) para tres
+   intenciones, y se consolidan en tres pasos:
+
+     rapida 140ms  microinteraccion: hover, opacidad, aparecer una capa
+     media  180ms  lo normal: transform, plegados pequenos, dialogos
+     lenta  220ms  paneles y lateral (los 220ms que Control Administrativos
+                   midio en R26 siguen siendo 220ms)
+
+   Las dos animaciones infinitas conservan su tiempo con nombre propio (giro
+   del boton ocupado, onda del progreso indeterminado). La curva estandar es la
+   que el sistema ya usaba en TODAS sus transiciones: ease. Cambiarla por otra
+   es decision de diseno pendiente; el token es el asidero para ese dia.
+
+   prefers-reduced-motion se resuelve AQUI y una sola vez: las duraciones caen
+   a 0.01ms —no a 0: un transitionend que nunca llega cuelga a quien lo
+   espera— y la PERMANENCIA del aviso no se toca, porque leer no es moverse y
+   quien pide menos movimiento no pide menos tiempo de lectura. */
+:root {
+  --dur-rapida: 140ms;
+  --dur-media: 180ms;
+  --dur-lenta: 220ms;
+  --dur-giro: 700ms;
+  --dur-onda: 1300ms;
+  --curva: ease;
+  --curva-vaiven: ease-in-out;
+  --curva-giro: linear;
+  --permanencia-aviso: 5s;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-rapida: 0.01ms;
+    --dur-media: 0.01ms;
+    --dur-lenta: 0.01ms;
+    --dur-giro: 0.01ms;
+    --dur-onda: 0.01ms;
+  }
+}
+
 /* SOLO PARA EL LECTOR. Oculta a la vista sin sacar del árbol de accesibilidad.
    No es display:none ni visibility:hidden: los dos lo quitan también del
    lector, que es justo lo contrario de lo que hace falta.
@@ -3945,7 +3989,7 @@ ${tokensCss}
 body {
   margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif;
   background: var(--fondo-pagina); color: var(--texto-principal);
-  font-size: 15px; line-height: 1.45; transition: background .18s, color .18s;
+  font-size: 15px; line-height: 1.45; transition: background var(--dur-media), color var(--dur-media);
 }
 h1,h2,h3,h4 { margin: 0; }
 code { font-family: 'IBM Plex Mono', monospace; }
@@ -4006,7 +4050,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
 @media (max-width: 700px) {
   /* La lateral sale del flujo y entra con el botón, igual que en vista móvil. */
   .app-cascaron .lat { position: absolute; left: 0; top: 0; bottom: 0; z-index: 60;
-    height: 100%; transform: translateX(-100%); transition: transform .22s ease; }
+    height: 100%; transform: translateX(-100%); transition: transform var(--dur-lenta) var(--curva); }
   .app-cascaron .lat:not(.colapsado) { transform: translateX(0); box-shadow: var(--sombra-capa); }
   .app-cascaron { position: relative; overflow-x: hidden; }
   /* Los filtros envuelven y encogen en vez de imponer 360px de mínimo. */
@@ -4037,11 +4081,11 @@ code { font-family: 'IBM Plex Mono', monospace; }
 /* El titulo de grupo y el de rama son el mismo control. */
 .nav-grupo-tit, .nav-rama-tit { width: 100%; background: transparent; border: 0; cursor: pointer;
   font: inherit; text-align: left; }
-.nav-grupo-tit .nav-chev .ic { transition: transform .18s ease; transform: rotate(-90deg); }
+.nav-grupo-tit .nav-chev .ic { transition: transform var(--dur-media) var(--curva); transform: rotate(-90deg); }
 .nav-grupo.abierto .nav-chev .ic { transform: rotate(0deg); }
 /* grid-template-rows de 0fr a 1fr: lo único que anima hasta altura automática. */
 /* El arbol tiene dos niveles y se comportan igual: una sola regla. */
-.nav-hijos, .nav-nietos { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
+.nav-hijos, .nav-nietos { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--dur-media) var(--curva); }
 .nav-grupo.abierto .nav-hijos { grid-template-rows: 1fr; }
 /* El padding va en los hijos, no en la caja: el padding de la caja NO lo
    recorta overflow, y un grupo cerrado se quedaba ocupando 8px. */
@@ -4051,7 +4095,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
    mientras el botón anuncia aria-expanded="false".
    La visibilidad se retrasa hasta que acaba la animación de cierre y vuelve al
    instante al abrir, así que el plegado sigue viéndose igual. */
-.nav-hijos-in { overflow: hidden; visibility: hidden; transition: visibility 0s .18s; }
+.nav-hijos-in { overflow: hidden; visibility: hidden; transition: visibility 0s var(--dur-media); }
 .nav-grupo.abierto .nav-hijos-in { visibility: visible; transition: visibility 0s; }
 .nav-hijos-in > .nav-hijo:first-child { margin-top: 4px; }
 .nav-hijos-in > .nav-hijo:last-child { margin-bottom: 8px; }
@@ -4065,10 +4109,10 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .nav-rama { border-top: 1px solid var(--marco-borde); }
 .nav-rama:first-child { border-top: 0; }
 .nav-rama-tit .nav-chev .ic { width: 14px; height: 14px;
-  transition: transform .18s ease; transform: rotate(-90deg); }
+  transition: transform var(--dur-media) var(--curva); transform: rotate(-90deg); }
 .nav-rama.abierta .nav-chev .ic { transform: rotate(0deg); }
 .nav-rama.abierta .nav-nietos { grid-template-rows: 1fr; }
-.nav-nietos-in { overflow: hidden; visibility: hidden; transition: visibility 0s .18s; }
+.nav-nietos-in { overflow: hidden; visibility: hidden; transition: visibility 0s var(--dur-media); }
 .nav-rama.abierta .nav-nietos-in { visibility: visible; transition: visibility 0s; }
 .nav-nieto { display: block; padding: 4px 8px 4px 56px; border-radius: 6px;
   text-decoration: none; color: var(--marco-texto); font-size: 12px;
@@ -4100,7 +4144,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
   border-radius: 6px; box-shadow: var(--sombra-capa);
   border: 1px solid var(--marco-borde);
   opacity: 0; visibility: hidden; transform: translateX(-4px);
-  transition: opacity .14s ease, transform .14s ease, visibility .14s; }
+  transition: opacity var(--dur-rapida) var(--curva), transform var(--dur-rapida) var(--curva), visibility var(--dur-rapida); }
 .lat.colapsado .nav-grupo.abierto .nav-hijos {
   opacity: 1; visibility: visible; transform: translateX(0); }
 .lat.colapsado .nav-hijos-in { border-radius: 6px; }
@@ -4238,7 +4282,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
 /* La banda abre empujando: grid-template-rows de 0fr a 1fr es lo único que
    anima hasta altura automática sin fijar píxeles a mano. */
 .cf-banda { display: grid; grid-template-rows: 0fr;
-  transition: grid-template-rows .24s ease; }
+  transition: grid-template-rows var(--dur-lenta) var(--curva); }
 .cf-banda.abierta { grid-template-rows: 1fr; }
 .cf-banda-in { overflow: hidden; }
 .cf-caja { display: flex; align-items: center; justify-content: space-between;
@@ -4273,7 +4317,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
   /* Entra deslizando 16px DESDE ARRIBA, que es de donde viene: aparecer de
      golpe se percibe como fallo de pintado. */
   transform: translateY(-16px); opacity: 0;
-  transition: transform .22s ease, opacity .22s ease; }
+  transition: transform var(--dur-lenta) var(--curva), opacity var(--dur-lenta) var(--curva); }
 .av-dentro { transform: translateY(0); opacity: 1; }
 /* FILETE INTENSO Y FONDO TENUE, los dos. El aviso solo cambiaba el filete y se
    quedaba sobre fondo-tarjeta, así que en pantalla era una tarjeta blanca con
@@ -4298,7 +4342,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .av-x:hover { color: var(--texto-principal); background: var(--fondo-encabezado); }
 .av-x .ic { width: 16px; height: 16px; }
 @media (max-width: 640px) { .av-zona { left: 16px; right: 16px; top: 68px; max-width: none; } }
-@media (prefers-reduced-motion: reduce) { .av { transform: none; transition: opacity .15s ease; } }
+@media (prefers-reduced-motion: reduce) { .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
 
 /* Interruptor */
 .sw-rejilla { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 16px; }
@@ -4311,7 +4355,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .sw { width: 40px; height: 24px; flex: none; padding: 0; cursor: pointer;
   border: 1px solid var(--apagado-borde); border-radius: 999px;
   background: var(--apagado-fondo); position: relative;
-  transition: background-color .18s ease, border-color .18s ease; }
+  transition: background-color var(--dur-media) var(--curva), border-color var(--dur-media) var(--curva); }
 /* La bolita NO usa la superficie: usa el token hecho para ir sobre SU vía.
    Con fondo-tarjeta quedaba a 1,19:1 sobre el rojo claro y a 1,17:1 sobre el
    rojo oscuro —invisible en los dos modos—. Ahora:
@@ -4322,7 +4366,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
   border-radius: 999px; background: var(--apagado-bolita);
   border: 1px solid var(--apagado-bolita);
   /* El desplazamiento y el color van al MISMO tiempo: desacompasados parecen fallo. */
-  transition: transform .18s ease, background-color .18s ease, border-color .18s ease; }
+  transition: transform var(--dur-media) var(--curva), background-color var(--dur-media) var(--curva), border-color var(--dur-media) var(--curva); }
 .sw[aria-checked='true'] { background: var(--accion); border-color: var(--accion); }
 .sw[aria-checked='true'] .sw-bolita { transform: translateX(16px);
   background: var(--accion-texto); border-color: var(--accion-texto); }
@@ -4442,11 +4486,11 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 .pr-cab { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; font-weight: 500; }
 .pr { height: 8px; border-radius: 6px; background: var(--neutra-fondo);
   overflow: hidden; border: 1px solid var(--borde); }
-.pr-relleno { height: 100%; background: var(--accion); transition: width .3s ease; }
+.pr-relleno { height: 100%; background: var(--accion); transition: width var(--dur-lenta) var(--curva); }
 .pr-exito { background: var(--exito-acento); }
 .pr-error { background: var(--error-acento); }
 .pr-indet { height: 100%; width: 34%; background: var(--accion);
-  animation: pr-va 1.3s ease-in-out infinite; }
+  animation: pr-va var(--dur-onda) var(--curva-vaiven) infinite; }
 @keyframes pr-va { 0% { transform: translateX(-110%); } 100% { transform: translateX(320%); } }
 .pr-pie { font-size: 12px; color: var(--texto-secundario); }
 .pr-pie-error { color: var(--error-texto); }
@@ -4484,7 +4528,7 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 /* La lateral sale de pantalla y vuelve con el botón: en 390px no caben las dos. */
 [data-vista='movil'] .lat {
   position: absolute; left: 0; top: 0; bottom: 0; z-index: 60;
-  transform: translateX(-100%); transition: transform .22s ease; height: 100%; }
+  transform: translateX(-100%); transition: transform var(--dur-lenta) var(--curva); height: 100%; }
 [data-vista='movil'] .lat:not(.colapsado) { transform: translateX(0); }
 [data-vista='movil'] .lat.colapsado { transform: translateX(-100%); }
 /* En móvil no hay panel flotante: con la lateral fuera de pantalla no hay
@@ -4940,7 +4984,7 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 .tb-chev { width: 100%; height: 34px; display: grid; place-items: center;
   background: transparent; border: 0; cursor: pointer; color: var(--texto-secundario); }
 .tb-chev:hover { color: var(--accion); }
-.tb-chev .ic { width: 16px; height: 16px; transition: transform .18s ease; }
+.tb-chev .ic { width: 16px; height: 16px; transition: transform var(--dur-media) var(--curva); }
 .tb-chev[aria-expanded='true'] .ic { transform: rotate(180deg); }
 .tb-grupo.abierto { background: var(--fondo-fila-hover); }
 .tb-grupo.abierto td { border-bottom: 0; }
@@ -4949,11 +4993,11 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 /* grid-template-rows 0fr → 1fr es lo único que anima hasta altura automática
    sin tener que fijar la altura en píxeles a mano. */
 .tb-desliza { display: grid; grid-template-rows: 0fr;
-  transition: grid-template-rows .22s ease; }
+  transition: grid-template-rows var(--dur-lenta) var(--curva); }
 .tb-detalle.abierto .tb-desliza { grid-template-rows: 1fr; }
 /* Mismo caso que el menú: sin ocultarlo, un lector de pantalla lee las
    sub-tablas de las seis filas mientras cada chevron dice aria-expanded=false. */
-.tb-desliza-in { overflow: hidden; visibility: hidden; transition: visibility 0s .22s; }
+.tb-desliza-in { overflow: hidden; visibility: hidden; transition: visibility 0s var(--dur-lenta); }
 .tb-detalle.abierto .tb-desliza-in { visibility: visible; transition: visibility 0s; }
 .tb-sub { width: 100%; border-collapse: collapse; font-size: 13px;
   background: var(--fondo-pagina); }
@@ -5074,7 +5118,7 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
    la lupa, el componente parece una caja de búsqueda y no un desplegable. */
 .sel-chev { position: absolute; right: 12px; color: var(--texto-secundario);
   display: grid; place-items: center; pointer-events: none; }
-.sel-chev .ic { width: 16px; height: 16px; transition: transform .15s ease; }
+.sel-chev .ic { width: 16px; height: 16px; transition: transform var(--dur-rapida) var(--curva); }
 .sel-caja.abierta .sel-chev .ic { transform: rotate(180deg); }
 /* Especificidad explícita: la clase .campo declara padding en atajo y pisaría
    estas dos longhand si empataran. La lupa ocupa la izquierda y el chevron la
@@ -5246,7 +5290,7 @@ a.enlace.enl-nosub { text-decoration: none; }
 .cod-ver { display: inline-flex; align-items: center; gap: 4px; font: inherit;
   font-size: 13px; font-weight: 500; cursor: pointer; background: transparent;
   border: 0; color: var(--accion); padding: 4px 4px; border-radius: 6px; }
-.cod-ver .ic { width: 16px; height: 16px; transition: transform .15s; }
+.cod-ver .ic { width: 16px; height: 16px; transition: transform var(--dur-rapida); }
 .cod-ver.abierto .ic { transform: rotate(180deg); }
 .cod-tit { flex: 1; font-size: 12px; color: var(--texto-secundario); }
 .cod-pre { margin: 0; padding: 16px; font-family: 'IBM Plex Mono', monospace;
@@ -5393,7 +5437,7 @@ h2.seccion {
 .btn-texto-oculto { visibility: hidden; }
 .btn-giro { width: 14px; height: 14px; flex: none; border-radius: 50%;
   border: 2px solid currentColor; border-top-color: transparent;
-  animation: btn-girar .7s linear infinite; }
+  animation: btn-girar var(--dur-giro) var(--curva-giro) infinite; }
 @keyframes btn-girar { to { transform: rotate(360deg); } }
 /* Quien pide menos movimiento no ve un aspa girando: se queda quieta y sigue
    diciendo que hay algo en marcha. WCAG 2.2, y ademas marea. */
@@ -5514,7 +5558,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   flex: 0 0 auto; width: 236px; min-width: 0; overflow: hidden;
   background: var(--marco-fondo); color: var(--marco-texto);
   display: flex; flex-direction: column;
-  transition: width .22s ease; }
+  transition: width var(--dur-lenta) var(--curva); }
 .lat.colapsado { width: 56px; }
 @media (prefers-reduced-motion: reduce) { .lat { transition: none; } }
 .lat.colapsado .nav-txt, .lat.colapsado .nav-chev,
