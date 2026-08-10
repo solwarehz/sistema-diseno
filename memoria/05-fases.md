@@ -1,5 +1,13 @@
 # Fases de trabajo
 
+> **Esto es el PLAN ORIGINAL, no el estado.** Se conserva porque explica en qué
+> orden se decidió construir y qué necesitaba cada fase — las cifras que aparecen
+> abajo son las de su momento y **no se actualizan**, porque cambiarlas borraría
+> lo que el registro dice que se hizo entonces.
+>
+> **El estado real está en [`01-estado.md`](01-estado.md)** (v1.19.0: 56 tokens
+> semánticos, 178 pares, 23 componentes, ocho candados).
+
 Una fase se cierra cuando **tú la apruebas viéndola**, no cuando yo digo que está
 lista. Nada avanza a la siguiente sin eso.
 

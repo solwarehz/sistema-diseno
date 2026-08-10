@@ -11,6 +11,10 @@ Léelos en orden la primera vez que abras el proyecto en una máquina.
 | [`02-decisiones.md`](02-decisiones.md) | Cada decisión con su porqué y qué la revertiría | Antes de cambiar algo que ya está decidido |
 | [`03-al-clonar.md`](03-al-clonar.md) | Qué falta tras un `git clone` y cómo conseguirlo | En una máquina nueva |
 | [`04-pendientes.md`](04-pendientes.md) | Lo que falta, ordenado por retorno | Al elegir en qué trabajar |
+| [`05-fases.md`](05-fases.md) | El plan por fases y qué necesita cada una | Al planificar |
+| [`06-cobertura.md`](06-cobertura.md) | Qué elementos hay y cuáles faltan | Antes de crear un componente |
+| [`../peticiones/`](../peticiones/) | Lo que pide cada proyecto y qué se respondió | Cuando llegue un requerimiento |
+| [`../auditorias/`](../auditorias/) | Auditorías estrictas con sus hallazgos | Antes de dar algo por sano |
 
 Las reglas de operación —límites de la máquina, flujo de git, definición de
 terminado— están en [`../CLAUDE.md`](../CLAUDE.md), que se carga solo.

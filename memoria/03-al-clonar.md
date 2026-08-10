@@ -10,12 +10,19 @@ repositorio.**
 ```bash
 node sistema/tokens/generar.mjs
 node sistema/candado/verificar-contraste.mjs
+node sistema/candado/verificar-cascada.mjs
 ```
 
-Debe salir **46 pares, 0 fallos**. Si falla, para y avisa: alguien cambió un color
-sin regenerar el contrato. No trabajes encima.
+Debe salir **178 pares, 138 bloqueantes, 0 fallos** y el candado de la cascada
+sin fallos a los once anchos. Si algo falla, **para y avisa**: alguien cambió un
+color sin regenerar el contrato, o una regla de la hoja que viaja dejó de ganar.
+No trabajes encima.
 
 Esto **no necesita instalar nada**: es cálculo puro con el `node` que ya haya.
+
+Los ocho candados completos, que son los que hay que pasar antes de subir a
+`main`, están listados en [`01-estado.md`](01-estado.md) y en
+[`../CLAUDE.md`](../CLAUDE.md) §8.
 
 ---
 

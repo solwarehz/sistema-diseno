@@ -1,5 +1,10 @@
 # Auditoría de cobertura
 
+> **Actualizado al 9 de agosto de 2026 · v1.19.0.** Donde abajo se lea «15
+> elementos construidos», hoy son **23 componentes publicados** —los lista
+> [`01-estado.md`](01-estado.md)—. Esta auditoría sigue valiendo para lo que
+> mejor hace: señalar **lo que falta**, no contar lo que hay.
+
 Qué elementos tiene el sistema y **qué le falta** para cubrir un sistema de
 gestión completo. No es una lista genérica de librería: es lo que hacen falta
 las pantallas de este proyecto.

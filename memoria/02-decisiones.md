@@ -365,3 +365,130 @@ que está mirando una lista vieja.
 sale con código 1 si no lo recibe, indicando el comando correcto. Lo lanza el
 generador del catálogo, que es quien sabe qué páginas existen. Se quitó el
 script `empaquetar` de `package.json` para que no haya dos puertas.
+
+---
+
+## D-17 · El modo oscuro pasa de prohibido a superficie mantenida
+
+**Fecha:** 9 de agosto de 2026 · **Quién:** el usuario, expresamente
+
+MMI-DS §9 lo listaba entre las cuatro cosas prohibidas: «calculado, **no
+aprobado**, no implementar». Estaba escrito en **cinco sitios**. Se aprobó.
+
+**Por qué importa cómo se aprobó.** La prohibición no era caprichosa: duplica la
+superficie de prueba de contraste. Lo que se compra con la aprobación es
+**trabajo continuo**, no una casilla — se pasa de 89 pares a **178**, y los de
+oscuro son bloqueantes igual que los de claro.
+
+**Qué lo revertiría:** nada previsible. Pero si alguna vez se propone relajar la
+verificación de los pares en oscuro «porque son secundarios», eso es exactamente
+la deuda que la prohibición evitaba, y la respuesta es no.
+
+**Consecuencia en el componente.** El selector de tema de `MenuUsuario` sigue
+siendo opt-in (`tema` + `onTema`), pero **cambia la razón**, y eso vale más que
+el hecho: antes era porque el modo no estaba aprobado; ahora es porque **la
+preferencia la guarda el producto**, que es quien tiene sesión. Si el componente
+la guardara por su cuenta, un producto que ya la tiene en el perfil tendría dos
+fuentes de verdad y la pantalla parpadearía al cargar. La prueba «sin tema no se
+pinta el selector» **no se borró**: ahora fija otra cosa.
+
+---
+
+## D-18 · En oscuro el marco va en la escala de negros, no en el azul
+
+**Fecha:** 9 de agosto de 2026 · **Quién:** el usuario · **Versión:** v1.18.0
+
+Hasta aquí el marco se conservaba idéntico al claro «porque se distingue por
+matiz». **Era verdad y aun así estaba mal**: un azul saturado sobre una página
+casi negra no lee como modo oscuro.
+
+**Y la separación tampoco la daba el matiz.** Medido antes de tocar nada: el
+marco quedaba a **1,49:1** de la tarjeta. Se probaron los **diez** escalones de
+indigo y los **catorce** de negro, y ninguno separa — la página en oscuro es
+`#1E1D1C`, y cualquier marco lo bastante oscuro para leer como modo oscuro queda
+a menos de 1,6:1 de ella. **Quien separa es la elevación** que entró en la
+v1.16.0, no el color. Aceptado eso, el color queda libre para ser neutro.
+
+Seis tokens cambian **solo en oscuro**; el claro no se toca. El
+`marco-texto-tenue` fue el que bloqueaba el cambio: sobre los neutros más claros
+caía a **3,39:1**, y tuvo que subir a `negro_100`.
+
+**El acento dorado se queda.** Es lo único que sigue diciendo de quién es el
+producto cuando el azul se va; sin él, el marco es un gris cualquiera. Da entre
+7,6 y 9:1 sobre los cuatro neutros.
+
+**Qué lo revertiría:** que el colegio decida que su azul debe estar presente en
+oscuro. Entonces habría que resolver antes cómo separa el marco de la página,
+porque el color no lo hace.
+
+---
+
+## D-19 · El catálogo y el paquete son dos hojas, y solo una importa al verificar
+
+**Fecha:** 9 de agosto de 2026 · **Origen:** defecto R25, reportado por Control
+Administrativos V2.0 · **Versión:** v1.19.0
+
+`extraer.mjs` construye la hoja que viaja repartiendo cada regla entre elementos
+**por su primera clase**. Una regla cuyo selector empieza por un prefijo
+declarado como estructura del catálogo **no viaja**, aunque un componente
+publicado emita esa clase.
+
+**Cómo se descubrió.** El botón de plegar enseñaba sus dos iconos a la vez en
+escritorio. Las reglas base empezaban por `.ic-` —prefijo catalogado como
+estructura— y no viajaban; la consulta de móvil sí, porque empieza por
+`.top-plegar`. En el paquete los dos iconos **solo tenían reglas por debajo de
+700px**, y por encima ninguna: ambos caían a `display` por omisión. **En el
+catálogo se veía perfecto. Vivió tres versiones.**
+
+**Regla que queda:** al verificar CSS se mide `sistema/componentes/componentes.css`,
+**nunca el catálogo**. Y una clase que un componente publicado emite tiene que
+tener regla en la hoja que viaja — lo comprueba `verificar-cascada`.
+
+**Qué lo revertiría:** que el extractor deje de repartir por prefijo. Sería un
+cambio grande y hay que hacerlo con el candado puesto, no antes.
+
+---
+
+## D-20 · Un candado para lo que no está escrito
+
+**Fecha:** 9 de agosto de 2026 · **Lo pidió:** Control Administrativos V2.0
+
+Los siete candados anteriores leen **lo que hay**: hexadecimales sueltos, clases
+huérfanas, pares de contraste, reglas obligatorias sin prueba. Ninguno sabía
+responder «¿y qué le pasa a este elemento a 1440 píxeles?», que es una pregunta
+sobre **lo que no hay**.
+
+`verificar-cascada.mjs` parsea la hoja que viaja, casa sus selectores contra un
+árbol de elementos declarado, evalúa las consultas de medios a **once anchos**,
+ordena por especificidad y orden, y dice qué declaración gana **o si no gana
+ninguna**. Sin dependencias: no se instala nada en la máquina.
+
+**Se vio en rojo antes de darlo por bueno:** apuntado a la v1.17.0 saca R25 a
+los siete anchos de escritorio, y verde por debajo de 700 — exactamente lo que
+Control Administrativos midió en el navegador. Admite una hoja por argumento
+para eso.
+
+**Declara lo que NO hace, y es parte de la decisión:** no calcula diseño. El
+defecto R26 —el lateral que no encoge— **no lo habría cazado**. Un candado que
+promete más de lo que mide es peor que no tenerlo.
+
+---
+
+## D-21 · Un solo registro de desplegables, y el catálogo no se lo escribe aparte
+
+**Fecha:** 9 de agosto de 2026 · **Origen:** el usuario, sobre el catálogo
+
+Con el menú de usuario abierto, pulsar la campana dejaba **los dos** encima del
+contenido. En **React ya estaba resuelto** desde la v1.15.0: hay un registro a
+nivel de módulo en `interno/desplegable` que comparten `MenuUsuario` y
+`PanelBarra`, y sus pruebas pasan. **El fallo era solo del catálogo**, que tenía
+dos cierres escritos a mano que no se conocían — uno cerraba menús, otro
+cerraba paneles.
+
+**Lo que esto enseña, y ya van varias:** lo generado acierta y lo escrito a mano
+se separa. Cada vez que el catálogo reimplementa lo que un componente resuelve,
+la copia diverge. Ya pasó con la paginación.
+
+**Regla que queda:** cuando un comportamiento exista en un componente, el
+catálogo lo usa o lo reproduce con **un solo** mecanismo compartido, nunca con
+una copia por familia de elementos.
