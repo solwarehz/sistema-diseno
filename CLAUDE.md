@@ -19,7 +19,10 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.7.0** — iconografía con regla, avatar unificado, séptimo estado y densidad.
+**Estado actual: v1.25.0** — auditoría de composición pasada, tokens de
+movimiento, y los siete pedidos R27–R33 de Control Administrativos resueltos.
+El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
+reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
 ---
 
@@ -239,18 +242,13 @@ en rojo, reviértela.
 
 ## 10 · Estado
 
-| Módulo | Estado |
-|---|---|
-| Motor de tokens | ✅ v1.7.0 · 144 pares, 106 bloqueantes, 0 fallos |
-| Candado de contraste | ✅ verificado, probado en fallo |
-| Candado de lint | ✅ escrito · sin ejecutar (falta Docker) |
-| Componentes | ⏳ pendiente · 17 elementos documentados en el catálogo |
-| Catálogo `/diseño` | ⏳ pendiente |
-| Manual de aplicaciones web | ✅ `manual/MANUAL-APLICACIONES-WEB.md` |
-| Entrega ZIP | ✅ se construye junto al catálogo · 11 archivos, 368 KB |
-| Contenedor | ⏳ pendiente · Docker sin autorizar |
-| Iconografía | ✅ 30 iconos · módulo consumible · cuatro tamaños (14·16·18·32) · regla de significado |
-| Modo oscuro | ✅ **aprobado 2026-08-09** · marco en escala de negros (v1.18.0) · sus pares entran en el candado |
+La tabla de módulos que vivía aquí **se quedaba vieja entre versiones** —llegó
+a decir «Componentes: pendiente» con 23 publicados y «Docker sin autorizar» con
+la autorización ya permanente—. Un registro desfasado es peor que ninguno,
+porque se lee como si fuera cierto. El estado por módulo vive en
+[`memoria/01-estado.md`](memoria/01-estado.md), que se reescribe entero con
+cada cambio; aquí solo queda lo que no cambia: las correcciones históricas de
+abajo.
 
 ### Correcciones aplicadas sobre MMI-DS v1.0.0
 
