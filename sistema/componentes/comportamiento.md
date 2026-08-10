@@ -120,6 +120,15 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 ---
 
+## Marco de aplicación
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** El marco **envuelve a la aplicación entera** —el enrutador vive DENTRO de su zona de contenido—, no se monta uno por página. Montado por página, cada navegación crea un marco nuevo y **el plegado del lateral se olvida**: el usuario lo pliega, elige una opción y lo encuentra desplegado sin haberlo pedido. El estado interno de React no sobrevive al remontaje, y no debe: la corrección es dónde se monta, no un parche de persistencia. |
+| **2** | Del proyecto: si el plegado debe **recordarse entre sesiones**, se controla con las props `plegado`/`onPlegar` y se guarda donde diga la regla transversal 5 — en el perfil, no en el navegador. |
+
+---
+
 ## Reglas transversales
 
 | | Regla |
@@ -136,9 +145,11 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 Declarado en vez de omitido:
 
-- **El teclado del calendario.** Hoy no implementa el patrón de rejilla —sin
-  flechas ni Home/End— y sería deshonesto escribirlo como si lo hiciera. Está
-  en la lista de correcciones abiertas.
-- **La gestión de foco del menú de usuario**, por el mismo motivo.
+- ~~**El teclado del calendario.**~~ **Cubierto desde que RangoFecha se rehízo
+  en React**: flechas, Home/End de semana, PageUp/PageDown de mes —con Shift,
+  de año—, Escape y roving tabindex, cada uno con su prueba en
+  `componentes/pruebas/RangoFecha.test.tsx`. La entrada anterior decía que no
+  existía y llevaba razón entonces; se tacha en vez de borrarse.
+- **La gestión de foco del menú de usuario.** Sigue sin cubrirse aquí.
 - **El comportamiento en lector de pantalla real.** Todo lo de aquí se verificó
   por marcado y por medición, no escuchándolo con NVDA ni VoiceOver.
