@@ -72,9 +72,9 @@ describe('Rango de fechas · el teclado, que antes no existía', () => {
     const u = userEvent.setup();
     const { container } = pintar();
     await abrirDesde(u);
-    const alcanzables = container.querySelectorAll('.fc-dia[tabindex="0"]');
+    const alcanzables = container.querySelectorAll('.fc-d[tabindex="0"]');
     expect(alcanzables).toHaveLength(1);
-    expect(container.querySelectorAll('.fc-dia').length).toBeGreaterThan(30);
+    expect(container.querySelectorAll('.fc-d').length).toBeGreaterThan(30);
   });
 
   it('Escape cierra Y devuelve el foco al campo, no a <body>', async () => {

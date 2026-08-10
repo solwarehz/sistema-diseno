@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.19.0';
+export const VERSION = '1.20.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,31 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.20.0', fecha: '2026-08-10',
+    que: 'RangoFecha viajaba con el calendario roto · el candado de huerfanas ve dentro de los arrays',
+    porque:
+      'La auditoria de composicion del 2026-08-10 encontro que RangoFecha emitia tres clases sin '
+      + 'regla en ninguna hoja -fc-dia, fc-otro-mes, fc-extremo-: el catalogo pinta los dias con '
+      + 'fc-d, fc-ini y fc-fin, y el React habia divergido. Cualquier consumidor recibia el '
+      + 'calendario sin altura, sin hover y sin rango visible; las 180 pruebas pasaban porque '
+      + 'prueban comportamiento, no estilo. El TSX emite ahora las clases que existen, con ini y '
+      + 'fin separados para que cada extremo redondee su lado, y fc-otro-mes gana regla en el '
+      + 'catalogo con texto-secundario -no texto-pista, cuyo uso declarado dice «nunca contenido '
+      + 'real», y los dias del mes vecino son fechas pulsables-. Sus pares ya eran bloqueantes. '
+      + 'La via de escape era el limite documentado del candado de huerfanas de extraer.mjs: no '
+      + 'veia clases dentro de un array. Cerrado recorriendo el contenido completo de cada '
+      + 'className={...} con contador de llaves; probado en fallo con una clase inexistente en el '
+      + 'array exacto por el que se escapo, y el limite que queda -className={variable} armada en '
+      + 'otra linea- esta declarado en el codigo.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'RangoFecha: las clases de celda cambian de nombre. fc-dia pasa a fc-d, fc-extremo se parte '
+      + 'en fc-ini y fc-fin, fc-otro-mes se mantiene y gana regla. Quien tuviera CSS o pruebas '
+      + 'apuntando a fc-dia o fc-extremo debe renombrar; quien usaba el componente sin tocar sus '
+      + 'clases no nota nada salvo que el calendario POR FIN se pinta.',
+    ],
+  },
   {
     v: '1.19.0', fecha: '2026-08-09',
     que: 'Modo oscuro APROBADO · R25 · el desplegable que no se cerraba · candado de la cascada',

@@ -4414,6 +4414,12 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 /* El hover es el del sistema, fondo-fila-hover, el mismo que la fila de tabla
    bajo el cursor. Antes usaba fondo-encabezado, un gris que no es un hover. */
 .fc-d:hover { background: var(--fondo-fila-hover); }
+/* Los días del mes vecino: visibles y pulsables pero atenuados. Es
+   texto-secundario y NO texto-pista porque son fechas reales que se pueden
+   elegir, y el uso declarado de texto-pista dice «nunca contenido real».
+   Sus pares ya son bloqueantes en el candado (sobre tarjeta y sobre hover).
+   Va ANTES de .fc-ini/.fc-fin para que el extremo gane el color si coincide. */
+.fc-otro-mes { color: var(--texto-secundario); }
 .fc-vacio { cursor: default; }
 .fc-vacio:hover { background: transparent; }
 /* El interior del tramo y los extremos NO se pintan igual: si no, no se sabe

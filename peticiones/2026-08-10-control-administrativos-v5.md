@@ -130,3 +130,18 @@ región viva creada en el momento del fallo no la anuncian la mayoría de
 lectores de pantalla) y bajo ~760px deja de flotar y ocupa el ancho inferior.
 **Pedimos el contenedor publicado** con anclaje, apilado y respuesta móvil
 resueltos.
+
+## R30 · El pie del lateral: el cascarón lo tiene, `MarcoApp` no
+
+Vuestro cascarón de referencia pinta al pie del menú lateral la identidad de la
+sesión —avatar, nombre y correo—. **`MarcoApp` v1.19.0 no lo renderiza ni tiene
+ranura para él** (leído en el fuente: el `aside` lleva solo navegación; la
+identidad vive únicamente en el `MenuUsuario` de la barra). Nuestro responsable
+lo detectó a la vista, comparando el producto con el cascarón.
+
+El caso general: en cualquier producto con varios perfiles, saber quién está
+dentro **de un vistazo y en permanencia** evita operar con la sesión
+equivocada; el avatar de la barra lo dice solo tras un clic. El cascarón ya
+tomó la decisión — pedimos el componente, no el criterio. Los datos ya viajan
+en la propiedad `usuario`, así que probablemente no haga falta ni una propiedad
+nueva. Con el lateral plegado, adoptamos lo que el cascarón haga.

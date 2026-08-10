@@ -172,7 +172,10 @@ export function RangoFecha({
   const dDesde = desde ? deIso(desde) : null;
   const dHasta = hasta ? deIso(hasta) : null;
   const dentroDelRango = (d: Date) => !!(dDesde && dHasta && d > dDesde && d < dHasta);
-  const esExtremo = (d: Date) => !!((dDesde && mismoDia(d, dDesde)) || (dHasta && mismoDia(d, dHasta)));
+  // Ini y fin por separado: cada extremo redondea SU lado (.fc-ini / .fc-fin).
+  // Fundidos en una sola clase, el rango pierde dónde empieza y dónde acaba.
+  const esIni = (d: Date) => !!(dDesde && mismoDia(d, dDesde));
+  const esFin = (d: Date) => !!(dHasta && mismoDia(d, dHasta));
 
   const cabecera = `${MESES[foco.getMonth()]} de ${foco.getFullYear()}`;
 
@@ -245,7 +248,9 @@ export function RangoFecha({
                 {semana.map((d) => {
                   const otroMes = d.getMonth() !== foco.getMonth();
                   const enFoco = mismoDia(d, foco);
-                  const extremo = esExtremo(d);
+                  const ini = esIni(d);
+                  const fin = esFin(d);
+                  const extremo = ini || fin;
                   const dentro = dentroDelRango(d);
                   return (
                     <span role="gridcell" key={iso(d)} aria-selected={extremo || dentro}>
@@ -255,9 +260,10 @@ export function RangoFecha({
                         // eran ~60 paradas seguidas.
                         tabIndex={enFoco ? 0 : -1}
                         className={[
-                          'fc-dia',
+                          'fc-d',
                           otroMes ? 'fc-otro-mes' : '',
-                          extremo ? 'fc-extremo' : '',
+                          ini ? 'fc-ini' : '',
+                          fin ? 'fc-fin' : '',
                           dentro ? 'fc-dentro' : '',
                         ].filter(Boolean).join(' ')}
                         // «hoy» es aria-current="date". Los extremos son

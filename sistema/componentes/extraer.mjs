@@ -289,19 +289,54 @@ if (existsSync(dirComponentes)) {
   const declaradas = new Set();
   for (const m of salida.matchAll(/\.([a-zA-Z][a-zA-Z0-9_-]*)/g)) declaradas.add(m[1]);
 
+  // El LÍMITE CONOCIDO de la versión anterior —no veía clases dentro de un
+  // array, `className={['fc-dia', ...].join(' ')}`— dejó de ser teórico el
+  // 2026-08-10: RangoFecha emitía tres clases sin regla por esa vía exacta y
+  // el candado decía verde (auditorias/2026-08-10-auditoria-composicion.md).
+  // Ahora se recorre el contenido COMPLETO de cada className={...} contando
+  // llaves, y se toma todo literal de cadena que parezca clase. El límite que
+  // queda, también declarado: un literal de COMPARACIÓN dentro de la zona
+  // (`className={x === 'grande' ? 'a' : 'b'}`) se tomaría por clase y daría
+  // un falso rojo — ruidoso y visible, que es el lado bueno del error.
+  function zonasClassName(fuente) {
+    const zonas = [];
+    const re = /className=/g;
+    let m;
+    while ((m = re.exec(fuente))) {
+      const i = m.index + m[0].length;
+      if (fuente[i] === '"') {
+        zonas.push({ texto: fuente.slice(i + 1, fuente.indexOf('"', i + 1)), esCadena: true });
+      } else if (fuente[i] === '{') {
+        let nivel = 1, j = i + 1;
+        while (j < fuente.length && nivel > 0) {
+          if (fuente[j] === '{') nivel++;
+          else if (fuente[j] === '}') nivel--;
+          j++;
+        }
+        zonas.push({ texto: fuente.slice(i + 1, j - 1), esCadena: false });
+      }
+    }
+    return zonas;
+  }
+
   const huerfanas = [];
   for (const f of readdirSync(dirComponentes).filter((f) => /\.tsx$/.test(f))) {
     const fuente = readFileSync(join(dirComponentes, f), 'utf8');
-    for (const m of fuente.matchAll(/className=[{]?['"`]([^'"`]+)['"`]/g)) {
-      for (const c of m[1].split(/\s+/)) {
-        // LÍMITE CONOCIDO, comprobado rompiéndolo: esto ve `className="x"` y
-        // `className={\`x\`}`, pero NO las clases dentro de un array
-        // —`className={['chip', CLASE[tono]].join(' ')}`—. Se probó metiendo
-        // una clase inexistente en `Chip` de esa forma y el candado salió en
-        // verde. Cubre la mayoría, no todo, y decirlo importa: un candado del
-        // que se cree que ve más de lo que ve es peor que no tenerlo.
-        if (!/^[a-z][a-z0-9-]*$/.test(c)) continue;
-        if (!declaradas.has(c)) huerfanas.push([f.replace('.tsx', ''), c]);
+    for (const zona of zonasClassName(fuente)) {
+      // En una zona de cadena, la zona ES el literal. En una de expresión,
+      // los literales son lo entrecomillado. `className={variable}` no trae
+      // ninguno, y ese es el límite que QUEDA: las clases con que se arma la
+      // variable en otra línea no se ven desde aquí (pasa en Migas). Declarado
+      // a propósito — un candado que dice qué no ve vale más que uno que calla.
+      const literales = zona.esCadena
+        ? [zona.texto]
+        : [...zona.texto.matchAll(/["'`]([^"'`]*)["'`]/g)].map((l) => l[1]);
+      for (const lit of literales) {
+        for (const c of lit.split(/\s+/)) {
+          if (c.includes('${')) continue; // trozo de plantilla, queda cortado
+          if (!/^[a-z][a-z0-9-]*$/.test(c)) continue;
+          if (!declaradas.has(c)) huerfanas.push([f.replace('.tsx', ''), c]);
+        }
       }
     }
   }
