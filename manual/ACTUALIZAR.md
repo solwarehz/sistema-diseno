@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.18.0
+# Actualizar al sistema de diseño v1.19.0
 
 Para el área de sistemas. Si vienes de la **v1.7.0**, que es la que se entregó
 en su momento, esto es todo lo que cambia y todo lo que hay que hacer.
@@ -8,7 +8,7 @@ en su momento, esto es todo lo que cambia y todo lo que hay que hacer.
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.18.0"
+npm install "github:solwarehz/sistema-diseno#v1.19.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -34,7 +34,7 @@ node -p "require('sistema-diseno-ae/package.json').version"   # 1.13.1
 ## 2 · Lo primero que cambia para ti: ya no reconstruyes componentes
 
 Hasta la v1.9.0 la entrega llevaba **el estilo** y tú ponías el comportamiento.
-Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.18.0
+Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.19.0
 viajan los VEINTE componentes de React**, con el comportamiento dentro.
 
 ```jsx
@@ -175,6 +175,34 @@ Un color escrito a mano en cualquier hoja del proyecto lo caza el candado:
 ```bash
 node node_modules/sistema-diseno-ae/sistema/candado/verificar-color.mjs
 ```
+
+---
+
+## 3bis · El modo oscuro ya está aprobado
+
+Hasta la v1.18.0 el manual decía «calculado, **no aprobado**, no implementar».
+**Se aprobó el 2026-08-09.** Ya podéis ofrecerlo.
+
+```jsx
+<MenuUsuario id={u.id} nombre={u.nombre} tema={tema} onTema={setTema} onSalir={salir} />
+```
+
+Sin `tema` y `onTema` el selector **no se pinta**, y eso sigue igual — pero por
+otra razón que la de antes. **La preferencia la guardáis vosotros**, porque el
+sistema no sabe dónde vive vuestra sesión. Si el componente la guardara por su
+cuenta y vosotros ya la tenéis en el perfil, habría dos fuentes de verdad y la
+pantalla parpadearía al cargar.
+
+Aplicad el modo poniendo `data-tema="oscuro"` en `<html>`. Los tokens hacen el
+resto: **no hay una segunda hoja que cargar**.
+
+Dos cosas que conviene que sepáis antes de encenderlo:
+
+- **El marco va en escala de negros, no en el azul del colegio.** Un azul
+  saturado sobre una página casi negra no lee como modo oscuro. El acento
+  dorado se queda: es lo único que sigue diciendo de quién es el producto.
+- **Los 178 pares están medidos en los dos modos**, no solo en claro. Si un
+  color vuestro falla en oscuro, es vuestro: pasadle el candado de contraste.
 
 ---
 

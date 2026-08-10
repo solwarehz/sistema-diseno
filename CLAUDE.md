@@ -161,8 +161,12 @@ No las «mejores» por iniciativa propia. Están razonadas:
 1. **No montar Storybook.** Para ocho componentes es sobrecarga y se desincroniza.
    El catálogo es la ruta `/diseño` dentro de la app, que importa los componentes
    reales y **no puede divergir**.
-2. **No hacer modo oscuro.** Los valores están calculados pero **no aprobados**.
-   Duplica la superficie de prueba de contraste. Ese esfuerzo rinde más en densidad.
+2. ~~**No hacer modo oscuro.**~~ **APROBADO el 2026-08-09 por el responsable.**
+   Deja de ser una prohibición y pasa a ser superficie mantenida: los pares en
+   oscuro entran en el candado de contraste igual que los de claro, y ninguna
+   versión sube con uno en rojo. Lo que la prohibición decía sigue siendo cierto
+   —duplica la superficie de prueba— y por eso lo que se compra con la
+   aprobación es trabajo, no una casilla: 178 pares en vez de 89.
 3. **No mostrar el markup interno de los componentes compartidos.** Lo que se
    copia es **la importación y las props**. Copiar utilidades de Tailwind aplica
    solo a composiciones puntuales.
@@ -189,7 +193,12 @@ No las «mejores» por iniciativa propia. Están razonadas:
   node sistema/candado/auditar-cascaron.mjs
   node sistema/candado/probar-candado.mjs
   node sistema/componentes/extraer.mjs        # incluye el candado de huérfanas
+  node sistema/candado/verificar-cascada.mjs  # la hoja QUE VIAJA, a once anchos
   ```
+
+  El de la cascada es el único que no lee lo que hay, sino lo que **falta**: el
+  defecto R25 —dos iconos pintados a la vez— vivía en la ausencia de una regla,
+  y por eso los otros seis no lo vieron en tres versiones.
 
   Se sube por **avance directo**, sin `checkout` y sin reescribir historia:
 
@@ -238,7 +247,7 @@ en rojo, reviértela.
 | Entrega ZIP | ✅ se construye junto al catálogo · 11 archivos, 368 KB |
 | Contenedor | ⏳ pendiente · Docker sin autorizar |
 | Iconografía | ✅ 30 iconos · módulo consumible · cuatro tamaños (14·16·18·32) · regla de significado |
-| Modo oscuro | ⛔ calculado, **no aprobado**. No implementar |
+| Modo oscuro | ✅ **aprobado 2026-08-09** · marco en escala de negros (v1.18.0) · sus pares entran en el candado |
 
 ### Correcciones aplicadas sobre MMI-DS v1.0.0
 

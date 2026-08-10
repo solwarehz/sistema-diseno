@@ -106,7 +106,7 @@ mensajes que ya existen en los sistemas y corregir los que no dicen qué hacer.
 
 | Qué | Por qué |
 |---|---|
-| Modo oscuro | Calculado pero **no aprobado** (§9, §2.4). Ver D-06 |
+| ~~Modo oscuro~~ | **Aprobado el 2026-08-09.** Deja de estar en «no hacer». Ver D-06 |
 | Storybook | Prohibido por §9. Ver D-05 |
 | Librería de componentes general | Prohibido por §9. Solo Radix para 3 casos. Ver D-08 |
 | Mostrar markup interno de componentes compartidos | §9. Se copia la importación y las props |

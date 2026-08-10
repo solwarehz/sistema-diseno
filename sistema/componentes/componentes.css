@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.18.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.19.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -851,7 +851,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .esqueleto.corto{ width: 62%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MARCO DE APLICACIÓN — 212 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
+   MARCO DE APLICACIÓN — 218 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 :where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
@@ -872,8 +872,6 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   .top-filtros{ flex-wrap: wrap; }
   .top-filtros .campo{ min-width: 0; }
   .top-filtros .cg{ min-width: 0; flex: 1 1 120px; }
-  .top-plegar .ic-escritorio{ display: none; }
-  .top-plegar .ic-movil{ display: grid; }
   .top.top-cascaron{ height: auto; flex-wrap: wrap; row-gap: 8px; }
   .app-cascaron .lat.colapsado .nav-hijos{ display: none; }
 }
@@ -967,6 +965,15 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   background: var(--marco-fondo); opacity: .5; }
 [data-vista='movil'] .app-main{ min-height: 0; height: 100%; overflow-y: auto; }
 [data-vista='movil'] .top{ position: sticky; top: 0; }
+.top-plegar .ic-escritorio, .top-plegar .ic-movil{ place-items: center; }
+.top-plegar .ic-escritorio{ display: grid; }
+.top-plegar .ic-movil{ display: none; }
+@media (max-width: 700px) {
+  .top-plegar .ic-escritorio{ display: none; }
+  .top-plegar .ic-movil{ display: grid; }
+}
+[data-vista='movil'] .top-plegar .ic-escritorio{ display: none; }
+[data-vista='movil'] .top-plegar .ic-movil{ display: grid; }
 [data-vista='movil'] .top-filtros{ flex-direction: column; gap: 12px; padding: 12px; width: 100%; }
 [data-vista='movil'] .top-filtros .cg{ width: 100%; }
 [data-vista='movil'] .top-filtros .campo{ width: 100%; min-width: 0; font-size: 16px; }

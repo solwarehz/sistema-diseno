@@ -4013,13 +4013,10 @@ code { font-family: 'IBM Plex Mono', monospace; }
   .top-filtros { flex-wrap: wrap; }
   .top-filtros .campo { min-width: 0; }
   .top-filtros .cg { min-width: 0; flex: 1 1 120px; }
-  /* El icono del botón cambia: en estrecho la hamburguesa es lo que se reconoce.
-     Van calificadas por el botón —.top-plegar— a propósito. Sin eso ganaban las
-     reglas base, que viven 400 líneas más abajo, y a igual especificidad manda
-     la última: esta consulta de medios no hacía nada. Un @media que pierde por
-     orden es peor que no tenerlo, porque parece que el caso está cubierto. */
-  .top-plegar .ic-escritorio { display: none; }
-  .top-plegar .ic-movil { display: grid; }
+  /* El intercambio de los dos iconos del botón de plegar YA NO ESTÁ AQUÍ: vive
+     pegado a sus reglas base, 500 líneas más abajo. Estar en dos sitios era el
+     defecto R25 —a igual especificidad ganaba quien el extractor colocara
+     después, y en el paquete ganaba la que no debía—. */
   /* La barra deja de tener altura fija: con los filtros envolviendo, 64px la
      obligaban a solaparse con el contenido de debajo. */
   .top.top-cascaron { height: auto; flex-wrap: wrap; row-gap: 8px; }
@@ -4503,12 +4500,37 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 /* El centrado es común a los dos; el display NO, porque es justo lo que decide
    cuál se ve. Estaban juntos en la misma regla —.ic-escritorio y .ic-movil
    compartiendo display:grid— y esa línea deshacía el display:none de la
-   anterior: en escritorio salían el icono de plegar Y la hamburguesa a la vez. */
-.ic-escritorio, .ic-movil { place-items: center; }
-.ic-escritorio { display: grid; }
-.ic-movil { display: none; }
-[data-vista='movil'] .ic-escritorio { display: none; }
-[data-vista='movil'] .ic-movil { display: grid; }
+   anterior: en escritorio salían el icono de plegar Y la hamburguesa a la vez.
+
+   R25 · Y aun arreglado eso, el defecto siguió VIVO EN LA ENTREGA hasta la
+   v1.18.1, aunque en el catálogo no se viera. La causa es la que importa:
+   estas reglas empezaban por .ic-, y el extractor reparte las reglas entre
+   elementos por su PRIMERA clase. ic está declarado como estructura del
+   catálogo —el envoltorio del SVG en plantilla, que en React pone Icono—,
+   así que no viajaba. Lo que sí viajaba era la consulta de móvil, porque
+   aquella empieza por .top-plegar. Resultado exacto en el paquete: los dos
+   iconos SOLO tenían reglas por debajo de 700px, y por encima ninguna, así que
+   ambos caían a display por omisión y se pintaban juntos.
+
+   Lo reportó Control Administrativos V2.0 con la medición hecha, y su
+   diagnóstico era correcto de cabo a rabo.
+
+   Dos cambios, y los dos son el mismo criterio:
+   · Se acotan bajo .top-plegar, que es donde de verdad viven: no son iconos
+     cualesquiera, son los dos del botón de plegar. Así viajan con el marco.
+   · La consulta de móvil se trae AQUÍ, pegada a la base. Estaba a 500 líneas,
+     y como tiene la misma especificidad, quien ganaba dependía del orden en
+     que el extractor las colocara. Pegadas, el orden es un hecho y no una
+     suerte. */
+.top-plegar .ic-escritorio, .top-plegar .ic-movil { place-items: center; }
+.top-plegar .ic-escritorio { display: grid; }
+.top-plegar .ic-movil { display: none; }
+@media (max-width: 700px) {
+  .top-plegar .ic-escritorio { display: none; }
+  .top-plegar .ic-movil { display: grid; }
+}
+[data-vista='movil'] .top-plegar .ic-escritorio { display: none; }
+[data-vista='movil'] .top-plegar .ic-movil { display: grid; }
 /* Los filtros globales se MUDAN al menú de usuario: en 390px, tres selectores
    en la barra dejan sin sitio al título y se deslizan mal. */
 [data-vista='movil'] .top-filtros { flex-direction: column; gap: 12px; padding: 12px; width: 100%; }
@@ -7040,15 +7062,37 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     pintar();
   })();
 
+  // ── SOLO UN DESPLEGABLE ABIERTO ──────────────────────────────────────────
+  // Lo reporto el responsable: con el menu de usuario abierto, pulsar la
+  // campana dejaba LOS DOS encima del contenido, y el de usuario tapaba lo que
+  // acababas de abrir.
+  //
+  // Y el fallo era SOLO del catalogo. En React esto ya estaba resuelto: hay un
+  // registro a nivel de modulo en interno/desplegable, que comparten
+  // MenuUsuario y PanelBarra, y sus pruebas pasan. Aqui habia dos cierres
+  // escritos a mano que no se conocian: el del menu cerraba menus, el de los
+  // paneles cerraba paneles, y ninguno sabia del otro.
+  //
+  // Es la deriva que este proyecto lleva persiguiendo todo el rato: lo generado
+  // acierta y lo escrito a mano se separa. El registro se pone UNA vez y los
+  // dos se apuntan, en lugar de que cada uno cierre a los de su especie.
+  var DESPLEGABLES = [];
+  function cerrarDesplegables(salvo) {
+    DESPLEGABLES.forEach(function (d) { if (d !== salvo) d(); });
+  }
+
   // ── Menú de usuario ──────────────────────────────────────────────────────
   (function () {
     var btn = document.getElementById('us-btn');
     var menu = document.getElementById('us-menu');
     if (!btn) return;
     function cerrar() { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+    DESPLEGABLES.push(cerrar);
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       var abierto = !menu.hidden;
+      // Se cierran los demas ANTES de abrir este.
+      cerrarDesplegables(cerrar);
       menu.hidden = abierto;
       btn.setAttribute('aria-expanded', String(!abierto));
     });
@@ -7189,15 +7233,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       var caja = p.querySelector('.pb-panel');
       if (!btn || !caja) return;
       function cerrar() { caja.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+      // Al registro comun, no a una lista de paneles: antes esto cerraba los
+      // otros paneles y dejaba abierto el menu de usuario.
+      DESPLEGABLES.push(cerrar);
       btn.addEventListener('click', function () {
         var abierto = caja.hidden;
-        // Solo uno abierto a la vez: dos ventanas encima del contenido no se
-        // leen, se estorban.
-        paneles.forEach(function (o) {
-          var c = o.querySelector('.pb-panel'), b = o.querySelector('[data-pb-btn]');
-          if (c) c.hidden = true;
-          if (b) b.setAttribute('aria-expanded', 'false');
-        });
+        cerrarDesplegables(cerrar);
+        cerrar();
         if (abierto) { caja.hidden = false; btn.setAttribute('aria-expanded', 'true'); }
       });
       document.addEventListener('keydown', function (e) {

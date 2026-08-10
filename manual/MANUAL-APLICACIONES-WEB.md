@@ -425,7 +425,7 @@ significado— y la densidad, que salieron en la v1.7.0.
 |---|---|
 | **Tabla — lo que aún no trae** | `TablaDatos` resuelve orden, filtros y paginación. **No** trae selección múltiple, encabezado fijo ni elegir columnas visibles |
 | **Primitivas de dominio** | DNI y RUC con dígito verificador, dos apellidos, ubigeo en cascada, soles, fechas peruanas |
-| **Modo oscuro** | Calculado, **no aprobado**. No implementar |
+| ~~**Modo oscuro**~~ | **Aprobado.** Ya no es un pendiente: se pasa `tema` y `onTema` a `MenuUsuario` y el producto guarda la preferencia. El marco va en escala de negros |
 
 Una nota que debe tratarse como contrato y no como detalle de base de datos: que
 `perez` encuentre a `Pérez` depende de las extensiones `unaccent` y `pg_trgm`. **Es

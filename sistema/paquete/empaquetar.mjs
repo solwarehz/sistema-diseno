@@ -421,8 +421,9 @@ con código 1 si algún par incumple, así que corta el build por sí solo.
    genera con \`node sistema/tokens/generar.mjs\`.
 3. **Si tu cambio hace fallar el candado, el candado tiene razón.** No lo
    desactives.
-4. **No hay modo oscuro aprobado.** Los valores están calculados y verificados,
-   pero la aprobación visual sigue pendiente.
+4. **El modo oscuro está aprobado** desde la v1.19.0. Se activa pasando
+   \`tema\` y \`onTema\` a \`MenuUsuario\`; la preferencia la guarda el producto,
+   porque el sistema no sabe dónde vive la sesión de cada uno.
 
 ---
 

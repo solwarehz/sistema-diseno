@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.18.0';
+export const VERSION = '1.19.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,36 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.19.0', fecha: '2026-08-09',
+    que: 'Modo oscuro APROBADO · R25 · el desplegable que no se cerraba · candado de la cascada',
+    porque:
+      'MODO OSCURO APROBADO por el responsable. Deja de estar en la lista de «no hacer» de la '
+      + 'MMI-DS §9 y pasa a ser superficie mantenida: sus pares entran en el candado de contraste '
+      + 'igual que los de claro y ninguna version sube con uno en rojo. Lo que la prohibicion decia '
+      + 'sigue siendo cierto —duplica la superficie de prueba—, asi que lo que se compra con la '
+      + 'aprobacion es trabajo: 178 pares en vez de 89. El selector sigue siendo opt-in, pero por '
+      + 'otra razon: la preferencia la guarda el producto, que es quien tiene sesion. '
+      + 'R25, reportado por Control Administrativos V2.0 con la medicion hecha y el diagnostico '
+      + 'correcto: el boton de plegar ensenaba SUS DOS ICONOS a la vez en escritorio. La causa no '
+      + 'era la que se ve. Las reglas base empezaban por .ic-, y el extractor reparte por la primera '
+      + 'clase; ic esta declarado como estructura del catalogo, asi que NO VIAJABAN. Si viajaba la '
+      + 'consulta de movil, porque empieza por .top-plegar. En el paquete los dos iconos solo tenian '
+      + 'reglas por debajo de 700px, y por encima ninguna: ambos caian a display por omision. '
+      + 'Se acotan bajo .top-plegar —es donde viven— y la consulta se trae pegada a la base, porque '
+      + 'a igual especificidad ganaba quien el extractor colocara despues. '
+      + 'EL DESPLEGABLE QUE NO SE CERRABA, reportado por el responsable: con el menu de usuario '
+      + 'abierto, pulsar la campana dejaba los dos encima del contenido. Era SOLO DEL CATALOGO. En '
+      + 'React estaba resuelto desde la v1.15.0 con un registro a nivel de modulo que comparten '
+      + 'MenuUsuario y PanelBarra, y sus cuatro pruebas pasan. El catalogo tenia dos cierres a mano '
+      + 'que no se conocian: uno cerraba menus, otro cerraba paneles. La deriva de siempre. '
+      + 'Y el CANDADO DE LA CASCADA, que es la parte que durara. Los siete anteriores leen lo que '
+      + 'HAY; R25 era lo que NO habia, y por eso ninguno lo vio. Este resuelve la cascada de la hoja '
+      + 'QUE VIAJA contra el marcado que se emite, a once anchos, y dice que declaracion gana. '
+      + 'Apuntado a la v1.17.0 saca R25 en rojo a los siete anchos de escritorio.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.18.0', fecha: '2026-08-09',
     que: 'En modo oscuro el marco pasa a la escala de negros: el azul se va',

@@ -37,10 +37,15 @@ export type MenuUsuarioProps = {
   /**
    * Tema en curso. **Si no se pasa, el selector de tema no se pinta.**
    *
-   * Es opt-in a propósito: MMI-DS §9 mantiene el modo oscuro como CALCULADO Y
-   * NO APROBADO. Los valores existen y están verificados, pero un producto no
-   * debería ofrecerlo hasta que se apruebe. Ofrecerlo por omisión sería
-   * saltarse esa decisión desde el componente.
+   * Sigue siendo opt-in, pero por otra razón. Hasta la v1.18.0 lo era porque el
+   * modo oscuro estaba CALCULADO Y NO APROBADO, y ofrecerlo por omisión habría
+   * saltado esa decisión desde el componente. **Se aprobó el 2026-08-09**, así
+   * que esa razón ya no vale.
+   *
+   * Lo que queda es una razón mejor: el sistema NO SABE DÓNDE VIVE LA
+   * PREFERENCIA. Si el componente guardara el tema por su cuenta, un producto
+   * que ya lo guarda en el perfil de la persona tendría dos fuentes de verdad y
+   * la pantalla parpadearía al cargar. Quien tiene sesión es el producto.
    */
   tema?: Tema;
   onTema?: (t: Tema) => void;

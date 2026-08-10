@@ -170,7 +170,10 @@ describe('Menú de usuario', () => {
     expect(salir).toHaveBeenCalled();
   });
 
-  it('SIN tema no se pinta el selector: el modo oscuro no está aprobado', async () => {
+  // El modo oscuro se aprobó el 2026-08-09. Esta prueba NO se borra: lo que
+  // fija ya no es la aprobación, es que la preferencia la gobierna el producto.
+  // Sin `tema`, el sistema no tiene dónde guardarla y no la finge.
+  it('SIN tema no se pinta el selector: la preferencia es del producto', async () => {
     const u = userEvent.setup();
     montar();
     await u.click(screen.getByRole('button', { name: /Menú de PINEDA/ }));
