@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.25.0';
+export const VERSION = '1.25.1';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,22 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.25.1', fecha: '2026-08-10',
+    que: 'El catalogo recupera los logos: seis versiones salieron sin ellos por regenerar en un clon sin activos',
+    porque:
+      'Los activos de marca no viajan en git (propiedad del cliente) y este clon de Windows no '
+      + 'los tenia: cada regeneracion de hoy embebia CERO imagenes y caia al marcador, y asi se '
+      + 'commiteo seis veces — el responsable lo vio en el cascaron. Recuperados byte a byte del '
+      + 'historial: los PNG viajan en base64 dentro del index.html de la v1.19.0 (lockup 350x94, '
+      + 'escudo 1063x1291 — el mismo 1063 que motivo MarcaMenu). El generador ahora AVISA cuando '
+      + 'genera sin activos, con la receta de recuperacion en el propio aviso: la regresion pudo '
+      + 'ser silenciosa porque nada gritaba. Ningun componente nuevo: MarcaMenu ya es el '
+      + 'componente que sube los dos logos sin poder romper el marco -caja fija de 44/40px, '
+      + 'contain, overflow hidden, respaldo en texto- y sus clases viajan en la hoja.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.25.0', fecha: '2026-08-10',
     que: 'R31-R33: la tabla gana columnas controladas, ranura de acciones y dominio cerrado — y el vacio que le faltaba',

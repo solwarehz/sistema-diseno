@@ -85,3 +85,10 @@ propiedad del cliente y `.gitignore` los excluye. **Es lo correcto, no un
 error.** Faltan los PNG del nombre y de tipografia (se piden al usuario), y no
 existen ni el escudo suelto ni el isotipo simplificado — eso es trabajo de
 disenador, no de codigo.
+
+**`imagenes/` (escudo y lockup del catalogo) ya esta en esta maquina** — el
+2026-08-10 se recupero del historial de git: los PNG viajan embebidos en
+base64 dentro de cualquier `cascaron/index.html` anterior, asi que se
+extrajeron byte a byte de la version v1.19.0. Si se pierde, misma receta. El
+generador ademas avisa si genera sin ellos: un catalogo sin logos NO se
+commitea.

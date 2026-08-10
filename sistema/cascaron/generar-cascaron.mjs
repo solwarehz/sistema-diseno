@@ -37,6 +37,21 @@ const b64 = (rel) => {
 };
 const ESCUDO_PNG = b64('imagenes/AE.png');
 const LOCKUP_PNG = b64('imagenes/AE-nombre-horizontal.png');
+
+// Los activos de marca NO viajan en git (propiedad del cliente): en un clon
+// nuevo faltan y el catalogo cae al marcador. Eso es correcto para MIRAR,
+// pero commitear ese catalogo BORRA los logos del que estaba publicado — paso
+// el 2026-08-10, seis versiones seguidas sin logos. El aviso existe para que
+// no vuelva a pasar en silencio. Recuperacion sin pedir archivos: los PNG
+// estan embebidos en base64 en cualquier index.html anterior del historial.
+if (!ESCUDO_PNG || !LOCKUP_PNG) {
+  console.warn(
+    '\n  ⚠ SIN ACTIVOS DE MARCA: falta imagenes/AE.png o AE-nombre-horizontal.png.'
+    + '\n    El catalogo saldra con el marcador de posicion. NO lo commitees asi:'
+    + '\n    recupera los PNG del historial (estan en base64 dentro de cualquier'
+    + '\n    cascaron/index.html anterior) o pidelos por el chat.\n'
+  );
+}
 const lock = JSON.parse(readFileSync(join(RAIZ, 'sistema', 'tokens', 'paleta.lock.json'), 'utf8'));
 
 // ── Utilidades ──────────────────────────────────────────────────────────────
