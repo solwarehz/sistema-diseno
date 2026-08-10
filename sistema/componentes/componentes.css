@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.20.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.21.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -88,21 +88,9 @@
 .btn.mini{ font-size: 12px; padding: 4px 8px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   ENLACE — 17 reglas · clases .enl-*, .enlace-*
+   ENLACE — 16 reglas · clases .enl-*, .enlace-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-[data-vista='movil'] .rejilla,
-[data-vista='movil'] .campos-rejilla,
-[data-vista='movil'] .sw-rejilla,
-[data-vista='movil'] .tp-rejilla,
-[data-vista='movil'] .tn-rejilla,
-[data-vista='movil'] .ep-rejilla,
-[data-vista='movil'] .chip-sup,
-[data-vista='movil'] .pr-rejilla,
-[data-vista='movil'] .estado-rejilla,
-[data-vista='movil'] .atajos,
-[data-vista='movil'] .mal-rejilla,
-[data-vista='movil'] .enl-comp{ grid-template-columns: 1fr; }
 a.enlace.enl-sub{ text-decoration: underline; text-underline-offset: 2px; }
 a.enlace.enl-nosub{ text-decoration: none; }
 .enl-activo{ color: var(--accion-activa); }
@@ -124,10 +112,9 @@ a.enlace.enl-nosub{ text-decoration: none; }
 .enlace:hover{ text-decoration: underline; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CAMPO DE TEXTO — 32 reglas · clases .campo-*, .cg-*, .msj-*
+   CAMPO DE TEXTO — 31 reglas · clases .campo-*, .cg-*, .msj-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-[data-vista='movil'] .campo{ font-size: 16px; }
 input.campo.sel-in{ width: 100%; padding-left: 32px; padding-right: 32px; }
 .cg{ display: flex; flex-direction: column; gap: 4px; }
 .cg-et{ font-size: 13px; font-weight: 500; color: var(--texto-principal); }
@@ -184,12 +171,9 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .campo-mal{ border-color: var(--error-acento); border-width: 2px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   SELECTOR — 20 reglas · clases .sel-*
+   SELECTOR — 17 reglas · clases .sel-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-[data-vista='movil'] .anatomia,
-[data-vista='movil'] .sel-demo-fila,
-[data-vista='movil'] .fc-cal-cuerpo{ grid-template-columns: 1fr; }
 .sel{ position: relative; }
 .sel-caja{ position: relative; display: flex; align-items: center; }
 .sel-lupa{ position: absolute; left: 9px; color: var(--texto-pista);
@@ -211,18 +195,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .sel-check .ic{ width: 16px; height: 16px; }
 .sel-vacio{ padding: 12px 12px; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .sel-vacio strong{ color: var(--texto-principal); }
-.sel-demo-fila{ display: grid; grid-template-columns: minmax(260px,360px) 1fr; gap: 28px; align-items: start; }
 .sel-notas p{ margin: 0 0 8px; font-size: 13px; line-height: 1.6; color: var(--texto-secundario); }
 .sel-notas strong{ color: var(--texto-principal); }
-@media (max-width: 760px) {
-  .sel-demo-fila{ grid-template-columns: 1fr; }
-}
 
 /* ───────────────────────────────────────────────────────────────────────────
-   INTERRUPTOR — 17 reglas · clases .sw-*
+   INTERRUPTOR — 15 reglas · clases .sw-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-.sw-rejilla{ display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 16px; }
 .sw-fila{ display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
 .sw-desh{ cursor: not-allowed; }
 .sw{ width: 40px; height: 24px; flex: none; padding: 0; cursor: pointer;
@@ -247,18 +226,6 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 @media (prefers-reduced-motion: reduce) {
   .sw, .sw-bolita{ transition: none; }
 }
-[data-vista='movil'] .rejilla,
-[data-vista='movil'] .campos-rejilla,
-[data-vista='movil'] .sw-rejilla,
-[data-vista='movil'] .tp-rejilla,
-[data-vista='movil'] .tn-rejilla,
-[data-vista='movil'] .ep-rejilla,
-[data-vista='movil'] .chip-sup,
-[data-vista='movil'] .pr-rejilla,
-[data-vista='movil'] .estado-rejilla,
-[data-vista='movil'] .atajos,
-[data-vista='movil'] .mal-rejilla,
-[data-vista='movil'] .enl-comp{ grid-template-columns: 1fr; }
 .sw-mini{ width: 40px; height: 24px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
@@ -284,7 +251,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .ms-estados{ display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 4px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   FECHA Y RANGO — 40 reglas · clases .fc-*
+   FECHA Y RANGO — 36 reglas · clases .fc-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .fc-campos{ display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
@@ -342,12 +309,6 @@ input.fc-campo.fc-activo{ border-color: var(--accion); box-shadow: inset 0 0 0 1
 @media (max-width: 620px) {
   .fc-cal-cuerpo{ grid-template-columns: 1fr; }
 }
-[data-vista='movil'] .anatomia,
-[data-vista='movil'] .sel-demo-fila,
-[data-vista='movil'] .fc-cal-cuerpo{ grid-template-columns: 1fr; }
-[data-vista='movil'] .fc-cal{ position: static; max-width: none; }
-[data-vista='movil'] .fc-cal-marco{ flex-direction: column; }
-[data-vista='movil'] .fc-atajos{ border-left: 0; border-top: 1px solid var(--borde); }
 input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
@@ -388,21 +349,9 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .hor-neutro{ background: var(--neutra-fondo);    color: var(--neutra-texto); border-left-color: var(--borde-fuerte); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CHIP DE ESTADO — 21 reglas · clases .chip-*
+   CHIP DE ESTADO — 19 reglas · clases .chip-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-[data-vista='movil'] .rejilla,
-[data-vista='movil'] .campos-rejilla,
-[data-vista='movil'] .sw-rejilla,
-[data-vista='movil'] .tp-rejilla,
-[data-vista='movil'] .tn-rejilla,
-[data-vista='movil'] .ep-rejilla,
-[data-vista='movil'] .chip-sup,
-[data-vista='movil'] .pr-rejilla,
-[data-vista='movil'] .estado-rejilla,
-[data-vista='movil'] .atajos,
-[data-vista='movil'] .mal-rejilla,
-[data-vista='movil'] .enl-comp{ grid-template-columns: 1fr; }
 .chip-pend{ background: var(--fondo-encabezado); color: var(--texto-principal);
   border-color: var(--borde-fuerte); }
 .chip-inact{ background: var(--borde); color: var(--texto-principal);
@@ -422,7 +371,6 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .chip-punto.chip-info{ background: var(--info-acento); }
 .chip-con-punto i{ display: inline-block; width: 6px; height: 6px; border-radius: 50%;
   background: currentColor; margin-right: 4px; vertical-align: middle; }
-.chip-fila-demo{ display: flex; gap: 8px; align-items: center; }
 .chip{ display: inline-block; font-size: 12px; font-weight: 500;
   padding: 4px 8px; border-radius: 3px; border-left: 3px solid; }
 .chip-exito, .msj-exito{ background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
@@ -431,7 +379,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .chip-info,  .msj-info{ background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   AVATAR — 14 reglas · clases .avatar-*
+   AVATAR — 13 reglas · clases .avatar-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .avatar{ border-radius: 50%; flex: none; overflow: hidden; display: grid;
@@ -448,29 +396,13 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .avatar-vacio{ background: var(--fondo-encabezado); color: var(--texto-secundario); }
 .av img, .avatar-silueta{ width: 100%; height: 100%; object-fit: cover; display: block; }
 .avatar-marco{ background: var(--marco-acento); color: var(--marco-fondo); }
-.avatar-rejilla{ display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
 .avatar-caso{ display: flex; flex-direction: column; align-items: center; gap: 4px;
   font-size: 12px; color: var(--texto-secundario); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TARJETA DE PERSONA — 19 reglas · clases .tp-*
+   TARJETA DE PERSONA — 14 reglas · clases .tp-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-[data-vista='movil'] .rejilla,
-[data-vista='movil'] .campos-rejilla,
-[data-vista='movil'] .sw-rejilla,
-[data-vista='movil'] .tp-rejilla,
-[data-vista='movil'] .tn-rejilla,
-[data-vista='movil'] .ep-rejilla,
-[data-vista='movil'] .chip-sup,
-[data-vista='movil'] .pr-rejilla,
-[data-vista='movil'] .estado-rejilla,
-[data-vista='movil'] .atajos,
-[data-vista='movil'] .mal-rejilla,
-[data-vista='movil'] .enl-comp{ grid-template-columns: 1fr; }
-.tp-rejilla{ display: grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap: 8px; }
-.tp-rejilla-2{ grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); max-width: 560px; }
-.tp-rejilla-1{ max-width: 300px; }
 .tp{ display: flex; gap: 12px; align-items: flex-start; padding: 12px 12px;
   background: var(--fondo-tarjeta); border: 1px solid var(--borde);
   border-left: 4px solid var(--borde-fuerte); border-radius: 6px; }
@@ -489,26 +421,11 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .tp-pie{ display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .tp-hora{ font-size: 12px; color: var(--texto-secundario); }
 .tp-opaca{ opacity: .5; }
-.rejilla > *, .campos-rejilla > *,
-.tp-rejilla > *, .tn-rejilla > *, .ep-rejilla > *{ min-width: 0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TARJETA — 12 reglas · clases .tn-*
+   TARJETA — 9 reglas · clases .tn-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-[data-vista='movil'] .rejilla,
-[data-vista='movil'] .campos-rejilla,
-[data-vista='movil'] .sw-rejilla,
-[data-vista='movil'] .tp-rejilla,
-[data-vista='movil'] .tn-rejilla,
-[data-vista='movil'] .ep-rejilla,
-[data-vista='movil'] .chip-sup,
-[data-vista='movil'] .pr-rejilla,
-[data-vista='movil'] .estado-rejilla,
-[data-vista='movil'] .atajos,
-[data-vista='movil'] .mal-rejilla,
-[data-vista='movil'] .enl-comp{ grid-template-columns: 1fr; }
-.tn-rejilla{ display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 12px; }
 .tn{ background: var(--fondo-tarjeta); border: 1px solid var(--borde);
   border-radius: 6px; display: flex; flex-direction: column; text-decoration: none;
   color: var(--texto-principal); }
@@ -522,11 +439,17 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
   border-top: 1px solid var(--borde); }
 .tn-pulsable:hover{ border-color: var(--accion); }
 .tn-pulsable:hover h4{ color: var(--accion); }
-.rejilla > *, .campos-rejilla > *,
-.tp-rejilla > *, .tn-rejilla > *, .ep-rejilla > *{ min-width: 0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TABLA DE DATOS — 82 reglas · clases .tb-*
+   BLOQUE DE CONTENIDO — 2 reglas · clases .bloque-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.bloque{ background: var(--fondo-tarjeta); border: 1px solid var(--borde);
+  border-radius: 6px; padding: 20px; margin-bottom: 8px; }
+.bloque, .app-main { min-width: 0; }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   TABLA DE DATOS — 81 reglas · clases .tb-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tabla-simple, .tb-sub{ display: block; overflow-x: auto; }
@@ -569,7 +492,6 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .tb-th.tb-num .tb-orden{ justify-content: flex-end; }
 .tb td{ padding: 0 12px; height: 34px; border-top: 1px solid var(--borde); }
 [data-densidad='compacta'] .tb td{ height: 28px; }
-[data-vista='movil'][data-densidad='compacta'] .tb td{ height: 44px; }
 .tb-num{ text-align: right; }
 .tb-th-indice{ width: 52px; }
 .tb-th-indice .tb-th-txt{ display: block; padding: 8px 12px; font-weight: 500; }
@@ -643,19 +565,11 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .tb-sub tbody tr:hover{ background: var(--fondo-tarjeta); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TABLA SIMPLE — 17 reglas · clases .tabla-*
+   TABLA SIMPLE — 11 reglas · clases .tabla-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tabla-simple, .tb-sub{ display: block; overflow-x: auto; }
 .tabla-simple > thead, .tabla-simple > tbody{ display: table; width: 100%; min-width: 520px; }
-.tabla-manual{ margin: 0 0 16px; }
-.tabla-escala-caja{ overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
-.tabla-escala{ width: 100%; border-collapse: collapse; font-size: 13px;
-  background: var(--fondo-tarjeta); min-width: 520px; }
-.tabla-escala th{ background: var(--fondo-encabezado); text-align: left;
-  padding: 8px 12px; font-weight: 500; font-size: 12px; }
-.tabla-escala td{ padding: 8px 12px; border-top: 1px solid var(--borde); vertical-align: middle; }
-.tabla-escala .num{ font-family: 'IBM Plex Mono', monospace; text-align: right; }
 .tabla-simple{ width: 100%; border-collapse: collapse; font-size: 13px;
   background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 6px; }
 .tabla-simple th{ background: var(--fondo-encabezado); text-align: left;
@@ -689,10 +603,9 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .pgn .campo-grupo .campo{ width: auto; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   BARRA DE PROGRESO — 23 reglas · clases .pr-*
+   BARRA DE PROGRESO — 21 reglas · clases .pr-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-.pr-rejilla{ display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 20px; }
 .pr-caja{ display: flex; flex-direction: column; gap: 8px; }
 .pr-cab{ display: flex; justify-content: space-between; gap: 12px; font-size: 13px; font-weight: 500; }
 .pr{ height: 8px; border-radius: 6px; background: var(--neutra-fondo);
@@ -725,21 +638,9 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .pr-paso b{ display: block; font-size: 15px; font-weight: 600; }
 .pr-paso span{ font-size: 12px; color: var(--texto-secundario); }
 .pr-paso div b + span{ display: block; }
-[data-vista='movil'] .rejilla,
-[data-vista='movil'] .campos-rejilla,
-[data-vista='movil'] .sw-rejilla,
-[data-vista='movil'] .tp-rejilla,
-[data-vista='movil'] .tn-rejilla,
-[data-vista='movil'] .ep-rejilla,
-[data-vista='movil'] .chip-sup,
-[data-vista='movil'] .pr-rejilla,
-[data-vista='movil'] .estado-rejilla,
-[data-vista='movil'] .atajos,
-[data-vista='movil'] .mal-rejilla,
-[data-vista='movil'] .enl-comp{ grid-template-columns: 1fr; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   AVISO TEMPORAL — 17 reglas · clases .av-*
+   AVISO TEMPORAL — 16 reglas · clases .av-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .av-botones{ display: flex; gap: 8px; flex-wrap: wrap; }
@@ -771,15 +672,12 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 @media (prefers-reduced-motion: reduce) {
   .av{ transform: none; transition: opacity .15s ease; }
 }
-[data-vista='movil'] .av-zona{ position: absolute; left: 12px; right: 12px;
-  top: 76px; max-width: none; z-index: 70; }
 .av img, .avatar-silueta{ width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CONFIRMACIÓN EN LÍNEA — 19 reglas · clases .cf-*
+   CONFIRMACIÓN EN LÍNEA — 18 reglas · clases .cf-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-.cf-demo{ border: 1px solid var(--borde); border-radius: 6px; overflow: hidden; }
 .cf-banda{ display: grid; grid-template-rows: 0fr;
   transition: grid-template-rows .24s ease; }
 .cf-banda.abierta{ grid-template-rows: 1fr; }
@@ -807,22 +705,9 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTADOS DE PANTALLA — 22 reglas · clases .ep-*, .esqueleto-*
+   ESTADOS DE PANTALLA — 18 reglas · clases .ep-*, .esqueleto-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-[data-vista='movil'] .rejilla,
-[data-vista='movil'] .campos-rejilla,
-[data-vista='movil'] .sw-rejilla,
-[data-vista='movil'] .tp-rejilla,
-[data-vista='movil'] .tn-rejilla,
-[data-vista='movil'] .ep-rejilla,
-[data-vista='movil'] .chip-sup,
-[data-vista='movil'] .pr-rejilla,
-[data-vista='movil'] .estado-rejilla,
-[data-vista='movil'] .atajos,
-[data-vista='movil'] .mal-rejilla,
-[data-vista='movil'] .enl-comp{ grid-template-columns: 1fr; }
-.ep-rejilla{ display: grid; grid-template-columns: repeat(auto-fit,minmax(232px,1fr)); gap: 12px; }
 .ep-caja{ border: 1px solid var(--borde); border-radius: 6px; overflow: hidden;
   display: flex; flex-direction: column; }
 .ep-et{ font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em;
@@ -843,16 +728,13 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .ep-mini{ font-size: 12px; color: var(--texto-secundario); }
 .ep-ambitos{ display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap: 20px; }
 .ep-ambito{ display: flex; flex-direction: column; gap: 8px; }
-.ep-marco-demo{ border: 1px solid var(--borde); border-radius: 6px; overflow: hidden; }
 .ep-mini-cab{ height: 34px; background: var(--marco-fondo); }
 .ep-ambito .tn .ep{ min-height: 128px; }
-.rejilla > *, .campos-rejilla > *,
-.tp-rejilla > *, .tn-rejilla > *, .ep-rejilla > *{ min-width: 0; }
 .esqueleto{ height: 11px; border-radius: 3px; background: var(--fondo-encabezado); }
 .esqueleto.corto{ width: 62%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MARCO DE APLICACIÓN — 218 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
+   MARCO DE APLICACIÓN — 186 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 :where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
@@ -864,7 +746,6 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .app-cascaron .lat-nav{ overflow-y: auto; overflow-x: visible; }
 .app-cascaron .lat.colapsado .lat-nav{ overflow: visible; }
 .app-cascaron .app-main{ min-height: 100vh; }
-.top.top-cascaron{ position: sticky; top: 0; z-index: 20; }
 @media (max-width: 700px) {
   .app-cascaron .lat{ position: absolute; left: 0; top: 0; bottom: 0; z-index: 60;
     height: 100%; transform: translateX(-100%); transition: transform .22s ease; }
@@ -873,7 +754,6 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   .top-filtros{ flex-wrap: wrap; }
   .top-filtros .campo{ min-width: 0; }
   .top-filtros .cg{ min-width: 0; flex: 1 1 120px; }
-  .top.top-cascaron{ height: auto; flex-wrap: wrap; row-gap: 8px; }
   .app-cascaron .lat.colapsado .nav-hijos{ display: none; }
 }
 .nav-grupo{ margin-bottom: 0; }
@@ -948,24 +828,6 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   padding: 12px 4px; font-size: 12px; color: var(--marco-texto-tenue);
   display: grid; gap: 4px; }
 .lat-leyenda div{ display: flex; align-items: center; gap: 8px; }
-[data-vista='movil'] .app-cascaron{
-  width: 390px; height: 780px; margin: 0 auto; overflow: hidden;
-  border: 1px solid var(--borde-fuerte); border-radius: 6px;
-  box-shadow: var(--sombra-capa); position: relative; }
-[data-vista='movil'] .lat{
-  position: absolute; left: 0; top: 0; bottom: 0; z-index: 60;
-  transform: translateX(-100%); transition: transform .22s ease; height: 100%; }
-[data-vista='movil'] .lat:not(.colapsado){ transform: translateX(0); }
-[data-vista='movil'] .lat.colapsado{ transform: translateX(-100%); }
-[data-vista='movil'] .lat.colapsado .nav-hijos{ display: none; }
-[data-vista='movil'] .lat:not(.colapsado){ width: 288px; }
-[data-vista='movil'] .lat:not(.colapsado) .nav-txt,
-[data-vista='movil'] .lat:not(.colapsado) .lat-id,
-[data-vista='movil'] .lat:not(.colapsado) .lat-user-txt{ display: block; }
-[data-vista='movil'] .velo{ position: absolute; inset: 0; z-index: 55;
-  background: var(--marco-fondo); opacity: .5; }
-[data-vista='movil'] .app-main{ min-height: 0; height: 100%; overflow-y: auto; }
-[data-vista='movil'] .top{ position: sticky; top: 0; }
 .top-plegar .ic-escritorio, .top-plegar .ic-movil{ place-items: center; }
 .top-plegar .ic-escritorio{ display: grid; }
 .top-plegar .ic-movil{ display: none; }
@@ -973,14 +835,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   .top-plegar .ic-escritorio{ display: none; }
   .top-plegar .ic-movil{ display: grid; }
 }
-[data-vista='movil'] .top-plegar .ic-escritorio{ display: none; }
-[data-vista='movil'] .top-plegar .ic-movil{ display: grid; }
-[data-vista='movil'] .top-filtros{ flex-direction: column; gap: 12px; padding: 12px; width: 100%; }
-[data-vista='movil'] .top-filtros .cg{ width: 100%; }
-[data-vista='movil'] .top-filtros .campo{ width: 100%; min-width: 0; font-size: 16px; }
-[data-vista='movil'] .us-menu{ min-width: 264px; }
 .fg{ position: relative; display: none; }
-[data-vista='movil'] .fg{ display: block; }
 .fg-panel{ position: absolute; z-index: 60; left: 0; top: calc(100% + 8px);
   width: max-content; max-width: 320px; min-width: 240px; padding: 4px;
   background: var(--fondo-tarjeta);
@@ -992,26 +847,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .top-filtros .campo-etiqueta{ font-size: 12px; color: var(--texto-secundario); white-space: nowrap; }
 .top-filtros .campo-grupo .campo{ padding: 4px 8px; width: auto; min-width: 0; }
 .fg-panel .campo{ width: 100%; min-width: 0; font-size: 16px; }
-[data-vista='movil'] .top-marca{ display: block; position: absolute;
-  left: 50%; transform: translateX(-50%); border-radius: 6px; }
-[data-vista='movil'] .top-marca img{ display: block; height: 44px; width: auto; }
-[data-vista='movil'] .top-marca:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px; }
-[data-app] .app-cascaron{ padding: 44px 0 36px; }
 .app-zona-arriba, .app-zona-abajo, .app-tabs{ display: none; }
-[data-app] .app-zona-arriba, [data-app] .app-zona-abajo{
-  position: absolute; left: 0; right: 0; display: grid; place-items: center;
-  background: var(--fondo-pagina); z-index: 45; }
-[data-app] .app-zona-arriba{ top: 0; height: 44px; }
-[data-app] .app-zona-abajo{ bottom: 0; height: 36px; }
-[data-app] .app-camara{ width: 96px; height: 24px; border-radius: 999px;
-  background: var(--texto-principal); }
-[data-app] .app-gestos{ width: 136px; height: 4px; border-radius: 999px;
-  background: var(--texto-secundario); }
-[data-app] .lat, [data-app] .velo,
-[data-app] #plegar-cat, [data-app] #fg{ display: none; }
-[data-app] .app-tabs{ display: flex; position: absolute; left: 0; right: 0;
-  bottom: 36px; z-index: 44; background: var(--fondo-tarjeta);
-  border-top: 1px solid var(--borde); }
 .app-marco .app-tabs{ display: flex; position: fixed; left: 0; right: 0;
   bottom: 0; z-index: 44; background: var(--fondo-tarjeta);
   border-top: 1px solid var(--borde);
@@ -1033,11 +869,6 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .app-tab[aria-current='page'] .ic{ stroke-width: 2.2; }
 .app-tab:focus-visible{ outline: 2px solid var(--foco); outline-offset: -2px; }
 .app-tab-txt{ max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-[data-app] .app-atras:not([hidden]){ display: grid; place-items: center;
-  background: transparent; border: 0; cursor: pointer; padding: 8px;
-  margin-left: -8px; border-radius: 6px; color: var(--texto-principal); }
-[data-app] .app-atras:hover{ background: var(--fondo-encabezado); }
-[data-app] .app-atras:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px; }
 .app-lista{ display: flex; flex-direction: column; }
 .app-lista-it{ display: flex; align-items: center; gap: 12px; padding: 12px 4px;
   min-height: 48px; background: transparent; border: 0; border-bottom: 1px solid var(--borde);
@@ -1048,7 +879,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .app-lista-it .ic{ color: var(--texto-secundario); flex: none; }
 .app-lista-tx{ flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .app-lista-ch{ flex: none; color: var(--texto-secundario); transform: rotate(-90deg); }
-.cat-cuerpo, .pagina, .bloque, .app-main{ min-width: 0; }
+.bloque, .app-main { min-width: 0; }
 .app{ display: flex; min-height: 520px; }
 .lat{ box-shadow: var(--sombra-marco), var(--canto-marco); position: relative; z-index: 20;
   flex: 0 0 auto; width: 236px; min-width: 0; overflow: hidden;
@@ -1219,7 +1050,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   box-shadow: 0 4px 14px rgba(0,0,0,.28); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MIGAS DE PAN — 11 reglas · clases .migas-*
+   MIGAS DE PAN — 10 reglas · clases .migas-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .migas{ display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
@@ -1236,7 +1067,6 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   .migas-tramo:has(> .migas-atras){ position: absolute; width: 1px; height: 1px;
     margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 }
-[data-app] .migas{ display: none; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    CABECERA DE PANTALLA — 5 reglas · clases .pant-*

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.20.0';
+export const VERSION = '1.21.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,32 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.21.0', fecha: '2026-08-10',
+    que: 'R28: .bloque viaja · el andamiaje del catalogo deja de viajar, por regla y no por lista',
+    porque:
+      'R28 de Control Administrativos: el marco que encierra barra + tabla + pie -.bloque- estaba '
+      + 'en la lista de SOLO_CATALOGO y cada consumidor copiaba sus declaraciones a mano. La '
+      + 'auditoria de composicion encontro la otra cara del mismo defecto: la clasificacion por '
+      + 'prefijo dejaba viajar ~196 lineas de andamiaje del catalogo, porque .sw-rejilla empieza '
+      + 'por sw- igual que .sw-bolita. La ironia medida: la unica regla con .bloque que viajaba '
+      + 'era la del andamio (.cat-cuerpo, .pagina, .bloque, .app-main). El extractor corta ahora '
+      + 'POR PARTE de selector -esa regla viaja como .bloque, .app-main- y el andamio se reconoce '
+      + 'por regla: [data-vista] y [data-app] son el simulador del catalogo y nada los pone en un '
+      + 'producto, y las clases -demo y -rejilla son muestrario. Verificado antes de cortar: '
+      + 'ninguna de las 27 clases retiradas la emite un TSX ni la documentan el manual o el '
+      + 'contrato. La cascada a once anchos y las 180 pruebas siguen en verde tras el corte.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'La hoja que viaja pierde 27 clases de andamiaje del catalogo: anatomia, app-atras, '
+      + 'app-camara, app-gestos, atajos, avatar-rejilla, campos-rejilla, cat-cuerpo, cf-demo, '
+      + 'chip-fila-demo, ep-marco-demo, ep-rejilla, estado-rejilla, mal-rejilla, pagina, '
+      + 'pr-rejilla, rejilla, sel-demo-fila, sw-rejilla, tabla-escala, tabla-escala-caja, '
+      + 'tabla-manual, tn-rejilla, top-cascaron, tp-rejilla, tp-rejilla-1 y tp-rejilla-2. '
+      + 'Ningun componente las emite y ningun documento las ensena; si un producto copio una '
+      + 'del catalogo, que la pida con su caso -como R28- en vez de heredarla de polizon.',
+    ],
+  },
   {
     v: '1.20.0', fecha: '2026-08-10',
     que: 'RangoFecha viajaba con el calendario roto · el candado de huerfanas ve dentro de los arrays',

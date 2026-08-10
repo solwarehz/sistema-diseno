@@ -53,6 +53,10 @@ const ELEMENTOS = [
   { n: 'Avatar',                p: ['avatar'] },
   { n: 'Tarjeta de persona',    p: ['tp'] },
   { n: 'Tarjeta',               p: ['tn'] },
+  // R28 (Control Administrativos, 2026-08-10): el marco que encierra barra +
+  // tabla + pie. Estaba en SOLO_CATALOGO y cada consumidor copiaba sus cuatro
+  // declaraciones a mano.
+  { n: 'Bloque de contenido',   p: ['bloque'] },
   { n: 'Tabla de datos',        p: ['tb'] },
   { n: 'Tabla simple',          p: ['tabla'] },
   { n: 'Paginación',            p: ['pgn', 'pg-pos'] },
@@ -77,7 +81,7 @@ const ELEMENTOS = [
 // de las dos listas.
 // `sr-solo` NO va aqui: es una utilidad del SISTEMA y tiene que viajar.
 const SOLO_CATALOGO = new Set([
-  'w', 'pag', 'cat', 'caso', 'bloque', 'sub', 'mal', 'tira', 'cam',
+  'w', 'pag', 'cat', 'caso', 'sub', 'mal', 'tira', 'cam',
   'atajo', 'cod', 'anatomia', 'anat', 'muestra', 'foco', 'op', 's', 'dialogos',
   'aviso', 'ic', 'ico', 'sin', 'filas', 'grupo', 'leyenda', 'pt', 'num',
   'motivo', 'conmutador', 'esc', 'esp', 'rejilla', 'rej', 'campos', 'estado',
@@ -151,6 +155,38 @@ const esDe = (sel, patrones) =>
     return c && patrones.some((p) => cazaPatron(c, p));
   });
 
+// ── Andamiaje que comparte prefijo con clases reales ────────────────────────
+// La lista de prefijos no puede cortarlo: `.sw-rejilla` empieza por `sw-`
+// igual que `.sw-bolita`, pero una es la rejilla de muestras del catálogo y la
+// otra es el interruptor de verdad. Así viajaban ~109 líneas de andamiaje —y
+// la auditoría del 2026-08-10 encontró la ironía: la ÚNICA regla con `.bloque`
+// que viajaba era `.cat-cuerpo, .pagina, .bloque, .app-main`, o sea, la del
+// andamio. Se corta POR PARTE de selector: esa regla ahora viaja como
+// `.bloque, .app-main { … }` en vez de arrastrar el andamio o perderse entera.
+// Verificado antes de cortar: ningún TSX emite estas clases y ni el manual ni
+// el contrato las documentan.
+const ANDAMIO_NOMBRADO = new Set([
+  'anatomia', 'tabla-manual', 'tabla-escala', 'tabla-escala-caja',
+  'top-cascaron', 'cat-cuerpo', 'pagina',
+]);
+const esParteAndamio = (parte) => {
+  // data-vista es el simulador de anchos del catálogo; data-app, su marco de
+  // teléfono con cámara y gestos. Ningún producto los pone: el React no los
+  // escribe y el manual no los enseña.
+  if (/\[data-(vista|app)[\]='"]/.test(parte)) return true;
+  return [...parte.matchAll(/\.([a-zA-Z][a-zA-Z0-9_-]*)/g)]
+    .some((m) => /(^|-)demo(-|$)/.test(m[1])
+      || /(^|-)rejilla(-\d+)?$/.test(m[1])
+      || ANDAMIO_NOMBRADO.has(m[1]));
+};
+/** La regla sin sus partes de andamio, o null si era todo andamio. */
+const sinAndamio = (b) => {
+  const partes = b.sel.split(',').map((p) => p.trim()).filter((p) => p && !esParteAndamio(p));
+  if (partes.length === b.sel.split(',').length) return b; // no había andamio
+  if (!partes.length) return null;
+  return { ...b, sel: partes.join(', '), entero: `${partes.join(', ')} {${b.cuerpo}}` };
+};
+
 // ── Extracción ──────────────────────────────────────────────────────────────
 
 const html = readFileSync(join(RAIZ, 'cascaron', 'index.html'), 'utf8');
@@ -168,7 +204,8 @@ for (const b of todos) {
   if (b.sel.startsWith('@media')) {
     // Se conserva la envoltura: una regla de @media sin su @media no vale nada.
     for (const e of ELEMENTOS) {
-      const dentro = bloques(b.cuerpo).filter((r) => r.sel && esDe(r.sel, e.p));
+      const dentro = bloques(b.cuerpo).map(sinAndamio).filter(Boolean)
+        .filter((r) => r.sel && esDe(r.sel, e.p));
       if (dentro.length) {
         porElemento.get(e.n).push(`${b.sel} {\n${dentro.map((r) => '  ' + r.entero).join('\n')}\n}`);
         dentroDeMedia += dentro.length;
@@ -187,10 +224,12 @@ for (const b of todos) {
   }
   if (!b.sel || b.sel.startsWith('@') || b.sel.startsWith(':root') || b.sel.startsWith('[data-tema')) continue;
 
+  const limpio = sinAndamio(b);
+  if (!limpio) continue; // era todo andamio: decidido que no sale
   let colocado = false;
   for (const e of ELEMENTOS) {
-    if (esDe(b.sel, e.p)) {
-      porElemento.get(e.n).push(b.entero);
+    if (esDe(limpio.sel, e.p)) {
+      porElemento.get(e.n).push(limpio.entero);
       colocado = true;
     }
   }

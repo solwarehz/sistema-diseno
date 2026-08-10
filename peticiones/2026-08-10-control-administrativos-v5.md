@@ -145,3 +145,27 @@ equivocada; el avatar de la barra lo dice solo tras un clic. El cascarón ya
 tomó la decisión — pedimos el componente, no el criterio. Los datos ya viajan
 en la propiedad `usuario`, así que probablemente no haga falta ni una propiedad
 nueva. Con el lateral plegado, adoptamos lo que el cascarón haga.
+
+## R31 · Columnas visibles controladas
+
+La elección de columnas es una preferencia de la persona, y una que no persiste
+no es una preferencia. En TablaDatos, `ocultas` es estado interno: no se puede
+sembrar al montar y `alCambiar` no lo emite, así que cualquier producto que
+guarde la elección en el perfil no puede honrarla. Pedimos la pareja controlada
+(`ocultas`/`onOcultas`), o un valor inicial + el dato en `alCambiar`.
+
+## R32 · Una ranura de acciones en la barra
+
+La tabla casi nunca viaja sola: junto a «Filtros» y «Columnas» los productos
+ponen su exportación, su impresión, su acción por lotes. Hoy no hay ranura y
+esas acciones se pintan fuera de la tarjeta — nuestro CSV flota encima y se
+nota que no pertenece. Pedimos una ranura (`acciones?: ReactNode`) en la barra.
+Sin comportamiento: solo el sitio.
+
+## R33 · Filtros de columna con dominio cerrado
+
+Hay columnas cuyo dominio es cerrado — un estado, un tipo, una sede — y su
+filtro natural es elegir, no adivinar el texto: quien teclea «vigente» porque
+recuerda el sinónimo y no el literal concluye que no hay resultados. Pedimos
+que `Columna` admita opciones de filtro y la fila pinte un selector en esas
+columnas, con texto libre para el resto.
