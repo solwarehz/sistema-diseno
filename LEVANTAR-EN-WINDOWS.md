@@ -29,7 +29,7 @@ docker run --rm -d --name mmi-cascaron -p 127.0.0.1:8080:80 `
 <http://127.0.0.1:8080> · solo en loopback y montado de solo lectura.
 Para pararlo: `docker rm -f mmi-cascaron`.
 
-## Los siete candados
+## Los candados — nueve comandos, no siete
 
 ```powershell
 docker compose exec ds node sistema/tokens/generar.mjs
@@ -39,7 +39,13 @@ docker compose exec ds node sistema/candado/auditar-cascaron.mjs
 docker compose exec ds node sistema/candado/probar-candado.mjs
 docker compose exec ds node sistema/componentes/extraer.mjs
 docker compose exec ds node sistema/candado/verificar-cascada.mjs
+docker compose exec ds node sistema/candado/verificar-contrato.mjs
+docker compose exec ds node sistema/candado/verificar-entrega.mjs
 ```
+
+Los dos últimos faltaban aquí y en CLAUDE.md §8 (la memoria sí los contaba):
+el 2026-08-10 no se corrieron en todo el día por eso, y al correrlos estaban
+en rojo los dos.
 
 Comprobados el 2026-08-10 sobre `main`: **los siete en verde** — 178 pares
 recalculados con 0 fallos, 62 casos del candado de lint sin fallos, 485 clases

@@ -239,7 +239,7 @@ describe('Contrato de comportamiento', () => {
   });
 });
 
-describe('R31 · columnas visibles controladas', () => {
+describe('R18 (pedido R31) · columnas visibles controladas', () => {
   it('se siembran al montar desde fuera', () => {
     pintar({ ocultas: ['horas'] });
     expect(screen.queryByRole('columnheader', { name: /Horas/ })).toBeNull();
@@ -259,7 +259,7 @@ describe('R31 · columnas visibles controladas', () => {
   });
 });
 
-describe('R32 · ranura de acciones en la barra', () => {
+describe('R19 (pedido R32) · ranura de acciones en la barra', () => {
   it('lo que se pasa aparece junto a Filtros y Columnas', () => {
     pintar({ acciones: <button type="button">Exportar CSV</button> });
     const exportar = screen.getByRole('button', { name: 'Exportar CSV' });
@@ -267,7 +267,7 @@ describe('R32 · ranura de acciones en la barra', () => {
   });
 });
 
-describe('R33 · filtro de dominio cerrado', () => {
+describe('R20 (pedido R33) · filtro de dominio cerrado', () => {
   const CON_OPCIONES: Columna<Persona>[] = COLUMNAS.map((c) =>
     c.clave === 'cargo' ? { ...c, opcionesFiltro: ['Docente', 'Auxiliar', 'Directora'] } : c
   );
@@ -289,7 +289,7 @@ describe('R33 · filtro de dominio cerrado', () => {
   });
 });
 
-describe('La tabla vacía dice por qué', () => {
+describe('R21 · la tabla vacía dice por qué', () => {
   it('cero resultados por filtro: aviso y salida de un clic', async () => {
     const u = userEvent.setup();
     pintar();

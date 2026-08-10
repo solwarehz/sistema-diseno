@@ -148,6 +148,12 @@ export function MarcoApp({
     const nuevo = typeof v === 'function' ? v(plegado) : v;
     if (plegadoFuera === undefined) setPlegadoDentro(nuevo);
     onPlegar?.(nuevo);
+    // Al plegar cambia la REGLA de apertura, así que el estado se re-sincroniza
+    // —igual que hace el catálogo—. Plegado, los grupos cierran: si quedaran
+    // abiertos, cada uno sería un panel flotante atascado, y como arrancan
+    // TODOS abiertos, plegar mostraba todos los flotantes a la vez. Desplegado,
+    // vuelven todos abiertos, que es como nace el menú.
+    setAbiertos(nuevo ? new Set() : new Set(navegacion.map((g) => g.clave)));
   };
   // «Más» en la vista de app: la lista de lo que no cupo en las cinco pestañas.
   const [masAbierto, setMasAbierto] = useState(false);
@@ -261,6 +267,12 @@ export function MarcoApp({
               <div
                 className={['nav-grupo', abierto ? 'abierto' : '', g.alPie ? 'nav-al-pie' : ''].filter(Boolean).join(' ')}
                 key={g.clave}
+                // Plegado, el panel flotante abre AL PASAR EL CURSOR y cierra al
+                // salir — el clic sigue ahí para el teclado. El manejador va en
+                // el grupo entero, no en el título: el panel es hijo del grupo,
+                // así que entrar al panel no lo cierra.
+                onMouseEnter={plegado ? () => setAbiertos((s) => new Set(s).add(g.clave)) : undefined}
+                onMouseLeave={plegado ? () => setAbiertos((s) => { const n = new Set(s); n.delete(g.clave); return n; }) : undefined}
               >
                 <button
                   className="nav-item nav-grupo-tit"
@@ -277,6 +289,10 @@ export function MarcoApp({
                     dentro, y el lector anuncia un cambio de página que no hubo. */}
                 <div className="nav-hijos" id={idHijos} hidden={!abierto}>
                   <div className="nav-hijos-in">
+                    {/* Plegado, el panel flota lejos de su icono: sin este
+                        título no dice DE QUÉ grupo son las opciones. La hoja lo
+                        enseña solo bajo .colapsado; desplegado no existe. */}
+                    <span className="nav-flot-tit">{g.texto}</span>
                     {g.hijos!.map((h) => (
                       <a
                         key={h.clave}

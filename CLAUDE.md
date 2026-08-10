@@ -200,7 +200,14 @@ No las «mejores» por iniciativa propia. Están razonadas:
   node sistema/candado/probar-candado.mjs
   node sistema/componentes/extraer.mjs        # incluye el candado de huérfanas
   node sistema/candado/verificar-cascada.mjs  # la hoja QUE VIAJA, a once anchos
+  node sistema/candado/verificar-contrato.mjs # toda regla Obligatorio tiene prueba
+  node sistema/candado/verificar-entrega.mjs  # lo publicado está en el catálogo
   ```
+
+  Los dos últimos faltaban de esta lista y **la memoria los contaba entre los
+  ocho**: el 2026-08-10 pasaron un día entero sin correrse por eso, y al
+  correrlos salieron en rojo los dos. Una lista incompleta de candados es un
+  candado abierto.
 
   El de la cascada es el único que no lee lo que hay, sino lo que **falta**: el
   defecto R25 —dos iconos pintados a la vez— vivía en la ausencia de una regla,

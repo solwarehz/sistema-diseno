@@ -130,6 +130,9 @@ const PAGINA_DE = new Map([
   ['Avatar', 'Avatar'], ['Tarjeta', 'Tarjeta'], ['TarjetaPersona', 'Tarjeta'],
   ['TablaDatos', 'Tabla de datos'], ['Paginacion', 'Paginación'],
   ['Progreso', 'Barra de progreso'], ['Aviso', 'Aviso temporal'],
+  // La zona se demuestra CON los avisos: es donde viven, y por separado no se
+  // entiende (R29, v1.23.0).
+  ['ZonaAvisos', 'Aviso temporal'],
   ['EstadoPantalla', 'Estados de pantalla'], ['Confirmacion', 'Confirmación'],
   ['Nota', 'Nota permanente'], ['Dialogo', 'Diálogo'], ['Migas', 'Migas de pan'],
   ['CabeceraPantalla', 'Cabecera de pantalla'], ['Icono', 'Iconos'],

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.25.1';
+export const VERSION = '1.26.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,25 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.26.0', fecha: '2026-08-10',
+    que: 'El flotante del plegado gana hover y titulo, y los dos candados que faltaban en la lista vuelven a correr',
+    porque:
+      'Reportado por el equipo de desarrollo leyendo el fuente: plegado, el panel flotante solo '
+      + 'abria con clic y no decia de que grupo eran sus opciones. Ahora abre al pasar el cursor '
+      + 'y cierra al salir -el clic sigue ahi para el teclado, y el manejador va en el grupo '
+      + 'entero para que entrar al panel no lo cierre- y lleva el titulo del grupo, que la hoja '
+      + 'ya estilizaba (.nav-flot-tit) sin que el React lo emitiera. De propina, un defecto que '
+      + 'nadie reporto: plegar con grupos abiertos -y arrancan TODOS abiertos- dejaba todos los '
+      + 'paneles flotantes visibles a la vez; al plegar los grupos se re-sincronizan, como hace '
+      + 'el catalogo. Y la causa raiz de otra cosa: verificar-contrato y verificar-entrega '
+      + 'faltaban en la lista de CLAUDE.md y LEVANTAR -la memoria si los contaba- y pasaron el '
+      + 'dia sin correrse; al correrlos, rojos los dos (una regla obligatoria sin prueba '
+      + 'nombrada, y ZonaAvisos sin pagina declarada). Corregidos los dos y la lista completa. '
+      + 'Cuatro pruebas nuevas: 199.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.25.1', fecha: '2026-08-10',
     que: 'El catalogo recupera los logos: seis versiones salieron sin ellos por regenerar en un clon sin activos',

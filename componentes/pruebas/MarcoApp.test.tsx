@@ -9,7 +9,7 @@
  * lector de pantalla no sabe en qué página está.
  */
 
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, within, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { MarcoApp, type GrupoNav } from '../src/MarcoApp';
@@ -284,5 +284,46 @@ describe('Pie del lateral — R30', () => {
   it('en vista app no hay lateral y por tanto no hay pie', () => {
     const { container } = montar({ vista: 'app' });
     expect(container.querySelector('.lat-usuario')).toBeNull();
+  });
+});
+
+describe('Plegado — el panel flotante', () => {
+  it('plegar CIERRA todos los grupos: sin esto, cada uno era un flotante atascado', async () => {
+    const u = userEvent.setup();
+    const { container } = montar();
+    expect(container.querySelectorAll('.nav-grupo.abierto').length).toBeGreaterThan(0);
+    await u.click(screen.getByRole('button', { name: 'Plegar menú' }));
+    expect(container.querySelectorAll('.nav-grupo.abierto')).toHaveLength(0);
+  });
+
+  it('plegado, el grupo abre al pasar el cursor y cierra al salir', async () => {
+    const u = userEvent.setup();
+    const { container } = montar();
+    await u.click(screen.getByRole('button', { name: 'Plegar menú' }));
+    const grupo = container.querySelector('.nav-grupo')!;
+    fireEvent.mouseEnter(grupo);
+    expect(grupo.classList.contains('abierto')).toBe(true);
+    fireEvent.mouseLeave(grupo);
+    expect(grupo.classList.contains('abierto')).toBe(false);
+  });
+
+  it('el flotante dice DE QUÉ grupo es: lleva su título', async () => {
+    const u = userEvent.setup();
+    const { container } = montar();
+    await u.click(screen.getByRole('button', { name: 'Plegar menú' }));
+    const grupo = container.querySelector('.nav-grupo')!;
+    fireEvent.mouseEnter(grupo);
+    const titulo = grupo.querySelector('.nav-hijos .nav-flot-tit')!;
+    expect(titulo).not.toBeNull();
+    expect(titulo.textContent).toBe('Académico');
+  });
+
+  it('desplegado NO hay hover: los grupos se gobiernan con el clic', () => {
+    const { container } = montar();
+    const grupo = [...container.querySelectorAll('.nav-grupo')].find((g) =>
+      !g.classList.contains('abierto')) ?? container.querySelector('.nav-grupo')!;
+    const antes = grupo.classList.contains('abierto');
+    fireEvent.mouseLeave(grupo);
+    expect(grupo.classList.contains('abierto')).toBe(antes);
   });
 });
