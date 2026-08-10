@@ -238,3 +238,71 @@ describe('Contrato de comportamiento', () => {
     expect(flecha).toHaveAttribute('aria-hidden', 'true');
   });
 });
+
+describe('R31 · columnas visibles controladas', () => {
+  it('se siembran al montar desde fuera', () => {
+    pintar({ ocultas: ['horas'] });
+    expect(screen.queryByRole('columnheader', { name: /Horas/ })).toBeNull();
+    expect(screen.getByRole('columnheader', { name: /Cargo/ })).toBeTruthy();
+  });
+
+  it('al cambiar, onOcultas emite la lista para persistirla', async () => {
+    const u = userEvent.setup();
+    const onOcultas = vi.fn();
+    pintar({ ocultas: [], onOcultas, columnasFijas: ['nombre'] });
+    await u.click(screen.getByRole('button', { name: 'Columnas' }));
+    await u.click(screen.getByRole('checkbox', { name: /Horas/ }));
+    expect(onOcultas).toHaveBeenCalledWith(['horas']);
+    // Controlada: la tabla NO se aplica el cambio por su cuenta. La verdad
+    // es del producto, o habría dos fuentes y parpadearía.
+    expect(screen.getByRole('columnheader', { name: /Horas/ })).toBeTruthy();
+  });
+});
+
+describe('R32 · ranura de acciones en la barra', () => {
+  it('lo que se pasa aparece junto a Filtros y Columnas', () => {
+    pintar({ acciones: <button type="button">Exportar CSV</button> });
+    const exportar = screen.getByRole('button', { name: 'Exportar CSV' });
+    expect(exportar.closest('.tb-barra-izq')).not.toBeNull();
+  });
+});
+
+describe('R33 · filtro de dominio cerrado', () => {
+  const CON_OPCIONES: Columna<Persona>[] = COLUMNAS.map((c) =>
+    c.clave === 'cargo' ? { ...c, opcionesFiltro: ['Docente', 'Auxiliar', 'Directora'] } : c
+  );
+
+  it('la columna con opciones pinta un selector, el resto texto libre', async () => {
+    const u = userEvent.setup();
+    pintar({ columnas: CON_OPCIONES });
+    await u.click(screen.getByRole('button', { name: 'Filtros' }));
+    expect(screen.getByRole('combobox', { name: 'Filtrar por Cargo' })).toBeTruthy();
+    expect(screen.getByRole('textbox', { name: 'Filtrar por Apellidos y nombres' })).toBeTruthy();
+  });
+
+  it('casa por IGUALDAD: «Docente» no arrastra a nadie más', async () => {
+    const u = userEvent.setup();
+    pintar({ columnas: CON_OPCIONES });
+    await u.click(screen.getByRole('button', { name: 'Filtros' }));
+    await u.selectOptions(screen.getByRole('combobox', { name: 'Filtrar por Cargo' }), 'Docente');
+    expect(filasCuerpo()).toHaveLength(3);
+  });
+});
+
+describe('La tabla vacía dice por qué', () => {
+  it('cero resultados por filtro: aviso y salida de un clic', async () => {
+    const u = userEvent.setup();
+    pintar();
+    await u.click(screen.getByRole('button', { name: 'Filtros' }));
+    await u.type(screen.getByRole('textbox', { name: 'Filtrar por Apellidos y nombres' }), 'zzz');
+    expect(screen.getByText(/Prueba con menos filtros/)).toBeTruthy();
+    await u.click(screen.getByRole('button', { name: 'quítalos todos' }));
+    expect(filasCuerpo().length).toBeGreaterThan(0);
+  });
+
+  it('cero filas sin filtros: «todavía», sin botón que no lleva a nada', () => {
+    pintar({ filas: [] });
+    expect(screen.getByText(/No hay datos registrados todavía/)).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'quítalos todos' })).toBeNull();
+  });
+});

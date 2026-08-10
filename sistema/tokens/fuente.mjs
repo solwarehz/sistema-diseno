@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.24.0';
+export const VERSION = '1.25.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,24 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.25.0', fecha: '2026-08-10',
+    que: 'R31-R33: la tabla gana columnas controladas, ranura de acciones y dominio cerrado — y el vacio que le faltaba',
+    porque:
+      'Los tres pedidos de tabla de Control Administrativos, y un hueco que salio de verificar '
+      + 'que toda la tabla se compone de componentes. R31: la eleccion de columnas es una '
+      + 'preferencia de la persona y una que no persiste no es una preferencia — la pareja '
+      + 'ocultas/onOcultas la siembra desde el perfil y la emite al cambiar, con el mismo patron '
+      + 'controlado que el plegado del marco. R32: la ranura acciones pone la exportacion DENTRO '
+      + 'de la barra, junto a Filtros y Columnas; solo el sitio, el comportamiento es del '
+      + 'producto. R33: columna con opcionesFiltro filtra con Selector -que ya existia: se '
+      + 'compone, no se rehace- y casa por IGUALDAD, porque «activo» esta contenido en «inactivo» '
+      + 'y la inclusion devolveria a los dos. Y el vacio: el catalogo decia por que y daba la '
+      + 'salida («quitalos todos») y el componente dejaba cero filas sin explicacion, que parece '
+      + 'un fallo. Siete pruebas nuevas: 195, incluida la trampa activo/inactivo.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.24.0', fecha: '2026-08-10',
     que: 'R30: el pie del lateral con la identidad de la sesion, y las iniciales dejan de mentir',

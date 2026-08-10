@@ -71,6 +71,10 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 |---|---|
 | **16** | **PENDIENTE — el componente NO lo hace todavía.** El chevron es un `<button>` con `aria-expanded` y `aria-controls`, y su nombre accesible **cambia** entre «Mostrar» y «Ocultar». |
 | **17** | **PENDIENTE — el componente NO lo hace todavía.** El detalle plegado **se oculta de verdad** (`visibility: hidden`), no solo a altura cero. Con altura cero los enlaces siguen siendo paradas de tabulación invisibles y el lector de pantalla lee el contenido de todas las filas cerradas. |
+| **18** | **Obligatorio.** (R31, v1.25.0) La elección de columnas **es una preferencia de la persona** y el producto debe poder honrarla: se siembra al montar con `ocultas` y se guarda con `onOcultas` — en el perfil, como manda la transversal 5. Pasada `ocultas`, esa es la verdad: la tabla no la duplica. |
+| **19** | Del proyecto. (R32, v1.25.0) La ranura `acciones` pone la exportación o la acción por lotes **dentro de la barra**, junto a «Filtros» y «Columnas». El sitio es del sistema; el comportamiento, de quien la llena. |
+| **20** | **Obligatorio.** (R33, v1.25.0) Columna con `opcionesFiltro` filtra con **selector** y casa por **igualdad**, no por texto contenido: «activo» está *contenido* en «inactivo», y quien teclea el sinónimo concluye que no hay resultados. |
+| **21** | **Obligatorio.** (v1.25.0) La tabla vacía **dice por qué y da la salida**: con filtros puestos, «Prueba con menos filtros, o quítalos todos» en un clic; sin filtros, «No hay datos registrados todavía». El encabezado se queda — dice qué columnas habría. Cero filas sin explicación parece un fallo. |
 
 ---
 

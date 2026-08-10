@@ -22,7 +22,7 @@
 import { useMemo, useState, useId } from 'react';
 import { Boton } from './Boton';
 import { Chip } from './Chip';
-import { Campo } from './Campo';
+import { Campo, Selector } from './Campo';
 import { Paginacion } from './Paginacion';
 import { SeleccionMultiple } from './Interruptor';
 
@@ -39,6 +39,11 @@ export type Columna<T> = {
   ordenable?: boolean;
   /** ¿Se puede filtrar por esta columna? Por omisión, sí. */
   filtrable?: boolean;
+  /** R33 · dominio cerrado: las opciones posibles. Con esto el filtro es un
+   *  SELECTOR y casa por IGUALDAD, no por texto contenido — quien teclea
+   *  «vigente» recordando el sinónimo y no el literal concluye que no hay
+   *  resultados, y «activo» está CONTENIDO en «inactivo». */
+  opcionesFiltro?: string[];
   /** Alineación numérica a la derecha. */
   numerica?: boolean;
 };
@@ -78,6 +83,18 @@ export type TablaDatosProps<T> = {
   /** Columnas que no se pueden ocultar. La que identifica cada fila va aquí:
    *  una tabla sin su identificador no identifica nada. */
   columnasFijas?: string[];
+  /** R31 · columnas ocultas, CONTROLADAS. La elección de columnas es una
+   *  preferencia de la persona, y una que no persiste no es una preferencia:
+   *  con la pareja `ocultas`/`onOcultas` el producto la siembra al montar
+   *  desde el perfil y la guarda al cambiar. Sin pasarla, la tabla se la
+   *  gestiona sola, como siempre. */
+  ocultas?: string[];
+  onOcultas?: (ocultas: string[]) => void;
+  /** R32 · acciones del producto en la barra —exportar, imprimir, por lotes—
+   *  junto a «Filtros» y «Columnas». Solo el sitio: el comportamiento es del
+   *  producto. Sin ranura, el CSV de cada consumidor flota encima de la
+   *  tarjeta y se nota que no pertenece. */
+  acciones?: React.ReactNode;
 };
 
 export type EstadoTabla = {
@@ -109,6 +126,9 @@ export function TablaDatos<T>({
   modo = 'navegador',
   total,
   columnasFijas = [],
+  ocultas: ocultasFuera,
+  onOcultas,
+  acciones,
 }: TablaDatosProps<T>) {
   if (process.env.NODE_ENV !== 'production' && modo === 'servidor' && total === undefined) {
     console.warn(
@@ -127,7 +147,15 @@ export function TablaDatos<T>({
   const [filtrosVisibles, setFiltrosVisibles] = useState(false);
   // R5 · qué columnas se ven. Arranca con todas: ocultar por omisión esconde
   // datos que nadie pidió esconder.
-  const [ocultas, setOcultas] = useState<Set<string>>(new Set());
+  // R31 · y CONTROLABLE desde fuera, con el mismo patrón que el plegado del
+  // marco: si el producto pasa `ocultas`, esa es la verdad y aquí no se
+  // duplica; si no la pasa, la tabla se la gestiona sola.
+  const [ocultasDentro, setOcultasDentro] = useState<Set<string>>(new Set());
+  const ocultas = ocultasFuera !== undefined ? new Set(ocultasFuera) : ocultasDentro;
+  const setOcultas = (s: Set<string>) => {
+    if (ocultasFuera === undefined) setOcultasDentro(s);
+    onOcultas?.([...s]);
+  };
   const [columnasAbierto, setColumnasAbierto] = useState(false);
 
   // Una columna FIJA no se puede quitar. No es un tope —cuántos datos quiere
@@ -152,7 +180,11 @@ export function TablaDatos<T>({
       activos.every(([clave, texto]) => {
         const col = columnas.find((c) => c.clave === clave);
         if (!col) return true;
-        return normalizar(String(col.valor(fila))).includes(normalizar(texto));
+        // R33 · dominio cerrado casa por IGUALDAD: con inclusión, elegir
+        // «Activo» en el selector devolvería también los «Inactivo».
+        return col.opcionesFiltro
+          ? normalizar(String(col.valor(fila))) === normalizar(texto)
+          : normalizar(String(col.valor(fila))).includes(normalizar(texto));
       })
     );
   }, [filas, filtros, columnas, modo]);
@@ -227,6 +259,9 @@ export function TablaDatos<T>({
           >
             Columnas
           </Boton>
+          {/* R32 · la ranura del producto: exportar, imprimir, por lotes.
+              Solo el sitio — el comportamiento es de quien la llena. */}
+          {acciones}
         </div>
         <div className="tb-barra-der">
           <span className="tb-rango">
@@ -315,13 +350,27 @@ export function TablaDatos<T>({
             {visiblesCols.map((col) => (
               <td key={col.clave} className="tb-f-celda">
                 {col.filtrable !== false && (
-                  <Campo
-                    etiqueta={`Filtrar por ${col.titulo}`}
-                    etiquetaOculta
-                    type="text"
-                    value={filtros[col.clave] ?? SIN_FILTRO}
-                    onChange={(e) => cambiarFiltro(col.clave, e.target.value)}
-                  />
+                  // R33 · dominio cerrado: se ELIGE, no se adivina el literal.
+                  // Se compone con Selector, que ya existe; texto libre para
+                  // el resto, como siempre.
+                  col.opcionesFiltro ? (
+                    <Selector
+                      etiqueta={`Filtrar por ${col.titulo}`}
+                      etiquetaOculta
+                      opciones={col.opcionesFiltro.map((o) => ({ valor: o, texto: o }))}
+                      vacio="Todas"
+                      value={filtros[col.clave] ?? SIN_FILTRO}
+                      onChange={(e) => cambiarFiltro(col.clave, e.target.value)}
+                    />
+                  ) : (
+                    <Campo
+                      etiqueta={`Filtrar por ${col.titulo}`}
+                      etiquetaOculta
+                      type="text"
+                      value={filtros[col.clave] ?? SIN_FILTRO}
+                      onChange={(e) => cambiarFiltro(col.clave, e.target.value)}
+                    />
+                  )
                 )}
               </td>
             ))}
@@ -337,6 +386,35 @@ export function TablaDatos<T>({
               ))}
             </tr>
           ))}
+          {/* El vacío DICE POR QUÉ y da la salida. El catálogo lo tenía y el
+              componente no: cero filas dejaba solo encabezados, y una tabla
+              filtrada a vacío parece un fallo. El encabezado se queda — dice
+              qué columnas habría. */}
+          {visibles.length === 0 && (
+            <tr>
+              <td colSpan={visiblesCols.length} className="tb-vacio">
+                <strong>Sin resultados.</strong><br />
+                {hayFiltro ? (
+                  <>
+                    Prueba con menos filtros, o{' '}
+                    <button
+                      type="button"
+                      className="tb-vacio-quitar"
+                      onClick={() => {
+                        setFiltros({});
+                        setPagina(1);
+                        avisar({ filtros: {}, pagina: 1 });
+                      }}
+                    >
+                      quítalos todos
+                    </button>.
+                  </>
+                ) : (
+                  'No hay datos registrados todavía.'
+                )}
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
 
