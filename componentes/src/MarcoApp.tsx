@@ -27,6 +27,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { MenuUsuario, type MenuUsuarioProps } from './MenuUsuario';
 import { MarcaMenu } from './MarcaMenu';
 import { Icono } from './Icono';
+import { Avatar } from './Avatar';
 
 export type OpcionNav = {
   /** Identificador estable. Es lo que se compara con `activa`. */
@@ -294,6 +295,19 @@ export function MarcoApp({
             );
           })}
         </nav>
+        {/* R30: la identidad de la sesión, a la vista y en permanencia. En un
+            producto con varios perfiles, saber quién está dentro de un vistazo
+            evita operar con la sesión equivocada; el avatar de la barra lo dice
+            solo tras un clic. Es EL MISMO Avatar que arriba —misma persona,
+            mismo color, mismas iniciales— y con el lateral plegado el texto se
+            va y queda el círculo, como el resto del lateral. */}
+        <div className="lat-usuario">
+          <Avatar id={usuario.id} nombre={usuario.nombre} foto={usuario.foto} tamano="m" />
+          <div className="lat-user-txt">
+            <span className="lat-user-nom">{usuario.nombre}</span>
+            {usuario.correo && <span className="lat-user-mail">{usuario.correo}</span>}
+          </div>
+        </div>
       </aside>
       )}
 

@@ -251,7 +251,7 @@ const barraSuperior = `
       <button class="top-btn" aria-label="Cambiar tema">${ICONOS.sol}</button>
       <button class="top-btn" aria-label="Mensajes">${ICONOS.sobre}</button>
       <button class="top-btn" aria-label="Notificaciones">${ICONOS.campana}<span class="badge">1</span></button>
-      <span class="avatar avatar-m avatar-2 top-avatar">JH</span>
+      <span class="avatar avatar-m avatar-2 top-avatar">JI</span>
     </div>
   </div>`;
 
@@ -263,7 +263,7 @@ const lateral = (colapsado) => `
     </div>
     <nav class="lat-nav">${itemsMenu()}</nav>
     <div class="lat-usuario">
-      <span class="lat-av">JP</span>
+      <span class="avatar avatar-m avatar-2">JI</span>
       <div class="lat-user-txt">
         <span class="lat-user-nom">JOSE ISIDRO PINEDA</span>
         <span class="lat-user-mail">jose.pineda@ae.edu.pe</span>
@@ -5675,9 +5675,6 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
 .lat-usuario { display: flex; align-items: center; gap: 8px; padding: 12px;
   border-top: 1px solid var(--marco-borde); }
-.lat-av { width: 30px; height: 30px; border-radius: 50%; flex: none;
-  background: var(--marco-acento); color: var(--marco-fondo);
-  display: grid; place-items: center; font-size: 12px; font-weight: 600; }
 .lat-user-txt { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
 .lat-user-nom { font-size: 12px; font-weight: 500; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis; }
@@ -6131,7 +6128,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     </div>
     <nav class="lat-nav">${menuCatalogo}</nav>
     <div class="lat-usuario">
-      <span class="lat-av">JP</span>
+      <span class="avatar avatar-m avatar-2">JI</span>
       <div class="lat-user-txt">
         <span class="lat-user-nom">JOSE ISIDRO PINEDA</span>
         <span class="lat-user-mail">jose.pineda@ae.edu.pe</span>
@@ -6197,10 +6194,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
         <div class="us">
           <button class="avatar avatar-m avatar-2 top-avatar" id="us-btn" aria-expanded="false" aria-controls="us-menu"
-                  aria-haspopup="menu" aria-label="Menú de JOSE ISIDRO PINEDA">JP</button>
+                  aria-haspopup="menu" aria-label="Menú de JOSE ISIDRO PINEDA">JI</button>
           <div class="us-menu" id="us-menu" role="menu" hidden>
             <div class="us-cab">
-              <span class="avatar avatar-m avatar-2">JP</span>
+              <span class="avatar avatar-m avatar-2">JI</span>
               <div class="us-txt">
                 <span class="us-nom">JOSE ISIDRO PINEDA</span>
                 <span class="us-mail">jose.pineda@ae.edu.pe</span>

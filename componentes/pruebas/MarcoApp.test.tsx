@@ -258,3 +258,31 @@ describe('Marco — requerimientos R16 a R23', () => {
     expect(screen.getByRole('button', { name: 'Plegar menú' })).toBeInTheDocument();
   });
 });
+
+describe('Pie del lateral — R30', () => {
+  it('la identidad de la sesión está a la vista sin abrir nada', () => {
+    const { container } = montar();
+    const pie = container.querySelector('.lat-usuario')!;
+    expect(pie).not.toBeNull();
+    // Nombre y correo en permanencia: el avatar de la barra los dice solo
+    // tras un clic, y operar con la sesión equivocada se evita de un vistazo.
+    expect(pie.textContent).toContain('PINEDA, José Isidro');
+    expect(pie.textContent).toContain('jose.pineda@ae.edu.pe');
+  });
+
+  it('el círculo es EL MISMO Avatar de la barra: misma persona, mismo color', () => {
+    const { container } = montar();
+    const arriba = container.querySelector('.top-avatar .avatar')!;
+    const abajo = container.querySelector('.lat-usuario .avatar')!;
+    expect(abajo).not.toBeNull();
+    // Mismas iniciales y misma clase de color (sale del id, no del nombre).
+    expect(abajo.textContent).toBe(arriba.textContent);
+    expect([...abajo.classList].find((c) => /^avatar-\d$/.test(c)))
+      .toBe([...arriba.classList].find((c) => /^avatar-\d$/.test(c)));
+  });
+
+  it('en vista app no hay lateral y por tanto no hay pie', () => {
+    const { container } = montar({ vista: 'app' });
+    expect(container.querySelector('.lat-usuario')).toBeNull();
+  });
+});

@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.23.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.24.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -753,7 +753,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .esqueleto.corto{ width: 62%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MARCO DE APLICACIÓN — 186 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
+   MARCO DE APLICACIÓN — 185 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 :where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
@@ -952,9 +952,6 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .nav-chev .ic{ width: 14px; height: 14px; }
 .lat-usuario{ display: flex; align-items: center; gap: 8px; padding: 12px;
   border-top: 1px solid var(--marco-borde); }
-.lat-av{ width: 30px; height: 30px; border-radius: 50%; flex: none;
-  background: var(--marco-acento); color: var(--marco-fondo);
-  display: grid; place-items: center; font-size: 12px; font-weight: 600; }
 .lat-user-txt{ display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
 .lat-user-nom{ font-size: 12px; font-weight: 500; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis; }

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.23.0';
+export const VERSION = '1.24.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,28 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.24.0', fecha: '2026-08-10',
+    que: 'R30: el pie del lateral con la identidad de la sesion, y las iniciales dejan de mentir',
+    porque:
+      'R30 de Control Administrativos, detectado a la vista comparando su producto con el '
+      + 'cascaron: el cascaron pintaba al pie del lateral la identidad de la sesion -avatar, '
+      + 'nombre, correo- y MarcoApp no lo renderizaba ni tenia ranura. En un producto con varios '
+      + 'perfiles, saber quien esta dentro DE UN VISTAZO evita operar con la sesion equivocada; '
+      + 'el avatar de la barra lo dice solo tras un clic. Los datos ya viajaban en la propiedad '
+      + 'usuario: ninguna API nueva. El circulo del pie es EL MISMO Avatar de la barra -misma '
+      + 'persona, mismo color por id, mismas iniciales- en vez del .lat-av propio que tenia el '
+      + 'cascaron, y la replica del cascaron adopta las clases reales del avatar. De paso, tres '
+      + 'iniciales que mentian en el catalogo: la sesion es JOSE ISIDRO PINEDA y los avatares '
+      + 'decian JH o JP donde iniciales() produce JI. Con el lateral plegado el texto se va y '
+      + 'queda el circulo, como el resto del lateral. Tres pruebas nuevas: 188.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'La clase .lat-av desaparece de la hoja: el pie usa las clases del Avatar '
+      + '(.avatar .avatar-m .avatar-N). Quien copiara .lat-av del catalogo, que componga el '
+      + 'Avatar real.',
+    ],
+  },
   {
     v: '1.23.0', fecha: '2026-08-10',
     que: 'R29: ZonaAvisos — la zona existe desde la carga y son dos regiones hermanas',
