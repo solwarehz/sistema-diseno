@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.30.4';
+export const VERSION = '1.31.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,22 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.31.0', fecha: '2026-08-10',
+    que: 'SelectorBusqueda entrega su promesa: lupa, chevron, visto — y el resaltado de teclado POR FIN se pinta',
+    porque:
+      'Verificacion promesa-vs-entrega de los selectores, pedida por el responsable. El Selector '
+      + 'simple estaba entero (la flecha oscura ya viajaba desde v1.28.0). El SelectorBusqueda '
+      + 'debia cuatro: la lupa que dice «escribe para buscar», el chevron que dice «esto se '
+      + 'despliega», el visto en la opcion elegida -aria-selected se lo decia al lector pero '
+      + 'nada a la vista- y el peor: el React marcaba la opcion resaltada con la clase «activa» '
+      + 'y la hoja solo estiliza .sel-op.marcado, asi que NAVEGAR CON FLECHAS NO RESALTABA NADA '
+      + 'en ningun producto. El candado de huerfanas no lo vio porque .pgn-btn.activa declara '
+      + '«activa» en otra familia: la ceguera de prefijo, otra vez. Tres pruebas nuevas: 218, '
+      + 'incluida la que fija que .sel-op.activa no vuelva.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.30.4', fecha: '2026-08-10',
     que: 'CargaImagen: promesa y entrega vuelven a contarse igual tras las iteraciones',

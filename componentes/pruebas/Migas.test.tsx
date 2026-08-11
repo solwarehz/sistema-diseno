@@ -209,3 +209,43 @@ describe('Nota permanente', () => {
     expect(container.querySelector('button')).toBeNull();
   });
 });
+
+describe('SelectorBusqueda · la promesa del catálogo, entregada', () => {
+  const OPCIONES = [
+    { valor: 'a', texto: 'Ana Pérez' },
+    { valor: 'b', texto: 'Bruno Díaz' },
+  ];
+
+  it('la opción resaltada por teclado lleva `marcado` — LA clase que la hoja estiliza', async () => {
+    const u = userEvent.setup();
+    const { container } = render(
+      <SelectorBusqueda etiqueta="Apoderado" opciones={OPCIONES} valor={null} onCambio={() => {}} />
+    );
+    await u.click(screen.getByRole('combobox', { name: 'Apoderado' }));
+    await u.keyboard('{ArrowDown}');
+    // Con `activa` (sin regla en la hoja) el resaltado era invisible en todo
+    // producto; el candado no lo vio porque .pgn-btn.activa declara la
+    // palabra en otra familia.
+    expect(container.querySelector('.sel-op.marcado')).not.toBeNull();
+    expect(container.querySelector('.sel-op.activa')).toBeNull();
+  });
+
+  it('la elegida lleva el visto, y solo ella', async () => {
+    const u = userEvent.setup();
+    const { container } = render(
+      <SelectorBusqueda etiqueta="Apoderado" opciones={OPCIONES} valor="b" onCambio={() => {}} />
+    );
+    await u.click(screen.getByRole('combobox', { name: 'Apoderado' }));
+    const conVisto = container.querySelectorAll('.sel-op .sel-check');
+    expect(conVisto).toHaveLength(1);
+    expect(conVisto[0].closest('.sel-op')!.textContent).toContain('Bruno Díaz');
+  });
+
+  it('la caja lleva la lupa y el chevron del catálogo', () => {
+    const { container } = render(
+      <SelectorBusqueda etiqueta="Apoderado" opciones={OPCIONES} valor={null} onCambio={() => {}} />
+    );
+    expect(container.querySelector('.sel-caja .sel-lupa svg')).not.toBeNull();
+    expect(container.querySelector('.sel-caja .sel-chev svg')).not.toBeNull();
+  });
+});

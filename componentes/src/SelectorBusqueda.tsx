@@ -18,6 +18,7 @@
  */
 
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { Icono } from './Icono';
 
 export type OpcionBusqueda = { valor: string; texto: string; ayuda?: string };
 
@@ -139,6 +140,10 @@ export function SelectorBusqueda({
           Lo encontró Control Administrativos V2.0, con las coordenadas medidas. */}
       <div className="sel">
         <div className="sel-caja">
+        {/* La lupa y el chevron son la promesa del catálogo: la lupa dice
+            «escribe para buscar» y el chevron dice «esto se despliega». El
+            React los perdía y el combobox parecía un campo de texto más. */}
+        <span className="sel-lupa" aria-hidden="true"><Icono nombre="lupa" tam="control" /></span>
         <input
           id={id}
           ref={campo}
@@ -158,6 +163,7 @@ export function SelectorBusqueda({
           onFocus={() => setAbierto(true)}
           onKeyDown={alTeclado}
         />
+        <span className="sel-chev" aria-hidden="true"><Icono nombre="chevron" tam="control" /></span>
         </div>
 
         <ul className="sel-lista" id={idLista} role="listbox" aria-labelledby={`${id}-et`} hidden={!abierto}>
@@ -168,7 +174,11 @@ export function SelectorBusqueda({
             <li
               key={o.valor}
               id={`${id}-op-${i}`}
-              className={['sel-op', i === activo ? 'activa' : ''].filter(Boolean).join(' ')}
+              // `marcado` y no `activa`: es LA clase que la hoja estiliza
+              // (.sel-op.marcado). Con `activa` la opción resaltada por
+              // teclado no se pintaba en ningún producto — y el candado no lo
+              // vio porque .pgn-btn.activa declara «activa» en otra familia.
+              className={['sel-op', i === activo ? 'marcado' : ''].filter(Boolean).join(' ')}
               role="option"
               aria-selected={o.valor === valor}
               // `mousedown` y no `click`: el clic llega después del blur, y para
@@ -176,6 +186,11 @@ export function SelectorBusqueda({
               onMouseDown={(e) => { e.preventDefault(); elegir(o); }}
               onMouseEnter={() => setActivo(i)}
             >
+              {/* El visto en la elegida: aria-selected ya lo dice al lector;
+                  esto se lo dice a la vista, que no lee atributos. */}
+              {o.valor === valor && (
+                <span className="sel-check"><Icono nombre="visto" tam="control" /></span>
+              )}
               {o.texto}
               {o.ayuda && <span className="sel-notas">{o.ayuda}</span>}
             </li>
