@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.44.0';
+export const VERSION = '1.45.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,38 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.45.0', fecha: '2026-08-11',
+    que: 'R51: nace CargaId — las dos caras del documento de identidad, con su proporcion real',
+    porque:
+      'Lo pidio el responsable con el guion entero: un boton «Subir ID» que abre el dialogo, se '
+      + 'elige la imagen, se acerca, se aleja y se mueve para hacerla coincidir con el recuadro de '
+      + 'la proporcion del documento, se graba, el mismo dialogo pide entonces el REVERSO, se graba '
+      + 'y se cierra; las miniaturas quedan al costado y el boton se desactiva, y solo vuelve si el '
+      + 'back lo autoriza; al pulsar una miniatura se ve en grande y al cerrar se oculta. '
+      + 'LA PROPORCION NO ES UN NUMERO BONITO: el documento es una tarjeta ID-1 (ISO/IEC 7810), '
+      + '85,60 x 53,98 mm, o sea 1,5858:1. El marco mide 428x270 px — 1,5852:1—, y una prueba '
+      + 'comprueba que no se aleja mas de una milesima del nominal. Encuadrar un carne en un '
+      + 'cuadrado seria encuadrar a ciegas. '
+      + 'Y ANTES DE ESCRIBIRLO SE EXTRAJO EL EDITOR. El lienzo, el arrastre, el zoom, las flechas, '
+      + 'el acotado y la salida en WebP vivian dentro de CargaImagen, y esto necesitaba lo mismo '
+      + 'con otro marco. Copiarlo habria dado dos editores parecidos: el dia que uno arregle el '
+      + 'acotado, el otro se queda con el defecto. Ahora hay uno solo —EditorEncuadre, interno— y '
+      + 'las 13 pruebas de CargaImagen pasaron sin tocar ni una, que es la comprobacion de que la '
+      + 'extraccion no cambio nada. '
+      + 'Volver a subir se autoriza DESDE ATRAS, no desde la pantalla: un documento ya entregado no '
+      + 'se reemplaza porque a alguien se le ocurra. El componente se gobierna solo —con las dos '
+      + 'caras, el boton se cierra— y el producto baja la prop bloqueado cuando su back se lo dice. '
+      + 'Hasta grabar el reverso, el anverso es un BORRADOR y no se avisa: un anverso suelto es un '
+      + 'documento a medias que nadie pidio. Misma regla que CargaPdf. '
+      + 'Dos candados salieron en rojo y los dos tenian razon: el de la entrega, porque meter la '
+      + 'pagina nueva corrio los indices del menu y tiro «Panel de la barra» fuera del ultimo tramo '
+      + '—una pagina publicada que dejaba de verse—; y el de la cascada, porque .btn declara su '
+      + 'display desde v1.41.1 y sin .btn[hidden]{display:none} un <Boton hidden> se seguia viendo. '
+      + 'Las dos correcciones viajan. 312.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.44.0', fecha: '2026-08-11',
     que: 'R50: la carga de imagen se centra, y sin foto de una persona el hueco lo ocupa su avatar',

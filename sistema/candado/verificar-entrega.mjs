@@ -135,6 +135,7 @@ const PAGINA_DE = new Map([
   ['ZonaAvisos', 'Aviso temporal'],
   ['CargaImagen', 'Carga de imagen'],
   ['CargaPdf', 'Carga de PDF'],
+  ['CargaId', 'Carga de ID'],
   ['AreaTexto', 'Área de texto'],
   // El compresor se exporta suelto para el producto que sube PDF sin usar el
   // componente, y se demuestra en la misma página: separado no se entiende —lo

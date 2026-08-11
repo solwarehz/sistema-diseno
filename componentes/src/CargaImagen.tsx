@@ -26,10 +26,11 @@
  * recorte siempre es cuadrado, así que ni la proporción es un riesgo.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Boton } from './Boton';
 import { Dialogo } from './Dialogo';
 import { Icono } from './Icono';
+import { EditorEncuadre, type ManejoEncuadre } from './interno/EditorEncuadre';
 import { Avatar } from './Avatar';
 
 /**
@@ -99,9 +100,6 @@ export type CargaImagenProps = {
   persona?: { id: string; nombre: string };
 };
 
-/** Cuánto mueve una flecha (px del lienzo) y cuánto acerca un paso de zoom. */
-const PASO_MOVER = 8;
-const PASO_ZOOM = 1.15;
 
 export function CargaImagen({
   etiqueta,
@@ -123,15 +121,13 @@ export function CargaImagen({
   const conAvatar = !!persona && formato === 'foto';
   const entrada = useRef<HTMLInputElement>(null);
   const disparador = useRef<HTMLButtonElement>(null);
-  const lienzo = useRef<HTMLCanvasElement>(null);
+  // R51 · el lienzo, el arrastre, el zoom, las flechas, el acotado y la
+  // exportación viven en `EditorEncuadre`, que es EL MISMO que usa `CargaId`.
+  // Estaban aquí dentro; se extrajeron al necesitarlos dos veces, antes de
+  // escribir el segundo, que es cuando toca.
+  const editor = useRef<ManejoEncuadre>(null);
   const [imagen, setImagen] = useState<HTMLImageElement | null>(null);
   const [urlCruda, setUrlCruda] = useState<string | null>(null);
-  // El encuadre: desplazamiento del CENTRO de la imagen respecto al centro
-  // del lienzo, en px de lienzo, y escala sobre el mínimo que lo cubre.
-  const [dx, setDx] = useState(0);
-  const [dy, setDy] = useState(0);
-  const [zoom, setZoom] = useState(1);
-  const arrastre = useRef<{ x: number; y: number } | null>(null);
 
   const abierto = !!urlCruda;
 
@@ -141,7 +137,6 @@ export function CargaImagen({
     img.onload = () => setImagen(img);
     img.src = url;
     setImagen(null);
-    setDx(0); setDy(0); setZoom(1);
     setUrlCruda(url);
   }
 
@@ -154,82 +149,6 @@ export function CargaImagen({
     if (entrada.current) entrada.current.value = '';
   }
 
-  /** La escala mínima cubre el marco ENTERO del formato: nunca hay bandas. */
-  const base = imagen ? Math.max(F.vw / imagen.naturalWidth, F.vh / imagen.naturalHeight) : 1;
-  const escala = base * zoom;
-
-  /** El desplazamiento se acota para que la imagen siempre CUBRA el marco:
-   *  centrar es mover hasta el borde, no sacar la foto del cuadro. */
-  function acotar(v: number, dimension: number, marco: number): number {
-    if (!imagen) return 0;
-    const tope = Math.max(0, (dimension * escala - marco) / 2);
-    return Math.min(tope, Math.max(-tope, v));
-  }
-
-  // Redibujo en cada cambio de encuadre. El canvas es la vista; el estado es
-  // la verdad, y así el recorte final se calcula con los mismos números.
-  useEffect(() => {
-    const ctx = lienzo.current?.getContext('2d');
-    if (!ctx || !imagen) return;
-    ctx.clearRect(0, 0, F.vw, F.vh);
-    const w = imagen.naturalWidth * escala;
-    const h = imagen.naturalHeight * escala;
-    ctx.drawImage(imagen, (F.vw - w) / 2 + dx, (F.vh - h) / 2 + dy, w, h);
-  }, [imagen, dx, dy, escala, F.vw, F.vh]);
-
-  function mover(mx: number, my: number) {
-    if (!imagen) return;
-    setDx((v) => acotar(v + mx, imagen.naturalWidth, F.vw));
-    setDy((v) => acotar(v + my, imagen.naturalHeight, F.vh));
-  }
-
-  function acercar(factor: number) {
-    if (!imagen) return;
-    const z = Math.min(8, Math.max(1, zoom * factor));
-    setZoom(z);
-    // Al alejar, el encuadre se reacota con la escala nueva o quedarían
-    // bandas vacías en el borde.
-    const e = base * z;
-    const topeX = Math.max(0, (imagen.naturalWidth * e - F.vw) / 2);
-    const topeY = Math.max(0, (imagen.naturalHeight * e - F.vh) / 2);
-    setDx((v) => Math.min(topeX, Math.max(-topeX, v)));
-    setDy((v) => Math.min(topeY, Math.max(-topeY, v)));
-  }
-
-  function confirmar() {
-    if (!imagen) return;
-    // El recorte con LOS MISMOS números del encuadre: lo que se ve es lo que
-    // sale, con la proporción del formato. `lado` es el ancho exportado.
-    const corte = document.createElement('canvas');
-    corte.width = lado;
-    corte.height = Math.round((lado * F.vh) / F.vw);
-    const ctx = corte.getContext('2d');
-    if (!ctx) return;
-    const anchoOrigen = F.vw / escala;
-    const altoOrigen = F.vh / escala;
-    const x = (imagen.naturalWidth - anchoOrigen) / 2 - dx / escala;
-    const y = (imagen.naturalHeight - altoOrigen) / 2 - dy / escala;
-    ctx.drawImage(imagen, x, y, anchoOrigen, altoOrigen, 0, 0, corte.width, corte.height);
-    // Toda imagen sale en WebP: mismo recorte, bastante menos peso. Donde el
-    // navegador no sepa producirlo, toBlob cae a PNG por especificación — el
-    // producto lee blob.type y no asume extensión.
-    corte.toBlob((blob) => {
-      if (!blob) return;
-      onCambio({ archivo: blob, url: URL.createObjectURL(blob) });
-      cerrarEditor();
-    }, 'image/webp', 0.85);
-  }
-
-  function teclas(e: React.KeyboardEvent) {
-    const salto: Record<string, [number, number]> = {
-      ArrowLeft: [PASO_MOVER, 0], ArrowRight: [-PASO_MOVER, 0],
-      ArrowUp: [0, PASO_MOVER], ArrowDown: [0, -PASO_MOVER],
-    };
-    if (e.key in salto) {
-      e.preventDefault();
-      mover(...salto[e.key]);
-    }
-  }
 
   const idError = error ? 'ci-error-' + etiqueta.replace(/\s+/g, '-') : undefined;
   const esExtendida = formato === 'logo-extendido';
@@ -306,48 +225,16 @@ export function CargaImagen({
         origen={disparador}
         onCerrar={cerrarEditor}
         cerrarAlPulsarFuera={false}
-        accion={imagen ? { texto: 'Grabar', onClick: confirmar } : undefined}
+        accion={imagen ? { texto: 'Grabar', onClick: () => editor.current?.grabar() } : undefined}
         textoCerrar="Cancelar"
       >
-        <div className="ci-editor">
-          <div className="ci-marco-editor">
-          {/* El lienzo es enfocable y las flechas mueven: un recorte
-              solo-ratón deja fuera al teclado. El zoom son botones por la
-              misma razón. */}
-          <canvas
-            ref={lienzo}
-            className="ci-lienzo"
-            width={F.vw}
-            height={F.vh}
-            tabIndex={0}
-            role="img"
-            aria-label="Encuadre. Flechas para mover la imagen; los botones acercan y alejan."
-            onKeyDown={teclas}
-            onPointerDown={(e) => {
-              arrastre.current = { x: e.clientX, y: e.clientY };
-              (e.target as HTMLElement).setPointerCapture(e.pointerId);
-            }}
-            onPointerMove={(e) => {
-              if (!arrastre.current) return;
-              mover(e.clientX - arrastre.current.x, e.clientY - arrastre.current.y);
-              arrastre.current = { x: e.clientX, y: e.clientY };
-            }}
-            onPointerUp={() => { arrastre.current = null; }}
-          />
-          {/* La foto se muestra en círculo, así que se ENCUADRA en círculo:
-              la máscara enseña qué quedará dentro. Es presentación —el
-              recorte exportado sigue siendo el cuadrado— y usa la receta del
-              velo: token del marco con opacidad, nada de colores a mano. */}
-          {F.redondo && <div className="ci-mascara" aria-hidden="true" />}
-          </div>
-          <div className="ci-zoom">
-            {/* Sin texto de ayuda a la vista (lo pidió el responsable): el
-                manejo se descubre arrastrando, y para el lector de pantalla
-                lo dice el aria-label del lienzo, que no ocupa sitio. */}
-            <Boton mini variante="neutra" aria-label="Alejar" onClick={() => acercar(1 / PASO_ZOOM)}>−</Boton>
-            <Boton mini variante="neutra" aria-label="Acercar" onClick={() => acercar(PASO_ZOOM)}>+</Boton>
-          </div>
-        </div>
+        <EditorEncuadre
+          ref={editor}
+          imagen={imagen}
+          marco={{ vw: F.vw, vh: F.vh, redondo: F.redondo }}
+          lado={lado}
+          onGrabado={(r) => { onCambio(r); cerrarEditor(); }}
+        />
       </Dialogo>
     </div>
   );

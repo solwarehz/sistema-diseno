@@ -1576,6 +1576,94 @@ texto, no basura.</p>
   </div>
 </div>`;
 
+// ── Elemento: Carga de documento de identidad ───────────────────────────────
+
+const pagCargaId = `
+<p class="pag-intro">Las <strong>dos caras</strong> del documento de identidad, encuadradas con
+<strong>su proporción real</strong> y entregadas en <strong>WebP</strong>. Mismo guion que la carga
+de PDF —botón, diálogo, borrador que solo se confirma al final— y <strong>el mismo editor de
+encuadre</strong> que la carga de imagen, porque es literalmente el mismo.</p>
+
+<div class="aviso"><strong>La proporción no es un número bonito.</strong> El documento de identidad
+es una tarjeta <strong>ID-1</strong> (ISO/IEC 7810): <strong>85,60 × 53,98 mm</strong>, o sea
+1,5858:1. El marco del editor mide <strong>428×270 px</strong> — 1,5852:1, cuatro milésimas por
+debajo del nominal. Encuadrar un carné en un cuadrado sería encuadrar a ciegas.</div>
+
+<div class="bloque">
+  <p class="seccion-sub"><strong>Pruébalo.</strong> Pulsa «Subir ID»: se abre el diálogo y pide
+  <em>primero el anverso</em>. Elige una imagen, encuádrala —arrastrar para mover, botones para
+  acercar, flechas con el teclado— y graba. El mismo diálogo pasa entonces al <em>reverso</em>; al
+  grabarlo se cierra, las dos miniaturas quedan al costado del botón y <strong>el botón se
+  desactiva</strong>. Pulsa una miniatura para verla en grande.</p>
+
+  <div class="cid" id="cid-demo">
+    <span class="cid-et">Documento de identidad</span>
+    <div class="cid-fila">
+      <button class="btn btn-neutro btn-mini btn-ic" id="cid-demo-btn">${icono('documento')}Subir ID</button>
+      <div class="cid-minis" id="cid-demo-minis"></div>
+    </div>
+    <span class="cid-nota">JPG o PNG, máximo 4 MB por cara. Se guarda en WebP.</span>
+    <input type="file" accept="image/*" class="ci-entrada" id="cid-demo-entrada" tabindex="-1" aria-hidden="true">
+  </div>
+
+  <!-- El MISMO marcado que emite Dialogo: caja, cabecera, cuerpo y pie con
+       Cancelar a la izquierda y la acción a la derecha. -->
+  <dialog class="dialogo" id="cid-demo-dlg" aria-labelledby="cid-demo-tit">
+    <div class="dialogo-caja">
+      <div class="dialogo-cab"><h2 class="dialogo-tit" id="cid-demo-tit" tabindex="-1">Documento de identidad — Anverso</h2></div>
+      <div class="dialogo-cuerpo">
+        <p class="cid-paso" id="cid-demo-paso">Primero el anverso: la cara con la foto y los datos.</p>
+        <button class="btn btn-1 btn-ic" id="cid-demo-elegir">${icono('subir')}Elegir la imagen del anverso</button>
+        <div class="ci-editor" id="cid-demo-editor" hidden>
+          <div class="ci-marco-editor">
+            <canvas class="ci-lienzo" id="cid-demo-lienzo" width="428" height="270" tabindex="0"
+              role="img" aria-label="Encuadre. Flechas para mover la imagen; los botones acercan y alejan."></canvas>
+          </div>
+          <div class="ci-zoom">
+            <button class="btn btn-neutro btn-mini" id="cid-demo-menos" aria-label="Alejar">−</button>
+            <button class="btn btn-neutro btn-mini" id="cid-demo-mas" aria-label="Acercar">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="dialogo-pie">
+        <button class="btn btn-neutro" id="cid-demo-cancelar">Cancelar</button>
+        <button class="btn btn-1" id="cid-demo-grabar" hidden>Grabar</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="dialogo" id="cid-demo-visor" aria-labelledby="cid-demo-visor-tit">
+    <div class="dialogo-caja">
+      <div class="dialogo-cab"><h2 class="dialogo-tit" id="cid-demo-visor-tit" tabindex="-1">Documento de identidad</h2></div>
+      <div class="dialogo-cuerpo"><img class="cid-visor-img" id="cid-demo-visor-img" src="" alt="Cara del documento de identidad"></div>
+      <div class="dialogo-pie"><button class="btn btn-neutro" id="cid-demo-visor-cerrar">Cerrar</button></div>
+    </div>
+  </dialog>
+
+  <p class="seccion-sub"><strong>Volver a subir se autoriza desde atrás, no desde la pantalla.</strong>
+  Un documento de identidad ya entregado no se reemplaza porque a alguien se le ocurra: el botón se
+  queda desactivado y solo vuelve cuando el producto baja la prop <code>bloqueado</code> porque su
+  back se lo indicó. Aquí, para poder seguir probando, este botón hace de ese aviso:</p>
+
+  <button class="btn btn-terc btn-mini" id="cid-demo-liberar">Simular el permiso del back</button>
+</div>
+
+<h3 class="sub-seccion">Lo que entrega</h3>
+<p class="seccion-sub">Una sola llamada, con las <strong>dos caras juntas</strong>. Hasta que el
+reverso está grabado, el anverso es un <strong>borrador</strong>: cancelar a mitad deja el
+expediente como estaba. Un anverso suelto es un documento a medias que nadie pidió.</p>
+
+<div class="cod">
+  <div class="cod-cab"><span class="cod-tit">Uso</span></div>
+  <pre class="cod-pre"><code>&lt;CargaId
+  etiqueta="Documento de identidad"
+  anverso={ficha.dniAnverso}
+  reverso={ficha.dniReverso}
+  bloqueado={!permiso.puedeReemplazarDni}
+  onCambio={({ anverso, reverso }) =&gt; subir(anverso.archivo, reverso.archivo)}
+/&gt;</code></pre>
+</div>`;
+
 // ── Elemento: Selector ──────────────────────────────────────────────────────
 
 const ICO_LUPA = icono('lupa');
@@ -4136,11 +4224,15 @@ const CATALOGO = [
     // la carga de imagen y sin encontrarla): cinco ramas, como en el Manual.
     // El ORDEN de items define los rangos de cada rama.
     ramas: [
+      // Los cortes son ÍNDICES sobre `items`: meter un elemento en medio los
+      // corre a todos. Pasó al entrar «Carga de ID» —el último, «Panel de la
+      // barra», se cayó fuera del último tramo y desapareció del menú—, y lo
+      // cazó el candado de la entrega, que lee los títulos del menú.
       { t: 'Acciones', desde: 0, hasta: 2 },
-      { t: 'Formulario', desde: 2, hasta: 10 },
-      { t: 'Datos', desde: 10, hasta: 16 },
-      { t: 'Respuesta', desde: 16, hasta: 22 },
-      { t: 'Marco y navegación', desde: 22, hasta: 25 },
+      { t: 'Formulario', desde: 2, hasta: 11 },
+      { t: 'Datos', desde: 11, hasta: 17 },
+      { t: 'Respuesta', desde: 17, hasta: 23 },
+      { t: 'Marco y navegación', desde: 23, hasta: 26 },
     ],
     items: [
       { id: 'boton', t: 'Botón', estado: 'listo', c: pagBoton },
@@ -4149,6 +4241,7 @@ const CATALOGO = [
       { id: 'areatexto', t: 'Área de texto', estado: 'listo', c: pagAreaTexto },
       { id: 'cargaimagen', t: 'Carga de imagen', estado: 'listo', c: pagCargaImagen },
       { id: 'cargapdf', t: 'Carga de PDF', estado: 'listo', c: pagCargaPdf },
+      { id: 'cargaid', t: 'Carga de ID', estado: 'listo', c: pagCargaId },
       { id: 'selector', t: 'Selector', estado: 'listo', c: pagSelector },
       { id: 'interruptor', t: 'Interruptor', estado: 'listo', c: pagInterruptor },
       { id: 'multiple', t: 'Selección múltiple', estado: 'listo', c: pagMultiple },
@@ -4674,6 +4767,10 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .btn-ic { display: inline-flex; align-items: center; gap: 8px; }
 /* Misma trampa: un boton con icono lleva display propio y [hidden] no lo tapa. */
 .btn-ic[hidden] { display: none; }
+/* R51 · y el boton a secas tambien: .btn declara su display desde v1.41.1, asi
+   que sin esto un <Boton hidden> se seguia viendo. Lo pidio el candado de la
+   cascada, que es el unico que mira lo que NO se escribio. */
+.btn[hidden] { display: none; }
 .btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
 
@@ -5969,6 +6066,28 @@ select.campo:disabled { opacity: .75; }
 .ci-m .ci-avatar { font-size: 34px; }
 .ci-l .ci-avatar { font-size: 56px; }
 .ci-acciones { display: flex; gap: 8px; }
+
+/* Carga de documento de identidad — R51. Aqui NO hay caja de vista previa: lo
+   entregado son dos miniaturas al costado del boton, con la proporcion ID-1
+   (85,60 x 53,98 mm). 76x48 la conserva —1,583 contra 1,586— y las dos medidas
+   caen en la rejilla de 4. */
+.cid { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.cid-et { font-size: 13px; font-weight: 500; }
+.cid-fila { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.cid-minis { display: flex; gap: 8px; }
+/* Es un BOTON, no una imagen con onClick: se alcanza con el tabulador y se abre
+   con Enter, como cualquier otro mando. */
+.cid-mini { padding: 0; border: 1px solid var(--borde-campo); border-radius: 6px;
+  background: var(--fondo-encabezado); cursor: pointer; overflow: hidden;
+  width: 76px; height: 48px; display: block; }
+.cid-mini:hover { border-color: var(--accion); }
+.cid-mini-img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.cid-paso { font-size: 13px; color: var(--texto-secundario); margin: 0 0 12px; }
+.cid-error { font-size: 12px; color: var(--error-texto); font-weight: 500; }
+.cid-nota { font-size: 12px; color: var(--texto-secundario); }
+/* El visor: la cara a tamaño legible, sin pasarse del alto de la ventana. */
+.cid-visor-img { display: block; max-width: 100%; max-height: 60vh;
+  border-radius: 6px; border: 1px solid var(--borde); }
 .ci-error { font-size: 12px; color: var(--error-texto); font-weight: 500; }
 .ci-nota { font-size: 12px; color: var(--texto-secundario); }
 /* El input real, fuera de la vista y del tabulador pero SIN display:none:
@@ -8087,6 +8206,152 @@ ${COMPRESOR_PDF}
         }
       }, 'image/webp', 0.85);
       editor.hidden = true; st = null;
+    });
+  })();
+
+  // ── Carga de documento de identidad ──────────────────────────────────────
+  // El MISMO guion que el componente: un solo dialogo para las dos caras,
+  // borrador hasta grabar el reverso, miniaturas al costado, boton desactivado
+  // y visor al pulsar una miniatura.
+  (function () {
+    var raiz = document.getElementById('cid-demo');
+    if (!raiz) return;
+    var MARCO = { w: 428, h: 270 };           // ID-1: 85,60 x 53,98 mm
+    var dlg = document.getElementById('cid-demo-dlg');
+    var visor = document.getElementById('cid-demo-visor');
+    var visorImg = document.getElementById('cid-demo-visor-img');
+    var entrada = document.getElementById('cid-demo-entrada');
+    var editor = document.getElementById('cid-demo-editor');
+    var lienzo = document.getElementById('cid-demo-lienzo');
+    var elegir = document.getElementById('cid-demo-elegir');
+    var grabar = document.getElementById('cid-demo-grabar');
+    var boton = document.getElementById('cid-demo-btn');
+    var minis = document.getElementById('cid-demo-minis');
+    var ctx = lienzo.getContext('2d');
+    var st = null, paso = 'anverso', borrador = null, ultima = null;
+
+    function escala() { return Math.max(MARCO.w / st.img.naturalWidth, MARCO.h / st.img.naturalHeight) * st.zoom; }
+    function pintar() {
+      ctx.clearRect(0, 0, MARCO.w, MARCO.h);
+      var w = st.img.naturalWidth * escala(), h = st.img.naturalHeight * escala();
+      ctx.drawImage(st.img, (MARCO.w - w) / 2 + st.dx, (MARCO.h - h) / 2 + st.dy, w, h);
+    }
+    function acotar() {
+      var tx = Math.max(0, (st.img.naturalWidth * escala() - MARCO.w) / 2);
+      var ty = Math.max(0, (st.img.naturalHeight * escala() - MARCO.h) / 2);
+      st.dx = Math.min(tx, Math.max(-tx, st.dx));
+      st.dy = Math.min(ty, Math.max(-ty, st.dy));
+    }
+    function mover(mx, my) { if (!st) return; st.dx += mx; st.dy += my; acotar(); pintar(); }
+    function zum(f) { if (!st) return; st.zoom = Math.min(8, Math.max(1, st.zoom * f)); acotar(); pintar(); }
+
+    function pedir(cual) {
+      paso = cual;
+      document.getElementById('cid-demo-tit').textContent =
+        'Documento de identidad — ' + (cual === 'anverso' ? 'Anverso' : 'Reverso');
+      document.getElementById('cid-demo-paso').textContent = cual === 'anverso'
+        ? 'Primero el anverso: la cara con la foto y los datos.'
+        : 'Ahora el reverso. El anverso ya está encuadrado y se graba con este.';
+      elegir.hidden = false;
+      elegir.textContent = '';
+      elegir.insertAdjacentHTML('beforeend', ${JSON.stringify(icono('subir'))});
+      elegir.insertAdjacentText('beforeend', 'Elegir la imagen del ' + cual);
+      editor.hidden = true;
+      grabar.hidden = true;
+      st = null;
+    }
+
+    boton.addEventListener('click', function () {
+      borrador = null;
+      pedir('anverso');
+      dlg.showModal();
+      document.getElementById('cid-demo-tit').focus();
+    });
+
+    elegir.addEventListener('click', function () { entrada.click(); });
+    entrada.addEventListener('change', function () {
+      var archivo = entrada.files && entrada.files[0];
+      if (!archivo) return;
+      var img = new Image();
+      img.onload = function () {
+        st = { img: img, dx: 0, dy: 0, zoom: 1 };
+        elegir.hidden = true;
+        editor.hidden = false;
+        grabar.hidden = false;
+        pintar();
+        lienzo.focus();
+      };
+      img.src = URL.createObjectURL(archivo);
+      entrada.value = '';
+    });
+
+    lienzo.addEventListener('keydown', function (e) {
+      var m = { ArrowLeft: [8, 0], ArrowRight: [-8, 0], ArrowUp: [0, 8], ArrowDown: [0, -8] }[e.key];
+      if (m) { e.preventDefault(); mover(m[0], m[1]); }
+    });
+    var arrastre = null;
+    lienzo.addEventListener('pointerdown', function (e) { arrastre = { x: e.clientX, y: e.clientY }; lienzo.setPointerCapture(e.pointerId); });
+    lienzo.addEventListener('pointermove', function (e) {
+      if (!arrastre) return;
+      mover(e.clientX - arrastre.x, e.clientY - arrastre.y);
+      arrastre = { x: e.clientX, y: e.clientY };
+    });
+    lienzo.addEventListener('pointerup', function () { arrastre = null; });
+    document.getElementById('cid-demo-menos').addEventListener('click', function () { zum(1 / 1.15); });
+    document.getElementById('cid-demo-mas').addEventListener('click', function () { zum(1.15); });
+
+    document.getElementById('cid-demo-cancelar').addEventListener('click', function () {
+      // Cancelar a mitad tira el borrador: dejarlo a medias seria entregar un
+      // anverso suelto, que es un documento incompleto.
+      borrador = null; st = null; dlg.close();
+    });
+
+    function miniatura(cara, url) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'cid-mini';
+      b.setAttribute('aria-label', 'Ver ' + cara + ' en grande');
+      b.innerHTML = '<img class="cid-mini-img" src="' + url + '" alt="">';
+      b.addEventListener('click', function () {
+        ultima = b;
+        visorImg.src = url;
+        document.getElementById('cid-demo-visor-tit').textContent =
+          'Documento de identidad — ' + (cara === 'anverso' ? 'Anverso' : 'Reverso');
+        visor.showModal();
+        document.getElementById('cid-demo-visor-tit').focus();
+      });
+      minis.appendChild(b);
+    }
+
+    grabar.addEventListener('click', function () {
+      if (!st) return;
+      var corte = document.createElement('canvas');
+      corte.width = 1024; corte.height = Math.round(1024 * MARCO.h / MARCO.w);
+      var c2 = corte.getContext('2d');
+      var aw = MARCO.w / escala(), ah = MARCO.h / escala();
+      c2.drawImage(st.img,
+        (st.img.naturalWidth - aw) / 2 - st.dx / escala(),
+        (st.img.naturalHeight - ah) / 2 - st.dy / escala(),
+        aw, ah, 0, 0, corte.width, corte.height);
+      corte.toBlob(function (blob) {
+        var url = URL.createObjectURL(blob);
+        if (paso === 'anverso') { borrador = url; pedir('reverso'); return; }
+        minis.textContent = '';
+        miniatura('anverso', borrador);
+        miniatura('reverso', url);
+        boton.disabled = true;      // volver a subir lo autoriza el back
+        borrador = null; st = null;
+        dlg.close();
+      }, 'image/webp', 0.85);
+    });
+
+    document.getElementById('cid-demo-visor-cerrar').addEventListener('click', function () {
+      visor.close();
+      if (ultima) ultima.focus();
+    });
+
+    document.getElementById('cid-demo-liberar').addEventListener('click', function () {
+      boton.disabled = false;
     });
   })();
 

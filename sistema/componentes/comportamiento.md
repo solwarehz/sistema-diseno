@@ -149,6 +149,20 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 ---
 
+## Carga de documento de identidad
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R51, v1.45.0) El marco de encuadre lleva la **proporción real del documento**: tarjeta **ID-1** (ISO/IEC 7810), **85,60 × 53,98 mm** → 1,5858:1. El editor mide 428×270 px (1,5852:1). Encuadrar un carné en un cuadrado es encuadrar a ciegas — la misma razón por la que `CargaImagen` cerró sus tres formatos. |
+| **2** | **Obligatorio.** (R51, v1.45.0) **Primero el anverso, después el reverso, en el MISMO diálogo.** Grabado el anverso, el diálogo pide el reverso sin cerrarse: son dos caras de un trámite, no dos trámites. Al grabar el reverso se cierra. |
+| **3** | **Obligatorio.** (R51, v1.45.0) Hasta que el reverso está grabado, el anverso es un **borrador**: `onCambio` se dispara **una sola vez y con las dos caras**. Cancelar a mitad lo tira. Un anverso suelto en el expediente es un documento a medias que nadie pidió — la misma regla que `CargaPdf` (R46). |
+| **4** | **Obligatorio.** (R51, v1.45.0) Entregadas las dos caras, **el botón se desactiva**. Volver a subir **se autoriza desde atrás**: el producto baja `bloqueado` cuando su back se lo indica. Un documento de identidad ya entregado no se reemplaza porque a alguien se le ocurra. |
+| **5** | **Obligatorio.** (R51, v1.45.0) Las miniaturas van **al costado del botón** y son **botones**, no imágenes con `onClick`: se alcanzan con el tabulador y se abren con Enter. Pulsar una la abre en grande; al cerrar el visor, **el foco vuelve a la miniatura pulsada**. |
+| **6** | **Obligatorio.** (R51, v1.45.0) El encuadre es **el mismo `EditorEncuadre` que usa `CargaImagen`** — arrastrar, acercar, flechas, acotado y salida en WebP—, extraído allí al necesitarse dos veces. Aquí no hay ni un lienzo propio: dos editores parecidos acaban con el defecto arreglado en uno solo. |
+| **7** | Del proyecto: el peso y formato máximos, la subida y la custodia del dato. El componente da `error` y `nota` para decirlos. |
+
+---
+
 ## Carga de PDF
 
 | | Regla |

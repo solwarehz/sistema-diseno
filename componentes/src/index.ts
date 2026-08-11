@@ -11,6 +11,7 @@ export { TablaDatos, type Columna, type EstadoTabla } from './TablaDatos';
 export { RangoFecha } from './RangoFecha';
 export { ZonaAvisos } from './ZonaAvisos';
 export { CargaImagen } from './CargaImagen';
+export { CargaId, MARCO_ID, type CaraId, type PasoId } from './CargaId';
 export { CargaPdf, type PdfListo } from './CargaPdf';
 export { AreaTexto } from './AreaTexto';
 // El compresor viaja aparte del componente: un producto que suba PDF por su

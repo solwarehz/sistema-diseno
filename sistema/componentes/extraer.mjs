@@ -50,6 +50,8 @@ const ELEMENTOS = [
   { n: 'Carga de imagen',       p: ['ci'] },
   // R43: soltar o elegir UN PDF, comprobarlo en los bytes y comprimirlo.
   { n: 'Carga de PDF',          p: ['cpdf'] },
+  // R51: las dos caras del documento de identidad, con su proporción ID-1.
+  { n: 'Carga de ID',           p: ['cid'] },
   // R44: el campo de varias líneas que crece con lo escrito.
   { n: 'Área de texto',         p: ['ta'] },
   { n: 'Selector',              p: ['sel'] },

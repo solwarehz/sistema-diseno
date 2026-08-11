@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 11 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.44.0** — la carga de imagen centrada y con
-avatar cuando hay persona y no hay foto; antes, la tabla ancha que solo desplaza
-la tabla y el menú que se quedaba comprimido enseñando las opciones de extendido
+**Versión del sistema:** MMI-DS **v1.45.0** — nace `CargaId`: las dos caras del
+documento de identidad con su proporción real; antes, la carga de imagen
+centrada con avatar y la tabla ancha que solo desplaza la tabla
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ la tabla y el menú que se quedaba comprimido enseñando las opciones de extendi
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —35 funciones de
-componente, la hoja que viaja, once candados, 302 pruebas— y el candado de la
+componente, la hoja que viaja, once candados, 312 pruebas— y el candado de la
 promesa ya no mira una lista escrita a mano: **recorre todo lo que el catálogo
 pinta**, 832 elementos, y en dos días ha sacado tres defectos que nadie veía.
 
@@ -34,11 +34,11 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` en Docker |
-| Componentes de React | ✅ | **302 pruebas en 20 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · 713 reglas de 1198 · **518 clases, 0 huérfanas** |
-| Catálogo navegable | ✅ | `cascaron/index.html` · 49 páginas · lo genera `generar-cascaron.mjs` |
+| Componentes de React | ✅ | **312 pruebas en 21 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · 725 reglas de 1210 · **529 clases, 0 huérfanas** |
+| Catálogo navegable | ✅ | `cascaron/index.html` · 50 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | 45 trazos en `iconos.mjs`, React real |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.44.0.zip` · 44 archivos |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.45.0.zip` · 44 archivos |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -54,9 +54,42 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.41.3 | R47 · el panel flotante del menú plegado cerraba en seco |
 | v1.42.0 | **R48** · el menú seguía comprimido y sacaba a la vez las opciones de extendido · el candado de la promesa pasa a recorrer todo el marcado |
 | v1.43.0 | **R49** · con la tabla ancha se desplazaba el componente entero, mandos incluidos |
-| **v1.44.0** | **R50** · la carga de imagen se centra, y sin foto de una persona el hueco lo ocupa su avatar |
+| v1.44.0 | **R50** · la carga de imagen se centra, y sin foto de una persona el hueco lo ocupa su avatar |
+| **v1.45.0** | **R51** · nace `CargaId` — las dos caras del documento de identidad, con el mismo editor de encuadre |
 
 ### Lo de hoy, con detalle
+
+**R51 · `CargaId`.** Las dos caras del documento de identidad, encuadradas con
+**su proporción real** y entregadas en WebP. El guion es el que se pidió: botón
+«Subir ID» → diálogo → **anverso** → Grabar → el **mismo** diálogo pide el
+reverso → Grabar → se cierra. Las miniaturas quedan al costado, el botón se
+desactiva, y pulsar una miniatura la abre en grande.
+
+La proporción no es un número elegido: el documento es una tarjeta **ID-1**
+(ISO/IEC 7810), **85,60 × 53,98 mm** = 1,5858:1. El marco mide 428×270 px
+(1,5852:1) y una prueba comprueba que no se aleja más de una milésima.
+
+**Antes de escribirlo se extrajo el editor.** El lienzo, el arrastre, el zoom,
+las flechas, el acotado y la salida en WebP vivían dentro de `CargaImagen`.
+Copiarlos habría dado dos editores parecidos —el día que uno arregle el
+acotado, el otro se queda con el defecto—, así que ahora hay **uno solo**:
+`interno/EditorEncuadre`. Las 13 pruebas de `CargaImagen` pasaron **sin tocar
+ni una**: esa es la comprobación de que la extracción no cambió nada.
+
+Volver a subir **se autoriza desde atrás**: con las dos caras el botón se
+cierra, y solo vuelve cuando el producto baja `bloqueado` porque su back se lo
+dijo. Hasta grabar el reverso el anverso es un **borrador** y no se avisa.
+
+Medido en el navegador, el guion entero: diálogo con el anverso primero, lienzo
+428×270 (1,5852), tras grabar sigue abierto pidiendo el reverso, al grabarlo se
+cierra con **2 miniaturas de 76×48**, el botón **desactivado**, el visor abre y
+al cerrarlo **el foco vuelve a la miniatura pulsada**.
+
+Dos candados en rojo por el camino, los dos con razón: **la entrega**, porque
+meter la página nueva corrió los índices del menú y tiró «Panel de la barra»
+fuera de su tramo —una página publicada que dejaba de verse—; y **la cascada**,
+porque `.btn` declara su `display` desde v1.41.1 y sin `.btn[hidden]` un
+`<Boton hidden>` se seguía viendo. Las dos correcciones viajan.
 
 **R50 · la carga de imagen.** Dos cosas. La columna **se centra sobre su caja**
 —estaba en `flex-start` y el rótulo, la vista previa y el botón miden cada uno
@@ -163,10 +196,10 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.44.0
+Versión                      1.45.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes, 0 fallos en ambos modos)
-Pruebas                         302   en 20 archivos
+Pruebas                         312   en 21 archivos
 Reglas que viajan               707   de 1192 · 516 clases, 0 huérfanas
 Candado de la promesa           832   elementos · 171.025 propiedades
                                       a 5 anchos (1440, 1024, 900, 700, 390)

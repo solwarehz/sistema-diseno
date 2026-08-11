@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.44.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.45.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -78,11 +78,12 @@
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   BOTÓN — 27 reglas · clases .btn-*
+   BOTÓN — 28 reglas · clases .btn-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .btn-ic{ display: inline-flex; align-items: center; gap: 8px; }
 .btn-ic[hidden]{ display: none; }
+.btn[hidden]{ display: none; }
 .btn-solo-ic{ padding-inline: 8px; }
 .btn{ font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -294,6 +295,25 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .cpdf-error{ font-size: 12px; color: var(--error-texto); font-weight: 500; }
 .cpdf-ayuda{ font-size: 12px; color: var(--texto-pista); }
 .cpdf-entrada{ position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   CARGA DE ID — 11 reglas · clases .cid-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.cid{ display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.cid-et{ font-size: 13px; font-weight: 500; }
+.cid-fila{ display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.cid-minis{ display: flex; gap: 8px; }
+.cid-mini{ padding: 0; border: 1px solid var(--borde-campo); border-radius: 6px;
+  background: var(--fondo-encabezado); cursor: pointer; overflow: hidden;
+  width: 76px; height: 48px; display: block; }
+.cid-mini:hover{ border-color: var(--accion); }
+.cid-mini-img{ display: block; width: 100%; height: 100%; object-fit: cover; }
+.cid-paso{ font-size: 13px; color: var(--texto-secundario); margin: 0 0 12px; }
+.cid-error{ font-size: 12px; color: var(--error-texto); font-weight: 500; }
+.cid-nota{ font-size: 12px; color: var(--texto-secundario); }
+.cid-visor-img{ display: block; max-width: 100%; max-height: 60vh;
+  border-radius: 6px; border: 1px solid var(--borde); }
 
 /* ───────────────────────────────────────────────────────────────────────────
    ÁREA DE TEXTO — 9 reglas · clases .ta-*
