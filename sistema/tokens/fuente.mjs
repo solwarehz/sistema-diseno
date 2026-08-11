@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.30.3';
+export const VERSION = '1.30.4';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,21 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.30.4', fecha: '2026-08-10',
+    que: 'CargaImagen: promesa y entrega vuelven a contarse igual tras las iteraciones',
+    porque:
+      'Verificacion pedida por el responsable con la herramienta de promesa-vs-entrega, en las '
+      + 'dos direcciones. Tres desvios, dos nacidos de las iteraciones del dia: .ci-ayuda quedo '
+      + 'HUERFANA en la hoja al retirar el texto de ayuda (regla muerta: fuera), el estado de '
+      + 'ERROR desaparecio de la promesa al hacer la demo interactiva aunque el React lo entrega '
+      + '(vuelve como muestra estatica), y ci-l viajaba sin muestra (la muestra de error va en '
+      + 'talla l y cierra ambos). Confirmado el limite: el dato del PESO es solo del cascaron '
+      + '-el componente no lo manda- y el tamano del encuadre es presentacion del editor, no '
+      + 'API. La promesa y la entrega de CargaImagen quedan iguales, clase por clase.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.30.3', fecha: '2026-08-10',
     que: 'La demo de carga ensena el peso al grabar: la prueba de que WebP adelgaza',

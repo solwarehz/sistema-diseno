@@ -1249,6 +1249,12 @@ y el comprimido en cuadrado. La subida es del producto.</p>
       <span class="ci-nota" data-peso hidden></span>
       <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
     </div>
+    <div class="ci">
+      <span class="ci-et">Foto del trabajador</span>
+      <div class="ci-caja ci-l ci-redonda"><span class="ci-vacia">Sin foto</span></div>
+      <div class="ci-acciones"><button class="btn btn-neutro btn-mini btn-ic">${icono('camara')}Subir foto</button></div>
+      <span class="ci-error">La imagen pesa 6 MB y el máximo es 2 MB.</span>
+    </div>
   </div>
 
   <div class="ci-editor" id="ci-demo-editor" hidden>
@@ -5598,7 +5604,6 @@ select.campo:disabled { opacity: .75; }
 .ci-lienzo { display: block; border: 1px solid var(--borde); border-radius: 6px;
   background: var(--fondo-encabezado); cursor: move; touch-action: none; }
 .ci-zoom { display: flex; gap: 8px; align-items: center; }
-.ci-ayuda { font-size: 12px; color: var(--texto-secundario); }
 
 /* Mismo caso que el select: el icono del campo de fecha lo pinta el navegador
    y LO RETIRA al deshabilitarlo. Sin icono deja de parecer un campo de fecha,

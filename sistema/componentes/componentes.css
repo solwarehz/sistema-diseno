@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.30.3
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.30.4
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -204,7 +204,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .campo-mal{ border-color: var(--error-acento); border-width: 2px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CARGA DE IMAGEN — 21 reglas · clases .ci-*
+   CARGA DE IMAGEN — 20 reglas · clases .ci-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .ci{ display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
@@ -231,7 +231,6 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .ci-lienzo{ display: block; border: 1px solid var(--borde); border-radius: 6px;
   background: var(--fondo-encabezado); cursor: move; touch-action: none; }
 .ci-zoom{ display: flex; gap: 8px; align-items: center; }
-.ci-ayuda{ font-size: 12px; color: var(--texto-secundario); }
 
 /* ───────────────────────────────────────────────────────────────────────────
    SELECTOR — 17 reglas · clases .sel-*
