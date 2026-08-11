@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.34.0';
+export const VERSION = '1.35.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,24 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.35.0', fecha: '2026-08-10',
+    que: 'alGuardar: la frontera de escritura viaja en el paquete — trim y minusculas decididos UNA vez',
+    porque:
+      'Pedido del responsable: que de igual como escriba la persona o como llegue de una API — '
+      + 'a la base entra normalizado. La decision de SITIO: ni en el CSS ni dentro de Campo (el '
+      + 'componente no sabe a donde viaja el dato, y normalizar en vivo cambia lo que la persona '
+      + 've al teclear); es funcion de frontera de escritura que el producto aplica al grabar, y '
+      + 'viaja en el paquete para que dos productos no normalicen distinto. POR TIPO, no a '
+      + 'ciegas: todo recibe trim y colapso de espacios; texto/correo/usuario/codigo bajan a '
+      + 'minusculas; el NOMBRE conserva su caja -en minusculas es perdida de dato en un registro '
+      + 'que se exhibe ante inspeccion, y la busqueda insensible ya la da la consulta con '
+      + 'unaccent/pg_trgm-; dni/ruc/telefono quedan en digitos. Y la contrasena JAMAS se '
+      + 'normaliza: hoy no existe el campo y la regla queda escrita para cuando exista. Manual '
+      + '6bis con las dos reglas de sitio. Seis pruebas nuevas: 229.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.34.0', fecha: '2026-08-10',
     que: 'R38a: el riel de tableta es estado, no CSS forzado — el aria dice la verdad y la marca conmuta',

@@ -1212,6 +1212,23 @@ ${verCodigo(
     <tr><td><code>obligatorio</code></td><td class="mono">boolean</td><td class="mono">false</td><td class="motivo">Marca visual + <code>required</code></td></tr>
     <tr><td><code>area</code></td><td class="mono">boolean</td><td class="mono">false</td><td class="motivo">Renderiza <code>textarea</code></td></tr>
   </tbody>
+</table>
+
+<h3 class="sub-seccion">La frontera de escritura — <code>alGuardar(valor, tipo)</code></h3>
+<p class="seccion-sub">Da igual cómo lo escriba la persona o cómo llegue de una API: <strong>antes de
+grabar</strong>, el dato pasa por <code>alGuardar</code> — viaja en el paquete para que dos productos no
+normalicen distinto. Se aplica <strong>al grabar, no al teclear</strong>: por eso no vive dentro de
+<code>Campo</code> — la pantalla enseña lo que se escribe, la base guarda lo normalizado.</p>
+<table class="tabla-simple">
+  <thead><tr><th>Tipo</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">(todos)</td><td class="motivo"><code>trim</code> + colapso de espacios internos</td></tr>
+    <tr><td class="mono">texto</td><td class="motivo">además, minúsculas (el genérico, por omisión)</td></tr>
+    <tr><td class="mono">nombre</td><td class="motivo"><strong>conserva la caja</strong>: «QUISPE MAMANI, Rosa» en minúsculas es pérdida de dato. La búsqueda insensible ya la da la consulta (unaccent/pg_trgm)</td></tr>
+    <tr><td class="mono">correo · usuario · codigo</td><td class="motivo">minúsculas — ahí es la forma canónica</td></tr>
+    <tr><td class="mono">dni · ruc · telefono</td><td class="motivo">solo dígitos (el teléfono conserva su <code>+</code>)</td></tr>
+    <tr><td class="mono">contraseña</td><td class="motivo"><strong>jamás</strong> — ni trim ni caja. Hoy no existe el campo; la regla espera escrita</td></tr>
+  </tbody>
 </table>`;
 
 // ── Elemento: Carga de imagen — R35 ─────────────────────────────────────────
