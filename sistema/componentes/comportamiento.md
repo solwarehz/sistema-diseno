@@ -139,6 +139,7 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 | **3** | **Obligatorio.** El editor vive en `Dialogo` con «pulsar fuera» **apagado**: un encuadre a medias no se pierde por un clic. Cancelar sí lo descarta, y elegir el mismo archivo después vuelve a abrir. |
 | **4** | **Obligatorio.** La imagen **cubre siempre el cuadro**: la escala mínima es la que lo llena y el desplazamiento se acota — centrar es mover hasta el borde, no sacar la foto del marco. |
 | **5** | Del proyecto: el peso y formato máximos y su validación. El componente da la ranura `error` y la `nota` para decirlos. |
+| **6** | **Obligatorio.** (v1.30.0) Los **formatos son cerrados** y llevan la proporción del **hueco real**: `foto` 1:1 mostrada en círculo (y encuadrada con máscara circular — el recorte exportado sigue siendo rectangular), `logo-extendido` **212×44** (el hueco de la marca del lateral: 236 − 24 de relleno), `logo-comprimido` 1:1. El editor adopta la proporción del formato: encuadrar un logo apaisado en un cuadro cuadrado es encuadrar a ciegas. La vista previa **es** el hueco — se ve cómo va a quedar, no una aproximación. |
 
 ---
 

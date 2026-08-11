@@ -1218,41 +1218,57 @@ ${verCodigo(
 
 const pagCargaImagen = `
 <p class="pag-intro">Elegir una imagen, <strong>encuadrarla</strong> —arrastrar para mover,
-botones para acercar— y entregar el recorte <strong>cuadrado</strong>. La pieza visual completa:
-disparador, vista previa, vacío, error y nota. La subida es del producto: el componente
-entrega el Blob del recorte y una URL local para pintarlo al instante.</p>
+botones para acercar, flechas con el teclado— y entregar el recorte <strong>en WebP</strong> con la
+<strong>proporción del hueco real</strong> donde va a vivir. Tres formatos cerrados: la foto en
+círculo (1:1), el logo extendido a <strong>212×44</strong> —el hueco de la marca en el lateral—
+y el comprimido en cuadrado. La subida es del producto.</p>
 <div class="bloque">
+  <p class="seccion-sub"><strong>Pruébalo</strong>: elige una imagen en cualquiera de los tres y
+  encuadra. El editor adopta la proporción del formato —encuadrar un logo apaisado en un cuadro
+  cuadrado es encuadrar a ciegas— y la foto se encuadra con su máscara circular. Al confirmar,
+  la vista previa enseña <strong>cómo se verá</strong> en su hueco.</p>
   <div class="muestra-fila">
-    <div class="ci">
-      <span class="ci-et">Foto del legajo</span>
-      <div class="ci-caja ci-m"><span class="ci-vacia">Sin imagen</span></div>
-      <div class="ci-acciones"><button class="btn btn-neutro btn-mini">Elegir imagen</button></div>
-      <span class="ci-nota">JPG o PNG · máx. 2 MB</span>
+    <div class="ci" data-carga="foto">
+      <span class="ci-et">Foto del trabajador</span>
+      <div class="ci-caja ci-m ci-redonda"><span class="ci-vacia">Sin foto</span></div>
+      <div class="ci-acciones"><button class="btn btn-neutro btn-mini btn-ic" data-elegir>${icono('camara')}Subir foto</button></div>
+      <span class="ci-nota">Se muestra en círculo · recorte 1:1</span>
+      <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
     </div>
-    <div class="ci">
-      <span class="ci-et">Logo de la empresa</span>
-      <div class="ci-caja ci-m">${ESCUDO_PNG ? `<img class="ci-img" src="${ESCUDO_PNG}" alt="">` : '<span class="ci-vacia">Sin imagen</span>'}</div>
-      <div class="ci-acciones"><button class="btn btn-neutro btn-mini">Cambiar</button><button class="btn btn-terc btn-mini">Quitar</button></div>
+    <div class="ci" data-carga="ext">
+      <span class="ci-et">Logo extendido</span>
+      <div class="ci-caja ci-extendida"><span class="ci-vacia">Sin logo</span></div>
+      <div class="ci-acciones"><button class="btn btn-neutro btn-mini btn-ic" data-elegir>${icono('subir')}Subir logo</button></div>
+      <span class="ci-nota">El hueco real del lateral · 212×44</span>
+      <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
     </div>
-    <div class="ci">
-      <span class="ci-et">Foto del legajo</span>
-      <div class="ci-caja ci-m"><span class="ci-vacia">Sin imagen</span></div>
-      <div class="ci-acciones"><button class="btn btn-neutro btn-mini">Elegir imagen</button></div>
-      <span class="ci-error">La imagen pesa 6 MB y el máximo es 2 MB.</span>
+    <div class="ci" data-carga="comp">
+      <span class="ci-et">Logo comprimido</span>
+      <div class="ci-caja ci-s"><span class="ci-vacia">Sin logo</span></div>
+      <div class="ci-acciones"><button class="btn btn-neutro btn-mini btn-ic" data-elegir>${icono('subir')}Subir logo</button></div>
+      <span class="ci-nota">El cuadrado del lateral plegado · 1:1</span>
+      <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
     </div>
   </div>
-  <p class="seccion-sub">El editor, dentro de un <code>Dialogo</code> con «pulsar fuera» APAGADO
-  —un encuadre a medias no se pierde por un clic—. El lienzo es enfocable: las flechas mueven,
-  los botones acercan. Un recorte solo-ratón deja gente fuera.</p>
-  <div class="ci-editor">
-    <canvas class="ci-lienzo" width="260" height="260" aria-label="Encuadre (demostración estática)"></canvas>
+
+  <div class="ci-editor" id="ci-demo-editor" hidden>
+    <div class="ci-marco-editor">
+      <canvas class="ci-lienzo" id="ci-demo-lienzo" width="260" height="260" tabindex="0"
+        aria-label="Encuadre. Flechas para mover la imagen; los botones acercan y alejan."></canvas>
+      <div class="ci-mascara" id="ci-demo-mascara" aria-hidden="true" hidden></div>
+    </div>
     <div class="ci-zoom">
-      <button class="btn btn-neutro btn-mini" aria-label="Alejar">−</button>
-      <button class="btn btn-neutro btn-mini" aria-label="Acercar">+</button>
-      <span class="ci-ayuda">Arrastra o usa las flechas para centrar. Se recorta el cuadro.</span>
+      <button class="btn btn-neutro btn-mini" id="ci-demo-menos" aria-label="Alejar">−</button>
+      <button class="btn btn-neutro btn-mini" id="ci-demo-mas" aria-label="Acercar">+</button>
+      <button class="btn btn-1 btn-mini" id="ci-demo-usar">Usar este encuadre</button>
+      <button class="btn btn-terc btn-mini" id="ci-demo-cancelar">Cancelar</button>
+      <span class="ci-ayuda">Arrastra o usa las flechas para centrar.</span>
     </div>
   </div>
-</div>`;
+</div>
+<p class="seccion-sub">En React, el editor vive en un <code>Dialogo</code> con «pulsar fuera»
+APAGADO —un encuadre a medias no se pierde por un clic—. El recorte sale en <strong>WebP</strong>
+(0,85), con caída a PNG por especificación: se lee <code>blob.type</code>, no se asume extensión.</p>`;
 
 // ── Elemento: Selector ──────────────────────────────────────────────────────
 
@@ -5562,7 +5578,17 @@ select.campo:disabled { opacity: .75; }
    algunos navegadores ignoran click() sobre lo que no se pinta. */
 .ci-entrada { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 .ci-editor { display: flex; flex-direction: column; gap: 8px; align-items: center; }
-.ci-lienzo { border: 1px solid var(--borde); border-radius: 6px;
+/* La foto vive en círculo y el logo extendido en su hueco real: 212×44, que
+   es el lateral desplegado (236) menos su relleno (24). La vista previa ES el
+   hueco, no una aproximación. */
+.ci-redonda { border-radius: 50%; }
+.ci-extendida { width: 212px; height: 44px; }
+.ci-marco-editor { position: relative; }
+/* La máscara del encuadre circular: la receta del velo —token del marco con
+   opacidad—, nada de colores a mano. Enseña qué quedará dentro del círculo. */
+.ci-mascara { position: absolute; inset: 0; border-radius: 50%;
+  box-shadow: 0 0 0 999px var(--marco-fondo); opacity: .5; pointer-events: none; }
+.ci-lienzo { display: block; border: 1px solid var(--borde); border-radius: 6px;
   background: var(--fondo-encabezado); cursor: move; touch-action: none; }
 .ci-zoom { display: flex; gap: 8px; align-items: center; }
 .ci-ayuda { font-size: 12px; color: var(--texto-secundario); }
@@ -7389,6 +7415,93 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       document.addEventListener('mousedown', function (e) {
         if (!p.contains(e.target) && !caja.hidden) cerrar();
       });
+    });
+  })();
+
+  // ── Carga de imagen (R35): la demo se puede PROBAR ───────────────────────
+  // El mismo comportamiento del componente React, con los mismos numeros:
+  // el editor adopta la proporcion del formato, la foto encuadra con mascara
+  // circular, y el resultado se pinta EN SU HUECO para ver como se vera.
+  (function () {
+    var FORMATOS = {
+      foto: { w: 260, h: 260, redondo: true },
+      ext:  { w: 260, h: 54,  redondo: false },
+      comp: { w: 260, h: 260, redondo: false },
+    };
+    var editor = document.getElementById('ci-demo-editor');
+    if (!editor) return;
+    var lienzo = document.getElementById('ci-demo-lienzo');
+    var mascara = document.getElementById('ci-demo-mascara');
+    var ctx = lienzo.getContext('2d');
+    var st = null;
+
+    function escala() { return Math.max(st.f.w / st.img.naturalWidth, st.f.h / st.img.naturalHeight) * st.zoom; }
+    function pintar() {
+      ctx.clearRect(0, 0, st.f.w, st.f.h);
+      var w = st.img.naturalWidth * escala(), h = st.img.naturalHeight * escala();
+      ctx.drawImage(st.img, (st.f.w - w) / 2 + st.dx, (st.f.h - h) / 2 + st.dy, w, h);
+    }
+    function acotar() {
+      var tx = Math.max(0, (st.img.naturalWidth * escala() - st.f.w) / 2);
+      var ty = Math.max(0, (st.img.naturalHeight * escala() - st.f.h) / 2);
+      st.dx = Math.min(tx, Math.max(-tx, st.dx));
+      st.dy = Math.min(ty, Math.max(-ty, st.dy));
+    }
+    function mover(mx, my) { if (!st) return; st.dx += mx; st.dy += my; acotar(); pintar(); }
+    function zum(f) { if (!st) return; st.zoom = Math.min(8, Math.max(1, st.zoom * f)); acotar(); pintar(); }
+
+    document.querySelectorAll('[data-carga]').forEach(function (tarjeta) {
+      var f = FORMATOS[tarjeta.getAttribute('data-carga')];
+      var input = tarjeta.querySelector('input[type="file"]');
+      tarjeta.querySelector('[data-elegir]').addEventListener('click', function () { input.click(); });
+      input.addEventListener('change', function () {
+        var archivo = input.files && input.files[0];
+        if (!archivo) return;
+        var img = new Image();
+        img.onload = function () {
+          st = { img: img, dx: 0, dy: 0, zoom: 1, f: f, caja: tarjeta.querySelector('.ci-caja') };
+          lienzo.width = f.w; lienzo.height = f.h;
+          mascara.hidden = !f.redondo;
+          editor.hidden = false;
+          pintar();
+          lienzo.focus();
+        };
+        img.src = URL.createObjectURL(archivo);
+        input.value = '';
+      });
+    });
+
+    var arrastre = null;
+    lienzo.addEventListener('pointerdown', function (e) { arrastre = { x: e.clientX, y: e.clientY }; lienzo.setPointerCapture(e.pointerId); });
+    lienzo.addEventListener('pointermove', function (e) {
+      if (!arrastre) return;
+      mover(e.clientX - arrastre.x, e.clientY - arrastre.y);
+      arrastre = { x: e.clientX, y: e.clientY };
+    });
+    lienzo.addEventListener('pointerup', function () { arrastre = null; });
+    lienzo.addEventListener('keydown', function (e) {
+      var m = { ArrowLeft: [8, 0], ArrowRight: [-8, 0], ArrowUp: [0, 8], ArrowDown: [0, -8] }[e.key];
+      if (m) { e.preventDefault(); mover(m[0], m[1]); }
+    });
+    document.getElementById('ci-demo-menos').addEventListener('click', function () { zum(1 / 1.15); });
+    document.getElementById('ci-demo-mas').addEventListener('click', function () { zum(1.15); });
+    document.getElementById('ci-demo-cancelar').addEventListener('click', function () { editor.hidden = true; st = null; });
+    document.getElementById('ci-demo-usar').addEventListener('click', function () {
+      if (!st) return;
+      var corte = document.createElement('canvas');
+      corte.width = 512; corte.height = Math.round(512 * st.f.h / st.f.w);
+      var c2 = corte.getContext('2d');
+      var aw = st.f.w / escala(), ah = st.f.h / escala();
+      c2.drawImage(st.img,
+        (st.img.naturalWidth - aw) / 2 - st.dx / escala(),
+        (st.img.naturalHeight - ah) / 2 - st.dy / escala(),
+        aw, ah, 0, 0, corte.width, corte.height);
+      var caja = st.caja;
+      // WebP, como el componente: pesa menos y blob.type dice la verdad.
+      corte.toBlob(function (blob) {
+        caja.innerHTML = '<img class="ci-img" src="' + URL.createObjectURL(blob) + '" alt="">';
+      }, 'image/webp', 0.85);
+      editor.hidden = true; st = null;
     });
   })();
 

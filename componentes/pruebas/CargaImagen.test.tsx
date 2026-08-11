@@ -51,7 +51,7 @@ describe('Carga de imagen — R35', () => {
     expect(screen.getByText('Aún sin foto')).toBeTruthy();
     expect(screen.getByText('JPG o PNG · máx. 2 MB')).toBeTruthy();
     // El error lo pinta el componente y DESCRIBE al disparador.
-    const boton = screen.getByRole('button', { name: 'Elegir imagen' });
+    const boton = screen.getByRole('button', { name: 'Subir foto' });
     expect(container.querySelector('.ci-error')!.id).toBe(boton.getAttribute('aria-describedby'));
   });
 
@@ -103,8 +103,58 @@ describe('Carga de imagen — R35', () => {
       <CargaImagen etiqueta="Logo" valor="blob:guardada" onCambio={() => {}} onQuitar={onQuitar} />
     );
     expect(container.querySelector('.ci-img')!.getAttribute('src')).toBe('blob:guardada');
-    expect(screen.getByRole('button', { name: 'Cambiar' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Cambiar foto' })).toBeTruthy();
     await u.click(screen.getByRole('button', { name: 'Quitar' }));
     expect(onQuitar).toHaveBeenCalled();
+  });
+});
+
+describe('R6 · los tres formatos — la proporción del hueco real', () => {
+  it('la foto se muestra REDONDA y se encuadra con máscara circular', async () => {
+    const { container } = render(<CargaImagen etiqueta="Foto" onCambio={() => {}} />);
+    expect(container.querySelector('.ci-caja')!.classList.contains('ci-redonda')).toBe(true);
+    elegir(container);
+    await screen.findByRole('dialog');
+    expect(container.ownerDocument.querySelector('.ci-mascara')).not.toBeNull();
+  });
+
+  it('el logo extendido encuadra a 212×44: el editor adopta la proporción', async () => {
+    const { container } = render(
+      <CargaImagen etiqueta="Logo" formato="logo-extendido" onCambio={() => {}} />
+    );
+    expect(container.querySelector('.ci-caja')!.classList.contains('ci-extendida')).toBe(true);
+    elegir(container);
+    await screen.findByRole('dialog');
+    const lienzo = container.ownerDocument.querySelector('.ci-lienzo') as HTMLCanvasElement;
+    // 260 de ancho → 54 de alto: la misma proporción que el hueco (212×44).
+    expect(lienzo.width).toBe(260);
+    expect(lienzo.height).toBe(54);
+    // Sin máscara: el logo no es redondo.
+    expect(container.ownerDocument.querySelector('.ci-mascara')).toBeNull();
+  });
+
+  it('el recorte exportado sale con la proporción del formato', async () => {
+    const onCambio = vi.fn();
+    const u = userEvent.setup();
+    const anchos: Array<[number, number]> = [];
+    const original = HTMLCanvasElement.prototype.toBlob;
+    HTMLCanvasElement.prototype.toBlob = function (cb: BlobCallback, tipo?: string) {
+      anchos.push([this.width, this.height]);
+      original.call(this, cb, tipo);
+    };
+    const { container } = render(
+      <CargaImagen etiqueta="Logo" formato="logo-extendido" onCambio={onCambio} />
+    );
+    elegir(container);
+    await u.click(await screen.findByRole('button', { name: 'Usar este encuadre' }));
+    await waitFor(() => expect(onCambio).toHaveBeenCalled());
+    // 512 de ancho → 106 de alto (512 × 54/260), no un cuadrado.
+    expect(anchos[0]).toEqual([512, 106]);
+  });
+
+  it('el botón lleva el icono y el texto del formato', () => {
+    render(<CargaImagen etiqueta="Foto" onCambio={() => {}} />);
+    const boton = screen.getByRole('button', { name: 'Subir foto' });
+    expect(boton.querySelector('svg')).not.toBeNull();
   });
 });

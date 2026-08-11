@@ -95,6 +95,9 @@ export const TRAZOS = {
   columnas: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/>',
   ordenar: '<path d="m7 15 5 5 5-5M7 9l5-5 5 5"/>',
   descargar2: '<path d="M12 5v14M6 13l6 6 6-6"/>',
+  // La pareja de descargar2: misma flecha, sentido contrario. Significado:
+  // SUBIR un archivo al sistema (la carga de imagen, R35).
+  subir: '<path d="M12 19V5M6 11l6-6 6 6"/>',
   camara: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/>',
   filas: '<rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="13" width="18" height="5" rx="1"/>',
   filasFinas: '<rect x="3" y="4" width="18" height="3" rx="1"/><rect x="3" y="10" width="18" height="3" rx="1"/><rect x="3" y="16" width="18" height="3" rx="1"/>',

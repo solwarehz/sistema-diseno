@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.29.0';
+export const VERSION = '1.30.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,28 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.30.0', fecha: '2026-08-10',
+    que: 'CargaImagen gana los tres formatos con la proporcion del hueco real, y el catalogo deja PROBARLOS',
+    porque:
+      'Pedido del responsable mirando la demo: la foto se muestra en CIRCULO (y se encuadra con '
+      + 'mascara circular — receta del velo: token del marco con opacidad, ningun color a mano), '
+      + 'el logo extendido lleva la proporcion del hueco REAL de la marca del lateral (212x44: '
+      + '236 de lateral menos 24 de relleno) y el comprimido el cuadrado del plegado. El editor '
+      + 'adopta la proporcion del formato porque encuadrar un logo apaisado en un cuadro cuadrado '
+      + 'es encuadrar a ciegas, y el recorte exportado sale con esa misma proporcion. El boton '
+      + 'gana icono: camara para la foto, subir para los logos — subir es icono NUEVO (el 40), '
+      + 'pareja semantica de descargar2 con la flecha invertida. Y el catalogo deja PROBAR los '
+      + 'tres: eliges imagen, encuadras con la mascara o la proporcion del caso, y el resultado '
+      + 'se pinta EN SU HUECO para ver como se vera. La vista previa es el hueco, no una '
+      + 'aproximacion. Cuatro pruebas nuevas: 215, incluida la del recorte 512x106.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'El texto del disparador cambia: «Elegir imagen» pasa a «Subir foto»/«Subir logo» segun '
+      + 'formato (textoBoton lo sustituye). El recorte del logo-extendido ya no es cuadrado: '
+      + 'sale 512x106.',
+    ],
+  },
   {
     v: '1.29.0', fecha: '2026-08-10',
     que: 'R37: elegir una opcion del menu de usuario lo cierra · el recorte de CargaImagen sale en WebP',
