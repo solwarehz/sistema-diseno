@@ -395,3 +395,25 @@ describe('R39 · el cajón de pantalla estrecha tiene velo y salida', () => {
     expect(onPlegar).toHaveBeenCalledWith(true);
   });
 });
+
+describe('R38a · la banda del riel (≤900px) es estado, no CSS forzado', () => {
+  it('al cruzar a tableta el marco se pliega DE VERDAD: aria y marca se enteran', () => {
+    let oyente: ((e: { matches: boolean }) => void) | null = null;
+    vi.stubGlobal('matchMedia', (media: string) => ({
+      matches: false,
+      media,
+      addEventListener: (_: string, f: (e: { matches: boolean }) => void) => {
+        if (media.includes('900')) oyente = f;
+      },
+      removeEventListener: () => {},
+    }));
+    const { container } = montar();
+    expect(container.querySelector('.lat.colapsado')).toBeNull();
+    act(() => oyente?.({ matches: true }));
+    // Plegado real: la clase (el riel), el aria (la verdad) y MarcaMenu (el
+    // logo compacto) salen del MISMO estado. Antes el CSS forzaba 56px y el
+    // aria decia «desplegada» con el lockup estrujado.
+    expect(container.querySelector('.lat.colapsado')).not.toBeNull();
+    expect(screen.getByRole('button', { name: 'Desplegar menú' })).toHaveAttribute('aria-expanded', 'false');
+  });
+});

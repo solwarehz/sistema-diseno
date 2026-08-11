@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.33.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.34.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.33.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.34.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -2504,21 +2504,20 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    y esta regla NO añade esa clase. Sin repetirla, el escudo se dibuja a tamaño
    natural —1063px— y revienta la página entera. Pasó, y no lo cazó ninguna
    medida: el documento no desbordaba porque overflow lo recortaba. */
-/* Se corta en 701 por abajo: de 700 hacia abajo YA existe una regla que saca la
-   lateral del flujo y la trae con el botón. Sin ese límite, esta le imponía un
-   ancho de 56px y la dejaba visible ENCIMA del contenido, cortando los títulos.
-   Dos reglas peleando por el mismo elemento en el mismo rango. */
-@media (max-width: 900px) and (min-width: 701px) {
-  .app-cascaron .lat:not(.colapsado) { width: 56px; }
-  .app-cascaron .lat:not(.colapsado) .nav-txt,
-  .app-cascaron .lat:not(.colapsado) .nav-chev,
-  .app-cascaron .lat:not(.colapsado) .lat-id,
-  .app-cascaron .lat:not(.colapsado) .lat-user-txt,
-  .app-cascaron .lat:not(.colapsado) .lat-lockup { display: none; }
-  .app-cascaron .lat:not(.colapsado) .lat-escudo { display: block; height: 40px; width: auto; }
-  .app-cascaron .lat:not(.colapsado) .lat-marca,
-  .app-cascaron .lat:not(.colapsado) .lat-usuario { padding: 8px; justify-content: center; }
-}
+/* R38a (v1.34.0): AQUÍ VIVÍA el bloque que forzaba el riel de 56px entre 701
+   y 900 con :not(.colapsado). Se retiró a propósito, y la lección de arriba
+   sigue siendo cierta — el corte en 900 y el escudo de 1063px pasaron.
+
+   Por qué se fue: forzar el riel por CSS dejaba al React SIN ENTERARSE. El
+   aria-expanded decía «desplegada» con la barra a 56px, y MarcaMenu no
+   conmutaba al logo compacto: el lockup quedaba estrujado — el caso exacto
+   contra el que MarcaMenu existe. Dos verdades a la vez, la enfermedad R34.
+
+   El riel bajo 900 sigue existiendo, pero ahora es ESTADO: MarcoApp se pliega
+   solo al cruzar la banda (matchMedia, avisando por onPlegar), MarcaMenu
+   conmuta el logo, y el aria dice la verdad. Quien quiera re-desplegar a ese
+   ancho, puede: los 236px caben en línea. El comportamiento es del
+   componente; la hoja pinta estados, no los impone. */
 @media (max-width: 640px) {
   /* Tres selectores globales de 120px suman 360 y por sí solos impedían bajar
      de 320. Sueltan su ancho mínimo y la barra envuelve. */
@@ -3120,7 +3119,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.33.0</option></select></label>
+          <select class="campo cg-in"><option>v1.34.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3208,8 +3207,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.33.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.33.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.34.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.34.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -9427,6 +9426,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.34.0 <span class="cam-fecha">2026-08-10</span></h3>
+<p class="pag-intro"><strong>R38a: el riel de tableta es estado, no CSS forzado — el aria dice la verdad y la marca conmuta.</strong> El frente mas visible de R38, resuelto por el camino que DISUELVE el problema en vez de parchearlo. La hoja forzaba el riel de 56px entre 701 y 900 con :not(.colapsado): el React no se enteraba, aria-expanded decia «desplegada» con la barra estrujada, y MarcaMenu no conmutaba el logo — el lockup aplastado, el caso exacto contra el que MarcaMenu existe. Ahora cruzar ≤900 PLIEGA de verdad (matchMedia, avisando por onPlegar): la clase, el aria y el logo compacto salen del MISMO estado, y quien quiera re-desplegar a ese ancho puede, porque los 236px caben en linea. El bloque forzado se retiro con lapida explicativa que conserva sus dos lecciones (el corte en 900 y el escudo de 1063px). La referencia se actualizo al mecanismo real — la opcion que el propio R34 sanciono. Regla 4 del contrato, una prueba nueva: 223.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>La hoja pierde el bloque @media 701-900 que forzaba el riel con :not(.colapsado). Un consumidor de hoja-sola (sin los componentes React) pierde el riel automatico de tableta: el comportamiento es del componente, como todo lo demas que la hoja no lleva.</td></tr></tbody></table>
 
 
 <h3 class="sub-seccion">v1.33.0 <span class="cam-fecha">2026-08-10</span></h3>

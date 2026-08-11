@@ -165,21 +165,27 @@ export function MarcoApp({
   const lateral = useRef<HTMLElement>(null);
   const plegarBtn = useRef<HTMLButtonElement>(null);
 
-  // R39 · al CRUZAR a la banda del cajón (≤700px), el marco se pliega solo.
-  // Sin esto, estrechar la ventana con el menú extendido dejaba el cajón
-  // plantado sobre el contenido — y como el botón de plegar queda DEBAJO del
-  // cajón, con el ratón no había salida. La ref evita el cierre rancio: el
-  // efecto corre una vez pero pliega con el setPlegado del render vigente.
+  // R39 y R38a · al CRUZAR a una banda más angosta, el marco se pliega solo.
+  // Dos bandas, dos motivos:
+  //   ≤900 — la banda del RIEL (R38a): antes la hoja forzaba 56px con CSS y
+  //          el React no se enteraba: aria decía «desplegada» y la marca
+  //          quedaba estrujada. Plegado DE VERDAD, MarcaMenu conmuta el logo
+  //          solo y el aria dice la verdad. Quien quiera, re-despliega: a ese
+  //          ancho los 236px caben en línea.
+  //   ≤700 — la banda del CAJÓN (R39): el menú extendido pasaría a tapar el
+  //          contenido; se pliega para que nadie herede un cajón plantado.
+  // La ref evita el cierre rancio: el efecto corre una vez pero pliega con el
+  // setPlegado del render vigente.
   const plegarRef = useRef(setPlegado);
   plegarRef.current = setPlegado;
   useEffect(() => {
     if (typeof window.matchMedia !== 'function') return; // jsdom, sin pena
-    const banda = window.matchMedia('(max-width: 700px)');
-    const alCruzar = (e: MediaQueryListEvent) => { if (e.matches) plegarRef.current(true); };
-    banda.addEventListener('change', alCruzar);
+    const bandas = ['(max-width: 900px)', '(max-width: 700px)'].map((q) => window.matchMedia(q));
+    const alCruzar = (e: { matches: boolean }) => { if (e.matches) plegarRef.current(true); };
+    bandas.forEach((b) => b.addEventListener('change', alCruzar));
     // Montado ya en angosto, arranca plegado: un cajón abierto de inicio tapa.
-    if (banda.matches) plegarRef.current(true);
-    return () => banda.removeEventListener('change', alCruzar);
+    if (bandas.some((b) => b.matches)) plegarRef.current(true);
+    return () => bandas.forEach((b) => b.removeEventListener('change', alCruzar));
   }, []);
 
   // Escape pliega el panel cuando está desplegado sobre el contenido. Sin esto,

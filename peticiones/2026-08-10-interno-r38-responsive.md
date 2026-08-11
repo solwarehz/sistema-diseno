@@ -13,6 +13,13 @@ igual en el teléfono que en el escritorio y nadie lo nota hasta montarlo.
 
 ---
 
+> **R38a RESUELTO en v1.34.0**, por el camino que disuelve el problema: el riel
+> de tableta pasó de CSS forzado a **estado**. Al cruzar ≤900 el marco se
+> pliega de verdad (matchMedia + `onPlegar`), `MarcaMenu` conmuta el logo solo
+> y el aria dice la verdad; el bloque `:not(.colapsado)` de 701–900 se retiró
+> con lápida explicativa. La referencia se actualizó al mecanismo real — la
+> opción que el propio R34 sancionó. Regla 4 del contrato del marco.
+
 ## R38a · El marco en tableta no conmuta la marca — el más visible
 
 Entre **701 y 900px** la hoja promete: la barra lateral se estrecha a 56px,

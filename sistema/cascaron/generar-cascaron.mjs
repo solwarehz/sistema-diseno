@@ -5852,21 +5852,20 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    y esta regla NO añade esa clase. Sin repetirla, el escudo se dibuja a tamaño
    natural —1063px— y revienta la página entera. Pasó, y no lo cazó ninguna
    medida: el documento no desbordaba porque overflow lo recortaba. */
-/* Se corta en 701 por abajo: de 700 hacia abajo YA existe una regla que saca la
-   lateral del flujo y la trae con el botón. Sin ese límite, esta le imponía un
-   ancho de 56px y la dejaba visible ENCIMA del contenido, cortando los títulos.
-   Dos reglas peleando por el mismo elemento en el mismo rango. */
-@media (max-width: 900px) and (min-width: 701px) {
-  .app-cascaron .lat:not(.colapsado) { width: 56px; }
-  .app-cascaron .lat:not(.colapsado) .nav-txt,
-  .app-cascaron .lat:not(.colapsado) .nav-chev,
-  .app-cascaron .lat:not(.colapsado) .lat-id,
-  .app-cascaron .lat:not(.colapsado) .lat-user-txt,
-  .app-cascaron .lat:not(.colapsado) .lat-lockup { display: none; }
-  .app-cascaron .lat:not(.colapsado) .lat-escudo { display: block; height: 40px; width: auto; }
-  .app-cascaron .lat:not(.colapsado) .lat-marca,
-  .app-cascaron .lat:not(.colapsado) .lat-usuario { padding: 8px; justify-content: center; }
-}
+/* R38a (v1.34.0): AQUÍ VIVÍA el bloque que forzaba el riel de 56px entre 701
+   y 900 con :not(.colapsado). Se retiró a propósito, y la lección de arriba
+   sigue siendo cierta — el corte en 900 y el escudo de 1063px pasaron.
+
+   Por qué se fue: forzar el riel por CSS dejaba al React SIN ENTERARSE. El
+   aria-expanded decía «desplegada» con la barra a 56px, y MarcaMenu no
+   conmutaba al logo compacto: el lockup quedaba estrujado — el caso exacto
+   contra el que MarcaMenu existe. Dos verdades a la vez, la enfermedad R34.
+
+   El riel bajo 900 sigue existiendo, pero ahora es ESTADO: MarcoApp se pliega
+   solo al cruzar la banda (matchMedia, avisando por onPlegar), MarcaMenu
+   conmuta el logo, y el aria dice la verdad. Quien quiera re-desplegar a ese
+   ancho, puede: los 236px caben en línea. El comportamiento es del
+   componente; la hoja pinta estados, no los impone. */
 @media (max-width: 640px) {
   /* Tres selectores globales de 120px suman 360 y por sí solos impedían bajar
      de 320. Sueltan su ancho mínimo y la barra envuelve. */

@@ -150,6 +150,7 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 | **1** | **Obligatorio.** El marco **envuelve a la aplicación entera** —el enrutador vive DENTRO de su zona de contenido—, no se monta uno por página. Montado por página, cada navegación crea un marco nuevo y **el plegado del lateral se olvida**: el usuario lo pliega, elige una opción y lo encuentra desplegado sin haberlo pedido. El estado interno de React no sobrevive al remontaje, y no debe: la corrección es dónde se monta, no un parche de persistencia. |
 | **2** | Del proyecto: si el plegado debe **recordarse entre sesiones**, se controla con las props `plegado`/`onPlegar` y se guarda donde diga la regla transversal 5 — en el perfil, no en el navegador. |
 | **3** | **Obligatorio.** (R39, v1.33.0) En la banda del cajón (≤700px) el velo **existe de verdad** —oscurece, cubre y se puede pulsar— y pulsarlo pliega: es la salida con el ratón, porque el botón de plegar queda debajo del propio cajón. Y al **cruzar** de ancho a angosto el marco **se pliega solo**, avisando por `onPlegar`: un cajón que nadie abrió no se queda plantado sobre el contenido. |
+| **4** | **Obligatorio.** (R38a, v1.34.0) La banda del **riel** (≤900px) es **estado, no CSS forzado**: al cruzarla el marco se pliega de verdad — la clase, el `aria-expanded` y el logo compacto de `MarcaMenu` salen del mismo estado. Quien quiera re-desplegar a ese ancho, puede: los 236px caben en línea. La hoja pinta estados; no los impone a espaldas del componente. |
 
 ---
 

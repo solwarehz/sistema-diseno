@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.33.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.34.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -797,7 +797,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .esqueleto.corto{ width: 62%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MARCO DE APLICACIÓN — 185 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
+   MARCO DE APLICACIÓN — 184 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 :where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
@@ -1008,17 +1008,6 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   padding: 24px max(32px, calc((100% - 1056px) / 2)) 80px; width: 100%; }
 @media (max-width: 700px) {
   .app-contenido{ padding: 16px 16px 64px; }
-}
-@media (max-width: 900px) and (min-width: 701px) {
-  .app-cascaron .lat:not(.colapsado){ width: 56px; }
-  .app-cascaron .lat:not(.colapsado) .nav-txt,
-  .app-cascaron .lat:not(.colapsado) .nav-chev,
-  .app-cascaron .lat:not(.colapsado) .lat-id,
-  .app-cascaron .lat:not(.colapsado) .lat-user-txt,
-  .app-cascaron .lat:not(.colapsado) .lat-lockup{ display: none; }
-  .app-cascaron .lat:not(.colapsado) .lat-escudo{ display: block; height: 40px; width: auto; }
-  .app-cascaron .lat:not(.colapsado) .lat-marca,
-  .app-cascaron .lat:not(.colapsado) .lat-usuario{ padding: 8px; justify-content: center; }
 }
 @media (max-width: 640px) {
   .top{ flex-wrap: wrap; height: auto; }

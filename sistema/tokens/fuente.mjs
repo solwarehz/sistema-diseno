@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.33.0';
+export const VERSION = '1.34.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,27 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.34.0', fecha: '2026-08-10',
+    que: 'R38a: el riel de tableta es estado, no CSS forzado — el aria dice la verdad y la marca conmuta',
+    porque:
+      'El frente mas visible de R38, resuelto por el camino que DISUELVE el problema en vez de '
+      + 'parchearlo. La hoja forzaba el riel de 56px entre 701 y 900 con :not(.colapsado): el '
+      + 'React no se enteraba, aria-expanded decia «desplegada» con la barra estrujada, y '
+      + 'MarcaMenu no conmutaba el logo — el lockup aplastado, el caso exacto contra el que '
+      + 'MarcaMenu existe. Ahora cruzar ≤900 PLIEGA de verdad (matchMedia, avisando por '
+      + 'onPlegar): la clase, el aria y el logo compacto salen del MISMO estado, y quien quiera '
+      + 're-desplegar a ese ancho puede, porque los 236px caben en linea. El bloque forzado se '
+      + 'retiro con lapida explicativa que conserva sus dos lecciones (el corte en 900 y el '
+      + 'escudo de 1063px). La referencia se actualizo al mecanismo real — la opcion que el '
+      + 'propio R34 sanciono. Regla 4 del contrato, una prueba nueva: 223.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'La hoja pierde el bloque @media 701-900 que forzaba el riel con :not(.colapsado). Un '
+      + 'consumidor de hoja-sola (sin los componentes React) pierde el riel automatico de '
+      + 'tableta: el comportamiento es del componente, como todo lo demas que la hoja no lleva.',
+    ],
+  },
   {
     v: '1.33.0', fecha: '2026-08-10',
     que: 'R39: el cajon de pantalla estrecha gana velo de verdad, salida con raton y pliegue automatico',
