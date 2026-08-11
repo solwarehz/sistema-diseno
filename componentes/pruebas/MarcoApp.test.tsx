@@ -327,3 +327,24 @@ describe('Plegado — el panel flotante', () => {
     expect(grupo.classList.contains('abierto')).toBe(antes);
   });
 });
+
+describe('R37 · las opciones propias cierran el menú al elegirse', () => {
+  it('un menuitem del producto cierra; conmutar el tema no', async () => {
+    const u = userEvent.setup();
+    const { container } = montar({
+      opcionesUsuario: <button role="menuitem">Mi cuenta</button>,
+      usuario: { ...USUARIO, tema: 'claro', onTema: () => {} },
+    });
+    await u.click(screen.getByRole('button', { name: /Menú de/ }));
+    const menu = container.querySelector('.us-menu')!;
+    expect(menu).not.toHaveAttribute('hidden');
+
+    // El tema fija estado, no navega: el menú se queda para seguir eligiendo.
+    await u.click(screen.getByRole('button', { name: 'Modo oscuro' }));
+    expect(menu).not.toHaveAttribute('hidden');
+
+    // La opción propia navega: se elige y el menú se va, como «Salir».
+    await u.click(screen.getByRole('menuitem', { name: 'Mi cuenta' }));
+    expect(menu).toHaveAttribute('hidden');
+  });
+});

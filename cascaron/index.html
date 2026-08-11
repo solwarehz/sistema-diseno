@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.28.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.29.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.28.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.29.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -3086,7 +3086,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.28.0</option></select></label>
+          <select class="campo cg-in"><option>v1.29.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3174,8 +3174,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.28.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.28.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.29.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.29.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -9371,6 +9371,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.29.0 <span class="cam-fecha">2026-08-10</span></h3>
+<p class="pag-intro"><strong>R37: elegir una opcion del menu de usuario lo cierra · el recorte de CargaImagen sale en WebP.</strong> R37 de Control Administrativos: las opciones que el producto mete por children no podian cerrar el menu -su rodeo era un Escape sintetico- y una opcion «Mi cuenta» dejaba el menu flotando sobre la pantalla nueva. Resuelto SIN API nueva: pulsar cualquier role=menuitem de dentro cierra, que es el rol que las opciones ya deben llevar dentro de un role=menu. El corte es deliberado: el selector de tema NO lleva menuitem porque fija estado en vez de navegar, y conmutar el tema no cierra — el menu se queda para seguir eligiendo. Y por pedido del responsable, toda imagen cargada se convierte: el recorte de CargaImagen sale en WebP a calidad 0,85 -pesa bastante menos que PNG- con caida a PNG por especificacion donde el navegador no sepa producirlo; el producto lee blob.type y no asume extension. Una prueba nueva: 211.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>CargaImagen entregaba PNG y ahora entrega WebP donde el navegador sabe. Quien fijara la extension .png al guardar, que lea blob.type.</td></tr></tbody></table>
 
 
 <h3 class="sub-seccion">v1.28.0 <span class="cam-fecha">2026-08-10</span></h3>

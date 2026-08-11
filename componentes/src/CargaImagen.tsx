@@ -156,11 +156,14 @@ export function CargaImagen({
     const x = (imagen.naturalWidth - enOrigen) / 2 - dx / escala;
     const y = (imagen.naturalHeight - enOrigen) / 2 - dy / escala;
     ctx.drawImage(imagen, x, y, enOrigen, enOrigen, 0, 0, lado, lado);
+    // Toda imagen sale en WebP: mismo recorte, bastante menos peso. Donde el
+    // navegador no sepa producirlo, toBlob cae a PNG por especificación — el
+    // producto lee blob.type y no asume extensión.
     corte.toBlob((blob) => {
       if (!blob) return;
       onCambio({ archivo: blob, url: URL.createObjectURL(blob) });
       cerrarEditor();
-    }, 'image/png');
+    }, 'image/webp', 0.85);
   }
 
   function teclas(e: React.KeyboardEvent) {

@@ -78,7 +78,20 @@ export function MenuUsuario({ id: idPersona, nombre, correo, foto, onSalir, tema
         <Avatar id={idPersona} nombre={nombre} foto={foto} tamano="m" />
       </button>
 
-      <div className="us-menu" id={idMenu} role="menu" hidden={!abierto}>
+      <div
+        className="us-menu"
+        id={idMenu}
+        role="menu"
+        hidden={!abierto}
+        // R37: una opción que SE ELIGE cierra el menú — la de «Salir» y las
+        // que el producto mete por children, sin API nueva: basta con que
+        // lleven role="menuitem", que ya es lo que deben llevar dentro de un
+        // role="menu". El selector de tema no lo lleva a propósito (fija
+        // estado, no navega) y por eso conmutar el tema NO cierra.
+        onClick={(e) => {
+          if ((e.target as HTMLElement).closest('[role="menuitem"]')) setAbierto(false);
+        }}
+      >
         <div className="us-cab">
           <Avatar id={idPersona} nombre={nombre} foto={foto} tamano="m" />
           <div className="us-txt">

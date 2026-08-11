@@ -134,7 +134,7 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 | | Regla |
 |---|---|
-| **1** | **Obligatorio.** Es la **pieza visual**: entrega el recorte cuadrado como `Blob` + URL local por `onCambio`. La subida —ruta, momento, reintentos— es del producto. |
+| **1** | **Obligatorio.** Es la **pieza visual**: entrega el recorte cuadrado como `Blob` + URL local por `onCambio`. El recorte sale en **WebP** (calidad 0,85) para que pese menos; donde el navegador no sepa producirlo cae a PNG por especificación, así que el producto lee `blob.type` y **no asume extensión**. La subida —ruta, momento, reintentos— es del producto. |
 | **2** | **Obligatorio.** El encuadre se maneja **también con teclado**: el lienzo es enfocable, las flechas mueven, y acercar/alejar son botones. Un recorte solo-ratón deja gente fuera. |
 | **3** | **Obligatorio.** El editor vive en `Dialogo` con «pulsar fuera» **apagado**: un encuadre a medias no se pierde por un clic. Cancelar sí lo descarta, y elegir el mismo archivo después vuelve a abrir. |
 | **4** | **Obligatorio.** La imagen **cubre siempre el cuadro**: la escala mínima es la que lo llena y el desplazamiento se acota — centrar es mover hasta el borde, no sacar la foto del marco. |

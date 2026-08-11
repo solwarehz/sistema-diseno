@@ -27,10 +27,13 @@ beforeEach(() => {
   HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
     clearRect: vi.fn(), drawImage: vi.fn(),
   })) as unknown as typeof HTMLCanvasElement.prototype.getContext;
-  HTMLCanvasElement.prototype.toBlob = function (cb: BlobCallback) {
-    cb(new Blob(['x'], { type: 'image/png' }));
+  HTMLCanvasElement.prototype.toBlob = function (cb: BlobCallback, tipo?: string) {
+    tipoPedido = tipo;
+    cb(new Blob(['x'], { type: tipo ?? 'image/png' }));
   };
 });
+
+let tipoPedido: string | undefined;
 
 const archivo = new File(['foto'], 'foto.png', { type: 'image/png' });
 
@@ -74,6 +77,9 @@ describe('Carga de imagen — R35', () => {
     const r = onCambio.mock.calls[0][0];
     expect(r.archivo).toBeInstanceOf(Blob);
     expect(r.url).toBe('blob:prueba');
+    // Toda imagen sale pedida en WebP: pesa menos. Si el navegador no sabe,
+    // toBlob cae a PNG por especificación y blob.type dice la verdad.
+    expect(tipoPedido).toBe('image/webp');
     expect(screen.queryByRole('dialog')).toBeNull();
   });
 

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.28.0';
+export const VERSION = '1.29.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,26 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.29.0', fecha: '2026-08-10',
+    que: 'R37: elegir una opcion del menu de usuario lo cierra · el recorte de CargaImagen sale en WebP',
+    porque:
+      'R37 de Control Administrativos: las opciones que el producto mete por children no podian '
+      + 'cerrar el menu -su rodeo era un Escape sintetico- y una opcion «Mi cuenta» dejaba el '
+      + 'menu flotando sobre la pantalla nueva. Resuelto SIN API nueva: pulsar cualquier '
+      + 'role=menuitem de dentro cierra, que es el rol que las opciones ya deben llevar dentro '
+      + 'de un role=menu. El corte es deliberado: el selector de tema NO lleva menuitem porque '
+      + 'fija estado en vez de navegar, y conmutar el tema no cierra — el menu se queda para '
+      + 'seguir eligiendo. Y por pedido del responsable, toda imagen cargada se convierte: el '
+      + 'recorte de CargaImagen sale en WebP a calidad 0,85 -pesa bastante menos que PNG- con '
+      + 'caida a PNG por especificacion donde el navegador no sepa producirlo; el producto lee '
+      + 'blob.type y no asume extension. Una prueba nueva: 211.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'CargaImagen entregaba PNG y ahora entrega WebP donde el navegador sabe. Quien fijara la '
+      + 'extension .png al guardar, que lea blob.type.',
+    ],
+  },
   {
     v: '1.28.0', fecha: '2026-08-10',
     que: 'R35: CargaImagen con encuadre · el modo oscuro del select POR FIN viaja · el catalogo se agrupa en ramas',
