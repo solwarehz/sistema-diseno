@@ -492,3 +492,31 @@ la copia diverge. Ya pasó con la paginación.
 **Regla que queda:** cuando un comportamiento exista en un componente, el
 catálogo lo usa o lo reproduce con **un solo** mecanismo compartido, nunca con
 una copia por familia de elementos.
+
+---
+
+## D-22 · En pantalla muy ancha: chasis en los bordes, documento centrado
+
+**Decisión (aprobada por el responsable, 2026-08-10, v1.32.0):** en monitores
+anchos la columna de contenido **se centra** en el espacio libre conservando su
+medida (1056px interiores), la barra superior alinea sus mandos con esa columna
+(su relleno lateral crece con `max()`), y el **lateral se queda pegado al borde
+físico**: es chasis, como la barra de tareas — no persigue a la columna.
+
+**Por qué:** medido con captura a 1900px — el contenido quedaba arrinconado
+contra el lateral con un desierto a la derecha, y el menú de usuario exiliado
+en la esquina, a media pantalla de lo que se leía. Con el centrado, los dos
+aires laterales son simétricos y el correo/campana/avatar caen sobre el borde
+derecho del contenido, donde el ojo ya está.
+
+**Factura:** se centra con **relleno**, no con margen — `cat-cuerpo` pinta su
+propio fondo y un margen dejaría bandas de otro color a los costados. Hasta
+~1150px el `max()` cae a los rellenos de siempre y no cambia nada.
+
+**La alternativa descartada:** centrar el bloque entero (lateral incluido).
+Convierte la aplicación en página flotante: el menú pierde su anclaje y el
+botón de plegar cambia de sitio físico según el monitor — malo para la memoria
+muscular.
+
+**Lo revertiría:** que el responsable prefiera el bloque completo centrado
+tras usarlo — es un cambio pequeño y localizado en las tres mismas reglas.
