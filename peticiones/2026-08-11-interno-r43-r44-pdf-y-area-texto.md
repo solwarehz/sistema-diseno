@@ -81,7 +81,8 @@ que un `<textarea>` hace distinto: crece con lo escrito (con CSS), el límite es
 
 ## Cómo se verificó
 
-- **270 pruebas** en 20 archivos, todas en verde. 26 son nuevas.
+- **270 pruebas** en 20 archivos, todas en verde. **37 son nuevas**, en tres
+  archivos: el compresor (14), `CargaPdf` (12) y `AreaTexto` (11).
 - El camino de imágenes **no se puede probar en Node**, así que se probó en el
   navegador: se fabricó un A4 a 300 ppp con ruido en JPEG de calidad alta —un
   escaneo— y salió **3,6 MB → 223 KB, 94 %**.
