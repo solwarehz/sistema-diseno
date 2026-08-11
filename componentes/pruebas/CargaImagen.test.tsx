@@ -126,9 +126,10 @@ describe('R6 · los tres formatos — la proporción del hueco real', () => {
     elegir(container);
     await screen.findByRole('dialog');
     const lienzo = container.ownerDocument.querySelector('.ci-lienzo') as HTMLCanvasElement;
-    // 260 de ancho → 54 de alto: la misma proporción que el hueco (212×44).
-    expect(lienzo.width).toBe(260);
-    expect(lienzo.height).toBe(54);
+    // 318×66: ancho ÚNICO para los tres formatos, y proporción EXACTA del
+    // hueco (53:11, sin redondeo). El alto es lo único que varía.
+    expect(lienzo.width).toBe(318);
+    expect(lienzo.height).toBe(66);
     // Sin máscara: el logo no es redondo.
     expect(container.ownerDocument.querySelector('.ci-mascara')).toBeNull();
   });
@@ -148,7 +149,7 @@ describe('R6 · los tres formatos — la proporción del hueco real', () => {
     elegir(container);
     await u.click(await screen.findByRole('button', { name: 'Grabar' }));
     await waitFor(() => expect(onCambio).toHaveBeenCalled());
-    // 512 de ancho → 106 de alto (512 × 54/260), no un cuadrado.
+    // 512 de ancho → 106 de alto (512 × 66/318), no un cuadrado.
     expect(anchos[0]).toEqual([512, 106]);
   });
 

@@ -50,9 +50,9 @@ const FORMATOS: Record<FormatoCarga, {
   vw: number; vh: number; redondo: boolean; icono: 'camara' | 'subir';
   subir: string; cambiar: string;
 }> = {
-  'foto':            { vw: 260, vh: 260, redondo: true,  icono: 'camara', subir: 'Subir foto', cambiar: 'Cambiar foto' },
-  'logo-extendido':  { vw: 260, vh: 54,  redondo: false, icono: 'subir',  subir: 'Subir logo', cambiar: 'Cambiar logo' },
-  'logo-comprimido': { vw: 260, vh: 260, redondo: false, icono: 'subir',  subir: 'Subir logo', cambiar: 'Cambiar logo' },
+  'foto':            { vw: 318, vh: 318, redondo: true,  icono: 'camara', subir: 'Subir foto', cambiar: 'Cambiar foto' },
+  'logo-extendido':  { vw: 318, vh: 66,  redondo: false, icono: 'subir',  subir: 'Subir logo', cambiar: 'Cambiar logo' },
+  'logo-comprimido': { vw: 318, vh: 318, redondo: false, icono: 'subir',  subir: 'Subir logo', cambiar: 'Cambiar logo' },
 };
 
 export type CargaImagenProps = {

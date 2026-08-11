@@ -7431,9 +7431,9 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   // circular, y el resultado se pinta EN SU HUECO para ver como se vera.
   (function () {
     var FORMATOS = {
-      foto: { w: 260, h: 260, redondo: true },
-      ext:  { w: 260, h: 54,  redondo: false },
-      comp: { w: 260, h: 260, redondo: false },
+      foto: { w: 318, h: 318, redondo: true },
+      ext:  { w: 318, h: 66,  redondo: false },
+      comp: { w: 318, h: 318, redondo: false },
     };
     var editor = document.getElementById('ci-demo-editor');
     if (!editor) return;

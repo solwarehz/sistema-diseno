@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.30.1';
+export const VERSION = '1.30.2';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,19 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.30.2', fecha: '2026-08-10',
+    que: 'Los tres encuadres comparten ancho: 318, y el alto lo pone la proporcion',
+    porque:
+      'Iteracion del responsable probando: el encuadre del logo extendido a 260x54 se veia '
+      + 'enano al lado del cuadrado de 260, y tras probar 424x88 la regla buena resulto ser '
+      + 'otra: UN ancho para los tres formatos y que solo el alto varie con la proporcion. '
+      + '318 no es capricho: es multiplo exacto de la proporcion del hueco (53:11 → 318x66, '
+      + 'sin redondeo), cabe holgado en el dialogo de 520 y no es inmenso. La foto y el '
+      + 'comprimido encuadran a 318x318.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.30.1', fecha: '2026-08-10',
     que: 'El difuminado del encuadre ya no se queda pegado a la pagina tras guardar la foto',
