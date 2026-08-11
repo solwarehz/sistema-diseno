@@ -1,77 +1,91 @@
 # Estado del proyecto
 
 **Última actualización:** 11 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.39.0** — la carga de PDF que comprime de
-verdad y sin dependencias, y el área de texto
+**Versión del sistema:** MMI-DS **v1.42.0** — el menú que se quedaba comprimido
+enseñando las opciones de extendido, y el marco entra por fin en el candado de
+la promesa
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
 >
-> **Y se reescribe SIEMPRE.** Esta vez no se hizo: el archivo se quedó en
-> v1.25.0 mientras el repositorio llegaba a v1.38.0 — **catorce versiones
-> diciendo un estado que ya no existía**. Un registro desfasado se lee como si
-> fuera cierto, que es exactamente el defecto que este archivo debía evitar.
+> **Y se reescribe SIEMPRE.** Van dos veces que no se hace: se quedó en v1.25.0
+> con el repositorio en v1.38.0, y otra vez en v1.39.0 con el repositorio en
+> v1.41.3 —tres versiones—. Un registro desfasado se lee como si fuera cierto,
+> que es exactamente el defecto que este archivo debía evitar.
 
 ---
 
 ## Dónde estamos, en una frase
 
-El sistema es un **paquete que un producto instala y consume** —32 componentes
-de React, la hoja que viaja, diez candados, 270 pruebas— y desde hoy sabe
-**comprimir un PDF sin cargar con una sola dependencia**: 94 % medido en un
-escaneo, con el archivo resultante abierto y leído en un visor de verdad.
+El sistema es un **paquete que un producto instala y consume** —35 funciones de
+componente, la hoja que viaja, once candados, 295 pruebas— y desde hoy la parte
+que más se reconstruye, el marco de aplicación, **está vigilada por el candado
+de la promesa**: hasta esta versión no tenía ni un caso.
 
 ---
 
 ## Qué está hecho y verificado
 
+Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
+
 | Módulo | Estado | Cómo se comprobó |
 |---|---|---|
-| Motor de tokens | ✅ | `node sistema/tokens/generar.mjs` — 56 semánticos + movimiento |
+| Motor de tokens | ✅ | `generar.mjs` — 56 semánticos + 5 de marca, claro y oscuro |
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
-| Contraste en **los dos modos** | ✅ | 178 pares · 138 bloqueantes · **0 fallos** |
-| Candado de lint | ✅ | Ejecutado en Docker · 62 casos |
-| **32 componentes de React** | ✅ | 270 pruebas en 20 archivos, en Docker |
-| Catálogo navegable | ✅ | `cascaron/index.html` · 49 páginas |
-| Iconografía | ✅ | 43 iconos, React real |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.39.0.zip` |
+| Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
+| Candado de lint | ✅ | `probar-candado` en Docker |
+| Componentes de React | ✅ | **295 pruebas en 20 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · 707 reglas de 1192 · **516 clases, 0 huérfanas** |
+| Catálogo navegable | ✅ | `cascaron/index.html` · 49 páginas · lo genera `generar-cascaron.mjs` |
+| Iconografía | ✅ | 45 trazos en `iconos.mjs`, React real |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.42.0.zip` · 604 KB · 44 archivos |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
-| **Compresor de PDF propio** | ✅ | Sin dependencias · 88–91 % en PDF crudo (Node), **94 % en escaneo** (navegador) |
+| Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
-### Lo que cambió desde la v1.25.0
+### Lo que cambió desde la v1.39.0
 
 | Versión | Qué |
 |---|---|
-| v1.26–v1.30.4 | `CargaImagen`: los tres formatos con la proporción del hueco real, encuadre probable en el catálogo, recorte en WebP, y cuatro correcciones seguidas del difuminado y los anchos |
-| v1.31.0 | `SelectorBusqueda` entrega su promesa: lupa, chevron, visto — y el resaltado de teclado por fin se pinta |
-| v1.32.0–v1.34.0 | R38/R38a/R39 · el responsive es **comportamiento del componente**: columna centrada en pantalla muy ancha, cajón con velo de verdad y pliegue automático, y el riel de tableta como **estado, no CSS forzado** |
-| v1.35.0 → v1.36.0 | `alGuardar` entró y **se retiró**: la frontera de escritura es del producto, y faltaba la decisión del responsable |
-| v1.37.0 | El `Campo` **recorta al salir**, y nace `CampoContrasena`, que **jamás normaliza** |
-| v1.38.0 | R42 · el tercer nivel del menú por fin se emite, y la tabla simple vuelve a ser **una** tabla |
-| **v1.39.0** | **R43** `CargaPdf` + compresor propio · **R44** `AreaTexto` |
+| v1.40.0 | `CargaPdf` cabe en un formulario: botón fuera, panel que empuja, borrador que confirma al Grabar |
+| v1.40.1 | El botón fija su propio `line-height` — el CSV salía más alto en la entrega |
+| v1.41.0 | El reset `box-sizing` por fin viaja, y **nace el candado promesa-vs-entrega** |
+| v1.41.1 | El botón declara su propio `display` — sin `.btn-ic` el icono y el texto se apilaban |
+| v1.41.2 | La tira de filtros de la tabla se entregaba vacía |
+| v1.41.3 | R47 · el panel flotante del menú plegado cerraba en seco |
+| **v1.42.0** | **R48** · el menú seguía comprimido y sacaba a la vez las opciones de extendido |
 
 ### Lo de hoy, con detalle
 
-**R43 · `CargaPdf`.** El compresor está **escrito a mano** porque el paquete no
-tiene ni una dependencia de ejecución y meter `pdf-lib` se la habría puesto a
-todos los productos que lo instalan. Recomprime las imágenes JPEG incrustadas
-—lo único que mueve la aguja en un escaneo—, tira lo que ya no alcanza nadie,
-tira XMP y `/PieceInfo`, desinfla lo que viajaba en crudo y **reempaqueta en
-`/ObjStm`**: sin eso un PDF moderno saldría **más grande**.
+**R48.** Reportado a 900px: «está el menú comprimido, pero el botón de expandir
+se muestra; al dar clic sigue comprimido pero se ven las opciones de extendido».
+Reproducido en el navegador con la hoja que viaja: la lateral seguía en 56px con
+su clase de plegada y **los cuatro paneles flotantes** encima del contenido.
 
-Tres promesas, cada una con prueba: nunca devuelve algo más grande, nunca
-devuelve algo que no sepa releer —relee su propia salida y exige el mismo
-número de páginas—, y nunca toca un PDF cifrado.
+La causa: el clic re-sincronizaba la apertura de los grupos con el valor
+**pedido**. Sin control de fuera da igual —pedir es aplicar—, pero **controlado**
+(R21) manda el producto: si no devuelve el valor nuevo, el carril sigue plegado
+y los grupos se abrían igual. Y plegado, un grupo abierto **es** un panel
+flotante. No hace falta que el producto se equivoque: guardar la preferencia en
+el perfil —lo que el sistema recomienda— hace que el valor vuelva tarde.
 
-**R44 · `AreaTexto`.** Compone el envoltorio de `Campo`, no lo reconstruye.
-Crece con lo escrito **con CSS** (la altura desde JavaScript exigiría el
-atributo `style`, que el candado prohíbe), el límite es **blando** —`maxlength`
-corta al pegar en silencio y sin deshacer— y el contador **solo se anuncia en el
-último tramo**.
+**Y la promesa no enseñaba ese ancho.** R38a movió el riel de ≤900 al componente
+y el catálogo se quedó sin él. Medido antes de tocar nada, a 900px: catálogo
+desplegado a 236px, entrega plegada a 56px. Ahora el catálogo lleva las dos
+bandas, su botón gana el `aria-expanded` que nunca tuvo, y plegar pasa por un
+solo sitio.
+
+**El marco entra en el candado de la promesa** con once casos —lateral, carril,
+opciones, panel flotante, botón de plegar con sus dos iconos, velo—: 29 casos a
+cinco anchos, todos idénticos.
+
+**El compresor de PDF ya viaja con tipos.** `componentes/src/interno/comprimir-pdf.d.mts`.
+Sin él, un producto que compile sin `allowJs` se caía con **TS7016** desde
+nuestro propio `index.ts`, sin usar el compresor. Reproducido con un `tsconfig`
+de consumidor: dos errores sin la declaración, cero con ella.
 
 ---
 
-## Los diez candados
+## Los once candados
 
 Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en rojo.
 
@@ -82,10 +96,11 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 | `auditar-cascaron` | Estilo en línea, marcado fuera de norma y duraciones a mano | ✅ |
 | `probar-candado` | Que las reglas de ESLint no hagan nada | ✅ |
 | `verificar-contrato` | Una regla obligatoria sin prueba que la nombre | ✅ |
-| `verificar-entrega` | Que el catálogo enseñe lo que no viaja, y al revés | ✅ el mismo día: pidió página para `CargaPdf` y `AreaTexto` |
-| huérfanas (en `extraer.mjs`) | Clase emitida sin regla | ✅ el mismo día: 25 clases nuevas sin regla |
+| `verificar-entrega` | Que el catálogo enseñe lo que no viaja, y al revés | ✅ |
+| huérfanas (en `extraer.mjs`) | Clase emitida sin regla | ✅ |
 | `verificar-cascada` | Lo que NO se escribió, a once anchos | ✅ |
-| ESLint | El atributo `style`, el hex crudo, `outline:none` | ✅ |
+| `verificar-promesa` | Que lo entregado no se vea como lo enseñado | ✅ |
+| ESLint | El atributo `style`, el hex crudo, `outline:none` | ✅ el mismo día: cazó una comilla invertida que rompía el generador |
 | `tsc --noEmit` | Tipos | ✅ |
 
 ---
@@ -95,13 +110,14 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                   1.39.0
-Tokens semánticos             56   + movimiento/elevación
-Pares de contraste           178   (138 bloqueantes, 0 fallos en ambos modos)
-Componentes de React          32   funciones exportadas desde componentes/src
-Pruebas                      270   en 20 archivos
-Iconos                        43
-Páginas del catálogo          49
+Versión                      1.42.0
+Tokens semánticos                56   + 5 de marca
+Pares de contraste              178   (138 bloqueantes, 0 fallos en ambos modos)
+Pruebas                         295   en 20 archivos
+Reglas que viajan               707   de 1192 · 516 clases, 0 huérfanas
+Casos del candado de promesa     29   a 5 anchos (1440, 1024, 900, 700, 390)
+Iconos                           45
+Páginas del catálogo             49
 ```
 
 ```powershell
@@ -115,14 +131,16 @@ docker compose exec ds sh -c "cd componentes && npm run probar"
 
 | Qué | Por qué |
 |---|---|
-| **Compresión de imágenes que no sean JPEG** | El compresor solo toca `/DCTDecode`. Un PDF con imágenes PNG incrustadas apenas adelgaza, y se dice en `detalle` |
-| **El compresor en Node no toca imágenes** | Necesita `canvas`. Las pruebas de Node cubren el camino estructural; el de imágenes se verificó **en el navegador** y así está declarado en el propio archivo de pruebas |
-| **Fuentes incrustadas** | No se tocan. Es el otro gran peso de un PDF y queda fuera |
+| **El marco abre TODOS los grupos al desplegar; el catálogo abre solo el de la página** | Divergencia medida hoy y **no resuelta**: son dos modelos de navegación distintos, los dos escritos y defendidos. Decidirlo cambia el menú de todos los productos o la documentación: **es del responsable** |
+| **El candado de la promesa compara CSS, no comportamiento** | R47 y R48 fueron defectos de comportamiento: ningún candado los vio. Lo único que los caza hoy son las pruebas del componente |
+| Compresión de imágenes que no sean JPEG | El compresor solo toca `/DCTDecode` |
+| El compresor en Node no toca imágenes | Necesita `canvas`; lo de imágenes se verificó en el navegador |
+| Fuentes incrustadas | No se tocan. Es el otro gran peso de un PDF |
 | Los seis `--ambito-alt-*` | Aplazado por el responsable del producto (2026-08-10) |
 | R8, R14–R17 | Marcados `PENDIENTE` en `comportamiento.md` |
 | Selección múltiple y encabezado fijo en la tabla | Declarado en manual §10 |
 | Escudo suelto e isotipo simplificado | **Trabajo de diseñador, no de código** |
-| ESLint: 2 errores en `Estados.tsx` (46 y 149) | `style=` dinámico de esqueleto y progreso; la decisión de arreglarlo **es del responsable** y sigue sin tomarse |
+| ESLint: 2 errores en `Estados.tsx` (46 y 149) | `style=` dinámico de esqueleto y progreso; la decisión **es del responsable** y sigue sin tomarse |
 
 ---
 
@@ -130,7 +148,7 @@ docker compose exec ds sh -c "cd componentes && npm run probar"
 
 - **`solwarehz/sistema-diseno`** · privado · https://github.com/solwarehz/sistema-diseno
 - En esta máquina (Windows) se trabaja en `main` directo, **únicamente con los
-  diez candados y las pruebas en verde**. Es de donde instala el área de
+  once candados y las pruebas en verde**. Es de donde instala el área de
   sistemas: un `main` roto es un proyecto ajeno roto.
 - Nunca `--force`. Nunca `checkout` ni `stash` sobre el árbol compartido.
 - `.gitattributes` fija LF; los binarios de diseño no suben.

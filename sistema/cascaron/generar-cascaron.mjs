@@ -6759,7 +6759,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
   <div class="app-main">
     <div class="top top-cascaron">
-      <button class="top-plegar" id="plegar-cat" aria-label="Plegar menú">
+      <button class="top-plegar" id="plegar-cat" aria-label="Plegar menú" aria-expanded="true">
         <span class="ic-escritorio">${ICONOS.panelIzq}</span>
         <span class="ic-movil">${ICONOS.hamburguesa}</span>
       </button>
@@ -7071,18 +7071,26 @@ ${COMPRESOR_PDF}
       v = document.createElement('div');
       v.className = 'velo';
       v.addEventListener('click', function () {
-        document.getElementById('lateral').classList.add('colapsado');
+        plegarLateral(true);
         velo(false);
       });
       app.appendChild(v);
     } else if (!poner && v) v.remove();
   }
 
-  document.getElementById('plegar-cat').addEventListener('click', function () {
-    document.getElementById('lateral').classList.toggle('colapsado');
-    if (document.documentElement.getAttribute('data-vista') === 'movil') {
-      velo(!document.getElementById('lateral').classList.contains('colapsado'));
-    }
+  /* R48 · UN SOLO SITIO QUE PLIEGA.
+     La clase, el aria y la apertura de los grupos salen del MISMO estado.
+     Estaban repartidos, y cada camino —el botón, el velo, la banda de ancho,
+     el conmutador de vista— tenía que acordarse de los tres: la banda no se
+     acordaba de ninguno, y el botón no tocaba el aria en toda su vida.
+     Devuelve el estado que QUEDA, no el que se pidió. */
+  function plegarLateral(poner) {
+    var lateral = document.getElementById('lateral');
+    var nuevo = poner === undefined ? !lateral.classList.contains('colapsado') : !!poner;
+    lateral.classList.toggle('colapsado', nuevo);
+    var boton = document.getElementById('plegar-cat');
+    boton.setAttribute('aria-expanded', String(!nuevo));
+    boton.setAttribute('aria-label', nuevo ? 'Desplegar menú' : 'Plegar menú');
     // Al plegar cambia la regla de apertura: fijado deja de abrir y solo abre
     // el cursor. Sin re-sincronizar, el grupo fijado se quedaba como panel
     // flotante atascado, abierto sin que nadie lo hubiera pedido.
@@ -7090,6 +7098,12 @@ ${COMPRESOR_PDF}
       g.classList.remove('hover');
       sincronizarGrupo(g);
     });
+    return nuevo;
+  }
+
+  document.getElementById('plegar-cat').addEventListener('click', function () {
+    var plegado = plegarLateral();
+    if (document.documentElement.getAttribute('data-vista') === 'movil') velo(!plegado);
   });
 
   function abrir(id) {
@@ -7136,7 +7150,7 @@ ${COMPRESOR_PDF}
     // sigue plegada: quien la plegó quiere que siga así.
     // En móvil, elegir cierra la lateral: ocupa media pantalla.
     if (document.documentElement.getAttribute('data-vista') === 'movil' && a.closest('.lat')) {
-      document.getElementById('lateral').classList.add('colapsado');
+      plegarLateral(true);
       var v = document.querySelector('.velo');
       if (v) v.remove();
     }
@@ -7810,7 +7824,7 @@ ${COMPRESOR_PDF}
       else raizEl.removeAttribute('data-app');
       // En 390px la lateral empieza fuera de pantalla. En app NUNCA se abre:
       // la navegación son las pestañas de abajo.
-      document.getElementById('lateral').classList.toggle('colapsado', on);
+      plegarLateral(on);
       // El aviso se muda dentro del marco: fuera se posicionaría contra la
       // ventana y aparecería flotando fuera del teléfono.
       var zona = document.querySelector('.av-zona');
@@ -8762,15 +8776,23 @@ ${COMPRESOR_PDF}
   // Se pliega al arrancar y al cruzar el umbral, no en cada píxel de
   // redimensionado: quien ya la abrió a mano no quiere que se le cierre sola
   // mientras ajusta la ventana.
+  //
+  // R48 · SON DOS BANDAS, LAS MISMAS QUE MarcoApp: ≤900 el riel de tableta
+  // (R38a) y ≤700 el cajón (R39). Aquí solo estaba la de 700, así que entre 701
+  // y 900 el catálogo enseñaba un menú de 236px que el producto NO TIENE —él se
+  // pliega solo a 56px—. Medido a 900px antes de tocar nada: catálogo 236px
+  // desplegado, entrega 56px plegada. La promesa no enseñaba en ningún momento
+  // el estado en el que vive la entrega, y por eso «se ve distinto» no tenía
+  // dónde verse. Lo reportó el responsable a ese ancho exacto.
   (function () {
     var lateral = document.getElementById('lateral');
     if (!lateral) return;
-    var estrecho = window.matchMedia('(max-width: 700px)');
-    var aplicar = function (e) {
-      if (e.matches) lateral.classList.add('colapsado');
-    };
-    aplicar(estrecho);
-    if (estrecho.addEventListener) estrecho.addEventListener('change', aplicar);
+    var bandas = ['(max-width: 900px)', '(max-width: 700px)'].map(function (q) {
+      return window.matchMedia(q);
+    });
+    var aplicar = function (e) { if (e.matches) plegarLateral(true); };
+    bandas.forEach(function (b) { if (b.addEventListener) b.addEventListener('change', aplicar); });
+    if (bandas.some(function (b) { return b.matches; })) plegarLateral(true);
   })();
 
   // ── Vista guardada ────────────────────────────────────────────────────────

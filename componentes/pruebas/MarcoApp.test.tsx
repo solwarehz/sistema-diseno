@@ -462,6 +462,70 @@ describe('R38a · la banda del riel (≤900px) es estado, no CSS forzado', () =>
   });
 });
 
+/**
+ * R48 · LO QUE SE PIDE NO ES LO QUE QUEDA.
+ *
+ * Reportado por el responsable a 900px, con el marco ya en el carril:
+ *
+ *   «al dar clic el menú sigue comprimido pero se ven las opciones de
+ *    extendido»
+ *
+ * El clic re-sincronizaba los grupos con el valor PEDIDO. Controlado (R21) el
+ * que manda es el producto: si no devuelve el nuevo valor, la barra se queda
+ * plegada — y los grupos se abrían igual. Plegado, un grupo abierto ES un panel
+ * flotante, así que el clic dejaba los cuatro paneles encima del contenido con
+ * la barra todavía a 56px. Medido en el navegador con la hoja que viaja:
+ * `.lat.colapsado` de 56px y cuatro `.nav-hijos` visibles a la vez.
+ */
+describe('R48 · los grupos siguen al plegado que QUEDA, no al que se pide', () => {
+  it('controlado y no honrado: el clic no deja los flotantes sueltos', async () => {
+    const u = userEvent.setup();
+    // El producto manda `plegado` y no devuelve el cambio: ni por descuido —lo
+    // pasa sin `onPlegar`— ni por lentitud, que es lo que pasa cuando la
+    // preferencia se guarda en el perfil y el guardado tarda o falla.
+    const { container } = montar({ plegado: true });
+    expect(container.querySelectorAll('.nav-grupo.abierto')).toHaveLength(0);
+
+    await u.click(screen.getByRole('button', { name: 'Desplegar menú' }));
+
+    // Sigue plegado, porque el producto no lo desplegó: eso es lo correcto.
+    expect(container.querySelector('.lat.colapsado')).not.toBeNull();
+    // Y LO QUE FALLABA: los grupos se abrían de todas formas. Plegado, cada uno
+    // es un panel flotante, así que salían todos a la vez.
+    expect(container.querySelectorAll('.nav-grupo.abierto')).toHaveLength(0);
+  });
+
+  it('controlado y honrado: los grupos se re-sincronizan al llegar el cambio', () => {
+    const { container, rerender } = render(
+      <MarcoApp titulo="AE" hrefInicio="/" navegacion={NAV} usuario={USUARIO} plegado>
+        <p>Contenido</p>
+      </MarcoApp>
+    );
+    expect(container.querySelectorAll('.nav-grupo.abierto')).toHaveLength(0);
+
+    // El producto devuelve el valor nuevo. Aquí sí abre, y abre por el cambio
+    // EFECTIVO — así funciona igual si el pliegue no vino del botón, como al
+    // restaurar la preferencia del perfil al abrir sesión.
+    rerender(
+      <MarcoApp titulo="AE" hrefInicio="/" navegacion={NAV} usuario={USUARIO} plegado={false}>
+        <p>Contenido</p>
+      </MarcoApp>
+    );
+    expect(container.querySelectorAll('.nav-grupo.abierto').length).toBeGreaterThan(0);
+  });
+
+  it('sin control de fuera nada cambia: pedir ES aplicar', async () => {
+    const u = userEvent.setup();
+    const { container } = montar();
+    await u.click(screen.getByRole('button', { name: 'Plegar menú' }));
+    expect(container.querySelector('.lat.colapsado')).not.toBeNull();
+    expect(container.querySelectorAll('.nav-grupo.abierto')).toHaveLength(0);
+    await u.click(screen.getByRole('button', { name: 'Desplegar menú' }));
+    expect(container.querySelector('.lat.colapsado')).toBeNull();
+    expect(container.querySelectorAll('.nav-grupo.abierto').length).toBeGreaterThan(0);
+  });
+});
+
 describe('R42a · el tercer nivel del menú por fin se emite', () => {
   const TRES_NIVELES: GrupoNav[] = [
     {

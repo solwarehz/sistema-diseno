@@ -186,10 +186,7 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 | **4** | **Obligatorio.** (R38a, v1.34.0) La banda del **riel** (≤900px) es **estado, no CSS forzado**: al cruzarla el marco se pliega de verdad — la clase, el `aria-expanded` y el logo compacto de `MarcaMenu` salen del mismo estado. Quien quiera re-desplegar a ese ancho, puede: los 236px caben en línea. La hoja pinta estados; no los impone a espaldas del componente. |
 | **5** | **Obligatorio.** (R47, v1.41.3) **Plegado, el panel flotante se cierra CON MARGEN**: 220 ms desde que el cursor sale del grupo, y volver a entrar dentro de ese margen lo cancela. No es un adorno: el panel nace al otro lado del carril y el cursor tiene que **cruzar sus 56 px** para alcanzarlo — cerrando en seco desaparece por el camino y no hay forma de elegir nada. El catálogo lo llevaba desde el principio; la entrega cerraba al instante. Y **con teclado abre al enfocar dentro**: sin ratón, el panel era inalcanzable. |
 | **6** | **Obligatorio.** (R42a, v1.38.0) La navegación llega al **tercer nivel**: una `OpcionNav` con `hijos` se dibuja como **rama plegable** (`aria-expanded`, chevron), no como enlace. Las ramas arrancan **cerradas** —doce ítems seguidos no se leen— salvo la que contiene a la opción activa: llegar a una pantalla y no ver dónde estás en el menú es peor que un clic de más. |
-
----
-
-## Reglas transversales
+| **7** | **Obligatorio.** (R48, v1.42.0) La apertura de los grupos sigue al plegado que **queda**, no al que se **pide**. Controlado (regla 2), el que manda es el producto: si no devuelve el valor nuevo, el carril sigue plegado — y los grupos **no se abren**. Abrirlos igual dejaba los paneles flotantes de **todos** los grupos encima del contenido con la barra todavía a 56 px, que es justo el estado que la regla 4 existe para evitar. Por lo mismo, un marco que **nace plegado** nace con los grupos cerrados. |
 
 | | Regla |
 |---|---|

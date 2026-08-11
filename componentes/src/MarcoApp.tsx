@@ -1,7 +1,9 @@
 /**
  * MARCO DE APLICACIÓN — navegación lateral, barra superior y contenido
  *
- * La pieza más grande del sistema: 196 de las 446 reglas de estilo. Y la que
+ * La pieza más grande del sistema: 184 de las 707 reglas que viajan —la cifra
+ * la da `extraer.mjs`, y esta línea decía 196 de 446 desde una versión en la
+ * que eso era cierto—. Y la que
  * más se reconstruía, porque hasta ahora se entregaba **cómo se ve** y cada
  * proyecto rehacía **cómo se comporta**.
  *
@@ -150,23 +152,57 @@ export function MarcoApp({
   // Controlado si llega de fuera; si no, se gobierna solo. El aviso sale en los
   // dos casos: un producto puede querer PERSISTIR sin querer MANDAR.
   const plegado = plegadoFuera ?? plegadoDentro;
+  // Al plegar cambia la REGLA de apertura, así que la apertura de los grupos se
+  // re-sincroniza —igual que hace el catálogo—. Plegado, los grupos cierran: si
+  // quedaran abiertos, cada uno sería un panel flotante atascado, y como
+  // arrancan TODOS abiertos, plegar mostraba todos los flotantes a la vez.
+  // Desplegado, vuelven todos abiertos, que es como nace el menú.
+  const sincronizarGrupos = (estaPlegado: boolean) =>
+    setAbiertos(estaPlegado ? new Set() : new Set(navegacion.map((g) => g.clave)));
+
   const setPlegado = (v: boolean | ((p: boolean) => boolean)) => {
     const nuevo = typeof v === 'function' ? v(plegado) : v;
-    if (plegadoFuera === undefined) setPlegadoDentro(nuevo);
+    // R48 · LOS GRUPOS SIGUEN AL PLEGADO QUE QUEDA, NO AL QUE SE PIDE.
+    //
+    // Aquí se re-sincronizaba siempre, con el valor PEDIDO. Sin control de
+    // fuera da igual —pedir es aplicar—, pero controlado (R21) el que manda es
+    // el producto: si no devuelve el nuevo valor, el carril se queda plegado y
+    // los grupos se abrían igual. Y plegado, un grupo abierto es un panel
+    // flotante: el clic dejaba los CUATRO paneles encima del contenido con la
+    // barra todavía a 56px. Medido a 900px: `.lat.colapsado` de 56px y cuatro
+    // `.nav-hijos` visibles a la vez. Es justo el estado que el comentario de
+    // arriba dice que no puede existir.
+    //
+    // Lo reportó el responsable: «al dar clic sigue comprimido pero se ven las
+    // opciones de extendido».
+    if (plegadoFuera === undefined) {
+      setPlegadoDentro(nuevo);
+      sincronizarGrupos(nuevo);
+    }
     onPlegar?.(nuevo);
-    // Al plegar cambia la REGLA de apertura, así que el estado se re-sincroniza
-    // —igual que hace el catálogo—. Plegado, los grupos cierran: si quedaran
-    // abiertos, cada uno sería un panel flotante atascado, y como arrancan
-    // TODOS abiertos, plegar mostraba todos los flotantes a la vez. Desplegado,
-    // vuelven todos abiertos, que es como nace el menú.
-    setAbiertos(nuevo ? new Set() : new Set(navegacion.map((g) => g.clave)));
   };
+
+  // Controlado, la sincronización llega cuando el producto DEVUELVE el cambio,
+  // no cuando se le pide. Y llega igual si lo cambia por su cuenta —restaurar
+  // la preferencia del perfil al cargar la sesión— que es un pliegue que este
+  // componente no ve pasar por su botón.
+  const plegadoPrevio = useRef(plegado);
+  useEffect(() => {
+    if (plegadoPrevio.current === plegado) return;
+    plegadoPrevio.current = plegado;
+    if (plegadoFuera !== undefined) sincronizarGrupos(plegado);
+  }, [plegado]);
   // «Más» en la vista de app: la lista de lo que no cupo en las cinco pestañas.
   const [masAbierto, setMasAbierto] = useState(false);
   // Qué grupos están abiertos. Arrancan ABIERTOS: un menú que empieza cerrado
   // esconde la navegación entera y obliga a un clic antes de poder mirar.
+  //
+  // R48 · salvo que NAZCA plegado, que es lo que pasa cuando el producto manda
+  // `plegado` y restaura la preferencia de la persona. Plegado, un grupo
+  // abierto es un panel flotante: arrancando todos abiertos, el marco se
+  // pintaba con los cuatro paneles encima del contenido antes de tocar nada.
   const [abiertos, setAbiertos] = useState<Set<string>>(
-    () => new Set(navegacion.map((g) => g.clave))
+    () => (plegado ? new Set() : new Set(navegacion.map((g) => g.clave)))
   );
   // R42a · qué RAMAS (tercer nivel) están abiertas. Al revés que los grupos,
   // arrancan CERRADAS —«doce ítems seguidos no se leen»— salvo la que

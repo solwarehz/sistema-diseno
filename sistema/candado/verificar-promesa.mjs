@@ -86,6 +86,55 @@ const CASOS = [
   ['Avatar', [elem('span', ['avatar', 'avatar-l'])]],
   ['Aviso', [elem('div', ['av-zona']), elem('div', ['av', 'av-exito'])]],
   ['Diálogo', [elem('dialog', ['dialogo'])]],
+
+  /**
+   * EL MARCO, que no tenía NI UN CASO aquí — 184 reglas de las 707 que viajan
+   * (`extraer.mjs` las cuenta), la pieza más grande del sistema, sin vigilar.
+   * Se ve al mirar la lista de arriba: botones, campos, tabla, avisos… y ni
+   * una `.lat`.
+   *
+   * Entraron cuando el responsable reportó el carril de 900px. Ese defecto era
+   * de comportamiento y estos casos no lo habrían cazado —aquí se compara CSS—,
+   * pero al ir a buscarlo apareció esto, que es peor: la parte del sistema que
+   * más se reconstruye era la única sin candado de promesa.
+   */
+  ['Lateral desplegada', [elem('div', ['app', 'app-cascaron']), elem('aside', ['lat'])]],
+  ['Lateral plegada (el carril)', [elem('div', ['app', 'app-cascaron']), elem('aside', ['lat', 'colapsado'])]],
+  ['Opción del menú', [
+    elem('div', ['app', 'app-cascaron']), elem('aside', ['lat']),
+    elem('nav', ['lat-nav']), elem('a', ['nav-item']),
+  ]],
+  ['Opción activa', [
+    elem('div', ['app', 'app-cascaron']), elem('aside', ['lat']),
+    elem('nav', ['lat-nav']), elem('a', ['nav-item', 'activo']),
+  ]],
+  ['Hijo del menú', [
+    elem('div', ['app', 'app-cascaron']), elem('aside', ['lat']), elem('nav', ['lat-nav']),
+    elem('div', ['nav-grupo', 'abierto']), elem('div', ['nav-hijos']),
+    elem('div', ['nav-hijos-in']), elem('a', ['nav-hijo']),
+  ]],
+  // El panel que se abre al lado del carril: existe SOLO bajo `.colapsado`, y
+  // es lo que se ve a 900px. Si su posición o su capa no viajaran, el producto
+  // lo tendría debajo del contenido y nadie lo vería.
+  ['Panel flotante del grupo plegado', [
+    elem('div', ['app', 'app-cascaron']), elem('aside', ['lat', 'colapsado']),
+    elem('nav', ['lat-nav']), elem('div', ['nav-grupo', 'abierto']), elem('div', ['nav-hijos']),
+  ]],
+  ['Título del panel flotante', [
+    elem('div', ['app', 'app-cascaron']), elem('aside', ['lat', 'colapsado']),
+    elem('nav', ['lat-nav']), elem('div', ['nav-grupo', 'abierto']),
+    elem('div', ['nav-hijos']), elem('div', ['nav-hijos-in']), elem('span', ['nav-flot-tit']),
+  ]],
+  ['Botón de plegar', [elem('div', ['top']), elem('button', ['top-plegar'])]],
+  // R25 vivió aquí: los dos iconos pintados a la vez porque sus reglas base no
+  // viajaban y solo llegaba la consulta de móvil.
+  ['Icono de escritorio del botón de plegar', [
+    elem('div', ['top']), elem('button', ['top-plegar']), elem('span', ['ic-escritorio']),
+  ]],
+  ['Icono de móvil del botón de plegar', [
+    elem('div', ['top']), elem('button', ['top-plegar']), elem('span', ['ic-movil']),
+  ]],
+  ['Velo del cajón', [elem('div', ['app', 'app-cascaron']), elem('div', ['velo'])]],
 ];
 
 /** Los anchos donde se compara. Una regla puede viajar y su @media no. */

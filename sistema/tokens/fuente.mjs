@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.41.3';
+export const VERSION = '1.42.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,42 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.42.0', fecha: '2026-08-11',
+    que: 'R48: el menu seguia comprimido y sacaba a la vez las opciones de extendido',
+    porque:
+      'Lo reporto el responsable a 900px: «esta el menu comprimido, pero el boton de expandir se '
+      + 'muestra; al dar clic sigue comprimido pero se ven las opciones de extendido». Reproducido '
+      + 'en el navegador con la hoja que viaja y medido: la lateral seguia en 56px con su clase '
+      + 'de plegada, y los CUATRO '
+      + 'paneles flotantes encima del contenido a la vez. '
+      + 'La causa: el clic re-sincronizaba la apertura de los grupos con el valor PEDIDO. Sin '
+      + 'control de fuera da igual —pedir es aplicar—, pero controlado (R21) el que manda es el '
+      + 'producto: si no devuelve el valor nuevo, el carril se queda plegado y los grupos se abrian '
+      + 'igual. Plegado, un grupo abierto ES un panel flotante. Ahora los grupos siguen al plegado '
+      + 'que QUEDA, no al que se pide, y un marco que nace plegado nace con los grupos cerrados. '
+      + 'No hace falta que el producto se equivoque: guardar la preferencia en el perfil —que es lo '
+      + 'que el sistema recomienda— hace que el valor vuelva tarde, y ese hueco bastaba. '
+      + 'Y LA PROMESA NO ENSEÑABA ESE ANCHO. R38a movio el riel de ≤900 al componente y el catalogo '
+      + 'se quedo sin el: medido antes de tocar nada, a 900px el catalogo estaba desplegado a 236px '
+      + 'y la entrega plegada a 56px. El catalogo aprende las dos bandas —≤900 y ≤700—, su boton '
+      + 'gana el aria-expanded que nunca tuvo y su etiqueta deja de mentir, y plegar y desplegar '
+      + 'pasan por un solo sitio. '
+      + 'El marco no tenia NI UN CASO en el candado de la promesa: 184 reglas de las 707 que viajan, '
+      + 'la pieza que mas se reconstruye, sin vigilar. Entran once — la lateral, el carril, las '
+      + 'opciones, el panel flotante, el boton de plegar con sus dos iconos y el velo. 29 casos, '
+      + 'identicos a cinco anchos. '
+      + 'Y el compresor de PDF viaja por fin con su declaracion de tipos: el index.ts del paquete '
+      + 'reexporta un .mjs sin tipos, asi que cualquier producto que compile sin allowJs se caia '
+      + 'con TS7016 sin usar el compresor. Reproducido con un tsconfig de consumidor y verificado '
+      + 'que se apaga. '
+      + '295.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'El catalogo pliega la lateral entre 701 y 900px, como hace el producto. Quien leia el '
+      + 'catalogo en tableta vera el carril de iconos: es el estado real del sistema a ese ancho.',
+    ],
+  },
   {
     v: '1.41.3', fecha: '2026-08-11',
     que: 'R47: el panel flotante del menu plegado cerraba en seco y no se podia llegar a el',

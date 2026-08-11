@@ -19,8 +19,8 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.39.0** — la carga de PDF que comprime de verdad y sin
-dependencias, y el área de texto.
+**Estado actual: v1.42.0** — el menú que se quedaba comprimido enseñando las
+opciones de extendido, y el marco entra en el candado de la promesa.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
