@@ -140,6 +140,93 @@ const CASOS = [
 /** Los anchos donde se compara. Una regla puede viajar y su @media no. */
 const ANCHOS = [1440, 1024, 900, 700, 390];
 
+// ─────────────────────────────────────────────────────────────────────────────
+// LOS CASOS QUE NADIE ELIGE
+//
+// La lista de arriba la escribió alguien, y por eso el marco —la pieza más
+// grande— pasó dos versiones sin un solo caso. Una lista a mano vigila lo que
+// alguien se acordó de mirar, que es justo lo contrario de una garantía.
+//
+// Lo pidió el responsable con estas palabras: «que la promesa esté garantizada
+// en cada componente». Así que los casos dejan de escribirse: se **recorre el
+// marcado del catálogo** y se compara CADA elemento que pinta, con su cadena de
+// antepasados real.
+//
+// La lista a mano se queda, y no sobra: el catálogo enseña un estado por
+// elemento, y hay estados que su marcado no tiene abierto en ese momento —la
+// lateral plegada y su panel flotante, el velo—. Esos hay que fijarlos.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Etiquetas sin cierre. Sin esto la pila se desequilibra y las cadenas mienten. */
+const VACIAS = new Set([
+  'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta',
+  'param', 'source', 'track', 'wbr',
+  // Del SVG, que va inline en el catálogo y también se cierra solo.
+  'path', 'circle', 'rect', 'line', 'polyline', 'polygon', 'ellipse', 'use', 'stop',
+]);
+
+/** Qué atributos miran los selectores. Solo esos se recogen del marcado. */
+function atributosVigilados(hojas) {
+  const nombres = new Set();
+  for (const reglas of hojas) {
+    for (const r of reglas) {
+      for (const m of r.sel.matchAll(/\[([a-zA-Z-]+)/g)) nombres.add(m[1]);
+    }
+  }
+  return nombres;
+}
+
+/**
+ * Recorre el marcado y devuelve la cadena de antepasados de CADA elemento.
+ *
+ * No es un analizador de HTML completo y no pretende serlo: el catálogo lo
+ * genera este repositorio, así que el marcado es el que escribimos. Lo que sí
+ * hace falta es no equivocarse con la pila —de ahí las etiquetas vacías y el
+ * cierre implícito— porque una cadena mal formada compara un elemento que no
+ * existe y saca diferencias que nadie puede arreglar.
+ */
+function recorrerMarcado(html, attrsVigilados) {
+  const cuerpo = html
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/g, '')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/g, '')
+    .replace(/<!--[\s\S]*?-->/g, '');
+
+  const pila = [];
+  const cadenas = new Map(); // firma -> cadena
+  const ETIQUETA = /<(\/?)([a-zA-Z][a-zA-Z0-9-]*)((?:"[^"]*"|'[^']*'|[^>"'])*?)(\/?)>/g;
+
+  for (const m of cuerpo.matchAll(ETIQUETA)) {
+    const [, cierre, tagCrudo, crudo, solo] = m;
+    const tag = tagCrudo.toLowerCase();
+
+    if (cierre) {
+      // Cierre: se desapila hasta el mismo nombre. Si no está, se ignora — es
+      // marcado roto, y romperse aquí sería peor que seguir.
+      const i = pila.map((e) => e.tag).lastIndexOf(tag);
+      if (i >= 0) pila.length = i;
+      continue;
+    }
+
+    const clases = (crudo.match(/\sclass=["']([^"']*)["']/) || [, ''])[1]
+      .split(/\s+/).filter(Boolean);
+    const attrs = {};
+    for (const a of crudo.matchAll(/\s([a-zA-Z-]+)(?:=["']([^"']*)["'])?/g)) {
+      if (attrsVigilados.has(a[1])) attrs[a[1]] = a[2] ?? '';
+    }
+
+    const el = elem(tag, clases, attrs);
+    const cadena = [...pila.map((e) => e.el), el];
+    const firma = cadena
+      .map((e) => e.tag + [...e.clases].sort().map((c) => '.' + c).join('')
+        + Object.entries(e.attrs).map(([k, v]) => `[${k}="${v}"]`).join(''))
+      .join(' ');
+    if (!cadenas.has(firma)) cadenas.set(firma, cadena);
+
+    if (!solo && !VACIAS.has(tag)) pila.push({ tag, el });
+  }
+  return cadenas;
+}
+
 /**
  * Toda propiedad que cualquiera de las dos hojas declare para este elemento.
  * No hay lista blanca: elegir qué mirar sería dejarlo a criterio.
@@ -176,19 +263,89 @@ const entrega = parsear(
   + readFileSync(join(RAIZ, 'sistema/componentes/componentes.css'), 'utf8'),
 );
 
+/**
+ * QUÉ ES «DEL SISTEMA» Y QUÉ ES MOBILIARIO DEL CATÁLOGO.
+ *
+ * El catálogo es una página, y una página tiene cromo propio —su índice, sus
+ * fichas de muestra, sus tablas de documentación— que **no viaja ni debe
+ * viajar**. Compararlo daría miles de diferencias que nadie puede arreglar,
+ * porque no son un incumplimiento: son la página.
+ *
+ * La frontera no se elige a ojo: es **la clase declarada en la hoja que viaja**.
+ * Si `componentes.css` declara la clase, ese elemento es del sistema y la
+ * entrega tiene que verse igual. Si no la declara ninguna de sus clases, es
+ * mobiliario — y se **cuenta y se dice** cuántos se saltaron, para que nadie lea
+ * el verde como si cubriera la página entera.
+ */
+const CLASES_QUE_VIAJAN = new Set();
+for (const r of entrega) {
+  for (const m of r.sel.matchAll(/\.([a-zA-Z][a-zA-Z0-9_-]*)/g)) CLASES_QUE_VIAJAN.add(m[1]);
+}
+
+const attrs = atributosVigilados([promesa, entrega]);
+const delMarcado = recorrerMarcado(html, attrs);
+
+/** Un elemento es del sistema si NINGUNA de sus clases es sólo del catálogo. */
+const esDelSistema = (el) => [...el.clases].every((c) => CLASES_QUE_VIAJAN.has(c));
+
+const automaticos = [];
+let mobiliario = 0;
+for (const [, cadena] of delMarcado) {
+  const hoja = cadena[cadena.length - 1];
+  // Con alguna clase que viaja —si no, es una caja de la página— y con NINGUNA
+  // que no viaje: `.top.top-cascaron` es la barra DEL CATÁLOGO, y el producto
+  // emite `.top` a secas. Compararla diría que la entrega incumple algo que
+  // nadie le prometió.
+  if (!esDelSistema(hoja) || ![...hoja.clases].some((c) => CLASES_QUE_VIAJAN.has(c))) {
+    mobiliario++;
+    continue;
+  }
+  // Los antepasados que son mobiliario se retiran de la cadena por lo mismo:
+  // una regla como `.pagina .btn` decora la página, y el producto no tiene
+  // `.pagina`. Se retiran ellos, no sus descendientes.
+  const cadenaLimpia = cadena.filter(esDelSistema);
+  const firma = cadenaLimpia
+    .map((e) => e.tag + [...e.clases].sort().map((c) => '.' + c).join('')
+      + Object.entries(e.attrs).map(([k, v]) => `[${k}="${v}"]`).join(''))
+    .join(' ');
+  automaticos.push([firma, cadenaLimpia]);
+}
+// Retirar antepasados junta cadenas que antes eran distintas.
+const unicos = new Map(automaticos);
+
+const TODOS = [
+  ...CASOS.map(([n, c]) => [n, c, true]),
+  ...[...unicos].map(([n, c]) => [n, c, false]),
+];
+
 console.log(`\n  Candado de la promesa — MMI-DS v${VERSION}\n`);
 console.log(`  Promesa (catálogo):  ${promesa.length} reglas`);
 console.log(`  Entrega (viaja):     ${entrega.length} reglas`);
-console.log(`  Casos:               ${CASOS.length} · anchos ${ANCHOS.join(', ')}\n`);
+console.log(`  Del marcado:         ${unicos.size} elementos del sistema`
+  + ` · ${mobiliario} de mobiliario del catálogo, no comparados`);
+console.log(`  Fijados a mano:      ${CASOS.length} (estados que el marcado no tiene abiertos)`);
+console.log(`  Anchos:              ${ANCHOS.join(', ')}\n`);
 
 let fallos = 0;
-for (const [nombre, cadena] of CASOS) {
+let comparados = 0;
+let propsTotales = 0;
+const rotos = new Map(); // firma corta -> diferencias, para no repetir el mismo aviso
+
+for (const [nombre, cadena, aMano] of TODOS) {
+  // Las reglas que casan se calculan UNA VEZ por elemento. Antes se volvían a
+  // casar por cada propiedad y por cada ancho: con los casos a mano daba igual,
+  // con el marcado entero no terminaría nunca.
+  const casanP = promesa.filter((r) => casa(r.sel, cadena) === true);
+  const casanE = entrega.filter((r) => casa(r.sel, cadena) === true);
+  const props = propiedadesEnJuego([casanP, casanE], cadena);
+  comparados++;
+  propsTotales += props.length;
+
   const diffs = [];
-  const props = propiedadesEnJuego([promesa, entrega], cadena);
   for (const ancho of ANCHOS) {
     for (const prop of props) {
-      const a = resolver(promesa, cadena, prop, ancho);
-      const b = resolver(entrega, cadena, prop, ancho);
+      const a = resolver(casanP, cadena, prop, ancho);
+      const b = resolver(casanE, cadena, prop, ancho);
       const va = a ? a.valor : '(sin regla)';
       const vb = b ? b.valor : '(sin regla)';
       if (va === vb) continue;
@@ -198,12 +355,21 @@ for (const [nombre, cadena] of CASOS) {
   }
   if (diffs.length) {
     fallos += diffs.length;
-    console.error(`  ✗ ${nombre}  (${props.length} propiedades en juego)`);
-    for (const d of diffs) console.error(d);
-    console.error('');
-  } else {
+    rotos.set(nombre, diffs);
+  } else if (aMano) {
     console.log(`  ✓ ${nombre.padEnd(24)} ${props.length} propiedades, idénticas`);
   }
+}
+
+if (!fallos) {
+  console.log(`\n  ${comparados} elementos comparados · ${propsTotales} propiedades resueltas`
+    + ` en ${ANCHOS.length} anchos.`);
+}
+
+for (const [nombre, diffs] of rotos) {
+  console.error(`  ✗ ${nombre}`);
+  for (const d of diffs) console.error(d);
+  console.error('');
 }
 
 if (fallos) {
@@ -213,4 +379,4 @@ if (fallos) {
   console.error('  lleva porque su primera clase no está en ELEMENTOS.\n');
   process.exit(1);
 }
-console.log('\n  La entrega se ve igual que la promesa, en todos los casos medidos.\n');
+console.log('\n  La entrega se ve igual que la promesa, en todo lo que el catálogo pinta.\n');

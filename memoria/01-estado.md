@@ -74,9 +74,23 @@ desplegado a 236px, entrega plegada a 56px. Ahora el catálogo lleva las dos
 bandas, su botón gana el `aria-expanded` que nunca tuvo, y plegar pasa por un
 solo sitio.
 
-**El marco entra en el candado de la promesa** con once casos —lateral, carril,
-opciones, panel flotante, botón de plegar con sus dos iconos, velo—: 29 casos a
-cinco anchos, todos idénticos.
+**El candado de la promesa deja de mirar una lista a mano.** El marco no tenía
+ni un caso, y eso es lo que pasa con una lista que alguien escribe: vigila lo
+que alguien se acordó de mirar. Ahora **se recorre el marcado del catálogo** y
+se compara cada elemento que pinta, con su cadena de antepasados real —
+**828 elementos · 170.194 propiedades resueltas a cinco anchos**, más 29 estados
+fijados a mano que el marcado no tiene abiertos (la lateral plegada, su panel
+flotante, el velo). Se dice además cuántos elementos se saltan por ser
+mobiliario de la página, para que el verde no se lea como lo que no es.
+
+En su primera pasada completa **sacó un defecto que la lista a mano no veía**:
+`PanelBarra` emite `us-menu` y `pb-panel`, pesan igual, y gana la que va
+después — en el catálogo `.us-menu`, en la entrega `.pb-panel`—, así que el
+panel de notificaciones salía en el producto con 320px de ancho mínimo y otro
+relleno del que se enseñaba. Las dos declaraciones muertas se retiraron.
+
+Y se le vio en rojo a propósito: bajando el relleno del botón de 16px a 15px,
+36 elementos en rojo.
 
 **El compresor de PDF ya viaja con tipos.** `componentes/src/interno/comprimir-pdf.d.mts`.
 Sin él, un producto que compile sin `allowJs` se caía con **TS7016** desde
@@ -115,7 +129,9 @@ Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes, 0 fallos en ambos modos)
 Pruebas                         295   en 20 archivos
 Reglas que viajan               707   de 1192 · 516 clases, 0 huérfanas
-Casos del candado de promesa     29   a 5 anchos (1440, 1024, 900, 700, 390)
+Candado de la promesa           828   elementos · 170.194 propiedades
+                                      a 5 anchos (1440, 1024, 900, 700, 390)
+                                      + 29 estados fijados a mano
 Iconos                           45
 Páginas del catálogo             49
 ```
@@ -132,7 +148,8 @@ docker compose exec ds sh -c "cd componentes && npm run probar"
 | Qué | Por qué |
 |---|---|
 | **El marco abre TODOS los grupos al desplegar; el catálogo abre solo el de la página** | Divergencia medida hoy y **no resuelta**: son dos modelos de navegación distintos, los dos escritos y defendidos. Decidirlo cambia el menú de todos los productos o la documentación: **es del responsable** |
-| **El candado de la promesa compara CSS, no comportamiento** | R47 y R48 fueron defectos de comportamiento: ningún candado los vio. Lo único que los caza hoy son las pruebas del componente |
+| **El candado de la promesa compara CSS, no comportamiento** | Y es el hueco que queda abierto. R38, R42, R47 y R48 fueron **comportamiento** —qué se abre, qué se cierra, qué se pliega—, y ahí no hay nada que compare el catálogo con el componente: lo único que los caza son las pruebas del componente, que sólo miran un lado. Cerrarlo pide ejecutar las dos superficies en un navegador y comparar estados; **eso necesita un navegador sin cabeza en el contenedor, y eso es autorización del responsable** |
+| **Lo que el catálogo no pinta, no se compara** | Los 29 estados fijados a mano existen por eso. Un estado nuevo que nadie fije ni el catálogo enseñe, no lo mira nadie |
 | Compresión de imágenes que no sean JPEG | El compresor solo toca `/DCTDecode` |
 | El compresor en Node no toca imágenes | Necesita `canvas`; lo de imágenes se verificó en el navegador |
 | Fuentes incrustadas | No se tocan. Es el otro gran peso de un PDF |

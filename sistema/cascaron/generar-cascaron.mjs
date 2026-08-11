@@ -6417,7 +6417,18 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .demo-accion { background: var(--accion); }
 .demo-paneles { display: flex; gap: 24px; }
 .demo-paneles .pb-panel { right: auto; left: 0; }
-.pb-panel { min-width: 320px; max-width: 360px; padding: 4px 0 0; }
+/* DOS DECLARACIONES QUE AQUI NUNCA SE APLICARON, y en la entrega SI.
+   PanelBarra emite las dos clases —us-menu y pb-panel— y pesan lo mismo: gana
+   la que este DESPUES. En esta hoja .us-menu va detras, asi que el panel
+   siempre se vio con min-width 248px y padding 4px, y el 320/4px 0 0 de aqui
+   era letra muerta. El extractor reparte por componente y en componentes.css
+   .pb-panel cae DESPUES, asi que alli ganaban y el panel salia mas ancho y
+   con otro relleno: el catalogo enseñaba una cosa y el producto veia otra.
+   Lo encontro el candado de la promesa el dia que dejo de mirar una lista a
+   mano y paso a recorrer TODO el marcado — es el unico caso que quedaba.
+   Se retiran las dos muertas en vez de duplicar la especificidad: lo que no se
+   aplica no se escribe. El max-width se queda porque ese si gana. */
+.pb-panel { max-width: 360px; }
 .pb-lista { list-style: none; margin: 0; padding: 0; max-height: 320px; overflow-y: auto; }
 .pb-item { display: flex; align-items: flex-start; gap: 8px; width: 100%;
   padding: 8px 12px; background: none; border: 0; text-align: left;

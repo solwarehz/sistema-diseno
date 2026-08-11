@@ -91,10 +91,17 @@ export const CAMBIOS = [
       + 'y la entrega plegada a 56px. El catalogo aprende las dos bandas —≤900 y ≤700—, su boton '
       + 'gana el aria-expanded que nunca tuvo y su etiqueta deja de mentir, y plegar y desplegar '
       + 'pasan por un solo sitio. '
-      + 'El marco no tenia NI UN CASO en el candado de la promesa: 184 reglas de las 707 que viajan, '
-      + 'la pieza que mas se reconstruye, sin vigilar. Entran once — la lateral, el carril, las '
-      + 'opciones, el panel flotante, el boton de plegar con sus dos iconos y el velo. 29 casos, '
-      + 'identicos a cinco anchos. '
+      + 'Y EL CANDADO DE LA PROMESA DEJA DE MIRAR UNA LISTA A MANO. El marco no tenia NI UN CASO '
+      + '—184 reglas de las 707 que viajan, la pieza que mas se reconstruye, sin vigilar—, y eso es '
+      + 'lo que pasa con una lista que alguien escribe: vigila lo que alguien se acordo de mirar. '
+      + 'Ahora se RECORRE EL MARCADO del catalogo y se compara cada elemento que pinta con su '
+      + 'cadena de antepasados real: 828 elementos, 170.194 propiedades resueltas a cinco anchos. '
+      + 'Se dice ademas cuantos se saltan por ser mobiliario de la pagina, para que el verde no se '
+      + 'lea como lo que no es. En su primera pasada completa saco un defecto que la lista a mano no '
+      + 'veia: PanelBarra emite us-menu y pb-panel, pesan igual, y gana la que va despues — en el '
+      + 'catalogo .us-menu, en la entrega .pb-panel—, asi que el panel de la barra salia en el '
+      + 'producto con 320px de min-width y otro relleno del que se enseñaba. Las dos declaraciones '
+      + 'muertas se retiran. '
       + 'Y el compresor de PDF viaja por fin con su declaracion de tipos: el index.ts del paquete '
       + 'reexporta un .mjs sin tipos, asi que cualquier producto que compile sin allowJs se caia '
       + 'con TS7016 sin usar el compresor. Reproducido con un tsconfig de consumidor y verificado '
@@ -104,6 +111,9 @@ export const CAMBIOS = [
     rompe: [
       'El catalogo pliega la lateral entre 701 y 900px, como hace el producto. Quien leia el '
       + 'catalogo en tableta vera el carril de iconos: es el estado real del sistema a ese ancho.',
+      'El panel de PanelBarra pasa a verse en el producto como se ve en el catalogo: min-width '
+      + '248px y relleno 4px, en vez de 320px y 4px 0 0. No es un cambio de diseño — es que el '
+      + 'catalogo lo enseño siempre asi y la entrega no lo cumplia.',
     ],
   },
   {
