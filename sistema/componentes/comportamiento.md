@@ -80,6 +80,7 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 | **24** | **Obligatorio.** (R34, v1.27.0) La columna **N.º** es localizadora y **continua entre páginas**: «era la 34» sigue siendo la 34 en la página 4. No ordena ni filtra — no es un dato, es un dedo puesto en la fila. `numerada={false}` la quita. |
 | **25** | **Obligatorio.** (R34, v1.27.0) El **pie** lleva el rango a la izquierda y la paginación a la derecha, como el catálogo. El tamaño de página no se repite ahí: ya vive arriba. |
 | **26** | **Obligatorio.** (R42b, v1.38.0) En la **tabla simple**, la cabecera **cae sobre sus columnas**: cabecera y cuerpo comparten un solo layout de tabla — nunca dos tablas independientes repartiendo columnas por su cuenta. Suelta, la tabla es un bloque que se desplaza solo; **dentro de `.tb-envoltura`** es tabla plena a todo lo ancho, y la envoltura resuelve el desbordamiento. |
+| **27** | **Obligatorio.** (R49, v1.43.0) Con la tabla ancha **solo se desplaza la tabla**. `.tb-envoltura` es el deslizador y **contiene la tabla y nada más**; la barra —buscar, «Mostrar», el recuento, Filtros, Columnas y las acciones del producto—, la tira de filtros activos y el pie —el rango y la paginación— son **hermanos suyos** dentro de `.tb-bloque`, y se quedan quietos. Cabecera y datos se mueven **juntos**, porque si no dejan de estar alineados. Lo que se arrastra a la derecha es la columna que se quiere leer, no los mandos que hacen falta para seguir trabajando. |
 
 ---
 

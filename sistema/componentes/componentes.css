@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.42.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.43.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -596,7 +596,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .bloque, .app-main { min-width: 0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TABLA DE DATOS — 81 reglas · clases .tb-*
+   TABLA DE DATOS — 82 reglas · clases .tb-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tabla-simple, .tb-sub{ display: block; overflow-x: auto; }
@@ -626,6 +626,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .tb-col-reset{ width: 100%; margin-top: 4px; padding: 8px; font: inherit; font-size: 12px;
   cursor: pointer; background: transparent; border: 0; border-top: 1px solid var(--borde);
   color: var(--enlace); }
+.tb-bloque{ min-width: 0; }
 .tb-envoltura{ overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
 .tb{ width: 100%; border-collapse: collapse; font-size: 15px; background: var(--fondo-tarjeta); }
 .tb-th{ background: var(--fondo-encabezado); text-align: left; padding: 0;

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.42.0';
+export const VERSION = '1.43.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,37 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.43.0', fecha: '2026-08-11',
+    que: 'R49: con la tabla ancha se desplazaba el componente entero, mandos incluidos',
+    porque:
+      'Lo pidio el responsable: «al desplazar la barra horizontal que se crea, que solo se '
+      + 'desplace la fila de nombres y las filas de datos; lo que debe quedar fijo son la busqueda, '
+      + 'el select mostrar, el numero de filas, los botones filtros, columnas y CSV, y en la parte '
+      + 'inferior la cantidad de filas y la navegacion». '
+      + 'La causa era estructural y otra vez del mismo tipo: .tb-envoltura ES el deslizador —lleva '
+      + 'el overflow-x— y en el componente envolvia el arbol ENTERO. Arrastrar a la derecha se '
+      + 'llevaba por delante el buscador, el Mostrar, el recuento, Filtros, Columnas, CSV, el rango '
+      + 'y la paginacion: justo lo que hay que poder alcanzar mientras se mira una columna del '
+      + 'final. El catalogo NUNCA lo hizo asi — alli la barra, la envoltura y el pie son hermanos—, '
+      + 'de modo que la promesa y la entrega volvian a contar cosas distintas. '
+      + 'Ahora el componente emite .tb-bloque como contenedor y .tb-envoltura envuelve la tabla y '
+      + 'nada mas. La cabecera va dentro a proposito: columnas y datos se mueven juntos o dejan de '
+      + 'estar alineados. Medido en el navegador con la hoja que viaja, tabla de 1145px en una caja '
+      + 'de 650: al desplazar 400px, la cabecera y las celdas se mueven -400 y la barra, el pie y la '
+      + 'paginacion se mueven 0. El catalogo, medido igual, hace lo mismo. '
+      + 'NINGUN CANDADO PODIA VERLO: el de la promesa resuelve la cascada sobre el marcado del '
+      + 'catalogo y no mira el arbol que emite el componente. La estructura la fijan ahora tres '
+      + 'pruebas del componente, vistas en rojo con la estructura vieja. 298.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'El arbol de TablaDatos cambia: el contenedor pasa a ser .tb-bloque y .tb-envoltura queda '
+      + 'solo alrededor de la tabla. Un producto que enganche CSS propio a .tb-envoltura contando '
+      + 'con que envuelve todo el componente —un borde, un fondo, un padding— tiene que moverlo a '
+      + '.tb-bloque. El borde y el radio de .tb-envoltura pasan a rodear la tabla, que es donde el '
+      + 'catalogo los enseño siempre.',
+    ],
+  },
   {
     v: '1.42.0', fecha: '2026-08-11',
     que: 'R48: el menu seguia comprimido y sacaba a la vez las opciones de extendido',

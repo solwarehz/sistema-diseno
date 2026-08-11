@@ -2124,7 +2124,7 @@ const pagTabla = `
 mira un rato; esto se mira seis horas. Ordena, pagina, oculta columnas, recuerda la
 configuración y descarga CSV.</p>
 
-<div class="bloque">
+<div class="bloque tb-bloque">
   <div class="tb-barra">
     <div class="tb-barra-izq">
       <label class="tb-mini tb-buscar"><span>Buscar en toda la tabla</span>
@@ -5277,6 +5277,14 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
   cursor: pointer; background: transparent; border: 0; border-top: 1px solid var(--borde);
   color: var(--enlace); }
 
+/* R49 · EL CONTENEDOR DEL COMPONENTE, QUE NO DESLIZA.
+   La barra, la tira de filtros, la tabla y el pie son HERMANOS aqui dentro, y
+   el unico que lleva overflow es .tb-envoltura, que solo envuelve la tabla. Asi
+   el buscador, el Mostrar, Filtros, Columnas, CSV, el rango y la paginacion se
+   quedan quietos mientras se mira una columna de la derecha.
+   min-width: 0 para que pueda encoger dentro de un flex o un grid: sin eso el
+   contenido ancho empuja al padre y la barra horizontal sale en la PAGINA. */
+.tb-bloque { min-width: 0; }
 .tb-envoltura { overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
 .tb { width: 100%; border-collapse: collapse; font-size: 15px; background: var(--fondo-tarjeta); }
 .tb-th { background: var(--fondo-encabezado); text-align: left; padding: 0;

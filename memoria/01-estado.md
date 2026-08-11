@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 11 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.42.0** — el menú que se quedaba comprimido
-enseñando las opciones de extendido, y el marco entra por fin en el candado de
-la promesa
+**Versión del sistema:** MMI-DS **v1.43.0** — con la tabla ancha ya solo se
+desplaza la tabla; antes, el menú que se quedaba comprimido enseñando las
+opciones de extendido y el marco entrando en el candado de la promesa
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ la promesa
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —35 funciones de
-componente, la hoja que viaja, once candados, 295 pruebas— y desde hoy la parte
+componente, la hoja que viaja, once candados, 298 pruebas— y desde hoy la parte
 que más se reconstruye, el marco de aplicación, **está vigilada por el candado
 de la promesa**: hasta esta versión no tenía ni un caso.
 
@@ -34,11 +34,11 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` en Docker |
-| Componentes de React | ✅ | **295 pruebas en 20 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · 707 reglas de 1192 · **516 clases, 0 huérfanas** |
+| Componentes de React | ✅ | **298 pruebas en 20 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · 708 reglas de 1193 · **517 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 49 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | 45 trazos en `iconos.mjs`, React real |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.42.0.zip` · 604 KB · 44 archivos |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.43.0.zip` · 44 archivos |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -52,9 +52,26 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.41.1 | El botón declara su propio `display` — sin `.btn-ic` el icono y el texto se apilaban |
 | v1.41.2 | La tira de filtros de la tabla se entregaba vacía |
 | v1.41.3 | R47 · el panel flotante del menú plegado cerraba en seco |
-| **v1.42.0** | **R48** · el menú seguía comprimido y sacaba a la vez las opciones de extendido |
+| v1.42.0 | **R48** · el menú seguía comprimido y sacaba a la vez las opciones de extendido · el candado de la promesa pasa a recorrer todo el marcado |
+| **v1.43.0** | **R49** · con la tabla ancha se desplazaba el componente entero, mandos incluidos |
 
 ### Lo de hoy, con detalle
+
+**R49 · la tabla ancha.** `.tb-envoltura` es el deslizador —lleva el
+`overflow-x`— y en el componente envolvía el árbol **entero**: arrastrar a la
+derecha se llevaba el buscador, el «Mostrar», el recuento, Filtros, Columnas,
+CSV, el rango y la paginación. El catálogo nunca lo hizo así: allí la barra, la
+envoltura y el pie son hermanos. Ahora el componente emite `.tb-bloque` y
+`.tb-envoltura` envuelve **la tabla y nada más**; la cabecera va dentro a
+propósito, porque columnas y datos tienen que moverse juntos.
+
+Medido con la hoja que viaja —tabla de 1145px en una caja de 650—: al desplazar
+400px, cabecera y celdas se mueven **−400** y la barra, el pie y la paginación
+se mueven **0**. El catálogo, medido igual, hace lo mismo.
+
+**Ningún candado podía verlo**: el de la promesa resuelve la cascada sobre el
+marcado del catálogo y no mira el árbol que emite el componente. Lo fijan tres
+pruebas del componente, vistas en rojo con la estructura vieja.
 
 **R48.** Reportado a 900px: «está el menú comprimido, pero el botón de expandir
 se muestra; al dar clic sigue comprimido pero se ven las opciones de extendido».
@@ -124,10 +141,10 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.42.0
+Versión                      1.43.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes, 0 fallos en ambos modos)
-Pruebas                         295   en 20 archivos
+Pruebas                         298   en 20 archivos
 Reglas que viajan               707   de 1192 · 516 clases, 0 huérfanas
 Candado de la promesa           828   elementos · 170.194 propiedades
                                       a 5 anchos (1440, 1024, 900, 700, 390)

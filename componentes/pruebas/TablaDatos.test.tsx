@@ -308,6 +308,55 @@ describe('R21 · la tabla vacía dice por qué', () => {
   });
 });
 
+/**
+ * R49 · lo reportó el responsable con una tabla ancha:
+ *
+ *   «al desplazar la barra horizontal que se crea, que solo se desplace la fila
+ *    de nombres y las filas de datos. Lo que debe quedar fijo son la búsqueda,
+ *    el select mostrar, el número de filas, los botones filtros, columnas y
+ *    CSV, y en la parte inferior la cantidad de filas y la navegación.»
+ *
+ * Esto es ESTRUCTURA, no cascada, y por eso no lo ve ningún candado: el de la
+ * promesa resuelve el CSS sobre el marcado del CATÁLOGO y nunca mira el árbol
+ * que emite el componente. En el catálogo la barra, la envoltura y el pie
+ * siempre fueron hermanos; aquí la envoltura —que es la que lleva el
+ * `overflow-x`— se los tragaba a los tres. La prueba la lleva el componente
+ * porque es el único sitio donde el árbol se puede afirmar.
+ */
+describe('R27 (pedido R49) · con la tabla ancha solo se desplaza la tabla', () => {
+  it('la envoltura que desliza contiene la tabla y NADA más', () => {
+    const { container } = pintar();
+    const desliza = container.querySelector('.tb-envoltura')!;
+    expect(desliza).not.toBeNull();
+    // Un solo hijo, y es la tabla: cabecera y datos se mueven juntos.
+    expect(desliza.children).toHaveLength(1);
+    expect(desliza.firstElementChild!.tagName).toBe('TABLE');
+    expect(desliza.querySelector('table.tb')).not.toBeNull();
+  });
+
+  it('los mandos de arriba y el pie quedan FUERA del deslizador', () => {
+    const { container } = pintar({ acciones: <button type="button">CSV</button> });
+    const desliza = container.querySelector('.tb-envoltura')!;
+    for (const clase of ['.tb-barra', '.tb-buscar', '.tb-conteo', '.tb-barra-der',
+      '.tb-activos', '.tb-pie', '.tb-rango', '.tb-pag']) {
+      const nodo = container.querySelector(clase);
+      expect(nodo, `falta ${clase}`).not.toBeNull();
+      expect(desliza.contains(nodo), `${clase} se desplazaría con la tabla`).toBe(false);
+    }
+  });
+
+  it('el bloque del componente no desliza: el que desliza es la envoltura', () => {
+    const { container } = pintar();
+    const bloque = container.querySelector('.tb-bloque')!;
+    expect(bloque).not.toBeNull();
+    expect(bloque.classList.contains('tb-envoltura')).toBe(false);
+    // Y la envoltura vive dentro del bloque, junto a la barra y el pie.
+    expect(bloque.querySelector(':scope > .tb-envoltura')).not.toBeNull();
+    expect(bloque.querySelector(':scope > .tb-barra')).not.toBeNull();
+    expect(bloque.querySelector(':scope > .tb-pie')).not.toBeNull();
+  });
+});
+
 describe('R34 · la tabla pinta lo que el catálogo promete', () => {
   it('R22 · la búsqueda global mira TODAS las columnas y vuelve a la página 1', async () => {
     const u = userEvent.setup();

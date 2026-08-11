@@ -277,7 +277,26 @@ export function TablaDatos<T>({
   }
 
   return (
-    <div className="tb-envoltura">
+    /**
+     * R49 · LA BARRA Y EL PIE NO SE DESPLAZAN. SOLO LA TABLA.
+     *
+     * `.tb-envoltura` es **el deslizador de la tabla**, y aquí envolvía el
+     * componente ENTERO: barra, tira de filtros, tabla y pie dentro del mismo
+     * `overflow-x`. Con una tabla ancha, arrastrar la barra horizontal se
+     * llevaba por delante el buscador, el «Mostrar», el recuento, Filtros,
+     * Columnas, CSV, el rango y la paginación — todo lo que hay que poder
+     * alcanzar MIENTRAS se mira una columna de la derecha.
+     *
+     * El catálogo nunca lo hizo así: allí `.tb-barra`, `.tb-activos`,
+     * `.tb-envoltura` y `.tb-pie` son HERMANOS, y solo la envoltura desliza.
+     * Otra vez la entrega y la promesa contando cosas distintas — y esta no la
+     * veía ningún candado, porque el de la promesa compara la cascada sobre el
+     * marcado del CATÁLOGO y nunca mira el árbol que emite el componente.
+     *
+     * Lo reportó el responsable: «al desplazar la barra horizontal que se crea,
+     * que solo se desplace la fila de nombres y las filas de datos».
+     */
+    <div className="tb-bloque">
       {/* R34 · la barra ES la del catálogo: buscar + Mostrar + recuento a la
           izquierda, mandos con icono a la derecha. La promesa y la entrega no
           pueden contarse distinto. */}
@@ -432,6 +451,9 @@ export function TablaDatos<T>({
         </button>
       </div>
 
+      {/* Lo ÚNICO que desliza. La cabecera va dentro a propósito: las columnas
+          y sus datos tienen que moverse juntos o dejan de estar alineados. */}
+      <div className="tb-envoltura">
       <table className="tb" aria-label={titulo}>
         <thead>
           <tr>
@@ -555,6 +577,7 @@ export function TablaDatos<T>({
           )}
         </tbody>
       </table>
+      </div>
 
       {/* R34 · el pie del catálogo: rango a la izquierda, paginación a la
           derecha. El «Mostrar» ya no va aquí — vive arriba, en la barra. */}
