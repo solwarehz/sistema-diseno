@@ -1361,7 +1361,7 @@ devuelve el archivo listo y los dos pesos.</p>
 
       <ul class="cpdf-lista" data-lista hidden></ul>
 
-      <div class="cpdf-acciones">
+      <div class="cpdf-acciones" data-cerrado>
         <button class="btn btn-neutro btn-mini btn-ic" data-abrir
           aria-expanded="false" aria-controls="cpdf-demo-panel">${icono('pdf')}Subir PDF</button>
       </div>
@@ -1383,9 +1383,13 @@ devuelve el archivo listo y los dos pesos.</p>
           <span class="cpdf-error" data-error role="alert" hidden></span>
           <input type="file" accept="application/pdf,.pdf" class="cpdf-entrada" tabindex="-1" aria-hidden="true">
         </div>
+        <!-- EXACTAMENTE DOS BOTONES. «Subir» siempre; el segundo MUTA:
+             «Cancelar» sin contenido o con error, «Grabar» con un PDF valido.
+             Los dos estados NO se parecen —terciario plano frente al principal
+             azul— para que el cambio se vea, no solo se lea. -->
         <div class="cpdf-pie">
-          <button class="btn btn-1 btn-mini" data-grabar disabled>Grabar</button>
-          <button class="btn btn-terc btn-mini" data-cancelar>Cancelar</button>
+          <button class="btn btn-neutro btn-mini btn-ic" data-subir>${icono('subir')}Subir</button>
+          <button class="btn btn-terc btn-mini" data-segundo>Cancelar</button>
         </div>
       </div>
 
@@ -8002,7 +8006,10 @@ ${COMPRESOR_PDF}
 
     document.querySelectorAll('[data-pdf]').forEach(function (caja) {
       var abrir = caja.querySelector('[data-abrir]');
+      var cerrado = caja.querySelector('[data-cerrado]');
       var panel = caja.querySelector('[data-panel]');
+      var subir = caja.querySelector('[data-subir]');
+      var segundo = caja.querySelector('[data-segundo]');
       var zona = caja.querySelector('[data-zona]');
       var entrada = caja.querySelector('input[type="file"]');
       var invita = caja.querySelector('[data-invita]');
@@ -8010,8 +8017,6 @@ ${COMPRESOR_PDF}
       var borradorUI = caja.querySelector('[data-borrador]');
       var trabajo = caja.querySelector('[data-trabajo]');
       var error = caja.querySelector('[data-error]');
-      var grabar = caja.querySelector('[data-grabar]');
-      var cancelar = caja.querySelector('[data-cancelar]');
       if (!abrir || !panel) return;
 
       var confirmados = [];
@@ -8077,6 +8082,8 @@ ${COMPRESOR_PDF}
         });
       }
 
+      // EL SEGUNDO BOTON MUTA. Con contenido valido y sin error es «Grabar»;
+      // sin nada o con error es «Cancelar» — que ademas es la salida.
       function refrescar() {
         pintar(borradorUI, borrador, function (k) {
           borrador.splice(k, 1);
@@ -8084,7 +8091,9 @@ ${COMPRESOR_PDF}
           refrescar();
         });
         invita.hidden = borrador.length > 0;
-        grabar.disabled = borrador.length === 0;
+        var puedeGrabar = borrador.length > 0 && error.hidden;
+        segundo.textContent = puedeGrabar ? 'Grabar' : 'Cancelar';
+        segundo.className = puedeGrabar ? 'btn btn-1 btn-mini' : 'btn btn-terc btn-mini';
       }
 
       function refrescarFuera() {
@@ -8108,10 +8117,10 @@ ${COMPRESOR_PDF}
         PDF.esPdf(archivo).then(function (vale) {
           if (!vale) { fallo('Ese archivo no es un PDF. Solo se admiten PDF.'); return; }
           trabajo.hidden = false;
-          abrir.disabled = true;
+          subir.disabled = true;
           return PDF.comprimirPdf(archivo).then(function (r) {
             trabajo.hidden = true;
-            abrir.disabled = false;
+            subir.disabled = false;
             if (r.pesoFinal > TOPE) {
               fallo(archivo.name + ' pesa ' + PDF.formatearPeso(r.pesoFinal) + ' y el máximo es '
                 + PDF.formatearPeso(TOPE) + '.');
@@ -8126,7 +8135,7 @@ ${COMPRESOR_PDF}
           });
         }).catch(function () {
           trabajo.hidden = true;
-          abrir.disabled = false;
+          subir.disabled = false;
           fallo('No se pudo leer el archivo.');
         }).then(function () {
           // Vaciar para que elegir EL MISMO archivo vuelva a disparar 'change'.
@@ -8134,32 +8143,34 @@ ${COMPRESOR_PDF}
         });
       }
 
+      function cerrarPanel() {
+        panel.hidden = true;
+        cerrado.hidden = false;
+        abrir.setAttribute('aria-expanded', 'false');
+        borrador = [];
+        limpiar();
+      }
+
       abrir.addEventListener('click', function () {
-        if (panel.hidden) {
-          // El borrador arranca de lo que ya hay: entrar a cambiar el archivo
-          // no puede empezar en blanco y hacer creer que se perdio.
-          borrador = confirmados.slice();
-          panel.hidden = false;
-          abrir.setAttribute('aria-expanded', 'true');
-          limpiar();
-          refrescar();
+        // El borrador arranca de lo que ya hay: entrar a cambiar el archivo no
+        // puede empezar en blanco y hacer creer que se perdio.
+        borrador = confirmados.slice();
+        panel.hidden = false;
+        // Abierto solo se ven DOS botones: el disparador de fuera se retira.
+        cerrado.hidden = true;
+        abrir.setAttribute('aria-expanded', 'true');
+        limpiar();
+        refrescar();
+      });
+      subir.addEventListener('click', function () { entrada.click(); });
+      segundo.addEventListener('click', function () {
+        if (borrador.length > 0 && error.hidden) {
+          confirmados = borrador.slice();
+          cerrarPanel();
+          refrescarFuera();
         } else {
-          entrada.click();
+          cerrarPanel();
         }
-      });
-      cancelar.addEventListener('click', function () {
-        panel.hidden = true;
-        abrir.setAttribute('aria-expanded', 'false');
-        borrador = [];
-        limpiar();
-      });
-      grabar.addEventListener('click', function () {
-        confirmados = borrador.slice();
-        panel.hidden = true;
-        abrir.setAttribute('aria-expanded', 'false');
-        borrador = [];
-        limpiar();
-        refrescarFuera();
       });
 
       zona.addEventListener('dragover', function (e) {

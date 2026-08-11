@@ -27,6 +27,11 @@ function abrir() {
   fireEvent.click(boton(/Subir PDF/));
 }
 
+/** El boton de dentro del panel. Se llama «Subir» a secas. */
+const subir = () => boton('Subir');
+/** El segundo del pie, que MUTA entre «Cancelar» y «Grabar». */
+const segundo = () => screen.getByRole('button', { name: /^(Grabar|Cancelar)$/ });
+
 function elegir(container: HTMLElement, archivos: File[]) {
   const input = container.querySelector('input[type="file"]')!;
   fireEvent.change(input, { target: { files: archivos } });
@@ -50,13 +55,16 @@ describe('Carga de PDF — dónde vive (R46)', () => {
     expect(container.querySelector('.cpdf-panel')).toBeInTheDocument();
     // Nada de `dialog`: el contenido del formulario se desplaza, no se tapa.
     expect(container.querySelector('dialog')).toBeNull();
-    expect(boton(/Subir PDF/)).toHaveAttribute('aria-expanded', 'true');
+    // Y abierto se ven EXACTAMENTE DOS botones de accion: el disparador de
+    // fuera se retira. El tachito no cuenta: pertenece a su archivo.
+    expect(container.querySelectorAll('.cpdf-pie button')).toHaveLength(2);
+    expect(screen.queryByRole('button', { name: /Subir PDF/ })).not.toBeInTheDocument();
   });
 
   it('R10 · cerrado no queda nada del panel en el árbol: se desmonta, no se colapsa', () => {
     const { container } = render(<CargaPdf etiqueta="Acta" onCambio={() => {}} />);
     abrir();
-    fireEvent.click(boton('Cancelar'));
+    fireEvent.click(segundo());
     expect(container.querySelector('.cpdf-panel')).toBeNull();
     expect(screen.queryByRole('button', { name: 'Grabar' })).not.toBeInTheDocument();
   });
@@ -81,7 +89,7 @@ describe('Carga de PDF — cuándo se entrega al formulario', () => {
     // Está elegido y a la vista, pero el formulario todavía no se ha enterado.
     expect(alCambiar).not.toHaveBeenCalled();
 
-    fireEvent.click(boton('Grabar'));
+    fireEvent.click(segundo());
     expect(alCambiar).toHaveBeenCalledTimes(1);
     const lista: PdfListo[] = alCambiar.mock.calls[0][0];
     expect(lista).toHaveLength(1);
@@ -98,7 +106,15 @@ describe('Carga de PDF — cuándo se entrega al formulario', () => {
     elegir(container, [comoPdf()]);
     await screen.findByText('acta.pdf');
 
-    fireEvent.click(boton('Cancelar'));
+    // CONSECUENCIA DEL BOTÓN QUE MUTA, y conviene tenerla escrita: con un PDF
+    // válido puesto YA NO HAY «Cancelar» — ese botón es ahora «Grabar». La
+    // salida sin guardar existe, pero son dos pasos: quitar el archivo con el
+    // tachito y entonces el botón vuelve a ser «Cancelar».
+    expect(segundo()).toHaveTextContent('Grabar');
+    fireEvent.click(boton('Quitar acta.pdf'));
+    expect(segundo()).toHaveTextContent('Cancelar');
+
+    fireEvent.click(segundo());
     expect(alCambiar).not.toHaveBeenCalled();
     expect(screen.queryByText('acta.pdf')).not.toBeInTheDocument();
   });
@@ -108,7 +124,7 @@ describe('Carga de PDF — cuándo se entrega al formulario', () => {
     abrir();
     elegir(container, [comoPdf()]);
     await screen.findByText('acta.pdf');
-    fireEvent.click(boton('Grabar'));
+    fireEvent.click(segundo());
 
     expect(container.querySelector('.cpdf-panel')).toBeNull();
     expect(screen.getByText('acta.pdf')).toBeInTheDocument();
@@ -119,12 +135,12 @@ describe('Carga de PDF — cuándo se entrega al formulario', () => {
     abrir();
     elegir(container, [comoPdf()]);
     await screen.findByText('acta.pdf');
-    fireEvent.click(boton('Grabar'));
+    fireEvent.click(segundo());
 
     abrir();
     // Si arrancara vacío, parecería que se perdió lo que ya había.
     expect(container.querySelector('.cpdf-panel')!.textContent).toContain('acta.pdf');
-    expect(boton('Grabar')).toBeEnabled();
+    expect(segundo()).toHaveTextContent('Grabar');
   });
 
   it('`onGrabar` recibe la lista, después de `onCambio`', async () => {
@@ -139,18 +155,18 @@ describe('Carga de PDF — cuándo se entrega al formulario', () => {
     abrir();
     elegir(container, [comoPdf()]);
     await screen.findByText('acta.pdf');
-    fireEvent.click(boton('Grabar'));
+    fireEvent.click(segundo());
     await waitFor(() => expect(orden).toEqual(['cambio', 'grabar']));
   });
 });
 
 describe('Carga de PDF — Grabar y Cancelar', () => {
-  it('Grabar nace apagado y se enciende con contenido válido', async () => {
+  it('el segundo boton MUTA: Cancelar sin nada, Grabar con contenido valido', async () => {
     const { container } = render(<CargaPdf etiqueta="Acta" onCambio={() => {}} />);
     abrir();
-    expect(boton('Grabar')).toBeDisabled();
+    expect(segundo()).toHaveTextContent('Cancelar');
     elegir(container, [comoPdf()]);
-    await waitFor(() => expect(boton('Grabar')).toBeEnabled());
+    await waitFor(() => expect(segundo()).toHaveTextContent('Grabar'));
   });
 
   it('con un archivo inválido, Grabar sigue apagado y Cancelar SIGUE SIENDO LA SALIDA', async () => {
@@ -159,19 +175,19 @@ describe('Carga de PDF — Grabar y Cancelar', () => {
     elegir(container, [disfrazado()]);
 
     expect(await screen.findByRole('alert')).toHaveTextContent('no es un PDF');
-    expect(boton('Grabar')).toBeDisabled();
+    expect(segundo()).toHaveTextContent('Cancelar');
     // Sin esto se quedaba encerrado: Grabar apagado y el otro botón volviendo
     // a abrir el diálogo de archivos.
-    expect(boton('Cancelar')).toBeEnabled();
+    expect(segundo()).toBeEnabled();
   });
 
   it('quitar dentro del panel apaga Grabar otra vez', async () => {
     const { container } = render(<CargaPdf etiqueta="Acta" onCambio={() => {}} />);
     abrir();
     elegir(container, [comoPdf()]);
-    await waitFor(() => expect(boton('Grabar')).toBeEnabled());
+    await waitFor(() => expect(segundo()).toHaveTextContent('Grabar'));
     fireEvent.click(boton('Quitar acta.pdf'));
-    expect(boton('Grabar')).toBeDisabled();
+    expect(segundo()).toHaveTextContent('Cancelar');
   });
 });
 
@@ -216,7 +232,7 @@ describe('Carga de PDF — cuántos archivos (R45)', () => {
     await screen.findByText('b.pdf');
     expect(screen.getByText('a.pdf')).toBeInTheDocument();
 
-    fireEvent.click(boton('Grabar'));
+    fireEvent.click(segundo());
     expect(alCambiar.mock.calls[0][0]).toHaveLength(2);
   });
 
@@ -262,7 +278,7 @@ describe('Carga de PDF — el peso máximo se mide DESPUÉS de comprimir', () =>
     abrir();
     elegir(container, [comoPdf()]);
     expect(await screen.findByRole('alert')).toHaveTextContent('el máximo es');
-    expect(boton('Grabar')).toBeDisabled();
+    expect(segundo()).toHaveTextContent('Cancelar');
   });
 });
 
@@ -323,7 +339,7 @@ describe('Carga de PDF — lo que se ve', () => {
     abrir();
     elegir(container, [comoPdf()]);
     await screen.findByText('acta.pdf');
-    fireEvent.click(boton('Grabar'));
+    fireEvent.click(segundo());
 
     const r: PdfListo = alCambiar.mock.calls[0][0][0];
     expect(r.comprimido).toBe(false);
@@ -340,7 +356,7 @@ describe('Carga de PDF — lo que se ve', () => {
     abrir();
     elegir(container, [comoPdf()]);
     await screen.findByText('acta.pdf');
-    fireEvent.click(boton('Grabar'));
+    fireEvent.click(segundo());
     alCambiar.mockClear();
 
     fireEvent.click(boton('Quitar acta.pdf'));

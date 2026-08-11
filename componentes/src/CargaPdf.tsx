@@ -328,6 +328,15 @@ export function CargaPdf({
     : `${cuantos} · máximo ${formatearPeso(pesoMaximo)} cada uno una vez comprimido.`);
 
   const hayBoton = uno || libres > 0;
+  /**
+   * El segundo botón del pie. Con contenido válido y quieto es «Grabar»; sin
+   * nada, con error, o mientras comprime, es «Cancelar».
+   *
+   * `error` del producto también lo tumba: si el formulario está diciendo que
+   * algo no cuadra, ofrecer «Grabar» sería invitar a guardar lo que él mismo
+   * acaba de rechazar.
+   */
+  const hayQueGrabar = borrador.length > 0 && !trabajo && !elError;
 
   /** Una fila de archivo: nombre y tachito EN LA MISMA LÍNEA. */
   const fila = (f: Ficha, k: number, medida: PdfListo | undefined, alQuitar: (i: number) => void) => (
@@ -491,55 +500,60 @@ export function CargaPdf({
         </ul>
       )}
 
-      {/* EL BOTÓN ESTÁ SIEMPRE, abierto o cerrado, y siempre dice lo mismo:
-          «Subir PDF». Cerrado despliega el panel; abierto abre el diálogo de
-          archivos. Las dos cosas son «meter un PDF», así que el rótulo no
-          cambia de significado bajo el cursor.
-
-          Lleva el icono `pdf` —la hoja con renglones—, distinto del
-          `documento` en blanco que marca cada archivo ya puesto. */}
-      <div className="cpdf-acciones">
-        <Boton
-          mini
-          variante="neutra"
-          className="btn-ic"
-          ref={disparador}
-          aria-expanded={abierto}
-          aria-controls={idPanel}
-          aria-describedby={descrito}
-          // Lleno y con varios: apagado, no escondido. Un botón que desaparece
-          // deja preguntándose si estaba ahí antes; apagado se ve que existe y
-          // la pista de dentro dice por qué no se puede.
-          disabled={!!trabajo || (abierto && !hayBoton)}
-          onClick={() => (abierto ? entrada.current?.click() : abrir())}
-        >
-          <Icono nombre="pdf" tam="control" />
-          {textoBoton ?? 'Subir PDF'}
-        </Boton>
-      </div>
+      {/* Cerrado: el disparador. Lleva el icono `pdf` —la hoja con
+          renglones—, distinto del `documento` en blanco que marca cada archivo
+          ya puesto. */}
+      {!abierto && (
+        <div className="cpdf-acciones">
+          <Boton
+            mini
+            variante="neutra"
+            className="btn-ic"
+            ref={disparador}
+            aria-expanded={false}
+            aria-controls={idPanel}
+            aria-describedby={descrito}
+            onClick={abrir}
+          >
+            <Icono nombre="pdf" tam="control" />
+            {textoBoton ?? 'Subir PDF'}
+          </Boton>
+        </div>
+      )}
 
       {abierto && (
         <div className="cpdf-panel" id={idPanel}>
           {zona}
+          {/* EXACTAMENTE DOS BOTONES, decidido por el responsable.
+              · «Subir» está SIEMPRE: es lo que trae el archivo.
+              · El segundo MUTA: «Cancelar» mientras no hay nada que grabar o
+                hay error, «Grabar» en cuanto hay un PDF válido.
+
+              Se avisó del riesgo y se eligió con él delante: un botón que
+              cambia de significado puede confirmar cuando se iba a descartar,
+              porque basta que un archivo termine de comprimirse en ese
+              instante. Lo que sí se hace para amortiguarlo es que los dos
+              estados NO se parezcan —«Cancelar» es terciario y plano,
+              «Grabar» es el principal, azul y macizo—: el cambio se ve, no
+              solo se lee. */}
           <div className="cpdf-pie">
-            {/* DOS BOTONES, no uno que cambia de significado. Uno solo que
-                pasara de «Cancelar» a «Guardar» al detectar contenido cambia
-                lo que hace BAJO EL CURSOR: basta con que un archivo termine de
-                comprimirse en ese instante para que quien iba a descartar
-                confirme. Guardar apagado dice lo mismo —todavía no se puede—
-                sin poder equivocarse. */}
             <Boton
-              variante="principal"
-              disabled={borrador.length === 0 || !!trabajo}
-              onClick={grabar}
+              mini
+              variante="neutra"
+              className="btn-ic"
+              disabled={!!trabajo || !hayBoton}
+              onClick={() => entrada.current?.click()}
             >
-              {textoGrabar}
+              <Icono nombre="subir" tam="control" />
+              Subir
             </Boton>
-            {/* Siempre activo, también con error y también mientras comprime:
-                es LA SALIDA. Sin ella, elegir un .docx dejaba encerrado —
-                «Guardar» apagado y el otro botón volviendo a abrir el diálogo
-                de archivos. */}
-            <Boton variante="terciaria" onClick={cerrar}>Cancelar</Boton>
+            {hayQueGrabar ? (
+              <Boton variante="principal" onClick={grabar}>{textoGrabar}</Boton>
+            ) : (
+              /* Nunca apagado, tampoco mientras comprime: es LA SALIDA. Sin
+                 ella, elegir un .docx dejaba encerrado. */
+              <Boton variante="terciaria" onClick={cerrar}>Cancelar</Boton>
+            )}
           </div>
         </div>
       )}

@@ -6148,7 +6148,7 @@ devuelve el archivo listo y los dos pesos.</p>
 
       <ul class="cpdf-lista" data-lista hidden></ul>
 
-      <div class="cpdf-acciones">
+      <div class="cpdf-acciones" data-cerrado>
         <button class="btn btn-neutro btn-mini btn-ic" data-abrir
           aria-expanded="false" aria-controls="cpdf-demo-panel"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>Subir PDF</button>
       </div>
@@ -6170,9 +6170,13 @@ devuelve el archivo listo y los dos pesos.</p>
           <span class="cpdf-error" data-error role="alert" hidden></span>
           <input type="file" accept="application/pdf,.pdf" class="cpdf-entrada" tabindex="-1" aria-hidden="true">
         </div>
+        <!-- EXACTAMENTE DOS BOTONES. «Subir» siempre; el segundo MUTA:
+             «Cancelar» sin contenido o con error, «Grabar» con un PDF valido.
+             Los dos estados NO se parecen —terciario plano frente al principal
+             azul— para que el cambio se vea, no solo se lea. -->
         <div class="cpdf-pie">
-          <button class="btn btn-1 btn-mini" data-grabar disabled>Grabar</button>
-          <button class="btn btn-terc btn-mini" data-cancelar>Cancelar</button>
+          <button class="btn btn-neutro btn-mini btn-ic" data-subir><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Subir</button>
+          <button class="btn btn-terc btn-mini" data-segundo>Cancelar</button>
         </div>
       </div>
 
@@ -9868,7 +9872,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
 
 
 <h3 class="sub-seccion">v1.40.0 <span class="cam-fecha">2026-08-11</span></h3>
-<p class="pag-intro"><strong>CargaPdf cabe en un formulario: boton fuera, panel que empuja, y borrador que solo confirma Grabar.</strong> Seis correcciones del responsable probandolo, y la primera invalidaba la forma entera: «porque mostrar un campo tan grande, rompera todo formulario». Tenia razon — un recuadro de soltar de 100px entre dos campos de 34px rompe la rejilla. Ahora en formulario el componente ES UN BOTON y el recuadro vive en un panel que se despliega EN SU SITIO, empujando lo de abajo. NO una ventana flotante: «nosotros no trabajamos con pop up». Y como grabar es lo que cierra, la eleccion pasa a ser BORRADOR: onCambio se dispara al Grabar, no al elegir — si emitiera al elegir, cancelar dejaria el formulario ya cambiado. Volver a abrir arranca de lo ya guardado, o pareceria que se perdio. R45: maximoArchivos —1, N o sin-limite—; si no caben todos se rechazan TODOS, no se cogen los que quepan en silencio. El tachito va EN LA LINEA DEL NOMBRE, que fue otra correccion: al final de la fila no decia a que archivo pertenecia. Cancelar existe porque el responsable vio el agujero que abrio Grabar: «cuando es error como salimos» — con un .docx elegido, Grabar apagado y el otro boton reabriendo el dialogo de archivos, se quedaba encerrado. Siempre visible y nunca apagado. Se descarto el boton que muta de Cancelar a Guardar: cambiaria lo que hace bajo el cursor. DOS DEFECTOS QUE SALIERON POR EL CAMINO. «le di clic en quitar, no quito el pdf»: display:flex gana a [hidden], la leccion R16 por tercera vez. Se arreglo y se le puso CANDADO — verificar-cascada gana la afirmacion OCULTABLE, que resuelve la cascada con el atributo puesto para toda clase que lleve hidden en el catalogo. Encontro un cuarto caso YA PUBLICADO: .cf-banda colapsada a 0fr PARECIA oculta pero seguia en el arbol de accesibilidad, con su region aria-live viva y sus botones tabulables. Dialogo.accion gana `deshabilitada`: a la vista y apagado no es lo mismo que ausente. Tres iconos: documento, papelera y pdf. 285 pruebas.</p>
+<p class="pag-intro"><strong>CargaPdf cabe en un formulario: boton fuera, panel que empuja, y borrador que solo confirma Grabar.</strong> Seis correcciones del responsable probandolo, y la primera invalidaba la forma entera: «porque mostrar un campo tan grande, rompera todo formulario». Tenia razon — un recuadro de soltar de 100px entre dos campos de 34px rompe la rejilla. Ahora en formulario el componente ES UN BOTON y el recuadro vive en un panel que se despliega EN SU SITIO, empujando lo de abajo. NO una ventana flotante: «nosotros no trabajamos con pop up». Y como grabar es lo que cierra, la eleccion pasa a ser BORRADOR: onCambio se dispara al Grabar, no al elegir — si emitiera al elegir, cancelar dejaria el formulario ya cambiado. Volver a abrir arranca de lo ya guardado, o pareceria que se perdio. R45: maximoArchivos —1, N o sin-limite—; si no caben todos se rechazan TODOS, no se cogen los que quepan en silencio. El tachito va EN LA LINEA DEL NOMBRE, que fue otra correccion: al final de la fila no decia a que archivo pertenecia. Cancelar existe porque el responsable vio el agujero que abrio Grabar: «cuando es error como salimos» — con un .docx elegido, Grabar apagado y el otro boton reabriendo el dialogo de archivos, se quedaba encerrado. Y el pie queda en EXACTAMENTE DOS BOTONES, elegido por el responsable con el riesgo delante: «Subir» siempre, y un segundo que MUTA —Cancelar sin contenido o con error, Grabar con un PDF valido—. Se aviso de que un boton asi puede confirmar cuando se iba a descartar; se amortigua haciendo que los dos estados no se parezcan (terciario plano frente al principal macizo). Consecuencia declarada y con prueba: con un PDF puesto ya no hay Cancelar, y salir sin guardar son dos pasos. DOS DEFECTOS QUE SALIERON POR EL CAMINO. «le di clic en quitar, no quito el pdf»: display:flex gana a [hidden], la leccion R16 por tercera vez. Se arreglo y se le puso CANDADO — verificar-cascada gana la afirmacion OCULTABLE, que resuelve la cascada con el atributo puesto para toda clase que lleve hidden en el catalogo. Encontro un cuarto caso YA PUBLICADO: .cf-banda colapsada a 0fr PARECIA oculta pero seguia en el arbol de accesibilidad, con su region aria-live viva y sus botones tabulables. Dialogo.accion gana `deshabilitada`: a la vista y apagado no es lo mismo que ausente. Tres iconos: documento, papelera y pdf. 285 pruebas.</p>
 <table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>CargaPdf.onCambio recibe AHORA LA LISTA ENTERA (PdfListo[]), no un archivo suelto, y en formulario se dispara al Grabar, no al elegir. La v1.39.0 se publico esta misma manana y con un solo archivo; quien ya la consuma cambia <code>r</code> por <code>lista[0]</code>.</td></tr><tr><td>CargaPdf ya no pinta el recuadro por defecto: pinta un boton. Para la forma anterior, presentacion="en-linea".</td></tr><tr><td>Se retiro <code>valor</code> como objeto suelto: ahora es una lista.</td></tr></tbody></table>
 
 
@@ -13458,7 +13462,10 @@ async function esPdf(archivo) {
 
     document.querySelectorAll('[data-pdf]').forEach(function (caja) {
       var abrir = caja.querySelector('[data-abrir]');
+      var cerrado = caja.querySelector('[data-cerrado]');
       var panel = caja.querySelector('[data-panel]');
+      var subir = caja.querySelector('[data-subir]');
+      var segundo = caja.querySelector('[data-segundo]');
       var zona = caja.querySelector('[data-zona]');
       var entrada = caja.querySelector('input[type="file"]');
       var invita = caja.querySelector('[data-invita]');
@@ -13466,8 +13473,6 @@ async function esPdf(archivo) {
       var borradorUI = caja.querySelector('[data-borrador]');
       var trabajo = caja.querySelector('[data-trabajo]');
       var error = caja.querySelector('[data-error]');
-      var grabar = caja.querySelector('[data-grabar]');
-      var cancelar = caja.querySelector('[data-cancelar]');
       if (!abrir || !panel) return;
 
       var confirmados = [];
@@ -13533,6 +13538,8 @@ async function esPdf(archivo) {
         });
       }
 
+      // EL SEGUNDO BOTON MUTA. Con contenido valido y sin error es «Grabar»;
+      // sin nada o con error es «Cancelar» — que ademas es la salida.
       function refrescar() {
         pintar(borradorUI, borrador, function (k) {
           borrador.splice(k, 1);
@@ -13540,7 +13547,9 @@ async function esPdf(archivo) {
           refrescar();
         });
         invita.hidden = borrador.length > 0;
-        grabar.disabled = borrador.length === 0;
+        var puedeGrabar = borrador.length > 0 && error.hidden;
+        segundo.textContent = puedeGrabar ? 'Grabar' : 'Cancelar';
+        segundo.className = puedeGrabar ? 'btn btn-1 btn-mini' : 'btn btn-terc btn-mini';
       }
 
       function refrescarFuera() {
@@ -13564,10 +13573,10 @@ async function esPdf(archivo) {
         PDF.esPdf(archivo).then(function (vale) {
           if (!vale) { fallo('Ese archivo no es un PDF. Solo se admiten PDF.'); return; }
           trabajo.hidden = false;
-          abrir.disabled = true;
+          subir.disabled = true;
           return PDF.comprimirPdf(archivo).then(function (r) {
             trabajo.hidden = true;
-            abrir.disabled = false;
+            subir.disabled = false;
             if (r.pesoFinal > TOPE) {
               fallo(archivo.name + ' pesa ' + PDF.formatearPeso(r.pesoFinal) + ' y el máximo es '
                 + PDF.formatearPeso(TOPE) + '.');
@@ -13582,7 +13591,7 @@ async function esPdf(archivo) {
           });
         }).catch(function () {
           trabajo.hidden = true;
-          abrir.disabled = false;
+          subir.disabled = false;
           fallo('No se pudo leer el archivo.');
         }).then(function () {
           // Vaciar para que elegir EL MISMO archivo vuelva a disparar 'change'.
@@ -13590,32 +13599,34 @@ async function esPdf(archivo) {
         });
       }
 
+      function cerrarPanel() {
+        panel.hidden = true;
+        cerrado.hidden = false;
+        abrir.setAttribute('aria-expanded', 'false');
+        borrador = [];
+        limpiar();
+      }
+
       abrir.addEventListener('click', function () {
-        if (panel.hidden) {
-          // El borrador arranca de lo que ya hay: entrar a cambiar el archivo
-          // no puede empezar en blanco y hacer creer que se perdio.
-          borrador = confirmados.slice();
-          panel.hidden = false;
-          abrir.setAttribute('aria-expanded', 'true');
-          limpiar();
-          refrescar();
+        // El borrador arranca de lo que ya hay: entrar a cambiar el archivo no
+        // puede empezar en blanco y hacer creer que se perdio.
+        borrador = confirmados.slice();
+        panel.hidden = false;
+        // Abierto solo se ven DOS botones: el disparador de fuera se retira.
+        cerrado.hidden = true;
+        abrir.setAttribute('aria-expanded', 'true');
+        limpiar();
+        refrescar();
+      });
+      subir.addEventListener('click', function () { entrada.click(); });
+      segundo.addEventListener('click', function () {
+        if (borrador.length > 0 && error.hidden) {
+          confirmados = borrador.slice();
+          cerrarPanel();
+          refrescarFuera();
         } else {
-          entrada.click();
+          cerrarPanel();
         }
-      });
-      cancelar.addEventListener('click', function () {
-        panel.hidden = true;
-        abrir.setAttribute('aria-expanded', 'false');
-        borrador = [];
-        limpiar();
-      });
-      grabar.addEventListener('click', function () {
-        confirmados = borrador.slice();
-        panel.hidden = true;
-        abrir.setAttribute('aria-expanded', 'false');
-        borrador = [];
-        limpiar();
-        refrescarFuera();
       });
 
       zona.addEventListener('dragover', function (e) {
