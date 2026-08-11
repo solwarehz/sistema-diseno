@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.41.1</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.41.2</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.41.1
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.41.2
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -3302,7 +3302,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.41.1</option></select></label>
+          <select class="campo cg-in"><option>v1.41.2</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3390,8 +3390,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.41.1.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.41.1</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.41.2.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.41.2</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -9905,6 +9905,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.41.2 <span class="cam-fecha">2026-08-11</span></h3>
+<p class="pag-intro"><strong>La tira de filtros de la tabla se entregaba vacia: banda azul sin valor y sin la x de quitar.</strong> Lo reporto el responsable: «cuando un filtro esta activo aparece una linea azul con una x para borrar el filtro, asi aparece en la promesa; en la entrega solo aparece la linea azul, no muestra el valor tampoco la x». La banda azul es el FONDO de .tb-activos, no una ficha: lo que faltaba era su contenido. El catalogo arma una ficha .tb-act por criterio con el valor en negrita, su boton .tb-act-x y un .tb-act-todo; el React pintaba un Chip por filtro y NINGUN boton de quitar. Ahora emite el marcado que el catalogo promete, y no un Chip: un chip es un estado, esto es un criterio puesto que se puede retirar — llevan cosas distintas dentro y una de ellas es un boton. Cada x lleva el NOMBRE DE LA COLUMNA en su rotulo accesible, porque cuatro «Quitar» iguales no dicen cual se llevan. La busqueda global se lista igual que un filtro y se quita igual, y «Quitar todos» las suelta a la vez. Quitar uno vuelve a la pagina 1, por lo mismo que ponerlo: el resultado cambia de tamaño. NO ERA UN HUECO DE CSS —las reglas .tb-act viajaban perfectamente— sino de MARCADO, que es la enfermedad R34 otra vez y la que el candado de la promesa NO cubre: ese compara las dos hojas, no lo que cada lado pinta. Lo que si lo listaba era promesa-vs-entrega.mjs, la herramienta de auditoria, con .tb-act, .tb-act-x y .tb-act-todo entre las clases que el catalogo pinta y el React no emite. Estaba escrito y nadie lo habia leido; queda pendiente decidir cuales de las otras que lista son deuda y cuales mobiliario. Cinco pruebas nuevas, vistas en rojo reintroduciendo el defecto exacto: 290.</p>
+
 
 
 <h3 class="sub-seccion">v1.41.1 <span class="cam-fecha">2026-08-11</span></h3>

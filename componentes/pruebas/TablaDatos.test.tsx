@@ -362,3 +362,67 @@ describe('R34 · la tabla pinta lo que el catálogo promete', () => {
     expect(pie.querySelector('.tb-pag nav')).not.toBeNull();
   });
 });
+
+/**
+ * R4 · LA TIRA DE FILTROS PUESTOS, entera.
+ *
+ * Se entregaba a medias y lo reportó el responsable desde su producto: «cuando
+ * un filtro está activo aparece una línea azul con una x para borrar el filtro,
+ * así aparece en la promesa; en la entrega solo aparece la línea azul, no
+ * muestra el valor tampoco la x». La banda azul es el fondo de `.tb-activos`;
+ * lo que faltaba era su contenido — el componente pintaba un `Chip` por filtro
+ * y ningún botón de quitar.
+ */
+describe('Tabla de datos · la tira dice CUÁLES y deja quitarlos', () => {
+  async function conFiltro() {
+    const u = userEvent.setup();
+    const vista = pintar();
+    await u.click(screen.getByRole('button', { name: /Filtros/ }));
+    await u.type(screen.getByLabelText('Filtrar por Cargo'), 'Docente');
+    return { u, vista };
+  }
+
+  it('cada filtro puesto se lista con su valor Y con su × para quitarlo', async () => {
+    const { vista } = await conFiltro();
+    const tira = vista.container.querySelector('.tb-activos')!;
+    expect(tira).not.toHaveAttribute('hidden');
+    expect(tira).toHaveTextContent('Cargo: Docente');
+    // Lo que faltaba: el botón de quitar, con el NOMBRE de la columna en su
+    // rótulo — con cuatro filtros puestos, cuatro «Quitar» iguales no dicen
+    // cuál se llevan.
+    expect(within(tira as HTMLElement).getByRole('button', { name: 'Quitar filtro de Cargo' }))
+      .toBeInTheDocument();
+  });
+
+  it('pulsar la × suelta ESE filtro y vuelve a la página 1', async () => {
+    const { u, vista } = await conFiltro();
+    expect(filasCuerpo()).toHaveLength(3);
+
+    await u.click(screen.getByRole('button', { name: 'Quitar filtro de Cargo' }));
+    expect(filasCuerpo()).toHaveLength(6);
+    expect(vista.container.querySelector('.tb-activos')).toHaveAttribute('hidden');
+  });
+
+  it('la búsqueda también se lista y también se quita desde la tira', async () => {
+    const u = userEvent.setup();
+    const vista = pintar();
+    await u.type(screen.getByLabelText(/Buscar/), 'Rosa');
+
+    const tira = vista.container.querySelector('.tb-activos')!;
+    expect(tira).toHaveTextContent('Busca: Rosa');
+    await u.click(within(tira as HTMLElement).getByRole('button', { name: 'Quitar búsqueda' }));
+    expect(filasCuerpo()).toHaveLength(6);
+  });
+
+  it('«Quitar todos» los suelta a la vez, búsqueda incluida', async () => {
+    const { u } = await conFiltro();
+    await u.type(screen.getByLabelText(/Buscar/), 'a');
+    await u.click(screen.getByRole('button', { name: 'Quitar todos' }));
+    expect(filasCuerpo()).toHaveLength(6);
+  });
+
+  it('sin nada puesto, la tira no se ve', () => {
+    const vista = pintar();
+    expect(vista.container.querySelector('.tb-activos')).toHaveAttribute('hidden');
+  });
+});

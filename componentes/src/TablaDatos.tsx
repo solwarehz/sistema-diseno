@@ -21,7 +21,6 @@
 
 import { useMemo, useState, useId } from 'react';
 import { Boton } from './Boton';
-import { Chip } from './Chip';
 import { Campo, Selector } from './Campo';
 import { Paginacion } from './Paginacion';
 import { SeleccionMultiple } from './Interruptor';
@@ -259,6 +258,24 @@ export function TablaDatos<T>({
     avisar({ filtros: nuevos, pagina: 1 });
   }
 
+  /** Suelta UN criterio desde la tira. Vuelve a la página 1 por lo mismo que
+   *  al ponerlo: el resultado cambia de tamaño. */
+  function quitarFiltro(clave: string) {
+    const nuevos = { ...filtros, [clave]: SIN_FILTRO };
+    setFiltros(nuevos);
+    setPagina(1);
+    avisar({ filtros: nuevos, pagina: 1 });
+  }
+
+  /** Los suelta todos, búsqueda incluida: la tira los lista juntos, así que
+   *  «Quitar todos» tiene que quitar todo lo que la tira enseña. */
+  function quitarTodo() {
+    setFiltros({});
+    setBusqueda('');
+    setPagina(1);
+    avisar({ filtros: {}, busqueda: '', pagina: 1 });
+  }
+
   return (
     <div className="tb-envoltura">
       {/* R34 · la barra ES la del catálogo: buscar + Mostrar + recuento a la
@@ -362,18 +379,57 @@ export function TablaDatos<T>({
       </div>
 
       {/* R4 · los filtros puestos se listan encima: el botón dice «hay
-          filtros», esta tira dice CUÁLES. */}
-      <div className="tb-activos" hidden={!hayFiltro}>
+          filtros», esta tira dice CUÁLES.
+
+          Y CADA UNO SE QUITA DESDE AQUÍ. Esto se entregaba a medias: la tira
+          pintaba un `Chip` por filtro y nada más, así que en el producto se
+          veía la banda azul —que es el fondo de `.tb-activos`, no un chip— con
+          el valor dentro pero SIN la × para quitarlo. Lo reportó el
+          responsable. Un listado de lo que está filtrando que no deja
+          desfiltrar obliga a volver a abrir la fila de filtros y borrar a mano
+          el que se quiera soltar.
+
+          Se usa el marcado que el catálogo promete —`.tb-act` con su
+          `.tb-act-x`— y no `Chip`: un chip es un estado, esto es un criterio
+          puesto que se puede retirar. Llevan cosas distintas dentro y una de
+          ellas es un botón. */}
+      <div className="tb-activos" hidden={!hayCriba}>
+        {busqueda.trim() !== '' && (
+          <span className="tb-act">
+            Busca: <b>{busqueda}</b>
+            <button
+              type="button"
+              className="tb-act-x"
+              aria-label="Quitar búsqueda"
+              onClick={() => { setBusqueda(''); setPagina(1); avisar({ busqueda: '', pagina: 1 }); }}
+            >
+              <Icono nombre="cerrar" tam="etiqueta" />
+            </button>
+          </span>
+        )}
         {Object.entries(filtros)
           .filter(([, v]) => v !== SIN_FILTRO)
           .map(([clave, v]) => {
             const col = columnas.find((c) => c.clave === clave);
             return (
-              <Chip tono="info" key={clave}>
-                {col?.titulo}: {v}
-              </Chip>
+              <span className="tb-act" key={clave}>
+                {col?.titulo}: <b>{v}</b>
+                {/* El nombre de la columna va en el rótulo: con cuatro filtros
+                    puestos, cuatro «Quitar» iguales no dicen cuál se llevan. */}
+                <button
+                  type="button"
+                  className="tb-act-x"
+                  aria-label={`Quitar filtro de ${col?.titulo ?? clave}`}
+                  onClick={() => quitarFiltro(clave)}
+                >
+                  <Icono nombre="cerrar" tam="etiqueta" />
+                </button>
+              </span>
             );
           })}
+        <button type="button" className="tb-act-todo" onClick={quitarTodo}>
+          Quitar todos
+        </button>
       </div>
 
       <table className="tb" aria-label={titulo}>

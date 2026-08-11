@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.41.1';
+export const VERSION = '1.41.2';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,32 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.41.2', fecha: '2026-08-11',
+    que: 'La tira de filtros de la tabla se entregaba vacia: banda azul sin valor y sin la x de quitar',
+    porque:
+      'Lo reporto el responsable: «cuando un filtro esta activo aparece una linea azul con una x '
+      + 'para borrar el filtro, asi aparece en la promesa; en la entrega solo aparece la linea '
+      + 'azul, no muestra el valor tampoco la x». La banda azul es el FONDO de .tb-activos, no una '
+      + 'ficha: lo que faltaba era su contenido. El catalogo arma una ficha .tb-act por criterio '
+      + 'con el valor en negrita, su boton .tb-act-x y un .tb-act-todo; el React pintaba un Chip '
+      + 'por filtro y NINGUN boton de quitar. '
+      + 'Ahora emite el marcado que el catalogo promete, y no un Chip: un chip es un estado, esto '
+      + 'es un criterio puesto que se puede retirar — llevan cosas distintas dentro y una de ellas '
+      + 'es un boton. Cada x lleva el NOMBRE DE LA COLUMNA en su rotulo accesible, porque cuatro '
+      + '«Quitar» iguales no dicen cual se llevan. La busqueda global se lista igual que un filtro '
+      + 'y se quita igual, y «Quitar todos» las suelta a la vez. Quitar uno vuelve a la pagina 1, '
+      + 'por lo mismo que ponerlo: el resultado cambia de tamaño. '
+      + 'NO ERA UN HUECO DE CSS —las reglas .tb-act viajaban perfectamente— sino de MARCADO, que '
+      + 'es la enfermedad R34 otra vez y la que el candado de la promesa NO cubre: ese compara las '
+      + 'dos hojas, no lo que cada lado pinta. Lo que si lo listaba era promesa-vs-entrega.mjs, la '
+      + 'herramienta de auditoria, con .tb-act, .tb-act-x y .tb-act-todo entre las clases que el '
+      + 'catalogo pinta y el React no emite. Estaba escrito y nadie lo habia leido; queda '
+      + 'pendiente decidir cuales de las otras que lista son deuda y cuales mobiliario. '
+      + 'Cinco pruebas nuevas, vistas en rojo reintroduciendo el defecto exacto: 290.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.41.1', fecha: '2026-08-11',
     que: 'El boton declara su propio display: sin .btn-ic, el icono y el texto se apilaban',
