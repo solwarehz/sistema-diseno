@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.41.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.41.1</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.41.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.41.1
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -1577,7 +1577,10 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
   justify-content: center; text-align: center; gap: 8px; padding: 24px 16px;
   background: var(--fondo-tarjeta); min-height: 168px; }
 .ep-cargando { align-items: stretch; justify-content: flex-start; gap: 12px; }
-.ep-ico { color: var(--texto-pista); }
+/* Sin display propio el icono queda en linea y arrastra el hueco del
+   descendiente debajo: el estado vacio salia descentrado en cuanto la pagina
+   que lo montaba no fijaba nada. Misma familia que el .btn de la v1.41.0. */
+.ep-ico { color: var(--texto-pista); display: grid; place-items: center; }
 .ep-ico .ic { width: 32px; height: 32px; }
 /* Solo error y sin permiso toman color: los demás no son incidencias. */
 .ep-ico-error { color: var(--error-acento); }
@@ -1724,7 +1727,11 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 .pgn-btn:disabled, .pgn-btn[aria-disabled='true'] { color: var(--accion-texto-desh); cursor: not-allowed; }
 .pgn-elip { color: var(--texto-pista); padding: 4px; display: inline-flex; align-items: center; }
 /* Anterior y Siguiente llevan nombre visible, no solo el chevron. */
-.pgn-flecha { gap: 4px; padding: 4px 12px; }
+/* Declaraba gap SIN display, asi que la alineacion se la ponia .pgn-btn — la
+   misma dependencia entre clases que dejo el boton de CSV apilado. Ahora se
+   sostiene sola: usada suelta se comporta igual. */
+.pgn-flecha { display: inline-flex; align-items: center; justify-content: center;
+  gap: 4px; padding: 4px 12px; }
 .pgn-flecha .ic { width: 14px; height: 14px; }
 /* El chevron y el nombre van siempre juntos, en cualquier ancho: el chevron
    da la dirección de un vistazo y el nombre la nombra. */
@@ -2166,7 +2173,24 @@ h2.seccion {
    18px es a proposito el tamaño del icono de texto: asi el boton mide lo mismo
    lleve icono o no. Y las dos alturas caen en la rejilla de 4 — 36px el normal
    (18+16+2) y 28px el mini (18+8+2). */
+/* EL display TAMBIEN ES DEL BOTON. Segunda vez que el mismo cimiento falla por
+   lo mismo, y lo diagnostico el responsable desde su producto:
+
+     «El .btn que entrega el paquete no declara display. Filtros y Columnas se
+      alinean porque llevan .btn-ic (inline-flex); nuestro CSV no la lleva, cae
+      en display:block, el icono y el texto se apilan y el boton mide 55px
+      contra 37px.»
+
+   Tenia razon: la alineacion vivia en .btn-ic, una clase OPCIONAL, asi que un
+   boton con icono y sin ella quedaba a merced del display que le pusiera la
+   pagina. Ahora la alineacion es DEL BOTON: lleve .btn-ic o no, el icono y el
+   texto van en linea y centrados. .btn-ic se queda —hay productos que ya la
+   usan— pero deja de ser imprescindible.
+
+   El gap solo se nota cuando hay dos cosas dentro, asi que en un boton de solo
+   texto no cambia nada. */
 .btn { font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   line-height: 18px;
   padding: 8px 16px; border-radius: 6px; border: 1px solid transparent; }
 .btn-1 { background: var(--accion); color: var(--accion-texto); }
@@ -3278,7 +3302,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.41.0</option></select></label>
+          <select class="campo cg-in"><option>v1.41.1</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3366,8 +3390,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.41.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.41.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.41.1.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.41.1</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -9881,6 +9905,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.41.1 <span class="cam-fecha">2026-08-11</span></h3>
+<p class="pag-intro"><strong>El boton declara su propio display: sin .btn-ic, el icono y el texto se apilaban.</strong> Lo diagnostico el responsable desde su producto, y con la causa exacta: «El .btn que entrega el paquete no declara display. Filtros y Columnas se alinean porque llevan .btn-ic (inline-flex); nuestro CSV no la lleva, cae en display:block, el icono y el texto se apilan y el boton mide 55px contra 37px». La alineacion vivia en una clase OPCIONAL, asi que un boton con icono y sin ella quedaba a merced del display que le pusiera la pagina. Ahora la alineacion es DEL BOTON — inline-flex, align-items y gap en .btn— y .btn-ic se queda por compatibilidad pero deja de ser imprescindible. ES LA SEGUNDA VEZ QUE EL MISMO CIMIENTO FALLA POR LO MISMO (la primera fue el line-height en la v1.40.1), y ninguno de los candados podia verlo: el de la promesa compara las dos hojas y aqui LAS DOS CALLAN — coinciden en no decir nada. La diferencia no esta entre catalogo y entrega, esta entre el catalogo y CUALQUIER OTRA PAGINA. Por eso el candado nuevo, SIN-ANFITRION: toda clase que lleve un icono dentro tiene que declarar display y align-items. La lista NO esta escrita a mano —se deduce de la hoja: toda clase dentro de la cual se estiliza un .ic— y admite place-items, que es la forma corta correcta; obligar a escribirlo largo habria sacado media hoja en rojo sin arreglar nada. Saco 15 casos a la primera; 13 ya lo resolvian con place-items y quedaban DOS de verdad: .ep-ico, sin display ninguno, y .pgn-flecha, que declaraba gap SIN display y dependia de que la acompañara .pgn-btn — la misma dependencia entre clases que dejo el CSV apilado. Los dos se sostienen ya solos. Medido con un reset de producto realista (button{display:block}, sin !important): los tres botones —sin icono, con icono y sin .btn-ic, y con .btn-ic— miden lo mismo.</p>
+
 
 
 <h3 class="sub-seccion">v1.41.0 <span class="cam-fecha">2026-08-11</span></h3>

@@ -5220,7 +5220,10 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
   justify-content: center; text-align: center; gap: 8px; padding: 24px 16px;
   background: var(--fondo-tarjeta); min-height: 168px; }
 .ep-cargando { align-items: stretch; justify-content: flex-start; gap: 12px; }
-.ep-ico { color: var(--texto-pista); }
+/* Sin display propio el icono queda en linea y arrastra el hueco del
+   descendiente debajo: el estado vacio salia descentrado en cuanto la pagina
+   que lo montaba no fijaba nada. Misma familia que el .btn de la v1.41.0. */
+.ep-ico { color: var(--texto-pista); display: grid; place-items: center; }
 .ep-ico .ic { width: 32px; height: 32px; }
 /* Solo error y sin permiso toman color: los demás no son incidencias. */
 .ep-ico-error { color: var(--error-acento); }
@@ -5367,7 +5370,11 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 .pgn-btn:disabled, .pgn-btn[aria-disabled='true'] { color: var(--accion-texto-desh); cursor: not-allowed; }
 .pgn-elip { color: var(--texto-pista); padding: 4px; display: inline-flex; align-items: center; }
 /* Anterior y Siguiente llevan nombre visible, no solo el chevron. */
-.pgn-flecha { gap: 4px; padding: 4px 12px; }
+/* Declaraba gap SIN display, asi que la alineacion se la ponia .pgn-btn — la
+   misma dependencia entre clases que dejo el boton de CSV apilado. Ahora se
+   sostiene sola: usada suelta se comporta igual. */
+.pgn-flecha { display: inline-flex; align-items: center; justify-content: center;
+  gap: 4px; padding: 4px 12px; }
 .pgn-flecha .ic { width: 14px; height: 14px; }
 /* El chevron y el nombre van siempre juntos, en cualquier ancho: el chevron
    da la dirección de un vistazo y el nombre la nombra. */
@@ -5809,7 +5816,24 @@ h2.seccion {
    18px es a proposito el tamaño del icono de texto: asi el boton mide lo mismo
    lleve icono o no. Y las dos alturas caen en la rejilla de 4 — 36px el normal
    (18+16+2) y 28px el mini (18+8+2). */
+/* EL display TAMBIEN ES DEL BOTON. Segunda vez que el mismo cimiento falla por
+   lo mismo, y lo diagnostico el responsable desde su producto:
+
+     «El .btn que entrega el paquete no declara display. Filtros y Columnas se
+      alinean porque llevan .btn-ic (inline-flex); nuestro CSV no la lleva, cae
+      en display:block, el icono y el texto se apilan y el boton mide 55px
+      contra 37px.»
+
+   Tenia razon: la alineacion vivia en .btn-ic, una clase OPCIONAL, asi que un
+   boton con icono y sin ella quedaba a merced del display que le pusiera la
+   pagina. Ahora la alineacion es DEL BOTON: lleve .btn-ic o no, el icono y el
+   texto van en linea y centrados. .btn-ic se queda —hay productos que ya la
+   usan— pero deja de ser imprescindible.
+
+   El gap solo se nota cuando hay dos cosas dentro, asi que en un boton de solo
+   texto no cambia nada. */
 .btn { font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   line-height: 18px;
   padding: 8px 16px; border-radius: 6px; border: 1px solid transparent; }
 .btn-1 { background: var(--accion); color: var(--accion-texto); }

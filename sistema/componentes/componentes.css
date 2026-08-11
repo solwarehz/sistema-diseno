@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.41.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.41.1
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -85,6 +85,7 @@
 .btn-ic[hidden]{ display: none; }
 .btn-solo-ic{ padding-inline: 8px; }
 .btn{ font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   line-height: 18px;
   padding: 8px 16px; border-radius: 6px; border: 1px solid transparent; }
 .btn-1{ background: var(--accion); color: var(--accion-texto); }
@@ -742,7 +743,8 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .pgn-btn.activa{ background: var(--accion); color: var(--accion-texto); border-color: var(--accion); }
 .pgn-btn:disabled, .pgn-btn[aria-disabled='true']{ color: var(--accion-texto-desh); cursor: not-allowed; }
 .pgn-elip{ color: var(--texto-pista); padding: 4px; display: inline-flex; align-items: center; }
-.pgn-flecha{ gap: 4px; padding: 4px 12px; }
+.pgn-flecha{ display: inline-flex; align-items: center; justify-content: center;
+  gap: 4px; padding: 4px 12px; }
 .pgn-flecha .ic{ width: 14px; height: 14px; }
 .pgn .campo-grupo{ flex-direction: row; align-items: center; gap: 8px; }
 .pgn .campo-grupo .campo{ width: auto; }
@@ -863,7 +865,7 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   justify-content: center; text-align: center; gap: 8px; padding: 24px 16px;
   background: var(--fondo-tarjeta); min-height: 168px; }
 .ep-cargando{ align-items: stretch; justify-content: flex-start; gap: 12px; }
-.ep-ico{ color: var(--texto-pista); }
+.ep-ico{ color: var(--texto-pista); display: grid; place-items: center; }
 .ep-ico .ic{ width: 32px; height: 32px; }
 .ep-ico-error{ color: var(--error-acento); }
 .ep-ico-sin-permiso{ color: var(--aviso-acento); }

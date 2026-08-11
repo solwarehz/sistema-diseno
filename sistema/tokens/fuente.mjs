@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.41.0';
+export const VERSION = '1.41.1';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,34 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.41.1', fecha: '2026-08-11',
+    que: 'El boton declara su propio display: sin .btn-ic, el icono y el texto se apilaban',
+    porque:
+      'Lo diagnostico el responsable desde su producto, y con la causa exacta: «El .btn que '
+      + 'entrega el paquete no declara display. Filtros y Columnas se alinean porque llevan '
+      + '.btn-ic (inline-flex); nuestro CSV no la lleva, cae en display:block, el icono y el texto '
+      + 'se apilan y el boton mide 55px contra 37px». La alineacion vivia en una clase OPCIONAL, '
+      + 'asi que un boton con icono y sin ella quedaba a merced del display que le pusiera la '
+      + 'pagina. Ahora la alineacion es DEL BOTON — inline-flex, align-items y gap en .btn— y '
+      + '.btn-ic se queda por compatibilidad pero deja de ser imprescindible. '
+      + 'ES LA SEGUNDA VEZ QUE EL MISMO CIMIENTO FALLA POR LO MISMO (la primera fue el '
+      + 'line-height en la v1.40.1), y ninguno de los candados podia verlo: el de la promesa '
+      + 'compara las dos hojas y aqui LAS DOS CALLAN — coinciden en no decir nada. La diferencia '
+      + 'no esta entre catalogo y entrega, esta entre el catalogo y CUALQUIER OTRA PAGINA. '
+      + 'Por eso el candado nuevo, SIN-ANFITRION: toda clase que lleve un icono dentro tiene que '
+      + 'declarar display y align-items. La lista NO esta escrita a mano —se deduce de la hoja: '
+      + 'toda clase dentro de la cual se estiliza un .ic— y admite place-items, que es la forma '
+      + 'corta correcta; obligar a escribirlo largo habria sacado media hoja en rojo sin arreglar '
+      + 'nada. Saco 15 casos a la primera; 13 ya lo resolvian con place-items y quedaban DOS de '
+      + 'verdad: .ep-ico, sin display ninguno, y .pgn-flecha, que declaraba gap SIN display y '
+      + 'dependia de que la acompañara .pgn-btn — la misma dependencia entre clases que dejo el '
+      + 'CSV apilado. Los dos se sostienen ya solos. '
+      + 'Medido con un reset de producto realista (button{display:block}, sin !important): los '
+      + 'tres botones —sin icono, con icono y sin .btn-ic, y con .btn-ic— miden lo mismo.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.41.0', fecha: '2026-08-11',
     que: 'El reset box-sizing por fin viaja, y nace el candado que compara promesa contra entrega',

@@ -351,6 +351,57 @@ const AFIRMACIONES = [
     },
   },
   {
+    id: 'SIN-ANFITRION',
+    que: 'lo que lleva un icono dentro fija su propia caja, no la hereda del producto',
+    /**
+     * LA FAMILIA DE DEFECTO QUE YA HA MORDIDO DOS VECES, y las dos las
+     * encontró el responsable montando el paquete en su producto, no aquí:
+     *
+     *   v1.40.1  `.btn` no declaraba `line-height` → el renglón lo ponía la
+     *            página, y donde era más corto que el icono, los botones CON
+     *            icono salían más altos que los demás.
+     *   v1.41.0  `.btn` no declaraba `display` → la alineación vivía en
+     *            `.btn-ic`, que es OPCIONAL; sin ella el botón caía al display
+     *            que le pusiera la página, el icono y el texto se apilaban y
+     *            medía 55px contra 37px.
+     *
+     * LOS OTROS CANDADOS NO PUEDEN VERLO, y conviene entender por qué antes de
+     * pedirles nada: el de la promesa compara las dos hojas, y aquí LAS DOS
+     * CALLAN — coinciden en no decir nada. La diferencia no está entre catálogo
+     * y entrega, está entre el catálogo y CUALQUIER OTRA PÁGINA.
+     *
+     * QUÉ SE EXIGE Y DE DÓNDE SALE LA LISTA. Un elemento que pone un icono al
+     * lado de texto tiene que decir cómo los coloca, o lo dirá quien lo monte.
+     * La lista NO está escrita a mano: se deduce de la propia hoja —toda clase
+     * dentro de la cual la hoja estiliza un `.ic` es, por definición, una que
+     * lleva icono dentro— más `.btn`, que los lleva sin necesitar regla propia
+     * para ellos.
+     */
+    revisar(reglas) {
+      const OBLIGADAS = ['display', 'align-items'];
+      const conIcono = new Set(['btn']);
+      for (const r of reglas) {
+        // `.x .ic`, `.x > .ic`: la hoja estiliza un icono DENTRO de `.x`.
+        const m = /\.([a-zA-Z0-9_-]+)\s*>?\s+\.ic\b/.exec(r.sel);
+        if (m) conIcono.add(m[1]);
+      }
+      // `place-items` FIJA `align-items`: exigir el nombre largo habria sacado
+      // en rojo media hoja por escribirlo en su forma corta, que es correcta.
+      // Un candado que obliga a escribir peor no esta protegiendo nada.
+      const EQUIVALE = { 'align-items': ['place-items', 'place-content'] };
+      const fallos = [];
+      for (const clase of [...conIcono].sort()) {
+        for (const prop of OBLIGADAS) {
+          const nombres = [prop, ...(EQUIVALE[prop] || [])];
+          if (nombres.some((p) => resolver(reglas, [elem('span', [clase])], p, 1280))) continue;
+          fallos.push(`  .${clase} lleva icono dentro y no declara ${prop}:`
+            + ' lo decidira la pagina que lo monte.');
+        }
+      }
+      return fallos;
+    },
+  },
+  {
     id: 'ALTURA-PROPIA',
     que: 'el botón fija su propio line-height y no lo hereda del producto',
     /**
