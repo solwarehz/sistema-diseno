@@ -1260,9 +1260,9 @@ y el comprimido en cuadrado. La subida es del producto.</p>
     <div class="ci-zoom">
       <button class="btn btn-neutro btn-mini" id="ci-demo-menos" aria-label="Alejar">−</button>
       <button class="btn btn-neutro btn-mini" id="ci-demo-mas" aria-label="Acercar">+</button>
-      <button class="btn btn-1 btn-mini" id="ci-demo-usar">Usar este encuadre</button>
+      <button class="btn btn-1 btn-mini" id="ci-demo-usar">Grabar</button>
       <button class="btn btn-terc btn-mini" id="ci-demo-cancelar">Cancelar</button>
-      <span class="ci-ayuda">Arrastra o usa las flechas para centrar.</span>
+      
     </div>
   </div>
 </div>
@@ -5578,12 +5578,19 @@ select.campo:disabled { opacity: .75; }
    algunos navegadores ignoran click() sobre lo que no se pinta. */
 .ci-entrada { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 .ci-editor { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+/* La leccion R16, otra vez: display:flex GANA a [hidden] del navegador y el
+   editor no se ocultaba nunca — con su mascara difuminando la pagina entera
+   despues de guardar. Lo vio el responsable probando la foto. */
+.ci-editor[hidden] { display: none; }
 /* La foto vive en círculo y el logo extendido en su hueco real: 212×44, que
    es el lateral desplegado (236) menos su relleno (24). La vista previa ES el
    hueco, no una aproximación. */
 .ci-redonda { border-radius: 50%; }
 .ci-extendida { width: 212px; height: 44px; }
-.ci-marco-editor { position: relative; }
+/* overflow:hidden CONTIENE la sombra de 999px de la mascara: sin el, el
+   difuminado se derrama del marco y atenua la pagina entera. El difuminado
+   es del encuadre, no del mundo. */
+.ci-marco-editor { position: relative; overflow: hidden; border-radius: 6px; }
 /* La máscara del encuadre circular: la receta del velo —token del marco con
    opacidad—, nada de colores a mano. Enseña qué quedará dentro del círculo. */
 .ci-mascara { position: absolute; inset: 0; border-radius: 50%;

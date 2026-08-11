@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.30.0';
+export const VERSION = '1.30.1';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,23 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.30.1', fecha: '2026-08-10',
+    que: 'El difuminado del encuadre ya no se queda pegado a la pagina tras guardar la foto',
+    porque:
+      'Reportado por el responsable probando la foto en el catalogo: al elegir aparecia el '
+      + 'sombreado del encuadre circular y NO terminaba al guardar. Dos defectos trenzados. '
+      + 'Uno: la leccion R16 otra vez — .ci-editor{display:flex} le gana a [hidden] del '
+      + 'navegador, asi que el editor y su mascara no se ocultaban nunca; se anade la regla '
+      + '.ci-editor[hidden]{display:none}, la misma cura que los grupos del marco. Dos: la '
+      + 'mascara difumina con una sombra de 999px y su marco no tenia overflow:hidden, asi que '
+      + 'el difuminado se derramaba sobre la pagina entera tambien DURANTE el encuadre. El '
+      + 'difuminado es del encuadre, no del mundo. Y el boton de confirmar pasa de «Usar este '
+      + 'encuadre» a «Grabar», que es como lo nombra quien lo usa: al grabar, el encuadre se '
+      + 'oculta y se vuelve a la pantalla con la foto grabada en su hueco.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.30.0', fecha: '2026-08-10',
     que: 'CargaImagen gana los tres formatos con la proporcion del hueco real, y el catalogo deja PROBARLOS',

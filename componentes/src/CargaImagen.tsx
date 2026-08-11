@@ -273,7 +273,7 @@ export function CargaImagen({
         origen={disparador}
         onCerrar={cerrarEditor}
         cerrarAlPulsarFuera={false}
-        accion={imagen ? { texto: 'Usar este encuadre', onClick: confirmar } : undefined}
+        accion={imagen ? { texto: 'Grabar', onClick: confirmar } : undefined}
         textoCerrar="Cancelar"
       >
         <div className="ci-editor">
@@ -308,9 +308,11 @@ export function CargaImagen({
           {F.redondo && <div className="ci-mascara" aria-hidden="true" />}
           </div>
           <div className="ci-zoom">
+            {/* Sin texto de ayuda a la vista (lo pidió el responsable): el
+                manejo se descubre arrastrando, y para el lector de pantalla
+                lo dice el aria-label del lienzo, que no ocupa sitio. */}
             <Boton mini variante="neutra" aria-label="Alejar" onClick={() => acercar(1 / PASO_ZOOM)}>−</Boton>
             <Boton mini variante="neutra" aria-label="Acercar" onClick={() => acercar(PASO_ZOOM)}>+</Boton>
-            <span className="ci-ayuda">Arrastra o usa las flechas para centrar. Se recorta el cuadro.</span>
           </div>
         </div>
       </Dialogo>

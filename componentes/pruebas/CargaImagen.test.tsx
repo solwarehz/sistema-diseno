@@ -71,7 +71,7 @@ describe('Carga de imagen — R35', () => {
     const u = userEvent.setup();
     const { container } = render(<CargaImagen etiqueta="Foto" onCambio={onCambio} />);
     elegir(container);
-    const usar = await screen.findByRole('button', { name: 'Usar este encuadre' });
+    const usar = await screen.findByRole('button', { name: 'Grabar' });
     await u.click(usar);
     await waitFor(() => expect(onCambio).toHaveBeenCalledTimes(1));
     const r = onCambio.mock.calls[0][0];
@@ -146,7 +146,7 @@ describe('R6 · los tres formatos — la proporción del hueco real', () => {
       <CargaImagen etiqueta="Logo" formato="logo-extendido" onCambio={onCambio} />
     );
     elegir(container);
-    await u.click(await screen.findByRole('button', { name: 'Usar este encuadre' }));
+    await u.click(await screen.findByRole('button', { name: 'Grabar' }));
     await waitFor(() => expect(onCambio).toHaveBeenCalled());
     // 512 de ancho → 106 de alto (512 × 54/260), no un cuadrado.
     expect(anchos[0]).toEqual([512, 106]);
