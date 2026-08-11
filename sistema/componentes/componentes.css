@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.32.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.33.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -813,6 +813,8 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
   .app-cascaron .lat{ position: absolute; left: 0; top: 0; bottom: 0; z-index: 60;
     height: 100%; transform: translateX(-100%); transition: transform var(--dur-lenta) var(--curva); }
   .app-cascaron .lat:not(.colapsado){ transform: translateX(0); box-shadow: var(--sombra-capa); }
+  .app-cascaron .velo{ position: fixed; inset: 0; z-index: 55;
+    background: var(--marco-fondo); opacity: .5; cursor: pointer; }
   .app-cascaron{ position: relative; overflow-x: hidden; }
   .top-filtros{ flex-wrap: wrap; }
   .top-filtros .campo{ min-width: 0; }

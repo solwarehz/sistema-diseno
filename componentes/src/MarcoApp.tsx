@@ -165,6 +165,23 @@ export function MarcoApp({
   const lateral = useRef<HTMLElement>(null);
   const plegarBtn = useRef<HTMLButtonElement>(null);
 
+  // R39 · al CRUZAR a la banda del cajón (≤700px), el marco se pliega solo.
+  // Sin esto, estrechar la ventana con el menú extendido dejaba el cajón
+  // plantado sobre el contenido — y como el botón de plegar queda DEBAJO del
+  // cajón, con el ratón no había salida. La ref evita el cierre rancio: el
+  // efecto corre una vez pero pliega con el setPlegado del render vigente.
+  const plegarRef = useRef(setPlegado);
+  plegarRef.current = setPlegado;
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return; // jsdom, sin pena
+    const banda = window.matchMedia('(max-width: 700px)');
+    const alCruzar = (e: MediaQueryListEvent) => { if (e.matches) plegarRef.current(true); };
+    banda.addEventListener('change', alCruzar);
+    // Montado ya en angosto, arranca plegado: un cajón abierto de inicio tapa.
+    if (banda.matches) plegarRef.current(true);
+    return () => banda.removeEventListener('change', alCruzar);
+  }, []);
+
   // Escape pliega el panel cuando está desplegado sobre el contenido. Sin esto,
   // en pantalla estrecha el panel tapa y no hay forma de cerrarlo con teclado.
   useEffect(() => {

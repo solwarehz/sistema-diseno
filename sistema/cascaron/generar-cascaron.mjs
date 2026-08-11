@@ -4140,6 +4140,13 @@ code { font-family: 'IBM Plex Mono', monospace; }
   .app-cascaron .lat { position: absolute; left: 0; top: 0; bottom: 0; z-index: 60;
     height: 100%; transform: translateX(-100%); transition: transform var(--dur-lenta) var(--curva); }
   .app-cascaron .lat:not(.colapsado) { transform: translateX(0); box-shadow: var(--sombra-capa); }
+  /* R39: el velo EXISTE de verdad. El React lo pintaba con su onClick y la
+     hoja no traia ni una regla: un div de 0x0 ni vela ni se puede pulsar, y
+     el unico cierre con raton quedaba tapado por el propio cajon (z 60 sobre
+     z 10). Receta del velo de siempre: fondo del marco con opacidad, bajo el
+     cajon y sobre todo lo demas, incluida la barra. */
+  .app-cascaron .velo { position: fixed; inset: 0; z-index: 55;
+    background: var(--marco-fondo); opacity: .5; cursor: pointer; }
   .app-cascaron { position: relative; overflow-x: hidden; }
   /* Los filtros envuelven y encogen en vez de imponer 360px de mínimo. */
   .top-filtros { flex-wrap: wrap; }

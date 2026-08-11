@@ -67,7 +67,15 @@ reglas dejan de viajar.
   queda como candidato a ampliarse por componente cuando el catálogo consuma
   el render real (fase 3).
 
-## Nota de método
+## Nota de método (ampliada con R39)
+
+**El sexto ojo que faltaba, señalado por Control Administrativos en R39:**
+`responsive-vs-entrega.mjs` compara **clases**, no cajas. Un selector presente
+en la hoja con **cero reglas de caja** (el velo: solo `display:none` en un
+modo) se le escapa — la clase «existe» y el elemento mide 0×0. La detección
+completa exige medir cajas montadas en navegador real: fase 3.
+
+
 
 Los falsos positivos de la herramienta (`av`, `cf-banda`) vienen de clases en
 plantilla (`` `av av-${tono}` ``): el literal no cierra antes del `${` y el

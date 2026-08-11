@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.32.0';
+export const VERSION = '1.33.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,24 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.33.0', fecha: '2026-08-10',
+    que: 'R39: el cajon de pantalla estrecha gana velo de verdad, salida con raton y pliegue automatico',
+    porque:
+      'R39 de Control Administrativos, con el diagnostico hecho y confirmado linea por linea: '
+      + 'MarcoApp pintaba el velo con su onClick y la hoja no traia NI UNA regla — un div de 0x0 '
+      + 'ni vela ni se puede pulsar. Y el unico cierre con raton (top-plegar, z 10) quedaba '
+      + 'tapado por el propio cajon (lat, z 60): con el cajon abierto solo salvaba Escape, que '
+      + 'nadie descubre. Entra el velo real en el mismo @media del cajon (fixed inset 0, fondo '
+      + 'del marco con opacidad, z 55 bajo el cajon, clicable), pulsarlo pliega, y al CRUZAR de '
+      + 'ancho a angosto el marco se pliega solo con matchMedia — avisando por onPlegar para que '
+      + 'el producto que persiste se entere. Montado ya en angosto, arranca plegado. Regla 3 del '
+      + 'contrato del marco y cuatro pruebas nuevas: 222. Anotado ademas el limite que ellos '
+      + 'senalaron: responsive-vs-entrega compara clases, no cajas — un selector presente con '
+      + 'cero reglas se le escapa.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.32.0', fecha: '2026-08-10',
     que: 'En pantalla muy ancha la columna se centra y la barra la acompana',

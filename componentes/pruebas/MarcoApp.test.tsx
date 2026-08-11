@@ -9,7 +9,7 @@
  * lector de pantalla no sabe en qué página está.
  */
 
-import { render, screen, within, fireEvent } from '@testing-library/react';
+import { render, screen, within, fireEvent, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { MarcoApp, type GrupoNav } from '../src/MarcoApp';
@@ -346,5 +346,52 @@ describe('R37 · las opciones propias cierran el menú al elegirse', () => {
     // La opción propia navega: se elige y el menú se va, como «Salir».
     await u.click(screen.getByRole('menuitem', { name: 'Mi cuenta' }));
     expect(menu).toHaveAttribute('hidden');
+  });
+});
+
+describe('R39 · el cajón de pantalla estrecha tiene velo y salida', () => {
+  function conBanda(matchesInicial: boolean) {
+    let oyente: ((e: { matches: boolean }) => void) | null = null;
+    vi.stubGlobal('matchMedia', (media: string) => ({
+      matches: matchesInicial,
+      media,
+      addEventListener: (_: string, f: (e: { matches: boolean }) => void) => { oyente = f; },
+      removeEventListener: () => {},
+    }));
+    return { cruzar: (m: boolean) => oyente?.({ matches: m }) };
+  }
+
+  it('el velo cierra el cajón al pulsarlo: la salida con el ratón', async () => {
+    const u = userEvent.setup();
+    const { container } = montar();
+    const velo = container.querySelector('.velo')!;
+    // Desplegado, el velo está presente (la hoja lo pinta solo bajo 700px).
+    expect(velo).not.toHaveAttribute('hidden');
+    await u.click(velo);
+    expect(container.querySelector('.lat')!.classList.contains('colapsado')).toBe(true);
+    // Plegado, el velo se esconde: ya no hay nada que tapar.
+    expect(velo).toHaveAttribute('hidden');
+  });
+
+  it('al cruzar a la banda del cajón, el marco se pliega SOLO', () => {
+    const banda = conBanda(false);
+    const { container } = montar();
+    expect(container.querySelector('.lat.colapsado')).toBeNull();
+    act(() => banda.cruzar(true));
+    expect(container.querySelector('.lat.colapsado')).not.toBeNull();
+  });
+
+  it('montado ya en angosto, arranca plegado: un cajón abierto de inicio tapa', () => {
+    conBanda(true);
+    const { container } = montar();
+    expect(container.querySelector('.lat.colapsado')).not.toBeNull();
+  });
+
+  it('el pliegue automático AVISA por onPlegar: el producto que persiste se entera', () => {
+    const banda = conBanda(false);
+    const onPlegar = vi.fn();
+    montar({ onPlegar });
+    act(() => banda.cruzar(true));
+    expect(onPlegar).toHaveBeenCalledWith(true);
   });
 });
