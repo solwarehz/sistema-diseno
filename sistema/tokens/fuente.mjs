@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.31.0';
+export const VERSION = '1.32.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,24 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.32.0', fecha: '2026-08-10',
+    que: 'En pantalla muy ancha la columna se centra y la barra la acompana',
+    porque:
+      'Reportado por el responsable con captura a 1900px: el contenido pegado al lateral con un '
+      + 'desierto a la derecha, y el menu de usuario exiliado en la esquina, a media pantalla de '
+      + 'lo que se lee. La columna de lectura conserva su medida (1056px interiores, la misma de '
+      + 'siempre) pero se CENTRA en el espacio libre, y la barra superior — pintada de lado a '
+      + 'lado, que es lo que la hace barra — alinea sus mandos con la columna, con su saliente '
+      + 'de 16px de siempre: el correo, la campana y el avatar caen sobre el borde derecho del '
+      + 'contenido, donde el ojo ya esta. Se centra con RELLENO y no con margen porque el '
+      + 'contenedor debe seguir pintando su fondo completo. En pantallas hasta ~1150px no cambia '
+      + 'NADA: el max() cae a los rellenos actuales. Promesa igual a entrega: las tres reglas '
+      + 'valen para el catalogo (cat-cuerpo) y para los productos (app-contenido y top viajan en '
+      + 'la hoja, y MarcoApp ya emite ambas).',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.31.0', fecha: '2026-08-10',
     que: 'SelectorBusqueda entrega su promesa: lupa, chevron, visto — y el resaltado de teclado POR FIN se pinta',

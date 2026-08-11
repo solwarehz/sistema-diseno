@@ -4273,7 +4273,8 @@ code { font-family: 'IBM Plex Mono', monospace; }
   display: grid; gap: 4px; }
 .lat-leyenda div { display: flex; align-items: center; gap: 8px; }
 
-.cat-cuerpo { flex: 1; min-width: 0; padding: 24px 32px 80px; max-width: 1120px;
+.cat-cuerpo { flex: 1; min-width: 0;
+  padding: 24px max(32px, calc((100% - 1056px) / 2)) 80px;
   background: var(--fondo-pagina); }
 .migas { display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
   font-size: 12px; margin-bottom: 8px; }
@@ -5819,8 +5820,14 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    el renglon al volver (§ Ancho de linea del manual). El relleno inferior es
    generoso a proposito, para que la ultima fila de una tabla no quede pegada
    al borde y parezca cortada. */
+/* En pantalla muy ancha la columna de lectura se CENTRA y no se arrincona:
+   el relleno lateral absorbe el sobrante (max: nunca baja de 32px) y la
+   medida interior queda clavada en 1056px, la misma de siempre (1120 − 64).
+   Se centra con relleno y no con margen porque el contenedor debe seguir
+   pintando de lado a lado. Lo pidió el responsable con captura de 1900px:
+   contenido pegado al lateral y el menu de usuario exiliado en la esquina. */
 .app-contenido { flex: 1; min-width: 0; overflow-y: auto;
-  padding: 24px 32px 80px; max-width: 1120px; width: 100%; }
+  padding: 24px max(32px, calc((100% - 1056px) / 2)) 80px; width: 100%; }
 @media (max-width: 700px) { .app-contenido { padding: 16px 16px 64px; } }
 
 /* ── REFLUJO ─────────────────────────────────────────────────────────────────
@@ -5870,8 +5877,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 /* La barra se eleva sobre el contenido que se desplaza por debajo. z-index
    MENOR que el del lateral: donde se cruzan, manda el lateral. */
 .top { box-shadow: var(--sombra-barra); z-index: 10;
-  display: flex; align-items: center; gap: 12px; padding: 8px 16px; position: relative;
-  height: 64px; flex: none;
+  display: flex; align-items: center; gap: 12px; position: relative;
+  /* La barra ACOMPAÑA a la columna: pintada de lado a lado, pero sus mandos
+     alineados con el contenido (mismo centrado, con los 16px de saliente de
+     siempre). Asi el menu de usuario cae sobre el borde derecho de lo que se
+     lee, no en la esquina del monitor. */
+  padding: 8px max(16px, calc((100% - 1056px) / 2 - 16px)); height: 64px; flex: none;
   background: var(--fondo-tarjeta); border-bottom: 1px solid var(--borde); }
 /* La marca de la barra solo existe en móvil: en escritorio ya la lleva la
    banda de la lateral y repetirla sería marca duplicada en pantalla. */
