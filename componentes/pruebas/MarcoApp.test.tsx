@@ -417,3 +417,45 @@ describe('R38a · la banda del riel (≤900px) es estado, no CSS forzado', () =>
     expect(screen.getByRole('button', { name: 'Desplegar menú' })).toHaveAttribute('aria-expanded', 'false');
   });
 });
+
+describe('R42a · el tercer nivel del menú por fin se emite', () => {
+  const TRES_NIVELES: GrupoNav[] = [
+    {
+      clave: 'config', texto: 'Configuración',
+      hijos: [
+        { clave: 'general', texto: 'General', href: '/general' },
+        {
+          clave: 'catalogos', texto: 'Catálogos',
+          hijos: [
+            { clave: 'sedes', texto: 'Sedes', href: '/catalogos/sedes' },
+            { clave: 'cargos', texto: 'Cargos', href: '/catalogos/cargos' },
+          ],
+        },
+      ],
+    },
+  ];
+
+  it('una opción con hijos es una RAMA plegable, con el marcado que la hoja estiliza', async () => {
+    const u = userEvent.setup();
+    const { container } = montar({ navegacion: TRES_NIVELES });
+    const rama = screen.getByRole('button', { name: 'Catálogos' });
+    // Arranca cerrada: doce ítems seguidos no se leen.
+    expect(rama).toHaveAttribute('aria-expanded', 'false');
+    expect(container.querySelector('.nav-rama.abierta')).toBeNull();
+    await u.click(rama);
+    expect(rama).toHaveAttribute('aria-expanded', 'true');
+    expect(container.querySelector('.nav-rama.abierta .nav-nietos .nav-nieto')).not.toBeNull();
+  });
+
+  it('el nieto navega y se anuncia con aria-current', async () => {
+    const u = userEvent.setup();
+    const ir = vi.fn();
+    montar({ navegacion: TRES_NIVELES, activa: 'sedes', onNavegar: ir });
+    // La rama que contiene a la activa arranca ABIERTA: llegar a una pantalla
+    // y no ver dónde estás en el menú es peor que un clic de más.
+    const sedes = screen.getByRole('link', { name: 'Sedes' });
+    expect(sedes).toHaveAttribute('aria-current', 'page');
+    await u.click(screen.getByRole('link', { name: 'Cargos' }));
+    expect(ir).toHaveBeenCalledWith('cargos', '/catalogos/cargos');
+  });
+});

@@ -4923,9 +4923,16 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
    se desplaza en horizontal. Las tablas de documentación no estaban envueltas
    en ningún contenedor, así que estiraban la página entera. Con display:block
    la propia tabla se convierte en su caja de desplazamiento. */
+/* R42b: la cabecera CAE sobre sus columnas porque comparten layout. Antes
+   thead y tbody eran display:table cada uno — DOS tablas independientes,
+   cada una repartiendo columnas por su cuenta, y los rótulos no coincidían
+   con las celdas (lo vio el responsable del consumidor a la primera). Con
+   display:block en la tabla, el navegador envuelve AMBOS grupos en UNA tabla
+   anónima: alineados por construcción, y el bloque se desplaza solo si hace
+   falta. Y dentro de la envoltura —que ya resuelve el desbordamiento— vuelve
+   a ser tabla plena a todo lo ancho. */
 .tabla-simple, .tb-sub { display: block; overflow-x: auto; }
-.tabla-simple > thead, .tabla-simple > tbody { display: table; width: 100%; min-width: 520px; }
-.tb-sub > thead, .tb-sub > tbody { display: table; width: 100%; min-width: 480px; }
+.tb-envoltura > .tabla-simple { display: table; width: 100%; min-width: 520px; }
 /* Los hijos de una rejilla o de un flex no bajan de su contenido si no se les
    dice: es el mismo motivo por el que las muestras de color desbordaban. */
 .cat-cuerpo, .pagina, .bloque, .app-main { min-width: 0; }

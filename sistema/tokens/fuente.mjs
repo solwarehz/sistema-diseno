@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.37.0';
+export const VERSION = '1.38.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,30 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.38.0', fecha: '2026-08-10',
+    que: 'R42: el tercer nivel del menu por fin se emite, y la tabla simple vuelve a ser UNA tabla',
+    porque:
+      'Dos huecos que Control Administrativos vio montando. R42a: la hoja publicaba nav-rama, '
+      + 'nav-nietos y nav-nieto desde siempre y el React no podia expresarlos — OpcionNav gana '
+      + 'hijos y una opcion con hijos se dibuja como rama plegable con aria-expanded y la '
+      + 'animacion de la hoja. Las ramas arrancan CERRADAS -doce items seguidos no se leen- '
+      + 'salvo la que contiene a la activa: llegar a una pantalla y no ver donde estas en el '
+      + 'menu es peor que un clic de mas. Su pantalla intermedia declarada se jubila. R42b: '
+      + 'thead y tbody eran display:table CADA UNO — dos tablas independientes repartiendo '
+      + 'columnas por su cuenta, y los rotulos no caian sobre las celdas; lo vio su responsable '
+      + 'a la primera. Ahora los dos grupos comparten UNA tabla anonima (alineados por '
+      + 'construccion) y dentro de tb-envoltura vuelve a ser tabla plena a todo lo ancho. '
+      + 'tb-sub tenia el mismo defecto y se curo igual. Reglas 5 del marco y 26 de la tabla, '
+      + 'dos pruebas nuevas: 231.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'tabla-simple suelta ya no se estira al 100% con contenido corto (la tabla anonima toma '
+      + 'el ancho de su contenido): quien la quiera plena, la envuelve en tb-envoltura, que '
+      + 'ademas le resuelve el desbordamiento. Los anchos fijos por columna que los consumidores '
+      + 'pusieron de rodeo pueden retirarse.',
+    ],
+  },
   {
     v: '1.37.0', fecha: '2026-08-10',
     que: 'Campo recorta al salir (pedido esta vez ANTES de implementar) y nace CampoContrasena, que jamas normaliza',

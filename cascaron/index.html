@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.37.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.38.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.37.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.38.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -1539,9 +1539,16 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
    se desplaza en horizontal. Las tablas de documentación no estaban envueltas
    en ningún contenedor, así que estiraban la página entera. Con display:block
    la propia tabla se convierte en su caja de desplazamiento. */
+/* R42b: la cabecera CAE sobre sus columnas porque comparten layout. Antes
+   thead y tbody eran display:table cada uno — DOS tablas independientes,
+   cada una repartiendo columnas por su cuenta, y los rótulos no coincidían
+   con las celdas (lo vio el responsable del consumidor a la primera). Con
+   display:block en la tabla, el navegador envuelve AMBOS grupos en UNA tabla
+   anónima: alineados por construcción, y el bloque se desplaza solo si hace
+   falta. Y dentro de la envoltura —que ya resuelve el desbordamiento— vuelve
+   a ser tabla plena a todo lo ancho. */
 .tabla-simple, .tb-sub { display: block; overflow-x: auto; }
-.tabla-simple > thead, .tabla-simple > tbody { display: table; width: 100%; min-width: 520px; }
-.tb-sub > thead, .tb-sub > tbody { display: table; width: 100%; min-width: 480px; }
+.tb-envoltura > .tabla-simple { display: table; width: 100%; min-width: 520px; }
 /* Los hijos de una rejilla o de un flex no bajan de su contenido si no se les
    dice: es el mismo motivo por el que las muestras de color desbordaban. */
 .cat-cuerpo, .pagina, .bloque, .app-main { min-width: 0; }
@@ -3131,7 +3138,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.37.0</option></select></label>
+          <select class="campo cg-in"><option>v1.38.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3219,8 +3226,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.37.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.37.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.38.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.38.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -9487,6 +9494,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.38.0 <span class="cam-fecha">2026-08-10</span></h3>
+<p class="pag-intro"><strong>R42: el tercer nivel del menu por fin se emite, y la tabla simple vuelve a ser UNA tabla.</strong> Dos huecos que Control Administrativos vio montando. R42a: la hoja publicaba nav-rama, nav-nietos y nav-nieto desde siempre y el React no podia expresarlos — OpcionNav gana hijos y una opcion con hijos se dibuja como rama plegable con aria-expanded y la animacion de la hoja. Las ramas arrancan CERRADAS -doce items seguidos no se leen- salvo la que contiene a la activa: llegar a una pantalla y no ver donde estas en el menu es peor que un clic de mas. Su pantalla intermedia declarada se jubila. R42b: thead y tbody eran display:table CADA UNO — dos tablas independientes repartiendo columnas por su cuenta, y los rotulos no caian sobre las celdas; lo vio su responsable a la primera. Ahora los dos grupos comparten UNA tabla anonima (alineados por construccion) y dentro de tb-envoltura vuelve a ser tabla plena a todo lo ancho. tb-sub tenia el mismo defecto y se curo igual. Reglas 5 del marco y 26 de la tabla, dos pruebas nuevas: 231.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>tabla-simple suelta ya no se estira al 100% con contenido corto (la tabla anonima toma el ancho de su contenido): quien la quiera plena, la envuelve en tb-envoltura, que ademas le resuelve el desbordamiento. Los anchos fijos por columna que los consumidores pusieron de rodeo pueden retirarse.</td></tr></tbody></table>
 
 
 <h3 class="sub-seccion">v1.37.0 <span class="cam-fecha">2026-08-10</span></h3>

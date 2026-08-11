@@ -35,6 +35,12 @@ export type OpcionNav = {
   texto: string;
   /** A dónde lleva. Si falta, la opción solo agrupa. */
   href?: string;
+  /** R42a · el TERCER nivel: Configuración › Catálogos › (cada catálogo).
+   *  La hoja lo estilizaba desde siempre (.nav-rama, .nav-nietos, .nav-nieto)
+   *  y el React no lo emitía — el desvío promesa/entrega de la auditoría.
+   *  Una opción con hijos se dibuja como RAMA plegable, no como enlace;
+   *  arranca cerrada salvo que contenga a la activa. */
+  hijos?: OpcionNav[];
   /**
    * R17 · Icono de la opción hija.
    *
@@ -162,6 +168,23 @@ export function MarcoApp({
   const [abiertos, setAbiertos] = useState<Set<string>>(
     () => new Set(navegacion.map((g) => g.clave))
   );
+  // R42a · qué RAMAS (tercer nivel) están abiertas. Al revés que los grupos,
+  // arrancan CERRADAS —«doce ítems seguidos no se leen»— salvo la que
+  // contiene a la opción activa: llegar a una pantalla y no ver dónde estás
+  // en el menú es peor que un clic de más.
+  const [ramas, setRamas] = useState<Set<string>>(() => {
+    const conActiva = new Set<string>();
+    for (const g of navegacion)
+      for (const h of g.hijos ?? [])
+        if (h.hijos?.some((n) => n.clave === activa)) conActiva.add(h.clave);
+    return conActiva;
+  });
+  const alternarRama = (clave: string) =>
+    setRamas((previas) => {
+      const s = new Set(previas);
+      s.has(clave) ? s.delete(clave) : s.add(clave);
+      return s;
+    });
   const lateral = useRef<HTMLElement>(null);
   const plegarBtn = useRef<HTMLButtonElement>(null);
 
@@ -316,18 +339,57 @@ export function MarcoApp({
                         título no dice DE QUÉ grupo son las opciones. La hoja lo
                         enseña solo bajo .colapsado; desplegado no existe. */}
                     <span className="nav-flot-tit">{g.texto}</span>
-                    {g.hijos!.map((h) => (
-                      <a
-                        key={h.clave}
-                        className={['nav-hijo', activa === h.clave ? 'activo' : ''].filter(Boolean).join(' ')}
-                        href={h.href}
-                        aria-current={activa === h.clave ? 'page' : undefined}
-                        onClick={(e) => navegar(e, h.clave, h.href)}
-                      >
-                        {h.icono && <span className="nav-ic">{h.icono}</span>}
-                        <span className="nav-txt">{h.texto}</span>
-                      </a>
-                    ))}
+                    {g.hijos!.map((h) => {
+                      // R42a · el TERCER nivel. Una opción con hijos es una
+                      // RAMA plegable — el marcado que la hoja estiliza desde
+                      // siempre y que el React no emitía.
+                      if (h.hijos?.length) {
+                        const ramaAbierta = ramas.has(h.clave);
+                        const idNietos = `${id}-${h.clave}-nietos`;
+                        return (
+                          <div key={h.clave} className={['nav-rama', ramaAbierta ? 'abierta' : ''].filter(Boolean).join(' ')}>
+                            <button
+                              className="nav-hijo nav-rama-tit"
+                              aria-expanded={ramaAbierta}
+                              aria-controls={idNietos}
+                              onClick={() => alternarRama(h.clave)}
+                            >
+                              {h.icono && <span className="nav-ic">{h.icono}</span>}
+                              <span className="nav-txt">{h.texto}</span>
+                              <span className="nav-chev" aria-hidden="true"><Icono nombre="chevron" tam="control" /></span>
+                            </button>
+                            <div className="nav-nietos" id={idNietos}>
+                              <div className="nav-nietos-in">
+                                {h.hijos.map((nieto) => (
+                                  <a
+                                    key={nieto.clave}
+                                    className={['nav-nieto', activa === nieto.clave ? 'activo' : ''].filter(Boolean).join(' ')}
+                                    href={nieto.href}
+                                    aria-current={activa === nieto.clave ? 'page' : undefined}
+                                    onClick={(e) => navegar(e, nieto.clave, nieto.href)}
+                                  >
+                                    {nieto.icono && <span className="nav-ic">{nieto.icono}</span>}
+                                    <span className="nav-txt">{nieto.texto}</span>
+                                  </a>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }
+                      return (
+                        <a
+                          key={h.clave}
+                          className={['nav-hijo', activa === h.clave ? 'activo' : ''].filter(Boolean).join(' ')}
+                          href={h.href}
+                          aria-current={activa === h.clave ? 'page' : undefined}
+                          onClick={(e) => navegar(e, h.clave, h.href)}
+                        >
+                          {h.icono && <span className="nav-ic">{h.icono}</span>}
+                          <span className="nav-txt">{h.texto}</span>
+                        </a>
+                      );
+                    })}
                   </div>
                 </div>
               </div>

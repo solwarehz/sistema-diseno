@@ -79,6 +79,7 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 | **23** | **Obligatorio.** (R34, v1.27.0) «Mostrar [N]» vive en la **barra**, con el recuento al lado y **con sustantivo** («38 trabajadores»). Con cualquier criba el recuento dice «X de Y» aunque X sea igual que Y: un filtro que no descarta nada parece no haber hecho nada. |
 | **24** | **Obligatorio.** (R34, v1.27.0) La columna **N.º** es localizadora y **continua entre páginas**: «era la 34» sigue siendo la 34 en la página 4. No ordena ni filtra — no es un dato, es un dedo puesto en la fila. `numerada={false}` la quita. |
 | **25** | **Obligatorio.** (R34, v1.27.0) El **pie** lleva el rango a la izquierda y la paginación a la derecha, como el catálogo. El tamaño de página no se repite ahí: ya vive arriba. |
+| **26** | **Obligatorio.** (R42b, v1.38.0) En la **tabla simple**, la cabecera **cae sobre sus columnas**: cabecera y cuerpo comparten un solo layout de tabla — nunca dos tablas independientes repartiendo columnas por su cuenta. Suelta, la tabla es un bloque que se desplaza solo; **dentro de `.tb-envoltura`** es tabla plena a todo lo ancho, y la envoltura resuelve el desbordamiento. |
 
 ---
 
@@ -153,6 +154,7 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 | **2** | Del proyecto: si el plegado debe **recordarse entre sesiones**, se controla con las props `plegado`/`onPlegar` y se guarda donde diga la regla transversal 5 — en el perfil, no en el navegador. |
 | **3** | **Obligatorio.** (R39, v1.33.0) En la banda del cajón (≤700px) el velo **existe de verdad** —oscurece, cubre y se puede pulsar— y pulsarlo pliega: es la salida con el ratón, porque el botón de plegar queda debajo del propio cajón. Y al **cruzar** de ancho a angosto el marco **se pliega solo**, avisando por `onPlegar`: un cajón que nadie abrió no se queda plantado sobre el contenido. |
 | **4** | **Obligatorio.** (R38a, v1.34.0) La banda del **riel** (≤900px) es **estado, no CSS forzado**: al cruzarla el marco se pliega de verdad — la clase, el `aria-expanded` y el logo compacto de `MarcaMenu` salen del mismo estado. Quien quiera re-desplegar a ese ancho, puede: los 236px caben en línea. La hoja pinta estados; no los impone a espaldas del componente. |
+| **5** | **Obligatorio.** (R42a, v1.38.0) La navegación llega al **tercer nivel**: una `OpcionNav` con `hijos` se dibuja como **rama plegable** (`aria-expanded`, chevron), no como enlace. Las ramas arrancan **cerradas** —doce ítems seguidos no se leen— salvo la que contiene a la opción activa: llegar a una pantalla y no ver dónde estás en el menú es peor que un clic de más. |
 
 ---
 
