@@ -1293,6 +1293,13 @@ y el comprimido en cuadrado. La subida es del producto.</p>
       <span class="ci-nota" data-peso hidden></span>
       <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
     </div>
+    <div class="ci" data-carga="foto">
+      <span class="ci-et">Foto del trabajador</span>
+      <div class="ci-caja ci-m ci-redonda"><span class="avatar avatar-xl avatar-2 ci-avatar" title="JOSE ISIDRO PINEDA">JI</span><span class="sr-solo">Sin foto</span></div>
+      <div class="ci-acciones"><button class="btn btn-neutro btn-mini btn-ic" data-elegir>${icono('camara')}Subir foto</button></div>
+      <span class="ci-nota" data-peso hidden></span>
+      <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
+    </div>
     <div class="ci" data-carga="ext">
       <span class="ci-et">Logo extendido</span>
       <div class="ci-caja ci-extendida"><span class="ci-vacia">Sin logo</span></div>
@@ -5928,7 +5935,12 @@ select.campo:disabled { opacity: .75; }
 
 /* Carga de imagen — R35. La caja no puede romperse: tamaño fijo por variante
    y el recorte YA es cuadrado, así que cover no recorta nada nuevo. */
-.ci { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+/* R50 · LA COLUMNA SE CENTRA SOBRE SU CAJA.
+   Estaba en flex-start, asi que el rotulo, la caja y el boton se alineaban por
+   la izquierda y cada uno mide distinto: la caja es lo ancho, el boton menos y
+   el rotulo otra cosa. Salia una escalera. Centrados, la caja manda y los tres
+   caen sobre su eje. Lo pidio el responsable. */
+.ci { display: flex; flex-direction: column; gap: 8px; align-items: center; }
 .ci-et { font-size: 13px; font-weight: 500; }
 .ci-caja { display: grid; place-items: center; overflow: hidden;
   border: 1px solid var(--borde-campo); border-radius: 6px;
@@ -5938,6 +5950,24 @@ select.campo:disabled { opacity: .75; }
 .ci-l { width: 144px; height: 144px; }
 .ci-img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .ci-vacia { font-size: 12px; color: var(--texto-pista); text-align: center; padding: 8px; }
+/* R50 · EL AVATAR COMO ESTADO VACIO, y solo cuando hay persona detras.
+   Sin foto pero CON datos, «Sin foto» no dice nada que no se sepa; las
+   iniciales con su color si dicen DE QUIEN es el hueco. Es el mismo Avatar del
+   sistema —mismo color por identificador, mismas iniciales— llenando la caja,
+   asi que la ficha, la tabla y esta carga pintan a la misma persona igual.
+   El borde se retira: el avatar ya es la forma. */
+.ci-caja:has(> .ci-avatar) { border-color: transparent; background: transparent; }
+/* .ci-caja delante NO es adorno: .ci-avatar y .avatar-xl pesan lo mismo, asi que
+   ganaria la que la hoja pusiera despues — y el extractor reparte por
+   componente, de modo que en el catalogo gana una y en la entrega la otra. Es
+   el defecto que el candado de la promesa acaba de cazar en .us-menu. Con el
+   antepasado delante gana esta en las dos, se ordenen como se ordenen. */
+.ci-caja .ci-avatar { width: 100%; height: 100%; }
+/* Los tres pasos de la escala (§3.4) que caen cerca del 40 % de cada caja, que
+   es la proporcion que el propio avatar usa: 19px sobre 48. */
+.ci-s .ci-avatar { font-size: 24px; }
+.ci-m .ci-avatar { font-size: 34px; }
+.ci-l .ci-avatar { font-size: 56px; }
 .ci-acciones { display: flex; gap: 8px; }
 .ci-error { font-size: 12px; color: var(--error-texto); font-weight: 500; }
 .ci-nota { font-size: 12px; color: var(--texto-secundario); }

@@ -30,6 +30,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Boton } from './Boton';
 import { Dialogo } from './Dialogo';
 import { Icono } from './Icono';
+import { Avatar } from './Avatar';
 
 /**
  * Los TRES formatos son cerrados y llevan la proporción del hueco REAL donde
@@ -82,6 +83,20 @@ export type CargaImagenProps = {
   formato?: FormatoCarga;
   /** Sustituye el texto del botón si el del formato no encaja. */
   textoBoton?: string;
+  /**
+   * R50 · DE QUIÉN es la foto. Solo para personas — trabajador, usuario—, y
+   * por eso solo se atiende con `formato="foto"`: un logo no tiene iniciales
+   * ni identidad que colorear, y ponerle un avatar sería inventar una persona
+   * donde hay una institución.
+   *
+   * Con esto y sin foto, el hueco lo ocupa el `Avatar` del sistema en vez del
+   * texto «Sin foto». En cuanto llega la foto, la foto manda.
+   *
+   * El `id` tiene que ser **estable** —el de la persona en la base, no su
+   * nombre—: el color sale de él, y un color que cambia al corregir un
+   * apellido deja de identificar a nadie.
+   */
+  persona?: { id: string; nombre: string };
 };
 
 /** Cuánto mueve una flecha (px del lienzo) y cuánto acerca un paso de zoom. */
@@ -101,8 +116,11 @@ export function CargaImagen({
   lado = 512,
   formato = 'foto',
   textoBoton,
+  persona,
 }: CargaImagenProps) {
   const F = FORMATOS[formato];
+  // Solo la FOTO tiene persona detras: un logo no tiene iniciales que poner.
+  const conAvatar = !!persona && formato === 'foto';
   const entrada = useRef<HTMLInputElement>(null);
   const disparador = useRef<HTMLButtonElement>(null);
   const lienzo = useRef<HTMLCanvasElement>(null);
@@ -232,6 +250,21 @@ export function CargaImagen({
       <div className={cajaClases}>
         {valor ? (
           <img className="ci-img" src={valor} alt="" />
+        ) : conAvatar ? (
+          /* R50 · SIN FOTO PERO CON PERSONA DETRÁS.
+             «Sin foto» no dice nada que no se sepa ya; las iniciales con su
+             color sí dicen DE QUIÉN es el hueco. Y es EL MISMO `Avatar` del
+             sistema —no un círculo parecido—, así que la ficha, la tabla y
+             esta carga pintan a la misma persona igual: mismo color por
+             identificador estable, mismas iniciales.
+             Al subir la foto, `valor` deja de estar vacío y la foto ocupa su
+             sitio: el avatar no se queda debajo ni se suma. */
+          <>
+            <Avatar id={persona!.id} nombre={persona!.nombre} tamano="xl" className="ci-avatar" />
+            {/* El avatar se ve, pero no DICE que falte la foto. Quien usa
+                lector de pantalla necesita el estado, no el adorno. */}
+            <span className="sr-solo">{vacio}</span>
+          </>
         ) : (
           <span className="ci-vacia">{vacio}</span>
         )}

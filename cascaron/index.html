@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.43.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.44.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.43.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.44.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -2285,7 +2285,12 @@ select.campo:disabled { opacity: .75; }
 
 /* Carga de imagen — R35. La caja no puede romperse: tamaño fijo por variante
    y el recorte YA es cuadrado, así que cover no recorta nada nuevo. */
-.ci { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+/* R50 · LA COLUMNA SE CENTRA SOBRE SU CAJA.
+   Estaba en flex-start, asi que el rotulo, la caja y el boton se alineaban por
+   la izquierda y cada uno mide distinto: la caja es lo ancho, el boton menos y
+   el rotulo otra cosa. Salia una escalera. Centrados, la caja manda y los tres
+   caen sobre su eje. Lo pidio el responsable. */
+.ci { display: flex; flex-direction: column; gap: 8px; align-items: center; }
 .ci-et { font-size: 13px; font-weight: 500; }
 .ci-caja { display: grid; place-items: center; overflow: hidden;
   border: 1px solid var(--borde-campo); border-radius: 6px;
@@ -2295,6 +2300,24 @@ select.campo:disabled { opacity: .75; }
 .ci-l { width: 144px; height: 144px; }
 .ci-img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .ci-vacia { font-size: 12px; color: var(--texto-pista); text-align: center; padding: 8px; }
+/* R50 · EL AVATAR COMO ESTADO VACIO, y solo cuando hay persona detras.
+   Sin foto pero CON datos, «Sin foto» no dice nada que no se sepa; las
+   iniciales con su color si dicen DE QUIEN es el hueco. Es el mismo Avatar del
+   sistema —mismo color por identificador, mismas iniciales— llenando la caja,
+   asi que la ficha, la tabla y esta carga pintan a la misma persona igual.
+   El borde se retira: el avatar ya es la forma. */
+.ci-caja:has(> .ci-avatar) { border-color: transparent; background: transparent; }
+/* .ci-caja delante NO es adorno: .ci-avatar y .avatar-xl pesan lo mismo, asi que
+   ganaria la que la hoja pusiera despues — y el extractor reparte por
+   componente, de modo que en el catalogo gana una y en la entrega la otra. Es
+   el defecto que el candado de la promesa acaba de cazar en .us-menu. Con el
+   antepasado delante gana esta en las dos, se ordenen como se ordenen. */
+.ci-caja .ci-avatar { width: 100%; height: 100%; }
+/* Los tres pasos de la escala (§3.4) que caen cerca del 40 % de cada caja, que
+   es la proporcion que el propio avatar usa: 19px sobre 48. */
+.ci-s .ci-avatar { font-size: 24px; }
+.ci-m .ci-avatar { font-size: 34px; }
+.ci-l .ci-avatar { font-size: 56px; }
 .ci-acciones { display: flex; gap: 8px; }
 .ci-error { font-size: 12px; color: var(--error-texto); font-weight: 500; }
 .ci-nota { font-size: 12px; color: var(--texto-secundario); }
@@ -3321,7 +3344,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.43.0</option></select></label>
+          <select class="campo cg-in"><option>v1.44.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3409,8 +3432,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.43.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.43.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.44.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.44.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -6125,6 +6148,13 @@ y el comprimido en cuadrado. La subida es del producto.</p>
     <div class="ci" data-carga="foto">
       <span class="ci-et">Foto del trabajador</span>
       <div class="ci-caja ci-m ci-redonda"><span class="ci-vacia">Sin foto</span></div>
+      <div class="ci-acciones"><button class="btn btn-neutro btn-mini btn-ic" data-elegir><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>Subir foto</button></div>
+      <span class="ci-nota" data-peso hidden></span>
+      <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
+    </div>
+    <div class="ci" data-carga="foto">
+      <span class="ci-et">Foto del trabajador</span>
+      <div class="ci-caja ci-m ci-redonda"><span class="avatar avatar-xl avatar-2 ci-avatar" title="JOSE ISIDRO PINEDA">JI</span><span class="sr-solo">Sin foto</span></div>
       <div class="ci-acciones"><button class="btn btn-neutro btn-mini btn-ic" data-elegir><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>Subir foto</button></div>
       <span class="ci-nota" data-peso hidden></span>
       <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
@@ -9924,6 +9954,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.44.0 <span class="cam-fecha">2026-08-11</span></h3>
+<p class="pag-intro"><strong>R50: la carga de imagen se centra, y sin foto de una persona el hueco lo ocupa su avatar.</strong> Dos cosas pedidas por el responsable. La primera, centrar: la columna estaba en flex-start, asi que el rotulo, la vista previa y el boton se alineaban por la izquierda midiendo cada uno una cosa distinta y salia una escalera. Centrada, la caja manda y los tres caen sobre su eje. La segunda es la que importa: SIN FOTO PERO CON PERSONA DETRAS, el hueco deja de decir «Sin foto» y pasa a enseñar el AVATAR de esa persona. «Sin foto» no dice nada que no se sepa ya; las iniciales con su color dicen DE QUIEN es el hueco. Y es EL MISMO Avatar del sistema, compuesto y no rehecho: mismo color por identificador estable, mismas iniciales, asi que la ficha, la tabla y esta carga pintan a la misma persona igual. En cuanto llega la foto, la foto manda. Se activa con la prop persona y SOLO con formato foto: un logo no tiene iniciales, y ponerle un avatar seria inventar una persona donde hay una institucion. El estado se sigue anunciando para lector de pantalla — el avatar se ve, pero no dice que la foto falte. Promesa y entrega a la vez: el catalogo estrena la tarjeta con el avatar en la misma fila de muestras, asi que el estado se puede VER, y el candado de la promesa lo compara con lo que viaja como a cualquier otro elemento que el catalogo pinta. Cuatro pruebas nuevas, y una comprueba que el color del avatar es el mismo que pinta el Avatar suelto: si alguien lo reconstruyera, la misma persona saldria de dos colores segun la pantalla. 302.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>La columna de CargaImagen se centra. Un producto que la montara contando con que el rotulo y el boton quedaban pegados a la izquierda vera los tres centrados sobre la vista previa.</td></tr></tbody></table>
 
 
 <h3 class="sub-seccion">v1.43.0 <span class="cam-fecha">2026-08-11</span></h3>

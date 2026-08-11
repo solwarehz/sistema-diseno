@@ -9,6 +9,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { CargaImagen } from '../src/CargaImagen';
+import { Avatar } from '../src/Avatar';
 
 class ImagenFalsa {
   onload: (() => void) | null = null;
@@ -157,5 +158,65 @@ describe('R6 · los tres formatos — la proporción del hueco real', () => {
     render(<CargaImagen etiqueta="Foto" onCambio={() => {}} />);
     const boton = screen.getByRole('button', { name: 'Subir foto' });
     expect(boton.querySelector('svg')).not.toBeNull();
+  });
+});
+
+/**
+ * R7 y R8 (pedido R50) · el hueco de una persona sin foto.
+ *
+ * Lo pidió el responsable: «cuando no se tenga foto del trabajador y hay data
+ * del trabajador, que se vea el componente avatar, y cuando se carga la foto
+ * se reemplaza por la foto; eso solo para fotos del trabajador o persona».
+ *
+ * Se prueba que es EL MISMO `Avatar` del sistema —sus clases, su color por
+ * identificador, sus iniciales—, no un círculo parecido: si alguien lo
+ * reconstruyera aquí, la misma persona se pintaría de dos colores según la
+ * pantalla, que es justo lo que el avatar existe para impedir.
+ */
+describe('R7 (pedido R50) · sin foto y con persona, el hueco es el avatar', () => {
+  const PERSONA = { id: 'u-1', nombre: 'PINEDA, José Isidro' }; // iniciales: PJ
+
+  it('sin foto y con persona: avatar con sus iniciales, no el texto «Sin foto»', () => {
+    const { container } = render(
+      <CargaImagen etiqueta="Foto" persona={PERSONA} onCambio={() => {}} vacio="Sin foto" />
+    );
+    const av = container.querySelector('.ci-caja .avatar')!;
+    expect(av).not.toBeNull();
+    expect(av.textContent).toBe('PJ');
+    expect(av.classList.contains('ci-avatar')).toBe(true);
+    // El color sale del identificador, y es el mismo que pinta el Avatar suelto.
+    expect([...av.classList].find((c) => /^avatar-\d$/.test(c))).toBe(
+      [...render(<Avatar id={PERSONA.id} nombre={PERSONA.nombre} />).container
+        .firstElementChild!.classList].find((c) => /^avatar-\d$/.test(c))
+    );
+    // El texto de vacío ya no se pinta como pista…
+    expect(container.querySelector('.ci-vacia')).toBeNull();
+    // …pero el estado se sigue ANUNCIANDO: el avatar se ve, no dice que falte.
+    expect(container.querySelector('.sr-solo')!.textContent).toBe('Sin foto');
+  });
+
+  it('con foto manda la foto: el avatar no se queda debajo', () => {
+    const { container } = render(
+      <CargaImagen etiqueta="Foto" persona={PERSONA} valor="blob:foto" onCambio={() => {}} />
+    );
+    expect(container.querySelector('.ci-caja img.ci-img')).not.toBeNull();
+    expect(container.querySelector('.ci-caja .avatar')).toBeNull();
+  });
+
+  it('sin persona se queda el texto: no se inventa una identidad', () => {
+    const { container } = render(
+      <CargaImagen etiqueta="Foto" onCambio={() => {}} vacio="Sin foto" />
+    );
+    expect(container.querySelector('.ci-caja .avatar')).toBeNull();
+    expect(container.querySelector('.ci-vacia')!.textContent).toBe('Sin foto');
+  });
+
+  it('SOLO para foto: un logo con persona sigue sin avatar', () => {
+    const { container } = render(
+      <CargaImagen etiqueta="Logo" formato="logo-extendido" persona={PERSONA}
+        onCambio={() => {}} vacio="Sin logo" />
+    );
+    expect(container.querySelector('.ci-caja .avatar')).toBeNull();
+    expect(container.querySelector('.ci-vacia')!.textContent).toBe('Sin logo');
   });
 });

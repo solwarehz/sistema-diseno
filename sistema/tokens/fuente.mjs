@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.43.0';
+export const VERSION = '1.44.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,34 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.44.0', fecha: '2026-08-11',
+    que: 'R50: la carga de imagen se centra, y sin foto de una persona el hueco lo ocupa su avatar',
+    porque:
+      'Dos cosas pedidas por el responsable. La primera, centrar: la columna estaba en flex-start, '
+      + 'asi que el rotulo, la vista previa y el boton se alineaban por la izquierda midiendo cada '
+      + 'uno una cosa distinta y salia una escalera. Centrada, la caja manda y los tres caen sobre '
+      + 'su eje. '
+      + 'La segunda es la que importa: SIN FOTO PERO CON PERSONA DETRAS, el hueco deja de decir '
+      + '«Sin foto» y pasa a enseñar el AVATAR de esa persona. «Sin foto» no dice nada que no se '
+      + 'sepa ya; las iniciales con su color dicen DE QUIEN es el hueco. Y es EL MISMO Avatar del '
+      + 'sistema, compuesto y no rehecho: mismo color por identificador estable, mismas iniciales, '
+      + 'asi que la ficha, la tabla y esta carga pintan a la misma persona igual. En cuanto llega '
+      + 'la foto, la foto manda. '
+      + 'Se activa con la prop persona y SOLO con formato foto: un logo no tiene iniciales, y '
+      + 'ponerle un avatar seria inventar una persona donde hay una institucion. El estado se sigue '
+      + 'anunciando para lector de pantalla — el avatar se ve, pero no dice que la foto falte. '
+      + 'Promesa y entrega a la vez: el catalogo estrena la tarjeta con el avatar en la misma fila '
+      + 'de muestras, asi que el estado se puede VER, y el candado de la promesa lo compara con lo '
+      + 'que viaja como a cualquier otro elemento que el catalogo pinta. Cuatro pruebas nuevas, y '
+      + 'una comprueba que el color del avatar es el mismo que pinta el Avatar suelto: si alguien '
+      + 'lo reconstruyera, la misma persona saldria de dos colores segun la pantalla. 302.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'La columna de CargaImagen se centra. Un producto que la montara contando con que el rotulo '
+      + 'y el boton quedaban pegados a la izquierda vera los tres centrados sobre la vista previa.',
+    ],
+  },
   {
     v: '1.43.0', fecha: '2026-08-11',
     que: 'R49: con la tabla ancha se desplazaba el componente entero, mandos incluidos',

@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.43.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.44.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -221,10 +221,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .cp-ver:disabled{ opacity: .75; cursor: default; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CARGA DE IMAGEN — 20 reglas · clases .ci-*
+   CARGA DE IMAGEN — 25 reglas · clases .ci-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-.ci{ display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.ci{ display: flex; flex-direction: column; gap: 8px; align-items: center; }
 .ci-et{ font-size: 13px; font-weight: 500; }
 .ci-caja{ display: grid; place-items: center; overflow: hidden;
   border: 1px solid var(--borde-campo); border-radius: 6px;
@@ -234,6 +234,11 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .ci-l{ width: 144px; height: 144px; }
 .ci-img{ display: block; width: 100%; height: 100%; object-fit: cover; }
 .ci-vacia{ font-size: 12px; color: var(--texto-pista); text-align: center; padding: 8px; }
+.ci-caja:has(> .ci-avatar){ border-color: transparent; background: transparent; }
+.ci-caja .ci-avatar{ width: 100%; height: 100%; }
+.ci-s .ci-avatar{ font-size: 24px; }
+.ci-m .ci-avatar{ font-size: 34px; }
+.ci-l .ci-avatar{ font-size: 56px; }
 .ci-acciones{ display: flex; gap: 8px; }
 .ci-error{ font-size: 12px; color: var(--error-texto); font-weight: 500; }
 .ci-nota{ font-size: 12px; color: var(--texto-secundario); }
