@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.40.1';
+export const VERSION = '1.41.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,40 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.41.0', fecha: '2026-08-11',
+    que: 'El reset box-sizing por fin viaja, y nace el candado que compara promesa contra entrega',
+    porque:
+      '«no veo el boton csv como lo veo en el cascaron, asegurate que la entrega sea igual que la '
+      + 'promesa, NO LO DEJES A CRITERIO». La ultima frase es la que manda, porque ya habia una '
+      + 'herramienta que cruzaba promesa y entrega y no lo vio: comparaba QUE CLASES pinta cada '
+      + 'lado, y el defecto no era una clase que faltara sino una DECLARACION que no llegaba. Dos '
+      + 'listas de clases identicas pueden acompañar a dos botones que se ven distinto. '
+      + 'El candado nuevo resuelve la cascada DOS VECES sobre el mismo marcado —con la hoja del '
+      + 'catalogo y con la que viaja— y compara valor a valor. Sin lista de propiedades '
+      + '«importantes»: compara la UNION de todo lo que cualquiera de las dos declare, porque '
+      + 'elegir que mirar es exactamente dejarlo a criterio. 18 casos, 5 anchos, ~210 propiedades '
+      + 'por caso. '
+      + 'LO QUE ENCONTRO A LA PRIMERA, y en los DIECIOCHO casos a la vez —que es lo que delata '
+      + 'que no era de un componente sino del cimiento—: `*, *::before, *::after { box-sizing: '
+      + 'border-box }` estaba en el catalogo y NO VIAJABA. El extractor reparte por clase y esa '
+      + 'regla no tiene ninguna, asi que se caia por el mismo agujero que las sombras. Todo '
+      + 'producto que instalaba el sistema maquetaba en content-box: relleno y borde SUMANDO al '
+      + 'ancho declarado, y cada caja de tamaño fijo midiendo distinto de lo enseñado. Ahora viaja '
+      + 'por la via de las dependencias sueltas. '
+      + 'De paso, el candado delato DOS DEFECTOS DEL MOTOR de la cascada, que llevaban ahi desde '
+      + 'que existe: partia los selectores por TODAS las comas —convirtiendo `.cat-cuerpo '
+      + ':where(a, button, input)` en una regla « button» que casaba con todos los botones del '
+      + 'sistema— y partia los compuestos por todos los espacios, incluidos los de dentro de un '
+      + 'parentesis. Los dos arreglados; el motor se saca a export para que los dos candados usen '
+      + 'EL MISMO resolvedor y no puedan discrepar.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'Los componentes ya llegan en border-box, como en el catalogo. Quien haya compensado a mano '
+      + 'el content-box —restando relleno de un ancho, cuadrando una altura— tiene que retirar la '
+      + 'compensacion: ahora sobra.',
+    ],
+  },
   {
     v: '1.40.1', fecha: '2026-08-11',
     que: 'El boton fija su propio line-height: en la entrega el de CSV salia mas alto que los demas',

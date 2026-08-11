@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.40.1
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.41.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -27,6 +27,7 @@
    ─────────────────────────────────────────────────────────────────────────── */
 
 /* Dependencias del paquete que no pertenecen a ningun elemento */
+*, *::before, *::after{ box-sizing: border-box; }
 :root{ --sombra-capa: 0 8px 24px rgba(0,0,0,.16); --sombra-aviso: 0 8px 24px rgba(0,0,0,.18);
   /* ── PROFUNDIDAD DEL MARCO ────────────────────────────────────────────────
      El marco y la barra se separan del contenido por ELEVACION, no por color.

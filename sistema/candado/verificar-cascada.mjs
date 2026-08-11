@@ -43,7 +43,7 @@
 
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { VERSION } from '../tokens/fuente.mjs';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
@@ -66,6 +66,21 @@ const HOJA = process.argv[2] || join(RAIZ, 'sistema/componentes/componentes.css'
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** @typedef {{sel:string, decl:Map<string,string>, media:string[], orden:number}} Regla */
+
+/** Parte por las comas DE PRIMER NIVEL: las de dentro de `(…)` no separan. */
+function separarComas(texto) {
+  const fuera = [];
+  let nivel = 0;
+  let actual = '';
+  for (const c of texto) {
+    if (c === '(') nivel++;
+    else if (c === ')') nivel--;
+    if (c === ',' && nivel === 0) { fuera.push(actual); actual = ''; continue; }
+    actual += c;
+  }
+  fuera.push(actual);
+  return fuera;
+}
 
 function parsear(css) {
   const limpio = css.replace(/\/\*[\s\S]*?\*\//g, '');
@@ -91,8 +106,12 @@ function parsear(css) {
         }
         if (decl.size) {
           const media = pila.filter((p) => p.startsWith('@media')).map((p) => p.slice(6).trim());
-          // Un selector con comas son varias reglas con la misma declaración.
-          for (const uno of cab.split(',')) {
+          // Un selector con comas son varias reglas con la misma declaración —
+          // pero SOLO las comas de primer nivel. Partiendo a lo bruto,
+          // `.cat-cuerpo :where(a, button, input)` se convertía en una regla
+          // llamada « button» que casaba con TODOS los botones del sistema, y
+          // el candado de la promesa sacaba una diferencia inventada.
+          for (const uno of separarComas(cab)) {
             const s = uno.trim();
             if (s) reglas.push({ sel: s, decl, media, orden: orden++ });
           }
@@ -160,7 +179,18 @@ function casaCompuesto(comp, el) {
  */
 function casa(sel, cadena) {
   if (/[+~]/.test(sel)) return null;              // hermanos: no se soportan
-  const partes = sel.trim().split(/\s*(>)\s*|\s+/).filter(Boolean);
+  // Los ESPACIOS DE DENTRO DE UN PARÉNTESIS no separan compuestos.
+  // `.cat-cuerpo :where(a, button, input)` son DOS partes, no seis, y
+  // partiéndolo a lo bruto salía casando con cualquier botón del mundo — el
+  // candado de la promesa lo delató sacando una diferencia que no existía.
+  // Se enmascara el contenido de los paréntesis, se parte, y se devuelve.
+  const guardados = [];
+  const enmascarado = sel.trim().replace(/\(([^()]*)\)/g, (_, dentro) => {
+    guardados.push(dentro);
+    return `( ${guardados.length - 1} )`;
+  });
+  const partes = enmascarado.split(/\s*(>)\s*|\s+/).filter(Boolean)
+    .map((p) => p.replace(/\( (\d+) \)/g, (_, k) => `(${guardados[Number(k)]})`));
   let i = partes.length - 1;
   let j = cadena.length - 1;
 
@@ -419,29 +449,38 @@ const AFIRMACIONES = [
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-const reglas = parsear(readFileSync(HOJA, 'utf8'));
+// El motor se exporta para que OTRO candado pueda resolver la cascada sin
+// copiarlo. verificar-promesa.mjs compara DOS hojas con este mismo
+// resolvedor: si tuviera el suyo, las dos podrian discrepar y nadie lo veria.
+export { parsear, resolver, elem, casa, especificidad, mediaCasa };
 
-console.log(`\n  Candado de la cascada — MMI-DS v${VERSION}\n`);
-console.log(`  Hoja medida:    ${HOJA.replace(RAIZ + '/', '')}${process.argv[2] ? '' : '   (la que VIAJA)'}`);
-console.log(`  Reglas leidas:  ${reglas.length}`);
-console.log(`  Anchos:         ${ANCHOS.join(', ')}\n`);
+// El informe solo corre si se invoca el archivo directamente.
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const reglas = parsear(readFileSync(HOJA, 'utf8'));
 
-let fallos = 0;
-for (const a of AFIRMACIONES) {
-  const malos = a.revisar(reglas);
-  if (malos.length) {
-    fallos += malos.length;
-    console.error(`  ✗ ${a.id} · ${a.que}`);
-    for (const m of malos) console.error(m);
-    console.error('');
-  } else {
-    console.log(`  ✓ ${a.id} · ${a.que}`);
+  console.log(`\n  Candado de la cascada — MMI-DS v${VERSION}\n`);
+  console.log(`  Hoja medida:    ${HOJA.replace(RAIZ + '/', '')}${process.argv[2] ? '' : '   (la que VIAJA)'}`);
+  console.log(`  Reglas leidas:  ${reglas.length}`);
+  console.log(`  Anchos:         ${ANCHOS.join(', ')}\n`);
+
+  let fallos = 0;
+  for (const a of AFIRMACIONES) {
+    const malos = a.revisar(reglas);
+    if (malos.length) {
+      fallos += malos.length;
+      console.error(`  ✗ ${a.id} · ${a.que}`);
+      for (const m of malos) console.error(m);
+      console.error('');
+    } else {
+      console.log(`  ✓ ${a.id} · ${a.que}`);
+    }
   }
-}
 
-if (fallos) {
-  console.error(`\n  ${fallos} fallo(s). Esto NO se ve leyendo el codigo: se ve resolviendo`);
-  console.error('  la cascada de la hoja que viaja contra el marcado que se emite.\n');
-  process.exit(1);
+  if (fallos) {
+    console.error(`\n  ${fallos} fallo(s). Esto NO se ve leyendo el codigo: se ve resolviendo`);
+    console.error('  la cascada de la hoja que viaja contra el marcado que se emite.\n');
+    process.exit(1);
+  }
+  console.log('\n  Sin fallos. Lo que se emite recibe lo que debe, a los once anchos.\n');
+
 }
-console.log('\n  Sin fallos. Lo que se emite recibe lo que debe, a los once anchos.\n');

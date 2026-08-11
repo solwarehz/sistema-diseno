@@ -255,6 +255,22 @@ for (const b of todos) {
     if (puroTema) continue; // tokens de color: esos sí viajan por tokens.css
     // estructural bajo tema: sigue y se clasifica como cualquier regla
   }
+  // EL RESET UNIVERSAL. No es de ningún elemento, así que se caía por el mismo
+  // agujero que las sombras: el extractor reparte por clase y esta regla no
+  // tiene ninguna. Pero TODO el catálogo está maquetado con `border-box`, y sin
+  // ella el producto recibe los componentes en `content-box` — el relleno y el
+  // borde SUMAN al ancho declarado, y cada caja de tamaño fijo mide distinto de
+  // lo que se enseñó.
+  //
+  // Lo encontró el candado de la promesa, y lo encontró en los DIECIOCHO casos
+  // a la vez, que es lo que delata que no era un defecto de un componente sino
+  // del cimiento. Lo reportó el responsable: «no veo el boton csv como lo veo
+  // en el cascaron».
+  if (b.sel && /^\*(\s*,\s*\*::[a-z-]+)*$/.test(b.sel.replace(/\s+/g, ' ').trim())
+      && /box-sizing/.test(b.cuerpo)) {
+    dependenciasSueltas.push(b.entero);
+    continue;
+  }
   if (!b.sel || b.sel.startsWith('@') || b.sel.startsWith(':root')) continue;
 
   const limpio = sinAndamio(b);

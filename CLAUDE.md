@@ -202,6 +202,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
   node sistema/candado/verificar-cascada.mjs  # la hoja QUE VIAJA, a once anchos
   node sistema/candado/verificar-contrato.mjs # toda regla Obligatorio tiene prueba
   node sistema/candado/verificar-entrega.mjs  # lo publicado está en el catálogo
+  node sistema/candado/verificar-promesa.mjs  # se VE igual que en el catálogo
   ```
 
   Los dos últimos faltaban de esta lista y **la memoria los contaba entre los
@@ -212,6 +213,14 @@ No las «mejores» por iniciativa propia. Están razonadas:
   El de la cascada es el único que no lee lo que hay, sino lo que **falta**: el
   defecto R25 —dos iconos pintados a la vez— vivía en la ausencia de una regla,
   y por eso los otros seis no lo vieron en tres versiones.
+
+  El de la **promesa** es el que compara las dos hojas resolviendo la cascada
+  sobre el mismo marcado. Existe porque «no veo el botón CSV como lo veo en el
+  cascarón» no lo cazaba ninguno: el reset `box-sizing: border-box` estaba en
+  el catálogo y **no viajaba**, así que cada producto maquetaba en
+  `content-box`. No lleva lista de propiedades «importantes» —compara todo lo
+  que cualquiera de las dos hojas declare— porque elegir qué mirar es dejarlo
+  a criterio, y eso es lo que se pidió que no se hiciera.
 
   Se sube por **avance directo**, sin `checkout` y sin reescribir historia:
 
