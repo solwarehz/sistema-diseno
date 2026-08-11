@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.27.0';
+export const VERSION = '1.28.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,35 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.28.0', fecha: '2026-08-10',
+    que: 'R35: CargaImagen con encuadre · el modo oscuro del select POR FIN viaja · el catalogo se agrupa en ramas',
+    porque:
+      'R35 de Control Administrativos ampliado por el responsable: elegir imagen, ENCUADRARLA '
+      + '-arrastrar para mover, botones para acercar- y entregar el recorte CUADRADO como Blob '
+      + 'mas URL local. La subida es del producto. Se compone, no se reconstruye: el disparador '
+      + 'y el zoom son Boton, el editor vive en Dialogo con pulsar-fuera apagado, y el encuadre '
+      + 'se pinta en canvas porque mover la imagen con style en linea lo prohibe el candado. El '
+      + 'lienzo es enfocable y las flechas mueven: un recorte solo-raton deja gente fuera. '
+      + 'DE VERIFICAR EL SELECT salio un defecto gordo: el extractor saltaba [data-tema] EN '
+      + 'BLOQUE -el tema viaja por tokens- y se llevaba por delante lo que los tokens no pueden '
+      + 'dar: la flecha del select y el icono del calendario llevan su color DENTRO de un SVG '
+      + 'data-URI que no puede usar var(), y sus reglas oscuras se quedaban en el catalogo. En '
+      + 'todo producto en oscuro: flecha #6A6864 sobre fondo oscuro, invisible -«el select no '
+      + 'tiene estilos»-. Y las sombras oscuras del marco tampoco viajaban. Ahora se salta solo '
+      + 'la redefinicion pura de tokens de color. '
+      + 'Y el catalogo: veintitres elementos seguidos no se leen -el responsable busco la carga '
+      + 'de imagen y no la encontro-, asi que Elementos se parte en cinco ramas (Acciones, '
+      + 'Formulario, Datos, Respuesta, Marco y navegacion) con el mecanismo que el Manual ya '
+      + 'usaba. Cinco pruebas nuevas: 210.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'La hoja gana las reglas [data-tema=oscuro] estructurales (flecha del select, icono del '
+      + 'calendario) y las sombras oscuras del marco como dependencia. Ningun selector se va: '
+      + 'solo entra lo que faltaba. Los anclajes #hash del catalogo dentro de Elementos '
+      + 'conservan sus id; solo cambia el agrupamiento del menu.',
+    ],
+  },
   {
     v: '1.27.0', fecha: '2026-08-10',
     que: 'R34: TablaDatos pinta lo que su catalogo promete — busqueda global, Mostrar con recuento, iconos, N.o y el pie',

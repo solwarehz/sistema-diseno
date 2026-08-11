@@ -133,6 +133,7 @@ const PAGINA_DE = new Map([
   // La zona se demuestra CON los avisos: es donde viven, y por separado no se
   // entiende (R29, v1.23.0).
   ['ZonaAvisos', 'Aviso temporal'],
+  ['CargaImagen', 'Carga de imagen'],
   ['EstadoPantalla', 'Estados de pantalla'], ['Confirmacion', 'Confirmación'],
   ['Nota', 'Nota permanente'], ['Dialogo', 'Diálogo'], ['Migas', 'Migas de pan'],
   ['CabeceraPantalla', 'Cabecera de pantalla'], ['Icono', 'Iconos'],

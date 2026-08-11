@@ -1214,6 +1214,46 @@ ${verCodigo(
   </tbody>
 </table>`;
 
+// ── Elemento: Carga de imagen — R35 ─────────────────────────────────────────
+
+const pagCargaImagen = `
+<p class="pag-intro">Elegir una imagen, <strong>encuadrarla</strong> —arrastrar para mover,
+botones para acercar— y entregar el recorte <strong>cuadrado</strong>. La pieza visual completa:
+disparador, vista previa, vacío, error y nota. La subida es del producto: el componente
+entrega el Blob del recorte y una URL local para pintarlo al instante.</p>
+<div class="bloque">
+  <div class="muestra-fila">
+    <div class="ci">
+      <span class="ci-et">Foto del legajo</span>
+      <div class="ci-caja ci-m"><span class="ci-vacia">Sin imagen</span></div>
+      <div class="ci-acciones"><button class="btn btn-neutro btn-mini">Elegir imagen</button></div>
+      <span class="ci-nota">JPG o PNG · máx. 2 MB</span>
+    </div>
+    <div class="ci">
+      <span class="ci-et">Logo de la empresa</span>
+      <div class="ci-caja ci-m">${ESCUDO_PNG ? `<img class="ci-img" src="${ESCUDO_PNG}" alt="">` : '<span class="ci-vacia">Sin imagen</span>'}</div>
+      <div class="ci-acciones"><button class="btn btn-neutro btn-mini">Cambiar</button><button class="btn btn-terc btn-mini">Quitar</button></div>
+    </div>
+    <div class="ci">
+      <span class="ci-et">Foto del legajo</span>
+      <div class="ci-caja ci-m"><span class="ci-vacia">Sin imagen</span></div>
+      <div class="ci-acciones"><button class="btn btn-neutro btn-mini">Elegir imagen</button></div>
+      <span class="ci-error">La imagen pesa 6 MB y el máximo es 2 MB.</span>
+    </div>
+  </div>
+  <p class="seccion-sub">El editor, dentro de un <code>Dialogo</code> con «pulsar fuera» APAGADO
+  —un encuadre a medias no se pierde por un clic—. El lienzo es enfocable: las flechas mueven,
+  los botones acercan. Un recorte solo-ratón deja gente fuera.</p>
+  <div class="ci-editor">
+    <canvas class="ci-lienzo" width="260" height="260" aria-label="Encuadre (demostración estática)"></canvas>
+    <div class="ci-zoom">
+      <button class="btn btn-neutro btn-mini" aria-label="Alejar">−</button>
+      <button class="btn btn-neutro btn-mini" aria-label="Acercar">+</button>
+      <span class="ci-ayuda">Arrastra o usa las flechas para centrar. Se recorta el cuadro.</span>
+    </div>
+  </div>
+</div>`;
+
 // ── Elemento: Selector ──────────────────────────────────────────────────────
 
 const ICO_LUPA = icono('lupa');
@@ -3770,10 +3810,21 @@ const CATALOGO = [
   {
     grupo: 'Elementos',
     icono: 'panel',
+    // Veintitrés ítems seguidos no se leen (lo dijo el responsable buscando
+    // la carga de imagen y sin encontrarla): cinco ramas, como en el Manual.
+    // El ORDEN de items define los rangos de cada rama.
+    ramas: [
+      { t: 'Acciones', desde: 0, hasta: 2 },
+      { t: 'Formulario', desde: 2, hasta: 8 },
+      { t: 'Datos', desde: 8, hasta: 14 },
+      { t: 'Respuesta', desde: 14, hasta: 20 },
+      { t: 'Marco y navegación', desde: 20, hasta: 23 },
+    ],
     items: [
       { id: 'boton', t: 'Botón', estado: 'listo', c: pagBoton },
       { id: 'enlace', t: 'Enlace', estado: 'listo', c: pagEnlace },
       { id: 'campo', t: 'Campo de texto', estado: 'listo', c: pagCampo },
+      { id: 'cargaimagen', t: 'Carga de imagen', estado: 'listo', c: pagCargaImagen },
       { id: 'selector', t: 'Selector', estado: 'listo', c: pagSelector },
       { id: 'interruptor', t: 'Interruptor', estado: 'listo', c: pagInterruptor },
       { id: 'multiple', t: 'Selección múltiple', estado: 'listo', c: pagMultiple },
@@ -5491,6 +5542,30 @@ select.campo {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C3C1BD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
 }
 select.campo:disabled { opacity: .75; }
+
+/* Carga de imagen — R35. La caja no puede romperse: tamaño fijo por variante
+   y el recorte YA es cuadrado, así que cover no recorta nada nuevo. */
+.ci { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.ci-et { font-size: 13px; font-weight: 500; }
+.ci-caja { display: grid; place-items: center; overflow: hidden;
+  border: 1px solid var(--borde-campo); border-radius: 6px;
+  background: var(--fondo-encabezado); }
+.ci-s { width: 64px; height: 64px; }
+.ci-m { width: 96px; height: 96px; }
+.ci-l { width: 144px; height: 144px; }
+.ci-img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ci-vacia { font-size: 12px; color: var(--texto-pista); text-align: center; padding: 8px; }
+.ci-acciones { display: flex; gap: 8px; }
+.ci-error { font-size: 12px; color: var(--error-texto); font-weight: 500; }
+.ci-nota { font-size: 12px; color: var(--texto-secundario); }
+/* El input real, fuera de la vista y del tabulador pero SIN display:none:
+   algunos navegadores ignoran click() sobre lo que no se pinta. */
+.ci-entrada { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.ci-editor { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+.ci-lienzo { border: 1px solid var(--borde); border-radius: 6px;
+  background: var(--fondo-encabezado); cursor: move; touch-action: none; }
+.ci-zoom { display: flex; gap: 8px; align-items: center; }
+.ci-ayuda { font-size: 12px; color: var(--texto-secundario); }
 
 /* Mismo caso que el select: el icono del campo de fecha lo pinta el navegador
    y LO RETIRA al deshabilitarlo. Sin icono deja de parecer un campo de fecha,

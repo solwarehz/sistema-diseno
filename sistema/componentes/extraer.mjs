@@ -44,6 +44,8 @@ const ELEMENTOS = [
   { n: 'Botón',                 p: ['btn'] },
   { n: 'Enlace',                p: ['enl', 'enlace'] },
   { n: 'Campo de texto',        p: ['campo', 'cg', 'msj'] },
+  // R35: elegir, encuadrar (mover + acercar) y recortar en cuadrado.
+  { n: 'Carga de imagen',       p: ['ci'] },
   { n: 'Selector',              p: ['sel'] },
   { n: 'Interruptor',           p: ['sw'] },
   { n: 'Selección múltiple',    p: ['ms'] },
@@ -230,7 +232,24 @@ for (const b of todos) {
     dependenciasSueltas.push(b.entero);
     continue;
   }
-  if (!b.sel || b.sel.startsWith('@') || b.sel.startsWith(':root') || b.sel.startsWith('[data-tema')) continue;
+  // [data-tema se saltaba EN BLOQUE porque el tema viaja por tokens.css — y
+  // el bloque se llevaba por delante dos cosas que los tokens no pueden dar:
+  //   (a) las reglas ESTRUCTURALES cuyo color va incrustado en un SVG
+  //       data-URI (la flecha del select, el icono del calendario): un
+  //       data-URI no puede usar var(), así que el oscuro necesita SU regla;
+  //   (b) la redefinición de las sombras del marco en oscuro, que es
+  //       dependencia del paquete igual que su :root de al lado.
+  // El resultado medido (2026-08-10, lo vio el equipo de desarrollo): en todo
+  // producto en modo oscuro la flecha del select quedaba #6A6864 sobre fondo
+  // oscuro — el select parecía sin estilo. Ahora se salta SOLO la
+  // redefinición pura de tokens de color.
+  if (b.sel && b.sel.startsWith('[data-tema')) {
+    const puroTema = /^\[data-tema[^\]]*\](\s*,\s*:root[^{]*)?$/.test(b.sel);
+    if (puroTema && /--sombra-|--canto-/.test(b.entero)) { dependenciasSueltas.push(b.entero); continue; }
+    if (puroTema) continue; // tokens de color: esos sí viajan por tokens.css
+    // estructural bajo tema: sigue y se clasifica como cualquier regla
+  }
+  if (!b.sel || b.sel.startsWith('@') || b.sel.startsWith(':root')) continue;
 
   const limpio = sinAndamio(b);
   if (!limpio) continue; // era todo andamio: decidido que no sale
