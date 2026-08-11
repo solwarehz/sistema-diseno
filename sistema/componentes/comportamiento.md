@@ -146,6 +146,31 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 ---
 
+## Carga de PDF
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R43, v1.39.0) **Solo PDF, y se comprueba en los bytes.** El `accept` del navegador filtra el diálogo de archivos y nada más: arrastrando entra cualquier cosa, y un `.docx` renombrado a `.pdf` se cuela. Se leen los primeros bytes y se exige `%PDF-`. |
+| **2** | **Obligatorio.** (R43, v1.39.0) **El peso máximo se mide DESPUÉS de comprimir.** Al revés se rechazan archivos que sí habrían cabido, y la persona ve «pesa demasiado» en algo que el sistema mismo podía arreglar. |
+| **3** | **Obligatorio.** (R43, v1.39.0) **Si no se gana peso, viaja el original.** El compresor nunca devuelve algo más grande, nunca devuelve algo que no sepa volver a leer —relee su propia salida y exige el mismo número de páginas— y **nunca toca un PDF cifrado**: lo devuelve intacto con su `motivo`. |
+| **4** | **Obligatorio.** (R43, v1.39.0) **Soltar es un atajo de ratón**, así que el control accesible es el `Boton`: la zona no se tabula y el `input[type=file]` va fuera del tabulador. Un gesto de ratón no puede ser la única forma de hacer algo. |
+| **5** | **Obligatorio.** (R43, v1.39.0) **Dos archivos a la vez se rechazan** en vez de coger el primero: en silencio, quien soltó tres se queda creyendo que subió tres. |
+| **6** | **Obligatorio.** (R43, v1.39.0) Los dos pesos viajan **siempre** en `onCambio`, pero **no se pintan por defecto** (`mostrarPesos`). A quien sube un acta no le importa cuánto adelgazó, le importa que se subió; en el catálogo sí se pintan, porque ahí la cifra es la demostración de que la compresión ocurre. |
+| **7** | Del proyecto: a dónde se sube, el peso máximo, y si se apaga la compresión —un PDF **firmado** hay que dejarlo intacto o la firma deja de validar. |
+
+## Área de texto
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R44, v1.39.0) El envoltorio **es** `Campo`, no se le parece: rótulo obligatorio y siempre visible, ayuda, error y los `aria-describedby` que los enlazan salen de su ranura de contenido propio. |
+| **2** | **Obligatorio.** (R44, v1.39.0) **El límite es blando.** `maxlength` corta al pegar, en silencio y sin deshacer. Aquí el texto entra entero, el campo se marca inválido y se dice cuánto sobra. **Bloquear el envío es del producto**, que es quien sabe si ese texto se puede guardar a medias. |
+| **3** | **Obligatorio.** (R44, v1.39.0) **Crece con lo escrito** hasta un tope, y a partir de ahí se desplaza. Se hace **con CSS** —copia invisible del texto en `::after` sobre la misma celda de rejilla—, no escribiendo la altura desde JavaScript: eso exigiría el atributo `style`, que el candado prohíbe (§2.5.6). |
+| **4** | **Obligatorio.** (R44, v1.39.0) El contador está **siempre** en el `aria-describedby` —se lee al entrar al campo— pero la **región viva solo habla en los últimos 20 caracteres y al pasarse**. Un contador que dicta un número por cada tecla no informa: tapa lo que se escribe. |
+| **5** | **Obligatorio.** (R44, v1.39.0) **Recorta al salir**, como `Campo` y por lo mismo —el copy-paste con cola—, y **solo los extremos**: los saltos de línea de dentro son el texto, no basura. |
+| **6** | Del proyecto: `filas` de arranque, el `maximo`, y si el campo debe medir lo mismo que sus vecinos (`autoCrecer` apagado). |
+
+---
+
 ## Marco de aplicación
 
 | | Regla |

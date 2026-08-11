@@ -134,6 +134,12 @@ const PAGINA_DE = new Map([
   // entiende (R29, v1.23.0).
   ['ZonaAvisos', 'Aviso temporal'],
   ['CargaImagen', 'Carga de imagen'],
+  ['CargaPdf', 'Carga de PDF'],
+  ['AreaTexto', 'Área de texto'],
+  // El compresor se exporta suelto para el producto que sube PDF sin usar el
+  // componente, y se demuestra en la misma página: separado no se entiende —lo
+  // que hay que ver es la cifra de antes y después (R43, v1.39.0).
+  ['comprimirPdf', 'Carga de PDF'],
   // El campo de contraseña se demuestra con los campos (v1.37.0).
   ['CampoContrasena', 'Campo de texto'],
   ['EstadoPantalla', 'Estados de pantalla'], ['Confirmacion', 'Confirmación'],

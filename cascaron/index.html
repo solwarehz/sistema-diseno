@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.38.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.39.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.38.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.39.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -2284,6 +2284,79 @@ select.campo:disabled { opacity: .75; }
   background: var(--fondo-encabezado); cursor: move; touch-action: none; }
 .ci-zoom { display: flex; gap: 8px; align-items: center; }
 
+/* Carga de PDF — R43. La zona de soltar es lo único que este elemento aporta
+   de dibujo nuevo: el disparador, el progreso y el icono ya existían. El borde
+   discontinuo dice «esto admite que le sueltes algo» sin escribirlo.
+
+   DENTRO DE LA ZONA SOLO SE USAN texto-principal Y texto-secundario, y no es
+   una preferencia: son los dos únicos frentes medidos contra las DOS
+   superficies que la zona alterna —fondo-tarjeta en reposo y fondo-encabezado
+   al arrastrar encima—. texto-pista está medido sobre la primera y no sobre la
+   segunda, así que aquí dentro no entra: al soltar un archivo la pista
+   quedaría sin garantía. */
+.cpdf { display: flex; flex-direction: column; gap: 4px; }
+.cpdf-et { font-size: 13px; font-weight: 500; }
+.cpdf-zona { display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 20px 16px; border-radius: 6px; text-align: center;
+  border: 2px dashed var(--borde-campo); background: var(--fondo-tarjeta);
+  transition: border-color var(--dur-media) var(--curva),
+              background-color var(--dur-media) var(--curva); }
+.cpdf-encima { border-color: var(--accion); background: var(--fondo-encabezado); }
+.cpdf-mal { border-color: var(--error-acento); }
+.cpdf-invita { display: flex; flex-direction: column; align-items: center; gap: 4px;
+  margin: 0; font-size: 13px; color: var(--texto-secundario); }
+.cpdf-ico { display: block; color: var(--texto-secundario); }
+.cpdf-instr { display: block; }
+.cpdf-puesto { display: flex; align-items: center; gap: 12px; text-align: left; max-width: 100%; }
+.cpdf-datos { display: flex; flex-direction: column; gap: 4px; min-width: 0;
+  align-items: flex-start; }
+.cpdf-nombre { font-size: 13px; font-weight: 500; overflow-wrap: anywhere; }
+.cpdf-peso { font-size: 12px; color: var(--texto-secundario); }
+.cpdf-acciones { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.cpdf-pista { font-size: 12px; color: var(--texto-secundario); }
+.cpdf-trabajo { padding-top: 4px; }
+.cpdf-error { font-size: 12px; color: var(--error-texto); font-weight: 500; }
+.cpdf-ayuda { font-size: 12px; color: var(--texto-pista); }
+/* El input real, fuera de la vista y del tabulador pero SIN display:none, por
+   la misma razón que en la carga de imagen. */
+.cpdf-entrada { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+/* Área de texto — R44. .ta-crece hace crecer el cuadro con lo escrito SIN
+   tocar la altura desde JavaScript: la copia invisible del texto vive en
+   ::after, ocupa la misma celda de la rejilla que el <textarea>, y es ella la
+   que estira la fila. Las dos TIENEN que compartir tipografía y relleno al
+   milímetro o la copia mediría distinto que el original.
+
+   Escribir la altura a mano exigiría el atributo style, que el candado
+   prohíbe (§2.5.6) — y aquí la prohibición no estorbó: obligó a la solución
+   que además sobrevive a que el texto llegue ya escrito. */
+.ta { resize: vertical; min-height: 0; line-height: 1.5; width: 100%; }
+.ta-fija { display: block; }
+.ta-crece { display: grid; max-height: 18em; overflow: auto; }
+.ta-crece > .ta { resize: none; overflow: hidden; }
+.ta-crece > .ta,
+.ta-crece::after {
+  grid-area: 1 / 1 / 2 / 2;
+  font: inherit; font-size: 13px; line-height: 1.5;
+  padding: 8px 8px;
+  white-space: pre-wrap; overflow-wrap: anywhere;
+}
+/* EL BORDE VA SOLO EN LA COPIA, no en la regla compartida. Ponerlo en las dos
+   se lo quitaba al cuadro —quedaba un campo sin contorno, indistinguible del
+   texto de al lado— y además le habría fijado 1px, pisando los 2px que
+   .campo-mal usa para marcar el error. El cuadro conserva el suyo, el de
+   .campo; la copia lleva uno transparente solo para medir igual.
+
+   El espacio final evita que la última línea vacía no cuente y el cuadro se
+   quede una línea corto justo al pulsar Intro. */
+.ta-crece::after {
+  content: attr(data-replica) ' '; visibility: hidden;
+  border: 1px solid transparent; border-radius: 6px;
+}
+.ta-pie { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.ta-cuenta { flex: none; font-variant-numeric: tabular-nums; }
+.ta-cuenta-mal { color: var(--error-texto); font-weight: 500; }
+
 /* Mismo caso que el select: el icono del campo de fecha lo pinta el navegador
    y LO RETIRA al deshabilitarlo. Sin icono deja de parecer un campo de fecha,
    y en deshabilitado es cuando más falta hace saber qué es, porque no se puede
@@ -2996,8 +3069,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                   </button>
                   <div class="nav-nietos"><div class="nav-nietos-in">
                     <a class="nav-nieto" href="#campo" data-ir="campo" title="Campo de texto">
-                          <span class="nav-txt">Campo de texto</span></a><a class="nav-nieto" href="#cargaimagen" data-ir="cargaimagen" title="Carga de imagen">
-                          <span class="nav-txt">Carga de imagen</span></a><a class="nav-nieto" href="#selector" data-ir="selector" title="Selector">
+                          <span class="nav-txt">Campo de texto</span></a><a class="nav-nieto" href="#areatexto" data-ir="areatexto" title="Área de texto">
+                          <span class="nav-txt">Área de texto</span></a><a class="nav-nieto" href="#cargaimagen" data-ir="cargaimagen" title="Carga de imagen">
+                          <span class="nav-txt">Carga de imagen</span></a><a class="nav-nieto" href="#cargapdf" data-ir="cargapdf" title="Carga de PDF">
+                          <span class="nav-txt">Carga de PDF</span></a><a class="nav-nieto" href="#selector" data-ir="selector" title="Selector">
                           <span class="nav-txt">Selector</span></a><a class="nav-nieto" href="#interruptor" data-ir="interruptor" title="Interruptor">
                           <span class="nav-txt">Interruptor</span></a><a class="nav-nieto" href="#multiple" data-ir="multiple" title="Selección múltiple">
                           <span class="nav-txt">Selección múltiple</span></a><a class="nav-nieto" href="#fecha" data-ir="fecha" title="Fecha y rango">
@@ -3138,7 +3213,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.38.0</option></select></label>
+          <select class="campo cg-in"><option>v1.39.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3226,8 +3301,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.38.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.38.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.39.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.39.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -5246,7 +5321,7 @@ claridad para que el mismo blanco funcione encima; por eso el paso es un índice
 Heredan <code>currentColor</code> — que es exactamente lo que el emoji no hace.</p>
 <div class="bloque">
   <div class="iconos-rejilla">
-  <div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>panel</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/></svg><span>matricula</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg><span>asistencia</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M17 6a3 3 0 0 1 0 6M18 20c0-2-1-3.5-2.5-4.5"/></svg><span>usuarios</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="2" y="13" width="4" height="6" rx="1.5"/><rect x="18" y="13" width="4" height="6" rx="1.5"/></svg><span>comunicaciones</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg><span>administracion</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg><span>tesoreria</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg><span>academico</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/></svg><span>configuracion</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>chevron</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m15 18-6-6 6-6"/></svg><span>chevronIzq</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg><span>chevronDer</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg><span>sol</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg><span>sobre</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span>campana</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg><span>panelIzq</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>hamburguesa</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><span>luna</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>salir</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>escritorio</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg><span>movil</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg><span>atras</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg><span>mas</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg><span>libro</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>descargar</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span>capas</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg><span>roto</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>candado</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>lupa</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg><span>cerrar</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 5 5L20 7"/></svg><span>visto</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg><span>alerta</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 5h18l-7 8v6l-4 2v-8Z"/></svg><span>filtro</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg><span>columnas</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg><span>ordenar</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 5v14M6 13l6 6 6-6"/></svg><span>descargar2</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg><span>subir</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg><span>ojo</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/><path d="m4 4 16 16"/></svg><span>ojoTachado</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg><span>camara</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="13" width="18" height="5" rx="1"/></svg><span>filas</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="3" rx="1"/><rect x="3" y="10" width="18" height="3" rx="1"/><rect x="3" y="16" width="18" height="3" rx="1"/></svg><span>filasFinas</span></div>
+  <div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>panel</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/></svg><span>matricula</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg><span>asistencia</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M17 6a3 3 0 0 1 0 6M18 20c0-2-1-3.5-2.5-4.5"/></svg><span>usuarios</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="2" y="13" width="4" height="6" rx="1.5"/><rect x="18" y="13" width="4" height="6" rx="1.5"/></svg><span>comunicaciones</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg><span>administracion</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg><span>tesoreria</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg><span>academico</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/></svg><span>configuracion</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>chevron</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m15 18-6-6 6-6"/></svg><span>chevronIzq</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg><span>chevronDer</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg><span>sol</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg><span>sobre</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span>campana</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg><span>panelIzq</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>hamburguesa</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><span>luna</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>salir</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>escritorio</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg><span>movil</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg><span>atras</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg><span>mas</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg><span>libro</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg><span>documento</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>descargar</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span>capas</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg><span>roto</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>candado</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>lupa</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg><span>cerrar</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 5 5L20 7"/></svg><span>visto</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg><span>alerta</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 5h18l-7 8v6l-4 2v-8Z"/></svg><span>filtro</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg><span>columnas</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg><span>ordenar</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 5v14M6 13l6 6 6-6"/></svg><span>descargar2</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg><span>subir</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg><span>ojo</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/><path d="m4 4 16 16"/></svg><span>ojoTachado</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg><span>camara</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="13" width="18" height="5" rx="1"/></svg><span>filas</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="3" rx="1"/><rect x="3" y="10" width="18" height="3" rx="1"/><rect x="3" y="16" width="18" height="3" rx="1"/></svg><span>filasFinas</span></div>
   </div>
 </div>
 <h3 class="sub-seccion">Por qué no emoji</h3>
@@ -5830,6 +5905,94 @@ manual (§6bis): normalizar <strong>al grabar, no al teclear</strong>; <code>tri
 para todo; minúsculas solo donde son canónicas (correo, usuario, código); <strong>los nombres
 conservan su caja</strong>; la contraseña jamás se normaliza. La utilidad <code>alGuardar</code> vivió
 una versión (v1.35.0) y se retiró por esta misma razón.</p>
+    </section><section class="pagina" id="pg-areatexto" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#areatexto" data-ir="areatexto" class="migas-actual" aria-current="page">Área de texto</a>
+      </nav>
+      <div class="pant-cab"><h1>Área de texto</h1></div>
+      
+<p class="pag-intro">El campo de <strong>varias líneas</strong>: observaciones, motivo de una baja,
+descripción de una incidencia. No es un <code>Campo</code> más alto — se comporta distinto en tres
+cosas, y esas tres son la razón de que exista.</p>
+
+<div class="bloque">
+  <p class="seccion-sub"><strong>Escribe en el primero</strong> y verás que crece solo. Escribe en el
+  segundo y pasa del límite a propósito: <strong>no te corta</strong>.</p>
+  <div class="campos-rejilla">
+    <div class="campo-grupo">
+      <label class="campo-etiqueta" for="ta-demo-1">Observaciones</label>
+      <div class="ta-crece" data-crece>
+        <textarea class="campo ta" id="ta-demo-1" rows="3" data-cuadro
+          placeholder="Qué pasó y qué se hizo."></textarea>
+      </div>
+      <span class="campo-ayuda">Crece con lo escrito hasta un tope, y a partir de ahí se desplaza.</span>
+    </div>
+    <div class="campo-grupo" data-limite="60">
+      <label class="campo-etiqueta" for="ta-demo-2">Motivo de la baja</label>
+      <div class="ta-crece" data-crece>
+        <textarea class="campo ta" id="ta-demo-2" rows="3" data-cuadro
+          aria-describedby="ta-demo-2-ayuda"></textarea>
+      </div>
+      <span class="campo-error" data-error hidden></span>
+      <span class="campo-ayuda" id="ta-demo-2-ayuda">
+        <span class="ta-pie">
+          <span>Máximo 60 caracteres.</span>
+          <span class="ta-cuenta" data-cuenta>60 restantes</span>
+        </span>
+      </span>
+    </div>
+    <div class="campo-grupo">
+      <label class="campo-etiqueta" for="ta-demo-3">Nota interna</label>
+      <div class="ta-fija">
+        <textarea class="campo ta" id="ta-demo-3" rows="3"
+          placeholder="Sin autoCrecer: alto fijo."></textarea>
+      </div>
+      <span class="campo-ayuda">Para una rejilla donde todos los campos miden lo mismo.</span>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Las tres diferencias con un campo de una línea</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Diferencia</th><th>Por qué</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Crece con lo escrito</strong></td><td class="motivo">Un cuadro de cuatro líneas para un texto de doce obliga a redactar mirando por una rendija. Se hace <strong>con CSS</strong>: la rejilla lleva una copia invisible del texto en <code>::after</code>. Escribir la altura desde JavaScript exigiría el atributo <code>style</code>, que el candado prohíbe (§2.5.6)</td></tr>
+    <tr><td><strong>El límite es blando</strong></td><td class="motivo"><code>maxlength</code> corta al pegar, en silencio y sin deshacer: se pega un párrafo, entra media frase, y nadie se entera hasta que lo lee el destinatario. Aquí entra entero, se marca inválido y se dice cuánto sobra. <strong>Bloquear el envío es del producto</strong>, que sabe si ese texto se puede guardar a medias</td></tr>
+    <tr><td><strong>El contador se anuncia solo cuando importa</strong></td><td class="motivo">En el <code>aria-describedby</code> está siempre —se lee al entrar al campo—, pero la región viva solo habla en los últimos 20 caracteres y al pasarse. Un contador que dicta un número por cada tecla no informa: tapa lo que se escribe</td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub">Lo demás <strong>es</strong> el <code>Campo</code>, no se le parece: el rótulo
+obligatorio y siempre visible, la ayuda, el error y los <code>aria-describedby</code> que los enlazan
+salen de su ranura de contenido propio. Y el <strong>recorte al salir</strong> es el mismo y por la
+misma razón —el copy-paste con cola—, solo en los extremos: los saltos de línea de dentro son el
+texto, no basura.</p>
+
+<h3 class="sub-seccion">Estados</h3>
+<div class="bloque">
+  <div class="campos-rejilla">
+    <div class="campo-grupo">
+      <label class="campo-etiqueta" for="ta-e1">Reposo</label>
+      <div class="ta-fija"><textarea class="campo ta" id="ta-e1" rows="2" readonly></textarea></div>
+    </div>
+    <div class="campo-grupo">
+      <label class="campo-etiqueta" for="ta-e2">Con foco</label>
+      <div class="ta-fija"><textarea class="campo ta foco-demo" id="ta-e2" rows="2" readonly></textarea></div>
+    </div>
+    <div class="campo-grupo">
+      <label class="campo-etiqueta" for="ta-e3">Con error</label>
+      <div class="ta-fija"><textarea class="campo ta campo-mal" id="ta-e3" rows="2" readonly>Se pasa de largo</textarea></div>
+      <span class="campo-error">El texto se pasa por 8 caracteres. Acórtalo antes de guardar.</span>
+    </div>
+    <div class="campo-grupo">
+      <label class="campo-etiqueta" for="ta-e4">Sin permiso</label>
+      <div class="ta-fija"><textarea class="campo ta" id="ta-e4" rows="2" disabled>Solo Dirección edita este campo.</textarea></div>
+    </div>
+  </div>
+</div>
     </section><section class="pagina" id="pg-cargaimagen" hidden>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
@@ -5898,6 +6061,121 @@ y el comprimido en cuadrado. La subida es del producto.</p>
 <p class="seccion-sub">En React, el editor vive en un <code>Dialogo</code> con «pulsar fuera»
 APAGADO —un encuadre a medias no se pierde por un clic—. El recorte sale en <strong>WebP</strong>
 (0,85), con caída a PNG por especificación: se lee <code>blob.type</code>, no se asume extensión.</p>
+    </section><section class="pagina" id="pg-cargapdf" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#cargapdf" data-ir="cargapdf" class="migas-actual" aria-current="page">Carga de PDF</a>
+      </nav>
+      <div class="pant-cab"><h1>Carga de PDF</h1></div>
+      
+<p class="pag-intro">Soltar o elegir <strong>un PDF</strong>, comprobar que lo es
+<strong>mirando sus bytes</strong> —no la extensión, que miente— y
+<strong>comprimirlo antes de entregarlo</strong>. La subida es del producto: el componente
+devuelve el archivo listo y los dos pesos.</p>
+
+<div class="bloque">
+  <p class="seccion-sub"><strong>Pruébalo con un PDF de verdad.</strong> Suéltalo en el recuadro o
+  elígelo. Aquí —y <em>solo</em> aquí— se enseña <strong>peso inicial → peso final</strong>: en un
+  producto esa cifra no le importa a quien sube un acta, pero en el catálogo es la prueba de que la
+  compresión ocurre. Los dos pesos viajan siempre en <code>onCambio</code>.</p>
+
+  <div class="muestra-fila">
+    <div class="cpdf" data-pdf="uno">
+      <span class="cpdf-et">Acta de notas</span>
+      <div class="cpdf-zona" data-zona>
+        <p class="cpdf-invita" data-invita>
+          <span class="cpdf-ico" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span>
+          <span class="cpdf-instr">Arrastra el PDF aquí o elígelo desde tu equipo.</span>
+        </p>
+        <div class="cpdf-puesto" data-puesto hidden>
+          <span class="cpdf-ico" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg></span>
+          <span class="cpdf-datos">
+            <span class="cpdf-nombre" data-nombre></span>
+            <span class="cpdf-peso" data-peso></span>
+            <span class="chip chip-exito" data-medida hidden></span>
+          </span>
+        </div>
+        <div class="cpdf-acciones">
+          <button class="btn btn-neutro btn-mini btn-ic" data-elegir><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Elegir PDF</button>
+          <button class="btn btn-terc btn-mini" data-quitar hidden>Quitar</button>
+        </div>
+        <span class="cpdf-pista">Solo PDF · máximo 10,0 MB una vez comprimido.</span>
+      </div>
+      <div class="cpdf-trabajo" data-trabajo hidden>
+        <div class="pr-caja">
+          <div class="pr-cab"><span>Comprimiendo el PDF…</span></div>
+          <div class="pr" role="progressbar" aria-label="Comprimiendo el PDF"><div class="pr-indet"></div></div>
+        </div>
+      </div>
+      <span class="cpdf-error" data-error role="alert" hidden></span>
+      <span class="cpdf-ayuda">El acta va al legajo del estudiante.</span>
+      <input type="file" accept="application/pdf,.pdf" class="cpdf-entrada" tabindex="-1" aria-hidden="true">
+    </div>
+
+    <div class="cpdf">
+      <span class="cpdf-et">Constancia firmada</span>
+      <div class="cpdf-zona cpdf-mal">
+        <p class="cpdf-invita">
+          <span class="cpdf-ico" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span>
+          <span class="cpdf-instr">Arrastra aquí la constancia ya firmada por Dirección.</span>
+        </p>
+        <div class="cpdf-acciones">
+          <button class="btn btn-neutro btn-mini btn-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Elegir PDF</button>
+        </div>
+        <span class="cpdf-pista">Solo PDF · una hoja.</span>
+      </div>
+      <span class="cpdf-error">Ese archivo no es un PDF. Solo se admiten PDF.</span>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Qué comprime, y cuánto — medido, no prometido</h3>
+<p class="seccion-sub">Sin ninguna dependencia: el paquete no carga con una librería de PDF y el
+producto que lo instala, tampoco. Lo que hace, en el orden en que gana peso:</p>
+<table class="tabla-simple">
+  <thead><tr><th>Qué</th><th>Cuánto</th><th>Sobre qué archivo</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Recomprimir las imágenes</strong></td><td>lo que de verdad mueve la aguja</td><td class="motivo">Escaneos. Solo JPEG incrustados, reducidos al ancho máximo. <strong>Necesita navegador</strong>: en Node no ocurre y se dice en <code>imagenesOmitidas</code></td></tr>
+    <tr><td><strong>Desinflar lo que viajaba en crudo</strong></td><td><strong>88–91 %</strong> medido</td><td class="motivo">Generadores que no comprimen nada. La cifra sale de las pruebas, no de una estimación</td></tr>
+    <tr><td><strong>Tirar lo inalcanzable</strong></td><td>según cuántas revisiones arrastre</td><td class="motivo">Un PDF editado o firmado varias veces guarda todas sus versiones anteriores</td></tr>
+    <tr><td><strong>Tirar XMP y <code>/PieceInfo</code></strong></td><td>kilobytes</td><td class="motivo">Lo que deja un procesador de textos y ningún lector usa</td></tr>
+    <tr><td><strong>Reempaquetar</strong></td><td>evita que crezca</td><td class="motivo">Sin esto un PDF moderno SALDRÍA MÁS GRANDE: sus objetos pequeños ya venían empaquetados</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Las tres promesas</h3>
+<div class="bloque">
+  <table class="tabla-simple">
+    <thead><tr><th>Promesa</th><th>Cómo se sostiene</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Nunca devuelve algo más grande</strong></td><td class="motivo">Se comparan los dos pesos al final. Si no se ganó, vuelve el original intacto y <code>motivo</code> dice <code>sin-ganancia</code></td></tr>
+      <tr><td><strong>Nunca devuelve algo que no sepa releer</strong></td><td class="motivo">Lo escrito se vuelve a analizar con el mismo lector y se exige que el catálogo resuelva y que las páginas sean las mismas. Si no cuadra, vuelve el original</td></tr>
+      <tr><td><strong>Nunca toca un PDF cifrado</strong></td><td class="motivo">Reescribirlo sin descifrar produce un archivo que abre y no se lee. Vuelve intacto con <code>motivo: 'cifrado'</code></td></tr>
+    </tbody>
+  </table>
+  <p class="seccion-sub">Y lo que <strong>no</strong> hace, que también hay que decirlo: no reduce
+  imágenes que no sean JPEG, no toca las fuentes incrustadas y no vuelve a comprimir un flujo que ya
+  venía desinflado. <strong>Un PDF que ya pasó por un optimizador saldrá igual</strong> — y devuelto
+  tal cual, que es lo correcto.</p>
+</div>
+
+<h3 class="sub-seccion">Dos decisiones que no son de aspecto</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Regla</th><th>Por qué</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Solo PDF, comprobado en los bytes</strong></td><td class="motivo">El <code>accept</code> del navegador filtra el diálogo de archivos y nada más: arrastrando entra cualquier cosa, y renombrar un <code>.docx</code> a <code>.pdf</code> lo cuela. Se exige <code>%PDF-</code></td></tr>
+    <tr><td><strong>El peso máximo se mide DESPUÉS de comprimir</strong></td><td class="motivo">Al revés se rechazan archivos que sí habrían cabido, y la persona ve «pesa demasiado» en algo que el sistema mismo podía arreglar</td></tr>
+    <tr><td><strong>Dos archivos a la vez se rechazan</strong></td><td class="motivo">Coger el primero en silencio deja a alguien creyendo que subió los tres que soltó</td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub">Se compone, no se reconstruye: el disparador y «Quitar» son <code>Boton</code>,
+el progreso es <code>Progreso</code>, el ahorro es un <code>Chip</code> —pintar aquí un verde a mano
+habría metido un par de contraste que nadie midió— y el icono es <code>Icono</code>. Lo único propio
+es la zona de soltar, que no existía. <strong>Soltar es un atajo de ratón</strong>, y por eso el
+control accesible es el botón: la zona no se tabula.</p>
     </section><section class="pagina" id="pg-selector" hidden>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
@@ -9496,6 +9774,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
 
 
+<h3 class="sub-seccion">v1.39.0 <span class="cam-fecha">2026-08-11</span></h3>
+<p class="pag-intro"><strong>CargaPdf comprime de verdad y sin dependencias, y nace AreaTexto.</strong> R43: subir un PDF era la pieza que cada producto iba a construir a mano, y la parte que nadie iba a construir bien era comprimirlo. Se escribio el compresor a mano —el paquete no tiene NI UNA dependencia de ejecucion y meter pdf-lib se la habria puesto a todos los productos que lo instalan—: lee el PDF, recomprime las imagenes JPEG incrustadas (lo unico que mueve la aguja en un escaneo, y necesita navegador: en Node se salta y se DICE en imagenesOmitidas), tira lo que ya no alcanza nadie —un PDF firmado varias veces arrastra todas sus revisiones—, tira XMP y PieceInfo, desinfla lo que viajaba en crudo y reempaqueta en ObjStm. Sin lo ultimo un PDF moderno SALDRIA MAS GRANDE. Medido en las pruebas: 88-91% en PDF crudo, 0% y original intacto en uno ya optimizado. Tres promesas con prueba: nunca devuelve algo mas grande, nunca devuelve algo que no sepa releer (relee su propia salida y exige el mismo numero de paginas), nunca toca un PDF cifrado. Y solo PDF comprobado EN LOS BYTES, porque accept no ve lo que se arrastra ni un docx renombrado. El peso maximo se mide DESPUES de comprimir: al reves se rechaza lo que si habria cabido. R44: AreaTexto compone el envoltorio de Campo —no lo reconstruye— y aporta las tres cosas que un textarea hace distinto: crece con lo escrito CON CSS (la altura desde JavaScript exigiria style, que el candado prohibe), el limite es BLANDO (maxlength corta al pegar en silencio y sin deshacer) y el contador solo se anuncia en el ultimo tramo. Icono documento nuevo: usar libro habria enseñado dos significados con el mismo dibujo. Campo.ayuda admite nodos para que el contador entre en su aria-describedby en vez de quedarse fuera.</p>
+
+
+
 <h3 class="sub-seccion">v1.38.0 <span class="cam-fecha">2026-08-10</span></h3>
 <p class="pag-intro"><strong>R42: el tercer nivel del menu por fin se emite, y la tabla simple vuelve a ser UNA tabla.</strong> Dos huecos que Control Administrativos vio montando. R42a: la hoja publicaba nav-rama, nav-nietos y nav-nieto desde siempre y el React no podia expresarlos — OpcionNav gana hijos y una opcion con hijos se dibuja como rama plegable con aria-expanded y la animacion de la hoja. Las ramas arrancan CERRADAS -doce items seguidos no se leen- salvo la que contiene a la activa: llegar a una pantalla y no ver donde estas en el menu es peor que un clic de mas. Su pantalla intermedia declarada se jubila. R42b: thead y tbody eran display:table CADA UNO — dos tablas independientes repartiendo columnas por su cuenta, y los rotulos no caian sobre las celdas; lo vio su responsable a la primera. Ahora los dos grupos comparten UNA tabla anonima (alineados por construccion) y dentro de tb-envoltura vuelve a ser tabla plena a todo lo ancho. tb-sub tenia el mismo defecto y se curo igual. Reglas 5 del marco y 26 de la tabla, dos pruebas nuevas: 231.</p>
 <table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>tabla-simple suelta ya no se estira al 100% con contenido corto (la tabla anonima toma el ancho de su contenido): quien la quiera plena, la envuelve en tb-envoltura, que ademas le resuelve el desbordamiento. Los anchos fijos por columna que los consumidores pusieron de rodeo pueden retirarse.</td></tr></tbody></table>
@@ -10931,6 +11214,998 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
 </div>
 
 <script>
+// EL COMPRESOR DE PDF, insertado desde componentes/src/interno/comprimir-pdf.mjs
+// SIN TOCARLE LA LOGICA. Es el mismo archivo que importa el componente de
+// React: dos copias ensenarian dos compresiones distintas.
+var PDF = (function () {
+/**
+ * COMPRESOR DE PDF — sin una sola dependencia
+ *
+ * POR QUÉ ESTÁ ESCRITO A MANO. El paquete no tiene dependencias de ejecución:
+ * viaja como fuente y lo único que pide es React. Meter `pdf-lib` obligaría a
+ * cada producto que instala el sistema a cargar con ella, y §9 ya decidió que
+ * las librerías entran solo cuando escribir a mano produce fallos
+ * sistemáticos. Aquí no los produce: el formato está publicado y lo que hace
+ * falta —inflar, desinflar, recorrer y volver a escribir— cabe en un archivo.
+ *
+ * QUÉ HACE, en el orden en que gana peso:
+ *
+ *   1 · RECOMPRIME LAS IMÁGENES. Es el único cambio que mueve la aguja en un
+ *       escaneo, que es el PDF que de verdad pesa en un colegio. Solo toca
+ *       imágenes JPEG (`/DCTDecode`): las decodifica, las reduce al ancho
+ *       máximo y las vuelve a codificar. Necesita `canvas`, así que ESTO SOLO
+ *       OCURRE EN EL NAVEGADOR — en Node se salta, y se dice.
+ *   2 · TIRA LO INALCANZABLE. Un PDF firmado o editado varias veces arrastra
+ *       todas sus revisiones anteriores. Se recorre desde el catálogo y lo que
+ *       no se alcanza no se copia.
+ *   3 · TIRA XMP Y `/PieceInfo`. Metadatos duplicados y datos privados de la
+ *       aplicación que lo generó. Word deja ahí kilobytes que nadie lee.
+ *   4 · DESINFLA LO QUE VIAJABA EN CRUDO.
+ *   5 · REEMPAQUETA. Los objetos que no son flujo van a un `/ObjStm` y la
+ *       tabla de referencias sale como flujo. Sin esto, un PDF moderno SALDRÍA
+ *       MÁS GRANDE del que entró: sus objetos pequeños ya venían empaquetados.
+ *
+ * LAS TRES PROMESAS. Son el contrato, y el resto del archivo existe para
+ * sostenerlas:
+ *
+ *   · NUNCA DEVUELVE ALGO MÁS GRANDE. Se compara al final y, si no se ganó
+ *     peso, vuelve el original intacto.
+ *   · NUNCA DEVUELVE ALGO QUE NO SEPA VOLVER A LEER. Lo que sale se vuelve a
+ *     analizar con este mismo lector y se comprueba que el catálogo resuelve y
+ *     que el número de páginas es el mismo. Si algo no cuadra, vuelve el
+ *     original.
+ *   · NUNCA TOCA UN PDF CIFRADO. Se devuelve intacto con su motivo.
+ *
+ * LO QUE NO HACE, y hay que decirlo: no reduce imágenes que no sean JPEG, no
+ * toca las fuentes incrustadas y no vuelve a comprimir un flujo que ya venía
+ * desinflado. Un PDF que ya pasó por un optimizador saldrá igual —y devuelto
+ * tal cual, que es lo correcto.
+ */
+
+// ── Piezas del formato ──────────────────────────────────────────────────────
+// Un PDF es una lista de objetos numerados. Cada valor es de uno de estos
+// tipos, y se modelan con clases para poder distinguir un nombre (`/Tipo`) de
+// una cadena («Tipo») al volver a escribir: en JavaScript los dos serían un
+// string y saldrían iguales, que es exactamente el error que corrompe archivos.
+
+class Nombre {
+  constructor(v) { this.v = v; }
+}
+class Ref {
+  constructor(num, gen) { this.num = num; this.gen = gen; }
+}
+class Cadena {
+  constructor(bytes, hex) { this.bytes = bytes; this.hex = !!hex; }
+}
+class Flujo {
+  constructor(dic, datos) { this.dic = dic; this.datos = datos; }
+}
+
+const BLANCOS = new Set([0x00, 0x09, 0x0a, 0x0c, 0x0d, 0x20]);
+const DELIMS = new Set([0x28, 0x29, 0x3c, 0x3e, 0x5b, 0x5d, 0x7b, 0x7d, 0x2f, 0x25]);
+const esBlanco = (c) => BLANCOS.has(c);
+const esDelim = (c) => DELIMS.has(c);
+const esRegular = (c) => c !== undefined && !esBlanco(c) && !esDelim(c);
+const esDigito = (c) => c >= 0x30 && c <= 0x39;
+
+/** `dic.get('Type')` sin tener que comprobar que existe ni que es un nombre. */
+function nombreDe(dic, clave) {
+  const v = dic instanceof Map ? dic.get(clave) : undefined;
+  return v instanceof Nombre ? v.v : null;
+}
+
+// ── Lector ──────────────────────────────────────────────────────────────────
+
+class Lector {
+  constructor(bytes) {
+    this.b = bytes;
+    this.i = 0;
+  }
+
+  /** Salta blancos Y comentarios: un `%` fuera de una cadena llega a fin de línea. */
+  saltar() {
+    for (;;) {
+      while (this.i < this.b.length && esBlanco(this.b[this.i])) this.i++;
+      if (this.b[this.i] !== 0x25) return;
+      while (this.i < this.b.length && this.b[this.i] !== 0x0a && this.b[this.i] !== 0x0d) this.i++;
+    }
+  }
+
+  /** Mira si en la posición actual está esta palabra, sin consumirla. */
+  esPalabra(txt) {
+    for (let k = 0; k < txt.length; k++) {
+      if (this.b[this.i + k] !== txt.charCodeAt(k)) return false;
+    }
+    return true;
+  }
+
+  leerSimbolo() {
+    const ini = this.i;
+    while (esRegular(this.b[this.i])) this.i++;
+    return String.fromCharCode(...this.b.subarray(ini, this.i));
+  }
+
+  leerNombre() {
+    this.i++; // la barra
+    let s = '';
+    while (esRegular(this.b[this.i])) {
+      let c = this.b[this.i++];
+      // `#41` es una `A`. Sin deshacerlo, un nombre con espacio o con `#` se
+      // reescribiría distinto del que se leyó.
+      if (c === 0x23 && esHex(this.b[this.i]) && esHex(this.b[this.i + 1])) {
+        c = parseInt(String.fromCharCode(this.b[this.i], this.b[this.i + 1]), 16);
+        this.i += 2;
+      }
+      s += String.fromCharCode(c);
+    }
+    return new Nombre(s);
+  }
+
+  leerCadenaLiteral() {
+    this.i++; // (
+    const out = [];
+    let nivel = 1;
+    while (this.i < this.b.length) {
+      const c = this.b[this.i++];
+      if (c === 0x5c) { // barra invertida
+        const e = this.b[this.i++];
+        const simples = { 0x6e: 10, 0x72: 13, 0x74: 9, 0x62: 8, 0x66: 12 };
+        if (e in simples) out.push(simples[e]);
+        else if (e >= 0x30 && e <= 0x37) { // octal, hasta tres cifras
+          let n = e - 0x30;
+          for (let k = 0; k < 2 && this.b[this.i] >= 0x30 && this.b[this.i] <= 0x37; k++) {
+            n = n * 8 + (this.b[this.i++] - 0x30);
+          }
+          out.push(n & 0xff);
+        } else if (e === 0x0a) { /* continuación de línea: no produce byte */ }
+        else if (e === 0x0d) { if (this.b[this.i] === 0x0a) this.i++; }
+        else out.push(e);
+      } else if (c === 0x28) { nivel++; out.push(c); }
+      else if (c === 0x29) { if (--nivel === 0) break; out.push(c); }
+      else out.push(c);
+    }
+    return new Cadena(Uint8Array.from(out), false);
+  }
+
+  leerCadenaHex() {
+    this.i++; // <
+    let s = '';
+    while (this.i < this.b.length && this.b[this.i] !== 0x3e) {
+      const c = this.b[this.i++];
+      if (esHex(c)) s += String.fromCharCode(c);
+    }
+    this.i++; // >
+    if (s.length % 2) s += '0';
+    const out = new Uint8Array(s.length / 2);
+    for (let k = 0; k < out.length; k++) out[k] = parseInt(s.substr(k * 2, 2), 16);
+    return new Cadena(out, true);
+  }
+
+  leerDiccionario() {
+    this.i += 2; // <<
+    const dic = new Map();
+    for (;;) {
+      this.saltar();
+      if (this.i >= this.b.length) break;
+      if (this.esPalabra('>>')) { this.i += 2; break; }
+      if (this.b[this.i] !== 0x2f) { // clave que no es nombre: archivo roto
+        const antes = this.i;
+        this.leerValor();
+        if (this.i === antes) { this.i++; }
+        continue;
+      }
+      const clave = this.leerNombre().v;
+      const valor = this.leerValor();
+      dic.set(clave, valor);
+    }
+    return dic;
+  }
+
+  leerArreglo() {
+    this.i++; // [
+    const arr = [];
+    for (;;) {
+      this.saltar();
+      if (this.i >= this.b.length) break;
+      if (this.b[this.i] === 0x5d) { this.i++; break; }
+      const antes = this.i;
+      arr.push(this.leerValor());
+      if (this.i === antes) { this.i++; } // nunca girar en vacío
+    }
+    return arr;
+  }
+
+  leerValor() {
+    this.saltar();
+    const c = this.b[this.i];
+    if (c === undefined) return null;
+    if (c === 0x2f) return this.leerNombre();
+    if (c === 0x28) return this.leerCadenaLiteral();
+    if (c === 0x5b) return this.leerArreglo();
+    if (c === 0x3c) return this.b[this.i + 1] === 0x3c ? this.leerDiccionario() : this.leerCadenaHex();
+    if (c === 0x3e || c === 0x5d) return null; // cierre suelto: lo come quien llamó
+
+    if (esDigito(c) || c === 0x2b || c === 0x2d || c === 0x2e) {
+      const guardado = this.i;
+      const num = parseFloat(this.leerSimbolo());
+      // ¿Es `12 0 R`? Hay que mirar dos símbolos por delante y volver si no.
+      const trasNumero = this.i;
+      this.saltar();
+      if (esDigito(this.b[this.i])) {
+        const g = this.i;
+        const gen = parseInt(this.leerSimbolo(), 10);
+        this.saltar();
+        if (this.b[this.i] === 0x52 && !esRegular(this.b[this.i + 1])) { // R
+          this.i++;
+          return new Ref(num, gen);
+        }
+        this.i = g;
+      }
+      this.i = trasNumero;
+      return Number.isNaN(num) ? (this.i = guardado + 1, null) : num;
+    }
+
+    const sim = this.leerSimbolo();
+    if (sim === 'true') return true;
+    if (sim === 'false') return false;
+    if (sim === 'null') return null;
+    if (sim === '') { this.i++; return null; }
+    return new Nombre(sim); // símbolo desconocido: se conserva como está
+  }
+}
+
+const esHex = (c) => c !== undefined &&
+  ((c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x46) || (c >= 0x61 && c <= 0x66));
+
+// ── Inflar y desinflar ──────────────────────────────────────────────────────
+// `CompressionStream('deflate')` produce zlib (RFC 1950), que es justo lo que
+// `/FlateDecode` espera. No hace falta nada más.
+
+async function porTubo(bytes, stream) {
+  const w = stream.writable.getWriter();
+  w.write(bytes);
+  w.close();
+  const partes = [];
+  const r = stream.readable.getReader();
+  for (;;) {
+    const { done, value } = await r.read();
+    if (done) break;
+    partes.push(value);
+  }
+  let n = 0;
+  for (const p of partes) n += p.length;
+  const out = new Uint8Array(n);
+  let o = 0;
+  for (const p of partes) { out.set(p, o); o += p.length; }
+  return out;
+}
+
+async function desinflar(bytes) {
+  return porTubo(bytes, new CompressionStream('deflate'));
+}
+
+/** Devuelve `null` si no se puede inflar: quien llama decide, nadie revienta. */
+async function inflar(bytes) {
+  for (const modo of ['deflate', 'deflate-raw']) {
+    try {
+      return await porTubo(bytes, new DecompressionStream(modo));
+    } catch { /* se prueba el siguiente */ }
+  }
+  return null;
+}
+
+/**
+ * Deshace el predictor PNG. Los flujos de referencias cruzadas casi siempre
+ * lo llevan, y sin esto un PDF moderno se leería como ruido.
+ */
+function deshacerPredictor(datos, parms) {
+  if (!(parms instanceof Map)) return datos;
+  const pred = parms.get('Predictor') ?? 1;
+  if (typeof pred !== 'number' || pred < 2) return datos;
+  const colores = parms.get('Colors') ?? 1;
+  const bpc = parms.get('BitsPerComponent') ?? 8;
+  const columnas = parms.get('Columns') ?? 1;
+  const muestra = Math.ceil((colores * bpc) / 8);
+  const fila = Math.ceil((colores * bpc * columnas) / 8);
+  if (pred === 2) return datos; // TIFF: solo se usa con imágenes, que no tocamos aquí
+  const filas = Math.floor(datos.length / (fila + 1));
+  const out = new Uint8Array(filas * fila);
+  let previa = new Uint8Array(fila);
+  for (let f = 0; f < filas; f++) {
+    const tipo = datos[f * (fila + 1)];
+    const cruda = datos.subarray(f * (fila + 1) + 1, f * (fila + 1) + 1 + fila);
+    const actual = new Uint8Array(fila);
+    for (let k = 0; k < fila; k++) {
+      const izq = k >= muestra ? actual[k - muestra] : 0;
+      const arr = previa[k];
+      const diag = k >= muestra ? previa[k - muestra] : 0;
+      let v = cruda[k];
+      if (tipo === 1) v += izq;
+      else if (tipo === 2) v += arr;
+      else if (tipo === 3) v += (izq + arr) >> 1;
+      else if (tipo === 4) {
+        const p = izq + arr - diag;
+        const pa = Math.abs(p - izq), pb = Math.abs(p - arr), pc = Math.abs(p - diag);
+        v += pa <= pb && pa <= pc ? izq : pb <= pc ? arr : diag;
+      }
+      actual[k] = v & 0xff;
+    }
+    out.set(actual, f * fila);
+    previa = actual;
+  }
+  return out;
+}
+
+/** El contenido real de un flujo, o `null` si lleva un filtro que no sabemos deshacer. */
+async function contenido(flujo) {
+  const filtros = comoArreglo(flujo.dic.get('Filter'));
+  if (!filtros.length) return flujo.datos;
+  if (filtros.length !== 1 || nombreDe2(filtros[0]) !== 'FlateDecode') return null;
+  const crudo = await inflar(flujo.datos);
+  if (!crudo) return null;
+  const parms = comoArreglo(flujo.dic.get('DecodeParms'))[0] ?? flujo.dic.get('DecodeParms');
+  return deshacerPredictor(crudo, parms instanceof Map ? parms : null);
+}
+
+const nombreDe2 = (v) => (v instanceof Nombre ? v.v : null);
+const comoArreglo = (v) => (v === undefined || v === null ? [] : Array.isArray(v) ? v : [v]);
+
+// ── Lectura del documento ───────────────────────────────────────────────────
+
+/**
+ * Los objetos se buscan RECORRIENDO EL ARCHIVO, no siguiendo la tabla de
+ * referencias. Es a propósito: la tabla es lo primero que se rompe en un PDF
+ * que pasó por varias manos, y un compresor que solo funciona con archivos
+ * sanos no sirve para el archivo que llega de fuera. Al recorrer en orden y
+ * saltar por encima de cada objeto ya leído, un `obj` que aparezca dentro de
+ * los bytes de una imagen no confunde a nadie.
+ */
+function localizarObjetos(bytes) {
+  const objetos = new Map(); // num -> { dic|valor, flujo, fin }
+  let i = 0;
+  while (i < bytes.length - 3) {
+    if (bytes[i] !== 0x6f || bytes[i + 1] !== 0x62 || bytes[i + 2] !== 0x6a || esRegular(bytes[i + 3])) {
+      i++;
+      continue;
+    }
+    // Hacia atrás: blancos, generación, blancos, número.
+    let j = i - 1;
+    while (j >= 0 && esBlanco(bytes[j])) j--;
+    const finGen = j;
+    while (j >= 0 && esDigito(bytes[j])) j--;
+    if (j === finGen) { i++; continue; }
+    const gen = parseInt(txt(bytes, j + 1, finGen + 1), 10);
+    while (j >= 0 && esBlanco(bytes[j])) j--;
+    const finNum = j;
+    while (j >= 0 && esDigito(bytes[j])) j--;
+    if (j === finNum) { i++; continue; }
+    if (j >= 0 && esRegular(bytes[j])) { i++; continue; }
+    const num = parseInt(txt(bytes, j + 1, finNum + 1), 10);
+
+    const lec = new Lector(bytes);
+    lec.i = i + 3;
+    let valor;
+    try { valor = lec.leerValor(); } catch { i++; continue; }
+    lec.saltar();
+
+    let flujo = null;
+    if (valor instanceof Map && lec.esPalabra('stream')) {
+      lec.i += 6;
+      if (bytes[lec.i] === 0x0d) lec.i++;
+      if (bytes[lec.i] === 0x0a) lec.i++;
+      const ini = lec.i;
+      const largo = valor.get('Length');
+      let fin = -1;
+      // Se cree a `/Length` solo si lo que hay detrás es de verdad `endstream`.
+      if (typeof largo === 'number' && largo >= 0 && ini + largo <= bytes.length) {
+        const tras = saltarBlancos(bytes, ini + largo);
+        if (coincide(bytes, tras, 'endstream')) fin = ini + largo;
+      }
+      if (fin < 0) fin = buscar(bytes, 'endstream', ini);
+      if (fin < 0) { i = ini; continue; }
+      // El fin de línea antes de `endstream` no es del flujo.
+      let real = fin;
+      if (bytes[real - 1] === 0x0a) real--;
+      if (bytes[real - 1] === 0x0d) real--;
+      flujo = new Flujo(valor, bytes.subarray(ini, real));
+      lec.i = fin + 9;
+    }
+
+    objetos.set(num, { gen, valor: flujo ?? valor });
+    i = Math.max(lec.i, i + 3);
+  }
+  return objetos;
+}
+
+const txt = (b, a, z) => String.fromCharCode(...b.subarray(a, z));
+const coincide = (b, i, s) => {
+  for (let k = 0; k < s.length; k++) if (b[i + k] !== s.charCodeAt(k)) return false;
+  return true;
+};
+const saltarBlancos = (b, i) => { while (i < b.length && esBlanco(b[i])) i++; return i; };
+function buscar(b, s, desde) {
+  const c0 = s.charCodeAt(0);
+  for (let i = desde; i <= b.length - s.length; i++) {
+    if (b[i] === c0 && coincide(b, i, s)) return i;
+  }
+  return -1;
+}
+
+/** Los objetos que viajan dentro de un `/ObjStm`. Sin esto, un PDF 1.5 se lee vacío. */
+async function expandirObjStm(objetos) {
+  for (const [, entrada] of [...objetos]) {
+    const o = entrada.valor;
+    if (!(o instanceof Flujo) || nombreDe(o.dic, 'Type') !== 'ObjStm') continue;
+    const datos = await contenido(o);
+    if (!datos) continue;
+    const n = o.dic.get('N');
+    const primero = o.dic.get('First');
+    if (typeof n !== 'number' || typeof primero !== 'number') continue;
+    const cab = new Lector(datos);
+    const pares = [];
+    for (let k = 0; k < n; k++) {
+      cab.saltar();
+      const num = parseInt(cab.leerSimbolo(), 10);
+      cab.saltar();
+      const off = parseInt(cab.leerSimbolo(), 10);
+      if (Number.isNaN(num) || Number.isNaN(off)) break;
+      pares.push([num, off]);
+    }
+    for (const [num, off] of pares) {
+      // Un objeto suelto en el archivo gana al empaquetado: si el PDF trae una
+      // revisión posterior, está fuera del `/ObjStm`.
+      if (objetos.has(num)) continue;
+      const lec = new Lector(datos);
+      lec.i = primero + off;
+      try { objetos.set(num, { gen: 0, valor: lec.leerValor(), enObjStm: true }); } catch { /* se ignora */ }
+    }
+  }
+}
+
+/** El catálogo: por el tráiler, por el flujo de referencias, o buscándolo. */
+function hallarRaiz(bytes, objetos) {
+  let cifrado = false;
+  let raiz = null;
+  let info = null;
+  // El último tráiler del archivo es el vigente.
+  let p = -1;
+  for (;;) {
+    const s = buscar(bytes, 'trailer', p + 1);
+    if (s < 0) break;
+    p = s;
+    const lec = new Lector(bytes);
+    lec.i = s + 7;
+    const dic = lec.leerValor();
+    if (dic instanceof Map) {
+      if (dic.has('Encrypt')) cifrado = true;
+      if (dic.get('Root') instanceof Ref) raiz = dic.get('Root');
+      if (dic.get('Info') instanceof Ref) info = dic.get('Info');
+    }
+  }
+  for (const [, e] of objetos) {
+    const v = e.valor;
+    const dic = v instanceof Flujo ? v.dic : v;
+    if (!(dic instanceof Map)) continue;
+    if (nombreDe(dic, 'Type') === 'XRef') {
+      if (dic.has('Encrypt')) cifrado = true;
+      if (!raiz && dic.get('Root') instanceof Ref) raiz = dic.get('Root');
+      if (!info && dic.get('Info') instanceof Ref) info = dic.get('Info');
+    }
+  }
+  if (!raiz) {
+    for (const [num, e] of objetos) {
+      if (e.valor instanceof Map && nombreDe(e.valor, 'Type') === 'Catalog') {
+        raiz = new Ref(num, 0);
+        break;
+      }
+    }
+  }
+  return { raiz, info, cifrado };
+}
+
+/** Recorrido desde el catálogo: lo que no se alcanza, no se copia. */
+function alcanzables(objetos, semillas) {
+  const vistos = new Set();
+  const cola = [...semillas];
+  while (cola.length) {
+    const ref = cola.pop();
+    if (!(ref instanceof Ref) || vistos.has(ref.num)) continue;
+    vistos.add(ref.num);
+    const e = objetos.get(ref.num);
+    if (!e) continue;
+    recorrer(e.valor, (r) => { if (!vistos.has(r.num)) cola.push(r); });
+  }
+  return vistos;
+}
+
+function recorrer(valor, alVerRef) {
+  const pila = [valor];
+  while (pila.length) {
+    const v = pila.pop();
+    if (v instanceof Ref) alVerRef(v);
+    else if (v instanceof Flujo) pila.push(v.dic);
+    else if (v instanceof Map) for (const x of v.values()) pila.push(x);
+    else if (Array.isArray(v)) for (const x of v) pila.push(x);
+  }
+}
+
+/** Cuántas páginas tiene. Es la cifra con la que se comprueba que no se perdió nada. */
+function contarPaginas(objetos, raiz) {
+  const cat = raiz && objetos.get(raiz.num);
+  if (!cat || !(cat.valor instanceof Map)) return -1;
+  const paginas = cat.valor.get('Pages');
+  if (!(paginas instanceof Ref)) return -1;
+  let n = 0;
+  const vistos = new Set();
+  const cola = [paginas];
+  while (cola.length) {
+    const ref = cola.pop();
+    if (vistos.has(ref.num)) continue;
+    vistos.add(ref.num);
+    const e = objetos.get(ref.num);
+    if (!e || !(e.valor instanceof Map)) continue;
+    const tipo = nombreDe(e.valor, 'Type');
+    if (tipo === 'Page') { n++; continue; }
+    for (const h of comoArreglo(e.valor.get('Kids'))) if (h instanceof Ref) cola.push(h);
+  }
+  return n;
+}
+
+// ── Escritura ───────────────────────────────────────────────────────────────
+
+const CODIF = new TextEncoder();
+
+class Pluma {
+  constructor() { this.trozos = []; this.largo = 0; }
+  bytes(u8) { this.trozos.push(u8); this.largo += u8.length; }
+  texto(s) { this.bytes(CODIF.encode(s)); }
+  juntar() {
+    const out = new Uint8Array(this.largo);
+    let o = 0;
+    for (const t of this.trozos) { out.set(t, o); o += t.length; }
+    return out;
+  }
+}
+
+/** Un nombre se vuelve a escribir escapando lo que no es regular. */
+function escribirNombre(v) {
+  let s = '/';
+  for (const ch of v) {
+    const c = ch.charCodeAt(0);
+    s += esRegular(c) && c > 0x20 && c < 0x7f && c !== 0x23 ? ch
+      : '#' + c.toString(16).padStart(2, '0');
+  }
+  return s;
+}
+
+function escribirValor(valor, pluma) {
+  if (valor === null || valor === undefined) { pluma.texto('null'); return; }
+  if (typeof valor === 'boolean') { pluma.texto(valor ? 'true' : 'false'); return; }
+  if (typeof valor === 'number') {
+    pluma.texto(Number.isInteger(valor) ? String(valor) : String(parseFloat(valor.toFixed(6))));
+    return;
+  }
+  if (valor instanceof Nombre) { pluma.texto(escribirNombre(valor.v)); return; }
+  if (valor instanceof Ref) { pluma.texto(`${valor.num} ${valor.gen} R`); return; }
+  if (valor instanceof Cadena) {
+    // Siempre en hexadecimal: no hay que escapar nada y no se puede corromper
+    // una cadena binaria por un paréntesis suelto.
+    let s = '<';
+    for (const b of valor.bytes) s += b.toString(16).padStart(2, '0');
+    pluma.texto(s + '>');
+    return;
+  }
+  if (Array.isArray(valor)) {
+    pluma.texto('[');
+    valor.forEach((v, k) => { if (k) pluma.texto(' '); escribirValor(v, pluma); });
+    pluma.texto(']');
+    return;
+  }
+  if (valor instanceof Map) {
+    pluma.texto('<<');
+    for (const [k, v] of valor) {
+      pluma.texto(escribirNombre(k));
+      pluma.texto(' ');
+      escribirValor(v, pluma);
+    }
+    pluma.texto('>>');
+    return;
+  }
+  pluma.texto('null');
+}
+
+function aTexto(valor) {
+  const p = new Pluma();
+  escribirValor(valor, p);
+  return p.juntar();
+}
+
+// ── El compresor ────────────────────────────────────────────────────────────
+
+const POR_DEFECTO = {
+  /** Ancho máximo de una imagen incrustada. Un escaneo a 300 ppp de un A4 son
+   *  2480 px: por encima de 1600 no se gana legibilidad en pantalla. */
+  anchoMaximoImagen: 1600,
+  calidadImagen: 0.72,
+  recomprimirImagenes: true,
+};
+
+/**
+ * Lo que se midió por el camino. Se devuelve entero porque una cifra de ahorro
+ * sin decir de dónde salió no se puede comprobar: `imagenesOmitidas` es la que
+ * avisa de que se comprimió SIN tocar las imágenes —en Node siempre— y de que
+ * por eso un escaneo apenas se movió.
+ *
+ * @typedef {object} DetalleCompresion
+ * @property {number} paginas
+ * @property {number} imagenes            Cuántas se volvieron a codificar
+ * @property {number} [bytesImagen]       Cuánto se ganó solo con ellas
+ * @property {number} desinflados         Flujos que viajaban en crudo
+ * @property {number} tirados             Objetos que ya no alcanzaba nadie
+ * @property {number} metadatosFuera      XMP y /PieceInfo retirados
+ * @property {boolean} [imagenesOmitidas] `true` si no había `canvas`
+ *
+ * @typedef {object} ResultadoCompresion
+ * @property {Blob} archivo
+ * @property {number} pesoInicial
+ * @property {number} pesoFinal
+ * @property {boolean} comprimido
+ * @property {string|null} motivo  `cifrado` · `no-es-pdf` · `ilegible` ·
+ *   `no-verificado` · `sin-ganancia`
+ * @property {Partial<DetalleCompresion>} detalle
+ *
+ * @param {Blob|ArrayBuffer|Uint8Array} entrada
+ * @param {{anchoMaximoImagen?: number, calidadImagen?: number,
+ *   recomprimirImagenes?: boolean}} [opciones]
+ * @returns {Promise<ResultadoCompresion>}
+ */
+async function comprimirPdf(entrada, opciones = {}) {
+  const cfg = { ...POR_DEFECTO, ...opciones };
+  const bytes = await aBytes(entrada);
+  const original = () => (entrada instanceof Blob ? entrada : new Blob([bytes], { type: 'application/pdf' }));
+  const pesoInicial = bytes.length;
+  const salir = (motivo, detalle = {}) => ({
+    archivo: original(), pesoInicial, pesoFinal: pesoInicial,
+    comprimido: false, motivo, detalle,
+  });
+
+  if (!coincide(bytes, 0, '%PDF-')) {
+    // Algunos archivos traen basura delante. Se admite si la cabecera aparece pronto.
+    if (buscar(bytes.subarray(0, 1024), '%PDF-', 0) < 0) return salir('no-es-pdf');
+  }
+
+  let objetos;
+  try {
+    objetos = localizarObjetos(bytes);
+    await expandirObjStm(objetos);
+  } catch {
+    return salir('ilegible');
+  }
+  if (!objetos.size) return salir('ilegible');
+
+  const { raiz, info, cifrado } = hallarRaiz(bytes, objetos);
+  // Un PDF cifrado tiene sus cadenas y sus flujos codificados con una clave.
+  // Reescribirlo sin descifrar produce un archivo que abre y no se lee.
+  if (cifrado) return salir('cifrado');
+  if (!raiz || !objetos.has(raiz.num)) return salir('ilegible');
+
+  const paginasAntes = contarPaginas(objetos, raiz);
+  if (paginasAntes <= 0) return salir('ilegible');
+
+  // 1 · Metadatos que sobran. XMP repite lo que ya está en `/Info`; `/PieceInfo`
+  //     son datos privados de Word que ningún lector usa.
+  const catalogo = objetos.get(raiz.num).valor;
+  let metadatosFuera = 0;
+  if (catalogo instanceof Map) {
+    for (const clave of ['Metadata', 'PieceInfo']) {
+      if (catalogo.has(clave)) { catalogo.delete(clave); metadatosFuera++; }
+    }
+  }
+
+  // 2 · Lo alcanzable desde el catálogo. Todo lo demás son revisiones viejas.
+  const semillas = [raiz];
+  if (info && objetos.has(info.num)) semillas.push(info);
+  const vivos = alcanzables(objetos, semillas);
+  const tirados = objetos.size - vivos.size;
+
+  // 3 · Imágenes. Es lo único que mueve la aguja en un escaneo.
+  let imagenes = 0;
+  let bytesImagen = 0;
+  if (cfg.recomprimirImagenes && hayLienzo()) {
+    for (const num of vivos) {
+      const e = objetos.get(num);
+      if (!(e?.valor instanceof Flujo)) continue;
+      const antes = e.valor.datos.length;
+      const nuevo = await recomprimirImagen(e.valor, cfg);
+      if (nuevo) { e.valor = nuevo; imagenes++; bytesImagen += antes - nuevo.datos.length; }
+    }
+  }
+
+  // 4 · Lo que viajaba en crudo, desinflado.
+  let desinflados = 0;
+  for (const num of vivos) {
+    const e = objetos.get(num);
+    if (!(e?.valor instanceof Flujo)) continue;
+    const f = e.valor;
+    if (f.dic.has('Filter') || !f.datos.length) continue;
+    // `/XRef` no se copia: la tabla se escribe de cero más abajo.
+    if (nombreDe(f.dic, 'Type') === 'XRef') continue;
+    const comprimido = await desinflar(f.datos);
+    if (comprimido.length >= f.datos.length) continue;
+    f.dic.set('Filter', new Nombre('FlateDecode'));
+    f.dic.set('Length', comprimido.length);
+    e.valor = new Flujo(f.dic, comprimido);
+    desinflados++;
+  }
+
+  // 5 · Escribir de nuevo, renumerando.
+  let salida;
+  try {
+    salida = await escribirDocumento(objetos, vivos, raiz, info);
+  } catch {
+    return salir('ilegible');
+  }
+
+  // La promesa que sostiene todo: lo que sale se vuelve a leer.
+  const comprobado = await volverALeer(salida, paginasAntes);
+  if (!comprobado) return salir('no-verificado', { paginas: paginasAntes });
+
+  if (salida.length >= pesoInicial) {
+    return salir('sin-ganancia', {
+      paginas: paginasAntes, imagenes, desinflados, tirados, metadatosFuera,
+    });
+  }
+
+  return {
+    archivo: new Blob([salida], { type: 'application/pdf' }),
+    pesoInicial,
+    pesoFinal: salida.length,
+    comprimido: true,
+    motivo: null,
+    detalle: {
+      paginas: paginasAntes, imagenes, bytesImagen, desinflados, tirados,
+      metadatosFuera, imagenesOmitidas: !hayLienzo(),
+    },
+  };
+}
+
+async function escribirDocumento(objetos, vivos, raiz, info) {
+  // Renumeración 1..N. Los huecos de la numeración original se van con las
+  // revisiones viejas, y la tabla de referencias no paga por ellos.
+  const orden = [...vivos].filter((n) => objetos.has(n)).sort((a, b) => a - b);
+  const mapa = new Map(orden.map((n, k) => [n, k + 1]));
+  const renum = (v) => transformar(v, (r) => (mapa.has(r.num) ? new Ref(mapa.get(r.num), 0) : null));
+
+  const sueltos = []; // flujos: van tal cual
+  const empacables = []; // el resto: van dentro de un /ObjStm
+  for (const viejo of orden) {
+    const nuevo = mapa.get(viejo);
+    const valor = renum(objetos.get(viejo).valor);
+    (valor instanceof Flujo ? sueltos : empacables).push([nuevo, valor]);
+  }
+
+  const numObjStm = orden.length + 1;
+  const numXRef = orden.length + 2;
+  const total = orden.length + 3; // +1 porque el objeto 0 existe y está libre
+
+  // El `/ObjStm`: cabecera de pares «número desplazamiento» y detrás los
+  // objetos pegados. Es lo que evita que el archivo salga MÁS GRANDE: sin
+  // esto, cada diccionario pequeño pagaría su `N 0 obj … endobj` y su entrada
+  // de 20 bytes en la tabla.
+  const cabecera = [];
+  const cuerpo = new Pluma();
+  for (const [num, valor] of empacables) {
+    cabecera.push(`${num} ${cuerpo.largo}`);
+    cuerpo.bytes(aTexto(valor));
+    cuerpo.texto(' ');
+  }
+  const cabBytes = CODIF.encode(cabecera.join(' ') + (cabecera.length ? ' ' : ''));
+  const planoObjStm = new Uint8Array(cabBytes.length + cuerpo.largo);
+  planoObjStm.set(cabBytes, 0);
+  planoObjStm.set(cuerpo.juntar(), cabBytes.length);
+  const objStmDatos = await desinflar(planoObjStm);
+
+  const doc = new Pluma();
+  doc.texto('%PDF-1.5\n%\xe2\xe3\xcf\xd3\n');
+  const posiciones = new Map();
+
+  const escribirFlujo = (num, dic, datos) => {
+    posiciones.set(num, doc.largo);
+    dic.set('Length', datos.length);
+    doc.texto(`${num} 0 obj\n`);
+    doc.bytes(aTexto(dic));
+    doc.texto('\nstream\n');
+    doc.bytes(datos);
+    doc.texto('\nendstream\nendobj\n');
+  };
+
+  for (const [num, flujo] of sueltos) escribirFlujo(num, flujo.dic, flujo.datos);
+
+  if (empacables.length) {
+    const dic = new Map([
+      ['Type', new Nombre('ObjStm')],
+      ['N', empacables.length],
+      ['First', cabBytes.length],
+      ['Filter', new Nombre('FlateDecode')],
+    ]);
+    escribirFlujo(numObjStm, dic, objStmDatos);
+  }
+
+  // Tabla de referencias como flujo. Tres campos: tipo, desplazamiento y
+  // generación —o número de `/ObjStm` e índice dentro de él para el tipo 2.
+  const ANCHOS = [1, 4, 2];
+  const filas = new Uint8Array(total * 7);
+  const poner = (idx, t, a, b) => {
+    const o = idx * 7;
+    filas[o] = t;
+    filas[o + 1] = (a >>> 24) & 0xff; filas[o + 2] = (a >>> 16) & 0xff;
+    filas[o + 3] = (a >>> 8) & 0xff; filas[o + 4] = a & 0xff;
+    filas[o + 5] = (b >>> 8) & 0xff; filas[o + 6] = b & 0xff;
+  };
+  poner(0, 0, 0, 0xffff); // el objeto 0 siempre está libre
+  const indiceEnObjStm = new Map(empacables.map(([num], k) => [num, k]));
+  for (const [num] of [...sueltos, ...empacables].sort((a, b) => a[0] - b[0])) {
+    if (posiciones.has(num)) poner(num, 1, posiciones.get(num), 0);
+    else poner(num, 2, numObjStm, indiceEnObjStm.get(num));
+  }
+  if (empacables.length) poner(numObjStm, 1, posiciones.get(numObjStm), 0);
+
+  const posXRef = doc.largo;
+  poner(numXRef, 1, posXRef, 0);
+  const xrefDatos = await desinflar(filas);
+  const dicXRef = new Map([
+    ['Type', new Nombre('XRef')],
+    ['Size', total],
+    ['W', ANCHOS],
+    ['Root', new Ref(mapa.get(raiz.num), 0)],
+    ['Filter', new Nombre('FlateDecode')],
+  ]);
+  if (info && mapa.has(info.num)) dicXRef.set('Info', new Ref(mapa.get(info.num), 0));
+  escribirFlujo(numXRef, dicXRef, xrefDatos);
+  doc.texto(`startxref\n${posXRef}\n%%EOF\n`);
+  return doc.juntar();
+}
+
+/** Copia cambiando las referencias. Una referencia a algo tirado se vuelve `null`. */
+function transformar(valor, fn) {
+  if (valor instanceof Ref) return fn(valor);
+  if (valor instanceof Flujo) return new Flujo(transformar(valor.dic, fn), valor.datos);
+  if (valor instanceof Map) {
+    const m = new Map();
+    for (const [k, v] of valor) m.set(k, transformar(v, fn));
+    return m;
+  }
+  if (Array.isArray(valor)) return valor.map((v) => transformar(v, fn));
+  return valor;
+}
+
+/**
+ * Analiza un PDF y devuelve lo que hay dentro. Es lo que usa la segunda
+ * promesa para releer su propia salida, y se exporta porque una prueba que
+ * quiera comprobar que un valor sobrevivió a la reescritura NO PUEDE MIRAR LOS
+ * BYTES: van dentro de un `/ObjStm` desinflado. Hay que volver a leerlos.
+ */
+async function analizarPdf(bytes) {
+  const objetos = localizarObjetos(bytes);
+  await expandirObjStm(objetos);
+  const { raiz, info, cifrado } = hallarRaiz(bytes, objetos);
+  return { objetos, raiz, info, cifrado, paginas: raiz ? contarPaginas(objetos, raiz) : -1 };
+}
+
+/**
+ * La segunda promesa. Se vuelve a analizar lo escrito con el mismo lector y se
+ * exige que el catálogo resuelva y que las páginas sean las mismas. No prueba
+ * que un lector de PDF esté contento, y por eso el candado no dice que sí a
+ * ciegas: dice que si esto falla, no se entrega.
+ */
+async function volverALeer(salida, paginasAntes) {
+  try {
+    const { raiz, cifrado, paginas } = await analizarPdf(salida);
+    if (cifrado || !raiz) return false;
+    return paginas === paginasAntes;
+  } catch {
+    return false;
+  }
+}
+
+// ── Imágenes ────────────────────────────────────────────────────────────────
+
+const hayLienzo = () =>
+  typeof createImageBitmap === 'function' && typeof document !== 'undefined' &&
+  typeof document.createElement === 'function';
+
+/**
+ * Solo JPEG (`/DCTDecode`), y sin excusas: los bytes de ese flujo SON un JPEG,
+ * así que se decodifican, se reducen y se vuelven a codificar. Al salir siempre
+ * en RGB de 8 bits se reescribe también `/ColorSpace`, y así un original en
+ * CMYK no acaba con los colores invertidos —que es como se rompe esto cuando
+ * se hace a medias.
+ *
+ * Se deja quieta si es máscara, si lleva más de un filtro o si no se gana peso.
+ */
+async function recomprimirImagen(flujo, cfg) {
+  const dic = flujo.dic;
+  if (nombreDe(dic, 'Subtype') !== 'Image') return null;
+  if (dic.get('ImageMask') === true) return null;
+  const filtros = comoArreglo(dic.get('Filter'));
+  if (filtros.length !== 1 || nombreDe2(filtros[0]) !== 'DCTDecode') return null;
+  const ancho = dic.get('Width');
+  const alto = dic.get('Height');
+  if (typeof ancho !== 'number' || typeof alto !== 'number' || !ancho || !alto) return null;
+
+  const escala = Math.min(1, cfg.anchoMaximoImagen / Math.max(ancho, alto));
+  const nAncho = Math.max(1, Math.round(ancho * escala));
+  const nAlto = Math.max(1, Math.round(alto * escala));
+
+  let mapa;
+  try {
+    mapa = await createImageBitmap(new Blob([flujo.datos], { type: 'image/jpeg' }));
+  } catch {
+    return null; // JPEG que el navegador no decodifica: se deja como estaba
+  }
+  const lienzo = document.createElement('canvas');
+  lienzo.width = nAncho;
+  lienzo.height = nAlto;
+  const ctx = lienzo.getContext('2d');
+  if (!ctx) return null;
+  ctx.drawImage(mapa, 0, 0, nAncho, nAlto);
+  mapa.close?.();
+
+  const blob = await new Promise((res) => lienzo.toBlob(res, 'image/jpeg', cfg.calidadImagen));
+  if (!blob) return null;
+  const nuevos = new Uint8Array(await blob.arrayBuffer());
+  if (nuevos.length >= flujo.datos.length) return null;
+
+  const nuevo = new Map(dic);
+  nuevo.set('Width', nAncho);
+  nuevo.set('Height', nAlto);
+  nuevo.set('ColorSpace', new Nombre('DeviceRGB'));
+  nuevo.set('BitsPerComponent', 8);
+  nuevo.set('Length', nuevos.length);
+  nuevo.delete('Decode');
+  nuevo.delete('DecodeParms');
+  return new Flujo(nuevo, nuevos);
+}
+
+// ── Utilidades públicas ─────────────────────────────────────────────────────
+
+async function aBytes(entrada) {
+  if (entrada instanceof Uint8Array) return entrada;
+  if (entrada instanceof ArrayBuffer) return new Uint8Array(entrada);
+  return new Uint8Array(await entrada.arrayBuffer());
+}
+
+/**
+ * El peso como se dice en voz alta. Un decimal a partir de MB, ninguno en KB:
+ * «1,4 MB» se retiene y «1.428 KB» no.
+ */
+function formatearPeso(bytes) {
+  if (!Number.isFinite(bytes) || bytes < 0) return '—';
+  if (bytes < 1024) return `${bytes} B`;
+  const kb = bytes / 1024;
+  if (kb < 1024) return `${Math.round(kb)} KB`;
+  return `${(kb / 1024).toFixed(1).replace('.', ',')} MB`;
+}
+
+/** El ahorro en porcentaje entero. Nunca negativo: si no se ganó, es 0. */
+function ahorro(pesoInicial, pesoFinal) {
+  if (!pesoInicial || pesoFinal >= pesoInicial) return 0;
+  return Math.round(((pesoInicial - pesoFinal) / pesoInicial) * 100);
+}
+
+/** Que sea PDF de verdad: la extensión miente y el `type` del navegador también. */
+async function esPdf(archivo) {
+  try {
+    const cabeza = new Uint8Array(await archivo.slice(0, 1024).arrayBuffer());
+    return buscar(cabeza, '%PDF-', 0) >= 0;
+  } catch {
+    return false;
+  }
+}
+
+  return { comprimirPdf: comprimirPdf, formatearPeso: formatearPeso, ahorro: ahorro, esPdf: esPdf };
+})();
+
 (function () {
   var raiz = document.documentElement;
   var bClaro = document.getElementById('b-claro');
@@ -12067,6 +13342,156 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
         }
       }, 'image/webp', 0.85);
       editor.hidden = true; st = null;
+    });
+  })();
+
+  // ── Carga de PDF ─────────────────────────────────────────────────────────
+  // Usa PDF.comprimirPdf, que es EL MISMO archivo que importa el componente
+  // de React: se inserta arriba tal cual. Si esta demo tuviera su propia copia
+  // enseñaría una compresión que no es la que viaja en el paquete.
+  (function () {
+    var TOPE = 10 * 1024 * 1024;
+
+    document.querySelectorAll('[data-pdf]').forEach(function (caja) {
+      var zona = caja.querySelector('[data-zona]');
+      var entrada = caja.querySelector('input[type="file"]');
+      var invita = caja.querySelector('[data-invita]');
+      var puesto = caja.querySelector('[data-puesto]');
+      var nombre = caja.querySelector('[data-nombre]');
+      var peso = caja.querySelector('[data-peso]');
+      var medida = caja.querySelector('[data-medida]');
+      var trabajo = caja.querySelector('[data-trabajo]');
+      var error = caja.querySelector('[data-error]');
+      var elegir = caja.querySelector('[data-elegir]');
+      var quitar = caja.querySelector('[data-quitar]');
+
+      function fallo(txt) {
+        error.textContent = txt;
+        error.hidden = false;
+        zona.classList.add('cpdf-mal');
+      }
+      function limpiar() {
+        error.hidden = true;
+        zona.classList.remove('cpdf-mal');
+      }
+
+      function tomar(archivos) {
+        var lista = archivos ? [].slice.call(archivos) : [];
+        limpiar();
+        if (lista.length > 1) {
+          fallo('Suelta un solo archivo. Si son varios, súbelos de uno en uno.');
+          return;
+        }
+        if (!lista[0]) return;
+        var archivo = lista[0];
+
+        // Los BYTES, no la extensión: un .docx renombrado se cuela por el nombre.
+        PDF.esPdf(archivo).then(function (vale) {
+          if (!vale) {
+            fallo('Ese archivo no es un PDF. Solo se admiten PDF.');
+            return;
+          }
+          trabajo.hidden = false;
+          elegir.disabled = true;
+          return PDF.comprimirPdf(archivo).then(function (r) {
+            trabajo.hidden = true;
+            elegir.disabled = false;
+            if (r.pesoFinal > TOPE) {
+              fallo('El PDF pesa ' + PDF.formatearPeso(r.pesoFinal) + ' y el máximo es '
+                + PDF.formatearPeso(TOPE) + '. Divídelo o quita las páginas que no hagan falta.');
+              return;
+            }
+            invita.hidden = true;
+            puesto.hidden = false;
+            quitar.hidden = false;
+            elegir.innerHTML = elegir.innerHTML.replace('Elegir PDF', 'Cambiar PDF');
+            nombre.textContent = archivo.name;
+            var pgs = r.detalle && r.detalle.paginas > 0
+              ? ' · ' + r.detalle.paginas + (r.detalle.paginas === 1 ? ' página' : ' páginas') : '';
+            peso.textContent = PDF.formatearPeso(r.pesoFinal) + pgs;
+            // LA CIFRA DEL CATÁLOGO. Es lo único que esta página enseña de más
+            // que el componente, y es la demostración de que la compresión
+            // ocurrió: sin ella sería una promesa.
+            medida.hidden = false;
+            if (r.comprimido) {
+              medida.className = 'chip chip-exito';
+              medida.textContent = PDF.formatearPeso(r.pesoInicial) + ' → '
+                + PDF.formatearPeso(r.pesoFinal) + ' · '
+                + PDF.ahorro(r.pesoInicial, r.pesoFinal) + ' % menos';
+            } else {
+              medida.className = 'chip chip-inact';
+              medida.textContent = PDF.formatearPeso(r.pesoInicial) + ' · sin cambio (' + r.motivo + ')';
+            }
+          });
+        }).catch(function () {
+          trabajo.hidden = true;
+          elegir.disabled = false;
+          fallo('No se pudo leer el archivo.');
+        }).then(function () {
+          // Vaciar para que elegir EL MISMO archivo vuelva a disparar 'change'.
+          entrada.value = '';
+        });
+      }
+
+      zona.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        zona.classList.add('cpdf-encima');
+      });
+      zona.addEventListener('dragleave', function () { zona.classList.remove('cpdf-encima'); });
+      zona.addEventListener('drop', function (e) {
+        e.preventDefault();
+        zona.classList.remove('cpdf-encima');
+        tomar(e.dataTransfer.files);
+      });
+      elegir.addEventListener('click', function () { entrada.click(); });
+      entrada.addEventListener('change', function (e) { tomar(e.target.files); });
+      quitar.addEventListener('click', function () {
+        limpiar();
+        invita.hidden = false;
+        puesto.hidden = true;
+        quitar.hidden = true;
+        medida.hidden = true;
+        elegir.innerHTML = elegir.innerHTML.replace('Cambiar PDF', 'Elegir PDF');
+      });
+    });
+  })();
+
+  // ── Área de texto ────────────────────────────────────────────────────────
+  // Crecer es CSS: lo único que hace falta aquí es mantener al día la copia
+  // invisible que estira la rejilla. La altura NO se toca desde JavaScript —
+  // eso exigiría el atributo 'style', que el candado prohíbe.
+  (function () {
+    document.querySelectorAll('[data-crece]').forEach(function (envoltorio) {
+      var cuadro = envoltorio.querySelector('textarea');
+      if (!cuadro) return;
+      var poner = function () { envoltorio.setAttribute('data-replica', cuadro.value); };
+      poner();
+      cuadro.addEventListener('input', poner);
+    });
+
+    // El límite BLANDO: no se corta, se cuenta y se marca.
+    document.querySelectorAll('[data-limite]').forEach(function (grupo) {
+      var tope = parseInt(grupo.getAttribute('data-limite'), 10);
+      var cuadro = grupo.querySelector('[data-cuadro]');
+      var cuenta = grupo.querySelector('[data-cuenta]');
+      var error = grupo.querySelector('[data-error]');
+      if (!cuadro || !cuenta) return;
+      cuadro.addEventListener('input', function () {
+        var quedan = tope - Array.from(cuadro.value).length;
+        var pasado = quedan < 0;
+        cuenta.textContent = pasado ? (-quedan) + ' de más' : quedan + ' restantes';
+        cuenta.classList.toggle('ta-cuenta-mal', pasado);
+        cuadro.classList.toggle('campo-mal', pasado);
+        if (pasado) cuadro.setAttribute('aria-invalid', 'true');
+        else cuadro.removeAttribute('aria-invalid');
+        if (error) {
+          error.hidden = !pasado;
+          error.textContent = pasado
+            ? 'El texto se pasa por ' + (-quedan) + (-quedan === 1 ? ' carácter' : ' caracteres')
+              + '. Acórtalo antes de guardar.'
+            : '';
+        }
+      });
     });
   })();
 

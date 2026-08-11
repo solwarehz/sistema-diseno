@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.38.0';
+export const VERSION = '1.39.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,33 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.39.0', fecha: '2026-08-11',
+    que: 'CargaPdf comprime de verdad y sin dependencias, y nace AreaTexto',
+    porque:
+      'R43: subir un PDF era la pieza que cada producto iba a construir a mano, y la parte que '
+      + 'nadie iba a construir bien era comprimirlo. Se escribio el compresor a mano —el paquete '
+      + 'no tiene NI UNA dependencia de ejecucion y meter pdf-lib se la habria puesto a todos '
+      + 'los productos que lo instalan—: lee el PDF, recomprime las imagenes JPEG incrustadas '
+      + '(lo unico que mueve la aguja en un escaneo, y necesita navegador: en Node se salta y se '
+      + 'DICE en imagenesOmitidas), tira lo que ya no alcanza nadie —un PDF firmado varias veces '
+      + 'arrastra todas sus revisiones—, tira XMP y PieceInfo, desinfla lo que viajaba en crudo '
+      + 'y reempaqueta en ObjStm. Sin lo ultimo un PDF moderno SALDRIA MAS GRANDE. Medido en las '
+      + 'pruebas: 88-91% en PDF crudo, 0% y original intacto en uno ya optimizado. Tres promesas '
+      + 'con prueba: nunca devuelve algo mas grande, nunca devuelve algo que no sepa releer '
+      + '(relee su propia salida y exige el mismo numero de paginas), nunca toca un PDF cifrado. '
+      + 'Y solo PDF comprobado EN LOS BYTES, porque accept no ve lo que se arrastra ni un docx '
+      + 'renombrado. El peso maximo se mide DESPUES de comprimir: al reves se rechaza lo que si '
+      + 'habria cabido. R44: AreaTexto compone el envoltorio de Campo —no lo reconstruye— y '
+      + 'aporta las tres cosas que un textarea hace distinto: crece con lo escrito CON CSS (la '
+      + 'altura desde JavaScript exigiria style, que el candado prohibe), el limite es BLANDO '
+      + '(maxlength corta al pegar en silencio y sin deshacer) y el contador solo se anuncia en '
+      + 'el ultimo tramo. Icono documento nuevo: usar libro habria enseñado dos significados con '
+      + 'el mismo dibujo. Campo.ayuda admite nodos para que el contador entre en su '
+      + 'aria-describedby en vez de quedarse fuera.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.38.0', fecha: '2026-08-10',
     que: 'R42: el tercer nivel del menu por fin se emite, y la tabla simple vuelve a ser UNA tabla',

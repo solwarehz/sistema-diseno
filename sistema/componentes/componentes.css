@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.38.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.39.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -244,6 +244,58 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .ci-lienzo{ display: block; border: 1px solid var(--borde); border-radius: 6px;
   background: var(--fondo-encabezado); cursor: move; touch-action: none; }
 .ci-zoom{ display: flex; gap: 8px; align-items: center; }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   CARGA DE PDF — 18 reglas · clases .cpdf-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.cpdf{ display: flex; flex-direction: column; gap: 4px; }
+.cpdf-et{ font-size: 13px; font-weight: 500; }
+.cpdf-zona{ display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 20px 16px; border-radius: 6px; text-align: center;
+  border: 2px dashed var(--borde-campo); background: var(--fondo-tarjeta);
+  transition: border-color var(--dur-media) var(--curva),
+              background-color var(--dur-media) var(--curva); }
+.cpdf-encima{ border-color: var(--accion); background: var(--fondo-encabezado); }
+.cpdf-mal{ border-color: var(--error-acento); }
+.cpdf-invita{ display: flex; flex-direction: column; align-items: center; gap: 4px;
+  margin: 0; font-size: 13px; color: var(--texto-secundario); }
+.cpdf-ico{ display: block; color: var(--texto-secundario); }
+.cpdf-instr{ display: block; }
+.cpdf-puesto{ display: flex; align-items: center; gap: 12px; text-align: left; max-width: 100%; }
+.cpdf-datos{ display: flex; flex-direction: column; gap: 4px; min-width: 0;
+  align-items: flex-start; }
+.cpdf-nombre{ font-size: 13px; font-weight: 500; overflow-wrap: anywhere; }
+.cpdf-peso{ font-size: 12px; color: var(--texto-secundario); }
+.cpdf-acciones{ display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.cpdf-pista{ font-size: 12px; color: var(--texto-secundario); }
+.cpdf-trabajo{ padding-top: 4px; }
+.cpdf-error{ font-size: 12px; color: var(--error-texto); font-weight: 500; }
+.cpdf-ayuda{ font-size: 12px; color: var(--texto-pista); }
+.cpdf-entrada{ position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   ÁREA DE TEXTO — 9 reglas · clases .ta-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.ta{ resize: vertical; min-height: 0; line-height: 1.5; width: 100%; }
+.ta-fija{ display: block; }
+.ta-crece{ display: grid; max-height: 18em; overflow: auto; }
+.ta-crece > .ta{ resize: none; overflow: hidden; }
+.ta-crece > .ta,
+.ta-crece::after{
+  grid-area: 1 / 1 / 2 / 2;
+  font: inherit; font-size: 13px; line-height: 1.5;
+  padding: 8px 8px;
+  white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.ta-crece::after{
+  content: attr(data-replica) ' '; visibility: hidden;
+  border: 1px solid transparent; border-radius: 6px;
+}
+.ta-pie{ display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.ta-cuenta{ flex: none; font-variant-numeric: tabular-nums; }
+.ta-cuenta-mal{ color: var(--error-texto); font-weight: 500; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    SELECTOR — 17 reglas · clases .sel-*

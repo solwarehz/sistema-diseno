@@ -25,6 +25,28 @@ const SALIDA = join(RAIZ, 'cascaron');
 
 const tokensCss = readFileSync(join(RAIZ, 'sistema', 'tokens', 'tokens.css'), 'utf8');
 
+/**
+ * EL COMPRESOR DE PDF, EL MISMO QUE USA REACT.
+ *
+ * Se lee el archivo y se inserta tal cual. No es comodidad: si el catálogo
+ * tuviera su propia copia, la página enseñaría una compresión que no es la que
+ * viaja en el paquete, y el día que una de las dos cambie nadie lo notaría.
+ * Es exactamente la reconstrucción que la política prohíbe.
+ *
+ * Dos ajustes, y ninguno toca la lógica:
+ *   · se quita `export`, porque el catálogo es un script clásico —tiene que
+ *     abrirse con `file://` y ahí un módulo externo lo bloquea CORS—;
+ *   · se envuelve en su propia función para que sus nombres (`Nombre`, `Ref`,
+ *     `Lector`…) no choquen con los del catálogo, que es largo.
+ */
+const fuentePdf = readFileSync(
+  join(RAIZ, 'componentes', 'src', 'interno', 'comprimir-pdf.mjs'), 'utf8',
+);
+const COMPRESOR_PDF = `var PDF = (function () {
+${fuentePdf.replace(/^export /gm, '')}
+  return { comprimirPdf: comprimirPdf, formatearPeso: formatearPeso, ahorro: ahorro, esPdf: esPdf };
+})();`;
+
 // Los activos de marca se incrustan como data URI: el cascarón sigue siendo un
 // solo archivo autocontenido y los PNG originales siguen fuera del repositorio
 // por .gitignore. Si faltan, se cae al marcador de posición.
@@ -1311,6 +1333,197 @@ y el comprimido en cuadrado. La subida es del producto.</p>
 <p class="seccion-sub">En React, el editor vive en un <code>Dialogo</code> con «pulsar fuera»
 APAGADO —un encuadre a medias no se pierde por un clic—. El recorte sale en <strong>WebP</strong>
 (0,85), con caída a PNG por especificación: se lee <code>blob.type</code>, no se asume extensión.</p>`;
+
+// ── Elemento: Carga de PDF ──────────────────────────────────────────────────
+
+const pagCargaPdf = `
+<p class="pag-intro">Soltar o elegir <strong>un PDF</strong>, comprobar que lo es
+<strong>mirando sus bytes</strong> —no la extensión, que miente— y
+<strong>comprimirlo antes de entregarlo</strong>. La subida es del producto: el componente
+devuelve el archivo listo y los dos pesos.</p>
+
+<div class="bloque">
+  <p class="seccion-sub"><strong>Pruébalo con un PDF de verdad.</strong> Suéltalo en el recuadro o
+  elígelo. Aquí —y <em>solo</em> aquí— se enseña <strong>peso inicial → peso final</strong>: en un
+  producto esa cifra no le importa a quien sube un acta, pero en el catálogo es la prueba de que la
+  compresión ocurre. Los dos pesos viajan siempre en <code>onCambio</code>.</p>
+
+  <div class="muestra-fila">
+    <div class="cpdf" data-pdf="uno">
+      <span class="cpdf-et">Acta de notas</span>
+      <div class="cpdf-zona" data-zona>
+        <p class="cpdf-invita" data-invita>
+          <span class="cpdf-ico" aria-hidden="true">${icono('subir', TAMANOS.estado)}</span>
+          <span class="cpdf-instr">Arrastra el PDF aquí o elígelo desde tu equipo.</span>
+        </p>
+        <div class="cpdf-puesto" data-puesto hidden>
+          <span class="cpdf-ico" aria-hidden="true">${icono('documento', TAMANOS.estado)}</span>
+          <span class="cpdf-datos">
+            <span class="cpdf-nombre" data-nombre></span>
+            <span class="cpdf-peso" data-peso></span>
+            <span class="chip chip-exito" data-medida hidden></span>
+          </span>
+        </div>
+        <div class="cpdf-acciones">
+          <button class="btn btn-neutro btn-mini btn-ic" data-elegir>${icono('documento')}Elegir PDF</button>
+          <button class="btn btn-terc btn-mini" data-quitar hidden>Quitar</button>
+        </div>
+        <span class="cpdf-pista">Solo PDF · máximo 10,0 MB una vez comprimido.</span>
+      </div>
+      <div class="cpdf-trabajo" data-trabajo hidden>
+        <div class="pr-caja">
+          <div class="pr-cab"><span>Comprimiendo el PDF…</span></div>
+          <div class="pr" role="progressbar" aria-label="Comprimiendo el PDF"><div class="pr-indet"></div></div>
+        </div>
+      </div>
+      <span class="cpdf-error" data-error role="alert" hidden></span>
+      <span class="cpdf-ayuda">El acta va al legajo del estudiante.</span>
+      <input type="file" accept="application/pdf,.pdf" class="cpdf-entrada" tabindex="-1" aria-hidden="true">
+    </div>
+
+    <div class="cpdf">
+      <span class="cpdf-et">Constancia firmada</span>
+      <div class="cpdf-zona cpdf-mal">
+        <p class="cpdf-invita">
+          <span class="cpdf-ico" aria-hidden="true">${icono('subir', TAMANOS.estado)}</span>
+          <span class="cpdf-instr">Arrastra aquí la constancia ya firmada por Dirección.</span>
+        </p>
+        <div class="cpdf-acciones">
+          <button class="btn btn-neutro btn-mini btn-ic">${icono('documento')}Elegir PDF</button>
+        </div>
+        <span class="cpdf-pista">Solo PDF · una hoja.</span>
+      </div>
+      <span class="cpdf-error">Ese archivo no es un PDF. Solo se admiten PDF.</span>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Qué comprime, y cuánto — medido, no prometido</h3>
+<p class="seccion-sub">Sin ninguna dependencia: el paquete no carga con una librería de PDF y el
+producto que lo instala, tampoco. Lo que hace, en el orden en que gana peso:</p>
+<table class="tabla-simple">
+  <thead><tr><th>Qué</th><th>Cuánto</th><th>Sobre qué archivo</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Recomprimir las imágenes</strong></td><td>lo que de verdad mueve la aguja</td><td class="motivo">Escaneos. Solo JPEG incrustados, reducidos al ancho máximo. <strong>Necesita navegador</strong>: en Node no ocurre y se dice en <code>imagenesOmitidas</code></td></tr>
+    <tr><td><strong>Desinflar lo que viajaba en crudo</strong></td><td><strong>88–91 %</strong> medido</td><td class="motivo">Generadores que no comprimen nada. La cifra sale de las pruebas, no de una estimación</td></tr>
+    <tr><td><strong>Tirar lo inalcanzable</strong></td><td>según cuántas revisiones arrastre</td><td class="motivo">Un PDF editado o firmado varias veces guarda todas sus versiones anteriores</td></tr>
+    <tr><td><strong>Tirar XMP y <code>/PieceInfo</code></strong></td><td>kilobytes</td><td class="motivo">Lo que deja un procesador de textos y ningún lector usa</td></tr>
+    <tr><td><strong>Reempaquetar</strong></td><td>evita que crezca</td><td class="motivo">Sin esto un PDF moderno SALDRÍA MÁS GRANDE: sus objetos pequeños ya venían empaquetados</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Las tres promesas</h3>
+<div class="bloque">
+  <table class="tabla-simple">
+    <thead><tr><th>Promesa</th><th>Cómo se sostiene</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Nunca devuelve algo más grande</strong></td><td class="motivo">Se comparan los dos pesos al final. Si no se ganó, vuelve el original intacto y <code>motivo</code> dice <code>sin-ganancia</code></td></tr>
+      <tr><td><strong>Nunca devuelve algo que no sepa releer</strong></td><td class="motivo">Lo escrito se vuelve a analizar con el mismo lector y se exige que el catálogo resuelva y que las páginas sean las mismas. Si no cuadra, vuelve el original</td></tr>
+      <tr><td><strong>Nunca toca un PDF cifrado</strong></td><td class="motivo">Reescribirlo sin descifrar produce un archivo que abre y no se lee. Vuelve intacto con <code>motivo: 'cifrado'</code></td></tr>
+    </tbody>
+  </table>
+  <p class="seccion-sub">Y lo que <strong>no</strong> hace, que también hay que decirlo: no reduce
+  imágenes que no sean JPEG, no toca las fuentes incrustadas y no vuelve a comprimir un flujo que ya
+  venía desinflado. <strong>Un PDF que ya pasó por un optimizador saldrá igual</strong> — y devuelto
+  tal cual, que es lo correcto.</p>
+</div>
+
+<h3 class="sub-seccion">Dos decisiones que no son de aspecto</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Regla</th><th>Por qué</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Solo PDF, comprobado en los bytes</strong></td><td class="motivo">El <code>accept</code> del navegador filtra el diálogo de archivos y nada más: arrastrando entra cualquier cosa, y renombrar un <code>.docx</code> a <code>.pdf</code> lo cuela. Se exige <code>%PDF-</code></td></tr>
+    <tr><td><strong>El peso máximo se mide DESPUÉS de comprimir</strong></td><td class="motivo">Al revés se rechazan archivos que sí habrían cabido, y la persona ve «pesa demasiado» en algo que el sistema mismo podía arreglar</td></tr>
+    <tr><td><strong>Dos archivos a la vez se rechazan</strong></td><td class="motivo">Coger el primero en silencio deja a alguien creyendo que subió los tres que soltó</td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub">Se compone, no se reconstruye: el disparador y «Quitar» son <code>Boton</code>,
+el progreso es <code>Progreso</code>, el ahorro es un <code>Chip</code> —pintar aquí un verde a mano
+habría metido un par de contraste que nadie midió— y el icono es <code>Icono</code>. Lo único propio
+es la zona de soltar, que no existía. <strong>Soltar es un atajo de ratón</strong>, y por eso el
+control accesible es el botón: la zona no se tabula.</p>`;
+
+// ── Elemento: Área de texto ─────────────────────────────────────────────────
+
+const pagAreaTexto = `
+<p class="pag-intro">El campo de <strong>varias líneas</strong>: observaciones, motivo de una baja,
+descripción de una incidencia. No es un <code>Campo</code> más alto — se comporta distinto en tres
+cosas, y esas tres son la razón de que exista.</p>
+
+<div class="bloque">
+  <p class="seccion-sub"><strong>Escribe en el primero</strong> y verás que crece solo. Escribe en el
+  segundo y pasa del límite a propósito: <strong>no te corta</strong>.</p>
+  <div class="campos-rejilla">
+    <div class="campo-grupo">
+      <label class="campo-etiqueta" for="ta-demo-1">Observaciones</label>
+      <div class="ta-crece" data-crece>
+        <textarea class="campo ta" id="ta-demo-1" rows="3" data-cuadro
+          placeholder="Qué pasó y qué se hizo."></textarea>
+      </div>
+      <span class="campo-ayuda">Crece con lo escrito hasta un tope, y a partir de ahí se desplaza.</span>
+    </div>
+    <div class="campo-grupo" data-limite="60">
+      <label class="campo-etiqueta" for="ta-demo-2">Motivo de la baja</label>
+      <div class="ta-crece" data-crece>
+        <textarea class="campo ta" id="ta-demo-2" rows="3" data-cuadro
+          aria-describedby="ta-demo-2-ayuda"></textarea>
+      </div>
+      <span class="campo-error" data-error hidden></span>
+      <span class="campo-ayuda" id="ta-demo-2-ayuda">
+        <span class="ta-pie">
+          <span>Máximo 60 caracteres.</span>
+          <span class="ta-cuenta" data-cuenta>60 restantes</span>
+        </span>
+      </span>
+    </div>
+    <div class="campo-grupo">
+      <label class="campo-etiqueta" for="ta-demo-3">Nota interna</label>
+      <div class="ta-fija">
+        <textarea class="campo ta" id="ta-demo-3" rows="3"
+          placeholder="Sin autoCrecer: alto fijo."></textarea>
+      </div>
+      <span class="campo-ayuda">Para una rejilla donde todos los campos miden lo mismo.</span>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Las tres diferencias con un campo de una línea</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Diferencia</th><th>Por qué</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Crece con lo escrito</strong></td><td class="motivo">Un cuadro de cuatro líneas para un texto de doce obliga a redactar mirando por una rendija. Se hace <strong>con CSS</strong>: la rejilla lleva una copia invisible del texto en <code>::after</code>. Escribir la altura desde JavaScript exigiría el atributo <code>style</code>, que el candado prohíbe (§2.5.6)</td></tr>
+    <tr><td><strong>El límite es blando</strong></td><td class="motivo"><code>maxlength</code> corta al pegar, en silencio y sin deshacer: se pega un párrafo, entra media frase, y nadie se entera hasta que lo lee el destinatario. Aquí entra entero, se marca inválido y se dice cuánto sobra. <strong>Bloquear el envío es del producto</strong>, que sabe si ese texto se puede guardar a medias</td></tr>
+    <tr><td><strong>El contador se anuncia solo cuando importa</strong></td><td class="motivo">En el <code>aria-describedby</code> está siempre —se lee al entrar al campo—, pero la región viva solo habla en los últimos 20 caracteres y al pasarse. Un contador que dicta un número por cada tecla no informa: tapa lo que se escribe</td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub">Lo demás <strong>es</strong> el <code>Campo</code>, no se le parece: el rótulo
+obligatorio y siempre visible, la ayuda, el error y los <code>aria-describedby</code> que los enlazan
+salen de su ranura de contenido propio. Y el <strong>recorte al salir</strong> es el mismo y por la
+misma razón —el copy-paste con cola—, solo en los extremos: los saltos de línea de dentro son el
+texto, no basura.</p>
+
+<h3 class="sub-seccion">Estados</h3>
+<div class="bloque">
+  <div class="campos-rejilla">
+    <div class="campo-grupo">
+      <label class="campo-etiqueta" for="ta-e1">Reposo</label>
+      <div class="ta-fija"><textarea class="campo ta" id="ta-e1" rows="2" readonly></textarea></div>
+    </div>
+    <div class="campo-grupo">
+      <label class="campo-etiqueta" for="ta-e2">Con foco</label>
+      <div class="ta-fija"><textarea class="campo ta foco-demo" id="ta-e2" rows="2" readonly></textarea></div>
+    </div>
+    <div class="campo-grupo">
+      <label class="campo-etiqueta" for="ta-e3">Con error</label>
+      <div class="ta-fija"><textarea class="campo ta campo-mal" id="ta-e3" rows="2" readonly>Se pasa de largo</textarea></div>
+      <span class="campo-error">El texto se pasa por 8 caracteres. Acórtalo antes de guardar.</span>
+    </div>
+    <div class="campo-grupo">
+      <label class="campo-etiqueta" for="ta-e4">Sin permiso</label>
+      <div class="ta-fija"><textarea class="campo ta" id="ta-e4" rows="2" disabled>Solo Dirección edita este campo.</textarea></div>
+    </div>
+  </div>
+</div>`;
 
 // ── Elemento: Selector ──────────────────────────────────────────────────────
 
@@ -3873,16 +4086,18 @@ const CATALOGO = [
     // El ORDEN de items define los rangos de cada rama.
     ramas: [
       { t: 'Acciones', desde: 0, hasta: 2 },
-      { t: 'Formulario', desde: 2, hasta: 8 },
-      { t: 'Datos', desde: 8, hasta: 14 },
-      { t: 'Respuesta', desde: 14, hasta: 20 },
-      { t: 'Marco y navegación', desde: 20, hasta: 23 },
+      { t: 'Formulario', desde: 2, hasta: 10 },
+      { t: 'Datos', desde: 10, hasta: 16 },
+      { t: 'Respuesta', desde: 16, hasta: 22 },
+      { t: 'Marco y navegación', desde: 22, hasta: 25 },
     ],
     items: [
       { id: 'boton', t: 'Botón', estado: 'listo', c: pagBoton },
       { id: 'enlace', t: 'Enlace', estado: 'listo', c: pagEnlace },
       { id: 'campo', t: 'Campo de texto', estado: 'listo', c: pagCampo },
+      { id: 'areatexto', t: 'Área de texto', estado: 'listo', c: pagAreaTexto },
       { id: 'cargaimagen', t: 'Carga de imagen', estado: 'listo', c: pagCargaImagen },
+      { id: 'cargapdf', t: 'Carga de PDF', estado: 'listo', c: pagCargaPdf },
       { id: 'selector', t: 'Selector', estado: 'listo', c: pagSelector },
       { id: 'interruptor', t: 'Interruptor', estado: 'listo', c: pagInterruptor },
       { id: 'multiple', t: 'Selección múltiple', estado: 'listo', c: pagMultiple },
@@ -5668,6 +5883,79 @@ select.campo:disabled { opacity: .75; }
   background: var(--fondo-encabezado); cursor: move; touch-action: none; }
 .ci-zoom { display: flex; gap: 8px; align-items: center; }
 
+/* Carga de PDF — R43. La zona de soltar es lo único que este elemento aporta
+   de dibujo nuevo: el disparador, el progreso y el icono ya existían. El borde
+   discontinuo dice «esto admite que le sueltes algo» sin escribirlo.
+
+   DENTRO DE LA ZONA SOLO SE USAN texto-principal Y texto-secundario, y no es
+   una preferencia: son los dos únicos frentes medidos contra las DOS
+   superficies que la zona alterna —fondo-tarjeta en reposo y fondo-encabezado
+   al arrastrar encima—. texto-pista está medido sobre la primera y no sobre la
+   segunda, así que aquí dentro no entra: al soltar un archivo la pista
+   quedaría sin garantía. */
+.cpdf { display: flex; flex-direction: column; gap: 4px; }
+.cpdf-et { font-size: 13px; font-weight: 500; }
+.cpdf-zona { display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 20px 16px; border-radius: 6px; text-align: center;
+  border: 2px dashed var(--borde-campo); background: var(--fondo-tarjeta);
+  transition: border-color var(--dur-media) var(--curva),
+              background-color var(--dur-media) var(--curva); }
+.cpdf-encima { border-color: var(--accion); background: var(--fondo-encabezado); }
+.cpdf-mal { border-color: var(--error-acento); }
+.cpdf-invita { display: flex; flex-direction: column; align-items: center; gap: 4px;
+  margin: 0; font-size: 13px; color: var(--texto-secundario); }
+.cpdf-ico { display: block; color: var(--texto-secundario); }
+.cpdf-instr { display: block; }
+.cpdf-puesto { display: flex; align-items: center; gap: 12px; text-align: left; max-width: 100%; }
+.cpdf-datos { display: flex; flex-direction: column; gap: 4px; min-width: 0;
+  align-items: flex-start; }
+.cpdf-nombre { font-size: 13px; font-weight: 500; overflow-wrap: anywhere; }
+.cpdf-peso { font-size: 12px; color: var(--texto-secundario); }
+.cpdf-acciones { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.cpdf-pista { font-size: 12px; color: var(--texto-secundario); }
+.cpdf-trabajo { padding-top: 4px; }
+.cpdf-error { font-size: 12px; color: var(--error-texto); font-weight: 500; }
+.cpdf-ayuda { font-size: 12px; color: var(--texto-pista); }
+/* El input real, fuera de la vista y del tabulador pero SIN display:none, por
+   la misma razón que en la carga de imagen. */
+.cpdf-entrada { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+/* Área de texto — R44. .ta-crece hace crecer el cuadro con lo escrito SIN
+   tocar la altura desde JavaScript: la copia invisible del texto vive en
+   ::after, ocupa la misma celda de la rejilla que el <textarea>, y es ella la
+   que estira la fila. Las dos TIENEN que compartir tipografía y relleno al
+   milímetro o la copia mediría distinto que el original.
+
+   Escribir la altura a mano exigiría el atributo style, que el candado
+   prohíbe (§2.5.6) — y aquí la prohibición no estorbó: obligó a la solución
+   que además sobrevive a que el texto llegue ya escrito. */
+.ta { resize: vertical; min-height: 0; line-height: 1.5; width: 100%; }
+.ta-fija { display: block; }
+.ta-crece { display: grid; max-height: 18em; overflow: auto; }
+.ta-crece > .ta { resize: none; overflow: hidden; }
+.ta-crece > .ta,
+.ta-crece::after {
+  grid-area: 1 / 1 / 2 / 2;
+  font: inherit; font-size: 13px; line-height: 1.5;
+  padding: 8px 8px;
+  white-space: pre-wrap; overflow-wrap: anywhere;
+}
+/* EL BORDE VA SOLO EN LA COPIA, no en la regla compartida. Ponerlo en las dos
+   se lo quitaba al cuadro —quedaba un campo sin contorno, indistinguible del
+   texto de al lado— y además le habría fijado 1px, pisando los 2px que
+   .campo-mal usa para marcar el error. El cuadro conserva el suyo, el de
+   .campo; la copia lleva uno transparente solo para medir igual.
+
+   El espacio final evita que la última línea vacía no cuente y el cuadro se
+   quede una línea corto justo al pulsar Intro. */
+.ta-crece::after {
+  content: attr(data-replica) ' '; visibility: hidden;
+  border: 1px solid transparent; border-radius: 6px;
+}
+.ta-pie { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.ta-cuenta { flex: none; font-variant-numeric: tabular-nums; }
+.ta-cuenta-mal { color: var(--error-texto); font-weight: 500; }
+
 /* Mismo caso que el select: el icono del campo de fecha lo pinta el navegador
    y LO RETIRA al deshabilitarlo. Sin icono deja de parecer un campo de fecha,
    y en deshabilitado es cuando más falta hace saber qué es, porque no se puede
@@ -6460,6 +6748,11 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 </div>
 
 <script>
+// EL COMPRESOR DE PDF, insertado desde componentes/src/interno/comprimir-pdf.mjs
+// SIN TOCARLE LA LOGICA. Es el mismo archivo que importa el componente de
+// React: dos copias ensenarian dos compresiones distintas.
+${COMPRESOR_PDF}
+
 (function () {
   var raiz = document.documentElement;
   var bClaro = document.getElementById('b-claro');
@@ -7598,6 +7891,156 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         }
       }, 'image/webp', 0.85);
       editor.hidden = true; st = null;
+    });
+  })();
+
+  // ── Carga de PDF ─────────────────────────────────────────────────────────
+  // Usa PDF.comprimirPdf, que es EL MISMO archivo que importa el componente
+  // de React: se inserta arriba tal cual. Si esta demo tuviera su propia copia
+  // enseñaría una compresión que no es la que viaja en el paquete.
+  (function () {
+    var TOPE = 10 * 1024 * 1024;
+
+    document.querySelectorAll('[data-pdf]').forEach(function (caja) {
+      var zona = caja.querySelector('[data-zona]');
+      var entrada = caja.querySelector('input[type="file"]');
+      var invita = caja.querySelector('[data-invita]');
+      var puesto = caja.querySelector('[data-puesto]');
+      var nombre = caja.querySelector('[data-nombre]');
+      var peso = caja.querySelector('[data-peso]');
+      var medida = caja.querySelector('[data-medida]');
+      var trabajo = caja.querySelector('[data-trabajo]');
+      var error = caja.querySelector('[data-error]');
+      var elegir = caja.querySelector('[data-elegir]');
+      var quitar = caja.querySelector('[data-quitar]');
+
+      function fallo(txt) {
+        error.textContent = txt;
+        error.hidden = false;
+        zona.classList.add('cpdf-mal');
+      }
+      function limpiar() {
+        error.hidden = true;
+        zona.classList.remove('cpdf-mal');
+      }
+
+      function tomar(archivos) {
+        var lista = archivos ? [].slice.call(archivos) : [];
+        limpiar();
+        if (lista.length > 1) {
+          fallo('Suelta un solo archivo. Si son varios, súbelos de uno en uno.');
+          return;
+        }
+        if (!lista[0]) return;
+        var archivo = lista[0];
+
+        // Los BYTES, no la extensión: un .docx renombrado se cuela por el nombre.
+        PDF.esPdf(archivo).then(function (vale) {
+          if (!vale) {
+            fallo('Ese archivo no es un PDF. Solo se admiten PDF.');
+            return;
+          }
+          trabajo.hidden = false;
+          elegir.disabled = true;
+          return PDF.comprimirPdf(archivo).then(function (r) {
+            trabajo.hidden = true;
+            elegir.disabled = false;
+            if (r.pesoFinal > TOPE) {
+              fallo('El PDF pesa ' + PDF.formatearPeso(r.pesoFinal) + ' y el máximo es '
+                + PDF.formatearPeso(TOPE) + '. Divídelo o quita las páginas que no hagan falta.');
+              return;
+            }
+            invita.hidden = true;
+            puesto.hidden = false;
+            quitar.hidden = false;
+            elegir.innerHTML = elegir.innerHTML.replace('Elegir PDF', 'Cambiar PDF');
+            nombre.textContent = archivo.name;
+            var pgs = r.detalle && r.detalle.paginas > 0
+              ? ' · ' + r.detalle.paginas + (r.detalle.paginas === 1 ? ' página' : ' páginas') : '';
+            peso.textContent = PDF.formatearPeso(r.pesoFinal) + pgs;
+            // LA CIFRA DEL CATÁLOGO. Es lo único que esta página enseña de más
+            // que el componente, y es la demostración de que la compresión
+            // ocurrió: sin ella sería una promesa.
+            medida.hidden = false;
+            if (r.comprimido) {
+              medida.className = 'chip chip-exito';
+              medida.textContent = PDF.formatearPeso(r.pesoInicial) + ' → '
+                + PDF.formatearPeso(r.pesoFinal) + ' · '
+                + PDF.ahorro(r.pesoInicial, r.pesoFinal) + ' % menos';
+            } else {
+              medida.className = 'chip chip-inact';
+              medida.textContent = PDF.formatearPeso(r.pesoInicial) + ' · sin cambio (' + r.motivo + ')';
+            }
+          });
+        }).catch(function () {
+          trabajo.hidden = true;
+          elegir.disabled = false;
+          fallo('No se pudo leer el archivo.');
+        }).then(function () {
+          // Vaciar para que elegir EL MISMO archivo vuelva a disparar 'change'.
+          entrada.value = '';
+        });
+      }
+
+      zona.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        zona.classList.add('cpdf-encima');
+      });
+      zona.addEventListener('dragleave', function () { zona.classList.remove('cpdf-encima'); });
+      zona.addEventListener('drop', function (e) {
+        e.preventDefault();
+        zona.classList.remove('cpdf-encima');
+        tomar(e.dataTransfer.files);
+      });
+      elegir.addEventListener('click', function () { entrada.click(); });
+      entrada.addEventListener('change', function (e) { tomar(e.target.files); });
+      quitar.addEventListener('click', function () {
+        limpiar();
+        invita.hidden = false;
+        puesto.hidden = true;
+        quitar.hidden = true;
+        medida.hidden = true;
+        elegir.innerHTML = elegir.innerHTML.replace('Cambiar PDF', 'Elegir PDF');
+      });
+    });
+  })();
+
+  // ── Área de texto ────────────────────────────────────────────────────────
+  // Crecer es CSS: lo único que hace falta aquí es mantener al día la copia
+  // invisible que estira la rejilla. La altura NO se toca desde JavaScript —
+  // eso exigiría el atributo 'style', que el candado prohíbe.
+  (function () {
+    document.querySelectorAll('[data-crece]').forEach(function (envoltorio) {
+      var cuadro = envoltorio.querySelector('textarea');
+      if (!cuadro) return;
+      var poner = function () { envoltorio.setAttribute('data-replica', cuadro.value); };
+      poner();
+      cuadro.addEventListener('input', poner);
+    });
+
+    // El límite BLANDO: no se corta, se cuenta y se marca.
+    document.querySelectorAll('[data-limite]').forEach(function (grupo) {
+      var tope = parseInt(grupo.getAttribute('data-limite'), 10);
+      var cuadro = grupo.querySelector('[data-cuadro]');
+      var cuenta = grupo.querySelector('[data-cuenta]');
+      var error = grupo.querySelector('[data-error]');
+      if (!cuadro || !cuenta) return;
+      cuadro.addEventListener('input', function () {
+        var quedan = tope - Array.from(cuadro.value).length;
+        var pasado = quedan < 0;
+        cuenta.textContent = pasado ? (-quedan) + ' de más' : quedan + ' restantes';
+        cuenta.classList.toggle('ta-cuenta-mal', pasado);
+        cuadro.classList.toggle('campo-mal', pasado);
+        if (pasado) cuadro.setAttribute('aria-invalid', 'true');
+        else cuadro.removeAttribute('aria-invalid');
+        if (error) {
+          error.hidden = !pasado;
+          error.textContent = pasado
+            ? 'El texto se pasa por ' + (-quedan) + (-quedan === 1 ? ' carácter' : ' caracteres')
+              + '. Acórtalo antes de guardar.'
+            : '';
+        }
+      });
     });
   })();
 

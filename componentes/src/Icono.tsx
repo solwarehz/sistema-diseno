@@ -4,7 +4,7 @@
  * ARCHIVO GENERADO. No editar a mano.
  * Fuente: sistema/iconos/iconos.mjs → node sistema/iconos/generar-react.mjs
  *
- * Los mismos 42 trazos que usa el catálogo, como elementos de React.
+ * Los mismos 43 trazos que usa el catálogo, como elementos de React.
  *
  * Existe para que NADIE tenga que usar `dangerouslySetInnerHTML`. El módulo
  * `iconos.mjs` devuelve cadenas de SVG —lo cómodo en una plantilla— y en React
@@ -46,6 +46,7 @@ const TRAZOS_REACT = {
   configuracion: <><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7" /></>,
   descargar: <><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" /><path d="M12 15V3" /></>,
   descargar2: <><path d="M12 5v14M6 13l6 6 6-6" /></>,
+  documento: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" /><path d="M14 2v6h6" /></>,
   escritorio: <><rect x="2" y="3" width="20" height="14" rx="2" /><path d="M8 21h8M12 17v4" /></>,
   filas: <><rect x="3" y="4" width="18" height="5" rx="1" /><rect x="3" y="13" width="18" height="5" rx="1" /></>,
   filasFinas: <><rect x="3" y="4" width="18" height="3" rx="1" /><rect x="3" y="10" width="18" height="3" rx="1" /><rect x="3" y="16" width="18" height="3" rx="1" /></>,

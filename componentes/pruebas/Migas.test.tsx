@@ -117,10 +117,12 @@ describe('Icono', () => {
     expect(container.querySelector('svg')).toHaveAttribute('width', '32');
   });
 
-  it('están los 42, los mismos que el catálogo', () => {
+  it('están los 43, los mismos que el catálogo', () => {
     // 42 desde la v1.37.0: subir (R35) y la pareja ojo/ojoTachado (contraseña).
-    expect(NOMBRES_ICONO).toHaveLength(42);
-    for (const n of ['candado', 'lupa', 'cerrar', 'visto', 'alerta', 'subir']) {
+    // 43 desde la v1.39.0: `documento`, que pedía la carga de PDF (R43). Usar
+    // `libro` habría enseñado dos significados con el mismo dibujo.
+    expect(NOMBRES_ICONO).toHaveLength(43);
+    for (const n of ['candado', 'lupa', 'cerrar', 'visto', 'alerta', 'subir', 'documento']) {
       expect(NOMBRES_ICONO).toContain(n);
     }
   });

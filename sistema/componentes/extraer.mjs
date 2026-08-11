@@ -48,6 +48,10 @@ const ELEMENTOS = [
   { n: 'Campo de contraseña',   p: ['cp'] },
   // R35: elegir, encuadrar (mover + acercar) y recortar en cuadrado.
   { n: 'Carga de imagen',       p: ['ci'] },
+  // R43: soltar o elegir UN PDF, comprobarlo en los bytes y comprimirlo.
+  { n: 'Carga de PDF',          p: ['cpdf'] },
+  // R44: el campo de varias líneas que crece con lo escrito.
+  { n: 'Área de texto',         p: ['ta'] },
   { n: 'Selector',              p: ['sel'] },
   { n: 'Interruptor',           p: ['sw'] },
   { n: 'Selección múltiple',    p: ['ms'] },

@@ -15,8 +15,14 @@ import { useId } from 'react';
 type Comun = {
   /** Obligatoria. Ver arriba: no se puede sustituir por el placeholder. */
   etiqueta: string;
-  /** Ayuda permanente bajo el campo. */
-  ayuda?: string;
+  /**
+   * Ayuda permanente bajo el campo.
+   *
+   * Admite nodos, no solo texto, porque `AreaTexto` cuelga ahí su contador de
+   * caracteres: así el contador entra en el `aria-describedby` que este
+   * envoltorio ya calcula, en vez de quedarse fuera y no anunciarse.
+   */
+  ayuda?: React.ReactNode;
   /** Mensaje de error. Marca el campo como inválido y lo vincula. */
   error?: string;
   /**

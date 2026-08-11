@@ -11,6 +11,11 @@ export { TablaDatos, type Columna, type EstadoTabla } from './TablaDatos';
 export { RangoFecha } from './RangoFecha';
 export { ZonaAvisos } from './ZonaAvisos';
 export { CargaImagen } from './CargaImagen';
+export { CargaPdf, type PdfListo } from './CargaPdf';
+export { AreaTexto } from './AreaTexto';
+// El compresor viaja aparte del componente: un producto que suba PDF por su
+// cuenta —desde un formulario que no usa `CargaPdf`— puede comprimir igual.
+export { comprimirPdf, formatearPeso, ahorro, esPdf } from './interno/comprimir-pdf.mjs';
 export { Confirmacion } from './Confirmacion';
 export { Boton, type VarianteBoton } from './Boton';
 export { Chip, type TonoChip } from './Chip';

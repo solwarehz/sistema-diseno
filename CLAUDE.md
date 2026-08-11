@@ -19,8 +19,8 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.25.0** — auditoría de composición pasada, tokens de
-movimiento, y los siete pedidos R27–R33 de Control Administrativos resueltos.
+**Estado actual: v1.39.0** — la carga de PDF que comprime de verdad y sin
+dependencias, y el área de texto.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

@@ -3,6 +3,11 @@
     "target": "ES2022", "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext", "moduleResolution": "bundler",
     "jsx": "react-jsx", "strict": true, "noEmit": true,
+    // El compresor de PDF es `.mjs` a propósito: el catálogo lo inserta tal
+    // cual en su página, y un `.ts` habría obligado a compilarlo aparte o a
+    // reescribirlo — que es justo la duplicación que la política prohíbe.
+    // `allowJs` deja que TypeScript lo lea y deduzca sus tipos del código.
+    "allowJs": true,
     "skipLibCheck": true, "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
   "include": ["src", "pruebas"]
