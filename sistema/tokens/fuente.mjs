@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.41.2';
+export const VERSION = '1.41.3';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,30 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.41.3', fecha: '2026-08-11',
+    que: 'R47: el panel flotante del menu plegado cerraba en seco y no se podia llegar a el',
+    porque:
+      'Lo reporto el responsable probando a 900px con el menu comprimido: «ese cambio en la '
+      + 'entrega no se puede, se cierra rapido el menu que aparece». Plegado, el panel nace al '
+      + 'otro lado del carril y el cursor tiene que CRUZAR sus 56px para alcanzarlo; cerrando en '
+      + 'el mouseleave a secas, el panel desaparece por el camino. Se abre, vas a por el, y ya no '
+      + 'esta. '
+      + 'El catalogo llevaba 220ms de margen DESDE EL PRINCIPIO, con la razon escrita al lado, y '
+      + 'la entrega cerraba al instante. Medido en el navegador antes de tocar nada: el catalogo '
+      + 'sigue abierto a 120ms y cierra antes de 320. Ahora el componente hace lo mismo, y volver '
+      + 'a entrar dentro del margen cancela el cierre — que es justo lo que permite cambiar de un '
+      + 'menu a otro. '
+      + 'Y con TECLADO tampoco abria: el catalogo usa focusin/focusout y la entrega no lo llevaba, '
+      + 'asi que tabulando dentro de un grupo plegado sus opciones eran inalcanzables. '
+      + 'LA PRUEBA QUE HABIA EXIGIA EL DEFECTO. Decia «cierra al salir» y comprobaba que el panel '
+      + 'desaparecia en el mismo mouseLeave. Una prueba que fija el comportamiento equivocado no '
+      + 'protege: lo blinda, y ademas explica por que ninguno de los nueve candados dijo nada. '
+      + 'Reescrita en las tres que hacen falta: el margen, la cancelacion al volver a entrar, y el '
+      + 'teclado. 292.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.41.2', fecha: '2026-08-11',
     que: 'La tira de filtros de la tabla se entregaba vacia: banda azul sin valor y sin la x de quitar',

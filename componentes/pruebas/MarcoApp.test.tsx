@@ -9,7 +9,7 @@
  * lector de pantalla no sabe en qué página está.
  */
 
-import { render, screen, within, fireEvent, act } from '@testing-library/react';
+import { render, screen, within, fireEvent, act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { MarcoApp, type GrupoNav } from '../src/MarcoApp';
@@ -296,15 +296,59 @@ describe('Plegado — el panel flotante', () => {
     expect(container.querySelectorAll('.nav-grupo.abierto')).toHaveLength(0);
   });
 
-  it('plegado, el grupo abre al pasar el cursor y cierra al salir', async () => {
+  /**
+   * ESTA PRUEBA EXIGÍA EL DEFECTO. Decía «cierra al salir» y comprobaba que el
+   * panel desaparecía en el mismo `mouseLeave`, que es exactamente lo que hacía
+   * imposible usarlo: plegado, el cursor tiene que CRUZAR los 56px del carril
+   * para llegar al panel, y por el camino ya no estaba. Lo reportó el
+   * responsable probando a 900px — «se cierra rápido el menú que aparece»— y el
+   * catálogo llevaba los 220ms de margen desde el principio.
+   *
+   * Una prueba que fija el comportamiento equivocado no protege: lo blinda.
+   */
+  const esperar = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  it('plegado, el grupo abre al pasar el cursor y cierra CON MARGEN para llegar', async () => {
     const u = userEvent.setup();
     const { container } = montar();
     await u.click(screen.getByRole('button', { name: 'Plegar menú' }));
     const grupo = container.querySelector('.nav-grupo')!;
+
     fireEvent.mouseEnter(grupo);
     expect(grupo.classList.contains('abierto')).toBe(true);
+
     fireEvent.mouseLeave(grupo);
+    // LO QUE FALLABA: aquí mismo ya estaba cerrado, y por eso no se llegaba.
+    expect(grupo.classList.contains('abierto')).toBe(true);
+    await esperar(100);
+    expect(grupo.classList.contains('abierto')).toBe(true);
+
+    await waitFor(() => expect(grupo.classList.contains('abierto')).toBe(false));
+  });
+
+  it('volver a entrar dentro del margen CANCELA el cierre: es lo que deja cambiar de menú', async () => {
+    const u = userEvent.setup();
+    const { container } = montar();
+    await u.click(screen.getByRole('button', { name: 'Plegar menú' }));
+    const grupo = container.querySelector('.nav-grupo')!;
+
+    fireEvent.mouseEnter(grupo);
+    fireEvent.mouseLeave(grupo);
+    await esperar(100);
+    fireEvent.mouseEnter(grupo);      // el cursor cruzó el carril y llegó
+    await esperar(400);               // muy por encima del margen
+    expect(grupo.classList.contains('abierto')).toBe(true);
+  });
+
+  it('con teclado también abre: sin ratón el panel era inalcanzable', async () => {
+    const u = userEvent.setup();
+    const { container } = montar();
+    await u.click(screen.getByRole('button', { name: 'Plegar menú' }));
+    const grupo = container.querySelector('.nav-grupo')!;
     expect(grupo.classList.contains('abierto')).toBe(false);
+
+    fireEvent.focus(grupo.querySelector('.nav-grupo-tit')!);
+    expect(grupo.classList.contains('abierto')).toBe(true);
   });
 
   it('el flotante dice DE QUÉ grupo es: lleva su título', async () => {

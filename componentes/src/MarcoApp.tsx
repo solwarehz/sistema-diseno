@@ -188,6 +188,41 @@ export function MarcoApp({
   const lateral = useRef<HTMLElement>(null);
   const plegarBtn = useRef<HTMLButtonElement>(null);
 
+  /**
+   * EL MARGEN PARA LLEGAR AL PANEL. Plegado, el panel flotante nace al lado del
+   * carril y el cursor tiene que CRUZAR los 56px del carril para alcanzarlo.
+   * Cerrando en el `mouseleave` a secas, el panel desaparece por el camino y no
+   * hay forma de elegir nada: se abre, se va uno a por él, y ya no está.
+   *
+   * El catálogo llevaba estos 220ms desde el principio —con la razón escrita al
+   * lado— y la entrega cerraba en seco. Lo reportó el responsable probando a
+   * 900px: «ese cambio en la entrega no se puede, se cierra rápido el menú que
+   * aparece».
+   *
+   * 220ms y no más: por encima, el panel se queda colgado cuando de verdad te
+   * fuiste, y estorba.
+   */
+  const GRACIA_SALIDA = 220;
+  const salidas = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+
+  const abrirGrupo = (clave: string) => {
+    clearTimeout(salidas.current[clave]);
+    setAbiertos((s) => (s.has(clave) ? s : new Set(s).add(clave)));
+  };
+  const cerrarGrupoConGracia = (clave: string) => {
+    clearTimeout(salidas.current[clave]);
+    salidas.current[clave] = setTimeout(() => {
+      setAbiertos((s) => { const n = new Set(s); n.delete(clave); return n; });
+    }, GRACIA_SALIDA);
+  };
+
+  // Los temporizadores pendientes se cancelan al desmontar: sin esto, salir de
+  // la pantalla con un panel abierto dispara un `setState` sobre un componente
+  // que ya no está.
+  useEffect(() => () => {
+    for (const t of Object.values(salidas.current)) clearTimeout(t);
+  }, []);
+
   // R39 y R38a · al CRUZAR a una banda más angosta, el marco se pliega solo.
   // Dos bandas, dos motivos:
   //   ≤900 — la banda del RIEL (R38a): antes la hoja forzaba 56px con CSS y
@@ -314,11 +349,23 @@ export function MarcoApp({
                 className={['nav-grupo', abierto ? 'abierto' : '', g.alPie ? 'nav-al-pie' : ''].filter(Boolean).join(' ')}
                 key={g.clave}
                 // Plegado, el panel flotante abre AL PASAR EL CURSOR y cierra al
-                // salir — el clic sigue ahí para el teclado. El manejador va en
-                // el grupo entero, no en el título: el panel es hijo del grupo,
-                // así que entrar al panel no lo cierra.
-                onMouseEnter={plegado ? () => setAbiertos((s) => new Set(s).add(g.clave)) : undefined}
-                onMouseLeave={plegado ? () => setAbiertos((s) => { const n = new Set(s); n.delete(g.clave); return n; }) : undefined}
+                // salir CON MARGEN — ver `GRACIA_SALIDA`. El manejador va en el
+                // grupo entero, no en el título: el panel es hijo del grupo, así
+                // que entrar al panel no lo cierra.
+                onMouseEnter={plegado ? () => abrirGrupo(g.clave) : undefined}
+                onMouseLeave={plegado ? () => cerrarGrupoConGracia(g.clave) : undefined}
+                // CON TECLADO NO HAY RATÓN. Sin esto, tabulando dentro de un
+                // grupo plegado el panel no se abría nunca y sus opciones eran
+                // inalcanzables. El catálogo lo hacía con focusin/focusout y la
+                // entrega no lo llevaba.
+                onFocus={plegado ? () => abrirGrupo(g.clave) : undefined}
+                onBlur={plegado ? (e) => {
+                  // Solo si el foco SALE del grupo: moverse del título a una
+                  // opción de dentro no puede cerrarlo.
+                  if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+                    cerrarGrupoConGracia(g.clave);
+                  }
+                } : undefined}
               >
                 <button
                   className="nav-item nav-grupo-tit"
