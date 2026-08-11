@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.39.0';
+export const VERSION = '1.40.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,43 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.40.0', fecha: '2026-08-11',
+    que: 'CargaPdf cabe en un formulario: boton fuera, panel que empuja, y borrador que solo confirma Grabar',
+    porque:
+      'Seis correcciones del responsable probandolo, y la primera invalidaba la forma entera: '
+      + '«porque mostrar un campo tan grande, rompera todo formulario». Tenia razon — un recuadro '
+      + 'de soltar de 100px entre dos campos de 34px rompe la rejilla. Ahora en formulario el '
+      + 'componente ES UN BOTON y el recuadro vive en un panel que se despliega EN SU SITIO, '
+      + 'empujando lo de abajo. NO una ventana flotante: «nosotros no trabajamos con pop up». Y '
+      + 'como grabar es lo que cierra, la eleccion pasa a ser BORRADOR: onCambio se dispara al '
+      + 'Grabar, no al elegir — si emitiera al elegir, cancelar dejaria el formulario ya '
+      + 'cambiado. Volver a abrir arranca de lo ya guardado, o pareceria que se perdio. '
+      + 'R45: maximoArchivos —1, N o sin-limite—; si no caben todos se rechazan TODOS, no se '
+      + 'cogen los que quepan en silencio. El tachito va EN LA LINEA DEL NOMBRE, que fue otra '
+      + 'correccion: al final de la fila no decia a que archivo pertenecia. Cancelar existe '
+      + 'porque el responsable vio el agujero que abrio Grabar: «cuando es error como salimos» — '
+      + 'con un .docx elegido, Grabar apagado y el otro boton reabriendo el dialogo de archivos, '
+      + 'se quedaba encerrado. Siempre visible y nunca apagado. Se descarto el boton que muta de '
+      + 'Cancelar a Guardar: cambiaria lo que hace bajo el cursor. '
+      + 'DOS DEFECTOS QUE SALIERON POR EL CAMINO. «le di clic en quitar, no quito el pdf»: '
+      + 'display:flex gana a [hidden], la leccion R16 por tercera vez. Se arreglo y se le puso '
+      + 'CANDADO — verificar-cascada gana la afirmacion OCULTABLE, que resuelve la cascada con '
+      + 'el atributo puesto para toda clase que lleve hidden en el catalogo. Encontro un cuarto '
+      + 'caso YA PUBLICADO: .cf-banda colapsada a 0fr PARECIA oculta pero seguia en el arbol de '
+      + 'accesibilidad, con su region aria-live viva y sus botones tabulables. '
+      + 'Dialogo.accion gana `deshabilitada`: a la vista y apagado no es lo mismo que ausente. '
+      + 'Tres iconos: documento, papelera y pdf. 285 pruebas.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'CargaPdf.onCambio recibe AHORA LA LISTA ENTERA (PdfListo[]), no un archivo suelto, y en '
+      + 'formulario se dispara al Grabar, no al elegir. La v1.39.0 se publico esta misma manana '
+      + 'y con un solo archivo; quien ya la consuma cambia `r` por `lista[0]`.',
+      'CargaPdf ya no pinta el recuadro por defecto: pinta un boton. Para la forma anterior, '
+      + 'presentacion="en-linea".',
+      'Se retiro `valor` como objeto suelto: ahora es una lista.',
+    ],
+  },
   {
     v: '1.39.0', fecha: '2026-08-11',
     que: 'CargaPdf comprime de verdad y sin dependencias, y nace AreaTexto',

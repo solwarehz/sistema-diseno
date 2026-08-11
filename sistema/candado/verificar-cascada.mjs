@@ -320,6 +320,57 @@ const AFIRMACIONES = [
       return [...emitidas].filter((c) => !declaradas.has(c)).sort().map((c) => `  .${c} se emite y la hoja no la estila`);
     },
   },
+  {
+    id: 'OCULTABLE',
+    que: 'toda clase que fija display se puede seguir ocultando con [hidden]',
+    /**
+     * LA TRAMPA QUE YA HA MORDIDO TRES VECES. `[hidden]` es `display:none` en
+     * la hoja del navegador, que es la de menos peso: CUALQUIER regla de autor
+     * que fije `display` la pisa. El elemento se queda pintado con su atributo
+     * puesto, el manejador ha corrido, y no hay nada que leer en el codigo —
+     * el fallo es, otra vez, lo que no se escribio.
+     *
+     * Historial: `.ci-editor` (v1.30.1, el difuminado que no se iba), la tira
+     * de filtros y el menu de columnas de la tabla, y `.cpdf-puesto` con
+     * `.cpdf-invita` (v1.39.1) — «le di clic en quitar, no quito el pdf».
+     *
+     * Se comprueba resolviendo la cascada de verdad: se pregunta que `display`
+     * le llega al elemento CON el atributo puesto. Si no es `none`, falta la
+     * guarda. Asi tambien vale una guarda escrita de otra forma —agrupada, con
+     * otro selector— con tal de que gane.
+     *
+     * Solo mira clases que fijan un display VISIBLE: una que ya declara `none`
+     * no puede tener este problema.
+     */
+    revisar(reglas) {
+      // Solo se vigilan los elementos que DE VERDAD llevan `hidden` en el
+      // catálogo. Marcar toda clase que fije `display` daría decenas de avisos
+      // sobre elementos que nadie oculta nunca, y un candado que grita por todo
+      // se acaba ignorando — que es como se pierde el aviso que importaba.
+      const html = readFileSync(join(RAIZ, 'cascaron/index.html'), 'utf8');
+      const conHidden = new Set();
+      for (const t of html.matchAll(/<[a-z][^>]*>/gi)) {
+        const tag = t[0];
+        if (!/\shidden[\s/>=]/.test(tag)) continue;
+        const cls = tag.match(/\sclass="([^"]*)"/);
+        if (!cls) continue;
+        for (const c of cls[1].split(/\s+/)) if (c) conHidden.add(c);
+      }
+
+      const fallos = [];
+      for (const clase of [...conHidden].sort()) {
+        // ¿Qué `display` le llega al elemento CON el atributo puesto? Se
+        // resuelve la cascada de verdad, así que una guarda escrita de otra
+        // forma —agrupada, con otro selector— vale igual con tal de que gane.
+        const gana = resolver(reglas, [elem('div', [clase], { hidden: '' })], 'display', 1280);
+        // Sin regla ninguna, manda la hoja del navegador y `hidden` funciona.
+        if (!gana || gana.valor === 'none') continue;
+        fallos.push(`  .${clase} lleva [hidden] en el catálogo y la hoja le deja `
+          + `display:${gana.valor} (${gana.sel}) — falta .${clase}[hidden]{display:none}`);
+      }
+      return fallos;
+    },
+  },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────

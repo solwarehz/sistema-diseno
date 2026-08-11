@@ -43,7 +43,20 @@ export type DialogoProps = {
    */
   origen: React.RefObject<HTMLElement>;
   /** Acción principal del pie. Sin ella, el pie solo lleva «Cerrar». */
-  accion?: { texto: string; onClick: () => void | Promise<unknown>; destructiva?: boolean };
+  /**
+   * Acción principal del pie. Sin ella, el pie solo lleva «Cerrar».
+   *
+   * `deshabilitada` la deja **a la vista y apagada**, que no es lo mismo que
+   * no pasarla: un botón que aparece y desaparece según lo que haya dentro
+   * mueve el pie bajo el ratón y obliga a adivinar qué falta. Apagado se ve
+   * que existe y que todavía no se puede.
+   */
+  accion?: {
+    texto: string;
+    onClick: () => void | Promise<unknown>;
+    destructiva?: boolean;
+    deshabilitada?: boolean;
+  };
   /** Texto del botón que cierra. «Cancelar» cuando hay acción; si no, «Cerrar». */
   textoCerrar?: string;
   /**
@@ -135,6 +148,7 @@ export function Dialogo({
           {accion && (
             <Boton
               variante={accion.destructiva ? 'destructiva' : 'principal'}
+              disabled={accion.deshabilitada}
               onClick={accion.onClick}
             >
               {accion.texto}

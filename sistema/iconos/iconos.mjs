@@ -78,6 +78,17 @@ export const TRAZOS = {
   // otra cosa —material de biblioteca— y usarlo para un archivo enseñaría dos
   // significados con el mismo dibujo.
   documento: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/>',
+  // El tachito. Va en la fila DEL archivo que borra: un «Quitar» suelto al pie
+  // de una lista no dice cuál de los cinco se lleva.
+  papelera: '<path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><path d="M9 7V4h6v3"/>',
+  // El documento CON CONTENIDO, para el boton de subir PDF. Se distingue de
+  // `documento` —que es la hoja en blanco, para la ficha del archivo ya
+  // puesto— por los renglones.
+  //
+  // No lleva las letras «PDF» dentro y no es descuido: a 16px no se leen. Es
+  // el mismo §8.6 del escudo, y la salida es la misma — la palabra va en el
+  // ROTULO del boton, que es donde si se lee.
+  pdf: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/>',
   descargar: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
   capas: '<path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/>',
   // v1.7.0 — fallo de dibujado. Es el único icono de alarma del conjunto y por

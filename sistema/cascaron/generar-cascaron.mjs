@@ -1348,50 +1348,90 @@ devuelve el archivo listo y los dos pesos.</p>
   producto esa cifra no le importa a quien sube un acta, pero en el catálogo es la prueba de que la
   compresión ocurre. Los dos pesos viajan siempre en <code>onCambio</code>.</p>
 
-  <div class="muestra-fila">
-    <div class="cpdf" data-pdf="uno">
+  <p class="seccion-sub"><strong>Está dentro de un formulario a propósito</strong>: pulsa «Subir PDF»
+  y mira cómo el panel se despliega <em>en su sitio</em> y empuja los campos de abajo. Nada flota
+  encima. Al grabar o cancelar, el formulario vuelve a su diseño con la información puesta.</p>
+
+  <form class="campos-rejilla" data-form-pdf onsubmit="return false">
+    <label class="cg"><span class="cg-et">Apellidos y nombres</span>
+      <input class="campo cg-in" value="QUISPE MAMANI, Rosa" readonly></label>
+
+    <div class="cpdf cpdf-compacta" data-pdf="uno">
       <span class="cpdf-et">Acta de notas</span>
-      <div class="cpdf-zona" data-zona>
-        <p class="cpdf-invita" data-invita>
-          <span class="cpdf-ico" aria-hidden="true">${icono('subir', TAMANOS.estado)}</span>
-          <span class="cpdf-instr">Arrastra el PDF aquí o elígelo desde tu equipo.</span>
-        </p>
-        <div class="cpdf-puesto" data-puesto hidden>
-          <span class="cpdf-ico" aria-hidden="true">${icono('documento', TAMANOS.estado)}</span>
-          <span class="cpdf-datos">
-            <span class="cpdf-nombre" data-nombre></span>
-            <span class="cpdf-peso" data-peso></span>
-            <span class="chip chip-exito" data-medida hidden></span>
-          </span>
-        </div>
-        <div class="cpdf-acciones">
-          <button class="btn btn-neutro btn-mini btn-ic" data-elegir>${icono('documento')}Elegir PDF</button>
-          <button class="btn btn-terc btn-mini" data-quitar hidden>Quitar</button>
-        </div>
-        <span class="cpdf-pista">Solo PDF · máximo 10,0 MB una vez comprimido.</span>
+
+      <ul class="cpdf-lista" data-lista hidden></ul>
+
+      <div class="cpdf-acciones">
+        <button class="btn btn-neutro btn-mini btn-ic" data-abrir
+          aria-expanded="false" aria-controls="cpdf-demo-panel">${icono('pdf')}Subir PDF</button>
       </div>
-      <div class="cpdf-trabajo" data-trabajo hidden>
-        <div class="pr-caja">
-          <div class="pr-cab"><span>Comprimiendo el PDF…</span></div>
-          <div class="pr" role="progressbar" aria-label="Comprimiendo el PDF"><div class="pr-indet"></div></div>
+
+      <div class="cpdf-panel" id="cpdf-demo-panel" data-panel hidden>
+        <div class="cpdf-zona" data-zona>
+          <ul class="cpdf-lista" data-borrador hidden></ul>
+          <p class="cpdf-invita" data-invita>
+            <span class="cpdf-ico" aria-hidden="true">${icono('subir', TAMANOS.estado)}</span>
+            <span class="cpdf-instr">Arrastra el PDF aquí o elígelo desde tu equipo.</span>
+          </p>
+          <span class="cpdf-pista">Solo PDF · máximo 10,0 MB una vez comprimido.</span>
+          <div class="cpdf-trabajo" data-trabajo hidden>
+            <div class="pr-caja">
+              <div class="pr-cab"><span>Comprimiendo el PDF…</span></div>
+              <div class="pr" role="progressbar" aria-label="Comprimiendo el PDF"><div class="pr-indet"></div></div>
+            </div>
+          </div>
+          <span class="cpdf-error" data-error role="alert" hidden></span>
+          <input type="file" accept="application/pdf,.pdf" class="cpdf-entrada" tabindex="-1" aria-hidden="true">
+        </div>
+        <div class="cpdf-pie">
+          <button class="btn btn-1 btn-mini" data-grabar disabled>Grabar</button>
+          <button class="btn btn-terc btn-mini" data-cancelar>Cancelar</button>
         </div>
       </div>
-      <span class="cpdf-error" data-error role="alert" hidden></span>
+
       <span class="cpdf-ayuda">El acta va al legajo del estudiante.</span>
-      <input type="file" accept="application/pdf,.pdf" class="cpdf-entrada" tabindex="-1" aria-hidden="true">
     </div>
 
-    <div class="cpdf">
-      <span class="cpdf-et">Constancia firmada</span>
-      <div class="cpdf-zona cpdf-mal">
-        <p class="cpdf-invita">
-          <span class="cpdf-ico" aria-hidden="true">${icono('subir', TAMANOS.estado)}</span>
-          <span class="cpdf-instr">Arrastra aquí la constancia ya firmada por Dirección.</span>
-        </p>
-        <div class="cpdf-acciones">
-          <button class="btn btn-neutro btn-mini btn-ic">${icono('documento')}Elegir PDF</button>
-        </div>
-        <span class="cpdf-pista">Solo PDF · una hoja.</span>
+    <label class="cg"><span class="cg-et">Observaciones</span>
+      <input class="campo cg-in" placeholder="Este campo se desplaza hacia abajo"></label>
+  </form>
+</div>
+
+<h3 class="sub-seccion">Cerrado, abierto, y el archivo puesto</h3>
+<div class="bloque">
+  <div class="muestra-fila">
+    <div class="cpdf cpdf-compacta">
+      <span class="cpdf-et">Cerrado y vacío</span>
+      <div class="cpdf-acciones">
+        <button class="btn btn-neutro btn-mini btn-ic">${icono('pdf')}Subir PDF</button>
+      </div>
+      <span class="cpdf-ayuda">Lo que ve el formulario mientras no hay nada.</span>
+    </div>
+
+    <div class="cpdf cpdf-compacta">
+      <span class="cpdf-et">Con el archivo puesto</span>
+      <ul class="cpdf-lista">
+        <li class="cpdf-puesto">
+          <span class="cpdf-ico" aria-hidden="true">${icono('documento', TAMANOS.estado)}</span>
+          <span class="cpdf-datos">
+            <span class="cpdf-linea">
+              <span class="cpdf-nombre">acta-2026-3B.pdf</span>
+              <button class="btn btn-terc btn-mini btn-solo-ic cpdf-quitar"
+                aria-label="Quitar acta-2026-3B.pdf">${icono('papelera')}</button>
+            </span>
+            <span class="cpdf-peso">223 KB · 2 páginas</span>
+          </span>
+        </li>
+      </ul>
+      <div class="cpdf-acciones">
+        <button class="btn btn-neutro btn-mini btn-ic">${icono('pdf')}Subir PDF</button>
+      </div>
+    </div>
+
+    <div class="cpdf cpdf-compacta">
+      <span class="cpdf-et">Con error</span>
+      <div class="cpdf-acciones">
+        <button class="btn btn-neutro btn-mini btn-ic">${icono('pdf')}Subir PDF</button>
       </div>
       <span class="cpdf-error">Ese archivo no es un PDF. Solo se admiten PDF.</span>
     </div>
@@ -4621,6 +4661,8 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .mf { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
 .mf-et { font-size: 12px; color: var(--texto-secundario); line-height: 1.45; }
 .btn-ic { display: inline-flex; align-items: center; gap: 8px; }
+/* Misma trampa: un boton con icono lleva display propio y [hidden] no lo tapa. */
+.btn-ic[hidden] { display: none; }
 .btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
 
@@ -4630,6 +4672,11 @@ code { font-family: 'IBM Plex Mono', monospace; }
    anima hasta altura automática sin fijar píxeles a mano. */
 .cf-banda { display: grid; grid-template-rows: 0fr;
   transition: grid-template-rows var(--dur-lenta) var(--curva); }
+/* Lo encontro el candado OCULTABLE, y llevaba publicado desde que existe la
+   banda. Colapsada a 0fr PARECE oculta —eso es lo que engañaba—, pero seguia
+   en el arbol de accesibilidad: su region aria-live viva y sus botones
+   alcanzables con el tabulador. Cerrada de verdad no la ve nadie. */
+.cf-banda[hidden] { display: none; }
 .cf-banda.abierta { grid-template-rows: 1fr; }
 .cf-banda-in { overflow: hidden; }
 .cf-caja { display: flex; align-items: center; justify-content: space-between;
@@ -5906,7 +5953,51 @@ select.campo:disabled { opacity: .75; }
   margin: 0; font-size: 13px; color: var(--texto-secundario); }
 .cpdf-ico { display: block; color: var(--texto-secundario); }
 .cpdf-instr { display: block; }
-.cpdf-puesto { display: flex; align-items: center; gap: 12px; text-align: left; max-width: 100%; }
+.cpdf-lista { list-style: none; margin: 0; padding: 0; width: 100%;
+  display: flex; flex-direction: column; gap: 8px; }
+/* align-items:flex-start y no center: con varias lineas de datos, centrar
+   dejaria el icono flotando a media altura del bloque. */
+.cpdf-puesto { display: flex; align-items: flex-start; gap: 12px; text-align: left;
+  max-width: 100%; }
+/* El nombre y el tachito COMPARTEN LINEA. Puesto al final de la fila, el boton
+   quedaba a la altura del bloque entero y con cinco archivos no se sabia a
+   cual pertenecia. En la misma linea que el nombre, se ve que se lleva. */
+.cpdf-linea { display: flex; align-items: center; gap: 8px; width: 100%; }
+.cpdf-quitar { flex: none; }
+/* LA LECCION R16, TERCERA VEZ: display GANA a [hidden] del navegador. Toda
+   regla que fije display deja su elemento imposible de ocultar con el atributo,
+   y no avisa — se ve pintado y nadie sabe por que. Lo encontro el responsable
+   pulsando «Quitar»: el manejador corria, ponia hidden, y el bloque seguia ahi.
+   Se pone la guarda AL LADO de la regla que causa el problema, no en un rincon,
+   para que quien anada otro display la vea. */
+.cpdf-invita[hidden], .cpdf-puesto[hidden], .cpdf-lista[hidden],
+.cpdf-linea[hidden], .cpdf-acciones[hidden], .cpdf-panel[hidden],
+.cpdf-pie[hidden] { display: none; }
+
+/* EN FORMULARIO NO HAY VENTANA FLOTANTE. Lo dijo el responsable: «nosotros no
+   trabajamos con pop up, lo que hacemos es aparecer este componente y desplazar
+   el contenido del formulario debajo». Asi que el panel se despliega EN SU
+   SITIO y empuja lo que venga despues; nada tapa el formulario y al cerrar
+   todo vuelve donde estaba.
+
+   Entra con una animacion corta —el desplazamiento se entiende mejor si se ve
+   ocurrir— y NO se anima al salir: cerrar tiene que ser inmediato. La
+   preferencia de movimiento reducido ya la resuelve el sistema una sola vez.
+
+   Se monta y se desmonta de verdad: colapsarlo con altura cero lo dejaria en
+   el arbol de accesibilidad con sus botones tabulables, que es el defecto que
+   el candado OCULTABLE acaba de encontrar en .cf-banda. */
+.cpdf-compacta { gap: 8px; }
+.cpdf-panel { display: flex; flex-direction: column; gap: 8px;
+  animation: cpdf-desplegar var(--dur-media) var(--curva); }
+@keyframes cpdf-desplegar {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+/* El pie del panel: Guardar y Cancelar. DOS botones, nunca uno que cambie de
+   significado — uno solo que pasara de «Cancelar» a «Guardar» al detectar
+   contenido cambiaria lo que hace bajo el cursor. */
+.cpdf-pie { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
 .cpdf-datos { display: flex; flex-direction: column; gap: 4px; min-width: 0;
   align-items: flex-start; }
 .cpdf-nombre { font-size: 13px; font-weight: 500; overflow-wrap: anywhere; }
@@ -5988,6 +6079,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
 .chip { display: inline-block; font-size: 12px; font-weight: 500;
   padding: 4px 8px; border-radius: 3px; border-left: 3px solid; }
+/* Fija display, asi que sin esto un chip con [hidden] se sigue viendo. */
+.chip[hidden] { display: none; }
 /* EL COLOR DEL ESTADO SE ESCRIBE UNA VEZ, no una por elemento.
    Estaba en .chip-* y otra vez en .msj-*, identico, y el dia que un tono
    cambiara habria cambiado en uno de los dos. No es un ahorro de lineas: es
@@ -7898,21 +7991,31 @@ ${COMPRESOR_PDF}
   // Usa PDF.comprimirPdf, que es EL MISMO archivo que importa el componente
   // de React: se inserta arriba tal cual. Si esta demo tuviera su propia copia
   // enseñaría una compresión que no es la que viaja en el paquete.
+  //
+  // La forma es la del formulario: boton siempre presente, panel que se
+  // despliega EN SU SITIO empujando los campos de abajo, y BORRADOR que solo
+  // se confirma al Grabar — cancelar tiene que dejar el formulario como estaba.
   (function () {
     var TOPE = 10 * 1024 * 1024;
+    var ICO_DOC = ${JSON.stringify(icono('documento', TAMANOS.estado))};
+    var ICO_PAPELERA = ${JSON.stringify(icono('papelera'))};
 
     document.querySelectorAll('[data-pdf]').forEach(function (caja) {
+      var abrir = caja.querySelector('[data-abrir]');
+      var panel = caja.querySelector('[data-panel]');
       var zona = caja.querySelector('[data-zona]');
       var entrada = caja.querySelector('input[type="file"]');
       var invita = caja.querySelector('[data-invita]');
-      var puesto = caja.querySelector('[data-puesto]');
-      var nombre = caja.querySelector('[data-nombre]');
-      var peso = caja.querySelector('[data-peso]');
-      var medida = caja.querySelector('[data-medida]');
+      var lista = caja.querySelector('[data-lista]');
+      var borradorUI = caja.querySelector('[data-borrador]');
       var trabajo = caja.querySelector('[data-trabajo]');
       var error = caja.querySelector('[data-error]');
-      var elegir = caja.querySelector('[data-elegir]');
-      var quitar = caja.querySelector('[data-quitar]');
+      var grabar = caja.querySelector('[data-grabar]');
+      var cancelar = caja.querySelector('[data-cancelar]');
+      if (!abrir || !panel) return;
+
+      var confirmados = [];
+      var borrador = [];
 
       function fallo(txt) {
         error.textContent = txt;
@@ -7924,63 +8027,140 @@ ${COMPRESOR_PDF}
         zona.classList.remove('cpdf-mal');
       }
 
+      // Una fila: el tachito EN LA MISMA LINEA que el nombre, para que se vea
+      // cual se lleva antes de pulsarlo.
+      function pintar(destino, items, alQuitar) {
+        destino.innerHTML = '';
+        destino.hidden = items.length === 0;
+        items.forEach(function (it, k) {
+          var li = document.createElement('li');
+          li.className = 'cpdf-puesto';
+          var ico = document.createElement('span');
+          ico.className = 'cpdf-ico';
+          ico.setAttribute('aria-hidden', 'true');
+          ico.innerHTML = ICO_DOC;
+          var datos = document.createElement('span');
+          datos.className = 'cpdf-datos';
+          var linea = document.createElement('span');
+          linea.className = 'cpdf-linea';
+          var nom = document.createElement('span');
+          nom.className = 'cpdf-nombre';
+          nom.textContent = it.nombre;
+          var bot = document.createElement('button');
+          bot.type = 'button';
+          bot.className = 'btn btn-terc btn-mini btn-solo-ic cpdf-quitar';
+          bot.setAttribute('aria-label', 'Quitar ' + it.nombre);
+          bot.innerHTML = ICO_PAPELERA;
+          bot.addEventListener('click', function () { alQuitar(k); });
+          linea.appendChild(nom);
+          linea.appendChild(bot);
+          var pes = document.createElement('span');
+          pes.className = 'cpdf-peso';
+          var pgs = it.paginas > 0 ? ' · ' + it.paginas + (it.paginas === 1 ? ' página' : ' páginas') : '';
+          pes.textContent = PDF.formatearPeso(it.pesoFinal) + pgs;
+          // LA CIFRA DEL CATALOGO: la demostracion de que la compresion ocurrio.
+          var chip = document.createElement('span');
+          if (it.comprimido) {
+            chip.className = 'chip chip-exito';
+            chip.textContent = PDF.formatearPeso(it.pesoInicial) + ' → ' + PDF.formatearPeso(it.pesoFinal)
+              + ' · ' + PDF.ahorro(it.pesoInicial, it.pesoFinal) + ' % menos';
+          } else {
+            chip.className = 'chip chip-inact';
+            chip.textContent = PDF.formatearPeso(it.pesoInicial) + ' · sin cambio (' + it.motivo + ')';
+          }
+          datos.appendChild(linea);
+          datos.appendChild(pes);
+          datos.appendChild(chip);
+          li.appendChild(ico);
+          li.appendChild(datos);
+          destino.appendChild(li);
+        });
+      }
+
+      function refrescar() {
+        pintar(borradorUI, borrador, function (k) {
+          borrador.splice(k, 1);
+          limpiar();
+          refrescar();
+        });
+        invita.hidden = borrador.length > 0;
+        grabar.disabled = borrador.length === 0;
+      }
+
+      function refrescarFuera() {
+        pintar(lista, confirmados, function (k) {
+          confirmados.splice(k, 1);
+          refrescarFuera();
+        });
+      }
+
       function tomar(archivos) {
-        var lista = archivos ? [].slice.call(archivos) : [];
+        var entrantes = archivos ? [].slice.call(archivos) : [];
         limpiar();
-        if (lista.length > 1) {
-          fallo('Suelta un solo archivo. Si son varios, súbelos de uno en uno.');
+        if (!entrantes.length) return;
+        if (entrantes.length > 1) {
+          fallo('Solo cabe 1 archivo. Suelta uno.');
+          entrada.value = '';
           return;
         }
-        if (!lista[0]) return;
-        var archivo = lista[0];
-
+        var archivo = entrantes[0];
         // Los BYTES, no la extensión: un .docx renombrado se cuela por el nombre.
         PDF.esPdf(archivo).then(function (vale) {
-          if (!vale) {
-            fallo('Ese archivo no es un PDF. Solo se admiten PDF.');
-            return;
-          }
+          if (!vale) { fallo('Ese archivo no es un PDF. Solo se admiten PDF.'); return; }
           trabajo.hidden = false;
-          elegir.disabled = true;
+          abrir.disabled = true;
           return PDF.comprimirPdf(archivo).then(function (r) {
             trabajo.hidden = true;
-            elegir.disabled = false;
+            abrir.disabled = false;
             if (r.pesoFinal > TOPE) {
-              fallo('El PDF pesa ' + PDF.formatearPeso(r.pesoFinal) + ' y el máximo es '
-                + PDF.formatearPeso(TOPE) + '. Divídelo o quita las páginas que no hagan falta.');
+              fallo(archivo.name + ' pesa ' + PDF.formatearPeso(r.pesoFinal) + ' y el máximo es '
+                + PDF.formatearPeso(TOPE) + '.');
               return;
             }
-            invita.hidden = true;
-            puesto.hidden = false;
-            quitar.hidden = false;
-            elegir.innerHTML = elegir.innerHTML.replace('Elegir PDF', 'Cambiar PDF');
-            nombre.textContent = archivo.name;
-            var pgs = r.detalle && r.detalle.paginas > 0
-              ? ' · ' + r.detalle.paginas + (r.detalle.paginas === 1 ? ' página' : ' páginas') : '';
-            peso.textContent = PDF.formatearPeso(r.pesoFinal) + pgs;
-            // LA CIFRA DEL CATÁLOGO. Es lo único que esta página enseña de más
-            // que el componente, y es la demostración de que la compresión
-            // ocurrió: sin ella sería una promesa.
-            medida.hidden = false;
-            if (r.comprimido) {
-              medida.className = 'chip chip-exito';
-              medida.textContent = PDF.formatearPeso(r.pesoInicial) + ' → '
-                + PDF.formatearPeso(r.pesoFinal) + ' · '
-                + PDF.ahorro(r.pesoInicial, r.pesoFinal) + ' % menos';
-            } else {
-              medida.className = 'chip chip-inact';
-              medida.textContent = PDF.formatearPeso(r.pesoInicial) + ' · sin cambio (' + r.motivo + ')';
-            }
+            borrador = [{
+              nombre: archivo.name, pesoInicial: r.pesoInicial, pesoFinal: r.pesoFinal,
+              comprimido: r.comprimido, motivo: r.motivo,
+              paginas: (r.detalle && r.detalle.paginas) || -1
+            }];
+            refrescar();
           });
         }).catch(function () {
           trabajo.hidden = true;
-          elegir.disabled = false;
+          abrir.disabled = false;
           fallo('No se pudo leer el archivo.');
         }).then(function () {
           // Vaciar para que elegir EL MISMO archivo vuelva a disparar 'change'.
           entrada.value = '';
         });
       }
+
+      abrir.addEventListener('click', function () {
+        if (panel.hidden) {
+          // El borrador arranca de lo que ya hay: entrar a cambiar el archivo
+          // no puede empezar en blanco y hacer creer que se perdio.
+          borrador = confirmados.slice();
+          panel.hidden = false;
+          abrir.setAttribute('aria-expanded', 'true');
+          limpiar();
+          refrescar();
+        } else {
+          entrada.click();
+        }
+      });
+      cancelar.addEventListener('click', function () {
+        panel.hidden = true;
+        abrir.setAttribute('aria-expanded', 'false');
+        borrador = [];
+        limpiar();
+      });
+      grabar.addEventListener('click', function () {
+        confirmados = borrador.slice();
+        panel.hidden = true;
+        abrir.setAttribute('aria-expanded', 'false');
+        borrador = [];
+        limpiar();
+        refrescarFuera();
+      });
 
       zona.addEventListener('dragover', function (e) {
         e.preventDefault();
@@ -7992,16 +8172,7 @@ ${COMPRESOR_PDF}
         zona.classList.remove('cpdf-encima');
         tomar(e.dataTransfer.files);
       });
-      elegir.addEventListener('click', function () { entrada.click(); });
       entrada.addEventListener('change', function (e) { tomar(e.target.files); });
-      quitar.addEventListener('click', function () {
-        limpiar();
-        invita.hidden = false;
-        puesto.hidden = true;
-        quitar.hidden = true;
-        medida.hidden = true;
-        elegir.innerHTML = elegir.innerHTML.replace('Cambiar PDF', 'Elegir PDF');
-      });
     });
   })();
 

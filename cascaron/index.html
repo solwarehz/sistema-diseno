@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.39.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.40.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.39.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.40.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -1022,6 +1022,8 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .mf { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
 .mf-et { font-size: 12px; color: var(--texto-secundario); line-height: 1.45; }
 .btn-ic { display: inline-flex; align-items: center; gap: 8px; }
+/* Misma trampa: un boton con icono lleva display propio y [hidden] no lo tapa. */
+.btn-ic[hidden] { display: none; }
 .btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
 
@@ -1031,6 +1033,11 @@ code { font-family: 'IBM Plex Mono', monospace; }
    anima hasta altura automática sin fijar píxeles a mano. */
 .cf-banda { display: grid; grid-template-rows: 0fr;
   transition: grid-template-rows var(--dur-lenta) var(--curva); }
+/* Lo encontro el candado OCULTABLE, y llevaba publicado desde que existe la
+   banda. Colapsada a 0fr PARECE oculta —eso es lo que engañaba—, pero seguia
+   en el arbol de accesibilidad: su region aria-live viva y sus botones
+   alcanzables con el tabulador. Cerrada de verdad no la ve nadie. */
+.cf-banda[hidden] { display: none; }
 .cf-banda.abierta { grid-template-rows: 1fr; }
 .cf-banda-in { overflow: hidden; }
 .cf-caja { display: flex; align-items: center; justify-content: space-between;
@@ -2307,7 +2314,51 @@ select.campo:disabled { opacity: .75; }
   margin: 0; font-size: 13px; color: var(--texto-secundario); }
 .cpdf-ico { display: block; color: var(--texto-secundario); }
 .cpdf-instr { display: block; }
-.cpdf-puesto { display: flex; align-items: center; gap: 12px; text-align: left; max-width: 100%; }
+.cpdf-lista { list-style: none; margin: 0; padding: 0; width: 100%;
+  display: flex; flex-direction: column; gap: 8px; }
+/* align-items:flex-start y no center: con varias lineas de datos, centrar
+   dejaria el icono flotando a media altura del bloque. */
+.cpdf-puesto { display: flex; align-items: flex-start; gap: 12px; text-align: left;
+  max-width: 100%; }
+/* El nombre y el tachito COMPARTEN LINEA. Puesto al final de la fila, el boton
+   quedaba a la altura del bloque entero y con cinco archivos no se sabia a
+   cual pertenecia. En la misma linea que el nombre, se ve que se lleva. */
+.cpdf-linea { display: flex; align-items: center; gap: 8px; width: 100%; }
+.cpdf-quitar { flex: none; }
+/* LA LECCION R16, TERCERA VEZ: display GANA a [hidden] del navegador. Toda
+   regla que fije display deja su elemento imposible de ocultar con el atributo,
+   y no avisa — se ve pintado y nadie sabe por que. Lo encontro el responsable
+   pulsando «Quitar»: el manejador corria, ponia hidden, y el bloque seguia ahi.
+   Se pone la guarda AL LADO de la regla que causa el problema, no en un rincon,
+   para que quien anada otro display la vea. */
+.cpdf-invita[hidden], .cpdf-puesto[hidden], .cpdf-lista[hidden],
+.cpdf-linea[hidden], .cpdf-acciones[hidden], .cpdf-panel[hidden],
+.cpdf-pie[hidden] { display: none; }
+
+/* EN FORMULARIO NO HAY VENTANA FLOTANTE. Lo dijo el responsable: «nosotros no
+   trabajamos con pop up, lo que hacemos es aparecer este componente y desplazar
+   el contenido del formulario debajo». Asi que el panel se despliega EN SU
+   SITIO y empuja lo que venga despues; nada tapa el formulario y al cerrar
+   todo vuelve donde estaba.
+
+   Entra con una animacion corta —el desplazamiento se entiende mejor si se ve
+   ocurrir— y NO se anima al salir: cerrar tiene que ser inmediato. La
+   preferencia de movimiento reducido ya la resuelve el sistema una sola vez.
+
+   Se monta y se desmonta de verdad: colapsarlo con altura cero lo dejaria en
+   el arbol de accesibilidad con sus botones tabulables, que es el defecto que
+   el candado OCULTABLE acaba de encontrar en .cf-banda. */
+.cpdf-compacta { gap: 8px; }
+.cpdf-panel { display: flex; flex-direction: column; gap: 8px;
+  animation: cpdf-desplegar var(--dur-media) var(--curva); }
+@keyframes cpdf-desplegar {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+/* El pie del panel: Guardar y Cancelar. DOS botones, nunca uno que cambie de
+   significado — uno solo que pasara de «Cancelar» a «Guardar» al detectar
+   contenido cambiaria lo que hace bajo el cursor. */
+.cpdf-pie { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
 .cpdf-datos { display: flex; flex-direction: column; gap: 4px; min-width: 0;
   align-items: flex-start; }
 .cpdf-nombre { font-size: 13px; font-weight: 500; overflow-wrap: anywhere; }
@@ -2389,6 +2440,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
 .chip { display: inline-block; font-size: 12px; font-weight: 500;
   padding: 4px 8px; border-radius: 3px; border-left: 3px solid; }
+/* Fija display, asi que sin esto un chip con [hidden] se sigue viendo. */
+.chip[hidden] { display: none; }
 /* EL COLOR DEL ESTADO SE ESCRIBE UNA VEZ, no una por elemento.
    Estaba en .chip-* y otra vez en .msj-*, identico, y el dia que un tono
    cambiara habria cambiado en uno de los dos. No es un ahorro de lineas: es
@@ -3213,7 +3266,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.39.0</option></select></label>
+          <select class="campo cg-in"><option>v1.40.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3301,8 +3354,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.39.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.39.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.40.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.40.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -5321,7 +5374,7 @@ claridad para que el mismo blanco funcione encima; por eso el paso es un índice
 Heredan <code>currentColor</code> — que es exactamente lo que el emoji no hace.</p>
 <div class="bloque">
   <div class="iconos-rejilla">
-  <div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>panel</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/></svg><span>matricula</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg><span>asistencia</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M17 6a3 3 0 0 1 0 6M18 20c0-2-1-3.5-2.5-4.5"/></svg><span>usuarios</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="2" y="13" width="4" height="6" rx="1.5"/><rect x="18" y="13" width="4" height="6" rx="1.5"/></svg><span>comunicaciones</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg><span>administracion</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg><span>tesoreria</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg><span>academico</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/></svg><span>configuracion</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>chevron</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m15 18-6-6 6-6"/></svg><span>chevronIzq</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg><span>chevronDer</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg><span>sol</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg><span>sobre</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span>campana</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg><span>panelIzq</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>hamburguesa</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><span>luna</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>salir</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>escritorio</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg><span>movil</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg><span>atras</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg><span>mas</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg><span>libro</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg><span>documento</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>descargar</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span>capas</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg><span>roto</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>candado</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>lupa</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg><span>cerrar</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 5 5L20 7"/></svg><span>visto</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg><span>alerta</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 5h18l-7 8v6l-4 2v-8Z"/></svg><span>filtro</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg><span>columnas</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg><span>ordenar</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 5v14M6 13l6 6 6-6"/></svg><span>descargar2</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg><span>subir</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg><span>ojo</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/><path d="m4 4 16 16"/></svg><span>ojoTachado</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg><span>camara</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="13" width="18" height="5" rx="1"/></svg><span>filas</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="3" rx="1"/><rect x="3" y="10" width="18" height="3" rx="1"/><rect x="3" y="16" width="18" height="3" rx="1"/></svg><span>filasFinas</span></div>
+  <div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>panel</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/></svg><span>matricula</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg><span>asistencia</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M17 6a3 3 0 0 1 0 6M18 20c0-2-1-3.5-2.5-4.5"/></svg><span>usuarios</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="2" y="13" width="4" height="6" rx="1.5"/><rect x="18" y="13" width="4" height="6" rx="1.5"/></svg><span>comunicaciones</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg><span>administracion</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg><span>tesoreria</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg><span>academico</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/></svg><span>configuracion</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>chevron</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m15 18-6-6 6-6"/></svg><span>chevronIzq</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg><span>chevronDer</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg><span>sol</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg><span>sobre</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span>campana</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg><span>panelIzq</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>hamburguesa</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><span>luna</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>salir</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>escritorio</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg><span>movil</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg><span>atras</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg><span>mas</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg><span>libro</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg><span>documento</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><path d="M9 7V4h6v3"/></svg><span>papelera</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg><span>pdf</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>descargar</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span>capas</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg><span>roto</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>candado</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>lupa</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg><span>cerrar</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 5 5L20 7"/></svg><span>visto</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg><span>alerta</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 5h18l-7 8v6l-4 2v-8Z"/></svg><span>filtro</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg><span>columnas</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg><span>ordenar</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 5v14M6 13l6 6 6-6"/></svg><span>descargar2</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg><span>subir</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg><span>ojo</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/><path d="m4 4 16 16"/></svg><span>ojoTachado</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg><span>camara</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="13" width="18" height="5" rx="1"/></svg><span>filas</span></div><div class="ico-item"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="3" rx="1"/><rect x="3" y="10" width="18" height="3" rx="1"/><rect x="3" y="16" width="18" height="3" rx="1"/></svg><span>filasFinas</span></div>
   </div>
 </div>
 <h3 class="sub-seccion">Por qué no emoji</h3>
@@ -6082,50 +6135,90 @@ devuelve el archivo listo y los dos pesos.</p>
   producto esa cifra no le importa a quien sube un acta, pero en el catálogo es la prueba de que la
   compresión ocurre. Los dos pesos viajan siempre en <code>onCambio</code>.</p>
 
-  <div class="muestra-fila">
-    <div class="cpdf" data-pdf="uno">
+  <p class="seccion-sub"><strong>Está dentro de un formulario a propósito</strong>: pulsa «Subir PDF»
+  y mira cómo el panel se despliega <em>en su sitio</em> y empuja los campos de abajo. Nada flota
+  encima. Al grabar o cancelar, el formulario vuelve a su diseño con la información puesta.</p>
+
+  <form class="campos-rejilla" data-form-pdf onsubmit="return false">
+    <label class="cg"><span class="cg-et">Apellidos y nombres</span>
+      <input class="campo cg-in" value="QUISPE MAMANI, Rosa" readonly></label>
+
+    <div class="cpdf cpdf-compacta" data-pdf="uno">
       <span class="cpdf-et">Acta de notas</span>
-      <div class="cpdf-zona" data-zona>
-        <p class="cpdf-invita" data-invita>
-          <span class="cpdf-ico" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span>
-          <span class="cpdf-instr">Arrastra el PDF aquí o elígelo desde tu equipo.</span>
-        </p>
-        <div class="cpdf-puesto" data-puesto hidden>
-          <span class="cpdf-ico" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg></span>
-          <span class="cpdf-datos">
-            <span class="cpdf-nombre" data-nombre></span>
-            <span class="cpdf-peso" data-peso></span>
-            <span class="chip chip-exito" data-medida hidden></span>
-          </span>
-        </div>
-        <div class="cpdf-acciones">
-          <button class="btn btn-neutro btn-mini btn-ic" data-elegir><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Elegir PDF</button>
-          <button class="btn btn-terc btn-mini" data-quitar hidden>Quitar</button>
-        </div>
-        <span class="cpdf-pista">Solo PDF · máximo 10,0 MB una vez comprimido.</span>
+
+      <ul class="cpdf-lista" data-lista hidden></ul>
+
+      <div class="cpdf-acciones">
+        <button class="btn btn-neutro btn-mini btn-ic" data-abrir
+          aria-expanded="false" aria-controls="cpdf-demo-panel"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>Subir PDF</button>
       </div>
-      <div class="cpdf-trabajo" data-trabajo hidden>
-        <div class="pr-caja">
-          <div class="pr-cab"><span>Comprimiendo el PDF…</span></div>
-          <div class="pr" role="progressbar" aria-label="Comprimiendo el PDF"><div class="pr-indet"></div></div>
+
+      <div class="cpdf-panel" id="cpdf-demo-panel" data-panel hidden>
+        <div class="cpdf-zona" data-zona>
+          <ul class="cpdf-lista" data-borrador hidden></ul>
+          <p class="cpdf-invita" data-invita>
+            <span class="cpdf-ico" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span>
+            <span class="cpdf-instr">Arrastra el PDF aquí o elígelo desde tu equipo.</span>
+          </p>
+          <span class="cpdf-pista">Solo PDF · máximo 10,0 MB una vez comprimido.</span>
+          <div class="cpdf-trabajo" data-trabajo hidden>
+            <div class="pr-caja">
+              <div class="pr-cab"><span>Comprimiendo el PDF…</span></div>
+              <div class="pr" role="progressbar" aria-label="Comprimiendo el PDF"><div class="pr-indet"></div></div>
+            </div>
+          </div>
+          <span class="cpdf-error" data-error role="alert" hidden></span>
+          <input type="file" accept="application/pdf,.pdf" class="cpdf-entrada" tabindex="-1" aria-hidden="true">
+        </div>
+        <div class="cpdf-pie">
+          <button class="btn btn-1 btn-mini" data-grabar disabled>Grabar</button>
+          <button class="btn btn-terc btn-mini" data-cancelar>Cancelar</button>
         </div>
       </div>
-      <span class="cpdf-error" data-error role="alert" hidden></span>
+
       <span class="cpdf-ayuda">El acta va al legajo del estudiante.</span>
-      <input type="file" accept="application/pdf,.pdf" class="cpdf-entrada" tabindex="-1" aria-hidden="true">
     </div>
 
-    <div class="cpdf">
-      <span class="cpdf-et">Constancia firmada</span>
-      <div class="cpdf-zona cpdf-mal">
-        <p class="cpdf-invita">
-          <span class="cpdf-ico" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span>
-          <span class="cpdf-instr">Arrastra aquí la constancia ya firmada por Dirección.</span>
-        </p>
-        <div class="cpdf-acciones">
-          <button class="btn btn-neutro btn-mini btn-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Elegir PDF</button>
-        </div>
-        <span class="cpdf-pista">Solo PDF · una hoja.</span>
+    <label class="cg"><span class="cg-et">Observaciones</span>
+      <input class="campo cg-in" placeholder="Este campo se desplaza hacia abajo"></label>
+  </form>
+</div>
+
+<h3 class="sub-seccion">Cerrado, abierto, y el archivo puesto</h3>
+<div class="bloque">
+  <div class="muestra-fila">
+    <div class="cpdf cpdf-compacta">
+      <span class="cpdf-et">Cerrado y vacío</span>
+      <div class="cpdf-acciones">
+        <button class="btn btn-neutro btn-mini btn-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>Subir PDF</button>
+      </div>
+      <span class="cpdf-ayuda">Lo que ve el formulario mientras no hay nada.</span>
+    </div>
+
+    <div class="cpdf cpdf-compacta">
+      <span class="cpdf-et">Con el archivo puesto</span>
+      <ul class="cpdf-lista">
+        <li class="cpdf-puesto">
+          <span class="cpdf-ico" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg></span>
+          <span class="cpdf-datos">
+            <span class="cpdf-linea">
+              <span class="cpdf-nombre">acta-2026-3B.pdf</span>
+              <button class="btn btn-terc btn-mini btn-solo-ic cpdf-quitar"
+                aria-label="Quitar acta-2026-3B.pdf"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><path d="M9 7V4h6v3"/></svg></button>
+            </span>
+            <span class="cpdf-peso">223 KB · 2 páginas</span>
+          </span>
+        </li>
+      </ul>
+      <div class="cpdf-acciones">
+        <button class="btn btn-neutro btn-mini btn-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>Subir PDF</button>
+      </div>
+    </div>
+
+    <div class="cpdf cpdf-compacta">
+      <span class="cpdf-et">Con error</span>
+      <div class="cpdf-acciones">
+        <button class="btn btn-neutro btn-mini btn-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>Subir PDF</button>
       </div>
       <span class="cpdf-error">Ese archivo no es un PDF. Solo se admiten PDF.</span>
     </div>
@@ -9774,6 +9867,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
 
 
+<h3 class="sub-seccion">v1.40.0 <span class="cam-fecha">2026-08-11</span></h3>
+<p class="pag-intro"><strong>CargaPdf cabe en un formulario: boton fuera, panel que empuja, y borrador que solo confirma Grabar.</strong> Seis correcciones del responsable probandolo, y la primera invalidaba la forma entera: «porque mostrar un campo tan grande, rompera todo formulario». Tenia razon — un recuadro de soltar de 100px entre dos campos de 34px rompe la rejilla. Ahora en formulario el componente ES UN BOTON y el recuadro vive en un panel que se despliega EN SU SITIO, empujando lo de abajo. NO una ventana flotante: «nosotros no trabajamos con pop up». Y como grabar es lo que cierra, la eleccion pasa a ser BORRADOR: onCambio se dispara al Grabar, no al elegir — si emitiera al elegir, cancelar dejaria el formulario ya cambiado. Volver a abrir arranca de lo ya guardado, o pareceria que se perdio. R45: maximoArchivos —1, N o sin-limite—; si no caben todos se rechazan TODOS, no se cogen los que quepan en silencio. El tachito va EN LA LINEA DEL NOMBRE, que fue otra correccion: al final de la fila no decia a que archivo pertenecia. Cancelar existe porque el responsable vio el agujero que abrio Grabar: «cuando es error como salimos» — con un .docx elegido, Grabar apagado y el otro boton reabriendo el dialogo de archivos, se quedaba encerrado. Siempre visible y nunca apagado. Se descarto el boton que muta de Cancelar a Guardar: cambiaria lo que hace bajo el cursor. DOS DEFECTOS QUE SALIERON POR EL CAMINO. «le di clic en quitar, no quito el pdf»: display:flex gana a [hidden], la leccion R16 por tercera vez. Se arreglo y se le puso CANDADO — verificar-cascada gana la afirmacion OCULTABLE, que resuelve la cascada con el atributo puesto para toda clase que lleve hidden en el catalogo. Encontro un cuarto caso YA PUBLICADO: .cf-banda colapsada a 0fr PARECIA oculta pero seguia en el arbol de accesibilidad, con su region aria-live viva y sus botones tabulables. Dialogo.accion gana `deshabilitada`: a la vista y apagado no es lo mismo que ausente. Tres iconos: documento, papelera y pdf. 285 pruebas.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>CargaPdf.onCambio recibe AHORA LA LISTA ENTERA (PdfListo[]), no un archivo suelto, y en formulario se dispara al Grabar, no al elegir. La v1.39.0 se publico esta misma manana y con un solo archivo; quien ya la consuma cambia <code>r</code> por <code>lista[0]</code>.</td></tr><tr><td>CargaPdf ya no pinta el recuadro por defecto: pinta un boton. Para la forma anterior, presentacion="en-linea".</td></tr><tr><td>Se retiro <code>valor</code> como objeto suelto: ahora es una lista.</td></tr></tbody></table>
+
+
 <h3 class="sub-seccion">v1.39.0 <span class="cam-fecha">2026-08-11</span></h3>
 <p class="pag-intro"><strong>CargaPdf comprime de verdad y sin dependencias, y nace AreaTexto.</strong> R43: subir un PDF era la pieza que cada producto iba a construir a mano, y la parte que nadie iba a construir bien era comprimirlo. Se escribio el compresor a mano —el paquete no tiene NI UNA dependencia de ejecucion y meter pdf-lib se la habria puesto a todos los productos que lo instalan—: lee el PDF, recomprime las imagenes JPEG incrustadas (lo unico que mueve la aguja en un escaneo, y necesita navegador: en Node se salta y se DICE en imagenesOmitidas), tira lo que ya no alcanza nadie —un PDF firmado varias veces arrastra todas sus revisiones—, tira XMP y PieceInfo, desinfla lo que viajaba en crudo y reempaqueta en ObjStm. Sin lo ultimo un PDF moderno SALDRIA MAS GRANDE. Medido en las pruebas: 88-91% en PDF crudo, 0% y original intacto en uno ya optimizado. Tres promesas con prueba: nunca devuelve algo mas grande, nunca devuelve algo que no sepa releer (relee su propia salida y exige el mismo numero de paginas), nunca toca un PDF cifrado. Y solo PDF comprobado EN LOS BYTES, porque accept no ve lo que se arrastra ni un docx renombrado. El peso maximo se mide DESPUES de comprimir: al reves se rechaza lo que si habria cabido. R44: AreaTexto compone el envoltorio de Campo —no lo reconstruye— y aporta las tres cosas que un textarea hace distinto: crece con lo escrito CON CSS (la altura desde JavaScript exigiria style, que el candado prohibe), el limite es BLANDO (maxlength corta al pegar en silencio y sin deshacer) y el contador solo se anuncia en el ultimo tramo. Icono documento nuevo: usar libro habria enseñado dos significados con el mismo dibujo. Campo.ayuda admite nodos para que el contador entre en su aria-describedby en vez de quedarse fuera.</p>
 
@@ -13349,21 +13447,31 @@ async function esPdf(archivo) {
   // Usa PDF.comprimirPdf, que es EL MISMO archivo que importa el componente
   // de React: se inserta arriba tal cual. Si esta demo tuviera su propia copia
   // enseñaría una compresión que no es la que viaja en el paquete.
+  //
+  // La forma es la del formulario: boton siempre presente, panel que se
+  // despliega EN SU SITIO empujando los campos de abajo, y BORRADOR que solo
+  // se confirma al Grabar — cancelar tiene que dejar el formulario como estaba.
   (function () {
     var TOPE = 10 * 1024 * 1024;
+    var ICO_DOC = "<svg class=\"ic\" viewBox=\"0 0 24 24\" width=\"32\" height=\"32\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z\"/><path d=\"M14 2v6h6\"/></svg>";
+    var ICO_PAPELERA = "<svg class=\"ic\" viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M4 7h16\"/><path d=\"M10 11v6M14 11v6\"/><path d=\"M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13\"/><path d=\"M9 7V4h6v3\"/></svg>";
 
     document.querySelectorAll('[data-pdf]').forEach(function (caja) {
+      var abrir = caja.querySelector('[data-abrir]');
+      var panel = caja.querySelector('[data-panel]');
       var zona = caja.querySelector('[data-zona]');
       var entrada = caja.querySelector('input[type="file"]');
       var invita = caja.querySelector('[data-invita]');
-      var puesto = caja.querySelector('[data-puesto]');
-      var nombre = caja.querySelector('[data-nombre]');
-      var peso = caja.querySelector('[data-peso]');
-      var medida = caja.querySelector('[data-medida]');
+      var lista = caja.querySelector('[data-lista]');
+      var borradorUI = caja.querySelector('[data-borrador]');
       var trabajo = caja.querySelector('[data-trabajo]');
       var error = caja.querySelector('[data-error]');
-      var elegir = caja.querySelector('[data-elegir]');
-      var quitar = caja.querySelector('[data-quitar]');
+      var grabar = caja.querySelector('[data-grabar]');
+      var cancelar = caja.querySelector('[data-cancelar]');
+      if (!abrir || !panel) return;
+
+      var confirmados = [];
+      var borrador = [];
 
       function fallo(txt) {
         error.textContent = txt;
@@ -13375,63 +13483,140 @@ async function esPdf(archivo) {
         zona.classList.remove('cpdf-mal');
       }
 
+      // Una fila: el tachito EN LA MISMA LINEA que el nombre, para que se vea
+      // cual se lleva antes de pulsarlo.
+      function pintar(destino, items, alQuitar) {
+        destino.innerHTML = '';
+        destino.hidden = items.length === 0;
+        items.forEach(function (it, k) {
+          var li = document.createElement('li');
+          li.className = 'cpdf-puesto';
+          var ico = document.createElement('span');
+          ico.className = 'cpdf-ico';
+          ico.setAttribute('aria-hidden', 'true');
+          ico.innerHTML = ICO_DOC;
+          var datos = document.createElement('span');
+          datos.className = 'cpdf-datos';
+          var linea = document.createElement('span');
+          linea.className = 'cpdf-linea';
+          var nom = document.createElement('span');
+          nom.className = 'cpdf-nombre';
+          nom.textContent = it.nombre;
+          var bot = document.createElement('button');
+          bot.type = 'button';
+          bot.className = 'btn btn-terc btn-mini btn-solo-ic cpdf-quitar';
+          bot.setAttribute('aria-label', 'Quitar ' + it.nombre);
+          bot.innerHTML = ICO_PAPELERA;
+          bot.addEventListener('click', function () { alQuitar(k); });
+          linea.appendChild(nom);
+          linea.appendChild(bot);
+          var pes = document.createElement('span');
+          pes.className = 'cpdf-peso';
+          var pgs = it.paginas > 0 ? ' · ' + it.paginas + (it.paginas === 1 ? ' página' : ' páginas') : '';
+          pes.textContent = PDF.formatearPeso(it.pesoFinal) + pgs;
+          // LA CIFRA DEL CATALOGO: la demostracion de que la compresion ocurrio.
+          var chip = document.createElement('span');
+          if (it.comprimido) {
+            chip.className = 'chip chip-exito';
+            chip.textContent = PDF.formatearPeso(it.pesoInicial) + ' → ' + PDF.formatearPeso(it.pesoFinal)
+              + ' · ' + PDF.ahorro(it.pesoInicial, it.pesoFinal) + ' % menos';
+          } else {
+            chip.className = 'chip chip-inact';
+            chip.textContent = PDF.formatearPeso(it.pesoInicial) + ' · sin cambio (' + it.motivo + ')';
+          }
+          datos.appendChild(linea);
+          datos.appendChild(pes);
+          datos.appendChild(chip);
+          li.appendChild(ico);
+          li.appendChild(datos);
+          destino.appendChild(li);
+        });
+      }
+
+      function refrescar() {
+        pintar(borradorUI, borrador, function (k) {
+          borrador.splice(k, 1);
+          limpiar();
+          refrescar();
+        });
+        invita.hidden = borrador.length > 0;
+        grabar.disabled = borrador.length === 0;
+      }
+
+      function refrescarFuera() {
+        pintar(lista, confirmados, function (k) {
+          confirmados.splice(k, 1);
+          refrescarFuera();
+        });
+      }
+
       function tomar(archivos) {
-        var lista = archivos ? [].slice.call(archivos) : [];
+        var entrantes = archivos ? [].slice.call(archivos) : [];
         limpiar();
-        if (lista.length > 1) {
-          fallo('Suelta un solo archivo. Si son varios, súbelos de uno en uno.');
+        if (!entrantes.length) return;
+        if (entrantes.length > 1) {
+          fallo('Solo cabe 1 archivo. Suelta uno.');
+          entrada.value = '';
           return;
         }
-        if (!lista[0]) return;
-        var archivo = lista[0];
-
+        var archivo = entrantes[0];
         // Los BYTES, no la extensión: un .docx renombrado se cuela por el nombre.
         PDF.esPdf(archivo).then(function (vale) {
-          if (!vale) {
-            fallo('Ese archivo no es un PDF. Solo se admiten PDF.');
-            return;
-          }
+          if (!vale) { fallo('Ese archivo no es un PDF. Solo se admiten PDF.'); return; }
           trabajo.hidden = false;
-          elegir.disabled = true;
+          abrir.disabled = true;
           return PDF.comprimirPdf(archivo).then(function (r) {
             trabajo.hidden = true;
-            elegir.disabled = false;
+            abrir.disabled = false;
             if (r.pesoFinal > TOPE) {
-              fallo('El PDF pesa ' + PDF.formatearPeso(r.pesoFinal) + ' y el máximo es '
-                + PDF.formatearPeso(TOPE) + '. Divídelo o quita las páginas que no hagan falta.');
+              fallo(archivo.name + ' pesa ' + PDF.formatearPeso(r.pesoFinal) + ' y el máximo es '
+                + PDF.formatearPeso(TOPE) + '.');
               return;
             }
-            invita.hidden = true;
-            puesto.hidden = false;
-            quitar.hidden = false;
-            elegir.innerHTML = elegir.innerHTML.replace('Elegir PDF', 'Cambiar PDF');
-            nombre.textContent = archivo.name;
-            var pgs = r.detalle && r.detalle.paginas > 0
-              ? ' · ' + r.detalle.paginas + (r.detalle.paginas === 1 ? ' página' : ' páginas') : '';
-            peso.textContent = PDF.formatearPeso(r.pesoFinal) + pgs;
-            // LA CIFRA DEL CATÁLOGO. Es lo único que esta página enseña de más
-            // que el componente, y es la demostración de que la compresión
-            // ocurrió: sin ella sería una promesa.
-            medida.hidden = false;
-            if (r.comprimido) {
-              medida.className = 'chip chip-exito';
-              medida.textContent = PDF.formatearPeso(r.pesoInicial) + ' → '
-                + PDF.formatearPeso(r.pesoFinal) + ' · '
-                + PDF.ahorro(r.pesoInicial, r.pesoFinal) + ' % menos';
-            } else {
-              medida.className = 'chip chip-inact';
-              medida.textContent = PDF.formatearPeso(r.pesoInicial) + ' · sin cambio (' + r.motivo + ')';
-            }
+            borrador = [{
+              nombre: archivo.name, pesoInicial: r.pesoInicial, pesoFinal: r.pesoFinal,
+              comprimido: r.comprimido, motivo: r.motivo,
+              paginas: (r.detalle && r.detalle.paginas) || -1
+            }];
+            refrescar();
           });
         }).catch(function () {
           trabajo.hidden = true;
-          elegir.disabled = false;
+          abrir.disabled = false;
           fallo('No se pudo leer el archivo.');
         }).then(function () {
           // Vaciar para que elegir EL MISMO archivo vuelva a disparar 'change'.
           entrada.value = '';
         });
       }
+
+      abrir.addEventListener('click', function () {
+        if (panel.hidden) {
+          // El borrador arranca de lo que ya hay: entrar a cambiar el archivo
+          // no puede empezar en blanco y hacer creer que se perdio.
+          borrador = confirmados.slice();
+          panel.hidden = false;
+          abrir.setAttribute('aria-expanded', 'true');
+          limpiar();
+          refrescar();
+        } else {
+          entrada.click();
+        }
+      });
+      cancelar.addEventListener('click', function () {
+        panel.hidden = true;
+        abrir.setAttribute('aria-expanded', 'false');
+        borrador = [];
+        limpiar();
+      });
+      grabar.addEventListener('click', function () {
+        confirmados = borrador.slice();
+        panel.hidden = true;
+        abrir.setAttribute('aria-expanded', 'false');
+        borrador = [];
+        limpiar();
+        refrescarFuera();
+      });
 
       zona.addEventListener('dragover', function (e) {
         e.preventDefault();
@@ -13443,16 +13628,7 @@ async function esPdf(archivo) {
         zona.classList.remove('cpdf-encima');
         tomar(e.dataTransfer.files);
       });
-      elegir.addEventListener('click', function () { entrada.click(); });
       entrada.addEventListener('change', function (e) { tomar(e.target.files); });
-      quitar.addEventListener('click', function () {
-        limpiar();
-        invita.hidden = false;
-        puesto.hidden = true;
-        quitar.hidden = true;
-        medida.hidden = true;
-        elegir.innerHTML = elegir.innerHTML.replace('Cambiar PDF', 'Elegir PDF');
-      });
     });
   })();
 
