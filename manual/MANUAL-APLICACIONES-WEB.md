@@ -333,30 +333,22 @@ impide trabajar. Limpia en silencio; rechaza solo lo imposible.
 
 ---
 
-## 6bis · La frontera de escritura — cómo entra cada dato a la base
+## 6bis · La frontera de escritura — regla de composición, no del paquete
 
-Desde la v1.35.0. Da igual cómo lo escriba la persona o cómo llegue de una
-API: **antes de grabar, todo dato pasa por `alGuardar(valor, tipo)`** — la
-función viaja en el paquete para que los productos no normalicen distinto.
+Cómo entra cada dato a la base **es del producto**, no del sistema de diseño:
+el paquete pinta y se comporta en pantalla; lo que se persiste y cómo, lo
+decide quien tiene la base. La utilidad `alGuardar` **vivió una versión**
+(v1.35.0) y se retiró en la v1.36.0 por esa razón — el propio análisis que la
+acompañaba lo decía.
 
-| Tipo | Qué hace |
-|---|---|
-| *(todos)* | `trim` + colapso de espacios internos |
-| `texto` (por omisión) | además, **minúsculas** |
-| `nombre` | **conserva la caja** — «QUISPE MAMANI, Rosa» en minúsculas es pérdida de dato en un registro que se exhibe ante inspección. Buscar sin sensibilidad ya lo hace la consulta (`unaccent`/`pg_trgm`, §10) |
-| `correo` · `usuario` · `codigo` | minúsculas: ahí la minúscula es la forma canónica |
-| `dni` · `ruc` | solo dígitos |
-| `telefono` | solo dígitos, conservando el `+` inicial |
-| **contraseña** | **jamás se normaliza** — ni `trim` ni caja. Hoy no existe el campo; la regla queda escrita para cuando exista |
+Lo que sí queda, como guía para quien escriba su frontera:
 
-Dos reglas de sitio:
-
-1. **Se aplica al GRABAR, no al teclear.** La pantalla enseña lo que la
-   persona escribe; normalizar el input en vivo cambia lo que ve. Por eso no
-   vive dentro de `Campo`.
-2. **La base guarda lo normalizado; la pantalla pinta lo guardado.** Si un
-   dato necesita formato de lectura (el teléfono con espacios), ese formato es
-   de presentación y se aplica al pintar, no al guardar.
+1. **Se normaliza al GRABAR, no al teclear** — la pantalla enseña lo que la
+   persona escribe.
+2. **`trim` + colapso de espacios** para todo; minúsculas donde la minúscula
+   es canónica (correo, usuario, código); **los nombres conservan su caja**
+   (la búsqueda insensible ya la da la consulta con `unaccent`/`pg_trgm`, §10);
+   la **contraseña jamás se normaliza**.
 
 ---
 

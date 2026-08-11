@@ -11,7 +11,6 @@ export { TablaDatos, type Columna, type EstadoTabla } from './TablaDatos';
 export { RangoFecha } from './RangoFecha';
 export { ZonaAvisos } from './ZonaAvisos';
 export { CargaImagen } from './CargaImagen';
-export { alGuardar, type TipoDato } from './normalizar';
 export { Confirmacion } from './Confirmacion';
 export { Boton, type VarianteBoton } from './Boton';
 export { Chip, type TonoChip } from './Chip';

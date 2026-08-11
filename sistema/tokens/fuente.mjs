@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.35.0';
+export const VERSION = '1.36.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,27 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.36.0', fecha: '2026-08-10',
+    que: 'alGuardar SE RETIRA: la frontera de escritura es del producto, y falto la decision del responsable',
+    porque:
+      'Dos razones, y la segunda es la que importa. La primera: el propio analisis de la v1.35.0 '
+      + 'lo decia — como entra un dato a la base es del producto, no del sistema de diseno; el '
+      + 'paquete pinta y se comporta en pantalla, persistir lo decide quien tiene la base. La '
+      + 'segunda, de proceso: la normalizacion en reposo era una REGLA DE NEGOCIO (lowercase '
+      + 'destruye la caja de los nombres) y las reglas de negocio se consultan — se consulto y '
+      + 'se implemento EN EL MISMO MENSAJE, con la propuesta del agente. El responsable: «falto '
+      + 'mi decision». Consultar y actuar a la vez no es consultar. La entrada de la v1.35.0 se '
+      + 'queda en este registro, como manda su cabecera: los errores se dejan escritos en vez de '
+      + 'disimularlos. La GUIA queda en el manual (6bis) para quien escriba su frontera: '
+      + 'normalizar al grabar y no al teclear, trim para todo, minusculas solo donde son '
+      + 'canonicas, los nombres conservan su caja, la contrasena jamas.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'alGuardar y TipoDato desaparecen del paquete tras una version. Nadie los consumia aun: '
+      + 'se publicaron hoy mismo.',
+    ],
+  },
   {
     v: '1.35.0', fecha: '2026-08-10',
     que: 'alGuardar: la frontera de escritura viaja en el paquete — trim y minusculas decididos UNA vez',

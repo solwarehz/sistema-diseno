@@ -134,9 +134,6 @@ const PAGINA_DE = new Map([
   // entiende (R29, v1.23.0).
   ['ZonaAvisos', 'Aviso temporal'],
   ['CargaImagen', 'Carga de imagen'],
-  // Utilidad de frontera de escritura: se enseña donde viven los formularios
-  // (v1.35.0).
-  ['alGuardar', 'Campo de texto'],
   ['EstadoPantalla', 'Estados de pantalla'], ['Confirmacion', 'Confirmación'],
   ['Nota', 'Nota permanente'], ['Dialogo', 'Diálogo'], ['Migas', 'Migas de pan'],
   ['CabeceraPantalla', 'Cabecera de pantalla'], ['Icono', 'Iconos'],
