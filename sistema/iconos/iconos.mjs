@@ -98,6 +98,10 @@ export const TRAZOS = {
   // La pareja de descargar2: misma flecha, sentido contrario. Significado:
   // SUBIR un archivo al sistema (la carga de imagen, R35).
   subir: '<path d="M12 19V5M6 11l6-6 6 6"/>',
+  // El conmutador de la contraseña: ver y no ver. Son pareja y se dibujan
+  // igual — el tachado es el mismo ojo con la barra encima.
+  ojo: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+  ojoTachado: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/><path d="m4 4 16 16"/>',
   camara: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/>',
   filas: '<rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="13" width="18" height="5" rx="1"/>',
   filasFinas: '<rect x="3" y="4" width="18" height="3" rx="1"/><rect x="3" y="10" width="18" height="3" rx="1"/><rect x="3" y="16" width="18" height="3" rx="1"/>',

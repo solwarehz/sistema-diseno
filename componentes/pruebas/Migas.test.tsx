@@ -117,9 +117,9 @@ describe('Icono', () => {
     expect(container.querySelector('svg')).toHaveAttribute('width', '32');
   });
 
-  it('están los 40, los mismos que el catálogo', () => {
-    // 40 desde la v1.30.0: entró «subir», la pareja de descargar2 (R35).
-    expect(NOMBRES_ICONO).toHaveLength(40);
+  it('están los 42, los mismos que el catálogo', () => {
+    // 42 desde la v1.37.0: subir (R35) y la pareja ojo/ojoTachado (contraseña).
+    expect(NOMBRES_ICONO).toHaveLength(42);
     for (const n of ['candado', 'lupa', 'cerrar', 'visto', 'alerta', 'subir']) {
       expect(NOMBRES_ICONO).toContain(n);
     }

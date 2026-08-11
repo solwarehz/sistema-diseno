@@ -134,6 +134,8 @@ const PAGINA_DE = new Map([
   // entiende (R29, v1.23.0).
   ['ZonaAvisos', 'Aviso temporal'],
   ['CargaImagen', 'Carga de imagen'],
+  // El campo de contraseña se demuestra con los campos (v1.37.0).
+  ['CampoContrasena', 'Campo de texto'],
   ['EstadoPantalla', 'Estados de pantalla'], ['Confirmacion', 'Confirmación'],
   ['Nota', 'Nota permanente'], ['Dialogo', 'Diálogo'], ['Migas', 'Migas de pan'],
   ['CabeceraPantalla', 'Cabecera de pantalla'], ['Icono', 'Iconos'],

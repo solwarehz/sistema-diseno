@@ -30,7 +30,10 @@ type Comun = {
   etiquetaOculta?: boolean;
 };
 
-export type CampoProps = Comun & React.InputHTMLAttributes<HTMLInputElement> & {
+// `Omit<…, 'children'>`: los atributos de input traen SU children (ReactNode)
+// y la intersección volvía inutilizable el render-prop — nadie lo había
+// consumido hasta CampoContrasena y el tipo llevaba el defecto dormido.
+export type CampoProps = Comun & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children'> & {
   /**
    * Contenido propio EN LUGAR del `<input>` que trae dentro.
    *
@@ -71,6 +74,23 @@ export function Campo({ etiqueta, ayuda, error, etiquetaOculta = false, classNam
           aria-invalid={error ? true : undefined}
           aria-describedby={descrito}
           {...resto}
+          // El trim AL SALIR es del componente: mientras se teclea no se toca
+          // nada (la persona ve lo que escribe), y al abandonar el campo el
+          // espacio accidental —el copy-paste con cola— se recorta y se emite
+          // por onChange para que el estado del producto se entere. Solo los
+          // extremos: los espacios internos son contenido. Y a un password,
+          // JAMÁS: ahí el espacio puede ser deliberado.
+          onBlur={(e) => {
+            const caja = e.target;
+            if (caja.type !== 'password') {
+              const limpio = caja.value.trim();
+              if (limpio !== caja.value) {
+                caja.value = limpio;
+                resto.onChange?.(e as unknown as React.ChangeEvent<HTMLInputElement>);
+              }
+            }
+            resto.onBlur?.(e);
+          }}
         />
       )}
       {/* El error va PRIMERO en el orden de lectura: es lo que hay que resolver. */}

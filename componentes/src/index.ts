@@ -16,6 +16,7 @@ export { Boton, type VarianteBoton } from './Boton';
 export { Chip, type TonoChip } from './Chip';
 export { Enlace } from './Enlace';
 export { Campo, Selector } from './Campo';
+export { CampoContrasena } from './CampoContrasena';
 export { Avatar, colorIdentidad, iniciales } from './Avatar';
 export { Paginacion } from './Paginacion';
 export { Interruptor, SeleccionMultiple, type Opcion } from './Interruptor';

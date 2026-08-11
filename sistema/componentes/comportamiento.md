@@ -127,6 +127,8 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 | **3** | **Obligatorio.** El selector con búsqueda **ignora tildes**: «jose» encuentra «José». |
 | **4** | **Obligatorio.** El interruptor **surte efecto al instante**. Si hace falta «Guardar», es una casilla, no un interruptor. |
 | **5** | **Obligatorio.** Todo icono va `aria-hidden`; **quien nombra es el control**. |
+| **6** | **Obligatorio.** (v1.37.0) `Campo` **recorta al salir**, nunca al teclear: la persona ve lo que escribe, y el espacio accidental —el copy-paste con cola— se va al abandonar el campo, emitiendo por `onChange` para que el estado se entere. Solo los extremos: los espacios internos son contenido. |
+| **7** | **Obligatorio.** (v1.37.0) `CampoContrasena` **jamás normaliza**: ni trim ni caja — un espacio en una contraseña puede ser deliberado, y «limpiarlo» es cambiar la llave sin avisar. El conmutador ver/no ver lleva `aria-pressed` y **es solo pantalla** (el valor no cambia); el `autoComplete` es `current-password`, o `new-password` con la prop `nueva`; y **pegar no se bloquea**: quien pega desde su gestor hace lo correcto. |
 
 ---
 

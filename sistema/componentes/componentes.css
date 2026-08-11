@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.36.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.37.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -202,6 +202,19 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .campo-ayuda{ font-size: 12px; color: var(--texto-pista); }
 .campo-error{ font-size: 12px; color: var(--error-texto); font-weight: 500; }
 .campo-mal{ border-color: var(--error-acento); border-width: 2px; }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   CAMPO DE CONTRASEÑA — 6 reglas · clases .cp-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.cp{ position: relative; display: flex; }
+.cp-in{ width: 100%; padding-right: 40px; }
+.cp-ver{ position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+  display: grid; place-items: center; padding: 8px; border: 0; border-radius: 3px;
+  background: transparent; cursor: pointer; color: var(--texto-secundario); }
+.cp-ver:hover{ color: var(--texto-principal); background: var(--fondo-encabezado); }
+.cp-ver[aria-pressed="true"]{ color: var(--accion); }
+.cp-ver:disabled{ opacity: .75; cursor: default; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    CARGA DE IMAGEN — 20 reglas · clases .ci-*

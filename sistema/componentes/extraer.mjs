@@ -44,6 +44,8 @@ const ELEMENTOS = [
   { n: 'Botón',                 p: ['btn'] },
   { n: 'Enlace',                p: ['enl', 'enlace'] },
   { n: 'Campo de texto',        p: ['campo', 'cg', 'msj'] },
+  // El campo que jamás se normaliza, con su conmutador ver/no ver (v1.37.0).
+  { n: 'Campo de contraseña',   p: ['cp'] },
   // R35: elegir, encuadrar (mover + acercar) y recortar en cuadrado.
   { n: 'Carga de imagen',       p: ['ci'] },
   { n: 'Selector',              p: ['sel'] },

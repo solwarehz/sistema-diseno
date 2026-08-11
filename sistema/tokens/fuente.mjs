@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.36.0';
+export const VERSION = '1.37.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,26 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.37.0', fecha: '2026-08-10',
+    que: 'Campo recorta al salir (pedido esta vez ANTES de implementar) y nace CampoContrasena, que jamas normaliza',
+    porque:
+      'Dos piezas que nacieron juntas y la segunda existe POR la primera. El responsable '
+      + 'pregunto si el trim si podia ir en los inputs — y si: recortar AL SALIR es del '
+      + 'componente (interaccion, no politica de datos): tecleando no se toca nada, al abandonar '
+      + 'el campo el espacio accidental se va y onChange se entera; solo extremos, los espacios '
+      + 'internos son contenido; y a un type=password jamas. Luego pidio el campo de contrasena: '
+      + 'CampoContrasena se COMPONE con el render-prop de Campo y pone su propio input, exento '
+      + 'del trim por construccion — la regla del 6bis existia antes que el campo. Trae el '
+      + 'conmutador ver/no ver con aria-pressed (solo pantalla: el valor no cambia), '
+      + 'autoComplete current-password o new-password con la prop nueva, y pegar NO se bloquea. '
+      + 'Dos iconos nuevos, pareja: ojo y ojoTachado (42). De paso, un defecto dormido: el tipo '
+      + 'de CampoProps hacia inutilizable su render-prop (children de InputHTMLAttributes en la '
+      + 'interseccion) y nadie lo habia consumido hasta hoy. Reglas 6 y 7 del contrato de '
+      + 'campos, seis pruebas nuevas: 229.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.36.0', fecha: '2026-08-10',
     que: 'alGuardar SE RETIRA: la frontera de escritura es del producto, y falto la decision del responsable',

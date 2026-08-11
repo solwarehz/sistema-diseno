@@ -1214,6 +1214,34 @@ ${verCodigo(
   </tbody>
 </table>
 
+<h3 class="sub-seccion">Campo de contraseña — el que jamás se normaliza</h3>
+<p class="seccion-sub">Su regla existía antes que él (§6bis): <strong>ni trim, ni caja</strong> — un
+espacio en una contraseña puede ser deliberado, y «limpiarlo» es cambiar la llave sin avisar.
+Por eso no usa el input de <code>Campo</code> (que recorta al salir): se compone con su render-prop
+y pone el suyo, exento por construcción. Trae el conmutador <strong>ver / no ver</strong> con
+<code>aria-pressed</code> —mostrar es solo pantalla, el valor no cambia—, <code>autoComplete</code>
+correcto (<code>current-password</code>, o <code>new-password</code> con la prop <code>nueva</code>) y
+<strong>nada de bloquear pegado</strong>: quien pega desde su gestor hace lo correcto.</p>
+<div class="bloque">
+  <div class="muestra-fila">
+    <div class="campo-grupo">
+      <label class="campo-etiqueta" for="cp-demo">Contraseña</label>
+      <div class="cp">
+        <input class="campo cp-in" id="cp-demo" type="password" value="correcto caballo pila" readonly>
+        <button type="button" class="cp-ver" aria-pressed="false" aria-label="Mostrar contraseña">${icono('ojo')}</button>
+      </div>
+    </div>
+    <div class="campo-grupo">
+      <label class="campo-etiqueta" for="cp-demo-2">Nueva contraseña</label>
+      <div class="cp">
+        <input class="campo cp-in" id="cp-demo-2" type="text" value="correcto caballo pila" readonly>
+        <button type="button" class="cp-ver" aria-pressed="true" aria-label="Ocultar contraseña">${icono('ojoTachado')}</button>
+      </div>
+      <span class="campo-ayuda">Mostrada: el conmutador es solo pantalla</span>
+    </div>
+  </div>
+</div>
+
 <h3 class="sub-seccion">La frontera de escritura es del producto</h3>
 <p class="seccion-sub">Cómo entra cada dato a la base <strong>no es de este paquete</strong>: el sistema
 pinta y se comporta en pantalla; persistir lo decide quien tiene la base. La guía vive en el
@@ -5599,6 +5627,18 @@ select.campo:disabled { opacity: .75; }
 /* El input real, fuera de la vista y del tabulador pero SIN display:none:
    algunos navegadores ignoran click() sobre lo que no se pinta. */
 .ci-entrada { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+/* Campo de contraseña: el conmutador ver/no ver vive DENTRO del campo, a la
+   derecha, sin robar sitio al texto. Pieza propia con clase propia, como el
+   boton de orden de la tabla. */
+.cp { position: relative; display: flex; }
+.cp-in { width: 100%; padding-right: 40px; }
+.cp-ver { position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+  display: grid; place-items: center; padding: 8px; border: 0; border-radius: 3px;
+  background: transparent; cursor: pointer; color: var(--texto-secundario); }
+.cp-ver:hover { color: var(--texto-principal); background: var(--fondo-encabezado); }
+.cp-ver[aria-pressed="true"] { color: var(--accion); }
+.cp-ver:disabled { opacity: .75; cursor: default; }
 .ci-editor { display: flex; flex-direction: column; gap: 8px; align-items: center; }
 /* La leccion R16, otra vez: display:flex GANA a [hidden] del navegador y el
    editor no se ocultaba nunca — con su mascara difuminando la pagina entera
