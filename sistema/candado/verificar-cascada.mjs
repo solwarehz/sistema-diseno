@@ -321,6 +321,50 @@ const AFIRMACIONES = [
     },
   },
   {
+    id: 'ALTURA-PROPIA',
+    que: 'el botón fija su propio line-height y no lo hereda del producto',
+    /**
+     * EL DEFECTO QUE ESTE CANDADO EXISTE PARA IMPEDIR, y que llevaba
+     * publicado: `.btn` no declaraba `line-height`, así que su altura la
+     * decidía LA PÁGINA QUE LO MONTABA.
+     *
+     * En el catálogo se hereda 1,45 —un renglón de 18,8px, más alto que el
+     * icono de 18— y todos los botones median igual. En un producto que no
+     * fija nada, el renglón de `normal` cae a ~16,9px, el icono sigue midiendo
+     * 18, y ESTIRA solo a los botones que lo llevan: el de CSV salía más alto
+     * que Filtros y Columnas. Lo vio el responsable en la entrega, no aquí.
+     *
+     * POR QUÉ NO LO VIO NINGÚN OTRO CANDADO. El cruce que compara catálogo y
+     * hoja los mide A LOS DOS DENTRO DEL CATÁLOGO, y una propiedad que se
+     * HEREDA DEL ANFITRIÓN vale lo mismo en los dos lados: no hay diferencia
+     * que encontrar. El fallo solo aparece montando la hoja en otra página, y
+     * eso ningún candado lo hacía.
+     *
+     * Se comprueba lo que arregla el problema de raíz: que el valor esté
+     * declarado —para que el anfitrión no mande— y que no sea menor que el
+     * icono de texto, que es lo que estiraba.
+     */
+    revisar(reglas) {
+      const ICONO_TEXTO = 18;
+      const fallos = [];
+      const decl = resolver(reglas, [elem('button', ['btn'])], 'line-height', 1280);
+      if (!decl) {
+        fallos.push('  .btn no declara line-height: su altura la decide la página que lo monte,');
+        fallos.push('  y con un icono dentro sale más alto que un botón sin icono.');
+        return fallos;
+      }
+      const px = /^(\d+(?:\.\d+)?)px$/.exec(decl.valor);
+      if (!px) {
+        fallos.push(`  .btn declara line-height:${decl.valor} — hace falta un valor EN PIXELES:`);
+        fallos.push('  un número suelto se recalcula con el tamaño de letra de cada variante.');
+      } else if (Number(px[1]) < ICONO_TEXTO) {
+        fallos.push(`  .btn declara line-height:${decl.valor}, por debajo del icono de texto (${ICONO_TEXTO}px):`);
+        fallos.push('  el icono estira el botón y deja más altos los que lo llevan.');
+      }
+      return fallos;
+    },
+  },
+  {
     id: 'OCULTABLE',
     que: 'toda clase que fija display se puede seguir ocultando con [hidden]',
     /**

@@ -5798,7 +5798,19 @@ h2.seccion {
   background: var(--fondo-pagina); }
 
 /* Botones compartidos */
+/* EL line-height ES DEL BOTON, NO DEL ANFITRION, y esa es la correccion.
+   Sin declararlo, la altura del boton la decidia la pagina que lo montaba: en
+   el catalogo se hereda 1,45 —un renglon de 18,8px, mas alto que el icono de
+   18— y todos los botones median igual; en un producto que no fija nada, el
+   renglon de normal cae a ~16,9px y entonces el icono, que sigue midiendo
+   18, ESTIRA solo a los botones que lo llevan. Por eso el CSV salia mas alto
+   que Filtros y Columnas en la entrega y no en el catalogo.
+
+   18px es a proposito el tamaño del icono de texto: asi el boton mide lo mismo
+   lleve icono o no. Y las dos alturas caen en la rejilla de 4 — 36px el normal
+   (18+16+2) y 28px el mini (18+8+2). */
 .btn { font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+  line-height: 18px;
   padding: 8px 16px; border-radius: 6px; border: 1px solid transparent; }
 .btn-1 { background: var(--accion); color: var(--accion-texto); }
 .btn-1:hover { background: var(--accion-hover); }

@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.40.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.40.1
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -84,6 +84,7 @@
 .btn-ic[hidden]{ display: none; }
 .btn-solo-ic{ padding-inline: 8px; }
 .btn{ font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+  line-height: 18px;
   padding: 8px 16px; border-radius: 6px; border: 1px solid transparent; }
 .btn-1{ background: var(--accion); color: var(--accion-texto); }
 .btn-1:hover{ background: var(--accion-hover); }

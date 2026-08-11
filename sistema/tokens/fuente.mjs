@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.40.0';
+export const VERSION = '1.40.1';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,31 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.40.1', fecha: '2026-08-11',
+    que: 'El boton fija su propio line-height: en la entrega el de CSV salia mas alto que los demas',
+    porque:
+      'Lo vio el responsable EN LA ENTREGA, no en el catalogo, y esa diferencia era el defecto '
+      + 'entero: .btn no declaraba line-height, asi que su altura la decidia LA PAGINA QUE LO '
+      + 'MONTABA. El catalogo hereda 1,45 —un renglon de 18,8px, mas alto que el icono de 18— y '
+      + 'todos los botones median igual; en un producto que no fija nada, el renglon de normal '
+      + 'cae a ~16,9px, el icono sigue midiendo 18 y ESTIRA solo a los que lo llevan. Medido: '
+      + '1,2px de mas en el normal y otro tanto en el mini. Ahora .btn declara line-height:18px '
+      + '—el tamaño exacto del icono de texto—, asi que mide lo mismo lleve icono o no, y las dos '
+      + 'alturas caen en la rejilla de 4: 36px el normal y 28px el mini. '
+      + 'POR QUE NO LO VIO NINGUN CANDADO, que es lo que habia que arreglar de verdad: el cruce '
+      + 'que compara catalogo y hoja los mide A LOS DOS DENTRO DEL CATALOGO, y una propiedad '
+      + 'HEREDADA DEL ANFITRION vale lo mismo en los dos lados — no hay diferencia que encontrar. '
+      + 'Y prueba-componentes.html, que existe para demostrar que las dos hojas bastan solas, no '
+      + 'tenia NI UN boton con icono. Se arreglan los dos: verificar-cascada gana la afirmacion '
+      + 'ALTURA-PROPIA (vista en rojo por sus dos vias: sin declarar, y declarada por debajo del '
+      + 'icono) y el banco gana los cuatro botones que faltaban.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'El boton normal pasa de ~36,9px a 36px exactos y el mini de ~27 a 28. Quien haya fijado '
+      + 'alturas a mano contando con las de antes, las retira: ahora son deterministas.',
+    ],
+  },
   {
     v: '1.40.0', fecha: '2026-08-11',
     que: 'CargaPdf cabe en un formulario: boton fuera, panel que empuja, y borrador que solo confirma Grabar',
