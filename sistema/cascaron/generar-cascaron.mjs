@@ -1232,21 +1232,21 @@ y el comprimido en cuadrado. La subida es del producto.</p>
       <span class="ci-et">Foto del trabajador</span>
       <div class="ci-caja ci-m ci-redonda"><span class="ci-vacia">Sin foto</span></div>
       <div class="ci-acciones"><button class="btn btn-neutro btn-mini btn-ic" data-elegir>${icono('camara')}Subir foto</button></div>
-      <span class="ci-nota">Se muestra en círculo · recorte 1:1</span>
+      <span class="ci-nota" data-peso hidden></span>
       <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
     </div>
     <div class="ci" data-carga="ext">
       <span class="ci-et">Logo extendido</span>
       <div class="ci-caja ci-extendida"><span class="ci-vacia">Sin logo</span></div>
       <div class="ci-acciones"><button class="btn btn-neutro btn-mini btn-ic" data-elegir>${icono('subir')}Subir logo</button></div>
-      <span class="ci-nota">El hueco real del lateral · 212×44</span>
+      <span class="ci-nota" data-peso hidden></span>
       <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
     </div>
     <div class="ci" data-carga="comp">
       <span class="ci-et">Logo comprimido</span>
       <div class="ci-caja ci-s"><span class="ci-vacia">Sin logo</span></div>
       <div class="ci-acciones"><button class="btn btn-neutro btn-mini btn-ic" data-elegir>${icono('subir')}Subir logo</button></div>
-      <span class="ci-nota">El cuadrado del lateral plegado · 1:1</span>
+      <span class="ci-nota" data-peso hidden></span>
       <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
     </div>
   </div>
@@ -7466,7 +7466,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         if (!archivo) return;
         var img = new Image();
         img.onload = function () {
-          st = { img: img, dx: 0, dy: 0, zoom: 1, f: f, caja: tarjeta.querySelector('.ci-caja') };
+          st = { img: img, dx: 0, dy: 0, zoom: 1, f: f,
+            caja: tarjeta.querySelector('.ci-caja'),
+            // Solo del cascaron: el peso original, para ensenar al grabar
+            // cuanto adelgaza la conversion a WebP. El componente no lo
+            // manda — es dato de demostracion, no de la pieza.
+            pesoOriginal: archivo.size,
+            nota: tarjeta.querySelector('[data-peso]') };
           lienzo.width = f.w; lienzo.height = f.h;
           mascara.hidden = !f.redondo;
           editor.hidden = false;
@@ -7503,10 +7509,16 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         (st.img.naturalWidth - aw) / 2 - st.dx / escala(),
         (st.img.naturalHeight - ah) / 2 - st.dy / escala(),
         aw, ah, 0, 0, corte.width, corte.height);
-      var caja = st.caja;
+      var caja = st.caja, nota = st.nota, pesoOriginal = st.pesoOriginal;
+      function peso(n) { return n < 1048576 ? Math.round(n / 1024) + ' KB' : (n / 1048576).toFixed(1) + ' MB'; }
       // WebP, como el componente: pesa menos y blob.type dice la verdad.
       corte.toBlob(function (blob) {
         caja.innerHTML = '<img class="ci-img" src="' + URL.createObjectURL(blob) + '" alt="">';
+        // El dato que prueba la conversion: de cuanto a cuanto, y en que.
+        if (nota) {
+          nota.textContent = blob.type + ' · ' + peso(pesoOriginal) + ' → ' + peso(blob.size);
+          nota.hidden = false;
+        }
       }, 'image/webp', 0.85);
       editor.hidden = true; st = null;
     });

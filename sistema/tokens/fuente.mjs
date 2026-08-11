@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.30.2';
+export const VERSION = '1.30.3';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,17 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.30.3', fecha: '2026-08-10',
+    que: 'La demo de carga ensena el peso al grabar: la prueba de que WebP adelgaza',
+    porque:
+      'Pedido del responsable: las tres notas fijas de la demo se van y en su lugar, al grabar, '
+      + 'aparece el dato que prueba la conversion — «image/webp · 1.8 MB → 46 KB» — debajo del '
+      + 'boton. SOLO en el cascaron: el componente no manda el peso, es dato de demostracion, '
+      + 'no de la pieza.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.30.2', fecha: '2026-08-10',
     que: 'Los tres encuadres comparten ancho: 318, y el alto lo pone la proporcion',
