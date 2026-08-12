@@ -197,7 +197,7 @@ export function CargaImagen({
           aria-describedby={idError}
           onClick={() => entrada.current?.click()}
         >
-          <Icono nombre={F.icono} tam="control" />
+          <Icono nombre={F.icono} />
           {textoBoton ?? (valor ? F.cambiar : F.subir)}
         </Boton>
         {valor && onQuitar && (

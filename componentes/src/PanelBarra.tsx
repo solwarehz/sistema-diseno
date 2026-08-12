@@ -75,7 +75,7 @@ export function PanelBarra({
         aria-label={sinLeer > 0 ? `${titulo}, ${sinLeer} sin leer` : titulo}
         onClick={alternar}
       >
-        <Icono nombre={icono} tam="control" />
+        <Icono nombre={icono} />
         {/* La burbuja va oculta al lector: lo que dice ya está en el nombre del
             botón, y leerlo dos veces es ruido. */}
         {sinLeer > 0 && <span className="badge" aria-hidden="true">{sinLeer}</span>}

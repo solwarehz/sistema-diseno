@@ -475,3 +475,37 @@ describe('Tabla de datos · la tira dice CUÁLES y deja quitarlos', () => {
     expect(vista.container.querySelector('.tb-activos')).toHaveAttribute('hidden');
   });
 });
+
+/**
+ * R28 (pedido R52) · el tamaño del icono, que es markup y no cascada.
+ *
+ * Lo reportó el responsable mirando la barra: «los botones filtro, columnas,
+ * CSV ¿tienen el mismo ancho? En la entrega el botón CSV es más ancho».
+ *
+ * No tienen el mismo ancho —cada uno mide lo que mide su texto, y el catálogo
+ * los enseña así: 97, 119 y 84 px—, pero el CSV **parecía** más grande por otra
+ * razón: el catálogo dibuja **todos** los iconos de la interfaz a **18px** y la
+ * entrega los pasaba a `tam="control"`, **16px**. Como el CSV lo pone el
+ * producto siguiendo el catálogo, su icono salía 2px mayor que el de sus dos
+ * vecinos.
+ *
+ * NINGÚN CANDADO PODÍA VERLO: el de la promesa compara la cascada, y esto es un
+ * atributo del `<svg>`. Por eso la prueba vive aquí.
+ */
+describe('R28 (pedido R52) · los iconos de la barra son los del catálogo', () => {
+  it('Filtros y Columnas llevan el icono de texto, 18px, como el catálogo', () => {
+    const { container } = pintar();
+    const iconos = [...container.querySelectorAll('.tb-barra-der .btn svg')];
+    expect(iconos).toHaveLength(2);
+    for (const svg of iconos) {
+      expect(svg.getAttribute('width')).toBe('18');
+      expect(svg.getAttribute('height')).toBe('18');
+    }
+  });
+
+  it('la lupa de la búsqueda, también', () => {
+    const { container } = pintar();
+    const lupa = container.querySelector('.tb-buscar svg')!;
+    expect(lupa.getAttribute('width')).toBe('18');
+  });
+});

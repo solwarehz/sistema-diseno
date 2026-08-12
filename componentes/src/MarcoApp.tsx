@@ -411,7 +411,7 @@ export function MarcoApp({
                 >
                   {g.icono && <span className="nav-ic">{g.icono}</span>}
                   <span className="nav-txt">{g.texto}</span>
-                  <span className="nav-chev" aria-hidden="true"><Icono nombre="chevron" tam="control" /></span>
+                  <span className="nav-chev" aria-hidden="true"><Icono nombre="chevron" /></span>
                 </button>
 
                 {/* `hidden` y no desmontar: desmontar pierde el foco si estaba
@@ -439,7 +439,7 @@ export function MarcoApp({
                             >
                               {h.icono && <span className="nav-ic">{h.icono}</span>}
                               <span className="nav-txt">{h.texto}</span>
-                              <span className="nav-chev" aria-hidden="true"><Icono nombre="chevron" tam="control" /></span>
+                              <span className="nav-chev" aria-hidden="true"><Icono nombre="chevron" /></span>
                             </button>
                             <div className="nav-nietos" id={idNietos}>
                               <div className="nav-nietos-in">
@@ -513,8 +513,8 @@ export function MarcoApp({
             >
               {/* Un icono por vista: la hamburguesa es lo que se reconoce en un
                   teléfono; el de plegar panel no significa nada ahí. */}
-              <span className="ic-escritorio"><Icono nombre="panelIzq" tam="control" /></span>
-              <span className="ic-movil"><Icono nombre="hamburguesa" tam="control" /></span>
+              <span className="ic-escritorio"><Icono nombre="panelIzq" /></span>
+              <span className="ic-movil"><Icono nombre="hamburguesa" /></span>
             </button>
           )}
 
@@ -569,7 +569,7 @@ export function MarcoApp({
               aria-controls="app-mas"
               onClick={() => setMasAbierto((v) => !v)}
             >
-              <span className="nav-ic" aria-hidden="true"><Icono nombre="mas" tam="control" /></span>
+              <span className="nav-ic" aria-hidden="true"><Icono nombre="mas" /></span>
               <span className="app-tab-txt">Más</span>
             </button>
           )}

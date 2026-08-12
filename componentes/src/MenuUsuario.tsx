@@ -113,7 +113,7 @@ export function MenuUsuario({ id: idPersona, nombre, correo, foto, onSalir, tema
                 title="Claro"
                 onClick={() => onTema('claro')}
               >
-                <Icono nombre="sol" tam="control" />
+                <Icono nombre="sol" />
               </button>
               <button
                 className="us-tema-b"
@@ -122,7 +122,7 @@ export function MenuUsuario({ id: idPersona, nombre, correo, foto, onSalir, tema
                 title="Oscuro"
                 onClick={() => onTema('oscuro')}
               >
-                <Icono nombre="luna" tam="control" />
+                <Icono nombre="luna" />
               </button>
             </div>
           </div>
@@ -134,7 +134,7 @@ export function MenuUsuario({ id: idPersona, nombre, correo, foto, onSalir, tema
             opciones: se busca cuando se busca, y estar arriba solo consigue
             que se pulse sin querer. */}
         <button className="us-op us-salir" role="menuitem" onClick={onSalir}>
-          <Icono nombre="salir" tam="control" />
+          <Icono nombre="salir" />
           <span>Salir del sistema</span>
         </button>
       </div>

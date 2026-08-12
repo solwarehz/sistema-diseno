@@ -309,7 +309,7 @@ export function TablaDatos<T>({
             <label className="tb-mini tb-buscar">
               <span>Buscar en toda la tabla</span>
               <span className="sel-caja">
-                <span className="sel-lupa"><Icono nombre="lupa" tam="control" /></span>
+                <span className="sel-lupa"><Icono nombre="lupa" /></span>
                 <input
                   className="campo sel-in"
                   autoComplete="off"
@@ -356,7 +356,7 @@ export function TablaDatos<T>({
             aria-controls={`${id}-filtros`}
             onClick={() => setFiltrosVisibles((v) => !v)}
           >
-            <Icono nombre="filtro" tam="control" />
+            <Icono nombre="filtro" />
             Filtros
           </Boton>
 
@@ -370,7 +370,7 @@ export function TablaDatos<T>({
             aria-controls={`${id}-columnas`}
             onClick={() => setColumnasAbierto((v) => !v)}
           >
-            <Icono nombre="columnas" tam="control" />
+            <Icono nombre="columnas" />
             Columnas
           </Boton>
           {/* R32 · la ranura del producto, donde el catálogo pone su CSV.

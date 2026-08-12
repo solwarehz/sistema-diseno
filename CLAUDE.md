@@ -19,8 +19,8 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.45.0** — nace `CargaId`: las dos caras del documento de
-identidad, con su proporción real y el mismo editor de encuadre.
+**Estado actual: v1.46.0** — los iconos de la entrega ya no salen 2px más
+pequeños que en el catálogo.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

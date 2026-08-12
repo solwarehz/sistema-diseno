@@ -359,7 +359,7 @@ export function CargaPdf({
             aria-label={`Quitar ${f.nombre}`}
             onClick={() => alQuitar(k)}
           >
-            <Icono nombre="papelera" tam="control" />
+            <Icono nombre="papelera" />
           </Boton>
         </span>
         <span className="cpdf-peso">
@@ -420,7 +420,7 @@ export function CargaPdf({
             aria-describedby={descrito}
             onClick={() => entrada.current?.click()}
           >
-            <Icono nombre="pdf" tam="control" />
+            <Icono nombre="pdf" />
             {enCurso.length === 0 ? 'Subir PDF' : uno ? 'Cambiar PDF' : 'Añadir otro'}
           </Boton>
           {/* En línea no hay diálogo que cierre, así que «Grabar» va aquí — y
@@ -515,7 +515,7 @@ export function CargaPdf({
             aria-describedby={descrito}
             onClick={abrir}
           >
-            <Icono nombre="pdf" tam="control" />
+            <Icono nombre="pdf" />
             {textoBoton ?? 'Subir PDF'}
           </Boton>
         </div>
@@ -544,7 +544,7 @@ export function CargaPdf({
               disabled={!!trabajo || !hayBoton}
               onClick={() => entrada.current?.click()}
             >
-              <Icono nombre="subir" tam="control" />
+              <Icono nombre="subir" />
               Subir
             </Boton>
             {hayQueGrabar ? (

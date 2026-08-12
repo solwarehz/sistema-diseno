@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 11 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.45.0** — nace `CargaId`: las dos caras del
-documento de identidad con su proporción real; antes, la carga de imagen
-centrada con avatar y la tabla ancha que solo desplaza la tabla
+**Versión del sistema:** MMI-DS **v1.46.0** — los iconos de la entrega ya no
+salen 2px más pequeños que en el catálogo; antes, nace `CargaId` con las dos
+caras del documento de identidad
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ centrada con avatar y la tabla ancha que solo desplaza la tabla
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —35 funciones de
-componente, la hoja que viaja, once candados, 312 pruebas— y el candado de la
+componente, la hoja que viaja, once candados, 314 pruebas— y el candado de la
 promesa ya no mira una lista escrita a mano: **recorre todo lo que el catálogo
 pinta**, 832 elementos, y en dos días ha sacado tres defectos que nadie veía.
 
@@ -34,11 +34,11 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` en Docker |
-| Componentes de React | ✅ | **312 pruebas en 21 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **314 pruebas en 21 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · 725 reglas de 1210 · **529 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 50 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | 45 trazos en `iconos.mjs`, React real |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.45.0.zip` · 44 archivos |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.46.0.zip` · 44 archivos |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -55,9 +55,30 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.42.0 | **R48** · el menú seguía comprimido y sacaba a la vez las opciones de extendido · el candado de la promesa pasa a recorrer todo el marcado |
 | v1.43.0 | **R49** · con la tabla ancha se desplazaba el componente entero, mandos incluidos |
 | v1.44.0 | **R50** · la carga de imagen se centra, y sin foto de una persona el hueco lo ocupa su avatar |
-| **v1.45.0** | **R51** · nace `CargaId` — las dos caras del documento de identidad, con el mismo editor de encuadre |
+| v1.45.0 | **R51** · nace `CargaId` — las dos caras del documento de identidad, con el mismo editor de encuadre |
+| **v1.46.0** | **R52** · todos los iconos de la entrega salían 2px más pequeños que en el catálogo |
 
 ### Lo de hoy, con detalle
+
+**R52 · el tamaño del icono.** Lo vio el responsable mirando la barra de la
+tabla: «los botones filtro, columnas, CSV ¿tienen el mismo ancho? En la entrega
+el CSV es más ancho».
+
+**No tienen el mismo ancho, y no deben**: cada uno mide lo que mide su texto —
+medido en el catálogo, **97, 119 y 84 px**—. Pero el CSV *parecía* más grande, y
+la causa era otra y peor: **el catálogo dibuja todos los iconos a 18px** —el
+paso «texto», el que `Icono` da por omisión— y la entrega los pasaba a
+`tam="control"`, **16px**, en 24 sitios. Como el botón de CSV lo pone el
+producto siguiendo el catálogo, su icono salía 2px mayor que el de sus dos
+vecinos, que son nuestros.
+
+El 18 no es un gusto: es el mismo número que el `line-height` del botón
+(v1.40.1), y por eso un botón mide lo mismo lleve icono o no.
+
+**Ningún candado podía verlo**: el de la promesa compara la cascada, y esto es
+un atributo del `<svg>`. Es la segunda vez en dos días que el hueco es el mismo
+—R49 fue estructura, esto es markup—. Lo fijan dos pruebas de la tabla y la
+regla transversal 0.
 
 **R51 · `CargaId`.** Las dos caras del documento de identidad, encuadradas con
 **su proporción real** y entregadas en WebP. El guion es el que se pidió: botón
@@ -196,10 +217,10 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.45.0
+Versión                      1.46.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes, 0 fallos en ambos modos)
-Pruebas                         312   en 21 archivos
+Pruebas                         314   en 21 archivos
 Reglas que viajan               707   de 1192 · 516 clases, 0 huérfanas
 Candado de la promesa           832   elementos · 171.025 propiedades
                                       a 5 anchos (1440, 1024, 900, 700, 390)

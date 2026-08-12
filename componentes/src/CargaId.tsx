@@ -185,7 +185,7 @@ export function CargaId({
           aria-describedby={idError}
           onClick={abrir}
         >
-          <Icono nombre="documento" tam="control" />
+          <Icono nombre="documento" />
           Subir ID
         </Boton>
 
@@ -263,7 +263,7 @@ export function CargaId({
           />
         ) : (
           <Boton className="btn-ic" onClick={() => entrada.current?.click()}>
-            <Icono nombre="subir" tam="control" />
+            <Icono nombre="subir" />
             {P?.pide}
           </Boton>
         )}

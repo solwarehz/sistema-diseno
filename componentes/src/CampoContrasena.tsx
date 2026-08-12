@@ -71,7 +71,7 @@ export function CampoContrasena({
             onClick={() => setVisible((v) => !v)}
             disabled={deshabilitado}
           >
-            <Icono nombre={visible ? 'ojoTachado' : 'ojo'} tam="control" />
+            <Icono nombre={visible ? 'ojoTachado' : 'ojo'} />
           </button>
         </div>
       )}

@@ -143,7 +143,7 @@ export function SelectorBusqueda({
         {/* La lupa y el chevron son la promesa del catálogo: la lupa dice
             «escribe para buscar» y el chevron dice «esto se despliega». El
             React los perdía y el combobox parecía un campo de texto más. */}
-        <span className="sel-lupa" aria-hidden="true"><Icono nombre="lupa" tam="control" /></span>
+        <span className="sel-lupa" aria-hidden="true"><Icono nombre="lupa" /></span>
         <input
           id={id}
           ref={campo}
@@ -163,7 +163,7 @@ export function SelectorBusqueda({
           onFocus={() => setAbierto(true)}
           onKeyDown={alTeclado}
         />
-        <span className="sel-chev" aria-hidden="true"><Icono nombre="chevron" tam="control" /></span>
+        <span className="sel-chev" aria-hidden="true"><Icono nombre="chevron" /></span>
         </div>
 
         <ul className="sel-lista" id={idLista} role="listbox" aria-labelledby={`${id}-et`} hidden={!abierto}>
@@ -189,7 +189,7 @@ export function SelectorBusqueda({
               {/* El visto en la elegida: aria-selected ya lo dice al lector;
                   esto se lo dice a la vista, que no lee atributos. */}
               {o.valor === valor && (
-                <span className="sel-check"><Icono nombre="visto" tam="control" /></span>
+                <span className="sel-check"><Icono nombre="visto" /></span>
               )}
               {o.texto}
               {o.ayuda && <span className="sel-notas">{o.ayuda}</span>}

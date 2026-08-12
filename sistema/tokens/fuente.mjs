@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.45.0';
+export const VERSION = '1.46.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,34 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.46.0', fecha: '2026-08-11',
+    que: 'R52: todos los iconos de la entrega salian 2px mas pequeños que en el catalogo',
+    porque:
+      'Lo vio el responsable mirando la barra de la tabla: «los botones filtro, columnas, CSV '
+      + '¿tienen el mismo ancho? En la entrega el boton CSV es mas ancho». '
+      + 'NO tienen el mismo ancho, y no deben: cada uno mide lo que mide su texto — medido en el '
+      + 'catalogo, 97, 119 y 84 px—. Pero el CSV PARECIA mas grande, y la causa es otra y peor: el '
+      + 'catalogo dibuja TODOS los iconos de la interfaz a 18px —el paso «texto», el que Icono da '
+      + 'por omision— y la entrega los pasaba a tam="control", 16px, en 24 sitios. Como el boton de '
+      + 'CSV lo pone el producto siguiendo el catalogo, su icono salia 2px mayor que el de sus dos '
+      + 'vecinos, que son nuestros. '
+      + 'Medido antes de tocar nada, con la hoja que viaja: iconos de 16px en la entrega contra '
+      + '18px en el catalogo, en la barra de la tabla, el menu del marco, el selector, la '
+      + 'contraseña, las cargas y el menu de usuario. '
+      + 'El 18 no es un gusto: es el mismo numero que el line-height del boton (v1.40.1), y por eso '
+      + 'un boton mide lo mismo lleve icono o no. Los otros pasos siguen teniendo su sitio — 14 en '
+      + 'la paginacion, 32 en el hueco vacio— pero se eligen porque el hueco mide eso, no por '
+      + 'costumbre. '
+      + 'NINGUN CANDADO PODIA VERLO: el de la promesa compara la cascada, y esto es un atributo del '
+      + 'svg. Lo fijan ahora dos pruebas de la tabla y la regla transversal 0. 314.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'Los iconos de la interfaz pasan de 16px a 18px en el producto — que es como el catalogo los '
+      + 'enseño siempre. Los botones con icono crecen ~2px de ancho; la altura no cambia, porque el '
+      + 'boton ya reservaba 18px de renglon.',
+    ],
+  },
   {
     v: '1.45.0', fecha: '2026-08-11',
     que: 'R51: nace CargaId — las dos caras del documento de identidad, con su proporcion real',
