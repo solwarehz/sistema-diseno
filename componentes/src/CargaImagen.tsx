@@ -97,7 +97,7 @@ export type CargaImagenProps = {
    * nombre—: el color sale de él, y un color que cambia al corregir un
    * apellido deja de identificar a nadie.
    */
-  persona?: { id: string; nombre: string };
+  persona?: { id: string; nombre: string; /** Su retrato, si la ficha ya lo tiene. Con foto manda la foto. */ foto?: string };
 };
 
 
@@ -118,7 +118,22 @@ export function CargaImagen({
 }: CargaImagenProps) {
   const F = FORMATOS[formato];
   // Solo la FOTO tiene persona detras: un logo no tiene iniciales que poner.
+  /**
+   * R55 · LA FOTO DE LA PERSONA TAMBIÉN VIENE EN `persona`.
+   *
+   * Lo reportó el responsable desde la pantalla de contrato: al buscar por DNI
+   * salía el avatar **aunque el trabajador ya tuviera foto**. Y era trampa mía:
+   * `persona` llevaba quién es —id y nombre— pero no su foto, así que al
+   * enganchar el resultado de la consulta lo natural era pasar `persona` y
+   * dejarse `valor`, y entonces el hueco enseñaba iniciales de alguien que sí
+   * tiene retrato.
+   *
+   * Ahora la regla se cumple con una sola prop: **foto si la hay, avatar si
+   * no**. `valor` sigue mandando cuando llega —es la que el producto acaba de
+   * recortar y todavía no ha guardado—, y por debajo está la de la ficha.
+   */
   const conAvatar = !!persona && formato === 'foto';
+  const retrato = valor ?? (conAvatar ? persona!.foto ?? null : null);
   const entrada = useRef<HTMLInputElement>(null);
   const disparador = useRef<HTMLButtonElement>(null);
   // R51 · el lienzo, el arrastre, el zoom, las flechas, el acotado y la
@@ -167,8 +182,8 @@ export function CargaImagen({
           La clase se arma FUERA del className: una comparación de formato ahí
           dentro se la toma por clase el candado de huérfanas, y con razón. */}
       <div className={cajaClases}>
-        {valor ? (
-          <img className="ci-img" src={valor} alt="" />
+        {retrato ? (
+          <img className="ci-img" src={retrato} alt="" />
         ) : conAvatar ? (
           /* R50 · SIN FOTO PERO CON PERSONA DETRÁS.
              «Sin foto» no dice nada que no se sepa ya; las iniciales con su
@@ -198,9 +213,9 @@ export function CargaImagen({
           onClick={() => entrada.current?.click()}
         >
           <Icono nombre={F.icono} />
-          {textoBoton ?? (valor ? F.cambiar : F.subir)}
+          {textoBoton ?? (retrato ? F.cambiar : F.subir)}
         </Boton>
-        {valor && onQuitar && (
+        {retrato && onQuitar && (
           <Boton mini variante="terciaria" onClick={onQuitar}>Quitar</Boton>
         )}
       </div>

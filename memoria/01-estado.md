@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 11 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.47.0** — el campo y el selector ya se ven
-como en el catálogo: una sola declaración para el grupo de campo y el error con
-su icono; antes, los iconos que salían 2px más pequeños
+**Versión del sistema:** MMI-DS **v1.48.0** — el selector en solo lectura
+mientras se consulta, y la foto de la persona con una sola prop; antes, el campo
+y el selector alineados con el catálogo
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ su icono; antes, los iconos que salían 2px más pequeños
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —35 funciones de
-componente, la hoja que viaja, once candados, 317 pruebas— y el candado de la
+componente, la hoja que viaja, once candados, 324 pruebas— y el candado de la
 promesa ya no mira una lista escrita a mano: **recorre todo lo que el catálogo
 pinta**, 832 elementos, y en dos días ha sacado tres defectos que nadie veía.
 
@@ -34,11 +34,11 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` en Docker |
-| Componentes de React | ✅ | **317 pruebas en 21 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **324 pruebas en 21 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · 725 reglas de 1210 · **529 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 50 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | 45 trazos en `iconos.mjs`, React real |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.47.0.zip` · 44 archivos |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.48.0.zip` · 44 archivos |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -57,9 +57,30 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.44.0 | **R50** · la carga de imagen se centra, y sin foto de una persona el hueco lo ocupa su avatar |
 | v1.45.0 | **R51** · nace `CargaId` — las dos caras del documento de identidad, con el mismo editor de encuadre |
 | v1.46.0 | **R52** · todos los iconos de la entrega salían 2px más pequeños que en el catálogo |
-| **v1.47.0** | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
+| v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
+| **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
 ### Lo de hoy, con detalle
+
+**R54 · solo lectura, que no es deshabilitado.** Pedido para el selector de
+documento mientras se consulta a la API: cambiar el tipo a mitad tira el
+resultado. Entra la prop `soloLectura`, y **no** es `disabled` — deshabilitado
+se sale del tabulador y **el navegador no lo envía con el formulario**, que es
+justo el dato que hay que conservar.
+
+**HTML no tiene `readonly` para `<select>`**, solo para `input` y `textarea`, así
+que el componente lo construye: `aria-readonly` para el lector y bloqueo de lo
+que abre o cambia la lista, dejando pasar Tab y Escape porque salir nunca se
+bloquea. Además, el estilo de solo lectura solo existía para `.cg-in`: un campo
+`readonly` del producto —que emite `.campo`— no se veía distinto de uno
+editable.
+
+**R55 · la foto de la persona.** «En contrato, al buscar el DNI del trabajador
+lo muestra con avatar, pero el trabajador ya tiene foto». Trampa mía: `persona`
+llevaba quién es —id y nombre— pero **no su retrato**, así que al enganchar el
+resultado de la consulta lo natural era pasar `persona` y dejarse `valor`. Ahora
+la regla se cumple con **una sola prop**: foto si la hay, avatar si no. `valor`
+sigue mandando cuando llega, porque es el recorte recién hecho.
 
 **R53 · el campo y el selector.** «La entrega del selector no es igual que la
 promesa». La causa: el grupo de campo tenía **dos nombres y dos bloques de
@@ -240,10 +261,10 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.47.0
+Versión                      1.48.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes, 0 fallos en ambos modos)
-Pruebas                         317   en 21 archivos
+Pruebas                         324   en 21 archivos
 Reglas que viajan               707   de 1192 · 516 clases, 0 huérfanas
 Candado de la promesa           832   elementos · 171.025 propiedades
                                       a 5 anchos (1440, 1024, 900, 700, 390)

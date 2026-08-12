@@ -116,9 +116,28 @@ export type SelectorProps = Comun & React.SelectHTMLAttributes<HTMLSelectElement
   /** Texto de la opción vacía. Si no se pasa, no hay opción vacía y el selector
    *  arranca con la primera ya elegida —que es una elección que nadie hizo—. */
   vacio?: string;
+  /**
+   * R54 · SOLO LECTURA: se ve, se lee, se enfoca… y no se cambia.
+   *
+   * Lo pidió el responsable para el selector de documento **mientras se
+   * consulta a la API**: cambiar el tipo a mitad de la consulta tira el
+   * resultado que se estaba esperando.
+   *
+   * **No es `disabled`, y la diferencia importa.** Deshabilitado dice «esto no
+   * es para ti», se sale del recorrido del tabulador y **el navegador no lo
+   * envía con el formulario** — justo el dato que aquí hay que conservar. Solo
+   * lectura dice «esto es un dato, ahora no se toca»: sigue enfocable, sigue
+   * leyéndose y sigue viajando.
+   *
+   * **HTML no tiene `readonly` para `<select>`** —solo para `input` y
+   * `textarea`—, así que aquí se construye: `aria-readonly` para que el lector
+   * lo anuncie, y el bloqueo real de lo que abre o cambia la lista. Decirlo
+   * importa: no es un atributo que el navegador respete solo.
+   */
+  soloLectura?: boolean;
 };
 
-export function Selector({ etiqueta, ayuda, error, opciones, vacio, etiquetaOculta = false, className = '', ...resto }: SelectorProps) {
+export function Selector({ etiqueta, ayuda, error, opciones, vacio, etiquetaOculta = false, soloLectura = false, className = '', ...resto }: SelectorProps) {
   const id = useId();
   const idAyuda = ayuda ? `${id}-ayuda` : undefined;
   const idError = error ? `${id}-error` : undefined;
@@ -138,6 +157,20 @@ export function Selector({ etiqueta, ayuda, error, opciones, vacio, etiquetaOcul
         aria-invalid={error ? true : undefined}
         aria-describedby={descrito}
         {...resto}
+        /* R54 · lo que hace de `readonly` en un elemento que no lo tiene. Los
+           manejadores van DESPUÉS del spread a propósito: si fueran antes, un
+           `onChange` del producto los pisaría y el selector volvería a cambiar
+           en mitad de la consulta. */
+        aria-readonly={soloLectura || undefined}
+        data-solo-lectura={soloLectura || undefined}
+        /* Sin esto la lista se abre igual y se elige con el ratón. */
+        onMouseDown={soloLectura ? (e) => e.preventDefault() : resto.onMouseDown}
+        /* Con teclado un `<select>` cambia con flechas, letras y espacio. Se
+           dejan pasar Tab y Escape: salir nunca se bloquea. */
+        onKeyDown={soloLectura
+          ? (e) => { if (e.key !== 'Tab' && e.key !== 'Escape') e.preventDefault(); }
+          : resto.onKeyDown}
+        onChange={soloLectura ? undefined : resto.onChange}
       >
         {vacio !== undefined && <option value="">{vacio}</option>}
         {opciones.map((o) => (

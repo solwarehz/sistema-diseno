@@ -215,3 +215,60 @@ describe('R53 · el error del campo lleva su icono, como el catálogo', () => {
     expect(container.querySelector('.campo-error')).toBeNull();
   });
 });
+
+/**
+ * R54 · el selector en solo lectura mientras se consulta a la API.
+ *
+ * Lo pidió el responsable para el selector de documento: cambiar el tipo a
+ * mitad de la consulta tira el resultado que se estaba esperando. Y NO es
+ * `disabled`: deshabilitado se sale del tabulador y el navegador no lo envía
+ * con el formulario, que es justo el dato que hay que conservar.
+ */
+describe('R54 · Selector en solo lectura: se lee, se enfoca y no cambia', () => {
+  const OPCIONES = [
+    { valor: 'dni', texto: 'DNI' },
+    { valor: 'ce', texto: 'Carné de extranjería' },
+  ];
+
+  it('lo anuncia como solo lectura y NO como deshabilitado', () => {
+    render(<Selector etiqueta="Tipo de documento" opciones={OPCIONES} soloLectura defaultValue="dni" />);
+    const sel = screen.getByLabelText('Tipo de documento');
+    expect(sel).toHaveAttribute('aria-readonly', 'true');
+    // Sigue enfocable y sigue viajando con el formulario: eso es lo que
+    // `disabled` rompería.
+    expect(sel).toBeEnabled();
+    expect(sel).not.toHaveAttribute('disabled');
+  });
+
+  it('el teclado no lo cambia, pero sí deja salir', () => {
+    const onCambio = vi.fn();
+    render(<Selector etiqueta="Tipo de documento" opciones={OPCIONES} soloLectura onChange={onCambio} />);
+    const sel = screen.getByLabelText('Tipo de documento');
+
+    const flecha = new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true });
+    sel.dispatchEvent(flecha);
+    expect(flecha.defaultPrevented).toBe(true);
+
+    // Tab y Escape pasan: salir nunca se bloquea.
+    const tab = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
+    sel.dispatchEvent(tab);
+    expect(tab.defaultPrevented).toBe(false);
+  });
+
+  it('el ratón no abre la lista', () => {
+    render(<Selector etiqueta="Tipo de documento" opciones={OPCIONES} soloLectura />);
+    const sel = screen.getByLabelText('Tipo de documento');
+    const raton = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
+    sel.dispatchEvent(raton);
+    expect(raton.defaultPrevented).toBe(true);
+  });
+
+  it('sin `soloLectura` todo sigue igual: no se estorba al caso normal', () => {
+    render(<Selector etiqueta="Tipo de documento" opciones={OPCIONES} />);
+    const sel = screen.getByLabelText('Tipo de documento');
+    expect(sel).not.toHaveAttribute('aria-readonly');
+    const raton = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
+    sel.dispatchEvent(raton);
+    expect(raton.defaultPrevented).toBe(false);
+  });
+});

@@ -1709,6 +1709,32 @@ mirar</strong>, y por debajo la caja de búsqueda estorba.</p>
   </div>
 </div>
 
+<h3 class="sub-seccion">Solo lectura — no es lo mismo que deshabilitado</h3>
+<p class="seccion-sub">Lo pidió el responsable para el <strong>selector de documento mientras se consulta
+a la API</strong>: cambiar el tipo a mitad de la consulta tira el resultado que se estaba esperando.
+<strong>Deshabilitado no vale aquí</strong> — dice «esto no es para ti», se sale del recorrido del
+tabulador y <strong>el navegador no lo envía con el formulario</strong>, que es justo el dato que hay
+que conservar. Solo lectura dice «esto es un dato, ahora no se toca»: se enfoca, se lee y viaja.</p>
+
+<div class="aviso"><strong>HTML no tiene <code>readonly</code> para <code>&lt;select&gt;</code></strong>
+—solo para <code>input</code> y <code>textarea</code>—, así que el componente lo construye:
+<code>aria-readonly</code> para que el lector lo anuncie, y el bloqueo de lo que abre o cambia la
+lista. Con teclado siguen pasando Tab y Escape: salir nunca se bloquea.</div>
+
+<div class="bloque">
+  <div class="campos-rejilla">
+    <label class="cg"><span class="cg-et">Tipo de documento</span>
+      <select class="campo cg-in" aria-readonly="true" data-solo-lectura>
+        <option>DNI</option><option>Carné de extranjería</option><option>Pasaporte</option></select>
+      <span class="cg-ayuda">Consultando el documento…</span></label>
+    <label class="cg"><span class="cg-et">Número</span>
+      <input class="campo cg-in" value="71234567" readonly>
+      <span class="cg-ayuda">Vuelve a editarse cuando la consulta termina.</span></label>
+    <label class="cg"><span class="cg-et">Editable, para comparar</span>
+      <select class="campo cg-in"><option>DNI</option><option>Pasaporte</option></select></label>
+  </div>
+</div>
+
 <h3 class="sub-seccion">Selector con búsqueda — funciona, pruébalo</h3>
 <p class="seccion-sub">${APODERADOS.length} apoderados. Escribe y filtra por coincidencias. Flechas para moverte, Enter para elegir, Esc para cerrar.</p>
 <div class="bloque">
@@ -5681,7 +5707,14 @@ input.campo.sel-in { width: 100%; padding-left: 32px; padding-right: 32px; }
    identifica como selector. */
 .cg-in:disabled { background-color: var(--fondo-encabezado); color: var(--texto-secundario);
   border-color: var(--borde); cursor: not-allowed; }
-.cg-in[readonly] { background-color: var(--fondo-encabezado); border-color: var(--borde); }
+/* R54 · solo lectura: se ve, se lee, se enfoca y no se cambia. El catalogo lo
+   estilizaba solo en .cg-in, asi que un campo readonly del producto —que emite
+   .campo— no se veia distinto de uno editable. El select no tiene readonly en
+   HTML: por eso tambien se mira aria-readonly, que es lo que el componente
+   pone. */
+.cg-in[readonly], .campo[readonly], .campo[aria-readonly="true"] {
+  background-color: var(--fondo-encabezado); border-color: var(--borde); }
+.campo[aria-readonly="true"] { cursor: default; }
 .campos-rejilla { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 16px; }
 .anatomia { display: grid; grid-template-columns: minmax(220px,300px) 1fr; gap: 28px; align-items: start; }
 .anat-lista { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.7;

@@ -220,3 +220,44 @@ describe('R7 (pedido R50) · sin foto y con persona, el hueco es el avatar', () 
     expect(container.querySelector('.ci-vacia')!.textContent).toBe('Sin logo');
   });
 });
+
+/**
+ * R55 · la foto de la persona viene EN `persona`.
+ *
+ * Lo reportó el responsable desde la pantalla de contrato: al buscar por DNI
+ * salía el avatar **aunque el trabajador ya tuviera foto**. La trampa era mía:
+ * `persona` llevaba quién es pero no su retrato, así que al enganchar el
+ * resultado de la consulta lo natural era pasar `persona` y dejarse `valor`.
+ */
+describe('R55 · foto si la hay, avatar si no — con una sola prop', () => {
+  it('con `persona.foto` se pinta la foto, no las iniciales', () => {
+    const { container } = render(
+      <CargaImagen etiqueta="Foto" onCambio={() => {}}
+        persona={{ id: 'u-1', nombre: 'PINEDA, José Isidro', foto: 'blob:retrato' }} />
+    );
+    const img = container.querySelector('.ci-caja img.ci-img') as HTMLImageElement;
+    expect(img).not.toBeNull();
+    expect(img.src).toContain('blob:retrato');
+    expect(container.querySelector('.ci-caja .avatar')).toBeNull();
+    // Y el botón dice «Cambiar», que es lo que toca cuando ya hay foto.
+    expect(screen.getByRole('button', { name: 'Cambiar foto' })).toBeInTheDocument();
+  });
+
+  it('sin `persona.foto` sigue el avatar: la regla no cambia', () => {
+    const { container } = render(
+      <CargaImagen etiqueta="Foto" onCambio={() => {}}
+        persona={{ id: 'u-1', nombre: 'PINEDA, José Isidro' }} />
+    );
+    expect(container.querySelector('.ci-caja .avatar')).not.toBeNull();
+    expect(container.querySelector('.ci-caja img.ci-img')).toBeNull();
+  });
+
+  it('`valor` manda sobre la foto de la ficha: es el recorte recién hecho', () => {
+    const { container } = render(
+      <CargaImagen etiqueta="Foto" valor="blob:recien" onCambio={() => {}}
+        persona={{ id: 'u-1', nombre: 'PINEDA, José Isidro', foto: 'blob:vieja' }} />
+    );
+    const img = container.querySelector('.ci-caja img.ci-img') as HTMLImageElement;
+    expect(img.src).toContain('blob:recien');
+  });
+});

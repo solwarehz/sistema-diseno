@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.47.0';
+export const VERSION = "1.48.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,33 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.48.0', fecha: '2026-08-11',
+    que: 'R54: el selector en solo lectura mientras se consulta · R55: foto de la persona con una sola prop',
+    porque:
+      'DOS PETICIONES DEL RESPONSABLE, y las dos con el mismo fondo: lo que el producto tiene que '
+      + 'acordarse de hacer, acaba sin hacerse. '
+      + 'R54 · «el selector de documento, al consultar el documento, colocalo en solo lectura para '
+      + 'que no cambien y se pierda la consulta a la api». Entra la prop soloLectura, y NO es '
+      + 'disabled: deshabilitado dice «esto no es para ti», se sale del recorrido del tabulador y '
+      + 'el navegador NO LO ENVIA con el formulario — justo el dato que aqui hay que conservar. '
+      + 'Solo lectura se ve, se lee, se enfoca y viaja. Y hay que decirlo porque no es gratis: HTML '
+      + 'no tiene readonly para <select>, solo para input y textarea, asi que el componente lo '
+      + 'construye — aria-readonly para el lector y bloqueo de lo que abre o cambia la lista, '
+      + 'dejando pasar Tab y Escape, porque salir nunca se bloquea. '
+      + 'Ademas, el estilo de solo lectura solo existia para .cg-in: un campo readonly del producto '
+      + '—que emite .campo— no se veia distinto de uno editable. Ahora los dos, y tambien el select '
+      + 'por su aria-readonly. '
+      + 'R55 · «en contrato, al buscar el dni del trabajador lo muestra con avatar, pero el '
+      + 'trabajador ya tiene foto». Era trampa mia: la prop persona llevaba quien es —id y nombre— '
+      + 'pero no su retrato, asi que al enganchar el resultado de la consulta lo natural era pasar '
+      + 'persona y dejarse valor, y el hueco enseñaba iniciales de alguien que si tiene foto. Ahora '
+      + 'persona lleva foto y la regla se cumple con una sola prop: foto si la hay, avatar si no. '
+      + 'valor sigue mandando cuando llega, porque es el recorte recien hecho que aun no se guardo. '
+      + '324.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.47.0', fecha: '2026-08-11',
     que: 'R53: el campo y el selector de la entrega no se veian como los del catalogo',

@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.47.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.48.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -144,7 +144,7 @@ a.enlace.enl-nosub{ text-decoration: none; }
 .enlace:hover{ text-decoration: underline; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CAMPO DE TEXTO — 29 reglas · clases .campo-*, .cg-*, .msj-*
+   CAMPO DE TEXTO — 30 reglas · clases .campo-*, .cg-*, .msj-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 input.campo.sel-in{ width: 100%; padding-left: 32px; padding-right: 32px; }
@@ -153,7 +153,9 @@ input.campo.sel-in{ width: 100%; padding-left: 32px; padding-right: 32px; }
 .cg-in{ width: 100%; }
 .cg-in:disabled{ background-color: var(--fondo-encabezado); color: var(--texto-secundario);
   border-color: var(--borde); cursor: not-allowed; }
-.cg-in[readonly]{ background-color: var(--fondo-encabezado); border-color: var(--borde); }
+.cg-in[readonly], .campo[readonly], .campo[aria-readonly="true"]{
+  background-color: var(--fondo-encabezado); border-color: var(--borde); }
+.campo[aria-readonly="true"]{ cursor: default; }
 .campo{ font: inherit; font-size: 13px; padding: 8px 8px; border-radius: 6px;
   border: 1px solid var(--borde-campo); background: var(--fondo-tarjeta);
   color: var(--texto-principal); }
