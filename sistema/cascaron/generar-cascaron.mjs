@@ -5670,8 +5670,9 @@ input.campo.sel-in { width: 100%; padding-left: 32px; padding-right: 32px; }
 @media (max-width: 760px) { .sel-demo-fila { grid-template-columns: 1fr; } }
 
 /* Campo de texto */
-.cg { display: flex; flex-direction: column; gap: 4px; }
-.cg-et { font-size: 13px; font-weight: 500; color: var(--texto-principal); }
+/* R53 · .cg y .campo-grupo son la MISMA pieza con dos nombres, y su bloque
+   compartido esta mas abajo, junto a .campo-*. Aqui quedan solo las piezas que
+   no tienen gemelo. */
 .cg-et-oculta { visibility: hidden; }
 .cg-req { color: var(--error-texto); margin-left: 4px; font-weight: 600; }
 .cg-in { width: 100%; }
@@ -5681,11 +5682,6 @@ input.campo.sel-in { width: 100%; padding-left: 32px; padding-right: 32px; }
 .cg-in:disabled { background-color: var(--fondo-encabezado); color: var(--texto-secundario);
   border-color: var(--borde); cursor: not-allowed; }
 .cg-in[readonly] { background-color: var(--fondo-encabezado); border-color: var(--borde); }
-.cg-mal { border-color: var(--error-acento); border-width: 2px; }
-.cg-ayuda { font-size: 12px; color: var(--texto-pista); }
-.cg-error { font-size: 12px; color: var(--error-texto); font-weight: 500;
-  display: flex; align-items: center; gap: 4px; }
-.cg-error .ic { width: 14px; height: 14px; flex: none; }
 .campos-rejilla { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 16px; }
 .anatomia { display: grid; grid-template-columns: minmax(220px,300px) 1fr; gap: 28px; align-items: start; }
 .anat-lista { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.7;
@@ -6825,15 +6821,33 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   border-left-color: var(--borde-fuerte); }
 
 .campos-demo { align-items: flex-start; }
-.campo-grupo { display: flex; flex-direction: column; gap: 4px; }
+/* R53 · DOS NOMBRES PARA LA MISMA PIEZA, Y YA HABIAN DERIVADO.
+   El grupo de campo se llama .cg-* en las paginas de campo, selector, fecha y
+   maquetas, y .campo-* en area de texto, casos y en TODOS los componentes de
+   React. Eran dos bloques de reglas separados, y con el tiempo se separaron
+   tambien por dentro: .cg-et declaraba color y .campo-etiqueta no —asi que la
+   etiqueta del producto salia del color que heredara, negro puro en vez del
+   gris tinta del sistema—, y .cg-error era flex con hueco para su icono
+   mientras .campo-error era texto suelto.
+   Lo vio el responsable: «la entrega del selector no es igual que la promesa».
+   Ahora los dos nombres COMPARTEN declaracion. No es un alias que haya que
+   acordarse de mantener: es el mismo bloque, y volver a separarlos exige
+   borrarlo aqui a proposito. El nombre .campo-* se queda porque hay productos
+   que ya lo tienen enganchado, y .cg-* porque es el que el catalogo enseña. */
+.cg, .campo-grupo { display: flex; flex-direction: column; gap: 4px; }
 /* Dentro de la paginacion el grupo va EN LINEA: apilar etiqueta y control
    duplicaria la altura de la barra. Es el mismo componente, otra disposicion. */
 .pgn .campo-grupo { flex-direction: row; align-items: center; gap: 8px; }
 .pgn .campo-grupo .campo { width: auto; }
-.campo-etiqueta { font-size: 13px; font-weight: 500; }
-.campo-ayuda { font-size: 12px; color: var(--texto-pista); }
-.campo-error { font-size: 12px; color: var(--error-texto); font-weight: 500; }
-.campo-mal { border-color: var(--error-acento); border-width: 2px; }
+.cg-et, .campo-etiqueta { font-size: 13px; font-weight: 500; color: var(--texto-principal); }
+.cg-ayuda, .campo-ayuda { font-size: 12px; color: var(--texto-pista); }
+.cg-error, .campo-error { font-size: 12px; color: var(--error-texto); font-weight: 500;
+  display: flex; align-items: center; gap: 4px; }
+.cg-error .ic, .campo-error .ic { width: 14px; height: 14px; flex: none; }
+/* Y se puede seguir ocultando: al pasar a flex, [hidden] dejaba de valer — el
+   mismo defecto que el candado de la cascada caza en .btn. */
+.cg-error[hidden], .campo-error[hidden] { display: none; }
+.cg-mal, .campo-mal { border-color: var(--error-acento); border-width: 2px; }
 
 .foco-demo { outline: 2px solid var(--foco); outline-offset: 2px; }
 .foco-marco { background: var(--marco-fondo); padding: 12px 12px; border-radius: 6px; display: inline-block; }

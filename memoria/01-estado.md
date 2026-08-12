@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 11 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.46.0** — los iconos de la entrega ya no
-salen 2px más pequeños que en el catálogo; antes, nace `CargaId` con las dos
-caras del documento de identidad
+**Versión del sistema:** MMI-DS **v1.47.0** — el campo y el selector ya se ven
+como en el catálogo: una sola declaración para el grupo de campo y el error con
+su icono; antes, los iconos que salían 2px más pequeños
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ caras del documento de identidad
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —35 funciones de
-componente, la hoja que viaja, once candados, 314 pruebas— y el candado de la
+componente, la hoja que viaja, once candados, 317 pruebas— y el candado de la
 promesa ya no mira una lista escrita a mano: **recorre todo lo que el catálogo
 pinta**, 832 elementos, y en dos días ha sacado tres defectos que nadie veía.
 
@@ -34,11 +34,11 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` en Docker |
-| Componentes de React | ✅ | **314 pruebas en 21 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **317 pruebas en 21 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · 725 reglas de 1210 · **529 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 50 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | 45 trazos en `iconos.mjs`, React real |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.46.0.zip` · 44 archivos |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.47.0.zip` · 44 archivos |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -56,9 +56,32 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.43.0 | **R49** · con la tabla ancha se desplazaba el componente entero, mandos incluidos |
 | v1.44.0 | **R50** · la carga de imagen se centra, y sin foto de una persona el hueco lo ocupa su avatar |
 | v1.45.0 | **R51** · nace `CargaId` — las dos caras del documento de identidad, con el mismo editor de encuadre |
-| **v1.46.0** | **R52** · todos los iconos de la entrega salían 2px más pequeños que en el catálogo |
+| v1.46.0 | **R52** · todos los iconos de la entrega salían 2px más pequeños que en el catálogo |
+| **v1.47.0** | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 
 ### Lo de hoy, con detalle
+
+**R53 · el campo y el selector.** «La entrega del selector no es igual que la
+promesa». La causa: el grupo de campo tenía **dos nombres y dos bloques de
+reglas** — `.cg-*` en las páginas de campo, selector, fecha y maquetas, y
+`.campo-*` en área de texto, casos y **todos** los componentes de React. Con el
+tiempo se separaron también por dentro.
+
+Medido, catálogo contra entrega:
+
+| | Catálogo | Entrega |
+|---|---|---|
+| Color de la etiqueta | `rgb(44,42,37)` | `rgb(0,0,0)` — heredado |
+| Renglón de error | `flex`, con icono de 14px | `block`, **sin icono** |
+
+Lo de la etiqueta es la enfermedad del `line-height` del botón otra vez: una
+propiedad que el sistema no declara y decide la página que lo monta.
+
+Ahora los dos nombres **comparten declaración** — es el mismo bloque, no un
+alias que haya que acordarse de mantener— y el error lleva su icono también en
+React: un renglón rojo suelto se confunde con una ayuda, y el color por sí solo
+no dice que algo falla (SC 1.4.1). El candado de la cascada volvió a cazar lo
+suyo: al pasar el error a `flex`, `[hidden]` dejaba de ocultarlo.
 
 **R52 · el tamaño del icono.** Lo vio el responsable mirando la barra de la
 tabla: «los botones filtro, columnas, CSV ¿tienen el mismo ancho? En la entrega
@@ -217,10 +240,10 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.46.0
+Versión                      1.47.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes, 0 fallos en ambos modos)
-Pruebas                         314   en 21 archivos
+Pruebas                         317   en 21 archivos
 Reglas que viajan               707   de 1192 · 516 clases, 0 huérfanas
 Candado de la promesa           832   elementos · 171.025 propiedades
                                       a 5 anchos (1440, 1024, 900, 700, 390)

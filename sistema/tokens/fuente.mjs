@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = '1.46.0';
+export const VERSION = '1.47.0';
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,32 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.47.0', fecha: '2026-08-11',
+    que: 'R53: el campo y el selector de la entrega no se veian como los del catalogo',
+    porque:
+      'Lo reporto el responsable: «la entrega del selector o select no es igual que la promesa». '
+      + 'La causa: el grupo de campo tenia DOS NOMBRES y DOS BLOQUES DE REGLAS. Se llama .cg-* en '
+      + 'las paginas de campo, selector, fecha y maquetas, y .campo-* en area de texto, casos y en '
+      + 'TODOS los componentes de React. Con el tiempo se separaron tambien por dentro, y eso es lo '
+      + 'que se veia. '
+      + 'Medido con la hoja que viaja, catalogo contra entrega: la ETIQUETA salia rgb(0,0,0) en el '
+      + 'producto contra rgb(44,42,37) en el catalogo —porque .cg-et declara color y .campo-etiqueta '
+      + 'no, asi que heredaba lo que hubiera en la pagina: la enfermedad del line-height del boton, '
+      + 'otra vez—. Y el ERROR salia como texto suelto (display:block, sin icono) contra el renglon '
+      + 'con icono de 14px del catalogo. '
+      + 'Ahora los dos nombres COMPARTEN declaracion: es el mismo bloque, no un alias que haya que '
+      + 'acordarse de mantener, asi que volver a separarlos exige borrarlo a proposito. Y el error '
+      + 'lleva su icono tambien en React — un renglon rojo suelto se confunde con una ayuda, y el '
+      + 'color por si solo no dice que algo falla (SC 1.4.1). '
+      + 'El candado de la cascada volvio a cazar lo suyo: al pasar el error a flex, [hidden] dejaba '
+      + 'de ocultarlo. Entra .campo-error[hidden]. Tres pruebas nuevas, vistas en rojo. 317.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'La etiqueta del campo pasa a llevar color propio (texto-principal) en vez de heredarlo, y el '
+      + 'error gana su icono. Los dos cambios acercan el producto a lo que el catalogo enseña.',
+    ],
+  },
   {
     v: '1.46.0', fecha: '2026-08-11',
     que: 'R52: todos los iconos de la entrega salian 2px mas pequeños que en el catalogo',

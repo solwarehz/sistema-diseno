@@ -199,7 +199,11 @@ export function SelectorBusqueda({
         </ul>
       </div>
 
-      {error && <span id={idError} className="campo-error">{error}</span>}
+      {error && (
+        /* R53 · el error lleva SU ICONO, como en el catalogo: un renglon rojo
+           suelto se confunde con una ayuda, y el color no basta (SC 1.4.1). */
+        <span id={idError} className="campo-error"><Icono nombre="alerta" />{error}</span>
+      )}
       {ayuda && <span id={idAyuda} className="campo-ayuda">{ayuda}</span>}
     </div>
   );

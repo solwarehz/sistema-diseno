@@ -184,3 +184,34 @@ describe('Paginación', () => {
     expect(fn).toHaveBeenCalledWith(3);
   });
 });
+
+/**
+ * R53 · el campo y el selector, iguales a la promesa.
+ *
+ * Lo reportó el responsable: «la entrega del selector no es igual que la
+ * promesa». Medido: la etiqueta salía del color que heredara —negro puro en vez
+ * del gris tinta del sistema, porque `.campo-etiqueta` no declaraba color y
+ * `.cg-et` sí— y el error salía **sin su icono**, que el catálogo lleva desde
+ * siempre. Dos nombres para la misma pieza que habían derivado por dentro.
+ */
+describe('R53 · el error del campo lleva su icono, como el catálogo', () => {
+  it('Campo: el error se pinta con icono, no solo en rojo', () => {
+    const { container } = render(<Campo etiqueta="Correo" error="El correo está incompleto." />);
+    const err = container.querySelector('.campo-error')!;
+    expect(err).not.toBeNull();
+    expect(err.querySelector('svg')).not.toBeNull();
+    expect(err.textContent).toContain('El correo está incompleto.');
+  });
+
+  it('Selector: igual — el color no basta para decir que algo falla (SC 1.4.1)', () => {
+    const { container } = render(
+      <Selector etiqueta="Sede" error="Elige una sede." opciones={[{ valor: 'h', texto: 'Huaraz' }]} />
+    );
+    expect(container.querySelector('.campo-error svg')).not.toBeNull();
+  });
+
+  it('sin error no hay renglón que ocultar', () => {
+    const { container } = render(<Campo etiqueta="Correo" />);
+    expect(container.querySelector('.campo-error')).toBeNull();
+  });
+});

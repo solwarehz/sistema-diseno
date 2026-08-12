@@ -11,6 +11,7 @@
  */
 
 import { useId } from 'react';
+import { Icono } from './Icono';
 
 type Comun = {
   /** Obligatoria. Ver arriba: no se puede sustituir por el placeholder. */
@@ -100,7 +101,11 @@ export function Campo({ etiqueta, ayuda, error, etiquetaOculta = false, classNam
         />
       )}
       {/* El error va PRIMERO en el orden de lectura: es lo que hay que resolver. */}
-      {error && <span id={idError} className="campo-error">{error}</span>}
+      {error && (
+        /* R53 · el error lleva SU ICONO, como en el catalogo: un renglon rojo
+           suelto se confunde con una ayuda, y el color no basta (SC 1.4.1). */
+        <span id={idError} className="campo-error"><Icono nombre="alerta" />{error}</span>
+      )}
       {ayuda && <span id={idAyuda} className="campo-ayuda">{ayuda}</span>}
     </div>
   );
@@ -139,7 +144,11 @@ export function Selector({ etiqueta, ayuda, error, opciones, vacio, etiquetaOcul
           <option key={o.valor} value={o.valor}>{o.texto}</option>
         ))}
       </select>
-      {error && <span id={idError} className="campo-error">{error}</span>}
+      {error && (
+        /* R53 · el error lleva SU ICONO, como en el catalogo: un renglon rojo
+           suelto se confunde con una ayuda, y el color no basta (SC 1.4.1). */
+        <span id={idError} className="campo-error"><Icono nombre="alerta" />{error}</span>
+      )}
       {ayuda && <span id={idAyuda} className="campo-ayuda">{ayuda}</span>}
     </div>
   );

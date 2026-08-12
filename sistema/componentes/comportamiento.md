@@ -208,6 +208,7 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 | | Regla |
 |---|---|
 | **0** | **Obligatorio.** (R52, v1.46.0) **El icono de la interfaz mide 18px** — el paso «texto», que es el que `Icono` da por omisión. Es el mismo número que el `line-height` del botón, y por eso un botón mide lo mismo lleve icono o no. `control` (16px) y `etiqueta` (14px) son para huecos que ya miden eso —la paginación—, y `estado` (32px) para el hueco vacío. La entrega los pasaba a `control` en 24 sitios y el catálogo los dibuja a 18: **todo icono salía 2px más pequeño en el producto**. Ningún candado lo ve: es un atributo del `<svg>`, no una declaración de la hoja. |
+| **0b** | **Obligatorio.** (R53, v1.47.0) El **grupo de campo tiene un solo aspecto**, se llame `.cg-*` o `.campo-*`: **comparten declaración en la hoja**, no son dos bloques parecidos. Habían derivado —la etiqueta perdía su color y el error perdía su icono— y por eso el selector de la entrega no se veía como el del catálogo. El **error lleva icono**: un renglón rojo suelto se confunde con una ayuda, y el color por sí solo no dice que algo falla (SC 1.4.1). |
 | **1** | **Obligatorio.** Nunca `outline: none` sin reemplazo. El candado lo corta. |
 | **2** | **Obligatorio.** Nada se distingue **solo por color** (SC 1.4.1). Los chips llevan texto, el orden lleva flecha, los filtros llevan tira. |
 | **3** | **Obligatorio.** Nunca se atenúa texto con `opacity`: lo saca del contrato de contraste. |

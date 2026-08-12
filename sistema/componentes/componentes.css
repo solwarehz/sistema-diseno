@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.46.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.47.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -144,23 +144,16 @@ a.enlace.enl-nosub{ text-decoration: none; }
 .enlace:hover{ text-decoration: underline; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CAMPO DE TEXTO — 33 reglas · clases .campo-*, .cg-*, .msj-*
+   CAMPO DE TEXTO — 29 reglas · clases .campo-*, .cg-*, .msj-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 input.campo.sel-in{ width: 100%; padding-left: 32px; padding-right: 32px; }
-.cg{ display: flex; flex-direction: column; gap: 4px; }
-.cg-et{ font-size: 13px; font-weight: 500; color: var(--texto-principal); }
 .cg-et-oculta{ visibility: hidden; }
 .cg-req{ color: var(--error-texto); margin-left: 4px; font-weight: 600; }
 .cg-in{ width: 100%; }
 .cg-in:disabled{ background-color: var(--fondo-encabezado); color: var(--texto-secundario);
   border-color: var(--borde); cursor: not-allowed; }
 .cg-in[readonly]{ background-color: var(--fondo-encabezado); border-color: var(--borde); }
-.cg-mal{ border-color: var(--error-acento); border-width: 2px; }
-.cg-ayuda{ font-size: 12px; color: var(--texto-pista); }
-.cg-error{ font-size: 12px; color: var(--error-texto); font-weight: 500;
-  display: flex; align-items: center; gap: 4px; }
-.cg-error .ic{ width: 14px; height: 14px; flex: none; }
 .campo{ font: inherit; font-size: 13px; padding: 8px 8px; border-radius: 6px;
   border: 1px solid var(--borde-campo); background: var(--fondo-tarjeta);
   color: var(--texto-principal); }
@@ -202,11 +195,14 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .msj{ font-size: 13px; padding: 8px 12px; border-radius: 6px; border-left: 3px solid; }
 .msj-nota{ background: var(--fondo-encabezado); color: var(--texto-secundario);
   border-left-color: var(--borde-fuerte); }
-.campo-grupo{ display: flex; flex-direction: column; gap: 4px; }
-.campo-etiqueta{ font-size: 13px; font-weight: 500; }
-.campo-ayuda{ font-size: 12px; color: var(--texto-pista); }
-.campo-error{ font-size: 12px; color: var(--error-texto); font-weight: 500; }
-.campo-mal{ border-color: var(--error-acento); border-width: 2px; }
+.cg, .campo-grupo{ display: flex; flex-direction: column; gap: 4px; }
+.cg-et, .campo-etiqueta{ font-size: 13px; font-weight: 500; color: var(--texto-principal); }
+.cg-ayuda, .campo-ayuda{ font-size: 12px; color: var(--texto-pista); }
+.cg-error, .campo-error{ font-size: 12px; color: var(--error-texto); font-weight: 500;
+  display: flex; align-items: center; gap: 4px; }
+.cg-error .ic, .campo-error .ic{ width: 14px; height: 14px; flex: none; }
+.cg-error[hidden], .campo-error[hidden]{ display: none; }
+.cg-mal, .campo-mal{ border-color: var(--error-acento); border-width: 2px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    CAMPO DE CONTRASEÑA — 6 reglas · clases .cp-*
