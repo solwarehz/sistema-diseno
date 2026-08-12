@@ -40,6 +40,8 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Iconografía | ✅ | 45 trazos en `iconos.mjs`, React real |
 | Entrega ZIP | ✅ | `sistema-diseno-v1.48.0.zip` · 44 archivos |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
+| Manual de aplicaciones | ✅ | **v1.2.0 sobre MMI-DS v1.48.0** — llevaba 37 versiones sin tocarse |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -61,6 +63,21 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
 ### Lo de hoy, con detalle
+
+**El manual, que llevaba 37 versiones sin tocarse.** Iba por la v1.1.0 sobre
+MMI-DS **v1.11.1** con el sistema en v1.48.0 — el mismo defecto que este archivo
+tuvo dos veces, en el documento al que se remite a los proyectos. Pasa a
+**v1.2.0** y entran las decisiones que hoy tiene que tomar quien construye una
+pantalla: el error con icono, **solo lectura no es deshabilitado** con el caso
+del selector de documento, los tres componentes de carga y sus tres reglas
+comunes, **foto si la hay y avatar si no** con una sola prop, y §9ter de tablas
+—la unidad en la cabecera, la celda numérica sin segunda línea y que con la
+tabla ancha solo se desplaza la tabla—.
+
+`ACTUALIZAR.md` estaba en v1.19.0: ahora apunta a la v1.48.0 y estrena el §4.2,
+**el salto desde la v1.19.0**, que es la que el área de sistemas tiene
+instalada. La lista sale de los `rompe` declarados en `fuente.mjs`, no de la
+memoria de nadie.
 
 **R54 · solo lectura, que no es deshabilitado.** Pedido para el selector de
 documento mientras se consulta a la API: cambiar el tipo a mitad tira el

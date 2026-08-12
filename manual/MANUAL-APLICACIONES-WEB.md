@@ -1,8 +1,8 @@
 # Manual de marca — Aplicaciones web
 
 **Colegio Albert Einstein, Huaraz**
-Documento MMI-MAN-01 · Versión 1.1.0 · 9 de agosto de 2026
-Sistema de referencia: MMI-DS v1.11.1 · Color modo claro **bloqueado**
+Documento MMI-MAN-01 · Versión 1.2.0 · 11 de agosto de 2026
+Sistema de referencia: MMI-DS v1.48.0 · Color modo claro **bloqueado**
 
 > Para actualizar un proyecto que ya usa el sistema, empieza por
 > [`ACTUALIZAR.md`](ACTUALIZAR.md): dice qué cambió, qué se rompe y cómo instalarlo.
@@ -331,6 +331,75 @@ que sí pase**. Eso es peor que el dato raro: el dato raro se ve; el inventado, 
 Quitar espacios sobrantes al guardar es invisible y ayuda. Exigir un formato exacto
 impide trabajar. Limpia en silencio; rechaza solo lo imposible.
 
+El `Campo` **recorta al salir**, no mientras se teclea: el espacio del copy-paste
+se va y la persona nunca ve desaparecer lo que escribe. `CampoContrasena` **jamás
+normaliza**: ahí un espacio puede ser deliberado.
+
+### 6.4 El error se ve, no solo se colorea
+
+El renglón de error del sistema **lleva icono**. No es adorno: un renglón rojo
+suelto se confunde con una ayuda, y el color por sí solo no dice que algo falla
+—SC 1.4.1—. Viene puesto; no hay que añadirlo.
+
+### 6.5 Solo lectura no es deshabilitado
+
+Son dos cosas distintas y se eligen por lo que significan:
+
+| | Qué dice | Qué pasa |
+|---|---|---|
+| **Deshabilitado** | «Esto no es para ti» | Sale del recorrido del tabulador y **el navegador no lo envía con el formulario** |
+| **Solo lectura** | «Esto es un dato, ahora no se toca» | Se ve, se lee, se enfoca y **viaja con el formulario** |
+
+El caso que lo trajo: **el selector de tipo de documento mientras se consulta a
+la API**. Cambiarlo a mitad tira el resultado que se está esperando, pero
+deshabilitarlo perdería el dato al enviar. Va en solo lectura:
+
+```tsx
+<Selector etiqueta="Tipo de documento" opciones={TIPOS}
+          soloLectura={consultando} value={tipo} onChange={setTipo} />
+```
+
+**HTML no tiene `readonly` para `<select>`** —solo para `input` y `textarea`—,
+así que lo construye el componente: `aria-readonly` para el lector y bloqueo de
+lo que abre o cambia la lista. Tab y Escape siguen pasando: salir nunca se
+bloquea. No hay que reconstruirlo con `disabled` y un `input` escondido.
+
+### 6.6 Subir un archivo: tres piezas, y ninguna se rehace
+
+| Qué se sube | Componente | Lo que resuelve |
+|---|---|---|
+| Foto o logo | `CargaImagen` | Encuadre —mover, acercar, flechas—, recorte en **WebP** y la proporción del hueco real: foto 1:1 en círculo, logo extendido 212×44, logo comprimido 1:1 |
+| Un PDF | `CargaPdf` | Comprueba que lo es **mirando sus bytes** —la extensión miente— y lo **comprime** antes de entregarlo, sin dependencias |
+| Documento de identidad | `CargaId` | Las **dos caras** con la proporción **ID-1** (85,60 × 53,98 mm), anverso y reverso en el mismo diálogo, miniaturas al costado |
+
+Tres reglas comunes que ya vienen dentro:
+
+- **La subida es del producto.** El componente entrega el archivo y una URL
+  local para pintarlo al instante; a qué ruta va y con qué reintentos, no.
+- **Borrador hasta el final.** Lo elegido no se entrega hasta confirmar:
+  cancelar a mitad deja el formulario como estaba. En `CargaId`, un anverso
+  suelto sería un documento a medias que nadie pidió.
+- **Volver a subir puede exigir permiso.** En `CargaId`, entregadas las dos
+  caras el botón se desactiva y solo vuelve cuando el producto baja `bloqueado`
+  porque **su back** lo autorizó. Un documento de identidad ya entregado no se
+  reemplaza porque a alguien se le ocurra.
+
+### 6.7 Donde se pinta una persona: foto si la hay, avatar si no
+
+Y con **una sola prop**. `persona` lleva su identidad **y su retrato**:
+
+```tsx
+<CargaImagen etiqueta="Foto del trabajador"
+             persona={{ id: t.id, nombre: t.nombre, foto: t.foto }} … />
+```
+
+Con foto se ve la foto; sin foto, el `Avatar` del sistema con sus iniciales y su
+color. **No es un círculo parecido**: es el mismo avatar que pintan la ficha y la
+tabla, con el color derivado del **identificador estable** —el de la base, nunca
+el nombre—, así que la misma persona se ve igual en todas las pantallas.
+
+Sin `persona` no se inventa identidad: el hueco dice «Sin foto» y ya.
+
 ---
 
 ## 6bis · La frontera de escritura — regla de composición, no del paquete
@@ -468,6 +537,40 @@ porque la persona puede resolverlo sola.
 
 ---
 
+## 9ter · Tablas — tres decisiones que se toman al escribir la columna
+
+Salieron de reportes de producto, y ninguna se puede imponer con código: las
+tres viven en cómo se define la columna.
+
+### La unidad va en la cabecera, no en cada celda
+
+«Días» arriba y `20` en la celda. Repetir «20 días», «14 días», «3 días» en
+cada fila obliga a leer la unidad noventa veces para comparar tres números, y
+ensancha la columna sin añadir nada.
+
+### Una celda numérica no lleva segunda línea
+
+Un `20` con «C-2026-001 · Director» debajo deja de ser una cifra: rompe la
+alineación de la columna y ya no se puede recorrer con la vista. Si ese dato
+hace falta, es **otra columna** —que además se podrá ordenar y filtrar— o va en
+la fila desplegable.
+
+Con `numerica: true` la columna alinea a la derecha y ordena por valor y no por
+texto, que es lo que una cifra necesita.
+
+### Con la tabla ancha, solo se desplaza la tabla
+
+La barra —buscar, «Mostrar», el recuento, Filtros, Columnas y las acciones del
+producto— y el pie —el rango y la paginación— **se quedan quietos**. Es
+comportamiento del componente y no hay que montar nada: lo que se arrastra a la
+derecha es la columna que se quiere leer, no los mandos que hacen falta para
+seguir trabajando.
+
+Si el producto engancha CSS propio al contenedor de la tabla, el que envuelve
+todo es `.tb-bloque`; `.tb-envoltura` es **solo la tabla**, y es la que desliza.
+
+---
+
 ## 10 · Lo que este manual todavía no cubre
 
 Honestidad sobre los límites, para que nadie asuma cobertura que no existe.
@@ -477,7 +580,8 @@ significado— y la densidad, que salieron en la v1.7.0.
 
 | Pendiente | Estado |
 |---|---|
-| **Tabla — lo que aún no trae** | `TablaDatos` resuelve orden, filtros —texto libre y dominio cerrado—, búsqueda global, «Mostrar» con recuento, columna N.º, paginación, columnas visibles (controlables desde el perfil), ranura de acciones y estado vacío. **No** trae selección múltiple ni encabezado fijo |
+| **Tabla — lo que aún no trae** | `TablaDatos` resuelve orden, filtros —texto libre y dominio cerrado—, búsqueda global, «Mostrar» con recuento, columna N.º, paginación, columnas visibles (controlables desde el perfil), ranura de acciones, estado vacío y **desplazamiento horizontal sin llevarse los mandos** (§9ter). **No** trae selección múltiple ni encabezado fijo |
+| **Comportamiento: promesa contra entrega** | El sistema compara **la cascada** del catálogo contra la que viaja —832 elementos, 171.025 propiedades, cinco anchos— y ahí no cabe una diferencia. Lo que **no** compara nadie todavía es el **comportamiento**: qué se abre, qué se cierra, qué clase elige el componente. Cuatro defectos seguidos entraron por ese hueco. Se cierra ejecutando las dos superficies en un navegador, y eso está **pendiente de autorización** |
 | **Primitivas de dominio** | DNI y RUC con dígito verificador, dos apellidos, ubigeo en cascada, soles, fechas peruanas |
 | ~~**Modo oscuro**~~ | **Aprobado.** Ya no es un pendiente: se pasa `tema` y `onTema` a `MenuUsuario` y el producto guarda la preferencia. El marco va en escala de negros |
 
@@ -492,6 +596,7 @@ comporta distinto y nadie sabrá por qué.
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 1.2.0 | 2026-08-11 | Sobre MMI-DS **v1.48.0**, tras 37 versiones sin tocar el manual — que es exactamente el defecto que este documento no puede permitirse. Entran: §6.4 el error lleva icono · §6.5 **solo lectura no es deshabilitado**, con el caso del selector de documento durante la consulta · §6.6 los tres componentes de carga —imagen, PDF y documento de identidad— y sus tres reglas comunes · §6.7 **foto si la hay, avatar si no**, con una sola prop · §9ter **tablas**: la unidad en la cabecera, la celda numérica sin segunda línea, y que con la tabla ancha solo se desplaza la tabla. En §10 se borra de «no cubre» lo que ya está hecho |
 | 1.1.0 | 2026-08-09 | Sobre MMI-DS v1.11.1. §2.4 pasa de «cuatro colores de marca» a la familia `marca`, con la distinción entre conocido y autorizado. De §10 se BORRAN iconografía y densidad, que ya están hechas. Se añade `ACTUALIZAR.md` |
 | 1.0.0 | 2026-08-07 | Primera edición. Sobre MMI-DS v1.1.0 |
 

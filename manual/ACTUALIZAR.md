@@ -1,14 +1,15 @@
-# Actualizar al sistema de diseño v1.19.0
+# Actualizar al sistema de diseño v1.48.0
 
-Para el área de sistemas. Si vienes de la **v1.7.0**, que es la que se entregó
-en su momento, esto es todo lo que cambia y todo lo que hay que hacer.
+Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
+hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
+**v1.19.0**, que es la que hay instalada. El §4 tiene un apartado para cada una.
 
 ---
 
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.19.0"
+npm install "github:solwarehz/sistema-diseno#v1.48.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -34,7 +35,7 @@ node -p "require('sistema-diseno-ae/package.json').version"   # 1.13.1
 ## 2 · Lo primero que cambia para ti: ya no reconstruyes componentes
 
 Hasta la v1.9.0 la entrega llevaba **el estilo** y tú ponías el comportamiento.
-Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.19.0
+Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.48.0
 viajan los VEINTE componentes de React**, con el comportamiento dentro.
 
 ```jsx
@@ -206,7 +207,9 @@ Dos cosas que conviene que sepáis antes de encenderlo:
 
 ---
 
-## 4 · Lo que se rompe al subir desde la v1.7.0
+## 4 · Lo que se rompe
+
+### 4.1 Si vienes de la v1.7.0
 
 Poco, y todo es renombrado:
 
@@ -219,6 +222,41 @@ Poco, y todo es renombrado:
 Y **una corrección que quizá notes en pantalla**: el aviso temporal ahora lleva
 fondo teñido además del filete. Antes era una tarjeta blanca con una raya de
 color, que no es lo que la documentación describía.
+
+### 4.2 Si vienes de la v1.19.0 — que es la que instaló el área de sistemas
+
+Son 29 versiones. Esto es **solo lo que cambia algo que ya tenías**; lo demás
+son piezas nuevas, y una pieza nueva no rompe nada.
+
+**Cambios de API — el compilador te los dirá:**
+
+| Versión | Qué cambió |
+|---|---|
+| 1.20.0 | `RangoFecha`: las clases de celda se acortan (`fc-dia` → `fc-d`, y `fc-extremo` se parte en dos) |
+| 1.36.0 | `alGuardar` y `TipoDato` **se retiran** del paquete. Entraron en la 1.35.0 y salieron en la siguiente: la frontera de escritura es del producto |
+| 1.40.0 | **`CargaPdf.onCambio` recibe ahora la lista entera** (`PdfListo[]`), no un archivo suelto |
+| 1.43.0 | **El árbol de `TablaDatos` cambia**: el contenedor pasa a ser `.tb-bloque` y `.tb-envoltura` queda **solo alrededor de la tabla**. Si enganchaste CSS propio a `.tb-envoltura` contando con que envolvía todo, muévelo a `.tb-bloque` |
+
+**Cambios que se ven en pantalla:**
+
+| Versión | Qué se ve distinto |
+|---|---|
+| 1.21.0 | La hoja pierde 27 clases de andamiaje del catálogo que nunca debieron viajar |
+| 1.22.0 | Las duraciones pasan a tokens: `.14/.15s` → 140ms, y `prefers-reduced-motion` se resuelve una vez |
+| 1.27.0 | La barra de la tabla se reordena: los mandos a la derecha, el rango al pie |
+| 1.28.0 | Llegan las reglas estructurales de **modo oscuro** que faltaban (flecha del select, icono del calendario) |
+| 1.29.0 | `CargaImagen` entrega **WebP** donde el navegador sabe, no PNG. **Lee `blob.type`, no asumas extensión** |
+| 1.40.1 · 1.41.1 | El botón fija su propio `line-height` y su propio `display`: pasa a **36px exactos** (mini, 28) y deja de necesitar `.btn-ic` para alinear |
+| 1.41.0 | El reset **`box-sizing: border-box`** por fin viaja. Si lo compensaste a mano, quítalo |
+| 1.44.0 | La columna de `CargaImagen` **se centra** |
+| 1.46.0 | **Los iconos pasan de 16 a 18px** — el tamaño que el catálogo enseñó siempre. Los botones con icono ganan ~2px de ancho; la altura no cambia |
+| 1.47.0 | La etiqueta del campo lleva **color propio** en vez de heredarlo, y el renglón de error **gana su icono** |
+| 1.48.0 | El panel de `PanelBarra` pasa a 248px de ancho mínimo, como en el catálogo (venía a 320) |
+
+**Lo que no rompe pero conviene aprovechar:** `soloLectura` en `Selector`
+(§6.5 del manual), `persona.foto` en `CargaImagen` (§6.7), `CargaId` para el
+documento de identidad (§6.6), `AreaTexto`, `CampoContrasena`, y el tercer nivel
+del menú en `MarcoApp`.
 
 ---
 
