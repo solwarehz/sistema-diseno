@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.52.1";
+export const VERSION = "1.53.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,28 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.53.0', fecha: '2026-08-13',
+    que: 'R65: publicar deja de ser tres pasos a mano — las dos vias garantizadas y los ZIP viejos podados',
+    porque:
+      'ORDEN DEL RESPONSABLE: siempre garantizar que se pueda actualizar por npm Y descargando '
+      + 'directamente, y borrar los ZIP de versiones anteriores. '
+      + 'Subir a main NO es publicar. El area de sistemas instala de dos formas —por etiqueta con '
+      + 'npm, y bajando el ZIP— y las dos dependian de que alguien se acordara de tres pasos '
+      + 'sueltos. Ya fallo: las etiquetas se cortaban en v1.38.0 con el sistema en v1.48.0, y '
+      + 'ACTUALIZAR.md mandaba instalar una etiqueta que no existia. Nadie podia actualizar, y nada '
+      + 'lo comprobaba. Es el MISMO defecto que la lista de componentes del empaquetador (R60) y '
+      + 'que la lista de candados del CLAUDE.md: un paso que depende de acordarse. '
+      + 'Ahora es un comando que pone la etiqueta, publica con el ZIP adjunto y poda los ZIP '
+      + 'anteriores. Se niega si el arbol esta sucio, si HEAD no coincide con origin/main, o si la '
+      + 'etiqueta ya existe apuntando a otro commit — y eso ultimo NO se arregla moviendo la '
+      + 'etiqueta, que es el defecto abierto de la v1.10.5: se sube de version. '
+      + 'La poda toca los ZIP y NADA MAS. Las etiquetas y las publicaciones se quedan, porque '
+      + 'borrarlas romperia el npm install de una version vieja, que es lo contrario de lo que se '
+      + 'pide garantizar. Y un ZIP borrado no se pierde: se reconstruye desde su etiqueta.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.52.1', fecha: '2026-08-13',
     que: 'R64: el medio de la tarjeta es SU PROPIO bloque contenedor',

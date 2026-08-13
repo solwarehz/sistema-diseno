@@ -1,6 +1,6 @@
 {
   "name": "sistema-diseno-ae",
-  "version": "1.52.1",
+  "version": "1.53.0",
   "description": "Sistema de diseño web del Colegio Albert Einstein — implementación ejecutable de MMI-DS",
   "private": true,
   "type": "module",
@@ -48,6 +48,7 @@
     "lint": "eslint .",
     "lint-real": "sh sistema/candado/probar-con-eslint.sh",
     "componentes-probar": "cd componentes && vitest run",
+    "publicar": "node sistema/paquete/publicar.mjs",
     "verificar-color": "node sistema/candado/verificar-color.mjs"
   },
   "devDependencies": {

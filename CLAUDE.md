@@ -246,6 +246,33 @@ No las «mejores» por iniciativa propia. Están razonadas:
 
   Si algo sale en rojo, **no se sube**. Un `main` roto es un proyecto ajeno roto.
   Y **nunca** con `--force`: eso sigue necesitando permiso expreso.
+
+- **Subir a `main` no es publicar.** El área de sistemas instala de **dos
+  formas**, y las dos tienen que funcionar **siempre**: por `npm` con la
+  etiqueta, y descargando el ZIP. Después del push:
+
+  ```bash
+  npm run publicar              # dice qué haría
+  npm run publicar -- --publicar
+  ```
+
+  Pone la etiqueta, crea la publicación con el ZIP adjunto, y **borra los ZIP de
+  las versiones anteriores** — solo la última conserva el suyo. Las etiquetas y
+  las publicaciones **no se tocan**: si se borraran, `npm install` de una versión
+  vieja dejaría de funcionar, que es lo contrario de lo que se garantiza.
+
+  Es un comando y no tres pasos porque los tres pasos ya fallaron: el 2026-08-13
+  se descubrió que las etiquetas se cortaban en **v1.38.0** con el sistema en
+  v1.48.0 —doce versiones sin etiquetar— y que `ACTUALIZAR.md` mandaba instalar
+  `#v1.48.0`, que **no existía**. Nadie podía actualizar y nada lo comprobaba.
+  Mismo defecto que la lista de componentes del empaquetador y que la lista de
+  candados de aquí arriba: **un paso que depende de acordarse.**
+
+  El publicador **se niega** si el árbol está sucio, si `HEAD` no coincide con
+  `origin/main`, o si la etiqueta ya existe apuntando a otro commit. Eso último
+  no se resuelve moviendo la etiqueta —una etiqueta movida entrega cosas
+  distintas según cuándo se baje, que es el defecto abierto de `v1.10.5`—: se
+  sube de versión.
 - En este proyecto **se commitea y se hace push al avanzar** — no se espera a que
   el usuario lo pida.
 - **Antes de cada commit, revisa el diff.** Si aparece `.env`, una clave o una
