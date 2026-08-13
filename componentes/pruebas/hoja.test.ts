@@ -68,6 +68,17 @@ describe('R57 · el medio de la tarjeta', () => {
     expect(hoja).toMatch(/prefers-reduced-motion[\s\S]{0,120}\.tn-pulsable:hover \.tn-medio img\s*\{\s*transform:\s*none/);
   });
 
+  /* R64 · Lo reportó Control Administrativos V2.0. `.tna-editar` es absoluto;
+     sin `position` en `.tn-medio`, su bloque contenedor era la tarjeta entera
+     —y en una `Tarjeta` normal, que no lleva `.tna`, no había ninguno—. En el
+     catálogo se veía bien por accidente: el medio es el primer hijo. */
+  it('R64 · el medio es su propio bloque contenedor', () => {
+    expect(hoja).toMatch(/\.tn-medio\{[^}]*position:\s*relative/);
+    // Y el control de la foto sigue siendo absoluto: si dejara de serlo, esta
+    // regla sobraría y la prueba estaría protegiendo un fósil.
+    expect(hoja).toMatch(/\.tna-editar\{[^}]*position:\s*absolute/);
+  });
+
   it('la vista previa de CargaImagen es el MISMO hueco: 192×108 es 16:9', () => {
     expect(hoja).toMatch(/\.ci-medio\{[^}]*width:\s*192px[^}]*height:\s*108px/);
     expect(192 / 108).toBeCloseTo(16 / 9, 5);

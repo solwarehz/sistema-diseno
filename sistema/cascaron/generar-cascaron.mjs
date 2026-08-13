@@ -5726,7 +5726,16 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
    imagen dentro, un recorte mal elegido deforma o corta la cara. 16:9 es la
    del formato medio-tarjeta de CargaImagen, asi que lo recortado alli entra
    aqui sin reencuadrar. Radio 5px y no 6px: es el interior del borde de 1px. */
-.tn-medio { aspect-ratio: 16 / 9; overflow: hidden; display: grid; place-items: center;
+/* R64 · El medio es SU PROPIO bloque contenedor. Lo reporto Control
+   Administrativos V2.0 y es una declaracion, pero no es cosmetica: .tna-editar
+   es position absolute, y sin esto su bloque contenedor era .tna —la tarjeta
+   entera—. En el catalogo se veia bien POR ACCIDENTE, porque el medio es el
+   primer hijo y esta pegado arriba, asi que top 8px caia donde parecia.
+   Dos formas de romperse: si algo se cuela por encima del medio, el boton se
+   queda donde estaba; y medioAccion es prop publica de Tarjeta, asi que una
+   Tarjeta normal —que no lleva .tna— no tenia NINGUN ancestro posicionado y el
+   boton se iba al primero que encontrara, fuera del componente. */
+.tn-medio { position: relative; aspect-ratio: 16 / 9; overflow: hidden; display: grid; place-items: center;
   background: var(--fondo-encabezado); border-bottom: 1px solid var(--borde);
   border-radius: 5px 5px 0 0; }
 .tn-medio img { display: block; width: 100%; height: 100%; object-fit: cover;

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.52.0";
+export const VERSION = "1.52.1";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,22 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.52.1', fecha: '2026-08-13',
+    que: 'R64: el medio de la tarjeta es SU PROPIO bloque contenedor',
+    porque:
+      'Lo reporto Control Administrativos V2.0 al aceptar la entrega, y es una sola declaracion. '
+      + '.tna-editar es position absolute y .tn-medio no declaraba position, asi que su bloque '
+      + 'contenedor era .tna: la tarjeta entera. En el catalogo se veia bien POR ACCIDENTE —el medio '
+      + 'es el primer hijo y esta pegado arriba, asi que top 8px caia donde parecia—, y por eso ni '
+      + 'la captura ni el candado de la promesa lo delataron. '
+      + 'Dos formas de romperse. Si algo se cuela por encima del medio, el boton se queda donde '
+      + 'estaba. Y la peor, que no estaba en el reporte: medioAccion es prop PUBLICA de Tarjeta, y '
+      + 'una Tarjeta normal no lleva .tna, asi que ahi no habia NINGUN ancestro posicionado y el '
+      + 'boton se iba al primero que encontrase, fuera del componente.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.52.0', fecha: '2026-08-13',
     que: 'R62: nace el candado del ELEMENTO — lo que el catalogo ensena y lo que el componente emite',
