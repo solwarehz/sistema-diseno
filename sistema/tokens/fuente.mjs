@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.53.0";
+export const VERSION = "1.53.1";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,23 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.53.1', fecha: '2026-08-13',
+    que: 'El publicador comprueba que ACTUALIZAR.md hable de la version que se publica',
+    porque:
+      'Se descubrio publicando la v1.53.0: el documento seguia mandando instalar la v1.51.1, cuyo '
+      + 'ZIP la poda acababa de borrar. O sea que el documento que explica como descargar mandaba a '
+      + 'una descarga que ya no existia — y era exactamente la clase de fallo que el publicador se '
+      + 'acababa de escribir para impedir. Ahora se niega si ACTUALIZAR.md no nombra la etiqueta que '
+      + 'se va a publicar. '
+      + 'Se corrigen ademas dos cifras que el reemplazo global habia estropeado: el ZIP son 51 '
+      + 'archivos y no 53 —dos candados dejaron de viajar en la v1.52.0— y los treinta componentes '
+      + 'viajan desde la v1.50.0, no desde la que toque publicar hoy. Y se documenta la poda para '
+      + 'quien la sufra: solo la ultima version conserva su ZIP, la etiqueta se queda, y el ZIP de '
+      + 'una version vieja se reconstruye desde su etiqueta si hace falta.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.53.0', fecha: '2026-08-13',
     que: 'R65: publicar deja de ser tres pasos a mano — las dos vias garantizadas y los ZIP viejos podados',

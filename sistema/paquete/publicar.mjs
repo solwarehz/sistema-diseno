@@ -28,7 +28,7 @@
  */
 
 import { execFileSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { VERSION } from '../tokens/fuente.mjs';
@@ -60,6 +60,19 @@ console.log(`\n  Publicar ${etiqueta}\n`);
 
 if (!existsSync(zip)) {
   problemas.push(`no existe ${NOMBRE_ZIP} — corre antes: node sistema/cascaron/generar-cascaron.mjs`);
+}
+
+/* El documento al que se remite al área de sistemas tiene que hablar de ESTA
+ * versión. Si no, manda a una descarga que la poda acaba de borrar: pasó al
+ * publicar la v1.53.0 con ACTUALIZAR.md todavía en la v1.51.1, y esa era
+ * exactamente la clase de fallo que este comando existe para impedir. */
+const actualizar = join(RAIZ, 'manual', 'ACTUALIZAR.md');
+if (existsSync(actualizar)) {
+  const texto = readFileSync(actualizar, 'utf8');
+  if (!texto.includes(etiqueta)) {
+    const cita = texto.match(/#v(\d+\.\d+\.\d+)/)?.[1] ?? '(ninguna)';
+    problemas.push(`manual/ACTUALIZAR.md manda instalar v${cita} y estamos publicando ${etiqueta}: ponlo al día o el documento manda a un ZIP que la poda borra`);
+  }
 }
 
 const sucio = sh('git', ['status', '--porcelain']);

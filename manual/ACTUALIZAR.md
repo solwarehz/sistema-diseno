@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.51.1
+# Actualizar al sistema de diseño v1.53.1
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.51.1"
+npm install "github:solwarehz/sistema-diseno#v1.53.1"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,24 +27,30 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.51.1
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.53.1
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.51.1>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.53.1>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.51.1 --repo solwarehz/sistema-diseno
+gh release download v1.53.1 --repo solwarehz/sistema-diseno
 ```
 
-Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
+Son 51 archivos —tokens, hoja de estilos, los treinta componentes de React, el
 contrato de comportamiento y los candados— y trae el catálogo dentro, así que
 se puede abrir sin conexión.
+
+**Solo la última versión conserva su ZIP.** Al publicar una nueva, el adjunto de
+la anterior se borra. La etiqueta y la publicación se quedan, así que
+`npm install` de una versión vieja sigue funcionando; lo que desaparece es la
+descarga directa de las viejas. Si necesitas el ZIP de una anterior, pídelo: se
+reconstruye desde su etiqueta.
 
 **Las dos vías entregan lo mismo.** La diferencia es que npm te deja actualizar
 cambiando un número, y el ZIP no: si bajas el ZIP, la próxima actualización es
@@ -53,7 +59,7 @@ está para cuando no se puede instalar desde un repositorio privado.
 
 > **Aviso sobre versiones anteriores.** Las etiquetas entre la **v1.39.0** y la
 > **v1.50.0** no existen: se dejaron de crear durante doce versiones y el aviso
-> saltó al comprobarlo. Lo que hay es **v1.38.0 y anteriores**, y **v1.51.1**.
+> saltó al comprobarlo. Lo que hay es **v1.38.0 y anteriores**, y **v1.53.1**.
 > Si necesitas una intermedia, pídela y se etiqueta — el commit está, es la
 > etiqueta lo que falta.
 
@@ -62,7 +68,7 @@ está para cuando no se puede instalar desde un repositorio privado.
 ## 2 · Lo primero que cambia para ti: ya no reconstruyes componentes
 
 Hasta la v1.9.0 la entrega llevaba **el estilo** y tú ponías el comportamiento.
-Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.51.1
+Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.50.0
 viajan los TREINTA componentes de React**, con el comportamiento dentro — y desde
 esa misma versión el paquete no se arma con una lista escrita a mano, así que
 lo publicado y lo entregado no pueden volver a separarse.
