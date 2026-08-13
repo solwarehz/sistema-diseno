@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.50.0";
+export const VERSION = "1.51.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,27 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.51.0', fecha: '2026-08-13',
+    que: 'R61: la cuadricula de tarjetas se entrega, y el manual pasa a mandar a los componentes en vez de describir su anatomia',
+    porque:
+      'ORDEN DEL RESPONSABLE: «actualiza todo para usar las nuevas cards». Y al recorrer el sistema '
+      + 'para hacerlo aparecio lo que faltaba para que fueran usables. '
+      + 'La cuadricula estaba resuelta en el catalogo y NO viajaba, por un motivo que nadie habia '
+      + 'mirado: se llamaba .tn-rejilla, y el extractor trata como andamiaje toda clase acabada en '
+      + '-rejilla —lo hace por una razon buena, ahi viven las rejillas de muestras del catalogo—. '
+      + 'Asi que el catalogo tenia la disposicion hecha y cada producto la rehacia con su propio '
+      + 'grid-template-columns. Con nombre propio, tn-cuadricula, sale del filtro y se entrega. Es '
+      + 'la quinta implementacion de cuadricula del paquete y la primera publicada. '
+      + 'El manual §5.4 describia la anatomia de la tarjeta de movil —«nombre, metadatos, chip, '
+      + 'monto, divisor y Ver detalle»— sin decir que eso YA ES TarjetaPersona: un manual que '
+      + 'describe la anatomia en vez de nombrar el componente esta pidiendo que lo reconstruyan. '
+      + 'Ahora hay una §5.5 que dice cual de las tres tarjetas usar, entrega la cuadricula y '
+      + 'explica por que TarjetaAccion existe —tres botones con el mismo onClick son tres paradas '
+      + 'de tabulador para una sola accion—.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.50.0', fecha: '2026-08-13',
     que: 'R58: el titulo de la tarjeta salia sin estilo · R59: TarjetaAccion, una accion y cuatro sitios donde pulsarla · R60: seis componentes publicados que NO viajaban en el ZIP',

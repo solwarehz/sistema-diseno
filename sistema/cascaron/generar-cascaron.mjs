@@ -2137,7 +2137,7 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 
 <h3 class="sub-seccion">Tarjeta normal</h3>
 <div class="bloque">
-  <div class="tn-rejilla">
+  <div class="tn-cuadricula">
     <article class="tn">
       <div class="tn-cuerpo"><h4>Simple</h4><p>Solo contenido. Fondo <code>fondo-tarjeta</code>, borde <code>borde</code>, radio 6px.</p></div>
     </article>
@@ -2169,7 +2169,7 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 
   <h3 class="sub-seccion">Tarjeta de acción</h3>
   <p class="parrafo">Foto, título, texto y un botón — y <strong>una sola acción</strong>: pulsar la imagen, el título, el texto o el botón lleva al mismo sitio. Hay <strong>un único control real</strong>, el título, y su zona pulsable se estira sobre toda la tarjeta. Una parada de tabulador y un anuncio, no cuatro.</p>
-  <div class="tn-rejilla">
+  <div class="tn-cuadricula">
     <article class="tn tn-pulsable tna">
       <div class="tn-medio"><img src="${MEDIO_MUESTRA}" alt=""></div>
       <div class="tn-cuerpo">
@@ -5349,7 +5349,7 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 [data-vista='movil'] .campos-rejilla,
 [data-vista='movil'] .sw-rejilla,
 [data-vista='movil'] .tp-rejilla,
-[data-vista='movil'] .tn-rejilla,
+[data-vista='movil'] .tn-cuadricula,
 [data-vista='movil'] .ep-rejilla,
 [data-vista='movil'] .chip-sup,
 [data-vista='movil'] .pr-rejilla,
@@ -5686,7 +5686,19 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 .tp-opaca { opacity: .5; }
 
 /* Tarjeta normal */
-.tn-rejilla { display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 12px; }
+/* R61 · LA CUADRICULA SE ENTREGA.
+   Estaba resuelta aqui y NO viajaba: se llamaba .tn-rejilla, y el extractor
+   trata como andamiaje del catalogo toda clase acabada en -rejilla —lo hace
+   por una razon buena, ahi viven las rejillas de muestras—. Asi que el
+   catalogo tenia la disposicion resuelta y cada producto la rehacia. Con
+   nombre propio sale del filtro y viaja.
+   auto-fill y no auto-fit: con auto-fit, dos tarjetas sueltas se estiran a
+   media pantalla cada una. Con auto-fill conservan su ancho y la cuadricula se
+   lee como una cuadricula aunque este a medias.
+   Los hijos con min-width 0 porque sin eso un titulo largo estira su columna
+   y rompe el reparto. */
+.tn-cuadricula { display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 12px; }
+.tn-cuadricula > * { min-width: 0; }
 /* R56 · La pulsable es un <button>, y un boton NO hereda tipografia.
    Sin font/text-align/padding/margin el navegador impone su fuente
    (~13,3px Arial), centra el texto y anade relleno propio. Aqui no se veia
@@ -6025,7 +6037,7 @@ h2.seccion {
 /* Los ítems de una rejilla tienen min-width auto y no bajan de su contenido:
    sin esto, cualquier texto largo estira la columna. */
 .rejilla > *, .campos-rejilla > *,
-.tp-rejilla > *, .tn-rejilla > *, .ep-rejilla > * { min-width: 0; }
+.tp-rejilla > *, .ep-rejilla > * { min-width: 0; }
 
 /* Escalas */
 .escala { margin-bottom: 12px; }

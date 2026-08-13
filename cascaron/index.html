@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.50.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.51.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.50.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.51.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -1520,7 +1520,7 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 [data-vista='movil'] .campos-rejilla,
 [data-vista='movil'] .sw-rejilla,
 [data-vista='movil'] .tp-rejilla,
-[data-vista='movil'] .tn-rejilla,
+[data-vista='movil'] .tn-cuadricula,
 [data-vista='movil'] .ep-rejilla,
 [data-vista='movil'] .chip-sup,
 [data-vista='movil'] .pr-rejilla,
@@ -1857,7 +1857,19 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 .tp-opaca { opacity: .5; }
 
 /* Tarjeta normal */
-.tn-rejilla { display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 12px; }
+/* R61 · LA CUADRICULA SE ENTREGA.
+   Estaba resuelta aqui y NO viajaba: se llamaba .tn-rejilla, y el extractor
+   trata como andamiaje del catalogo toda clase acabada en -rejilla —lo hace
+   por una razon buena, ahi viven las rejillas de muestras—. Asi que el
+   catalogo tenia la disposicion resuelta y cada producto la rehacia. Con
+   nombre propio sale del filtro y viaja.
+   auto-fill y no auto-fit: con auto-fit, dos tarjetas sueltas se estiran a
+   media pantalla cada una. Con auto-fill conservan su ancho y la cuadricula se
+   lee como una cuadricula aunque este a medias.
+   Los hijos con min-width 0 porque sin eso un titulo largo estira su columna
+   y rompe el reparto. */
+.tn-cuadricula { display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 12px; }
+.tn-cuadricula > * { min-width: 0; }
 /* R56 · La pulsable es un <button>, y un boton NO hereda tipografia.
    Sin font/text-align/padding/margin el navegador impone su fuente
    (~13,3px Arial), centra el texto y anade relleno propio. Aqui no se veia
@@ -2196,7 +2208,7 @@ h2.seccion {
 /* Los ítems de una rejilla tienen min-width auto y no bajan de su contenido:
    sin esto, cualquier texto largo estira la columna. */
 .rejilla > *, .campos-rejilla > *,
-.tp-rejilla > *, .tn-rejilla > *, .ep-rejilla > * { min-width: 0; }
+.tp-rejilla > *, .ep-rejilla > * { min-width: 0; }
 
 /* Escalas */
 .escala { margin-bottom: 12px; }
@@ -3451,7 +3463,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.50.0</option></select></label>
+          <select class="campo cg-in"><option>v1.51.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3539,8 +3551,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.50.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.50.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.51.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.51.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -7715,7 +7727,7 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 
 <h3 class="sub-seccion">Tarjeta normal</h3>
 <div class="bloque">
-  <div class="tn-rejilla">
+  <div class="tn-cuadricula">
     <article class="tn">
       <div class="tn-cuerpo"><h4>Simple</h4><p>Solo contenido. Fondo <code>fondo-tarjeta</code>, borde <code>borde</code>, radio 6px.</p></div>
     </article>
@@ -7747,7 +7759,7 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 
   <h3 class="sub-seccion">Tarjeta de acción</h3>
   <p class="parrafo">Foto, título, texto y un botón — y <strong>una sola acción</strong>: pulsar la imagen, el título, el texto o el botón lleva al mismo sitio. Hay <strong>un único control real</strong>, el título, y su zona pulsable se estira sobre toda la tarjeta. Una parada de tabulador y un anuncio, no cuatro.</p>
-  <div class="tn-rejilla">
+  <div class="tn-cuadricula">
     <article class="tn tn-pulsable tna">
       <div class="tn-medio"><img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20160%2090%22%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%22158%22%20height%3D%2288%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-dasharray%3D%224%203%22%2F%3E%3Cpath%20d%3D%22M18%2072%20L58%2036%20L88%2062%20L110%2046%20L142%2072%20Z%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%22118%22%20cy%3D%2226%22%20r%3D%228%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%2F%3E%3C%2Fsvg%3E" alt=""></div>
       <div class="tn-cuerpo">
@@ -10070,6 +10082,19 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
 <p class="man-p">  fondo <code>accion</code> y texto <code>accion-texto</code>.</p>
 <h3 class="man-h3">5.4 En móvil, la tabla se convierte en tarjetas</h3>
 <p class="man-p">No se hace scroll horizontal. Cada tarjeta lleva: nombre, una línea de metadatos (DNI y grado), chip de estado, monto, divisor y «Ver detalle» como enlace.</p>
+<p class="man-p">Esa anatomía <strong>ya está construida</strong>: es <code>TarjetaPersona</code>. No se maqueta a mano.</p>
+<h3 class="man-h3">5.5 Tarjetas: cuál de las tres, y la cuadrícula</h3>
+<table class="tabla-simple tabla-manual"><thead><tr><th>Cuándo</th><th>Componente</th></tr></thead><tbody><tr><td>Una persona: avatar, cargo, estado con chip</td><td><code>TarjetaPersona</code></td></tr><tr><td><strong>Una tarjeta que lleva a una pantalla</strong>, con imagen arriba</td><td><code>TarjetaAccion</code></td></tr><tr><td>Cualquier otra cosa: contenido suelto, cabecera, acciones al pie</td><td><code>Tarjeta</code></td></tr></tbody></table>
+<p class="man-p">Para disponerlas, la clase <strong><code>tn-cuadricula</code></strong>. Se reparte sola —columnas de 230px mínimo, 12px de separación— y ya trae el <code>min-width: 0</code> que evita que un título largo estire su columna. No se rehace con <code>grid-template-columns</code> en el producto: eso es exactamente lo que esta clase existe para no repetir.</p>
+<p class="man-p">``<code>html &lt;div class="tn-cuadricula"&gt; … tarjetas … &lt;/div&gt; </code>``</p>
+<p class="man-p"><strong>La regla que no es evidente, y por la que <code>TarjetaAccion</code> existe.</strong> Cuando una tarjeta lleva a un sitio, la imagen, el título y el botón tienen que llevar <strong>al mismo sitio</strong> — y aun así ser <strong>una sola parada de tabulador</strong>. Tres <code>&lt;button&gt;</code> con el mismo <code>onClick</code> parece lo natural y es lo peor: con teclado hay que pasar por los tres para salir de la tarjeta, y un lector de pantalla la lee tres veces diciendo lo mismo. En una cuadrícula de veinte tarjetas, sesenta paradas para veinte destinos.</p>
+<p class="man-p"><code>TarjetaAccion</code> ya lo resuelve: un solo control real, cuya zona pulsable cubre toda la tarjeta. <strong>No lo replique</strong> montando la composición a mano.</p>
+<p class="man-p">``<code>tsx &lt;TarjetaAccion   titulo="Ficha del trabajador"   nivelTitulo={2}          // la jerarquía de SU página; el sistema no la conoce   texto="Datos personales y contrato"   foto={urlWebp}   onAccion={() =&gt; navegar('/trabajador/71234567')}   textoBoton="Abrir"   editable={puedeEditar}   // por omisión NO se edita   onEditarFoto={abrirCargador} /&gt; </code>``</p>
+<p class="man-p">Dos detalles que evitan un rediseño a mitad de camino:</p>
+<ul class="man-lista"><li><strong>La proporción del medio es 16:9 y la fija el sistema.</strong> La imagen se recorta</li></ul>
+<p class="man-p">  con <code>CargaImagen formato="medio-tarjeta"</code>, que produce justo ese encuadre. Las   dos piezas encajan: no hay que reencuadrar nada en el medio.</p>
+<ul class="man-lista"><li><strong>Bloquear la edición no apaga la navegación.</strong> En solo lectura se sigue</li></ul>
+<p class="man-p">  entrando en la tarjeta; lo único que desaparece es poder cambiar la foto.</p>
 <p class="man-p">El marco se parte en dos filas: identidad arriba, navegación abajo. La acción principal pasa a <strong>botón flotante de 56px</strong> en la esquina inferior derecha, al alcance del pulgar.</p>
 <hr class="man-hr"></div>
     </section><section class="pagina" id="pg-man-5bis-movimiento-el-tiempo-tambien-" hidden>
@@ -10115,7 +10140,7 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
 <p class="man-p">``<code>tsx &lt;Selector etiqueta="Tipo de documento" opciones={TIPOS}           soloLectura={consultando} value={tipo} onChange={setTipo} /&gt; </code>``</p>
 <p class="man-p"><strong>HTML no tiene <code>readonly</code> para <code>&lt;select&gt;</code></strong> —solo para <code>input</code> y <code>textarea</code>—, así que lo construye el componente: <code>aria-readonly</code> para el lector y bloqueo de lo que abre o cambia la lista. Tab y Escape siguen pasando: salir nunca se bloquea. No hay que reconstruirlo con <code>disabled</code> y un <code>input</code> escondido.</p>
 <h3 class="man-h3">6.6 Subir un archivo: tres piezas, y ninguna se rehace</h3>
-<table class="tabla-simple tabla-manual"><thead><tr><th>Qué se sube</th><th>Componente</th><th>Lo que resuelve</th></tr></thead><tbody><tr><td>Foto o logo</td><td><code>CargaImagen</code></td><td>Encuadre —mover, acercar, flechas—, recorte en <strong>WebP</strong> y la proporción del hueco real: foto 1:1 en círculo, logo extendido 212×44, logo comprimido 1:1</td></tr><tr><td>Un PDF</td><td><code>CargaPdf</code></td><td>Comprueba que lo es <strong>mirando sus bytes</strong> —la extensión miente— y lo <strong>comprime</strong> antes de entregarlo, sin dependencias</td></tr><tr><td>Documento de identidad</td><td><code>CargaId</code></td><td>Las <strong>dos caras</strong> con la proporción <strong>ID-1</strong> (85,60 × 53,98 mm), anverso y reverso en el mismo diálogo, miniaturas al costado</td></tr></tbody></table>
+<table class="tabla-simple tabla-manual"><thead><tr><th>Qué se sube</th><th>Componente</th><th>Lo que resuelve</th></tr></thead><tbody><tr><td>Foto o logo</td><td><code>CargaImagen</code></td><td>Encuadre —mover, acercar, flechas—, recorte en <strong>WebP</strong> y la proporción del hueco real: foto 1:1 en círculo, logo extendido 212×44, logo comprimido 1:1, <strong>medio de tarjeta 16:9</strong></td></tr><tr><td>Un PDF</td><td><code>CargaPdf</code></td><td>Comprueba que lo es <strong>mirando sus bytes</strong> —la extensión miente— y lo <strong>comprime</strong> antes de entregarlo, sin dependencias</td></tr><tr><td>Documento de identidad</td><td><code>CargaId</code></td><td>Las <strong>dos caras</strong> con la proporción <strong>ID-1</strong> (85,60 × 53,98 mm), anverso y reverso en el mismo diálogo, miniaturas al costado</td></tr></tbody></table>
 <p class="man-p">Tres reglas comunes que ya vienen dentro:</p>
 <ul class="man-lista"><li><strong>La subida es del producto.</strong> El componente entrega el archivo y una URL</li></ul>
 <p class="man-p">  local para pintarlo al instante; a qué ruta va y con qué reintentos, no.</p>
@@ -10267,6 +10292,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.51.0 <span class="cam-fecha">2026-08-13</span></h3>
+<p class="pag-intro"><strong>R61: la cuadricula de tarjetas se entrega, y el manual pasa a mandar a los componentes en vez de describir su anatomia.</strong> ORDEN DEL RESPONSABLE: «actualiza todo para usar las nuevas cards». Y al recorrer el sistema para hacerlo aparecio lo que faltaba para que fueran usables. La cuadricula estaba resuelta en el catalogo y NO viajaba, por un motivo que nadie habia mirado: se llamaba .tn-rejilla, y el extractor trata como andamiaje toda clase acabada en -rejilla —lo hace por una razon buena, ahi viven las rejillas de muestras del catalogo—. Asi que el catalogo tenia la disposicion hecha y cada producto la rehacia con su propio grid-template-columns. Con nombre propio, tn-cuadricula, sale del filtro y se entrega. Es la quinta implementacion de cuadricula del paquete y la primera publicada. El manual §5.4 describia la anatomia de la tarjeta de movil —«nombre, metadatos, chip, monto, divisor y Ver detalle»— sin decir que eso YA ES TarjetaPersona: un manual que describe la anatomia en vez de nombrar el componente esta pidiendo que lo reconstruyan. Ahora hay una §5.5 que dice cual de las tres tarjetas usar, entrega la cuadricula y explica por que TarjetaAccion existe —tres botones con el mismo onClick son tres paradas de tabulador para una sola accion—.</p>
+
 
 
 <h3 class="sub-seccion">v1.50.0 <span class="cam-fecha">2026-08-13</span></h3>

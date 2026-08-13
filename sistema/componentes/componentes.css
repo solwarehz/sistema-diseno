@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.50.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.51.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -607,9 +607,11 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .tna-editar{ position: absolute; top: 8px; right: 8px; z-index: 1; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TARJETA — 15 reglas · clases .tn-*
+   TARJETA — 17 reglas · clases .tn-*
    ─────────────────────────────────────────────────────────────────────────── */
 
+.tn-cuadricula{ display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 12px; }
+.tn-cuadricula > *{ min-width: 0; }
 .tn{ background: var(--fondo-tarjeta); border: 1px solid var(--borde);
   border-radius: 6px; display: flex; flex-direction: column; text-decoration: none;
   color: var(--texto-principal);

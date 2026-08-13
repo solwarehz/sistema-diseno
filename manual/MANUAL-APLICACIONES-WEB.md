@@ -1,8 +1,8 @@
 # Manual de marca — Aplicaciones web
 
 **Colegio Albert Einstein, Huaraz**
-Documento MMI-MAN-01 · Versión 1.2.0 · 11 de agosto de 2026
-Sistema de referencia: MMI-DS v1.48.0 · Color modo claro **bloqueado**
+Documento MMI-MAN-01 · Versión 1.3.0 · 13 de agosto de 2026
+Sistema de referencia: MMI-DS v1.51.0 · Color modo claro **bloqueado**
 
 > Para actualizar un proyecto que ya usa el sistema, empieza por
 > [`ACTUALIZAR.md`](ACTUALIZAR.md): dice qué cambió, qué se rompe y cómo instalarlo.
@@ -266,6 +266,57 @@ Es el 80 % de la superficie del sistema. Vale la pena hacerla bien.
 No se hace scroll horizontal. Cada tarjeta lleva: nombre, una línea de metadatos
 (DNI y grado), chip de estado, monto, divisor y «Ver detalle» como enlace.
 
+Esa anatomía **ya está construida**: es `TarjetaPersona`. No se maqueta a mano.
+
+### 5.5 Tarjetas: cuál de las tres, y la cuadrícula
+
+| Cuándo | Componente |
+|---|---|
+| Una persona: avatar, cargo, estado con chip | `TarjetaPersona` |
+| **Una tarjeta que lleva a una pantalla**, con imagen arriba | `TarjetaAccion` |
+| Cualquier otra cosa: contenido suelto, cabecera, acciones al pie | `Tarjeta` |
+
+Para disponerlas, la clase **`tn-cuadricula`**. Se reparte sola —columnas de
+230px mínimo, 12px de separación— y ya trae el `min-width: 0` que evita que un
+título largo estire su columna. No se rehace con `grid-template-columns` en el
+producto: eso es exactamente lo que esta clase existe para no repetir.
+
+```html
+<div class="tn-cuadricula"> … tarjetas … </div>
+```
+
+**La regla que no es evidente, y por la que `TarjetaAccion` existe.** Cuando una
+tarjeta lleva a un sitio, la imagen, el título y el botón tienen que llevar **al
+mismo sitio** — y aun así ser **una sola parada de tabulador**. Tres `<button>`
+con el mismo `onClick` parece lo natural y es lo peor: con teclado hay que pasar
+por los tres para salir de la tarjeta, y un lector de pantalla la lee tres veces
+diciendo lo mismo. En una cuadrícula de veinte tarjetas, sesenta paradas para
+veinte destinos.
+
+`TarjetaAccion` ya lo resuelve: un solo control real, cuya zona pulsable cubre
+toda la tarjeta. **No lo replique** montando la composición a mano.
+
+```tsx
+<TarjetaAccion
+  titulo="Ficha del trabajador"
+  nivelTitulo={2}          // la jerarquía de SU página; el sistema no la conoce
+  texto="Datos personales y contrato"
+  foto={urlWebp}
+  onAccion={() => navegar('/trabajador/71234567')}
+  textoBoton="Abrir"
+  editable={puedeEditar}   // por omisión NO se edita
+  onEditarFoto={abrirCargador}
+/>
+```
+
+Dos detalles que evitan un rediseño a mitad de camino:
+
+- **La proporción del medio es 16:9 y la fija el sistema.** La imagen se recorta
+  con `CargaImagen formato="medio-tarjeta"`, que produce justo ese encuadre. Las
+  dos piezas encajan: no hay que reencuadrar nada en el medio.
+- **Bloquear la edición no apaga la navegación.** En solo lectura se sigue
+  entrando en la tarjeta; lo único que desaparece es poder cambiar la foto.
+
 El marco se parte en dos filas: identidad arriba, navegación abajo. La acción
 principal pasa a **botón flotante de 56px** en la esquina inferior derecha, al
 alcance del pulgar.
@@ -368,7 +419,7 @@ bloquea. No hay que reconstruirlo con `disabled` y un `input` escondido.
 
 | Qué se sube | Componente | Lo que resuelve |
 |---|---|---|
-| Foto o logo | `CargaImagen` | Encuadre —mover, acercar, flechas—, recorte en **WebP** y la proporción del hueco real: foto 1:1 en círculo, logo extendido 212×44, logo comprimido 1:1 |
+| Foto o logo | `CargaImagen` | Encuadre —mover, acercar, flechas—, recorte en **WebP** y la proporción del hueco real: foto 1:1 en círculo, logo extendido 212×44, logo comprimido 1:1, **medio de tarjeta 16:9** |
 | Un PDF | `CargaPdf` | Comprueba que lo es **mirando sus bytes** —la extensión miente— y lo **comprime** antes de entregarlo, sin dependencias |
 | Documento de identidad | `CargaId` | Las **dos caras** con la proporción **ID-1** (85,60 × 53,98 mm), anverso y reverso en el mismo diálogo, miniaturas al costado |
 

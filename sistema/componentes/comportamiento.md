@@ -175,6 +175,7 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 | **4** | **Obligatorio.** (R59, v1.50.0) **Por omisión no se puede editar.** El producto la manda editable cuando toca. Y **bloquear la edición no apaga la navegación**: en solo lectura se sigue entrando igual — lo único que desaparece es poder cambiar la foto. |
 | **5** | **Obligatorio.** (R59, v1.50.0) Cuando sí se puede editar, el control de la foto va **por encima** de la zona pulsable (`z-index`), porque es **la única acción de la tarjeta que no es _la_ acción de la tarjeta**. Sin eso, el `::after` se lo come y cambiar la foto abriría la página. No sale si falta `onEditarFoto`: un botón que no hace nada es peor que no tenerlo. |
 | **6** | Del proyecto: a dónde lleva la acción, qué imagen va en cada tarjeta y cuándo se puede editar. |
+| **7** | **Obligatorio.** (R61, v1.51.0) La **disposición en cuadrícula se entrega**: clase `tn-cuadricula`, columnas de 230 px mínimo y 12 px de separación, con `min-width: 0` en los hijos para que un título largo no estire su columna. Estaba resuelta en el catálogo y **no viajaba** —se llamaba `.tn-rejilla`, y el extractor trata como andamiaje toda clase acabada en `-rejilla`—, así que cada producto la rehacía. Es `auto-fill` y no `auto-fit` a propósito: con `auto-fit`, dos tarjetas sueltas se estiran a media pantalla cada una. |
 
 ---
 

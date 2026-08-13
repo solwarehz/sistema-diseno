@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.48.0
+# Actualizar al sistema de diseño v1.51.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.48.0"
+npm install "github:solwarehz/sistema-diseno#v1.51.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -35,8 +35,10 @@ node -p "require('sistema-diseno-ae/package.json').version"   # 1.13.1
 ## 2 · Lo primero que cambia para ti: ya no reconstruyes componentes
 
 Hasta la v1.9.0 la entrega llevaba **el estilo** y tú ponías el comportamiento.
-Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.48.0
-viajan los VEINTE componentes de React**, con el comportamiento dentro.
+Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.51.0
+viajan los TREINTA componentes de React**, con el comportamiento dentro — y desde
+esa misma versión el paquete no se arma con una lista escrita a mano, así que
+lo publicado y lo entregado no pueden volver a separarse.
 
 ```jsx
 import 'sistema-diseno-ae/tokens.css';       // SIEMPRE primero
@@ -252,6 +254,10 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.46.0 | **Los iconos pasan de 16 a 18px** — el tamaño que el catálogo enseñó siempre. Los botones con icono ganan ~2px de ancho; la altura no cambia |
 | 1.47.0 | La etiqueta del campo lleva **color propio** en vez de heredarlo, y el renglón de error **gana su icono** |
 | 1.48.0 | El panel de `PanelBarra` pasa a 248px de ancho mínimo, como en el catálogo (venía a 320) |
+| 1.49.0 | **La tarjeta pulsable deja de heredar la fuente del navegador.** Si la compensaste a mano —forzando `font-family`, `text-align: left` o `padding: 0` sobre `.tn`—, **quítalo**: ahora lo trae la hoja y tu parche pelea contra ella |
+| 1.50.0 | **El título de la tarjeta pasa a llevar estilo.** La hoja estilizaba `h4` y el componente emitía `h3`, así que salía con el tamaño por defecto del navegador. Si lo compensaste, quítalo. El nivel se elige con `nivelTitulo` |
+| 1.50.0 | **Seis componentes que se publicaban y no viajaban** —`AreaTexto`, `CampoContrasena`, `CargaId`, `CargaImagen`, `CargaPdf`, `ZonaAvisos`— ya están en el paquete. Si los reconstruiste, **cámbialos por los del sistema** |
+| 1.51.0 | La **cuadrícula de tarjetas se entrega**: clase `tn-cuadricula`. Si maquetaste el `grid-template-columns` a mano, cámbialo por la clase |
 
 **Lo que no rompe pero conviene aprovechar:** `soloLectura` en `Selector`
 (§6.5 del manual), `persona.foto` en `CargaImagen` (§6.7), `CargaId` para el
