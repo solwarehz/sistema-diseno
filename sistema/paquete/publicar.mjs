@@ -40,7 +40,15 @@ const REPO = 'solwarehz/sistema-diseno';
 const HACERLO = process.argv.includes('--publicar');
 
 const sh = (cmd, args) => execFileSync(cmd, args, { cwd: RAIZ, encoding: 'utf8' }).trim();
-const intenta = (cmd, args) => { try { return sh(cmd, args); } catch { return null; } };
+/** Preguntar por algo que puede no existir —una etiqueta, una publicación— es
+ *  normal aquí, no un fallo. Sin silenciar su salida de error, el ensayo en
+ *  seco escupe «unknown revision» y «release not found» y parece roto cuando
+ *  está funcionando: quien lo lea la primera vez desconfía del resto. */
+const intenta = (cmd, args) => {
+  try {
+    return execFileSync(cmd, args, { cwd: RAIZ, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+  } catch { return null; }
+};
 
 const etiqueta = `v${VERSION}`;
 const zip = join(RAIZ, 'cascaron', NOMBRE_ZIP);
