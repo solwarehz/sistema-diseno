@@ -195,6 +195,22 @@ const escudo = (px) => `
     </svg>
   </div>`;
 
+// ── Medio de tarjeta: muestra sin inventar un activo ────────────────────────
+// R57 · El catálogo tiene que EJERCITAR `.tn-medio img`, no solo describirlo:
+// lo que no se pinta aquí, el candado de la promesa no lo puede comparar. Pero
+// no existe una foto de muestra en el repositorio y no se inventa ninguna, así
+// que la muestra es un SVG con la proporción real, dibujado solo con
+// `currentColor` — ni un hexadecimal, y en un <img> resuelve a negro.
+const MEDIO_MUESTRA = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 90">'
+  + '<rect x="1" y="1" width="158" height="88" fill="none" stroke="currentColor"'
+  + ' stroke-dasharray="4 3"/>'
+  + '<path d="M18 72 L58 36 L88 62 L110 46 L142 72 Z" fill="none"'
+  + ' stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'
+  + '<circle cx="118" cy="26" r="8" fill="none" stroke="currentColor" stroke-width="2"/>'
+  + '</svg>'
+);
+
 // ── Maquetas ────────────────────────────────────────────────────────────────
 
 const maquetaWeb = `
@@ -2134,9 +2150,21 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
       <div class="tn-cuerpo"><p>Las acciones van al pie, alineadas a la derecha.</p></div>
       <div class="tn-pie"><button class="btn btn-terc">Cancelar</button><button class="btn btn-1">Guardar</button></div>
     </article>
-    <a href="#" class="tn tn-pulsable">
-      <div class="tn-cuerpo"><h4>Pulsable →</h4><p>Si toda la tarjeta navega, es un <code>&lt;a&gt;</code>. <strong>Nunca un div con onClick.</strong></p></div>
-    </a>
+    <button type="button" class="tn tn-pulsable">
+      <div class="tn-cuerpo"><h4>Pulsable →</h4><p>Si toda la tarjeta hace algo, es un <code>&lt;button&gt;</code>; si navega, un <code>&lt;a&gt;</code>. <strong>Nunca un div con onClick.</strong></p></div>
+    </button>
+    <article class="tn">
+      <div class="tn-medio"><img src="${MEDIO_MUESTRA}" alt=""></div>
+      <div class="tn-cuerpo"><h4>Con medio</h4><p>La imagen va <strong>arriba</strong>, antes del título, a <code>16:9</code>. La proporción la fija el sistema.</p></div>
+    </article>
+    <button type="button" class="tn tn-pulsable">
+      <div class="tn-medio"><img src="${MEDIO_MUESTRA}" alt=""></div>
+      <div class="tn-cuerpo"><h4>Medio pulsable →</h4><p>Al pasar el cursor, la imagen se acerca <strong>dentro de su marco</strong>: la tarjeta no empuja a las de al lado.</p></div>
+    </button>
+    <article class="tn">
+      <div class="tn-medio"><span class="tn-medio-vacio">Sin imagen</span></div>
+      <div class="tn-cuerpo"><h4>Sin imagen</h4><p>El hueco <strong>se reserva igual</strong>. Si no, en una cuadrícula las tarjetas sin foto salen más bajas y el borde inferior queda dentado.</p></div>
+    </article>
   </div>
 </div>
 
@@ -5627,19 +5655,47 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 
 /* Tarjeta normal */
 .tn-rejilla { display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 12px; }
+/* R56 · La pulsable es un <button>, y un boton NO hereda tipografia.
+   Sin font/text-align/padding/margin el navegador impone su fuente
+   (~13,3px Arial), centra el texto y anade relleno propio. Aqui no se veia
+   porque el catalogo la pintaba como <a>, y un ancla si hereda. */
 .tn { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
   border-radius: 6px; display: flex; flex-direction: column; text-decoration: none;
-  color: var(--texto-principal); }
+  color: var(--texto-principal);
+  font: inherit; text-align: left; padding: 0; margin: 0;
+  transition: border-color var(--dur-rapida) var(--curva); }
 .tn-cab { display: flex; align-items: center; justify-content: space-between; gap: 8px;
   padding: 12px 12px; border-bottom: 1px solid var(--borde); }
-.tn-cab h4, .tn-cuerpo h4 { font-size: 15px; font-weight: 600; margin: 0 0 4px; }
+.tn-cab h4, .tn-cuerpo h4 { font-size: 15px; font-weight: 600; margin: 0 0 4px;
+  transition: color var(--dur-rapida) var(--curva); }
 .tn-cab h4 { margin: 0; }
 .tn-cuerpo { padding: 12px; flex: 1; }
 .tn-cuerpo p { margin: 0; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .tn-pie { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 12px;
   border-top: 1px solid var(--borde); }
+/* R57 · EL MEDIO. La proporcion la declara el sistema, no el producto: con
+   imagen dentro, un recorte mal elegido deforma o corta la cara. 16:9 es la
+   del formato medio-tarjeta de CargaImagen, asi que lo recortado alli entra
+   aqui sin reencuadrar. Radio 5px y no 6px: es el interior del borde de 1px. */
+.tn-medio { aspect-ratio: 16 / 9; overflow: hidden; display: grid; place-items: center;
+  background: var(--fondo-encabezado); border-bottom: 1px solid var(--borde);
+  border-radius: 5px 5px 0 0; }
+.tn-medio img { display: block; width: 100%; height: 100%; object-fit: cover;
+  transition: transform var(--dur-media) var(--curva); }
+/* R57 · Sin imagen no sale un agujero: sale el mismo hueco rotulado que usa
+   .ci-vacia. En un catalogo real siempre falta alguna. */
+.tn-medio-vacio { font-size: 12px; color: var(--texto-pista); text-align: center; padding: 8px; }
+.tn-pulsable { cursor: pointer; }
 .tn-pulsable:hover { border-color: var(--accion); }
 .tn-pulsable:hover h4 { color: var(--accion); }
+/* R57 · El acercamiento va CONTENIDO dentro del marco —el medio recorta—, asi
+   la tarjeta no empuja a las de al lado. Con una imagen ocupando la mayor
+   parte de la tarjeta, un cambio instantaneo es lo que peor se ve. */
+.tn-pulsable:hover .tn-medio img { transform: scale(1.04); }
+/* R57 · Los tokens de duracion ya caen a 0,01ms, pero transform no es una
+   duracion: sin esto el acercamiento seguiria ocurriendo, solo que de golpe.
+   Mismo remedio que el avatar. */
+@media (prefers-reduced-motion: reduce) { .tn-pulsable:hover .tn-medio img { transform: none; } }
 
 /* Chip de estado */
 .chip-sup { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 8px; }
@@ -6144,6 +6200,9 @@ select.campo:disabled { opacity: .75; }
    hueco, no una aproximación. */
 .ci-redonda { border-radius: 50%; }
 .ci-extendida { width: 212px; height: 44px; }
+/* R57 · La vista previa ES el hueco: 16:9, la misma proporcion que .tn-medio.
+   192x108 para que quepa junto a los mandos sin empujarlos. */
+.ci-medio { width: 192px; height: 108px; }
 /* overflow:hidden CONTIENE la sombra de 999px de la mascara: sin el, el
    difuminado se derrama del marco y atenua la pagina entera. El difuminado
    es del encuadre, no del mundo. */

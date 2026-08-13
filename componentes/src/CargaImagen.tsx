@@ -46,7 +46,7 @@ import { Avatar } from './Avatar';
  * El editor adopta la proporción del formato: encuadrar un logo apaisado en
  * un cuadro cuadrado es encuadrar a ciegas.
  */
-export type FormatoCarga = 'foto' | 'logo-extendido' | 'logo-comprimido';
+export type FormatoCarga = 'foto' | 'logo-extendido' | 'logo-comprimido' | 'medio-tarjeta';
 
 const FORMATOS: Record<FormatoCarga, {
   vw: number; vh: number; redondo: boolean; icono: 'camara' | 'subir';
@@ -55,6 +55,11 @@ const FORMATOS: Record<FormatoCarga, {
   'foto':            { vw: 318, vh: 318, redondo: true,  icono: 'camara', subir: 'Subir foto', cambiar: 'Cambiar foto' },
   'logo-extendido':  { vw: 318, vh: 66,  redondo: false, icono: 'subir',  subir: 'Subir logo', cambiar: 'Cambiar logo' },
   'logo-comprimido': { vw: 318, vh: 318, redondo: false, icono: 'subir',  subir: 'Subir logo', cambiar: 'Cambiar logo' },
+  // R57 · 320×180 es 16:9 EXACTO, la proporción que `.tn-medio` declara. Se
+  // sale de los 318 de los otros tres a propósito: aquí el hueco no es fijo
+  // —en una cuadrícula el ancho es fluido—, así que lo que tiene que casar es
+  // la proporción, y 318 no da un 16:9 redondo.
+  'medio-tarjeta':   { vw: 320, vh: 180, redondo: false, icono: 'subir',  subir: 'Subir imagen', cambiar: 'Cambiar imagen' },
 };
 
 export type CargaImagenProps = {
@@ -167,9 +172,12 @@ export function CargaImagen({
 
   const idError = error ? 'ci-error-' + etiqueta.replace(/\s+/g, '-') : undefined;
   const esExtendida = formato === 'logo-extendido';
+  // R57 · El medio de tarjeta tampoco es cuadrado: su vista previa es 16:9,
+  // igual que el hueco donde va a caer.
+  const esMedio = formato === 'medio-tarjeta';
   const cajaClases = [
     'ci-caja',
-    esExtendida ? 'ci-extendida' : `ci-${tamano}`,
+    esExtendida ? 'ci-extendida' : esMedio ? 'ci-medio' : `ci-${tamano}`,
     F.redondo ? 'ci-redonda' : '',
   ].filter(Boolean).join(' ');
 

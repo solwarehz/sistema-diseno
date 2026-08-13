@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.48.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.49.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -220,7 +220,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .cp-ver:disabled{ opacity: .75; cursor: default; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CARGA DE IMAGEN — 25 reglas · clases .ci-*
+   CARGA DE IMAGEN — 26 reglas · clases .ci-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .ci{ display: flex; flex-direction: column; gap: 8px; align-items: center; }
@@ -246,6 +246,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .ci-editor[hidden]{ display: none; }
 .ci-redonda{ border-radius: 50%; }
 .ci-extendida{ width: 212px; height: 44px; }
+.ci-medio{ width: 192px; height: 108px; }
 .ci-marco-editor{ position: relative; overflow: hidden; border-radius: 6px; }
 .ci-mascara{ position: absolute; inset: 0; border-radius: 50%;
   box-shadow: 0 0 0 999px var(--marco-fondo); opacity: .5; pointer-events: none; }
@@ -593,22 +594,36 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .tp-opaca{ opacity: .5; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TARJETA — 9 reglas · clases .tn-*
+   TARJETA — 15 reglas · clases .tn-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tn{ background: var(--fondo-tarjeta); border: 1px solid var(--borde);
   border-radius: 6px; display: flex; flex-direction: column; text-decoration: none;
-  color: var(--texto-principal); }
+  color: var(--texto-principal);
+  font: inherit; text-align: left; padding: 0; margin: 0;
+  transition: border-color var(--dur-rapida) var(--curva); }
 .tn-cab{ display: flex; align-items: center; justify-content: space-between; gap: 8px;
   padding: 12px 12px; border-bottom: 1px solid var(--borde); }
-.tn-cab h4, .tn-cuerpo h4{ font-size: 15px; font-weight: 600; margin: 0 0 4px; }
+.tn-cab h4, .tn-cuerpo h4{ font-size: 15px; font-weight: 600; margin: 0 0 4px;
+  transition: color var(--dur-rapida) var(--curva); }
 .tn-cab h4{ margin: 0; }
 .tn-cuerpo{ padding: 12px; flex: 1; }
 .tn-cuerpo p{ margin: 0; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .tn-pie{ display: flex; justify-content: flex-end; gap: 8px; padding: 12px 12px;
   border-top: 1px solid var(--borde); }
+.tn-medio{ aspect-ratio: 16 / 9; overflow: hidden; display: grid; place-items: center;
+  background: var(--fondo-encabezado); border-bottom: 1px solid var(--borde);
+  border-radius: 5px 5px 0 0; }
+.tn-medio img{ display: block; width: 100%; height: 100%; object-fit: cover;
+  transition: transform var(--dur-media) var(--curva); }
+.tn-medio-vacio{ font-size: 12px; color: var(--texto-pista); text-align: center; padding: 8px; }
+.tn-pulsable{ cursor: pointer; }
 .tn-pulsable:hover{ border-color: var(--accion); }
 .tn-pulsable:hover h4{ color: var(--accion); }
+.tn-pulsable:hover .tn-medio img{ transform: scale(1.04); }
+@media (prefers-reduced-motion: reduce) {
+  .tn-pulsable:hover .tn-medio img{ transform: none; }
+}
 
 /* ───────────────────────────────────────────────────────────────────────────
    BLOQUE DE CONTENIDO — 2 reglas · clases .bloque-*

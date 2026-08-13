@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.48.0";
+export const VERSION = "1.49.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,30 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.49.0', fecha: '2026-08-12',
+    que: 'R56: la tarjeta pulsable heredaba la tipografia del navegador · R57: la Tarjeta gana ranura de medio',
+    porque:
+      'R56 NO LO PIDIO NADIE: aparecio al ir a construir R57. Durante 48 versiones el catalogo pinto '
+      + 'la tarjeta pulsable como <a href="#"> y el componente la emitio como <button>. Un ancla '
+      + 'hereda tipografia; un boton no. Como .tn era el UNICO control de la hoja sin font: inherit '
+      + '—los otros 16 si lo llevan—, en cada producto la tarjeta pulsable salia con la fuente del '
+      + 'navegador (~13,3px Arial), el texto centrado y relleno propio, mientras en el catalogo se '
+      + 'veia perfecta. El candado de la promesa no lo vio porque resuelve la cascada sobre EL MISMO '
+      + 'marcado: aqui lo que difiere es el elemento, no el CSS. Y bloqueaba R57, porque el medio no '
+      + 'puede ir a ras del borde dentro de un boton con relleno del navegador. '
+      + 'R57 · lo pidio Control Administrativos V2.0, y el argumento no era la imagen: era que la '
+      + 'AUSENCIA de la ranura PRODUCIA marcado propio. Sin sitio donde poner la imagen, el unico '
+      + 'hueco era children —debajo del titulo—, asi que quien quisiera la disposicion normal tenia '
+      + 'que copiar el <article class="tn"> a mano y perdia con ello tn-pulsable y el <button> '
+      + 'accesible. Un sistema que obliga a reconstruir su componente para un caso corriente fabrica '
+      + 'la divergencia que existe para impedir. La proporcion la declara el sistema (16:9) y no cada '
+      + 'producto, porque con imagen dentro un recorte mal elegido deforma o corta la cara; y '
+      + 'CargaImagen gana el formato medio-tarjeta 320x180 para que las dos piezas encajen en vez de '
+      + 'ser dos componentes nuestros que no se hablan.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.48.0', fecha: '2026-08-11',
     que: 'R54: el selector en solo lectura mientras se consulta · R55: foto de la persona con una sola prop',

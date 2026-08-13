@@ -169,6 +169,41 @@ describe('Tarjetas', () => {
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
+  /* R57 · El medio. Las reglas de la HOJA viven en `hoja.test.ts`. */
+  it('R57 · el medio va ANTES del título y la imagen es decorativa por omisión', () => {
+    const { container } = render(
+      <Tarjeta titulo="Informe anual" medio="/foto.webp">Contenido</Tarjeta>
+    );
+    const tarjeta = container.querySelector('.tn')!;
+    const medio = tarjeta.querySelector('.tn-medio')!;
+    // Primer hijo: antes de .tn-cab. Es la disposición normal de una tarjeta
+    // con imagen, y es justo lo que no se podía hacer sin la ranura.
+    expect(tarjeta.firstElementChild).toBe(medio);
+    const img = medio.querySelector('img')!;
+    expect(img.getAttribute('src')).toBe('/foto.webp');
+    // alt vacío: el título ya la nombra, y con alt el lector lo diría dos veces.
+    expect(img.getAttribute('alt')).toBe('');
+  });
+
+  it('R57 · con medioAlt la imagen deja de ser decorativa', () => {
+    render(<Tarjeta medio="/plano.webp" medioAlt="Plano del pabellón B">x</Tarjeta>);
+    expect(screen.getByAltText('Plano del pabellón B')).toBeInTheDocument();
+  });
+
+  it('R57 · sin imagen pero con hueco reservado no sale un agujero', () => {
+    const { container } = render(<Tarjeta conMedio>Contenido</Tarjeta>);
+    const medio = container.querySelector('.tn-medio')!;
+    expect(medio).toBeInTheDocument();
+    expect(medio.querySelector('img')).toBeNull();
+    expect(screen.getByText('Sin imagen')).toBeInTheDocument();
+  });
+
+  it('R57 · sin pedir medio no se reserva hueco: la tarjeta de siempre no cambia', () => {
+    const { container } = render(<Tarjeta titulo="Asistencia">128</Tarjeta>);
+    expect(container.querySelector('.tn-medio')).toBeNull();
+  });
+
+
   it('la tarjeta de persona dice el estado con TEXTO, no solo con el filete', () => {
     const { container } = render(
       <TarjetaPersona id="71234567" nombre="QUISPE MAMANI, Rosa" cargo="Docente"

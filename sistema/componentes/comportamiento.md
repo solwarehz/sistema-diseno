@@ -149,6 +149,21 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 ---
 
+## Tarjeta
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R56, v1.49.0) La tarjeta pulsable es un **`<button>`**, y la hoja **le resetea la tipografía**: `font: inherit`, `text-align: left`, `padding: 0`, `margin: 0`. No es cosmética. Durante 48 versiones el catálogo la pintó como `<a href="#">` y el componente la emitió como `<button>`: un ancla hereda tipografía y un botón no, así que en cada producto salía con la fuente del navegador (~13,3px Arial), el texto centrado y relleno de más — y en el catálogo se veía perfecta. El catálogo pasa a enseñar el `<button>` que se entrega. |
+| **2** | **Obligatorio.** (R57, v1.49.0) El **medio** va **antes del título**, no dentro del cuerpo. Es la disposición normal de una tarjeta con imagen —catálogo, galería, menú de secciones— y sin la ranura el producto tenía que reconstruir el `<article class="tn">` a mano, perdiendo con ello `tn-pulsable` y el `<button>` accesible. La ausencia de la ranura *producía* marcado propio: eso es lo que se corrige. |
+| **3** | **Obligatorio.** (R57, v1.49.0) La **proporción la declara el sistema: 16:9**, no cada producto. Con imagen dentro, un recorte mal elegido deforma o corta la cara, y esa es la decisión que más caro sale repartida. La imagen **cubre** el hueco (`object-fit: cover`) en vez de deformarse. |
+| **4** | **Obligatorio.** (R57, v1.49.0) `CargaImagen` gana el formato **`medio-tarjeta`**, 320×180 —16:9 exacto—, para que **las dos piezas encajen**: lo que se recorta allí entra aquí sin reencuadrar, y sale en WebP como todo lo demás. Se sale de los 318 px de los otros tres a propósito: aquí el hueco no es fijo, así que lo que tiene que casar es la proporción. |
+| **5** | **Obligatorio.** (R57, v1.49.0) Al pasar el cursor sobre una tarjeta pulsable, el medio **se acerca dentro de su marco** (`scale(1.04)`), con `var(--dur-media)` y `var(--curva)` — nunca una cifra a mano. El acercamiento va **contenido**: el medio recorta, así que la tarjeta no empuja a las de al lado. Con `prefers-reduced-motion` el `transform` se apaga del todo: los tokens de duración ya caen a 0,01 ms, pero `transform` no es una duración y seguiría ocurriendo, solo que de golpe. |
+| **6** | **Obligatorio.** (R57, v1.49.0) **Sin imagen no sale un agujero:** el hueco se reserva igual y se rotula, como ya hace `.ci-vacia`. Se pide con `conMedio`, y en un catálogo se pasa **siempre**: sin eso, las tarjetas sin foto salen más bajas y el borde inferior de la cuadrícula queda dentado. |
+| **7** | **Obligatorio.** (R57, v1.49.0) El `alt` del medio es **vacío por omisión**: en una tarjeta la imagen ilustra lo que el título ya nombra, y con `alt` el lector lo diría dos veces. Se rellena con `medioAlt` solo cuando la imagen aporta algo que el texto no dice. |
+| **8** | Del proyecto: qué imagen va en cada tarjeta, de dónde sale y cuándo se sube. |
+
+---
+
 ## Carga de documento de identidad
 
 | | Regla |

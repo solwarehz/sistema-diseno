@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.48.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.49.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.48.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.49.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -1858,19 +1858,47 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 
 /* Tarjeta normal */
 .tn-rejilla { display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 12px; }
+/* R56 · La pulsable es un <button>, y un boton NO hereda tipografia.
+   Sin font/text-align/padding/margin el navegador impone su fuente
+   (~13,3px Arial), centra el texto y anade relleno propio. Aqui no se veia
+   porque el catalogo la pintaba como <a>, y un ancla si hereda. */
 .tn { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
   border-radius: 6px; display: flex; flex-direction: column; text-decoration: none;
-  color: var(--texto-principal); }
+  color: var(--texto-principal);
+  font: inherit; text-align: left; padding: 0; margin: 0;
+  transition: border-color var(--dur-rapida) var(--curva); }
 .tn-cab { display: flex; align-items: center; justify-content: space-between; gap: 8px;
   padding: 12px 12px; border-bottom: 1px solid var(--borde); }
-.tn-cab h4, .tn-cuerpo h4 { font-size: 15px; font-weight: 600; margin: 0 0 4px; }
+.tn-cab h4, .tn-cuerpo h4 { font-size: 15px; font-weight: 600; margin: 0 0 4px;
+  transition: color var(--dur-rapida) var(--curva); }
 .tn-cab h4 { margin: 0; }
 .tn-cuerpo { padding: 12px; flex: 1; }
 .tn-cuerpo p { margin: 0; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .tn-pie { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 12px;
   border-top: 1px solid var(--borde); }
+/* R57 · EL MEDIO. La proporcion la declara el sistema, no el producto: con
+   imagen dentro, un recorte mal elegido deforma o corta la cara. 16:9 es la
+   del formato medio-tarjeta de CargaImagen, asi que lo recortado alli entra
+   aqui sin reencuadrar. Radio 5px y no 6px: es el interior del borde de 1px. */
+.tn-medio { aspect-ratio: 16 / 9; overflow: hidden; display: grid; place-items: center;
+  background: var(--fondo-encabezado); border-bottom: 1px solid var(--borde);
+  border-radius: 5px 5px 0 0; }
+.tn-medio img { display: block; width: 100%; height: 100%; object-fit: cover;
+  transition: transform var(--dur-media) var(--curva); }
+/* R57 · Sin imagen no sale un agujero: sale el mismo hueco rotulado que usa
+   .ci-vacia. En un catalogo real siempre falta alguna. */
+.tn-medio-vacio { font-size: 12px; color: var(--texto-pista); text-align: center; padding: 8px; }
+.tn-pulsable { cursor: pointer; }
 .tn-pulsable:hover { border-color: var(--accion); }
 .tn-pulsable:hover h4 { color: var(--accion); }
+/* R57 · El acercamiento va CONTENIDO dentro del marco —el medio recorta—, asi
+   la tarjeta no empuja a las de al lado. Con una imagen ocupando la mayor
+   parte de la tarjeta, un cambio instantaneo es lo que peor se ve. */
+.tn-pulsable:hover .tn-medio img { transform: scale(1.04); }
+/* R57 · Los tokens de duracion ya caen a 0,01ms, pero transform no es una
+   duracion: sin esto el acercamiento seguiria ocurriendo, solo que de golpe.
+   Mismo remedio que el avatar. */
+@media (prefers-reduced-motion: reduce) { .tn-pulsable:hover .tn-medio img { transform: none; } }
 
 /* Chip de estado */
 .chip-sup { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 8px; }
@@ -2375,6 +2403,9 @@ select.campo:disabled { opacity: .75; }
    hueco, no una aproximación. */
 .ci-redonda { border-radius: 50%; }
 .ci-extendida { width: 212px; height: 44px; }
+/* R57 · La vista previa ES el hueco: 16:9, la misma proporcion que .tn-medio.
+   192x108 para que quepa junto a los mandos sin empujarlos. */
+.ci-medio { width: 192px; height: 108px; }
 /* overflow:hidden CONTIENE la sombra de 999px de la mascara: sin el, el
    difuminado se derrama del marco y atenua la pagina entera. El difuminado
    es del encuadre, no del mundo. */
@@ -3392,7 +3423,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.48.0</option></select></label>
+          <select class="campo cg-in"><option>v1.49.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3480,8 +3511,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.48.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.48.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.49.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.49.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -7669,9 +7700,21 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
       <div class="tn-cuerpo"><p>Las acciones van al pie, alineadas a la derecha.</p></div>
       <div class="tn-pie"><button class="btn btn-terc">Cancelar</button><button class="btn btn-1">Guardar</button></div>
     </article>
-    <a href="#" class="tn tn-pulsable">
-      <div class="tn-cuerpo"><h4>Pulsable →</h4><p>Si toda la tarjeta navega, es un <code>&lt;a&gt;</code>. <strong>Nunca un div con onClick.</strong></p></div>
-    </a>
+    <button type="button" class="tn tn-pulsable">
+      <div class="tn-cuerpo"><h4>Pulsable →</h4><p>Si toda la tarjeta hace algo, es un <code>&lt;button&gt;</code>; si navega, un <code>&lt;a&gt;</code>. <strong>Nunca un div con onClick.</strong></p></div>
+    </button>
+    <article class="tn">
+      <div class="tn-medio"><img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20160%2090%22%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%22158%22%20height%3D%2288%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-dasharray%3D%224%203%22%2F%3E%3Cpath%20d%3D%22M18%2072%20L58%2036%20L88%2062%20L110%2046%20L142%2072%20Z%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%22118%22%20cy%3D%2226%22%20r%3D%228%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%2F%3E%3C%2Fsvg%3E" alt=""></div>
+      <div class="tn-cuerpo"><h4>Con medio</h4><p>La imagen va <strong>arriba</strong>, antes del título, a <code>16:9</code>. La proporción la fija el sistema.</p></div>
+    </article>
+    <button type="button" class="tn tn-pulsable">
+      <div class="tn-medio"><img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20160%2090%22%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%22158%22%20height%3D%2288%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-dasharray%3D%224%203%22%2F%3E%3Cpath%20d%3D%22M18%2072%20L58%2036%20L88%2062%20L110%2046%20L142%2072%20Z%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%22118%22%20cy%3D%2226%22%20r%3D%228%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%2F%3E%3C%2Fsvg%3E" alt=""></div>
+      <div class="tn-cuerpo"><h4>Medio pulsable →</h4><p>Al pasar el cursor, la imagen se acerca <strong>dentro de su marco</strong>: la tarjeta no empuja a las de al lado.</p></div>
+    </button>
+    <article class="tn">
+      <div class="tn-medio"><span class="tn-medio-vacio">Sin imagen</span></div>
+      <div class="tn-cuerpo"><h4>Sin imagen</h4><p>El hueco <strong>se reserva igual</strong>. Si no, en una cuadrícula las tarjetas sin foto salen más bajas y el borde inferior queda dentado.</p></div>
+    </article>
   </div>
 </div>
 
@@ -10002,6 +10045,29 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
 <p class="man-p">Quien tiene prisa y se encuentra un campo que no le deja avanzar <strong>inventa un dato que sí pase</strong>. Eso es peor que el dato raro: el dato raro se ve; el inventado, no.</p>
 <h3 class="man-h3">6.3 Limpiar no es rechazar</h3>
 <p class="man-p">Quitar espacios sobrantes al guardar es invisible y ayuda. Exigir un formato exacto impide trabajar. Limpia en silencio; rechaza solo lo imposible.</p>
+<p class="man-p">El <code>Campo</code> <strong>recorta al salir</strong>, no mientras se teclea: el espacio del copy-paste se va y la persona nunca ve desaparecer lo que escribe. <code>CampoContrasena</code> <strong>jamás normaliza</strong>: ahí un espacio puede ser deliberado.</p>
+<h3 class="man-h3">6.4 El error se ve, no solo se colorea</h3>
+<p class="man-p">El renglón de error del sistema <strong>lleva icono</strong>. No es adorno: un renglón rojo suelto se confunde con una ayuda, y el color por sí solo no dice que algo falla —SC 1.4.1—. Viene puesto; no hay que añadirlo.</p>
+<h3 class="man-h3">6.5 Solo lectura no es deshabilitado</h3>
+<p class="man-p">Son dos cosas distintas y se eligen por lo que significan:</p>
+<table class="tabla-simple tabla-manual"><thead><tr><th></th><th>Qué dice</th><th>Qué pasa</th></tr></thead><tbody><tr><td><strong>Deshabilitado</strong></td><td>«Esto no es para ti»</td><td>Sale del recorrido del tabulador y <strong>el navegador no lo envía con el formulario</strong></td></tr><tr><td><strong>Solo lectura</strong></td><td>«Esto es un dato, ahora no se toca»</td><td>Se ve, se lee, se enfoca y <strong>viaja con el formulario</strong></td></tr></tbody></table>
+<p class="man-p">El caso que lo trajo: <strong>el selector de tipo de documento mientras se consulta a la API</strong>. Cambiarlo a mitad tira el resultado que se está esperando, pero deshabilitarlo perdería el dato al enviar. Va en solo lectura:</p>
+<p class="man-p">``<code>tsx &lt;Selector etiqueta="Tipo de documento" opciones={TIPOS}           soloLectura={consultando} value={tipo} onChange={setTipo} /&gt; </code>``</p>
+<p class="man-p"><strong>HTML no tiene <code>readonly</code> para <code>&lt;select&gt;</code></strong> —solo para <code>input</code> y <code>textarea</code>—, así que lo construye el componente: <code>aria-readonly</code> para el lector y bloqueo de lo que abre o cambia la lista. Tab y Escape siguen pasando: salir nunca se bloquea. No hay que reconstruirlo con <code>disabled</code> y un <code>input</code> escondido.</p>
+<h3 class="man-h3">6.6 Subir un archivo: tres piezas, y ninguna se rehace</h3>
+<table class="tabla-simple tabla-manual"><thead><tr><th>Qué se sube</th><th>Componente</th><th>Lo que resuelve</th></tr></thead><tbody><tr><td>Foto o logo</td><td><code>CargaImagen</code></td><td>Encuadre —mover, acercar, flechas—, recorte en <strong>WebP</strong> y la proporción del hueco real: foto 1:1 en círculo, logo extendido 212×44, logo comprimido 1:1</td></tr><tr><td>Un PDF</td><td><code>CargaPdf</code></td><td>Comprueba que lo es <strong>mirando sus bytes</strong> —la extensión miente— y lo <strong>comprime</strong> antes de entregarlo, sin dependencias</td></tr><tr><td>Documento de identidad</td><td><code>CargaId</code></td><td>Las <strong>dos caras</strong> con la proporción <strong>ID-1</strong> (85,60 × 53,98 mm), anverso y reverso en el mismo diálogo, miniaturas al costado</td></tr></tbody></table>
+<p class="man-p">Tres reglas comunes que ya vienen dentro:</p>
+<ul class="man-lista"><li><strong>La subida es del producto.</strong> El componente entrega el archivo y una URL</li></ul>
+<p class="man-p">  local para pintarlo al instante; a qué ruta va y con qué reintentos, no.</p>
+<ul class="man-lista"><li><strong>Borrador hasta el final.</strong> Lo elegido no se entrega hasta confirmar:</li></ul>
+<p class="man-p">  cancelar a mitad deja el formulario como estaba. En <code>CargaId</code>, un anverso   suelto sería un documento a medias que nadie pidió.</p>
+<ul class="man-lista"><li><strong>Volver a subir puede exigir permiso.</strong> En <code>CargaId</code>, entregadas las dos</li></ul>
+<p class="man-p">  caras el botón se desactiva y solo vuelve cuando el producto baja <code>bloqueado</code>   porque <strong>su back</strong> lo autorizó. Un documento de identidad ya entregado no se   reemplaza porque a alguien se le ocurra.</p>
+<h3 class="man-h3">6.7 Donde se pinta una persona: foto si la hay, avatar si no</h3>
+<p class="man-p">Y con <strong>una sola prop</strong>. <code>persona</code> lleva su identidad <strong>y su retrato</strong>:</p>
+<p class="man-p">``<code>tsx &lt;CargaImagen etiqueta="Foto del trabajador"              persona={{ id: t.id, nombre: t.nombre, foto: t.foto }} … /&gt; </code>``</p>
+<p class="man-p">Con foto se ve la foto; sin foto, el <code>Avatar</code> del sistema con sus iniciales y su color. <strong>No es un círculo parecido</strong>: es el mismo avatar que pintan la ficha y la tabla, con el color derivado del <strong>identificador estable</strong> —el de la base, nunca el nombre—, así que la misma persona se ve igual en todas las pantallas.</p>
+<p class="man-p">Sin <code>persona</code> no se inventa identidad: el hueco dice «Sin foto» y ya.</p>
 <hr class="man-hr"></div>
     </section><section class="pagina" id="pg-man-6bis-la-frontera-de-escritura-regl" hidden>
       <nav class="migas" aria-label="Ubicación">
@@ -10082,6 +10148,25 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
 <p class="man-p"><strong>Ausente, no deshabilitado.</strong> Un botón apagado invita a averiguar por qué, y esa averiguación termina en alguien pidiendo un permiso que no necesita.</p>
 <p class="man-p">Es distinto de un control deshabilitado por el ESTADO de la pantalla —un «Guardar» que espera a que el formulario sea válido—: eso sí se deshabilita, porque la persona puede resolverlo sola.</p>
 <hr class="man-hr"></div>
+    </section><section class="pagina" id="pg-man-9ter-tablas-tres-decisiones-que-se" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" class="migas-grupo">Manual de uso</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#man-9ter-tablas-tres-decisiones-que-se" data-ir="man-9ter-tablas-tres-decisiones-que-se" class="migas-actual" aria-current="page">9ter · Tablas — tres decisiones que se toman al escribir la columna</a>
+      </nav>
+      <div class="pant-cab"><h1>9ter · Tablas — tres decisiones que se toman al escribir la columna</h1></div>
+      <div class="manual"><p class="man-p">Salieron de reportes de producto, y ninguna se puede imponer con código: las tres viven en cómo se define la columna.</p>
+<h3 class="man-h3">La unidad va en la cabecera, no en cada celda</h3>
+<p class="man-p">«Días» arriba y <code>20</code> en la celda. Repetir «20 días», «14 días», «3 días» en cada fila obliga a leer la unidad noventa veces para comparar tres números, y ensancha la columna sin añadir nada.</p>
+<h3 class="man-h3">Una celda numérica no lleva segunda línea</h3>
+<p class="man-p">Un <code>20</code> con «C-2026-001 · Director» debajo deja de ser una cifra: rompe la alineación de la columna y ya no se puede recorrer con la vista. Si ese dato hace falta, es <strong>otra columna</strong> —que además se podrá ordenar y filtrar— o va en la fila desplegable.</p>
+<p class="man-p">Con <code>numerica: true</code> la columna alinea a la derecha y ordena por valor y no por texto, que es lo que una cifra necesita.</p>
+<h3 class="man-h3">Con la tabla ancha, solo se desplaza la tabla</h3>
+<p class="man-p">La barra —buscar, «Mostrar», el recuento, Filtros, Columnas y las acciones del producto— y el pie —el rango y la paginación— <strong>se quedan quietos</strong>. Es comportamiento del componente y no hay que montar nada: lo que se arrastra a la derecha es la columna que se quiere leer, no los mandos que hacen falta para seguir trabajando.</p>
+<p class="man-p">Si el producto engancha CSS propio al contenedor de la tabla, el que envuelve todo es <code>.tb-bloque</code>; <code>.tb-envoltura</code> es <strong>solo la tabla</strong>, y es la que desliza.</p>
+<hr class="man-hr"></div>
     </section><section class="pagina" id="pg-man-lo-que-este-manual-todavia-no-cubr" hidden>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
@@ -10092,7 +10177,7 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
       </nav>
       <div class="pant-cab"><h1>Lo que este manual todavía no cubre</h1></div>
       <div class="manual"><p class="man-p">Honestidad sobre los límites, para que nadie asuma cobertura que no existe. <strong>Lo que estaba aquí y ya está hecho se ha borrado en vez de dejarlo como pendiente eterno:</strong> la iconografía —39 iconos, cuatro tamaños y regla de significado— y la densidad, que salieron en la v1.7.0.</p>
-<table class="tabla-simple tabla-manual"><thead><tr><th>Pendiente</th><th>Estado</th></tr></thead><tbody><tr><td><strong>Tabla — lo que aún no trae</strong></td><td><code>TablaDatos</code> resuelve orden, filtros —texto libre y dominio cerrado—, búsqueda global, «Mostrar» con recuento, columna N.º, paginación, columnas visibles (controlables desde el perfil), ranura de acciones y estado vacío. <strong>No</strong> trae selección múltiple ni encabezado fijo</td></tr><tr><td><strong>Primitivas de dominio</strong></td><td>DNI y RUC con dígito verificador, dos apellidos, ubigeo en cascada, soles, fechas peruanas</td></tr><tr><td>~~<strong>Modo oscuro</strong>~~</td><td><strong>Aprobado.</strong> Ya no es un pendiente: se pasa <code>tema</code> y <code>onTema</code> a <code>MenuUsuario</code> y el producto guarda la preferencia. El marco va en escala de negros</td></tr></tbody></table>
+<table class="tabla-simple tabla-manual"><thead><tr><th>Pendiente</th><th>Estado</th></tr></thead><tbody><tr><td><strong>Tabla — lo que aún no trae</strong></td><td><code>TablaDatos</code> resuelve orden, filtros —texto libre y dominio cerrado—, búsqueda global, «Mostrar» con recuento, columna N.º, paginación, columnas visibles (controlables desde el perfil), ranura de acciones, estado vacío y <strong>desplazamiento horizontal sin llevarse los mandos</strong> (§9ter). <strong>No</strong> trae selección múltiple ni encabezado fijo</td></tr><tr><td><strong>Comportamiento: promesa contra entrega</strong></td><td>El sistema compara <strong>la cascada</strong> del catálogo contra la que viaja —832 elementos, 171.025 propiedades, cinco anchos— y ahí no cabe una diferencia. Lo que <strong>no</strong> compara nadie todavía es el <strong>comportamiento</strong>: qué se abre, qué se cierra, qué clase elige el componente. Cuatro defectos seguidos entraron por ese hueco. Se cierra ejecutando las dos superficies en un navegador, y eso está <strong>pendiente de autorización</strong></td></tr><tr><td><strong>Primitivas de dominio</strong></td><td>DNI y RUC con dígito verificador, dos apellidos, ubigeo en cascada, soles, fechas peruanas</td></tr><tr><td>~~<strong>Modo oscuro</strong>~~</td><td><strong>Aprobado.</strong> Ya no es un pendiente: se pasa <code>tema</code> y <code>onTema</code> a <code>MenuUsuario</code> y el producto guarda la preferencia. El marco va en escala de negros</td></tr></tbody></table>
 <p class="man-p">Una nota que debe tratarse como contrato y no como detalle de base de datos: que <code>perez</code> encuentre a <code>Pérez</code> depende de las extensiones <code>unaccent</code> y <code>pg_trgm</code>. <strong>Es una promesa de interfaz.</strong> Si un buscador se monta sin ellas, el componente se comporta distinto y nadie sabrá por qué.</p>
 <hr class="man-hr"></div>
     </section><section class="pagina" id="pg-man-historial" hidden>
@@ -10104,7 +10189,7 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
         <a href="#man-historial" data-ir="man-historial" class="migas-actual" aria-current="page">Historial</a>
       </nav>
       <div class="pant-cab"><h1>Historial</h1></div>
-      <div class="manual"><table class="tabla-simple tabla-manual"><thead><tr><th>Versión</th><th>Fecha</th><th>Cambio</th></tr></thead><tbody><tr><td>1.1.0</td><td>2026-08-09</td><td>Sobre MMI-DS v1.11.1. §2.4 pasa de «cuatro colores de marca» a la familia <code>marca</code>, con la distinción entre conocido y autorizado. De §10 se BORRAN iconografía y densidad, que ya están hechas. Se añade <code>ACTUALIZAR.md</code></td></tr><tr><td>1.0.0</td><td>2026-08-07</td><td>Primera edición. Sobre MMI-DS v1.1.0</td></tr></tbody></table>
+      <div class="manual"><table class="tabla-simple tabla-manual"><thead><tr><th>Versión</th><th>Fecha</th><th>Cambio</th></tr></thead><tbody><tr><td>1.2.0</td><td>2026-08-11</td><td>Sobre MMI-DS <strong>v1.48.0</strong>, tras 37 versiones sin tocar el manual — que es exactamente el defecto que este documento no puede permitirse. Entran: §6.4 el error lleva icono · §6.5 <strong>solo lectura no es deshabilitado</strong>, con el caso del selector de documento durante la consulta · §6.6 los tres componentes de carga —imagen, PDF y documento de identidad— y sus tres reglas comunes · §6.7 <strong>foto si la hay, avatar si no</strong>, con una sola prop · §9ter <strong>tablas</strong>: la unidad en la cabecera, la celda numérica sin segunda línea, y que con la tabla ancha solo se desplaza la tabla. En §10 se borra de «no cubre» lo que ya está hecho</td></tr><tr><td>1.1.0</td><td>2026-08-09</td><td>Sobre MMI-DS v1.11.1. §2.4 pasa de «cuatro colores de marca» a la familia <code>marca</code>, con la distinción entre conocido y autorizado. De §10 se BORRAN iconografía y densidad, que ya están hechas. Se añade <code>ACTUALIZAR.md</code></td></tr><tr><td>1.0.0</td><td>2026-08-07</td><td>Primera edición. Sobre MMI-DS v1.1.0</td></tr></tbody></table>
 <p class="man-p"><strong>Este manual se corrige cuando cambia el sistema, no al revés.</strong></p></div>
     </section><section class="pagina" id="pg-cambios" hidden>
       <nav class="migas" aria-label="Ubicación">
@@ -10122,6 +10207,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.49.0 <span class="cam-fecha">2026-08-12</span></h3>
+<p class="pag-intro"><strong>R56: la tarjeta pulsable heredaba la tipografia del navegador · R57: la Tarjeta gana ranura de medio.</strong> R56 NO LO PIDIO NADIE: aparecio al ir a construir R57. Durante 48 versiones el catalogo pinto la tarjeta pulsable como <a href="#"> y el componente la emitio como <button>. Un ancla hereda tipografia; un boton no. Como .tn era el UNICO control de la hoja sin font: inherit —los otros 16 si lo llevan—, en cada producto la tarjeta pulsable salia con la fuente del navegador (~13,3px Arial), el texto centrado y relleno propio, mientras en el catalogo se veia perfecta. El candado de la promesa no lo vio porque resuelve la cascada sobre EL MISMO marcado: aqui lo que difiere es el elemento, no el CSS. Y bloqueaba R57, porque el medio no puede ir a ras del borde dentro de un boton con relleno del navegador. R57 · lo pidio Control Administrativos V2.0, y el argumento no era la imagen: era que la AUSENCIA de la ranura PRODUCIA marcado propio. Sin sitio donde poner la imagen, el unico hueco era children —debajo del titulo—, asi que quien quisiera la disposicion normal tenia que copiar el <article class="tn"> a mano y perdia con ello tn-pulsable y el <button> accesible. Un sistema que obliga a reconstruir su componente para un caso corriente fabrica la divergencia que existe para impedir. La proporcion la declara el sistema (16:9) y no cada producto, porque con imagen dentro un recorte mal elegido deforma o corta la cara; y CargaImagen gana el formato medio-tarjeta 320x180 para que las dos piezas encajen en vez de ser dos componentes nuestros que no se hablan.</p>
+
 
 
 <h3 class="sub-seccion">v1.48.0 <span class="cam-fecha">2026-08-11</span></h3>
