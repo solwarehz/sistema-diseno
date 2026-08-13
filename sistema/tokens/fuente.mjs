@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.51.1";
+export const VERSION = "1.52.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,28 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.52.0', fecha: '2026-08-13',
+    que: 'R62: nace el candado del ELEMENTO — lo que el catalogo ensena y lo que el componente emite',
+    porque:
+      'Lo pidio el responsable tras verse el hueco dos veces en la misma semana. R56 y R58 se '
+      + 'colaron por el MISMO sitio: el catalogo pintaba la tarjeta pulsable como <a> y el '
+      + 'componente la emitia como <button>, y la hoja estilizaba h4 donde el componente emitia h3. '
+      + 'En los dos casos la tarjeta se veia perfecta en el catalogo y mal en cada producto, y el '
+      + 'candado de la promesa NO PODIA VERLOS: resuelve la cascada sobre el MISMO marcado, asi que '
+      + 'cuando lo que difiere es el elemento, le das lo mismo a las dos hojas y responden lo mismo. '
+      + 'Nada mas escribirlo encontro CINCO divergencias mas que nadie habia visto, la peor '
+      + '.sel-notas: la hoja trae una regla .sel-notas p que el componente no puede casar nunca, asi '
+      + 'que la tipografia de la ayuda del selector no se aplica en ningun producto. Se declaran con '
+      + 'su dano real en vez de arreglarse a la carrera, y el candado falla tambien si una entrada '
+      + 'de deuda deja de divergir y no se poda. '
+      + 'Se retiro una segunda comprobacion —el nivel de encabezado— porque daba un falso positivo '
+      + 'en .pant-fila: saber que encabezado es de que caja pide entender el anidado, y la '
+      + 'aproximacion por cercania se colaba en el elemento siguiente. Un candado que grita en falso '
+      + 'se desactiva a la semana.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.51.1', fecha: '2026-08-13',
     que: 'La via de DESCARGA entra en el manual, y se declara el hueco de etiquetas',

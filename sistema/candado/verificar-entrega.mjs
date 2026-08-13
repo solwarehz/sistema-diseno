@@ -185,6 +185,16 @@ if (existsSync(indice)) {
    *
    * Se comprueba contra el CONTENIDO real del empaquetador, no contra el ZIP
    * construido: así falla ANTES de empaquetar y no después. */
+  /* Este candado VIAJA en la entrega, y el empaquetador no: allí no hay nada
+   * que empaquetar. Sin esta guarda, correrlo en el proyecto de destino —que es
+   * justo para lo que se entrega— reventaba con ERR_MODULE_NOT_FOUND. Lo
+   * introduje en R60 al añadir esta segunda mitad; se caza aquí. */
+  const rutaEmpaquetador = new URL('../paquete/empaquetar.mjs', import.meta.url);
+  if (!existsSync(rutaEmpaquetador)) {
+    console.log('  (el empaquetador no está: esta mitad solo corre en el repositorio)');
+    console.log('\n  Nada estructural se queda sin decidir.\n');
+    process.exit(0);
+  }
   const { CONTENIDO_ENTREGA } = await import('../paquete/empaquetar.mjs');
   // Los MÓDULOS que viajan, normalizados sin extensión: la clave es de dónde
   // sale cada export, no cómo se llama. `EstadoPantalla` vive en `Estados.tsx`

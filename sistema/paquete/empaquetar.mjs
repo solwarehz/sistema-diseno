@@ -166,8 +166,23 @@ const CONTENIDO = [
   // Los candados. Sin ellos el sistema es una sugerencia.
   ['sistema/candado/verificar-contraste.mjs', 'sistema/candado/verificar-contraste.mjs'],
   ['sistema/candado/verificar-color.mjs', 'sistema/candado/verificar-color.mjs'],
-  ['sistema/candado/verificar-contrato.mjs', 'sistema/candado/verificar-contrato.mjs'],
-  ['sistema/candado/verificar-entrega.mjs', 'sistema/candado/verificar-entrega.mjs'],
+  // R62 · `verificar-contrato` TAMPOCO viaja. Comprueba que cada regla
+  // obligatoria del contrato tenga una prueba detrás, y las pruebas no se
+  // entregan: en destino decía «sin respaldo: 93» —las 93— y salía en rojo. No
+  // estaba detectando nada; estaba mirando un cajón vacío.
+  //
+  // R62 · `verificar-entrega` DEJA DE VIAJAR, y no por recortar: en destino
+  // estaba roto desde la v1.14.0. Importa `ELEMENTOS` de `extraer.mjs`, que no
+  // viaja, así que al correrlo desde la entrega tiraba ERR_MODULE_NOT_FOUND.
+  // Y la raíz no era esa dependencia: es que el candado pregunta si cada
+  // componente tiene página en el catálogo y si está dentro del paquete —dos
+  // preguntas sobre CONSTRUIR la entrega, no sobre usarla—. En el proyecto de
+  // destino no significan nada.
+  //
+  // Regla que queda: aquí solo viajan los candados que FUNCIONAN en destino.
+  // Los que necesitan el catálogo o el árbol del repositorio —cascada, promesa,
+  // elemento, cascarón, entrega— se quedan. Entregar un candado que revienta al
+  // primer uso enseña a desconfiar de todos los demás.
   ['sistema/candado/candado.eslint.config.mjs', 'sistema/candado/candado.eslint.config.mjs'],
   ['sistema/candado/probar-candado.mjs', 'sistema/candado/probar-candado.mjs'],
   // La documentación.

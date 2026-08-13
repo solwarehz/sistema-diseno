@@ -201,8 +201,9 @@ No las «mejores» por iniciativa propia. Están razonadas:
   node sistema/componentes/extraer.mjs        # incluye el candado de huérfanas
   node sistema/candado/verificar-cascada.mjs  # la hoja QUE VIAJA, a once anchos
   node sistema/candado/verificar-contrato.mjs # toda regla Obligatorio tiene prueba
-  node sistema/candado/verificar-entrega.mjs  # lo publicado está en el catálogo
+  node sistema/candado/verificar-entrega.mjs  # lo publicado está EN el paquete
   node sistema/candado/verificar-promesa.mjs  # se VE igual que en el catálogo
+  node sistema/candado/verificar-elemento.mjs # se emite el MISMO elemento
   ```
 
   Los dos últimos faltaban de esta lista y **la memoria los contaba entre los
@@ -213,6 +214,21 @@ No las «mejores» por iniciativa propia. Están razonadas:
   El de la cascada es el único que no lee lo que hay, sino lo que **falta**: el
   defecto R25 —dos iconos pintados a la vez— vivía en la ausencia de una regla,
   y por eso los otros seis no lo vieron en tres versiones.
+
+  El del **elemento** cierra el hueco que dejaba el de la promesa, y nació de
+  dos defectos de la misma semana: el catálogo pintaba la tarjeta pulsable como
+  `<a>` y el componente la emitía como `<button>` (R56), y la hoja estilizaba
+  `h4` donde el componente emitía `h3` (R58). En los dos, la tarjeta se veía
+  perfecta en el catálogo y mal en cada producto. **El candado de la promesa no
+  podía verlos**: resuelve la cascada sobre el MISMO marcado, así que cuando lo
+  que difiere es el elemento, le das lo mismo a las dos hojas y las dos
+  responden lo mismo. Verde, y la pantalla mal.
+
+  Lleva **deuda declarada**: cinco divergencias que encontró el día que se
+  escribió, verificadas a mano y escritas con su daño real. Protege ya de las
+  nuevas y no finge que las viejas no existen. Arreglar una es quitar su línea
+  —y si se arregla y no se quita, el candado también falla, porque una lista de
+  excepciones que nadie poda vuelve a ser el inventario a mano de siempre.
 
   El de la **promesa** es el que compara las dos hojas resolviendo la cascada
   sobre el mismo marcado. Existe porque «no veo el botón CSV como lo veo en el
