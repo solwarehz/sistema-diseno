@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.49.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.50.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -594,6 +594,19 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .tp-opaca{ opacity: .5; }
 
 /* ───────────────────────────────────────────────────────────────────────────
+   TARJETA DE ACCIÓN — 7 reglas · clases .tna-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.tna{ position: relative; }
+.tna-disparo{ font: inherit; color: inherit; background: none; border: 0;
+  padding: 0; margin: 0; text-align: left; cursor: pointer; }
+.tna-disparo::after{ content: ''; position: absolute; inset: 0; border-radius: 6px; }
+.tna-disparo:focus-visible{ outline: none; }
+.tna-disparo:focus-visible::after{ outline: 2px solid var(--foco); outline-offset: 2px; }
+.tna-txt{ margin: 4px 0 0; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
+.tna-editar{ position: absolute; top: 8px; right: 8px; z-index: 1; }
+
+/* ───────────────────────────────────────────────────────────────────────────
    TARJETA — 15 reglas · clases .tn-*
    ─────────────────────────────────────────────────────────────────────────── */
 
@@ -604,9 +617,9 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
   transition: border-color var(--dur-rapida) var(--curva); }
 .tn-cab{ display: flex; align-items: center; justify-content: space-between; gap: 8px;
   padding: 12px 12px; border-bottom: 1px solid var(--borde); }
-.tn-cab h4, .tn-cuerpo h4{ font-size: 15px; font-weight: 600; margin: 0 0 4px;
+.tn-cab :is(h2,h3,h4), .tn-cuerpo :is(h2,h3,h4){ font-size: 15px; font-weight: 600; margin: 0 0 4px;
   transition: color var(--dur-rapida) var(--curva); }
-.tn-cab h4{ margin: 0; }
+.tn-cab :is(h2,h3,h4){ margin: 0; }
 .tn-cuerpo{ padding: 12px; flex: 1; }
 .tn-cuerpo p{ margin: 0; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .tn-pie{ display: flex; justify-content: flex-end; gap: 8px; padding: 12px 12px;
@@ -619,7 +632,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .tn-medio-vacio{ font-size: 12px; color: var(--texto-pista); text-align: center; padding: 8px; }
 .tn-pulsable{ cursor: pointer; }
 .tn-pulsable:hover{ border-color: var(--accion); }
-.tn-pulsable:hover h4{ color: var(--accion); }
+.tn-pulsable:hover :is(h2,h3,h4){ color: var(--accion); }
 .tn-pulsable:hover .tn-medio img{ transform: scale(1.04); }
 @media (prefers-reduced-motion: reduce) {
   .tn-pulsable:hover .tn-medio img{ transform: none; }

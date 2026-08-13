@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.49.0";
+export const VERSION = "1.50.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,34 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.50.0', fecha: '2026-08-13',
+    que: 'R58: el titulo de la tarjeta salia sin estilo · R59: TarjetaAccion, una accion y cuatro sitios donde pulsarla · R60: seis componentes publicados que NO viajaban en el ZIP',
+    porque:
+      'R58 es el hermano de R56 y aparecio por el mismo camino: la hoja estilaba `h4`, el componente '
+      + 'emitia `h3` y el catalogo usaba `h4`. Asi que el titulo de la tarjeta salia SIN NINGUN '
+      + 'ESTILO en cada producto —con el h3 por defecto del navegador, grande y con margenes— '
+      + 'mientras el catalogo se veia bien. La correccion no es cambiar el numero: es que la hoja '
+      + 'DEJE DE ELEGIR el nivel. Ahora estiliza h2, h3 y h4 igual y el nivel lo pone quien conoce '
+      + 'la jerarquia de su pagina, que es el producto. '
+      + 'R59 lo pidio el responsable: foto arriba con hover, titulo, texto y boton, y que pulsar la '
+      + 'imagen, el titulo o el boton lleve A LO MISMO. La forma directa —tres <button> con el mismo '
+      + 'onClick— es la mala: tres paradas de tabulador y tres anuncios para UNA accion, y en una '
+      + 'cuadricula de veinte tarjetas son sesenta paradas para veinte destinos. Asi que hay un '
+      + 'unico control real, el titulo, y su zona pulsable se estira sobre toda la tarjeta con '
+      + '::after. El boton del pie es la SEÑAL de la accion, no un control: aria-hidden y fuera del '
+      + 'tabulador. Editable por defecto NO, y bloquear la edicion no apaga la navegacion. '
+      + 'R60 tampoco lo pidio nadie: salio al verificar el ZIP para responder si las tarjetas '
+      + 'estaban entregadas. AreaTexto, CampoContrasena, CargaId, CargaImagen, CargaPdf y ZonaAvisos '
+      + 'existian, tenian pagina en el catalogo y sus pruebas en verde — y NO viajaban en el '
+      + 'paquete. La causa: `CONTENIDO` era una lista escrita a mano y cada componente nuevo habia '
+      + 'que acordarse de añadirlo. Mismo defecto que la lista incompleta de candados y que las '
+      + 'etiquetas cortadas en v1.38.0: un inventario a mano al lado de una realidad que crece. '
+      + 'Deja de ser inventario y pasa a ser un recorrido del directorio, y `verificar-entrega` '
+      + 'gana una segunda mitad: tener pagina no es estar entregado.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.49.0', fecha: '2026-08-12',
     que: 'R56: la tarjeta pulsable heredaba la tipografia del navegador · R57: la Tarjeta gana ranura de medio',

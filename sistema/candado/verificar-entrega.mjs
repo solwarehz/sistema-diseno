@@ -174,6 +174,46 @@ if (existsSync(indice)) {
     process.exit(1);
   }
   console.log(`  ${exportados.length} componentes publicados, todos con página en el catálogo.`);
+
+  /* R60 · Y QUE ADEMÁS VIAJEN.
+   *
+   * Tener página no es estar entregado. Durante seis componentes seguidos
+   * —AreaTexto, CampoContrasena, CargaId, CargaImagen, CargaPdf, ZonaAvisos—
+   * este candado decía «todos con página en el catálogo» mientras ninguno de
+   * los seis estaba dentro del ZIP: la lista de `empaquetar.mjs` se escribía a
+   * mano y nadie se acordó. El candado miraba el escaparate y no la caja.
+   *
+   * Se comprueba contra el CONTENIDO real del empaquetador, no contra el ZIP
+   * construido: así falla ANTES de empaquetar y no después. */
+  const { CONTENIDO_ENTREGA } = await import('../paquete/empaquetar.mjs');
+  // Los MÓDULOS que viajan, normalizados sin extensión: la clave es de dónde
+  // sale cada export, no cómo se llama. `EstadoPantalla` vive en `Estados.tsx`
+  // y `comprimirPdf` en `interno/comprimir-pdf.mjs`; comparar por nombre de
+  // archivo daba falsos positivos en los dos.
+  const viajan = new Set(
+    CONTENIDO_ENTREGA
+      .map(([origen]) => origen.match(/^componentes\/src\/(.+?)(?:\.tsx|\.ts|\.mjs|\.mts)$/)?.[1])
+      .filter(Boolean)
+  );
+  // De `export { A, B } from './X'` se saca el módulo, y de ahí se comprueba.
+  const sinViajar = [];
+  for (const m of readFileSync(indice, 'utf8')
+    .matchAll(/export \{([^}]+)\} from '\.\/([^']+)'/g)) {
+    const modulo = m[2].replace(/\.(tsx|ts|mjs|mts)$/, '');
+    if (viajan.has(modulo)) continue;
+    for (const n of m[1].split(',')) {
+      const nombre = n.replace(/^\s*type\s+/, '').trim();
+      if (nombre && /^[A-Za-z]/.test(nombre)) sinViajar.push(`${nombre}  (${modulo})`);
+    }
+  }
+  if (sinViajar.length) {
+    console.error(`\n  ${sinViajar.length} componente(s) que el catálogo enseña y el PAQUETE no lleva:\n`);
+    for (const c of sinViajar) console.error(`    ${c}`);
+    console.error('\n  Se publica, se documenta y se prueba — y al instalar no está.');
+    console.error('  Un escaparate con la caja vacía es peor que no publicarlo.\n');
+    process.exit(1);
+  }
+  console.log(`  ${viajan.size} módulos de componente viajan en el paquete.`);
 }
 
 console.log('\n  Nada estructural se queda sin decidir.\n');

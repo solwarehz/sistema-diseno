@@ -161,6 +161,20 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 | **6** | **Obligatorio.** (R57, v1.49.0) **Sin imagen no sale un agujero:** el hueco se reserva igual y se rotula, como ya hace `.ci-vacia`. Se pide con `conMedio`, y en un catálogo se pasa **siempre**: sin eso, las tarjetas sin foto salen más bajas y el borde inferior de la cuadrícula queda dentado. |
 | **7** | **Obligatorio.** (R57, v1.49.0) El `alt` del medio es **vacío por omisión**: en una tarjeta la imagen ilustra lo que el título ya nombra, y con `alt` el lector lo diría dos veces. Se rellena con `medioAlt` solo cuando la imagen aporta algo que el texto no dice. |
 | **8** | Del proyecto: qué imagen va en cada tarjeta, de dónde sale y cuándo se sube. |
+| **9** | **Obligatorio.** (R58, v1.50.0) El **nivel del encabezado lo pone el producto** con `nivelTitulo` (2, 3 o 4), porque la jerarquía de la página la conoce él y no el sistema. La hoja **estiliza los tres igual**. Es una corrección: la hoja estilizaba `h4`, el componente emitía `h3` y el catálogo usaba `h4`, así que el título salía **sin ningún estilo** en cada producto —con el `h3` por defecto del navegador— mientras el catálogo se veía bien. Mismo origen que R56: la hoja se escribió mirando el catálogo. Ahora la hoja no elige el nivel, estiliza la ranura. |
+
+---
+
+## Tarjeta de acción
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R59, v1.50.0) **Una sola acción, cuatro sitios donde pulsarla.** La imagen, el título, el texto y el botón llevan **al mismo sitio**. Y hay **un único control real** —el título—, cuya zona pulsable se estira sobre toda la tarjeta con `::after`. La forma directa —tres `<button>` con el mismo `onClick`— es la mala: son **tres paradas de tabulador y tres anuncios para una sola acción**, y en una cuadrícula de veinte tarjetas, sesenta paradas para veinte destinos. |
+| **2** | **Obligatorio.** (R59, v1.50.0) El **botón del pie es la señal de la acción, no un control aparte**: va `aria-hidden` y fuera del tabulador, y el clic lo recoge la zona que tiene debajo. Se ve y se pulsa como un botón; lo que no hace es duplicar la parada de tabulador. |
+| **3** | **Obligatorio.** (R59, v1.50.0) El **anillo de foco rodea la tarjeta entera**, no las dos palabras del título: lo que se activa con Enter es la tarjeta, y el foco tiene que decir eso. Se hace sobre el `::after`, nunca apagando el contorno. |
+| **4** | **Obligatorio.** (R59, v1.50.0) **Por omisión no se puede editar.** El producto la manda editable cuando toca. Y **bloquear la edición no apaga la navegación**: en solo lectura se sigue entrando igual — lo único que desaparece es poder cambiar la foto. |
+| **5** | **Obligatorio.** (R59, v1.50.0) Cuando sí se puede editar, el control de la foto va **por encima** de la zona pulsable (`z-index`), porque es **la única acción de la tarjeta que no es _la_ acción de la tarjeta**. Sin eso, el `::after` se lo come y cambiar la foto abriría la página. No sale si falta `onEditarFoto`: un botón que no hace nada es peor que no tenerlo. |
+| **6** | Del proyecto: a dónde lleva la acción, qué imagen va en cada tarjeta y cuándo se puede editar. |
 
 ---
 

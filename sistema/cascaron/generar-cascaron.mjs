@@ -2166,6 +2166,38 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
       <div class="tn-cuerpo"><h4>Sin imagen</h4><p>El hueco <strong>se reserva igual</strong>. Si no, en una cuadrícula las tarjetas sin foto salen más bajas y el borde inferior queda dentado.</p></div>
     </article>
   </div>
+
+  <h3 class="sub-seccion">Tarjeta de acción</h3>
+  <p class="parrafo">Foto, título, texto y un botón — y <strong>una sola acción</strong>: pulsar la imagen, el título, el texto o el botón lleva al mismo sitio. Hay <strong>un único control real</strong>, el título, y su zona pulsable se estira sobre toda la tarjeta. Una parada de tabulador y un anuncio, no cuatro.</p>
+  <div class="tn-rejilla">
+    <article class="tn tn-pulsable tna">
+      <div class="tn-medio"><img src="${MEDIO_MUESTRA}" alt=""></div>
+      <div class="tn-cuerpo">
+        <h4><button type="button" class="tna-disparo">Registro de asistencia</button></h4>
+        <p class="tna-txt">No editable: el producto la manda así y solo se mira. Se sigue entrando igual.</p>
+      </div>
+      <div class="tn-pie"><span class="btn btn-1" aria-hidden="true">Ver</span></div>
+    </article>
+    <article class="tn tn-pulsable tna">
+      <div class="tn-medio">
+        <img src="${MEDIO_MUESTRA}" alt="">
+        <button class="btn btn-neutro btn-mini tna-editar" type="button">Cambiar imagen</button>
+      </div>
+      <div class="tn-cuerpo">
+        <h4><button type="button" class="tna-disparo">Ficha del trabajador</button></h4>
+        <p class="tna-txt">Editable: el control de la foto va <strong>encima</strong> de la zona pulsable. Es la única acción que no es <em>la</em> acción.</p>
+      </div>
+      <div class="tn-pie"><span class="btn btn-1" aria-hidden="true">Abrir</span></div>
+    </article>
+    <article class="tn tn-pulsable tna">
+      <div class="tn-medio"><span class="tn-medio-vacio">Sin imagen</span></div>
+      <div class="tn-cuerpo">
+        <h4><button type="button" class="tna-disparo">Sin foto todavía</button></h4>
+        <p class="tna-txt">Bloquear la edición <strong>no apaga la navegación</strong>. Sin foto, el hueco se reserva y se rotula.</p>
+      </div>
+      <div class="tn-pie"><span class="btn btn-1" aria-hidden="true">Ver</span></div>
+    </article>
+  </div>
 </div>
 
 <h3 class="sub-seccion">Reglas</h3>
@@ -5666,9 +5698,14 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
   transition: border-color var(--dur-rapida) var(--curva); }
 .tn-cab { display: flex; align-items: center; justify-content: space-between; gap: 8px;
   padding: 12px 12px; border-bottom: 1px solid var(--borde); }
-.tn-cab h4, .tn-cuerpo h4 { font-size: 15px; font-weight: 600; margin: 0 0 4px;
+/* R58 · La hoja estilaba h4 y el componente emitia h3, asi que el titulo de la
+   tarjeta salia SIN ESTILO en cada producto —con el h3 por defecto del
+   navegador— mientras el catalogo se veia bien. Mismo origen que R56: la hoja
+   se escribio mirando el catalogo. Ahora la hoja NO ELIGE el nivel: estila la
+   ranura, y el nivel lo pone quien conoce la jerarquia de su pagina. */
+.tn-cab :is(h2,h3,h4), .tn-cuerpo :is(h2,h3,h4) { font-size: 15px; font-weight: 600; margin: 0 0 4px;
   transition: color var(--dur-rapida) var(--curva); }
-.tn-cab h4 { margin: 0; }
+.tn-cab :is(h2,h3,h4) { margin: 0; }
 .tn-cuerpo { padding: 12px; flex: 1; }
 .tn-cuerpo p { margin: 0; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .tn-pie { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 12px;
@@ -5687,7 +5724,7 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 .tn-medio-vacio { font-size: 12px; color: var(--texto-pista); text-align: center; padding: 8px; }
 .tn-pulsable { cursor: pointer; }
 .tn-pulsable:hover { border-color: var(--accion); }
-.tn-pulsable:hover h4 { color: var(--accion); }
+.tn-pulsable:hover :is(h2,h3,h4) { color: var(--accion); }
 /* R57 · El acercamiento va CONTENIDO dentro del marco —el medio recorta—, asi
    la tarjeta no empuja a las de al lado. Con una imagen ocupando la mayor
    parte de la tarjeta, un cambio instantaneo es lo que peor se ve. */
@@ -5696,6 +5733,29 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
    duracion: sin esto el acercamiento seguiria ocurriendo, solo que de golpe.
    Mismo remedio que el avatar. */
 @media (prefers-reduced-motion: reduce) { .tn-pulsable:hover .tn-medio img { transform: none; } }
+
+/* R59 · TARJETA DE ACCION — una sola accion, cuatro sitios donde pulsarla.
+   Se pidio que la imagen, el titulo y el boton llevaran A LO MISMO. Tres
+   <button> haciendo lo mismo son TRES paradas de tabulador y tres anuncios
+   para una sola accion: con teclado hay que pasar por las tres para salir de
+   la tarjeta, y el lector la lee tres veces. Asi que hay UN control real —el
+   titulo— y su zona pulsable se estira sobre toda la tarjeta con ::after. Una
+   parada, un anuncio, y se puede pulsar donde sea. El boton del pie es la
+   señal visual de la accion, no un control aparte: por eso va aria-hidden y
+   sin foco, y el clic lo recoge la zona que tiene debajo. */
+.tna { position: relative; }
+.tna-disparo { font: inherit; color: inherit; background: none; border: 0;
+  padding: 0; margin: 0; text-align: left; cursor: pointer; }
+.tna-disparo::after { content: ''; position: absolute; inset: 0; border-radius: 6px; }
+/* El anillo rodea LA TARJETA, no dos palabras del titulo: lo que se activa al
+   pulsar Enter es la tarjeta entera, y el foco tiene que decir eso. */
+.tna-disparo:focus-visible { outline: none; }
+.tna-disparo:focus-visible::after { outline: 2px solid var(--foco); outline-offset: 2px; }
+.tna-txt { margin: 4px 0 0; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
+/* La ÚNICA accion distinta de la tarjeta va por encima de la zona pulsable.
+   Sin este z-index el ::after se la comeria y cambiar la foto abriria la
+   pagina. */
+.tna-editar { position: absolute; top: 8px; right: 8px; z-index: 1; }
 
 /* Chip de estado */
 .chip-sup { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 8px; }

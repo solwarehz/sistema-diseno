@@ -62,6 +62,10 @@ const ELEMENTOS = [
   { n: 'Chip de estado',        p: ['chip'] },
   { n: 'Avatar',                p: ['avatar'] },
   { n: 'Tarjeta de persona',    p: ['tp'] },
+  // R59 · Prefijo propio y no `tn-`: el corte de prefijos es en el guion, así
+  // que `.tna` no cae dentro de `tn` por accidente. Y es un elemento aparte,
+  // no una variante: tiene su propia página y su propio contrato.
+  { n: 'Tarjeta de acción',     p: ['tna'] },
   { n: 'Tarjeta',               p: ['tn'] },
   // R28 (Control Administrativos, 2026-08-10): el marco que encierra barra +
   // tabla + pie. Estaba en SOLO_CATALOGO y cada consumidor copiaba sus cuatro

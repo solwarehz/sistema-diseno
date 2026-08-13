@@ -8,7 +8,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { Interruptor, SeleccionMultiple } from '../src/Interruptor';
 import { EstadoPantalla, Aviso, Progreso } from '../src/Estados';
-import { Tarjeta, TarjetaPersona } from '../src/Tarjeta';
+import { Tarjeta, TarjetaAccion, TarjetaPersona } from '../src/Tarjeta';
 
 describe('Interruptor', () => {
   it('tiene nombre accesible: el <label> NO nombra a un <button>', () => {
@@ -201,6 +201,107 @@ describe('Tarjetas', () => {
   it('R57 · sin pedir medio no se reserva hueco: la tarjeta de siempre no cambia', () => {
     const { container } = render(<Tarjeta titulo="Asistencia">128</Tarjeta>);
     expect(container.querySelector('.tn-medio')).toBeNull();
+  });
+
+  /* R58 · La hoja estilaba h4 y el componente emitía h3: el título salía sin
+     estilo en cada producto y bien en el catálogo. Ahora el nivel lo elige el
+     producto y la hoja estiliza los tres. */
+  it('R58 · el nivel del encabezado lo pone el producto', () => {
+    const { container } = render(
+      <Tarjeta titulo="Asistencia" nivelTitulo={2}>128</Tarjeta>
+    );
+    expect(container.querySelector('.tn-cab h2')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Asistencia' })).toBeInTheDocument();
+  });
+
+  it('R58 · por omisión es h3, y la hoja lo estiliza igual que h2 y h4', () => {
+    const { container } = render(<Tarjeta titulo="Asistencia">128</Tarjeta>);
+    expect(container.querySelector('.tn-cab h3')).toBeInTheDocument();
+  });
+});
+
+describe('Tarjeta de acción · R59', () => {
+  it('la imagen, el título y el botón llevan a LA MISMA acción', async () => {
+    const u = userEvent.setup();
+    const ir = vi.fn();
+    const { container } = render(
+      <TarjetaAccion titulo="Registro de asistencia" texto="128 registros"
+        foto="/f.webp" onAccion={ir} textoBoton="Ver" />
+    );
+    // El título es el control real.
+    await u.click(screen.getByRole('button', { name: 'Registro de asistencia' }));
+    expect(ir).toHaveBeenCalledTimes(1);
+    // La imagen y el botón caen sobre la MISMA zona: el ::after del disparo se
+    // estira sobre la tarjeta. jsdom no resuelve diseño, así que lo que se
+    // comprueba es que no hay OTRO control que pudiera hacer otra cosa.
+    expect(container.querySelectorAll('button')).toHaveLength(1);
+  });
+
+  it('una sola parada de tabulador para una sola acción, no cuatro', async () => {
+    const u = userEvent.setup();
+    render(
+      <TarjetaAccion titulo="Ficha" texto="x" foto="/f.webp" onAccion={vi.fn()} />
+    );
+    await u.tab();
+    expect(screen.getByRole('button', { name: 'Ficha' })).toHaveFocus();
+    // Y la siguiente tabulación YA SALE de la tarjeta.
+    await u.tab();
+    expect(screen.getByRole('button', { name: 'Ficha' })).not.toHaveFocus();
+  });
+
+  it('el botón del pie es señal, no control: no lo ve el lector ni el tabulador', () => {
+    const { container } = render(
+      <TarjetaAccion titulo="Ficha" onAccion={vi.fn()} textoBoton="Abrir" />
+    );
+    const senal = container.querySelector('.tn-pie .btn')!;
+    expect(senal.tagName).toBe('SPAN');
+    expect(senal).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.queryByRole('button', { name: 'Abrir' })).not.toBeInTheDocument();
+  });
+
+  it('por omisión NO se puede editar la foto', () => {
+    const { container } = render(
+      <TarjetaAccion titulo="Ficha" foto="/f.webp" onAccion={vi.fn()}
+        onEditarFoto={vi.fn()} />
+    );
+    expect(container.querySelector('.tna-editar')).toBeNull();
+  });
+
+  it('en solo lectura se SIGUE entrando: bloquear la edición no apaga la acción', async () => {
+    const u = userEvent.setup();
+    const ir = vi.fn();
+    render(<TarjetaAccion titulo="Ficha" foto="/f.webp" onAccion={ir} editable={false} />);
+    await u.click(screen.getByRole('button', { name: 'Ficha' }));
+    expect(ir).toHaveBeenCalled();
+  });
+
+  it('editable saca el control de la foto, y hace lo SUYO, no la acción', async () => {
+    const u = userEvent.setup();
+    const ir = vi.fn();
+    const editar = vi.fn();
+    const { container } = render(
+      <TarjetaAccion titulo="Ficha" foto="/f.webp" onAccion={ir}
+        editable onEditarFoto={editar} textoEditarFoto="Cambiar imagen" />
+    );
+    // Va DENTRO del medio: por encima de la zona pulsable, no al lado.
+    expect(container.querySelector('.tn-medio .tna-editar')).toBeInTheDocument();
+    await u.click(screen.getByRole('button', { name: 'Cambiar imagen' }));
+    expect(editar).toHaveBeenCalledTimes(1);
+    expect(ir).not.toHaveBeenCalled();
+  });
+
+  it('editable sin onEditarFoto no saca un botón que no hace nada', () => {
+    const { container } = render(
+      <TarjetaAccion titulo="Ficha" foto="/f.webp" onAccion={vi.fn()} editable />
+    );
+    expect(container.querySelector('.tna-editar')).toBeNull();
+  });
+
+  it('sin foto reserva el hueco igual, y sigue siendo pulsable', () => {
+    const { container } = render(<TarjetaAccion titulo="Ficha" onAccion={vi.fn()} />);
+    expect(container.querySelector('.tn-medio')).toBeInTheDocument();
+    expect(screen.getByText('Sin imagen')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Ficha' })).toBeInTheDocument();
   });
 
 

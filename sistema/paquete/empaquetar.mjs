@@ -108,6 +108,31 @@ const CARPETA = `sistema-diseno-v${VERSION}`;
  *  sitio: escrito dos veces, un cambio de versión rompe el enlace en silencio. */
 export const NOMBRE_ZIP = `${CARPETA}.zip`;
 
+/**
+ * R60 · Todo lo que vive en `componentes/src/` viaja, sin lista intermedia.
+ *
+ * Recorre el árbol entero —incluido `interno/`, que trae `EditorEncuadre`,
+ * `desplegable` y el compresor de PDF: sin ellos los componentes que los
+ * importan no compilan en destino—. Se ordena para que el ZIP sea reproducible:
+ * el orden del sistema de archivos no está garantizado, y un ZIP que cambia de
+ * bytes sin que cambie nada es ruido en cada entrega.
+ */
+function componentesDeReact() {
+  const salida = [];
+  const recorrer = (rel) => {
+    for (const ent of readdirSync(join(RAIZ, rel), { withFileTypes: true })
+      .sort((a, b) => a.name.localeCompare(b.name, 'es'))) {
+      const hijo = `${rel}/${ent.name}`;
+      if (ent.isDirectory()) { recorrer(hijo); continue; }
+      if (!/\.(tsx|ts|mjs|mts)$/.test(ent.name)) continue;
+      // `componentes/src/X` se entrega como `componentes/X`.
+      salida.push([hijo, hijo.replace('componentes/src/', 'componentes/')]);
+    }
+  };
+  recorrer('componentes/src');
+  return salida;
+}
+
 const CONTENIDO = [
   // El motor. fuente.mjs es el ÚNICO archivo donde se escribe un color.
   ['sistema/tokens/fuente.mjs', 'sistema/tokens/fuente.mjs'],
@@ -120,37 +145,24 @@ const CONTENIDO = [
   // Los estilos de los elementos, para importar en vez de replicar.
   ['sistema/componentes/componentes.css', 'sistema/componentes/componentes.css'],
   ['sistema/componentes/comportamiento.md', 'sistema/componentes/comportamiento.md'],
-  // Los COMPONENTES DE REACT. Trece archivos que se construyeron para que nadie
-  // reconstruya el comportamiento —ordenar, filtrar, plegar, el teclado del
-  // calendario, el foco del diálogo— y que no viajaban en la entrega: el ZIP
-  // llevaba catorce archivos y ninguno era uno de estos. Se entregaba el ESTILO
-  // y se seguía pidiendo al proyecto que rehiciera lo demás, que es justo el
+  // Los COMPONENTES DE REACT. Se construyeron para que nadie reconstruya el
+  // comportamiento —ordenar, filtrar, plegar, el teclado del calendario, el
+  // foco del diálogo— y durante un tiempo no viajaban: se entregaba el ESTILO y
+  // se seguía pidiendo al proyecto que rehiciera lo demás, que es justo el
   // coste que Control Administrativos V2.0 midió en 3.983 líneas.
-  ['componentes/src/index.ts', 'componentes/index.ts'],
-  ['componentes/src/Boton.tsx', 'componentes/Boton.tsx'],
-  ['componentes/src/Enlace.tsx', 'componentes/Enlace.tsx'],
-  ['componentes/src/Campo.tsx', 'componentes/Campo.tsx'],
-  ['componentes/src/SelectorBusqueda.tsx', 'componentes/SelectorBusqueda.tsx'],
-  ['componentes/src/Chip.tsx', 'componentes/Chip.tsx'],
-  ['componentes/src/Migas.tsx', 'componentes/Migas.tsx'],
-  ['componentes/src/CabeceraPantalla.tsx', 'componentes/CabeceraPantalla.tsx'],
-  ['componentes/src/Dialogo.tsx', 'componentes/Dialogo.tsx'],
-  ['componentes/src/Nota.tsx', 'componentes/Nota.tsx'],
-  ['componentes/src/Avatar.tsx', 'componentes/Avatar.tsx'],
-  ['componentes/src/Icono.tsx', 'componentes/Icono.tsx'],
-  ['componentes/src/MarcoApp.tsx', 'componentes/MarcoApp.tsx'],
-  ['componentes/src/MarcaMenu.tsx', 'componentes/MarcaMenu.tsx'],
-  ['componentes/src/MenuUsuario.tsx', 'componentes/MenuUsuario.tsx'],
-  ['componentes/src/PanelBarra.tsx', 'componentes/PanelBarra.tsx'],
-  ['componentes/src/interno/desplegable.ts', 'componentes/interno/desplegable.ts'],
-  ['componentes/src/Interruptor.tsx', 'componentes/Interruptor.tsx'],
-  ['componentes/src/Tarjeta.tsx', 'componentes/Tarjeta.tsx'],
-  ['componentes/src/TablaDatos.tsx', 'componentes/TablaDatos.tsx'],
-  ['componentes/src/Paginacion.tsx', 'componentes/Paginacion.tsx'],
-  ['componentes/src/RangoFecha.tsx', 'componentes/RangoFecha.tsx'],
-  ['componentes/src/Horario.tsx', 'componentes/Horario.tsx'],
-  ['componentes/src/Estados.tsx', 'componentes/Estados.tsx'],
-  ['componentes/src/Confirmacion.tsx', 'componentes/Confirmacion.tsx'],
+  //
+  // R60 · YA NO SE LISTAN A MANO. Estaban escritos uno a uno, y cada componente
+  // nuevo había que acordarse de añadirlo. Con seis seguidos nadie se acordó:
+  // AreaTexto, CampoContrasena, CargaId, CargaImagen, CargaPdf y ZonaAvisos
+  // existían, tenían página en el catálogo y sus pruebas en verde — y NO
+  // viajaban en el ZIP. Ninguno de los diez candados lo veía, porque
+  // `verificar-entrega` comprueba que cada componente tenga página, no que esté
+  // dentro del paquete.
+  //
+  // Es el mismo defecto que la lista incompleta de candados y que las etiquetas
+  // cortadas en v1.38.0: un inventario a mano al lado de una realidad que
+  // crece. Así que deja de ser un inventario y pasa a ser un recorrido.
+  ...componentesDeReact(),
   // Los candados. Sin ellos el sistema es una sugerencia.
   ['sistema/candado/verificar-contraste.mjs', 'sistema/candado/verificar-contraste.mjs'],
   ['sistema/candado/verificar-color.mjs', 'sistema/candado/verificar-color.mjs'],
@@ -193,6 +205,11 @@ function comprobarVersion() {
  *   así que un LEEME incompleto es un sistema que parece más pequeño de lo que
  *   es —y eso fue justo lo que reportó el área de sistemas—.
  */
+/** R60 · Lo que de verdad se mete en el ZIP, para que un candado pueda mirarlo
+ *  ANTES de empaquetar. Sin esto, «está publicado» y «está entregado» eran dos
+ *  cosas distintas y nadie comprobaba la segunda. */
+export const CONTENIDO_ENTREGA = CONTENIDO;
+
 export function empaquetar({ silencioso = false, inventario } = {}) {
   comprobarVersion();
   if (!Array.isArray(inventario) || !inventario.length) {
