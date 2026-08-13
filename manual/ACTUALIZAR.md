@@ -27,8 +27,35 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.13.1
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.51.0
 ```
+
+### 1bis · Si no instalas por npm: la descarga
+
+Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
+
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.51.0>**
+
+O desde la línea de órdenes:
+
+```bash
+gh release download v1.51.0 --repo solwarehz/sistema-diseno
+```
+
+Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
+contrato de comportamiento y los candados— y trae el catálogo dentro, así que
+se puede abrir sin conexión.
+
+**Las dos vías entregan lo mismo.** La diferencia es que npm te deja actualizar
+cambiando un número, y el ZIP no: si bajas el ZIP, la próxima actualización es
+otra descarga y otra copia a mano. Por eso npm es la vía recomendada, y el ZIP
+está para cuando no se puede instalar desde un repositorio privado.
+
+> **Aviso sobre versiones anteriores.** Las etiquetas entre la **v1.39.0** y la
+> **v1.50.0** no existen: se dejaron de crear durante doce versiones y el aviso
+> saltó al comprobarlo. Lo que hay es **v1.38.0 y anteriores**, y **v1.51.0**.
+> Si necesitas una intermedia, pídela y se etiqueta — el commit está, es la
+> etiqueta lo que falta.
 
 ---
 
