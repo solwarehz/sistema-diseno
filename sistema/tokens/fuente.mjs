@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.51.0";
+export const VERSION = "1.51.1";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,26 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.51.1', fecha: '2026-08-13',
+    que: 'La via de DESCARGA entra en el manual, y se declara el hueco de etiquetas',
+    porque:
+      'El area de sistemas actualiza por npm, pero tiene que poder BAJAR la version igual, y '
+      + 'ACTUALIZAR.md solo documentaba npm. El ZIP de entrega esta en .gitignore, asi que quien '
+      + 'clonaba el repositorio no tenia de donde descargarlo: ahora cada version se adjunta a su '
+      + 'publicacion en GitHub y el documento dice como, con las dos vias y la diferencia entre '
+      + 'ellas. '
+      + 'Se declara ademas lo que faltaba y nadie habia escrito: las etiquetas entre v1.39.0 y '
+      + 'v1.50.0 NO EXISTEN. Un documento que manda instalar por etiqueta sin avisar de que hay '
+      + 'doce sin crear manda a un 404. '
+      + 'Y es version aparte, no un retoque de la v1.51.0, porque el commit de documentacion salio '
+      + 'DESPUES de etiquetar: quien instalara la v1.51.0 recibiria el manual sin la seccion de '
+      + 'descarga. Mover la etiqueta habria sido mas comodo y es exactamente el defecto que este '
+      + 'mismo dia se le reprocho a la v1.10.5 —una etiqueta movida entrega cosas distintas segun '
+      + 'cuando la bajes—. Se corrige avanzando, no reescribiendo.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.51.0', fecha: '2026-08-13',
     que: 'R61: la cuadricula de tarjetas se entrega, y el manual pasa a mandar a los componentes en vez de describir su anatomia',
