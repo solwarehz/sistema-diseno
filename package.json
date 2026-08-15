@@ -1,6 +1,6 @@
 {
   "name": "sistema-diseno-ae",
-  "version": "1.53.2",
+  "version": "1.54.0",
   "description": "Sistema de diseño web del Colegio Albert Einstein — implementación ejecutable de MMI-DS",
   "private": true,
   "type": "module",

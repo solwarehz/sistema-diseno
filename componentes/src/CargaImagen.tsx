@@ -228,7 +228,24 @@ export function CargaImagen({
         )}
       </div>
       {error && <span className="ci-error" id={idError}>{error}</span>}
-      {nota && <span className="ci-nota">{nota}</span>}
+      {/* R71 · LA NOTA SE RETIRA CUANDO YA HAY IMAGEN.
+          Es instrucción para ELEGIR un archivo —qué se sube, dónde se ve, cuánto
+          puede pesar—, y en cuanto la imagen está, ya se cumplió: se queda
+          debajo de cada campo lleno ocupando sitio y sin decir nada nuevo. Lo
+          reportó el responsable con una nota de tres frases que no cabía.
+
+          Se retira con `retrato`, no con `persona`: el avatar de reserva
+          significa que la foto TODAVÍA falta, y ahí la instrucción sigue
+          haciendo falta.
+
+          Y no se mueve al diálogo, aunque se pidió así. El orden real es clic →
+          selector de archivos del sistema → diálogo de encuadre, así que una
+          nota que viviera en el diálogo diría «hasta 8 MB» DESPUÉS de haber
+          elegido el archivo. La restricción tiene que leerse antes de elegir.
+
+          No se pierde nada para el lector de pantalla: la nota nunca estuvo
+          enlazada por `aria-describedby` —solo el error lo está—. */}
+      {nota && !retrato && <span className="ci-nota">{nota}</span>}
 
       {/* El input real, fuera del tabulador: el control accesible es el Boton.
           `hidden` no: algunos navegadores ignoran click() sobre hidden. */}

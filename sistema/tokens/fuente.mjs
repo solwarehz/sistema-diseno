@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.53.2";
+export const VERSION = "1.54.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,28 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.54.0', fecha: '2026-08-15',
+    que: 'R71: la nota de CargaImagen se retira cuando ya hay imagen',
+    porque:
+      'Lo reporto el responsable con un caso concreto: una nota de tres frases —donde se ve el '
+      + 'logo, quien lo mantiene y que pesa hasta 8 MB— que no cabia debajo de la vista previa. '
+      + 'El texto NO es del sistema: llega por la prop nota y lo escribe el producto. Lo que si es '
+      + 'del sistema es CUANDO se ensena, y ahi tenian razon. La nota es instruccion para ELEGIR un '
+      + 'archivo, y cumplida esa funcion se queda debajo de cada campo lleno ocupando sitio sin '
+      + 'decir nada nuevo. '
+      + 'Se retira con la imagen presente y NO con el avatar de reserva: el avatar significa que la '
+      + 'foto todavia falta, y ahi la instruccion sigue haciendo falta. El error no se retira nunca '
+      + '—eso hay que verlo siempre—, y hay prueba de las dos cosas. '
+      + 'NO se movio al dialogo, que es lo que se pidio literalmente, y conviene decir por que: el '
+      + 'orden real es clic → selector de archivos del sistema → dialogo de encuadre, asi que una '
+      + 'nota que viviera en el dialogo diria «hasta 8 MB» DESPUES de haber elegido el archivo. La '
+      + 'restriccion se lee antes de elegir o no sirve de nada. '
+      + 'Se anade al contrato que la REDACCION es del proyecto: el sistema decide cuando se ve, y '
+      + 'tres frases no caben debajo de una vista previa de 96px.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.53.2', fecha: '2026-08-14',
     que: 'R70: la tarjeta pulsable no marcaba el foco del teclado — WCAG 2.2 SC 2.4.7',

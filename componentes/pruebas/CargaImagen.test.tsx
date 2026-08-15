@@ -56,6 +56,45 @@ describe('Carga de imagen — R35', () => {
     expect(container.querySelector('.ci-error')!.id).toBe(boton.getAttribute('aria-describedby'));
   });
 
+  /* R71 · La nota es instrucción para ELEGIR. Cumplida esa función, se queda
+     debajo de cada campo lleno ocupando sitio y sin decir nada nuevo. Lo
+     reportó el responsable con una nota de tres frases que no cabía. */
+  it('R71 · con imagen ya puesta, la nota se retira', () => {
+    const { container } = render(
+      <CargaImagen etiqueta="Logo" onCambio={() => {}}
+        valor="/logo.webp" nota="Hasta 8 MB." />
+    );
+    expect(container.querySelector('.ci-img')).toBeTruthy();
+    expect(screen.queryByText('Hasta 8 MB.')).toBeNull();
+  });
+
+  it('R71 · con el avatar de reserva la nota SIGUE, porque la foto aún falta', () => {
+    render(
+      <CargaImagen etiqueta="Foto" formato="foto" onCambio={() => {}}
+        persona={{ id: '71234567', nombre: 'QUISPE MAMANI, Rosa' }}
+        nota="Hasta 8 MB." />
+    );
+    expect(screen.getByText('Hasta 8 MB.')).toBeTruthy();
+  });
+
+  it('R71 · al quitar la imagen, la nota vuelve', () => {
+    const { rerender } = render(
+      <CargaImagen etiqueta="Logo" onCambio={() => {}} valor="/logo.webp" nota="Hasta 8 MB." />
+    );
+    expect(screen.queryByText('Hasta 8 MB.')).toBeNull();
+    rerender(<CargaImagen etiqueta="Logo" onCambio={() => {}} valor={null} nota="Hasta 8 MB." />);
+    expect(screen.getByText('Hasta 8 MB.')).toBeTruthy();
+  });
+
+  it('R71 · el error NO se retira con la imagen: eso hay que verlo siempre', () => {
+    render(
+      <CargaImagen etiqueta="Logo" onCambio={() => {}} valor="/logo.webp"
+        nota="Hasta 8 MB." error="No se pudo guardar." />
+    );
+    expect(screen.queryByText('Hasta 8 MB.')).toBeNull();
+    expect(screen.getByText('No se pudo guardar.')).toBeTruthy();
+  });
+
   it('elegir archivo abre el editor en un Dialogo que no se pierde por un clic fuera', async () => {
     const { container } = render(<CargaImagen etiqueta="Foto" onCambio={() => {}} />);
     elegir(container);
