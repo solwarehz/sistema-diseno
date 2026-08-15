@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.55.0";
+export const VERSION = "1.56.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,28 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.56.0', fecha: '2026-08-15',
+    que: 'R41: lo deshabilitado no se veia — el boton no tenia NINGUNA regla :disabled',
+    porque:
+      'Tercera vez que Control Administrativos V2.0 lo pedia, y era cierto. .btn no tenia ninguna '
+      + 'regla :disabled, asi que un boton principal apagado se pintaba con el mismo --accion y el '
+      + 'mismo color de texto que uno activo: identico. Lo unico que cambiaba era que no respondia, '
+      + 'y eso se descubre pulsando. El campo de texto igual — solo select.campo tenia trato, asi '
+      + 'que un input apagado se veia editable. '
+      + 'LO MAS REVELADOR: el par accion-texto-desh / accion-deshabilitada YA estaba en el contrato '
+      + 'de contraste, declarado como «Boton deshabilitado. Exento por 1.4.3». Se midio y se '
+      + 'documento el color de un boton que la hoja nunca llego a pintar. No fue un olvido de '
+      + 'diseno: fue un olvido de implementacion sobre una decision ya tomada. '
+      + 'El hover no lo resucita —sin eso, .btn-1:hover volvia a pintarlo de azul— y se cubre '
+      + '[aria-disabled] ademas del atributo, porque el sistema lo prefiere donde el control tiene '
+      + 'que seguir siendo alcanzable. El terciario NO se rellena: es un boton de texto, y darle '
+      + 'fondo gris lo convertiria en solido justo cuando deja de poder pulsarse. '
+      + 'El campo reutiliza el trato que ya tenia .cg-in en vez de inventar otro: dos tratos '
+      + 'distintos para el mismo estado es la deriva que este sistema existe para evitar.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.55.0', fecha: '2026-08-15',
     que: 'R50: el Aviso nacia INVISIBLE y nadie lo veia nunca · R81: EstadoPantalla gana acceso-suspendido · R82: .enlace no marcaba el foco del teclado',

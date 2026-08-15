@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.55.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.56.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -78,7 +78,7 @@
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   BOTÓN — 28 reglas · clases .btn-*
+   BOTÓN — 31 reglas · clases .btn-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .btn-ic{ display: inline-flex; align-items: center; gap: 8px; }
@@ -99,6 +99,14 @@
 .btn-terc:hover{ background: var(--fondo-encabezado); }
 .btn-destr{ background: var(--destructiva); color: var(--destructiva-texto); }
 .btn-destr:hover{ background: var(--destructiva-hover); }
+.btn:disabled, .btn[aria-disabled='true']{
+  background: var(--accion-deshabilitada); color: var(--accion-texto-desh);
+  border-color: var(--accion-deshabilitada); cursor: not-allowed; }
+.btn:disabled:hover, .btn[aria-disabled='true']:hover{
+  background: var(--accion-deshabilitada); color: var(--accion-texto-desh); }
+.btn-terc:disabled, .btn-terc[aria-disabled='true'],
+.btn-terc:disabled:hover, .btn-terc[aria-disabled='true']:hover{
+  background: transparent; border-color: transparent; color: var(--accion-texto-desh); }
 .btn-mini{ font-size: 12px; padding: 4px 12px; }
 .btn-ocupado{ cursor: progress; }
 .btn-textos{ display: inline-grid; }
@@ -152,7 +160,7 @@ input.campo.sel-in{ width: 100%; padding-left: 32px; padding-right: 32px; }
 .cg-et-oculta{ visibility: hidden; }
 .cg-req{ color: var(--error-texto); margin-left: 4px; font-weight: 600; }
 .cg-in{ width: 100%; }
-.cg-in:disabled{ background-color: var(--fondo-encabezado); color: var(--texto-secundario);
+.campo:disabled, .cg-in:disabled{ background-color: var(--fondo-encabezado); color: var(--texto-secundario);
   border-color: var(--borde); cursor: not-allowed; }
 .cg-in[readonly], .campo[readonly], .campo[aria-readonly="true"]{
   background-color: var(--fondo-encabezado); border-color: var(--borde); }

@@ -103,3 +103,33 @@ describe('R57 · el medio de la tarjeta', () => {
     expect(192 / 108).toBeCloseTo(16 / 9, 5);
   });
 });
+
+describe('R41 · lo deshabilitado se ve', () => {
+  /* Tercera vez que lo pedían, y era cierto: `.btn` no tenía NINGUNA regla
+     `:disabled`, así que un botón principal apagado se pintaba con el mismo
+     `--accion` que uno activo. Lo revelador: el par
+     accion-texto-desh/accion-deshabilitada ya estaba declarado en el contrato
+     de contraste como «botón deshabilitado». Se midió el color de un botón que
+     la hoja nunca pintó. */
+  it('el botón deshabilitado usa los tokens que el contrato ya tenía medidos', () => {
+    expect(hoja).toMatch(/\.btn:disabled[^{]*\{[^}]*background:\s*var\(--accion-deshabilitada\)/);
+    expect(hoja).toMatch(/\.btn:disabled[^{]*\{[^}]*color:\s*var\(--accion-texto-desh\)/);
+  });
+
+  it('el hover no lo resucita', () => {
+    expect(hoja).toMatch(/\.btn:disabled:hover[^{]*\{[^}]*background:\s*var\(--accion-deshabilitada\)/);
+  });
+
+  it('cubre también aria-disabled, no solo el atributo', () => {
+    expect(hoja).toMatch(/\.btn\[aria-disabled='true'\]/);
+  });
+
+  it('el terciario NO se rellena: sigue siendo un botón de texto', () => {
+    expect(hoja).toMatch(/\.btn-terc:disabled[^{]*\{[^}]*background:\s*transparent/);
+  });
+
+  it('el campo de texto deshabilitado deja de verse editable', () => {
+    expect(hoja).toMatch(/\.campo:disabled[^{]*\{[^}]*background-color:\s*var\(--fondo-encabezado\)/);
+    expect(hoja).toMatch(/\.campo:disabled[^{]*\{[^}]*cursor:\s*not-allowed/);
+  });
+});

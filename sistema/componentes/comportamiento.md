@@ -120,6 +120,16 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 ---
 
+## Lo deshabilitado
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R41, v1.56.0) Un control deshabilitado **se ve deshabilitado**. El botón usa `accion-deshabilitada` de fondo y `accion-texto-desh` de texto; el campo de texto, el mismo trato que ya tenía el del grupo. Es una corrección de algo que estuvo mal desde el principio: `.btn` **no tenía ninguna regla `:disabled`**, así que un botón principal apagado se pintaba con el mismo azul que uno activo y solo se descubría al pulsarlo. Lo pidieron **tres veces**. |
+| **2** | **Obligatorio.** (R41, v1.56.0) El `hover` **no lo resucita**, y se cubre también `[aria-disabled='true']` — no solo el atributo—, porque el sistema prefiere `aria-disabled` donde el control tiene que seguir siendo alcanzable y anunciable. |
+| **3** | **Obligatorio.** (R41, v1.56.0) El **terciario no se rellena**: es un botón de texto, y darle fondo gris lo convertiría en sólido justo cuando deja de poder pulsarse. Recibe solo el color de texto apagado. |
+
+---
+
 ## Estados de pantalla — acceso suspendido
 
 | | Regla |

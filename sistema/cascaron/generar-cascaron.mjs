@@ -5852,7 +5852,11 @@ input.campo.sel-in { width: 100%; padding-left: 32px; padding-right: 32px; }
 /* background-color y no el atajo background: el atajo borra el background-image
    y un select deshabilitado se quedaba sin su flecha, que es justo lo que lo
    identifica como selector. */
-.cg-in:disabled { background-color: var(--fondo-encabezado); color: var(--texto-secundario);
+/* R41 · Y el CAMPO igual: solo select.campo tenia trato de deshabilitado, asi
+   que un campo de texto apagado se veia editable. Se le da el MISMO que ya
+   tenia .cg-in en vez de inventar otro — dos tratos distintos para el mismo
+   estado es la deriva que este sistema existe para evitar. */
+.campo:disabled, .cg-in:disabled { background-color: var(--fondo-encabezado); color: var(--texto-secundario);
   border-color: var(--borde); cursor: not-allowed; }
 /* R54 · solo lectura: se ve, se lee, se enfoca y no se cambia. El catalogo lo
    estilizaba solo en .cg-in, asi que un campo readonly del producto —que emite
@@ -6146,6 +6150,26 @@ h2.seccion {
 .btn-terc:hover { background: var(--fondo-encabezado); }
 .btn-destr { background: var(--destructiva); color: var(--destructiva-texto); }
 .btn-destr:hover { background: var(--destructiva-hover); }
+/* R41 · LO DESHABILITADO NO SE VEIA. Tercera vez pedido, y era cierto: .btn no
+   tenia NINGUNA regla :disabled, asi que un boton principal apagado se pintaba
+   con el mismo --accion y el mismo texto que uno activo. Identico. Lo unico
+   que cambiaba era que no respondia, y eso se descubre pulsando.
+   Lo mas revelador: el par accion-texto-desh / accion-deshabilitada YA estaba
+   declarado en el contrato de contraste como «Boton deshabilitado, exento por
+   1.4.3». Se midio el color de un boton que la hoja nunca pinto.
+   Se cubre tambien [aria-disabled] porque el sistema lo prefiere donde el
+   control tiene que seguir siendo alcanzable y anunciable. */
+.btn:disabled, .btn[aria-disabled='true'] {
+  background: var(--accion-deshabilitada); color: var(--accion-texto-desh);
+  border-color: var(--accion-deshabilitada); cursor: not-allowed; }
+/* El hover no lo resucita: sin esto, .btn-1:hover volvia a pintarlo de azul. */
+.btn:disabled:hover, .btn[aria-disabled='true']:hover {
+  background: var(--accion-deshabilitada); color: var(--accion-texto-desh); }
+/* El terciario NO se rellena: es un boton de texto, y darle fondo gris lo
+   convertiria en solido justo cuando deja de poder pulsarse. */
+.btn-terc:disabled, .btn-terc[aria-disabled='true'],
+.btn-terc:disabled:hover, .btn-terc[aria-disabled='true']:hover {
+  background: transparent; border-color: transparent; color: var(--accion-texto-desh); }
 .btn-mini { font-size: 12px; padding: 4px 12px; }
 
 /* ACCION DE SERVIDOR. No es otro boton: es el MISMO ocupado.
