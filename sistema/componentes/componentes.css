@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.53.1
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.53.2
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -607,7 +607,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .tna-editar{ position: absolute; top: 8px; right: 8px; z-index: 1; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TARJETA — 17 reglas · clases .tn-*
+   TARJETA — 18 reglas · clases .tn-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tn-cuadricula{ display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 12px; }
@@ -633,6 +633,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
   transition: transform var(--dur-media) var(--curva); }
 .tn-medio-vacio{ font-size: 12px; color: var(--texto-pista); text-align: center; padding: 8px; }
 .tn-pulsable{ cursor: pointer; }
+.tn-pulsable:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px; }
 .tn-pulsable:hover{ border-color: var(--accion); }
 .tn-pulsable:hover :is(h2,h3,h4){ color: var(--accion); }
 .tn-pulsable:hover .tn-medio img{ transform: scale(1.04); }

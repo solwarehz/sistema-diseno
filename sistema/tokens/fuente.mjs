@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.53.1";
+export const VERSION = "1.53.2";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,24 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.53.2', fecha: '2026-08-14',
+    que: 'R70: la tarjeta pulsable no marcaba el foco del teclado — WCAG 2.2 SC 2.4.7',
+    porque:
+      'PRIORITARIO, y es una regla. .tn-pulsable no tenia NINGUNA regla de foco, y la generica del '
+      + 'sistema solo alcanza lo que vive dentro del marco de aplicacion —[data-marco], .marco, '
+      + '.lat—: una tarjeta en una pantalla de aterrizaje esta FUERA, asi que no la tocaba nada. Se '
+      + 'quedaba con el anillo por defecto del navegador sobre una tarjeta que ya trae su propio '
+      + 'borde de 1px, y ahi apenas se distingue. '
+      + 'El agravante, que es lo que lo hace prioritario: al pasar el RATON si cambia el borde a '
+      + 'color de accion. Quien navega con teclado recibia MENOS señal que quien usa raton, y es al '
+      + 'reves de como tiene que ser — §1.3 del documento dice que con teclado te pierdes, y este '
+      + 'era un caso literal. Aparecio en la pantalla de aterrizaje del responsable. '
+      + 'Mismo anillo que el resto del sistema: 2px de --foco con 2px de separacion. Y se suma al '
+      + 'hover en vez de sustituirlo, asi que las dos formas de navegar tienen su señal.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.53.1', fecha: '2026-08-13',
     que: 'El publicador comprueba que ACTUALIZAR.md hable de la version que se publica',

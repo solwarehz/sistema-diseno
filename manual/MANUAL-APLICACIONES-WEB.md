@@ -2,7 +2,7 @@
 
 **Colegio Albert Einstein, Huaraz**
 Documento MMI-MAN-01 · Versión 1.3.0 · 13 de agosto de 2026
-Sistema de referencia: MMI-DS v1.53.1 · Color modo claro **bloqueado**
+Sistema de referencia: MMI-DS v1.53.2 · Color modo claro **bloqueado**
 
 > Para actualizar un proyecto que ya usa el sistema, empieza por
 > [`ACTUALIZAR.md`](ACTUALIZAR.md): dice qué cambió, qué se rompe y cómo instalarlo.

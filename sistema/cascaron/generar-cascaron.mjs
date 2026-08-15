@@ -5744,6 +5744,16 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
    .ci-vacia. En un catalogo real siempre falta alguna. */
 .tn-medio-vacio { font-size: 12px; color: var(--texto-pista); text-align: center; padding: 8px; }
 .tn-pulsable { cursor: pointer; }
+/* R70 · EL FOCO DEL TECLADO. WCAG 2.2 SC 2.4.7 (Focus Visible), Nivel AA.
+   No tenia ninguna regla, y la generica de foco solo alcanza lo que vive DENTRO
+   del marco de aplicacion —[data-marco], .marco, .lat—: una tarjeta en una
+   pantalla de aterrizaje esta fuera, asi que no la tocaba nada y se quedaba con
+   el anillo por defecto del navegador sobre una tarjeta que ya trae su propio
+   borde de 1px.
+   El agravante: al pasar el RATON si cambia el borde a color de accion. Quien
+   navega con teclado recibia MENOS señal que quien usa raton, que es al reves
+   de como tiene que ser. Mismo anillo que el resto del sistema. */
+.tn-pulsable:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
 .tn-pulsable:hover { border-color: var(--accion); }
 .tn-pulsable:hover :is(h2,h3,h4) { color: var(--accion); }
 /* R57 · El acercamiento va CONTENIDO dentro del marco —el medio recorta—, asi

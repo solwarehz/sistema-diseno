@@ -46,6 +46,25 @@ describe('R56 · la tarjeta pulsable es un <button>, y la hoja lo sabe', () => {
   });
 });
 
+describe('R70 · la tarjeta pulsable marca el foco del teclado', () => {
+  /* WCAG 2.2 SC 2.4.7. No tenía regla: la genérica de foco solo alcanza lo que
+     vive dentro del marco de aplicación, y una tarjeta en una pantalla de
+     aterrizaje está fuera. Con el ratón sí cambiaba el borde, así que el
+     teclado recibía menos señal que el ratón. */
+  it('tiene su anillo, y es el del sistema', () => {
+    expect(hoja).toMatch(/\.tn-pulsable:focus-visible\{[^}]*outline:\s*2px solid var\(--foco\)/);
+  });
+
+  it('el anillo NO se apaga en ningún sitio', () => {
+    // §2.5.7: `outline: none` sin reemplazo es el defecto real de §1.3.
+    expect(hoja).not.toMatch(/\.tn-pulsable:focus(-visible)?\{[^}]*outline:\s*none/);
+  });
+
+  it('y sigue habiendo señal de ratón: el foco se suma, no sustituye', () => {
+    expect(hoja).toMatch(/\.tn-pulsable:hover\{[^}]*border-color:\s*var\(--accion\)/);
+  });
+});
+
 describe('R57 · el medio de la tarjeta', () => {
   it('la proporción la declara la hoja, no el producto', () => {
     expect(hoja).toMatch(/\.tn-medio\{[^}]*aspect-ratio:\s*16\s*\/\s*9/);
