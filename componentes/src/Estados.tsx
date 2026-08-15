@@ -20,7 +20,28 @@ import { EnZonaAvisos } from './ZonaAvisos';
  */
 export type TipoEstado =
   | 'cargando' | 'nunca-consultado' | 'sin-resultados'
-  | 'primera-vez' | 'error' | 'sin-permiso' | 'fallo-dibujado';
+  | 'primera-vez' | 'error' | 'sin-permiso'
+  /**
+   * R81 · ACCESO SUSPENDIDO POR UNA CONDICIÓN DEL SERVICIO.
+   *
+   * No es `sin-permiso`, y la diferencia no es de matiz: cambia a quién se
+   * manda a la persona. `sin-permiso` significa «tu cuenta no tiene este
+   * privilegio» y su salida natural es hablar con quien administra la
+   * aplicación. Aquí el privilegio existe y está **suspendido** por algo ajeno
+   * a la aplicación —un contrato, un pago, una vigencia—, y el administrador
+   * **no puede resolverlo**.
+   *
+   * Usar `sin-permiso` para esto manda a la gente a la puerta equivocada, y el
+   * propio componente exige lo contrario: ningún estado es un callejón sin
+   * salida, y si no hay acción posible la línea tiene que decir a quién acudir.
+   * Con el tipo equivocado, esa línea dice a quién acudir MAL.
+   *
+   * Lo pidió Control Administrativos V2.0, que lo suplía tomando prestado
+   * `sin-permiso`. El sistema no nombra a quién hay que acudir —eso es del
+   * negocio de cada aplicación— pero sí obliga a decirlo.
+   */
+  | 'acceso-suspendido'
+  | 'fallo-dibujado';
 
 export type EstadoPantallaProps = {
   tipo: TipoEstado;
@@ -93,9 +114,34 @@ export function Aviso({ tono, texto, accion, onCerrar, duracion }: AvisoProps) {
   // existen desde la carga— y repetirlo aquí anidaría regiones vivas.
   const enZona = useContext(EnZonaAvisos);
 
+  /**
+   * R50 · EL AVISO NACÍA INVISIBLE, Y NADIE LO VEÍA NUNCA.
+   *
+   * `.av` arranca con `opacity: 0` y `translateY(-16px)` para poder entrar
+   * deslizando, y `.av-dentro` es lo que lo trae a la vista. El componente
+   * **no la añadía nunca**: en el catálogo se veía porque allí la pone el guion
+   * de la página, y en cada producto el aviso se montaba, ocupaba su sitio,
+   * anunciaba al lector de pantalla… y no se veía. Ni uno.
+   *
+   * Lo reportó Control Administrativos V2.0, que lleva supliéndolo con una
+   * pieza propia que recorre el DOM añadiendo la clase desde fuera. Con esto,
+   * ese apaño sobra — y no chocan: React manda en `className`, así que añadir
+   * una clase que ya está no hace nada.
+   *
+   * Va en un fotograma aparte a propósito. Poner la clase en el mismo en que
+   * se inserta el elemento no anima: el navegador no llega a ver el estado
+   * inicial y salta al final. Con movimiento reducido no importa, porque las
+   * duraciones caen a 0,01ms y aparece de golpe igual.
+   */
+  const [dentro, setDentro] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setDentro(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
   return (
     <div
-      className={`av av-${tono}`}
+      className={['av', `av-${tono}`, dentro ? 'av-dentro' : ''].filter(Boolean).join(' ')}
       // Error interrumpe; el resto espera turno. Y van en zonas hermanas, no
       // anidadas: un role=alert dentro de una región polite se comporta distinto
       // en cada lector.

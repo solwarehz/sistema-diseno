@@ -6179,6 +6179,15 @@ h2.seccion {
 }
 .enlace { color: var(--enlace); text-decoration: none; font-size: 13px; }
 .enlace:hover { text-decoration: underline; }
+/* R82 · EL FOCO DEL TECLADO. WCAG 2.2 SC 2.4.7. Mismo hueco que R70 y por el
+   mismo motivo: la regla generica de foco solo alcanza lo que vive dentro del
+   marco de aplicacion, y .enlace es la accion de FILA —el manual manda usarlo
+   ahi en vez de un boton, para no convertir la tabla en una rejilla de
+   botones—. En una tabla de veinte filas con varias acciones por fila, el
+   anillo es lo unico que dice en cual estas. Sin el, con teclado te pierdes.
+   Y como con el raton si se subraya, el teclado recibia menos señal que el
+   raton, igual que en la tarjeta. */
+.enlace:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; border-radius: 3px; }
 .mono { font-family: 'IBM Plex Mono', monospace; }
 .apagado { color: var(--texto-secundario); }
 .deuda { color: var(--error-texto); font-weight: 500; }

@@ -120,6 +120,23 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 ---
 
+## Estados de pantalla — acceso suspendido
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R81, v1.55.0) Existe el tipo **`acceso-suspendido`**, distinto de `sin-permiso`. `sin-permiso` significa «tu cuenta no tiene este privilegio» y su salida es quien administra la aplicación. `acceso-suspendido` significa que el privilegio **existe y está suspendido** por algo ajeno a la aplicación —un contrato, un pago, una vigencia— y **el administrador no puede levantarlo**. Confundirlos manda a la persona a la puerta equivocada, y el componente ya exigía que ningún estado sea un callejón sin salida: con el tipo equivocado, la línea de salida dice a quién acudir **mal**. |
+| **2** | Del proyecto: **a quién hay que acudir**. El sistema obliga a decirlo en la `línea`; quién es —tesorería, dirección, el área comercial— lo sabe cada aplicación y no lo nombra el sistema. |
+
+---
+
+## Aviso temporal — visibilidad
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R50, v1.55.0) El aviso **se hace visible solo**. `.av` nace con `opacity: 0` y `translateY(-16px)` para poder entrar deslizando, y `.av-dentro` es lo que lo trae a la vista: el componente la añade en el fotograma siguiente al montaje. Es una corrección de un defecto que dejaba el componente **inservible**: no la añadía nadie, así que en cada producto el aviso se montaba, ocupaba su sitio, se anunciaba al lector de pantalla **y no se veía. Ni uno.** En el catálogo sí se veía, porque allí la pone el guion de la página. Va en un fotograma aparte a propósito: puesta en el mismo en que se inserta el elemento, el navegador no llega a ver el estado inicial y no anima. |
+
+---
+
 ## Campo, selector y formulario
 
 | | Regla |

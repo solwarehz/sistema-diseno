@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.54.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.55.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -120,7 +120,7 @@
 .btn.mini{ font-size: 12px; padding: 4px 8px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   ENLACE — 16 reglas · clases .enl-*, .enlace-*
+   ENLACE — 17 reglas · clases .enl-*, .enlace-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 a.enlace.enl-sub{ text-decoration: underline; text-underline-offset: 2px; }
@@ -142,6 +142,7 @@ a.enlace.enl-nosub{ text-decoration: none; }
   text-underline-offset: 2px; font-size: 13px; }
 .enlace{ color: var(--enlace); text-decoration: none; font-size: 13px; }
 .enlace:hover{ text-decoration: underline; }
+.enlace:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px; border-radius: 3px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    CAMPO DE TEXTO — 30 reglas · clases .campo-*, .cg-*, .msj-*

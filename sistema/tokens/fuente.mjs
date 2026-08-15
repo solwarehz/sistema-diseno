@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.54.0";
+export const VERSION = "1.55.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,32 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.55.0', fecha: '2026-08-15',
+    que: 'R50: el Aviso nacia INVISIBLE y nadie lo veia nunca · R81: EstadoPantalla gana acceso-suspendido · R82: .enlace no marcaba el foco del teclado',
+    porque:
+      'R50 ES EL PEOR DEFECTO ENTREGADO HASTA HOY. La hoja pone .av con opacity 0 y '
+      + 'translateY(-16px) para que entre deslizando, y .av-dentro es lo que lo trae a la vista. El '
+      + 'componente NO la anadia nunca. En el catalogo se ve porque alli la pone el guion de la '
+      + 'pagina; en cada producto el aviso se montaba, ocupaba su sitio, se anunciaba al lector de '
+      + 'pantalla — y no se veia. Ni uno. Control Administrativos V2.0 lo suplia con una pieza '
+      + 'propia que recorre el DOM anadiendo la clase desde fuera, y lo habia reportado ya. Ese '
+      + 'apano ahora sobra y NO choca: React manda en className, asi que anadir una clase que ya '
+      + 'esta no hace nada. Va en un fotograma aparte porque ponerla en el mismo en que se inserta '
+      + 'el elemento no anima. '
+      + 'R81 · sin-permiso significa «tu cuenta no tiene este privilegio» y su salida es quien '
+      + 'administra la aplicacion. Un acceso suspendido por contrato es otra cosa: el privilegio '
+      + 'EXISTE y esta suspendido por algo ajeno, y el administrador no puede levantarlo. El propio '
+      + 'componente exige que ningun estado sea un callejon sin salida — y con el tipo prestado, la '
+      + 'linea de salida decia a quien acudir MAL. El sistema no nombra a quien acudir: eso es del '
+      + 'negocio de cada aplicacion, pero obliga a decirlo. '
+      + 'R82 · mismo hueco que R70 y por el mismo motivo: .enlace no tenia regla de foco y la '
+      + 'generica solo alcanza lo que vive dentro del marco. Y .enlace es la accion de FILA —el '
+      + 'manual manda usarlo ahi para no convertir la tabla en una rejilla de botones—, asi que en '
+      + 'una tabla de veinte filas el anillo es lo unico que dice en cual estas.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.54.0', fecha: '2026-08-15',
     que: 'R71: la nota de CargaImagen se retira cuando ya hay imagen',

@@ -3,7 +3,7 @@
  * Se prueba la promesa de cada uno, no que rendericen.
  */
 
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, within, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { Interruptor, SeleccionMultiple } from '../src/Interruptor';
@@ -137,6 +137,25 @@ describe('Aviso temporal', () => {
   it('el botón de cerrar tiene nombre', () => {
     render(<Aviso tono="info" texto="X" onCerrar={() => {}} />);
     expect(screen.getByRole('button', { name: 'Cerrar aviso' })).toBeInTheDocument();
+  });
+
+  /* R50 · El aviso nacía INVISIBLE. `.av` arranca con `opacity: 0` y
+     `.av-dentro` es lo que lo trae a la vista; el componente no la añadía
+     nunca. En cada producto el aviso se montaba, ocupaba su sitio, se
+     anunciaba al lector de pantalla — y no se veía. Ni uno. En el catálogo sí,
+     porque allí la pone el guion de la página. Lo reportó Control
+     Administrativos V2.0, que lo suplía recorriendo el DOM desde fuera. */
+  it('R50 · el aviso se hace visible solo: añade av-dentro', async () => {
+    const { container } = render(<Aviso tono="exito" texto="Guardado" onCerrar={() => {}} />);
+    const av = container.querySelector('.av')!;
+    await waitFor(() => expect(av.className).toContain('av-dentro'));
+  });
+
+  it('R50 · y conserva su tono al hacerse visible', async () => {
+    const { container } = render(<Aviso tono="error" texto="Falló" onCerrar={() => {}} />);
+    const av = container.querySelector('.av')!;
+    await waitFor(() => expect(av.className).toContain('av-dentro'));
+    expect(av.className).toContain('av-error');
   });
 });
 
@@ -321,5 +340,31 @@ describe('Tarjeta de acción · R59', () => {
     const av = container.querySelector('.avatar')!;
     expect([...av.classList].some((c) => /^avatar-[1-4]$/.test(c))).toBe(true);
     expect(av).toHaveTextContent('QR');
+  });
+});
+
+describe('Estados de pantalla · R81 · acceso suspendido', () => {
+  /* No es `sin-permiso`. Ese manda a hablar con quien administra la
+     aplicación, y aquí el administrador NO puede levantar la suspensión.
+     Usar el tipo equivocado manda a la persona a la puerta equivocada. */
+  it('existe como tipo propio y se distingue de sin-permiso en el marcado', () => {
+    const { container, rerender } = render(
+      <EstadoPantalla tipo="acceso-suspendido" titulo="Acceso suspendido"
+        linea="Escribe a tesorería para reactivarlo." />
+    );
+    expect(container.querySelector('.ep-acceso-suspendido')).toBeInTheDocument();
+    expect(container.querySelector('.ep-sin-permiso')).toBeNull();
+
+    rerender(<EstadoPantalla tipo="sin-permiso" titulo="Sin permiso" />);
+    expect(container.querySelector('.ep-sin-permiso')).toBeInTheDocument();
+    expect(container.querySelector('.ep-acceso-suspendido')).toBeNull();
+  });
+
+  it('la línea dice a quién acudir, y la pinta el componente', () => {
+    render(
+      <EstadoPantalla tipo="acceso-suspendido" titulo="Acceso suspendido"
+        linea="Escribe a tesorería para reactivarlo." />
+    );
+    expect(screen.getByText('Escribe a tesorería para reactivarlo.')).toBeInTheDocument();
   });
 });
