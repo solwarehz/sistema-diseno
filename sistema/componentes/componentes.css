@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.58.1
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.59.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -433,6 +433,50 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .ms-conteo{ font-size: 12px; color: var(--texto-secundario); margin: 12px 0 0;
   padding-top: 12px; border-top: 1px dashed var(--borde); }
 .ms-estados{ display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 4px; }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   SEGMENTADO — 26 reglas · clases .sg-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.sg{ border: 0; padding: 0; margin: 0; min-width: 0; }
+.sg-et{ font-size: 13px; font-weight: 500; padding: 0; margin-bottom: 4px;
+  color: var(--texto-principal); }
+.sg-desh .sg-et{ color: var(--texto-secundario); }
+.sg-barra{ display: flex; align-items: stretch; overflow: hidden;
+  border: 1px solid var(--borde-campo); border-radius: 6px;
+  background: var(--fondo-tarjeta); }
+.sg-op{ flex: 1 1 0; min-width: 0; position: relative; display: flex;
+  flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  min-height: 44px; padding: 8px 4px; cursor: pointer; text-align: center;
+  transition: background-color var(--dur-rapida) var(--curva); }
+.sg-op + .sg-op{ border-left: 1px solid var(--borde-campo); }
+.sg-op:hover{ background: var(--fondo-encabezado); }
+.sg-in{ position: absolute; inset: 0; width: 100%; height: 100%; margin: 0;
+  opacity: 0; cursor: pointer; }
+.sg-txt{ font-size: 13px; line-height: 1.3; color: var(--texto-principal); }
+.sg-ej{ font-size: 11px; line-height: 1.3; color: var(--texto-secundario);
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sg-op:has(.sg-in:checked){ background: var(--accion); }
+.sg-op:has(.sg-in:checked) .sg-txt{ color: var(--accion-texto); font-weight: 600; }
+.sg-op:has(.sg-in:checked) .sg-ej{ color: var(--accion-texto); }
+.sg-op:has(.sg-in:focus-visible){ outline: 2px solid var(--foco); outline-offset: -2px; }
+.sg-desh .sg-op, .sg-desh .sg-in{ cursor: not-allowed; }
+.sg-desh .sg-txt, .sg-desh .sg-ej{ color: var(--texto-secundario); }
+.sg-desh .sg-op:has(.sg-in:checked){ background: var(--accion-deshabilitada); }
+.sg-desh .sg-op:has(.sg-in:checked) .sg-txt,
+.sg-desh .sg-op:has(.sg-in:checked) .sg-ej{ color: var(--accion-texto-desh); }
+.sg-op-cerrada{ cursor: default; background: var(--fondo-encabezado); }
+.sg-op-cerrada:hover{ background: var(--fondo-encabezado); }
+.sg-op-cerrada .sg-txt{ color: var(--texto-secundario); }
+.sg-candado{ display: grid; place-items: center; color: var(--texto-pista); }
+.sg-motivo{ font-size: 11px; line-height: 1.3; color: var(--texto-secundario); }
+.sg-cerrado{ display: block; }
+.sg-barra-cerrada{ display: flex; align-items: center; gap: 8px;
+  min-height: 44px; padding: 8px; border-radius: 6px;
+  border: 1px dashed var(--borde-campo); background: var(--fondo-encabezado); }
+@media (prefers-reduced-motion: reduce) {
+  .sg-op{ transition: none; }
+}
 
 /* ───────────────────────────────────────────────────────────────────────────
    FECHA Y RANGO — 37 reglas · clases .fc-*

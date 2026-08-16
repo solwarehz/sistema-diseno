@@ -132,6 +132,21 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 ---
 
+## Segmentado
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R69, v1.59.0) Existe `Segmentado`: **dos o tres opciones excluyentes en una línea**. Existe porque hay datos que no se ven o no se ven — tienen un **punto medio**, y es el que hace útil el sistema—. Con el interruptor, de dos posiciones, ese punto medio no se puede expresar sin mentir. La regla que lo gobierna la escribió Control Administrativos V2.0 y cabe en una frase: **cada dato sensible tiene una versión reducida que sirve para trabajar, pero no para suplantar.** |
+| **2** | **Obligatorio.** (R69, v1.59.0) El **ejemplo va en cada opción**, no solo en la elegida. El ejemplo es la *definición* del nivel: si solo se viera bajo la activa, para saber qué concede «parcial» habría que **concederlo primero** — cambiar un privilegio real de un cargo real para aprender qué significa—. Una definición se lee antes de elegir, no después. |
+| **3** | **Obligatorio.** (R69, v1.59.0) El nombre accesible es **el rótulo solo**; el ejemplo va de **descripción**. El `<label>` envuelve a los dos, así que sin `aria-labelledby` el lector anuncia «Completo 71602303» y acto seguido «71602303» otra vez. |
+| **4** | **Obligatorio.** (R69, v1.59.0) Botones de opción **nativos** dentro de un `fieldset`, y el control se **tapa, no se quita**: con `display:none` se van las flechas del teclado y el foco itinerante, y un grupo de diez pasa a ser treinta tabulaciones. |
+| **5** | **Obligatorio.** (R69, v1.59.0) Los segmentos **reparten el ancho a partes iguales** (`flex: 1 1 0` con `min-width: 0`). Sin ello un ejemplo largo empuja y a 390 px la barra desborda la página, que es justo lo que la matriz de privilegios no admite. |
+| **6** | **Obligatorio.** (R69 · R66, v1.59.0) **Cerrado por regla, aquí por nivel.** Quien reparte privilegios no puede conceder uno que lo iguale a él mismo, y eso casi nunca cierra el campo: cierra **un nivel**. El nivel **no desaparece** —desaparecido, la lista no coincide con la de al lado y se lee como una carga a medias—, **no se pinta apagado** —apagado invita a encenderlo— y va **con su motivo**. Deja de ser un control: no es un botón de opción desactivado, es texto. |
+| **7** | **Obligatorio.** (R69, v1.59.0) Un nivel que **no aplica no se pasa**, y el componente no lo inventa: la dirección no tiene punto medio —media dirección ya dice el barrio— y el documento no puede ocultarse del todo —sin él, dos personas con el mismo apellido son indistinguibles—. Dos opciones es un caso normal, no un componente a medias. |
+| **8** | Del proyecto: qué niveles tiene cada dato, y qué se muestra en cada uno. |
+
+---
+
 ## Mensaje en flujo
 
 | | Regla |

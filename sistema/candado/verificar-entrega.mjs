@@ -126,6 +126,10 @@ const PAGINA_DE = new Map([
   ['Boton', 'Botón'], ['Enlace', 'Enlace'], ['Campo', 'Campo de texto'],
   ['Selector', 'Selector'], ['SelectorBusqueda', 'Selector'],
   ['Interruptor', 'Interruptor'], ['SeleccionMultiple', 'Selección múltiple'],
+  // R69 · Página propia y no compartida con el interruptor: lo que hay que
+  // enseñar es justamente cuándo NO sirve el interruptor, y eso se pierde si se
+  // cuenta como una variante suya.
+  ['Segmentado', 'Segmentado'],
   ['RangoFecha', 'Fecha y rango'], ['Horario', 'Horario'], ['Chip', 'Chip de estado'],
   ['Avatar', 'Avatar'], ['Tarjeta', 'Tarjeta'], ['TarjetaPersona', 'Tarjeta'],
   ['TablaDatos', 'Tabla de datos'], ['Paginacion', 'Paginación'],

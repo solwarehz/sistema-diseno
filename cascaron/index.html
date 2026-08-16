@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.58.1</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.59.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.58.1
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.59.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -1182,6 +1182,76 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .ms-conteo { font-size: 12px; color: var(--texto-secundario); margin: 12px 0 0;
   padding-top: 12px; border-top: 1px dashed var(--borde); }
 .ms-estados { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 4px; }
+
+/* R69 · SEGMENTADO — dos o tres opciones excluyentes, en una sola linea.
+   Lo pidio Control Administrativos V2.0: un dato sensible no se ve o no se ve,
+   y tiene un punto medio —*****303— que es el que hace util el sistema. Con el
+   interruptor, de dos posiciones, no se podia expresar sin mentir.
+   NO es Seleccion multiple con modo unica: esa apila una fila por opcion y aqui
+   el control se repite en cinco a diez filas de una tabla. Apilado son treinta
+   filas para configurar cinco campos, y a 390px eso deja de ser una pantalla.
+   Una ocupa ALTO por opcion y esta ocupa ANCHO: a diez repeticiones, eso decide
+   si la pantalla existe.
+   Los pares de color son los ya medidos: accion-texto sobre accion en la opcion
+   elegida (5,75 claro · 7,34 oscuro), y texto-principal / texto-secundario
+   sobre fondo-tarjeta en las demas. No entra ningun par nuevo. */
+.sg { border: 0; padding: 0; margin: 0; min-width: 0; }
+.sg-et { font-size: 13px; font-weight: 500; padding: 0; margin-bottom: 4px;
+  color: var(--texto-principal); }
+.sg-desh .sg-et { color: var(--texto-secundario); }
+/* overflow hidden para que el relleno de la opcion elegida respete el radio de
+   la barra: sin el, la esquina pintada se sale del filete y se ve un diente. */
+.sg-barra { display: flex; align-items: stretch; overflow: hidden;
+  border: 1px solid var(--borde-campo); border-radius: 6px;
+  background: var(--fondo-tarjeta); }
+/* flex-basis 0 y min-width 0: los tres segmentos reparten el ancho a partes
+   iguales pase lo que pase dentro. Sin min-width 0 un ejemplo largo empuja y a
+   390px la barra desborda la pagina, que es justo lo que R68 prohibe. */
+.sg-op { flex: 1 1 0; min-width: 0; position: relative; display: flex;
+  flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  min-height: 44px; padding: 8px 4px; cursor: pointer; text-align: center;
+  transition: background-color var(--dur-rapida) var(--curva); }
+.sg-op + .sg-op { border-left: 1px solid var(--borde-campo); }
+.sg-op:hover { background: var(--fondo-encabezado); }
+/* El boton de opcion se tapa, no se quita: display:none lo saca del orden de
+   tabulacion y con el se van las flechas del teclado, que es lo unico que hace
+   navegable un grupo de diez. Cubre el segmento entero para que el clic caiga
+   donde se ve. */
+.sg-in { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0;
+  opacity: 0; cursor: pointer; }
+.sg-txt { font-size: 13px; line-height: 1.3; color: var(--texto-principal); }
+.sg-ej { font-size: 11px; line-height: 1.3; color: var(--texto-secundario);
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sg-op:has(.sg-in:checked) { background: var(--accion); }
+.sg-op:has(.sg-in:checked) .sg-txt { color: var(--accion-texto); font-weight: 600; }
+.sg-op:has(.sg-in:checked) .sg-ej { color: var(--accion-texto); }
+/* El anillo va DENTRO: el segmento pega con el filete de la barra y por fuera
+   lo recortaria el overflow del padre. */
+.sg-op:has(.sg-in:focus-visible) { outline: 2px solid var(--foco); outline-offset: -2px; }
+.sg-desh .sg-op, .sg-desh .sg-in { cursor: not-allowed; }
+.sg-desh .sg-txt, .sg-desh .sg-ej { color: var(--texto-secundario); }
+.sg-desh .sg-op:has(.sg-in:checked) { background: var(--accion-deshabilitada); }
+.sg-desh .sg-op:has(.sg-in:checked) .sg-txt,
+.sg-desh .sg-op:has(.sg-in:checked) .sg-ej { color: var(--accion-texto-desh); }
+/* R66 · CERRADO POR REGLA, y aqui por NIVEL. El caso es de seguridad: quien
+   reparte privilegios no puede conceder uno que lo iguale a el mismo, y eso no
+   cierra el campo, cierra un nivel. El segmento NO desaparece —desaparecido, la
+   lista no coincide con la de al lado y se lee como una carga a medias— y NO se
+   pinta apagado —apagado se lee «ahora no, vuelve luego» e invita a encenderlo—.
+   Deja de ser un control: sin boton de opcion detras, es texto con su motivo. */
+.sg-op-cerrada { cursor: default; background: var(--fondo-encabezado); }
+.sg-op-cerrada:hover { background: var(--fondo-encabezado); }
+.sg-op-cerrada .sg-txt { color: var(--texto-secundario); }
+.sg-candado { display: grid; place-items: center; color: var(--texto-pista); }
+.sg-motivo { font-size: 11px; line-height: 1.3; color: var(--texto-secundario); }
+/* Control entero cerrado: no hay barra que pintar, hay una razon que leer. */
+.sg-cerrado { display: block; }
+.sg-barra-cerrada { display: flex; align-items: center; gap: 8px;
+  min-height: 44px; padding: 8px; border-radius: 6px;
+  border: 1px dashed var(--borde-campo); background: var(--fondo-encabezado); }
+@media (prefers-reduced-motion: reduce) {
+  .sg-op { transition: none; }
+}
 
 /* Fecha */
 .fc-campos { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
@@ -3407,7 +3477,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                           <span class="nav-txt">Carga de ID</span></a><a class="nav-nieto" href="#selector" data-ir="selector" title="Selector">
                           <span class="nav-txt">Selector</span></a><a class="nav-nieto" href="#interruptor" data-ir="interruptor" title="Interruptor">
                           <span class="nav-txt">Interruptor</span></a><a class="nav-nieto" href="#multiple" data-ir="multiple" title="Selección múltiple">
-                          <span class="nav-txt">Selección múltiple</span></a><a class="nav-nieto" href="#fecha" data-ir="fecha" title="Fecha y rango">
+                          <span class="nav-txt">Selección múltiple</span></a><a class="nav-nieto" href="#segmentado" data-ir="segmentado" title="Segmentado">
+                          <span class="nav-txt">Segmentado</span></a><a class="nav-nieto" href="#fecha" data-ir="fecha" title="Fecha y rango">
                           <span class="nav-txt">Fecha y rango</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="2-2">
@@ -3545,7 +3616,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.58.1</option></select></label>
+          <select class="campo cg-in"><option>v1.59.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3633,8 +3704,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.58.1.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.58.1</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.59.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.59.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -7123,6 +7194,224 @@ de las de abajo.</p>
   onCambio={setResultado}
 /&gt;</pre>
   </div>
+    </section><section class="pagina" id="pg-segmentado" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#segmentado" data-ir="segmentado" class="migas-actual" aria-current="page">Segmentado</a>
+      </nav>
+      <div class="pant-cab"><h1>Segmentado</h1></div>
+      
+<p class="pag-intro">Dos o tres opciones <strong>excluyentes</strong>, en una sola línea. Existe porque
+hay datos que no se ven o no se ven: tienen un <strong>punto medio</strong>, y es el que hace útil el
+sistema. Con el interruptor, de dos posiciones, ese punto medio no se puede expresar sin mentir.</p>
+
+<h3 class="sub-seccion">La regla que lo gobierna</h3>
+<p class="pag-intro">Cada dato sensible tiene una <strong>versión reducida que sirve para trabajar,
+pero no para suplantar</strong>. Tres dígitos identifican a una persona en una lista y no permiten
+reconstruir un documento. Una edad distingue y no sirve para verificar una identidad.</p>
+
+<h3 class="sub-seccion">Los tres niveles, con su ejemplo</h3>
+<div class="sw-rejilla">
+  
+  <fieldset class="sg">
+    <legend class="sg-et">Documento</legend>
+    <div class="sg-barra">
+      <label class="sg-op" for="sg-g-1-0">
+        <input id="sg-g-1-0" class="sg-in" type="radio" name="sg-g-1"
+               aria-labelledby="sg-g-1-0-txt" aria-describedby="sg-g-1-0-ej">
+        <span class="sg-txt" id="sg-g-1-0-txt">Completo</span>
+        <span class="sg-ej mono" id="sg-g-1-0-ej">71602303</span>
+      </label>
+      <label class="sg-op" for="sg-g-1-1">
+        <input id="sg-g-1-1" class="sg-in" type="radio" name="sg-g-1" checked
+               aria-labelledby="sg-g-1-1-txt" aria-describedby="sg-g-1-1-ej">
+        <span class="sg-txt" id="sg-g-1-1-txt">Parcial</span>
+        <span class="sg-ej mono" id="sg-g-1-1-ej">*****303</span>
+      </label></div>
+  </fieldset>
+  
+  <fieldset class="sg">
+    <legend class="sg-et">Fecha de nacimiento</legend>
+    <div class="sg-barra">
+      <label class="sg-op" for="sg-g-2-0">
+        <input id="sg-g-2-0" class="sg-in" type="radio" name="sg-g-2"
+               aria-labelledby="sg-g-2-0-txt" aria-describedby="sg-g-2-0-ej">
+        <span class="sg-txt" id="sg-g-2-0-txt">Completa</span>
+        <span class="sg-ej mono" id="sg-g-2-0-ej">12/03/1992</span>
+      </label>
+      <label class="sg-op" for="sg-g-2-1">
+        <input id="sg-g-2-1" class="sg-in" type="radio" name="sg-g-2" checked
+               aria-labelledby="sg-g-2-1-txt" aria-describedby="sg-g-2-1-ej">
+        <span class="sg-txt" id="sg-g-2-1-txt">Parcial</span>
+        <span class="sg-ej mono" id="sg-g-2-1-ej">34 años</span>
+      </label>
+      <label class="sg-op" for="sg-g-2-2">
+        <input id="sg-g-2-2" class="sg-in" type="radio" name="sg-g-2"
+               aria-labelledby="sg-g-2-2-txt" aria-describedby="sg-g-2-2-ej">
+        <span class="sg-txt" id="sg-g-2-2-txt">Oculta</span>
+        <span class="sg-ej mono" id="sg-g-2-2-ej">—</span>
+      </label></div>
+  </fieldset>
+  
+  <fieldset class="sg">
+    <legend class="sg-et">Dirección</legend>
+    <div class="sg-barra">
+      <label class="sg-op" for="sg-g-3-0">
+        <input id="sg-g-3-0" class="sg-in" type="radio" name="sg-g-3"
+               aria-labelledby="sg-g-3-0-txt" aria-describedby="sg-g-3-0-ej">
+        <span class="sg-txt" id="sg-g-3-0-txt">Completa</span>
+        <span class="sg-ej mono" id="sg-g-3-0-ej">Jr. Bolívar 340</span>
+      </label>
+      <label class="sg-op" for="sg-g-3-1">
+        <input id="sg-g-3-1" class="sg-in" type="radio" name="sg-g-3" checked
+               aria-labelledby="sg-g-3-1-txt" aria-describedby="sg-g-3-1-ej">
+        <span class="sg-txt" id="sg-g-3-1-txt">Oculta</span>
+        <span class="sg-ej mono" id="sg-g-3-1-ej">—</span>
+      </label></div>
+  </fieldset>
+</div>
+
+<h3 class="sub-seccion">Dos o tres, y no siempre las mismas</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Dato</th><th>Completo</th><th>Parcial</th><th>Oculto</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Apellido materno</strong></td><td class="mono">SUÁREZ MENDOZA</td><td class="mono">SUÁREZ M.</td><td class="motivo">No aplica: hay que poder identificar</td></tr>
+    <tr><td><strong>Documento</strong></td><td class="mono">71602303</td><td class="mono">*****303</td><td class="motivo">No aplica: sin él, dos personas con el mismo apellido son indistinguibles</td></tr>
+    <tr><td><strong>Fecha de nacimiento</strong></td><td class="mono">12/03/1992</td><td class="mono">34 años</td><td>Sí</td></tr>
+    <tr><td><strong>Correo o celular personal</strong></td><td>Completo</td><td>Parcial</td><td>Sí</td></tr>
+    <tr><td><strong>Dirección</strong></td><td>Completa</td><td class="motivo">No aplica: media dirección ya dice el barrio</td><td>Sí</td></tr>
+  </tbody>
+</table>
+<p class="pag-intro">Un nivel que <strong>no aplica no se pasa</strong>. Un nivel que aplica pero
+<strong>no se puede conceder</strong> se pasa cerrado, que es otra cosa.</p>
+
+<h3 class="sub-seccion">Cerrado por regla — por nivel y por control</h3>
+<p class="pag-intro">Quien reparte privilegios <strong>no puede conceder uno que lo iguale a él
+mismo</strong>. Eso casi nunca cierra el campo entero: cierra <strong>un nivel</strong>.</p>
+<div class="sw-rejilla">
+  
+  <fieldset class="sg">
+    <legend class="sg-et">Documento</legend>
+    <div class="sg-barra">
+      <span class="sg-op sg-op-cerrada">
+        <span class="sg-candado"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+        <span class="sg-txt">Completo</span>
+        <span class="sg-motivo">Tú lo ves en parcial</span>
+      </span>
+      <label class="sg-op" for="sg-g-4-1">
+        <input id="sg-g-4-1" class="sg-in" type="radio" name="sg-g-4" checked
+               aria-labelledby="sg-g-4-1-txt" aria-describedby="sg-g-4-1-ej">
+        <span class="sg-txt" id="sg-g-4-1-txt">Parcial</span>
+        <span class="sg-ej mono" id="sg-g-4-1-ej">*****303</span>
+      </label>
+      <label class="sg-op" for="sg-g-4-2">
+        <input id="sg-g-4-2" class="sg-in" type="radio" name="sg-g-4"
+               aria-labelledby="sg-g-4-2-txt" aria-describedby="sg-g-4-2-ej">
+        <span class="sg-txt" id="sg-g-4-2-txt">Oculto</span>
+        <span class="sg-ej mono" id="sg-g-4-2-ej">—</span>
+      </label></div>
+  </fieldset>
+  
+  <div class="sg sg-cerrado">
+    <span class="sg-et">Privilegios</span>
+    <span class="sg-barra-cerrada">
+      <span class="sg-candado"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+      <span class="sg-motivo">No puedes conceder el reparto de privilegios</span>
+    </span>
+  </div>
+</div>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td>El nivel cerrado <strong>no desaparece</strong>. Desaparecido, quien reparte no entiende por qué su lista no coincide con la de al lado, y lo lee como una carga a medias.</td></tr>
+    <tr><td class="num">2</td><td><strong>No se pinta apagado.</strong> Apagado se lee «ahora no, vuelve luego» e invita a buscar la forma de encenderlo. Aquí el mensaje es el contrario.</td></tr>
+    <tr><td class="num">3</td><td>Va <strong>con su motivo</strong>. Un candado sin explicación se lee como un fallo del sistema.</td></tr>
+    <tr><td class="num">4</td><td>Deja de ser un control: no es un botón de opción desactivado, es <strong>texto</strong>. Un control que no puede cambiar nunca no es un control.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Deshabilitado — que es otra cosa</h3>
+<div class="sw-rejilla">
+  
+  <fieldset class="sg sg-desh">
+    <legend class="sg-et">Celular personal</legend>
+    <div class="sg-barra">
+      <label class="sg-op" for="sg-g-6-0">
+        <input id="sg-g-6-0" class="sg-in" type="radio" name="sg-g-6"
+               aria-labelledby="sg-g-6-0-txt" aria-describedby="sg-g-6-0-ej" aria-disabled='true'>
+        <span class="sg-txt" id="sg-g-6-0-txt">Completo</span>
+        <span class="sg-ej mono" id="sg-g-6-0-ej">987 654 321</span>
+      </label>
+      <label class="sg-op" for="sg-g-6-1">
+        <input id="sg-g-6-1" class="sg-in" type="radio" name="sg-g-6" checked
+               aria-labelledby="sg-g-6-1-txt" aria-describedby="sg-g-6-1-ej" aria-disabled='true'>
+        <span class="sg-txt" id="sg-g-6-1-txt">Parcial</span>
+        <span class="sg-ej mono" id="sg-g-6-1-ej">*** *** 321</span>
+      </label>
+      <label class="sg-op" for="sg-g-6-2">
+        <input id="sg-g-6-2" class="sg-in" type="radio" name="sg-g-6"
+               aria-labelledby="sg-g-6-2-txt" aria-describedby="sg-g-6-2-ej" aria-disabled='true'>
+        <span class="sg-txt" id="sg-g-6-2-txt">Oculto</span>
+        <span class="sg-ej mono" id="sg-g-6-2-ej">—</span>
+      </label></div>
+  </fieldset>
+</div>
+<p class="pag-intro">Temporal: «ahora no». Para lo permanente está <strong>cerrado</strong>.</p>
+
+<h3 class="sub-seccion">Por qué no es Selección múltiple con una sola respuesta</h3>
+<table class="tabla-simple">
+  <thead><tr><th></th><th>Segmentado</th><th>Selección múltiple, modo única</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Qué ocupa</strong></td><td>Ancho: una línea</td><td class="motivo">Alto: una fila por opción</td></tr>
+    <tr><td><strong>Repetido diez veces</strong></td><td>Diez líneas</td><td class="motivo">Treinta filas</td></tr>
+    <tr><td><strong>Para qué sirve</strong></td><td>Configurar una tabla de campos</td><td class="motivo">Elegir una vez, leyendo de arriba abajo</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Dos o tres opciones.</strong> Más de tres no cabe a 390&nbsp;px y deja de ser un segmentado.</td></tr>
+    <tr><td class="num">2</td><td>El <strong>ejemplo va en cada opción</strong>, no solo en la elegida. Si no, para saber qué concede «parcial» hay que concederlo primero.</td></tr>
+    <tr><td class="num">3</td><td>Botones de opción <strong>nativos</strong> dentro de un <code>fieldset</code>. Es lo que da las flechas del teclado y el foco itinerante sin escribirlos.</td></tr>
+    <tr><td class="num">4</td><td>El botón de opción se <strong>tapa, no se quita</strong>. Con <code>display:none</code> se van las flechas, y un grupo de diez se vuelve treinta tabulaciones.</td></tr>
+    <tr><td class="num">5</td><td>Los segmentos <strong>reparten el ancho a partes iguales</strong> pase lo que pase dentro. Un ejemplo largo no empuja: se recorta.</td></tr>
+    <tr><td class="num">6</td><td>Con lector de pantalla, <code>contexto</code> antepone el grupo al rótulo. «Documento, parcial» no dice de qué grupo.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+
+  <div class="cod-bloque">
+    <div class="cod-cab">
+      <button class="cod-ver" data-ver="cod14" aria-expanded="false" aria-controls="cod14">
+        <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
+      </button>
+      <span class="cod-tit">Uso del componente</span>
+      <button class="copiar" data-copiar-de="cod14">Copiar</button>
+    </div>
+    <pre class="cod-pre" id="cod14" hidden>import { Segmentado } from '@ae/sistema';
+
+&lt;Segmentado
+  etiqueta="Documento"
+  contexto="Trabajadores"
+  valor={nivel}
+  onCambio={guardarYAplicar}
+  opciones={[
+    { valor: 'completo', texto: 'Completo', ejemplo: '71602303',
+      cerrado: 'Tú lo ves en parcial' },
+    { valor: 'parcial',  texto: 'Parcial',  ejemplo: '*****303' },
+  ]}
+/&gt;
+
+&lt;Segmentado
+  etiqueta="Privilegios"
+  cerrado="No puedes conceder el reparto de privilegios"
+  opciones={[]} valor="" onCambio={() =&gt; {}}
+/&gt;</pre>
+  </div>
     </section><section class="pagina" id="pg-fecha" hidden>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
@@ -7236,13 +7525,13 @@ día.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod14" aria-expanded="false" aria-controls="cod14">
+      <button class="cod-ver" data-ver="cod15" aria-expanded="false" aria-controls="cod15">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod14">Copiar</button>
+      <button class="copiar" data-copiar-de="cod15">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod14" hidden>import { CampoFecha, RangoFechas } from '@ae/sistema';
+    <pre class="cod-pre" id="cod15" hidden>import { CampoFecha, RangoFechas } from '@ae/sistema';
 
 &lt;CampoFecha etiqueta="Fecha de ingreso" maximo="hoy" /&gt;
 
@@ -8626,13 +8915,13 @@ no aportan nada sobre una barra.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod15" aria-expanded="false" aria-controls="cod15">
+      <button class="cod-ver" data-ver="cod16" aria-expanded="false" aria-controls="cod16">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod15">Copiar</button>
+      <button class="copiar" data-copiar-de="cod16">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod15" hidden>import { Progreso, ProgresoPasos } from '@ae/sistema';
+    <pre class="cod-pre" id="cod16" hidden>import { Progreso, ProgresoPasos } from '@ae/sistema';
 
 &lt;Progreso
   etiqueta="Importando trabajadores"
@@ -8756,13 +9045,13 @@ dato</strong>; el detalle vive en la pantalla, no en algo que se va en cuatro se
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod16" aria-expanded="false" aria-controls="cod16">
+      <button class="cod-ver" data-ver="cod17" aria-expanded="false" aria-controls="cod17">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod16">Copiar</button>
+      <button class="copiar" data-copiar-de="cod17">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod16" hidden>import { avisar } from '@ae/sistema';
+    <pre class="cod-pre" id="cod17" hidden>import { avisar } from '@ae/sistema';
 
 avisar.exito('Se guardó la asistencia de marzo');
 avisar.info('Se exportaron 38 filas a CSV');
@@ -8894,13 +9183,13 @@ se pliega y el contenido vuelve a subir.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod17" aria-expanded="false" aria-controls="cod17">
+      <button class="cod-ver" data-ver="cod18" aria-expanded="false" aria-controls="cod18">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod17">Copiar</button>
+      <button class="copiar" data-copiar-de="cod18">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod17" hidden>import { useConfirmar } from '@ae/sistema';
+    <pre class="cod-pre" id="cod18" hidden>import { useConfirmar } from '@ae/sistema';
 
 const confirmar = useConfirmar();
 
@@ -10382,6 +10671,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.59.0 <span class="cam-fecha">2026-08-16</span></h3>
+<p class="pag-intro"><strong>R69: nace Segmentado — dos o tres opciones excluyentes en una linea, con el ejemplo de cada nivel.</strong> R69 · Lo pidio Control Administrativos V2.0 para su pantalla de privilegios, y lo argumento bien: un dato sensible no se ve o no se ve, y tiene un PUNTO MEDIO que es el que hace util el sistema. El documento completo es 71602303, el parcial es *****303, y tres digitos identifican a una persona en una lista sin permitir reconstruir el documento. La regla que gobierna la pantalla entera cabe en una frase suya: cada dato sensible tiene una version reducida que sirve para trabajar, pero no para suplantar. Estaban usando el Interruptor, que tiene dos posiciones y les obligaba a mentir. NO es SeleccionMultiple con modo unica, que ya existe y tambien es excluyente: esa APILA una fila por opcion, y aqui el control se repite en cinco a diez filas de una tabla. Apilado son treinta filas para configurar cinco campos, y a 390px eso deja de ser una pantalla. Una ocupa ALTO por opcion y esta ocupa ANCHO — a diez repeticiones, eso decide si la pantalla existe. El ejemplo va en CADA opcion y no solo en la elegida. Si solo se viera bajo la activa, para saber que concede «parcial» habria que concederlo primero: cambiar un privilegio real de un cargo real para aprender que significa. El ejemplo es la definicion del nivel, y una definicion se lee antes de elegir. Dos opciones es un caso normal y no un componente a medias: la direccion no tiene punto medio —media direccion ya dice el barrio— y el documento no puede ocultarse del todo —sin el, dos personas con el mismo apellido son indistinguibles—. R66 llega al nivel. Quien reparte privilegios no puede conceder uno que lo iguale a el mismo, y eso casi nunca cierra el campo: cierra UN NIVEL. El nivel no desaparece, no se pinta apagado y va con su motivo, igual que en el Interruptor. Y el menu volvio a comerse su ultimo elemento. Los cortes de las cinco ramas son INDICES sobre la lista de items: meter uno en medio los corre a todos, y «Panel de la barra» se cayo fuera del ultimo tramo — exactamente lo que ya paso al entrar «Carga de ID», con la misma victima. Lo cazo el candado de la entrega. Queda apuntado que solo se nota cuando el que se cae es el ULTIMO: si un elemento entrara en la rama equivocada, ningun candado lo veria.</p>
+
 
 
 <h3 class="sub-seccion">v1.58.1 <span class="cam-fecha">2026-08-16</span></h3>

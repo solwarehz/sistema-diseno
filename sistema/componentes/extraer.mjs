@@ -57,6 +57,10 @@ const ELEMENTOS = [
   { n: 'Selector',              p: ['sel'] },
   { n: 'Interruptor',           p: ['sw'] },
   { n: 'Selección múltiple',    p: ['ms'] },
+  // R69 · Dos o tres opciones excluyentes en una línea. Elemento aparte y no
+  // variante de `ms`: aquélla apila una fila por opción y ésta reparte el ancho,
+  // que es lo que la hace repetible diez veces en una tabla a 390 px.
+  { n: 'Segmentado',            p: ['sg'] },
   { n: 'Fecha y rango',         p: ['fc'] },
   { n: 'Horario',               p: ['hor'] },
   { n: 'Chip de estado',        p: ['chip'] },

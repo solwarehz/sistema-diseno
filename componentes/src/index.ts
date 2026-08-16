@@ -26,6 +26,7 @@ export { CampoContrasena } from './CampoContrasena';
 export { Avatar, colorIdentidad, iniciales } from './Avatar';
 export { Paginacion } from './Paginacion';
 export { Interruptor, SeleccionMultiple, type Opcion } from './Interruptor';
+export { Segmentado, type OpcionSegmento } from './Segmentado';
 export { EstadoPantalla, Aviso, Progreso, type TipoEstado, type TonoAviso } from './Estados';
 export { Tarjeta, TarjetaAccion, TarjetaPersona } from './Tarjeta';
 export { Horario, escribirHora, type BloqueHorario } from './Horario';

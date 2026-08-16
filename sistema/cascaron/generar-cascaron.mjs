@@ -3107,6 +3107,165 @@ ${verCodigo(
 />`
 )}`;
 
+// ── Elemento: Segmentado ────────────────────────────────────────────────────
+
+// R69 · Dos o tres opciones excluyentes en una linea. El ejemplo va en CADA
+// opcion y no solo en la elegida: si solo se viera bajo la activa, para saber
+// que concede «parcial» habria que concederlo primero — cambiar un privilegio
+// real de un cargo real para aprender que significa —. El ejemplo es la
+// definicion, y una definicion se lee antes de elegir, no despues.
+let nSg = 0;
+const sg = (o = {}) => {
+  const g = `sg-g-${++nSg}`;
+  const ops = (o.opciones || []).map((op, i) => {
+    if (op.cerrado) return `
+      <span class="sg-op sg-op-cerrada">
+        <span class="sg-candado">${icono('candado', 16)}</span>
+        <span class="sg-txt">${op.texto}</span>
+        <span class="sg-motivo">${op.cerrado}</span>
+      </span>`;
+    return `
+      <label class="sg-op" for="${g}-${i}">
+        <input id="${g}-${i}" class="sg-in" type="radio" name="${g}"${op.elegida ? ' checked' : ''}
+               aria-labelledby="${g}-${i}-txt"${op.ejemplo ? ` aria-describedby="${g}-${i}-ej"` : ''}${o.desh ? " aria-disabled='true'" : ''}>
+        <span class="sg-txt" id="${g}-${i}-txt">${op.texto}</span>
+        ${op.ejemplo ? `<span class="sg-ej mono" id="${g}-${i}-ej">${op.ejemplo}</span>` : ''}
+      </label>`;
+  }).join('');
+
+  if (o.cerrado) return `
+  <div class="sg sg-cerrado">
+    <span class="sg-et">${o.etiqueta}</span>
+    <span class="sg-barra-cerrada">
+      <span class="sg-candado">${icono('candado', 16)}</span>
+      <span class="sg-motivo">${o.cerrado}</span>
+    </span>
+  </div>`;
+
+  return `
+  <fieldset class="sg${o.desh ? ' sg-desh' : ''}">
+    <legend class="sg-et">${o.etiqueta}</legend>
+    <div class="sg-barra">${ops}</div>
+  </fieldset>`;
+};
+
+const pagSegmentado = `
+<p class="pag-intro">Dos o tres opciones <strong>excluyentes</strong>, en una sola línea. Existe porque
+hay datos que no se ven o no se ven: tienen un <strong>punto medio</strong>, y es el que hace útil el
+sistema. Con el interruptor, de dos posiciones, ese punto medio no se puede expresar sin mentir.</p>
+
+<h3 class="sub-seccion">La regla que lo gobierna</h3>
+<p class="pag-intro">Cada dato sensible tiene una <strong>versión reducida que sirve para trabajar,
+pero no para suplantar</strong>. Tres dígitos identifican a una persona en una lista y no permiten
+reconstruir un documento. Una edad distingue y no sirve para verificar una identidad.</p>
+
+<h3 class="sub-seccion">Los tres niveles, con su ejemplo</h3>
+<div class="sw-rejilla">
+  ${sg({ etiqueta: 'Documento', opciones: [
+    { texto: 'Completo', ejemplo: '71602303' },
+    { texto: 'Parcial', ejemplo: '*****303', elegida: true },
+  ] })}
+  ${sg({ etiqueta: 'Fecha de nacimiento', opciones: [
+    { texto: 'Completa', ejemplo: '12/03/1992' },
+    { texto: 'Parcial', ejemplo: '34 años', elegida: true },
+    { texto: 'Oculta', ejemplo: '—' },
+  ] })}
+  ${sg({ etiqueta: 'Dirección', opciones: [
+    { texto: 'Completa', ejemplo: 'Jr. Bolívar 340' },
+    { texto: 'Oculta', ejemplo: '—', elegida: true },
+  ] })}
+</div>
+
+<h3 class="sub-seccion">Dos o tres, y no siempre las mismas</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Dato</th><th>Completo</th><th>Parcial</th><th>Oculto</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Apellido materno</strong></td><td class="mono">SUÁREZ MENDOZA</td><td class="mono">SUÁREZ M.</td><td class="motivo">No aplica: hay que poder identificar</td></tr>
+    <tr><td><strong>Documento</strong></td><td class="mono">71602303</td><td class="mono">*****303</td><td class="motivo">No aplica: sin él, dos personas con el mismo apellido son indistinguibles</td></tr>
+    <tr><td><strong>Fecha de nacimiento</strong></td><td class="mono">12/03/1992</td><td class="mono">34 años</td><td>Sí</td></tr>
+    <tr><td><strong>Correo o celular personal</strong></td><td>Completo</td><td>Parcial</td><td>Sí</td></tr>
+    <tr><td><strong>Dirección</strong></td><td>Completa</td><td class="motivo">No aplica: media dirección ya dice el barrio</td><td>Sí</td></tr>
+  </tbody>
+</table>
+<p class="pag-intro">Un nivel que <strong>no aplica no se pasa</strong>. Un nivel que aplica pero
+<strong>no se puede conceder</strong> se pasa cerrado, que es otra cosa.</p>
+
+<h3 class="sub-seccion">Cerrado por regla — por nivel y por control</h3>
+<p class="pag-intro">Quien reparte privilegios <strong>no puede conceder uno que lo iguale a él
+mismo</strong>. Eso casi nunca cierra el campo entero: cierra <strong>un nivel</strong>.</p>
+<div class="sw-rejilla">
+  ${sg({ etiqueta: 'Documento', opciones: [
+    { texto: 'Completo', cerrado: 'Tú lo ves en parcial' },
+    { texto: 'Parcial', ejemplo: '*****303', elegida: true },
+    { texto: 'Oculto', ejemplo: '—' },
+  ] })}
+  ${sg({ etiqueta: 'Privilegios', cerrado: 'No puedes conceder el reparto de privilegios' })}
+</div>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td>El nivel cerrado <strong>no desaparece</strong>. Desaparecido, quien reparte no entiende por qué su lista no coincide con la de al lado, y lo lee como una carga a medias.</td></tr>
+    <tr><td class="num">2</td><td><strong>No se pinta apagado.</strong> Apagado se lee «ahora no, vuelve luego» e invita a buscar la forma de encenderlo. Aquí el mensaje es el contrario.</td></tr>
+    <tr><td class="num">3</td><td>Va <strong>con su motivo</strong>. Un candado sin explicación se lee como un fallo del sistema.</td></tr>
+    <tr><td class="num">4</td><td>Deja de ser un control: no es un botón de opción desactivado, es <strong>texto</strong>. Un control que no puede cambiar nunca no es un control.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Deshabilitado — que es otra cosa</h3>
+<div class="sw-rejilla">
+  ${sg({ etiqueta: 'Celular personal', desh: true, opciones: [
+    { texto: 'Completo', ejemplo: '987 654 321' },
+    { texto: 'Parcial', ejemplo: '*** *** 321', elegida: true },
+    { texto: 'Oculto', ejemplo: '—' },
+  ] })}
+</div>
+<p class="pag-intro">Temporal: «ahora no». Para lo permanente está <strong>cerrado</strong>.</p>
+
+<h3 class="sub-seccion">Por qué no es Selección múltiple con una sola respuesta</h3>
+<table class="tabla-simple">
+  <thead><tr><th></th><th>Segmentado</th><th>Selección múltiple, modo única</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Qué ocupa</strong></td><td>Ancho: una línea</td><td class="motivo">Alto: una fila por opción</td></tr>
+    <tr><td><strong>Repetido diez veces</strong></td><td>Diez líneas</td><td class="motivo">Treinta filas</td></tr>
+    <tr><td><strong>Para qué sirve</strong></td><td>Configurar una tabla de campos</td><td class="motivo">Elegir una vez, leyendo de arriba abajo</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Dos o tres opciones.</strong> Más de tres no cabe a 390&nbsp;px y deja de ser un segmentado.</td></tr>
+    <tr><td class="num">2</td><td>El <strong>ejemplo va en cada opción</strong>, no solo en la elegida. Si no, para saber qué concede «parcial» hay que concederlo primero.</td></tr>
+    <tr><td class="num">3</td><td>Botones de opción <strong>nativos</strong> dentro de un <code>fieldset</code>. Es lo que da las flechas del teclado y el foco itinerante sin escribirlos.</td></tr>
+    <tr><td class="num">4</td><td>El botón de opción se <strong>tapa, no se quita</strong>. Con <code>display:none</code> se van las flechas, y un grupo de diez se vuelve treinta tabulaciones.</td></tr>
+    <tr><td class="num">5</td><td>Los segmentos <strong>reparten el ancho a partes iguales</strong> pase lo que pase dentro. Un ejemplo largo no empuja: se recorta.</td></tr>
+    <tr><td class="num">6</td><td>Con lector de pantalla, <code>contexto</code> antepone el grupo al rótulo. «Documento, parcial» no dice de qué grupo.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+${verCodigo(
+  'Uso del componente',
+  `import { Segmentado } from '@ae/sistema';
+
+<Segmentado
+  etiqueta="Documento"
+  contexto="Trabajadores"
+  valor={nivel}
+  onCambio={guardarYAplicar}
+  opciones={[
+    { valor: 'completo', texto: 'Completo', ejemplo: '71602303',
+      cerrado: 'Tú lo ves en parcial' },
+    { valor: 'parcial',  texto: 'Parcial',  ejemplo: '*****303' },
+  ]}
+/>
+
+<Segmentado
+  etiqueta="Privilegios"
+  cerrado="No puedes conceder el reparto de privilegios"
+  opciones={[]} valor="" onCambio={() => {}}
+/>`
+)}`;
+
 // ── Elemento: Fecha ─────────────────────────────────────────────────────────
 
 const pagFecha = `
@@ -4326,11 +4485,15 @@ const CATALOGO = [
       // corre a todos. Pasó al entrar «Carga de ID» —el último, «Panel de la
       // barra», se cayó fuera del último tramo y desapareció del menú—, y lo
       // cazó el candado de la entrega, que lee los títulos del menú.
+      // Y volvió a pasar al entrar «Segmentado» (R69, v1.59.0), con la misma
+      // víctima. Dos veces la misma trampa: los cortes se corren a mano y solo
+      // se nota si el que se cae es el ÚLTIMO. Si un elemento se metiera en la
+      // rama equivocada, ningún candado lo vería.
       { t: 'Acciones', desde: 0, hasta: 2 },
-      { t: 'Formulario', desde: 2, hasta: 11 },
-      { t: 'Datos', desde: 11, hasta: 17 },
-      { t: 'Respuesta', desde: 17, hasta: 23 },
-      { t: 'Marco y navegación', desde: 23, hasta: 26 },
+      { t: 'Formulario', desde: 2, hasta: 12 },
+      { t: 'Datos', desde: 12, hasta: 18 },
+      { t: 'Respuesta', desde: 18, hasta: 24 },
+      { t: 'Marco y navegación', desde: 24, hasta: 27 },
     ],
     items: [
       { id: 'boton', t: 'Botón', estado: 'listo', c: pagBoton },
@@ -4343,6 +4506,7 @@ const CATALOGO = [
       { id: 'selector', t: 'Selector', estado: 'listo', c: pagSelector },
       { id: 'interruptor', t: 'Interruptor', estado: 'listo', c: pagInterruptor },
       { id: 'multiple', t: 'Selección múltiple', estado: 'listo', c: pagMultiple },
+      { id: 'segmentado', t: 'Segmentado', estado: 'listo', c: pagSegmentado },
       { id: 'fecha', t: 'Fecha y rango', estado: 'listo', c: pagFecha },
       { id: 'horario', t: 'Horario', estado: 'listo', c: pagHorario },
       { id: 'chip', t: 'Chip de estado', estado: 'listo', c: pagChip },
@@ -5023,6 +5187,76 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .ms-conteo { font-size: 12px; color: var(--texto-secundario); margin: 12px 0 0;
   padding-top: 12px; border-top: 1px dashed var(--borde); }
 .ms-estados { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 4px; }
+
+/* R69 · SEGMENTADO — dos o tres opciones excluyentes, en una sola linea.
+   Lo pidio Control Administrativos V2.0: un dato sensible no se ve o no se ve,
+   y tiene un punto medio —*****303— que es el que hace util el sistema. Con el
+   interruptor, de dos posiciones, no se podia expresar sin mentir.
+   NO es Seleccion multiple con modo unica: esa apila una fila por opcion y aqui
+   el control se repite en cinco a diez filas de una tabla. Apilado son treinta
+   filas para configurar cinco campos, y a 390px eso deja de ser una pantalla.
+   Una ocupa ALTO por opcion y esta ocupa ANCHO: a diez repeticiones, eso decide
+   si la pantalla existe.
+   Los pares de color son los ya medidos: accion-texto sobre accion en la opcion
+   elegida (5,75 claro · 7,34 oscuro), y texto-principal / texto-secundario
+   sobre fondo-tarjeta en las demas. No entra ningun par nuevo. */
+.sg { border: 0; padding: 0; margin: 0; min-width: 0; }
+.sg-et { font-size: 13px; font-weight: 500; padding: 0; margin-bottom: 4px;
+  color: var(--texto-principal); }
+.sg-desh .sg-et { color: var(--texto-secundario); }
+/* overflow hidden para que el relleno de la opcion elegida respete el radio de
+   la barra: sin el, la esquina pintada se sale del filete y se ve un diente. */
+.sg-barra { display: flex; align-items: stretch; overflow: hidden;
+  border: 1px solid var(--borde-campo); border-radius: 6px;
+  background: var(--fondo-tarjeta); }
+/* flex-basis 0 y min-width 0: los tres segmentos reparten el ancho a partes
+   iguales pase lo que pase dentro. Sin min-width 0 un ejemplo largo empuja y a
+   390px la barra desborda la pagina, que es justo lo que R68 prohibe. */
+.sg-op { flex: 1 1 0; min-width: 0; position: relative; display: flex;
+  flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  min-height: 44px; padding: 8px 4px; cursor: pointer; text-align: center;
+  transition: background-color var(--dur-rapida) var(--curva); }
+.sg-op + .sg-op { border-left: 1px solid var(--borde-campo); }
+.sg-op:hover { background: var(--fondo-encabezado); }
+/* El boton de opcion se tapa, no se quita: display:none lo saca del orden de
+   tabulacion y con el se van las flechas del teclado, que es lo unico que hace
+   navegable un grupo de diez. Cubre el segmento entero para que el clic caiga
+   donde se ve. */
+.sg-in { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0;
+  opacity: 0; cursor: pointer; }
+.sg-txt { font-size: 13px; line-height: 1.3; color: var(--texto-principal); }
+.sg-ej { font-size: 11px; line-height: 1.3; color: var(--texto-secundario);
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sg-op:has(.sg-in:checked) { background: var(--accion); }
+.sg-op:has(.sg-in:checked) .sg-txt { color: var(--accion-texto); font-weight: 600; }
+.sg-op:has(.sg-in:checked) .sg-ej { color: var(--accion-texto); }
+/* El anillo va DENTRO: el segmento pega con el filete de la barra y por fuera
+   lo recortaria el overflow del padre. */
+.sg-op:has(.sg-in:focus-visible) { outline: 2px solid var(--foco); outline-offset: -2px; }
+.sg-desh .sg-op, .sg-desh .sg-in { cursor: not-allowed; }
+.sg-desh .sg-txt, .sg-desh .sg-ej { color: var(--texto-secundario); }
+.sg-desh .sg-op:has(.sg-in:checked) { background: var(--accion-deshabilitada); }
+.sg-desh .sg-op:has(.sg-in:checked) .sg-txt,
+.sg-desh .sg-op:has(.sg-in:checked) .sg-ej { color: var(--accion-texto-desh); }
+/* R66 · CERRADO POR REGLA, y aqui por NIVEL. El caso es de seguridad: quien
+   reparte privilegios no puede conceder uno que lo iguale a el mismo, y eso no
+   cierra el campo, cierra un nivel. El segmento NO desaparece —desaparecido, la
+   lista no coincide con la de al lado y se lee como una carga a medias— y NO se
+   pinta apagado —apagado se lee «ahora no, vuelve luego» e invita a encenderlo—.
+   Deja de ser un control: sin boton de opcion detras, es texto con su motivo. */
+.sg-op-cerrada { cursor: default; background: var(--fondo-encabezado); }
+.sg-op-cerrada:hover { background: var(--fondo-encabezado); }
+.sg-op-cerrada .sg-txt { color: var(--texto-secundario); }
+.sg-candado { display: grid; place-items: center; color: var(--texto-pista); }
+.sg-motivo { font-size: 11px; line-height: 1.3; color: var(--texto-secundario); }
+/* Control entero cerrado: no hay barra que pintar, hay una razon que leer. */
+.sg-cerrado { display: block; }
+.sg-barra-cerrada { display: flex; align-items: center; gap: 8px;
+  min-height: 44px; padding: 8px; border-radius: 6px;
+  border: 1px dashed var(--borde-campo); background: var(--fondo-encabezado); }
+@media (prefers-reduced-motion: reduce) {
+  .sg-op { transition: none; }
+}
 
 /* Fecha */
 .fc-campos { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }

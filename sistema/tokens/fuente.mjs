@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.58.1";
+export const VERSION = "1.59.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,41 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.59.0', fecha: '2026-08-16',
+    que: 'R69: nace Segmentado — dos o tres opciones excluyentes en una linea, con el ejemplo de cada nivel',
+    porque:
+      'R69 · Lo pidio Control Administrativos V2.0 para su pantalla de privilegios, y lo argumento '
+      + 'bien: un dato sensible no se ve o no se ve, y tiene un PUNTO MEDIO que es el que hace util '
+      + 'el sistema. El documento completo es 71602303, el parcial es *****303, y tres digitos '
+      + 'identifican a una persona en una lista sin permitir reconstruir el documento. La regla que '
+      + 'gobierna la pantalla entera cabe en una frase suya: cada dato sensible tiene una version '
+      + 'reducida que sirve para trabajar, pero no para suplantar. Estaban usando el Interruptor, '
+      + 'que tiene dos posiciones y les obligaba a mentir. '
+      + 'NO es SeleccionMultiple con modo unica, que ya existe y tambien es excluyente: esa APILA '
+      + 'una fila por opcion, y aqui el control se repite en cinco a diez filas de una tabla. '
+      + 'Apilado son treinta filas para configurar cinco campos, y a 390px eso deja de ser una '
+      + 'pantalla. Una ocupa ALTO por opcion y esta ocupa ANCHO — a diez repeticiones, eso decide '
+      + 'si la pantalla existe. '
+      + 'El ejemplo va en CADA opcion y no solo en la elegida. Si solo se viera bajo la activa, '
+      + 'para saber que concede «parcial» habria que concederlo primero: cambiar un privilegio real '
+      + 'de un cargo real para aprender que significa. El ejemplo es la definicion del nivel, y una '
+      + 'definicion se lee antes de elegir. '
+      + 'Dos opciones es un caso normal y no un componente a medias: la direccion no tiene punto '
+      + 'medio —media direccion ya dice el barrio— y el documento no puede ocultarse del todo '
+      + '—sin el, dos personas con el mismo apellido son indistinguibles—. '
+      + 'R66 llega al nivel. Quien reparte privilegios no puede conceder uno que lo iguale a el '
+      + 'mismo, y eso casi nunca cierra el campo: cierra UN NIVEL. El nivel no desaparece, no se '
+      + 'pinta apagado y va con su motivo, igual que en el Interruptor. '
+      + 'Y el menu volvio a comerse su ultimo elemento. Los cortes de las cinco ramas son INDICES '
+      + 'sobre la lista de items: meter uno en medio los corre a todos, y «Panel de la barra» se '
+      + 'cayo fuera del ultimo tramo — exactamente lo que ya paso al entrar «Carga de ID», con la '
+      + 'misma victima. Lo cazo el candado de la entrega. Queda apuntado que solo se nota cuando el '
+      + 'que se cae es el ULTIMO: si un elemento entrara en la rama equivocada, ningun candado lo '
+      + 'veria.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.58.1', fecha: '2026-08-16',
     que: 'La memoria se pone al dia: el registro llevaba diez versiones sin reescribirse, y los pedidos de tres dias no existian en el repositorio',
