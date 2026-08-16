@@ -4,7 +4,7 @@
  * ARCHIVO GENERADO. No editar a mano.
  * Fuente: sistema/iconos/iconos.mjs → node sistema/iconos/generar-react.mjs
  *
- * Los mismos 45 trazos que usa el catálogo, como elementos de React.
+ * Los mismos 46 trazos que usa el catálogo, como elementos de React.
  *
  * Existe para que NADIE tenga que usar `dangerouslySetInnerHTML`. El módulo
  * `iconos.mjs` devuelve cadenas de SVG —lo cómodo en una plantilla— y en React
@@ -52,6 +52,7 @@ const TRAZOS_REACT = {
   filasFinas: <><rect x="3" y="4" width="18" height="3" rx="1" /><rect x="3" y="10" width="18" height="3" rx="1" /><rect x="3" y="16" width="18" height="3" rx="1" /></>,
   filtro: <><path d="M3 5h18l-7 8v6l-4 2v-8Z" /></>,
   hamburguesa: <><path d="M4 6h16M4 12h16M4 18h16" /></>,
+  informacion: <><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></>,
   libro: <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" /></>,
   luna: <><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" /></>,
   lupa: <><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></>,

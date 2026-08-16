@@ -368,3 +368,21 @@ describe('Estados de pantalla · R81 · acceso suspendido', () => {
     expect(screen.getByText('Escribe a tesorería para reactivarlo.')).toBeInTheDocument();
   });
 });
+
+describe('Interruptor · R65 · la etiqueta admite marcado', () => {
+  it('acepta nodos, no solo texto', () => {
+    const { container } = render(
+      <Interruptor activo={false} onCambio={() => {}}
+        etiqueta={<><strong>Tesorería</strong> — cobros y pagos</>} />
+    );
+    expect(container.querySelector('.sw-et strong')).toHaveTextContent('Tesorería');
+  });
+
+  it('y el nombre accesible NO se resiente: sale del subárbol completo', () => {
+    render(
+      <Interruptor activo={false} onCambio={() => {}}
+        etiqueta={<><strong>Tesorería</strong> — cobros y pagos</>} />
+    );
+    expect(screen.getByRole('switch', { name: 'Tesorería — cobros y pagos' })).toBeInTheDocument();
+  });
+});

@@ -105,6 +105,13 @@ export const TRAZOS = {
   cerrar: '<path d="M6 6l12 12M18 6 6 18"/>',
   visto: '<path d="m5 12 5 5L20 7"/>',
   alerta: '<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/>',
+  // R83 · El cuarto glifo de intención, y el único que faltaba. Los otros tres
+  // ya estaban: `visto` (✓), `alerta` (!) y `cerrar` (✕). Sin este, un mensaje
+  // informativo no tenía señal NO CROMÁTICA y quedaba dicho solo con el color,
+  // que es exactamente lo que prohíbe SC 1.4.1. Es `alerta` con el trazo del
+  // punto invertido —punto arriba, asta abajo— para que las dos formas se
+  // distingan de un vistazo y no solo por el color del círculo.
+  informacion: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
   // Los de la tabla, por el mismo motivo: sin ellos no se puede reconstruir.
   filtro: '<path d="M3 5h18l-7 8v6l-4 2v-8Z"/>',
   columnas: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/>',

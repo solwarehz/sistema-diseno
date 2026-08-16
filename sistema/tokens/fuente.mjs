@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.56.0";
+export const VERSION = "1.57.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,29 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.57.0', fecha: '2026-08-16',
+    que: 'R83: nace Mensaje —en flujo y con tono— con su glifo no cromatico · R65: la etiqueta del Interruptor admite marcado · icono informacion, el 46',
+    porque:
+      'R83 · Existia el CSS de los cuatro tonos y NO existia la pieza. Aviso flota, tiene tono y se '
+      + 'va solo; Nota esta en flujo y se queda pero es neutra. Faltaba el tercero: en flujo, se '
+      + 'queda, y con tono. Sin el, cada pantalla que no conociera el apano ajeno volvia a dibujar '
+      + 'su caja a mano — seis mensajes en tres pantallas, medido por Control Administrativos V2.0. '
+      + 'El glifo NO es adorno: el tono se decia solo con color, que es lo que prohibe SC 1.4.1. '
+      + 'Quien no distingue el rojo del ambar no sabe si lo que lee es un fallo o una advertencia. '
+      + 'De los cuatro glifos que pedian, TRES ya existian —visto, alerta y cerrar—; solo faltaba '
+      + 'la i, que entra como icono 46. Su reporte decia que faltaban los cuatro y que el conjunto '
+      + 'tenia 30 iconos: son 45, ahora 46. El glifo va oculto al lector, como todo icono del '
+      + 'sistema, y el canal equivalente es el role. '
+      + 'El role es elegible entre status y alert, con el error interrumpiendo por omision. Los dos '
+      + 'sentidos tienen caso legitimo: un error ya leido que solo se repite no debe volver a '
+      + 'interrumpir, y un aviso de sesion a punto de caducar si. '
+      + 'R65 · la etiqueta del Interruptor era string y no se podia destacar nada dentro. Pasa a '
+      + 'aceptar nodos. El nombre accesible no se resiente porque se calcula del subarbol completo, '
+      + 'y hay prueba de ello; lo que NO cabe ahi es un control, porque el label se lleva el clic.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.56.0', fecha: '2026-08-15',
     que: 'R41: lo deshabilitado no se veia — el boton no tenia NINGUNA regla :disabled',

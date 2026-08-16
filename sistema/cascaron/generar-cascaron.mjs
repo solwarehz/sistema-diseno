@@ -489,10 +489,10 @@ const casosDeUso = `
       <span class="chip chip-info">Informativo</span>
     </div>
     <div class="mensajes">
-      <div class="msj msj-exito"><strong>Se guardó.</strong> 24 registros actualizados.</div>
-      <div class="msj msj-aviso"><strong>Faltan 3 asistencias.</strong> Puedes continuar y completarlas después.</div>
-      <div class="msj msj-error"><strong>No se guardó: falta el DNI.</strong> Complétalo y vuelve a intentar.</div>
-      <div class="msj msj-info"><strong>El periodo se cierra el 31 de marzo.</strong> Después no se podrán editar notas.</div>
+      <div class="msj msj-exito"><span class="msj-ico">${icono('visto', 16)}</span><span class="msj-txt"><strong>Se guardó.</strong> 24 registros actualizados.</span></div>
+      <div class="msj msj-aviso"><span class="msj-ico">${icono('alerta', 16)}</span><span class="msj-txt"><strong>Faltan 3 asistencias.</strong> Puedes continuar y completarlas después.</span></div>
+      <div class="msj msj-error"><span class="msj-ico">${icono('cerrar', 16)}</span><span class="msj-txt"><strong>No se guardó: falta el DNI.</strong> Complétalo y vuelve a intentar.</span></div>
+      <div class="msj msj-info"><span class="msj-ico">${icono('informacion', 16)}</span><span class="msj-txt"><strong>El periodo se cierra el 31 de marzo.</strong> Después no se podrán editar notas.</span></div>
     </div>
     <div class="caso-tokens"><code>exito-*</code> <code>aviso-*</code> <code>error-*</code> <code>info-*</code></div>`
   )}
@@ -4140,7 +4140,7 @@ atencion. Usarlo para algo permanente tiene dos costes: <strong>grita mas de lo 
 <div class="bloque">
   <div class="msj msj-nota"><strong>Como se calcula:</strong> las horas se redondean al bloque de 15 minutos mas cercano.</div>
   <div style="height:12px"></div>
-  <div class="msj msj-aviso">Se envio con 3 faltas sin justificar.</div>
+  <div class="msj msj-aviso"><span class="msj-ico">${icono('alerta', 16)}</span><span class="msj-txt">Se envio con 3 faltas sin justificar.</span></div>
 </div>
 <p class="seccion-sub">Arriba, la nota. Abajo, el aviso. La nota no reclama nada: solo esta.</p>
 
@@ -7022,7 +7022,17 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .fila-demo { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
 .mensajes { display: grid; gap: 8px; margin-top: 12px; }
-.msj { font-size: 13px; padding: 8px 12px; border-radius: 6px; border-left: 3px solid; }
+/* R83 · EL MENSAJE EN FLUJO LLEVA GLIFO. El tono se decia SOLO CON COLOR, que
+   es lo que prohibe SC 1.4.1: quien no distingue el rojo del ambar no sabe si
+   lo que lee es un fallo o una advertencia. El glifo es la señal no cromatica.
+   Va oculto al lector —regla de significado de la iconografia—: para quien usa
+   lector, el canal es el role: status o alert. */
+.msj { display: flex; align-items: flex-start; gap: 8px;
+  font-size: 13px; padding: 8px 12px; border-radius: 6px; border-left: 3px solid; }
+/* El glifo se alinea con la PRIMERA LINEA del texto, no con el centro de la
+   caja: con dos renglones, centrado queda flotando en medio de la nada. */
+.msj-ico { flex: none; margin-top: 1px; }
+.msj-txt { min-width: 0; }
 /* NOTA PERMANENTE. Los cuatro de arriba son ESTADOS: dicen que algo paso.
    Esta no dice nada, explica —como se calcula un dato, una advertencia legal
    que siempre esta ahi—, y por eso no puede vestirse de aviso.

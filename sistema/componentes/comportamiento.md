@@ -120,6 +120,17 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 ---
 
+## Mensaje en flujo
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R83, v1.57.0) Existe `Mensaje`: mensaje **en flujo y con tono**, el hueco que faltaba entre los otros dos. `Aviso` flota, tiene tono y **se va solo**. `Nota` está en flujo y se queda, pero es **neutra**: explica, no señala. `Mensaje` está en flujo, se queda y tiene tono. Existía el CSS de los cuatro tonos y no existía la pieza, así que cada pantalla dibujaba su caja a mano — **seis mensajes en tres pantallas**, medido por Control Administrativos V2.0. |
+| **2** | **Obligatorio.** (R83, v1.57.0) Cada intención lleva su **glifo**, y los cuatro son distintos: `visto` ✓, `alerta` !, `cerrar` ✕ e `informacion` i. Es la señal **no cromática** que exige SC 1.4.1: sin ella, quien no distingue el rojo del ámbar no sabe si lo que lee es un fallo o una advertencia. El glifo va **oculto al lector** —regla de significado de la iconografía—; para quien usa lector, el canal equivalente es el `role`. |
+| **3** | **Obligatorio.** (R83, v1.57.0) El `role` es **elegible**: `status` espera turno, `alert` interrumpe. Por omisión el error interrumpe y el resto espera. Se puede forzar en los dos sentidos, y hay casos legítimos para ambos: un error ya leído que solo se repite no debe volver a interrumpir, y un aviso de que la sesión caduca en un minuto sí. |
+| **4** | Del proyecto: qué dice el mensaje y cuándo aparece. |
+
+---
+
 ## Lo deshabilitado
 
 | | Regla |

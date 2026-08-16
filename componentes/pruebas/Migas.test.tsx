@@ -117,16 +117,32 @@ describe('Icono', () => {
     expect(container.querySelector('svg')).toHaveAttribute('width', '32');
   });
 
-  it('están los 45, los mismos que el catálogo', () => {
+  it('están los 46, los mismos que el catálogo', () => {
     // 42 desde la v1.37.0: subir (R35) y la pareja ojo/ojoTachado (contraseña).
     // 45 desde la v1.40.0, los tres de la carga de PDF: `documento` (la hoja en
     // blanco de cada archivo puesto), `papelera` (el tachito, en la línea del
     // nombre) y `pdf` (la hoja con renglones, del botón). Usar `libro` habría
     // enseñado dos significados con el mismo dibujo.
-    expect(NOMBRES_ICONO).toHaveLength(45);
-    for (const n of ['candado', 'lupa', 'cerrar', 'visto', 'alerta', 'subir', 'documento', 'papelera', 'pdf']) {
+    // 46 desde la v1.57.0: `informacion` (R83), el cuarto glifo de intención.
+    // Los otros tres ya estaban —visto, alerta y cerrar—, y sin este un mensaje
+    // informativo quedaba dicho SOLO con el color (SC 1.4.1).
+    expect(NOMBRES_ICONO).toHaveLength(46);
+    for (const n of ['candado', 'lupa', 'cerrar', 'visto', 'alerta', 'informacion', 'subir', 'documento', 'papelera', 'pdf']) {
       expect(NOMBRES_ICONO).toContain(n);
     }
+  });
+
+  /* R83 · Los cuatro glifos de intención tienen que ser DISTINTOS entre sí: si
+     dos comparten trazo, la señal no cromática deja de distinguir nada y todo
+     el argumento de SC 1.4.1 se cae. */
+  it('R83 · los cuatro glifos de intención son cuatro dibujos distintos', () => {
+    const { container, rerender } = render(<Icono nombre="visto" />);
+    const trazos = new Set<string>();
+    for (const n of ['visto', 'alerta', 'cerrar', 'informacion'] as const) {
+      rerender(<Icono nombre={n} />);
+      trazos.add(container.querySelector('svg')!.innerHTML);
+    }
+    expect(trazos.size).toBe(4);
   });
 });
 

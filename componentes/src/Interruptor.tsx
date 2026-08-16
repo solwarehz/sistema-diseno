@@ -14,8 +14,18 @@
 import { useId } from 'react';
 
 export type InterruptorProps = {
-  etiqueta: string;
-  ayuda?: string;
+  /**
+   * R65 · Admite marcado, no solo texto. Era `string` y no se podía destacar
+   * nada dentro: ni el nombre del privilegio, ni un dato del que depende.
+   *
+   * El nombre accesible **no se resiente**: sale de `aria-labelledby` apuntando
+   * a este nodo, y el nombre accesible de un elemento se calcula de su subárbol
+   * completo, así que un `<strong>` dentro se lee igual. Lo que NO cabe aquí es
+   * un control —un enlace o un botón dentro de la etiqueta de un interruptor no
+   * se puede alcanzar, porque el `<label>` se lleva el clic—.
+   */
+  etiqueta: React.ReactNode;
+  ayuda?: React.ReactNode;
   activo: boolean;
   /** Obligatorio: un interruptor que no hace nada al instante no es esto. */
   onCambio: (activo: boolean) => void;

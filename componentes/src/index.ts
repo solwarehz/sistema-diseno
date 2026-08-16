@@ -31,6 +31,7 @@ export { Tarjeta, TarjetaAccion, TarjetaPersona } from './Tarjeta';
 export { Horario, escribirHora, type BloqueHorario } from './Horario';
 export { SelectorBusqueda, type OpcionBusqueda } from './SelectorBusqueda';
 export { Nota } from './Nota';
+export { Mensaje, type IntencionMensaje } from './Mensaje';
 export { MarcoApp, type GrupoNav, type OpcionNav } from './MarcoApp';
 export { MenuUsuario, type Tema } from './MenuUsuario';
 export { MarcaMenu } from './MarcaMenu';
