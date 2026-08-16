@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.59.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.60.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -711,11 +711,12 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .bloque, .app-main { min-width: 0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TABLA DE DATOS — 82 reglas · clases .tb-*
+   TABLA DE DATOS — 83 reglas · clases .tb-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tabla-simple, .tb-sub{ display: block; overflow-x: auto; }
 .tb-envoltura > .tabla-simple{ display: table; width: 100%; min-width: 520px; }
+.tb-envoltura > .tabla-simple.tabla-libre{ min-width: 0; }
 .tb-barra{ display: flex; align-items: flex-end; justify-content: space-between;
   gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
 .tb-barra-izq, .tb-barra-der{ display: flex; align-items: flex-end; gap: 8px; flex-wrap: wrap; }
@@ -828,10 +829,11 @@ select.tb-f{ padding-right: 24px; background-position: right 7px center; backgro
 .tb-sub tbody tr:hover{ background: var(--fondo-tarjeta); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TABLA SIMPLE — 10 reglas · clases .tabla-*
+   TABLA SIMPLE — 11 reglas · clases .tabla-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tabla-simple, .tb-sub{ display: block; overflow-x: auto; }
+.tabla-simple.tabla-libre{ min-width: 0; }
 .tabla-simple{ width: 100%; border-collapse: collapse; font-size: 13px;
   background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 6px; }
 .tabla-simple th{ background: var(--fondo-encabezado); text-align: left;

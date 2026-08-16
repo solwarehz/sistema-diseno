@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.59.0";
+export const VERSION = "1.60.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,33 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.60.0', fecha: '2026-08-16',
+    que: 'R85 P3: el suelo de 520px de la tabla se puede quitar DICIENDOLO, y es contrato verificado',
+    porque:
+      'R85 · P3, la que marcaron en rojo. Control Administrativos lo pidio con el argumento '
+      + 'correcto, y el argumento es el valor del pedido: su apano era sacar la tabla FUERA de '
+      + '.tb-envoltura para que no heredara el min-width de 520px, y eso depende de un detalle '
+      + 'interno de nuestra cascada. Textual: «el dia que cambieis ese selector, se nos rompe y no '
+      + 'nos vamos a enterar». Un contrato que se descubre leyendo la hoja no es un contrato. '
+      + 'La respuesta NO es quitar el suelo: 520px es un buen valor por omision, porque una tabla '
+      + 'de datos por debajo de eso apelmaza las columnas y se lee peor estrujada que '
+      + 'desplazandola. Para LEER, desplazar esta bien. Para CONFIGURAR no —se pierde de vista la '
+      + 'fila mientras se pulsa la columna— y esa es decision de quien monta la pantalla. '
+      + 'Asi que se renuncia al suelo diciendolo: clase tabla-libre. '
+      + 'Y se verifica en el candado de la cascada, a los once anchos y en las DOS caras: que '
+      + 'tabla-libre reciba 0, y que sin declarar nada siga recibiendo 520. La segunda importa '
+      + 'igual — si el suelo por omision desapareciera sin querer, tabla-libre seguiria '
+      + '«funcionando» y nadie se enteraria de que las tablas de datos perdieron su suelo. '
+      + 'La regla nacio sin viajar: el extractor solo se lleva lo que el catalogo usa, y nadie la '
+      + 'usaba. El candado la saco en rojo a los once anchos antes de verla verde. '
+      + 'Se corrige ademas una premisa suya: dijeron que cualquier tabla dentro de .tb-envoltura '
+      + 'obliga a desplazamiento lateral. La tabla de datos emite .tb, no .tabla-simple, y NUNCA '
+      + 'tuvo suelo. El de 520 solo alcanza a una .tabla-simple puesta a proposito dentro de la '
+      + 'envoltura.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.59.0', fecha: '2026-08-16',
     que: 'R69: nace Segmentado — dos o tres opciones excluyentes en una linea, con el ejemplo de cada nivel',

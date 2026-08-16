@@ -446,6 +446,47 @@ const AFIRMACIONES = [
     },
   },
   {
+    id: 'ANCHO-LIBRE',
+    que: 'una tabla puede DECLARAR que no lleva ancho minimo, y se le respeta',
+    /**
+     * P3 de R85, y existe por lo que dijeron al pedirlo:
+     *
+     *   «Nuestro apaño de hoy funciona y no nos gusta: usamos .tabla-simple
+     *    suelta, fuera de .tb-envoltura, porque así no arrastra el min-width.
+     *    Depende de un detalle interno de vuestra cascada. El día que cambiéis
+     *    ese selector, se nos rompe y no nos vamos a enterar.»
+     *
+     * Tienen razon, y la respuesta no es «pues no lo cambiamos»: es que deje de
+     * ser un descubrimiento. `tabla-libre` lo dice, y esto lo comprueba a los
+     * once anchos resolviendo la cascada de verdad — asi el dia que alguien
+     * mueva, reordene o reescriba ese selector, el candado sale en rojo AQUI y
+     * no en su producto.
+     *
+     * Se comprueban las DOS caras, y la segunda importa igual: si el suelo por
+     * omision desapareciera sin querer, `tabla-libre` seguiria «funcionando» y
+     * nadie se enteraria de que se perdio el suelo de las tablas de datos.
+     */
+    revisar(reglas) {
+      const fallos = [];
+      const envuelta = (extra = []) => [
+        elem('div', ['bloque']),
+        elem('div', ['tb-envoltura']),
+        elem('table', ['tabla-simple', ...extra]),
+      ];
+      for (const w of ANCHOS) {
+        const libre = resolver(reglas, envuelta(['tabla-libre']), 'min-width', w);
+        if (!libre || parseFloat(libre.valor) !== 0) {
+          fallos.push(`  a ${String(w).padStart(4)}px .tabla-libre recibe min-width: ${libre ? libre.valor : 'NINGUNA REGLA'} (se esperaba 0)`);
+        }
+        const suelo = resolver(reglas, envuelta(), 'min-width', w);
+        if (!suelo || parseFloat(suelo.valor) !== 520) {
+          fallos.push(`  a ${String(w).padStart(4)}px la tabla SIN declarar pierde el suelo: ${suelo ? suelo.valor : 'NINGUNA REGLA'} (se esperaba 520px)`);
+        }
+      }
+      return fallos;
+    },
+  },
+  {
     id: 'OCULTABLE',
     que: 'toda clase que fija display se puede seguir ocultando con [hidden]',
     /**

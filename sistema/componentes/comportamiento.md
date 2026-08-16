@@ -26,6 +26,17 @@ memoria de nadie.
 
 ---
 
+## Tabla simple · ancho mínimo
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R85 · P3, v1.60.0) Dentro de `.tb-envoltura`, una `.tabla-simple` lleva un **suelo de 520 px**. Es un buen valor por omisión: por debajo, las columnas se apelmazan y se lee peor estrujada que desplazándola. |
+| **2** | **Obligatorio.** (R85 · P3, v1.60.0) Se **renuncia al suelo diciéndolo**: la clase `tabla-libre`. Para **leer**, desplazar está bien; para **configurar** no —se pierde de vista la fila mientras se pulsa la columna—, y ésa es decisión de quien monta la pantalla, no del sistema. |
+| **3** | **Obligatorio.** (R85 · P3, v1.60.0) Es **contrato, no un descubrimiento**. Lo pidieron así con razón: su apaño era sacar la tabla fuera de `.tb-envoltura` para no heredar el suelo, y eso depende de un detalle interno de la cascada — «el día que cambiéis ese selector, se nos rompe y no nos vamos a enterar». El candado de la cascada lo comprueba **a los once anchos y en las dos caras**: que `tabla-libre` reciba 0, **y** que sin declarar nada siga recibiendo 520. |
+| **4** | Del proyecto: que las celdas puedan encoger. Sin suelo, el desbordamiento es suyo. |
+
+---
+
 ## Tabla de datos
 
 Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.

@@ -2367,6 +2367,32 @@ configuración y descarga CSV.</p>
 </table>
 <p class="pag-intro" style="margin-top:12px">Las dos <strong>comparten el lenguaje visual</strong>. Si no lo compartieran, dos tablas en la misma pantalla parecerían de dos productos distintos.</p>
 
+<h3 class="sub-seccion">El ancho mínimo, y cómo se renuncia a él</h3>
+<p class="seccion-sub">Dentro de la envoltura deslizante, una tabla simple lleva un <strong>suelo de 520&nbsp;px</strong>.
+Es un buen valor por omisión: por debajo, las columnas se apelmazan y se lee peor estrujada que desplazándola.</p>
+<p class="pag-intro">Pero <strong>para configurar no vale</strong>: se pierde de vista la fila mientras se pulsa
+la columna. Esa es una decisión de quien monta la pantalla, así que se puede renunciar al suelo — <strong>diciéndolo</strong>,
+con <code>tabla-libre</code>, y no sacando la tabla fuera de la envoltura para que no lo herede.</p>
+<div class="bloque">
+  <div class="tb-envoltura">
+    <table class="tabla-simple tabla-libre">
+      <thead><tr><th>Grupo</th><th>Ver</th><th>Editar</th><th>Crear</th></tr></thead>
+      <tbody>
+        <tr><td>Organigrama</td><td>Sí</td><td>Sí</td><td class="motivo">No</td></tr>
+        <tr><td>Locales</td><td>Sí</td><td class="motivo">No</td><td class="motivo">No</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td>Sin declarar nada, el suelo son <strong>520&nbsp;px</strong> y la envoltura desplaza. Para <strong>leer</strong> está bien.</td></tr>
+    <tr><td class="num">2</td><td>Con <code>tabla-libre</code> <strong>no hay suelo</strong>. La contrapartida es de quien la usa: las celdas tienen que poder encoger.</td></tr>
+    <tr><td class="num">3</td><td>Es <strong>contrato</strong>, no un descubrimiento: el candado de la cascada lo comprueba a los once anchos, en las dos caras — que <code>tabla-libre</code> reciba 0 <em>y</em> que sin declarar nada siga recibiendo 520.</td></tr>
+    <tr><td class="num">4</td><td>La tabla de datos <strong>no está afectada</strong>: emite <code>.tb</code>, no <code>.tabla-simple</code>, y nunca tuvo suelo.</td></tr>
+  </tbody>
+</table>
+
 <h3 class="sub-seccion">Densidad</h3>
 <p class="pag-intro">Dos alturas de fila: <strong>cómoda 34px</strong> y <strong>compacta 28px</strong>.
 Se cambia en el menú de usuario, junto al tema.</p>
@@ -5655,6 +5681,24 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
    a ser tabla plena a todo lo ancho. */
 .tabla-simple, .tb-sub { display: block; overflow-x: auto; }
 .tb-envoltura > .tabla-simple { display: table; width: 100%; min-width: 520px; }
+/* P3 (R85) · EL SUELO DE 520px SE PUEDE QUITAR, Y SE QUITA DICIENDOLO.
+   Lo pidio Control Administrativos y el motivo es bueno: su apano era sacar la
+   tabla FUERA de .tb-envoltura para que no heredara el suelo, y eso depende de
+   un detalle interno de esta cascada. El dia que este selector cambie, se les
+   rompe y no se enteran. Un contrato que se descubre leyendo la hoja no es un
+   contrato.
+   520px es un suelo BUENO por omision: una tabla de datos por debajo de eso
+   apelmaza las columnas y se lee peor desplazandola que estrujandola. Pero para
+   CONFIGURAR no vale —se pierde de vista la fila mientras se pulsa la columna—
+   y esa es una decision del que monta la pantalla, no nuestra.
+   Con tabla-libre la tabla NO tiene suelo, y la contrapartida es suya: las
+   celdas tienen que poder encoger. Ahi es donde paga el flex 1 1 0 con
+   min-width 0 del Segmentado.
+   Va en las dos posiciones a proposito: dentro de la envoltura gana por
+   especificidad (0,3,0 contra 0,2,0), y suelta deja dicho que tampoco lo tiene
+   —que hoy es cierto por el display:block de arriba, pero por accidente—. */
+.tabla-simple.tabla-libre { min-width: 0; }
+.tb-envoltura > .tabla-simple.tabla-libre { min-width: 0; }
 /* Los hijos de una rejilla o de un flex no bajan de su contenido si no se les
    dice: es el mismo motivo por el que las muestras de color desbordaban. */
 .cat-cuerpo, .pagina, .bloque, .app-main { min-width: 0; }

@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.59.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.60.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.59.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.60.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -1650,6 +1650,24 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
    a ser tabla plena a todo lo ancho. */
 .tabla-simple, .tb-sub { display: block; overflow-x: auto; }
 .tb-envoltura > .tabla-simple { display: table; width: 100%; min-width: 520px; }
+/* P3 (R85) · EL SUELO DE 520px SE PUEDE QUITAR, Y SE QUITA DICIENDOLO.
+   Lo pidio Control Administrativos y el motivo es bueno: su apano era sacar la
+   tabla FUERA de .tb-envoltura para que no heredara el suelo, y eso depende de
+   un detalle interno de esta cascada. El dia que este selector cambie, se les
+   rompe y no se enteran. Un contrato que se descubre leyendo la hoja no es un
+   contrato.
+   520px es un suelo BUENO por omision: una tabla de datos por debajo de eso
+   apelmaza las columnas y se lee peor desplazandola que estrujandola. Pero para
+   CONFIGURAR no vale —se pierde de vista la fila mientras se pulsa la columna—
+   y esa es una decision del que monta la pantalla, no nuestra.
+   Con tabla-libre la tabla NO tiene suelo, y la contrapartida es suya: las
+   celdas tienen que poder encoger. Ahi es donde paga el flex 1 1 0 con
+   min-width 0 del Segmentado.
+   Va en las dos posiciones a proposito: dentro de la envoltura gana por
+   especificidad (0,3,0 contra 0,2,0), y suelta deja dicho que tampoco lo tiene
+   —que hoy es cierto por el display:block de arriba, pero por accidente—. */
+.tabla-simple.tabla-libre { min-width: 0; }
+.tb-envoltura > .tabla-simple.tabla-libre { min-width: 0; }
 /* Los hijos de una rejilla o de un flex no bajan de su contenido si no se les
    dice: es el mismo motivo por el que las muestras de color desbordaban. */
 .cat-cuerpo, .pagina, .bloque, .app-main { min-width: 0; }
@@ -3616,7 +3634,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.59.0</option></select></label>
+          <select class="campo cg-in"><option>v1.60.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3704,8 +3722,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.59.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.59.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.60.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.60.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -8302,6 +8320,32 @@ configuración y descarga CSV.</p>
 </table>
 <p class="pag-intro" style="margin-top:12px">Las dos <strong>comparten el lenguaje visual</strong>. Si no lo compartieran, dos tablas en la misma pantalla parecerían de dos productos distintos.</p>
 
+<h3 class="sub-seccion">El ancho mínimo, y cómo se renuncia a él</h3>
+<p class="seccion-sub">Dentro de la envoltura deslizante, una tabla simple lleva un <strong>suelo de 520&nbsp;px</strong>.
+Es un buen valor por omisión: por debajo, las columnas se apelmazan y se lee peor estrujada que desplazándola.</p>
+<p class="pag-intro">Pero <strong>para configurar no vale</strong>: se pierde de vista la fila mientras se pulsa
+la columna. Esa es una decisión de quien monta la pantalla, así que se puede renunciar al suelo — <strong>diciéndolo</strong>,
+con <code>tabla-libre</code>, y no sacando la tabla fuera de la envoltura para que no lo herede.</p>
+<div class="bloque">
+  <div class="tb-envoltura">
+    <table class="tabla-simple tabla-libre">
+      <thead><tr><th>Grupo</th><th>Ver</th><th>Editar</th><th>Crear</th></tr></thead>
+      <tbody>
+        <tr><td>Organigrama</td><td>Sí</td><td>Sí</td><td class="motivo">No</td></tr>
+        <tr><td>Locales</td><td>Sí</td><td class="motivo">No</td><td class="motivo">No</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td>Sin declarar nada, el suelo son <strong>520&nbsp;px</strong> y la envoltura desplaza. Para <strong>leer</strong> está bien.</td></tr>
+    <tr><td class="num">2</td><td>Con <code>tabla-libre</code> <strong>no hay suelo</strong>. La contrapartida es de quien la usa: las celdas tienen que poder encoger.</td></tr>
+    <tr><td class="num">3</td><td>Es <strong>contrato</strong>, no un descubrimiento: el candado de la cascada lo comprueba a los once anchos, en las dos caras — que <code>tabla-libre</code> reciba 0 <em>y</em> que sin declarar nada siga recibiendo 520.</td></tr>
+    <tr><td class="num">4</td><td>La tabla de datos <strong>no está afectada</strong>: emite <code>.tb</code>, no <code>.tabla-simple</code>, y nunca tuvo suelo.</td></tr>
+  </tbody>
+</table>
+
 <h3 class="sub-seccion">Densidad</h3>
 <p class="pag-intro">Dos alturas de fila: <strong>cómoda 34px</strong> y <strong>compacta 28px</strong>.
 Se cambia en el menú de usuario, junto al tema.</p>
@@ -10671,6 +10715,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.60.0 <span class="cam-fecha">2026-08-16</span></h3>
+<p class="pag-intro"><strong>R85 P3: el suelo de 520px de la tabla se puede quitar DICIENDOLO, y es contrato verificado.</strong> R85 · P3, la que marcaron en rojo. Control Administrativos lo pidio con el argumento correcto, y el argumento es el valor del pedido: su apano era sacar la tabla FUERA de .tb-envoltura para que no heredara el min-width de 520px, y eso depende de un detalle interno de nuestra cascada. Textual: «el dia que cambieis ese selector, se nos rompe y no nos vamos a enterar». Un contrato que se descubre leyendo la hoja no es un contrato. La respuesta NO es quitar el suelo: 520px es un buen valor por omision, porque una tabla de datos por debajo de eso apelmaza las columnas y se lee peor estrujada que desplazandola. Para LEER, desplazar esta bien. Para CONFIGURAR no —se pierde de vista la fila mientras se pulsa la columna— y esa es decision de quien monta la pantalla. Asi que se renuncia al suelo diciendolo: clase tabla-libre. Y se verifica en el candado de la cascada, a los once anchos y en las DOS caras: que tabla-libre reciba 0, y que sin declarar nada siga recibiendo 520. La segunda importa igual — si el suelo por omision desapareciera sin querer, tabla-libre seguiria «funcionando» y nadie se enteraria de que las tablas de datos perdieron su suelo. La regla nacio sin viajar: el extractor solo se lleva lo que el catalogo usa, y nadie la usaba. El candado la saco en rojo a los once anchos antes de verla verde. Se corrige ademas una premisa suya: dijeron que cualquier tabla dentro de .tb-envoltura obliga a desplazamiento lateral. La tabla de datos emite .tb, no .tabla-simple, y NUNCA tuvo suelo. El de 520 solo alcanza a una .tabla-simple puesta a proposito dentro de la envoltura.</p>
+
 
 
 <h3 class="sub-seccion">v1.59.0 <span class="cam-fecha">2026-08-16</span></h3>
