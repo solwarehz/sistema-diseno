@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.58.0";
+export const VERSION = "1.58.1";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,27 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.58.1', fecha: '2026-08-16',
+    que: 'La memoria se pone al dia: el registro llevaba diez versiones sin reescribirse, y los pedidos de tres dias no existian en el repositorio',
+    porque:
+      'Dos huecos de rastro, y los dos avisados por el propio repositorio. '
+      + '01-estado.md declaraba v1.48.0 con el sistema en v1.58.0. El archivo lleva escrito «se '
+      + 'reescribe SIEMPRE» y contaba dos veces que no se habia hecho: esta es la tercera, y es '
+      + 'mia. Se reescribe entero con los numeros REGENERADOS, no repetidos de memoria, que es lo '
+      + 'que el propio archivo exige. '
+      + 'Y los pedidos de R41, R50, R58, R59, R65, R66, R70 y R81 a R84 llegaron por chat y NINGUNO '
+      + 'quedo escrito. Un requerimiento que solo vive en una conversacion no se clona: manana '
+      + 'alguien lee que el role de Mensaje es elegible y no sabe por que. Queda en peticiones/ con '
+      + 'lo pedido, lo entregado, lo corregido de sus premisas y lo que falta. '
+      + 'Se anaden dos decisiones. D-23: publicar no es subir a main, y deja de depender de '
+      + 'acordarse. D-24: los peores defectos son los que el catalogo NO PUEDE ensenar — cinco '
+      + 'pasaron por los once candados en verde entre el 12 y el 16 de agosto, y la leccion es que '
+      + 'un candado en verde no dice que el componente funcione, dice que lo que ese candado mira '
+      + 'esta bien.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.58.0', fecha: '2026-08-16',
     que: 'R66: el Interruptor gana CERRADO POR REGLA, con su motivo · y el deshabilitado por fin se ve',

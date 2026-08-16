@@ -520,3 +520,60 @@ muscular.
 
 **Lo revertiría:** que el responsable prefiera el bloque completo centrado
 tras usarlo — es un cambio pequeño y localizado en las tres mismas reglas.
+
+---
+
+## D-23 · Publicar no es subir a `main`, y deja de depender de acordarse
+
+**Decisión.** Una versión se publica con `npm run publicar -- --publicar`, que
+pone la etiqueta, crea la publicación con el ZIP adjunto y **poda los ZIP de las
+versiones anteriores**. Solo la última conserva el suyo.
+
+**Por qué.** El área de sistemas instala de dos formas y las dos tienen que
+funcionar siempre: por etiqueta con npm, y bajando el ZIP. Eran tres pasos
+sueltos y fallaron: las etiquetas se cortaron en **v1.38.0** con el sistema en
+v1.48.0 —doce versiones sin etiquetar— y `ACTUALIZAR.md` mandaba instalar
+`#v1.48.0`, que **no existía**. Nadie podía actualizar y nada lo comprobaba.
+
+Es el mismo defecto que la lista de componentes del empaquetador y la lista de
+candados del `CLAUDE.md`: **un paso que depende de acordarse**.
+
+**Lo que la poda NO toca.** Etiquetas y publicaciones se quedan. Borrarlas
+rompería el `npm install` de una versión vieja, que es lo contrario de lo que se
+quiere garantizar. Un ZIP borrado se reconstruye desde su etiqueta.
+
+**Y la etiqueta no se mueve.** Si ya existe apuntando a otro commit, se sube de
+versión. Pasó con la v1.51.0 —el manual salió sin la sección de descarga— y se
+corrigió sacando la v1.51.1, no moviendo la etiqueta: una etiqueta movida
+entrega cosas distintas según cuándo se baje. Es el defecto abierto de `v1.10.5`.
+
+---
+
+## D-24 · Los peores defectos son los que el catálogo no puede enseñar
+
+**Lo observado.** Entre el 12 y el 16 de agosto, cinco defectos graves pasaron
+por todos los candados en verde:
+
+- El **aviso nacía invisible** y no se veía en ningún producto (R50).
+- El **botón deshabilitado** se pintaba igual que uno activo (R41).
+- El **interruptor deshabilitado**, lo mismo, y sus reglas existían pero pedían
+  un atributo que el componente no emite.
+- La **tarjeta pulsable** salía con la fuente del navegador (R56).
+- El **título de la tarjeta** salía sin estilo (R58 interno).
+
+**Qué tienen en común.** Ninguno se puede ver en el catálogo. Allí el aviso lo
+hace visible el guion de la página, nadie deshabilita un botón de muestra, y la
+hoja se escribió mirando un marcado que el componente no emite.
+
+**Consecuencia para el diseño de candados.** El candado de la promesa compara la
+cascada **sobre el mismo marcado**: si el estado no existe en ninguno de los dos
+lados, no hay nada que comparar, y sale verde. `verificar-elemento` cerró la
+parte que se puede leer del texto —qué elemento emite cada uno—, y encontró
+cinco divergencias más el día que se escribió.
+
+**Lo que queda.** Comparar **comportamiento y estados**, no marcado. Pide montar
+los componentes en un navegador de verdad dentro del contenedor, y eso es
+autorización del responsable. Está declarado en `04-pendientes.md`.
+
+**La lección más incómoda:** que un candado esté en verde no significa que el
+componente funcione. Significa que **lo que el candado mira** está bien.

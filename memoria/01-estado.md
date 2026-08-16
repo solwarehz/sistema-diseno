@@ -1,9 +1,9 @@
 # Estado del proyecto
 
-**Última actualización:** 11 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.48.0** — el selector en solo lectura
-mientras se consulta, y la foto de la persona con una sola prop; antes, el campo
-y el selector alineados con el catálogo
+**Última actualización:** 16 de agosto de 2026
+**Versión del sistema:** MMI-DS **v1.58.1** — el interruptor cerrado por regla,
+y lo deshabilitado por fin se ve; antes, el aviso que nacía invisible y no se
+veía en ningún producto
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -17,10 +17,13 @@ y el selector alineados con el catálogo
 
 ## Dónde estamos, en una frase
 
-El sistema es un **paquete que un producto instala y consume** —35 funciones de
-componente, la hoja que viaja, once candados, 324 pruebas— y el candado de la
-promesa ya no mira una lista escrita a mano: **recorre todo lo que el catálogo
-pinta**, 832 elementos, y en dos días ha sacado tres defectos que nadie veía.
+El sistema es un **paquete que un producto instala y consume** —31 componentes
+publicados, la hoja que viaja, **once candados**, 376 pruebas— y esta semana ha
+aprendido algo incómodo: los peores defectos no estaban en lo que el catálogo
+enseña mal, sino en **lo que el catálogo no puede enseñar**. El aviso que nacía
+invisible y el botón que no se veía apagado pasaron por todos los candados en
+verde. Nació el candado del elemento para cerrar parte de esa familia, y el
+resto está declarado abajo.
 
 ---
 
@@ -34,13 +37,13 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` en Docker |
-| Componentes de React | ✅ | **324 pruebas en 21 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · 725 reglas de 1210 · **529 clases, 0 huérfanas** |
-| Catálogo navegable | ✅ | `cascaron/index.html` · 50 páginas · lo genera `generar-cascaron.mjs` |
-| Iconografía | ✅ | 45 trazos en `iconos.mjs`, React real |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.48.0.zip` · 44 archivos |
+| Componentes de React | ✅ | **376 pruebas en 22 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · 749 reglas de 1233 · **543 clases, 0 huérfanas** |
+| Catálogo navegable | ✅ | `cascaron/index.html` · 51 páginas · lo genera `generar-cascaron.mjs` |
+| Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.58.1.zip` · **52 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
-| Manual de aplicaciones | ✅ | **v1.2.0 sobre MMI-DS v1.48.0** — llevaba 37 versiones sin tocarse |
+| Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
 | Guía de actualización | ✅ | `ACTUALIZAR.md` con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -268,6 +271,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 | huérfanas (en `extraer.mjs`) | Clase emitida sin regla | ✅ |
 | `verificar-cascada` | Lo que NO se escribió, a once anchos | ✅ |
 | `verificar-promesa` | Que lo entregado no se vea como lo enseñado | ✅ |
+| `verificar-elemento` | Que el catálogo enseñe un elemento y el componente emita otro | ✅ reproduciendo R56 |
 | ESLint | El atributo `style`, el hex crudo, `outline:none` | ✅ el mismo día: cazó una comilla invertida que rompía el generador |
 | `tsc --noEmit` | Tipos | ✅ |
 
@@ -278,16 +282,19 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.48.0
+Versión                      1.58.1
 Tokens semánticos                56   + 5 de marca
-Pares de contraste              178   (138 bloqueantes, 0 fallos en ambos modos)
-Pruebas                         324   en 21 archivos
-Reglas que viajan               707   de 1192 · 516 clases, 0 huérfanas
-Candado de la promesa           832   elementos · 171.025 propiedades
+Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
+Pruebas                         376   en 22 archivos
+Reglas que viajan               749   de 1233 · 543 clases, 0 huérfanas
+Candado de la promesa           894   elementos · 183.836 propiedades
                                       a 5 anchos (1440, 1024, 900, 700, 390)
-                                      + 29 estados fijados a mano
-Iconos                           45
-Páginas del catálogo             49
+Candado del elemento            145   clases comparadas · 5 divergencias
+                                      DECLARADAS · 100 las pinta el guion
+Contrato de comportamiento      127   reglas · 107 obligatorias · 5 PENDIENTE
+Componentes publicados           31   35 módulos viajan en el paquete
+Iconos                           46
+Páginas del catálogo             51
 ```
 
 ```powershell

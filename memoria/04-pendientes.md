@@ -202,3 +202,68 @@ dispositivos está a medias.
 Si el avatar va a mostrar fotos de **estudiantes menores de edad**, eso no es
 decisión de interfaz: es de dirección y con consentimiento por escrito. El
 sistema entrega el componente; a qué caras se aplica, no.
+
+---
+
+## Aceptado y SIN HACER — Control Administrativos V2.0, 2026-08-16
+
+Respuesta razonada en
+[`../peticiones/2026-08-16-control-administrativos-v12.md`](../peticiones/2026-08-16-control-administrativos-v12.md).
+Lo demás de esa tanda se entregó entre la v1.53.2 y la v1.58.0.
+
+**R84 · `OpcionNav` bloqueado.** Una opción de menú que se ve, no se pulsa, y
+dice por qué. **No es `disabled`**: eso sale del tabulador y el lector lo ignora,
+y aquí la razón de ser es que el cliente sepa que la opción existe y que podría
+contratarla. El icono `candado` ya existe, así que eso no bloquea.
+
+Lo que hay que resolver bien es **el caso plegado**: al plegar el lateral
+desaparece el rótulo y el icono es lo único que identifica la opción, así que un
+candado que **sustituya** al icono deja la opción sin identidad. Ese es el
+problema de diseño, y por eso no entró a la carrera.
+
+**R58 · La columna identificadora se va con el desplazamiento horizontal.**
+`position: sticky` sobre la celda, con **fondo propio** —si no, lo que pasa por
+debajo se transparenta—, y **por propiedad explícita**: la columna que identifica
+cambia según la tabla, así que no puede ser por omisión.
+
+**R59 · El encabezado tampoco se queda fijo al desplazar en vertical.** Se suma
+a R58: sin nombre a la izquierda y sin títulos arriba, la celda no tiene ni fila
+ni columna. Ya estaba declarado como no hecho en el manual §10.
+
+Los dos son lo más grande de la cola y hay que verificarlos **a los once
+anchos**. Su argumento de no resolverlo ellos es correcto y queda registrado:
+CSS propio sobre nuestro marcado se rompe en cuanto cambiamos el árbol, como
+pasó con R49.
+
+---
+
+## Deuda declarada del candado del elemento — 2026-08-13
+
+Cinco divergencias entre lo que el catálogo enseña y lo que el componente emite,
+verificadas a mano y **declaradas dentro de `verificar-elemento.mjs`** con su
+daño real. El candado protege ya de las nuevas; estas cinco esperan. Arreglar
+una es quitar su línea de la lista — y si se arregla y no se quita, el candado
+**también falla**, para que la lista no se convierta en el inventario a mano de
+siempre.
+
+La peor es **`.sel-notas`**: la hoja trae una regla `.sel-notas p` que el
+componente no puede casar nunca, así que la tipografía de la ayuda del selector
+**no se aplica en ningún producto**. Es la única de las cinco que hoy deja algo
+sin estilo en producción.
+
+---
+
+## El hueco que sigue abierto, y es el importante
+
+Tres defectos de la tanda del 14 al 16 de agosto —**R50** (el aviso invisible),
+**R41** (lo deshabilitado) y el `aria-disabled` del interruptor— **pasaron por
+los once candados en verde**.
+
+Son defectos que **el catálogo no puede enseñar**: allí el aviso lo hace visible
+el guion de la página, y nadie deshabilita un botón de muestra. El candado de la
+promesa compara la cascada sobre el mismo marcado, y si el estado no existe en
+ninguno de los dos lados, no hay nada que comparar.
+
+`verificar-elemento` cerró la parte legible del texto. **La otra mitad —comparar
+comportamiento y estados montando los componentes de verdad— necesita un
+navegador sin cabeza en el contenedor, y eso es autorización del responsable.**
