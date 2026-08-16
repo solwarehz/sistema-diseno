@@ -12,6 +12,7 @@
  */
 
 import { useId } from 'react';
+import { Icono } from './Icono';
 
 export type InterruptorProps = {
   /**
@@ -30,10 +31,51 @@ export type InterruptorProps = {
   /** Obligatorio: un interruptor que no hace nada al instante no es esto. */
   onCambio: (activo: boolean) => void;
   deshabilitado?: boolean;
+  /**
+   * R66 · CERRADO POR REGLA — el motivo, y el motivo ES el estado.
+   *
+   * No es `deshabilitado`, y confundirlos tiene consecuencia. Deshabilitado se
+   * lee como «ahora no, vuelve luego»: gris, apagado, temporal. Eso invita a
+   * buscar la forma de encenderlo. Aquí el mensaje es el contrario — **no se va
+   * a poder mientras la regla siga**—, y el caso que lo motiva es de seguridad:
+   * quien reparte privilegios no puede conceder los que él mismo no tiene.
+   *
+   * Y no vale ocultarlo. Si el privilegio no aparece, quien reparte no entiende
+   * por qué su lista no coincide con la de al lado.
+   *
+   * El interruptor **desaparece**: un control que no puede cambiar nunca no es
+   * un interruptor. En su hueco va un candado, del mismo tamaño para que la
+   * columna no baile. Se pasa el motivo, no un booleano, porque un candado sin
+   * explicación se lee como un fallo del sistema.
+   *
+   * Manda sobre `deshabilitado`: lo permanente gana a lo temporal.
+   */
+  cerrado?: string;
 };
 
-export function Interruptor({ etiqueta, ayuda, activo, onCambio, deshabilitado = false }: InterruptorProps) {
+export function Interruptor({
+  etiqueta, ayuda, activo, onCambio, deshabilitado = false, cerrado,
+}: InterruptorProps) {
   const id = useId();
+
+  if (cerrado) {
+    return (
+      // No es <label>: no hay control que etiquetar. Y no lleva role ni
+      // aria-disabled porque no es un control desactivado — es una fila de
+      // texto que dice qué hay y por qué está cerrado. El lector lee el
+      // rótulo y el motivo, que es toda la información que existe.
+      <div className="sw-fila sw-cerrado">
+        <span className="sw-candado">
+          <Icono nombre="candado" tam="control" />
+        </span>
+        <span className="sw-txt">
+          <span className="sw-et">{etiqueta}</span>
+          <span className="sw-motivo">{cerrado}</span>
+        </span>
+      </div>
+    );
+  }
+
   return (
     <label className={`sw-fila${deshabilitado ? ' sw-desh' : ''}`}>
       <button

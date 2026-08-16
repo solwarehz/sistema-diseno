@@ -120,6 +120,18 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 ---
 
+## Interruptor cerrado por regla
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R66, v1.58.0) `cerrado` **no es `deshabilitado`**, y confundirlos tiene consecuencia. Deshabilitado se lee como «ahora no, vuelve luego» — gris, apagado, temporal— y eso **invita a buscar la forma de encenderlo**. Cerrado dice lo contrario: no se va a poder mientras la regla siga. El caso que lo motiva es de seguridad: quien reparte privilegios no puede conceder los que él mismo no tiene. |
+| **2** | **Obligatorio.** (R66, v1.58.0) **El interruptor desaparece** y en su hueco va un candado del mismo tamaño, para que la columna no baile. Un control que no puede cambiar nunca no es un interruptor: dejarlo puesto y apagado es prometer una interacción que no existe. |
+| **3** | **Obligatorio.** (R66, v1.58.0) Se pasa **el motivo**, no un booleano. El motivo es la mitad del estado: un candado sin explicación se lee como un fallo del sistema. Y **la opción no se oculta** — si el privilegio no aparece, quien reparte no entiende por qué su lista no coincide con la de al lado. |
+| **4** | **Obligatorio.** (R66, v1.58.0) `cerrado` **manda sobre `deshabilitado`**: lo permanente gana a lo temporal. |
+| **5** | **Obligatorio.** (R41, v1.58.0) El interruptor **deshabilitado se ve deshabilitado**. Las reglas existían pero pedían el atributo `disabled`, y el componente usa `aria-disabled` a propósito —el nativo sale del tabulador y su estado se vuelve indescubrible con teclado—, así que **no casaban nunca**: conservaba su color de encendido y solo se apagaba el rótulo. |
+
+---
+
 ## Mensaje en flujo
 
 | | Regla |

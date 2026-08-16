@@ -2902,11 +2902,22 @@ ${verCodigo(
 let nSw = 0;
 const sw = (o = {}) => {
   const id = `sw-et-${++nSw}`;
+  // R66 · Cerrado por regla: el interruptor DESAPARECE y en su hueco va el
+  // candado. Un control que no puede cambiar nunca no es un interruptor, y el
+  // motivo es la mitad del estado — sin el, el candado se lee como un fallo.
+  if (o.cerrado) return `
+  <div class="sw-fila sw-cerrado">
+    <span class="sw-candado">${icono('candado', 16)}</span>
+    <span class="sw-txt">
+      <span class="sw-et">${o.etiqueta || 'Tesorería'}</span>
+      <span class="sw-motivo">${o.cerrado}</span>
+    </span>
+  </div>`;
   return `
   <label class="sw-fila${o.desh ? ' sw-desh' : ''}">
     <button type="button" role="switch" class="sw" aria-checked="${o.on ? 'true' : 'false'}"
             aria-labelledby="${id}"
-            ${o.desh ? 'disabled' : ''}${o.demo ? ' data-sw' : ''}><span class="sw-bolita"></span></button>
+            ${o.desh ? "aria-disabled='true'" : ''}${o.demo ? ' data-sw' : ''}><span class="sw-bolita"></span></button>
     <span class="sw-txt">
       <span class="sw-et" id="${id}">${o.etiqueta || 'Notificar por correo'}</span>
       ${o.ayuda ? `<span class="sw-ayuda">${o.ayuda}</span>` : ''}
@@ -2938,6 +2949,7 @@ engaña: la persona lo mueve, se va, y el cambio no se aplicó.</p>
     ${sw({ etiqueta: 'Encendido', on: true })}
     ${sw({ etiqueta: 'Apagado sin permiso', on: false, desh: true, ayuda: 'Solo Dirección puede cambiarlo.' })}
     ${sw({ etiqueta: 'Encendido sin permiso', on: true, desh: true })}
+    ${sw({ etiqueta: 'Tesorería', cerrado: 'Cerrado: no puedes conceder un privilegio que tú no tienes.' })}
   </div>
 </div>
 
@@ -4962,9 +4974,29 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .sw[aria-checked='true'] { background: var(--accion); border-color: var(--accion); }
 .sw[aria-checked='true'] .sw-bolita { transform: translateX(16px);
   background: var(--accion-texto); border-color: var(--accion-texto); }
-.sw:disabled { cursor: not-allowed; background: var(--accion-deshabilitada); border-color: var(--borde-fuerte); }
-.sw:disabled .sw-bolita { background: var(--texto-secundario); border-color: var(--texto-secundario); }
-.sw:disabled[aria-checked='true'] { background: var(--borde-fuerte); border-color: var(--borde-fuerte); }
+/* R41 · Estas tres reglas pedian el atributo disabled, y el componente usa
+   aria-disabled a proposito —disabled sale del tabulador y su estado se vuelve
+   indescubrible con teclado—. O sea que NO casaban nunca: el interruptor
+   deshabilitado conservaba su color de encendido y solo se apagaba el rotulo. */
+.sw:disabled, .sw[aria-disabled='true'] { cursor: not-allowed; background: var(--accion-deshabilitada); border-color: var(--borde-fuerte); }
+.sw:disabled .sw-bolita, .sw[aria-disabled='true'] .sw-bolita { background: var(--texto-secundario); border-color: var(--texto-secundario); }
+.sw:disabled[aria-checked='true'], .sw[aria-disabled='true'][aria-checked='true'] { background: var(--borde-fuerte); border-color: var(--borde-fuerte); }
+
+/* R66 · CERRADO POR REGLA. No es apagado y no es deshabilitado, y confundirlos
+   tiene consecuencia: deshabilitado se lee como «ahora no, vuelve luego» e
+   invita a buscar la forma de encenderlo. Aqui el mensaje es el contrario —no
+   se va a poder, nunca, mientras la regla siga— y quien reparte privilegios
+   necesita entender por que su lista no coincide con la de al lado.
+   Por eso NO se oculta la opcion y por eso el interruptor DESAPARECE: un
+   control que no puede cambiar nunca no es un interruptor. En su hueco va el
+   candado, que ocupa exactamente lo mismo para que la columna no baile.
+   El motivo es la mitad del componente: un candado sin explicacion se lee como
+   un fallo del sistema. */
+.sw-cerrado { cursor: default; }
+.sw-cerrado .sw-et { color: var(--texto-secundario); }
+.sw-candado { width: 40px; height: 24px; flex: none; display: grid; place-items: center;
+  color: var(--texto-pista); }
+.sw-motivo { font-size: 12px; color: var(--texto-secundario); line-height: 1.5; }
 .sw-txt { display: flex; flex-direction: column; gap: 4px; }
 .sw-et { font-size: 15px; }
 .sw-desh .sw-et { color: var(--texto-secundario); }

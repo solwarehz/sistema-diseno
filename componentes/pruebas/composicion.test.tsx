@@ -386,3 +386,47 @@ describe('Interruptor · R65 · la etiqueta admite marcado', () => {
     expect(screen.getByRole('switch', { name: 'Tesorería — cobros y pagos' })).toBeInTheDocument();
   });
 });
+
+describe('Interruptor · R66 · cerrado por regla', () => {
+  /* No es «apagado» ni «deshabilitado». Deshabilitado se lee como «ahora no,
+     vuelve luego» e invita a buscar la forma de encenderlo; aquí el mensaje es
+     el contrario. El caso que lo motiva es de seguridad: quien reparte
+     privilegios no puede conceder los que él mismo no tiene. */
+  it('el interruptor desaparece: lo que no puede cambiar nunca no es un interruptor', () => {
+    const { container } = render(
+      <Interruptor etiqueta="Tesorería" activo={false} onCambio={() => {}}
+        cerrado="No puedes conceder un privilegio que tú no tienes." />
+    );
+    expect(screen.queryByRole('switch')).not.toBeInTheDocument();
+    expect(container.querySelector('.sw-candado')).toBeInTheDocument();
+  });
+
+  it('el motivo se ve SIEMPRE: un candado sin explicación se lee como un fallo', () => {
+    render(
+      <Interruptor etiqueta="Tesorería" activo={false} onCambio={() => {}}
+        cerrado="No puedes conceder un privilegio que tú no tienes." />
+    );
+    expect(screen.getByText('No puedes conceder un privilegio que tú no tienes.')).toBeInTheDocument();
+  });
+
+  it('la opción NO se oculta: el rótulo sigue ahí', () => {
+    render(
+      <Interruptor etiqueta="Tesorería" activo={false} onCambio={() => {}} cerrado="Regla." />
+    );
+    expect(screen.getByText('Tesorería')).toBeInTheDocument();
+  });
+
+  it('manda sobre deshabilitado: lo permanente gana a lo temporal', () => {
+    const { container } = render(
+      <Interruptor etiqueta="Tesorería" activo={false} onCambio={() => {}}
+        deshabilitado cerrado="Regla." />
+    );
+    expect(container.querySelector('.sw-cerrado')).toBeInTheDocument();
+    expect(container.querySelector('.sw-desh')).toBeNull();
+  });
+
+  it('sin `cerrado` sigue siendo el interruptor de siempre', () => {
+    render(<Interruptor etiqueta="Notificar" activo={false} onCambio={() => {}} />);
+    expect(screen.getByRole('switch', { name: 'Notificar' })).toBeInTheDocument();
+  });
+});

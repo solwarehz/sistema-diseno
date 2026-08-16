@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.57.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.58.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.57.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.58.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -1133,9 +1133,29 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .sw[aria-checked='true'] { background: var(--accion); border-color: var(--accion); }
 .sw[aria-checked='true'] .sw-bolita { transform: translateX(16px);
   background: var(--accion-texto); border-color: var(--accion-texto); }
-.sw:disabled { cursor: not-allowed; background: var(--accion-deshabilitada); border-color: var(--borde-fuerte); }
-.sw:disabled .sw-bolita { background: var(--texto-secundario); border-color: var(--texto-secundario); }
-.sw:disabled[aria-checked='true'] { background: var(--borde-fuerte); border-color: var(--borde-fuerte); }
+/* R41 · Estas tres reglas pedian el atributo disabled, y el componente usa
+   aria-disabled a proposito —disabled sale del tabulador y su estado se vuelve
+   indescubrible con teclado—. O sea que NO casaban nunca: el interruptor
+   deshabilitado conservaba su color de encendido y solo se apagaba el rotulo. */
+.sw:disabled, .sw[aria-disabled='true'] { cursor: not-allowed; background: var(--accion-deshabilitada); border-color: var(--borde-fuerte); }
+.sw:disabled .sw-bolita, .sw[aria-disabled='true'] .sw-bolita { background: var(--texto-secundario); border-color: var(--texto-secundario); }
+.sw:disabled[aria-checked='true'], .sw[aria-disabled='true'][aria-checked='true'] { background: var(--borde-fuerte); border-color: var(--borde-fuerte); }
+
+/* R66 · CERRADO POR REGLA. No es apagado y no es deshabilitado, y confundirlos
+   tiene consecuencia: deshabilitado se lee como «ahora no, vuelve luego» e
+   invita a buscar la forma de encenderlo. Aqui el mensaje es el contrario —no
+   se va a poder, nunca, mientras la regla siga— y quien reparte privilegios
+   necesita entender por que su lista no coincide con la de al lado.
+   Por eso NO se oculta la opcion y por eso el interruptor DESAPARECE: un
+   control que no puede cambiar nunca no es un interruptor. En su hueco va el
+   candado, que ocupa exactamente lo mismo para que la columna no baile.
+   El motivo es la mitad del componente: un candado sin explicacion se lee como
+   un fallo del sistema. */
+.sw-cerrado { cursor: default; }
+.sw-cerrado .sw-et { color: var(--texto-secundario); }
+.sw-candado { width: 40px; height: 24px; flex: none; display: grid; place-items: center;
+  color: var(--texto-pista); }
+.sw-motivo { font-size: 12px; color: var(--texto-secundario); line-height: 1.5; }
 .sw-txt { display: flex; flex-direction: column; gap: 4px; }
 .sw-et { font-size: 15px; }
 .sw-desh .sw-et { color: var(--texto-secundario); }
@@ -3525,7 +3545,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.57.0</option></select></label>
+          <select class="campo cg-in"><option>v1.58.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3613,8 +3633,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.57.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.57.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.58.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.58.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -6886,7 +6906,7 @@ engaña: la persona lo mueve, se va, y el cambio no se aplicó.</p>
   <label class="sw-fila sw-desh">
     <button type="button" role="switch" class="sw" aria-checked="false"
             aria-labelledby="sw-et-3"
-            disabled><span class="sw-bolita"></span></button>
+            aria-disabled='true'><span class="sw-bolita"></span></button>
     <span class="sw-txt">
       <span class="sw-et" id="sw-et-3">Apagado sin permiso</span>
       <span class="sw-ayuda">Solo Dirección puede cambiarlo.</span>
@@ -6896,12 +6916,20 @@ engaña: la persona lo mueve, se va, y el cambio no se aplicó.</p>
   <label class="sw-fila sw-desh">
     <button type="button" role="switch" class="sw" aria-checked="true"
             aria-labelledby="sw-et-4"
-            disabled><span class="sw-bolita"></span></button>
+            aria-disabled='true'><span class="sw-bolita"></span></button>
     <span class="sw-txt">
       <span class="sw-et" id="sw-et-4">Encendido sin permiso</span>
       
     </span>
   </label>
+    
+  <div class="sw-fila sw-cerrado">
+    <span class="sw-candado"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+    <span class="sw-txt">
+      <span class="sw-et">Tesorería</span>
+      <span class="sw-motivo">Cerrado: no puedes conceder un privilegio que tú no tienes.</span>
+    </span>
+  </div>
   </div>
 </div>
 
@@ -6911,21 +6939,11 @@ engaña: la persona lo mueve, se va, y el cambio no se aplicó.</p>
     
   <label class="sw-fila">
     <button type="button" role="switch" class="sw" aria-checked="true"
-            aria-labelledby="sw-et-5"
-             data-sw><span class="sw-bolita"></span></button>
-    <span class="sw-txt">
-      <span class="sw-et" id="sw-et-5">Notificar tardanzas por correo</span>
-      <span class="sw-ayuda">Se envía un resumen a las 09:00.</span>
-    </span>
-  </label>
-    
-  <label class="sw-fila">
-    <button type="button" role="switch" class="sw" aria-checked="false"
             aria-labelledby="sw-et-6"
              data-sw><span class="sw-bolita"></span></button>
     <span class="sw-txt">
-      <span class="sw-et" id="sw-et-6">Permitir marcar desde el móvil</span>
-      <span class="sw-ayuda">Requiere estar dentro del colegio.</span>
+      <span class="sw-et" id="sw-et-6">Notificar tardanzas por correo</span>
+      <span class="sw-ayuda">Se envía un resumen a las 09:00.</span>
     </span>
   </label>
     
@@ -6934,7 +6952,17 @@ engaña: la persona lo mueve, se va, y el cambio no se aplicó.</p>
             aria-labelledby="sw-et-7"
              data-sw><span class="sw-bolita"></span></button>
     <span class="sw-txt">
-      <span class="sw-et" id="sw-et-7">Modo compacto en las tablas</span>
+      <span class="sw-et" id="sw-et-7">Permitir marcar desde el móvil</span>
+      <span class="sw-ayuda">Requiere estar dentro del colegio.</span>
+    </span>
+  </label>
+    
+  <label class="sw-fila">
+    <button type="button" role="switch" class="sw" aria-checked="false"
+            aria-labelledby="sw-et-8"
+             data-sw><span class="sw-bolita"></span></button>
+    <span class="sw-txt">
+      <span class="sw-et" id="sw-et-8">Modo compacto en las tablas</span>
       <span class="sw-ayuda">Filas de 28px en vez de 34px.</span>
     </span>
   </label>
@@ -10354,6 +10382,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.58.0 <span class="cam-fecha">2026-08-16</span></h3>
+<p class="pag-intro"><strong>R66: el Interruptor gana CERRADO POR REGLA, con su motivo · y el deshabilitado por fin se ve.</strong> R66 · deshabilitado se lee como «ahora no, vuelve luego»: gris, apagado, temporal. Eso INVITA a buscar la forma de encenderlo. Cerrado dice lo contrario —no se va a poder mientras la regla siga— y el caso que lo motiva es de seguridad: quien reparte privilegios no puede conceder los que el mismo no tiene. El interruptor DESAPARECE y en su hueco va un candado del mismo tamaño, para que la columna no baile: un control que no puede cambiar nunca no es un interruptor, y dejarlo puesto y apagado es prometer una interaccion que no existe. Se pasa EL MOTIVO y no un booleano, porque un candado sin explicacion se lee como un fallo del sistema. Y la opcion no se oculta: si el privilegio no aparece, quien reparte no entiende por que su lista no coincide con la de al lado. DE PASO, R41 otra vez y en el mismo componente. Las reglas del interruptor deshabilitado existian, pero pedian el atributo disabled — y el componente usa aria-disabled a proposito, porque el nativo sale del tabulador y su estado se vuelve indescubrible con teclado—. Asi que NO casaban nunca: conservaba su color de encendido y solo se apagaba el rotulo. Es el tercer sitio donde el mismo defecto aparece con otra cara. Y el catalogo tambien lo pintaba con disabled mientras el componente emitia aria-disabled: corregido, ahora los dos dicen lo mismo.</p>
+
 
 
 <h3 class="sub-seccion">v1.57.0 <span class="cam-fecha">2026-08-16</span></h3>

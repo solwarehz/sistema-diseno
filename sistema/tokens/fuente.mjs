@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.57.0";
+export const VERSION = "1.58.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,30 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.58.0', fecha: '2026-08-16',
+    que: 'R66: el Interruptor gana CERRADO POR REGLA, con su motivo · y el deshabilitado por fin se ve',
+    porque:
+      'R66 · deshabilitado se lee como «ahora no, vuelve luego»: gris, apagado, temporal. Eso '
+      + 'INVITA a buscar la forma de encenderlo. Cerrado dice lo contrario —no se va a poder '
+      + 'mientras la regla siga— y el caso que lo motiva es de seguridad: quien reparte privilegios '
+      + 'no puede conceder los que el mismo no tiene. '
+      + 'El interruptor DESAPARECE y en su hueco va un candado del mismo tamaño, para que la '
+      + 'columna no baile: un control que no puede cambiar nunca no es un interruptor, y dejarlo '
+      + 'puesto y apagado es prometer una interaccion que no existe. Se pasa EL MOTIVO y no un '
+      + 'booleano, porque un candado sin explicacion se lee como un fallo del sistema. Y la opcion '
+      + 'no se oculta: si el privilegio no aparece, quien reparte no entiende por que su lista no '
+      + 'coincide con la de al lado. '
+      + 'DE PASO, R41 otra vez y en el mismo componente. Las reglas del interruptor deshabilitado '
+      + 'existian, pero pedian el atributo disabled — y el componente usa aria-disabled a '
+      + 'proposito, porque el nativo sale del tabulador y su estado se vuelve indescubrible con '
+      + 'teclado—. Asi que NO casaban nunca: conservaba su color de encendido y solo se apagaba el '
+      + 'rotulo. Es el tercer sitio donde el mismo defecto aparece con otra cara. '
+      + 'Y el catalogo tambien lo pintaba con disabled mientras el componente emitia aria-disabled: '
+      + 'corregido, ahora los dos dicen lo mismo.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.57.0', fecha: '2026-08-16',
     que: 'R83: nace Mensaje —en flujo y con tono— con su glifo no cromatico · R65: la etiqueta del Interruptor admite marcado · icono informacion, el 46',

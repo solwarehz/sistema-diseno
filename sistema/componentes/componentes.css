@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.57.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.58.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -378,7 +378,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .sel-notas strong{ color: var(--texto-principal); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   INTERRUPTOR — 15 reglas · clases .sw-*
+   INTERRUPTOR — 19 reglas · clases .sw-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .sw-fila{ display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
@@ -395,9 +395,14 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .sw[aria-checked='true']{ background: var(--accion); border-color: var(--accion); }
 .sw[aria-checked='true'] .sw-bolita{ transform: translateX(16px);
   background: var(--accion-texto); border-color: var(--accion-texto); }
-.sw:disabled{ cursor: not-allowed; background: var(--accion-deshabilitada); border-color: var(--borde-fuerte); }
-.sw:disabled .sw-bolita{ background: var(--texto-secundario); border-color: var(--texto-secundario); }
-.sw:disabled[aria-checked='true']{ background: var(--borde-fuerte); border-color: var(--borde-fuerte); }
+.sw:disabled, .sw[aria-disabled='true']{ cursor: not-allowed; background: var(--accion-deshabilitada); border-color: var(--borde-fuerte); }
+.sw:disabled .sw-bolita, .sw[aria-disabled='true'] .sw-bolita{ background: var(--texto-secundario); border-color: var(--texto-secundario); }
+.sw:disabled[aria-checked='true'], .sw[aria-disabled='true'][aria-checked='true']{ background: var(--borde-fuerte); border-color: var(--borde-fuerte); }
+.sw-cerrado{ cursor: default; }
+.sw-cerrado .sw-et{ color: var(--texto-secundario); }
+.sw-candado{ width: 40px; height: 24px; flex: none; display: grid; place-items: center;
+  color: var(--texto-pista); }
+.sw-motivo{ font-size: 12px; color: var(--texto-secundario); line-height: 1.5; }
 .sw-txt{ display: flex; flex-direction: column; gap: 4px; }
 .sw-et{ font-size: 15px; }
 .sw-desh .sw-et{ color: var(--texto-secundario); }
