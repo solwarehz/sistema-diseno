@@ -577,3 +577,41 @@ autorización del responsable. Está declarado en `04-pendientes.md`.
 
 **La lección más incómoda:** que un candado esté en verde no significa que el
 componente funcione. Significa que **lo que el candado mira** está bien.
+
+---
+
+## D-25 · La celda de datos no parte el texto — y la tabla simple sí
+
+**Decisión:** `white-space: nowrap` en `.tb td` y `.tb-sub td`; `normal` en el
+estado vacío y en el panel de detalle; **nada** en `.tabla-simple td`.
+
+**Por qué:** lo pidió Control Administrativos V2.0 (R86) con el argumento
+correcto: como `.tb-envoltura` ya desplaza en horizontal desde R49, partir el
+texto **no gana espacio** — solo rompe la altura de fila que el propio
+componente fija. Medido antes de tocar nada, en un navegador y con la hoja que
+viaja: tres filas de la misma tabla en 54,7 · 34,0 · 72,3 px con 34 declarados,
+y 36,7 con 28 en compacta. Y el ejemplo compacto daba `scrollWidth` 419 sobre
+`clientWidth` 419: el desbordamiento **no se estaba desplazando**, se estaba
+absorbiendo hacia abajo.
+
+**Por qué la tabla simple no**, aunque el pedido lo planteaba: el argumento no
+se traslada. `.tabla-simple` **no declara altura de fila**, así que no hay
+medida que romper, y sus celdas son prosa **por diseño** — `vertical-align:
+top`, `line-height: 1.45`, y la columna `.motivo` del catálogo lleva frases
+enteras. Ponerle `nowrap` convertiría cada tabla de documentación en un
+deslizador. Su única celda que no parte sigue siendo `.num`, que es la que sí es
+un dato de una línea.
+
+**Lo que se aprendió, y vale más que la regla:** una excepción hay que
+**ganarla**, no solo declararla. `white-space: normal` escrito dentro de la
+regla `.tb-vacio` (una clase, 100) perdía contra `.tb td` (clase + tipo, 101), y
+el vacío salía en una línea. Se declara como `.tb td.tb-vacio`. **Lo sacó el
+candado de la cascada en rojo**, a los once anchos, antes de que se viera en
+ninguna pantalla — la primera vez que caza una excepción que existe pero no
+gana.
+
+**Lo revertiría:** que aparezca una columna cuyo valor **solo se entiende
+partido** en varias líneas. Está previsto y escrito como regla 29 del contrato:
+no se improvisa con CSS del producto, se declara la salida aquí. Y si alguien le
+pone `nowrap` a `.tabla-simple` «por simetría», la prueba de `tabla-nowrap`
+sale en rojo.

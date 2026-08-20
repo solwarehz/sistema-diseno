@@ -487,6 +487,55 @@ const AFIRMACIONES = [
     },
   },
   {
+    id: 'UN-DATO-UNA-LINEA',
+    que: 'la celda de datos no parte el texto, y el que es prosa sigue partiendo',
+    /**
+     * R86, y nace medido. Lo reporto Control Administrativos V2.0: en sus
+     * tablas un nombre como «SIFUENTES DE PINEDA, Julia Trinidad» salia en tres
+     * lineas y la fila crecia. Comprobado aqui en el navegador ANTES de tocar
+     * nada, con la hoja que viaja: tres filas de la misma tabla median 54,7 ·
+     * 34,0 · 72,3 px con 34 declarados, y 36,7 con 28 en compacta.
+     *
+     * El argumento que lo cierra es suyo: `.tb-envoltura` YA desplaza en
+     * horizontal desde R49, asi que partir no gana espacio — solo rompe la
+     * altura que el propio componente fija. Medido tambien: el ejemplo en
+     * compacta daba scrollWidth 419 sobre clientWidth 419, o sea que el
+     * desbordamiento se absorbia hacia abajo y ni siquiera se desplazaba.
+     *
+     * Se comprueban las CUATRO caras, y las de prosa importan igual que las de
+     * dato: un nowrap que se filtre al estado vacio o al panel de detalle
+     * convierte una frase en una linea kilometrica y obliga a desplazar una
+     * tabla que no tiene ni una fila que mirar. Las cuatro dependen de que
+     * `.tb-detalle > td` y `.tb-sub td` GANEN a `.tb td` al resolver —tienen su
+     * misma especificidad y se deciden por orden—, que es justo la clase de
+     * detalle que se rompe al reordenar la hoja sin enterarse.
+     */
+    revisar(reglas) {
+      const fallos = [];
+      const tabla = [elem('div', ['tb-bloque']), elem('div', ['tb-envoltura']), elem('table', ['tb'])];
+      const detalle = [...tabla, elem('tbody'), elem('tr', ['tb-detalle'])];
+      const CASOS = [
+        ['la celda de datos', [...tabla, elem('tbody'), elem('tr'), elem('td')], 'nowrap'],
+        ['la celda numerica', [...tabla, elem('tbody'), elem('tr'), elem('td', ['tb-num'])], 'nowrap'],
+        ['el estado vacio', [...tabla, elem('tbody'), elem('tr'), elem('td', ['tb-vacio'])], 'normal'],
+        ['el panel de detalle', [...detalle, elem('td')], 'normal'],
+        ['la celda de la sub-tabla', [...detalle, elem('td'), elem('div', ['tb-desliza']),
+          elem('div', ['tb-desliza-in']), elem('table', ['tb-sub']), elem('tbody'), elem('tr'),
+          elem('td')], 'nowrap'],
+      ];
+      for (const w of ANCHOS) {
+        for (const [nombre, cadena, esperado] of CASOS) {
+          const r = resolver(reglas, cadena, 'white-space', w);
+          const valor = r ? r.valor.trim() : 'NINGUNA REGLA';
+          if (valor !== esperado) {
+            fallos.push(`  a ${String(w).padStart(4)}px ${nombre} recibe white-space: ${valor} (se esperaba ${esperado})`);
+          }
+        }
+      }
+      return fallos;
+    },
+  },
+  {
     id: 'OCULTABLE',
     que: 'toda clase que fija display se puede seguir ocultando con [hidden]',
     /**

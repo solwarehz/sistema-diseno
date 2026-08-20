@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.60.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.61.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.60.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.61.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -1765,7 +1765,21 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 .tb-orden.activo { color: var(--accion); }
 .tb-flecha { font-size: 12px; width: 10px; }
 .tb-th.tb-num .tb-orden { justify-content: flex-end; }
-.tb td { padding: 0 12px; height: 34px; border-top: 1px solid var(--borde); }
+/* UN DATO, UNA LÍNEA. (R86, v1.61.0) La celda de datos NO PARTE el texto.
+   Lo reportó Control Administrativos con la medida hecha, y medido aquí en la
+   hoja que viaja sale igual: en una columna estrecha, tres filas de la misma
+   tabla median 54,7 · 34,0 · 72,3 px con 34 declarados, y en compacta 36,7 con
+   28 declarados. La altura de fila deja de ser una altura y pasa a ser un
+   mínimo.
+   Partir no ganaba nada, y esa es la razón de fondo: .tb-envoltura YA desplaza
+   en horizontal desde R49, así que el texto largo tiene a dónde ir. Sin nowrap
+   ni siquiera se desplaza —el ejemplo compacto medía scrollWidth 419 sobre
+   clientWidth 419—: el desbordamiento se estaba absorbiendo hacia abajo, en el
+   único eje donde el componente había prometido una medida.
+   Se desplaza la columna que se quiere leer, y las filas se mantienen a la
+   altura que la densidad declara. */
+.tb td { padding: 0 12px; height: 34px; border-top: 1px solid var(--borde);
+  white-space: nowrap; }
 /* DENSIDAD. El atributo va en <html> y no en la tabla: es GLOBAL. Un conmutador
    por tabla permitiría dos alturas de fila en la misma pantalla, y eso no se lee
    como preferencia sino como fallo. Los dos valores son los del preset —
@@ -1791,8 +1805,19 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 /* El resaltado lleva FILETE, no solo fondo: medido, sobre la fila alterna el
    fondo solo cambia 1,04:1 y la mitad de las filas no responderían. */
 .tb tbody tr:hover { background: var(--fondo-fila-hover); box-shadow: inset 3px 0 0 var(--accion); }
+/* EL VACÍO NO ES UN DATO: es una frase, y vuelve a partir. Ya renunciaba a la
+   altura de fila (height: auto), así que renuncia también al nowrap — si no,
+   «Prueba con menos filtros, o quítalos todos» sale en una línea y obliga a
+   desplazar una tabla que no tiene ni una fila que mirar. */
 .tb-vacio { text-align: center; padding: 32px 16px !important; height: auto !important;
   font-size: 13px; color: var(--texto-secundario); line-height: 1.6; }
+/* Y LA EXCEPCIÓN HAY QUE GANARLA, no solo declararla. Escrita dentro de la regla
+   de arriba NO servía: .tb-vacio es una clase (100) y .tb td suma clase y tipo
+   (101), así que el nowrap seguía ganando y el vacío salía en una línea. Lo sacó
+   el candado de la cascada en rojo, a los once anchos, antes de que se viera en
+   ninguna pantalla — que es justo para lo que está. Se declara con la misma
+   forma que la regla que hay que vencer. */
+.tb td.tb-vacio { white-space: normal; }
 .tb-vacio strong { color: var(--texto-principal); }
 
 /* Filtros por columna */
@@ -1882,7 +1907,13 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 .tb-grupo.abierto { background: var(--fondo-fila-hover); }
 .tb-grupo.abierto td { border-bottom: 0; }
 
-.tb-detalle > td { padding: 0 !important; height: auto !important; border-top: 0 !important; }
+/* EL PANEL DE DETALLE TAMPOCO ES UNA CELDA DE DATOS: lo llena el producto con
+   lo que quiera —prosa, fichas, otra tabla— y no tiene altura declarada que
+   proteger. Renuncia al nowrap igual que el vacío, y por la misma razón: aquí
+   el nowrap no mantiene una promesa, solo se hereda hacia dentro y estira un
+   panel que nadie midió. */
+.tb-detalle > td { padding: 0 !important; height: auto !important; border-top: 0 !important;
+  white-space: normal; }
 /* grid-template-rows 0fr → 1fr es lo único que anima hasta altura automática
    sin tener que fijar la altura en píxeles a mano. */
 .tb-desliza { display: grid; grid-template-rows: 0fr;
@@ -1898,7 +1929,16 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
   color: var(--texto-secundario); padding: 8px 12px 8px 40px;
   border-bottom: 1px solid var(--borde); }
 .tb-sub th:not(:first-child) { padding-left: 12px; }
-.tb-sub td { padding: 0 12px; height: 30px; border-bottom: 1px solid var(--borde); }
+/* LA SUB-TABLA SÍ, y no por simetría: tiene el MISMO defecto medido. Con el
+   detalle a 240px, dos filas de 30px declarados medían 46,7 y 30,0. Y tiene la
+   misma salida que la tabla grande —.tb-sub es display:block con
+   overflow-x:auto, así que desplaza sola—, así que lo que se gana partiendo
+   es cero y lo que se pierde es la altura. Lo declara EN LA CELDA a propósito:
+   el white-space: normal del panel que la contiene se hereda, y un valor
+   declarado en el propio elemento gana siempre a lo heredado — la prosa del
+   panel parte y la sub-tabla no, sin depender del orden de las reglas. */
+.tb-sub td { padding: 0 12px; height: 30px; border-bottom: 1px solid var(--borde);
+  white-space: nowrap; }
 .tb-sub .tb-sub-n { width: 52px; padding-left: 40px; text-align: right; }
 .tb-sub tr:last-child td { border-bottom: 0; }
 .tb-sub tbody tr:hover { background: var(--fondo-tarjeta); }
@@ -3634,7 +3674,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.60.0</option></select></label>
+          <select class="campo cg-in"><option>v1.61.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3722,8 +3762,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.60.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.60.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.61.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.61.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -10715,6 +10755,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.61.0 <span class="cam-fecha">2026-08-20</span></h3>
+<p class="pag-intro"><strong>R86: un dato, una linea — la celda de la tabla deja de partir el texto y la fila conserva su altura.</strong> R86 · Lo reporto Control Administrativos V2.0 con la medida hecha y el diagnostico bien hecho: el producto no aplica ninguna clase de ajuste de texto en las celdas, asi que el comportamiento salia entero de nuestra hoja. Verificado aqui, en la hoja QUE VIAJA y en un navegador de verdad, antes de tocar nada: en una columna estrecha tres filas de la misma tabla median 54,7 · 34,0 · 72,3 px con 34 declarados, y en densidad compacta 36,7 con 28 declarados. La altura de fila del componente no era una altura: era un minimo. El argumento de fondo es suyo y es el correcto: como .tb-envoltura YA desplaza en horizontal desde R49, partir el texto no gana espacio — solo rompe la altura que el propio componente fija. Medido tambien eso: el ejemplo en compacta daba scrollWidth 419 sobre clientWidth 419, o sea que ni siquiera se desplazaba. El desbordamiento se estaba absorbiendo hacia abajo, en el unico eje donde habiamos prometido una medida. Entra `white-space: nowrap` en .tb td, y con el las tres excepciones que la medida pide: el estado vacio (.tb-vacio) y el panel de detalle (.tb-detalle > td) vuelven a `normal` —son prosa, ya renunciaban a la altura de fila y no hay nada que proteger ahi—, y la sub-tabla plegable (.tb-sub td) tambien deja de partir, porque tenia el MISMO defecto medido: 46,7 px con 30 declarados, y su propia salida horizontal. Se rechaza a proposito la otra mitad del pedido: .tabla-simple td NO lleva nowrap. Ahi el argumento no se sostiene porque no hay altura declarada que romper —la tabla simple no fija ninguna— y sus celdas son prosa POR DISENO (vertical-align: top y line-height 1,45, y la columna .motivo del catalogo lleva frases enteras). Su unica celda nowrap sigue siendo .num, que es la que si es un dato de una sola linea. Verificado a los once anchos por el candado de la cascada, contrato 28 de la tabla, y medido otra vez en el navegador despues del cambio: 34,0 en las tres filas comodas, 28,0 en compacta, 30,0 en la sub-tabla, y la envoltura desplazando en vez de crecer.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>Una celda de .tb que hoy dependa de partir en varias lineas —varios chips, una observacion larga— dejara de hacerlo y ensanchara su columna: la tabla se desplaza en horizontal en vez de crecer hacia abajo. Es el cambio pedido, y se declara porque cambia como se ve una pantalla ya montada.</td></tr></tbody></table>
 
 
 <h3 class="sub-seccion">v1.60.0 <span class="cam-fecha">2026-08-16</span></h3>

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.60.0";
+export const VERSION = "1.61.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,42 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.61.0', fecha: '2026-08-20',
+    que: 'R86: un dato, una linea — la celda de la tabla deja de partir el texto y la fila conserva su altura',
+    porque:
+      'R86 · Lo reporto Control Administrativos V2.0 con la medida hecha y el diagnostico bien '
+      + 'hecho: el producto no aplica ninguna clase de ajuste de texto en las celdas, asi que el '
+      + 'comportamiento salia entero de nuestra hoja. Verificado aqui, en la hoja QUE VIAJA y en '
+      + 'un navegador de verdad, antes de tocar nada: en una columna estrecha tres filas de la '
+      + 'misma tabla median 54,7 · 34,0 · 72,3 px con 34 declarados, y en densidad compacta 36,7 '
+      + 'con 28 declarados. La altura de fila del componente no era una altura: era un minimo. '
+      + 'El argumento de fondo es suyo y es el correcto: como .tb-envoltura YA desplaza en '
+      + 'horizontal desde R49, partir el texto no gana espacio — solo rompe la altura que el '
+      + 'propio componente fija. Medido tambien eso: el ejemplo en compacta daba scrollWidth 419 '
+      + 'sobre clientWidth 419, o sea que ni siquiera se desplazaba. El desbordamiento se estaba '
+      + 'absorbiendo hacia abajo, en el unico eje donde habiamos prometido una medida. '
+      + 'Entra `white-space: nowrap` en .tb td, y con el las tres excepciones que la medida pide: '
+      + 'el estado vacio (.tb-vacio) y el panel de detalle (.tb-detalle > td) vuelven a `normal` '
+      + '—son prosa, ya renunciaban a la altura de fila y no hay nada que proteger ahi—, y la '
+      + 'sub-tabla plegable (.tb-sub td) tambien deja de partir, porque tenia el MISMO defecto '
+      + 'medido: 46,7 px con 30 declarados, y su propia salida horizontal. '
+      + 'Se rechaza a proposito la otra mitad del pedido: .tabla-simple td NO lleva nowrap. Ahi el '
+      + 'argumento no se sostiene porque no hay altura declarada que romper —la tabla simple no '
+      + 'fija ninguna— y sus celdas son prosa POR DISENO (vertical-align: top y line-height 1,45, '
+      + 'y la columna .motivo del catalogo lleva frases enteras). Su unica celda nowrap sigue '
+      + 'siendo .num, que es la que si es un dato de una sola linea. '
+      + 'Verificado a los once anchos por el candado de la cascada, contrato 28 de la tabla, y '
+      + 'medido otra vez en el navegador despues del cambio: 34,0 en las tres filas comodas, 28,0 '
+      + 'en compacta, 30,0 en la sub-tabla, y la envoltura desplazando en vez de crecer.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'Una celda de .tb que hoy dependa de partir en varias lineas —varios chips, una '
+      + 'observacion larga— dejara de hacerlo y ensanchara su columna: la tabla se desplaza en '
+      + 'horizontal en vez de crecer hacia abajo. Es el cambio pedido, y se declara porque cambia '
+      + 'como se ve una pantalla ya montada.',
+    ],
+  },
   {
     v: '1.60.0', fecha: '2026-08-16',
     que: 'R85 P3: el suelo de 520px de la tabla se puede quitar DICIENDOLO, y es contrato verificado',

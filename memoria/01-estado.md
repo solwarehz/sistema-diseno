@@ -1,9 +1,9 @@
 # Estado del proyecto
 
-**Última actualización:** 16 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.58.1** — el interruptor cerrado por regla,
-y lo deshabilitado por fin se ve; antes, el aviso que nacía invisible y no se
-veía en ningún producto
+**Última actualización:** 20 de agosto de 2026
+**Versión del sistema:** MMI-DS **v1.61.0** — un dato, una línea: la celda de la
+tabla deja de partir el texto y la fila conserva la altura que la densidad
+declara; antes, tres filas de la misma tabla medían 54,7 · 34,0 · 72,3 px
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,12 +18,13 @@ veía en ningún producto
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —31 componentes
-publicados, la hoja que viaja, **once candados**, 376 pruebas— y esta semana ha
-aprendido algo incómodo: los peores defectos no estaban en lo que el catálogo
-enseña mal, sino en **lo que el catálogo no puede enseñar**. El aviso que nacía
-invisible y el botón que no se veía apagado pasaron por todos los candados en
-verde. Nació el candado del elemento para cerrar parte de esa familia, y el
-resto está declarado abajo.
+publicados, la hoja que viaja, **once candados**, 394 pruebas— y sigue
+aprendiendo la misma lección por otro lado: los peores defectos no están en lo
+que el catálogo enseña mal, sino en **lo que ningún candado estaba mirando**.
+R86 es de ese tipo: la tabla declaraba una altura de fila de 34px desde la
+v1.0.0 y **entregaba un mínimo**, porque nadie comprobaba que la celda no
+partiera el texto. Se veía en cada producto y en el propio catálogo. Ahora lo
+mira el candado de la cascada, a los once anchos y en los cinco casos.
 
 ---
 
@@ -37,14 +38,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` en Docker |
-| Componentes de React | ✅ | **376 pruebas en 22 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · 749 reglas de 1233 · **543 clases, 0 huérfanas** |
-| Catálogo navegable | ✅ | `cascaron/index.html` · 51 páginas · lo genera `generar-cascaron.mjs` |
+| Componentes de React | ✅ | **394 pruebas en 25 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · 778 reglas de 1262 · **558 clases, 0 huérfanas** |
+| Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.58.1.zip` · **52 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.61.0.zip` · **53 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.61.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -65,7 +66,45 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy, con detalle
+### Lo de hoy (v1.61.0), con detalle
+
+**R86 · un dato, una línea.** Lo reportó Control Administrativos V2.0, con el
+diagnóstico hecho y correcto: el producto no aplica ninguna clase de ajuste de
+texto en las celdas, así que el comportamiento salía entero de nuestra hoja.
+
+Medido aquí en un navegador, sobre la hoja **que viaja** y **antes** de tocar
+nada: en una columna estrecha, tres filas de la misma tabla daban **54,7 · 34,0
+· 72,3 px con 34 declarados**, y **36,7 con 28** en compacta. La altura de fila
+no era una altura: era un mínimo. Y la medida que cierra el argumento es la del
+desplazamiento — el ejemplo en compacta daba `scrollWidth` 419 sobre
+`clientWidth` 419: el desbordamiento se estaba absorbiendo **hacia abajo**, en
+el único eje donde el componente había prometido una medida.
+
+Entra `white-space: nowrap` en `.tb td` y en `.tb-sub td` —la sub-tabla plegable
+tenía el mismo defecto medido: 46,7 px con 30 declarados—, y **dos excepciones
+que son prosa, no datos**: el estado vacío y el panel de detalle siguen
+partiendo. Después: **34,0 en las tres filas** y **28,0 en compacta**, con la
+envoltura desplazando en vez de crecer.
+
+**La excepción hubo que ganarla, no solo declararla.** Escrito como `.tb-vacio`
+(100) perdía contra `.tb td` (101) y el vacío salía en una línea. Lo sacó el
+candado de la cascada **en rojo, a los once anchos**, antes de que se viera en
+ninguna pantalla. Es la primera vez que ese candado caza algo de esta familia
+—una excepción que existe pero no gana— y por eso vale escribirlo.
+
+**Se rechazó la otra mitad del pedido**, y con su razón: `.tabla-simple td` no
+lleva `nowrap`. Ahí no hay altura declarada que romper y sus celdas son prosa
+por diseño (`vertical-align: top`, `line-height: 1.45`). Está escrito como
+prueba, así que si alguien se la pone «por simetría», sale en rojo.
+
+> **Deuda de este archivo.** Las secciones históricas de abajo siguen siendo las
+> de la v1.48.0: llevan trece versiones sin reescribirse, que es exactamente el
+> defecto contra el que avisa la cabecera. Hoy se han puesto al día la cabecera,
+> la frase, las cifras y los números verificados —todos regenerados, ninguno de
+> memoria—, y el rótulo «lo de hoy» de la sección vieja, que decía una mentira.
+> La reescritura completa queda **declarada y pendiente**.
+
+### Lo de la v1.48.0, con detalle
 
 **El manual, que llevaba 37 versiones sin tocarse.** Iba por la v1.1.0 sobre
 MMI-DS **v1.11.1** con el sistema en v1.48.0 — el mismo defecto que este archivo
@@ -282,19 +321,20 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.58.1
+Versión                      1.61.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
-Pruebas                         376   en 22 archivos
-Reglas que viajan               749   de 1233 · 543 clases, 0 huérfanas
-Candado de la promesa           894   elementos · 183.836 propiedades
+Pruebas                         394   en 25 archivos
+Reglas que viajan               778   de 1262 · 558 clases, 0 huérfanas
+Candado de la cascada           868   reglas leidas · 11 anchos
+Candado de la promesa           921   elementos · 189.379 propiedades
                                       a 5 anchos (1440, 1024, 900, 700, 390)
 Candado del elemento            145   clases comparadas · 5 divergencias
                                       DECLARADAS · 100 las pinta el guion
-Contrato de comportamiento      127   reglas · 107 obligatorias · 5 PENDIENTE
-Componentes publicados           31   35 módulos viajan en el paquete
+Contrato de comportamiento      141   reglas · 118 obligatorias · 5 PENDIENTE
+Componentes publicados           31   36 módulos viajan en el paquete
 Iconos                           46
-Páginas del catálogo             51
+Páginas del catálogo             52
 ```
 
 ```powershell

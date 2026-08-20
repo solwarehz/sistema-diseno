@@ -5796,7 +5796,21 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 .tb-orden.activo { color: var(--accion); }
 .tb-flecha { font-size: 12px; width: 10px; }
 .tb-th.tb-num .tb-orden { justify-content: flex-end; }
-.tb td { padding: 0 12px; height: 34px; border-top: 1px solid var(--borde); }
+/* UN DATO, UNA LÍNEA. (R86, v1.61.0) La celda de datos NO PARTE el texto.
+   Lo reportó Control Administrativos con la medida hecha, y medido aquí en la
+   hoja que viaja sale igual: en una columna estrecha, tres filas de la misma
+   tabla median 54,7 · 34,0 · 72,3 px con 34 declarados, y en compacta 36,7 con
+   28 declarados. La altura de fila deja de ser una altura y pasa a ser un
+   mínimo.
+   Partir no ganaba nada, y esa es la razón de fondo: .tb-envoltura YA desplaza
+   en horizontal desde R49, así que el texto largo tiene a dónde ir. Sin nowrap
+   ni siquiera se desplaza —el ejemplo compacto medía scrollWidth 419 sobre
+   clientWidth 419—: el desbordamiento se estaba absorbiendo hacia abajo, en el
+   único eje donde el componente había prometido una medida.
+   Se desplaza la columna que se quiere leer, y las filas se mantienen a la
+   altura que la densidad declara. */
+.tb td { padding: 0 12px; height: 34px; border-top: 1px solid var(--borde);
+  white-space: nowrap; }
 /* DENSIDAD. El atributo va en <html> y no en la tabla: es GLOBAL. Un conmutador
    por tabla permitiría dos alturas de fila en la misma pantalla, y eso no se lee
    como preferencia sino como fallo. Los dos valores son los del preset —
@@ -5822,8 +5836,19 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 /* El resaltado lleva FILETE, no solo fondo: medido, sobre la fila alterna el
    fondo solo cambia 1,04:1 y la mitad de las filas no responderían. */
 .tb tbody tr:hover { background: var(--fondo-fila-hover); box-shadow: inset 3px 0 0 var(--accion); }
+/* EL VACÍO NO ES UN DATO: es una frase, y vuelve a partir. Ya renunciaba a la
+   altura de fila (height: auto), así que renuncia también al nowrap — si no,
+   «Prueba con menos filtros, o quítalos todos» sale en una línea y obliga a
+   desplazar una tabla que no tiene ni una fila que mirar. */
 .tb-vacio { text-align: center; padding: 32px 16px !important; height: auto !important;
   font-size: 13px; color: var(--texto-secundario); line-height: 1.6; }
+/* Y LA EXCEPCIÓN HAY QUE GANARLA, no solo declararla. Escrita dentro de la regla
+   de arriba NO servía: .tb-vacio es una clase (100) y .tb td suma clase y tipo
+   (101), así que el nowrap seguía ganando y el vacío salía en una línea. Lo sacó
+   el candado de la cascada en rojo, a los once anchos, antes de que se viera en
+   ninguna pantalla — que es justo para lo que está. Se declara con la misma
+   forma que la regla que hay que vencer. */
+.tb td.tb-vacio { white-space: normal; }
 .tb-vacio strong { color: var(--texto-principal); }
 
 /* Filtros por columna */
@@ -5913,7 +5938,13 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
 .tb-grupo.abierto { background: var(--fondo-fila-hover); }
 .tb-grupo.abierto td { border-bottom: 0; }
 
-.tb-detalle > td { padding: 0 !important; height: auto !important; border-top: 0 !important; }
+/* EL PANEL DE DETALLE TAMPOCO ES UNA CELDA DE DATOS: lo llena el producto con
+   lo que quiera —prosa, fichas, otra tabla— y no tiene altura declarada que
+   proteger. Renuncia al nowrap igual que el vacío, y por la misma razón: aquí
+   el nowrap no mantiene una promesa, solo se hereda hacia dentro y estira un
+   panel que nadie midió. */
+.tb-detalle > td { padding: 0 !important; height: auto !important; border-top: 0 !important;
+  white-space: normal; }
 /* grid-template-rows 0fr → 1fr es lo único que anima hasta altura automática
    sin tener que fijar la altura en píxeles a mano. */
 .tb-desliza { display: grid; grid-template-rows: 0fr;
@@ -5929,7 +5960,16 @@ select.tb-f { padding-right: 24px; background-position: right 7px center; backgr
   color: var(--texto-secundario); padding: 8px 12px 8px 40px;
   border-bottom: 1px solid var(--borde); }
 .tb-sub th:not(:first-child) { padding-left: 12px; }
-.tb-sub td { padding: 0 12px; height: 30px; border-bottom: 1px solid var(--borde); }
+/* LA SUB-TABLA SÍ, y no por simetría: tiene el MISMO defecto medido. Con el
+   detalle a 240px, dos filas de 30px declarados medían 46,7 y 30,0. Y tiene la
+   misma salida que la tabla grande —.tb-sub es display:block con
+   overflow-x:auto, así que desplaza sola—, así que lo que se gana partiendo
+   es cero y lo que se pierde es la altura. Lo declara EN LA CELDA a propósito:
+   el white-space: normal del panel que la contiene se hereda, y un valor
+   declarado en el propio elemento gana siempre a lo heredado — la prosa del
+   panel parte y la sub-tabla no, sin depender del orden de las reglas. */
+.tb-sub td { padding: 0 12px; height: 30px; border-bottom: 1px solid var(--borde);
+  white-space: nowrap; }
 .tb-sub .tb-sub-n { width: 52px; padding-left: 40px; text-align: right; }
 .tb-sub tr:last-child td { border-bottom: 0; }
 .tb-sub tbody tr:hover { background: var(--fondo-tarjeta); }
