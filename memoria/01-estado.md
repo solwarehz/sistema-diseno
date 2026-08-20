@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 20 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.61.0** — un dato, una línea: la celda de la
-tabla deja de partir el texto y la fila conserva la altura que la densidad
-declara; antes, tres filas de la misma tabla medían 54,7 · 34,0 · 72,3 px
+**Versión del sistema:** MMI-DS **v1.62.0** — el filtro de columna se veía
+distinto en el catálogo y en la entrega: las mismas reglas, en distinto orden.
+Nace el **candado del empate**, que es el duodécimo
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ declara; antes, tres filas de la misma tabla medían 54,7 · 34,0 · 72,3 px
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —31 componentes
-publicados, la hoja que viaja, **once candados**, 394 pruebas— y sigue
+publicados, la hoja que viaja, **doce candados**, 398 pruebas— y sigue
 aprendiendo la misma lección por otro lado: los peores defectos no están en lo
 que el catálogo enseña mal, sino en **lo que ningún candado estaba mirando**.
 R86 es de ese tipo: la tabla declaraba una altura de fila de 34px desde la
@@ -38,14 +38,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` en Docker |
-| Componentes de React | ✅ | **394 pruebas en 25 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · 778 reglas de 1262 · **558 clases, 0 huérfanas** |
+| Componentes de React | ✅ | **398 pruebas en 26 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · 777 reglas de 1261 · **558 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.61.0.zip` · **53 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.62.0.zip` · **53 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.61.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.62.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,52 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.61.0), con detalle
+### Lo de hoy (v1.62.0), con detalle
+
+**R87 · las mismas reglas, en distinto orden.** No lo reportó nadie: salió de
+comprobar R86. Al montar el **mismo marcado** con las dos hojas en un navegador
+y compararlo propiedad a propiedad —**37 elementos, 24.642 propiedades**—, 27
+elementos salieron idénticos y 10 distintos. Los 10 eran el **filtro de columna**
+de la tabla y lo que arrastra por altura:
+
+| | catálogo | entrega |
+|---|---|---|
+| `font-size` | 13px | **12px** |
+| Alto del control | 36,18 px | **26,73 px** |
+| Alto de la fila de filtros | 44,84 px | **35,40 px** |
+| Flecha del select | 16px | **13px** |
+
+**Ninguna regla faltaba ni sobraba.** `.tb-f` y `.campo` empatan en
+especificidad —una clase contra una clase— y cuando dos reglas empatan **gana la
+última**. El extractor agrupa por elemento, así que `.campo` (Campo de texto)
+pasa a ir *antes* que `.tb-f` (Tabla de datos) y el empate se resuelve al revés a
+cada lado.
+
+**Y la decisión no era «12 o 13».** Preguntándole al navegador qué reglas tocan
+el control *en el catálogo*, las tres de `.tb-f` **pierden allí**: son
+declaraciones que esa página no ha mostrado nunca. Muertas en el catálogo y
+vivas en la entrega por accidente de orden. Se borran, y las dos hojas coinciden
+**por construcción**. Darle más especificidad a la que pierde habría congelado
+en la hoja un valor que el catálogo no enseña.
+
+Quien usa `<TablaDatos>` **no ve ningún cambio**: el componente monta `<Campo>`,
+que emite `.campo` sin `.tb-f`, así que su filtro ya estaba a 13px y 36,18.
+
+**Nace el candado del empate**, el duodécimo. Se mide solo sobre las **292
+combinaciones de clases que existen de verdad** en el marcado —del catálogo y de
+los componentes—: sin ese filtro salen **25.823** pares teóricos, y una lista así
+no se lee, se ignora. Quedan **53 empates reales** y ninguno cambia de ganador.
+
+**Un hueco que este trabajo deja abierto, declarado.** El troceador de `parsear`
+corta por `;` sin mirar si está dentro de unas comillas, y los seis
+`background-image: url("data:image/svg+xml;utf8,…")` salen partidos: un
+`background-image` truncado y una propiedad llamada `utf8,<svg xmlns='http`. El
+candado del empate los descarta por nombre imposible. **El defecto es del motor y
+lo comparten los candados de la cascada y de la promesa**: no dan falso rojo
+—el corte es igual en las dos hojas— pero dejan un punto ciego en el icono del
+select y el del calendario, que es justo donde hubo un defecto en la v1.28.0.
+
+### Lo de la v1.61.0, con detalle
 
 **R86 · un dato, una línea.** Lo reportó Control Administrativos V2.0, con el
 diagnóstico hecho y correcto: el producto no aplica ninguna clase de ajuste de
@@ -321,12 +366,14 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.61.0
+Versión                      1.62.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
-Pruebas                         394   en 25 archivos
-Reglas que viajan               778   de 1262 · 558 clases, 0 huérfanas
-Candado de la cascada           868   reglas leidas · 11 anchos
+Pruebas                         398   en 26 archivos
+Reglas que viajan               777   de 1261 · 558 clases, 0 huérfanas
+Candado de la cascada           867   reglas leidas · 11 anchos
+Candado del empate              292   combinaciones reales · 53 empates
+                                      · 0 cambian de ganador
 Candado de la promesa           921   elementos · 189.379 propiedades
                                       a 5 anchos (1440, 1024, 900, 700, 390)
 Candado del elemento            145   clases comparadas · 5 divergencias

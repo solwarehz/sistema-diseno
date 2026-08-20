@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.61.0
+# Actualizar al sistema de diseño v1.62.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.61.0"
+npm install "github:solwarehz/sistema-diseno#v1.62.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,19 +27,19 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.61.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.62.0
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.61.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.62.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.61.0 --repo solwarehz/sistema-diseno
+gh release download v1.62.0 --repo solwarehz/sistema-diseno
 ```
 
 Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
@@ -292,6 +292,7 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.50.0 | **Seis componentes que se publicaban y no viajaban** —`AreaTexto`, `CampoContrasena`, `CargaId`, `CargaImagen`, `CargaPdf`, `ZonaAvisos`— ya están en el paquete. Si los reconstruiste, **cámbialos por los del sistema** |
 | 1.51.0 | La **cuadrícula de tarjetas se entrega**: clase `tn-cuadricula`. Si maquetaste el `grid-template-columns` a mano, cámbialo por la clase |
 | 1.61.0 | **La celda de la tabla de datos deja de partir el texto.** Un valor largo ya no baja a la línea siguiente: ensancha su columna y la tabla se desplaza en horizontal, que es lo que `.tb-envoltura` hace desde la 1.43.0. A cambio, **todas las filas conservan su altura declarada** (34px, 28 en compacta). Si tienes una columna cuyo valor **necesita** ir partido, dínoslo: se declara la salida en el contrato, no la improvises con CSS propio. El estado vacío, el panel de detalle plegado y la `.tabla-simple` **no cambian** |
+| 1.62.0 | **Solo si copian el marcado del catálogo** (`class="campo tb-f"`) en vez de usar `<TablaDatos>`: el filtro de columna pasa de 12px a 13px y de 26,73 a 36,18 px de alto, y la fila de filtros de 35,40 a 44,84. Es el tamaño que el catálogo enseña desde siempre, y el que ya tenían quienes usan el componente: la hoja llevaba tres declaraciones que **el catálogo nunca mostró** y que solo se veían en la entrega, por el orden en que quedaban. **Quien usa `<TablaDatos>` no ve ningún cambio** |
 
 **Lo que no rompe pero conviene aprovechar:** `soloLectura` en `Selector`
 (§6.5 del manual), `persona.foto` en `CargaImagen` (§6.7), `CargaId` para el

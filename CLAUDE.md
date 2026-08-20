@@ -19,8 +19,8 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.61.0** — un dato, una línea: la celda de la tabla de datos
-deja de partir el texto y la fila conserva la altura que la densidad declara.
+**Estado actual: v1.62.0** — el filtro de columna se veía distinto en el
+catálogo y en la entrega: mismas reglas, distinto orden. Nace el candado del empate.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
@@ -189,7 +189,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
 - **`main` sí se actualiza en este proyecto** —y solo en este—, pero **únicamente
   cuando está verificado y sin errores**. La condición no es una formalidad: es
   lo que hace que la regla sea segura, porque `main` es de donde instala el área
-  de sistemas. Antes de subir, los cinco candados **en verde** y las pruebas
+  de sistemas. Antes de subir, los **doce** candados **en verde** y las pruebas
   pasando:
 
   ```bash
@@ -204,6 +204,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
   node sistema/candado/verificar-entrega.mjs  # lo publicado está EN el paquete
   node sistema/candado/verificar-promesa.mjs  # se VE igual que en el catálogo
   node sistema/candado/verificar-elemento.mjs # se emite el MISMO elemento
+  node sistema/candado/verificar-empate.mjs   # el ORDEN no decide distinto en cada hoja
   ```
 
   Los dos últimos faltaban de esta lista y **la memoria los contaba entre los
@@ -229,6 +230,22 @@ No las «mejores» por iniciativa propia. Están razonadas:
   nuevas y no finge que las viejas no existen. Arreglar una es quitar su línea
   —y si se arregla y no se quita, el candado también falla, porque una lista de
   excepciones que nadie poda vuelve a ser el inventario a mano de siempre.
+
+  El del **empate** nació de comprobar el anterior. Al montar el mismo marcado
+  con las dos hojas en un navegador —24.642 propiedades— el filtro de columna
+  de la tabla salió a 12px y 26,73px de alto con la hoja entregada y a 13px y
+  36,18 con la del catálogo. **Ninguna regla faltaba ni sobraba: las mismas, en
+  distinto orden.** `.tb-f` y `.campo` empatan en especificidad, y cuando dos
+  reglas empatan gana la última — pero el extractor agrupa por elemento y les
+  cambia el orden relativo. Ninguno de los otros podía verlo: el de la promesa
+  compara una lista de elementos escrita a mano y ése no estaba en ella; el de
+  la cascada resuelve la hoja que viaja contra sí misma, no una contra otra; el
+  del elemento compara etiquetas, no valores.
+
+  Se mide **solo sobre las combinaciones de clases que existen de verdad** en el
+  marcado. Sin ese filtro salen 25.823 pares teóricos —`.sr-solo` contra
+  `.nav-grupo` y demás parejas que no coinciden jamás—, y una lista así no se
+  lee: se ignora.
 
   El de la **promesa** es el que compara las dos hojas resolviendo la cascada
   sobre el mismo marcado. Existe porque «no veo el botón CSV como lo veo en el

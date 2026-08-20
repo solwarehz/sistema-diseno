@@ -615,3 +615,40 @@ partido** en varias líneas. Está previsto y escrito como regla 29 del contrato
 no se improvisa con CSS del producto, se declara la salida aquí. Y si alguien le
 pone `nowrap` a `.tabla-simple` «por simetría», la prueba de `tabla-nowrap`
 sale en rojo.
+
+---
+
+## D-26 · Cuando dos reglas empatan, el orden decide — y el extractor lo cambia
+
+**Decisión:** borrar las declaraciones muertas de `.tb-f` en vez de arbitrar
+entre 12px y 13px, y **nace el candado del empate**.
+
+**Por qué:** al comprobar R86 se montó el mismo marcado con las dos hojas en un
+navegador. 27 elementos idénticos; 10 distintos, todos el filtro de columna:
+13px contra 12, 36,18 px de alto contra 26,73, la flecha del select a 16 contra
+13. **Ninguna regla faltaba ni sobraba.** `.tb-f` y `.campo` empatan en
+especificidad, gana la última, y el extractor —que agrupa por elemento— les
+cambia el orden relativo respecto al catálogo.
+
+**Por qué no se eligió un valor:** porque las tres declaraciones de `.tb-f`
+**pierden en el catálogo**, o sea que esa página no las ha mostrado nunca. Eran
+código muerto que la entrega resucitaba. Dárselas por buenas con más
+especificidad habría congelado en la hoja un valor que nadie ha visto. Al
+borrarlas, las dos hojas coinciden **por construcción**: donde no hay empate, el
+orden no decide nada.
+
+**Por qué no se tocó el extractor**, que era el arreglo de raíz: se midió antes.
+De **292 combinaciones de clases que existen de verdad**, solo **6 empates**
+cambiaban de ganador, y los 6 eran este mismo elemento. Reordenar la salida del
+extractor para preservar el orden del catálogo habría movido toda la hoja para
+arreglar un elemento. Si algún día los empates se multiplican, el candado lo
+dirá y entonces sí tocará discutirlo.
+
+**El filtro de las 292 es la mitad que hace útil el candado.** Sin él salen
+**25.823** pares —`.sr-solo` contra `.nav-grupo` y demás parejas que no
+coinciden jamás— y una lista de 25.823 avisos no se lee: se ignora, y entonces
+el candado deja de proteger aunque siga en verde.
+
+**Lo revertiría:** que el catálogo empiece a mostrar de verdad un tamaño propio
+para el filtro. Entonces la declaración deja de estar muerta y hay que decidirla
+—en el catálogo, que es donde se ve—, no resucitarla por orden en la entrega.

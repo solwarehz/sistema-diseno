@@ -5857,8 +5857,22 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 #tb-filtros-btn.activo { border-color: var(--accion); color: var(--accion); }
 .tb-fila-filtros .tb-f-celda { padding: 4px 8px; background: var(--fondo-encabezado);
   border-bottom: 1px solid var(--borde); }
-.tb-f { width: 100%; font-size: 12px; padding: 4px 8px; }
-select.tb-f { padding-right: 24px; background-position: right 7px center; background-size: 13px 13px; }
+/* R87 · EL FILTRO SOLO DECLARA LO QUE ES SUYO: llenar la columna.
+   Llevaba ademas font-size: 12px, padding: 4px 8px y, en el select, su propia
+   flecha a 13px. Ninguna de las tres se veia NUNCA aqui: empatan en
+   especificidad con .campo y select.campo —una clase contra una clase— y el
+   catalogo las anula por orden. Eran declaraciones muertas.
+   Muertas aqui, y VIVAS en la entrega. El extractor agrupa por elemento, asi
+   que .campo (Campo de texto) pasa a ir ANTES que .tb-f (Tabla de datos), el
+   empate se resuelve al reves y el filtro salia a 12px con 26,73px de alto
+   donde el catalogo lo enseña a 13px con 36,18. Medido en el navegador, con
+   las dos hojas y el mismo marcado.
+   No se arregla dandole mas especificidad: eso congelaria en la hoja un valor
+   que esta pagina no ha mostrado nunca. Se arregla quitando lo que sobra, y
+   entonces las dos hojas coinciden POR CONSTRUCCION, sin empate que resolver.
+   Lo vigila verificar-empate.mjs sobre las combinaciones de clases que
+   existen de verdad en el marcado. */
+.tb-f { width: 100%; }
 
 /* [hidden] tiene que ganar al display, o la tira de filtros activos ocupa
    16px vacia y se ve como una banda azul sin contenido. Lo reporto Control

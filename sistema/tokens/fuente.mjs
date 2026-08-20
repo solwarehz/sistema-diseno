@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.61.0";
+export const VERSION = "1.62.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,44 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.62.0', fecha: '2026-08-20',
+    que: 'R87: el filtro de columna se veia distinto en el catalogo y en la entrega — mismas reglas, distinto ORDEN',
+    porque:
+      'R87 · Lo encontro la comprobacion de R86, no un reporte: al montar el MISMO marcado con las '
+      + 'dos hojas y compararlo en un navegador —24.642 propiedades, 37 elementos— salieron 27 '
+      + 'elementos identicos y 10 distintos, todos el filtro de columna de la tabla y lo que arrastra '
+      + 'por altura. Medido: font-size 13px contra 12, relleno 8px contra 4, alto del control 36,18 '
+      + 'contra 26,73, alto de la fila de filtros 44,84 contra 35,40, y en el select ademas la flecha '
+      + 'a 16px contra 13. '
+      + 'La causa no es una regla que falte ni que sobre: es el ORDEN. .tb-f y .campo empatan en '
+      + 'especificidad —una clase contra una clase— y cuando dos reglas empatan gana la ultima. El '
+      + 'extractor agrupa por elemento, asi que .campo (Campo de texto) pasa a ir ANTES que .tb-f '
+      + '(Tabla de datos) y el empate se resuelve al reves en cada hoja. '
+      + 'Y la respuesta correcta no era elegir entre 12 y 13. Preguntandole al navegador que reglas '
+      + 'tocan el control EN EL CATALOGO, las tres de .tb-f —font-size, padding y la flecha del '
+      + 'select— PIERDEN alli: son declaraciones que esta pagina no ha mostrado nunca. Muertas en el '
+      + 'catalogo y vivas en la entrega por accidente de orden. Se borran, y entonces las dos hojas '
+      + 'coinciden POR CONSTRUCCION. Darle mas especificidad a la que pierde habria congelado en la '
+      + 'hoja un valor que el catalogo no enseña. .tb-f se queda con lo unico suyo: width 100%. '
+      + 'Quien usa el componente NO ve ningun cambio: TablaDatos monta <Campo>, que emite .campo sin '
+      + '.tb-f, asi que su filtro ya estaba a 13px y 36,18 — igual que la promesa. El unico que veia '
+      + 'otra cosa es quien copia el marcado del catalogo con la hoja entregada. '
+      + 'Nace el CANDADO DEL EMPATE: ningun par de reglas que empate en especificidad puede cambiar '
+      + 'de ganador entre las dos hojas. Se mide solo sobre las 292 combinaciones de clases que '
+      + 'existen de verdad en el marcado —del catalogo y de los componentes—, porque sin ese filtro '
+      + 'salen 25.823 pares teoricos como .sr-solo contra .nav-grupo, y una lista asi no se lee. Los '
+      + 'otros candados no podian verlo: el de la promesa compara una lista de elementos escrita a '
+      + 'mano y el filtro con sus dos clases no estaba en ella; el de la cascada resuelve la hoja que '
+      + 'viaja contra si misma, no una contra otra; el del elemento compara etiquetas, no valores.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'Solo a quien copie el marcado del catalogo (class="campo tb-f") usando la hoja entregada: su '
+      + 'filtro de columna pasa de 12px a 13px y de 26,73px a 36,18px de alto, y la fila de filtros '
+      + 'de 35,40 a 44,84. Es el valor que el catalogo enseña desde siempre. Quien usa <TablaDatos> '
+      + 'no ve ningun cambio.',
+    ],
+  },
   {
     v: '1.61.0', fecha: '2026-08-20',
     que: 'R86: un dato, una linea — la celda de la tabla deja de partir el texto y la fila conserva su altura',

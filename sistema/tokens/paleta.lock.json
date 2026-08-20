@@ -1,6 +1,6 @@
 {
   "documento": "MMI-DS",
-  "version": "1.61.0",
+  "version": "1.62.0",
   "norma": "WCAG 2.2 AA",
   "generado": "node sistema/tokens/generar.mjs",
   "modos": [

@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.61.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.62.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -711,7 +711,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .bloque, .app-main { min-width: 0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TABLA DE DATOS — 84 reglas · clases .tb-*
+   TABLA DE DATOS — 83 reglas · clases .tb-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tabla-simple, .tb-sub{ display: block; overflow-x: auto; }
@@ -773,8 +773,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .tb-buscar input.campo.sel-in{ min-width: 230px; font-size: 13px; padding-block: 4px; }
 .tb-fila-filtros .tb-f-celda{ padding: 4px 8px; background: var(--fondo-encabezado);
   border-bottom: 1px solid var(--borde); }
-.tb-f{ width: 100%; font-size: 12px; padding: 4px 8px; }
-select.tb-f{ padding-right: 24px; background-position: right 7px center; background-size: 13px 13px; }
+.tb-f{ width: 100%; }
 .tb-activos[hidden]{ display: none; }
 .tb-columnas{ padding: 12px; border-bottom: 1px solid var(--borde);
   background: var(--fondo-encabezado); }

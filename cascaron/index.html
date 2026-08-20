@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.61.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.62.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.61.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.62.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -1826,8 +1826,22 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 #tb-filtros-btn.activo { border-color: var(--accion); color: var(--accion); }
 .tb-fila-filtros .tb-f-celda { padding: 4px 8px; background: var(--fondo-encabezado);
   border-bottom: 1px solid var(--borde); }
-.tb-f { width: 100%; font-size: 12px; padding: 4px 8px; }
-select.tb-f { padding-right: 24px; background-position: right 7px center; background-size: 13px 13px; }
+/* R87 · EL FILTRO SOLO DECLARA LO QUE ES SUYO: llenar la columna.
+   Llevaba ademas font-size: 12px, padding: 4px 8px y, en el select, su propia
+   flecha a 13px. Ninguna de las tres se veia NUNCA aqui: empatan en
+   especificidad con .campo y select.campo —una clase contra una clase— y el
+   catalogo las anula por orden. Eran declaraciones muertas.
+   Muertas aqui, y VIVAS en la entrega. El extractor agrupa por elemento, asi
+   que .campo (Campo de texto) pasa a ir ANTES que .tb-f (Tabla de datos), el
+   empate se resuelve al reves y el filtro salia a 12px con 26,73px de alto
+   donde el catalogo lo enseña a 13px con 36,18. Medido en el navegador, con
+   las dos hojas y el mismo marcado.
+   No se arregla dandole mas especificidad: eso congelaria en la hoja un valor
+   que esta pagina no ha mostrado nunca. Se arregla quitando lo que sobra, y
+   entonces las dos hojas coinciden POR CONSTRUCCION, sin empate que resolver.
+   Lo vigila verificar-empate.mjs sobre las combinaciones de clases que
+   existen de verdad en el marcado. */
+.tb-f { width: 100%; }
 
 /* [hidden] tiene que ganar al display, o la tira de filtros activos ocupa
    16px vacia y se ve como una banda azul sin contenido. Lo reporto Control
@@ -3674,7 +3688,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.61.0</option></select></label>
+          <select class="campo cg-in"><option>v1.62.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3762,8 +3776,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.61.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.61.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.62.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.62.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -10755,6 +10769,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.62.0 <span class="cam-fecha">2026-08-20</span></h3>
+<p class="pag-intro"><strong>R87: el filtro de columna se veia distinto en el catalogo y en la entrega — mismas reglas, distinto ORDEN.</strong> R87 · Lo encontro la comprobacion de R86, no un reporte: al montar el MISMO marcado con las dos hojas y compararlo en un navegador —24.642 propiedades, 37 elementos— salieron 27 elementos identicos y 10 distintos, todos el filtro de columna de la tabla y lo que arrastra por altura. Medido: font-size 13px contra 12, relleno 8px contra 4, alto del control 36,18 contra 26,73, alto de la fila de filtros 44,84 contra 35,40, y en el select ademas la flecha a 16px contra 13. La causa no es una regla que falte ni que sobre: es el ORDEN. .tb-f y .campo empatan en especificidad —una clase contra una clase— y cuando dos reglas empatan gana la ultima. El extractor agrupa por elemento, asi que .campo (Campo de texto) pasa a ir ANTES que .tb-f (Tabla de datos) y el empate se resuelve al reves en cada hoja. Y la respuesta correcta no era elegir entre 12 y 13. Preguntandole al navegador que reglas tocan el control EN EL CATALOGO, las tres de .tb-f —font-size, padding y la flecha del select— PIERDEN alli: son declaraciones que esta pagina no ha mostrado nunca. Muertas en el catalogo y vivas en la entrega por accidente de orden. Se borran, y entonces las dos hojas coinciden POR CONSTRUCCION. Darle mas especificidad a la que pierde habria congelado en la hoja un valor que el catalogo no enseña. .tb-f se queda con lo unico suyo: width 100%. Quien usa el componente NO ve ningun cambio: TablaDatos monta <Campo>, que emite .campo sin .tb-f, asi que su filtro ya estaba a 13px y 36,18 — igual que la promesa. El unico que veia otra cosa es quien copia el marcado del catalogo con la hoja entregada. Nace el CANDADO DEL EMPATE: ningun par de reglas que empate en especificidad puede cambiar de ganador entre las dos hojas. Se mide solo sobre las 292 combinaciones de clases que existen de verdad en el marcado —del catalogo y de los componentes—, porque sin ese filtro salen 25.823 pares teoricos como .sr-solo contra .nav-grupo, y una lista asi no se lee. Los otros candados no podian verlo: el de la promesa compara una lista de elementos escrita a mano y el filtro con sus dos clases no estaba en ella; el de la cascada resuelve la hoja que viaja contra si misma, no una contra otra; el del elemento compara etiquetas, no valores.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>Solo a quien copie el marcado del catalogo (class="campo tb-f") usando la hoja entregada: su filtro de columna pasa de 12px a 13px y de 26,73px a 36,18px de alto, y la fila de filtros de 35,40 a 44,84. Es el valor que el catalogo enseña desde siempre. Quien usa <TablaDatos> no ve ningun cambio.</td></tr></tbody></table>
 
 
 <h3 class="sub-seccion">v1.61.0 <span class="cam-fecha">2026-08-20</span></h3>
