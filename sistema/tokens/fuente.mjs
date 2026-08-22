@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.65.0";
+export const VERSION = "1.66.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,31 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.66.0', fecha: '2026-08-21',
+    que: 'R91: 42 de 105 exportaciones no llegaban al indice — los Props de TODOS los componentes',
+    porque:
+      'R91 · Lo reporto Control Administrativos con la frase que lo resume: «AjusteHorario no se '
+      + 'exporta: anadieron onAjuste pero dejaron su tipo dentro. Lo deduzco del propio componente '
+      + 'en vez de meter mano en el paquete». Tenian razon y el fallo era nuestro, de la v1.64.0. '
+      + 'Pero al mirarlo no era un olvido puntual: 42 de 105 exportaciones no llegaban a '
+      + 'componentes/src/index.ts, y entre ellas los Props de TODOS y CADA UNO de los componentes '
+      + '—BotonProps, ChipProps, TablaDatosProps, HorarioProps…—. Un paquete que obliga a deducir el '
+      + 'tipo de una prop no ha publicado esa prop. '
+      + 'Salen las 42, y el indice DEJA DE DEPENDER DE ACORDARSE: verificar-entrega falla si un '
+      + 'componente exporta algo que no llega hasta alli. Lo que no quiera publicarse, que no se '
+      + 'exporte del modulo: ahi la decision se ve y se revisa; un export que no llega al indice no '
+      + 'es una decision, es un olvido. '
+      + 'Es la TERCERA lista escrita a mano que se queda corta el mismo dia: los casos de la promesa '
+      + 'que no incluian el filtro (R87), los que no incluian el horario (R90) y este indice. La '
+      + 'familia entera esta declarada en la memoria. '
+      + 'El candado se vio en rojo antes que en verde, y la primera version NO CAZO NADA: buscaba el '
+      + 'nombre en todo el texto del indice y se daba por satisfecha con encontrarlo en un '
+      + 'COMENTARIO —el que cita AjusteHorario al explicar por que existe el candado—. Ahora lee los '
+      + 'nombres de las clausulas export, no el archivo.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.65.0', fecha: '2026-08-21',
     que: 'R90: el candado de la promesa NO MIRABA EL HORARIO — verde por no mirar',

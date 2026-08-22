@@ -29,7 +29,7 @@
  * Cálculo puro. No toca red. No escribe nada.
  */
 
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { VERSION } from '../tokens/fuente.mjs';
@@ -233,6 +233,66 @@ if (existsSync(indice)) {
     process.exit(1);
   }
   console.log(`  ${viajan.size} módulos de componente viajan en el paquete.`);
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // R91 · TODO LO QUE UN COMPONENTE EXPORTA TIENE QUE LLEGAR AL ÍNDICE
+  //
+  // La comprobación de arriba mira que el MÓDULO viaje. No miraba que sus
+  // exportaciones salgan, y son dos cosas distintas: `Horario.tsx` viajaba
+  // entero y `AjusteHorario` no se podía importar.
+  //
+  // Lo reportó Control Administrativos el 2026-08-21, y con la frase que lo
+  // resume: «lo deduzco del propio componente en vez de meter mano en el
+  // paquete». Al mirarlo aparecieron 42 de 105 exportaciones sin salida, entre
+  // ellas los `Props` de TODOS los componentes. Un paquete que obliga a deducir
+  // el tipo de una prop no ha publicado esa prop.
+  //
+  // Es la tercera lista escrita a mano que se queda corta el mismo día —el
+  // filtro que no estaba en los casos de la promesa (R87), el horario que
+  // tampoco estaba (R90), y este índice— y por eso deja de depender de que
+  // alguien se acuerde.
+  //
+  // Lo que NO quiera publicarse, que no se exporte del módulo: ahí la decisión
+  // se ve y se revisa. Un `export` que no llega al índice no es una decisión,
+  // es un olvido.
+  // ───────────────────────────────────────────────────────────────────────────
+  // Se leen los nombres de las CLÁUSULAS export, no el texto del archivo. La
+  // primera versión buscaba el nombre en todo el índice y se daba por
+  // satisfecha con encontrarlo en un COMENTARIO — el de aquí arriba, que cita
+  // `AjusteHorario` al contar por qué existe este candado. Se rompió a
+  // propósito quitando esa exportación y el candado siguió en verde.
+  const sacaElIndice = new Set();
+  for (const m of readFileSync(indice, 'utf8').matchAll(/export \{([^}]+)\}/g)) {
+    for (const n of m[1].split(',')) {
+      const nombre = n.replace(/^\s*type\s+/, '').split(/\s+as\s+/)[0].trim();
+      if (nombre) sacaElIndice.add(nombre);
+    }
+  }
+  const dirFuente = join(RAIZ, 'componentes', 'src');
+  const sinSalida = [];
+  let exportadas = 0;
+  for (const f of readdirSync(dirFuente).filter((f) => /\.tsx$/.test(f)).sort()) {
+    const fuente = readFileSync(join(dirFuente, f), 'utf8');
+    const nombres = [
+      ...[...fuente.matchAll(/^export (?:type|interface) ([A-Za-z0-9_]+)/gm)],
+      ...[...fuente.matchAll(/^export (?:function|const) ([A-Za-z0-9_]+)/gm)],
+    ].map((m) => m[1]);
+    exportadas += nombres.length;
+    for (const n of nombres) {
+      if (!sacaElIndice.has(n)) sinSalida.push(`${n}  (${f})`);
+    }
+  }
+  if (sinSalida.length) {
+    console.error(`\n  ${sinSalida.length} exportación(es) que un componente declara y el ÍNDICE no saca:\n`);
+    for (const c of sinSalida) console.error(`    ${c}`);
+    console.error('\n  Quien instale el paquete no las puede importar: tiene que deducirlas');
+    console.error('  del componente, que es justo lo que un paquete evita.');
+    console.error('\n  Dos salidas, y las dos honestas: sácala por `componentes/src/index.ts`,');
+    console.error('  o quítale el `export` al módulo si no es pública. Lo que no vale es');
+    console.error('  exportarla a medias.\n');
+    process.exit(1);
+  }
+  console.log(`  ${exportadas} exportaciones de componente · todas salen por el índice.`);
 }
 
 console.log('\n  Nada estructural se queda sin decidir.\n');

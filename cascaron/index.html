@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.65.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.66.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.65.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.66.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -3795,7 +3795,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.65.0</option></select></label>
+          <select class="campo cg-in"><option>v1.66.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3883,8 +3883,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.65.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.65.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.66.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.66.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -11002,6 +11002,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.66.0 <span class="cam-fecha">2026-08-21</span></h3>
+<p class="pag-intro"><strong>R91: 42 de 105 exportaciones no llegaban al indice — los Props de TODOS los componentes.</strong> R91 · Lo reporto Control Administrativos con la frase que lo resume: «AjusteHorario no se exporta: anadieron onAjuste pero dejaron su tipo dentro. Lo deduzco del propio componente en vez de meter mano en el paquete». Tenian razon y el fallo era nuestro, de la v1.64.0. Pero al mirarlo no era un olvido puntual: 42 de 105 exportaciones no llegaban a componentes/src/index.ts, y entre ellas los Props de TODOS y CADA UNO de los componentes —BotonProps, ChipProps, TablaDatosProps, HorarioProps…—. Un paquete que obliga a deducir el tipo de una prop no ha publicado esa prop. Salen las 42, y el indice DEJA DE DEPENDER DE ACORDARSE: verificar-entrega falla si un componente exporta algo que no llega hasta alli. Lo que no quiera publicarse, que no se exporte del modulo: ahi la decision se ve y se revisa; un export que no llega al indice no es una decision, es un olvido. Es la TERCERA lista escrita a mano que se queda corta el mismo dia: los casos de la promesa que no incluian el filtro (R87), los que no incluian el horario (R90) y este indice. La familia entera esta declarada en la memoria. El candado se vio en rojo antes que en verde, y la primera version NO CAZO NADA: buscaba el nombre en todo el texto del indice y se daba por satisfecha con encontrarlo en un COMENTARIO —el que cita AjusteHorario al explicar por que existe el candado—. Ahora lee los nombres de las clausulas export, no el archivo.</p>
+
 
 
 <h3 class="sub-seccion">v1.65.0 <span class="cam-fecha">2026-08-21</span></h3>

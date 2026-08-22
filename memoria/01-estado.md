@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 21 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.65.0** — el candado de la promesa no
-miraba el horario: estaba **verde por no mirar**. Segunda vez que la lista
-escrita a mano se queda corta
+**Versión del sistema:** MMI-DS **v1.66.0** — 42 de 105 exportaciones no
+llegaban al índice, incluidos los `Props` de **todos** los componentes. Tercera
+lista a mano que se queda corta el mismo día
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -42,10 +42,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 790 reglas de 1274 · **566 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.65.0.zip` · **53 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.66.0.zip` · **53 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.65.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.66.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,35 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.65.0), con detalle
+### Lo de hoy (v1.66.0), con detalle
+
+**R91 · 42 de 105 exportaciones no llegaban al índice.** Lo reportó Control
+Administrativos, y con la frase que lo resume: *«`AjusteHorario` no se exporta:
+añadieron `onAjuste` pero dejaron su tipo dentro. Lo deduzco del propio
+componente en vez de meter mano en el paquete»*. Tenían razón, y el fallo era
+nuestro, de la v1.64.0 — de ayer.
+
+**Pero no era un olvido puntual.** Al medirlo: **42 de 105**, y entre ellas los
+`Props` de **todos y cada uno** de los componentes. Un paquete que obliga a
+deducir el tipo de una prop **no ha publicado esa prop**.
+
+Salen las 42, y el índice **deja de depender de acordarse**:
+`verificar-entrega` falla si un componente exporta algo que no llega allí. Lo
+que no quiera publicarse, que no se exporte del módulo — ahí la decisión se ve.
+Un `export` que no llega al índice no es una decisión, es un olvido.
+
+**Tercera lista escrita a mano que se queda corta el mismo día**: los casos de la
+promesa sin el filtro (R87), los mismos sin el horario (R90), y este índice. Las
+tres tenían la misma forma y ninguna avisaba de estar incompleta.
+
+**Y el candado nuevo no cazó nada en su primera versión.** Buscaba el nombre en
+todo el texto del índice y se daba por satisfecha al encontrarlo **en un
+comentario** — el que cita `AjusteHorario` para explicar por qué existe el
+candado. Se rompió a propósito, siguió verde, y se rehízo para leer los nombres
+de las cláusulas `export`. Es el mismo error que ya había cometido la prueba de
+R88, dos días seguidos.
+
+### Lo de la v1.65.0, con detalle
 
 **R90 · el candado estaba verde por no mirar.** Salió de una pregunta, no de un
 reporte: *«¿la entrega es igual a la promesa?»*, después de publicar R88 y R89.
@@ -469,7 +497,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.65.0
+Versión                      1.66.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
 Pruebas                         415   en 28 archivos
