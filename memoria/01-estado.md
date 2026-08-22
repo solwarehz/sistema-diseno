@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 21 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.66.0** — 42 de 105 exportaciones no
-llegaban al índice, incluidos los `Props` de **todos** los componentes. Tercera
-lista a mano que se queda corta el mismo día
+**Versión del sistema:** MMI-DS **v1.67.0** — el candado de ESLint no sabía
+leer TypeScript: moría en el análisis antes de llegar a ninguna regla. Lo
+teníamos resuelto para nosotros y entregábamos la versión sin resolver
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -37,15 +37,15 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Motor de tokens | ✅ | `generar.mjs` — 56 semánticos + 5 de marca, claro y oscuro |
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
-| Candado de lint | ✅ | `probar-candado` en Docker |
+| Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
 | Componentes de React | ✅ | **415 pruebas en 28 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · 790 reglas de 1274 · **566 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.66.0.zip` · **53 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.67.0.zip` · **53 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.66.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.67.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,44 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.66.0), con detalle
+### Lo de hoy (v1.67.0), con detalle
+
+**R92 · el candado de ESLint no sabía leer TypeScript.** Lo reportó Control
+Administrativos con el caso exacto: *«no parsea `import { type X }`, que es
+TypeScript estándar desde la 4.5»*. Reproducido montando el candado **a solas**,
+como dice su propia cabecera que se use:
+
+```
+1:15  error  Parsing error: Unexpected token AjusteHorario
+```
+
+**El defecto era más ancho que el caso.** Sin analizador no se parseaba **nada**
+de TypeScript; ese import es solo donde lo notaron. ESLint moría **antes de
+llegar a ninguna regla del sistema**, y el error parecía del archivo del
+consumidor.
+
+**Y la ironía es la parte que enseña:** el `eslint.config.mjs` de *este*
+repositorio lleva el parser desde hace versiones, con un comentario al lado que
+explica exactamente este fallo. **Sabíamos el problema, lo resolvimos para
+nosotros, y entregamos el candado sin él** — documentando el uso que no
+funciona. Es el mismo defecto que el reset `box-sizing` que no viajaba: lo que
+el sistema usa y no entrega, lo sufre el consumidor.
+
+El analizador se carga con `await import`: si el consumidor no tiene
+`typescript-eslint`, el candado sigue cubriendo su JavaScript **y avisa por
+consola**, en vez de reventar o de fallar en silencio. Declarado como peer
+opcional.
+
+**Entra la prueba que faltaba** —el candado a solas sobre un `.tsx` real, tercer
+paso de `probar-con-eslint.sh`—, vista en rojo con el candado desarmado antes de
+verla en verde.
+
+**Y se arregla el paso 1 de ese mismo script**, que exigía cero infracciones
+habiendo dos declaradas como deuda: **fallaba siempre, y una prueba que falla
+siempre nadie la corre.** Ahora tolera exactamente la deuda y falla con
+cualquier otra.
+
+### Lo de la v1.66.0, con detalle
 
 **R91 · 42 de 105 exportaciones no llegaban al índice.** Lo reportó Control
 Administrativos, y con la frase que lo resume: *«`AjusteHorario` no se exporta:
@@ -497,7 +534,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.66.0
+Versión                      1.67.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
 Pruebas                         415   en 28 archivos
@@ -536,7 +573,7 @@ docker compose exec ds sh -c "cd componentes && npm run probar"
 | R8, R14–R17 | Marcados `PENDIENTE` en `comportamiento.md` |
 | Selección múltiple y encabezado fijo en la tabla | Declarado en manual §10 |
 | Escudo suelto e isotipo simplificado | **Trabajo de diseñador, no de código** |
-| ESLint: 2 errores en `Estados.tsx` (46 y 149) | `style=` dinámico de esqueleto y progreso; la decisión **es del responsable** y sigue sin tomarse |
+| ESLint: 2 errores en `Estados.tsx` (67 y 195) — ahora tolerados como deuda por `probar-con-eslint.sh` | `style=` dinámico de esqueleto y progreso; la decisión **es del responsable** y sigue sin tomarse |
 
 ---
 

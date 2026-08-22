@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.66.0";
+export const VERSION = "1.67.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,36 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.67.0', fecha: '2026-08-21',
+    que: 'R92: el candado de ESLint no sabia leer TypeScript — moria en el analisis antes de llegar a ninguna regla',
+    porque:
+      'R92 · Lo reporto Control Administrativos con el caso exacto: «el candado de ESLint no parsea '
+      + 'import { type X }, que es TypeScript estandar desde la 4.5». Reproducido tal cual, montando '
+      + 'el candado A SOLAS como lo documenta su propia cabecera: «Parsing error: Unexpected token». '
+      + 'Y el defecto era mas ancho que el caso: el candado no traia analizador de TypeScript, asi '
+      + 'que no parseaba NADA de TS. Ese import es solo donde lo notaron; habria muerto igual con la '
+      + 'primera anotacion de tipo. ESLint fallaba ANTES de llegar a ninguna regla del sistema, y el '
+      + 'error parecia del archivo del consumidor. '
+      + 'LA IRONIA ES LA PARTE QUE ENSENA: el eslint.config.mjs de ESTE repositorio lleva el parser '
+      + 'desde hace versiones, con un comentario al lado que explica exactamente este fallo —«sin el, '
+      + 'ESLint no sabe leer .tsx y falla con Parsing error ANTES de llegar a las reglas»—. Sabiamos '
+      + 'el problema, lo resolvimos PARA NOSOTROS, y entregamos el candado sin el documentando el uso '
+      + 'que no funciona. Mismo defecto que el reset box-sizing que no viajaba: lo que el sistema usa '
+      + 'y no entrega, lo sufre el consumidor. '
+      + 'El analizador se carga con await import y no con un import normal: si el consumidor no tiene '
+      + 'typescript-eslint, el candado sigue cubriendo su JavaScript y AVISA por consola, en vez de '
+      + 'reventar al importarse o de fallar en silencio. Se declara como peerDependency opcional. Los '
+      + 'archivos de declaracion —.d.ts, .d.mts— quedan fuera: no llevan color y solo producian ruido. '
+      + 'Y entra la prueba que faltaba, la tercera de probar-con-eslint.sh: el candado A SOLAS, sobre '
+      + 'un .tsx con sintaxis de TypeScript, no puede morir en el analisis. Se probo con el candado '
+      + 'desarmado y salio en rojo antes de verla en verde. '
+      + 'De paso se arregla el PASO 1 de ese mismo script, que exigia cero infracciones cuando hay dos '
+      + 'declaradas como deuda en Estados.tsx: fallaba siempre, y una prueba que falla siempre nadie '
+      + 'la corre. Ahora tolera exactamente la deuda y falla con cualquier otra.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.66.0', fecha: '2026-08-21',
     que: 'R91: 42 de 105 exportaciones no llegaban al indice — los Props de TODOS los componentes',

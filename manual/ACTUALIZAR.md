@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.66.0
+# Actualizar al sistema de diseño v1.67.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.66.0"
+npm install "github:solwarehz/sistema-diseno#v1.67.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,19 +27,19 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.66.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.67.0
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.66.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.67.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.66.0 --repo solwarehz/sistema-diseno
+gh release download v1.67.0 --repo solwarehz/sistema-diseno
 ```
 
 Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
@@ -296,6 +296,7 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.63.0 | **Nada se rompe: se añade.** `Horario` y `Chip` aceptan cuatro tonos más — `identidad-1` a `identidad-4` —, los mismos colores que ya usaba el avatar. Son **decorativos**: agrupan (una sede, un turno) y **no significan nada**. Condición del sistema: lo agrupado va **también en texto** y con **leyenda** al lado (`chip-punto` con el tono de identidad), porque el color nunca puede ser el único medio |
 | 1.64.0 | **`Horario` cambia de sitio algunos bloques, y a mejor.** Un bloque desalineado —07:45 con paso de 60— se dibujaba **en la fila de las 08:00** con el rótulo «07:45» al lado. Ahora se ancla donde **cae** su inicio y el resto lo resuelve el **sombreado en cuartos**: 13:30–15:00 es media celda de las 13:00 más la de las 14:00. Además, en un solapamiento **gana el primer bloque** (antes, el último), y los bloques más cortos que medio paso, que desaparecían, ahora se dibujan. **Nuevo `onAjuste`**: todo lo que no se pueda dibujar tal cual se anuncia con su motivo, en vez de desaparecer |
 | 1.66.0 | **Nada se rompe: ahora se puede importar lo que ya existía.** Las **42 exportaciones** que un componente declaraba y el índice no sacaba ya salen — entre ellas los `Props` de **todos** los componentes y `AjusteHorario`, que reportaron ustedes. Si dedujeron algún tipo del componente para no tocar el paquete, **ya pueden importarlo** |
+| 1.67.0 | **El candado de ESLint ya sabe leer TypeScript.** Antes moría con `Parsing error` ante cualquier sintaxis de TS —`import { type X }`, una anotación de tipo, lo que fuera— **antes de llegar a ninguna regla**, y el error parecía de su archivo. Si lo tenían apagado o con excepciones por esto, **pueden quitarlas**. Necesita `typescript-eslint` instalado (peer opcional); si no está, avisa por consola y cubre solo el JavaScript |
 
 **Lo que no rompe pero conviene aprovechar:** `soloLectura` en `Selector`
 (§6.5 del manual), `persona.foto` en `CargaImagen` (§6.7), `CargaId` para el

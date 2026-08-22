@@ -6,8 +6,22 @@
  *
  * Uso en el proyecto consumidor (ESLint 9, flat config):
  *
- *   import candado from './sistema/candado/candado.eslint.config.mjs';
+ *   import candado from 'sistema-diseno-ae/eslint';
  *   export default [ ...candado ];
+ *
+ * Y eso BASTA, desde la v1.67.0. Antes no: el candado no traía quién leyera
+ * TypeScript, así que en cuanto tocaba un `.ts` o un `.tsx` ESLint moría con
+ * «Parsing error» ANTES de llegar a ninguna regla. Lo reportó Control
+ * Administrativos con el caso exacto —`import { type X }`, estándar desde
+ * TypeScript 4.5— pero el defecto era más ancho: no se parseaba NADA de
+ * TypeScript; ese import es solo donde lo notaron.
+ *
+ * Y la ironía, que es la parte que enseña: el `eslint.config.mjs` de ESTE
+ * repositorio lleva el parser desde hace versiones, con un comentario que
+ * explica justo este fallo. Sabíamos el problema, lo resolvimos para nosotros,
+ * y entregamos el candado sin él documentando el uso que no funciona. Mismo
+ * defecto que el reset `box-sizing` que no viajaba: lo que el sistema usa y no
+ * entrega, el consumidor lo sufre.
  *
  * Qué prohíbe, y por qué cada regla existe:
  *
@@ -24,6 +38,28 @@
  *                                     marca-celeste (2,6:1) no entran al sistema.
  *   7 · Pesos prohibidos              §3.2 — cuatro pesos y ninguno más.
  */
+
+// ── Quién lee TypeScript ────────────────────────────────────────────────────
+// Se carga con `await import` y no con un `import` normal a propósito: si el
+// consumidor no tiene `typescript-eslint`, el candado tiene que seguir
+// sirviendo para sus `.js` en vez de reventar entero al importarse. Lo que NO
+// puede volver a pasar es que falle en silencio con un «Parsing error» que
+// parece un fallo del archivo del consumidor.
+let parserTs = null;
+try {
+  const m = await import('typescript-eslint');
+  parserTs = (m.default ?? m).parser ?? m.parser ?? null;
+} catch {
+  try {
+    parserTs = (await import('@typescript-eslint/parser')).default ?? null;
+  } catch {
+    console.warn(
+      '\n  [candado MMI-DS] No encuentro `typescript-eslint`, así que NO voy a revisar\n'
+      + '  los archivos .ts/.tsx: sin analizador, ESLint no sabe leerlos.\n'
+      + '  Instálalo —npm i -D typescript-eslint— o el candado solo cubre tu JavaScript.\n'
+    );
+  }
+}
 
 // ── Patrones ────────────────────────────────────────────────────────────────
 
@@ -85,6 +121,22 @@ const restringidos = [
 ];
 
 export default [
+  // El analizador va PRIMERO y en su propio bloque: sin él, ESLint no sabe leer
+  // un `.tsx` y muere antes de llegar a las reglas de abajo. Si no está
+  // instalado no se añade nada y el candado sigue cubriendo el JavaScript.
+  ...(parserTs
+    ? [{
+        name: 'mmi-ds/candado-ts',
+        files: ['**/*.{ts,tsx,mts,cts}'],
+        // Los archivos de DECLARACIÓN quedan fuera. No llevan color ni estilo
+        // —son tipos— así que el candado no tiene nada que mirar en ellos, y
+        // sí llevan directivas `eslint-disable` de reglas del plugin de
+        // TypeScript que aquí no se registra: procesarlos solo produce ruido
+        // sobre archivos que ninguna regla del sistema vigila.
+        ignores: ['**/*.d.ts', '**/*.d.mts', '**/*.d.cts'],
+        languageOptions: { parser: parserTs, parserOptions: { ecmaFeatures: { jsx: true } } },
+      }]
+    : []),
   {
     name: 'mmi-ds/candado',
     files: ['**/*.{ts,tsx,js,jsx,mjs}'],
