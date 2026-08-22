@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.69.0";
+export const VERSION = "1.70.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,39 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.70.0', fecha: '2026-08-21',
+    que: 'R95: el atajo border-left de .chip borraba el color de TODOS los tonos que perdian el empate — y los semanticos se salvaban por accidente',
+    porque:
+      'R95 · Lo midio Control Administrativos hasta el ultimo detalle: .chip-identidad-N ponia '
+      + 'border-color: var(--identidad-N) y .chip, mas abajo en la hoja, border-left: 3px solid '
+      + 'currentcolor. Misma especificidad —una clase cada una—, gana la ultima, y el ATAJO no solo '
+      + 'pone grosor y estilo: REESCRIBE el color. Los cuatro tonos salian del color del texto, '
+      + 'rgb(44,42,37), y se veian identicos entre si. Los tokens estaban bien; lo que fallaba era la '
+      + 'cascada. '
+      + 'Es la leccion de R87 aplicada a nuestro propio codigo, dos dias despues de escribirla. '
+      + 'Y LOS TONOS SEMANTICOS SE SALVABAN POR ACCIDENTE: el extractor emite .chip-exito dos veces y '
+      + 'la segunda copia cae despues de .chip. Apoyarse en eso no es tener una regla, es tener suerte '
+      + '— asi que se arreglan TODOS por especificidad, no solo los de identidad. Los tonos de chip y '
+      + 'de mensaje pasan a .chip.chip-X y .msj.msj-X, que ganan siempre. '
+      + 'EL CANDADO DEL EMPATE NO LO CAZABA, y esa es la parte que importa. Comparaba propiedades por '
+      + 'NOMBRE, y border-left no se parece a border-color; ademas solo miraba divergencias entre las '
+      + 'dos hojas, y este defecto estaba igual en las dos. Ahora expande los atajos a las longhands '
+      + 'que de verdad se pisan, y añade una regla nueva dentro de UNA MISMA hoja: un modificador no '
+      + 'puede perder contra su propia clase base. '
+      + 'Al estrenarla salieron 26 casos, de los que 17 eran ruido: se indexaba la PRIMERA aparicion de '
+      + 'cada regla cuando en CSS manda la ultima, y faltaba descartar los que declaran el MISMO valor '
+      + '—.btn-ic repite el display de .btn— y los que llevan !important, como .chip-sin-filete. Un '
+      + 'candado que grita por lo que funciona se acaba ignorando entero. '
+      + 'Los que quedaron eran REALES y no los habia reportado nadie: .chip-pend y .chip-inact perdian '
+      + 'su borde-fuerte igual que identidad, y .app-cascaron pedia 100vh recibiendo los 520px de .app.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'Los chips `pendiente` e `inactivo` cambian de aspecto, y a lo que siempre debieron ser: su '
+      + 'filete pasa del color del texto a borde-fuerte. Nadie lo habia reportado porque el gris '
+      + 'parecia intencionado.',
+    ],
+  },
   {
     v: '1.69.0', fecha: '2026-08-21',
     que: 'R94: onAjuste entraba en BUCLE INFINITO, y el sombreado desalineaba las columnas segun su contenido',

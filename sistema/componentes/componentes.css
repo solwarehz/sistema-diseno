@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.69.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.70.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -199,10 +199,10 @@ input[type='date'].campo::-webkit-calendar-picker-indicator{
   position: absolute; right: 0; top: 0;
 }
 input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: none; }
-.chip-exito, .msj-exito{ background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
-.chip-aviso, .msj-aviso{ background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
-.chip-error, .msj-error{ background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
-.chip-info,  .msj-info{ background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
+.chip.chip-exito, .msj.msj-exito{ background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.chip.chip-aviso, .msj.msj-aviso{ background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.chip.chip-error, .msj.msj-error{ background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
+.chip.chip-info, .msj.msj-info{ background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
 .msj{ display: flex; align-items: flex-start; gap: 8px;
   font-size: 13px; padding: 8px 12px; border-radius: 6px; border-left: 3px solid; }
 .msj-ico{ flex: none; margin-top: 1px; }
@@ -613,18 +613,18 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
    CHIP DE ESTADO — 28 reglas · clases .chip-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-.chip-pend{ background: var(--fondo-encabezado); color: var(--texto-principal);
+.chip.chip-pend{ background: var(--fondo-encabezado); color: var(--texto-principal);
   border-color: var(--borde-fuerte); }
-.chip-inact{ background: var(--borde); color: var(--texto-principal);
+.chip.chip-inact{ background: var(--borde); color: var(--texto-principal);
   border-color: var(--borde-fuerte); }
-.chip-identidad-1{ background: var(--fondo-encabezado); color: var(--texto-principal);
-  border-color: var(--identidad-1); }
-.chip-identidad-2{ background: var(--fondo-encabezado); color: var(--texto-principal);
-  border-color: var(--identidad-2); }
-.chip-identidad-3{ background: var(--fondo-encabezado); color: var(--texto-principal);
-  border-color: var(--identidad-3); }
-.chip-identidad-4{ background: var(--fondo-encabezado); color: var(--texto-principal);
-  border-color: var(--identidad-4); }
+.chip.chip-identidad-1{ background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-left-color: var(--identidad-1); }
+.chip.chip-identidad-2{ background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-left-color: var(--identidad-2); }
+.chip.chip-identidad-3{ background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-left-color: var(--identidad-3); }
+.chip.chip-identidad-4{ background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-left-color: var(--identidad-4); }
 .chip-sup{ display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 8px; }
 .chip-sup-caja{ border: 1px solid var(--borde); border-radius: 6px; padding: 12px;
   display: flex; flex-direction: column; gap: 8px; }
@@ -647,10 +647,10 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .chip{ display: inline-block; font-size: 12px; font-weight: 500;
   padding: 4px 8px; border-radius: 3px; border-left: 3px solid; }
 .chip[hidden]{ display: none; }
-.chip-exito, .msj-exito{ background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
-.chip-aviso, .msj-aviso{ background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
-.chip-error, .msj-error{ background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
-.chip-info,  .msj-info{ background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
+.chip.chip-exito, .msj.msj-exito{ background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.chip.chip-aviso, .msj.msj-aviso{ background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.chip.chip-error, .msj.msj-error{ background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
+.chip.chip-info, .msj.msj-info{ background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
 
 /* ───────────────────────────────────────────────────────────────────────────
    AVATAR — 13 reglas · clases .avatar-*
@@ -1050,7 +1050,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 :where([data-marco], .marco, .lat):focus-visible{
   outline-color: var(--foco-en-marco);
 }
-.app-cascaron{ min-height: 100vh; }
+.app.app-cascaron{ min-height: 100vh; }
 .app-cascaron .lat{ position: sticky; top: 0; height: 100vh; overflow: visible; }
 .app-cascaron .lat-nav{ overflow-y: auto; overflow-x: visible; }
 .app-cascaron .lat.colapsado .lat-nav{ overflow: visible; }
@@ -1061,7 +1061,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
   .app-cascaron .lat:not(.colapsado){ transform: translateX(0); box-shadow: var(--sombra-capa); }
   .app-cascaron .velo{ position: fixed; inset: 0; z-index: 55;
     background: var(--marco-fondo); opacity: .5; cursor: pointer; }
-  .app-cascaron{ position: relative; overflow-x: hidden; }
+  .app.app-cascaron{ position: relative; overflow-x: hidden; }
   .top-filtros{ flex-wrap: wrap; }
   .top-filtros .campo{ min-width: 0; }
   .top-filtros .cg{ min-width: 0; flex: 1 1 120px; }

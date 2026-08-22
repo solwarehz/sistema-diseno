@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 21 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.69.0** — `onAjuste` entraba en **bucle
-infinito** y el sombreado **desalineaba** las columnas según su contenido. Dos
-fallos nuestros de la v1.64.0
+**Versión del sistema:** MMI-DS **v1.70.0** — el atajo `border-left` de `.chip`
+borraba el color de todo tono que perdiera el empate. Los semánticos **se
+salvaban por accidente**
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -38,14 +38,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **419 pruebas en 29 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **420 pruebas en 29 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · 790 reglas de 1274 · **566 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.69.0.zip` · **54 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.70.0.zip` · **54 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.69.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.70.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,44 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.69.0), con detalle
+### Lo de hoy (v1.70.0), con detalle
+
+**R95 · el atajo que borraba el color.** Control Administrativos lo midió hasta
+el último detalle: `.chip-identidad-N` ponía `border-color` y `.chip`, más abajo,
+`border-left: 3px solid currentcolor`. Misma especificidad, gana la última, y
+**el atajo no solo pone grosor y estilo: reescribe el color**. Los cuatro tonos
+salían en `rgb(44,42,37)` y se veían idénticos entre sí.
+
+Es **la lección de R87 aplicada a nuestro propio código**, dos días después de
+escribirla.
+
+**Y los semánticos se salvaban por accidente.** El extractor emite
+`.chip-exito` dos veces y la segunda copia cae después de `.chip`. Apoyarse en
+eso no es tener una regla: es tener suerte. Así que se arreglan **todos** por
+especificidad —`.chip.chip-X`, `.msj.msj-X`—, no solo los de identidad.
+
+**El candado del empate no lo cazaba**, y esa es la parte que importa:
+
+- comparaba propiedades **por nombre**, y `border-left` no se parece a
+  `border-color`;
+- solo miraba divergencias **entre las dos hojas**, y este defecto estaba igual
+  en las dos.
+
+Ahora expande los atajos a las longhands que de verdad se pisan, y añade una
+regla dentro de **una misma hoja**: *un modificador no puede perder contra su
+propia clase base*.
+
+**Al estrenarla salieron 26 casos y 17 eran ruido.** Se indexaba la **primera**
+aparición de cada regla cuando en CSS manda la última; y faltaba descartar los
+que declaran el **mismo valor** —`.btn-ic` repite el `display` de `.btn`— y los
+que llevan `!important`, como `.chip-sin-filete`. **Un candado que grita por lo
+que funciona se acaba ignorando entero.**
+
+**Los que quedaron eran reales y no los había reportado nadie:** `.chip-pend` y
+`.chip-inact` perdían su `borde-fuerte` igual que identidad, y `.app-cascaron`
+pedía `100vh` recibiendo los `520px` de `.app`.
+
+### Lo de la v1.69.0, con detalle
 
 **R94 · dos fallos nuestros de la v1.64.0**, los dos reportados por Control
 Administrativos, que además tuvo que blindarse el bucle por su cuenta.
@@ -618,10 +655,10 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.69.0
+Versión                      1.70.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
-Pruebas                         419   en 29 archivos
+Pruebas                         420   en 29 archivos
 Reglas que viajan               790   de 1274 · 566 clases, 0 huérfanas
 Candado de la cascada           867   reglas leidas · 11 anchos
 Candado del empate              292   combinaciones reales · 53 empates

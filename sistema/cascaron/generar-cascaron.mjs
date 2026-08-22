@@ -4915,7 +4915,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .conmutador button:focus-visible { outline: 2px solid var(--foco-en-marco); outline-offset: 2px; }
 
 /* ── El cascarón usa la misma cáscara que la aplicación ──────────────────── */
-.app-cascaron { min-height: 100vh; }
+.app.app-cascaron { min-height: 100vh; }
 /* La lateral plegada NO puede recortar el panel flotante, que sale fuera de
    sus 56px. El recorte se limita al eje vertical. */
 .app-cascaron .lat { position: sticky; top: 0; height: 100vh; overflow: visible; }
@@ -4956,7 +4956,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
      cajon y sobre todo lo demas, incluida la barra. */
   .app-cascaron .velo { position: fixed; inset: 0; z-index: 55;
     background: var(--marco-fondo); opacity: .5; cursor: pointer; }
-  .app-cascaron { position: relative; overflow-x: hidden; }
+  .app.app-cascaron { position: relative; overflow-x: hidden; }
   /* Los filtros envuelven y encogen en vez de imponer 360px de mínimo. */
   .top-filtros { flex-wrap: wrap; }
   .top-filtros .campo { min-width: 0; }
@@ -5531,7 +5531,7 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
    como en un teléfono. No es una maqueta dibujada: es el catálogo entero
    dentro del ancho real, así que lo que se rompa, se rompe de verdad. */
 [data-vista='movil'] body { background: var(--fondo-encabezado); padding: 24px 0; }
-[data-vista='movil'] .app-cascaron {
+[data-vista='movil'] .app.app-cascaron {
   width: 390px; height: 780px; margin: 0 auto; overflow: hidden;
   border: 1px solid var(--borde-fuerte); border-radius: 6px;
   box-shadow: var(--sombra-capa); position: relative; }
@@ -5653,7 +5653,7 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
    entra: se reserva con relleno del marco.
    44px arriba y 36px abajo. iOS marca 34pt abajo y se redondea HACIA ARRIBA
    para seguir en la rejilla de 4 —pasarse deja aire, quedarse corto invade—. */
-[data-app] .app-cascaron { padding: 44px 0 36px; }
+[data-app] .app.app-cascaron { padding: 44px 0 36px; }
 .app-zona-arriba, .app-zona-abajo, .app-tabs { display: none; }
 [data-app] .app-zona-arriba, [data-app] .app-zona-abajo {
   position: absolute; left: 0; right: 0; display: grid; place-items: center;
@@ -6168,24 +6168,37 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tp-pie { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .tp-hora { font-size: 12px; color: var(--texto-secundario); }
-.chip-pend { background: var(--fondo-encabezado); color: var(--texto-principal);
+.chip.chip-pend { background: var(--fondo-encabezado); color: var(--texto-principal);
   border-color: var(--borde-fuerte); }
-.chip-inact { background: var(--borde); color: var(--texto-principal);
+.chip.chip-inact { background: var(--borde); color: var(--texto-principal);
   border-color: var(--borde-fuerte); }
 /* R88 · IDENTIDAD EN EL CHIP — porque la leyenda va en chips, y si las dos
    paletas no coinciden, la leyenda MIENTE. Lo dijeron ellos y es exacto.
    Aqui el filete se queda en 3px, y no por descuido: en el horario los 6px
    distinguen identidad de estado dentro de una rejilla donde conviven; un chip
    dice su sede EN EL TEXTO y no compite con ninguna alarma en la misma linea.
-   Un filete de 6px en una ficha de 22px de alto la desequilibra. */
-.chip-identidad-1 { background: var(--fondo-encabezado); color: var(--texto-principal);
-  border-color: var(--identidad-1); }
-.chip-identidad-2 { background: var(--fondo-encabezado); color: var(--texto-principal);
-  border-color: var(--identidad-2); }
-.chip-identidad-3 { background: var(--fondo-encabezado); color: var(--texto-principal);
-  border-color: var(--identidad-3); }
-.chip-identidad-4 { background: var(--fondo-encabezado); color: var(--texto-principal);
-  border-color: var(--identidad-4); }
+   Un filete de 6px en una ficha de 22px de alto la desequilibra.
+
+   R95 · DOS CLASES EN EL SELECTOR, Y border-left-color EN VEZ DE border-color.
+   Nacieron con una sola clase y con el atajo, y los tags salian GRISES: .chip
+   declara border-left: 3px solid currentcolor mas abajo en la hoja, empata en
+   especificidad —una clase cada una— y al ganar por orden el atajo REESCRIBE el
+   color con currentcolor, que aqui es texto-principal. Lo midio Control
+   Administrativos: el borde pintado era rgb(44,42,37) y no #0E6F63.
+   Los tonos semanticos se salvaban POR ACCIDENTE: el extractor emite .chip-exito
+   dos veces y la segunda cae despues de .chip. Apoyarse en eso no es tener una
+   regla, es tener suerte.
+   Se arregla con ESPECIFICIDAD y no con orden —dos clases ganan siempre a una—
+   y declarando el lado que de verdad se pinta. Es la leccion de R87 aplicada a
+   nuestro propio codigo. */
+.chip.chip-identidad-1 { background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-left-color: var(--identidad-1); }
+.chip.chip-identidad-2 { background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-left-color: var(--identidad-2); }
+.chip.chip-identidad-3 { background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-left-color: var(--identidad-3); }
+.chip.chip-identidad-4 { background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-left-color: var(--identidad-4); }
 /* Solo para el ejemplo de lo que NO se debe hacer. */
 .tp-opaca { opacity: .5; }
 
@@ -7085,10 +7098,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    cambiara habria cambiado en uno de los dos. No es un ahorro de lineas: es
    que la pareja fondo/texto/filete de un estado es UNA decision, y una
    decision escrita dos veces se separa. */
-.chip-exito, .msj-exito { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
-.chip-aviso, .msj-aviso { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
-.chip-error, .msj-error { background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
-.chip-info,  .msj-info  { background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
+.chip.chip-exito, .msj.msj-exito { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.chip.chip-aviso, .msj.msj-aviso { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.chip.chip-error, .msj.msj-error { background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
+.chip.chip-info, .msj.msj-info { background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
 
 /* Escudo pendiente */
 .escudo-falta { color: var(--texto-pista); flex: none; display: grid; place-items: center; }

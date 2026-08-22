@@ -38,11 +38,30 @@ describe('Identidad — R88 · agrupa, no informa', () => {
     expect(reglas.join('')).toMatch(/background:\s*var\(--neutra-fondo\)/);
   });
 
-  it('R88 · el chip de identidad lleva el color en el borde, no en el fondo', () => {
+  /* R95 · DOS CLASES Y LA LONGHAND, y las dos cosas importan.
+     Con una sola clase empataba con `.chip`, que declara el atajo
+     `border-left: 3px solid currentcolor` más abajo — gana el último y el atajo
+     REESCRIBE el color: los cuatro tonos salían del color del texto. Con
+     `border-color` a secas volvería a pisarlo el atajo del lado izquierdo. */
+  it('R95 · el chip de identidad gana por especificidad, y declara el lado que se pinta', () => {
     for (const n of [1, 2, 3, 4]) {
-      const regla = css.match(new RegExp(`\\.chip-identidad-${n}\\{[^}]*\\}`))?.[0] ?? '';
-      expect(regla).toMatch(new RegExp(`border-color:\\s*var\\(--identidad-${n}\\)`));
+      const regla = css.match(new RegExp(`\\.chip\\.chip-identidad-${n}\\{[^}]*\\}`))?.[0] ?? '';
+      expect(regla, `falta .chip.chip-identidad-${n}`).not.toBe('');
+      expect(regla).toMatch(new RegExp(`border-left-color:\\s*var\\(--identidad-${n}\\)`));
       expect(regla).not.toMatch(/background:\s*var\(--identidad-/);
+    }
+    // Y con una sola clase no puede quedar ninguna, que era la forma vencida.
+    expect(css).not.toMatch(/(^|\n)\.chip-identidad-\d\{/);
+  });
+
+  /* Los semánticos se salvaban por accidente —el extractor emite `.chip-exito`
+     dos veces y la segunda cae después de `.chip`—. Ahora ganan por regla. */
+  it('R95 · los tonos semánticos del chip también ganan por especificidad', () => {
+    for (const tono of ['exito', 'aviso', 'error', 'info']) {
+      expect(css, `.chip.chip-${tono} debería existir`).toMatch(new RegExp(`\\.chip\\.chip-${tono}`));
+    }
+    for (const tono of ['pend', 'inact']) {
+      expect(css).toMatch(new RegExp(`\\.chip\\.chip-${tono}\\{`));
     }
   });
 

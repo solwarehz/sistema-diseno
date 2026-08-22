@@ -97,6 +97,30 @@ if (existsSync(dirComponentes)) {
 
 // ── Índice de reglas de una sola clase ──────────────────────────────────────
 
+// ── Los atajos, expandidos ──────────────────────────────────────────────────
+// R95 · `border-left: 3px solid` no solo pone grosor y estilo: REESCRIBE el
+// color. Comparando por nombre de propiedad, `border-left` y `border-color` no
+// se parecen en nada y el choque pasa desapercibido — que es exactamente lo que
+// pasó con el chip de identidad. Se expanden a las partes que de verdad se
+// pisan. Solo los atajos que el sistema usa: inventar la tabla entera de CSS
+// sería fingir una cobertura que no se ha comprobado.
+const ATAJOS = {
+  border: ['border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
+    'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width'],
+  'border-color': ['border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color'],
+  'border-width': ['border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width'],
+  'border-left': ['border-left-color', 'border-left-width'],
+  'border-right': ['border-right-color', 'border-right-width'],
+  'border-top': ['border-top-color', 'border-top-width'],
+  'border-bottom': ['border-bottom-color', 'border-bottom-width'],
+  background: ['background-color', 'background-image'],
+  outline: ['outline-color', 'outline-width'],
+  flex: ['flex-grow', 'flex-shrink', 'flex-basis'],
+  padding: ['padding-top', 'padding-right', 'padding-bottom', 'padding-left'],
+  margin: ['margin-top', 'margin-right', 'margin-bottom', 'margin-left'],
+};
+const expandir = (prop) => ATAJOS[prop] ?? [prop];
+
 const esSimple = (s) => /^[a-z]*\.[a-z][a-z0-9-]*$/.test(s.trim());
 const claseDe = (s) => s.trim().replace(/^[a-z]*\./, '');
 /** El tipo de elemento del selector, si lo lleva: `select.campo` → `select`. */
@@ -114,9 +138,12 @@ const indexar = (reglas) => {
       for (const [prop] of r.decl) {
         if (!esPropiedad(prop)) continue;
         const k = `${parte}|${prop}`;
-        // La PRIMERA declaración fija la posición desde la que se compara: si
-        // una hoja repite la propiedad, la última gana igual en las dos.
-        if (!m.has(k)) m.set(k, { orden: i, esp: especificidad(parte), valor: r.decl.get(prop) });
+        // LA ÚLTIMA, no la primera: en CSS manda la que va después. Se indexaba
+        // la primera y eso daba doce falsos rojos de golpe — el extractor emite
+        // `.chip-exito` y `.msj-exito` dos veces, y la segunda copia cae después
+        // de `.chip`, así que esos tonos SÍ ganan. Un candado que grita por algo
+        // que funciona se acaba ignorando entero.
+        m.set(k, { orden: i, esp: especificidad(parte), valor: r.decl.get(prop) });
       }
     }
   });
@@ -191,4 +218,69 @@ if (fallos.length) {
   process.exit(1);
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// R95 · UN MODIFICADOR NO PUEDE PERDER CONTRA SU PROPIA BASE
+//
+// La comprobación de arriba mira dos hojas. Esta mira UNA, porque el chip de
+// identidad estaba mal en las dos por igual: `.chip-identidad-1` ponía
+// `border-color` y `.chip`, más abajo, `border-left: 3px solid currentcolor`.
+// Misma especificidad, gana la última, y el atajo reescribía el color: los
+// cuatro tonos salían del color del texto. Lo midió Control Administrativos —
+// rgb(44,42,37) donde debía haber #0E6F63.
+//
+// Y los tonos semánticos se salvaban POR ACCIDENTE: el extractor emite
+// `.chip-exito` dos veces y la segunda cae después de `.chip`. Apoyarse en eso
+// no es tener una regla, es tener suerte.
+//
+// La regla, dicha en una frase: si `B` es un modificador de `A` —su nombre
+// empieza por el de A— y las dos empatan en especificidad, **A no puede ir
+// después**. Cuando eso pasa, lo genérico pisa a lo específico y el modificador
+// no sirve para nada.
+// ─────────────────────────────────────────────────────────────────────────────
+const vencidos = [];
+for (const hoja of [['entrega', E], ['promesa', P]]) {
+  const [nombreHoja, idx] = hoja;
+  const declara = new Map();   // clase -> [{prop, orden, esp, valor}]
+  for (const [k, v] of idx) {
+    const [sel, prop] = k.split('|');
+    const c = claseDe(sel);
+    if (!declara.has(c)) declara.set(c, []);
+    for (const larga of expandir(prop)) declara.get(c).push({ ...v, prop: larga, sel });
+  }
+  for (const [base, deBase] of declara) {
+    for (const [mod, deMod] of declara) {
+      if (mod === base || !mod.startsWith(`${base}-`)) continue;
+      if (!juntas.has([base, mod].sort().join('|'))) continue;
+      for (const b of deBase) {
+        for (const m of deMod) {
+          if (b.prop !== m.prop) continue;
+          if (b.esp !== m.esp) continue;
+          if (b.orden <= m.orden) continue;      // la base va antes: correcto
+          // Si ponen LO MISMO, que gane cualquiera da igual: `.btn-ic` repite
+          // el `display: inline-flex` de `.btn` y no hay nada que perder.
+          if (b.valor.trim() === m.valor.trim()) continue;
+          // `!important` gana pase lo que pase — así se defiende
+          // `.chip-sin-filete`, y es legítimo.
+          if (/!important/.test(m.valor)) continue;
+          vencidos.push(`[${nombreHoja}] .${mod} pierde contra .${base} en ${b.prop}`
+            + `\n        .${mod} lo pone en la posición ${m.orden}, y .${base} lo pisa en la ${b.orden}`);
+        }
+      }
+    }
+  }
+}
+
+if (vencidos.length) {
+  const unicos = [...new Set(vencidos)];
+  console.error(`  ${unicos.length} modificador(es) que su propia clase base PISA:\n`);
+  for (const v of unicos) console.error(`    ${v}`);
+  console.error('\n  Empatan en especificidad y la base va después, así que lo genérico');
+  console.error('  gana a lo específico: el modificador no pinta nada y nadie avisa.');
+  console.error('\n  El arreglo es ESPECIFICIDAD, no orden: `.base.modificador { … }`.');
+  console.error('  Mover la regla más abajo también «funciona», y es justo lo que');
+  console.error('  convierte el estilo en una cuestión de suerte.\n');
+  process.exit(1);
+}
+
+console.log(`  Modificadores comprobados contra su base · ninguno queda pisado.`);
 console.log('  Ningún empate cambia de ganador. El orden no decide cosas distintas.\n');

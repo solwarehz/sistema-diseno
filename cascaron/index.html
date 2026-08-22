@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.69.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.70.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.69.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.70.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -758,7 +758,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .conmutador button:focus-visible { outline: 2px solid var(--foco-en-marco); outline-offset: 2px; }
 
 /* ── El cascarón usa la misma cáscara que la aplicación ──────────────────── */
-.app-cascaron { min-height: 100vh; }
+.app.app-cascaron { min-height: 100vh; }
 /* La lateral plegada NO puede recortar el panel flotante, que sale fuera de
    sus 56px. El recorte se limita al eje vertical. */
 .app-cascaron .lat { position: sticky; top: 0; height: 100vh; overflow: visible; }
@@ -799,7 +799,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
      cajon y sobre todo lo demas, incluida la barra. */
   .app-cascaron .velo { position: fixed; inset: 0; z-index: 55;
     background: var(--marco-fondo); opacity: .5; cursor: pointer; }
-  .app-cascaron { position: relative; overflow-x: hidden; }
+  .app.app-cascaron { position: relative; overflow-x: hidden; }
   /* Los filtros envuelven y encogen en vez de imponer 360px de mínimo. */
   .top-filtros { flex-wrap: wrap; }
   .top-filtros .campo { min-width: 0; }
@@ -1374,7 +1374,7 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
    como en un teléfono. No es una maqueta dibujada: es el catálogo entero
    dentro del ancho real, así que lo que se rompa, se rompe de verdad. */
 [data-vista='movil'] body { background: var(--fondo-encabezado); padding: 24px 0; }
-[data-vista='movil'] .app-cascaron {
+[data-vista='movil'] .app.app-cascaron {
   width: 390px; height: 780px; margin: 0 auto; overflow: hidden;
   border: 1px solid var(--borde-fuerte); border-radius: 6px;
   box-shadow: var(--sombra-capa); position: relative; }
@@ -1496,7 +1496,7 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
    entra: se reserva con relleno del marco.
    44px arriba y 36px abajo. iOS marca 34pt abajo y se redondea HACIA ARRIBA
    para seguir en la rejilla de 4 —pasarse deja aire, quedarse corto invade—. */
-[data-app] .app-cascaron { padding: 44px 0 36px; }
+[data-app] .app.app-cascaron { padding: 44px 0 36px; }
 .app-zona-arriba, .app-zona-abajo, .app-tabs { display: none; }
 [data-app] .app-zona-arriba, [data-app] .app-zona-abajo {
   position: absolute; left: 0; right: 0; display: grid; place-items: center;
@@ -2011,24 +2011,37 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tp-pie { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .tp-hora { font-size: 12px; color: var(--texto-secundario); }
-.chip-pend { background: var(--fondo-encabezado); color: var(--texto-principal);
+.chip.chip-pend { background: var(--fondo-encabezado); color: var(--texto-principal);
   border-color: var(--borde-fuerte); }
-.chip-inact { background: var(--borde); color: var(--texto-principal);
+.chip.chip-inact { background: var(--borde); color: var(--texto-principal);
   border-color: var(--borde-fuerte); }
 /* R88 · IDENTIDAD EN EL CHIP — porque la leyenda va en chips, y si las dos
    paletas no coinciden, la leyenda MIENTE. Lo dijeron ellos y es exacto.
    Aqui el filete se queda en 3px, y no por descuido: en el horario los 6px
    distinguen identidad de estado dentro de una rejilla donde conviven; un chip
    dice su sede EN EL TEXTO y no compite con ninguna alarma en la misma linea.
-   Un filete de 6px en una ficha de 22px de alto la desequilibra. */
-.chip-identidad-1 { background: var(--fondo-encabezado); color: var(--texto-principal);
-  border-color: var(--identidad-1); }
-.chip-identidad-2 { background: var(--fondo-encabezado); color: var(--texto-principal);
-  border-color: var(--identidad-2); }
-.chip-identidad-3 { background: var(--fondo-encabezado); color: var(--texto-principal);
-  border-color: var(--identidad-3); }
-.chip-identidad-4 { background: var(--fondo-encabezado); color: var(--texto-principal);
-  border-color: var(--identidad-4); }
+   Un filete de 6px en una ficha de 22px de alto la desequilibra.
+
+   R95 · DOS CLASES EN EL SELECTOR, Y border-left-color EN VEZ DE border-color.
+   Nacieron con una sola clase y con el atajo, y los tags salian GRISES: .chip
+   declara border-left: 3px solid currentcolor mas abajo en la hoja, empata en
+   especificidad —una clase cada una— y al ganar por orden el atajo REESCRIBE el
+   color con currentcolor, que aqui es texto-principal. Lo midio Control
+   Administrativos: el borde pintado era rgb(44,42,37) y no #0E6F63.
+   Los tonos semanticos se salvaban POR ACCIDENTE: el extractor emite .chip-exito
+   dos veces y la segunda cae despues de .chip. Apoyarse en eso no es tener una
+   regla, es tener suerte.
+   Se arregla con ESPECIFICIDAD y no con orden —dos clases ganan siempre a una—
+   y declarando el lado que de verdad se pinta. Es la leccion de R87 aplicada a
+   nuestro propio codigo. */
+.chip.chip-identidad-1 { background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-left-color: var(--identidad-1); }
+.chip.chip-identidad-2 { background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-left-color: var(--identidad-2); }
+.chip.chip-identidad-3 { background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-left-color: var(--identidad-3); }
+.chip.chip-identidad-4 { background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-left-color: var(--identidad-4); }
 /* Solo para el ejemplo de lo que NO se debe hacer. */
 .tp-opaca { opacity: .5; }
 
@@ -2942,10 +2955,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    cambiara habria cambiado en uno de los dos. No es un ahorro de lineas: es
    que la pareja fondo/texto/filete de un estado es UNA decision, y una
    decision escrita dos veces se separa. */
-.chip-exito, .msj-exito { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
-.chip-aviso, .msj-aviso { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
-.chip-error, .msj-error { background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
-.chip-info,  .msj-info  { background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
+.chip.chip-exito, .msj.msj-exito { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.chip.chip-aviso, .msj.msj-aviso { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.chip.chip-error, .msj.msj-error { background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
+.chip.chip-info, .msj.msj-info { background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
 
 /* Escudo pendiente */
 .escudo-falta { color: var(--texto-pista); flex: none; display: grid; place-items: center; }
@@ -3802,7 +3815,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.69.0</option></select></label>
+          <select class="campo cg-in"><option>v1.70.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3890,8 +3903,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.69.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.69.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.70.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.70.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -11009,6 +11022,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.70.0 <span class="cam-fecha">2026-08-21</span></h3>
+<p class="pag-intro"><strong>R95: el atajo border-left de .chip borraba el color de TODOS los tonos que perdian el empate — y los semanticos se salvaban por accidente.</strong> R95 · Lo midio Control Administrativos hasta el ultimo detalle: .chip-identidad-N ponia border-color: var(--identidad-N) y .chip, mas abajo en la hoja, border-left: 3px solid currentcolor. Misma especificidad —una clase cada una—, gana la ultima, y el ATAJO no solo pone grosor y estilo: REESCRIBE el color. Los cuatro tonos salian del color del texto, rgb(44,42,37), y se veian identicos entre si. Los tokens estaban bien; lo que fallaba era la cascada. Es la leccion de R87 aplicada a nuestro propio codigo, dos dias despues de escribirla. Y LOS TONOS SEMANTICOS SE SALVABAN POR ACCIDENTE: el extractor emite .chip-exito dos veces y la segunda copia cae despues de .chip. Apoyarse en eso no es tener una regla, es tener suerte — asi que se arreglan TODOS por especificidad, no solo los de identidad. Los tonos de chip y de mensaje pasan a .chip.chip-X y .msj.msj-X, que ganan siempre. EL CANDADO DEL EMPATE NO LO CAZABA, y esa es la parte que importa. Comparaba propiedades por NOMBRE, y border-left no se parece a border-color; ademas solo miraba divergencias entre las dos hojas, y este defecto estaba igual en las dos. Ahora expande los atajos a las longhands que de verdad se pisan, y añade una regla nueva dentro de UNA MISMA hoja: un modificador no puede perder contra su propia clase base. Al estrenarla salieron 26 casos, de los que 17 eran ruido: se indexaba la PRIMERA aparicion de cada regla cuando en CSS manda la ultima, y faltaba descartar los que declaran el MISMO valor —.btn-ic repite el display de .btn— y los que llevan !important, como .chip-sin-filete. Un candado que grita por lo que funciona se acaba ignorando entero. Los que quedaron eran REALES y no los habia reportado nadie: .chip-pend y .chip-inact perdian su borde-fuerte igual que identidad, y .app-cascaron pedia 100vh recibiendo los 520px de .app.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>Los chips <code>pendiente</code> e <code>inactivo</code> cambian de aspecto, y a lo que siempre debieron ser: su filete pasa del color del texto a borde-fuerte. Nadie lo habia reportado porque el gris parecia intencionado.</td></tr></tbody></table>
 
 
 <h3 class="sub-seccion">v1.69.0 <span class="cam-fecha">2026-08-21</span></h3>

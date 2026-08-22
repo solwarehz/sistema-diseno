@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.69.0
+# Actualizar al sistema de diseño v1.70.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.69.0"
+npm install "github:solwarehz/sistema-diseno#v1.70.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,19 +27,19 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.69.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.70.0
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.69.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.70.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.69.0 --repo solwarehz/sistema-diseno
+gh release download v1.70.0 --repo solwarehz/sistema-diseno
 ```
 
 Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
@@ -299,6 +299,7 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.67.0 | **El candado de ESLint ya sabe leer TypeScript.** Antes moría con `Parsing error` ante cualquier sintaxis de TS —`import { type X }`, una anotación de tipo, lo que fuera— **antes de llegar a ninguna regla**, y el error parecía de su archivo. Si lo tenían apagado o con excepciones por esto, **pueden quitarlas**. Necesita `typescript-eslint` instalado (peer opcional); si no está, avisa por consola y cubre solo el JavaScript |
 | 1.68.0 | **Si desarmaban el candado, léanlo.** En la 1.67.0 el bloque de reglas dejó de ser `candado[0]`, así que un proyecto que copiara sus campos a mano se habría quedado **sin ninguna regla activa y en verde**. Ya vuelve a ser `[0]` y un candado nuevo vigila que la forma no cambie sin decirlo. **Lo recomendado sigue siendo esparcir**: `export default [ ...candado ]` — así el día que añadamos un bloque entra solo |
 | 1.69.0 | **Dos fallos nuestros de la 1.64.0, corregidos.** (1) **`onAjuste` se llamaba durante el render**: guardar los avisos en un estado entraba en **bucle infinito**. Ahora sale de un efecto y solo cuando los avisos cambian de contenido — si se blindaron por su cuenta, el blindaje ya no estorba. (2) **El sombreado desalineaba las columnas**: el hueco se repartía con lo que sobraba, y sobra distinto según el contenido, así que el mismo horario se dibujaba a alturas distintas si un bloque llevaba línea de detalle. Medido ahora: **0,00 px** de desalineación. Las clases `hor-fr-N` pasan a `hor-q{cuartos}-{celdas}` — solo afecta a quien escriba el marcado a mano |
+| 1.70.0 | **Los cuatro tonos de identidad del `Chip` ya se pintan.** Salían del color del texto: `.chip` declara el atajo `border-left: 3px solid currentcolor` más abajo en la hoja, empata en especificidad y **el atajo reescribe el color**. Se arregla con `.chip.chip-identidad-N` y `border-left-color`. De paso, **todos** los tonos de `Chip` y `Mensaje` pasan a ganar por especificidad en vez de por el orden — antes los semánticos se salvaban por una duplicación afortunada. **Cambio visible**: los chips `pendiente` e `inactivo` pasan del gris del texto a `borde-fuerte`, que es lo que siempre debieron ser |
 
 **Lo que no rompe pero conviene aprovechar:** `soloLectura` en `Selector`
 (§6.5 del manual), `persona.foto` en `CargaImagen` (§6.7), `CargaId` para el
