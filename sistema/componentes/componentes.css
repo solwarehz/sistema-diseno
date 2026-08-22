@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.63.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.64.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -543,7 +543,7 @@ input.fc-campo.fc-activo{ border-color: var(--accion); box-shadow: inset 0 0 0 1
 input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   HORARIO — 32 reglas · clases .hor-*
+   HORARIO — 59 reglas · clases .hor-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 [data-densidad='compacta'] .hor-c{ height: 28px; }
@@ -569,6 +569,33 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .hor-vacia{ background: var(--fondo-tarjeta); }
 .hor-b{ display: block; height: 100%; padding: 4px 8px; border-left: 3px solid;
   border-radius: 3px; }
+.hor-pila{ display: flex; flex-direction: column; height: 100%; }
+.hor-hueco{ flex-basis: 0; flex-shrink: 0; }
+.hor-pila > .hor-b{ flex-basis: 0; flex-shrink: 0; height: auto; }
+.hor-fr-1{ flex-grow: 1; }
+.hor-fr-2{ flex-grow: 2; }
+.hor-fr-3{ flex-grow: 3; }
+.hor-fr-4{ flex-grow: 4; }
+.hor-fr-5{ flex-grow: 5; }
+.hor-fr-6{ flex-grow: 6; }
+.hor-fr-7{ flex-grow: 7; }
+.hor-fr-8{ flex-grow: 8; }
+.hor-fr-9{ flex-grow: 9; }
+.hor-fr-10{ flex-grow: 10; }
+.hor-fr-11{ flex-grow: 11; }
+.hor-fr-12{ flex-grow: 12; }
+.hor-fr-13{ flex-grow: 13; }
+.hor-fr-14{ flex-grow: 14; }
+.hor-fr-15{ flex-grow: 15; }
+.hor-fr-16{ flex-grow: 16; }
+.hor-fr-17{ flex-grow: 17; }
+.hor-fr-18{ flex-grow: 18; }
+.hor-fr-19{ flex-grow: 19; }
+.hor-fr-20{ flex-grow: 20; }
+.hor-fr-21{ flex-grow: 21; }
+.hor-fr-22{ flex-grow: 22; }
+.hor-fr-23{ flex-grow: 23; }
+.hor-fr-24{ flex-grow: 24; }
 .hor-b b{ display: block; font-weight: 600; font-size: 13px; }
 .hor-b span{ display: block; font-size: 12px; }
 .hor-rango{ font-variant-numeric: tabular-nums; }

@@ -41,6 +41,26 @@ export type HorarioProps = {
   /** vertical = día en columna. horizontal = día en fila. */
   eje?: 'vertical' | 'horizontal';
   formato?: '24' | '12';
+  /**
+   * R89 · **El descarte deja de ser silencioso.** Se llama con TODO lo que el
+   * horario no pudo dibujar tal cual: lo que se salió del rango, lo que se
+   * quedó sin sitio porque otro bloque ya lo ocupaba, y lo que se pintó a
+   * celda entera por pasarse del tope de span.
+   *
+   * Nace porque no avisar es peor que fallar: un bloque que desaparece de una
+   * rejilla no deja hueco visible —la celda vacía es un estado normal— así que
+   * nadie lo echa en falta hasta que alguien pregunta por qué no aparece su
+   * clase.
+   */
+  onAjuste?: (avisos: AjusteHorario[]) => void;
+};
+
+/** Qué le pasó a un bloque que no se pudo dibujar tal cual. */
+export type AjusteHorario = {
+  bloque: BloqueHorario;
+  motivo: 'fuera-de-rango' | 'dia-inexistente' | 'duracion-nula' | 'sin-sitio' | 'span-largo';
+  /** Frase lista para un registro o un aviso. */
+  detalle: string;
 };
 
 const aMin = (s: string) => {
@@ -58,25 +78,77 @@ export function escribirHora(min: number, formato: '24' | '12'): string {
   return `${h12}:${mm} ${h < 12 ? 'a. m.' : 'p. m.'}`;
 }
 
+/** Tope de proporciones: seis celdas de span. Se dice, no se descubre. */
+const TOPE_CUARTOS = 24;
+
 export function Horario({
   titulo, dias, inicio, fin, paso, bloques, eje = 'vertical', formato = '24',
+  onAjuste,
 }: HorarioProps) {
   const ini = aMin(inicio);
   const n = Math.round((aMin(fin) - ini) / paso);
 
-  // Qué bloque empieza en cada franja, y cuáles quedan tapadas por un span.
-  const empieza: Record<number, Record<number, { b: BloqueHorario; largo: number }>> = {};
+  type Encaje = { b: BloqueHorario; largo: number; arr: number; dur: number; aba: number };
+  const empieza: Record<number, Record<number, Encaje>> = {};
   const tapada: Record<number, Record<number, boolean>> = {};
   dias.forEach((_, d) => { empieza[d] = {}; tapada[d] = {}; });
+
+  const avisos: AjusteHorario[] = [];
+  const rotular = (b: BloqueHorario) => `«${b.titulo}» (${b.de}–${b.a})`;
+
   bloques.forEach((b) => {
-    const i = Math.round((aMin(b.de) - ini) / paso);
-    const largo = Math.round((aMin(b.a) - aMin(b.de)) / paso);
-    // Un bloque desalineado o fuera de rango se descarta en vez de romper la
-    // tabla en silencio.
-    if (i < 0 || largo < 1 || i + largo > n || !empieza[b.dia]) return;
-    empieza[b.dia][i] = { b, largo };
-    for (let k = 1; k < largo; k++) tapada[b.dia][i + k] = true;
+    if (!empieza[b.dia]) {
+      avisos.push({ bloque: b, motivo: 'dia-inexistente',
+        detalle: `${rotular(b)} apunta al día ${b.dia} y solo hay ${dias.length}.` });
+      return;
+    }
+    // R89 · TODO SE CUENTA EN CUARTOS DE PASO. Es la resolución que ellos
+    // mismos pidieron —25 %, 50 %, 75 %— y la que hace que la rejilla se quede
+    // en 24 filas aunque alguien entre a las 07:45. El minuto exacto no se
+    // pierde: viaja en el rótulo del bloque, que es donde se lee.
+    const q = paso / 4;
+    const qDe = Math.round((aMin(b.de) - ini) / q);
+    const qA = Math.round((aMin(b.a) - ini) / q);
+
+    if (qA <= qDe) {
+      avisos.push({ bloque: b, motivo: 'duracion-nula',
+        detalle: `${rotular(b)} dura menos de ${Math.round(q)} min, que es el cuarto de franja más pequeño que se puede pintar.` });
+      return;
+    }
+    // La fila donde CAE el inicio, no la más cercana. Antes se redondeaba, y
+    // por eso un bloque de las 07:45 se dibujaba en la fila de las 08:00: se
+    // veía una hora que no era, con el rótulo correcto al lado.
+    const f = Math.floor(qDe / 4);
+    const ff = Math.ceil(qA / 4);
+    if (f < 0 || ff > n) {
+      avisos.push({ bloque: b, motivo: 'fuera-de-rango',
+        detalle: `${rotular(b)} cae fuera de ${inicio}–${fin}.` });
+      return;
+    }
+    const largo = ff - f;
+    for (let k = 0; k < largo; k++) {
+      if (empieza[b.dia][f + k] || tapada[b.dia][f + k]) {
+        avisos.push({ bloque: b, motivo: 'sin-sitio',
+          detalle: `${rotular(b)} se solapa con otro bloque ya colocado y no se dibuja.` });
+        return;
+      }
+    }
+    let arr = qDe - f * 4;
+    let dur = qA - qDe;
+    let aba = ff * 4 - qA;
+    // Pasado el tope, celda entera — y se dice.
+    if (largo * 4 > TOPE_CUARTOS) {
+      avisos.push({ bloque: b, motivo: 'span-largo',
+        detalle: `${rotular(b)} abarca ${largo} franjas y se pinta a celda entera: el sombreado fraccionado llega hasta ${TOPE_CUARTOS / 4}.` });
+      arr = 0; dur = largo * 4; aba = 0;
+    }
+    empieza[b.dia][f] = { b, largo, arr, dur, aba };
+    for (let k = 1; k < largo; k++) tapada[b.dia][f + k] = true;
   });
+
+  // Se avisa DESPUÉS de colocarlo todo y en una sola llamada: un aviso por
+  // bloque durante el reparto llegaría a medias y en orden de entrada.
+  if (onAjuste && avisos.length) onAjuste(avisos);
 
   const vertical = eje === 'vertical';
   const filas = vertical ? n : dias.length;
@@ -116,13 +188,25 @@ export function Horario({
                     className="hor-c"
                     {...(vertical ? { rowSpan: e.largo } : { colSpan: e.largo })}
                   >
-                    <span className={`hor-b hor-${e.b.tono ?? 'neutro'}`} title={`${dias[dia]}, ${rango}`}>
-                      <b>{e.b.titulo}</b>
-                      {e.b.detalle && <span>{e.b.detalle}</span>}
-                      {/* El bloque SIEMPRE dice su franja en texto: deducirla de
-                          la altura de la celda no es leerla. */}
-                      <span className="hor-rango">{rango}</span>
-                    </span>
+                    {/* La pila reparte la celda en proporciones. Sin fracción
+                        —arr y aba a cero— sale el mismo marcado de siempre más
+                        un div, y el bloque ocupa la celda entera. */}
+                    <div className="hor-pila">
+                      {e.arr > 0 && <i className={`hor-hueco hor-fr-${e.arr}`} aria-hidden="true" />}
+                      <span
+                        className={`hor-b hor-${e.b.tono ?? 'neutro'} hor-fr-${e.dur}`}
+                        title={`${dias[dia]}, ${rango}`}
+                      >
+                        <b>{e.b.titulo}</b>
+                        {e.b.detalle && <span>{e.b.detalle}</span>}
+                        {/* El bloque SIEMPRE dice su franja en texto: deducirla de
+                            la altura de la celda no es leerla. Y con el sombreado
+                            fraccionado importa MÁS: el relleno redondea a cuartos,
+                            el rótulo no redondea nada. */}
+                        <span className="hor-rango">{rango}</span>
+                      </span>
+                      {e.aba > 0 && <i className={`hor-hueco hor-fr-${e.aba}`} aria-hidden="true" />}
+                    </div>
                   </td>
                 );
               })}

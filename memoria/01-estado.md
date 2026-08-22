@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 21 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.63.0** — los cuatro colores de identidad
-salen del avatar: `Horario` y `Chip` los aceptan como tono. El color que
-**agrupa**, no el que avisa
+**Versión del sistema:** MMI-DS **v1.64.0** — la celda del horario deja de ser
+un interruptor: sombreado en cuartos de franja, y **nada se descarta en
+silencio**
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ salen del avatar: `Horario` y `Chip` los aceptan como tono. El color que
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —31 componentes
-publicados, la hoja que viaja, **doce candados**, 404 pruebas— y sigue
+publicados, la hoja que viaja, **doce candados**, 415 pruebas— y sigue
 aprendiendo la misma lección por otro lado: los peores defectos no están en lo
 que el catálogo enseña mal, sino en **lo que ningún candado estaba mirando**.
 R86 es de ese tipo: la tabla declaraba una altura de fila de 34px desde la
@@ -38,14 +38,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` en Docker |
-| Componentes de React | ✅ | **404 pruebas en 27 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **415 pruebas en 28 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · 790 reglas de 1274 · **566 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.63.0.zip` · **53 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.64.0.zip` · **53 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.63.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.64.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,45 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.63.0), con detalle
+### Lo de hoy (v1.64.0), con detalle
+
+**R89 · la celda del horario deja de ser un interruptor.** Lo pidió Control
+Administrativos con el argumento que lo cierra: **las 07:45**. Si un bloque solo
+se dibuja cuando el paso divide sus horas, un trabajador que entre a menos
+cuarto obliga a dibujar la semana entera en franjas de quince minutos, para
+todos — 96 filas en vez de 24.
+
+**Al sondear el motor apareció algo peor que lo que denunciaban.** Su premisa era
+que un bloque desalineado no se dibuja. Medido con el componente real:
+
+| Bloque, paso 60 | Qué hacía |
+|---|---|
+| `07:45 – 09:00` | Se dibujaba **en la fila de las 08:00** |
+| `13:30 – 15:00` (su ejemplo) | Se dibujaba **de 14:00 a 16:00** |
+| `07:25 – 07:50` | Desaparecía |
+| Dos a la misma hora | **Ganaba el segundo**; el primero desaparecía sin rastro |
+
+No es que no se viera: **se veía una hora que no era**, con el rótulo correcto al
+lado. Y los silencios eran cuatro, no uno.
+
+**Cómo se resolvió sin tocar la tabla.** Sombreado en **cuartos de franja** —la
+resolución que ellos pidieron, no una rejilla de precisión— repartido con una
+**pila flexible** dentro de la celda: hueco, bloque, hueco, con proporciones. Sin
+una sola medida en píxeles. Y **sin sacar el bloque del flujo**: con
+`position: absolute` la fila se quedaba sin nada que la empuje y el texto se
+salía de una celda de 32 px. Los `th scope` y los `rowSpan`/`colSpan` intactos,
+que era su condición.
+
+**Se descartó el `style` en línea** con variables de geometría, que habría dado
+el fraccionado exacto al minuto: relajaba §2.5.6 para toda una superficie y el
+candado dejaría de proteger lo que hoy protege entero. Los cuartos bastan.
+
+**Y la desviación se declara con su número:** donde tocaría 37,5 % sale
+**35,5 %**, porque el bloque nunca se comprime por debajo de su texto. Es
+deliberado —cortar el título para cuadrar un sombreado sería cambiar un dato por
+un adorno— y es justo la razón de que el rótulo lleve la hora exacta.
+
+### Lo de la v1.63.0, con detalle
 
 **R88 · el color que agrupa, no el que avisa.** Control Administrativos pidió
 que `Horario.tono` y `Chip.tono` aceptaran los cuatro colores de identidad que
@@ -404,10 +442,10 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.63.0
+Versión                      1.64.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
-Pruebas                         404   en 27 archivos
+Pruebas                         415   en 28 archivos
 Reglas que viajan               790   de 1274 · 566 clases, 0 huérfanas
 Candado de la cascada           867   reglas leidas · 11 anchos
 Candado del empate              292   combinaciones reales · 53 empates
@@ -416,7 +454,7 @@ Candado de la promesa           921   elementos · 189.379 propiedades
                                       a 5 anchos (1440, 1024, 900, 700, 390)
 Candado del elemento            145   clases comparadas · 5 divergencias
                                       DECLARADAS · 100 las pinta el guion
-Contrato de comportamiento      147   reglas · 122 obligatorias · 5 PENDIENTE
+Contrato de comportamiento      156   reglas · 130 obligatorias · 5 PENDIENTE
 Componentes publicados           31   36 módulos viajan en el paquete
 Iconos                           46
 Páginas del catálogo             52

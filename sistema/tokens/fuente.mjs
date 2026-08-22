@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.63.0";
+export const VERSION = "1.64.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,45 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.64.0', fecha: '2026-08-21',
+    que: 'R89: la celda del horario deja de ser un interruptor — sombreado en cuartos, y el descarte deja de ser silencioso',
+    porque:
+      'R89 · Lo pidio Control Administrativos con el argumento que lo cierra: LAS 07:45. Si un '
+      + 'bloque solo se dibuja cuando el paso divide sus horas, un trabajador que entre a menos '
+      + 'cuarto obliga a dibujar la semana entera en franjas de quince minutos, para todos: 96 '
+      + 'franjas en 24 h en vez de 24. '
+      + 'AL SONDEAR EL MOTOR APARECIO ALGO PEOR QUE LO QUE DENUNCIABAN. Su premisa era que un '
+      + 'bloque desalineado no se dibuja. Medido con el componente real: 07:45–09:00 con paso 60 SI '
+      + 'se dibujaba, pero EN LA FILA DE LAS 08:00, con el rotulo «07:45 – 09:00» al lado. Su propio '
+      + 'ejemplo, 13:30–15:00, salia pintado de 14:00 a 16:00. No es que no se viera: es que se '
+      + 'veia una hora que no era. Y habia cuatro silencios, no uno — fuera de rango, dia '
+      + 'inexistente, mas corto que medio paso, y el solapamiento, donde el SEGUNDO bloque pisaba '
+      + 'al primero y el primero desaparecia sin rastro. '
+      + 'Entra el sombreado en CUARTOS de franja, que es la resolucion que ellos pidieron (25 %, '
+      + '50 %, 75 %) y no una rejilla de precision: el relleno redondea, el rotulo no. Se reparte '
+      + 'con una pila flexible dentro de la celda —hueco, bloque, hueco— y proporciones, sin una '
+      + 'sola medida en pixeles y SIN sacar el bloque del flujo: con position:absolute la fila se '
+      + 'quedaba sin nada que la empuje y el texto se salia de una celda de 32px. '
+      + 'La tabla, los th scope y los rowSpan/colSpan se quedan EXACTAMENTE igual. Era su condicion '
+      + 'y es lo que hace accesible este componente. '
+      + 'Y nace onAjuste: nada se descarta en silencio, con motivo por bloque. No avisar es peor que '
+      + 'fallar, porque una celda vacia es un estado normal y un bloque que desaparece no deja hueco '
+      + 'visible. Hasta el tope de span se dice: seis franjas, y por encima celda entera avisando — '
+      + 'un limite que no se dice es otro descarte silencioso. '
+      + 'Se descarto el style en linea con variables de geometria, que habria dado el fraccionado '
+      + 'exacto al minuto: relajaba la regla 2.5.6 para toda una superficie y el candado dejaria de '
+      + 'proteger lo que hoy protege entero. Los cuartos bastan para lo que se pidio.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'El bloque desalineado CAMBIA DE SITIO en pantallas ya montadas, y a mejor: antes se '
+      + 'redondeaba a la franja mas cercana —07:45 con paso 60 se pintaba en la fila de las 08:00— '
+      + 'y ahora se ancla a la franja donde cae su inicio, con el resto resuelto por el sombreado.',
+      'En un solapamiento ahora gana el PRIMER bloque; antes ganaba el ultimo. Si alguien dependia '
+      + 'de ese orden sin saberlo, vera el otro bloque.',
+      'Bloques mas cortos que medio paso que antes desaparecian ahora SI se dibujan, en cuartos.',
+    ],
+  },
   {
     v: '1.63.0', fecha: '2026-08-21',
     que: 'R88: los cuatro colores de identidad se exponen en Horario y Chip — el color que AGRUPA, no el que avisa',

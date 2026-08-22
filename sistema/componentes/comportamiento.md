@@ -329,6 +329,22 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 ---
 
+## Horario · sombreado fraccionado y descarte
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R89, v1.64.0) **La celda no es un interruptor.** Un bloque se pinta en **cuartos de franja**: 13:30–15:00 con paso de 60 es media celda de las 13:00 más la de las 14:00 entera. Es lo que permite que la rejilla se quede en 24 filas aunque alguien entre a las 07:45 — antes, un solo turno a menos cuarto obligaba a dibujar la semana entera en franjas de quince minutos, para todos. |
+| **2** | **Obligatorio.** (R89, v1.64.0) **El relleno redondea; el rótulo no.** El sombreado se cuantiza a cuartos, pero la hora exacta viaja siempre en el texto del bloque. Una entrada de 07:25 sombreada como «casi media celda» no miente, porque el minuto está escrito dentro. Por eso no hace falta una rejilla de precisión. |
+| **3** | **Obligatorio.** (R89, v1.64.0) **La tabla no cambia.** Sigue siendo una tabla de verdad: `th scope`, `rowSpan` y `colSpan` intactos. El reparto se hace **dentro** de la celda con una pila de proporciones, sin sacar el bloque del flujo — si el texto no cabe, la fila crece, como siempre. |
+| **4** | **Obligatorio.** (R89, v1.64.0) **El bloque se ancla donde CAE su inicio**, no en la franja más cercana. Hasta la v1.63.0 se redondeaba, y un bloque de las 07:45 con paso de una hora se dibujaba **en la fila de las 08:00** con el rótulo «07:45» al lado: se veía una hora que no era. |
+| **5** | **Obligatorio.** (R89, v1.64.0) **Nada se descarta en silencio.** `onAjuste` recibe todo lo que no se pudo dibujar tal cual, con su motivo: `fuera-de-rango`, `dia-inexistente`, `duracion-nula`, `sin-sitio`, `span-largo`. No avisar es peor que fallar: una celda vacía es un estado normal, así que un bloque que desaparece **no deja hueco visible** y nadie lo echa en falta hasta que alguien pregunta por su clase. |
+| **6** | **Obligatorio.** (R89, v1.64.0) **En un solapamiento gana el primero**, y el segundo se anuncia. Antes ganaba el último y el anterior desaparecía sin rastro. |
+| **7** | **Obligatorio.** (R89, v1.64.0) El sombreado llega hasta **seis franjas de span**. Por encima, celda entera **y aviso** — un límite que no se dice es un descarte silencioso, que es justo lo que esta regla viene a quitar. |
+| **8** | **Obligatorio.** (R89, v1.64.0) **La proporción es aproximada, y el número está medido: donde tocaría 37,5 % sale 35,5 %.** El bloque nunca se comprime por debajo de su texto, así que cuando el contenido pesa, el reparto cede. Es deliberado —cortar el título para cuadrar un sombreado sería cambiar un dato por un adorno— y es la razón de la regla 2: el rótulo lleva la hora exacta. |
+| **9** | Del proyecto: **qué se hace con los avisos**. El sistema los entrega; registrarlos, enseñarlos o corregir el dato es de cada aplicación. |
+
+---
+
 ## Color de identidad · Horario y Chip
 
 Los cuatro colores decorativos que ya usaba el avatar, disponibles desde la

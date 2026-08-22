@@ -4260,6 +4260,64 @@ responden a la vez.</p>
   </tbody>
 </table>
 
+<h3 class="sub-seccion">La celda no es un interruptor: es un porcentaje</h3>
+<p class="seccion-sub">Un bloque de <strong>13:30 a 15:00</strong> se pinta como <strong>media celda</strong> de las 13:00
+más la de las 14:00 entera. La rejilla se queda en <strong>24 filas</strong> aunque alguien entre a las 07:45.</p>
+<div class="bloque">
+  <div class="hor-env" tabindex="0">
+    <table class="hor">
+      <thead><tr><th class="hor-esq" scope="col">Hora</th><th scope="col">Lunes</th><th scope="col">Martes</th></tr></thead>
+      <tbody>
+        <tr><th class="hor-eje hor-eje-v" scope="row">07:00</th>
+          <td class="hor-c" rowspan="2"><div class="hor-pila">
+            <i class="hor-hueco hor-fr-3" aria-hidden="true"></i>
+            <span class="hor-b hor-identidad-1 hor-fr-5"><b>Turno mañana</b><span>Sede Centro</span><span class="hor-rango">07:45 – 09:00</span></span>
+          </div></td>
+          <td class="hor-c hor-vacia"></td></tr>
+        <tr><td class="hor-c hor-vacia"></td></tr>
+        <tr><th class="hor-eje hor-eje-v" scope="row">13:00</th>
+          <td class="hor-c" rowspan="2"><div class="hor-pila">
+            <i class="hor-hueco hor-fr-2" aria-hidden="true"></i>
+            <span class="hor-b hor-identidad-2 hor-fr-6"><b>Turno tarde</b><span>Sede Norte</span><span class="hor-rango">13:30 – 15:00</span></span>
+          </div></td>
+          <td class="hor-c"><div class="hor-pila">
+            <span class="hor-b hor-neutro hor-fr-4"><b>Refuerzo</b><span>Sede Centro</span><span class="hor-rango">13:00 – 14:00</span></span>
+          </div></td></tr>
+        <tr><td class="hor-c hor-vacia"></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td>Se cuenta en <strong>cuartos de franja</strong>. Es la resolución que se pidió —25&nbsp;%, 50&nbsp;%, 75&nbsp;%—, no una rejilla de precisión.</td></tr>
+    <tr><td class="num">2</td><td><strong>El relleno redondea; el rótulo no.</strong> La hora exacta viaja en el texto del bloque, que es donde se lee. Una entrada de 07:25 sombreada como «casi media celda» no miente: el minuto está escrito dentro.</td></tr>
+    <tr><td class="num">3</td><td>Se reparte con una <strong>pila flexible</strong> —hueco, bloque, hueco— y proporciones. No hay una sola medida en píxeles, y el bloque <strong>sigue en el flujo</strong>: si el texto no cabe, la fila crece, como antes. Sacarlo con <code>position: absolute</code> habría dejado la fila sin nada que la empuje.</td></tr>
+    <tr><td class="num">4</td><td><strong>La tabla no cambia.</strong> Los <code>th scope</code> y los <code>rowSpan</code>/<code>colSpan</code> se quedan exactamente igual: es lo que hace accesible este componente y era la condición del pedido.</td></tr>
+    <tr><td class="num">5</td><td>El tope es <strong>seis franjas de span</strong>. Por encima se pinta a celda entera <strong>y se avisa</strong> — un límite que no se dice es un descarte silencioso, que es justo lo que este pedido venía a quitar.</td></tr>
+    <tr><td class="num">6</td><td><strong>La proporción es aproximada, y se dice con el número.</strong> Medido: donde tocaría un 37,5&nbsp;% sale un <strong>35,5&nbsp;%</strong>. El bloque <strong>nunca se comprime por debajo de su texto</strong>, así que cuando el contenido pesa, el reparto cede. Es la decisión correcta —cortar el título para cuadrar un sombreado sería cambiar un dato por un adorno— y por eso el rótulo lleva la hora exacta.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Y el descarte deja de ser silencioso</h3>
+<p class="seccion-sub">Lo que el horario no puede dibujar tal cual se anuncia por <code>onAjuste</code>, con su motivo.
+Antes desaparecía: una celda vacía es un estado normal, así que <strong>nadie echaba en falta el bloque</strong>.</p>
+<table class="tabla-simple">
+  <thead><tr><th>Motivo</th><th>Cuándo</th><th>Qué hacía antes</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">fuera-de-rango</td><td>Empieza o acaba fuera de la ventana del horario</td><td class="motivo">Desaparecía</td></tr>
+    <tr><td class="mono">dia-inexistente</td><td>Apunta a un día que no está en <code>dias</code></td><td class="motivo">Desaparecía</td></tr>
+    <tr><td class="mono">duracion-nula</td><td>Dura menos de un cuarto de franja</td><td class="motivo">Desaparecía</td></tr>
+    <tr><td class="mono">sin-sitio</td><td>Se solapa con otro ya colocado</td><td class="motivo"><strong>Pisaba al anterior</strong>, que desaparecía</td></tr>
+    <tr><td class="mono">span-largo</td><td>Abarca más de seis franjas</td><td class="motivo">No existía el caso</td></tr>
+  </tbody>
+</table>
+<div class="aviso">
+  <p><strong>El desalineado ya no se mueve.</strong> Un bloque de las 07:45 con paso de una hora se dibujaba
+  <strong>en la fila de las 08:00</strong>, con el rótulo «07:45» al lado: se veía una hora que no era. Ahora se
+  ancla a la franja donde <strong>cae</strong> su inicio y el resto lo resuelve el sombreado.</p>
+</div>
+
 <h3 class="sub-seccion">Colorear por sede, sin gastar el rojo</h3>
 <p class="seccion-sub">Un profesor reparte su semana entre varios locales. El color es lo que permite ver
 <strong>dónde está cada tramo</strong> sin leer caja por caja — pero los tonos de estado no valen para eso:
@@ -6379,6 +6437,37 @@ a.enlace.enl-nosub { text-decoration: none; }
    no distingue nada -SC 1.4.1-. */
 .hor-b { display: block; height: 100%; padding: 4px 8px; border-left: 3px solid;
   border-radius: 3px; }
+
+/* R89 · SOMBREADO FRACCIONADO — la celda deja de ser un interruptor.
+   Lo pidio Control Administrativos con el argumento que lo cierra: las 07:45.
+   Si un bloque solo se dibuja cuando el paso divide sus horas, un trabajador
+   que entre a menos cuarto obliga a dibujar la semana entera en franjas de
+   quince minutos, para todos. Con fraccion, la rejilla se queda en 24 filas
+   siempre.
+
+   SE REPARTE POR PROPORCION, NO POR ALTURA. La celda se llena con una pila
+   flexible de hasta tres piezas —hueco de arriba, bloque, hueco de abajo— y
+   cada una crece segun su numero de CUARTOS. Asi el reparto es exacto sin
+   saber cuantas celdas abarca el rowSpan, y sin una sola medida en pixeles.
+
+   Y sobre todo: el bloque SIGUE EN EL FLUJO. Sacarlo con position:absolute
+   habria dejado la fila sin nada que la empuje, y el texto —titulo, detalle y
+   rango— se saldria de una celda de 32px. Con flex-shrink: 0 el bloque nunca
+   se comprime por debajo de su contenido: si no cabe, crece la fila, que es lo
+   que ya pasaba antes.
+
+   La tabla, los th scope y los rowSpan/colSpan se quedan EXACTAMENTE igual.
+   Era su condicion y es la que hace accesible este componente. */
+.hor-pila { display: flex; flex-direction: column; height: 100%; }
+.hor-hueco { flex-basis: 0; flex-shrink: 0; }
+.hor-pila > .hor-b { flex-basis: 0; flex-shrink: 0; height: auto; }
+/* Una por cada numero de cuartos. Veinticuatro es el tope: seis celdas de span,
+   que es una jornada de seis horas seguidas con paso de una hora. Por encima el
+   bloque se pinta a celda entera y el producto se entera por onAjuste — un
+   limite que no se dice es un descarte silencioso, que es justo lo que este
+   pedido venia a quitar. */
+${Array.from({ length: 24 }, (_, i) => `.hor-fr-${i + 1} { flex-grow: ${i + 1}; }`).join('\n')}
+
 .hor-b b { display: block; font-weight: 600; font-size: 13px; }
 .hor-b span { display: block; font-size: 12px; }
 /* Sin opacidad. Atenuar texto con opacity lo saca del contrato: medido daba
