@@ -6,7 +6,15 @@
  * existe una variante «solo color».
  */
 
-export type TonoChip = 'exito' | 'aviso' | 'error' | 'info' | 'pendiente' | 'inactivo';
+/**
+ * Dos familias, y la diferencia importa. Los seis primeros SIGNIFICAN algo:
+ * verde va bien, rojo va mal. Los cuatro de identidad no significan nada — son
+ * los mismos del avatar y sirven para AGRUPAR (una sede, un turno, un
+ * responsable), nunca para informar. Ver la regla 3 del contrato.
+ */
+export type TonoChip =
+  | 'exito' | 'aviso' | 'error' | 'info' | 'pendiente' | 'inactivo'
+  | 'identidad-1' | 'identidad-2' | 'identidad-3' | 'identidad-4';
 
 const CLASE: Record<TonoChip, string> = {
   exito: 'chip-exito',
@@ -15,6 +23,10 @@ const CLASE: Record<TonoChip, string> = {
   info: 'chip-info',
   pendiente: 'chip-pend',
   inactivo: 'chip-inact',
+  'identidad-1': 'chip-identidad-1',
+  'identidad-2': 'chip-identidad-2',
+  'identidad-3': 'chip-identidad-3',
+  'identidad-4': 'chip-identidad-4',
 };
 
 export type ChipProps = {

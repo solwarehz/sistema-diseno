@@ -1,9 +1,9 @@
 # Estado del proyecto
 
-**Última actualización:** 20 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.62.0** — el filtro de columna se veía
-distinto en el catálogo y en la entrega: las mismas reglas, en distinto orden.
-Nace el **candado del empate**, que es el duodécimo
+**Última actualización:** 21 de agosto de 2026
+**Versión del sistema:** MMI-DS **v1.63.0** — los cuatro colores de identidad
+salen del avatar: `Horario` y `Chip` los aceptan como tono. El color que
+**agrupa**, no el que avisa
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ Nace el **candado del empate**, que es el duodécimo
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —31 componentes
-publicados, la hoja que viaja, **doce candados**, 398 pruebas— y sigue
+publicados, la hoja que viaja, **doce candados**, 404 pruebas— y sigue
 aprendiendo la misma lección por otro lado: los peores defectos no están en lo
 que el catálogo enseña mal, sino en **lo que ningún candado estaba mirando**.
 R86 es de ese tipo: la tabla declaraba una altura de fila de 34px desde la
@@ -38,14 +38,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` en Docker |
-| Componentes de React | ✅ | **398 pruebas en 26 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · 777 reglas de 1261 · **558 clases, 0 huérfanas** |
+| Componentes de React | ✅ | **404 pruebas en 27 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · 790 reglas de 1274 · **566 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.62.0.zip` · **53 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.63.0.zip` · **53 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.62.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.63.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,45 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.62.0), con detalle
+### Lo de hoy (v1.63.0), con detalle
+
+**R88 · el color que agrupa, no el que avisa.** Control Administrativos pidió
+que `Horario.tono` y `Chip.tono` aceptaran los cuatro colores de identidad que
+el sistema ya tiene, para colorear cada bloque **por sede**. El diagnóstico era
+suyo y era correcto: usar `error` como color decorativo **gasta el rojo** — el
+mismo argumento que este sistema defiende en la `Nota`.
+
+**No hay tokens nuevos.** `identidad-1..4` e `identidad-texto` existen desde la
+v1.7.0, cableados solo a `.avatar-N`. Sus contrastes seguían medidos: **6,04 ·
+7,41 · 6,47 · 7,52**, e iguales en los dos modos — porque el par es
+texto-blanco-sobre-color y el modo no interviene. Eso responde su tercera
+pregunta.
+
+**La forma se decidió mirándola**, con la rejilla real y bloques de estado
+mezclados:
+
+| Probado | Qué pasó |
+|---|---|
+| Fondo macizo, texto blanco (lo pedido) | Cumple (6,05–7,53:1) y se lee rapidísimo, pero **cuatro cajas decorativas pesan más que el bloque de error** en rojo tenue: la alarma queda por debajo del adorno |
+| Título en el color | 5,27–6,55:1, cumple. Pero aquí el **texto** de color ya significa estado: un título verde se lee como «bien» |
+| **Filete de 6 px, fondo neutro** | **Elegido.** Los de estado llevan 3: **el grosor distinto es en sí la señal** de que es otra dimensión |
+
+Va en `.hor-b.hor-identidad-N` y no en `.hor-identidad-N` a secas, para que el
+ancho gane por **especificidad y no por orden**. Eso es R87 aplicado el día
+siguiente.
+
+**Y se corrige la doctrina del token.** Decía «nunca informan, agrupan ni
+filtran», escrito pensando solo en el avatar. Ahora: **agrupar sí, informar no**
+—lo agrupado va también en texto y con leyenda, SC 1.4.1—, **filtrar no**. Seis
+reglas de contrato, cuatro obligatorias.
+
+**Una prueba que no se vio fallar no protege nada, otra vez.** El aserto de «no
+fondo macizo» exigía una coma en el selector, así que miraba la regla agrupada y
+se le escapaba la individual: se rompió a propósito metiendo el fondo macizo y
+**las seis pruebas siguieron verdes**. Corregido para mirar todas las reglas del
+bloque, y vuelto a romper hasta verlo en rojo.
+
+### Lo de la v1.62.0, con detalle
 
 **R87 · las mismas reglas, en distinto orden.** No lo reportó nadie: salió de
 comprobar R86. Al montar el **mismo marcado** con las dos hojas en un navegador
@@ -366,11 +404,11 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.62.0
+Versión                      1.63.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
-Pruebas                         398   en 26 archivos
-Reglas que viajan               777   de 1261 · 558 clases, 0 huérfanas
+Pruebas                         404   en 27 archivos
+Reglas que viajan               790   de 1274 · 566 clases, 0 huérfanas
 Candado de la cascada           867   reglas leidas · 11 anchos
 Candado del empate              292   combinaciones reales · 53 empates
                                       · 0 cambian de ganador
@@ -378,7 +416,7 @@ Candado de la promesa           921   elementos · 189.379 propiedades
                                       a 5 anchos (1440, 1024, 900, 700, 390)
 Candado del elemento            145   clases comparadas · 5 divergencias
                                       DECLARADAS · 100 las pinta el guion
-Contrato de comportamiento      141   reglas · 118 obligatorias · 5 PENDIENTE
+Contrato de comportamiento      147   reglas · 122 obligatorias · 5 PENDIENTE
 Componentes publicados           31   36 módulos viajan en el paquete
 Iconos                           46
 Páginas del catálogo             52

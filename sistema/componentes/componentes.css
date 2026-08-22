@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.62.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.63.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -543,7 +543,7 @@ input.fc-campo.fc-activo{ border-color: var(--accion); box-shadow: inset 0 0 0 1
 input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   HORARIO — 27 reglas · clases .hor-*
+   HORARIO — 32 reglas · clases .hor-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 [data-densidad='compacta'] .hor-c{ height: 28px; }
@@ -578,15 +578,32 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .hor-error{ background: var(--error-fondo);     color: var(--error-texto);  border-left-color: var(--error-acento); }
 .hor-oro{ background: var(--accion-2-fondo);  color: var(--accion-2);     border-left-color: var(--accion-2); }
 .hor-neutro{ background: var(--neutra-fondo);    color: var(--neutra-texto); border-left-color: var(--borde-fuerte); }
+.hor-b.hor-identidad-1,
+.hor-b.hor-identidad-2,
+.hor-b.hor-identidad-3,
+.hor-b.hor-identidad-4{ background: var(--neutra-fondo); color: var(--neutra-texto);
+  border-left-width: 6px; }
+.hor-b.hor-identidad-1{ border-left-color: var(--identidad-1); }
+.hor-b.hor-identidad-2{ border-left-color: var(--identidad-2); }
+.hor-b.hor-identidad-3{ border-left-color: var(--identidad-3); }
+.hor-b.hor-identidad-4{ border-left-color: var(--identidad-4); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CHIP DE ESTADO — 20 reglas · clases .chip-*
+   CHIP DE ESTADO — 28 reglas · clases .chip-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .chip-pend{ background: var(--fondo-encabezado); color: var(--texto-principal);
   border-color: var(--borde-fuerte); }
 .chip-inact{ background: var(--borde); color: var(--texto-principal);
   border-color: var(--borde-fuerte); }
+.chip-identidad-1{ background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-color: var(--identidad-1); }
+.chip-identidad-2{ background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-color: var(--identidad-2); }
+.chip-identidad-3{ background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-color: var(--identidad-3); }
+.chip-identidad-4{ background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-color: var(--identidad-4); }
 .chip-sup{ display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 8px; }
 .chip-sup-caja{ border: 1px solid var(--borde); border-radius: 6px; padding: 12px;
   display: flex; flex-direction: column; gap: 8px; }
@@ -600,6 +617,10 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .chip-punto.chip-aviso{ background: var(--aviso-acento); }
 .chip-punto.chip-error{ background: var(--error-acento); }
 .chip-punto.chip-info{ background: var(--info-acento); }
+.chip-punto.chip-identidad-1{ background: var(--identidad-1); }
+.chip-punto.chip-identidad-2{ background: var(--identidad-2); }
+.chip-punto.chip-identidad-3{ background: var(--identidad-3); }
+.chip-punto.chip-identidad-4{ background: var(--identidad-4); }
 .chip-con-punto i{ display: inline-block; width: 6px; height: 6px; border-radius: 50%;
   background: currentColor; margin-right: 4px; vertical-align: middle; }
 .chip{ display: inline-block; font-size: 12px; font-weight: 500;

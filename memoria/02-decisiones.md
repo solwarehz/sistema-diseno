@@ -652,3 +652,35 @@ el candado deja de proteger aunque siga en verde.
 **Lo revertiría:** que el catálogo empiece a mostrar de verdad un tamaño propio
 para el filtro. Entonces la declaración deja de estar muerta y hay que decidirla
 —en el catálogo, que es donde se ve—, no resucitarla por orden en la entrega.
+
+---
+
+## D-27 · El color de identidad puede agrupar, pero no informar
+
+**Decisión:** exponer `identidad-1..4` como tono de `Horario` y `Chip`, con el
+color **en el filete a 6 px** y no en el fondo; y reescribir la doctrina del
+token, que decía «nunca informan, agrupan ni filtran».
+
+**Por qué:** Control Administrativos trajo el caso que desbordaba la regla —
+colorear el horario por sede — con el argumento correcto: los tonos de estado no
+sirven de adorno porque **gastan la señal**. La regla vieja se había escrito
+pensando solo en el avatar, donde el color no agrupa nada.
+
+**Por qué no en el fondo, que es como lo pidieron:** se montaron las tres formas
+con la rejilla real y bloques de estado mezclados. El fondo macizo cumple el
+contraste (6,05–7,53:1) y se lee rapidísimo, pero **cuatro cajas decorativas
+pesan más que un bloque de error en rojo tenue**. Es el mismo error que ellos
+denuncian, del revés: en vez de gastar el rojo, lo tapa. El filete de 6 px
+resuelve las dos cosas — el grosor distinto del semántico (3 px) es en sí la
+señal de que es otra dimensión.
+
+**La condición que se compra con la ampliación:** lo agrupado va **también en
+texto** y con **leyenda**. No es burocracia: cuatro colores sin leyenda son
+cuatro adornos, y quien no distinga dos de ellos —o no vea color— se queda sin
+el dato (SC 1.4.1). Es regla obligatoria del contrato, con prueba detrás.
+
+**Lo revertiría:** que aparezca una pantalla donde el filete no baste para
+distinguir grupos y se pida el fondo macizo. Entonces la pregunta no es «macizo
+o filete», sino **qué pasa con la alarma en esa pantalla**: si ahí no conviven
+bloques de estado, el macizo deja de tener contra qué competir y la medida
+cambia. Se decide con la rejilla delante, como esta vez.

@@ -1,6 +1,6 @@
 {
   "documento": "MMI-DS",
-  "version": "1.62.0",
+  "version": "1.63.0",
   "norma": "WCAG 2.2 AA",
   "generado": "node sistema/tokens/generar.mjs",
   "modos": [
@@ -643,7 +643,7 @@
         "claro": "identidad_1",
         "oscuro": "identidad_1"
       },
-      "uso": "Avatar sin foto. Verde azulado, tono 173°"
+      "uso": "Decorativo: avatar, y agrupar con leyenda. Verde azulado, tono 173°"
     },
     "identidad-2": {
       "claro": "#6A3FA0",
@@ -652,7 +652,7 @@
         "claro": "identidad_2",
         "oscuro": "identidad_2"
       },
-      "uso": "Avatar sin foto. Violeta, tono 267°"
+      "uso": "Decorativo: avatar, y agrupar con leyenda. Violeta, tono 267°"
     },
     "identidad-3": {
       "claro": "#9B3B6E",
@@ -661,7 +661,7 @@
         "claro": "identidad_3",
         "oscuro": "identidad_3"
       },
-      "uso": "Avatar sin foto. Magenta, tono 328°"
+      "uso": "Decorativo: avatar, y agrupar con leyenda. Magenta, tono 328°"
     },
     "identidad-4": {
       "claro": "#4A5568",
@@ -670,7 +670,7 @@
         "claro": "identidad_4",
         "oscuro": "identidad_4"
       },
-      "uso": "Avatar sin foto. Pizarra, saturación 17 %"
+      "uso": "Decorativo: avatar, y agrupar con leyenda. Pizarra, saturación 17 %"
     },
     "identidad-texto": {
       "claro": "#FFFFFF",
@@ -679,7 +679,7 @@
         "claro": "gris_0",
         "oscuro": "gris_0"
       },
-      "uso": "Iniciales sobre cualquier color de identidad"
+      "uso": "Texto sobre un color de identidad pleno — hoy, las iniciales del avatar"
     }
   },
   "marca": {

@@ -17,7 +17,15 @@ export type BloqueHorario = {
   a: string;
   titulo: string;
   detalle?: string;
-  tono?: 'info' | 'exito' | 'aviso' | 'error' | 'oro' | 'neutro';
+  /**
+   * Los seis primeros SIGNIFICAN algo y el color es la señal. Los cuatro de
+   * identidad no significan nada: son los del avatar y agrupan —una sede, un
+   * turno—, nunca informan. Por eso llevan el color en un filete de 6px y no
+   * en el fondo: dentro de una rejilla donde conviven, el adorno no puede
+   * pesar más que la alarma. Regla 3 del contrato del horario.
+   */
+  tono?: 'info' | 'exito' | 'aviso' | 'error' | 'oro' | 'neutro'
+       | 'identidad-1' | 'identidad-2' | 'identidad-3' | 'identidad-4';
 };
 
 export type HorarioProps = {

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.62.0";
+export const VERSION = "1.63.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,37 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.63.0', fecha: '2026-08-21',
+    que: 'R88: los cuatro colores de identidad se exponen en Horario y Chip — el color que AGRUPA, no el que avisa',
+    porque:
+      'R88 · Lo pidio Control Administrativos V2.0 y el diagnostico era correcto: querian colorear '
+      + 'cada bloque del horario por SEDE —un profesor reparte su semana entre dos o tres locales y '
+      + 'el color es lo que permite ver donde esta cada tramo sin leer caja por caja— y los tonos de '
+      + 'estado no sirven para eso. Su argumento, que es el del propio sistema en la Nota: usar '
+      + 'error como color decorativo GASTA el rojo, y un rojo que siempre esta deja de querer decir '
+      + '«mira esto». Se quedaban con cuatro tonos que tampoco son una paleta —info, exito, oro y '
+      + 'neutro— y que arrastran su propio significado. '
+      + 'No hay tokens nuevos: identidad-1..4 e identidad-texto existen desde la v1.7.0, cableados '
+      + 'solo a .avatar-N. Sus contrastes estaban medidos y siguen: 6,04 · 7,41 · 6,47 · 7,52, y '
+      + 'IGUALES en los dos modos, porque el par es texto-blanco-sobre-color y el modo no interviene. '
+      + 'LA FORMA SE DECIDIO MIRANDOLA, con la rejilla real y bloques de estado mezclados. El fondo '
+      + 'macizo con texto blanco —que es como se ve el avatar y como lo pedian— cumple el contraste '
+      + 'y se lee rapidisimo, pero mide mal la jerarquia: cuatro cajas macizas decorativas pesan mas '
+      + 'que el bloque de error en rojo tenue, o sea que la alarma queda por debajo del adorno. Es el '
+      + 'mismo error que ellos denuncian, del reves. El titulo en color (5,27–6,55:1) tambien se '
+      + 'descarto: aqui el TEXTO de color ya significa estado, y un titulo verde se lee como «bien». '
+      + 'Gana el filete de 6px sobre fondo neutro — los de estado llevan 3, asi que el GROSOR '
+      + 'DISTINTO es en si la senal de que esto es otra dimension. En el chip el filete se queda en '
+      + '3px: dice su grupo en el texto y no compite con ninguna alarma en la misma linea. '
+      + 'Y se corrige la doctrina del token, que decia «nunca informan, agrupan ni filtran» escrito '
+      + 'pensando solo en el avatar. Ahora: agrupar SI, informar NO —lo agrupado va tambien en texto '
+      + 'y con leyenda, SC 1.4.1—, filtrar NO. La condicion no es burocracia: cuatro colores sin '
+      + 'leyenda son cuatro adornos, y quien no distinga dos de ellos se queda sin el dato. Seis '
+      + 'reglas de contrato, cuatro obligatorias, con prueba detras.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.62.0', fecha: '2026-08-20',
     que: 'R87: el filtro de columna se veia distinto en el catalogo y en la entrega — mismas reglas, distinto ORDEN',
@@ -2253,10 +2284,25 @@ const declarados = {
   'apagado-bolita': { claro: 'rojo_900', oscuro: 'rojo_100', uso: 'Bolita sobre apagado-fondo' },
 
   // ── IDENTIDAD · v1.7.0 ────────────────────────────────────────────────────
-  // Colores del avatar sin foto. Existen porque NO se puede reutilizar la
-  // paleta de estado: un avatar rojo diría que esa persona tiene un problema
-  // sin que nadie lo haya dicho. Estos no significan NADA: son ayuda de
-  // reconocimiento y nunca informan, agrupan ni filtran.
+  // Colores decorativos. Existen porque NO se puede reutilizar la paleta de
+  // estado: un avatar rojo diría que esa persona tiene un problema sin que
+  // nadie lo haya dicho. Estos no significan NADA.
+  //
+  // QUÉ PUEDEN HACER, corregido en v1.63.0 (R88). Hasta aquí decía «nunca
+  // informan, agrupan ni filtran», escrito pensando solo en el avatar, y
+  // Control Administrativos trajo el caso que lo desbordaba: colorear cada
+  // bloque del horario por SEDE, para que un profesor repartido entre tres
+  // locales se lea de un vistazo. Eso es agrupar, y el argumento es bueno.
+  //
+  //   · AGRUPAR, SÍ — una sede, un turno, un responsable.
+  //   · INFORMAR, NO — el color no puede ser el único medio (SC 1.4.1). Lo
+  //     agrupado va TAMBIÉN en texto dentro de la pieza, y una leyenda dice
+  //     qué es cada color. Sin las dos cosas, no se usa.
+  //   · FILTRAR, NO — no son un valor: no se ordena ni se criba por ellos.
+  //
+  // La condición no es burocracia. Cuatro colores sin leyenda son cuatro
+  // adornos, y quien no distinga dos de ellos —o no vea color— se queda sin
+  // el dato. Está como regla obligatoria en el contrato, con prueba detrás.
   //
   // Son cuatro y no seis porque cuatro es lo que la paleta de estado deja
   // libre. Medido en tono: estado ocupa rojo (0°/358°), ámbar (36°/48°), verde
@@ -2266,13 +2312,13 @@ const declarados = {
   //
   // Mismo valor en los dos modos, como el marco: es un disco relleno con texto
   // blanco encima, y cambiarlo por tema no aporta nada.
-  'identidad-1':     { claro: 'identidad_1', oscuro: 'identidad_1', uso: 'Avatar sin foto. Verde azulado, tono 173°' },
-  'identidad-2':     { claro: 'identidad_2', oscuro: 'identidad_2', uso: 'Avatar sin foto. Violeta, tono 267°' },
-  'identidad-3':     { claro: 'identidad_3', oscuro: 'identidad_3', uso: 'Avatar sin foto. Magenta, tono 328°' },
-  'identidad-4':     { claro: 'identidad_4', oscuro: 'identidad_4', uso: 'Avatar sin foto. Pizarra, saturación 17 %' },
+  'identidad-1':     { claro: 'identidad_1', oscuro: 'identidad_1', uso: 'Decorativo: avatar, y agrupar con leyenda. Verde azulado, tono 173°' },
+  'identidad-2':     { claro: 'identidad_2', oscuro: 'identidad_2', uso: 'Decorativo: avatar, y agrupar con leyenda. Violeta, tono 267°' },
+  'identidad-3':     { claro: 'identidad_3', oscuro: 'identidad_3', uso: 'Decorativo: avatar, y agrupar con leyenda. Magenta, tono 328°' },
+  'identidad-4':     { claro: 'identidad_4', oscuro: 'identidad_4', uso: 'Decorativo: avatar, y agrupar con leyenda. Pizarra, saturación 17 %' },
   // Blanco en los DOS modos. texto-invertido no sirve: en oscuro vale #20201E
   // y las iniciales quedarían oscuras sobre un disco oscuro.
-  'identidad-texto': { claro: 'gris_0', oscuro: 'gris_0',  uso: 'Iniciales sobre cualquier color de identidad' },
+  'identidad-texto': { claro: 'gris_0', oscuro: 'gris_0',  uso: 'Texto sobre un color de identidad pleno — hoy, las iniciales del avatar' },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────

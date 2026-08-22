@@ -1916,6 +1916,34 @@ chip de estado.</p>
   </table>
 </div>
 
+<h3 class="sub-seccion">Y cuatro que no significan nada</h3>
+<p class="seccion-sub">Los seis de arriba <strong>dicen algo</strong>. Estos cuatro son los del avatar y
+<strong>no dicen nada</strong>: sirven para <strong>agrupar</strong> —una sede, un turno, un responsable— y
+nunca para informar.</p>
+<div class="bloque">
+  <p class="pag-intro" style="margin-top:0">Como leyenda de una rejilla, que es para lo que nacieron:</p>
+  <div class="chip-sup-fila" style="align-items:center;gap:12px">
+    <span><span class="chip chip-punto chip-identidad-1"></span> Sede Centro</span>
+    <span><span class="chip chip-punto chip-identidad-2"></span> Sede Norte</span>
+    <span><span class="chip chip-punto chip-identidad-3"></span> Sede Sur</span>
+    <span><span class="chip chip-punto chip-identidad-4"></span> Sede Este</span>
+  </div>
+  <p class="pag-intro">Y como ficha con texto, cuando hace falta nombrar el grupo:</p>
+  <div class="chip-sup-fila">
+    <span class="chip chip-identidad-1">Sede Centro</span>
+    <span class="chip chip-identidad-2">Sede Norte</span>
+    <span class="chip chip-identidad-3">Sede Sur</span>
+    <span class="chip chip-identidad-4">Sede Este</span>
+  </div>
+</div>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Agrupar sí, informar no.</strong> Lo agrupado va <strong>también en texto</strong> y con leyenda al lado. Cuatro colores sin leyenda son cuatro adornos, y quien no distinga dos de ellos se queda sin el dato (SC 1.4.1).</td></tr>
+    <tr><td class="num">2</td><td><strong>Cuatro, y no más.</strong> Es lo que la paleta de estado deja libre: cada uno queda a 30° o más del tono de estado más cercano. Una paleta larga de colores decorativos acaba con dos que nadie distingue.</td></tr>
+    <tr><td class="num">3</td><td><strong>No se ordena ni se criba por ellos.</strong> No son un valor: son ayuda de reconocimiento.</td></tr>
+  </tbody>
+</table>
+
 <h3 class="sub-seccion">El filete no es adorno: es lo que dibuja el chip</h3>
 <div class="aviso">
   Sobre las cuatro superficies donde vive un chip, el relleno da entre
@@ -4232,6 +4260,46 @@ responden a la vez.</p>
   </tbody>
 </table>
 
+<h3 class="sub-seccion">Colorear por sede, sin gastar el rojo</h3>
+<p class="seccion-sub">Un profesor reparte su semana entre varios locales. El color es lo que permite ver
+<strong>dónde está cada tramo</strong> sin leer caja por caja — pero los tonos de estado no valen para eso:
+usar <code>error</code> como adorno <strong>gasta el rojo</strong>.</p>
+<div class="bloque">
+  <div class="hor-env">
+    <table class="hor">
+      <thead><tr><th class="hor-esq"></th><th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th></tr></thead>
+      <tbody>
+        <tr><th class="hor-eje hor-eje-v" scope="row">08:00</th>
+          <td class="hor-c"><span class="hor-b hor-identidad-1"><b>Matemática</b><span>Sede Centro · A-201</span><span class="hor-rango">08:00 – 09:30</span></span></td>
+          <td class="hor-c"><span class="hor-b hor-identidad-2"><b>Comunicación</b><span>Sede Norte · B-104</span><span class="hor-rango">08:00 – 09:30</span></span></td>
+          <td class="hor-c hor-vacia"></td>
+          <td class="hor-c"><span class="hor-b hor-identidad-3"><b>Tutoría</b><span>Sede Sur · C-12</span><span class="hor-rango">08:00 – 08:45</span></span></td></tr>
+        <tr><th class="hor-eje hor-eje-v" scope="row">10:00</th>
+          <td class="hor-c"><span class="hor-b hor-identidad-4"><b>Ciencias</b><span>Sede Este · Lab 1</span><span class="hor-rango">10:00 – 11:30</span></span></td>
+          <td class="hor-c hor-vacia"></td>
+          <td class="hor-c"><span class="hor-b hor-error"><b>Sin docente</b><span>Sede Centro · A-201</span><span class="hor-rango">10:00 – 11:30</span></span></td>
+          <td class="hor-c hor-vacia"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="pag-intro">Mire el bloque rojo: <strong>sigue siendo lo que más pesa</strong>. Esa es toda la
+  decisión de diseño.</p>
+  <div class="chip-sup-fila" style="align-items:center;gap:12px;margin-top:8px">
+    <span><span class="chip chip-punto chip-identidad-1"></span> Sede Centro</span>
+    <span><span class="chip chip-punto chip-identidad-2"></span> Sede Norte</span>
+    <span><span class="chip chip-punto chip-identidad-3"></span> Sede Sur</span>
+    <span><span class="chip chip-punto chip-identidad-4"></span> Sede Este</span>
+  </div>
+</div>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td>El color va en el <strong>filete, y a 6&nbsp;px</strong>. Los tonos de estado llevan 3: <strong>el grosor distinto es en sí la señal</strong> de que esto es otra dimensión, no un estado más.</td></tr>
+    <tr><td class="num">2</td><td>Se probó el <strong>fondo macizo</strong> con texto blanco, que es como se ve el avatar y como se pidió. Cumple el contraste (6,05–7,53:1) y se lee rapidísimo, pero <strong>cuatro cajas macizas decorativas pesan más que un bloque de error</strong> en rojo tenue: la alarma quedaba por debajo del adorno.</td></tr>
+    <tr><td class="num">3</td><td>También el <strong>título en el color</strong> (5,27–6,55:1). Descartado: aquí el <strong>texto</strong> de color ya significa estado, y un título verde se lee como «bien».</td></tr>
+    <tr><td class="num">4</td><td><strong>La sede va en el texto del bloque y en la leyenda.</strong> El color acompaña; no es el dato. Sin las dos cosas, no se usa.</td></tr>
+  </tbody>
+</table>
+
 <h3 class="sub-seccion">12 horas o 24 horas</h3>
 <table class="tabla-simple">
   <tbody>
@@ -6046,6 +6114,20 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
   border-color: var(--borde-fuerte); }
 .chip-inact { background: var(--borde); color: var(--texto-principal);
   border-color: var(--borde-fuerte); }
+/* R88 · IDENTIDAD EN EL CHIP — porque la leyenda va en chips, y si las dos
+   paletas no coinciden, la leyenda MIENTE. Lo dijeron ellos y es exacto.
+   Aqui el filete se queda en 3px, y no por descuido: en el horario los 6px
+   distinguen identidad de estado dentro de una rejilla donde conviven; un chip
+   dice su sede EN EL TEXTO y no compite con ninguna alarma en la misma linea.
+   Un filete de 6px en una ficha de 22px de alto la desequilibra. */
+.chip-identidad-1 { background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-color: var(--identidad-1); }
+.chip-identidad-2 { background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-color: var(--identidad-2); }
+.chip-identidad-3 { background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-color: var(--identidad-3); }
+.chip-identidad-4 { background: var(--fondo-encabezado); color: var(--texto-principal);
+  border-color: var(--identidad-4); }
 /* Solo para el ejemplo de lo que NO se debe hacer. */
 .tp-opaca { opacity: .5; }
 
@@ -6169,6 +6251,13 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 .chip-punto.chip-aviso { background: var(--aviso-acento); }
 .chip-punto.chip-error { background: var(--error-acento); }
 .chip-punto.chip-info  { background: var(--info-acento); }
+/* El punto de identidad usa el color PLENO y no un acento, porque identidad no
+   tiene rampa: es un color y ya. Es la pieza de leyenda que R88 necesitaba, y
+   ya existia — solo le faltaban estos cuatro. */
+.chip-punto.chip-identidad-1 { background: var(--identidad-1); }
+.chip-punto.chip-identidad-2 { background: var(--identidad-2); }
+.chip-punto.chip-identidad-3 { background: var(--identidad-3); }
+.chip-punto.chip-identidad-4 { background: var(--identidad-4); }
 .chip-con-punto i { display: inline-block; width: 6px; height: 6px; border-radius: 50%;
   background: currentColor; margin-right: 4px; vertical-align: middle; }
 .chip-fila-demo { display: flex; gap: 8px; align-items: center; }
@@ -6302,6 +6391,38 @@ a.enlace.enl-nosub { text-decoration: none; }
 .hor-error  { background: var(--error-fondo);     color: var(--error-texto);  border-left-color: var(--error-acento); }
 .hor-oro    { background: var(--accion-2-fondo);  color: var(--accion-2);     border-left-color: var(--accion-2); }
 .hor-neutro { background: var(--neutra-fondo);    color: var(--neutra-texto); border-left-color: var(--borde-fuerte); }
+
+/* R88 · IDENTIDAD EN EL HORARIO — el color que agrupa, no el que avisa.
+   Lo pidio Control Administrativos para colorear cada bloque por SEDE: un
+   profesor reparte su semana entre dos o tres locales y el color es lo que
+   permite ver donde esta cada tramo sin leer caja por caja. Tenian razon en el
+   diagnostico: los tonos de estado no sirven para eso. Usar error como color
+   decorativo GASTA el rojo, que es justo lo que este sistema defiende en la
+   Nota — si el ambar siempre esta, deja de significar «mira esto».
+
+   EL COLOR VA EN EL FILETE, Y A 6PX. Se probaron las tres formas con la rejilla
+   real y bloques de estado mezclados, que es como se ve de verdad:
+     · Fondo macizo con texto blanco, como lo pedian y como es el avatar: se lee
+       rapidisimo, pero MIDE mal la jerarquia — cuatro cajas macizas decorativas
+       pesan mas que el bloque de error en rojo tenue, asi que la alarma queda
+       por debajo del adorno. Es el mismo error que ellos denuncian, del reves.
+     · Titulo en el color: 5,27–6,55:1, cumple, pero en este sistema el TEXTO de
+       color ya significa estado. Un titulo verde se lee como «bien».
+     · Filete de 6px sobre fondo neutro: el grosor distinto del semantico —3px—
+       es EN SI la senal de que esto es otra dimension, no un estado mas.
+   Va en .hor-b.hor-identidad-N y no en .hor-identidad-N a secas para que el
+   ancho GANE al border-left: 3px de .hor-b por especificidad y no por
+   orden. Eso ultimo es R87: dos reglas de una clase empatan, y el empate se
+   resuelve al reves en cada hoja. */
+.hor-b.hor-identidad-1,
+.hor-b.hor-identidad-2,
+.hor-b.hor-identidad-3,
+.hor-b.hor-identidad-4 { background: var(--neutra-fondo); color: var(--neutra-texto);
+  border-left-width: 6px; }
+.hor-b.hor-identidad-1 { border-left-color: var(--identidad-1); }
+.hor-b.hor-identidad-2 { border-left-color: var(--identidad-2); }
+.hor-b.hor-identidad-3 { border-left-color: var(--identidad-3); }
+.hor-b.hor-identidad-4 { border-left-color: var(--identidad-4); }
 
 .cam-fecha { font-size: 13px; font-weight: 400; color: var(--texto-secundario); }
 .cam-tok { font-size: 13px; color: var(--texto-secundario); margin: 8px 0 0; }

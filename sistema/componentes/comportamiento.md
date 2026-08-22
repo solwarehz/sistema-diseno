@@ -329,6 +329,22 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 ---
 
+## Color de identidad · Horario y Chip
+
+Los cuatro colores decorativos que ya usaba el avatar, disponibles desde la
+v1.63.0 como `tono` en `Horario` y en `Chip`.
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R88, v1.63.0) **Agrupan, no informan.** Sirven para marcar a qué grupo pertenece algo —una sede, un turno, un responsable— y **no significan nada**: ni bien, ni mal, ni pendiente. Existen porque la paleta de estado no se puede reutilizar para esto: usar `error` como color decorativo **gasta el rojo**, y un rojo que siempre está deja de querer decir «mira esto». |
+| **2** | **Obligatorio.** (R88, v1.63.0) **Lo agrupado va también en texto, y con leyenda.** El color acompaña; nunca es el único medio (SC 1.4.1). En el horario, el bloque dice su sede; junto a la rejilla, una leyenda dice qué color es cada una — `chip-punto` con el tono de identidad es la pieza. Sin las dos cosas no se usa: cuatro colores sin leyenda son cuatro adornos, y quien no distinga dos de ellos se queda sin el dato. |
+| **3** | **Obligatorio.** (R88, v1.63.0) En el **horario** el color va en el **filete, a 6 px** — los tonos de estado llevan 3, y **el grosor distinto es en sí la señal** de que esto es otra dimensión. No va en el fondo: se probó macizo con texto blanco, cumple el contraste (6,05–7,53:1) pero **cuatro cajas decorativas pesan más que un bloque de error** en rojo tenue, y la alarma queda por debajo del adorno. Tampoco en el texto (5,27–6,55:1): aquí el texto de color ya significa estado. |
+| **4** | **Obligatorio.** (R88, v1.63.0) **Son cuatro y no más.** Es lo que la paleta de estado deja libre: cada uno queda a 30° o más del tono de estado más cercano, salvo pizarra, que va al 17 % de saturación. Una paleta larga de colores decorativos acaba con dos tonos que nadie distingue. |
+| **5** | Del proyecto: **el reparto**. Qué grupo se lleva cada color lo decide quien monta la pantalla. `colorIdentidad(id)` da un reparto estable por identificador y está exportada, pero no es obligatoria: para sedes con nombre suele quererse un orden fijo. |
+| **6** | Del proyecto: **no se ordena ni se criba por el color**. No es un valor. |
+
+---
+
 ## Lo que este documento todavía no cubre
 
 Declarado en vez de omitido:
