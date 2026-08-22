@@ -1,0 +1,38 @@
+{
+  "documento": "MMI-DS",
+  "version": "1.68.0",
+  "forma": {
+    "candadoEslint": {
+      "bloques": 1,
+      "detalle": [
+        {
+          "name": "mmi-ds/candado",
+          "tieneReglas": true,
+          "reglas": [
+            "no-restricted-syntax"
+          ],
+          "files": [
+            "**/*.{ts,tsx,js,jsx,mjs}"
+          ]
+        }
+      ],
+      "indiceConReglas": 0
+    },
+    "rutasPublicadas": [
+      ".",
+      "./componentes",
+      "./componentes.css",
+      "./componentes/*",
+      "./comportamiento.md",
+      "./eslint",
+      "./fuente",
+      "./iconos",
+      "./lock",
+      "./package.json",
+      "./politica",
+      "./preset",
+      "./tokens.css",
+      "./verificar-color"
+    ]
+  }
+}

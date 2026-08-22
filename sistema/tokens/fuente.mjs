@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.67.0";
+export const VERSION = "1.68.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,39 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.68.0', fecha: '2026-08-21',
+    que: 'R93: la v1.67.0 habria APAGADO el candado en silencio a quien lo desarmaba — y nace el candado de la forma',
+    porque:
+      'R93 · Lo caza Control Administrativos al actualizar, y es el mas grave de los tres que han '
+      + 'reportado hoy. Hasta la v1.66.0 el candado de ESLint era UN bloque y su proyecto copiaba a '
+      + 'mano los cuatro campos de candado[0]: name, files, ignores y rules. La v1.67.0 —nuestra, de '
+      + 'ayer— metio el analizador delante, y con eso candado[0].rules paso a ser undefined. La '
+      + 'actualizacion les habria dejado el candado SIN NINGUNA REGLA ACTIVA Y EN VERDE: ESLint no '
+      + 'se queja de un bloque con rules: undefined, simplemente no comprueba nada. '
+      + 'Lo vieron porque fueron a mirar la forma de la exportacion ANTES DE CONFIAR EN ELLA, no '
+      + 'porque algo fallara. Nadie se habria enterado. '
+      + 'Dos arreglos. Uno: el bloque de reglas vuelve a ser candado[0] y el analizador va detras '
+      + '—para ESLint da igual el orden, y delante le quitaba el sitio—. Lo correcto sigue siendo '
+      + 'esparcir el array entero, y asi lo dice la documentacion, pero un paquete no puede repartir '
+      + 'la culpa: si se puede desarmar, alguien lo desarmara, y romperle el suelo en una version '
+      + 'menor es fallo nuestro. '
+      + 'Dos: nace el CANDADO DE LA FORMA, el decimotercero, con la frase de ellos por bandera — '
+      + '«verificar-entrega comprueba que todo SALGA, no que la FORMA se mantenga». Fija en un lock '
+      + 'la forma de lo que un consumidor puede desarmar: cuantos bloques tiene el candado de ESLint, '
+      + 'cual lleva las reglas, y las rutas publicadas en exports. Cambiarla exige --sellar, y '
+      + 'entonces el cambio se ve en el diff y toca decidir si va en rompe. '
+      + 'El bloque del analizador NO cuenta como forma, y eso importa: es condicional a que el '
+      + 'consumidor tenga typescript-eslint, asi que contarlo haria que el lock dijera una cosa dentro '
+      + 'del contenedor y otra fuera. Un candado que depende de donde se ejecute no vale. Se comprueba '
+      + 'aparte que, cuando exista, vaya DETRAS. '
+      + 'Visto en rojo reintroduciendo el defecto exacto de la v1.67.0 antes de verlo en verde. Y su '
+      + 'primera salida MENTIA —decia «presente, y detras» con el analizador delante— porque el rotulo '
+      + 'se calculaba antes de la comprobacion: corregido, que un candado no puede mentir en su propio '
+      + 'informe.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.67.0', fecha: '2026-08-21',
     que: 'R92: el candado de ESLint no sabia leer TypeScript — moria en el analisis antes de llegar a ninguna regla',

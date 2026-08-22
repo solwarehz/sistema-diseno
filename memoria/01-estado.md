@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 21 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.67.0** — el candado de ESLint no sabía
-leer TypeScript: moría en el análisis antes de llegar a ninguna regla. Lo
-teníamos resuelto para nosotros y entregábamos la versión sin resolver
+**Versión del sistema:** MMI-DS **v1.68.0** — la v1.67.0 habría **apagado el
+candado en silencio** a quien lo desarmaba. Nace el **candado de la forma**, el
+decimotercero
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ teníamos resuelto para nosotros y entregábamos la versión sin resolver
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —31 componentes
-publicados, la hoja que viaja, **doce candados**, 415 pruebas— y sigue
+publicados, la hoja que viaja, **trece candados**, 415 pruebas— y sigue
 aprendiendo la misma lección por otro lado: los peores defectos no están en lo
 que el catálogo enseña mal, sino en **lo que ningún candado estaba mirando**.
 R86 es de ese tipo: la tabla declaraba una altura de fila de 34px desde la
@@ -42,10 +42,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 790 reglas de 1274 · **566 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.67.0.zip` · **53 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.68.0.zip` · **54 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.67.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.68.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,54 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.67.0), con detalle
+### Lo de hoy (v1.68.0), con detalle
+
+**R93 · la v1.67.0 habría apagado el candado en silencio.** Lo cazó Control
+Administrativos **al actualizar**, y es el más grave de los tres que reportaron
+hoy — porque no lo reportó un fallo, lo reportó una sospecha.
+
+Hasta la v1.66.0 el candado de ESLint era **un** bloque, y su proyecto copiaba a
+mano los cuatro campos de `candado[0]`. La v1.67.0 —nuestra, de ayer— metió el
+analizador delante, y con eso `candado[0].rules` pasó a ser `undefined`. **La
+actualización les habría dejado el candado sin ninguna regla activa y en
+verde**: ESLint no se queja de un bloque con `rules: undefined`, sencillamente
+no comprueba nada.
+
+> *«Lo vi porque fui a mirar la forma de la exportación antes de confiar en
+> ella, no porque nada fallara.»*
+
+Nadie se habría enterado.
+
+**Dos arreglos.** El bloque de reglas vuelve a ser `candado[0]` y el analizador
+va detrás —para ESLint el orden da igual, y delante le quitaba el sitio—. Lo
+correcto sigue siendo esparcir el array, y así lo dice la documentación, pero
+**un paquete no puede repartir la culpa**: si se puede desarmar, alguien lo
+desarmará, y romperle el suelo en una versión menor es fallo nuestro.
+
+**Y nace el candado de la forma**, con la frase de ellos por bandera:
+*«`verificar-entrega` comprueba que todo salga, no que la forma se mantenga»*.
+Fija en un lock lo que un consumidor puede desarmar —cuántos bloques, cuál lleva
+las reglas, qué rutas se publican— y cambiarlo exige `--sellar`, así que el
+cambio aparece en el diff y toca decidir si va en `rompe`.
+
+**El bloque del analizador no cuenta como forma**, y esa decisión importa: es
+condicional a que el consumidor tenga `typescript-eslint`, así que contarlo
+haría que el lock dijera una cosa dentro del contenedor y otra fuera. **Un
+candado que depende de dónde se ejecute no vale.** Se comprueba aparte que,
+cuando exista, vaya detrás.
+
+Visto en rojo reintroduciendo el defecto exacto de la v1.67.0. Y su primera
+salida **mentía** —decía «presente, y detrás» con el analizador delante—, porque
+el rótulo se calculaba antes de la comprobación. Corregido: un candado no puede
+mentir en su propio informe.
+
+**Una corrección que ellos mismos hicieron y conviene registrar:** su proyecto
+**no** tenía el candado apagado — su `eslint.config.mjs` ya componía el
+analizador. Lo que fallaba era la **invocación suelta**, que es justo la que
+manda nuestro `ACTUALIZAR.md`. El defecto era de lo que documentamos, no de lo
+que ellos habían montado.
+
+### Lo de la v1.67.0, con detalle
 
 **R92 · el candado de ESLint no sabía leer TypeScript.** Lo reportó Control
 Administrativos con el caso exacto: *«no parsea `import { type X }`, que es
@@ -508,7 +555,7 @@ de consumidor: dos errores sin la declaración, cero con ella.
 
 ---
 
-## Los once candados
+## Los trece candados
 
 Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en rojo.
 
@@ -534,7 +581,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.67.0
+Versión                      1.68.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
 Pruebas                         415   en 28 archivos

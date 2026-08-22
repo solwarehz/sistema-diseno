@@ -189,7 +189,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
 - **`main` sí se actualiza en este proyecto** —y solo en este—, pero **únicamente
   cuando está verificado y sin errores**. La condición no es una formalidad: es
   lo que hace que la regla sea segura, porque `main` es de donde instala el área
-  de sistemas. Antes de subir, los **doce** candados **en verde** y las pruebas
+  de sistemas. Antes de subir, los **trece** candados **en verde** y las pruebas
   pasando:
 
   ```bash
@@ -205,6 +205,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
   node sistema/candado/verificar-promesa.mjs  # se VE igual que en el catálogo
   node sistema/candado/verificar-elemento.mjs # se emite el MISMO elemento
   node sistema/candado/verificar-empate.mjs   # el ORDEN no decide distinto en cada hoja
+  node sistema/candado/verificar-forma.mjs    # lo publicado no cambia de FORMA sin decirlo
   ```
 
   Los dos últimos faltaban de esta lista y **la memoria los contaba entre los
@@ -230,6 +231,24 @@ No las «mejores» por iniciativa propia. Están razonadas:
   nuevas y no finge que las viejas no existen. Arreglar una es quitar su línea
   —y si se arregla y no se quita, el candado también falla, porque una lista de
   excepciones que nadie poda vuelve a ser el inventario a mano de siempre.
+
+  El de la **forma** es el más joven y el que menos se parece a los demás: no
+  mira lo que el sistema dice, sino **cómo está empaquetado lo que dice**. Nació
+  de un fallo propio. La v1.67.0 metió el analizador de TypeScript delante en el
+  candado de ESLint, y con eso `candado[0].rules` pasó a ser `undefined`: un
+  proyecto que copiaba a mano los cuatro campos de `candado[0]` se habría
+  quedado **sin ninguna regla activa y en verde**, porque ESLint no protesta
+  ante un bloque sin reglas — simplemente no comprueba nada.
+
+  Lo cazó Control Administrativos yendo a mirar la forma antes de confiar en
+  ella, **no porque algo fallara**. Nadie se habría enterado, y es la clase de
+  defecto que este repositorio ya conoce: el `box-sizing` que no viajaba y el
+  analizador que no se entregaba. Lo suyo lo resume mejor que nosotros:
+  *«cambiar la forma de lo exportado rompe a quien lo desarma, y verificar-entrega
+  comprueba que todo salga, no que la forma se mantenga»*.
+
+  Lo correcto sigue siendo esparcir —`...candado`—, pero **un paquete no puede
+  repartir la culpa**: si se puede desarmar, alguien lo desarmará.
 
   El del **empate** nació de comprobar el anterior. Al montar el mismo marcado
   con las dos hojas en un navegador —24.642 propiedades— el filtro de columna

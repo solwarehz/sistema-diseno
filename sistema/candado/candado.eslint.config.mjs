@@ -120,23 +120,27 @@ const restringidos = [
   },
 ];
 
+// ─────────────────────────────────────────────────────────────────────────────
+// LA FORMA DE ESTO ES CONTRATO, Y SE APRENDIO ROMPIENDOLA (R93).
+//
+// **El bloque de reglas es SIEMPRE `candado[0]`.** No es estética: la v1.67.0
+// metió el analizador delante y con eso `candado[0].rules` pasó a ser
+// `undefined`. Un proyecto que copiaba a mano los cuatro campos de `candado[0]`
+// —name, files, ignores, rules— se habría quedado **sin ninguna regla activa y
+// en verde**, porque ESLint no se queja de un bloque con `rules: undefined`:
+// simplemente no comprueba nada.
+//
+// Lo cazó Control Administrativos yendo a mirar la forma de la exportación
+// antes de confiar en ella, **no porque algo fallara**. Nadie se habría
+// enterado.
+//
+// Lo correcto sigue siendo esparcir el array entero —`...candado`—, y así lo
+// dice el uso de arriba. Pero un paquete no puede repartir la culpa: si se
+// puede desarmar, alguien lo desarmará, y romperle el suelo en una versión
+// menor es nuestro fallo, no suyo. Por eso el orden se fija, y lo vigila
+// `verificar-forma.mjs` con su contrato escrito.
+// ─────────────────────────────────────────────────────────────────────────────
 export default [
-  // El analizador va PRIMERO y en su propio bloque: sin él, ESLint no sabe leer
-  // un `.tsx` y muere antes de llegar a las reglas de abajo. Si no está
-  // instalado no se añade nada y el candado sigue cubriendo el JavaScript.
-  ...(parserTs
-    ? [{
-        name: 'mmi-ds/candado-ts',
-        files: ['**/*.{ts,tsx,mts,cts}'],
-        // Los archivos de DECLARACIÓN quedan fuera. No llevan color ni estilo
-        // —son tipos— así que el candado no tiene nada que mirar en ellos, y
-        // sí llevan directivas `eslint-disable` de reglas del plugin de
-        // TypeScript que aquí no se registra: procesarlos solo produce ruido
-        // sobre archivos que ninguna regla del sistema vigila.
-        ignores: ['**/*.d.ts', '**/*.d.mts', '**/*.d.cts'],
-        languageOptions: { parser: parserTs, parserOptions: { ecmaFeatures: { jsx: true } } },
-      }]
-    : []),
   {
     name: 'mmi-ds/candado',
     files: ['**/*.{ts,tsx,js,jsx,mjs}'],
@@ -164,6 +168,22 @@ export default [
       'no-restricted-syntax': ['error', ...restringidos],
     },
   },
+  // El analizador, DETRÁS. Para ESLint da igual el orden —los bloques se
+  // fusionan por archivo y este es el único que declara `parser`—, y delante
+  // le quitaba el sitio al bloque de reglas.
+  ...(parserTs
+    ? [{
+        name: 'mmi-ds/candado-ts',
+        files: ['**/*.{ts,tsx,mts,cts}'],
+        // Los archivos de DECLARACIÓN quedan fuera. No llevan color ni estilo
+        // —son tipos— así que el candado no tiene nada que mirar en ellos, y
+        // sí llevan directivas `eslint-disable` de reglas del plugin de
+        // TypeScript que aquí no se registra: procesarlos solo produce ruido
+        // sobre archivos que ninguna regla del sistema vigila.
+        ignores: ['**/*.d.ts', '**/*.d.mts', '**/*.d.cts'],
+        languageOptions: { parser: parserTs, parserOptions: { ecmaFeatures: { jsx: true } } },
+      }]
+    : []),
 ];
 
 /** Exportado para poder probar el candado sin ESLint. Ver `probar-candado.mjs`. */
