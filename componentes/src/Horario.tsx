@@ -8,6 +8,8 @@
  * Rotar NO reordena datos: intercambia los ejes de la misma tabla.
  */
 
+import { useEffect, useRef } from 'react';
+
 export type BloqueHorario = {
   /** Índice del día dentro de `dias`. */
   dia: number;
@@ -146,9 +148,29 @@ export function Horario({
     for (let k = 1; k < largo; k++) tapada[b.dia][f + k] = true;
   });
 
-  // Se avisa DESPUÉS de colocarlo todo y en una sola llamada: un aviso por
-  // bloque durante el reparto llegaría a medias y en orden de entrada.
-  if (onAjuste && avisos.length) onAjuste(avisos);
+  // R94 · SE AVISA EN UN EFECTO, NO DURANTE EL RENDER.
+  //
+  // Estaba llamado en el cuerpo del componente, y eso es un BUCLE INFINITO en
+  // cuanto el consumidor hace lo natural: guardar los avisos en un estado para
+  // enseñarlos. `setState` durante el render de otro componente provoca otro
+  // render, que vuelve a llamar, que vuelve a renderizar. Lo reportó Control
+  // Administrativos, que además tuvo que blindarse por su cuenta; aquí la
+  // prueba que lo reprodujo se colgó diez minutos antes de que la matáramos.
+  //
+  // La comparación es por CONTENIDO y no por identidad de array: `avisos` es
+  // un array nuevo en cada render, así que un efecto con `[avisos]` volvería a
+  // dispararse siempre y el bucle seguiría, solo que un paso más allá.
+  const huella = JSON.stringify(avisos.map((a) => [a.motivo, a.detalle]));
+  const ultima = useRef<string | null>(null);
+  useEffect(() => {
+    if (!onAjuste || !avisos.length) return;
+    if (ultima.current === huella) return;
+    ultima.current = huella;
+    onAjuste(avisos);
+    // `avisos` queda fuera a propósito: su identidad cambia en cada render y
+    // lo que decide si hay algo nuevo que decir es la huella.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [huella, onAjuste]);
 
   const vertical = eje === 'vertical';
   const filas = vertical ? n : dias.length;
@@ -192,9 +214,9 @@ export function Horario({
                         —arr y aba a cero— sale el mismo marcado de siempre más
                         un div, y el bloque ocupa la celda entera. */}
                     <div className="hor-pila">
-                      {e.arr > 0 && <i className={`hor-hueco hor-fr-${e.arr}`} aria-hidden="true" />}
+                      {e.arr > 0 && <i className={`hor-hueco hor-q${e.arr}-${e.largo}`} aria-hidden="true" />}
                       <span
-                        className={`hor-b hor-${e.b.tono ?? 'neutro'} hor-fr-${e.dur}`}
+                        className={`hor-b hor-${e.b.tono ?? 'neutro'}`}
                         title={`${dias[dia]}, ${rango}`}
                       >
                         <b>{e.b.titulo}</b>
@@ -205,7 +227,7 @@ export function Horario({
                             el rótulo no redondea nada. */}
                         <span className="hor-rango">{rango}</span>
                       </span>
-                      {e.aba > 0 && <i className={`hor-hueco hor-fr-${e.aba}`} aria-hidden="true" />}
+                      {e.aba > 0 && <i className={`hor-hueco hor-q${e.aba}-${e.largo}`} aria-hidden="true" />}
                     </div>
                   </td>
                 );

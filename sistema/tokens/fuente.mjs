@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.68.0";
+export const VERSION = "1.69.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,41 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.69.0', fecha: '2026-08-21',
+    que: 'R94: onAjuste entraba en BUCLE INFINITO, y el sombreado desalineaba las columnas segun su contenido',
+    porque:
+      'R94 · Dos defectos nuestros de la v1.64.0, los dos reportados por Control Administrativos, que '
+      + 'ademas tuvo que blindarse el bucle por su cuenta. '
+      + 'EL BUCLE. onAjuste se llamaba en el cuerpo del componente, o sea DURANTE EL RENDER. Un '
+      + 'consumidor que hiciera lo natural —guardar los avisos en un estado para ensenarlos— entraba '
+      + 'en bucle infinito: setState durante el render provoca otro render, que vuelve a avisar. La '
+      + 'prueba que lo reprodujo SE COLGO DIEZ MINUTOS antes de matarla; ahora el aviso sale de un '
+      + 'useEffect y solo cuando los avisos cambian DE CONTENIDO — comparar la identidad del array no '
+      + 'vale, porque es uno nuevo en cada render y el bucle volveria un paso mas alla. La prueba que '
+      + 'lo vigila lleva tope de renders para fallar en vez de colgar el CI. '
+      + 'EL DESALINEADO. El hueco se repartia con flex-grow, y flex-grow reparte lo que SOBRA. Sobra '
+      + 'distinto en cada celda —una con linea de detalle tiene mas contenido que una sin ella—, asi '
+      + 'que dos bloques de la MISMA hora en la MISMA fila empezaban a alturas distintas. Ellos lo '
+      + 'vieron en pantalla: martes y jueves mas abajo que lunes, miercoles y viernes con el mismo '
+      + 'horario. '
+      + 'Y esto ya estaba medido a medias: la v1.64.0 declaro «donde tocaria 37,5 % sale 35,5 %» como '
+      + 'aproximacion aceptable. Lo que no se vio es que la desviacion NO ES UNIFORME. Una desviacion '
+      + 'que cambia con el contenido no es aproximar: es desalinear. Declarar un numero medido no basta '
+      + 'si no se comprueba que sea el mismo en todos los casos. '
+      + 'Ahora el hueco es flex-basis en PORCENTAJE del contenedor —18 clases hor-q{cuartos}-{celdas}, '
+      + 'de 25 %/L a 75 %/L— y el bloque se lleva el resto sin poder encogerse. Medido despues: 37,6 % '
+      + 'donde toca 37,5, y desalineacion de 0,00 px entre columnas con y sin detalle. La precision pasa '
+      + 'de +-2 puntos a +-0,2, y deja de depender del contenido. '
+      + 'De paso: el ejemplo del catalogo se quedo con las clases viejas al cambiarlas, asi que el hueco '
+      + 'perdio su tamano y el sombreado no se veia. Nadie lo caza: el candado de huerfanas mira los '
+      + 'componentes de React, no el marcado del catalogo. Queda anotado como pendiente.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'Las clases hor-fr-1..24 desaparecen y las sustituyen hor-q{cuartos}-{celdas}. Solo afecta a quien '
+      + 'escribiera el marcado del horario a mano en vez de usar <Horario>.',
+    ],
+  },
   {
     v: '1.68.0', fecha: '2026-08-21',
     que: 'R93: la v1.67.0 habria APAGADO el candado en silencio a quien lo desarmaba — y nace el candado de la forma',

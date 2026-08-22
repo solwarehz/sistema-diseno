@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 21 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.68.0** — la v1.67.0 habría **apagado el
-candado en silencio** a quien lo desarmaba. Nace el **candado de la forma**, el
-decimotercero
+**Versión del sistema:** MMI-DS **v1.69.0** — `onAjuste` entraba en **bucle
+infinito** y el sombreado **desalineaba** las columnas según su contenido. Dos
+fallos nuestros de la v1.64.0
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -38,14 +38,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **415 pruebas en 28 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **419 pruebas en 29 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · 790 reglas de 1274 · **566 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.68.0.zip` · **54 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.69.0.zip` · **54 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.68.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.69.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,44 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.68.0), con detalle
+### Lo de hoy (v1.69.0), con detalle
+
+**R94 · dos fallos nuestros de la v1.64.0**, los dos reportados por Control
+Administrativos, que además tuvo que blindarse el bucle por su cuenta.
+
+**El bucle.** `onAjuste` se llamaba en el cuerpo del componente, o sea
+**durante el render**. Un consumidor que hiciera lo natural —guardar los avisos
+en un estado para enseñarlos— entraba en **bucle infinito**. La prueba que lo
+reprodujo **se colgó diez minutos** antes de matarla. Ahora sale de un
+`useEffect`, y solo cuando los avisos cambian **de contenido**: comparar la
+identidad del array no vale, porque es uno nuevo en cada render y el bucle
+volvería un paso más allá. La prueba que lo vigila lleva **tope de renders**,
+para fallar en vez de colgar.
+
+**El desalineado.** El hueco se repartía con `flex-grow`, y `flex-grow` reparte
+**lo que sobra**. Sobra distinto en cada celda —una con línea de detalle tiene
+más contenido—, así que dos bloques de la misma hora en la misma fila empezaban
+a alturas distintas. Lo vieron en pantalla: martes y jueves más abajo que lunes,
+miércoles y viernes con el mismo horario.
+
+**Y esto ya estaba medido a medias**, que es la parte que enseña. La v1.64.0
+declaró *«donde tocaría 37,5 % sale 35,5 %»* y lo dio por aproximación
+aceptable. Lo que no se comprobó es que **la desviación no es uniforme**. Una
+desviación que cambia con el contenido no es aproximar: es desalinear.
+**Declarar un número medido no basta si no se comprueba que sea el mismo en
+todos los casos.**
+
+| | antes | ahora |
+|---|---|---|
+| Inicio donde toca 37,5 % | 35,5 % | **37,6 %** |
+| Desalineación entre columnas | variable | **0,00 px** |
+
+**Pendiente que esto destapó:** al cambiar las clases, el ejemplo del catálogo
+se quedó con las viejas y el sombreado dejó de verse. **No lo caza nadie** — el
+candado de las clases huérfanas mira los componentes de React, no el marcado del
+catálogo. Queda anotado.
+
+### Lo de la v1.68.0, con detalle
 
 **R93 · la v1.67.0 habría apagado el candado en silencio.** Lo cazó Control
 Administrativos **al actualizar**, y es el más grave de los tres que reportaron
@@ -581,10 +618,10 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.68.0
+Versión                      1.69.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
-Pruebas                         415   en 28 archivos
+Pruebas                         419   en 29 archivos
 Reglas que viajan               790   de 1274 · 566 clases, 0 huérfanas
 Candado de la cascada           867   reglas leidas · 11 anchos
 Candado del empate              292   combinaciones reales · 53 empates

@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.68.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.69.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.68.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.69.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -2301,38 +2301,45 @@ a.enlace.enl-nosub { text-decoration: none; }
 
    La tabla, los th scope y los rowSpan/colSpan se quedan EXACTAMENTE igual.
    Era su condicion y es la que hace accesible este componente. */
+/* min-height y no height: con height fijo la pila no puede crecer, y un bloque
+   con linea de detalle desbordaba la celda con el texto cortado por el borde.
+   Con min-height el reparto sigue siendo porcentual —todas las celdas de una
+   fila miden lo mismo— y ademas la fila crece si el contenido lo pide. */
 .hor-pila { display: flex; flex-direction: column; height: 100%; }
 .hor-hueco { flex-basis: 0; flex-shrink: 0; }
-.hor-pila > .hor-b { flex-basis: 0; flex-shrink: 0; height: auto; }
-/* Una por cada numero de cuartos. Veinticuatro es el tope: seis celdas de span,
-   que es una jornada de seis horas seguidas con paso de una hora. Por encima el
-   bloque se pinta a celda entera y el producto se entera por onAjuste — un
-   limite que no se dice es un descarte silencioso, que es justo lo que este
-   pedido venia a quitar. */
-.hor-fr-1 { flex-grow: 1; }
-.hor-fr-2 { flex-grow: 2; }
-.hor-fr-3 { flex-grow: 3; }
-.hor-fr-4 { flex-grow: 4; }
-.hor-fr-5 { flex-grow: 5; }
-.hor-fr-6 { flex-grow: 6; }
-.hor-fr-7 { flex-grow: 7; }
-.hor-fr-8 { flex-grow: 8; }
-.hor-fr-9 { flex-grow: 9; }
-.hor-fr-10 { flex-grow: 10; }
-.hor-fr-11 { flex-grow: 11; }
-.hor-fr-12 { flex-grow: 12; }
-.hor-fr-13 { flex-grow: 13; }
-.hor-fr-14 { flex-grow: 14; }
-.hor-fr-15 { flex-grow: 15; }
-.hor-fr-16 { flex-grow: 16; }
-.hor-fr-17 { flex-grow: 17; }
-.hor-fr-18 { flex-grow: 18; }
-.hor-fr-19 { flex-grow: 19; }
-.hor-fr-20 { flex-grow: 20; }
-.hor-fr-21 { flex-grow: 21; }
-.hor-fr-22 { flex-grow: 22; }
-.hor-fr-23 { flex-grow: 23; }
-.hor-fr-24 { flex-grow: 24; }
+.hor-pila > .hor-b { flex: 1 0 auto; height: auto; }
+/* R94 · EL HUECO MIDE UNA FRACCION DE LA CELDA, NO DEL ESPACIO SOBRANTE.
+   La v1.64.0 repartia con flex-grow, y flex-grow reparte lo que SOBRA. Sobra
+   distinto en cada celda —una con linea de detalle tiene mas contenido que una
+   sin ella—, asi que dos bloques de la MISMA hora en la MISMA fila empezaban a
+   alturas distintas. Lo reporto Control Administrativos viendolo en pantalla:
+   martes y jueves mas abajo que lunes, miercoles y viernes con el mismo horario.
+   Ya estaba medida la desviacion —37,5 % que salia 35,5 %— y se declaro como
+   aproximacion aceptable; lo que no se vio es que NO ES UNIFORME, y una
+   desviacion que cambia con el contenido no es aproximar: es desalinear.
+   Ahora el hueco es flex-basis en PORCENTAJE del contenedor, que es la celda
+   —o las L celdas del rowSpan—, y todas las celdas de una fila miden lo mismo.
+   El bloque se lleva el resto con flex: 1 1 auto, asi que si su texto no cabe la
+   fila crece, y al crecer el porcentaje se recalcula sobre la misma altura para
+   todas. El reparto deja de depender del contenido. */
+.hor-hueco.hor-q1-1 { flex: 0 0 25%; }
+.hor-hueco.hor-q1-2 { flex: 0 0 12.5%; }
+.hor-hueco.hor-q1-3 { flex: 0 0 8.3333%; }
+.hor-hueco.hor-q1-4 { flex: 0 0 6.25%; }
+.hor-hueco.hor-q1-5 { flex: 0 0 5%; }
+.hor-hueco.hor-q1-6 { flex: 0 0 4.1667%; }
+.hor-hueco.hor-q2-1 { flex: 0 0 50%; }
+.hor-hueco.hor-q2-2 { flex: 0 0 25%; }
+.hor-hueco.hor-q2-3 { flex: 0 0 16.6667%; }
+.hor-hueco.hor-q2-4 { flex: 0 0 12.5%; }
+.hor-hueco.hor-q2-5 { flex: 0 0 10%; }
+.hor-hueco.hor-q2-6 { flex: 0 0 8.3333%; }
+.hor-hueco.hor-q3-1 { flex: 0 0 75%; }
+.hor-hueco.hor-q3-2 { flex: 0 0 37.5%; }
+.hor-hueco.hor-q3-3 { flex: 0 0 25%; }
+.hor-hueco.hor-q3-4 { flex: 0 0 18.75%; }
+.hor-hueco.hor-q3-5 { flex: 0 0 15%; }
+.hor-hueco.hor-q3-6 { flex: 0 0 12.5%; }
 
 .hor-b b { display: block; font-weight: 600; font-size: 13px; }
 .hor-b span { display: block; font-size: 12px; }
@@ -3795,7 +3802,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.68.0</option></select></label>
+          <select class="campo cg-in"><option>v1.69.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3883,8 +3890,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.68.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.68.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.69.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.69.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -7809,18 +7816,18 @@ más la de las 14:00 entera. La rejilla se queda en <strong>24 filas</strong> au
       <tbody>
         <tr><th class="hor-eje hor-eje-v" scope="row">07:00</th>
           <td class="hor-c" rowspan="2"><div class="hor-pila">
-            <i class="hor-hueco hor-fr-3" aria-hidden="true"></i>
-            <span class="hor-b hor-identidad-1 hor-fr-5"><b>Turno mañana</b><span>Sede Centro</span><span class="hor-rango">07:45 – 09:00</span></span>
+            <i class="hor-hueco hor-q3-2" aria-hidden="true"></i>
+            <span class="hor-b hor-identidad-1"><b>Turno mañana</b><span>Sede Centro</span><span class="hor-rango">07:45 – 09:00</span></span>
           </div></td>
           <td class="hor-c hor-vacia"></td></tr>
         <tr><td class="hor-c hor-vacia"></td></tr>
         <tr><th class="hor-eje hor-eje-v" scope="row">13:00</th>
           <td class="hor-c" rowspan="2"><div class="hor-pila">
-            <i class="hor-hueco hor-fr-2" aria-hidden="true"></i>
-            <span class="hor-b hor-identidad-2 hor-fr-6"><b>Turno tarde</b><span>Sede Norte</span><span class="hor-rango">13:30 – 15:00</span></span>
+            <i class="hor-hueco hor-q2-2" aria-hidden="true"></i>
+            <span class="hor-b hor-identidad-2"><b>Turno tarde</b><span>Sede Norte</span><span class="hor-rango">13:30 – 15:00</span></span>
           </div></td>
           <td class="hor-c"><div class="hor-pila">
-            <span class="hor-b hor-neutro hor-fr-4"><b>Refuerzo</b><span>Sede Centro</span><span class="hor-rango">13:00 – 14:00</span></span>
+            <span class="hor-b hor-neutro"><b>Refuerzo</b><span>Sede Centro</span><span class="hor-rango">13:00 – 14:00</span></span>
           </div></td></tr>
         <tr><td class="hor-c hor-vacia"></td></tr>
       </tbody>
@@ -11002,6 +11009,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.69.0 <span class="cam-fecha">2026-08-21</span></h3>
+<p class="pag-intro"><strong>R94: onAjuste entraba en BUCLE INFINITO, y el sombreado desalineaba las columnas segun su contenido.</strong> R94 · Dos defectos nuestros de la v1.64.0, los dos reportados por Control Administrativos, que ademas tuvo que blindarse el bucle por su cuenta. EL BUCLE. onAjuste se llamaba en el cuerpo del componente, o sea DURANTE EL RENDER. Un consumidor que hiciera lo natural —guardar los avisos en un estado para ensenarlos— entraba en bucle infinito: setState durante el render provoca otro render, que vuelve a avisar. La prueba que lo reprodujo SE COLGO DIEZ MINUTOS antes de matarla; ahora el aviso sale de un useEffect y solo cuando los avisos cambian DE CONTENIDO — comparar la identidad del array no vale, porque es uno nuevo en cada render y el bucle volveria un paso mas alla. La prueba que lo vigila lleva tope de renders para fallar en vez de colgar el CI. EL DESALINEADO. El hueco se repartia con flex-grow, y flex-grow reparte lo que SOBRA. Sobra distinto en cada celda —una con linea de detalle tiene mas contenido que una sin ella—, asi que dos bloques de la MISMA hora en la MISMA fila empezaban a alturas distintas. Ellos lo vieron en pantalla: martes y jueves mas abajo que lunes, miercoles y viernes con el mismo horario. Y esto ya estaba medido a medias: la v1.64.0 declaro «donde tocaria 37,5 % sale 35,5 %» como aproximacion aceptable. Lo que no se vio es que la desviacion NO ES UNIFORME. Una desviacion que cambia con el contenido no es aproximar: es desalinear. Declarar un numero medido no basta si no se comprueba que sea el mismo en todos los casos. Ahora el hueco es flex-basis en PORCENTAJE del contenedor —18 clases hor-q{cuartos}-{celdas}, de 25 %/L a 75 %/L— y el bloque se lleva el resto sin poder encogerse. Medido despues: 37,6 % donde toca 37,5, y desalineacion de 0,00 px entre columnas con y sin detalle. La precision pasa de +-2 puntos a +-0,2, y deja de depender del contenido. De paso: el ejemplo del catalogo se quedo con las clases viejas al cambiarlas, asi que el hueco perdio su tamano y el sombreado no se veia. Nadie lo caza: el candado de huerfanas mira los componentes de React, no el marcado del catalogo. Queda anotado como pendiente.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>Las clases hor-fr-1..24 desaparecen y las sustituyen hor-q{cuartos}-{celdas}. Solo afecta a quien escribiera el marcado del horario a mano en vez de usar <Horario>.</td></tr></tbody></table>
 
 
 <h3 class="sub-seccion">v1.68.0 <span class="cam-fecha">2026-08-21</span></h3>

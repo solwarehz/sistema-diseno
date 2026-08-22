@@ -25,14 +25,26 @@ function encaje(b: Record<string, unknown>) {
   const bloque = container.querySelector('.hor-b');
   if (!bloque) return null;
   const td = bloque.closest('td')!;
-  const clase = (el: Element | null) =>
-    el ? Number((el.className.match(/hor-fr-(\d+)/) ?? [])[1] ?? 0) : 0;
+  // R94 · los huecos declaran cuartos SOBRE el span (`hor-q{cuartos}-{celdas}`).
+  // Antes era `hor-fr-{n}` con flex-grow, y flex-grow reparte lo que SOBRA:
+  // sobraba distinto según el contenido de cada celda, así que dos bloques de
+  // la misma hora en la misma fila empezaban a alturas distintas.
+  const cuartos = (el: Element | null) =>
+    el ? Number((el.className.match(/hor-q(\d+)-\d+/) ?? [])[1] ?? 0) : 0;
+  const span = Number(td.getAttribute('rowspan') ?? 1);
+  const arr = cuartos(td.querySelector('.hor-hueco:first-child'));
+  const aba = td.querySelectorAll('.hor-hueco').length > 1
+    ? cuartos(td.querySelector('.hor-hueco:last-child'))
+    : (td.querySelector('.hor-hueco:first-child') === td.querySelector('.hor-hueco:last-child') && arr > 0
+        ? 0 : cuartos(td.querySelector('.hor-hueco:last-child')));
   return {
     fila: td.closest('tr')!.querySelector('th')!.textContent,
-    span: Number(td.getAttribute('rowspan') ?? 1),
-    arr: clase(td.querySelector('.hor-hueco:first-child')),
-    dur: clase(bloque),
-    aba: clase(td.querySelector('.hor-hueco:last-child')),
+    span,
+    arr,
+    // La duración ya no va en una clase: el bloque se lleva el resto de la
+    // pila. Se deduce, que es lo que de verdad se quiere afirmar.
+    dur: span * 4 - arr - aba,
+    aba,
     rango: bloque.querySelector('.hor-rango')!.textContent,
   };
 }
@@ -63,6 +75,14 @@ describe('Horario — R89 · la celda deja de ser un interruptor', () => {
     expect(avisos).toHaveLength(1);
     expect(avisos[0].motivo).toBe('duracion-nula');
     expect(avisos[0].detalle).toContain('«E»');
+  });
+
+  it('R94 · el hueco declara los cuartos sobre el span, no una proporción suelta', () => {
+    const { container } = render(<Horario {...base}
+      bloques={[{ dia: 0, de: '13:30', a: '15:00', titulo: 'D' }]} />);
+    // Dos cuartos de hueco sobre dos celdas → 25 % de la celda, sea cual sea
+    // el contenido. Esa es toda la diferencia con flex-grow.
+    expect(container.querySelector('.hor-hueco')!.className).toContain('hor-q2-2');
   });
 
   it('R89 · 25 minutos con paso 60 ya SÍ se dibujan: dos cuartos', () => {

@@ -4270,18 +4270,18 @@ más la de las 14:00 entera. La rejilla se queda en <strong>24 filas</strong> au
       <tbody>
         <tr><th class="hor-eje hor-eje-v" scope="row">07:00</th>
           <td class="hor-c" rowspan="2"><div class="hor-pila">
-            <i class="hor-hueco hor-fr-3" aria-hidden="true"></i>
-            <span class="hor-b hor-identidad-1 hor-fr-5"><b>Turno mañana</b><span>Sede Centro</span><span class="hor-rango">07:45 – 09:00</span></span>
+            <i class="hor-hueco hor-q3-2" aria-hidden="true"></i>
+            <span class="hor-b hor-identidad-1"><b>Turno mañana</b><span>Sede Centro</span><span class="hor-rango">07:45 – 09:00</span></span>
           </div></td>
           <td class="hor-c hor-vacia"></td></tr>
         <tr><td class="hor-c hor-vacia"></td></tr>
         <tr><th class="hor-eje hor-eje-v" scope="row">13:00</th>
           <td class="hor-c" rowspan="2"><div class="hor-pila">
-            <i class="hor-hueco hor-fr-2" aria-hidden="true"></i>
-            <span class="hor-b hor-identidad-2 hor-fr-6"><b>Turno tarde</b><span>Sede Norte</span><span class="hor-rango">13:30 – 15:00</span></span>
+            <i class="hor-hueco hor-q2-2" aria-hidden="true"></i>
+            <span class="hor-b hor-identidad-2"><b>Turno tarde</b><span>Sede Norte</span><span class="hor-rango">13:30 – 15:00</span></span>
           </div></td>
           <td class="hor-c"><div class="hor-pila">
-            <span class="hor-b hor-neutro hor-fr-4"><b>Refuerzo</b><span>Sede Centro</span><span class="hor-rango">13:00 – 14:00</span></span>
+            <span class="hor-b hor-neutro"><b>Refuerzo</b><span>Sede Centro</span><span class="hor-rango">13:00 – 14:00</span></span>
           </div></td></tr>
         <tr><td class="hor-c hor-vacia"></td></tr>
       </tbody>
@@ -6458,15 +6458,31 @@ a.enlace.enl-nosub { text-decoration: none; }
 
    La tabla, los th scope y los rowSpan/colSpan se quedan EXACTAMENTE igual.
    Era su condicion y es la que hace accesible este componente. */
+/* min-height y no height: con height fijo la pila no puede crecer, y un bloque
+   con linea de detalle desbordaba la celda con el texto cortado por el borde.
+   Con min-height el reparto sigue siendo porcentual —todas las celdas de una
+   fila miden lo mismo— y ademas la fila crece si el contenido lo pide. */
 .hor-pila { display: flex; flex-direction: column; height: 100%; }
 .hor-hueco { flex-basis: 0; flex-shrink: 0; }
-.hor-pila > .hor-b { flex-basis: 0; flex-shrink: 0; height: auto; }
-/* Una por cada numero de cuartos. Veinticuatro es el tope: seis celdas de span,
-   que es una jornada de seis horas seguidas con paso de una hora. Por encima el
-   bloque se pinta a celda entera y el producto se entera por onAjuste — un
-   limite que no se dice es un descarte silencioso, que es justo lo que este
-   pedido venia a quitar. */
-${Array.from({ length: 24 }, (_, i) => `.hor-fr-${i + 1} { flex-grow: ${i + 1}; }`).join('\n')}
+.hor-pila > .hor-b { flex: 1 0 auto; height: auto; }
+/* R94 · EL HUECO MIDE UNA FRACCION DE LA CELDA, NO DEL ESPACIO SOBRANTE.
+   La v1.64.0 repartia con flex-grow, y flex-grow reparte lo que SOBRA. Sobra
+   distinto en cada celda —una con linea de detalle tiene mas contenido que una
+   sin ella—, asi que dos bloques de la MISMA hora en la MISMA fila empezaban a
+   alturas distintas. Lo reporto Control Administrativos viendolo en pantalla:
+   martes y jueves mas abajo que lunes, miercoles y viernes con el mismo horario.
+   Ya estaba medida la desviacion —37,5 % que salia 35,5 %— y se declaro como
+   aproximacion aceptable; lo que no se vio es que NO ES UNIFORME, y una
+   desviacion que cambia con el contenido no es aproximar: es desalinear.
+   Ahora el hueco es flex-basis en PORCENTAJE del contenedor, que es la celda
+   —o las L celdas del rowSpan—, y todas las celdas de una fila miden lo mismo.
+   El bloque se lleva el resto con flex: 1 1 auto, asi que si su texto no cabe la
+   fila crece, y al crecer el porcentaje se recalcula sobre la misma altura para
+   todas. El reparto deja de depender del contenido. */
+${[1, 2, 3].flatMap((q) => Array.from({ length: 6 }, (_, i) => {
+  const L = i + 1;
+  return `.hor-hueco.hor-q${q}-${L} { flex: 0 0 ${(q * 25 / L).toFixed(4).replace(/\.?0+$/, '')}%; }`;
+})).join('\n')}
 
 .hor-b b { display: block; font-weight: 600; font-size: 13px; }
 .hor-b span { display: block; font-size: 12px; }
