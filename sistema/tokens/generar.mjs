@@ -176,6 +176,40 @@ const grupos = {
 // pasó nada. Esto obliga a que la versión en curso tenga entrada, y a que las
 // altas de token declaradas existan de verdad en `semanticos`.
 // ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// R96 · Y LA VERSIÓN TIENE QUE DECIR LO MISMO EN TODAS PARTES
+//
+// El número vive en varios sitios que nadie cruzaba, y dos se habían quedado
+// atrás sin que ningún candado dijera nada: `componentes/package.json` llevaba
+// DOCE versiones parado en la 1.58.1, y el «Estado actual» de `CLAUDE.md` —el
+// archivo que viaja con el repositorio y es lo primero que lee quien clona—
+// decía v1.62.0 con el sistema en la 1.70.0.
+//
+// Es la misma familia que llenó el día 2026-08-21: listas y números que
+// dependen de que alguien se acuerde. Un archivo que dice una versión que no
+// es, se lee como si fuera cierta.
+// ─────────────────────────────────────────────────────────────────────────────
+const malVersion = [];
+const mirar = (ruta, patron, nombre) => {
+  const texto = readFileSync(join(AQUI, '..', '..', ruta), 'utf8');
+  const m = texto.match(patron);
+  if (!m) { malVersion.push(`${nombre}: no encuentro la versión en ${ruta}`); return; }
+  if (m[1] !== VERSION) malVersion.push(`${nombre}: dice ${m[1]} y la versión es ${VERSION}  (${ruta})`);
+};
+mirar('package.json', /"version":\s*"([^"]+)"/, 'paquete');
+mirar('componentes/package.json', /"version":\s*"([^"]+)"/, 'paquete de componentes');
+mirar('CLAUDE.md', /\*\*Estado actual: v([0-9.]+)\*\*/, 'CLAUDE.md');
+mirar('memoria/01-estado.md', /MMI-DS \*\*v([0-9.]+)\*\*/, 'memoria');
+mirar('manual/ACTUALIZAR.md', /sistema de diseño v([0-9.]+)/, 'guía de actualización');
+
+if (malVersion.length) {
+  console.error('\n  La versión no dice lo mismo en todas partes:\n');
+  for (const m of malVersion) console.error(`    ${m}`);
+  console.error('\n  Un archivo que declara una versión que no es se lee como si fuera');
+  console.error('  cierta. Iguálalos antes de seguir.\n');
+  process.exit(1);
+}
+
 const malCambios = [];
 if (!CAMBIOS.length || CAMBIOS[0].v !== VERSION) {
   malCambios.push(`la versión en curso es ${VERSION} y la primera entrada de CAMBIOS es ${CAMBIOS[0]?.v ?? '(ninguna)'}`);

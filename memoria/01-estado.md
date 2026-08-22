@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 21 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.70.0** — el atajo `border-left` de `.chip`
-borraba el color de todo tono que perdiera el empate. Los semánticos **se
-salvaban por accidente**
+**Versión del sistema:** MMI-DS **v1.71.0** — la versión deja de poder decir cosas
+distintas en cada archivo. `CLAUDE.md` llevaba ocho versiones atrás y el paquete
+de componentes **doce**
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -42,10 +42,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 790 reglas de 1274 · **566 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.70.0.zip` · **54 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.71.0.zip` · **54 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.70.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.71.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,26 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.70.0), con detalle
+### Lo de hoy (v1.71.0), con detalle
+
+**R96 · la versión decía cosas distintas según dónde se mirara.** Salió de una
+revisión de coherencia, no de un fallo:
+
+| Archivo | Decía | Era |
+|---|---|---|
+| `componentes/package.json` | 1.58.1 | 1.70.0 — **doce versiones atrás** |
+| `CLAUDE.md`, «Estado actual» | 1.62.0 | 1.70.0 — **ocho** |
+
+Lo de `CLAUDE.md` es lo peor de los dos: es **el archivo que viaja con el
+repositorio y lo primero que lee quien clona**, y él mismo avisa de que ese
+número «es lo único que se toca aquí».
+
+Ahora el generador cruza **los cinco sitios** donde vive la versión y falla si
+alguno discrepa. Es la misma familia que llenó el 21 de agosto —listas y
+números que dependen de que alguien se acuerde— y por eso se cierra igual: con
+una comprobación, no con un recordatorio.
+
+### Lo de la v1.70.0, con detalle
 
 **R95 · el atajo que borraba el color.** Control Administrativos lo midió hasta
 el último detalle: `.chip-identidad-N` ponía `border-color` y `.chip`, más abajo,
@@ -655,7 +674,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.70.0
+Versión                      1.71.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
 Pruebas                         420   en 29 archivos

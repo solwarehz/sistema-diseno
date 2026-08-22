@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.70.0";
+export const VERSION = "1.71.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,25 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.71.0', fecha: '2026-08-22',
+    que: 'R96: la version decia cosas distintas segun donde se mirara — el generador cruza ahora los cinco sitios',
+    porque:
+      'R96 · Salio de una revision de coherencia, no de un fallo. El numero de version vive en cinco '
+      + 'sitios y dos se habian quedado atras sin que ningun candado dijera nada: '
+      + 'componentes/package.json llevaba DOCE versiones parado en la 1.58.1, y el «Estado actual» de '
+      + 'CLAUDE.md decia v1.62.0 con el sistema en la 1.70.0. '
+      + 'Lo de CLAUDE.md es lo peor de los dos: es el archivo que VIAJA con el repositorio y lo primero '
+      + 'que lee quien clona en una maquina nueva, y el mismo avisa de que ese numero «es lo unico que '
+      + 'se toca aqui». Un archivo que declara una version que no es se lee como si fuera cierta. '
+      + 'Ahora el generador cruza package.json, componentes/package.json, CLAUDE.md, memoria/01-estado '
+      + 'y ACTUALIZAR.md, y falla si alguno discrepa. Es la misma familia que llenó el 21 de agosto '
+      + '—listas y numeros que dependen de que alguien se acuerde— y se cierra igual: con una '
+      + 'comprobacion, no con un recordatorio. Visto en rojo con los dos desfases reales antes de '
+      + 'igualarlos.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.70.0', fecha: '2026-08-21',
     que: 'R95: el atajo border-left de .chip borraba el color de TODOS los tonos que perdian el empate — y los semanticos se salvaban por accidente',
