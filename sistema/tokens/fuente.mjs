@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.71.0";
+export const VERSION = "1.72.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,43 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.72.0', fecha: '2026-08-22',
+    que: 'R97: nace PanelPrivilegios — repartir permisos por modulo, sin saber de negocio',
+    porque:
+      'R97 · Lo pidio Control Administrativos y se hizo del SISTEMA y no del producto por una razon: '
+      + 'repartir permisos no es un problema de ese producto, es un problema de cualquier aplicacion '
+      + 'con roles. El panel no conoce cargos, ni sedes, ni trabajadores: recibe modulos con '
+      + 'privilegios y devuelve que esta concedido, asi que sirve igual para un puesto, una persona '
+      + 'suelta o una clave de API. El selector del cargo lo pone el producto por children. '
+      + 'SE COMPONE, que es la regla 1 de la politica: el Interruptor, el Chip y el Boton son los del '
+      + 'sistema. Lo unico propio son 27 reglas de andamiaje. Y el caso dificil ya estaba resuelto — '
+      + 'el `cerrado` del Interruptor (R66) nacio literalmente para esto: «quien reparte privilegios '
+      + 'no puede conceder los que el mismo no tiene». '
+      + 'CINCO DECISIONES, y son las que hacen que dos productos repartan permisos igual: '
+      + '(1) hay un privilegio que MANDA —base, «ver» por omision—: apagarlo apaga el modulo y '
+      + 'encender otro lo enciende solo, porque «editar sin ver» no significa nada y sin la regla '
+      + 'cada backend lo resolveria a su manera; (2) lo cerrado lleva el MOTIVO en texto, no un '
+      + 'booleano; (3) lo que no aplica NO SE PASA —una casilla vacia y un permiso denegado no son lo '
+      + 'mismo—; (4) lo concedido se ve SIN abrir, porque abrir es para cambiar y no para enterarse; '
+      + '(5) con preset, lo modificado se marca y se puede volver. '
+      + 'Y lo que NO hace, tambien decidido: no ordena por estado. Subir los concedidos al principio '
+      + 'moveria la fila justo despues de tocarla y borraria el orden que traen los datos, que suele '
+      + 'ser una escalera de riesgo. El orden lo pone quien pasa los modulos. '
+      + 'Se descarto la matriz de acciones por columnas que el producto tenia: con acciones distintas '
+      + 'por modulo, la mayoria de las celdas quedan vacias y se lee como una hoja de calculo. Queda '
+      + 'dibujada en el mockup por si algun dia hace falta para auditar. '
+      + 'Y DE PASO SE CERRO UNA TRAMPA QUE YA HABIA MORDIDO TRES VECES. Los cortes de `ramas` en el '
+      + 'catalogo son INDICES sobre `items`: meter un elemento al final lo deja fuera del menu. El '
+      + 'comentario del propio codigo contaba dos victimas —Carga de ID y Segmentado— y el Panel de '
+      + 'privilegios fue la tercera. Ahora el ultimo tramo es Infinity y una comprobacion nueva exige '
+      + 'que los tramos cubran todas las paginas sin huecos ni solapes. '
+      + 'Esa comprobacion encontro un defecto que nadie habia reportado: el grupo «Manual de uso» '
+      + 'tenia dos tramos hasta el indice 12 y DIECISEIS paginas, asi que las cuatro ultimas no '
+      + 'aparecian en ningun menu. Existian y no se podia llegar a ellas.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.71.0', fecha: '2026-08-22',
     que: 'R96: la version decia cosas distintas segun donde se mirara — el generador cruza ahora los cinco sitios',

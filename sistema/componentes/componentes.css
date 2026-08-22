@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.71.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.72.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -1404,6 +1404,54 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .pb-vacio{ margin: 0; padding: 16px 12px; font-size: 13px;
   color: var(--texto-secundario); text-align: center; }
 .pb-todos{ justify-content: center; border-top: 1px solid var(--borde); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   PANEL DE PRIVILEGIOS — 27 reglas · clases .pp-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.pp{ display: flex; flex-direction: column; gap: 16px; }
+.pp-cab{ display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.pp-lista{ display: flex; flex-direction: column; gap: 4px; }
+.pp-mod{ background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 6px; }
+.pp-mod.pp-abierto{ border-color: var(--borde-fuerte); }
+.pp-mod-cab{ display: grid; grid-template-columns: 20px 1fr auto auto; gap: 12px;
+  align-items: center; width: 100%; padding: 11px 14px; background: transparent;
+  border: 0; font: inherit; text-align: left; cursor: pointer; border-radius: 6px;
+  color: var(--texto-principal); }
+.pp-mod-cab:hover{ background: var(--fondo-encabezado); }
+.pp-mod-cab:focus-visible{ outline: 2px solid var(--foco); outline-offset: -2px; }
+.pp-chev{ display: grid; place-items: center; color: var(--texto-secundario);
+  transition: transform var(--dur-media) var(--curva); }
+.pp-abierto .pp-chev{ transform: rotate(180deg); }
+.pp-mod-nom{ font-size: 15px; font-weight: 500; min-width: 0; }
+.pp-marca{ margin-left: 8px; }
+.pp-tags{ display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; max-width: 46ch; }
+.pp-conteo{ font-size: 12px; color: var(--texto-secundario);
+  font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pp-mod-cuerpo{ padding: 4px 14px 12px 46px; border-top: 1px solid var(--borde); }
+.pp-mod-cuerpo[hidden]{ display: none; }
+.pp-priv{ padding: 8px 0; border-bottom: 1px solid var(--borde); }
+.pp-priv:last-child{ border-bottom: 0; }
+.pp-priv-base{ border-bottom-color: var(--borde-fuerte); }
+.pp-sin-base .pp-priv:not(.pp-priv-base){ opacity: .5; }
+.pp-aviso{ display: flex; align-items: center; gap: 8px; margin: 12px 0 0;
+  padding: 8px 12px; border-radius: 6px; font-size: 13px;
+  background: var(--aviso-fondo); color: var(--aviso-texto);
+  border-left: 3px solid var(--aviso-acento); }
+.pp-grupo{ margin-top: 12px; padding-top: 4px; border-top: 1px dashed var(--borde); }
+.pp-grupo-tit{ margin: 8px 0 4px; font-size: 12px; font-weight: 600;
+  letter-spacing: .05em; text-transform: uppercase; color: var(--texto-secundario); }
+.pp-pie{ display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+  padding-top: 4px; }
+.pp-pie-txt{ font-size: 13px; color: var(--texto-secundario); }
+@media (prefers-reduced-motion: reduce) {
+  .pp-chev{ transition: none; }
+}
+@media (max-width: 900px) {
+  .pp-mod-cab{ grid-template-columns: 20px 1fr auto; }
+  .pp-tags{ display: none; }
+  .pp-mod-cuerpo{ padding-left: 20px; }
+}
 
 /* ───────────────────────────────────────────────────────────────────────────
    DIÁLOGO — 8 reglas · clases .dialogo-*

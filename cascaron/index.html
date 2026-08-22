@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.71.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.72.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.71.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.72.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -2015,6 +2015,72 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
   border-color: var(--borde-fuerte); }
 .chip.chip-inact { background: var(--borde); color: var(--texto-principal);
   border-color: var(--borde-fuerte); }
+/* ───────────────────────────────────────────────────────────────────────────
+   PANEL DE PRIVILEGIOS · clases .pp-*
+   Reparte permisos por modulo. Aqui SOLO vive el andamiaje de la lista: el
+   interruptor, el chip y el boton de dentro son los del sistema, importados.
+   Si esto tuviera muchas reglas seria senal de que se esta reconstruyendo en
+   vez de componer, que es la regla 1 de la politica.
+   ─────────────────────────────────────────────────────────────────────────── */
+.pp { display: flex; flex-direction: column; gap: 16px; }
+.pp-cab { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.pp-lista { display: flex; flex-direction: column; gap: 4px; }
+
+.pp-mod { background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 6px; }
+.pp-mod.pp-abierto { border-color: var(--borde-fuerte); }
+
+/* La cabecera es UN boton: toda la fila abre. Un chevron de 20px es un blanco
+   pequeno para el dedo, y aqui hay diez seguidos. */
+.pp-mod-cab { display: grid; grid-template-columns: 20px 1fr auto auto; gap: 12px;
+  align-items: center; width: 100%; padding: 11px 14px; background: transparent;
+  border: 0; font: inherit; text-align: left; cursor: pointer; border-radius: 6px;
+  color: var(--texto-principal); }
+.pp-mod-cab:hover { background: var(--fondo-encabezado); }
+.pp-mod-cab:focus-visible { outline: 2px solid var(--foco); outline-offset: -2px; }
+.pp-chev { display: grid; place-items: center; color: var(--texto-secundario);
+  transition: transform var(--dur-media) var(--curva); }
+.pp-abierto .pp-chev { transform: rotate(180deg); }
+.pp-mod-nom { font-size: 15px; font-weight: 500; min-width: 0; }
+.pp-marca { margin-left: 8px; }
+.pp-tags { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; max-width: 46ch; }
+.pp-conteo { font-size: 12px; color: var(--texto-secundario);
+  font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* El sangrado alinea los privilegios bajo el nombre del modulo, no bajo el
+   chevron: lo que se lee en vertical son los permisos, no las flechas. */
+.pp-mod-cuerpo { padding: 4px 14px 12px 46px; border-top: 1px solid var(--borde); }
+.pp-mod-cuerpo[hidden] { display: none; }
+
+.pp-priv { padding: 8px 0; border-bottom: 1px solid var(--borde); }
+.pp-priv:last-child { border-bottom: 0; }
+/* El privilegio base cierra su bloque con filete fuerte: manda sobre los de
+   abajo y la linea lo dice sin una palabra mas. */
+.pp-priv-base { border-bottom-color: var(--borde-fuerte); }
+/* Sin el base, el resto del modulo no se aplica: se atenua para que se vea que
+   estan ahi pero no rigen. No se ocultan — desaparecer un permiso concedido
+   haria pensar que se perdio. */
+.pp-sin-base .pp-priv:not(.pp-priv-base) { opacity: .5; }
+
+.pp-aviso { display: flex; align-items: center; gap: 8px; margin: 12px 0 0;
+  padding: 8px 12px; border-radius: 6px; font-size: 13px;
+  background: var(--aviso-fondo); color: var(--aviso-texto);
+  border-left: 3px solid var(--aviso-acento); }
+
+.pp-grupo { margin-top: 12px; padding-top: 4px; border-top: 1px dashed var(--borde); }
+.pp-grupo-tit { margin: 8px 0 4px; font-size: 12px; font-weight: 600;
+  letter-spacing: .05em; text-transform: uppercase; color: var(--texto-secundario); }
+
+.pp-pie { display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+  padding-top: 4px; }
+.pp-pie-txt { font-size: 13px; color: var(--texto-secundario); }
+
+@media (prefers-reduced-motion: reduce) { .pp-chev { transition: none; } }
+@media (max-width: 900px) {
+  .pp-mod-cab { grid-template-columns: 20px 1fr auto; }
+  .pp-tags { display: none; }
+  .pp-mod-cuerpo { padding-left: 20px; }
+}
+
 /* R88 · IDENTIDAD EN EL CHIP — porque la leyenda va en chips, y si las dos
    paletas no coinciden, la leyenda MIENTE. Lo dijeron ellos y es exacto.
    Aqui el filete se queda en 3px, y no por descuido: en el horario los 6px
@@ -3717,7 +3783,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                     <a class="nav-nieto" href="#migas" data-ir="migas" title="Migas de pan">
                           <span class="nav-txt">Migas de pan</span></a><a class="nav-nieto" href="#cabecera" data-ir="cabecera" title="Cabecera de pantalla">
                           <span class="nav-txt">Cabecera de pantalla</span></a><a class="nav-nieto" href="#panelbarra" data-ir="panelbarra" title="Panel de la barra">
-                          <span class="nav-txt">Panel de la barra</span></a>
+                          <span class="nav-txt">Panel de la barra</span></a><a class="nav-nieto" href="#panelprivilegios" data-ir="panelprivilegios" title="Panel de privilegios">
+                          <span class="nav-txt">Panel de privilegios</span></a>
                   </div></div>
                 </div>
       </div>
@@ -3773,7 +3840,11 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                           <span class="nav-txt">6bis · La frontera de escritura — regla de composición, no del paquete</span></a><a class="nav-nieto" href="#man-voz-de-interfaz" data-ir="man-voz-de-interfaz" title="Voz de interfaz">
                           <span class="nav-txt">Voz de interfaz</span></a><a class="nav-nieto" href="#man-errores-frecuentes" data-ir="man-errores-frecuentes" title="Errores frecuentes">
                           <span class="nav-txt">Errores frecuentes</span></a><a class="nav-nieto" href="#man-antes-de-dar-una-pantalla-por-term" data-ir="man-antes-de-dar-una-pantalla-por-term" title="Antes de dar una pantalla por terminada">
-                          <span class="nav-txt">Antes de dar una pantalla por terminada</span></a>
+                          <span class="nav-txt">Antes de dar una pantalla por terminada</span></a><a class="nav-nieto" href="#man-9bis-dos-reglas-de-composicion-que" data-ir="man-9bis-dos-reglas-de-composicion-que" title="9bis · Dos reglas de composición que llegaron de un proyecto">
+                          <span class="nav-txt">9bis · Dos reglas de composición que llegaron de un proyecto</span></a><a class="nav-nieto" href="#man-9ter-tablas-tres-decisiones-que-se" data-ir="man-9ter-tablas-tres-decisiones-que-se" title="9ter · Tablas — tres decisiones que se toman al escribir la columna">
+                          <span class="nav-txt">9ter · Tablas — tres decisiones que se toman al escribir la columna</span></a><a class="nav-nieto" href="#man-lo-que-este-manual-todavia-no-cubr" data-ir="man-lo-que-este-manual-todavia-no-cubr" title="Lo que este manual todavía no cubre">
+                          <span class="nav-txt">Lo que este manual todavía no cubre</span></a><a class="nav-nieto" href="#man-historial" data-ir="man-historial" title="Historial">
+                          <span class="nav-txt">Historial</span></a>
                   </div></div>
                 </div>
       </div>
@@ -3815,7 +3886,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.71.0</option></select></label>
+          <select class="campo cg-in"><option>v1.72.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -3903,8 +3974,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.71.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.71.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.72.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.72.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -10090,6 +10161,112 @@ Lo que cambia es el icono, el titulo y los datos, que es justo lo que se pasa po
   }))}
   onVerTodos={() =&gt; router.push('/mensajes')}
 /&gt;</code></pre>
+    </section><section class="pagina" id="pg-panelprivilegios" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#panelprivilegios" data-ir="panelprivilegios" class="migas-actual" aria-current="page">Panel de privilegios</a>
+      </nav>
+      <div class="pant-cab"><h1>Panel de privilegios</h1></div>
+      
+<p class="pag-intro">Reparte permisos <strong>por módulo</strong>: qué puede hacer alguien en cada parte de una
+aplicación. No sabe de negocio —ni de cargos, ni de sedes— así que el mismo panel sirve para los permisos de un
+puesto, los de una persona suelta o los de una clave de API.</p>
+
+<h3 class="sub-seccion">Se compone, no se dibuja</h3>
+<p class="seccion-sub">El interruptor, el chip y el botón de dentro son los del sistema. Lo único propio es el
+andamiaje de la lista — <strong>catorce reglas</strong>, y si fueran muchas más sería señal de estar
+reconstruyendo.</p>
+<div class="bloque">
+  <div class="pp">
+    <div class="pp-lista">
+
+      <section class="pp-mod pp-abierto">
+        <button class="pp-mod-cab" type="button" aria-expanded="true">
+          <span class="pp-chev">${ic('chevron', 18)}</span>
+          <span class="pp-mod-nom">Trabajadores</span>
+          <span class="pp-tags">
+            <span class="chip chip-info">Ver</span><span class="chip chip-info">Editar</span>
+            <span class="chip chip-info">Crear</span><span class="chip chip-info">Descargar</span>
+          </span>
+          <span class="pp-conteo">4 de 4</span>
+        </button>
+        <div class="pp-mod-cuerpo">
+          <div class="pp-priv pp-priv-base">
+            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="true" aria-label="Ver"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Ver</span></span></label>
+          </div>
+          <div class="pp-priv">
+            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="true" aria-label="Editar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar</span></span></label>
+          </div>
+          <div class="pp-priv">
+            <span class="sw-fila sw-cerrado"><span class="sw-candado">${ic('candado', 18)}</span><span class="sw-txt"><span class="sw-et">Dar de alta</span><span class="sw-motivo">Dar de alta a una persona es del Jefe de personal.</span></span></span>
+          </div>
+          <div class="pp-grupo">
+            <p class="pp-grupo-tit">Dentro del módulo</p>
+            <div class="pp-priv">
+              <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="true" aria-label="Ver documento, dirección y correo"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Ver documento, dirección y correo</span><span class="sw-ayuda">Dato sensible: quien lo tenga verá el número completo.</span></span></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="pp-mod">
+        <button class="pp-mod-cab" type="button" aria-expanded="false">
+          <span class="pp-chev">${ic('chevron', 18)}</span>
+          <span class="pp-mod-nom">Marcaciones<span class="pp-marca"><span class="chip chip-identidad-3">modificado</span></span></span>
+          <span class="pp-tags"><span class="chip chip-info">Ver</span></span>
+          <span class="pp-conteo">1 de 1</span>
+        </button>
+      </section>
+
+      <section class="pp-mod pp-sin-base pp-abierto">
+        <button class="pp-mod-cab" type="button" aria-expanded="true">
+          <span class="pp-chev">${ic('chevron', 18)}</span>
+          <span class="pp-mod-nom">Horarios</span>
+          <span class="pp-tags"><span class="chip chip-pend">sin permisos</span></span>
+          <span class="pp-conteo">0 de 3</span>
+        </button>
+        <div class="pp-mod-cuerpo">
+          <div class="pp-priv pp-priv-base">
+            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Ver"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Ver</span></span></label>
+          </div>
+          <div class="pp-priv">
+            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Editar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar</span></span></label>
+          </div>
+          <p class="pp-aviso">${ic('alerta', 16)}<span>Sin este permiso, el resto del módulo no se aplica.</span></p>
+        </div>
+      </section>
+
+    </div>
+    <div class="pp-pie">
+      <span class="pp-pie-txt">1 módulo modificado</span>
+      <button class="btn btn-neutro btn-mini" type="button">Volver al preset</button>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Las cinco decisiones que lleva dentro</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Hay un privilegio que manda.</strong> Sin «ver», editar no significa nada: apagarlo apaga el módulo, y encender cualquier otro lo enciende solo. Se cambia con <code>base</code> o se desactiva con <code>base={null}</code> cuando el dominio no funcione así. Sin esto se puede guardar «editar sin ver», y cada producto lo resolvería a su manera.</td></tr>
+    <tr><td class="num">2</td><td><strong>Lo cerrado dice por qué.</strong> Se pasa el motivo, no un booleano. Es el <code>cerrado</code> del Interruptor (R66), que nació para esto: un candado sin explicación se lee como un fallo del sistema.</td></tr>
+    <tr><td class="num">3</td><td><strong>Lo que no aplica no se pasa.</strong> No hay «no aplica» que pintar: si un módulo no tiene «descargar», ese privilegio no está en su lista. Una casilla vacía y un permiso denegado no son lo mismo.</td></tr>
+    <tr><td class="num">4</td><td><strong>Lo concedido se ve sin abrir.</strong> Los chips y el «4 de 6» están en la cabecera: abrir es para <em>cambiar</em>, no para <em>enterarse</em>. Con diez módulos, obligar a abrirlos uno por uno es diez veces el mismo gesto.</td></tr>
+    <tr><td class="num">5</td><td><strong>El preset se ve y se recupera.</strong> Pasando <code>preset</code>, cada módulo que difiera se marca y aparece cómo volver. Sin él nadie sabe qué tocó.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Lo que NO hace, y es a propósito</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>No ordena por estado.</strong> Subir los concedidos al principio haría que la fila saltara bajo el dedo justo después de tocarla, y borraría el orden ver → editar → crear → desactivar, que es una escalera de riesgo. El orden lo pone quien pasa los datos.</td></tr>
+    <tr><td class="num">2</td><td><strong>No guarda.</strong> Es controlado: recibe <code>valor</code> y emite <code>onCambio</code>. Cuándo se persiste es del producto.</td></tr>
+    <tr><td class="num">3</td><td><strong>No sabe de cargos.</strong> El selector de arriba lo pone el producto por <code>children</code>. El día que esto sirva para permisos de una clave de API, no habrá que tocarlo.</td></tr>
+  </tbody>
+</table>
+
     </section><section class="pagina" id="pg-casos" hidden>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
@@ -11022,6 +11199,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.72.0 <span class="cam-fecha">2026-08-22</span></h3>
+<p class="pag-intro"><strong>R97: nace PanelPrivilegios — repartir permisos por modulo, sin saber de negocio.</strong> R97 · Lo pidio Control Administrativos y se hizo del SISTEMA y no del producto por una razon: repartir permisos no es un problema de ese producto, es un problema de cualquier aplicacion con roles. El panel no conoce cargos, ni sedes, ni trabajadores: recibe modulos con privilegios y devuelve que esta concedido, asi que sirve igual para un puesto, una persona suelta o una clave de API. El selector del cargo lo pone el producto por children. SE COMPONE, que es la regla 1 de la politica: el Interruptor, el Chip y el Boton son los del sistema. Lo unico propio son 27 reglas de andamiaje. Y el caso dificil ya estaba resuelto — el `cerrado` del Interruptor (R66) nacio literalmente para esto: «quien reparte privilegios no puede conceder los que el mismo no tiene». CINCO DECISIONES, y son las que hacen que dos productos repartan permisos igual: (1) hay un privilegio que MANDA —base, «ver» por omision—: apagarlo apaga el modulo y encender otro lo enciende solo, porque «editar sin ver» no significa nada y sin la regla cada backend lo resolveria a su manera; (2) lo cerrado lleva el MOTIVO en texto, no un booleano; (3) lo que no aplica NO SE PASA —una casilla vacia y un permiso denegado no son lo mismo—; (4) lo concedido se ve SIN abrir, porque abrir es para cambiar y no para enterarse; (5) con preset, lo modificado se marca y se puede volver. Y lo que NO hace, tambien decidido: no ordena por estado. Subir los concedidos al principio moveria la fila justo despues de tocarla y borraria el orden que traen los datos, que suele ser una escalera de riesgo. El orden lo pone quien pasa los modulos. Se descarto la matriz de acciones por columnas que el producto tenia: con acciones distintas por modulo, la mayoria de las celdas quedan vacias y se lee como una hoja de calculo. Queda dibujada en el mockup por si algun dia hace falta para auditar. Y DE PASO SE CERRO UNA TRAMPA QUE YA HABIA MORDIDO TRES VECES. Los cortes de `ramas` en el catalogo son INDICES sobre `items`: meter un elemento al final lo deja fuera del menu. El comentario del propio codigo contaba dos victimas —Carga de ID y Segmentado— y el Panel de privilegios fue la tercera. Ahora el ultimo tramo es Infinity y una comprobacion nueva exige que los tramos cubran todas las paginas sin huecos ni solapes. Esa comprobacion encontro un defecto que nadie habia reportado: el grupo «Manual de uso» tenia dos tramos hasta el indice 12 y DIECISEIS paginas, asi que las cuatro ultimas no aparecian en ningun menu. Existian y no se podia llegar a ellas.</p>
+
 
 
 <h3 class="sub-seccion">v1.71.0 <span class="cam-fecha">2026-08-22</span></h3>

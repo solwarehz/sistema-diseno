@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 21 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.71.0** — la versión deja de poder decir cosas
-distintas en cada archivo. `CLAUDE.md` llevaba ocho versiones atrás y el paquete
-de componentes **doce**
+**Versión del sistema:** MMI-DS **v1.72.0** — nace `PanelPrivilegios`, el
+trigésimo segundo componente: repartir permisos por módulo **sin saber de
+negocio**
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -38,14 +38,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **420 pruebas en 29 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **432 pruebas en 30 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · 790 reglas de 1274 · **566 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.71.0.zip` · **54 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.72.0.zip` · **54 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.71.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.72.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,53 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.71.0), con detalle
+### Lo de hoy (v1.72.0), con detalle
+
+**R97 · nace `PanelPrivilegios`.** Lo pidió Control Administrativos para su
+pantalla de privilegios por cargo, y se hizo **del sistema y no del producto**
+por una razón: repartir permisos no es un problema de ese producto, es un
+problema de cualquier aplicación con roles.
+
+**No sabe de negocio.** Ni cargos, ni sedes, ni trabajadores: recibe módulos con
+privilegios y devuelve qué está concedido. El selector del cargo lo pone el
+producto por `children`. El día que sirva para los permisos de una clave de API,
+no habrá que tocarlo.
+
+**Se compone**, que es la regla 1 de la política: Interruptor, Chip y Botón son
+los del sistema; lo único propio son **27 reglas de andamiaje**. Y el caso
+difícil ya estaba resuelto — el `cerrado` del Interruptor (R66) nació
+literalmente para esto: *«quien reparte privilegios no puede conceder los que él
+mismo no tiene»*.
+
+**Cinco decisiones**, que son las que hacen que dos productos repartan permisos
+igual:
+
+1. **Hay un privilegio que manda** (`base`, «ver» por omisión). «Editar sin ver»
+   no significa nada, y sin la regla cada backend lo resolvería a su manera.
+2. **Lo cerrado lleva el motivo en texto**, no un booleano.
+3. **Lo que no aplica no se pasa**: una casilla vacía y un permiso denegado no
+   son lo mismo.
+4. **Lo concedido se ve sin abrir**: abrir es para cambiar, no para enterarse.
+5. **Con `preset`, lo modificado se marca** y se puede volver.
+
+**Y lo que no hace, también decidido:** no ordena por estado. Subir los
+concedidos al principio movería la fila justo después de tocarla y borraría el
+orden que traen los datos, que suele ser una escalera de riesgo.
+
+**Y de paso se cerró una trampa que ya había mordido tres veces.** Los cortes de
+`ramas` en el catálogo son **índices** sobre `items`, así que meter un elemento
+al final lo deja fuera del menú. El propio comentario del código contaba dos
+víctimas —Carga de ID y Segmentado—; el Panel de privilegios fue la tercera.
+Ahora el último tramo es `Infinity` —llega siempre al final— y una comprobación
+nueva exige que los tramos cubran todas las páginas sin huecos ni solapes.
+
+**Esa comprobación encontró un defecto que llevaba tiempo ahí y que no había
+reportado nadie:** el grupo «Manual de uso» tenía dos tramos hasta el índice 12
+y **dieciséis** páginas, así que las cuatro últimas —`9bis`, `9ter`, «Lo que
+este manual todavía no cubre» e «Historial»— **no aparecían en ningún menú**.
+Existían y no se podía llegar a ellas.
+
+### Lo de la v1.71.0, con detalle
 
 **R96 · la versión decía cosas distintas según dónde se mirara.** Salió de una
 revisión de coherencia, no de un fallo:
@@ -674,10 +720,10 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.71.0
+Versión                      1.72.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
-Pruebas                         420   en 29 archivos
+Pruebas                         432   en 30 archivos
 Reglas que viajan               790   de 1274 · 566 clases, 0 huérfanas
 Candado de la cascada           867   reglas leidas · 11 anchos
 Candado del empate              292   combinaciones reales · 53 empates
@@ -687,7 +733,7 @@ Candado de la promesa           971   elementos · 199.674 propiedades
 Candado del elemento            145   clases comparadas · 5 divergencias
                                       DECLARADAS · 100 las pinta el guion
 Contrato de comportamiento      156   reglas · 130 obligatorias · 5 PENDIENTE
-Componentes publicados           31   36 módulos viajan en el paquete
+Componentes publicados           32   37 módulos viajan en el paquete
 Iconos                           46
 Páginas del catálogo             52
 ```

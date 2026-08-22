@@ -19,8 +19,8 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.71.0** — la versión deja de poder decir cosas distintas en
-cada archivo: el generador cruza los cinco sitios donde vive el número.
+**Estado actual: v1.72.0** — nace `PanelPrivilegios`: repartir permisos por módulo,
+sin saber de negocio. Se compone de Interruptor, Chip y Botón.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

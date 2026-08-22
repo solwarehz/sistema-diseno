@@ -282,6 +282,43 @@ const MENU = [
   ['configuracion', 'Configuración', true],
 ];
 
+/* ───────────────────────────────────────────────────────────────────────────
+   R97 · LOS TRAMOS DEL MENU TIENEN QUE CUBRIR TODOS LOS ELEMENTOS
+   Los cortes de `ramas` son indices sobre `items`, asi que meter un elemento
+   corre todos los que van detras. El comentario de arriba ya contaba DOS
+   victimas —Carga de ID y Segmentado, las dos veces el ultimo elemento— y con
+   el Panel de privilegios iban tres.
+   El candado de la entrega solo caza el caso en que el que se cae es un
+   componente PUBLICADO; una pagina de catalogo que se cayera del menu no la
+   veria nadie. Esto comprueba lo que aquel da por supuesto: que los tramos
+   cubren [0, items.length) sin huecos ni solapes.
+   ─────────────────────────────────────────────────────────────────────────── */
+function comprobarTramos(grupos) {
+  const malos = [];
+  for (const g of grupos) {
+    if (!g.ramas) continue;
+    const cubierto = new Array(g.items.length).fill(0);
+    for (const r of g.ramas) {
+      const hasta = Math.min(r.hasta, g.items.length);
+      for (let i = r.desde; i < hasta; i++) cubierto[i] = (cubierto[i] ?? 0) + 1;
+    }
+    g.items.forEach((it, i) => {
+      if (cubierto[i] === 0) malos.push(`  «${it.t}» (${g.grupo}, indice ${i}) no esta en ninguna rama del menu`);
+      if (cubierto[i] > 1) malos.push(`  «${it.t}» (${g.grupo}, indice ${i}) esta en ${cubierto[i]} ramas`);
+    });
+    const finitos = g.ramas.map((r) => r.hasta).filter((h) => Number.isFinite(h));
+    const ultimo = finitos.length ? Math.max(...finitos) : 0;
+    if (ultimo > g.items.length) malos.push(`  ${g.grupo}: una rama llega hasta ${ultimo} y solo hay ${g.items.length} elementos`);
+  }
+  if (malos.length) {
+    console.error('\n  El menu no cubre todas las paginas:\n');
+    for (const m of malos) console.error(m);
+    console.error('\n  Los cortes de `ramas` son INDICES sobre `items`: al meter un elemento');
+    console.error('  hay que correr los tramos de detras. Es la tercera vez que pasa.\n');
+    process.exit(1);
+  }
+}
+
 const itemsMenu = (activo = 'panel') =>
   MENU.map(
     ([k, txt, sub]) => `
@@ -4529,6 +4566,104 @@ perder lo escrito por un clic fuera es peor que un clic de mas.</p>
 &lt;/Dialogo&gt;</code></pre>`;
 
 
+const pagPanelPrivilegios = `
+<p class="pag-intro">Reparte permisos <strong>por módulo</strong>: qué puede hacer alguien en cada parte de una
+aplicación. No sabe de negocio —ni de cargos, ni de sedes— así que el mismo panel sirve para los permisos de un
+puesto, los de una persona suelta o los de una clave de API.</p>
+
+<h3 class="sub-seccion">Se compone, no se dibuja</h3>
+<p class="seccion-sub">El interruptor, el chip y el botón de dentro son los del sistema. Lo único propio es el
+andamiaje de la lista — <strong>catorce reglas</strong>, y si fueran muchas más sería señal de estar
+reconstruyendo.</p>
+<div class="bloque">
+  <div class="pp">
+    <div class="pp-lista">
+
+      <section class="pp-mod pp-abierto">
+        <button class="pp-mod-cab" type="button" aria-expanded="true">
+          <span class="pp-chev">\${ic('chevron', 18)}</span>
+          <span class="pp-mod-nom">Trabajadores</span>
+          <span class="pp-tags">
+            <span class="chip chip-info">Ver</span><span class="chip chip-info">Editar</span>
+            <span class="chip chip-info">Crear</span><span class="chip chip-info">Descargar</span>
+          </span>
+          <span class="pp-conteo">4 de 4</span>
+        </button>
+        <div class="pp-mod-cuerpo">
+          <div class="pp-priv pp-priv-base">
+            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="true" aria-label="Ver"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Ver</span></span></label>
+          </div>
+          <div class="pp-priv">
+            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="true" aria-label="Editar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar</span></span></label>
+          </div>
+          <div class="pp-priv">
+            <span class="sw-fila sw-cerrado"><span class="sw-candado">\${ic('candado', 18)}</span><span class="sw-txt"><span class="sw-et">Dar de alta</span><span class="sw-motivo">Dar de alta a una persona es del Jefe de personal.</span></span></span>
+          </div>
+          <div class="pp-grupo">
+            <p class="pp-grupo-tit">Dentro del módulo</p>
+            <div class="pp-priv">
+              <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="true" aria-label="Ver documento, dirección y correo"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Ver documento, dirección y correo</span><span class="sw-ayuda">Dato sensible: quien lo tenga verá el número completo.</span></span></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="pp-mod">
+        <button class="pp-mod-cab" type="button" aria-expanded="false">
+          <span class="pp-chev">\${ic('chevron', 18)}</span>
+          <span class="pp-mod-nom">Marcaciones<span class="pp-marca"><span class="chip chip-identidad-3">modificado</span></span></span>
+          <span class="pp-tags"><span class="chip chip-info">Ver</span></span>
+          <span class="pp-conteo">1 de 1</span>
+        </button>
+      </section>
+
+      <section class="pp-mod pp-sin-base pp-abierto">
+        <button class="pp-mod-cab" type="button" aria-expanded="true">
+          <span class="pp-chev">\${ic('chevron', 18)}</span>
+          <span class="pp-mod-nom">Horarios</span>
+          <span class="pp-tags"><span class="chip chip-pend">sin permisos</span></span>
+          <span class="pp-conteo">0 de 3</span>
+        </button>
+        <div class="pp-mod-cuerpo">
+          <div class="pp-priv pp-priv-base">
+            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Ver"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Ver</span></span></label>
+          </div>
+          <div class="pp-priv">
+            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Editar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar</span></span></label>
+          </div>
+          <p class="pp-aviso">\${ic('alerta', 16)}<span>Sin este permiso, el resto del módulo no se aplica.</span></p>
+        </div>
+      </section>
+
+    </div>
+    <div class="pp-pie">
+      <span class="pp-pie-txt">1 módulo modificado</span>
+      <button class="btn btn-neutro btn-mini" type="button">Volver al preset</button>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Las cinco decisiones que lleva dentro</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Hay un privilegio que manda.</strong> Sin «ver», editar no significa nada: apagarlo apaga el módulo, y encender cualquier otro lo enciende solo. Se cambia con <code>base</code> o se desactiva con <code>base={null}</code> cuando el dominio no funcione así. Sin esto se puede guardar «editar sin ver», y cada producto lo resolvería a su manera.</td></tr>
+    <tr><td class="num">2</td><td><strong>Lo cerrado dice por qué.</strong> Se pasa el motivo, no un booleano. Es el <code>cerrado</code> del Interruptor (R66), que nació para esto: un candado sin explicación se lee como un fallo del sistema.</td></tr>
+    <tr><td class="num">3</td><td><strong>Lo que no aplica no se pasa.</strong> No hay «no aplica» que pintar: si un módulo no tiene «descargar», ese privilegio no está en su lista. Una casilla vacía y un permiso denegado no son lo mismo.</td></tr>
+    <tr><td class="num">4</td><td><strong>Lo concedido se ve sin abrir.</strong> Los chips y el «4 de 6» están en la cabecera: abrir es para <em>cambiar</em>, no para <em>enterarse</em>. Con diez módulos, obligar a abrirlos uno por uno es diez veces el mismo gesto.</td></tr>
+    <tr><td class="num">5</td><td><strong>El preset se ve y se recupera.</strong> Pasando <code>preset</code>, cada módulo que difiera se marca y aparece cómo volver. Sin él nadie sabe qué tocó.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Lo que NO hace, y es a propósito</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>No ordena por estado.</strong> Subir los concedidos al principio haría que la fila saltara bajo el dedo justo después de tocarla, y borraría el orden ver → editar → crear → desactivar, que es una escalera de riesgo. El orden lo pone quien pasa los datos.</td></tr>
+    <tr><td class="num">2</td><td><strong>No guarda.</strong> Es controlado: recibe <code>valor</code> y emite <code>onCambio</code>. Cuándo se persiste es del producto.</td></tr>
+    <tr><td class="num">3</td><td><strong>No sabe de cargos.</strong> El selector de arriba lo pone el producto por <code>children</code>. El día que esto sirva para permisos de una clave de API, no habrá que tocarlo.</td></tr>
+  </tbody>
+</table>
+`;
+
 const pagPanelBarra = `
 <p class="pag-intro">El boton con contador de la barra superior y la ventana que se abre al
 pulsarlo. <strong>Mensajes y notificaciones son el mismo componente.</strong></p>
@@ -4645,7 +4780,10 @@ const CATALOGO = [
       { t: 'Formulario', desde: 2, hasta: 12 },
       { t: 'Datos', desde: 12, hasta: 18 },
       { t: 'Respuesta', desde: 18, hasta: 24 },
-      { t: 'Marco y navegación', desde: 24, hasta: 27 },
+      // `Infinity` y no un numero: el ULTIMO tramo llega siempre al final, asi
+      // que meter un elemento al final deja de tener trampa. Los cortes de en
+      // medio siguen siendo indices, y por eso existe `comprobarTramos`.
+      { t: 'Marco y navegación', desde: 24, hasta: Infinity },
     ],
     items: [
       { id: 'boton', t: 'Botón', estado: 'listo', c: pagBoton },
@@ -4675,6 +4813,7 @@ const CATALOGO = [
       { id: 'migas', t: 'Migas de pan', estado: 'listo', c: pagMigas },
       { id: 'cabecera', t: 'Cabecera de pantalla', estado: 'listo', c: pagCabecera },
       { id: 'panelbarra', t: 'Panel de la barra', estado: 'listo', c: pagPanelBarra },
+      { id: 'panelprivilegios', t: 'Panel de privilegios', estado: 'listo', c: pagPanelPrivilegios },
     ],
   },
   {
@@ -4692,7 +4831,7 @@ const CATALOGO = [
     // seguidos no se leen; dos ramas de seis, sí.
     ramas: [
       { t: 'Cómo se aplica', desde: 0, hasta: 6 },
-      { t: 'Cómo se escribe', desde: 6, hasta: 12 },
+      { t: 'Cómo se escribe', desde: 6, hasta: Infinity },
     ],
     items: seccionesManual.map((s) => ({
       id: s.id,
@@ -4710,6 +4849,8 @@ const CATALOGO = [
     ],
   },
 ];
+
+comprobarTramos(CATALOGO);
 
 const PUNTO = { listo: '', decidir: '', pendiente: '<span class="pt pt-pend" title="Sin construir"></span>' };
 
@@ -6172,6 +6313,72 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
   border-color: var(--borde-fuerte); }
 .chip.chip-inact { background: var(--borde); color: var(--texto-principal);
   border-color: var(--borde-fuerte); }
+/* ───────────────────────────────────────────────────────────────────────────
+   PANEL DE PRIVILEGIOS · clases .pp-*
+   Reparte permisos por modulo. Aqui SOLO vive el andamiaje de la lista: el
+   interruptor, el chip y el boton de dentro son los del sistema, importados.
+   Si esto tuviera muchas reglas seria senal de que se esta reconstruyendo en
+   vez de componer, que es la regla 1 de la politica.
+   ─────────────────────────────────────────────────────────────────────────── */
+.pp { display: flex; flex-direction: column; gap: 16px; }
+.pp-cab { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.pp-lista { display: flex; flex-direction: column; gap: 4px; }
+
+.pp-mod { background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 6px; }
+.pp-mod.pp-abierto { border-color: var(--borde-fuerte); }
+
+/* La cabecera es UN boton: toda la fila abre. Un chevron de 20px es un blanco
+   pequeno para el dedo, y aqui hay diez seguidos. */
+.pp-mod-cab { display: grid; grid-template-columns: 20px 1fr auto auto; gap: 12px;
+  align-items: center; width: 100%; padding: 11px 14px; background: transparent;
+  border: 0; font: inherit; text-align: left; cursor: pointer; border-radius: 6px;
+  color: var(--texto-principal); }
+.pp-mod-cab:hover { background: var(--fondo-encabezado); }
+.pp-mod-cab:focus-visible { outline: 2px solid var(--foco); outline-offset: -2px; }
+.pp-chev { display: grid; place-items: center; color: var(--texto-secundario);
+  transition: transform var(--dur-media) var(--curva); }
+.pp-abierto .pp-chev { transform: rotate(180deg); }
+.pp-mod-nom { font-size: 15px; font-weight: 500; min-width: 0; }
+.pp-marca { margin-left: 8px; }
+.pp-tags { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; max-width: 46ch; }
+.pp-conteo { font-size: 12px; color: var(--texto-secundario);
+  font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* El sangrado alinea los privilegios bajo el nombre del modulo, no bajo el
+   chevron: lo que se lee en vertical son los permisos, no las flechas. */
+.pp-mod-cuerpo { padding: 4px 14px 12px 46px; border-top: 1px solid var(--borde); }
+.pp-mod-cuerpo[hidden] { display: none; }
+
+.pp-priv { padding: 8px 0; border-bottom: 1px solid var(--borde); }
+.pp-priv:last-child { border-bottom: 0; }
+/* El privilegio base cierra su bloque con filete fuerte: manda sobre los de
+   abajo y la linea lo dice sin una palabra mas. */
+.pp-priv-base { border-bottom-color: var(--borde-fuerte); }
+/* Sin el base, el resto del modulo no se aplica: se atenua para que se vea que
+   estan ahi pero no rigen. No se ocultan — desaparecer un permiso concedido
+   haria pensar que se perdio. */
+.pp-sin-base .pp-priv:not(.pp-priv-base) { opacity: .5; }
+
+.pp-aviso { display: flex; align-items: center; gap: 8px; margin: 12px 0 0;
+  padding: 8px 12px; border-radius: 6px; font-size: 13px;
+  background: var(--aviso-fondo); color: var(--aviso-texto);
+  border-left: 3px solid var(--aviso-acento); }
+
+.pp-grupo { margin-top: 12px; padding-top: 4px; border-top: 1px dashed var(--borde); }
+.pp-grupo-tit { margin: 8px 0 4px; font-size: 12px; font-weight: 600;
+  letter-spacing: .05em; text-transform: uppercase; color: var(--texto-secundario); }
+
+.pp-pie { display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+  padding-top: 4px; }
+.pp-pie-txt { font-size: 13px; color: var(--texto-secundario); }
+
+@media (prefers-reduced-motion: reduce) { .pp-chev { transition: none; } }
+@media (max-width: 900px) {
+  .pp-mod-cab { grid-template-columns: 20px 1fr auto; }
+  .pp-tags { display: none; }
+  .pp-mod-cuerpo { padding-left: 20px; }
+}
+
 /* R88 · IDENTIDAD EN EL CHIP — porque la leyenda va en chips, y si las dos
    paletas no coinciden, la leyenda MIENTE. Lo dijeron ellos y es exacto.
    Aqui el filete se queda en 3px, y no por descuido: en el horario los 6px

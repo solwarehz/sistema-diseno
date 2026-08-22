@@ -347,6 +347,26 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 ---
 
+## Panel de privilegios
+
+Reparte permisos por módulo. **No sabe de negocio**: recibe módulos con
+privilegios y devuelve qué está concedido, así que sirve igual para un cargo,
+una persona o una clave de API.
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R97, v1.72.0) **Hay un privilegio que manda.** `base` —`ver` por omisión— gobierna a los demás de su módulo: apagarlo apaga el módulo entero, y encender cualquier otro lo enciende solo. Sin esto se puede guardar «editar sin ver», y entonces cada producto decide por su cuenta qué significa eso. Se desactiva con `base={null}` cuando el dominio no funcione así. |
+| **2** | **Obligatorio.** (R97, v1.72.0) **Lo cerrado dice por qué.** Un privilegio que no se puede conceder lleva `cerrado` con el **motivo en texto**, no un booleano. Es el `cerrado` del Interruptor: un candado sin explicación se lee como un fallo del sistema, y quien reparte permisos no entiende por qué su lista no coincide con la de al lado. |
+| **3** | **Obligatorio.** (R97, v1.72.0) **Lo que no aplica no se pasa.** Si un módulo no tiene «descargar», ese privilegio no está en su lista — no hay estado «no aplica» que pintar. Una casilla vacía y un permiso denegado no son lo mismo, y confundirlos hace que se conceda lo que no existe. |
+| **4** | **Obligatorio.** (R97, v1.72.0) **Lo concedido se ve sin abrir.** El resumen y el conteo están en la cabecera del módulo: **abrir es para cambiar, no para enterarse**. Con diez módulos, obligar a abrirlos uno por uno para saber qué hay concedido es diez veces el mismo gesto. |
+| **5** | **Obligatorio.** (R97, v1.72.0) **Sin el privilegio base, el resto se atenúa pero NO se oculta.** Siguen ahí, apagados y visibles, con un aviso que lo explica. Hacerlos desaparecer haría pensar que se perdió lo que estaba concedido. |
+| **6** | **Obligatorio.** (R97, v1.72.0) **El panel no ordena por estado.** Subir los concedidos al principio movería la fila justo después de tocarla y borraría el orden que traen los datos, que suele ser una escalera de riesgo (ver → editar → crear → desactivar). El orden lo decide quien pasa los módulos. |
+| **7** | Del proyecto: **cuándo se guarda**. El panel es controlado —recibe `valor`, emite `onCambio`— y no persiste nada. |
+| **8** | Del proyecto: **de dónde salen los motivos** de lo cerrado. El sistema los muestra; calcularlos es del backend. Un `bloqueado` sin explicación devuelve el candado mudo. |
+| **9** | Del proyecto: **el encabezado**. El selector de cargo, el buscador o lo que haga falta va por `children`. El panel no sabe qué se está configurando. |
+
+---
+
 ## Color de identidad · Horario y Chip
 
 Los cuatro colores decorativos que ya usaba el avatar, disponibles desde la

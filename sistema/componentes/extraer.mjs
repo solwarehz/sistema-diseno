@@ -88,6 +88,9 @@ const ELEMENTOS = [
   { n: 'Migas de pan',          p: ['migas'] },
   { n: 'Cabecera de pantalla',  p: ['pant'] },
   { n: 'Panel de la barra',     p: ['pb'] },
+  // R97 · Reparte permisos por modulo. Se COMPONE de Interruptor, Chip y Boton;
+  // lo unico suyo es el andamiaje de la lista.
+  { n: 'Panel de privilegios',  p: ['pp'] },
   { n: 'Diálogo',               p: ['dialogo'] },
   { n: 'Utilidades',            p: ['sr', 'mono'] },
 ];

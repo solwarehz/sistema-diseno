@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.71.0
+# Actualizar al sistema de diseño v1.72.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.71.0"
+npm install "github:solwarehz/sistema-diseno#v1.72.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,19 +27,19 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.71.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.72.0
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.71.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.72.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.71.0 --repo solwarehz/sistema-diseno
+gh release download v1.72.0 --repo solwarehz/sistema-diseno
 ```
 
 Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
@@ -301,6 +301,7 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.69.0 | **Dos fallos nuestros de la 1.64.0, corregidos.** (1) **`onAjuste` se llamaba durante el render**: guardar los avisos en un estado entraba en **bucle infinito**. Ahora sale de un efecto y solo cuando los avisos cambian de contenido — si se blindaron por su cuenta, el blindaje ya no estorba. (2) **El sombreado desalineaba las columnas**: el hueco se repartía con lo que sobraba, y sobra distinto según el contenido, así que el mismo horario se dibujaba a alturas distintas si un bloque llevaba línea de detalle. Medido ahora: **0,00 px** de desalineación. Las clases `hor-fr-N` pasan a `hor-q{cuartos}-{celdas}` — solo afecta a quien escriba el marcado a mano |
 | 1.70.0 | **Los cuatro tonos de identidad del `Chip` ya se pintan.** Salían del color del texto: `.chip` declara el atajo `border-left: 3px solid currentcolor` más abajo en la hoja, empata en especificidad y **el atajo reescribe el color**. Se arregla con `.chip.chip-identidad-N` y `border-left-color`. De paso, **todos** los tonos de `Chip` y `Mensaje` pasan a ganar por especificidad en vez de por el orden — antes los semánticos se salvaban por una duplicación afortunada. **Cambio visible**: los chips `pendiente` e `inactivo` pasan del gris del texto a `borde-fuerte`, que es lo que siempre debieron ser |
 | 1.71.0 | **Nada que hacer de su lado.** La versión del paquete se declaraba en cinco sitios y dos se habían quedado atrás; ahora el generador los cruza y falla si discrepan. Si alguna vez leyeron una versión rara en `componentes/package.json`, era eso |
+| 1.72.0 | **Componente nuevo: `PanelPrivilegios`.** Reparte permisos por módulo — es el de su pantalla de privilegios por cargo, hecho general. Recibe `modulos` y `valor`, emite `onCambio`; el selector del cargo lo ponen ustedes por `children`. Trae dentro la regla de que **«ver» manda sobre el resto** y el **motivo** de lo que no se puede conceder. Nada existente cambia |
 
 **Lo que no rompe pero conviene aprovechar:** `soloLectura` en `Selector`
 (§6.5 del manual), `persona.foto` en `CargaImagen` (§6.7), `CargaId` para el

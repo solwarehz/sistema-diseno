@@ -123,6 +123,7 @@ if (sospechosas.length) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const PAGINA_DE = new Map([
+  ['PanelPrivilegios', 'Panel de privilegios'],
   ['Boton', 'Botón'], ['Enlace', 'Enlace'], ['Campo', 'Campo de texto'],
   ['Selector', 'Selector'], ['SelectorBusqueda', 'Selector'],
   ['Interruptor', 'Interruptor'], ['SeleccionMultiple', 'Selección múltiple'],
