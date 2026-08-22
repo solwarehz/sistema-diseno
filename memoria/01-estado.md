@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 21 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.64.0** — la celda del horario deja de ser
-un interruptor: sombreado en cuartos de franja, y **nada se descarta en
-silencio**
+**Versión del sistema:** MMI-DS **v1.65.0** — el candado de la promesa no
+miraba el horario: estaba **verde por no mirar**. Segunda vez que la lista
+escrita a mano se queda corta
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -42,10 +42,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 790 reglas de 1274 · **566 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.64.0.zip` · **53 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.65.0.zip` · **53 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.64.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.65.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,34 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.64.0), con detalle
+### Lo de hoy (v1.65.0), con detalle
+
+**R90 · el candado estaba verde por no mirar.** Salió de una pregunta, no de un
+reporte: *«¿la entrega es igual a la promesa?»*, después de publicar R88 y R89.
+El candado decía que sí.
+
+Y **era verdad** — se comprobó a mano montando el mismo marcado con las dos
+hojas en un navegador: **19 elementos, 12.654 propiedades, cero diferencias**.
+Pero el candado no lo sabía: en su lista de casos, escrita a mano, **no había ni
+un elemento del horario**. Ni el bloque, ni la celda, ni el eje, ni la
+envoltura.
+
+**Es el mismo hueco que dejó pasar R87**, y por eso importa más que el defecto
+que no había: una lista escrita a mano se queda corta en cuanto nace un
+elemento, **y no avisa de que se ha quedado corta**. Van dos veces.
+
+Entran diez casos —envoltura, celda, celda vacía, eje, bloque, bloque con tono
+de identidad, pila, hueco de la fracción, chip de identidad y punto de leyenda—.
+El candado pasa de **921 a 971 elementos** y de **189.379 a 199.674
+propiedades**. Visto en rojo a propósito antes de verlo en verde.
+
+> **Pendiente que esto deja abierto.** Sigue siendo una lista a mano. Lo que
+> haría falta es que el candado **descubra** los elementos del catálogo en vez
+> de que alguien los recuerde — el mismo remedio que ya se aplicó al
+> empaquetador y a la lista de candados. No se hace hoy porque no es un cambio
+> pequeño; queda escrito para que la tercera vez no sea una sorpresa.
+
+### Lo de la v1.64.0, con detalle
 
 **R89 · la celda del horario deja de ser un interruptor.** Lo pidió Control
 Administrativos con el argumento que lo cierra: **las 07:45**. Si un bloque solo
@@ -442,7 +469,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.64.0
+Versión                      1.65.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
 Pruebas                         415   en 28 archivos
@@ -450,7 +477,7 @@ Reglas que viajan               790   de 1274 · 566 clases, 0 huérfanas
 Candado de la cascada           867   reglas leidas · 11 anchos
 Candado del empate              292   combinaciones reales · 53 empates
                                       · 0 cambian de ganador
-Candado de la promesa           921   elementos · 189.379 propiedades
+Candado de la promesa           971   elementos · 199.674 propiedades
                                       a 5 anchos (1440, 1024, 900, 700, 390)
 Candado del elemento            145   clases comparadas · 5 divergencias
                                       DECLARADAS · 100 las pinta el guion

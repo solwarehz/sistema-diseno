@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.64.0";
+export const VERSION = "1.65.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,27 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.65.0', fecha: '2026-08-21',
+    que: 'R90: el candado de la promesa NO MIRABA EL HORARIO — verde por no mirar',
+    porque:
+      'R90 · Salio de una pregunta, no de un reporte: «¿la entrega es igual a la promesa?», despues '
+      + 'de publicar R88 y R89. El candado decia que si. Y era verdad —se comprobo a mano con el '
+      + 'motor del navegador, montando el mismo marcado con las dos hojas: 19 elementos, 12.654 '
+      + 'propiedades, CERO diferencias— pero el candado no lo sabia: en su lista de casos, escrita a '
+      + 'mano, NO HABIA NI UN ELEMENTO DEL HORARIO. Ni el bloque, ni la celda, ni el eje, ni la '
+      + 'envoltura. Estaba verde por no mirar. '
+      + 'Es el MISMO hueco que dejo pasar R87 con el filtro de columna, y por eso importa mas que el '
+      + 'defecto que no habia: una lista escrita a mano se queda corta en cuanto nace un elemento, y '
+      + 'no avisa de que se ha quedado corta. Van dos veces. '
+      + 'Entran diez casos: la envoltura, la celda, la celda vacia, el eje de horas, el bloque, el '
+      + 'bloque con tono de identidad (R88), la pila y el hueco de la fraccion (R89), el chip de '
+      + 'identidad y el punto de leyenda. El candado pasa de 921 a 971 elementos comparados y de '
+      + '189.379 a 199.674 propiedades. Se vio en rojo a proposito —cambiando la direccion de la '
+      + 'pila en la hoja entregada— antes de verlo en verde.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.64.0', fecha: '2026-08-21',
     que: 'R89: la celda del horario deja de ser un interruptor — sombreado en cuartos, y el descarte deja de ser silencioso',

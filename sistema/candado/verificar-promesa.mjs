@@ -84,6 +84,38 @@ const CASOS = [
     elem('li', ['cpdf-puesto']),
   ]],
   ['Avatar', [elem('span', ['avatar', 'avatar-l'])]],
+
+  // R90 · EL HORARIO NO ESTABA EN ESTA LISTA. Salió al preguntar si la entrega
+  // se veía igual que la promesa después de R88 y R89: el candado decía que sí
+  // —y era verdad, se comprobó a mano con el motor del navegador: 19 elementos,
+  // 12.654 propiedades, cero diferencias— pero NO MIRABA EL HORARIO. Verde por
+  // no mirar es exactamente el defecto que este candado existe para no tener.
+  // Es el mismo hueco que dejó pasar R87: lo que no está en la lista no se
+  // compara, y una lista escrita a mano se queda corta en cuanto nace un
+  // elemento. Se cubre entero, incluido el marcado que R89 estrenó.
+  ['Envoltura del horario', [elem('div', ['hor-env'])]],
+  ['Celda del horario', [elem('table', ['hor']), elem('tbody'), elem('tr'), elem('td', ['hor-c'])]],
+  ['Celda vacía del horario', [elem('table', ['hor']), elem('tbody'), elem('tr'), elem('td', ['hor-c', 'hor-vacia'])]],
+  ['Eje de horas', [elem('table', ['hor']), elem('tbody'), elem('tr'), elem('th', ['hor-eje', 'hor-eje-v'])]],
+  ['Bloque del horario', [
+    elem('table', ['hor']), elem('tbody'), elem('tr'), elem('td', ['hor-c']),
+    elem('div', ['hor-pila']), elem('span', ['hor-b', 'hor-neutro']),
+  ]],
+  // R88 · el tono que agrupa, con su filete de 6px.
+  ['Bloque de identidad', [
+    elem('table', ['hor']), elem('tbody'), elem('tr'), elem('td', ['hor-c']),
+    elem('div', ['hor-pila']), elem('span', ['hor-b', 'hor-identidad-1', 'hor-fr-5']),
+  ]],
+  // R89 · la pila y el hueco, que son la fracción.
+  ['Pila de la celda', [
+    elem('table', ['hor']), elem('tbody'), elem('tr'), elem('td', ['hor-c']), elem('div', ['hor-pila']),
+  ]],
+  ['Hueco de la fracción', [
+    elem('table', ['hor']), elem('tbody'), elem('tr'), elem('td', ['hor-c']),
+    elem('div', ['hor-pila']), elem('i', ['hor-hueco', 'hor-fr-3']),
+  ]],
+  ['Chip de identidad', [elem('span', ['chip', 'chip-identidad-1'])]],
+  ['Punto de leyenda', [elem('span', ['chip', 'chip-punto', 'chip-identidad-1'])]],
   ['Aviso', [elem('div', ['av-zona']), elem('div', ['av', 'av-exito'])]],
   ['Diálogo', [elem('dialog', ['dialogo'])]],
 
