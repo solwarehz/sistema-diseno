@@ -4581,7 +4581,7 @@ reconstruyendo.</p>
 
       <section class="pp-mod pp-abierto">
         <button class="pp-mod-cab" type="button" aria-expanded="true">
-          <span class="pp-chev">\${ic('chevron', 18)}</span>
+          <span class="pp-chev">${ic('chevron', 18)}</span>
           <span class="pp-mod-nom">Trabajadores</span>
           <span class="pp-tags">
             <span class="chip chip-info">Ver</span><span class="chip chip-info">Editar</span>
@@ -4597,7 +4597,17 @@ reconstruyendo.</p>
             <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="true" aria-label="Editar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar</span></span></label>
           </div>
           <div class="pp-priv">
-            <span class="sw-fila sw-cerrado"><span class="sw-candado">\${ic('candado', 18)}</span><span class="sw-txt"><span class="sw-et">Dar de alta</span><span class="sw-motivo">Dar de alta a una persona es del Jefe de personal.</span></span></span>
+            <span class="sw-fila sw-cerrado"><span class="sw-candado">${ic('candado', 18)}</span><span class="sw-txt"><span class="sw-et">Dar de alta</span><span class="sw-motivo">Dar de alta a una persona es del Jefe de personal.</span></span></span>
+          </div>
+          <div class="pp-niveles">
+            <fieldset class="sg">
+              <legend class="sg-et">Documento</legend>
+              <div class="sg-barra">
+                <label class="sg-op"><input class="sg-in" type="radio" name="doc" checked><span class="sg-tit">Completo</span><span class="sg-ej">71602303</span></label>
+                <label class="sg-op"><input class="sg-in" type="radio" name="doc"><span class="sg-tit">Parcial</span><span class="sg-ej">*****303</span></label>
+                <label class="sg-op"><input class="sg-in" type="radio" name="doc"><span class="sg-tit">Oculto</span></label>
+              </div>
+            </fieldset>
           </div>
           <div class="pp-grupo">
             <p class="pp-grupo-tit">Dentro del módulo</p>
@@ -4610,7 +4620,7 @@ reconstruyendo.</p>
 
       <section class="pp-mod">
         <button class="pp-mod-cab" type="button" aria-expanded="false">
-          <span class="pp-chev">\${ic('chevron', 18)}</span>
+          <span class="pp-chev">${ic('chevron', 18)}</span>
           <span class="pp-mod-nom">Marcaciones<span class="pp-marca"><span class="chip chip-identidad-3">modificado</span></span></span>
           <span class="pp-tags"><span class="chip chip-info">Ver</span></span>
           <span class="pp-conteo">1 de 1</span>
@@ -4619,7 +4629,7 @@ reconstruyendo.</p>
 
       <section class="pp-mod pp-sin-base pp-abierto">
         <button class="pp-mod-cab" type="button" aria-expanded="true">
-          <span class="pp-chev">\${ic('chevron', 18)}</span>
+          <span class="pp-chev">${ic('chevron', 18)}</span>
           <span class="pp-mod-nom">Horarios</span>
           <span class="pp-tags"><span class="chip chip-pend">sin permisos</span></span>
           <span class="pp-conteo">0 de 3</span>
@@ -4631,7 +4641,7 @@ reconstruyendo.</p>
           <div class="pp-priv">
             <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Editar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar</span></span></label>
           </div>
-          <p class="pp-aviso">\${ic('alerta', 16)}<span>Sin este permiso, el resto del módulo no se aplica.</span></p>
+          <p class="pp-aviso">${ic('alerta', 16)}<span>Sin este permiso, el resto del módulo no se aplica.</span></p>
         </div>
       </section>
 
@@ -4651,6 +4661,8 @@ reconstruyendo.</p>
     <tr><td class="num">3</td><td><strong>Lo que no aplica no se pasa.</strong> No hay «no aplica» que pintar: si un módulo no tiene «descargar», ese privilegio no está en su lista. Una casilla vacía y un permiso denegado no son lo mismo.</td></tr>
     <tr><td class="num">4</td><td><strong>Lo concedido se ve sin abrir.</strong> Los chips y el «4 de 6» están en la cabecera: abrir es para <em>cambiar</em>, no para <em>enterarse</em>. Con diez módulos, obligar a abrirlos uno por uno es diez veces el mismo gesto.</td></tr>
     <tr><td class="num">5</td><td><strong>El preset se ve y se recupera.</strong> Pasando <code>preset</code>, cada módulo que difiera se marca y aparece cómo volver. Sin él nadie sabe qué tocó.</td></tr>
+    <tr><td class="num">6</td><td><strong>Un privilegio puede declarar niveles por campo</strong> — cuánto se ve de un dato sensible. Van en <a href="#segmentado" data-ir="segmentado" class="enlace">Segmentado</a>, que nació para esto, y <strong>dentro del privilegio</strong>: sin «ver» concedido, elegir cuánto se ve no significa nada.</td></tr>
+    <tr><td class="num">7</td><td><strong>Apagar el privilegio que manda no borra nada.</strong> Lo configurado se conserva para cuando se vuelva a encender — igual que los filtros de la tabla al plegarse. Lo que no se conserva es el <em>efecto</em>: <code>privilegiosEfectivos()</code> devuelve lo que de verdad se aplica, que es lo que va al backend.</td></tr>
   </tbody>
 </table>
 
@@ -6368,15 +6380,39 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 .pp-grupo-tit { margin: 8px 0 4px; font-size: 12px; font-weight: 600;
   letter-spacing: .05em; text-transform: uppercase; color: var(--texto-secundario); }
 
+/* R98 · Los niveles cuelgan del privilegio que los gobierna, sangrados bajo su
+   interruptor: se lee «ver, y de lo que ve, el documento en parcial». Sueltos
+   parecerian permisos aparte. */
+.pp-niveles { display: flex; flex-direction: column; gap: 12px;
+  margin: 12px 0 4px 52px; padding-left: 12px;
+  border-left: 1px solid var(--borde); }
+
 .pp-pie { display: flex; align-items: center; justify-content: flex-end; gap: 12px;
   padding-top: 4px; }
 .pp-pie-txt { font-size: 13px; color: var(--texto-secundario); }
 
 @media (prefers-reduced-motion: reduce) { .pp-chev { transition: none; } }
+/* R98 · MOVIL. Lo pidieron por esto: la tabla que tenian no cabia a 390px y era
+   su motivo principal para cambiar. Aqui no hay tabla, asi que no hay nada que
+   desplazar — pero si tres cosas que apretar.
+   El sangrado cae a 20px: con 46 no queda ancho para el nombre del privilegio.
+   Los chips de la cabecera se van: el conteo «4 de 6» dice lo mismo en una
+   linea y no parte el titulo del modulo en tres. */
 @media (max-width: 900px) {
   .pp-mod-cab { grid-template-columns: 20px 1fr auto; }
   .pp-tags { display: none; }
   .pp-mod-cuerpo { padding-left: 20px; }
+}
+@media (max-width: 560px) {
+  /* Los niveles pierden el sangrado y se quedan con el filete: a 390px, 52px de
+     margen se comen un tercio de la pantalla. */
+  .pp-niveles { margin-left: 0; }
+  .pp-mod-cab { padding: 12px; gap: 8px; }
+  .pp-mod-cuerpo { padding: 4px 12px 12px; }
+  /* El pie deja de ir a la derecha: en una columna, un boton pegado al borde
+     derecho se alcanza peor con el pulgar que uno a lo ancho. */
+  .pp-pie { flex-direction: column; align-items: stretch; gap: 8px; }
+  .pp-pie-txt { text-align: center; }
 }
 
 /* R88 · IDENTIDAD EN EL CHIP — porque la leyenda va en chips, y si las dos
@@ -10178,6 +10214,34 @@ ${COMPRESOR_PDF}
 
 mkdirSync(SALIDA, { recursive: true });
 writeFileSync(join(SALIDA, 'index.html'), html);
+
+/* ───────────────────────────────────────────────────────────────────────────
+   R98 · NO PUEDE QUEDAR PLANTILLA SIN RESOLVER EN LA SALIDA
+   Una barra invertida de mas —`\${ic('chevron', 18)}`— y el catalogo publica el
+   codigo en vez del icono. Paso en la v1.72.0, en la pagina del Panel de
+   privilegios, y NINGUN candado lo vio: se descubrio mirando una captura.
+   Un `${` en el HTML generado no es nunca intencionado.
+   ─────────────────────────────────────────────────────────────────────────── */
+{
+  // Solo en el MARCADO: el catalogo lleva su propio script, que usa template
+  // literals en el navegador y ahi `${t}` es legitimo. Buscarlos tambien alli
+  // daba trece falsos positivos, y un candado con falsos positivos se acaba
+  // ignorando entero — la leccion de R95, aplicada antes de publicarlo.
+  // Fuera tambien los EJEMPLOS: el catalogo enseña como se usa cada componente
+  // en TSX, y ahi `${t}` o `${f.dni}` son parte de lo que se esta enseñando.
+  const soloMarcado = html
+    .replace(/<script[\s\S]*?<\/script>/g, '')
+    .replace(/<pre[\s\S]*?<\/pre>/g, '')
+    .replace(/<code[\s\S]*?<\/code>/g, '');
+  const crudo = [...soloMarcado.matchAll(/\$\{[^}\n]{0,60}\}/g)].map((m) => m[0]);
+  if (crudo.length) {
+    console.error(`\n  ${crudo.length} plantilla(s) sin resolver en cascaron/index.html:\n`);
+    for (const c of [...new Set(crudo)].slice(0, 10)) console.error(`    ${c}`);
+    console.error('\n  Casi siempre es una barra invertida de mas dentro de un template');
+    console.error('  literal: el catalogo acaba publicando el codigo en vez del icono.\n');
+    process.exit(1);
+  }
+}
 
 const kb = (html.length / 1024).toFixed(0);
 console.log(`\n  cascaron/index.html  ${kb} KB, autocontenido`);

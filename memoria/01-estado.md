@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 21 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.72.0** — nace `PanelPrivilegios`, el
-trigésimo segundo componente: repartir permisos por módulo **sin saber de
-negocio**
+**Versión del sistema:** MMI-DS **v1.73.0** — `PanelPrivilegios` gana **niveles
+por campo**, deja de borrar al apagar el privilegio que manda, y queda
+verificado a **390 px de viewport real**
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -42,10 +42,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 790 reglas de 1274 · **566 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.72.0.zip` · **54 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.73.0.zip` · **54 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.72.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.73.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,38 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.72.0), con detalle
+### Lo de hoy (v1.73.0), con detalle
+
+**R98 · tres peticiones sobre el panel, y la primera bloqueaba.**
+
+**Niveles por campo.** Un cargo no solo concede «ver trabajadores»: define
+**cuánto** ve del documento —completo, parcial, oculto—. No hubo que inventar
+nada: el `Segmentado` (R69) nació para este caso exacto y con **este mismo
+ejemplo**, `71602303` contra `*****303`. Se conectan bajo la clave
+`privilegio:nivel` en el mismo mapa, y solo se reparten si el privilegio está
+concedido.
+
+**Apagar el base ya no borra.** La pregunta la hicieron ellos: *«guardamos en
+cada pulsación, no hay botón de guardar»*. Hasta ayer, apagar «ver» ponía todo
+el módulo a `false` — con niveles, eso destruye configuración en el acto y sin
+vuelta atrás. Ahora se conserva, que es **la misma decisión que ya tomó la tabla
+con sus filtros**: «plegar es dejar de ver el control, no dejar de filtrar». Lo
+que no se conserva es el efecto: nace `privilegiosEfectivos()`.
+
+**Móvil**, que era su motivo principal para dejar la tabla. Verificado a 390 px
+de **viewport real** — en un marco con su propio viewport, porque medir un
+contenedor estrecho dentro de una ventana ancha **no evalúa las consultas de
+medios** y da un verde falso. Nada desborda; la cabecera mide 68 px de blanco
+táctil.
+
+**Y la captura destapó un defecto publicado ayer.** Cinco iconos de la página
+del panel salían como **texto crudo** —`${ic('chevron', 18)}`— por una barra
+invertida de más. **Ningún candado lo veía.** Ahora el generador falla si queda
+plantilla sin resolver en el marcado, excluyendo el script del catálogo y los
+ejemplos de código: sin esa exclusión daba **trece falsos positivos**, y un
+candado con falsos positivos se acaba ignorando entero.
+
+### Lo de la v1.72.0, con detalle
 
 **R97 · nace `PanelPrivilegios`.** Lo pidió Control Administrativos para su
 pantalla de privilegios por cargo, y se hizo **del sistema y no del producto**
@@ -720,7 +751,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.72.0
+Versión                      1.73.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
 Pruebas                         432   en 30 archivos

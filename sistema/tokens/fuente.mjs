@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.72.0";
+export const VERSION = "1.73.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,44 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.73.0', fecha: '2026-08-23',
+    que: 'R98: PanelPrivilegios gana NIVELES por campo, deja de borrar al apagar el privilegio base, y se verifica a 390px',
+    porque:
+      'R98 · Tres cosas que pidio Control Administrativos sobre la v1.72.0, y la primera les bloqueaba. '
+      + 'NIVELES POR CAMPO. Ademas de conceder un privilegio, un cargo define CUANTO ve de un dato '
+      + 'sensible: documento completo, parcial u oculto. No es un interruptor, son tres estados, y no '
+      + 'viven en el modulo sino DENTRO de un privilegio —«ver trabajadores» concedido, pero el '
+      + 'documento en parcial—. No hacia falta inventar nada: el Segmentado (R69) nacio para este caso '
+      + 'exacto y con este mismo ejemplo, el documento 71602303 contra *****303. Se conectan con la '
+      + 'clave `privilegio:nivel` en el mismo mapa, para que el producto persista un solo objeto, y '
+      + 'solo se reparten si el privilegio esta concedido. '
+      + 'APAGAR EL BASE YA NO BORRA, y esta la preguntaron ellos: «guardamos en cada pulsacion, no hay '
+      + 'boton de guardar». Hasta la v1.72.0, apagar «ver» ponia todo el modulo a false; con niveles '
+      + 'por campo eso destruye configuracion que costo definir, en el acto y sin vuelta atras. Ahora '
+      + 'se conserva, que es la misma decision que ya tomo la tabla con sus filtros —«plegar es dejar '
+      + 'de ver el control, no dejar de filtrar»—. Lo que NO se conserva es el efecto: nace '
+      + '`privilegiosEfectivos()`, que devuelve lo que de verdad se aplica. Guardar el mapa completo no '
+      + 'pierde el trabajo; mandar el completo al backend concederia lo que no se concedio. '
+      + 'MOVIL, que era su motivo principal para dejar la tabla. Verificado a 390px de viewport REAL '
+      + '—en un marco con su propio viewport, porque medir un contenedor estrecho dentro de una ventana '
+      + 'ancha no evalua las consultas de medios y da un verde falso—: nada desborda en horizontal, ni '
+      + 'la pagina ni el panel ni el segmentado, los chips de la cabecera se retiran, el sangrado de '
+      + 'los niveles cae a cero y la cabecera del modulo mide 68px de blanco tactil. '
+      + 'Y AL MIRAR LA CAPTURA APARECIO UN DEFECTO PUBLICADO EN LA v1.72.0: cinco iconos de la pagina '
+      + 'del panel salian como TEXTO CRUDO —la llamada al icono sin resolver, tal cual— por una barra '
+      + 'invertida de mas '
+      + 'dentro de un template literal. Ningun candado lo veia. Ahora el generador falla si queda '
+      + 'plantilla sin resolver en el marcado, excluyendo el script del catalogo y los ejemplos de '
+      + 'codigo, que es donde una plantilla escrita a proposito es legitima — sin esa exclusion daba '
+      + 'trece falsos positivos, y un '
+      + 'candado con falsos positivos se acaba ignorando entero.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'Apagar el privilegio base ya NO pone el modulo a false: lo conserva. Quien dependiera de recibir '
+      + 'todo en false al apagar «ver» debe usar `privilegiosEfectivos()`, que devuelve exactamente eso.',
+    ],
+  },
   {
     v: '1.72.0', fecha: '2026-08-22',
     que: 'R97: nace PanelPrivilegios — repartir permisos por modulo, sin saber de negocio',

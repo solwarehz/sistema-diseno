@@ -22,14 +22,39 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { Interruptor } from './Interruptor';
+import { Segmentado, type OpcionSegmento } from './Segmentado';
 import { Chip } from './Chip';
 import { Boton } from './Boton';
 import { Icono } from './Icono';
+
+/**
+ * R98 · CUÁNTO se ve de un campo, dentro de un privilegio que ya está concedido.
+ *
+ * No es un permiso más: «Ver trabajadores» puede estar concedido y el documento
+ * verse en parcial. Son dos o tres estados excluyentes, así que es un
+ * Segmentado — el componente que nació (R69) para este caso exacto, con el
+ * ejemplo del documento: completo `71602303`, parcial `*****303`.
+ *
+ * Vive DENTRO del privilegio y no en el módulo porque de eso depende: sin «ver»
+ * concedido, el nivel no significa nada.
+ */
+export type NivelPrivilegio = {
+  id: string;
+  /** El nombre del campo: «Documento», «Dirección», «Correo». */
+  nombre: React.ReactNode;
+  /** Dos o tres. Un nivel que no aplica no se pasa; uno que no se puede
+   *  conceder se pasa `cerrado`, que es otra cosa. */
+  opciones: OpcionSegmento[];
+  /** El control entero cerrado por regla, con su motivo. */
+  cerrado?: string;
+};
 
 export type Privilegio = {
   id: string;
   nombre: React.ReactNode;
   ayuda?: React.ReactNode;
+  /** Niveles por campo. Solo se reparten si el privilegio está concedido. */
+  niveles?: NivelPrivilegio[];
   /**
    * El motivo por el que este privilegio **no se puede** conceder. Es texto, no
    * un booleano, por lo mismo que en el Interruptor: un candado sin explicación
@@ -49,8 +74,16 @@ export type ModuloPrivilegios = {
   grupos?: GrupoPrivilegios[];
 };
 
-/** `{ modulo: { privilegio: concedido } }`. Lo que no está, no está concedido. */
-export type ValorPrivilegios = Record<string, Record<string, boolean>>;
+/**
+ * `{ modulo: { privilegio: concedido } }`. Lo que no está, no está concedido.
+ *
+ * Los niveles guardan una CADENA bajo la clave `privilegio:nivel`, así que un
+ * mismo mapa lleva las dos cosas y el producto persiste un solo objeto.
+ */
+export type ValorPrivilegios = Record<string, Record<string, boolean | string>>;
+
+/** La clave con la que se guarda un nivel. Se exporta para poder leerlo fuera. */
+export const claveNivel = (privilegio: string, nivel: string) => `${privilegio}:${nivel}`;
 
 export type PanelPrivilegiosProps = {
   modulos: ModuloPrivilegios[];
@@ -77,7 +110,7 @@ export type PanelPrivilegiosProps = {
   className?: string;
 };
 
-const concedido = (v: ValorPrivilegios, mod: string, priv: string) => Boolean(v[mod]?.[priv]);
+const concedido = (v: ValorPrivilegios, mod: string, priv: string) => v[mod]?.[priv] === true;
 
 /** Todos los privilegios del módulo, con grupos incluidos y en orden. */
 function todos(m: ModuloPrivilegios): Privilegio[] {
@@ -101,6 +134,27 @@ export function resumirPrivilegios(modulos: ModuloPrivilegios[], valor: ValorPri
     .filter((x): x is string => x !== null);
 }
 
+/**
+ * Lo que de verdad se aplica: sin el privilegio base, un módulo no concede nada
+ * aunque su mapa lo diga.
+ *
+ * Existe porque el panel CONSERVA lo configurado al apagar el base (R98), y
+ * entonces el mapa guardado y el mapa efectivo dejan de ser el mismo. Guardar
+ * el primero es lo correcto —no se pierde el trabajo—; mandar el primero al
+ * backend sería conceder lo que no se concedió.
+ */
+export function privilegiosEfectivos(
+  modulos: ModuloPrivilegios[], valor: ValorPrivilegios, base: string | null = 'ver',
+): ValorPrivilegios {
+  const salida: ValorPrivilegios = {};
+  for (const m of modulos) {
+    const del = valor[m.id] ?? {};
+    if (base && del[base] !== true) { salida[m.id] = {}; continue; }
+    salida[m.id] = { ...del };
+  }
+  return salida;
+}
+
 export function PanelPrivilegios({
   modulos, valor, onCambio, base = 'ver', preset, onVolverAlPreset,
   abiertos, onAbiertos, soloLectura = false, children, className = '',
@@ -114,13 +168,23 @@ export function PanelPrivilegios({
 
   const cambiar = useCallback((m: ModuloPrivilegios, priv: string, activo: boolean) => {
     const delModulo = { ...(valor[m.id] ?? {}), [priv]: activo };
-    // El privilegio base gobierna: apagarlo apaga el módulo; encender otro lo
-    // enciende. Sin esto se puede guardar «editar sin ver», que el backend
-    // tendría que resolver por su cuenta y cada producto de otra manera.
+    // R98 · EL BASE GOBIERNA, PERO NO BORRA.
+    //
+    // Hasta la v1.72.0, apagar el base ponía a `false` todo el módulo. Con
+    // niveles por campo eso destruye configuración que costó definir —y en un
+    // panel que guarda en cada pulsación, sin botón de Guardar, se pierde en el
+    // acto y sin vuelta atrás—.
+    //
+    // Ahora se conserva. Es la misma decisión que ya tomó la tabla con sus
+    // filtros: «al plegar la fila, los valores se conservan; plegar es dejar de
+    // ver el control, no dejar de filtrar». Aquí, apagar «ver» es dejar de
+    // conceder el módulo, no olvidar cómo estaba repartido.
+    //
+    // Lo que NO se conserva es el efecto: sin el base, nada se aplica. Eso lo
+    // dice el panel en pantalla, y `privilegiosEfectivos` lo resuelve para
+    // quien tenga que mandarlo al backend.
     if (base) {
-      if (priv === base && !activo) {
-        todos(m).forEach((p) => { delModulo[p.id] = false; });
-      } else if (priv !== base && activo && !delModulo[base]) {
+      if (priv !== base && activo && !delModulo[base]) {
         const puedeBase = !todos(m).find((p) => p.id === base)?.cerrado;
         if (puedeBase) delModulo[base] = true;
       }
@@ -135,18 +199,44 @@ export function PanelPrivilegios({
     )).map((m) => m.id));
   }, [modulos, valor, preset]);
 
-  const fila = (m: ModuloPrivilegios, p: Privilegio, esBase: boolean) => (
-    <div className={`pp-priv${esBase ? ' pp-priv-base' : ''}`} key={p.id}>
-      <Interruptor
-        etiqueta={p.nombre}
-        ayuda={p.ayuda}
-        activo={concedido(valor, m.id, p.id)}
-        deshabilitado={soloLectura}
-        cerrado={p.cerrado}
-        onCambio={(a) => cambiar(m, p.id, a)}
-      />
-    </div>
-  );
+  const cambiarNivel = (m: ModuloPrivilegios, priv: string, nivel: string, v: string) => {
+    onCambio({ ...valor, [m.id]: { ...(valor[m.id] ?? {}), [claveNivel(priv, nivel)]: v } });
+  };
+
+  const fila = (m: ModuloPrivilegios, p: Privilegio, esBase: boolean) => {
+    const dado = concedido(valor, m.id, p.id);
+    return (
+      <div className={`pp-priv${esBase ? ' pp-priv-base' : ''}`} key={p.id}>
+        <Interruptor
+          etiqueta={p.nombre}
+          ayuda={p.ayuda}
+          activo={dado}
+          deshabilitado={soloLectura}
+          cerrado={p.cerrado}
+          onCambio={(a) => cambiar(m, p.id, a)}
+        />
+        {/* Los niveles solo se reparten si el privilegio está concedido: sin
+            «ver», elegir cuánto se ve no significa nada. No se ocultan al
+            apagarlo —lo configurado se conserva— pero dejan de pedir atención. */}
+        {p.niveles?.length && dado ? (
+          <div className="pp-niveles">
+            {p.niveles.map((n) => (
+              <Segmentado
+                key={n.id}
+                etiqueta={n.nombre}
+                contexto={typeof m.nombre === 'string' ? m.nombre : undefined}
+                opciones={n.opciones}
+                valor={String(valor[m.id]?.[claveNivel(p.id, n.id)] ?? n.opciones[0]?.valor ?? '')}
+                deshabilitado={soloLectura}
+                cerrado={n.cerrado}
+                onCambio={(v) => cambiarNivel(m, p.id, n.id, v)}
+              />
+            ))}
+          </div>
+        ) : null}
+      </div>
+    );
+  };
 
   return (
     <div className={['pp', className].filter(Boolean).join(' ')}>

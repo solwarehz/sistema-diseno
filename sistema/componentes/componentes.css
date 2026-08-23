@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.72.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.73.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -1406,7 +1406,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .pb-todos{ justify-content: center; border-top: 1px solid var(--borde); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   PANEL DE PRIVILEGIOS — 27 reglas · clases .pp-*
+   PANEL DE PRIVILEGIOS — 29 reglas · clases .pp-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .pp{ display: flex; flex-direction: column; gap: 16px; }
@@ -1441,6 +1441,9 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .pp-grupo{ margin-top: 12px; padding-top: 4px; border-top: 1px dashed var(--borde); }
 .pp-grupo-tit{ margin: 8px 0 4px; font-size: 12px; font-weight: 600;
   letter-spacing: .05em; text-transform: uppercase; color: var(--texto-secundario); }
+.pp-niveles{ display: flex; flex-direction: column; gap: 12px;
+  margin: 12px 0 4px 52px; padding-left: 12px;
+  border-left: 1px solid var(--borde); }
 .pp-pie{ display: flex; align-items: center; justify-content: flex-end; gap: 12px;
   padding-top: 4px; }
 .pp-pie-txt{ font-size: 13px; color: var(--texto-secundario); }
@@ -1451,6 +1454,13 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
   .pp-mod-cab{ grid-template-columns: 20px 1fr auto; }
   .pp-tags{ display: none; }
   .pp-mod-cuerpo{ padding-left: 20px; }
+}
+@media (max-width: 560px) {
+  .pp-niveles{ margin-left: 0; }
+  .pp-mod-cab{ padding: 12px; gap: 8px; }
+  .pp-mod-cuerpo{ padding: 4px 12px 12px; }
+  .pp-pie{ flex-direction: column; align-items: stretch; gap: 8px; }
+  .pp-pie-txt{ text-align: center; }
 }
 
 /* ───────────────────────────────────────────────────────────────────────────

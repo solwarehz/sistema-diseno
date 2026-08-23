@@ -10,12 +10,22 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { PanelPrivilegios, resumirPrivilegios,
+import { PanelPrivilegios, resumirPrivilegios, privilegiosEfectivos, claveNivel,
   type ModuloPrivilegios, type ValorPrivilegios } from '../src/PanelPrivilegios';
 
 const MODULOS: ModuloPrivilegios[] = [
   { id: 'trab', nombre: 'Trabajadores', privilegios: [
-      { id: 'ver', nombre: 'Ver' },
+      { id: 'ver', nombre: 'Ver', niveles: [
+          { id: 'documento', nombre: 'Documento', opciones: [
+              { valor: 'completo', texto: 'Completo', ejemplo: '71602303' },
+              { valor: 'parcial', texto: 'Parcial', ejemplo: '*****303' },
+              { valor: 'oculto', texto: 'Oculto' },
+            ] },
+          { id: 'correo', nombre: 'Correo', opciones: [
+              { valor: 'completo', texto: 'Completo' },
+              { valor: 'oculto', texto: 'Oculto', cerrado: 'Su cargo no ve el correo: no puede ocultarlo a otros.' },
+            ] },
+        ] },
       { id: 'editar', nombre: 'Editar' },
       { id: 'alta', nombre: 'Dar de alta', cerrado: 'Dar de alta es del Jefe de personal.' },
     ],
@@ -34,12 +44,17 @@ const abrir = async (nombre: string) => {
 };
 
 describe('Panel de privilegios — R97', () => {
-  it('R97 · el privilegio base manda: apagarlo apaga el módulo', async () => {
+  /* R98 cambió esto: apagar el base ya NO borra el módulo. Lo que se mantiene
+     es que sin el base nada se aplica —lo dice el panel y lo resuelve
+     `privilegiosEfectivos`— y que encender otro enciende el base. */
+  it('R97 · el privilegio base manda: sin él, el módulo no concede nada', async () => {
     const onCambio = vi.fn();
     render(<PanelPrivilegios modulos={MODULOS} onCambio={onCambio}
       valor={{ trab: { ver: true, editar: true, datos: true } }} abiertos={['trab']} />);
     await userEvent.click(screen.getByRole('switch', { name: 'Ver' }));
-    expect(onCambio).toHaveBeenCalledWith({ trab: { ver: false, editar: false, datos: false, alta: false } });
+    const tras = onCambio.mock.calls[0][0];
+    expect(tras.trab.ver).toBe(false);
+    expect(privilegiosEfectivos(MODULOS, tras).trab).toEqual({});
   });
 
   it('R97 · encender otro enciende el base solo', async () => {
@@ -114,6 +129,67 @@ describe('Panel de privilegios — R97', () => {
   it('R97 · el encabezado lo pone el producto, el panel no sabe qué configura', () => {
     render(<Montado inicial={{}}><label>Cargo<select><option>Administradora</option></select></label></Montado>);
     expect(screen.getByRole('combobox')).toBeTruthy();
+  });
+
+  /* ── R98 · niveles por campo ─────────────────────────────────────────── */
+
+  it('R98 · los niveles se reparten solo si el privilegio está concedido', () => {
+    // Dos montajes y no un `rerender`: `Montado` siembra su estado al montar,
+    // así que volver a pintarlo con otro `inicial` no lo cambiaba y la prueba
+    // pasaba por el motivo equivocado.
+    const apagado = render(<Montado inicial={{ trab: { ver: false } }} abiertos={['trab']} />);
+    expect(screen.queryByRole('group', { name: /Documento/ })).toBeNull();
+    apagado.unmount();
+    render(<Montado inicial={{ trab: { ver: true } }} abiertos={['trab']} />);
+    expect(screen.getByRole('group', { name: /Documento/ })).toBeTruthy();
+  });
+
+  it('R98 · el nivel se guarda bajo «privilegio:nivel» y no choca con los permisos', async () => {
+    const onCambio = vi.fn();
+    render(<PanelPrivilegios modulos={MODULOS} onCambio={onCambio}
+      valor={{ trab: { ver: true } }} abiertos={['trab']} />);
+    await userEvent.click(screen.getByRole('radio', { name: /Parcial/ }));
+    expect(onCambio.mock.calls[0][0].trab).toMatchObject({
+      ver: true, [claveNivel('ver', 'documento')]: 'parcial',
+    });
+  });
+
+  it('R98 · un nivel cerrado por regla no es un control, y dice por qué', () => {
+    render(<Montado inicial={{ trab: { ver: true } }} abiertos={['trab']} />);
+    expect(screen.getByText(/no puede ocultarlo a otros/)).toBeTruthy();
+  });
+
+  /* ── R98 · la pregunta que hizo Control Administrativos ───────────────── */
+
+  it('R98 · apagar el base CONSERVA lo configurado, no lo borra', async () => {
+    const onCambio = vi.fn();
+    render(<PanelPrivilegios modulos={MODULOS} onCambio={onCambio} abiertos={['trab']}
+      valor={{ trab: { ver: true, editar: true, [claveNivel('ver', 'documento')]: 'parcial' } }} />);
+    await userEvent.click(screen.getByRole('switch', { name: 'Ver' }));
+    // Hasta la v1.72.0 esto devolvía todo en false y el nivel se perdía. Con
+    // guardado en cada pulsación, se perdía de verdad y sin vuelta atrás.
+    expect(onCambio.mock.calls[0][0].trab).toEqual({
+      ver: false, editar: true, [claveNivel('ver', 'documento')]: 'parcial',
+    });
+  });
+
+  it('R98 · pero sin el base nada se aplica: eso lo resuelve privilegiosEfectivos', () => {
+    const guardado: ValorPrivilegios = {
+      trab: { ver: false, editar: true, [claveNivel('ver', 'documento')]: 'parcial' },
+      marc: { ver: true },
+    };
+    expect(privilegiosEfectivos(MODULOS, guardado)).toEqual({ trab: {}, marc: { ver: true } });
+  });
+
+  it('R98 · con base={null} lo efectivo es lo guardado', () => {
+    const g: ValorPrivilegios = { trab: { editar: true }, marc: {} };
+    expect(privilegiosEfectivos(MODULOS, g, null)).toEqual(g);
+  });
+
+  it('R98 · el resumen no cuenta lo que no se aplica', () => {
+    // Sin «ver», el módulo no concede nada aunque su mapa diga que sí.
+    const efectivo = privilegiosEfectivos(MODULOS, { trab: { ver: false, editar: true } });
+    expect(resumirPrivilegios(MODULOS, efectivo)).toEqual([]);
   });
 
   it('R97 · en solo lectura no se puede cambiar nada', () => {
