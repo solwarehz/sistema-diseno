@@ -19,8 +19,8 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.73.0** — `PanelPrivilegios` gana niveles por campo, deja de
-borrar al apagar el privilegio que manda, y se verifica a 390 px.
+**Estado actual: v1.74.0** — tres motivos para no repartir un privilegio, y
+privilegios que son el mismo permiso: se mueven juntos y se avisa antes.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

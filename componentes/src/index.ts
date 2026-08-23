@@ -51,6 +51,6 @@ export { Dialogo, type DialogoProps } from './Dialogo';
 export { Icono, NOMBRES_ICONO, type NombreIcono, type TamanoIcono, type IconoProps, TAMANOS_ICONO } from './Icono';
 export { CabeceraPantalla, type CabeceraPantallaProps } from './CabeceraPantalla';
 export { PanelBarra, type ItemPanel, type PanelBarraProps } from './PanelBarra';
-export { PanelPrivilegios, resumirPrivilegios, privilegiosEfectivos, claveNivel,
-  type PanelPrivilegiosProps, type Privilegio, type NivelPrivilegio,
+export { PanelPrivilegios, resumirPrivilegios, privilegiosEfectivos, claveNivel, comoNoRepartible,
+  type PanelPrivilegiosProps, type Privilegio, type NivelPrivilegio, type NoRepartible,
   type GrupoPrivilegios, type ModuloPrivilegios, type ValorPrivilegios } from './PanelPrivilegios';

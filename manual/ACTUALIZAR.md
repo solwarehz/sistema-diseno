@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.73.0
+# Actualizar al sistema de diseño v1.74.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.73.0"
+npm install "github:solwarehz/sistema-diseno#v1.74.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,19 +27,19 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.73.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.74.0
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.73.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.74.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.73.0 --repo solwarehz/sistema-diseno
+gh release download v1.74.0 --repo solwarehz/sistema-diseno
 ```
 
 Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
@@ -303,6 +303,7 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.71.0 | **Nada que hacer de su lado.** La versión del paquete se declaraba en cinco sitios y dos se habían quedado atrás; ahora el generador los cruza y falla si discrepan. Si alguna vez leyeron una versión rara en `componentes/package.json`, era eso |
 | 1.72.0 | **Componente nuevo: `PanelPrivilegios`.** Reparte permisos por módulo — es el de su pantalla de privilegios por cargo, hecho general. Recibe `modulos` y `valor`, emite `onCambio`; el selector del cargo lo ponen ustedes por `children`. Trae dentro la regla de que **«ver» manda sobre el resto** y el **motivo** de lo que no se puede conceder. Nada existente cambia |
 | 1.73.0 | **`PanelPrivilegios`: niveles por campo, y apagar «ver» ya no borra.** Un privilegio puede declarar `niveles` —documento completo · parcial · oculto— que se reparten con `Segmentado` y se guardan bajo `privilegio:nivel`. **Cambio de comportamiento**: apagar el privilegio que manda **conserva** lo configurado en vez de ponerlo a `false`; para saber qué se aplica de verdad, `privilegiosEfectivos()`. Verificado a 390 px |
+| 1.74.0 | **Aditivo, nada que tocar.** `cerrado` admite ahora **tres motivos** en vez de uno: `cerrado` (nunca), `ajeno` (existe, pero usted no lo tiene) y `pendiente` (todavía no está). `cerrado: 'texto'` sigue valiendo. Y varios privilegios con la misma **`clave`** son el mismo permiso: se mueven juntos y se avisa en la etiqueta |
 
 **Lo que no rompe pero conviene aprovechar:** `soloLectura` en `Selector`
 (§6.5 del manual), `persona.foto` en `CargaImagen` (§6.7), `CargaId` para el

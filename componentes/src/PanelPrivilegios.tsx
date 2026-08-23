@@ -49,18 +49,51 @@ export type NivelPrivilegio = {
   cerrado?: string;
 };
 
+/**
+ * R99 · POR QUÉ UN PRIVILEGIO NO SE PUEDE REPARTIR. Son tres motivos, y leerlos
+ * igual deja a quien reparte sin saber si insistir sirve de algo:
+ *
+ *   · `cerrado`   — no se podrá conceder nunca. La regla no va a cambiar.
+ *   · `ajeno`     — existe y se concede, pero **quien reparte no lo tiene**, y
+ *                   nadie puede dar lo que no tiene. Otro cargo sí puede.
+ *   · `pendiente` — el permiso todavía no existe en el sistema. Va a existir.
+ *
+ * Lo trajo Control Administrativos con el argumento correcto, y citando este
+ * mismo código: «un apagado invita a encenderlo». Con un solo estado, las tres
+ * se leen igual y las tres invitan a lo mismo — a insistir.
+ *
+ * `cerrado: 'motivo'` a secas sigue valiendo y significa `cerrado`: lo que ya
+ * estaba escrito no cambia de significado.
+ */
+export type NoRepartible =
+  | { tipo: 'cerrado'; motivo: string }
+  | { tipo: 'ajeno'; motivo: string }
+  | { tipo: 'pendiente'; motivo?: string };
+
 export type Privilegio = {
   id: string;
   nombre: React.ReactNode;
   ayuda?: React.ReactNode;
+  /**
+   * R99 · Varios privilegios con la MISMA clave son **el mismo permiso**: se
+   * encienden y se apagan juntos.
+   *
+   * Lo pidió Control Administrativos y su ejemplo lo explica mejor que una
+   * definición: «organigrama no tiene opción de interruptor de crear» — crear y
+   * editar son ahí una sola cosa. Colapsarlos en un control se probó y se
+   * descartó: la acción desaparecía de la lista y nadie sabía que existía. Se
+   * quedan los dos interruptores, se mueven a la vez, y el panel lo dice antes
+   * de pulsar.
+   */
+  clave?: string;
   /** Niveles por campo. Solo se reparten si el privilegio está concedido. */
   niveles?: NivelPrivilegio[];
   /**
-   * El motivo por el que este privilegio **no se puede** conceder. Es texto, no
-   * un booleano, por lo mismo que en el Interruptor: un candado sin explicación
-   * se lee como un fallo del sistema.
+   * Por qué no se puede repartir. Texto —que significa `cerrado`— o los tres
+   * tipos de `NoRepartible`. Nunca un booleano: un candado sin explicación se
+   * lee como un fallo del sistema.
    */
-  cerrado?: string;
+  cerrado?: string | NoRepartible;
 };
 
 /** Un bloque con título dentro del módulo. Para lo que no es una acción. */
@@ -111,6 +144,12 @@ export type PanelPrivilegiosProps = {
 };
 
 const concedido = (v: ValorPrivilegios, mod: string, priv: string) => v[mod]?.[priv] === true;
+
+/** `cerrado: 'texto'` es azúcar de `{ tipo: 'cerrado', motivo: texto }`. */
+export function comoNoRepartible(c: Privilegio['cerrado']): NoRepartible | undefined {
+  if (!c) return undefined;
+  return typeof c === 'string' ? { tipo: 'cerrado', motivo: c } : c;
+}
 
 /** Todos los privilegios del módulo, con grupos incluidos y en orden. */
 function todos(m: ModuloPrivilegios): Privilegio[] {
@@ -168,6 +207,15 @@ export function PanelPrivilegios({
 
   const cambiar = useCallback((m: ModuloPrivilegios, priv: string, activo: boolean) => {
     const delModulo = { ...(valor[m.id] ?? {}), [priv]: activo };
+    // R99 · Los que comparten clave son el MISMO permiso: van juntos. Si no,
+    // el panel enseñaría dos interruptores que el backend guarda como uno, y
+    // al recargar uno de los dos habría cambiado solo.
+    const clave = todos(m).find((p) => p.id === priv)?.clave;
+    if (clave) {
+      todos(m).forEach((p) => {
+        if (p.clave === clave && !p.cerrado) delModulo[p.id] = activo;
+      });
+    }
     // R98 · EL BASE GOBIERNA, PERO NO BORRA.
     //
     // Hasta la v1.72.0, apagar el base ponía a `false` todo el módulo. Con
@@ -205,16 +253,51 @@ export function PanelPrivilegios({
 
   const fila = (m: ModuloPrivilegios, p: Privilegio, esBase: boolean) => {
     const dado = concedido(valor, m.id, p.id);
+    const no = comoNoRepartible(p.cerrado);
+    // Con quién va enlazado, para decirlo ANTES de pulsar.
+    const conQuien = p.clave
+      ? todos(m).filter((x) => x.clave === p.clave && x.id !== p.id).map((x) => x.nombre)
+      : [];
     return (
-      <div className={`pp-priv${esBase ? ' pp-priv-base' : ''}`} key={p.id}>
+      <div className={`pp-priv${esBase ? ' pp-priv-base' : ''}${no ? ` pp-no pp-no-${no.tipo}` : ''}`} key={p.id}>
+        {/* R99 · Cada motivo se dibuja distinto, porque cada uno pide una cosa
+            distinta de quien reparte: el cerrado que se olvide, el ajeno que
+            hable con quien sí lo tiene, y el pendiente que espere. */}
+        {no ? (
+          <div className="pp-cerrado">
+            <span className="pp-cerrado-ic">
+              <Icono nombre={no.tipo === 'pendiente' ? 'informacion' : no.tipo === 'ajeno' ? 'usuarios' : 'candado'} />
+            </span>
+            <span className="pp-cerrado-txt">
+              <span className="pp-cerrado-nom">{p.nombre}</span>
+              <span className="pp-cerrado-eti">
+                <Chip tono={no.tipo === 'pendiente' ? 'pendiente' : no.tipo === 'ajeno' ? 'info' : 'inactivo'}>
+                  {no.tipo === 'cerrado' ? 'no se puede conceder'
+                    : no.tipo === 'ajeno' ? 'no lo tiene usted'
+                    : 'todavía no existe'}
+                </Chip>
+              </span>
+              {no.motivo && <span className="pp-cerrado-motivo">{no.motivo}</span>}
+            </span>
+          </div>
+        ) : (
         <Interruptor
-          etiqueta={p.nombre}
+          etiqueta={
+            conQuien.length ? (
+              <>
+                {p.nombre}
+                <span className="pp-junto"> · va con {conQuien.map((n, i) => (
+                  <span key={i}>{i > 0 ? ' y ' : ''}{n}</span>
+                ))}</span>
+              </>
+            ) : p.nombre
+          }
           ayuda={p.ayuda}
           activo={dado}
           deshabilitado={soloLectura}
-          cerrado={p.cerrado}
           onCambio={(a) => cambiar(m, p.id, a)}
         />
+        )}
         {/* Los niveles solo se reparten si el privilegio está concedido: sin
             «ver», elegir cuánto se ve no significa nada. No se ocultan al
             apagarlo —lo configurado se conserva— pero dejan de pedir atención. */}
@@ -247,6 +330,8 @@ export function PanelPrivilegios({
           const lista = todos(m);
           const abiertoM = visibles.includes(m.id);
           const dados = lista.filter((p) => !p.cerrado && concedido(valor, m.id, p.id));
+          // Lo que no se puede repartir no cuenta en el «4 de 6»: contarlo haría
+          // que un cargo pareciera incompleto por reglas que no dependen de él.
           const posibles = lista.filter((p) => !p.cerrado).length;
           const sinBase = Boolean(base) && !concedido(valor, m.id, base as string);
           return (

@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.73.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.74.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -1406,7 +1406,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .pb-todos{ justify-content: center; border-top: 1px solid var(--borde); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   PANEL DE PRIVILEGIOS — 29 reglas · clases .pp-*
+   PANEL DE PRIVILEGIOS — 39 reglas · clases .pp-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .pp{ display: flex; flex-direction: column; gap: 16px; }
@@ -1441,6 +1441,16 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .pp-grupo{ margin-top: 12px; padding-top: 4px; border-top: 1px dashed var(--borde); }
 .pp-grupo-tit{ margin: 8px 0 4px; font-size: 12px; font-weight: 600;
   letter-spacing: .05em; text-transform: uppercase; color: var(--texto-secundario); }
+.pp-cerrado{ display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: start; }
+.pp-cerrado-ic{ display: grid; place-items: center; width: 40px; height: 24px; }
+.pp-cerrado-txt{ display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.pp-cerrado-nom{ font-size: 15px; color: var(--texto-secundario); }
+.pp-cerrado-eti{ display: flex; gap: 4px; flex-wrap: wrap; }
+.pp-cerrado-motivo{ font-size: 12px; color: var(--texto-secundario); line-height: 1.5; }
+.pp-no-cerrado .pp-cerrado-ic{ color: var(--texto-pista); }
+.pp-no-ajeno .pp-cerrado-ic{ color: var(--info-acento); }
+.pp-no-pendiente .pp-cerrado-ic{ color: var(--texto-secundario); }
+.pp-junto{ font-size: 12px; color: var(--texto-secundario); font-weight: 400; }
 .pp-niveles{ display: flex; flex-direction: column; gap: 12px;
   margin: 12px 0 4px 52px; padding-left: 12px;
   border-left: 1px solid var(--borde); }

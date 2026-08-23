@@ -6380,6 +6380,32 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 .pp-grupo-tit { margin: 8px 0 4px; font-size: 12px; font-weight: 600;
   letter-spacing: .05em; text-transform: uppercase; color: var(--texto-secundario); }
 
+/* R99 · LOS TRES MOTIVOS POR LOS QUE UN PRIVILEGIO NO SE REPARTE, y cada uno
+   con su dibujo. Con uno solo los tres se leen igual, y los tres invitan a lo
+   mismo: a insistir. Lo trajo Control Administrativos citando nuestro propio
+   codigo — «un apagado invita a encenderlo».
+     · cerrado   candado    · no se podra conceder nunca      → olvidalo
+     · ajeno     usuarios   · existe, pero usted no lo tiene  → hable con quien si
+     · pendiente informacion· todavia no existe en el sistema → espere
+   El icono cambia, la etiqueta cambia y el motivo se lee debajo. Ninguno se
+   pinta apagado: apagado es «ahora no, vuelve luego», que es justo lo que aqui
+   no se quiere decir. */
+.pp-cerrado { display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: start; }
+.pp-cerrado-ic { display: grid; place-items: center; width: 40px; height: 24px; }
+.pp-cerrado-txt { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.pp-cerrado-nom { font-size: 15px; color: var(--texto-secundario); }
+.pp-cerrado-eti { display: flex; gap: 4px; flex-wrap: wrap; }
+.pp-cerrado-motivo { font-size: 12px; color: var(--texto-secundario); line-height: 1.5; }
+/* El definitivo se apaga del todo; el ajeno y el pendiente conservan el color
+   del texto, porque en los dos hay algo que hacer: preguntar, o esperar. */
+.pp-no-cerrado .pp-cerrado-ic { color: var(--texto-pista); }
+.pp-no-ajeno .pp-cerrado-ic { color: var(--info-acento); }
+.pp-no-pendiente .pp-cerrado-ic { color: var(--texto-secundario); }
+
+/* R99 · «va con Editar»: lo que se mueve junto se dice ANTES de pulsar, no
+   despues de ver saltar el otro interruptor. */
+.pp-junto { font-size: 12px; color: var(--texto-secundario); font-weight: 400; }
+
 /* R98 · Los niveles cuelgan del privilegio que los gobierna, sangrados bajo su
    interruptor: se lee «ver, y de lo que ve, el documento en parcial». Sueltos
    parecerian permisos aparte. */

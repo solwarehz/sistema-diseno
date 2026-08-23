@@ -1,9 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 21 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.73.0** — `PanelPrivilegios` gana **niveles
-por campo**, deja de borrar al apagar el privilegio que manda, y queda
-verificado a **390 px de viewport real**
+**Versión del sistema:** MMI-DS **v1.74.0** — **tres motivos** para no repartir un
+privilegio en vez de uno, y privilegios que son **el mismo permiso**
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -42,10 +41,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 790 reglas de 1274 · **566 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.73.0.zip` · **54 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.74.0.zip` · **54 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.73.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.74.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +65,38 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.73.0), con detalle
+### Lo de hoy (v1.74.0), con detalle
+
+**R99 · dos huecos, y el primero lo argumentaron citando nuestro propio código.**
+
+**Tres motivos, no uno.** Su matriz distinguía tres cosas que el panel colapsaba
+en `cerrado`:
+
+| | Qué dice | Qué se hace |
+|---|---|---|
+| `cerrado` | no se podrá conceder nunca | olvidarlo |
+| `ajeno` | existe, pero **quien reparte no lo tiene** | hablar con quien sí |
+| `pendiente` | todavía no existe en el sistema | esperar |
+
+*«Un apagado invita a encenderlo»* — está escrito en el `Interruptor` desde que
+se hizo, y con un solo estado las tres invitaban a lo mismo. Ahora cada una
+lleva icono, etiqueta y motivo propios.
+
+**Privilegios que comparten clave.** Un permiso puede cubrir varias acciones;
+su ejemplo lo explica mejor que una definición: *«organigrama no tiene opción de
+interruptor de crear»*. Colapsarlos en un control lo probaron y lo descartaron
+ellos —la acción desaparecía y nadie sabía que existía—, así que se quedan los
+dos interruptores, se mueven juntos y el aviso va **en la etiqueta**: «Editar ·
+va con Crear».
+
+Que sea la etiqueta y no un texto aparte tiene una consecuencia buena que no
+buscábamos: **es también el nombre accesible**, así que un lector de pantalla
+anuncia el enlace antes de que se pulse. Lo descubrimos porque una prueba falló
+—`/Editar/` casaba dos interruptores, el de Editar y el de Crear—.
+
+Los dos cambios son **aditivos**: quien ya integró la v1.73.0 no toca nada.
+
+### Lo de la v1.73.0, con detalle
 
 **R98 · tres peticiones sobre el panel, y la primera bloqueaba.**
 
@@ -751,7 +781,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.73.0
+Versión                      1.74.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
 Pruebas                         432   en 30 archivos

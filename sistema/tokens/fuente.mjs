@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.73.0";
+export const VERSION = "1.74.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,31 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.74.0', fecha: '2026-08-23',
+    que: 'R99: tres motivos para no repartir un privilegio, y privilegios que son el mismo permiso',
+    porque:
+      'R99 · Dos huecos que encontro Control Administrativos al montar el panel, y el primero lo '
+      + 'argumentaron citando NUESTRO PROPIO CODIGO: «un apagado invita a encenderlo». '
+      + 'TRES MOTIVOS, NO UNO. Su matriz distinguia tres cosas que el panel colapsaba en `cerrado`: '
+      + 'no se podra conceder NUNCA; existe pero QUIEN REPARTE no lo tiene, asi que no puede darlo; y '
+      + 'el permiso TODAVIA NO EXISTE. Con un solo estado las tres se leen igual, y las tres invitan '
+      + 'a lo mismo: a insistir. Ahora cada una lleva icono, etiqueta y motivo propios — candado, '
+      + 'usuarios, informacion — y ninguna se pinta como interruptor apagado. `cerrado: texto` sigue '
+      + 'significando cerrado, asi que nada de lo ya escrito cambia de sentido. '
+      + 'PRIVILEGIOS QUE COMPARTEN CLAVE. Un permiso puede cubrir varias acciones, y su ejemplo lo '
+      + 'explica mejor que una definicion: «organigrama no tiene opcion de interruptor de crear». '
+      + 'Colapsarlos en un control lo probaron y lo descartaron ellos mismos —la accion desaparecia y '
+      + 'nadie sabia que existia—, asi que se quedan los dos interruptores, se mueven juntos, y el '
+      + 'aviso va en la ETIQUETA: «Editar · va con Crear». Que sea la etiqueta y no un texto aparte '
+      + 'tiene consecuencia buena: es tambien el nombre accesible, asi que un lector de pantalla '
+      + 'anuncia el enlace ANTES de que se pulse. '
+      + 'Y lo que no se puede repartir deja de contar en el «4 de 6»: contarlo hacia que un cargo '
+      + 'pareciera incompleto por reglas que no dependen de el. '
+      + 'Los dos cambios son ADITIVOS: quien ya integro la v1.73.0 no tiene que tocar nada.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.73.0', fecha: '2026-08-23',
     que: 'R98: PanelPrivilegios gana NIVELES por campo, deja de borrar al apagar el privilegio base, y se verifica a 390px',

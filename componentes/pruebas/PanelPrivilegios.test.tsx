@@ -6,12 +6,12 @@
  * manda— es la que evita que se guarde «editar sin ver» y que cada backend
  * decida por su cuenta qué significa eso.
  */
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { PanelPrivilegios, resumirPrivilegios, privilegiosEfectivos, claveNivel,
-  type ModuloPrivilegios, type ValorPrivilegios } from '../src/PanelPrivilegios';
+  comoNoRepartible, type ModuloPrivilegios, type ValorPrivilegios } from '../src/PanelPrivilegios';
 
 const MODULOS: ModuloPrivilegios[] = [
   { id: 'trab', nombre: 'Trabajadores', privilegios: [
@@ -32,6 +32,17 @@ const MODULOS: ModuloPrivilegios[] = [
     grupos: [{ titulo: 'Dentro del módulo', privilegios: [{ id: 'datos', nombre: 'Ver documento' }] }] },
   // Sin «descargar»: lo que no aplica no se pasa.
   { id: 'marc', nombre: 'Marcaciones', privilegios: [{ id: 'ver', nombre: 'Ver' }] },
+  // R99 · los tres motivos, y dos privilegios que son el MISMO permiso.
+  { id: 'org', nombre: 'Organigrama', privilegios: [
+      { id: 'ver', nombre: 'Ver' },
+      { id: 'editar', nombre: 'Editar', clave: 'escritura' },
+      { id: 'crear', nombre: 'Crear', clave: 'escritura' },
+      { id: 'exportar', nombre: 'Exportar',
+        cerrado: { tipo: 'ajeno', motivo: 'Su cargo no exporta el organigrama, así que no puede concederlo.' } },
+      { id: 'auditar', nombre: 'Auditar',
+        cerrado: { tipo: 'pendiente', motivo: 'Llega en la próxima entrega.' } },
+      { id: 'borrar', nombre: 'Borrar', cerrado: 'Un organigrama no se borra: se cierra con fecha.' },
+    ] },
 ];
 
 function Montado({ inicial, ...resto }: { inicial: ValorPrivilegios } & Record<string, unknown>) {
@@ -178,18 +189,88 @@ describe('Panel de privilegios — R97', () => {
       trab: { ver: false, editar: true, [claveNivel('ver', 'documento')]: 'parcial' },
       marc: { ver: true },
     };
-    expect(privilegiosEfectivos(MODULOS, guardado)).toEqual({ trab: {}, marc: { ver: true } });
+    expect(privilegiosEfectivos(MODULOS, guardado)).toMatchObject({ trab: {}, marc: { ver: true } });
   });
 
   it('R98 · con base={null} lo efectivo es lo guardado', () => {
     const g: ValorPrivilegios = { trab: { editar: true }, marc: {} };
-    expect(privilegiosEfectivos(MODULOS, g, null)).toEqual(g);
+    expect(privilegiosEfectivos(MODULOS, g, null)).toMatchObject(g);
   });
 
   it('R98 · el resumen no cuenta lo que no se aplica', () => {
     // Sin «ver», el módulo no concede nada aunque su mapa diga que sí.
     const efectivo = privilegiosEfectivos(MODULOS, { trab: { ver: false, editar: true } });
     expect(resumirPrivilegios(MODULOS, efectivo)).toEqual([]);
+  });
+
+  /* ── R99 · tres motivos, tres lecturas ────────────────────────────────── */
+
+  it('R99 · los tres motivos se distinguen en pantalla, no solo en el texto', () => {
+    const { container } = render(<Montado inicial={{ org: { ver: true } }} abiertos={['org']} />);
+    const org = within(container.querySelector('.pp-mod:last-child') as HTMLElement);
+    expect(container.querySelector('.pp-no-cerrado')).toBeTruthy();
+    expect(container.querySelector('.pp-no-ajeno')).toBeTruthy();
+    expect(container.querySelector('.pp-no-pendiente')).toBeTruthy();
+    // Y cada uno dice en una etiqueta qué hacer al respecto.
+    expect(org.getByText('no se puede conceder')).toBeTruthy();
+    expect(org.getByText('no lo tiene usted')).toBeTruthy();
+    expect(org.getByText('todavía no existe')).toBeTruthy();
+  });
+
+  it('R99 · ninguno de los tres es un interruptor: no invitan a encenderlos', () => {
+    const { container } = render(<Montado inicial={{ org: { ver: true } }} abiertos={['org']} />);
+    const org = within(container.querySelector('.pp-mod:last-child') as HTMLElement);
+    for (const n of ['Exportar', 'Auditar', 'Borrar']) {
+      expect(org.queryByRole('switch', { name: new RegExp(n) })).toBeNull();
+      expect(org.getByText(n)).toBeTruthy();   // pero siguen a la vista
+    }
+  });
+
+  it('R99 · `cerrado: "texto"` sigue significando cerrado', () => {
+    expect(comoNoRepartible('porque sí')).toEqual({ tipo: 'cerrado', motivo: 'porque sí' });
+    expect(comoNoRepartible(undefined)).toBeUndefined();
+  });
+
+  it('R99 · el pendiente puede no llevar motivo', () => {
+    expect(comoNoRepartible({ tipo: 'pendiente' })).toEqual({ tipo: 'pendiente' });
+  });
+
+  /* ── R99 · privilegios que son el mismo permiso ───────────────────────── */
+
+  it('R99 · los que comparten clave se encienden juntos', async () => {
+    const onCambio = vi.fn();
+    // El `container` del render, no `document`: con varios montajes en el mismo
+    // archivo, buscar en el documento entero encuentra los de antes.
+    const { container } = render(<PanelPrivilegios modulos={MODULOS} onCambio={onCambio} abiertos={['org']}
+      valor={{ org: { ver: true, editar: false, crear: false } }} />);
+    const org = within(container.querySelector('.pp-mod:last-child') as HTMLElement);
+    await userEvent.click(org.getByRole('switch', { name: /^Editar/ }));
+    expect(onCambio.mock.calls[0][0].org).toMatchObject({ editar: true, crear: true });
+  });
+
+  it('R99 · y se apagan juntos', async () => {
+    const onCambio = vi.fn();
+    const { container } = render(<PanelPrivilegios modulos={MODULOS} onCambio={onCambio} abiertos={['org']}
+      valor={{ org: { ver: true, editar: true, crear: true } }} />);
+    const org = within(container.querySelector('.pp-mod:last-child') as HTMLElement);
+    await userEvent.click(org.getByRole('switch', { name: /^Crear/ }));
+    expect(onCambio.mock.calls[0][0].org).toMatchObject({ editar: false, crear: false });
+  });
+
+  it('R99 · se avisa ANTES de pulsar, en la propia etiqueta', () => {
+    const { container } = render(<Montado inicial={{ org: { ver: true } }} abiertos={['org']} />);
+    const org = within(container.querySelector('.pp-mod:last-child') as HTMLElement);
+    expect(org.getByRole('switch', { name: /^Editar · va con Crear/ })).toBeTruthy();
+    // Y al revés: el nombre accesible de «Crear» también lo dice, así que un
+    // lector de pantalla anuncia el enlace antes de que se pulse.
+    expect(org.getByRole('switch', { name: /^Crear · va con Editar/ })).toBeTruthy();
+  });
+
+  it('R99 · lo no repartible no cuenta en el «de N»: el cargo no parece incompleto', () => {
+    const { container } = render(<Montado inicial={{ org: { ver: true } }} />);
+    // Seis privilegios, tres de ellos no repartibles → «1 de 3».
+    const org = container.querySelector('.pp-mod:last-child .pp-conteo')!;
+    expect(org.textContent).toBe('1 de 3');
   });
 
   it('R97 · en solo lectura no se puede cambiar nada', () => {
