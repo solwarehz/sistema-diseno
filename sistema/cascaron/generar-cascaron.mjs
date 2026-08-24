@@ -1795,7 +1795,7 @@ lista. Con teclado siguen pasando Tab y Escape: salir nunca se bloquea.</div>
     <div class="cg" style="max-width:340px">
       <span class="cg-et" id="sel-et">Apoderado</span>
       <div class="sel" data-sel>
-        <div class="sel-caja">
+        <div class="sel-caja sel-con-lupa">
           <span class="sel-lupa">${ICO_LUPA}</span>
           <input class="campo sel-in" role="combobox" aria-expanded="false"
                  aria-autocomplete="list" aria-controls="sel-lista" aria-labelledby="sel-et"
@@ -1821,16 +1821,16 @@ lista. Con teclado siguen pasando Tab y Escape: salir nunca se bloquea.</div>
 <div class="bloque">
   <div class="campos-rejilla">
     <label class="cg"><span class="cg-et">Reposo</span>
-      <div class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
+      <div class="sel-caja sel-con-lupa"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
         <input class="campo sel-in" placeholder="Escribe para buscar" readonly></div></label>
     <label class="cg"><span class="cg-et">Con foco</span>
-      <div class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
+      <div class="sel-caja sel-con-lupa"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
         <input class="campo sel-in foco-demo" placeholder="Escribe para buscar" readonly></div></label>
     <label class="cg"><span class="cg-et">Con selección</span>
-      <div class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
+      <div class="sel-caja sel-con-lupa"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
         <input class="campo sel-in" value="Pérez Salazar, Ana" readonly></div></label>
     <label class="cg"><span class="cg-et">Con error</span>
-      <div class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
+      <div class="sel-caja sel-con-lupa"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
         <input class="campo sel-in cg-mal" placeholder="Escribe para buscar" readonly></div>
       <span class="cg-error">${ICO_ERROR}Elige un apoderado.</span></label>
   </div>
@@ -2374,7 +2374,7 @@ configuración y descarga CSV.</p>
   <div class="tb-barra">
     <div class="tb-barra-izq">
       <label class="tb-mini tb-buscar"><span>Buscar en toda la tabla</span>
-        <span class="sel-caja"><span class="sel-lupa">${ICO_LUPA}</span>
+        <span class="sel-caja sel-con-lupa"><span class="sel-lupa">${ICO_LUPA}</span>
           <input class="campo sel-in" id="tb-buscar" placeholder="Nombre, DNI, cargo…" autocomplete="off"></span>
       </label>
       <label class="tb-mini"><span>Mostrar</span>
@@ -6617,7 +6617,20 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 /* Especificidad explícita: la clase .campo declara padding en atajo y pisaría
    estas dos longhand si empataran. La lupa ocupa la izquierda y el chevron la
    derecha, así que el texto necesita hueco reservado a ambos lados. */
-input.campo.sel-in { width: 100%; padding-left: 32px; padding-right: 32px; }
+/* R100 · EL SANGRADO SOLO CUANDO HAY LUPA.
+   Con la lupa siempre puesta, este campo empezaba el texto a 32px y el resto
+   del formulario a 8, asi que en una columna de campos el suyo se salia de la
+   alineacion. Lo reporto Control Administrativos: «se ve distinto a los demas».
+   Medido: mismo alto (32,7px) y mismo ancho que el Selector; de nueve
+   propiedades distintas, ocho eran intrinsecas del <select> nativo —su flecha
+   de fondo, el ajuste de linea— y la unica que se ve es esta.
+   La lupa NO se retira del sistema: en el buscador de la tabla es correcta,
+   porque alli se busca de verdad. Se vuelve opcional, y por omision no esta —
+   elegir de una lista es el mismo gesto en los dos componentes, y que uno
+   ademas filtre escribiendo es un detalle de interaccion, no otra clase de
+   campo. */
+input.campo.sel-in { width: 100%; padding-right: 32px; }
+.sel-caja.sel-con-lupa input.campo.sel-in { padding-left: 32px; }
 .sel-lista { position: absolute; z-index: 30; top: calc(100% + 4px); left: 0; right: 0;
   max-height: 244px; overflow-y: auto; margin: 0; padding: 4px; list-style: none;
   background: var(--fondo-tarjeta); border: 1px solid var(--borde-campo);

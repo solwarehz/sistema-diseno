@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.74.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.75.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -156,7 +156,7 @@ a.enlace.enl-nosub{ text-decoration: none; }
    CAMPO DE TEXTO — 32 reglas · clases .campo-*, .cg-*, .msj-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-input.campo.sel-in{ width: 100%; padding-left: 32px; padding-right: 32px; }
+input.campo.sel-in{ width: 100%; padding-right: 32px; }
 .cg-et-oculta{ visibility: hidden; }
 .cg-req{ color: var(--error-texto); margin-left: 4px; font-weight: 600; }
 .cg-in{ width: 100%; }
@@ -350,7 +350,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .ta-cuenta-mal{ color: var(--error-texto); font-weight: 500; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   SELECTOR — 17 reglas · clases .sel-*
+   SELECTOR — 18 reglas · clases .sel-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .sel{ position: relative; }
@@ -362,6 +362,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
   display: grid; place-items: center; pointer-events: none; }
 .sel-chev .ic{ width: 16px; height: 16px; transition: transform var(--dur-rapida) var(--curva); }
 .sel-caja.abierta .sel-chev .ic{ transform: rotate(180deg); }
+.sel-caja.sel-con-lupa input.campo.sel-in{ padding-left: 32px; }
 .sel-lista{ position: absolute; z-index: 30; top: calc(100% + 4px); left: 0; right: 0;
   max-height: 244px; overflow-y: auto; margin: 0; padding: 4px; list-style: none;
   background: var(--fondo-tarjeta); border: 1px solid var(--borde-campo);

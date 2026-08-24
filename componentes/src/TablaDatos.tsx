@@ -308,7 +308,9 @@ export function TablaDatos<T>({
                <label> envolvente da el nombre accesible de forma nativa. */
             <label className="tb-mini tb-buscar">
               <span>Buscar en toda la tabla</span>
-              <span className="sel-caja">
+              {/* Con lupa a propósito: aquí se BUSCA en toda la tabla, no se
+                  elige de una lista. Es el caso para el que la lupa existe. */}
+              <span className="sel-caja sel-con-lupa">
                 <span className="sel-lupa"><Icono nombre="lupa" /></span>
                 <input
                   className="campo sel-in"

@@ -31,6 +31,22 @@ export type SelectorBusquedaProps = {
   onCambio: (valor: string | null) => void;
   /** Ejemplo de formato, no etiqueta. */
   placeholder?: string;
+  /**
+   * R100 · La lupa dentro del campo. **Por omisión no está**, y con eso este
+   * componente se ve como un `Selector`.
+   *
+   * La lupa obliga a sangrar el texto 32 px mientras el resto de los campos
+   * empieza en 8, así que en una columna de formulario el suyo se salía de la
+   * alineación — lo reportó Control Administrativos con esas palabras: «se ve
+   * distinto a los demás».
+   *
+   * Se enciende donde **de verdad se busca** y no se elige: el buscador de una
+   * tabla, una caja de búsqueda global. Elegir de una lista es el mismo gesto
+   * que en el `Selector`, y que además se pueda filtrar escribiendo es un
+   * detalle de interacción, no otra clase de campo. Si hace falta decirlo, se
+   * dice en el `placeholder`, que es texto y no roba sangrado.
+   */
+  conLupa?: boolean;
   ayuda?: string;
   error?: string;
   /** Qué decir cuando no hay coincidencias. Un «Sin resultados» seco no dice
@@ -56,6 +72,7 @@ export function SelectorBusqueda({
   error,
   textoVacio = 'No hay coincidencias',
   deshabilitado = false,
+  conLupa = false,
 }: SelectorBusquedaProps) {
   const id = useId();
   const [abierto, setAbierto] = useState(false);
@@ -139,11 +156,12 @@ export function SelectorBusqueda({
           El catálogo sí la emite; al portar el componente se perdió.
           Lo encontró Control Administrativos V2.0, con las coordenadas medidas. */}
       <div className="sel">
-        <div className="sel-caja">
-        {/* La lupa y el chevron son la promesa del catálogo: la lupa dice
-            «escribe para buscar» y el chevron dice «esto se despliega». El
-            React los perdía y el combobox parecía un campo de texto más. */}
-        <span className="sel-lupa" aria-hidden="true"><Icono nombre="lupa" /></span>
+        <div className={['sel-caja', conLupa ? 'sel-con-lupa' : ''].filter(Boolean).join(' ')}>
+        {/* El chevron dice «esto se despliega» y va siempre — es lo que iguala
+            este control con el `Selector`. La lupa dice «aquí se busca» y solo
+            va cuando `conLupa`: en un formulario, su sangrado de 32 px sacaba
+            este campo de la alineación de los demás (R100). */}
+        {conLupa && <span className="sel-lupa" aria-hidden="true"><Icono nombre="lupa" /></span>}
         <input
           id={id}
           ref={campo}

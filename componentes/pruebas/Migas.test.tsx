@@ -261,11 +261,22 @@ describe('SelectorBusqueda · la promesa del catálogo, entregada', () => {
     expect(conVisto[0].closest('.sel-op')!.textContent).toContain('Bruno Díaz');
   });
 
-  it('la caja lleva la lupa y el chevron del catálogo', () => {
-    const { container } = render(
+  /* R100 · la lupa dejó de ser obligatoria: sangraba el texto 32px donde el
+     resto del formulario empieza en 8, y el campo se salía de la alineación.
+     El chevron sigue siendo obligatorio — es lo que dice «esto se despliega» y
+     lo que iguala este control con el Selector. */
+  it('R100 · el chevron va siempre; la lupa solo si se pide', () => {
+    const { container, unmount } = render(
       <SelectorBusqueda etiqueta="Apoderado" opciones={OPCIONES} valor={null} onCambio={() => {}} />
     );
-    expect(container.querySelector('.sel-caja .sel-lupa svg')).not.toBeNull();
     expect(container.querySelector('.sel-caja .sel-chev svg')).not.toBeNull();
+    expect(container.querySelector('.sel-caja .sel-lupa')).toBeNull();
+    unmount();
+
+    const conLupa = render(
+      <SelectorBusqueda etiqueta="Apoderado" opciones={OPCIONES} valor={null} onCambio={() => {}} conLupa />
+    );
+    expect(conLupa.container.querySelector('.sel-caja .sel-lupa svg')).not.toBeNull();
+    expect(conLupa.container.querySelector('.sel-caja .sel-chev svg')).not.toBeNull();
   });
 });

@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.74.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.75.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.74.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.75.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -2307,7 +2307,20 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 /* Especificidad explícita: la clase .campo declara padding en atajo y pisaría
    estas dos longhand si empataran. La lupa ocupa la izquierda y el chevron la
    derecha, así que el texto necesita hueco reservado a ambos lados. */
-input.campo.sel-in { width: 100%; padding-left: 32px; padding-right: 32px; }
+/* R100 · EL SANGRADO SOLO CUANDO HAY LUPA.
+   Con la lupa siempre puesta, este campo empezaba el texto a 32px y el resto
+   del formulario a 8, asi que en una columna de campos el suyo se salia de la
+   alineacion. Lo reporto Control Administrativos: «se ve distinto a los demas».
+   Medido: mismo alto (32,7px) y mismo ancho que el Selector; de nueve
+   propiedades distintas, ocho eran intrinsecas del <select> nativo —su flecha
+   de fondo, el ajuste de linea— y la unica que se ve es esta.
+   La lupa NO se retira del sistema: en el buscador de la tabla es correcta,
+   porque alli se busca de verdad. Se vuelve opcional, y por omision no esta —
+   elegir de una lista es el mismo gesto en los dos componentes, y que uno
+   ademas filtre escribiendo es un detalle de interaccion, no otra clase de
+   campo. */
+input.campo.sel-in { width: 100%; padding-right: 32px; }
+.sel-caja.sel-con-lupa input.campo.sel-in { padding-left: 32px; }
 .sel-lista { position: absolute; z-index: 30; top: calc(100% + 4px); left: 0; right: 0;
   max-height: 244px; overflow-y: auto; margin: 0; padding: 4px; list-style: none;
   background: var(--fondo-tarjeta); border: 1px solid var(--borde-campo);
@@ -3936,7 +3949,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.74.0</option></select></label>
+          <select class="campo cg-in"><option>v1.75.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4024,8 +4037,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.74.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.74.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.75.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.75.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -7115,7 +7128,7 @@ lista. Con teclado siguen pasando Tab y Escape: salir nunca se bloquea.</div>
     <div class="cg" style="max-width:340px">
       <span class="cg-et" id="sel-et">Apoderado</span>
       <div class="sel" data-sel>
-        <div class="sel-caja">
+        <div class="sel-caja sel-con-lupa">
           <span class="sel-lupa"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
           <input class="campo sel-in" role="combobox" aria-expanded="false"
                  aria-autocomplete="list" aria-controls="sel-lista" aria-labelledby="sel-et"
@@ -7141,16 +7154,16 @@ lista. Con teclado siguen pasando Tab y Escape: salir nunca se bloquea.</div>
 <div class="bloque">
   <div class="campos-rejilla">
     <label class="cg"><span class="cg-et">Reposo</span>
-      <div class="sel-caja"><span class="sel-lupa"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><span class="sel-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+      <div class="sel-caja sel-con-lupa"><span class="sel-lupa"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><span class="sel-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
         <input class="campo sel-in" placeholder="Escribe para buscar" readonly></div></label>
     <label class="cg"><span class="cg-et">Con foco</span>
-      <div class="sel-caja"><span class="sel-lupa"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><span class="sel-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+      <div class="sel-caja sel-con-lupa"><span class="sel-lupa"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><span class="sel-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
         <input class="campo sel-in foco-demo" placeholder="Escribe para buscar" readonly></div></label>
     <label class="cg"><span class="cg-et">Con selección</span>
-      <div class="sel-caja"><span class="sel-lupa"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><span class="sel-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+      <div class="sel-caja sel-con-lupa"><span class="sel-lupa"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><span class="sel-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
         <input class="campo sel-in" value="Pérez Salazar, Ana" readonly></div></label>
     <label class="cg"><span class="cg-et">Con error</span>
-      <div class="sel-caja"><span class="sel-lupa"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><span class="sel-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+      <div class="sel-caja sel-con-lupa"><span class="sel-lupa"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><span class="sel-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
         <input class="campo sel-in cg-mal" placeholder="Escribe para buscar" readonly></div>
       <span class="cg-error"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg>Elige un apoderado.</span></label>
   </div>
@@ -8690,7 +8703,7 @@ configuración y descarga CSV.</p>
   <div class="tb-barra">
     <div class="tb-barra-izq">
       <label class="tb-mini tb-buscar"><span>Buscar en toda la tabla</span>
-        <span class="sel-caja"><span class="sel-lupa"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+        <span class="sel-caja sel-con-lupa"><span class="sel-lupa"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
           <input class="campo sel-in" id="tb-buscar" placeholder="Nombre, DNI, cargo…" autocomplete="off"></span>
       </label>
       <label class="tb-mini"><span>Mostrar</span>
@@ -11261,6 +11274,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.75.0 <span class="cam-fecha">2026-08-24</span></h3>
+<p class="pag-intro"><strong>R100: el selector con busqueda se veia distinto al Selector — la lupa deja de ser obligatoria.</strong> R100 · Lo reporto Control Administrativos con esas palabras: «se ve distinto a los demas». Y empezaron descartando la causa facil: en su codigo YA usaban SelectorBusqueda del sistema, no un select nativo, asi que el problema era del componente. Medido contra un Selector, propiedad a propiedad en el navegador: MISMO alto (32,7px) y MISMO ancho. De las nueve propiedades que diferian, ocho son intrinsecas del <select> nativo —su flecha de fondo, el ajuste de linea, el recorte— y no se pueden igualar ni tiene sentido intentarlo. La unica que se VE era el sangrado del texto: 32px contra 8, por la lupa. En una columna de formulario, ese campo empezaba el texto un cuarto de pulgada mas a la derecha que todos los demas. Eso es lo que notaban. La lupa NO se retira del sistema: en el buscador de una tabla es correcta, porque alli se busca de verdad. Se vuelve opcional con `conLupa` y por omision no esta — elegir de una lista es el mismo gesto en los dos componentes, y que uno ademas filtre escribiendo es un detalle de interaccion, no otra clase de campo. Si hace falta decirlo, se dice en el placeholder, que es texto y no roba sangrado. El chevron sigue siendo obligatorio: es lo que dice «esto se despliega» y lo que iguala los dos controles. Y el sangrado se separa de la clase base —`input.campo.sel-in` ya no declara padding-left; lo declara `.sel-caja.sel-con-lupa`— asi que quien no pide lupa no lo paga.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>Quien use <code>SelectorBusqueda</code> y espere ver la lupa tiene que pedirla con <code>conLupa</code>. Sin ella el control se ve como un Selector, que es justo lo que se buscaba. El buscador de TablaDatos ya la pide por su cuenta y no cambia.</td></tr></tbody></table>
 
 
 <h3 class="sub-seccion">v1.74.0 <span class="cam-fecha">2026-08-23</span></h3>

@@ -19,8 +19,8 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.74.0** — tres motivos para no repartir un privilegio, y
-privilegios que son el mismo permiso: se mueven juntos y se avisa antes.
+**Estado actual: v1.75.0** — el selector con búsqueda se ve como el `Selector`: la
+lupa deja de ser obligatoria y el texto empieza donde el de todos los campos.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

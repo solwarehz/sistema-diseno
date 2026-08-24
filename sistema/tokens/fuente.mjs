@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.74.0";
+export const VERSION = "1.75.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,34 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.75.0', fecha: '2026-08-24',
+    que: 'R100: el selector con busqueda se veia distinto al Selector — la lupa deja de ser obligatoria',
+    porque:
+      'R100 · Lo reporto Control Administrativos con esas palabras: «se ve distinto a los demas». Y '
+      + 'empezaron descartando la causa facil: en su codigo YA usaban SelectorBusqueda del sistema, no '
+      + 'un select nativo, asi que el problema era del componente. '
+      + 'Medido contra un Selector, propiedad a propiedad en el navegador: MISMO alto (32,7px) y MISMO '
+      + 'ancho. De las nueve propiedades que diferian, ocho son intrinsecas del <select> nativo —su '
+      + 'flecha de fondo, el ajuste de linea, el recorte— y no se pueden igualar ni tiene sentido '
+      + 'intentarlo. La unica que se VE era el sangrado del texto: 32px contra 8, por la lupa. '
+      + 'En una columna de formulario, ese campo empezaba el texto un cuarto de pulgada mas a la '
+      + 'derecha que todos los demas. Eso es lo que notaban. '
+      + 'La lupa NO se retira del sistema: en el buscador de una tabla es correcta, porque alli se '
+      + 'busca de verdad. Se vuelve opcional con `conLupa` y por omision no esta — elegir de una lista '
+      + 'es el mismo gesto en los dos componentes, y que uno ademas filtre escribiendo es un detalle '
+      + 'de interaccion, no otra clase de campo. Si hace falta decirlo, se dice en el placeholder, que '
+      + 'es texto y no roba sangrado. '
+      + 'El chevron sigue siendo obligatorio: es lo que dice «esto se despliega» y lo que iguala los '
+      + 'dos controles. Y el sangrado se separa de la clase base —`input.campo.sel-in` ya no declara '
+      + 'padding-left; lo declara `.sel-caja.sel-con-lupa`— asi que quien no pide lupa no lo paga.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'Quien use `SelectorBusqueda` y espere ver la lupa tiene que pedirla con `conLupa`. Sin ella el '
+      + 'control se ve como un Selector, que es justo lo que se buscaba. El buscador de TablaDatos ya '
+      + 'la pide por su cuenta y no cambia.',
+    ],
+  },
   {
     v: '1.74.0', fecha: '2026-08-23',
     que: 'R99: tres motivos para no repartir un privilegio, y privilegios que son el mismo permiso',

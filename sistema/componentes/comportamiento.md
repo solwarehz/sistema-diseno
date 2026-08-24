@@ -200,6 +200,7 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 
 ## Campo, selector y formulario
 
+
 | | Regla |
 |---|---|
 | **1** | **Obligatorio.** **La etiqueta siempre visible.** El placeholder es solo ejemplo de formato, nunca etiqueta: desaparece al escribir y con él la pregunta. |
@@ -211,6 +212,16 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 | **7** | **Obligatorio.** (v1.37.0) `CampoContrasena` **jamás normaliza**: ni trim ni caja — un espacio en una contraseña puede ser deliberado, y «limpiarlo» es cambiar la llave sin avisar. El conmutador ver/no ver lleva `aria-pressed` y **es solo pantalla** (el valor no cambia); el `autoComplete` es `current-password`, o `new-password` con la prop `nueva`; y **pegar no se bloquea**: quien pega desde su gestor hace lo correcto. |
 
 ---
+
+### Selector con búsqueda · la lupa
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R100, v1.75.0) **Por omisión no lleva lupa**, y así se ve igual que el `Selector`: mismo alto, mismo ancho y **el texto empieza en el mismo sitio**. Con la lupa siempre puesta, el campo sangraba 32 px mientras el resto del formulario empezaba en 8, y en una columna de campos el suyo se salía de la alineación. |
+| **2** | **Obligatorio.** (R100, v1.75.0) **El chevron va siempre.** Es lo que dice «esto se despliega», y es lo que iguala este control con el `Selector`. |
+| **3** | **Obligatorio.** (R100, v1.75.0) **`conLupa` se enciende donde de verdad se BUSCA y no se elige**: el buscador de una tabla, una caja de búsqueda global. Elegir de una lista es el mismo gesto en los dos componentes; que además se filtre escribiendo es un detalle de interacción, no otra clase de campo. |
+| **4** | Del proyecto: si hace falta decir que se puede escribir, se dice en el **`placeholder`** — es texto y no roba sangrado. |
+
 
 ## Carga de imagen
 

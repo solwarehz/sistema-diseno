@@ -1,8 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 21 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.74.0** — **tres motivos** para no repartir un
-privilegio en vez de uno, y privilegios que son **el mismo permiso**
+**Versión del sistema:** MMI-DS **v1.75.0** — el selector con búsqueda se veía
+distinto al `Selector`, y era **la lupa**: sangraba el texto 32 px donde el
+resto del formulario empieza en 8
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -41,10 +42,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 790 reglas de 1274 · **566 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.74.0.zip` · **54 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.75.0.zip` · **54 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.74.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.75.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -65,7 +66,27 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.74.0), con detalle
+### Lo de hoy (v1.75.0), con detalle
+
+**R100 · «se ve distinto a los demás».** Control Administrativos lo reportó
+empezando por descartar la causa fácil: en su código **ya usaban
+`SelectorBusqueda` del sistema**, no un `<select>` nativo. El problema era
+nuestro.
+
+Medido contra un `Selector`, propiedad a propiedad en el navegador: **mismo alto
+(32,7 px) y mismo ancho**. De las nueve propiedades que diferían, **ocho son
+intrínsecas del `<select>` nativo** —su flecha de fondo, el ajuste de línea— y
+ni se pueden igualar ni tiene sentido intentarlo.
+
+**La única que se veía era el sangrado: 32 px contra 8**, por la lupa. En una
+columna de formulario, ese campo empezaba el texto bastante más a la derecha que
+todos los demás.
+
+**La lupa no se retira**: en el buscador de una tabla es correcta, porque allí
+se busca de verdad. Se vuelve opcional con `conLupa` y por omisión no está. El
+chevron sigue siendo obligatorio — es lo que dice «esto se despliega».
+
+### Lo de la v1.74.0, con detalle
 
 **R99 · dos huecos, y el primero lo argumentaron citando nuestro propio código.**
 
@@ -781,7 +802,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.74.0
+Versión                      1.75.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
 Pruebas                         432   en 30 archivos
