@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.75.0
+# Actualizar al sistema de diseño v1.76.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.75.0"
+npm install "github:solwarehz/sistema-diseno#v1.76.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,19 +27,19 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.75.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.76.0
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.75.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.76.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.75.0 --repo solwarehz/sistema-diseno
+gh release download v1.76.0 --repo solwarehz/sistema-diseno
 ```
 
 Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
@@ -305,6 +305,7 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.73.0 | **`PanelPrivilegios`: niveles por campo, y apagar «ver» ya no borra.** Un privilegio puede declarar `niveles` —documento completo · parcial · oculto— que se reparten con `Segmentado` y se guardan bajo `privilegio:nivel`. **Cambio de comportamiento**: apagar el privilegio que manda **conserva** lo configurado en vez de ponerlo a `false`; para saber qué se aplica de verdad, `privilegiosEfectivos()`. Verificado a 390 px |
 | 1.74.0 | **Aditivo, nada que tocar.** `cerrado` admite ahora **tres motivos** en vez de uno: `cerrado` (nunca), `ajeno` (existe, pero usted no lo tiene) y `pendiente` (todavía no está). `cerrado: 'texto'` sigue valiendo. Y varios privilegios con la misma **`clave`** son el mismo permiso: se mueven juntos y se avisa en la etiqueta |
 | 1.75.0 | **`SelectorBusqueda` ya se ve como `Selector`.** Se veía distinto por la lupa, que sangraba el texto 32 px cuando el resto de los campos empieza en 8. **La lupa pasa a ser opcional** (`conLupa`) y por omisión no está: si la quieren —en un buscador de verdad— hay que pedirla. El buscador de `TablaDatos` la pide por su cuenta y no cambia |
+| 1.76.0 | **La tabla arranca ordenada y su primera columna no se puede quitar.** Sin declarar nada: orden alfabético por la primera columna ordenable, y esa columna deja de poder ocultarse — **antes su casilla se desmarcaba y no pasaba nada**. **Dos cambios visibles**: si alguna tabla dependía del orden de llegada de la consulta, pásenle `ordenInicial={null}`; si querían poder ocultar la primera columna, `columnasFijas={[]}`. En `modo="servidor"` no se impone orden |
 
 **Lo que no rompe pero conviene aprovechar:** `soloLectura` en `Selector`
 (§6.5 del manual), `persona.foto` en `CargaImagen` (§6.7), `CargaId` para el

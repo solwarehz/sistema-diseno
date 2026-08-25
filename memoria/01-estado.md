@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 21 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.75.0** — el selector con búsqueda se veía
-distinto al `Selector`, y era **la lupa**: sangraba el texto 32 px donde el
-resto del formulario empieza en 8
+**Versión del sistema:** MMI-DS **v1.76.0** — la tabla arranca **ordenada**, y la
+casilla de la columna fija dejaba desmarcarse sin efecto: **un control que
+mentía**
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -42,10 +42,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 790 reglas de 1274 · **566 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.75.0.zip` · **54 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.76.0.zip` · **54 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.75.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.76.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,33 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.75.0), con detalle
+### Lo de hoy (v1.76.0), con detalle
+
+**R101 · dos comportamientos por omisión que faltaban, y un control que mentía.**
+
+**La tabla arranca ordenada.** Empezaba sin orden, así que lo que se veía era el
+orden de llegada de la consulta — que para quien mira la pantalla **no es
+ningún orden**: dos cargas de los mismos datos se ven distintas y nadie sabe por
+dónde buscar. Ahora, por la primera columna ordenable, ascendente. El comparador
+ya estaba bien: `localeCompare` en español con `numeric`, así que la Ñ cae donde
+debe y «zapata» en minúscula no se va al final.
+
+**En `servidor` no se impone nada**, y es deliberado: allí la tabla no ordena, y
+pintar la flecha sin que el backend haya ordenado sería mentir.
+
+**La primera columna, fija por omisión.** `columnasFijas` existía desde la
+v1.25.0, pero su defecto era «ninguna» — se podían ocultar **todas** y quedarse
+con una tabla de filas en blanco.
+
+**Y el control que mentía**, que nadie había reportado: la casilla de una
+columna fija **se podía desmarcar** y la columna seguía ahí, porque la lógica la
+reponía. El código lo justificaba —*«no se confía en deshabilitar el control: un
+`disabled` se quita desde el inspector»*— y el argumento es bueno, pero
+planteaba una falsa disyuntiva. Ahora se hacen **las dos cosas**: la casilla va
+deshabilitada, que evita el gesto inútil, y la columna se repone igual, que
+protege el dato.
+
+### Lo de la v1.75.0, con detalle
 
 **R100 · «se ve distinto a los demás».** Control Administrativos lo reportó
 empezando por descartar la causa fácil: en su código **ya usaban
@@ -802,7 +828,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.75.0
+Versión                      1.76.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
 Pruebas                         432   en 30 archivos

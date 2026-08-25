@@ -80,9 +80,31 @@ export type TablaDatosProps<T> = {
   /** Obligatorio con `modo="servidor"`: cuántas filas hay EN TOTAL, no en esta
    *  página. Sin esto el pie diría «1–10 de 10» teniendo 380. */
   total?: number;
-  /** Columnas que no se pueden ocultar. La que identifica cada fila va aquí:
-   *  una tabla sin su identificador no identifica nada. */
+  /**
+   * Columnas que no se pueden ocultar. La que identifica cada fila va aquí:
+   * una tabla sin su identificador no identifica nada.
+   *
+   * R101 · **Si no se declara, es la primera.** Antes el valor por omisión era
+   * «ninguna», y eso dejaba ocultar TODAS las columnas y quedarse con una tabla
+   * de filas en blanco. La primera columna es, casi siempre, la que dice de
+   * quién es la fila. Para renunciar a ello hay que decirlo: `columnasFijas={[]}`.
+   */
   columnasFijas?: string[];
+  /**
+   * R101 · El orden con el que arranca la tabla.
+   *
+   * Si no se declara, en modo navegador arranca ordenada **por la primera
+   * columna ordenable, ascendente**. Sin esto, el orden inicial era el de
+   * llegada de la consulta — que para quien mira la pantalla no es ningún
+   * orden, y hace que dos cargas de los mismos datos se vean distintas.
+   *
+   * En `servidor` NO se impone nada: allí la tabla no puede ordenar, así que
+   * pintar la flecha sin que el backend haya ordenado sería mentir. Si el
+   * producto ordena en su consulta, lo declara aquí y la cabecera lo refleja.
+   *
+   * `null` arranca sin orden.
+   */
+  ordenInicial?: { clave: string; dir: 'asc' | 'desc' } | null;
   /** R31 · columnas ocultas, CONTROLADAS. La elección de columnas es una
    *  preferencia de la persona, y una que no persiste no es una preferencia:
    *  con la pareja `ocultas`/`onOcultas` el producto la siembra al montar
@@ -137,7 +159,8 @@ export function TablaDatos<T>({
   alCambiar,
   modo = 'navegador',
   total,
-  columnasFijas = [],
+  columnasFijas: columnasFijasFuera,
+  ordenInicial,
   ocultas: ocultasFuera,
   onOcultas,
   acciones,
@@ -152,7 +175,14 @@ export function TablaDatos<T>({
     );
   }
   const id = useId();
-  const [orden, setOrden] = useState<EstadoTabla['orden']>(null);
+  // R101 · El orden de arranque. Se calcula una vez —es «inicial»— y por eso
+  // va como función: `useState(fn)` no lo recalcula en cada render.
+  const [orden, setOrden] = useState<EstadoTabla['orden']>(() => {
+    if (ordenInicial !== undefined) return ordenInicial;
+    if (modo === 'servidor') return null;
+    const primera = columnas.find((c) => c.ordenable !== false);
+    return primera ? { clave: primera.clave, dir: 'asc' } : null;
+  });
   const [filtros, setFiltros] = useState<Record<string, string>>({});
   const [busqueda, setBusqueda] = useState('');
   const [pagina, setPagina] = useState(1);
@@ -177,6 +207,8 @@ export function TablaDatos<T>({
   // Una columna FIJA no se puede quitar. No es un tope —cuántos datos quiere
   // ver cada persona es decisión suya— es un mínimo: una tabla sin la columna
   // que identifica cada fila no identifica nada.
+  // R101 · Sin declarar, la primera columna. `[]` es renunciar a ello DICIÉNDOLO.
+  const columnasFijas = columnasFijasFuera ?? (columnas[0] ? [columnas[0].clave] : []);
   const esFija = (clave: string) => columnasFijas.includes(clave);
   const visiblesCols = columnas.filter((c) => !ocultas.has(c.clave) || esFija(c.clave));
 
@@ -388,11 +420,14 @@ export function TablaDatos<T>({
             valor: c.clave,
             texto: c.titulo,
             ayuda: esFija(c.clave) ? 'Identifica la fila: no se puede quitar' : undefined,
+            deshabilitada: esFija(c.clave),
           }))}
           valores={visiblesCols.map((c) => c.clave)}
-          // Las fijas se reponen SIEMPRE. No se confía en deshabilitar el
-          // control: un `disabled` se puede quitar desde el inspector, y esto
-          // es un minimo de la tabla, no una sugerencia.
+          // R101 · Las fijas se reponen SIEMPRE, ADEMÁS de ir deshabilitadas.
+          // No es redundancia: el `disabled` evita el gesto inútil —antes la
+          // casilla se desmarcaba y la columna seguía ahí, que es un control
+          // que miente— y esta línea protege el dato, porque un `disabled` se
+          // quita desde el inspector. Antes solo estaba lo segundo.
           onCambio={(elegidas) =>
             setOcultas(new Set(columnas.filter((c) => !elegidas.includes(c.clave) && !esFija(c.clave)).map((c) => c.clave)))
           }

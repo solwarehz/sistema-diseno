@@ -99,7 +99,23 @@ export function Interruptor({
   );
 }
 
-export type Opcion = { valor: string; texto: string; ayuda?: string };
+export type Opcion = {
+  valor: string;
+  texto: string;
+  ayuda?: string;
+  /**
+   * R101 · La opción se ve, pero no se puede cambiar.
+   *
+   * Para lo que el grupo **necesita** y no es negociable — la columna que
+   * identifica cada fila de una tabla, por ejemplo. Va con `ayuda`: una casilla
+   * que no responde y no dice por qué se lee como una avería.
+   *
+   * Quien la use **no debe fiarse solo de esto**: `disabled` se quita desde el
+   * inspector. La regla se aplica también donde se recibe el cambio. Lo uno
+   * evita el gesto inútil; lo otro protege el dato.
+   */
+  deshabilitada?: boolean;
+};
 
 export type SeleccionMultipleProps = {
   /** El nombre del grupo. Va al fieldset: sin él, las casillas son sueltas. */
@@ -119,10 +135,12 @@ export function SeleccionMultiple({
   modo = 'varias',
 }: SeleccionMultipleProps) {
   const id = useId();
-  const alternar = (v: string) =>
-    modo === 'unica'
+  const alternar = (v: string) => {
+    if (opciones.find((o) => o.valor === v)?.deshabilitada) return;
+    return modo === 'unica'
       ? onCambio([v])
       : onCambio(valores.includes(v) ? valores.filter((x) => x !== v) : [...valores, v]);
+  };
 
   return (
     // fieldset y legend, no un div con texto: es lo que agrupa las casillas
@@ -132,12 +150,13 @@ export function SeleccionMultiple({
       {opciones.map((o) => {
         const idOp = `${id}-${o.valor}`;
         return (
-          <label className="ms-op" key={o.valor} htmlFor={idOp}>
+          <label className={`ms-op${o.deshabilitada ? ' ms-op-fija' : ''}`} key={o.valor} htmlFor={idOp}>
             <input
               id={idOp}
               type={modo === 'unica' ? 'radio' : 'checkbox'}
               name={modo === 'unica' ? id : undefined}
               checked={valores.includes(o.valor)}
+              disabled={o.deshabilitada}
               onChange={() => alternar(o.valor)}
               aria-describedby={o.ayuda ? `${idOp}-ayuda` : undefined}
             />

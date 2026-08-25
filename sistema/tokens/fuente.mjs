@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.75.0";
+export const VERSION = "1.76.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,37 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.76.0', fecha: '2026-08-25',
+    que: 'R101: la tabla arranca ordenada, y la columna que identifica la fila deja de poder desmarcarse',
+    porque:
+      'R101 · Lo pidio Control Administrativos, y al mirarlo aparecio ademas un control que MENTIA. '
+      + 'ARRANCAR ORDENADA. La tabla empezaba sin orden, asi que lo que se veia era el orden de llegada '
+      + 'de la consulta — que para quien mira la pantalla no es ningun orden: hace que dos cargas de '
+      + 'los mismos datos se vean distintas y que nadie sepa por donde buscar. Ahora arranca por la '
+      + 'primera columna ordenable, ascendente. El comparador ya estaba bien: localeCompare en español '
+      + 'con numeric, asi que la Ñ cae donde debe y «zapata» en minuscula no se va al final. '
+      + 'En modo SERVIDOR no se impone nada, y es deliberado: alli la tabla no ordena, asi que pintar '
+      + 'la flecha sin que el backend haya ordenado seria mentir. Si el producto ordena en su consulta, '
+      + 'lo declara con ordenInicial y la cabecera lo refleja. '
+      + 'LA PRIMERA COLUMNA, FIJA POR OMISION. `columnasFijas` existia desde la v1.25.0 pero su valor '
+      + 'por defecto era «ninguna», asi que se podian ocultar TODAS las columnas y quedarse con una '
+      + 'tabla de filas en blanco. Para renunciar hay que decirlo: columnasFijas={[]}. '
+      + 'Y UN CONTROL QUE MENTIA, que no estaba reportado. La casilla de una columna fija SE PODIA '
+      + 'DESMARCAR y la columna seguia ahi: la logica la reponia siempre. El codigo lo justificaba —«no '
+      + 'se confia en deshabilitar el control: un disabled se quita desde el inspector»— y el argumento '
+      + 'es bueno, pero planteaba una falsa disyuntiva. Ahora se hacen las DOS cosas: la casilla va '
+      + 'deshabilitada, que evita el gesto inutil, y la columna se repone igual, que protege el dato. '
+      + 'Para eso, `Opcion` de SeleccionMultiple gana `deshabilitada`, util para cualquier grupo con '
+      + 'una opcion que no es negociable.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'Las tablas que no declaraban orden ahora arrancan ordenadas alfabeticamente por su primera '
+      + 'columna. Quien dependiera del orden de llegada de la consulta debe pasar `ordenInicial={null}`.',
+      'La primera columna deja de poder ocultarse si no se declaraba `columnasFijas`. Se recupera el '
+      + 'comportamiento anterior con `columnasFijas={[]}`.',
+    ],
+  },
   {
     v: '1.75.0', fecha: '2026-08-24',
     que: 'R100: el selector con busqueda se veia distinto al Selector — la lupa deja de ser obligatoria',

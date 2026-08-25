@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.75.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.76.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.75.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.76.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -1171,6 +1171,9 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .ms-lista { display: flex; flex-direction: column; gap: 4px; }
 .ms-op { display: flex; align-items: center; gap: 12px; padding: 8px;
   border-radius: 6px; cursor: pointer; font-size: 15px; }
+/* R101 · La opcion que el grupo NECESITA: se ve, no se cambia. Su ayuda dice
+   por que — una casilla que no responde y no lo explica se lee como averia. */
+.ms-op-fija { cursor: not-allowed; color: var(--texto-secundario); }
 .ms-op:hover { background: var(--fondo-encabezado); }
 .ms-op input { width: 16px; height: 16px; flex: none; accent-color: var(--accion); cursor: pointer; }
 .ms-desh { cursor: not-allowed; color: var(--texto-secundario); }
@@ -3949,7 +3952,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.75.0</option></select></label>
+          <select class="campo cg-in"><option>v1.76.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4037,8 +4040,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.75.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.75.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.76.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.76.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -11274,6 +11277,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.76.0 <span class="cam-fecha">2026-08-25</span></h3>
+<p class="pag-intro"><strong>R101: la tabla arranca ordenada, y la columna que identifica la fila deja de poder desmarcarse.</strong> R101 · Lo pidio Control Administrativos, y al mirarlo aparecio ademas un control que MENTIA. ARRANCAR ORDENADA. La tabla empezaba sin orden, asi que lo que se veia era el orden de llegada de la consulta — que para quien mira la pantalla no es ningun orden: hace que dos cargas de los mismos datos se vean distintas y que nadie sepa por donde buscar. Ahora arranca por la primera columna ordenable, ascendente. El comparador ya estaba bien: localeCompare en español con numeric, asi que la Ñ cae donde debe y «zapata» en minuscula no se va al final. En modo SERVIDOR no se impone nada, y es deliberado: alli la tabla no ordena, asi que pintar la flecha sin que el backend haya ordenado seria mentir. Si el producto ordena en su consulta, lo declara con ordenInicial y la cabecera lo refleja. LA PRIMERA COLUMNA, FIJA POR OMISION. `columnasFijas` existia desde la v1.25.0 pero su valor por defecto era «ninguna», asi que se podian ocultar TODAS las columnas y quedarse con una tabla de filas en blanco. Para renunciar hay que decirlo: columnasFijas={[]}. Y UN CONTROL QUE MENTIA, que no estaba reportado. La casilla de una columna fija SE PODIA DESMARCAR y la columna seguia ahi: la logica la reponia siempre. El codigo lo justificaba —«no se confia en deshabilitar el control: un disabled se quita desde el inspector»— y el argumento es bueno, pero planteaba una falsa disyuntiva. Ahora se hacen las DOS cosas: la casilla va deshabilitada, que evita el gesto inutil, y la columna se repone igual, que protege el dato. Para eso, `Opcion` de SeleccionMultiple gana `deshabilitada`, util para cualquier grupo con una opcion que no es negociable.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>Las tablas que no declaraban orden ahora arrancan ordenadas alfabeticamente por su primera columna. Quien dependiera del orden de llegada de la consulta debe pasar <code>ordenInicial={null}</code>.</td></tr><tr><td>La primera columna deja de poder ocultarse si no se declaraba <code>columnasFijas</code>. Se recupera el comportamiento anterior con <code>columnasFijas={[]}</code>.</td></tr></tbody></table>
 
 
 <h3 class="sub-seccion">v1.75.0 <span class="cam-fecha">2026-08-24</span></h3>

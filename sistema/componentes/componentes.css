@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.75.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.76.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -414,7 +414,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .sw-mini{ width: 40px; height: 24px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   SELECCIÓN MÚLTIPLE — 14 reglas · clases .ms-*
+   SELECCIÓN MÚLTIPLE — 15 reglas · clases .ms-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .ms-grupo{ border: 0; padding: 0; margin: 0; }
@@ -423,6 +423,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .ms-lista{ display: flex; flex-direction: column; gap: 4px; }
 .ms-op{ display: flex; align-items: center; gap: 12px; padding: 8px;
   border-radius: 6px; cursor: pointer; font-size: 15px; }
+.ms-op-fija{ cursor: not-allowed; color: var(--texto-secundario); }
 .ms-op:hover{ background: var(--fondo-encabezado); }
 .ms-op input{ width: 16px; height: 16px; flex: none; accent-color: var(--accion); cursor: pointer; }
 .ms-desh{ cursor: not-allowed; color: var(--texto-secundario); }

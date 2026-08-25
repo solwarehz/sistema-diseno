@@ -5481,6 +5481,9 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .ms-lista { display: flex; flex-direction: column; gap: 4px; }
 .ms-op { display: flex; align-items: center; gap: 12px; padding: 8px;
   border-radius: 6px; cursor: pointer; font-size: 15px; }
+/* R101 · La opcion que el grupo NECESITA: se ve, no se cambia. Su ayuda dice
+   por que — una casilla que no responde y no lo explica se lee como averia. */
+.ms-op-fija { cursor: not-allowed; color: var(--texto-secundario); }
 .ms-op:hover { background: var(--fondo-encabezado); }
 .ms-op input { width: 16px; height: 16px; flex: none; accent-color: var(--accion); cursor: pointer; }
 .ms-desh { cursor: not-allowed; color: var(--texto-secundario); }
