@@ -9870,7 +9870,11 @@ ${COMPRESOR_PDF}
         // sacarla dos veces seria decir dos veces lo mismo.
         var items = panel.hidden ? confirmados : [];
         lista.hidden = items.length === 0;
-        if (vacio) vacio.hidden = items.length > 0;
+        // Con el panel abierto NO hay estado vacio que contar: la lista de la
+        // fila se vacia para no decir dos veces lo mismo, y el mensaje se
+        // encenderia diciendo «ningun archivo» justo encima de un panel que
+        // enseña el archivo.
+        if (vacio) vacio.hidden = items.length > 0 || !panel.hidden;
         items.forEach(function (it, k) {
           var punto = it.nombre.lastIndexOf('.');
           var base = punto > 0 ? it.nombre.slice(0, punto) : it.nombre;

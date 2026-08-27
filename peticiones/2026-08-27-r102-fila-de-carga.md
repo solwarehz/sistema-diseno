@@ -82,9 +82,12 @@ los componentes de React.
    cargado se pinta con `.cx-adj`, al costado del disparador.
 4. **`.cpdf-compacta` y `.cpdf-ayuda` se retiran de la hoja.** Ya no las emite
    nadie; la ayuda del componente sale ahora por `.cx-nota`.
-5. **El resumen de `CargaPdf` deja de repetir el recuento de páginas.** En 27 px
-   de alto no cabe. Sigue en el panel, y el dato sigue viajando entero en
-   `onCambio` — no se pierde nada, solo deja de pintarse en la fila.
+5. **El resumen de `CargaPdf` deja de repetir dos datos.** El **recuento de
+   páginas** y —con `mostrarPesos` encendido— el **chip del ahorro**. El resumen
+   anterior se apilaba en tres renglones y por eso los tenía; una fila de una
+   línea, no: el chip son ~30 caracteres y en una columna de formulario se
+   recortaría a la mitad, que es peor que tenerlo donde sí se lee. Los dos
+   siguen en el panel y siguen viajando enteros en `onCambio`.
 
 Un sexto detalle, menor: con el panel abierto, el botón «Subir PDF» **ya no
 desaparece, queda apagado**. Antes se desmontaba y con él se iba el ancla de la
@@ -111,7 +114,7 @@ Ninguna regla de comportamiento de las tres cargas se ha tocado:
   hoja que viaja: `verificar-promesa` (**1.064 elementos · 218.743 propiedades**
   a cinco anchos), `verificar-elemento`, `verificar-empate` y
   `verificar-cascada` (**965 reglas · 11 anchos**).
-- **476 pruebas** en 33 archivos, **16 de ellas nuevas** para esta fila.
+- **478 pruebas** en 33 archivos, **18 de ellas nuevas** para esta fila.
 - `tsc --noEmit` limpio.
 - Medido en el navegador sobre el catálogo: las **siete** filas visibles de la
   página nueva dan **36 px exactos**, ninguna desborda, y la miniatura del ID

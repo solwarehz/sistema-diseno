@@ -509,17 +509,36 @@ export function CargaPdf({
       idError={idError}
       nota={ayuda}
       idNota={idAyuda}
-      vacio={uno ? 'Ningún archivo' : 'Ningún archivo todavía'}
+      /* CON EL PANEL ABIERTO NO HAY ESTADO VACÍO QUE CONTAR, y esto fue un
+         defecto real: `total` se pone a 0 para no listar dos veces lo mismo, y
+         eso encendía además el mensaje de vacío. La fila decía «ningún archivo
+         todavía» mientras el panel de debajo enseñaba el archivo — dos frases
+         contradictorias en pantalla a la vez.
+
+         Lo decide AQUÍ quien sabe qué significa `abierto`, no la fila: ella es
+         genérica y no tiene por qué saber que un panel abierto invalida el
+         mensaje. (Aun así la fila se protege sola, por si otra carga repite
+         el descuido.) */
+      vacio={abierto ? undefined : uno ? 'Ningún archivo' : 'Ningún archivo todavía'}
       /* Cerrado: el resumen al costado. Abierto no, o la misma lista saldría
          dos veces —en la fila y en el panel—. */
       adjuntos={!abierto ? puestos.map((f, k) => (
         <AdjuntoArchivo
           key={`${f.nombre}-${k}`}
           nombre={f.nombre}
-          /* El peso del archivo puesto se veía antes y se sigue viendo: esto
-             cambia la FORMA del resultado, no lo que dice. Lo que no cabe en
-             27 px de alto es el recuento de páginas, que sí queda solo en el
-             panel — es el único dato que la fila deja de repetir. */
+          /* El peso del archivo puesto se veía antes y se sigue viendo.
+             Lo que NO cabe en 27 px de alto y se queda solo en el panel son
+             DOS cosas, no una: el recuento de páginas y —con `mostrarPesos`
+             encendido— el `Chip` del ahorro. El resumen anterior se apilaba en
+             tres renglones y por eso los tenía; una fila de una línea no.
+
+             No se meten a la fuerza: el chip del ahorro son ~30 caracteres, y
+             en una columna de formulario se saldría del ancho y lo recortaría
+             `.cx-adjuntos`. Un dato cortado a la mitad es peor que ese dato en
+             el sitio donde sí se lee — el panel, que es justo donde se está
+             comprimiendo cuando la cifra significa algo.
+
+             Los dos siguen viajando enteros en `onCambio`. */
           peso={formatearPeso(f.peso)}
           onQuitar={() => quitarConfirmado(k)}
         />

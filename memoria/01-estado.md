@@ -17,8 +17,8 @@ las tres rompían el formulario, cada una a su manera
 
 ## Dónde estamos, en una frase
 
-El sistema es un **paquete que un producto instala y consume** —31 componentes
-publicados, la hoja que viaja, **trece candados**, 415 pruebas— y sigue
+El sistema es un **paquete que un producto instala y consume** —32 componentes
+publicados, la hoja que viaja, **trece candados**, 478 pruebas— y sigue
 aprendiendo la misma lección por otro lado: los peores defectos no están en lo
 que el catálogo enseña mal, sino en **lo que ningún candado estaba mirando**.
 R86 es de ese tipo: la tabla declaraba una altura de fila de 34px desde la
@@ -38,9 +38,9 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **432 pruebas en 30 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · 790 reglas de 1274 · **566 clases, 0 huérfanas** |
-| Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
+| Componentes de React | ✅ | **478 pruebas en 33 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · 866 reglas de 1351 · **629 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
+| Catálogo navegable | ✅ | `cascaron/index.html` · 41 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
 | Entrega ZIP | ✅ | `sistema-diseno-v1.77.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
@@ -886,7 +886,7 @@ Versión                      1.77.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         476   en 33 archivos
+Pruebas                         478   en 33 archivos
 Reglas que viajan               866   de 1351 · 629 clases, 0 huérfanas
                                       — y desde hoy tambien las de interno/
 Candado de la cascada           965   reglas leidas · 11 anchos
@@ -896,11 +896,11 @@ Candado de la promesa          1064   elementos · 218.743 propiedades
                                       a 5 anchos (1440, 1024, 900, 700, 390)
 Candado del elemento            168   clases comparadas · 5 divergencias
                                       DECLARADAS, ninguna nueva
-Contrato de comportamiento      178   reglas · 146 obligatorias · 5 PENDIENTE
-Componentes publicados           33   38 módulos viajan en el paquete
+Contrato de comportamiento      179   reglas · 146 obligatorias · 6 PENDIENTE
+Componentes publicados           32   38 módulos viajan en el paquete
                                       117 exportaciones, todas por el índice
 Iconos                           46
-Páginas del catálogo             38   (índice de `items`, no de anclas)
+Páginas del catálogo             41
 Fila de un campo, medida      36,45   px · la fila de carga se fija en 36
 ```
 

@@ -206,6 +206,30 @@ describe('R102 · el comportamiento NO cambió con la forma', () => {
     expect(container.querySelectorAll('.cx-adj')).toHaveLength(0);
   });
 
+  it('R102 · con el panel abierto, la fila NO dice «ningún archivo» teniendo uno', async () => {
+    // El defecto: `total={abierto ? 0 : …}` se puso para no listar dos veces lo
+    // mismo, y de paso encendía el mensaje de vacío. Quedaban dos frases
+    // contradictorias en pantalla a la vez — la fila decía que no hay nada y
+    // el panel de debajo enseñaba el archivo.
+    const { container } = render(
+      <CargaPdf etiqueta="Acta" onCambio={() => {}} valor={[{ nombre: 'acta.pdf', peso: 1024 }]} />,
+    );
+    await userEvent.click(screen.getByRole('button', { name: /Subir PDF/ }));
+    expect(container.querySelector('.cx-vacio')).toBeNull();
+  });
+
+  it('R102 · la fila genérica tampoco pinta el vacío mientras hay panel debajo', () => {
+    const { container } = render(
+      <FilaCarga
+        etiqueta="Anexos"
+        disparador={<button type="button">Cargar</button>}
+        vacio="Ningún archivo"
+        panel={<div className="cx-panel" />}
+      />,
+    );
+    expect(container.querySelector('.cx-vacio')).toBeNull();
+  });
+
   it('R102 · el ID sigue desactivando su botón con las dos caras entregadas', () => {
     render(<CargaId anverso="blob:a" reverso="blob:b" onCambio={() => {}} />);
     expect(screen.getByRole('button', { name: /Subir ID/ })).toBeDisabled();

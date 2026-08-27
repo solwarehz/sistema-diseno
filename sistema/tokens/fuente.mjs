@@ -107,8 +107,11 @@ export const CAMBIOS = [
       + 'documento se lee donde se leia antes: en el visor, pulsando la miniatura.',
       '`.cpdf-compacta` y `.cpdf-ayuda` **se retiran de la hoja**: ya no las emite nadie. La ayuda '
       + 'del componente sale ahora por `.cx-nota`.',
-      'En `CargaPdf`, el resumen de la fila deja de repetir el **recuento de paginas**: en 27px de '
-      + 'alto no cabe. Sigue en el panel, y el dato sigue viajando entero en `onCambio`.',
+      'En `CargaPdf`, el resumen de la fila deja de repetir **dos** datos que el resumen apilado si '
+      + 'tenia: el **recuento de paginas** y —con `mostrarPesos` encendido— el **Chip del ahorro**. '
+      + 'En 27px de alto no caben, y el chip son ~30 caracteres que en una columna de formulario se '
+      + 'recortarian a la mitad: un dato cortado es peor que ese dato donde si se lee, que es el '
+      + 'panel. Los dos siguen viajando enteros en `onCambio`.',
       '`CargaImagen` **no cambia sola**: su defecto sigue siendo `presentacion="caja"`. La fila se '
       + 'pide con `presentacion="fila"`, que es lo que va en un formulario.',
     ],

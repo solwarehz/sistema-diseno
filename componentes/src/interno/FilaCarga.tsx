@@ -109,7 +109,12 @@ export function FilaCarga({
             {ocultos > 0 && <li className="cx-mas">+{ocultos}</li>}
           </ul>
         )}
-        {cuantos === 0 && vacio && <span className="cx-vacio">{vacio}</span>}
+        {/* `!panel` es un candado, no una comodidad. Una carga puede vaciar la
+            fila mientras despliega su panel —para no listar dos veces lo
+            mismo— y encender sin querer este mensaje: quedaría diciendo «ningún
+            archivo» justo encima de un panel que enseña el archivo. Le pasó a
+            `CargaPdf` y no vuelve a pasar aquí. */}
+        {cuantos === 0 && vacio && !panel && <span className="cx-vacio">{vacio}</span>}
         {extra}
       </div>
 
