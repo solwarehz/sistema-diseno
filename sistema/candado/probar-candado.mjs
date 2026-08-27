@@ -120,7 +120,24 @@ patrones.forEach(({ patron, mensaje }, i) => {
 
 console.log('  El patrón, ya dentro del selector\n');
 
-const reglas = config.at(-1)?.rules?.['no-restricted-syntax'] ?? [];
+/**
+ * SE BUSCA EL BLOQUE QUE TIENE LA REGLA, NO EL QUE ESTÁ EN UN SITIO.
+ *
+ * Esto estaba en `config.at(-1)`, y llevaba en rojo desde que el bloque con
+ * `languageOptions` —el analizador de TypeScript— pasó a ir el último: el
+ * candado leía ese, que no tiene reglas, encontraba 0 selectores donde
+ * esperaba 8 y fallaba. Nadie lo estaba mirando.
+ *
+ * Es EXACTAMENTE el defecto del que nació `verificar-forma`: buscar por
+ * posición dentro de algo que se puede reordenar. Que le pasara al propio
+ * candado que comprueba el candado es la ironía completa, y por eso la
+ * corrección no es correr el índice sino dejar de usar índices.
+ */
+const conReglas = config.filter((b) => b?.rules?.['no-restricted-syntax']);
+if (conReglas.length !== 1) {
+  fallos.push(`hay ${conReglas.length} bloques con no-restricted-syntax y debería haber exactamente 1`);
+}
+const reglas = conReglas[0]?.rules?.['no-restricted-syntax'] ?? [];
 const selectoresLiteral = reglas
   .filter((r) => typeof r === 'object' && /^Literal\[value=\//.test(r.selector || ''))
   .map((r) => r.selector);

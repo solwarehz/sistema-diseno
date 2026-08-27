@@ -31,6 +31,7 @@ import { Boton } from './Boton';
 import { Dialogo } from './Dialogo';
 import { Icono } from './Icono';
 import { EditorEncuadre, type ManejoEncuadre } from './interno/EditorEncuadre';
+import { FilaCarga, AdjuntoImagen } from './interno/FilaCarga';
 import { Avatar } from './Avatar';
 
 /**
@@ -103,6 +104,25 @@ export type CargaImagenProps = {
    * apellido deja de identificar a nadie.
    */
   persona?: { id: string; nombre: string; /** Su retrato, si la ficha ya lo tiene. Con foto manda la foto. */ foto?: string };
+  /**
+   * R102 · DÓNDE VIVE, que es lo que decide su forma.
+   *
+   *   caja  (por defecto)  la vista previa a tamaño real — el círculo del
+   *                        avatar, el hueco de 212×44 del logo—. Es una
+   *                        pantalla dedicada a poner esa imagen.
+   *   fila                 UNA FILA DE FORMULARIO: el disparador y la
+   *                        miniatura de lo cargado, con el alto de un `.campo`.
+   *
+   * El defecto a resolver era medible: la caja mide 96 px de alto y un campo
+   * 36,45, así que entre dos campos rompía la rejilla. La misma fila que usan
+   * `CargaPdf` y `CargaId`, para que las tres arranquen y terminen igual.
+   *
+   * `caja` SIGUE SIENDO EL DEFECTO a propósito, y no por prudencia: cambiarlo
+   * reformaría en silencio cada selector de foto y de logo ya en producción,
+   * donde la caja no es un estorbo sino el punto —enseña el hueco real donde
+   * la imagen va a vivir—. En un formulario se pide `fila`.
+   */
+  presentacion?: 'caja' | 'fila';
 };
 
 
@@ -120,6 +140,7 @@ export function CargaImagen({
   formato = 'foto',
   textoBoton,
   persona,
+  presentacion = 'caja',
 }: CargaImagenProps) {
   const F = FORMATOS[formato];
   // Solo la FOTO tiene persona detras: un logo no tiene iniciales que poner.
@@ -181,6 +202,79 @@ export function CargaImagen({
     F.redondo ? 'ci-redonda' : '',
   ].filter(Boolean).join(' ');
 
+  /* El disparador es el MISMO en las dos presentaciones: mismo icono, mismo
+     texto, mismo `aria-describedby`. Lo que cambia es dónde se pone. */
+  const elDisparador = (
+    <Boton
+      mini
+      variante="neutra"
+      className="btn-ic"
+      ref={disparador}
+      aria-describedby={idError}
+      onClick={() => entrada.current?.click()}
+    >
+      <Icono nombre={F.icono} />
+      {textoBoton ?? (retrato ? F.cambiar : F.subir)}
+    </Boton>
+  );
+
+  /* El input real, fuera del tabulador: el control accesible es el Boton.
+     `hidden` no: algunos navegadores ignoran click() sobre hidden. */
+  const laEntrada = (
+    <input
+      ref={entrada}
+      className="ci-entrada"
+      type="file"
+      accept={accept}
+      tabIndex={-1}
+      aria-hidden="true"
+      onChange={(e) => { const f = e.target.files?.[0]; if (f) elegirArchivo(f); }}
+    />
+  );
+
+  const elEditor = (
+    <Dialogo
+      abierto={abierto}
+      titulo={`Encuadrar — ${etiqueta}`}
+      origen={disparador}
+      onCerrar={cerrarEditor}
+      cerrarAlPulsarFuera={false}
+      accion={imagen ? { texto: 'Grabar', onClick: () => editor.current?.grabar() } : undefined}
+      textoCerrar="Cancelar"
+    >
+      <EditorEncuadre
+        ref={editor}
+        imagen={imagen}
+        marco={{ vw: F.vw, vh: F.vh, redondo: F.redondo }}
+        lado={lado}
+        onGrabado={(r) => { onCambio(r); cerrarEditor(); }}
+      />
+    </Dialogo>
+  );
+
+  /* R102 · EN FILA. El mismo arranque y el mismo final que `CargaPdf` y
+     `CargaId`: rótulo, una fila con el alto de un campo, y debajo el error y
+     la nota. Aquí no hay avatar de reserva —a 22 px unas iniciales no se
+     leen—: eso es lo que la caja hace bien y por lo que sigue existiendo. */
+  if (presentacion === 'fila') {
+    return (
+      <FilaCarga
+        etiqueta={etiqueta}
+        disparador={elDisparador}
+        adjuntos={retrato
+          ? [<AdjuntoImagen key="imagen" url={retrato} alt={etiqueta} onQuitar={onQuitar} />]
+          : []}
+        vacio={vacio}
+        error={error}
+        idError={idError}
+        nota={!retrato ? nota : undefined}
+      >
+        {laEntrada}
+        {elEditor}
+      </FilaCarga>
+    );
+  }
+
   return (
     <div className="ci">
       <span className="ci-et">{etiqueta}</span>
@@ -212,17 +306,7 @@ export function CargaImagen({
         )}
       </div>
       <div className="ci-acciones">
-        <Boton
-          mini
-          variante="neutra"
-          className="btn-ic"
-          ref={disparador}
-          aria-describedby={idError}
-          onClick={() => entrada.current?.click()}
-        >
-          <Icono nombre={F.icono} />
-          {textoBoton ?? (retrato ? F.cambiar : F.subir)}
-        </Boton>
+        {elDisparador}
         {retrato && onQuitar && (
           <Boton mini variante="terciaria" onClick={onQuitar}>Quitar</Boton>
         )}
@@ -247,35 +331,8 @@ export function CargaImagen({
           enlazada por `aria-describedby` —solo el error lo está—. */}
       {nota && !retrato && <span className="ci-nota">{nota}</span>}
 
-      {/* El input real, fuera del tabulador: el control accesible es el Boton.
-          `hidden` no: algunos navegadores ignoran click() sobre hidden. */}
-      <input
-        ref={entrada}
-        className="ci-entrada"
-        type="file"
-        accept={accept}
-        tabIndex={-1}
-        aria-hidden="true"
-        onChange={(e) => { const f = e.target.files?.[0]; if (f) elegirArchivo(f); }}
-      />
-
-      <Dialogo
-        abierto={abierto}
-        titulo={`Encuadrar — ${etiqueta}`}
-        origen={disparador}
-        onCerrar={cerrarEditor}
-        cerrarAlPulsarFuera={false}
-        accion={imagen ? { texto: 'Grabar', onClick: () => editor.current?.grabar() } : undefined}
-        textoCerrar="Cancelar"
-      >
-        <EditorEncuadre
-          ref={editor}
-          imagen={imagen}
-          marco={{ vw: F.vw, vh: F.vh, redondo: F.redondo }}
-          lado={lado}
-          onGrabado={(r) => { onCambio(r); cerrarEditor(); }}
-        />
-      </Dialogo>
+      {laEntrada}
+      {elEditor}
     </div>
   );
 }

@@ -42,6 +42,7 @@ import { Boton } from './Boton';
 import { Dialogo } from './Dialogo';
 import { Icono } from './Icono';
 import { EditorEncuadre, type ManejoEncuadre } from './interno/EditorEncuadre';
+import { FilaCarga, AdjuntoImagen } from './interno/FilaCarga';
 
 /** ID-1 (ISO/IEC 7810): 85,60 × 53,98 mm. 428×270 da 1,5852 contra 1,5858. */
 export const MARCO_ID = { vw: 428, vh: 270 } as const;
@@ -171,11 +172,40 @@ export function CargaId({
   const idError = error ? `cid-error-${etiqueta.replace(/\s+/g, '-')}` : undefined;
   const P = paso ? PASOS[paso] : null;
 
-  return (
-    <div className="cid">
-      <span className="cid-et">{etiqueta}</span>
+  /* R102 · Las dos caras van AL COSTADO del botón, no debajo: lo entregado y
+     el mando de entregar se leen de una vez. Y ahora en la fila común de las
+     tres cargas, con el alto de un campo: las miniaturas medían 76×48 y una
+     fila de 48 entre campos de 37 rompía la rejilla igual que la caja de
+     `CargaImagen`. A 35×22 la proporción ID-1 se conserva —1,5909 contra
+     1,5858— y leer el documento sigue siendo trabajo del visor, que es donde
+     se leía antes también: a 76 px tampoco se lee un DNI. */
+  const lasCaras = (['anverso', 'reverso'] as PasoId[]).flatMap((cara) => {
+    const url = cara === 'anverso' ? urlAnverso : urlReverso;
+    if (!url) return [];
+    return [
+      <AdjuntoImagen
+        key={cara}
+        url={url}
+        alt={PASOS[cara].titulo.toLowerCase()}
+        forma="id"
+        onVer={(e) => {
+          // Se guarda LA MINIATURA pulsada: al cerrar el visor el foco vuelve
+          // a ella, no al principio de la pantalla.
+          origenVisor.current = e.currentTarget;
+          setMirando(cara);
+        }}
+      />,
+    ];
+  });
 
-      <div className="cid-fila">
+  return (
+    <FilaCarga
+      etiqueta={etiqueta}
+      error={error}
+      idError={idError}
+      nota={nota}
+      adjuntos={lasCaras}
+      disparador={
         <Boton
           ref={disparador}
           mini
@@ -188,40 +218,8 @@ export function CargaId({
           <Icono nombre="documento" />
           Subir ID
         </Boton>
-
-        {/* Las miniaturas van AL COSTADO del botón, no debajo: lo entregado y
-            el mando de entregar se leen de una vez. */}
-        {(urlAnverso || urlReverso) && (
-          <div className="cid-minis">
-            {(['anverso', 'reverso'] as PasoId[]).map((cara) => {
-              const url = cara === 'anverso' ? urlAnverso : urlReverso;
-              if (!url) return null;
-              return (
-                // Es un BOTÓN, no una imagen con onClick: se alcanza con el
-                // tabulador y se abre con Enter como cualquier otro mando.
-                <button
-                  key={cara}
-                  type="button"
-                  className="cid-mini"
-                  aria-label={`Ver ${PASOS[cara].titulo.toLowerCase()} en grande`}
-                  onClick={(e) => {
-                    // Se guarda LA MINIATURA pulsada: al cerrar el visor el
-                    // foco vuelve a ella, no al principio de la pantalla.
-                    origenVisor.current = e.currentTarget;
-                    setMirando(cara);
-                  }}
-                >
-                  <img className="cid-mini-img" src={url} alt="" />
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      {error && <span className="cid-error" id={idError}>{error}</span>}
-      {nota && <span className="cid-nota">{nota}</span>}
-
+      }
+    >
       {/* El input real, fuera del tabulador: el control accesible es el Boton.
           `hidden` no: algunos navegadores ignoran click() sobre hidden. */}
       <input
@@ -285,6 +283,6 @@ export function CargaId({
           />
         )}
       </Dialogo>
-    </div>
+    </FilaCarga>
   );
 }

@@ -46,6 +46,10 @@ const ELEMENTOS = [
   { n: 'Campo de texto',        p: ['campo', 'cg', 'msj'] },
   // El campo que jamás se normaliza, con su conmutador ver/no ver (v1.37.0).
   { n: 'Campo de contraseña',   p: ['cp'] },
+  // R102: la fila COMÚN de las tres cargas — imagen, PDF e ID. Va primero
+  // porque es de la que dependen las otras tres: sin ella, cada una vuelve a
+  // romper la rejilla del formulario a su manera.
+  { n: 'Fila de carga',         p: ['cx'] },
   // R35: elegir, encuadrar (mover + acercar) y recortar en cuadrado.
   { n: 'Carga de imagen',       p: ['ci'] },
   // R43: soltar o elegir UN PDF, comprobarlo en los bytes y comprimirlo.
@@ -420,8 +424,27 @@ if (existsSync(dirComponentes)) {
     return zonas;
   }
 
+  /**
+   * TAMBIÉN `interno/`, y esto era un agujero.
+   *
+   * El barrido leía solo los .tsx sueltos de `componentes/src`, así que todo
+   * lo que se extrae a una pieza interna salía del alcance del candado justo
+   * al extraerse — que es cuando más falta hace, porque una pieza interna la
+   * comparten varios componentes y su clase huérfana rompe en todos.
+   * Se vio al escribir `interno/FilaCarga.tsx` (R102): sus catorce clases
+   * `cx-*` no las miraba nadie. `EditorEncuadre` llevaba ahí desde la v1.45.0.
+   */
+  const tsx = [
+    ...readdirSync(dirComponentes).filter((f) => /\.tsx$/.test(f)),
+    ...(existsSync(join(dirComponentes, 'interno'))
+      ? readdirSync(join(dirComponentes, 'interno'))
+        .filter((f) => /\.tsx$/.test(f))
+        .map((f) => join('interno', f))
+      : []),
+  ];
+
   const huerfanas = [];
-  for (const f of readdirSync(dirComponentes).filter((f) => /\.tsx$/.test(f))) {
+  for (const f of tsx) {
     const fuente = readFileSync(join(dirComponentes, f), 'utf8');
     for (const zona of zonasClassName(fuente)) {
       // En una zona de cadena, la zona ES el literal. En una de expresión,

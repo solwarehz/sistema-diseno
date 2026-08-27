@@ -45,27 +45,30 @@ describe('Carga de PDF — dónde vive (R46)', () => {
   it('en un formulario es UN BOTÓN, no un recuadro: el panel no está hasta que se abre', () => {
     const { container } = render(<CargaPdf etiqueta="Acta de notas" onCambio={() => {}} />);
     expect(boton(/Subir PDF/)).toBeInTheDocument();
-    expect(container.querySelector('.cpdf-panel')).toBeNull();
+    expect(container.querySelector('.cx-panel')).toBeNull();
     expect(container.querySelector('.cpdf-zona')).toBeNull();
   });
 
   it('el panel se despliega EN SU SITIO, sin ventana flotante', () => {
     const { container } = render(<CargaPdf etiqueta="Acta" onCambio={() => {}} />);
     abrir();
-    expect(container.querySelector('.cpdf-panel')).toBeInTheDocument();
+    expect(container.querySelector('.cx-panel')).toBeInTheDocument();
     // Nada de `dialog`: el contenido del formulario se desplaza, no se tapa.
     expect(container.querySelector('dialog')).toBeNull();
-    // Y abierto se ven EXACTAMENTE DOS botones de accion: el disparador de
-    // fuera se retira. El tachito no cuenta: pertenece a su archivo.
+    // Y abierto se ven EXACTAMENTE DOS botones de accion. El tachito no
+    // cuenta: pertenece a su archivo.
     expect(container.querySelectorAll('.cpdf-pie button')).toHaveLength(2);
-    expect(screen.queryByRole('button', { name: /Subir PDF/ })).not.toBeInTheDocument();
+    // R102 · el disparador de fuera ya no se retira: se queda APAGADO, que es
+    // el ancla de la fila. Pulsarlo sigue sin hacer nada, como cuando no
+    // estaba, asi que el panel manda igual.
+    expect(screen.getByRole('button', { name: /Subir PDF/ })).toBeDisabled();
   });
 
   it('R10 · cerrado no queda nada del panel en el árbol: se desmonta, no se colapsa', () => {
     const { container } = render(<CargaPdf etiqueta="Acta" onCambio={() => {}} />);
     abrir();
     fireEvent.click(segundo());
-    expect(container.querySelector('.cpdf-panel')).toBeNull();
+    expect(container.querySelector('.cx-panel')).toBeNull();
     expect(screen.queryByRole('button', { name: 'Grabar' })).not.toBeInTheDocument();
   });
 
@@ -74,7 +77,7 @@ describe('Carga de PDF — dónde vive (R46)', () => {
       <CargaPdf etiqueta="Acta" presentacion="en-linea" onCambio={() => {}} />,
     );
     expect(container.querySelector('.cpdf-zona')).toBeInTheDocument();
-    expect(container.querySelector('.cpdf-panel')).toBeNull();
+    expect(container.querySelector('.cx-panel')).toBeNull();
   });
 });
 
@@ -126,8 +129,11 @@ describe('Carga de PDF — cuándo se entrega al formulario', () => {
     await screen.findByText('acta.pdf');
     fireEvent.click(segundo());
 
-    expect(container.querySelector('.cpdf-panel')).toBeNull();
-    expect(screen.getByText('acta.pdf')).toBeInTheDocument();
+    expect(container.querySelector('.cx-panel')).toBeNull();
+    // R102 · el resumen vive AL COSTADO del disparador, en la fila. El nombre
+    // va partido —base y extension— para que la extension no se recorte nunca,
+    // asi que se comprueba sobre el adjunto entero.
+    expect(container.querySelector('.cx-adj')?.textContent).toContain('acta.pdf');
   });
 
   it('volver a abrir arranca del archivo YA GUARDADO, no en blanco', async () => {
@@ -139,7 +145,7 @@ describe('Carga de PDF — cuándo se entrega al formulario', () => {
 
     abrir();
     // Si arrancara vacío, parecería que se perdió lo que ya había.
-    expect(container.querySelector('.cpdf-panel')!.textContent).toContain('acta.pdf');
+    expect(container.querySelector('.cx-panel')!.textContent).toContain('acta.pdf');
     expect(segundo()).toHaveTextContent('Grabar');
   });
 

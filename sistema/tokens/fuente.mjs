@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.76.0";
+export const VERSION = "1.77.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,50 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.77.0', fecha: '2026-08-27',
+    que: 'R102: subir imagen, subir archivo y subir ID arrancan y terminan igual, sin romper el formulario',
+    porque:
+      'R102 · Lo pidio el responsable con estas palabras: «subir id, subir archivo, subir imagen, todas '
+      + 'inician y terminan de forma similar sin romper el flujo». Y el defecto que arreglaba era '
+      + 'MEDIBLE, no de gusto: un .campo mide 36,45px medido en el catalogo con el navegador — 13px de texto con 18,85 de '
+      + 'interlinea real, mas 8+8 de relleno y 1+1 de borde—. CargaImagen pintaba una caja de 96px, '
+      + 'CargaPdf apilaba la lista ENCIMA del boton —asi que la carga crecia hacia arriba cada vez que '
+      + 'se anadia un archivo y el formulario entero se movia— y CargaId ponia dos miniaturas de 48. '
+      + 'Las tres rompian la rejilla, cada una a su manera y con su propio marcado. '
+      + 'AHORA LAS TRES EMITEN LA MISMA FILA (interno/FilaCarga), asi que no pueden divergir: no es que '
+      + 'se parezcan, es que es la misma. El disparador es mini (27,6), la miniatura 22, el adjunto 27, '
+      + 'y lo cargado va AL COSTADO del disparador y no encima. Lo que no cabe se CUENTA («+2») en vez '
+      + 'de saltar de linea, porque envolver es romper la estatica otra vez, solo que hacia abajo. Y la '
+      + 'extension del archivo no se recorta jamas: cortar «boleta-…-2026.pdf» por el final se lleva '
+      + 'justo el dato que dice que es. '
+      + 'EL FUNCIONAMIENTO INTERNO NO CAMBIA, y lo fijo el responsable: lo que cada carga comprueba, '
+      + 'comprime, borronea y entrega es identico. Cambia como se presenta al empezar y que forma tiene '
+      + 'el resultado. Por eso CargaImagen conserva «caja» como defecto —cambiarlo reformaria en '
+      + 'silencio cada selector de foto y de logo ya en produccion, donde la caja no estorba sino que es '
+      + 'el punto: ensena el hueco real donde la imagen va a vivir— y la fila se pide con '
+      + 'presentacion="fila". '
+      + 'DE PASO, UN AGUJERO PROPIO: el candado de huerfanas leia solo los .tsx sueltos de '
+      + 'componentes/src, asi que todo lo extraido a interno/ salia de su alcance justo al extraerse — '
+      + 'que es cuando mas falta hace, porque una pieza interna la comparten varios componentes. Las '
+      + 'catorce clases cx-* no las miraba nadie, y EditorEncuadre llevaba ahi desde la v1.45.0.',
+    rompe: [
+      'Si maquetaron a mano el resumen de `CargaPdf`, cambia de sitio: las clases `.cpdf-lista` '
+      + 'y `.cpdf-puesto` siguen existiendo DENTRO del panel, pero fuera de el lo cargado se pinta '
+      + 'ahora con `.cx-adj`, al costado del disparador. Si usan el componente, no hay nada que hacer.',
+      'Si maquetaron a mano `CargaId`, sus clases propias **desaparecen**: `.cid`, `.cid-et`, '
+      + '`.cid-fila`, `.cid-minis`, `.cid-mini`, `.cid-mini-img`, `.cid-error` y `.cid-nota` pasan a '
+      + 'ser `.cx-*`. Las miniaturas van de **76×48 a 35×22** —la proporcion ID-1 se conserva— y el '
+      + 'documento se lee donde se leia antes: en el visor, pulsando la miniatura.',
+      '`.cpdf-compacta` y `.cpdf-ayuda` **se retiran de la hoja**: ya no las emite nadie. La ayuda '
+      + 'del componente sale ahora por `.cx-nota`.',
+      'En `CargaPdf`, el resumen de la fila deja de repetir el **recuento de paginas**: en 27px de '
+      + 'alto no cabe. Sigue en el panel, y el dato sigue viajando entero en `onCambio`.',
+      '`CargaImagen` **no cambia sola**: su defecto sigue siendo `presentacion="caja"`. La fila se '
+      + 'pide con `presentacion="fila"`, que es lo que va en un formulario.',
+    ],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.76.0', fecha: '2026-08-25',
     que: 'R101: la tabla arranca ordenada, y la columna que identifica la fila deja de poder desmarcarse',

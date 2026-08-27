@@ -78,6 +78,24 @@ const CASOS = [
   ['Celda de la tabla', [elem('table', ['tb']), elem('tbody'), elem('tr'), elem('td', ['tb-indice', 'mono'])]],
   ['Cabecera de la tabla', [elem('table', ['tb']), elem('thead'), elem('tr'), elem('th', ['tb-th'])]],
   ['Paginación', [elem('div', ['pgn']), elem('button', ['pgn-btn'])]],
+  // R102 · la fila común de las tres cargas. Va nombrada además del barrido
+  // porque es la superficie de esta versión: si un día se cae del marcado, el
+  // barrido dejaría de mirarla en silencio y aquí se vería el hueco.
+  ['Fila de carga', [elem('div', ['cx']), elem('div', ['cx-fila'])]],
+  ['Adjunto de archivo en la fila', [
+    elem('div', ['cx']), elem('div', ['cx-fila']),
+    elem('ul', ['cx-adjuntos']), elem('li', ['cx-adj']),
+  ]],
+  ['Miniatura de la fila', [
+    elem('div', ['cx']), elem('div', ['cx-fila']),
+    elem('ul', ['cx-adjuntos']), elem('li', ['cx-adj', 'cx-adj-img']),
+    elem('img', ['cx-mini']),
+  ]],
+  ['Miniatura del documento de identidad', [
+    elem('div', ['cx']), elem('div', ['cx-fila']),
+    elem('ul', ['cx-adjuntos']), elem('li', ['cx-adj', 'cx-adj-img']),
+    elem('button', ['cx-ver']), elem('img', ['cx-mini', 'cx-mini-id']),
+  ]],
   ['Zona de soltar PDF', [elem('div', ['cpdf']), elem('div', ['cpdf-zona'])]],
   ['Fila de archivo PDF', [
     elem('div', ['cpdf']), elem('div', ['cpdf-panel']), elem('ul', ['cpdf-lista']),

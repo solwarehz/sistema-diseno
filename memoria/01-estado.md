@@ -1,9 +1,9 @@
 # Estado del proyecto
 
-**Última actualización:** 21 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.76.0** — la tabla arranca **ordenada**, y la
-casilla de la columna fija dejaba desmarcarse sin efecto: **un control que
-mentía**
+**Última actualización:** 27 de agosto de 2026
+**Versión del sistema:** MMI-DS **v1.77.0** — subir imagen, subir archivo y
+subir ID **arrancan y terminan igual**, en una fila que mide lo que un campo:
+las tres rompían el formulario, cada una a su manera
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -42,10 +42,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 790 reglas de 1274 · **566 clases, 0 huérfanas** |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 52 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.76.0.zip` · **54 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.77.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.76.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.77.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,61 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.76.0), con detalle
+### Lo de hoy (v1.77.0), con detalle
+
+**R102 · las tres cargas arrancan y terminan igual, y dejan de romper el
+formulario.**
+
+Lo pidió el responsable con estas palabras: *«subir id, subir archivo, subir
+imagen, todas inician y terminan de forma similar sin romper el flujo»*. Y lo
+acotó después, que es lo que decidió el alcance: *«el funcionamiento interno
+sigue igual, solo cambias la forma como se presenta al inicio y como es el
+resultado final»*.
+
+**El defecto era medible, no de gusto.** Medido en el catálogo con el navegador,
+un `.campo` da **36,45 px** —13 px de texto con **18,85** de interlínea real,
+más 8+8 de relleno y 1+1 de borde—. Contra eso:
+
+| | Qué hacía | Alto |
+|---|---|---|
+| `CargaImagen` | una caja de vista previa entre dos campos | **96 px** |
+| `CargaPdf` | apilaba la lista **encima** del botón, así que crecía hacia arriba al añadir | variable |
+| `CargaId` | dos miniaturas al costado, pero de 76×48 | **48 px** |
+
+Las tres rompían la rejilla, cada una a su manera **y con su propio marcado**.
+
+**Ahora las tres emiten la misma fila** (`interno/FilaCarga`), así que no pueden
+divergir: no es que se parezcan, es que es la misma. La fila se fija en 36 px y
+no crece con nada — con uno, con cinco y con ninguno mide lo mismo. Lo que no
+cabe **se cuenta** («+2») en vez de saltar de línea, porque envolver es romper
+la estática otra vez, solo que hacia abajo.
+
+**Dos decisiones que conviene recordar:**
+
+- **La extensión del archivo no se recorta jamás.** El nombre sí. Cortar
+  `boleta-…-2026.pdf` por el final se lleva justo el dato que dice qué es.
+- **`CargaImagen` conserva `caja` como defecto.** Cambiarlo habría reformado en
+  silencio cada selector de foto y de logo ya en producción, donde la caja no
+  estorba sino que es el punto: enseña el hueco real donde la imagen va a vivir.
+  La fila se pide con `presentacion="fila"`.
+
+**Un agujero propio, encontrado de paso.** El candado de huérfanas leía solo los
+`.tsx` sueltos de `componentes/src`, así que **todo lo extraído a `interno/`
+salía de su alcance justo al extraerse** — que es cuando más falta hace, porque
+una pieza interna la comparten varios componentes y su clase huérfana rompe en
+todos. Las catorce clases `cx-*` no las miraba nadie, y `EditorEncuadre` llevaba
+ahí desde la v1.45.0. Ampliado y **visto fallar a propósito** antes de confiar
+en él.
+
+**Y el candado que llevaba tiempo en rojo sin que nadie lo mirara.**
+`probar-candado.mjs` leía las reglas en `config.at(-1)`, y desde que el bloque
+del analizador de TypeScript pasó a ir el último encontraba **0 selectores donde
+esperaba 8**. Es exactamente el defecto del que nació `verificar-forma` —buscar
+por posición dentro de algo que se puede reordenar—, y le había tocado al propio
+candado que comprueba el candado. La corrección no es correr el índice: es dejar
+de usar índices y buscar el bloque **que tiene la regla**.
+
+### Lo de la v1.76.0, con detalle
 
 **R101 · dos comportamientos por omisión que faltaban, y un control que mentía.**
 
@@ -828,22 +882,26 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.76.0
+Versión                      1.77.0
 Tokens semánticos                56   + 5 de marca
-Pares de contraste              178   (69 bloqueantes por modo, 0 fallos)
-Pruebas                         432   en 30 archivos
-Reglas que viajan               790   de 1274 · 566 clases, 0 huérfanas
-Candado de la cascada           867   reglas leidas · 11 anchos
-Candado del empate              292   combinaciones reales · 53 empates
+Pares de contraste              178   (138 bloqueantes · 40 informativos,
+                                      0 fallos)
+Pruebas                         476   en 33 archivos
+Reglas que viajan               866   de 1351 · 629 clases, 0 huérfanas
+                                      — y desde hoy tambien las de interno/
+Candado de la cascada           965   reglas leidas · 11 anchos
+Candado del empate              311   combinaciones reales · 54 empates
                                       · 0 cambian de ganador
-Candado de la promesa           971   elementos · 199.674 propiedades
+Candado de la promesa          1064   elementos · 218.743 propiedades
                                       a 5 anchos (1440, 1024, 900, 700, 390)
-Candado del elemento            145   clases comparadas · 5 divergencias
-                                      DECLARADAS · 100 las pinta el guion
-Contrato de comportamiento      156   reglas · 130 obligatorias · 5 PENDIENTE
-Componentes publicados           32   37 módulos viajan en el paquete
+Candado del elemento            168   clases comparadas · 5 divergencias
+                                      DECLARADAS, ninguna nueva
+Contrato de comportamiento      178   reglas · 146 obligatorias · 5 PENDIENTE
+Componentes publicados           33   38 módulos viajan en el paquete
+                                      117 exportaciones, todas por el índice
 Iconos                           46
-Páginas del catálogo             52
+Páginas del catálogo             38   (índice de `items`, no de anclas)
+Fila de un campo, medida      36,45   px · la fila de carga se fija en 36
 ```
 
 ```powershell

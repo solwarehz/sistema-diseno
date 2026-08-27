@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.76.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.77.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -232,6 +232,52 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .cp-ver:disabled{ opacity: .75; cursor: default; }
 
 /* ───────────────────────────────────────────────────────────────────────────
+   FILA DE CARGA — 25 reglas · clases .cx-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.cx{ display: flex; flex-direction: column; gap: 4px; }
+.cx-et{ font-size: 13px; font-weight: 500; color: var(--texto-principal); }
+.cx-fila{ display: flex; align-items: center; gap: 8px;
+  min-height: 36px; min-width: 0; flex-wrap: nowrap; }
+.cx-fila > .btn{ flex: none; }
+.cx-vacio{ font-size: 12px; color: var(--texto-pista); }
+.cx-adjuntos{ display: flex; align-items: center; gap: 4px;
+  min-width: 0; overflow: hidden; list-style: none; margin: 0; padding: 0; }
+.cx-adjuntos[hidden]{ display: none; }
+.cx-adj{ display: inline-flex; align-items: center; gap: 4px;
+  min-width: 0; max-width: 100%; height: 27px; padding: 0 4px;
+  border: 1px solid var(--borde); border-radius: 6px;
+  background: var(--fondo-tarjeta); font-size: 12px; color: var(--texto-principal); }
+.cx-adj .ic{ width: 14px; height: 14px; flex: none; color: var(--texto-secundario); }
+.cx-adj-img{ padding: 0; border-color: transparent; background: transparent; gap: 4px; }
+.cx-mini{ width: 22px; height: 22px; flex: none; display: block;
+  object-fit: cover; border-radius: 3px; border: 1px solid var(--borde);
+  background: var(--fondo-encabezado); }
+.cx-mini-id{ width: 35px; }
+.cx-ver{ padding: 0; border: 0; background: transparent; cursor: pointer;
+  display: block; border-radius: 3px; }
+.cx-ver:hover .cx-mini{ border-color: var(--accion); }
+.cx-ver:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px; }
+.cx-arch{ display: inline-flex; align-items: baseline; min-width: 0; }
+.cx-nombre{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  min-width: 4ch; max-width: 22ch; }
+.cx-ext{ flex: none; }
+.cx-peso{ font-size: 12px; color: var(--texto-secundario); flex: none; }
+.cx-mas{ flex: none; height: 22px; padding: 0 4px;
+  display: inline-flex; align-items: center; border-radius: 3px;
+  background: var(--fondo-encabezado); color: var(--texto-secundario);
+  font-size: 12px; font-weight: 500; }
+.cx-panel{ margin-top: 4px; padding: 12px;
+  border: 1px solid var(--borde); border-radius: 8px;
+  background: var(--fondo-encabezado);
+  display: flex; flex-direction: column; gap: 12px; }
+.cx-panel[hidden]{ display: none; }
+.cx-error{ font-size: 12px; color: var(--error-texto); font-weight: 500;
+  display: inline-flex; align-items: center; gap: 4px; }
+.cx-error .ic{ width: 14px; height: 14px; flex: none; }
+.cx-nota{ font-size: 12px; color: var(--texto-secundario); }
+
+/* ───────────────────────────────────────────────────────────────────────────
    CARGA DE IMAGEN — 26 reglas · clases .ci-*
    ─────────────────────────────────────────────────────────────────────────── */
 
@@ -267,7 +313,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .ci-zoom{ display: flex; gap: 8px; align-items: center; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CARGA DE PDF — 25 reglas · clases .cpdf-*
+   CARGA DE PDF — 23 reglas · clases .cpdf-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .cpdf{ display: flex; flex-direction: column; gap: 4px; }
@@ -292,7 +338,6 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .cpdf-invita[hidden], .cpdf-puesto[hidden], .cpdf-lista[hidden],
 .cpdf-linea[hidden], .cpdf-acciones[hidden], .cpdf-panel[hidden],
 .cpdf-pie[hidden]{ display: none; }
-.cpdf-compacta{ gap: 8px; }
 .cpdf-panel{ display: flex; flex-direction: column; gap: 8px;
   animation: cpdf-desplegar var(--dur-media) var(--curva); }
 .cpdf-pie{ display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
@@ -304,25 +349,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .cpdf-pista{ font-size: 12px; color: var(--texto-secundario); }
 .cpdf-trabajo{ padding-top: 4px; }
 .cpdf-error{ font-size: 12px; color: var(--error-texto); font-weight: 500; }
-.cpdf-ayuda{ font-size: 12px; color: var(--texto-pista); }
 .cpdf-entrada{ position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CARGA DE ID — 11 reglas · clases .cid-*
+   CARGA DE ID — 2 reglas · clases .cid-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-.cid{ display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
-.cid-et{ font-size: 13px; font-weight: 500; }
-.cid-fila{ display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.cid-minis{ display: flex; gap: 8px; }
-.cid-mini{ padding: 0; border: 1px solid var(--borde-campo); border-radius: 6px;
-  background: var(--fondo-encabezado); cursor: pointer; overflow: hidden;
-  width: 76px; height: 48px; display: block; }
-.cid-mini:hover{ border-color: var(--accion); }
-.cid-mini-img{ display: block; width: 100%; height: 100%; object-fit: cover; }
 .cid-paso{ font-size: 13px; color: var(--texto-secundario); margin: 0 0 12px; }
-.cid-error{ font-size: 12px; color: var(--error-texto); font-weight: 500; }
-.cid-nota{ font-size: 12px; color: var(--texto-secundario); }
 .cid-visor-img{ display: block; max-width: 100%; max-height: 60vh;
   border-radius: 6px; border: 1px solid var(--borde); }
 

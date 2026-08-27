@@ -1327,6 +1327,157 @@ una versión (v1.35.0) y se retiró por esta misma razón.</p>`;
 
 // ── Elemento: Carga de imagen — R35 ─────────────────────────────────────────
 
+// ── Elemento: Fila de carga ─────────────────────────────────────────────────
+// R102. La pieza de la que dependen las tres cargas. Su página va ANTES que
+// las tres a propósito: lo que hay que entender primero es la medida.
+
+const pagFilaCarga = `
+<p class="pag-intro">El <strong>arranque y el final comunes</strong> de las tres cargas —imagen,
+PDF e ID—. Una fila que mide <strong>lo que mide un campo</strong>: el rótulo arriba, el
+disparador y lo ya cargado al costado, y debajo el error y la nota. Nada crece, cargue lo que
+cargue.</p>
+
+<div class="aviso"><strong>La regla es una medida, no un gusto.</strong> Un <code>.campo</code>
+mide <strong>36,45 px</strong> —medidos aquí, con el navegador: 13 px de texto con 18,85 de interlínea real, más 8+8 de relleno y
+1+1 de borde—. Antes, la carga de imagen pintaba una caja de <strong>96</strong>, la de PDF
+apilaba la lista <em>encima</em> del botón y la de ID ponía miniaturas de <strong>48</strong>.
+Las tres rompían la rejilla del formulario, cada una a su manera.</div>
+
+<div class="bloque">
+  <p class="seccion-sub"><strong>Las tres, en el mismo formulario.</strong> Con los campos de
+  verdad alrededor, que es donde se ve si rompen o no. Ninguna de las tres filas pasa de los
+  36 px, y las cuatro etiquetas caen sobre la misma columna.</p>
+
+  <div class="caso">
+    <div class="caso-lienzo">
+      <div class="caso-form">
+      <div class="campo-grupo">
+        <label class="campo-etiqueta" for="cx-m-1">Alumno</label>
+        <input id="cx-m-1" class="campo cg-in" value="Quispe Ramos, Ana Lucía" readonly>
+      </div>
+
+      <div class="cx">
+        <span class="cx-et">Boleta de notas</span>
+        <div class="cx-fila">
+          <button class="btn btn-neutro btn-mini btn-ic">${icono('subir')}Subir imagen</button>
+          <ul class="cx-adjuntos">
+            <li class="cx-adj cx-adj-img">
+              <img class="cx-mini" id="cx-demo-fuente" src="${ESCUDO_PNG}" alt="Boleta de notas">
+              <button class="btn btn-terc btn-mini btn-solo-ic" aria-label="Quitar Boleta de notas">${icono('papelera')}</button>
+            </li>
+          </ul>
+        </div>
+        <span class="cx-nota">JPG o PNG · hasta 5 MB</span>
+      </div>
+
+      <div class="cx">
+        <span class="cx-et">Acta firmada</span>
+        <div class="cx-fila">
+          <button class="btn btn-neutro btn-mini btn-ic" aria-expanded="false">${icono('pdf')}Subir PDF</button>
+          <ul class="cx-adjuntos">
+            <li class="cx-adj">
+              ${icono('documento')}
+              <span class="cx-arch"><span class="cx-nombre">acta-bimestre-III-2026</span><span class="cx-ext">.pdf</span></span>
+              <span class="cx-peso">312 KB</span>
+              <button class="btn btn-terc btn-mini btn-solo-ic" aria-label="Quitar acta-bimestre-III-2026.pdf">${icono('papelera')}</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cx">
+        <span class="cx-et">Documento de identidad</span>
+        <div class="cx-fila">
+          <button class="btn btn-neutro btn-mini btn-ic">${icono('documento')}Subir ID</button>
+          <ul class="cx-adjuntos">
+            <li class="cx-adj cx-adj-img">
+              <button type="button" class="cx-ver" aria-label="Ver anverso en grande">
+                <img class="cx-mini cx-mini-id" src="${LOCKUP_PNG}" alt="">
+              </button>
+            </li>
+            <li class="cx-adj cx-adj-img">
+              <button type="button" class="cx-ver" aria-label="Ver reverso en grande">
+                <img class="cx-mini cx-mini-id" src="${LOCKUP_PNG}" alt="">
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="campo-grupo">
+        <label class="campo-etiqueta" for="cx-m-2">Observación</label>
+        <input id="cx-m-2" class="campo cg-in" placeholder="Opcional">
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Los estados</h3>
+<p class="seccion-sub">Todos miden lo mismo. Lo que cambia es qué hay dentro, nunca cuánto ocupa.</p>
+
+<div class="bloque">
+  <div class="caso-form">
+    <div class="cx">
+      <span class="cx-et">Vacío</span>
+      <div class="cx-fila">
+        <button class="btn btn-neutro btn-mini btn-ic">${icono('subir')}Subir imagen</button>
+        <span class="cx-vacio">Ningún archivo</span>
+      </div>
+    </div>
+
+    <div class="cx">
+      <span class="cx-et">Varios — el sobrante se cuenta, no se apila</span>
+      <div class="cx-fila">
+        <button class="btn btn-neutro btn-mini btn-ic">${icono('subir')}Subir imagen</button>
+        <ul class="cx-adjuntos">
+          <li class="cx-adj cx-adj-img"><img class="cx-mini" data-mini alt="Cara A"></li>
+          <li class="cx-adj cx-adj-img"><img class="cx-mini" data-mini alt="Cara B"></li>
+          <li class="cx-mas">+3</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cx">
+      <span class="cx-et">Con error</span>
+      <div class="cx-fila">
+        <button class="btn btn-neutro btn-mini btn-ic" aria-expanded="false">${icono('pdf')}Subir PDF</button>
+        <ul class="cx-adjuntos">
+          <li class="cx-adj">
+            ${icono('documento')}
+            <span class="cx-arch"><span class="cx-nombre">escaneo-completo</span><span class="cx-ext">.pdf</span></span>
+            <span class="cx-peso">8,4 MB</span>
+          </li>
+        </ul>
+      </div>
+      <span class="cx-error">${icono('alerta')}Pesa 8,4 MB después de comprimir. El máximo son 5 MB.</span>
+    </div>
+
+    <div class="cx">
+      <span class="cx-et">Con el panel abierto — se despliega aquí y empuja</span>
+      <div class="cx-fila">
+        <button class="btn btn-neutro btn-mini btn-ic" aria-expanded="true">${icono('pdf')}Subir PDF</button>
+      </div>
+      <div class="cx-panel">
+        <p class="cx-nota">Arrastra el PDF aquí o elígelo desde tu equipo.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Tres decisiones que no son de aspecto</h3>
+<ol class="man-lista">
+  <li><strong>Lo que no cabe se cuenta.</strong> Tres adjuntos a la vista y «+2» para el resto.
+  Envolver en dos renglones vuelve a romper la estática, solo que hacia abajo; una tira que se
+  sale por el borde no dice cuánto falta.</li>
+  <li><strong>La extensión no se recorta jamás.</strong> El nombre sí —con puntos suspensivos—,
+  pero cortar <code>boleta-…-2026.pdf</code> por el final se lleva justo el dato que dice qué es
+  el archivo.</li>
+  <li><strong>La miniatura no sirve para reconocer.</strong> A 22 px no se lee un documento, y no
+  es a lo que va: sirve para saber que hay algo puesto y cuál de los dos es. Reconocerlo es
+  trabajo del visor, que se abre pulsándola.</li>
+</ol>`;
+
 const pagCargaImagen = `
 <p class="pag-intro">Elegir una imagen, <strong>encuadrarla</strong> —arrastrar para mover,
 botones para acercar, flechas con el teclado— y entregar el recorte <strong>en WebP</strong> con la
@@ -1392,7 +1543,42 @@ y el comprimido en cuadrado. La subida es del producto.</p>
 </div>
 <p class="seccion-sub">En React, el editor vive en un <code>Dialogo</code> con «pulsar fuera»
 APAGADO —un encuadre a medias no se pierde por un clic—. El recorte sale en <strong>WebP</strong>
-(0,85), con caída a PNG por especificación: se lee <code>blob.type</code>, no se asume extensión.</p>`;
+(0,85), con caída a PNG por especificación: se lee <code>blob.type</code>, no se asume extensión.</p>
+
+<h3 class="sub-seccion">En un formulario: <code>presentacion="fila"</code></h3>
+<p class="seccion-sub">La caja de arriba mide <strong>96 px</strong> y un campo <strong>36,45</strong>:
+entre dos campos rompe la rejilla. En un formulario se pide la <a href="#filacarga" data-ir="filacarga"
+class="enlace">fila de carga</a>, la misma que usan la carga de PDF y la de ID. La caja
+<strong>sigue siendo el defecto</strong> a propósito: en una pantalla dedicada a poner una foto o
+un logo no estorba, es el punto — enseña el hueco real donde la imagen va a vivir.</p>
+
+<div class="bloque">
+  <div class="caso-form">
+    <div class="cx">
+      <span class="cx-et">Foto del trabajador</span>
+      <div class="cx-fila">
+        <button class="btn btn-neutro btn-mini btn-ic">${icono('camara')}Cambiar foto</button>
+        <ul class="cx-adjuntos">
+          <li class="cx-adj cx-adj-img">
+            <img class="cx-mini" data-mini alt="Foto del trabajador">
+            <button class="btn btn-terc btn-mini btn-solo-ic" aria-label="Quitar Foto del trabajador">${icono('papelera')}</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cod">
+  <div class="cod-cab"><span class="cod-tit">Uso</span></div>
+  <pre class="cod-pre"><code>&lt;CargaImagen
+  etiqueta="Foto del trabajador"
+  presentacion="fila"
+  valor={ficha.foto}
+  onCambio={({ archivo }) =&gt; subir(archivo)}
+  onQuitar={() =&gt; borrar()}
+/&gt;</code></pre>
+</div>`;
 
 // ── Elemento: Carga de PDF ──────────────────────────────────────────────────
 
@@ -1416,17 +1602,20 @@ devuelve el archivo listo y los dos pesos.</p>
     <label class="cg"><span class="cg-et">Apellidos y nombres</span>
       <input class="campo cg-in" value="QUISPE MAMANI, Rosa" readonly></label>
 
-    <div class="cpdf cpdf-compacta" data-pdf="uno">
+    <div class="cx" data-pdf="uno">
       <span class="cpdf-et">Acta de notas</span>
 
-      <ul class="cpdf-lista" data-lista hidden></ul>
-
-      <div class="cpdf-acciones" data-cerrado>
+      <!-- R102 · LA FILA. Lo cargado va AL COSTADO del disparador y no encima:
+           antes la lista se apilaba arriba y el formulario entero se movia
+           cada vez que se anadia un archivo. -->
+      <div class="cx-fila">
         <button class="btn btn-neutro btn-mini btn-ic" data-abrir
           aria-expanded="false" aria-controls="cpdf-demo-panel">${icono('pdf')}Subir PDF</button>
+        <ul class="cx-adjuntos" data-lista hidden></ul>
+        <span class="cx-vacio" data-vacio>Ningún archivo</span>
       </div>
 
-      <div class="cpdf-panel" id="cpdf-demo-panel" data-panel hidden>
+      <div class="cx-panel" id="cpdf-demo-panel" data-panel hidden>
         <div class="cpdf-zona" data-zona>
           <ul class="cpdf-lista" data-borrador hidden></ul>
           <p class="cpdf-invita" data-invita>
@@ -1453,7 +1642,7 @@ devuelve el archivo listo y los dos pesos.</p>
         </div>
       </div>
 
-      <span class="cpdf-ayuda">El acta va al legajo del estudiante.</span>
+      <span class="cx-nota">El acta va al legajo del estudiante.</span>
     </div>
 
     <label class="cg"><span class="cg-et">Observaciones</span>
@@ -1464,40 +1653,37 @@ devuelve el archivo listo y los dos pesos.</p>
 <h3 class="sub-seccion">Cerrado, abierto, y el archivo puesto</h3>
 <div class="bloque">
   <div class="muestra-fila">
-    <div class="cpdf cpdf-compacta">
-      <span class="cpdf-et">Cerrado y vacío</span>
-      <div class="cpdf-acciones">
-        <button class="btn btn-neutro btn-mini btn-ic">${icono('pdf')}Subir PDF</button>
+    <div class="cx">
+      <span class="cx-et">Cerrado y vacío</span>
+      <div class="cx-fila">
+        <button class="btn btn-neutro btn-mini btn-ic" aria-expanded="false">${icono('pdf')}Subir PDF</button>
+        <span class="cx-vacio">Ningún archivo</span>
       </div>
-      <span class="cpdf-ayuda">Lo que ve el formulario mientras no hay nada.</span>
+      <span class="cx-nota">Lo que ve el formulario mientras no hay nada.</span>
     </div>
 
-    <div class="cpdf cpdf-compacta">
-      <span class="cpdf-et">Con el archivo puesto</span>
-      <ul class="cpdf-lista">
-        <li class="cpdf-puesto">
-          <span class="cpdf-ico" aria-hidden="true">${icono('documento', TAMANOS.estado)}</span>
-          <span class="cpdf-datos">
-            <span class="cpdf-linea">
-              <span class="cpdf-nombre">acta-2026-3B.pdf</span>
-              <button class="btn btn-terc btn-mini btn-solo-ic cpdf-quitar"
-                aria-label="Quitar acta-2026-3B.pdf">${icono('papelera')}</button>
-            </span>
-            <span class="cpdf-peso">223 KB · 2 páginas</span>
-          </span>
-        </li>
-      </ul>
-      <div class="cpdf-acciones">
-        <button class="btn btn-neutro btn-mini btn-ic">${icono('pdf')}Subir PDF</button>
+    <div class="cx">
+      <span class="cx-et">Con el archivo puesto</span>
+      <div class="cx-fila">
+        <button class="btn btn-neutro btn-mini btn-ic" aria-expanded="false">${icono('pdf')}Subir PDF</button>
+        <ul class="cx-adjuntos">
+          <li class="cx-adj">
+            ${icono('documento')}
+            <span class="cx-arch"><span class="cx-nombre">acta-2026-3B</span><span class="cx-ext">.pdf</span></span>
+            <button class="btn btn-terc btn-mini btn-solo-ic"
+              aria-label="Quitar acta-2026-3B.pdf">${icono('papelera')}</button>
+          </li>
+        </ul>
       </div>
     </div>
 
-    <div class="cpdf cpdf-compacta">
-      <span class="cpdf-et">Con error</span>
-      <div class="cpdf-acciones">
-        <button class="btn btn-neutro btn-mini btn-ic">${icono('pdf')}Subir PDF</button>
+    <div class="cx">
+      <span class="cx-et">Con error</span>
+      <div class="cx-fila">
+        <button class="btn btn-neutro btn-mini btn-ic" aria-expanded="false">${icono('pdf')}Subir PDF</button>
+        <span class="cx-vacio">Ningún archivo</span>
       </div>
-      <span class="cpdf-error">Ese archivo no es un PDF. Solo se admiten PDF.</span>
+      <span class="cx-error">${icono('alerta')}Ese archivo no es un PDF. Solo se admiten PDF.</span>
     </div>
   </div>
 </div>
@@ -1649,13 +1835,13 @@ debajo del nominal. Encuadrar un carné en un cuadrado sería encuadrar a ciegas
   grabarlo se cierra, las dos miniaturas quedan al costado del botón y <strong>el botón se
   desactiva</strong>. Pulsa una miniatura para verla en grande.</p>
 
-  <div class="cid" id="cid-demo">
-    <span class="cid-et">Documento de identidad</span>
-    <div class="cid-fila">
+  <div class="cx" id="cid-demo">
+    <span class="cx-et">Documento de identidad</span>
+    <div class="cx-fila">
       <button class="btn btn-neutro btn-mini btn-ic" id="cid-demo-btn">${icono('documento')}Subir ID</button>
-      <div class="cid-minis" id="cid-demo-minis"></div>
+      <ul class="cx-adjuntos" id="cid-demo-minis"></ul>
     </div>
-    <span class="cid-nota">JPG o PNG, máximo 4 MB por cara. Se guarda en WebP.</span>
+    <span class="cx-nota">JPG o PNG, máximo 4 MB por cara. Se guarda en WebP.</span>
     <input type="file" accept="image/*" class="ci-entrada" id="cid-demo-entrada" tabindex="-1" aria-hidden="true">
   </div>
 
@@ -4789,19 +4975,24 @@ const CATALOGO = [
       // se nota si el que se cae es el ÚLTIMO. Si un elemento se metiera en la
       // rama equivocada, ningún candado lo vería.
       { t: 'Acciones', desde: 0, hasta: 2 },
-      { t: 'Formulario', desde: 2, hasta: 12 },
-      { t: 'Datos', desde: 12, hasta: 18 },
-      { t: 'Respuesta', desde: 18, hasta: 24 },
+      // +1 en los tres cortes de detrás al entrar «Fila de carga» (R102,
+      // v1.77.0). Es la cuarta vez que hay que correrlos a mano.
+      { t: 'Formulario', desde: 2, hasta: 13 },
+      { t: 'Datos', desde: 13, hasta: 19 },
+      { t: 'Respuesta', desde: 19, hasta: 25 },
       // `Infinity` y no un numero: el ULTIMO tramo llega siempre al final, asi
       // que meter un elemento al final deja de tener trampa. Los cortes de en
       // medio siguen siendo indices, y por eso existe `comprobarTramos`.
-      { t: 'Marco y navegación', desde: 24, hasta: Infinity },
+      { t: 'Marco y navegación', desde: 25, hasta: Infinity },
     ],
     items: [
       { id: 'boton', t: 'Botón', estado: 'listo', c: pagBoton },
       { id: 'enlace', t: 'Enlace', estado: 'listo', c: pagEnlace },
       { id: 'campo', t: 'Campo de texto', estado: 'listo', c: pagCampo },
       { id: 'areatexto', t: 'Área de texto', estado: 'listo', c: pagAreaTexto },
+      // R102 · va ANTES que las tres cargas: lo primero que hay que entender
+      // es la medida que las tres respetan.
+      { id: 'filacarga', t: 'Fila de carga', estado: 'listo', c: pagFilaCarga },
       { id: 'cargaimagen', t: 'Carga de imagen', estado: 'listo', c: pagCargaImagen },
       { id: 'cargapdf', t: 'Carga de PDF', estado: 'listo', c: pagCargaPdf },
       { id: 'cargaid', t: 'Carga de ID', estado: 'listo', c: pagCargaId },
@@ -7127,6 +7318,76 @@ select.campo {
 }
 select.campo:disabled { opacity: .75; }
 
+/* ── FILA DE CARGA — R102 ─────────────────────────────────────────────────────
+   El arranque y el final COMUNES de las tres cargas: imagen, PDF e ID. Antes
+   cada una rompia la rejilla del formulario a su manera —una caja de 96px, una
+   lista apilada encima del boton, dos miniaturas de 48—. Ahora las tres emiten
+   este marcado, asi que no pueden divergir.
+
+   LA REGLA ES UNA MEDIDA: la fila mide lo que mide un «.campo». Medido en el
+   catalogo con el navegador: 36,45px —13px de texto con 18,85 de interlinea
+   REAL, mas 8+8 de relleno y 1+1 de borde—. La fila se fija en 36.
+
+   La cifra exacta depende de la interlinea que herede el producto, asi que lo
+   que esta regla garantiza no es un numero: es que la fila NO CRECE con lo
+   que se cargue. Con uno, con cinco y con ninguno mide lo mismo. */
+.cx { display: flex; flex-direction: column; gap: 4px; }
+.cx-et { font-size: 13px; font-weight: 500; color: var(--texto-principal); }
+/* 'nowrap' es la regla, no un descuido: envolver es romper la estatica otra
+   vez, solo que hacia abajo. Lo que no cabe se cuenta, ver «.cx-mas». */
+.cx-fila { display: flex; align-items: center; gap: 8px;
+  min-height: 36px; min-width: 0; flex-wrap: nowrap; }
+.cx-fila > .btn { flex: none; }
+.cx-vacio { font-size: 12px; color: var(--texto-pista); }
+.cx-adjuntos { display: flex; align-items: center; gap: 4px;
+  min-width: 0; overflow: hidden; list-style: none; margin: 0; padding: 0; }
+/* Sin esto, «display: flex» le gana a [hidden] y la lista vacia sigue ahi
+   ocupando su hueco. Lo cazo el candado de la cascada, no la vista. */
+.cx-adjuntos[hidden] { display: none; }
+/* 27px y no 37: el adjunto vive DENTRO de la fila, no la define. */
+.cx-adj { display: inline-flex; align-items: center; gap: 4px;
+  min-width: 0; max-width: 100%; height: 27px; padding: 0 4px;
+  border: 1px solid var(--borde); border-radius: 6px;
+  background: var(--fondo-tarjeta); font-size: 12px; color: var(--texto-principal); }
+.cx-adj .ic { width: 14px; height: 14px; flex: none; color: var(--texto-secundario); }
+/* Con imagen no hay caja: la miniatura ya es la ficha, y una caja alrededor
+   de una miniatura de 22px es mas borde que contenido. */
+.cx-adj-img { padding: 0; border-color: transparent; background: transparent; gap: 4px; }
+.cx-mini { width: 22px; height: 22px; flex: none; display: block;
+  object-fit: cover; border-radius: 3px; border: 1px solid var(--borde);
+  background: var(--fondo-encabezado); }
+/* La miniatura del carne conserva su proporcion: ID-1 es 1,5858:1 y 35x22 da
+   1,5909 — cinco milesimas por encima, y el alto sigue cabiendo en la fila. */
+.cx-mini-id { width: 35px; }
+.cx-ver { padding: 0; border: 0; background: transparent; cursor: pointer;
+  display: block; border-radius: 3px; }
+.cx-ver:hover .cx-mini { border-color: var(--accion); }
+.cx-ver:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
+/* El nombre se recorta; la EXTENSION no. Cortar «boleta-…-2026.pdf» por el
+   final se lleva justo el dato que dice que es el archivo. */
+.cx-arch { display: inline-flex; align-items: baseline; min-width: 0; }
+.cx-nombre { overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  min-width: 4ch; max-width: 22ch; }
+.cx-ext { flex: none; }
+.cx-peso { font-size: 12px; color: var(--texto-secundario); flex: none; }
+/* El sobrante se CUENTA. Una tira que se sale por el borde no dice cuanto
+   falta; un numero si. */
+.cx-mas { flex: none; height: 22px; padding: 0 4px;
+  display: inline-flex; align-items: center; border-radius: 3px;
+  background: var(--fondo-encabezado); color: var(--texto-secundario);
+  font-size: 12px; font-weight: 500; }
+/* El panel se despliega EN SU SITIO y empuja hacia abajo lo que venga despues.
+   No flota y no tapa el formulario. */
+.cx-panel { margin-top: 4px; padding: 12px;
+  border: 1px solid var(--borde); border-radius: 8px;
+  background: var(--fondo-encabezado);
+  display: flex; flex-direction: column; gap: 12px; }
+.cx-panel[hidden] { display: none; }
+.cx-error { font-size: 12px; color: var(--error-texto); font-weight: 500;
+  display: inline-flex; align-items: center; gap: 4px; }
+.cx-error .ic { width: 14px; height: 14px; flex: none; }
+.cx-nota { font-size: 12px; color: var(--texto-secundario); }
+
 /* Carga de imagen — R35. La caja no puede romperse: tamaño fijo por variante
    y el recorte YA es cuadrado, así que cover no recorta nada nuevo. */
 /* R50 · LA COLUMNA SE CENTRA SOBRE SU CAJA.
@@ -7166,22 +7427,15 @@ select.campo:disabled { opacity: .75; }
 
 /* Carga de documento de identidad — R51. Aqui NO hay caja de vista previa: lo
    entregado son dos miniaturas al costado del boton, con la proporcion ID-1
-   (85,60 x 53,98 mm). 76x48 la conserva —1,583 contra 1,586— y las dos medidas
-   caen en la rejilla de 4. */
-.cid { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
-.cid-et { font-size: 13px; font-weight: 500; }
-.cid-fila { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.cid-minis { display: flex; gap: 8px; }
-/* Es un BOTON, no una imagen con onClick: se alcanza con el tabulador y se abre
-   con Enter, como cualquier otro mando. */
-.cid-mini { padding: 0; border: 1px solid var(--borde-campo); border-radius: 6px;
-  background: var(--fondo-encabezado); cursor: pointer; overflow: hidden;
-  width: 76px; height: 48px; display: block; }
-.cid-mini:hover { border-color: var(--accion); }
-.cid-mini-img { display: block; width: 100%; height: 100%; object-fit: cover; }
+   (85,60 x 53,98 mm).
+
+   R102 · EL ANDAMIAJE YA NO ES SUYO. El grupo, la fila, las miniaturas, el
+   error y la nota eran «.cid-*» propias y ahora son «.cx-*», la fila comun de
+   las tres cargas. Las miniaturas median 76x48, y una fila de 48 entre campos
+   de 36 rompia la rejilla igual que la caja de la carga de imagen: a 35x22
+   la proporcion se conserva —1,5909 contra 1,5858— y la fila no crece.
+   Lo unico que le queda aqui es lo que vive DENTRO del dialogo. */
 .cid-paso { font-size: 13px; color: var(--texto-secundario); margin: 0 0 12px; }
-.cid-error { font-size: 12px; color: var(--error-texto); font-weight: 500; }
-.cid-nota { font-size: 12px; color: var(--texto-secundario); }
 /* El visor: la cara a tamaño legible, sin pasarse del alto de la ventana. */
 .cid-visor-img { display: block; max-width: 100%; max-height: 60vh;
   border-radius: 6px; border: 1px solid var(--borde); }
@@ -7284,7 +7538,6 @@ select.campo:disabled { opacity: .75; }
    Se monta y se desmonta de verdad: colapsarlo con altura cero lo dejaria en
    el arbol de accesibilidad con sus botones tabulables, que es el defecto que
    el candado OCULTABLE acaba de encontrar en .cf-banda. */
-.cpdf-compacta { gap: 8px; }
 .cpdf-panel { display: flex; flex-direction: column; gap: 8px;
   animation: cpdf-desplegar var(--dur-media) var(--curva); }
 @keyframes cpdf-desplegar {
@@ -7303,7 +7556,6 @@ select.campo:disabled { opacity: .75; }
 .cpdf-pista { font-size: 12px; color: var(--texto-secundario); }
 .cpdf-trabajo { padding-top: 4px; }
 .cpdf-error { font-size: 12px; color: var(--error-texto); font-weight: 500; }
-.cpdf-ayuda { font-size: 12px; color: var(--texto-pista); }
 /* El input real, fuera de la vista y del tabulador pero SIN display:none, por
    la misma razón que en la carga de imagen. */
 .cpdf-entrada { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
@@ -7903,6 +8155,9 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .caso-cab p { margin: 4px 0 0; font-size: 12px; color: var(--texto-secundario); }
 .caso-cab code { background: var(--fondo-tarjeta); padding: 4px 4px; border-radius: 3px; font-size: 12px; }
 .caso-lienzo { padding: 16px 16px; }
+/* Andamio del catalogo: la columna de campos con la que se mira si una fila
+   rompe la rejilla. No viaja — «caso» esta en SOLO_CATALOGO. */
+.caso-form { display: flex; flex-direction: column; gap: 16px; max-width: 520px; }
 .caso-tokens { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--borde);
   font-size: 12px; color: var(--texto-secundario); }
 .caso-tokens code { background: var(--fondo-encabezado); padding: 4px 4px;
@@ -8759,6 +9014,18 @@ ${COMPRESOR_PDF}
     });
   });
 
+  // ── Miniaturas de las demostraciones de la fila de carga (R102) ──────────
+  // El escudo pesa 101 KB y aqui hacen falta cuatro miniaturas de 22 px. Si
+  // cada una llevara su base64, el catalogo engordaba 540 KB para pintar
+  // cuatro cuadrados. Se embebe UNA vez y las demas copian su «src».
+  (function () {
+    var fuente = document.getElementById('cx-demo-fuente');
+    if (!fuente) return;
+    document.querySelectorAll('img.cx-mini[data-mini]').forEach(function (img) {
+      img.src = fuente.src;
+    });
+  })();
+
   // ── Selección múltiple ───────────────────────────────────────────────────
   (function () {
     var lista = document.querySelector('[data-ms-lista]');
@@ -9435,11 +9702,14 @@ ${COMPRESOR_PDF}
     });
 
     function miniatura(cara, url) {
+      // R102 · el MISMO marcado que emite «AdjuntoImagen» con forma="id".
+      var li = document.createElement('li');
+      li.className = 'cx-adj cx-adj-img';
       var b = document.createElement('button');
       b.type = 'button';
-      b.className = 'cid-mini';
+      b.className = 'cx-ver';
       b.setAttribute('aria-label', 'Ver ' + cara + ' en grande');
-      b.innerHTML = '<img class="cid-mini-img" src="' + url + '" alt="">';
+      b.innerHTML = '<img class="cx-mini cx-mini-id" src="' + url + '" alt="">';
       b.addEventListener('click', function () {
         ultima = b;
         visorImg.src = url;
@@ -9448,7 +9718,8 @@ ${COMPRESOR_PDF}
         visor.showModal();
         document.getElementById('cid-demo-visor-tit').focus();
       });
-      minis.appendChild(b);
+      li.appendChild(b);
+      minis.appendChild(li);
     }
 
     grabar.addEventListener('click', function () {
@@ -9494,11 +9765,13 @@ ${COMPRESOR_PDF}
   (function () {
     var TOPE = 10 * 1024 * 1024;
     var ICO_DOC = ${JSON.stringify(icono('documento', TAMANOS.estado))};
+    // El de la FILA va al tamano de texto: en 27px de alto el de estado no cabe.
+    var ICO_DOC_LINEA = ${JSON.stringify(icono('documento'))};
     var ICO_PAPELERA = ${JSON.stringify(icono('papelera'))};
 
     document.querySelectorAll('[data-pdf]').forEach(function (caja) {
       var abrir = caja.querySelector('[data-abrir]');
-      var cerrado = caja.querySelector('[data-cerrado]');
+      var vacio = caja.querySelector('[data-vacio]');
       var panel = caja.querySelector('[data-panel]');
       var subir = caja.querySelector('[data-subir]');
       var segundo = caja.querySelector('[data-segundo]');
@@ -9588,10 +9861,51 @@ ${COMPRESOR_PDF}
         segundo.className = puedeGrabar ? 'btn btn-1 btn-mini' : 'btn btn-terc btn-mini';
       }
 
+      // R102 · FUERA DEL PANEL se pinta la FILA, que es otro marcado: el mismo
+      // que emite «AdjuntoArchivo». La extension va aparte porque no se recorta
+      // nunca; el nombre si.
       function refrescarFuera() {
-        pintar(lista, confirmados, function (k) {
-          confirmados.splice(k, 1);
-          refrescarFuera();
+        lista.innerHTML = '';
+        // Con el panel abierto la fila no pinta nada: la lista esta dentro, y
+        // sacarla dos veces seria decir dos veces lo mismo.
+        var items = panel.hidden ? confirmados : [];
+        lista.hidden = items.length === 0;
+        if (vacio) vacio.hidden = items.length > 0;
+        items.forEach(function (it, k) {
+          var punto = it.nombre.lastIndexOf('.');
+          var base = punto > 0 ? it.nombre.slice(0, punto) : it.nombre;
+          var ext = punto > 0 ? it.nombre.slice(punto) : '';
+          var li = document.createElement('li');
+          li.className = 'cx-adj';
+          var arch = document.createElement('span');
+          arch.className = 'cx-arch';
+          var nom = document.createElement('span');
+          nom.className = 'cx-nombre';
+          nom.textContent = base;
+          arch.appendChild(nom);
+          if (ext) {
+            var e = document.createElement('span');
+            e.className = 'cx-ext';
+            e.textContent = ext;
+            arch.appendChild(e);
+          }
+          var pes = document.createElement('span');
+          pes.className = 'cx-peso';
+          pes.textContent = PDF.formatearPeso(it.pesoFinal);
+          var bot = document.createElement('button');
+          bot.type = 'button';
+          bot.className = 'btn btn-terc btn-mini btn-solo-ic';
+          bot.setAttribute('aria-label', 'Quitar ' + it.nombre);
+          bot.innerHTML = ICO_PAPELERA;
+          bot.addEventListener('click', function () {
+            confirmados.splice(k, 1);
+            refrescarFuera();
+          });
+          li.innerHTML = ICO_DOC_LINEA;
+          li.appendChild(arch);
+          li.appendChild(pes);
+          li.appendChild(bot);
+          lista.appendChild(li);
         });
       }
 
@@ -9637,22 +9951,27 @@ ${COMPRESOR_PDF}
 
       function cerrarPanel() {
         panel.hidden = true;
-        cerrado.hidden = false;
+        abrir.disabled = false;
         abrir.setAttribute('aria-expanded', 'false');
         borrador = [];
         limpiar();
+        refrescarFuera();
       }
 
+      // R102 · el disparador SE QUEDA con el panel abierto, APAGADO. Antes se
+      // retiraba, y con el se iba el ancla de la fila. Apagado y no cerrando:
+      // las salidas del panel siguen siendo «Grabar» y «Cancelar», que es lo
+      // que decide que pasa con el borrador.
       abrir.addEventListener('click', function () {
         // El borrador arranca de lo que ya hay: entrar a cambiar el archivo no
         // puede empezar en blanco y hacer creer que se perdio.
         borrador = confirmados.slice();
         panel.hidden = false;
-        // Abierto solo se ven DOS botones: el disparador de fuera se retira.
-        cerrado.hidden = true;
+        abrir.disabled = true;
         abrir.setAttribute('aria-expanded', 'true');
         limpiar();
         refrescar();
+        refrescarFuera();
       });
       subir.addEventListener('click', function () { entrada.click(); });
       segundo.addEventListener('click', function () {

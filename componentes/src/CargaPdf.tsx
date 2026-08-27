@@ -59,6 +59,7 @@ import { Chip } from './Chip';
 import { Icono } from './Icono';
 import { Progreso } from './Estados';
 import { comprimirPdf, formatearPeso, ahorro, esPdf } from './interno/comprimir-pdf.mjs';
+import { FilaCarga, AdjuntoArchivo } from './interno/FilaCarga';
 
 /** Lo que se entrega al producto por cada PDF listo. */
 export type PdfListo = {
@@ -473,7 +474,10 @@ export function CargaPdf({
       <div className="cpdf">
         <span className="cpdf-et" id={`${id}-et`}>{etiqueta}</span>
         {zona}
-        {ayuda && <span className="cpdf-ayuda" id={idAyuda}>{ayuda}</span>}
+        {/* R102 · la misma nota que en formulario. Era `.cpdf-ayuda`, con una
+            declaración idéntica a la de la fila común: dos nombres para el
+            mismo estilo es la manera de que un día se separen. */}
+        {ayuda && <span className="cx-nota" id={idAyuda}>{ayuda}</span>}
       </div>
     );
   }
@@ -489,40 +493,64 @@ export function CargaPdf({
   // con el tabulador — ese defecto acaba de aparecer en `.cf-banda` y no se
   // vuelve a sembrar aquí.
   const idPanel = `${id}-panel`;
+
+  /* R102 · LA FILA COMÚN. Antes el resumen se apilaba ENCIMA del disparador,
+     así que la carga crecía hacia arriba cada vez que se añadía un archivo y
+     el formulario se movía entero. Ahora lo cargado va AL COSTADO del botón,
+     en una fila que mide lo que un `.campo` y no crece nunca: es el mismo
+     arranque y el mismo final que `CargaImagen` y `CargaId`. */
   return (
-    <div className="cpdf cpdf-compacta">
-      <span className="cpdf-et" id={`${id}-et`}>{etiqueta}</span>
+    <FilaCarga
+      etiqueta={etiqueta}
+      idEtiqueta={`${id}-et`}
+      /* El error del PRODUCTO se ve siempre; el del componente vive dentro del
+         panel, que es donde se puede corregir. */
+      error={error}
+      idError={idError}
+      nota={ayuda}
+      idNota={idAyuda}
+      vacio={uno ? 'Ningún archivo' : 'Ningún archivo todavía'}
+      /* Cerrado: el resumen al costado. Abierto no, o la misma lista saldría
+         dos veces —en la fila y en el panel—. */
+      adjuntos={!abierto ? puestos.map((f, k) => (
+        <AdjuntoArchivo
+          key={`${f.nombre}-${k}`}
+          nombre={f.nombre}
+          /* El peso del archivo puesto se veía antes y se sigue viendo: esto
+             cambia la FORMA del resultado, no lo que dice. Lo que no cabe en
+             27 px de alto es el recuento de páginas, que sí queda solo en el
+             panel — es el único dato que la fila deja de repetir. */
+          peso={formatearPeso(f.peso)}
+          onQuitar={() => quitarConfirmado(k)}
+        />
+      )) : []}
+      total={abierto ? 0 : puestos.length}
+      /* El disparador lleva el icono `pdf` —la hoja con renglones—, distinto
+         del `documento` en blanco que marca cada archivo ya puesto.
 
-      {/* Cerrado: el resumen. Abierto no, o la misma lista saldría dos veces. */}
-      {!abierto && puestos.length > 0 && (
-        <ul className="cpdf-lista">
-          {puestos.map((f, k) => fila(f, k, confirmados[k], quitarConfirmado))}
-        </ul>
-      )}
-
-      {/* Cerrado: el disparador. Lleva el icono `pdf` —la hoja con
-          renglones—, distinto del `documento` en blanco que marca cada archivo
-          ya puesto. */}
-      {!abierto && (
-        <div className="cpdf-acciones">
-          <Boton
-            mini
-            variante="neutra"
-            className="btn-ic"
-            ref={disparador}
-            aria-expanded={false}
-            aria-controls={idPanel}
-            aria-describedby={descrito}
-            onClick={abrir}
-          >
-            <Icono nombre="pdf" />
-            {textoBoton ?? 'Subir PDF'}
-          </Boton>
-        </div>
-      )}
-
-      {abierto && (
-        <div className="cpdf-panel" id={idPanel}>
+         CON EL PANEL ABIERTO SE QUEDA, APAGADO. Antes se desmontaba, y con él
+         se iba el ancla de la fila. Apagado y no cerrando: lo que hace el
+         panel no cambia —las salidas siguen siendo «Grabar» y «Cancelar», que
+         es lo que decide qué pasa con el borrador—, y pulsarlo con el panel
+         abierto tampoco hacía nada antes, porque no estaba. */
+      disparador={
+        <Boton
+          mini
+          variante="neutra"
+          className="btn-ic"
+          ref={disparador}
+          disabled={abierto}
+          aria-expanded={abierto}
+          aria-controls={idPanel}
+          aria-describedby={descrito}
+          onClick={abrir}
+        >
+          <Icono nombre="pdf" />
+          {textoBoton ?? 'Subir PDF'}
+        </Boton>
+      }
+      panel={abierto && (
+        <div className="cx-panel" id={idPanel}>
           {zona}
           {/* EXACTAMENTE DOS BOTONES, decidido por el responsable.
               · «Subir» está SIEMPRE: es lo que trae el archivo.
@@ -557,11 +585,6 @@ export function CargaPdf({
           </div>
         </div>
       )}
-
-      {/* El error del PRODUCTO se ve siempre; el del componente vive dentro del
-          panel, que es donde se puede corregir. */}
-      {error && <span className="cpdf-error" id={idError} role="alert">{error}</span>}
-      {ayuda && <span className="cpdf-ayuda" id={idAyuda}>{ayuda}</span>}
-    </div>
+    />
   );
 }
