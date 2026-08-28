@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.80.0
+# Actualizar al sistema de diseño v1.81.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.80.0"
+npm install "github:solwarehz/sistema-diseno#v1.81.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,19 +27,19 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.80.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.81.0
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.80.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.81.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.80.0 --repo solwarehz/sistema-diseno
+gh release download v1.81.0 --repo solwarehz/sistema-diseno
 ```
 
 Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el

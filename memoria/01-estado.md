@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 27 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.80.0** — el catálogo estrena grupo
-**Pasarela de pagos**, con las pantallas del cobro con Izipay: una composición,
-no un elemento
+**Versión del sistema:** MMI-DS **v1.81.0** — el catálogo enseñaba **solo la
+variante con lupa**, que es justo la que no sale por omisión: seis demos con
+ella, cero sin ella. Y nace el **catorceavo candado**
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ no un elemento
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —32 componentes
-publicados, la hoja que viaja, **trece candados**, 499 pruebas— y sigue
+publicados, la hoja que viaja, **catorce candados**, 499 pruebas— y sigue
 aprendiendo la misma lección por otro lado: los peores defectos no están en lo
 que el catálogo enseña mal, sino en **lo que ningún candado estaba mirando**.
 R86 es de ese tipo: la tabla declaraba una altura de fila de 34px desde la
@@ -42,10 +42,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 42 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.80.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.81.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.80.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.81.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,41 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.80.0), con detalle
+### Lo de hoy (v1.81.0), con detalle
+
+**R104 · el catálogo enseñaba solo la excepción, no lo que se entrega.**
+
+Lo reportó Control Administrativos V2.0, y **no viéndolo fallar: contándolo**.
+En el catálogo había **seis** demostraciones de `.sel-caja` y las seis llevaban
+`sel-con-lupa`; **cero** enseñaban el estado por omisión. Pero `conLupa` vale
+`false` desde R100, así que lo que recibe quien no pide nada es el selector
+**sin** lupa.
+
+**Lo que costó:** compararon su pantalla contra el catálogo y concluyeron que al
+componente le faltaba CSS —«no tiene la lupa»—. No era cierto: pintaban las
+clases exactas contra la hoja exacta. **El catálogo no daba forma de
+comprobarlo.** Una tarde ajena por una demo que faltaba.
+
+Ahora se enseñan **las dos**: la de por omisión primero y la variante al lado,
+etiquetada con su caso. Quedan **6 sin lupa y 2 con ella**, contra 6 y 0. **No
+se cambió el defecto**: `conLupa = false` es correcto y sale de su propio R100.
+
+**Y nace el catorceavo candado**, porque su petición era una regla general y no
+un arreglo: *«si una prop cambia lo que se VE y tiene un valor por omisión, el
+catálogo debería enseñar el valor por omisión»*. `verificar-omision.mjs` lo
+comprueba **sin lista**: toda regla de la hoja que exija dos clases en el mismo
+elemento declara un modificador sobre una base, y si el catálogo enseña esa base
+siempre con su modificador y nunca sin él, el estado por omisión no se puede
+mirar. **80 reglas compuestas, 0 falsos positivos**, y visto en rojo contra el
+catálogo de ayer: encuentra exactamente `.sel-caja` sin `.sel-con-lupa`.
+
+**Por qué hacía falta uno nuevo.** El de la promesa compara las propiedades de
+lo que **se pinta**; el del elemento, sus etiquetas; el del empate, el orden de
+sus reglas. Los tres miran lo pintado — y esto era una variante que existe en el
+código y **no se pintaba en ninguna demo**. No hay nada que comparar, y por eso
+los tres salían en verde con el defecto delante.
+
+### Lo de la v1.80.0, con detalle
 
 **El catálogo estrena grupo: «Pasarela de pagos».**
 
@@ -981,7 +1015,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.80.0
+Versión                      1.81.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes · 40 informativos,
                                       0 fallos)

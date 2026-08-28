@@ -29,7 +29,7 @@ docker run --rm -d --name mmi-cascaron -p 127.0.0.1:8080:80 `
 <http://127.0.0.1:8080> · solo en loopback y montado de solo lectura.
 Para pararlo: `docker rm -f mmi-cascaron`.
 
-## Los candados — nueve comandos, no siete
+## Los candados — CATORCE comandos
 
 ```powershell
 docker compose exec ds node sistema/tokens/generar.mjs
@@ -41,11 +41,18 @@ docker compose exec ds node sistema/componentes/extraer.mjs
 docker compose exec ds node sistema/candado/verificar-cascada.mjs
 docker compose exec ds node sistema/candado/verificar-contrato.mjs
 docker compose exec ds node sistema/candado/verificar-entrega.mjs
+docker compose exec ds node sistema/candado/verificar-promesa.mjs
+docker compose exec ds node sistema/candado/verificar-elemento.mjs
+docker compose exec ds node sistema/candado/verificar-empate.mjs
+docker compose exec ds node sistema/candado/verificar-forma.mjs
+docker compose exec ds node sistema/candado/verificar-omision.mjs
 ```
 
-Los dos últimos faltaban aquí y en CLAUDE.md §8 (la memoria sí los contaba):
-el 2026-08-10 no se corrieron en todo el día por eso, y al correrlos estaban
-en rojo los dos.
+**Esta lista ya se quedo corta dos veces**, y las dos costaron caro: el
+2026-08-10 faltaban dos y no se corrieron en todo el dia — al correrlos, los dos
+en rojo. Cuatro mas faltaban aqui hasta la v1.81.0. Una lista incompleta de
+candados es un candado abierto: si se añade uno, se añade en los DOS sitios,
+aqui y en `CLAUDE.md` §8.
 
 Comprobados el 2026-08-10 sobre `main`: **los siete en verde** — 178 pares
 recalculados con 0 fallos, 62 casos del candado de lint sin fallos, 485 clases

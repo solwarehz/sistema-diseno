@@ -19,8 +19,8 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.80.0** — el catálogo estrena grupo **Pasarela de pagos**,
-con las pantallas del cobro con Izipay.
+**Estado actual: v1.81.0** — el catálogo enseñaba solo la variante con lupa,
+que es justo la que NO sale por omisión. Y nace el catorceavo candado.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
@@ -189,7 +189,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
 - **`main` sí se actualiza en este proyecto** —y solo en este—, pero **únicamente
   cuando está verificado y sin errores**. La condición no es una formalidad: es
   lo que hace que la regla sea segura, porque `main` es de donde instala el área
-  de sistemas. Antes de subir, los **trece** candados **en verde** y las pruebas
+  de sistemas. Antes de subir, los **catorce** candados **en verde** y las pruebas
   pasando:
 
   ```bash
@@ -206,6 +206,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
   node sistema/candado/verificar-elemento.mjs # se emite el MISMO elemento
   node sistema/candado/verificar-empate.mjs   # el ORDEN no decide distinto en cada hoja
   node sistema/candado/verificar-forma.mjs    # lo publicado no cambia de FORMA sin decirlo
+  node sistema/candado/verificar-omision.mjs  # el catálogo enseña lo que se ENTREGA por omisión
   ```
 
   Los dos últimos faltaban de esta lista y **la memoria los contaba entre los

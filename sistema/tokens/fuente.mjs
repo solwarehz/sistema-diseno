@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.80.0";
+export const VERSION = "1.81.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,35 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.81.0', fecha: '2026-08-27',
+    que: 'R104: el catalogo enseñaba SOLO la variante con lupa, que es justo la que NO sale por omision',
+    porque:
+      'R104 · Lo reporto Control Administrativos V2.0, y no viendolo fallar: contandolo. En el '
+      + 'catalogo habia SEIS demostraciones de `.sel-caja` y las seis llevaban `sel-con-lupa`; cero '
+      + 'enseñaban el estado por omision. Pero `conLupa` vale false desde R100, asi que lo que '
+      + 'recibe un consumidor sin pedir nada es el selector SIN lupa. '
+      + 'LO QUE COSTO: compararon su pantalla contra el catalogo y concluyeron que al componente le '
+      + 'faltaba CSS —«no tiene la lupa»—. No era cierto: pintaban las clases exactas contra la hoja '
+      + 'exacta. El catalogo NO DABA FORMA DE COMPROBARLO. Una tarde ajena por una demo que faltaba. '
+      + 'AHORA SE ENSEÑAN LAS DOS: la de por omision primero —el «Pruebalo» y los cuatro estados van '
+      + 'sin lupa— y la variante con lupa al lado, etiquetada con su caso. Quedan 6 sin lupa y 2 con '
+      + 'ella, contra las 6 y 0 de antes. NO se cambio el defecto: `conLupa = false` es correcto y '
+      + 'sale de su propio reporte R100. '
+      + 'Y NACE UN CANDADO, porque su peticion era una regla general y no un arreglo: «si una prop '
+      + 'cambia lo que se VE y tiene un valor por omision, el catalogo deberia enseñar el valor por '
+      + 'omision». `verificar-omision.mjs` lo comprueba SIN LISTA: toda regla de la hoja que exija '
+      + 'dos clases en el mismo elemento —`.sel-caja.sel-con-lupa`— declara un modificador sobre una '
+      + 'base, y si el catalogo enseña esa base siempre con su modificador y nunca sin el, el estado '
+      + 'por omision no se puede mirar. 80 reglas compuestas, 0 falsos positivos, y VISTO EN ROJO '
+      + 'contra el catalogo de ayer: encuentra exactamente `.sel-caja` sin `.sel-con-lupa`. '
+      + 'POR QUE HACIA FALTA UNO NUEVO: el de la promesa compara las propiedades de lo que SE PINTA, '
+      + 'el del elemento sus etiquetas, el del empate el orden de sus reglas. Los tres miran lo '
+      + 'pintado, y esto era una variante que existe en el codigo y NO SE PINTABA en ninguna demo. '
+      + 'No hay nada que comparar, y por eso los tres salian en verde con el defecto delante.',
+    rompe: [],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.80.0', fecha: '2026-08-27',
     que: 'El catalogo estrena grupo «Pasarela de pagos», con la pagina de Izipay',

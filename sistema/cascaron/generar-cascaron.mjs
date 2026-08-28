@@ -2062,9 +2062,14 @@ reportó Control Administrativos V2.0.</div>
   <div class="sel-demo-fila">
     <div class="cg" style="max-width:340px">
       <span class="cg-et" id="sel-et">Apoderado</span>
+      <!-- R104 · SIN LUPA, que es lo que se entrega. «conLupa» vale false por
+           omision desde R100, y el catalogo enseñaba SOLO la variante con
+           lupa: seis demos con ella, cero sin ella. Lo reporto Control
+           Administrativos V2.0 despues de creer que al componente le faltaba
+           CSS — y no habia forma de comprobarlo, porque no habia una sola
+           demo del estado por omision. -->
       <div class="sel" data-sel>
-        <div class="sel-caja sel-con-lupa">
-          <span class="sel-lupa">${ICO_LUPA}</span>
+        <div class="sel-caja">
           <input class="campo sel-in" role="combobox" aria-expanded="false"
                  aria-autocomplete="list" aria-controls="sel-lista" aria-labelledby="sel-et"
                  placeholder="Escribe para buscar" autocomplete="off">
@@ -2085,20 +2090,52 @@ reportó Control Administrativos V2.0.</div>
   </div>
 </div>
 
+<h3 class="sub-seccion">Sin lupa y con lupa — las dos, y cuál es cuál</h3>
+<p class="seccion-sub">Lo de arriba y estos <strong>Estados</strong> son el control
+<strong>por omisión</strong>: <code>conLupa</code> vale <code>false</code>. La lupa se pide, y solo
+donde de verdad se busca.</p>
+
+<div class="aviso"><strong>Esto faltaba, y costó una tarde ajena.</strong> Hasta la v1.81.0 las
+<strong>seis</strong> demostraciones de este control llevaban lupa y <strong>ninguna</strong>
+enseñaba lo que se entrega. Control Administrativos V2.0 comparó su pantalla contra el catálogo y
+concluyó que al componente le faltaba CSS —«no tiene la lupa»—; no era cierto, pero
+<strong>el catálogo no daba forma de comprobarlo</strong>. Y la comparación catálogo-contra-paquete
+no puede cazarlo: compara las propiedades de lo que se pinta, y esto era una variante que existe en
+el código y no se pintaba en ninguna demo.</div>
+
+<div class="bloque">
+  <div class="enl-comp">
+    <div class="enl-caja bien">
+      <label class="cg"><span class="cg-et">Por omisión — sin lupa</span>
+        <div class="sel-caja"><span class="sel-chev">${ICONOS.chevron}</span>
+          <input class="campo sel-in" placeholder="Escribe para buscar" readonly></div></label>
+      <span class="bien-et">Lo que recibe quien no pide nada. El texto empieza donde el de
+      cualquier otro campo, así que la columna del formulario no se rompe.</span>
+    </div>
+    <div class="enl-caja">
+      <label class="cg"><span class="cg-et"><code>conLupa</code> — el buscador de una tabla</span>
+        <div class="sel-caja sel-con-lupa"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
+          <input class="campo sel-in" placeholder="Buscar en la tabla" readonly></div></label>
+      <span class="cg-ayuda">Se pide donde <strong>de verdad se busca</strong> y no se elige: el
+      buscador de una tabla, una caja de búsqueda global. Sangra el texto 32&nbsp;px.</span>
+    </div>
+  </div>
+</div>
+
 <h3 class="sub-seccion">Estados</h3>
 <div class="bloque">
   <div class="campos-rejilla">
     <label class="cg"><span class="cg-et">Reposo</span>
-      <div class="sel-caja sel-con-lupa"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
+      <div class="sel-caja"><span class="sel-chev">${ICONOS.chevron}</span>
         <input class="campo sel-in" placeholder="Escribe para buscar" readonly></div></label>
     <label class="cg"><span class="cg-et">Con foco</span>
-      <div class="sel-caja sel-con-lupa"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
+      <div class="sel-caja"><span class="sel-chev">${ICONOS.chevron}</span>
         <input class="campo sel-in foco-demo" placeholder="Escribe para buscar" readonly></div></label>
     <label class="cg"><span class="cg-et">Con selección</span>
-      <div class="sel-caja sel-con-lupa"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
+      <div class="sel-caja"><span class="sel-chev">${ICONOS.chevron}</span>
         <input class="campo sel-in" value="Pérez Salazar, Ana" readonly></div></label>
     <label class="cg"><span class="cg-et">Con error</span>
-      <div class="sel-caja sel-con-lupa"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
+      <div class="sel-caja"><span class="sel-chev">${ICONOS.chevron}</span>
         <input class="campo sel-in cg-mal" placeholder="Escribe para buscar" readonly></div>
       <span class="cg-error">${ICO_ERROR}Elige un apoderado.</span></label>
   </div>
