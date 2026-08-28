@@ -6492,6 +6492,166 @@ ${
 </table>
 `;
 
+const pagEfact = `
+<p class="pag-intro">El segundo proveedor evaluado: <strong>EFACT S.A.C.</strong>, peruano y
+autorizado por SUNAT como <strong>OSE</strong>. Se buscó su documentación con el mismo criterio que
+la de Nubefact, y el hallazgo que decide el diseño es que <strong>EFACT no es una integración: son
+tres productos distintos</strong>, y solo uno de ellos tiene contrato público.</p>
+
+<div class="msj msj-aviso">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt"><strong>Esta página se corrigió a sí misma dos veces.</strong> La primera
+  lectura de su tabla de productos recuperó una sola celda —«Conexión: SOAP»— y de ahí salió la
+  conclusión equivocada de que EFACT solo acepta XML. Al releerla celda por celda aparecieron las
+  tres columnas. Se deja escrito porque la conclusión errónea era la que decidía si estas pantallas
+  servían o había que rehacerlas.</span>
+</div>
+
+<h3 class="sub-seccion">1 · Tres productos, y el nombre importa</h3>
+<table class="tabla-simple">
+  <thead><tr><th>&nbsp;</th><th>Validación simple</th><th>Dynamic+</th><th>Efact Web</th></tr></thead>
+  <tbody>
+    <tr><td>Formato que manda el producto</td><td><strong>XML UBL 2.1</strong></td><td><strong>JSON, TXT, CSV</strong></td><td>—</td></tr>
+    <tr><td>Conexión</td><td>SOAP</td><td><strong>REST, SFTP</strong> y SOAP</td><td>navegador</td></tr>
+    <tr><td>Integración con sistema o ERP</td><td>sí</td><td>sí</td><td><strong>no</strong></td></tr>
+    <tr><td>Emisión sin certificado digital</td><td><strong>no</strong></td><td><span class="chip chip-aviso">sin resolver</span></td><td>sí</td></tr>
+    <tr><td>Personalización del PDF</td><td>no</td><td>sí</td><td>no</td></tr>
+    <tr><td>Recepción de comprobantes</td><td>no</td><td>sí</td><td>no</td></tr>
+    <tr><td>Envío por correo</td><td>no</td><td>sí</td><td>sí</td></tr>
+    <tr><td>Portal web</td><td>no</td><td>sí</td><td>sí</td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub">Decir «EFACT acepta JSON» es falso, y decir «EFACT exige XML» también.
+<strong>Lo cierto es que el formato y el protocolo son una elección comercial</strong>: en una
+versión archivada de su web había un configurador con tres selectores —formato inicial, protocolo y
+módulos— donde el cliente escogía. <strong>Efact Web no integra con nada</strong>: es un portal
+donde una persona teclea el comprobante. Si aparece en una comparación de precios, no compite con
+lo que estamos construyendo.</p>
+
+<h3 class="sub-seccion">2 · Qué se verificó de verdad, y qué no</h3>
+<p class="seccion-sub">De la vía <strong>Validación simple</strong> se comprobó el servicio a mano,
+y esta es la única afirmación de toda la página que se pudo medir en vez de leer. El WSDL responde
+en <code>ose.efact.pe/ol-ti-itcpe/billService?wsdl</code> —<strong>sin el
+<code>?wsdl</code> devuelve 404</strong>, que es lo que hizo fallar el primer intento— y declara el
+servicio <code>BillServiceImplService</code> con <strong>las cinco operaciones estándar de
+SUNAT</strong>, sin una sola añadida:</p>
+<table class="tabla-simple">
+  <thead><tr><th>Operación</th><th>Para qué</th></tr></thead>
+  <tbody>
+    <tr><td><code>sendBill</code></td><td>Factura y notas — respuesta <strong>inmediata</strong>, con el CDR en la misma llamada</td></tr>
+    <tr><td><code>sendSummary</code></td><td>Resumen diario de boletas y comunicación de baja — devuelve <strong>ticket</strong></td></tr>
+    <tr><td><code>sendPack</code></td><td>Lote de comprobantes — devuelve ticket</td></tr>
+    <tr><td><code>getStatus</code> · <code>getStatusCdr</code></td><td>Recoger el resultado del ticket, y volver a pedir un CDR ya emitido</td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub">Que sea el WSDL estándar es la mejor noticia de esta página, y por dos
+motivos. Uno: una librería peruana de las que ya existen cubre casi todo el trabajo, y
+<strong>el contrato no depende de la buena voluntad de nadie</strong>. Dos: <strong>confirma que
+el estado «esperando el ticket» del punto 3 existe de verdad</strong> — no es una suposición de
+diseño, es que <code>sendSummary</code> no devuelve el resultado, devuelve un ticket que hay que
+consultar aparte. Se manda el XML UBL 2.1 <strong>firmado, comprimido y en base64</strong>.</p>
+
+<div class="msj msj-error">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt"><strong>De Dynamic+ no existe ni una línea de especificación pública.</strong>
+  Ni esquema de campos, ni URL de homologación, ni método de autenticación, ni catálogo de errores.
+  Su propio acuerdo de servicio deja fuera el soporte durante el desarrollo y las pruebas, y lo
+  remite al contrato: <strong>la especificación es material contractual y llega después de
+  firmar</strong>. Con Nubefact se evalúa la integración leyendo su web antes de comprometerse; aquí
+  no.</span>
+</div>
+
+<h3 class="sub-seccion">3 · Dos estados que Nubefact no tiene</h3>
+<p class="seccion-sub">Si el colegio va por la vía UBL, el producto <strong>firma y empaqueta</strong>
+antes de enviar, y esos pasos pueden fallar por su cuenta —certificado vencido, XML mal formado—
+sin que SUNAT llegue a verlo. La pantalla necesita decirlo, porque el usuario que ve «no enviada»
+no sabe si el problema es suyo o de SUNAT.</p>
+<div class="bloque">
+  <div class="cpe">
+    <div class="cpe-sunat cpe-sunat-espera">
+      <span class="cpe-sunat-ico">${icono('candado')}</span>
+      <span class="cpe-sunat-txt">
+        <span class="cpe-sunat-tit">Firmando el comprobante</span>
+        <span class="cpe-sunat-det">Paso <strong>nuestro</strong>, no de SUNAT. Si falla aquí, el
+        documento <strong>no llegó a existir</strong>: no hay nada que anular.</span>
+      </span>
+    </div>
+    <div class="cpe-sunat cpe-sunat-espera">
+      <span class="cpe-sunat-ico">${icono('informacion')}</span>
+      <span class="cpe-sunat-txt">
+        <span class="cpe-sunat-tit">Enviado — esperando el ticket</span>
+        <span class="cpe-sunat-det"><code>sendSummary</code> y <code>sendPack</code>
+        <strong>no devuelven el resultado</strong>: devuelven un ticket que se consulta con
+        <code>getStatus</code>. Comprobado en su WSDL, no supuesto. <strong>Las boletas van por
+        ahí</strong> — solo la factura responde al momento. Nubefact oculta este paso; aquí no está
+        oculto.</span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">4 · El certificado digital, y una discrepancia que no se tapa</h3>
+<p class="seccion-sub">En la vía <strong>Validación simple</strong> la respuesta es clara y es la
+esperable en el modelo OSE: <strong>firma el emisor con su propio certificado</strong>. Eso obliga
+a que el producto lo custodie, con todo lo que implica —vencimiento, contraseña, resguardo—. Es
+justo lo contrario de Nubefact, donde el colegio no necesita certificado.</p>
+<div class="msj msj-error">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt"><strong>Para Dynamic+ hay dos lecturas de la misma celda y no coinciden:
+  una la da por vacía y la otra marcada.</strong> No se afirma ninguna. Es una pregunta directa para
+  EFACT y no es menor — decide si hay que custodiar el certificado del colegio o no, y eso cambia la
+  arquitectura, no un detalle de pantalla.</span>
+</div>
+
+<h3 class="sub-seccion">5 · El alta del emisor: peor que Nubefact</h3>
+<p class="seccion-sub">Tampoco hay API para dar de alta empresas. Y trae un paso de más: el
+contribuyente tiene que entrar a <strong>SUNAT Operaciones en Línea con su Clave SOL</strong> y
+vincular a EFACT como su OSE. En Nubefact el alta también es manual, pero ocurre dentro del panel
+del proveedor. <strong>Aquí el trámite es del colegio, en SUNAT</strong>, y ningún panel nuestro
+puede hacerlo por él ni comprobar que lo hizo.</p>
+
+<h3 class="sub-seccion">6 · Dos trampas al buscar su documentación</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Lo que aparece</th><th>Qué es en realidad</th></tr></thead>
+  <tbody>
+    <tr><td><code>consorciaoc.github.io/eFact</code></td><td><strong>eFact catalán</strong>, del Consorci AOC. Servicio público de Cataluña, <strong>ninguna relación</strong>. Su documentación no aplica — igual con <code>ef4ktur.eus</code>, del País Vasco</td></tr>
+    <tr><td><code>ose.efact.pe/core-ui/</code></td><td>Devuelve <span class="chip chip-error">401</span>. Es el <strong>backend interno de su portal</strong>, no la API de integración. Usarlo como tal sería construir sobre algo que nadie prometió mantener</td></tr>
+    <tr><td><code>Manual_Efact_Web.pdf</code></td><td>Existe y se abre, pero es <strong>manual de usuario del portal</strong>: cero API, cero UBL, cero endpoints</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">7 · Contra Nubefact, lo mismo medido igual</h3>
+<table class="tabla-simple">
+  <thead><tr><th>&nbsp;</th><th>Nubefact</th><th>EFACT · Validación simple</th><th>EFACT · Dynamic+</th></tr></thead>
+  <tbody>
+    <tr><td>Formato</td><td>JSON o TXT</td><td>XML UBL 2.1 firmado</td><td>JSON, TXT o CSV</td></tr>
+    <tr><td>Protocolo</td><td>REST</td><td>SOAP</td><td>REST, SFTP, SOAP</td></tr>
+    <tr><td>Endpoint público conocido</td><td>sí</td><td><strong>sí</strong>, verificado</td><td><strong>ninguno</strong></td></tr>
+    <tr><td>Esquema de campos publicado</td><td>sí</td><td>UBL 2.1, estándar OASIS</td><td><strong>ninguna muestra</strong></td></tr>
+    <tr><td>Certificado del emisor</td><td>lo ponen ellos</td><td>propio del emisor</td><td><span class="chip chip-aviso">sin resolver</span></td></tr>
+    <tr><td>Catálogo de errores de SUNAT</td><td><strong>sí lo publica</strong></td><td>no</td><td>no</td></tr>
+    <tr><td>API de alta de emisores</td><td>no</td><td>no, y además trámite en SUNAT SOL</td><td>igual</td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub">La conclusión de diseño, sin adornos: <strong>si el colegio va por Dynamic+,
+las siete pantallas de este grupo se reutilizan casi enteras</strong>, porque el trabajo se parece
+mucho al de Nubefact. Si va por Validación simple, hay que añadir el motor UBL, la firma y los dos
+estados de arriba. <strong>Diseñar contra la vía UBL es lo prudente</strong> — es la única cuyo
+contrato está verificado, y lo que sobre se apaga por configuración.</p>
+
+<h3 class="sub-seccion">8 · Lo que NO se pudo verificar</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Qué</th><th>Por qué</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Todo Dynamic+</strong>: esquema, URLs, autenticación, errores</td><td>No hay nada público. <strong>Pedirlo por escrito antes de comprometer arquitectura</strong></td></tr>
+    <tr><td>Quién firma en Dynamic+</td><td>Dos lecturas de la misma tabla se contradicen — ver el punto 4</td></tr>
+    <tr><td>Precios y límites por empresa</td><td>No publicados; se negocian con su comercial, igual que Nubefact</td></tr>
+    <tr><td>Si existe modelo revendedor</td><td><strong>No se encontró ninguna mención.</strong> Nubefact sí lo documenta; de EFACT no se puede decir ni que sí ni que no</td></tr>
+    <tr><td>Su presidencia del comité OASIS UBL para Latinoamérica</td><td>Lo afirman ellos y <strong>no se contrastó</strong>. Si es cierto explica que su producto gire en torno a UBL puro</td></tr>
+    <tr><td>Una copia archivada de su web</td><td>El archivo público <strong>rechazó la descarga</strong> desde aquí. El configurador de formato y protocolo del punto 1 sale de ahí, y por eso se cita como indicio, no como prueba</td></tr>
+  </tbody>
+</table>`;
+
 // ── Avatar ──────────────────────────────────────────────────────────────────
 // La asignación es DETERMINISTA y por identificador estable, nunca por nombre:
 // un cambio de apellido no debe cambiarle el color a nadie.
@@ -7283,6 +7443,7 @@ const CATALOGO = [
       { id: 'cotizacion', t: 'Cotización', estado: 'listo', c: pagCotizacion },
       { id: 'guiaremision', t: 'Guía de remisión', estado: 'listo', c: pagGuiaRemision },
       { id: 'impresion', t: 'Impresión', estado: 'listo', c: pagImpresion },
+      { id: 'efact', t: 'EFACT', estado: 'listo', c: pagEfact },
     ],
   },
   {

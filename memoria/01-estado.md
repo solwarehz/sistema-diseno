@@ -1,9 +1,9 @@
 # Estado del proyecto
 
-**Última actualización:** 27 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.88.0** — una auditoría encontró un
-contraste de **1,91:1** en oscuro que se había publicado, y un candado que medía
-la hoja de impresión **como si fuera pantalla**
+**Última actualización:** 28 de agosto de 2026
+**Versión del sistema:** MMI-DS **v1.89.0** — entra **EFACT** como segundo
+proveedor de comprobante electrónico, y el hallazgo es que **no vende una
+integración: vende tres**, y solo una de ellas tiene contrato público
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -40,12 +40,12 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
 | Componentes de React | ✅ | **499 pruebas en 34 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
-| Catálogo navegable | ✅ | `cascaron/index.html` · 53 páginas · lo genera `generar-cascaron.mjs` |
+| Catálogo navegable | ✅ | `cascaron/index.html` · **67 páginas** (contadas en el HTML generado; decía 53 y llevaba tiempo desfasado) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.88.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.89.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.88.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.89.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,34 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.88.0), con detalle
+### Lo de hoy (v1.89.0), con detalle
+
+**R108 · EFACT.** Se pidió buscar su documentación como segundo proveedor. Tres
+cosas que quedan escritas:
+
+1. **La primera lectura de su tabla de productos fue incorrecta**, y produjo la
+   conclusión de que EFACT solo acepta XML. Releída celda por celda: son **tres
+   productos**. «Validación simple» es XML UBL 2.1 por SOAP; **«Dynamic+» acepta
+   JSON, TXT y CSV por REST y SFTP**; «Efact Web» es un portal que no integra
+   con nada. La corrección está escrita **dentro de la página**, porque la
+   conclusión errónea era la que decidía si las siete pantallas de este grupo
+   servían o había que rehacerlas.
+2. **De Dynamic+ no existe ni una línea de especificación pública.** Ni esquema,
+   ni URL de homologación, ni autenticación, ni catálogo de errores: llega
+   después de firmar. Con Nubefact la integración se evalúa antes de
+   comprometerse; aquí no.
+3. **Dos cosas que la página se niega a afirmar:** quién firma en Dynamic+ —dos
+   lecturas de la misma celda se contradicen, y eso decide si hay que custodiar
+   el certificado del colegio— y si EFACT tiene modelo revendedor, del que no se
+   encontró ninguna mención ni a favor ni en contra.
+
+Lo único verificado de verdad: el WSDL responde en
+`ose.efact.pe/ol-ti-itcpe/billService` y es el de SUNAT sin modificar.
+
+La página **no aporta ni una regla de CSS**: se compone entera con lo que ya
+existía. Es la política de creación funcionando sin que nadie la empuje.
+
+### Lo de ayer (v1.88.0), con detalle
 
 **R107 · una auditoría encontró lo que catorce candados en verde no veían.**
 
@@ -1210,7 +1237,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.88.0
+Versión                      1.89.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes · 40 informativos,
                                       0 fallos)

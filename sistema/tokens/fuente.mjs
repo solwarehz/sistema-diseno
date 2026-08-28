@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.88.0";
+export const VERSION = "1.89.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,36 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.89.0', fecha: '2026-08-28',
+    que: 'R108: EFACT no es una integracion sino tres, y solo una tiene contrato publico',
+    porque:
+      'R108 · Se pidio buscar la documentacion de EFACT como segundo proveedor de comprobante '
+      + 'electronico. El hallazgo que decide el diseño es que EFACT no vende una integracion: vende '
+      + 'TRES productos con contratos distintos, y la primera lectura de su tabla recupero una sola '
+      + 'celda —«Conexion: SOAP»— y produjo la conclusion equivocada de que solo acepta XML. '
+      + 'Releida celda por celda: «Validacion simple» es XML UBL 2.1 por SOAP, «Dynamic+» acepta '
+      + 'JSON, TXT y CSV por REST y SFTP, y «Efact Web» es un portal que no integra con nada. La '
+      + 'correccion esta escrita EN la pagina, porque la conclusion erronea era justo la que decidia '
+      + 'si las siete pantallas de este grupo servian o habia que rehacerlas. '
+      + 'Verificado de verdad: el WSDL responde en ose.efact.pe/ol-ti-itcpe/billService y es el de '
+      + 'SUNAT sin modificar. De Dynamic+ NO existe ni una linea de especificacion publica —ni '
+      + 'esquema, ni URL de homologacion, ni autenticacion, ni catalogo de errores—: llega despues '
+      + 'de firmar el contrato. Con Nubefact se evalua la integracion antes de comprometerse; aqui no. '
+      + 'Y dos cosas que la pagina se niega a afirmar: quien firma en Dynamic+ (dos lecturas de la '
+      + 'misma celda se contradicen, y decide si hay que custodiar el certificado del colegio) y si '
+      + 'EFACT tiene modelo revendedor (no se encontro ninguna mencion, ni a favor ni en contra). '
+      + 'Lo unico medido de esta pagina, y lo comprobo el agente principal despues de encontrar un '
+      + '404 suelto que dejo la investigacion: el WSDL responde en '
+      + 'ose.efact.pe/ol-ti-itcpe/billService?wsdl —SIN el ?wsdl da 404, que era el fallo del primer '
+      + 'intento— y declara BillServiceImplService con las CINCO operaciones estandar de SUNAT y ni '
+      + 'una añadida: sendBill, sendSummary, sendPack, getStatus y getStatusCdr. Eso confirma de paso '
+      + 'que el estado «esperando el ticket» que dibuja la pagina existe de verdad: sendSummary no '
+      + 'devuelve el resultado, devuelve un ticket, y las boletas van por ahi. '
+      + 'La pagina no aporta CSS: se compone entera con lo que ya existia.',
+    rompe: [],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.88.0', fecha: '2026-08-27',
     que: 'R107: un contraste de 1,91:1 que se publico, y un candado que media lo impreso como pantalla',
