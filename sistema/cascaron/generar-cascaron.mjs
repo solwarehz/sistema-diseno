@@ -1792,11 +1792,33 @@ producto que lo instala, tampoco. Lo que hace, en el orden en que gana peso:</p>
 <table class="tabla-simple">
   <thead><tr><th>Regla</th><th>Por qué</th></tr></thead>
   <tbody>
-    <tr><td><strong>Solo PDF, comprobado en los bytes</strong></td><td class="motivo">El <code>accept</code> del navegador filtra el diálogo de archivos y nada más: arrastrando entra cualquier cosa, y renombrar un <code>.docx</code> a <code>.pdf</code> lo cuela. Se exige <code>%PDF-</code></td></tr>
+    <tr><td><strong>Se comprueba en los bytes, no en la extensión</strong></td><td class="motivo">El <code>accept</code> del navegador filtra el diálogo de archivos y nada más: arrastrando entra cualquier cosa, y renombrar un <code>.docx</code> a <code>.pdf</code> lo cuela. Por omisión se exige <code>%PDF-</code>; con <code>validar</code> lo decide el producto, <strong>y sigue siendo una comprobación de contenido</strong></td></tr>
     <tr><td><strong>El peso máximo se mide DESPUÉS de comprimir</strong></td><td class="motivo">Al revés se rechazan archivos que sí habrían cabido, y la persona ve «pesa demasiado» en algo que el sistema mismo podía arreglar</td></tr>
     <tr><td><strong>Dos archivos a la vez se rechazan</strong></td><td class="motivo">Coger el primero en silencio deja a alguien creyendo que subió los tres que soltó</td></tr>
+    <tr><td><strong>R109 · El archivo entregado no miente sobre lo que es</strong></td><td class="motivo">Hasta la v1.89.0 el <code>File</code> reconstruido salía reetiquetado como <code>application/pdf</code> pasara lo que pasara. Ahora <strong>conserva el <code>type</code> que traía</strong>: un archivo que dice ser lo que no es acaba creído por el servidor</td></tr>
   </tbody>
 </table>
+
+<h3 class="sub-seccion">R109 · Qué acepta lo decide el producto</h3>
+<p class="seccion-sub">Lo pidió Control Administrativos para la <strong>carga masiva de
+trabajadores</strong> en CSV, y el argumento es el que vale: el componente ya resuelve lo difícil
+—arrastrar y soltar, la lista, los rechazos, volver a elegir el mismo archivo, el progreso—, así que
+reimplementarlo fuera sería <strong>la sexta copia de una zona de soltar</strong>. Lo que sobraba era
+que decidiera por el producto qué se acepta.</p>
+<table class="tabla-simple">
+  <thead><tr><th>Prop</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>accept</code></td><td>Lo que ofrece el diálogo de archivos. <code>'application/pdf,.pdf'</code> por omisión. <strong>Mismo nombre y misma forma que en <code>CargaImagen</code> y <code>CargaId</code></strong>, donde ya existía</td></tr>
+    <tr><td><code>validar</code></td><td><code>(archivo) =&gt; Promise&lt;true | string&gt;</code>. El motivo se pega <strong>detrás del nombre</strong>, así que se escribe como continuación: <code>'no es un CSV'</code> da «padron.txt no es un CSV». Se llama una vez por archivo y <strong>antes de comprimir</strong></td></tr>
+  </tbody>
+</table>
+<div class="msj msj-aviso">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt"><strong>Los dos van juntos o dejas una puerta abierta.</strong> Cambiar solo
+  <code>accept</code> deja pasar cualquier cosa arrastrada; cambiar solo <code>validar</code> hace
+  que el diálogo no ofrezca lo que sí se admite. Y una cosa que <strong>sigue diciendo PDF y no se
+  puede cambiar</strong>: el icono del disparador. El texto sí, con <code>textoBoton</code>.</span>
+</div>
 <p class="seccion-sub">Se compone, no se reconstruye: el disparador y «Quitar» son <code>Boton</code>,
 el progreso es <code>Progreso</code>, el ahorro es un <code>Chip</code> —pintar aquí un verde a mano
 habría metido un par de contraste que nadie midió— y el icono es <code>Icono</code>. Lo único propio
@@ -7231,6 +7253,75 @@ reconstruyendo.</p>
   </div>
 </div>
 
+<h3 class="sub-seccion">Cuatro motivos para no poder pulsar un interruptor</h3>
+<p class="seccion-sub">Los tres primeros son de R99 y dicen por qué un privilegio
+<strong>no se puede repartir</strong>. El cuarto es de R110 y es distinto: no dice que no se
+pueda, dice que <strong>todavía no</strong> — y se resuelve encendiendo el de arriba.</p>
+<div class="msj msj-aviso">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt"><strong>R110 · Estas cuatro clases viajaban desde R99 y el catálogo no
+  pintaba ninguna.</strong> Se descubrió al añadir la cuarta: un producto recibía los cuatro
+  tratamientos sin una sola pantalla que le dijera a qué se parecen. Es el mismo defecto que
+  <code>cpe-no-imprime</code> ayer, y <code>verificar-omision</code> tampoco puede verlo — escriben
+  su modificador como clase suelta, no como regla compuesta.</span>
+</div>
+<div class="bloque">
+  <div class="pp">
+    <div class="pp-lista">
+      <section class="pp-mod pp-abierto">
+        <div class="pp-mod-cuerpo">
+          <div class="pp-priv pp-no-cerrado">
+            <div class="pp-cerrado">
+              <span class="pp-cerrado-ic">${ic('candado', 20)}</span>
+              <span class="pp-cerrado-txt">
+                <span class="pp-cerrado-nom">Dar de alta</span>
+                <span class="pp-cerrado-eti"><span class="chip chip-inact">no se puede conceder</span></span>
+                <span class="pp-cerrado-motivo">Dar de alta es del Jefe de personal.</span>
+              </span>
+            </div>
+          </div>
+          <div class="pp-priv pp-no-ajeno">
+            <div class="pp-cerrado">
+              <span class="pp-cerrado-ic">${ic('usuarios', 20)}</span>
+              <span class="pp-cerrado-txt">
+                <span class="pp-cerrado-nom">Ver planilla</span>
+                <span class="pp-cerrado-eti"><span class="chip chip-info">no lo tiene usted</span></span>
+                <span class="pp-cerrado-motivo">No se reparte lo que uno no tiene.</span>
+              </span>
+            </div>
+          </div>
+          <div class="pp-priv pp-no-pendiente">
+            <div class="pp-cerrado">
+              <span class="pp-cerrado-ic">${ic('informacion', 20)}</span>
+              <span class="pp-cerrado-txt">
+                <span class="pp-cerrado-nom">Exportar a SUNAT</span>
+                <span class="pp-cerrado-eti"><span class="chip chip-pend">todavía no existe</span></span>
+                <span class="pp-cerrado-motivo">Llega con el módulo de planilla.</span>
+              </span>
+            </div>
+          </div>
+          <div class="pp-priv pp-no-depende">
+            <div class="pp-cerrado">
+              <span class="pp-cerrado-ic">${ic('capas', 20)}</span>
+              <span class="pp-cerrado-txt">
+                <span class="pp-cerrado-nom">Carga masiva</span>
+                <span class="pp-cerrado-eti"><span class="chip chip-aviso">necesita otro permiso</span></span>
+                <span class="pp-cerrado-motivo">Antes hay que conceder «Crear trabajador».</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+<p class="seccion-sub"><strong>Por qué el cuarto no reutiliza ninguno de los tres.</strong> Lo pidió
+Control Administrativos y el argumento es suyo: <code>NoRepartible</code> describe por qué algo
+<em>no se puede</em> repartir, no un estado que cambia con lo que el usuario acaba de pulsar.
+Recalcularlo como <code>cerrado</code> en cada pintada funciona —por eso no se pidió como bloqueo—
+pero desdibuja los tres motivos. Se declara con <code>depende: 'crear'</code>, y encender arrastra
+la cadena entera hacia arriba.</p>
+
 <h3 class="sub-seccion">Las cinco decisiones que lleva dentro</h3>
 <table class="tabla-simple">
   <tbody>
@@ -7241,6 +7332,7 @@ reconstruyendo.</p>
     <tr><td class="num">5</td><td><strong>El preset se ve y se recupera.</strong> Pasando <code>preset</code>, cada módulo que difiera se marca y aparece cómo volver. Sin él nadie sabe qué tocó.</td></tr>
     <tr><td class="num">6</td><td><strong>Un privilegio puede declarar niveles por campo</strong> — cuánto se ve de un dato sensible. Van en <a href="#segmentado" data-ir="segmentado" class="enlace">Segmentado</a>, que nació para esto, y <strong>dentro del privilegio</strong>: sin «ver» concedido, elegir cuánto se ve no significa nada.</td></tr>
     <tr><td class="num">7</td><td><strong>Apagar el privilegio que manda no borra nada.</strong> Lo configurado se conserva para cuando se vuelva a encender — igual que los filtros de la tabla al plegarse. Lo que no se conserva es el <em>efecto</em>: <code>privilegiosEfectivos()</code> devuelve lo que de verdad se aplica, que es lo que va al backend.</td></tr>
+    <tr><td class="num">8</td><td><strong>R110 · Un privilegio puede depender de otro, y la cadena se recorre entera.</strong> <code>depende: 'crear'</code>. El <code>base</code> es <strong>uno solo y de un salto</strong>, así que no sabe expresar <code>leer → crear → carga&#8209;masiva</code>: dejarlo en <code>'leer'</code> permite encender la carga masiva sin poder crear, que es un botón que responde 403. Mientras falte, se ve bloqueado y dice cuál falta; encenderlo enciende toda la cadena; apagar aquél <strong>no borra</strong> éste, pero <code>privilegiosEfectivos()</code> le quita el efecto. <strong>Ojo al tacto:</strong> un privilegio con <code>depende</code> deja de encender el base de rebote — primero se enciende aquel del que depende.</td></tr>
   </tbody>
 </table>
 
@@ -9014,6 +9106,10 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 .pp-no-cerrado .pp-cerrado-ic { color: var(--texto-pista); }
 .pp-no-ajeno .pp-cerrado-ic { color: var(--info-acento); }
 .pp-no-pendiente .pp-cerrado-ic { color: var(--texto-secundario); }
+/* R110 · El bloqueado por dependencia. Es el unico de los cuatro que se
+   resuelve aqui mismo, encendiendo el interruptor de arriba, y por eso lleva
+   el acento de aviso y no el gris de los que no tienen salida. */
+.pp-no-depende .pp-cerrado-ic { color: var(--aviso-acento); }
 
 /* R99 · «va con Editar»: lo que se mueve junto se dice ANTES de pulsar, no
    despues de ver saltar el otro interruptor. */

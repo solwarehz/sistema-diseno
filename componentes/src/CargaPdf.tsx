@@ -38,9 +38,18 @@
  *
  * TRES DECISIONES QUE NO SON DE ASPECTO:
  *
- *   1 · SOLO PDF, Y SE COMPRUEBA EN LOS BYTES. El `accept` del navegador filtra
- *       el diálogo de archivos y nada más: arrastrando entra cualquier cosa, y
- *       renombrar un .docx a .pdf lo cuela. Se exige `%PDF-`.
+ *   1 · SE COMPRUEBA EN LOS BYTES, NO EN LA EXTENSIÓN. El `accept` del navegador
+ *       filtra el diálogo de archivos y nada más: arrastrando entra cualquier
+ *       cosa, y renombrar un .docx a .pdf lo cuela. Por omisión se exige
+ *       `%PDF-`; con `validar` el producto pone su propia comprobación —y sigue
+ *       siendo una comprobación de contenido, no un punto de extensión—.
+ *
+ *       R109 · Hasta la v1.89.0 el PDF estaba clavado en tres sitios: el
+ *       `accept` del JSX, `esPdf()` en el bucle y un `type: 'application/pdf'`
+ *       que **reetiquetaba el archivo reconstruido**. Ese último era el peor de
+ *       los tres: un CSV que hubiera pasado la validación salía del componente
+ *       diciendo que era un PDF, y el servidor lo creía. Ahora el `File` que se
+ *       entrega conserva el `type` que traía.
  *   2 · EL PESO MÁXIMO SE MIDE DESPUÉS DE COMPRIMIR. Al revés se rechazan
  *       archivos que sí habrían cabido, y la persona ve «pesa demasiado» en
  *       algo que el sistema mismo podía arreglar.
@@ -135,6 +144,30 @@ export type CargaPdfProps = {
   /** Apagarlo entrega el original sin tocarlo. Para un PDF **firmado**, donde
    *  reescribir el archivo invalidaría la firma. */
   comprimir?: boolean;
+  /**
+   * R109 · Lo que ofrece el diálogo de archivos. `'application/pdf,.pdf'` por
+   * omisión. Mismo nombre y misma forma que en `CargaImagen` y `CargaId`.
+   *
+   * Filtra el diálogo y **nada más**: no es la validación. Arrastrando entra
+   * cualquier cosa. Quien cambie esto casi siempre tiene que cambiar `validar`
+   * también, y al revés — uno sin el otro deja una de las dos puertas abierta.
+   */
+  accept?: string;
+  /**
+   * R109 · Qué se acepta, comprobado sobre el **contenido**. Devuelve `true`, o
+   * el motivo del rechazo.
+   *
+   * El motivo se pega **detrás del nombre del archivo**, así que se escribe
+   * como continuación de la frase: `'no es un CSV'` produce «padron.txt no es
+   * un CSV». No empieza por mayúscula ni termina en punto.
+   *
+   * Por omisión se exige `%PDF-` en los primeros 1024 bytes, que es lo que
+   * hacía el componente cuando esto no se podía cambiar.
+   *
+   * Se llama **una vez por archivo y antes de comprimir**: si el producto va a
+   * rechazarlo, no tiene sentido gastar el trabajo de comprimirlo primero.
+   */
+  validar?: (archivo: File) => Promise<true | string>;
   /** Ancho máximo y calidad de las imágenes incrustadas. */
   opcionesCompresion?: { anchoMaximoImagen?: number; calidadImagen?: number };
   /**
@@ -166,6 +199,8 @@ export function CargaPdf({
   error,
   pesoMaximo,
   comprimir = true,
+  accept = 'application/pdf,.pdf',
+  validar,
   opcionesCompresion,
   mostrarPesos = false,
 }: CargaPdfProps) {
@@ -254,21 +289,35 @@ export function CargaPdf({
         const archivo = entrantes[k];
         setTrabajo({ hecho: k, total: entrantes.length });
 
-        // La comprobación que no se puede esquivar: los bytes, no la extensión.
-        if (!(await esPdf(archivo))) {
-          rechazados.push(`${archivo.name} no es un PDF`);
+        // La comprobación que no se puede esquivar: el contenido, no la
+        // extensión. Por omisión `%PDF-`; con `validar`, lo que diga el
+        // producto. Va ANTES de comprimir: rechazar después es trabajo tirado.
+        const veredicto = validar
+          ? await validar(archivo)
+          : ((await esPdf(archivo)) ? true as const : 'no es un PDF');
+        if (veredicto !== true) {
+          rechazados.push(`${archivo.name} ${veredicto}`);
           continue;
         }
 
-        const r = comprimir
+        // R109 · Comprimir solo lo que el compresor sabe comprimir. Sin esto, un
+        // CSV admitido por `validar` se leía ENTERO en memoria para que el
+        // compresor descubriera al final que no era un PDF y lo devolviera igual.
+        // Mirar los primeros 1024 bytes cuesta mucho menos y evita el resto.
+        const comprimible = comprimir && await esPdf(archivo);
+        const r = comprimible
           ? await comprimirPdf(archivo, opcionesCompresion ?? {})
           : {
             archivo, pesoInicial: archivo.size, pesoFinal: archivo.size,
-            comprimido: false, motivo: 'sin-comprimir', detalle: {} as { paginas?: number },
+            comprimido: false,
+            motivo: comprimir ? 'no-es-pdf' : 'sin-comprimir',
+            detalle: {} as { paginas?: number },
           };
 
         const listo: PdfListo = {
-          archivo: new File([r.archivo], archivo.name, { type: 'application/pdf' }),
+          // R109 · Conserva el `type` que traía. Reetiquetarlo como PDF hacía que
+          // el archivo mintiera sobre sí mismo en cuanto salía de aquí.
+          archivo: new File([r.archivo], archivo.name, { type: archivo.type }),
           pesoInicial: r.pesoInicial,
           pesoFinal: r.pesoFinal,
           comprimido: r.comprimido,
@@ -446,9 +495,12 @@ export function CargaPdf({
           marcha sin inventar un porcentaje que no se conoce. */}
       {trabajo && (
         <div className="cpdf-trabajo">
+          {/* R109 · Antes decía «Comprimiendo» siempre, también con
+              `comprimir={false}`, donde no se comprime nada. Era mentira desde
+              que existe esa prop; se ve ahora porque la carga masiva la usa. */}
           <Progreso etiqueta={trabajo.total > 1
-            ? `Comprimiendo ${trabajo.hecho + 1} de ${trabajo.total}…`
-            : 'Comprimiendo el PDF…'} />
+            ? `${comprimir ? 'Comprimiendo' : 'Comprobando'} ${trabajo.hecho + 1} de ${trabajo.total}…`
+            : comprimir ? 'Comprimiendo el archivo…' : 'Comprobando el archivo…'} />
         </div>
       )}
 
@@ -460,7 +512,7 @@ export function CargaPdf({
         ref={entrada}
         className="cpdf-entrada"
         type="file"
-        accept="application/pdf,.pdf"
+        accept={accept}
         multiple={!uno}
         tabIndex={-1}
         aria-hidden="true"

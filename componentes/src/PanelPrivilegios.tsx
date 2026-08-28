@@ -86,6 +86,35 @@ export type Privilegio = {
    * de pulsar.
    */
   clave?: string;
+  /**
+   * R110 · De qué OTRO privilegio del mismo módulo depende éste. Su `id`.
+   *
+   * Dos efectos, y son los dos que hasta ahora había que recomponer fuera:
+   * mientras aquél esté apagado, éste se ve pero no se puede encender y dice
+   * qué falta; y encenderlo enciende también aquél, igual que el `base`.
+   *
+   * POR QUÉ NO BASTABA `base`. El `base` es **uno solo por panel** y se aplica
+   * en un salto: cualquier privilegio encendido enciende el base y ya. Una
+   * cadena de tres —`leer` → `crear` → `carga-masiva`— no cabe ahí: poner
+   * `base: 'crear'` deja a `leer` sin base, y dejarlo en `'leer'` permite
+   * encender la carga masiva sin poder crear, que es un botón que responde 403.
+   *
+   * POR QUÉ NO SE RESOLVIÓ CON `cerrado`. Se podía, recalculándolo en cada
+   * pintada, y por eso Control Administrativos no lo pidió como bloqueo.
+   * `NoRepartible` describe por qué un privilegio **no se puede repartir**
+   * —cerrado, ajeno, pendiente—, no un estado que cambia con lo que acaban de
+   * pulsar; usarlo para esto desdibuja los tres motivos de R99. Y la otra mitad
+   * —el encendido en cascada— cada producto la habría escrito por su cuenta, y
+   * cada uno habría acertado distinto.
+   *
+   * SE ENCADENA. Si aquél depende a su vez de otro, se recorre la cadena
+   * entera. Un ciclo se corta solo: se deja de andar donde ya se estuvo.
+   *
+   * FALLA CERRADO. Si el `id` no existe en el módulo, el privilegio queda
+   * bloqueado y lo dice nombrando el id que falta. En un panel de permisos, una
+   * errata tiene que quitar acceso, nunca darlo.
+   */
+  depende?: string;
   /** Niveles por campo. Solo se reparten si el privilegio está concedido. */
   niveles?: NivelPrivilegio[];
   /**
@@ -157,6 +186,45 @@ function todos(m: ModuloPrivilegios): Privilegio[] {
 }
 
 /**
+ * R110 · La cadena de `depende` desde un privilegio, de dentro hacia fuera y
+ * sin incluirlo a él: `carga-masiva` → `['crear']`, y si `crear` dependiera de
+ * otro, también ese.
+ *
+ * Se corta sola en un ciclo —`a` depende de `b` y `b` de `a`— porque no vuelve
+ * a entrar donde ya estuvo. Sin eso, una configuración mal escrita colgaría el
+ * navegador en vez de enseñar un panel raro, y de las dos cosas la segunda se
+ * arregla y la primera no se diagnostica.
+ *
+ * Un `depende` que apunta a un id inexistente devuelve ese id igual. Quien
+ * llama lo verá como no concedido —no existe, no puede estarlo— y el
+ * privilegio quedará bloqueado. Es a propósito: en permisos, una errata quita
+ * acceso, nunca lo da.
+ */
+function cadenaDepende(m: ModuloPrivilegios, id: string): string[] {
+  const lista = todos(m);
+  const cadena: string[] = [];
+  const visto = new Set<string>([id]);
+  let actual = lista.find((p) => p.id === id)?.depende;
+  while (actual && !visto.has(actual)) {
+    visto.add(actual);
+    cadena.push(actual);
+    actual = lista.find((p) => p.id === actual)?.depende;
+  }
+  return cadena;
+}
+
+/**
+ * R110 · Qué privilegio de la cadena falta, o `undefined` si están todos. Se
+ * devuelve el PRIMERO que falta, no la lista: decirle a alguien que le faltan
+ * tres cosas cuando solo puede resolver una es darle trabajo, no información.
+ */
+function faltaDepende(
+  m: ModuloPrivilegios, v: ValorPrivilegios, id: string,
+): string | undefined {
+  return cadenaDepende(m, id).find((x) => !concedido(v, m.id, x));
+}
+
+/**
  * Lo concedido, dicho en una frase. Se exporta aparte porque el resumen suele
  * querer enseñarse fuera del panel —en una cabecera, en un correo, en un
  * registro— y no tiene por qué depender de que el panel esté montado.
@@ -189,7 +257,21 @@ export function privilegiosEfectivos(
   for (const m of modulos) {
     const del = valor[m.id] ?? {};
     if (base && del[base] !== true) { salida[m.id] = {}; continue; }
-    salida[m.id] = { ...del };
+    // R110 · Lo mismo que hace el base, y por lo mismo. Apagar aquel del que
+    // uno depende NO borra lo guardado —eso es R98, y sigue en pie—, pero sí le
+    // quita el efecto. Sin esta línea el backend recibiría `carga-masiva: true`
+    // sin `crear`, que es exactamente el botón que responde 403 y el motivo por
+    // el que se pidió la prop.
+    const quitados = todos(m)
+      .filter((p) => p.depende && faltaDepende(m, valor, p.id))
+      .map((p) => p.id);
+    const limpio = { ...del };
+    for (const id of quitados) {
+      delete limpio[id];
+      // Los niveles de un privilegio sin efecto tampoco lo tienen.
+      for (const k of Object.keys(limpio)) if (k.startsWith(`${id}:`)) delete limpio[k];
+    }
+    salida[m.id] = limpio;
   }
   return salida;
 }
@@ -237,6 +319,34 @@ export function PanelPrivilegios({
         if (puedeBase) delModulo[base] = true;
       }
     }
+
+    // R110 · ENCENDER ENCIENDE LA CADENA. Es la mitad que `cerrado` no podía
+    // cubrir: recalcular un bloqueo se puede hacer fuera, pero el encendido en
+    // cascada lo habría escrito cada producto por su cuenta y cada uno habría
+    // acertado distinto.
+    //
+    // Se recorre desde TODO lo que acaba de encenderse —el privilegio pulsado y
+    // los que comparten su clave—, porque un compañero de clave puede tener su
+    // propia dependencia.
+    //
+    // APAGAR NO ARRASTRA. Apagar «crear» no apaga la carga masiva: la deja
+    // visible y bloqueada, con lo configurado intacto. Es la misma decisión que
+    // R98 tomó para el base —gobierna, pero no borra— y `privilegiosEfectivos`
+    // se encarga de que tampoco surta efecto mientras tanto.
+    if (activo) {
+      const encendidos = Object.keys(delModulo).filter((k) => delModulo[k] === true);
+      for (const id of encendidos) {
+        for (const dep of cadenaDepende(m, id)) {
+          // Uno cerrado no se enciende por la puerta de atrás: si no se puede
+          // conceder a mano, tampoco de rebote. La cadena se para ahí, y el
+          // privilegio de abajo se quedará bloqueado diciendo qué falta.
+          const p = todos(m).find((x) => x.id === dep);
+          if (!p || p.cerrado) break;
+          delModulo[dep] = true;
+        }
+      }
+    }
+
     onCambio({ ...valor, [m.id]: delModulo });
   }, [valor, onCambio, base]);
 
@@ -254,12 +364,37 @@ export function PanelPrivilegios({
   const fila = (m: ModuloPrivilegios, p: Privilegio, esBase: boolean) => {
     const dado = concedido(valor, m.id, p.id);
     const no = comoNoRepartible(p.cerrado);
+    // R110 · `cerrado` manda: si un privilegio no se puede repartir nunca, da
+    // igual de qué dependa. Se mira la dependencia solo cuando no hay cerrado.
+    const falta = no ? undefined : faltaDepende(m, valor, p.id);
+    const nombreFalta = falta ? todos(m).find((x) => x.id === falta)?.nombre : undefined;
+    // Una sola frase en UN solo nodo de texto siempre que se pueda. Partirla en
+    // tres —«Antes hay que conceder «», el nombre, y «».»— la deja ilegible para
+    // un lector de pantalla, que la anuncia a trozos, y para cualquiera que la
+    // busque por su texto. Solo se compone con nodos si el nombre no es texto.
+    const motivoFalta = falta === undefined ? null
+      : typeof nombreFalta === 'string' || nombreFalta === undefined
+        ? `Antes hay que conceder «${nombreFalta ?? falta}».`
+        : <>Antes hay que conceder «{nombreFalta}».</>;
     // Con quién va enlazado, para decirlo ANTES de pulsar.
     const conQuien = p.clave
       ? todos(m).filter((x) => x.clave === p.clave && x.id !== p.id).map((x) => x.nombre)
       : [];
     return (
-      <div className={`pp-priv${esBase ? ' pp-priv-base' : ''}${no ? ` pp-no pp-no-${no.tipo}` : ''}`} key={p.id}>
+      <div className={[
+        'pp-priv',
+        esBase && 'pp-priv-base',
+        // El motivo se arma FUERA del JSX: un ternario anidado dentro de
+        // `className` deja al candado de huérfanas leyendo trozos sueltos, y
+        // pasó a inventarse dos clases —`.no` y `.falta`— que no existen.
+        //
+        // R110 · Y al ordenarlo salió `.pp-no`, que se emitía desde R99 y que
+        // NINGUNA regla define. Vivía escondida detrás del mismo desorden que
+        // confundía al candado. Se quita en vez de inventarle un estilo: lo que
+        // distingue a los cuatro motivos es `pp-no-*`, y una clase que no pinta
+        // nada solo sirve para que alguien la use creyendo que sí.
+        no ? `pp-no-${no.tipo}` : falta ? 'pp-no-depende' : '',
+      ].filter(Boolean).join(' ')} key={p.id}>
         {/* R99 · Cada motivo se dibuja distinto, porque cada uno pide una cosa
             distinta de quien reparte: el cerrado que se olvide, el ajeno que
             hable con quien sí lo tiene, y el pendiente que espere. */}
@@ -278,6 +413,22 @@ export function PanelPrivilegios({
                 </Chip>
               </span>
               {no.motivo && <span className="pp-cerrado-motivo">{no.motivo}</span>}
+            </span>
+          </div>
+        ) : falta ? (
+          /* R110 · Mismo tratamiento que un no repartible —se ve, no se puede
+             encender, y dice por qué— pero con su propio motivo y su propio
+             icono. No se reutiliza ninguno de los tres de R99 a propósito:
+             aquéllos explican por qué algo NO SE PUEDE repartir, y esto es un
+             estado que se resuelve encendiendo el interruptor de arriba. */
+          <div className="pp-cerrado">
+            <span className="pp-cerrado-ic"><Icono nombre="capas" /></span>
+            <span className="pp-cerrado-txt">
+              <span className="pp-cerrado-nom">{p.nombre}</span>
+              <span className="pp-cerrado-eti">
+                <Chip tono="aviso">necesita otro permiso</Chip>
+              </span>
+              <span className="pp-cerrado-motivo">{motivoFalta}</span>
             </span>
           </div>
         ) : (
@@ -329,7 +480,12 @@ export function PanelPrivilegios({
         {modulos.map((m) => {
           const lista = todos(m);
           const abiertoM = visibles.includes(m.id);
-          const dados = lista.filter((p) => !p.cerrado && concedido(valor, m.id, p.id));
+          // R110 · Uno bloqueado por su dependencia NO cuenta como concedido,
+          // aunque lo guardado diga `true`: es justo lo que `privilegiosEfectivos`
+          // le quita al backend, y un «4 de 6» que cuenta un permiso sin efecto
+          // dice que se repartió algo que no se repartió.
+          const dados = lista.filter((p) => !p.cerrado
+            && concedido(valor, m.id, p.id) && !faltaDepende(m, valor, p.id));
           // Lo que no se puede repartir no cuenta en el «4 de 6»: contarlo haría
           // que un cargo pareciera incompleto por reglas que no dependen de él.
           const posibles = lista.filter((p) => !p.cerrado).length;

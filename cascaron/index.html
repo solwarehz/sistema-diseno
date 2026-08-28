@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.89.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.90.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.89.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.90.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -2094,6 +2094,10 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 .pp-no-cerrado .pp-cerrado-ic { color: var(--texto-pista); }
 .pp-no-ajeno .pp-cerrado-ic { color: var(--info-acento); }
 .pp-no-pendiente .pp-cerrado-ic { color: var(--texto-secundario); }
+/* R110 · El bloqueado por dependencia. Es el unico de los cuatro que se
+   resuelve aqui mismo, encendiendo el interruptor de arriba, y por eso lleva
+   el acento de aviso y no el gris de los que no tienen salida. */
+.pp-no-depende .pp-cerrado-ic { color: var(--aviso-acento); }
 
 /* R99 · «va con Editar»: lo que se mueve junto se dice ANTES de pulsar, no
    despues de ver saltar el otro interruptor. */
@@ -4247,7 +4251,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.89.0</option></select></label>
+          <select class="campo cg-in"><option>v1.90.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4335,8 +4339,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.89.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.89.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.90.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.90.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -7511,11 +7515,33 @@ producto que lo instala, tampoco. Lo que hace, en el orden en que gana peso:</p>
 <table class="tabla-simple">
   <thead><tr><th>Regla</th><th>Por qué</th></tr></thead>
   <tbody>
-    <tr><td><strong>Solo PDF, comprobado en los bytes</strong></td><td class="motivo">El <code>accept</code> del navegador filtra el diálogo de archivos y nada más: arrastrando entra cualquier cosa, y renombrar un <code>.docx</code> a <code>.pdf</code> lo cuela. Se exige <code>%PDF-</code></td></tr>
+    <tr><td><strong>Se comprueba en los bytes, no en la extensión</strong></td><td class="motivo">El <code>accept</code> del navegador filtra el diálogo de archivos y nada más: arrastrando entra cualquier cosa, y renombrar un <code>.docx</code> a <code>.pdf</code> lo cuela. Por omisión se exige <code>%PDF-</code>; con <code>validar</code> lo decide el producto, <strong>y sigue siendo una comprobación de contenido</strong></td></tr>
     <tr><td><strong>El peso máximo se mide DESPUÉS de comprimir</strong></td><td class="motivo">Al revés se rechazan archivos que sí habrían cabido, y la persona ve «pesa demasiado» en algo que el sistema mismo podía arreglar</td></tr>
     <tr><td><strong>Dos archivos a la vez se rechazan</strong></td><td class="motivo">Coger el primero en silencio deja a alguien creyendo que subió los tres que soltó</td></tr>
+    <tr><td><strong>R109 · El archivo entregado no miente sobre lo que es</strong></td><td class="motivo">Hasta la v1.89.0 el <code>File</code> reconstruido salía reetiquetado como <code>application/pdf</code> pasara lo que pasara. Ahora <strong>conserva el <code>type</code> que traía</strong>: un archivo que dice ser lo que no es acaba creído por el servidor</td></tr>
   </tbody>
 </table>
+
+<h3 class="sub-seccion">R109 · Qué acepta lo decide el producto</h3>
+<p class="seccion-sub">Lo pidió Control Administrativos para la <strong>carga masiva de
+trabajadores</strong> en CSV, y el argumento es el que vale: el componente ya resuelve lo difícil
+—arrastrar y soltar, la lista, los rechazos, volver a elegir el mismo archivo, el progreso—, así que
+reimplementarlo fuera sería <strong>la sexta copia de una zona de soltar</strong>. Lo que sobraba era
+que decidiera por el producto qué se acepta.</p>
+<table class="tabla-simple">
+  <thead><tr><th>Prop</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>accept</code></td><td>Lo que ofrece el diálogo de archivos. <code>'application/pdf,.pdf'</code> por omisión. <strong>Mismo nombre y misma forma que en <code>CargaImagen</code> y <code>CargaId</code></strong>, donde ya existía</td></tr>
+    <tr><td><code>validar</code></td><td><code>(archivo) =&gt; Promise&lt;true | string&gt;</code>. El motivo se pega <strong>detrás del nombre</strong>, así que se escribe como continuación: <code>'no es un CSV'</code> da «padron.txt no es un CSV». Se llama una vez por archivo y <strong>antes de comprimir</strong></td></tr>
+  </tbody>
+</table>
+<div class="msj msj-aviso">
+  <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+  <span class="msj-txt"><strong>Los dos van juntos o dejas una puerta abierta.</strong> Cambiar solo
+  <code>accept</code> deja pasar cualquier cosa arrastrada; cambiar solo <code>validar</code> hace
+  que el diálogo no ofrezca lo que sí se admite. Y una cosa que <strong>sigue diciendo PDF y no se
+  puede cambiar</strong>: el icono del disparador. El texto sí, con <code>textoBoton</code>.</span>
+</div>
 <p class="seccion-sub">Se compone, no se reconstruye: el disparador y «Quitar» son <code>Boton</code>,
 el progreso es <code>Progreso</code>, el ahorro es un <code>Chip</code> —pintar aquí un verde a mano
 habría metido un par de contraste que nadie midió— y el icono es <code>Icono</code>. Lo único propio
@@ -10927,6 +10953,75 @@ reconstruyendo.</p>
   </div>
 </div>
 
+<h3 class="sub-seccion">Cuatro motivos para no poder pulsar un interruptor</h3>
+<p class="seccion-sub">Los tres primeros son de R99 y dicen por qué un privilegio
+<strong>no se puede repartir</strong>. El cuarto es de R110 y es distinto: no dice que no se
+pueda, dice que <strong>todavía no</strong> — y se resuelve encendiendo el de arriba.</p>
+<div class="msj msj-aviso">
+  <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+  <span class="msj-txt"><strong>R110 · Estas cuatro clases viajaban desde R99 y el catálogo no
+  pintaba ninguna.</strong> Se descubrió al añadir la cuarta: un producto recibía los cuatro
+  tratamientos sin una sola pantalla que le dijera a qué se parecen. Es el mismo defecto que
+  <code>cpe-no-imprime</code> ayer, y <code>verificar-omision</code> tampoco puede verlo — escriben
+  su modificador como clase suelta, no como regla compuesta.</span>
+</div>
+<div class="bloque">
+  <div class="pp">
+    <div class="pp-lista">
+      <section class="pp-mod pp-abierto">
+        <div class="pp-mod-cuerpo">
+          <div class="pp-priv pp-no-cerrado">
+            <div class="pp-cerrado">
+              <span class="pp-cerrado-ic"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">candado</svg></span>
+              <span class="pp-cerrado-txt">
+                <span class="pp-cerrado-nom">Dar de alta</span>
+                <span class="pp-cerrado-eti"><span class="chip chip-inact">no se puede conceder</span></span>
+                <span class="pp-cerrado-motivo">Dar de alta es del Jefe de personal.</span>
+              </span>
+            </div>
+          </div>
+          <div class="pp-priv pp-no-ajeno">
+            <div class="pp-cerrado">
+              <span class="pp-cerrado-ic"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">usuarios</svg></span>
+              <span class="pp-cerrado-txt">
+                <span class="pp-cerrado-nom">Ver planilla</span>
+                <span class="pp-cerrado-eti"><span class="chip chip-info">no lo tiene usted</span></span>
+                <span class="pp-cerrado-motivo">No se reparte lo que uno no tiene.</span>
+              </span>
+            </div>
+          </div>
+          <div class="pp-priv pp-no-pendiente">
+            <div class="pp-cerrado">
+              <span class="pp-cerrado-ic"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">informacion</svg></span>
+              <span class="pp-cerrado-txt">
+                <span class="pp-cerrado-nom">Exportar a SUNAT</span>
+                <span class="pp-cerrado-eti"><span class="chip chip-pend">todavía no existe</span></span>
+                <span class="pp-cerrado-motivo">Llega con el módulo de planilla.</span>
+              </span>
+            </div>
+          </div>
+          <div class="pp-priv pp-no-depende">
+            <div class="pp-cerrado">
+              <span class="pp-cerrado-ic"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">capas</svg></span>
+              <span class="pp-cerrado-txt">
+                <span class="pp-cerrado-nom">Carga masiva</span>
+                <span class="pp-cerrado-eti"><span class="chip chip-aviso">necesita otro permiso</span></span>
+                <span class="pp-cerrado-motivo">Antes hay que conceder «Crear trabajador».</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+<p class="seccion-sub"><strong>Por qué el cuarto no reutiliza ninguno de los tres.</strong> Lo pidió
+Control Administrativos y el argumento es suyo: <code>NoRepartible</code> describe por qué algo
+<em>no se puede</em> repartir, no un estado que cambia con lo que el usuario acaba de pulsar.
+Recalcularlo como <code>cerrado</code> en cada pintada funciona —por eso no se pidió como bloqueo—
+pero desdibuja los tres motivos. Se declara con <code>depende: 'crear'</code>, y encender arrastra
+la cadena entera hacia arriba.</p>
+
 <h3 class="sub-seccion">Las cinco decisiones que lleva dentro</h3>
 <table class="tabla-simple">
   <tbody>
@@ -10937,6 +11032,7 @@ reconstruyendo.</p>
     <tr><td class="num">5</td><td><strong>El preset se ve y se recupera.</strong> Pasando <code>preset</code>, cada módulo que difiera se marca y aparece cómo volver. Sin él nadie sabe qué tocó.</td></tr>
     <tr><td class="num">6</td><td><strong>Un privilegio puede declarar niveles por campo</strong> — cuánto se ve de un dato sensible. Van en <a href="#segmentado" data-ir="segmentado" class="enlace">Segmentado</a>, que nació para esto, y <strong>dentro del privilegio</strong>: sin «ver» concedido, elegir cuánto se ve no significa nada.</td></tr>
     <tr><td class="num">7</td><td><strong>Apagar el privilegio que manda no borra nada.</strong> Lo configurado se conserva para cuando se vuelva a encender — igual que los filtros de la tabla al plegarse. Lo que no se conserva es el <em>efecto</em>: <code>privilegiosEfectivos()</code> devuelve lo que de verdad se aplica, que es lo que va al backend.</td></tr>
+    <tr><td class="num">8</td><td><strong>R110 · Un privilegio puede depender de otro, y la cadena se recorre entera.</strong> <code>depende: 'crear'</code>. El <code>base</code> es <strong>uno solo y de un salto</strong>, así que no sabe expresar <code>leer → crear → carga&#8209;masiva</code>: dejarlo en <code>'leer'</code> permite encender la carga masiva sin poder crear, que es un botón que responde 403. Mientras falte, se ve bloqueado y dice cuál falta; encenderlo enciende toda la cadena; apagar aquél <strong>no borra</strong> éste, pero <code>privilegiosEfectivos()</code> le quita el efecto. <strong>Ojo al tacto:</strong> un privilegio con <code>depende</code> deja de encender el base de rebote — primero se enciende aquel del que depende.</td></tr>
   </tbody>
 </table>
 
@@ -14224,6 +14320,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.90.0 <span class="cam-fecha">2026-08-28</span></h3>
+<p class="pag-intro"><strong>R109 y R110: dos componentes dejan de decidir por el producto, y sale una clase muerta desde R99.</strong> Dos requerimientos de Control Administrativos, medidos sobre el paquete instalado y con las lineas citadas. Los dos sirven al MISMO caso —carga masiva de trabajadores— y por eso van juntos. R109 · CargaPdf tenia el PDF clavado en TRES sitios: el accept del JSX, esPdf() en el bucle y un type: application/pdf que REETIQUETABA el archivo reconstruido. El tercero era el peor: un archivo que pasara la validacion salia del componente mintiendo sobre lo que era, y el servidor se lo creia. Entran `accept` —mismo nombre y forma que en CargaImagen y CargaId, donde YA existia— y `validar(archivo) => true | motivo`, y el File conserva su type. No se hizo componente nuevo, que es lo que pidieron: el que existe ya resuelve arrastrar y soltar, la lista, los rechazos y el reset del input, y reimplementarlo fuera seria la sexta copia de una zona de soltar. De camino, dos cosas que el caso destapo: comprimir solo se intenta si los bytes son un PDF —antes un CSV se leia ENTERO en memoria para que el compresor descubriera al final que no lo era—, y el progreso decia «Comprimiendo» tambien con comprimir={false}, donde no comprime nada. Eso ultimo era mentira desde que existe esa prop; se ve ahora porque la carga masiva la usa. R110 · PanelPrivilegios gana `depende`. El `base` es UNO SOLO por panel y de UN salto, asi que no sabe expresar leer → crear → carga-masiva: dejarlo en «leer» permite encender la carga masiva sin poder crear, que es un boton que responde 403. Con `depende` se ve bloqueado y dice cual falta, encenderlo enciende la cadena entera, apagar aquel NO borra este —R98 sigue en pie— y privilegiosEfectivos le quita el efecto, que es justo el 403 que se vino a evitar. No se reutilizo NoRepartible a proposito, y el argumento es de ellos: describe por que algo no se PUEDE repartir, no un estado que cambia con lo que acaban de pulsar. CONSECUENCIA QUE HAY QUE SABER: un privilegio con `depende` deja de encender el base de rebote. Primero se enciende aquel del que depende. Es lo que se pidio, pero es un cambio de tacto real en cuanto alguien apunta `depende` al propio base. Y UNA CLASE MUERTA. Al sacar el ternario anidado fuera del className —el candado de huerfanas leia trozos sueltos y se invento `.no` y `.falta`— salio `.pp-no`, que se emitia en cada fila bloqueada DESDE R99 y que ninguna regla define. Vivia escondida detras del mismo desorden que confundia al candado. Se quita en vez de inventarle un estilo. Y las cuatro `pp-no-*` VIAJABAN SIN QUE EL CATALOGO PINTARA NINGUNA desde R99 —el defecto de cpe-no-imprime de ayer, tres veces y mas viejo—. Ahora se pintan las cuatro juntas.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>PanelPrivilegios ya no emite <code>.pp-no</code> en las filas bloqueadas. Ninguna regla la definia, asi que nada cambia de aspecto; solo afecta a quien la usara como gancho de CSS propio. Los cuatro <code>pp-no-cerrado</code>, <code>pp-no-ajeno</code>, <code>pp-no-pendiente</code> y <code>pp-no-depende</code> siguen igual.</td></tr><tr><td>Un privilegio que declare <code>depende</code> deja de encender el <code>base</code> de rebote: hay que encender antes aquel del que depende. Solo afecta a quien anada la prop nueva.</td></tr></tbody></table>
 
 
 <h3 class="sub-seccion">v1.89.0 <span class="cam-fecha">2026-08-28</span></h3>

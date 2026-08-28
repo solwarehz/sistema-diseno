@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 28 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.89.0** — entra **EFACT** como segundo
-proveedor de comprobante electrónico, y el hallazgo es que **no vende una
-integración: vende tres**, y solo una de ellas tiene contrato público
+**Versión del sistema:** MMI-DS **v1.90.0** — dos requerimientos de Control
+Administrativos para el mismo caso (carga masiva de trabajadores), y de camino
+una clase que se emitía **desde R99 sin que ninguna regla la definiera**
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -42,10 +42,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **67 páginas** (contadas en el HTML generado; decía 53 y llevaba tiempo desfasado) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.89.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.90.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.89.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.90.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,36 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.89.0), con detalle
+### Lo de hoy (v1.90.0), con detalle
+
+**R109 · `CargaPdf` deja de decidir qué acepta.** El PDF estaba clavado en tres
+sitios; el peor era `type: 'application/pdf'` al reconstruir el `File`, que hacía
+que el archivo **mintiera sobre sí mismo** en cuanto salía del componente. Entran
+`accept` —que ya existía con ese nombre en `CargaImagen` y `CargaId`— y
+`validar`. **No se hizo componente nuevo**, que es lo que pidieron y es lo
+correcto: el que existe ya resuelve arrastrar y soltar, la lista, los rechazos y
+el reset del `<input>`.
+
+De camino, dos cosas que el caso destapó: comprimir solo se intenta si los bytes
+son un PDF, y el progreso decía «Comprimiendo» también con `comprimir={false}`
+—mentira desde que existe esa prop—.
+
+**R110 · `PanelPrivilegios` gana `depende`.** El `base` es uno solo y de un
+salto, así que no sabe expresar `leer → crear → carga-masiva`. Con `depende` se
+ve bloqueado y dice cuál falta, encender arrastra la cadena entera, apagar no
+borra —R98 sigue en pie— y `privilegiosEfectivos` le quita el efecto.
+
+**Consecuencia que hay que saber:** un privilegio con `depende` deja de encender
+el base de rebote.
+
+**Y una clase muerta desde R99.** Al sacar el ternario anidado fuera del
+`className` —el candado de huérfanas leía trozos sueltos y se inventaba `.no` y
+`.falta`— salió `.pp-no`, emitida en cada fila bloqueada **desde R99** y que
+ninguna regla define. Además, las cuatro `pp-no-*` **viajaban sin que el catálogo
+pintara ninguna**: el defecto de `cpe-no-imprime` de ayer, tres veces y más
+viejo. Ahora se pintan las cuatro juntas.
+
+### Lo de ayer (v1.89.0), con detalle
 
 **R108 · EFACT.** Se pidió buscar su documentación como segundo proveedor. Tres
 cosas que quedan escritas:
@@ -1237,11 +1266,11 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.89.0
+Versión                      1.90.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         499   en 34 archivos
+Pruebas                         521   en 36 archivos
 Reglas que viajan               864   de 1349 · 626 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Candado de la cascada           963   reglas leidas · 11 anchos

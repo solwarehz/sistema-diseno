@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.89.0";
+export const VERSION = "1.90.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,52 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.90.0', fecha: '2026-08-28',
+    que: 'R109 y R110: dos componentes dejan de decidir por el producto, y sale una clase muerta desde R99',
+    porque:
+      'Dos requerimientos de Control Administrativos, medidos sobre el paquete instalado y con las '
+      + 'lineas citadas. Los dos sirven al MISMO caso —carga masiva de trabajadores— y por eso van '
+      + 'juntos. '
+      + 'R109 · CargaPdf tenia el PDF clavado en TRES sitios: el accept del JSX, esPdf() en el bucle '
+      + 'y un type: application/pdf que REETIQUETABA el archivo reconstruido. El tercero era el peor: '
+      + 'un archivo que pasara la validacion salia del componente mintiendo sobre lo que era, y el '
+      + 'servidor se lo creia. Entran `accept` —mismo nombre y forma que en CargaImagen y CargaId, '
+      + 'donde YA existia— y `validar(archivo) => true | motivo`, y el File conserva su type. No se '
+      + 'hizo componente nuevo, que es lo que pidieron: el que existe ya resuelve arrastrar y soltar, '
+      + 'la lista, los rechazos y el reset del input, y reimplementarlo fuera seria la sexta copia de '
+      + 'una zona de soltar. '
+      + 'De camino, dos cosas que el caso destapo: comprimir solo se intenta si los bytes son un PDF '
+      + '—antes un CSV se leia ENTERO en memoria para que el compresor descubriera al final que no lo '
+      + 'era—, y el progreso decia «Comprimiendo» tambien con comprimir={false}, donde no comprime '
+      + 'nada. Eso ultimo era mentira desde que existe esa prop; se ve ahora porque la carga masiva '
+      + 'la usa. '
+      + 'R110 · PanelPrivilegios gana `depende`. El `base` es UNO SOLO por panel y de UN salto, asi '
+      + 'que no sabe expresar leer → crear → carga-masiva: dejarlo en «leer» permite encender la '
+      + 'carga masiva sin poder crear, que es un boton que responde 403. Con `depende` se ve '
+      + 'bloqueado y dice cual falta, encenderlo enciende la cadena entera, apagar aquel NO borra '
+      + 'este —R98 sigue en pie— y privilegiosEfectivos le quita el efecto, que es justo el 403 que '
+      + 'se vino a evitar. No se reutilizo NoRepartible a proposito, y el argumento es de ellos: '
+      + 'describe por que algo no se PUEDE repartir, no un estado que cambia con lo que acaban de '
+      + 'pulsar. '
+      + 'CONSECUENCIA QUE HAY QUE SABER: un privilegio con `depende` deja de encender el base de '
+      + 'rebote. Primero se enciende aquel del que depende. Es lo que se pidio, pero es un cambio de '
+      + 'tacto real en cuanto alguien apunta `depende` al propio base. '
+      + 'Y UNA CLASE MUERTA. Al sacar el ternario anidado fuera del className —el candado de '
+      + 'huerfanas leia trozos sueltos y se invento `.no` y `.falta`— salio `.pp-no`, que se emitia '
+      + 'en cada fila bloqueada DESDE R99 y que ninguna regla define. Vivia escondida detras del '
+      + 'mismo desorden que confundia al candado. Se quita en vez de inventarle un estilo. '
+      + 'Y las cuatro `pp-no-*` VIAJABAN SIN QUE EL CATALOGO PINTARA NINGUNA desde R99 —el defecto '
+      + 'de cpe-no-imprime de ayer, tres veces y mas viejo—. Ahora se pintan las cuatro juntas.',
+    rompe: [
+      'PanelPrivilegios ya no emite `.pp-no` en las filas bloqueadas. Ninguna regla la definia, asi '
+      + 'que nada cambia de aspecto; solo afecta a quien la usara como gancho de CSS propio. Los '
+      + 'cuatro `pp-no-cerrado`, `pp-no-ajeno`, `pp-no-pendiente` y `pp-no-depende` siguen igual.',
+      'Un privilegio que declare `depende` deja de encender el `base` de rebote: hay que encender '
+      + 'antes aquel del que depende. Solo afecta a quien anada la prop nueva.',
+    ],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.89.0', fecha: '2026-08-28',
     que: 'R108: EFACT no es una integracion sino tres, y solo una tiene contrato publico',

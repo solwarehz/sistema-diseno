@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.89.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.90.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -1442,7 +1442,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .pb-todos{ justify-content: center; border-top: 1px solid var(--borde); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   PANEL DE PRIVILEGIOS — 39 reglas · clases .pp-*
+   PANEL DE PRIVILEGIOS — 40 reglas · clases .pp-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .pp{ display: flex; flex-direction: column; gap: 16px; }
@@ -1486,6 +1486,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .pp-no-cerrado .pp-cerrado-ic{ color: var(--texto-pista); }
 .pp-no-ajeno .pp-cerrado-ic{ color: var(--info-acento); }
 .pp-no-pendiente .pp-cerrado-ic{ color: var(--texto-secundario); }
+.pp-no-depende .pp-cerrado-ic{ color: var(--aviso-acento); }
 .pp-junto{ font-size: 12px; color: var(--texto-secundario); font-weight: 400; }
 .pp-niveles{ display: flex; flex-direction: column; gap: 12px;
   margin: 12px 0 4px 52px; padding-left: 12px;
