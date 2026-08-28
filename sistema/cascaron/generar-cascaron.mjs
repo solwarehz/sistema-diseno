@@ -2045,7 +2045,19 @@ lista. Con teclado siguen pasando Tab y Escape: salir nunca se bloquea.</div>
 </div>
 
 <h3 class="sub-seccion">Selector con búsqueda — funciona, pruébalo</h3>
-<p class="seccion-sub">${APODERADOS.length} apoderados. Escribe y filtra por coincidencias. Flechas para moverte, Enter para elegir, Esc para cerrar.</p>
+<p class="seccion-sub">${APODERADOS.length} apoderados. Escribe y filtra por coincidencias. Flechas para
+moverte, Enter para elegir, Esc para cerrar.</p>
+<p class="seccion-sub"><strong>Y desde la v1.79.0, dos cosas más</strong> (R103): con algo elegido, la
+lista ofrece <strong>«Todos los apoderados»</strong> para volver a <em>sin elegir</em> —o
+<strong>Retroceso</strong> sobre el campo vacío, que es el atajo—; y escribiendo un nombre que no
+existe, la fila de «no hay coincidencias» deja de ser un cartel y pasa a ser
+<strong>«Crear …»</strong>. Prueba a escribir <code>Huaraz Vega, Ana</code>.</p>
+
+<div class="aviso"><strong>El defecto no era la falta, era la mentira.</strong> La firma decía
+<code>onCambio: (valor: string | null) =&gt; void</code> y el componente <strong>jamás emitía
+<code>null</code></strong>: solo se salía por <code>elegir()</code>, siempre con un valor real. Un
+tipo que documenta un camino que no existe bloquea el componente en cualquier campo opcional. Lo
+reportó Control Administrativos V2.0.</div>
 <div class="bloque">
   <div class="sel-demo-fila">
     <div class="cg" style="max-width:340px">
@@ -10287,20 +10299,33 @@ ${COMPRESOR_PDF}
       return s.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();
     }
 
+    // R103 · las filas no son solo las opciones: la primera puede ser el mando
+    // de VACIAR, y cuando no hay ninguna coincidencia la fila de «no hay» pasa
+    // a ser el CREAR. Igual que en el componente.
+    var VACIO = 'Todos los apoderados';
+
     function pintar(texto) {
       var q = plano(texto.trim());
-      visibles = q ? OPCIONES.filter(function (o) { return plano(o).indexOf(q) !== -1; }) : OPCIONES.slice();
+      var ops = (q ? OPCIONES.filter(function (o) { return plano(o).indexOf(q) !== -1; }) : OPCIONES.slice())
+        .map(function (o) { return { tipo: 'opcion', texto: o }; });
+      // El mando de vaciar va PRIMERO, solo si hay algo que vaciar, y se retira
+      // al escribir: es un mando, no un resultado.
+      if (!q && elegido) ops.unshift({ tipo: 'vaciar', texto: VACIO });
+      // Sin coincidencias y con texto, la fila vacia deja de ser un cartel.
+      if (!ops.length && q) ops.push({ tipo: 'crear', texto: 'Crear «' + texto.trim() + '»' });
+      visibles = ops;
       marcado = visibles.length ? 0 : -1;
 
       if (!visibles.length) {
         lista.innerHTML = '<li class="sel-vacio"><strong>Sin resultados para «' +
           texto.trim() + '».</strong><br>Prueba con menos letras, o revisa si está matriculado.</li>';
       } else {
-        lista.innerHTML = visibles.map(function (o, i) {
-          var et = o === elegido ? '<span class="sel-check">${ICO_CHECK.replace(/'/g, "\\'")}</span>' : '';
+        lista.innerHTML = visibles.map(function (f, i) {
+          var esta = f.tipo === 'opcion' && f.texto === elegido;
+          var et = esta ? '<span class="sel-check">${ICO_CHECK.replace(/'/g, "\\'")}</span>' : '';
           return '<li role="option" id="sel-op-' + i + '" data-i="' + i +
             '" class="sel-op' + (i === 0 ? ' marcado' : '') + '"' +
-            (o === elegido ? ' aria-selected="true"' : '') + '>' + o + et + '</li>';
+            (esta ? ' aria-selected="true"' : '') + '>' + f.texto + et + '</li>';
         }).join('');
       }
       conteo.textContent = q
@@ -10337,10 +10362,28 @@ ${COMPRESOR_PDF}
     }
     function elegir(i) {
       if (i < 0 || !visibles[i]) return;
-      elegido = visibles[i];
+      var f = visibles[i];
+      if (f.tipo === 'crear') {
+        // Crear es del producto: aqui solo se dice que se pidio. No se elige
+        // ni se limpia — el alta puede tardar o cancelarse.
+        cerrar();
+        conteo.textContent = 'El producto abriria su alta con: ' + input.value.trim();
+        return;
+      }
+      if (f.tipo === 'vaciar') { vaciar(); return; }
+      elegido = f.texto;
       input.value = elegido;
       cerrar();
       conteo.textContent = 'Elegido: ' + elegido;
+    }
+
+    // R103 · el camino que la firma prometia y no existia: volver a «sin
+    // elegir». En el componente esto es «onCambio(null)».
+    function vaciar() {
+      elegido = '';
+      input.value = '';
+      cerrar();
+      conteo.textContent = 'Sin elegir — ' + OPCIONES.length + ' apoderados';
     }
 
     input.addEventListener('focus', function () { pintar(input.value === elegido ? '' : input.value); abrir(); });
@@ -10357,8 +10400,14 @@ ${COMPRESOR_PDF}
       } else if (e.key === 'Home' && !lista.hidden) { e.preventDefault(); marcado = 0; sincronizar(); }
       else if (e.key === 'End' && !lista.hidden) { e.preventDefault(); marcado = visibles.length - 1; sincronizar(); }
       else if (e.key === 'Enter') { e.preventDefault(); elegir(marcado); }
+      // R103 · Retroceso sobre el campo vacio vacia la eleccion. Acelerador,
+      // no la unica puerta: el mando de la lista hace lo mismo con el raton.
+      else if (e.key === 'Backspace' && input.value === '' && elegido) { e.preventDefault(); vaciar(); }
       else if (e.key === 'Escape') { e.preventDefault(); cerrar(); }
-      else if (e.key === 'Tab' && !lista.hidden && marcado >= 0) { elegir(marcado); }
+      // Tab elige lo marcado, pero NO dispara «crear»: salir de un campo no es
+      // pedir un alta.
+      else if (e.key === 'Tab' && !lista.hidden && marcado >= 0
+               && visibles[marcado] && visibles[marcado].tipo !== 'crear') { elegir(marcado); }
     });
     lista.addEventListener('mousedown', function (e) {
       var li = e.target.closest('.sel-op');

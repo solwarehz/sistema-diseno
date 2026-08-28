@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.78.0";
+export const VERSION = "1.79.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,43 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.79.0', fecha: '2026-08-27',
+    que: 'R103: el selector con busqueda ya se puede vaciar, ocultar su rotulo y ofrecer «Crear»',
+    porque:
+      'R103 · Lo reporto Control Administrativos V2.0 leyendo el codigo, y el defecto principal NO '
+      + 'era una falta: era una MENTIRA. `onCambio` solo salia de `elegir()`, siempre con un valor '
+      + 'real, asi que SelectorBusqueda jamas emitia `null` aunque su firma dijera '
+      + '`(valor: string | null) => void`. Un tipo que documenta un camino que no existe bloquea el '
+      + 'componente en cualquier campo OPCIONAL: quien lo lee espera poder recibir null y no puede. '
+      + 'Su propio planteamiento lo cerraba bien: o sobra el `| null`, o falta el camino. Falta el '
+      + 'camino. '
+      + 'SE RESUELVE CON EL MISMO GESTO QUE EL SELECTOR — su opcion vacia— y no con la prop booleana '
+      + 'que propusieron (`permiteVaciar`), por dos razones: el vocabulario ya existe y se llama '
+      + '`vacio`, y pedir el TEXTO obliga a nombrar el estado vacio. «Todos», «Sin asignar» y '
+      + '«Cualquiera» no significan lo mismo, y un booleano los borra todos en un «— Ninguno —» '
+      + 'generico que no dice que pasa al elegirlo. Sin `vacio` no se puede vaciar, asi que lo que '
+      + 'ya esta en produccion no cambia — que era su condicion. '
+      + 'Y SI, TAMBIEN RETROCESO sobre el campo vacio, el atajo que pidieron. Pero como acelerador y '
+      + 'no como unica puerta: un gesto que solo existe en el teclado deja fuera a quien usa el '
+      + 'raton, asi que el camino principal es el mando de la lista. '
+      + 'LOS DOS HUECOS QUE SEGUIAN ABIERTOS, cerrados de paso. `etiquetaOculta` la tenian `Campo` y '
+      + '`Selector` y faltaba solo aqui —era su «hueco 16», y se estaban apañando con `Selector` '
+      + 'para no anunciar el rotulo dos veces bajo una cabecera de columna—. Y `onCrear` recibe LO '
+      + 'TECLEADO: la fila de «no hay coincidencias» deja de ser un cartel y pasa a ser el camino, '
+      + 'con raton y con Enter —sin lista no hay opcion activa que Enter pudiera elegir, asi que ahi '
+      + 'esa tecla estaba libre—. Tab no lo dispara: salir de un campo no es pedir un alta. Y '
+      + 'pulsarlo no elige ni limpia, porque el alta es del producto y puede cancelarse.',
+    rompe: [
+      'Nada. Las tres props son **opcionales y apagadas por omision**: sin `vacio` no se puede '
+      + 'vaciar, sin `onCrear` la fila de «no hay» sigue siendo el cartel de siempre, y '
+      + '`etiquetaOculta` por omision deja la etiqueta a la vista.',
+      'Un aviso de lectura, no de rotura: si su codigo hacia `if (valor === null)` sobre lo que '
+      + 'emite este componente, esa rama **nunca se ejecutaba** y ahora puede ejecutarse. Es lo que '
+      + 'se estaba pidiendo, pero conviene mirarla antes de encender `vacio`.',
+    ],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.78.0', fecha: '2026-08-27',
     que: 'R102 (segunda parte): la carga de imagen deja de ser la excepcion — las tres arrancan iguales de verdad',

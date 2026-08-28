@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 27 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.78.0** — subir imagen, subir archivo y
-subir ID **arrancan y terminan igual de verdad**: rótulo, botón y lo cargado en
-un solo renglón, y la carga de imagen deja de ser la excepción
+**Versión del sistema:** MMI-DS **v1.79.0** — el selector con búsqueda ya se
+puede **vaciar**: su firma prometía un `null` que el componente **nunca**
+emitía, y eso lo bloqueaba en todo campo opcional
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ un solo renglón, y la carga de imagen deja de ser la excepción
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —32 componentes
-publicados, la hoja que viaja, **trece candados**, 482 pruebas— y sigue
+publicados, la hoja que viaja, **trece candados**, 499 pruebas— y sigue
 aprendiendo la misma lección por otro lado: los peores defectos no están en lo
 que el catálogo enseña mal, sino en **lo que ningún candado estaba mirando**.
 R86 es de ese tipo: la tabla declaraba una altura de fila de 34px desde la
@@ -38,14 +38,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **482 pruebas en 33 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **499 pruebas en 34 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 41 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.78.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.79.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.78.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.79.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,40 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.78.0), con detalle
+### Lo de hoy (v1.79.0), con detalle
+
+**R103 · el selector con búsqueda prometía un `null` que nunca emitía.**
+
+Lo reportó Control Administrativos V2.0 **leyendo el código**, no viéndolo
+fallar. Y el defecto principal no era una falta: era una **mentira**. `onCambio`
+solo salía de `elegir()`, siempre con un valor real, así que el componente
+**jamás emitía `null`** aunque su firma dijera `(valor: string | null) => void`.
+
+Su planteamiento cerraba la cuestión mejor que cualquier discusión: **o sobra el
+`| null`, o falta el camino**. Falta el camino — un tipo que documenta algo que
+no existe bloquea el componente en todo campo opcional, porque quien lo lee
+espera poder recibir `null` y no puede.
+
+**Se resuelve con el mismo gesto que el `Selector`**, su opción vacía, y **no**
+con la prop booleana que ellos propusieron (`permiteVaciar`). Dos razones: el
+vocabulario ya existe y se llama `vacio`, y pedir el **texto** obliga a nombrar
+el estado vacío. «Todos», «Sin asignar» y «Cualquiera» no significan lo mismo, y
+un booleano los borra todos en un «— Ninguno —» genérico que no dice qué pasa al
+elegirlo. Sin `vacio` no se puede vaciar, que era su condición: **nada de lo que
+está en producción cambia.**
+
+El **Retroceso** que pidieron está, pero como **acelerador y no como única
+puerta**: un gesto que solo existe en el teclado deja fuera a quien usa el ratón.
+
+**Y los dos huecos que seguían abiertos, cerrados de paso.** `etiquetaOculta`
+—su «hueco 16»— la tenían `Campo` y `Selector` y faltaba solo aquí, así que se
+estaban apañando con `Selector` para no anunciar el rótulo dos veces bajo una
+cabecera de columna. Y `onCrear` recibe **lo tecleado**: la fila de «no hay
+coincidencias» deja de ser un cartel y pasa a ser el camino, con ratón y con
+Enter —sin lista no hay opción activa que Enter pudiera elegir, así que ahí esa
+tecla estaba libre—. Tab no lo dispara: salir de un campo no es pedir un alta.
+
+### Lo de la v1.78.0, con detalle
 
 **R102, segunda parte · la carga de imagen deja de ser la excepción.**
 
@@ -915,11 +948,11 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.78.0
+Versión                      1.79.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         482   en 33 archivos
+Pruebas                         499   en 34 archivos
 Reglas que viajan               864   de 1349 · 626 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Candado de la cascada           963   reglas leidas · 11 anchos
@@ -929,7 +962,7 @@ Candado de la promesa          1065   elementos · 218.948 propiedades
                                       a 5 anchos (1440, 1024, 900, 700, 390)
 Candado del elemento            166   clases comparadas · 5 divergencias
                                       DECLARADAS, ninguna nueva
-Contrato de comportamiento      181   reglas · 148 obligatorias · 6 PENDIENTE
+Contrato de comportamiento      185   reglas · 152 obligatorias · 6 PENDIENTE
 Componentes publicados           32   38 módulos viajan en el paquete
                                       117 exportaciones, todas por el índice
 Iconos                           46

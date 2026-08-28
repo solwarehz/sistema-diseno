@@ -19,8 +19,8 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.78.0** — subir imagen, subir archivo y subir ID arrancan y
-terminan igual **de verdad**: rótulo, botón y lo cargado en un solo renglón.
+**Estado actual: v1.79.0** — el selector con búsqueda ya se puede vaciar: su
+firma prometía un `null` que el componente nunca emitía.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

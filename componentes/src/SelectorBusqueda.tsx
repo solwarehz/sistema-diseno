@@ -53,6 +53,55 @@ export type SelectorBusquedaProps = {
    *  si el problema es lo escrito o que no existe. */
   textoVacio?: string;
   deshabilitado?: boolean;
+  /**
+   * R103 · CÓMO SE VUELVE A «SIN ELEGIR». Texto de la opción de vaciar, igual
+   * que en `Selector`. **Si no se pasa, no se puede vaciar** — y así se queda
+   * lo que ya está en producción.
+   *
+   * Lo reportó Control Administrativos V2.0, y el defecto no era la falta:
+   * era la MENTIRA. `onCambio` solo salía de `elegir()`, siempre con un valor
+   * real, así que este componente **jamás emitía `null`** aunque su firma
+   * dijera `(valor: string | null) => void`. El tipo documentaba un camino que
+   * no existía, y eso lo bloqueaba en cualquier campo opcional.
+   *
+   * Se resuelve con **el mismo gesto que el `Selector`** —su opción vacía— y
+   * no con una prop booleana, por dos razones: el vocabulario ya existe y se
+   * llama igual, y obliga a NOMBRAR el estado vacío. «Todos», «Sin asignar» y
+   * «Cualquiera» no significan lo mismo, y un `permiteVaciar` los borra todos
+   * en un «— Ninguno —» genérico que no dice qué pasa al elegirlo.
+   *
+   * Además, con esto puesto, **Retroceso sobre el campo vacío también vacía**
+   * —el atajo que pidieron—: es acelerador, no la única puerta. Un gesto que
+   * solo existe en el teclado deja fuera a quien usa el ratón.
+   */
+  vacio?: string;
+  /**
+   * Oculta la etiqueta A LA VISTA, no al lector. Lo mismo que en `Campo` y
+   * `Selector`, y faltaba solo aquí: sin ella, este control bajo una cabecera
+   * de columna anuncia el rótulo dos veces. Era el «hueco 16» de Control
+   * Administrativos, que se estaba apañando con `Selector` para evitarlo.
+   *
+   * Sigue siendo obligatoria: esto no es una puerta trasera para quedarse sin
+   * etiqueta, es la diferencia entre no mostrarla y no tenerla.
+   */
+  etiquetaOculta?: boolean;
+  /**
+   * R103 · QUÉ HACER CUANDO NO EXISTE. Recibe **lo tecleado** y, si se pasa,
+   * la fila de «no hay coincidencias» pasa a ser pulsable: es el «Crear "…"»
+   * dentro del propio selector, sin componer nada por fuera.
+   *
+   * Se activa con el ratón y **con Enter**, porque sin lista no hay opción
+   * activa que Enter pudiera elegir: esa tecla estaba libre justo ahí.
+   *
+   * El componente **no crea nada** —no sabe qué es «crear» en cada producto—:
+   * avisa con el texto y el producto decide. Lo normal es abrir su alta y,
+   * cuando vuelva con el registro hecho, meterlo en `opciones` y pasarlo por
+   * `valor`.
+   */
+  onCrear?: (texto: string) => void;
+  /** Qué se lee en esa fila cuando `onCrear` está puesto. Recibe lo tecleado
+   *  para poder decir exactamente qué se va a crear. */
+  textoCrear?: (texto: string) => string;
 };
 
 /** Sin tildes y en minúsculas: `perez` tiene que encontrar «Pérez Salazar».
@@ -73,6 +122,10 @@ export function SelectorBusqueda({
   textoVacio = 'No hay coincidencias',
   deshabilitado = false,
   conLupa = false,
+  vacio,
+  etiquetaOculta = false,
+  onCrear,
+  textoCrear = (t) => `Crear «${t}»`,
 }: SelectorBusquedaProps) {
   const id = useId();
   const [abierto, setAbierto] = useState(false);
@@ -93,6 +146,23 @@ export function SelectorBusqueda({
     return opciones.filter((o) => normalizar(o.texto).includes(q));
   }, [opciones, texto, abierto]);
 
+  /**
+   * R103 · LAS FILAS DE LA LISTA, que no son solo las opciones.
+   *
+   * La de vaciar va PRIMERA y solo cuando hay algo que vaciar. No se filtra al
+   * escribir —es un mando, no un dato—, pero se retira en cuanto hay texto:
+   * ofrecer «Todos» mientras se busca «Ancash» no significa nada, y encima
+   * empujaría la primera coincidencia fuera del sitio donde el dedo ya va.
+   */
+  const filas = useMemo(() => {
+    const ops = filtradas.map((o) => ({ tipo: 'opcion' as const, o }));
+    const sePuedeVaciar = vacio !== undefined && valor !== null && !texto.trim();
+    return sePuedeVaciar ? [{ tipo: 'vaciar' as const }, ...ops] : ops;
+  }, [filtradas, vacio, valor, texto]);
+
+  /** Sin coincidencias y con `onCrear`, la fila vacía deja de ser un cartel. */
+  const puedeCrear = !!onCrear && filas.length === 0 && !!texto.trim();
+
   // El índice activo no puede quedarse fuera de una lista que encogió.
   useEffect(() => { setActivo(0); }, [texto, abierto]);
 
@@ -106,11 +176,30 @@ export function SelectorBusqueda({
     return () => document.removeEventListener('mousedown', fuera);
   }, [abierto]);
 
-  function elegir(o: OpcionBusqueda) {
-    onCambio(o.valor);
+  /** Cerrar dejando el foco donde estaba. Lo comparten elegir y vaciar. */
+  function cerrarTras(nuevo: string | null) {
+    onCambio(nuevo);
     setAbierto(false);
     setTexto('');
     campo.current?.focus();
+  }
+
+  function elegir(o: OpcionBusqueda) {
+    cerrarTras(o.valor);
+  }
+
+  /** R103 · el camino que la firma prometía y no existía. */
+  function vaciarEleccion() {
+    cerrarTras(null);
+  }
+
+  function crear() {
+    const t = texto.trim();
+    onCrear?.(t);
+    // NO se cierra ni se limpia: crear es del producto y puede tardar o
+    // cancelarse. Cerrar aquí daría por hecho un alta que quizá no ocurre, y
+    // quien vuelva de cancelar se encontraría el campo en blanco.
+    setAbierto(false);
   }
 
   function alTeclado(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -119,7 +208,7 @@ export function SelectorBusqueda({
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       if (!abierto) { setAbierto(true); return; }
-      setActivo((i) => Math.min(i + 1, filtradas.length - 1));
+      setActivo((i) => Math.min(i + 1, filas.length - 1));
       return;
     }
     if (e.key === 'ArrowUp') {
@@ -129,8 +218,27 @@ export function SelectorBusqueda({
     }
     if (e.key === 'Enter' && abierto) {
       e.preventDefault();
-      const o = filtradas[activo];
-      if (o) elegir(o);
+      // R103 · sin lista no hay opción activa que Enter pudiera elegir, así que
+      // ahí la tecla está libre y es donde cae «Crear».
+      if (puedeCrear) { crear(); return; }
+      const f = filas[activo];
+      if (!f) return;
+      if (f.tipo === 'vaciar') vaciarEleccion();
+      else elegir(f.o);
+      return;
+    }
+    /**
+     * R103 · RETROCESO SOBRE EL CAMPO VACÍO VACÍA LA ELECCIÓN. El atajo que
+     * pidió Control Administrativos, y solo cuando `vacio` está puesto: es el
+     * mismo permiso, expresado con la misma prop.
+     *
+     * «Vacío» es lo TECLEADO, no lo que se ve: con la lista cerrada el campo
+     * enseña lo elegido, y ahí `texto` está en blanco. Es el gesto de borrar
+     * una ficha, el mismo que hace cualquier campo de etiquetas.
+     */
+    if (e.key === 'Backspace' && vacio !== undefined && texto === '' && valor !== null) {
+      e.preventDefault();
+      vaciarEleccion();
       return;
     }
     if (e.key === 'Escape') {
@@ -148,7 +256,13 @@ export function SelectorBusqueda({
 
   return (
     <div className="campo-grupo" ref={caja}>
-      <label className="campo-etiqueta" htmlFor={id} id={`${id}-et`}>{etiqueta}</label>
+      <label
+        className={['campo-etiqueta', etiquetaOculta ? 'sr-solo' : ''].filter(Boolean).join(' ')}
+        htmlFor={id}
+        id={`${id}-et`}
+      >
+        {etiqueta}
+      </label>
 
       {/* `.sel` es el ancla. Faltaba, y sin ella la lista —que es
           `position: absolute`— no encontraba antepasado posicionado y se
@@ -170,7 +284,7 @@ export function SelectorBusqueda({
           aria-expanded={abierto}
           aria-controls={idLista}
           aria-autocomplete="list"
-          aria-activedescendant={abierto && filtradas[activo] ? `${id}-op-${activo}` : undefined}
+          aria-activedescendant={abierto && filas[activo] ? `${id}-op-${activo}` : undefined}
           aria-invalid={error ? true : undefined}
           aria-describedby={[idError, idAyuda].filter(Boolean).join(' ') || undefined}
           autoComplete="off"
@@ -185,12 +299,43 @@ export function SelectorBusqueda({
         </div>
 
         <ul className="sel-lista" id={idLista} role="listbox" aria-labelledby={`${id}-et`} hidden={!abierto}>
-        {filtradas.length === 0 ? (
-          <li className="sel-vacio">{textoVacio}</li>
-        ) : (
-          filtradas.map((o, i) => (
+        {filas.length === 0 ? (
+          puedeCrear ? (
+            /* R103 · la fila de «no hay» deja de ser un cartel y pasa a ser el
+               camino. Sigue siendo `option` porque está dentro del listbox y
+               se elige con Enter, como cualquier otra. */
             <li
-              key={o.valor}
+              id={`${id}-op-0`}
+              className="sel-op marcado"
+              role="option"
+              aria-selected={false}
+              onMouseDown={(e) => { e.preventDefault(); crear(); }}
+            >
+              {textoCrear(texto.trim())}
+            </li>
+          ) : (
+            <li className="sel-vacio">{textoVacio}</li>
+          )
+        ) : (
+          filas.map((f, i) => f.tipo === 'vaciar' ? (
+            /* R103 · vaciar la elección. Va DENTRO de la lista y como una
+               opción más: es el mismo gesto que la opción vacía del
+               `Selector`, y así se alcanza con el ratón y con las flechas.
+               El atajo de Retroceso es un acelerador, no la única puerta. */
+            <li
+              key="__vaciar"
+              id={`${id}-op-${i}`}
+              className={['sel-op', i === activo ? 'marcado' : ''].filter(Boolean).join(' ')}
+              role="option"
+              aria-selected={false}
+              onMouseDown={(e) => { e.preventDefault(); vaciarEleccion(); }}
+              onMouseEnter={() => setActivo(i)}
+            >
+              {vacio}
+            </li>
+          ) : (
+            <li
+              key={f.o.valor}
               id={`${id}-op-${i}`}
               // `marcado` y no `activa`: es LA clase que la hoja estiliza
               // (.sel-op.marcado). Con `activa` la opción resaltada por
@@ -198,19 +343,19 @@ export function SelectorBusqueda({
               // vio porque .pgn-btn.activa declara «activa» en otra familia.
               className={['sel-op', i === activo ? 'marcado' : ''].filter(Boolean).join(' ')}
               role="option"
-              aria-selected={o.valor === valor}
+              aria-selected={f.o.valor === valor}
               // `mousedown` y no `click`: el clic llega después del blur, y para
               // entonces la lista ya se cerró y la opción no existe.
-              onMouseDown={(e) => { e.preventDefault(); elegir(o); }}
+              onMouseDown={(e) => { e.preventDefault(); elegir(f.o); }}
               onMouseEnter={() => setActivo(i)}
             >
               {/* El visto en la elegida: aria-selected ya lo dice al lector;
                   esto se lo dice a la vista, que no lee atributos. */}
-              {o.valor === valor && (
+              {f.o.valor === valor && (
                 <span className="sel-check"><Icono nombre="visto" /></span>
               )}
-              {o.texto}
-              {o.ayuda && <span className="sel-notas">{o.ayuda}</span>}
+              {f.o.texto}
+              {f.o.ayuda && <span className="sel-notas">{f.o.ayuda}</span>}
             </li>
           ))
           )}
