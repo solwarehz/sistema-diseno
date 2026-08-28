@@ -7500,6 +7500,141 @@ Lo que cambia es el icono, el titulo y los datos, que es justo lo que se pasa po
   onVerTodos={() =&gt; router.push('/mensajes')}
 /&gt;</code></pre>`;
 
+const unaRed = (red, nom, forma) => `
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="${nom}, se abre en una pestaña nueva">
+          <span class="rs-marco">${icono(red, forma === 'grande' ? TAMANOS.estado : forma === 'chico' ? TAMANOS.control : TAMANOS.texto)}</span>
+        </a>
+      </li>`;
+
+const LAS_SIETE = [
+  ['facebook', 'Facebook'], ['instagram', 'Instagram'], ['youtube', 'YouTube'],
+  ['tiktok', 'TikTok'], ['whatsapp', 'WhatsApp'], ['x', 'X, antes Twitter'],
+  ['linkedin', 'LinkedIn'],
+];
+
+const grupoRedes = (clases, tam = 'medio') => `
+  <nav aria-label="Redes sociales" class="rs-fila rs-${tam}${clases ? ' ' + clases : ''}">
+    <ul class="rs-lista">${LAS_SIETE.map(([r, n]) => unaRed(r, n, tam)).join('')}
+    </ul>
+  </nav>`;
+
+const pagRedes = `
+<p class="pag-intro">Los enlaces a las cuentas del colegio. Parece el componente más tonto del
+sistema y es el que más se hace mal: es un puñado de enlaces con un dibujo dentro y
+<strong>sin una sola palabra</strong>, o sea el caso exacto en el que un lector de pantalla anuncia
+«enlace» siete veces seguidas y se acabó.</p>
+
+<div class="msj msj-error">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt"><strong>Los colores de marca no entran, y no es una cuestión de gusto.</strong>
+  Ni el azul de Facebook ni el degradado de Instagram. §2.5.5 dice que los colores autorizados son el
+  panel de escalas y que <strong>ampliarlo no lo decide quien escribe un componente</strong>. Los
+  iconos heredan <code>currentColor</code> como los otros cuarenta y cinco — lo que además les hace
+  funcionar en claro y en oscuro, cosa que un logotipo de marca no hace. Si el colegio quiere sus
+  colores de marca, es una autorización, no un arreglo.</span>
+</div>
+<p class="seccion-sub">Y van <strong>dibujados</strong> en el estilo del sistema —trazo de 1,5 sobre
+una retícula de 24×24—, <strong>no calcados</strong>: los logotipos son marcas registradas y vienen
+rellenos.</p>
+
+<h3 class="sub-seccion">Las siete que el sistema dibuja</h3>
+<div class="bloque">${grupoRedes('')}</div>
+<p class="seccion-sub">Facebook, Instagram, YouTube, TikTok, WhatsApp, X y LinkedIn. Añadir otra es
+añadir su trazo en <strong>los dos</strong> mapas de iconos — y desde R112 hay un candado que
+comprueba que digan lo mismo.</p>
+
+<h3 class="sub-seccion">Las tres formas</h3>
+<p class="seccion-sub">Son <strong>la misma lista con otra clase</strong>, no tres componentes: un
+producto que quiera cambiar de forma no debería tener que cambiar de importación.</p>
+<div class="bloque">
+  <div class="mf"><div>${grupoRedes('')}</div><span class="mf-et"><code>forma="solo"</code> — por omisión. Lo que pide un pie de página</span></div>
+  <div class="mf"><div>${grupoRedes('rs-circulo')}</div><span class="mf-et"><code>forma="circulo"</code></span></div>
+  <div class="mf"><div>${grupoRedes('rs-cuadro')}</div><span class="mf-et"><code>forma="cuadro"</code></span></div>
+  <div class="mf"><div>${grupoRedes('rs-circulo rs-relleno')}</div><span class="mf-et"><code>relleno</code> — sobre el fondo de la neutra, que ya está medido</span></div>
+</div>
+
+<div class="msj msj-aviso">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt"><strong>El marco no es adorno: es el blanco de pulsación.</strong> Un icono
+  suelto a 18px deja un objetivo de <strong>18px</strong>, y SC 2.5.8 pide <strong>24</strong>. Con
+  marco son <strong>40</strong>. Por eso en móvil se recomienda círculo o cuadro, y el suelto se
+  queda para el pie de una pantalla de escritorio.</span>
+</div>
+
+<h3 class="sub-seccion">Los tres tamaños</h3>
+<p class="seccion-sub">Son <strong>pasos de §8.1</strong>, no números libres: chico 16 · medio 18 ·
+grande 32. El sistema tiene cuatro pasos de icono y estos son tres de ellos.</p>
+<div class="bloque">
+  <div class="mf"><div>${grupoRedes('rs-circulo', 'chico')}</div><span class="mf-et"><code>tamano="chico"</code> · 16px</span></div>
+  <div class="mf"><div>${grupoRedes('rs-circulo', 'medio')}</div><span class="mf-et"><code>tamano="medio"</code> · 18px, por omisión</span></div>
+  <div class="mf"><div>${grupoRedes('rs-circulo', 'grande')}</div><span class="mf-et"><code>tamano="grande"</code> · 32px</span></div>
+</div>
+<p class="seccion-sub">Y los mismos tres <strong>sin marco</strong>, que es la forma por omisión. Se
+enseñan las dos porque el candado de la omisión tiene razón en lo que exige: una variante que solo
+se ve acompañada de otra deja sin demostrar el estado que se entrega por defecto.</p>
+<div class="bloque">
+  <div class="mf"><div>${grupoRedes('', 'chico')}</div><span class="mf-et">chico, suelto</span></div>
+  <div class="mf"><div>${grupoRedes('', 'medio')}</div><span class="mf-et">medio, suelto</span></div>
+  <div class="mf"><div>${grupoRedes('', 'grande')}</div><span class="mf-et">grande, suelto</span></div>
+</div>
+
+<h3 class="sub-seccion">Con el nombre, y con la cuenta</h3>
+<p class="seccion-sub">Cuando hay sitio, escribir el nombre resuelve el problema de raíz: deja de
+haber un enlace sin texto. Y con <code>usuario</code> se dice <strong>a qué cuenta</strong> se va,
+que no es lo mismo que a qué plataforma.</p>
+<div class="bloque">
+  <div class="mf">
+    <nav aria-label="Redes sociales" class="rs-columna rs-medio rs-circulo">
+      <ul class="rs-lista">
+        <li class="rs-item"><a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook Colegio Albert Einstein, se abre en una pestaña nueva"><span class="rs-marco">${icono('facebook')}</span><span class="rs-txt"><span class="rs-nombre">Facebook</span><span class="rs-usuario">Colegio Albert Einstein</span></span></a></li>
+        <li class="rs-item"><a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Instagram @ae.huaraz, se abre en una pestaña nueva"><span class="rs-marco">${icono('instagram')}</span><span class="rs-txt"><span class="rs-nombre">Instagram</span><span class="rs-usuario">@ae.huaraz</span></span></a></li>
+        <li class="rs-item"><a class="rs-enlace" href="#redes" data-ir="redes" aria-label="WhatsApp Secretaría, se abre en una pestaña nueva"><span class="rs-marco">${icono('whatsapp')}</span><span class="rs-txt"><span class="rs-nombre">WhatsApp</span><span class="rs-usuario">Secretaría</span></span></a></li>
+      </ul>
+    </nav>
+    <span class="mf-et"><code>conNombre</code> con <code>direccion="columna"</code> — para un pie de contacto</span>
+  </div>
+  <div class="mf">
+    <nav aria-label="Redes sociales" class="rs-fila rs-medio">
+      <ul class="rs-lista">
+        <li class="rs-item"><a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva"><span class="rs-marco">${icono('facebook')}</span><span class="rs-txt"><span class="rs-nombre">Facebook</span></span></a></li>
+        <li class="rs-item"><a class="rs-enlace" href="#redes" data-ir="redes" aria-label="YouTube, se abre en una pestaña nueva"><span class="rs-marco">${icono('youtube')}</span><span class="rs-txt"><span class="rs-nombre">YouTube</span></span></a></li>
+        <li class="rs-item"><a class="rs-enlace" href="#redes" data-ir="redes" aria-label="TikTok, se abre en una pestaña nueva"><span class="rs-marco">${icono('tiktok')}</span><span class="rs-txt"><span class="rs-nombre">TikTok</span></span></a></li>
+      </ul>
+    </nav>
+    <span class="mf-et"><code>conNombre</code> en fila, sin marco</span>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Las tres decisiones que no son de aspecto</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>El nombre accesible lo lleva el enlace, no el dibujo.</strong> Es §8.1 aplicado: el icono sale <code>aria-hidden</code> siempre y quien nombra es el control. Sin esto, un lector anuncia «enlace, enlace, enlace» — que es <strong>el error más común de este componente en toda la web</strong>, y por eso el sistema lo resuelve una vez y no siete.</td></tr>
+    <tr><td class="num">2</td><td><strong>Con el nombre escrito, lo que se ve tiene que estar dentro de lo que se oye.</strong> SC 2.5.3. Si en pantalla pone «Instagram» y el <code>aria-label</code> dijera «Síguenos en Instagram», quien dicta por voz diría «pulsar Instagram» y <strong>no pasaría nada</strong>. Por eso el nombre accesible <em>empieza</em> por el texto visible y solo añade el aviso detrás.</td></tr>
+    <tr><td class="num">3</td><td><strong>Si se abre en otra pestaña, se dice.</strong> SC 3.2.5. Va dentro del nombre accesible, no en un <code>title</code> que no oye nadie. Y siempre con <code>rel="noopener"</code>: sin él, la página de destino puede tocar la nuestra por <code>window.opener</code>. Eso no es accesibilidad, es seguridad.</td></tr>
+    <tr><td class="num">4</td><td><strong>El grupo va en un <code>&lt;nav&gt;</code> con nombre.</strong> Con varias navegaciones en la misma página —el menú, las migas, esto— sin nombre se anuncian todas igual y quien salta entre puntos de referencia no las distingue.</td></tr>
+    <tr><td class="num">5</td><td><strong>Sin enlaces no se pinta nada.</strong> Ni un <code>&lt;nav&gt;</code> vacío: un punto de referencia que no lleva a ninguna parte es ruido para quien navega por ellos.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Lo que se buscó antes de dibujar</h3>
+<p class="seccion-sub">Las formas no se inventaron. En lo publicado sobre iconos de redes, las
+variantes que se repiten son <strong>círculo, cuadro redondeado y suelto</strong>, y
+<strong>relleno frente a contorno</strong> — que es exactamente lo que tiene este componente. El
+sitio canónico es el <strong>pie de página</strong>, porque aparece en todas las pantallas sin
+competir por atención. Y lo que dice la parte de accesibilidad es unánime en dos cosas: el
+<code>aria-label</code> va <strong>en el enlace</strong>, y el <code>&lt;svg&gt;</code> va
+<strong>oculto</strong>.</p>
+
+<h3 class="sub-seccion">Lo que NO hace, y es a propósito</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>No trae las URL puestas.</strong> Las cuentas del colegio son un dato del producto, no del sistema de diseño. Una URL metida aquí se queda vieja el día que cambien de cuenta y nadie sabría dónde tocarla.</td></tr>
+    <tr><td class="num">2</td><td><strong>No ordena las redes.</strong> El orden lo pone quien pasa la lista. Ordenar por «popularidad» sería una opinión escrita en el sistema.</td></tr>
+    <tr><td class="num">3</td><td><strong>No cuenta seguidores ni incrusta nada.</strong> Eso pide la API de cada plataforma, una clave y un permiso. Esto son enlaces.</td></tr>
+  </tbody>
+</table>`;
+
 const CATALOGO = [
   {
     grupo: 'Inicio',
@@ -7597,6 +7732,7 @@ const CATALOGO = [
       { id: 'niubiz', t: 'Niubiz', estado: 'listo', c: pagNiubiz },
     ],
   },
+
   {
     grupo: 'Boleta electrónica',
     icono: 'documento',
@@ -7609,6 +7745,13 @@ const CATALOGO = [
       { id: 'guiaremision', t: 'Guía de remisión', estado: 'listo', c: pagGuiaRemision },
       { id: 'impresion', t: 'Impresión', estado: 'listo', c: pagImpresion },
       { id: 'efact', t: 'EFACT', estado: 'listo', c: pagEfact },
+    ],
+  },
+  {
+    grupo: 'Redes sociales',
+    icono: 'comunicaciones',
+    items: [
+      { id: 'redes', t: 'Enlaces a las cuentas', estado: 'listo', c: pagRedes },
     ],
   },
   {
@@ -9183,6 +9326,52 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
    resuelve aqui mismo, encendiendo el interruptor de arriba, y por eso lleva
    el acento de aviso y no el gris de los que no tienen salida. */
 .pp-no-depende .pp-cerrado-ic { color: var(--aviso-acento); }
+
+/* ── REDES SOCIALES · R112 ──────────────────────────────────────────────────
+   SIN COLORES DE MARCA, y no es una preferencia de gusto: §2.5.5 dice que los
+   colores autorizados son el panel de escalas y ampliarlo no lo decide quien
+   escribe un componente. Los iconos heredan currentColor como los otros 45, lo
+   que ademas les hace funcionar en claro y en oscuro — cosa que un logotipo de
+   marca no hace.
+
+   TRES FORMAS, UNA LISTA. Suelto, en circulo y en cuadro son la MISMA lista con
+   otra clase: cambiar de forma no puede obligar a cambiar de importacion. */
+.rs-lista { display: flex; list-style: none; margin: 0; padding: 0; }
+.rs-fila .rs-lista { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; }
+.rs-columna .rs-lista { flex-direction: column; align-items: flex-start; gap: 4px; }
+
+.rs-enlace { display: inline-flex; align-items: center; gap: 8px;
+  color: var(--texto-secundario); text-decoration: none; border-radius: 3px; }
+.rs-enlace:hover { color: var(--enlace); }
+/* §2.5.7 · el foco NUNCA se quita: con teclado es lo unico que dice donde estas. */
+.rs-enlace:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
+
+.rs-marco { display: inline-grid; place-items: center; }
+
+/* EL MARCO NO ES ADORNO: es el blanco de pulsacion. Un icono suelto de 18px deja
+   un objetivo de 18px y SC 2.5.8 pide 24. Con marco son 40, y por eso en movil
+   se recomienda circulo o cuadro y no el suelto. */
+.rs-circulo .rs-marco, .rs-cuadro .rs-marco { border: 1px solid var(--borde-fuerte); }
+.rs-circulo .rs-marco { border-radius: 999px; }
+.rs-cuadro .rs-marco { border-radius: 6px; }
+.rs-relleno .rs-marco { background: var(--neutra-fondo); border-color: transparent; }
+.rs-enlace:hover .rs-marco { background: var(--fondo-fila-hover); }
+
+/* R112 · El tamaño manda sobre la CAJA; el del dibujo lo pone «Icono» con su
+   paso. Las tres clases tienen regla propia a proposito: una clase que se emite
+   y no define ninguna regla es lo que este repositorio acaba de quitar dos veces
+   —«.pp-no» y «.cpdf-panel»— y no se vuelve a meter el mismo dia. */
+.rs-chico.rs-circulo .rs-marco, .rs-chico.rs-cuadro .rs-marco { width: 32px; height: 32px; }
+.rs-medio.rs-circulo .rs-marco, .rs-medio.rs-cuadro .rs-marco { width: 40px; height: 40px; }
+.rs-grande.rs-circulo .rs-marco, .rs-grande.rs-cuadro .rs-marco { width: 56px; height: 56px; }
+
+/* En columna la fila entera es pulsable, no solo el ancho del texto: un blanco
+   de 40px de alto y 90px de ancho es peor que uno de 40 por todo el ancho. */
+.rs-columna .rs-item { width: 100%; }
+
+.rs-txt { display: flex; flex-direction: column; }
+.rs-nombre { font-size: 13px; color: var(--texto-principal); }
+.rs-usuario { font-size: 12px; color: var(--texto-secundario); }
 
 /* R99 · «va con Editar»: lo que se mueve junto se dice ANTES de pulsar, no
    despues de ver saltar el otro interruptor. */

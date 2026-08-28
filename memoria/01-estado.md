@@ -1,8 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 28 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.91.0** — dos auditorías sobre R109 y R110
-con los doce candados en verde: **catorce hallazgos**, y los peores son propios
+**Versión del sistema:** MMI-DS **v1.92.0** — nace **Redes sociales**, y con él
+el **candado quince**: nada comprobaba que el catálogo y el producto dibujaran
+el mismo icono, y llevaban 111 versiones coincidiendo por suerte
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -41,10 +42,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **67 páginas** (contadas en el HTML generado; decía 53 y llevaba tiempo desfasado) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.91.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.92.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.91.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.92.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -65,7 +66,27 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.91.0), con detalle
+### Lo de hoy (v1.92.0), con detalle
+
+**R112 · Redes sociales.** Siete iconos —Facebook, Instagram, YouTube, TikTok,
+WhatsApp, X y LinkedIn— dibujados en el estilo del sistema, y un componente con
+tres formas (suelto, círculo, cuadro), relleno o contorno, tres tamaños, con
+nombre y con cuenta, en fila y en columna.
+
+**Los colores de marca no entran**, y no es gusto: §2.5.5 dice que ampliar los
+colores autorizados no lo decide quien escribe un componente. Los iconos heredan
+`currentColor`, lo que además les hace funcionar en los dos modos. Si el colegio
+quiere sus colores de marca, **eso es una autorización**, no un arreglo.
+
+**El candado quince, que es el hallazgo de verdad.** El sistema dibuja cada
+icono **dos veces** —`TRAZOS` para el catálogo, `TRAZOS_REACT` para los
+productos— y **nada comprobaba que dijeran lo mismo**. Se compararon los 45 que
+había antes de tocar nada: coincidían los 45. O sea que el sistema llevaba **111
+versiones dependiendo de que nadie se equivocara al copiar, y acertando**. Eso
+no es una garantía, es una racha. Ninguno de los doce podía verlo: uno compara
+propiedades CSS y otro compara etiquetas, y `svg` contra `svg` es igual.
+
+### Lo de ayer (v1.91.0), con detalle
 
 Se encargó a dos agentes auditar que la promesa fuera igual a la entrega en
 R109 y R110. **Con los doce candados en verde, volvieron con catorce hallazgos.**
@@ -1295,7 +1316,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.91.0
+Versión                      1.92.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              182   (142 bloqueantes · 40 informativos,
                                       0 fallos)

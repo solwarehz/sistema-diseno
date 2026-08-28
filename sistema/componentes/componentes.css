@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.91.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.92.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -1603,6 +1603,31 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
   .cpe-no-imprime{ display: none; }
   .cpe-impresa{ border: 0; padding: 0; }
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   REDES SOCIALES — 19 reglas · clases .rs-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.rs-lista{ display: flex; list-style: none; margin: 0; padding: 0; }
+.rs-fila .rs-lista{ flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; }
+.rs-columna .rs-lista{ flex-direction: column; align-items: flex-start; gap: 4px; }
+.rs-enlace{ display: inline-flex; align-items: center; gap: 8px;
+  color: var(--texto-secundario); text-decoration: none; border-radius: 3px; }
+.rs-enlace:hover{ color: var(--enlace); }
+.rs-enlace:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px; }
+.rs-marco{ display: inline-grid; place-items: center; }
+.rs-circulo .rs-marco, .rs-cuadro .rs-marco{ border: 1px solid var(--borde-fuerte); }
+.rs-circulo .rs-marco{ border-radius: 999px; }
+.rs-cuadro .rs-marco{ border-radius: 6px; }
+.rs-relleno .rs-marco{ background: var(--neutra-fondo); border-color: transparent; }
+.rs-enlace:hover .rs-marco{ background: var(--fondo-fila-hover); }
+.rs-chico.rs-circulo .rs-marco, .rs-chico.rs-cuadro .rs-marco{ width: 32px; height: 32px; }
+.rs-medio.rs-circulo .rs-marco, .rs-medio.rs-cuadro .rs-marco{ width: 40px; height: 40px; }
+.rs-grande.rs-circulo .rs-marco, .rs-grande.rs-cuadro .rs-marco{ width: 56px; height: 56px; }
+.rs-columna .rs-item{ width: 100%; }
+.rs-txt{ display: flex; flex-direction: column; }
+.rs-nombre{ font-size: 13px; color: var(--texto-principal); }
+.rs-usuario{ font-size: 12px; color: var(--texto-secundario); }
 
 /* ───────────────────────────────────────────────────────────────────────────
    DIÁLOGO — 8 reglas · clases .dialogo-*

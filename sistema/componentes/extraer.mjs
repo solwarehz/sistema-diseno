@@ -113,6 +113,7 @@ const ELEMENTOS = [
   // ni las lineas, ni el estado ante SUNAT, ni la representacion impresa, que
   // es la unica superficie del sistema cuyo contenido lo manda una norma.
   { n: 'Comprobante electronico', p: ['cpe'] },
+  { n: 'Redes sociales', p: ['rs'] },
   { n: 'Diálogo',               p: ['dialogo'] },
   { n: 'Utilidades',            p: ['sr', 'mono'] },
 ];

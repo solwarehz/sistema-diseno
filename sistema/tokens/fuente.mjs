@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.91.0";
+export const VERSION = "1.92.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,43 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.92.0', fecha: '2026-08-28',
+    que: 'R112: nace «Redes sociales», y con el un candado que faltaba desde la version 1.0',
+    porque:
+      'Lo pidio el responsable: un grupo de redes sociales con los iconos dibujados en nuestros '
+      + 'colores, configurable —icono solo, tamaño, icono con nombre, y la URL de destino— y '
+      + 'buscando antes las distintas formas de presentarlos. '
+      + 'LO QUE SE BUSCO Y LO QUE SALIO: las variantes que se repiten en lo publicado son circulo, '
+      + 'cuadro redondeado y suelto, y relleno frente a contorno. El sitio canonico es el pie de '
+      + 'pagina. Y la parte de accesibilidad es unanime en dos cosas: el aria-label va EN EL '
+      + 'ENLACE y el <svg> va OCULTO. El componente tiene las tres formas, dos rellenos, tres '
+      + 'tamaños, con nombre y con cuenta, en fila y en columna. '
+      + 'LOS COLORES DE MARCA NO ENTRAN, y no es gusto: §2.5.5 dice que los colores autorizados '
+      + 'son el panel de escalas y que ampliarlo NO lo decide quien escribe un componente. Los '
+      + 'iconos heredan currentColor como los otros 45, lo que ademas les hace funcionar en claro '
+      + 'y en oscuro — cosa que un logotipo de marca no hace. Van DIBUJADOS en el estilo del '
+      + 'sistema, no calcados: son marcas registradas y vienen rellenas. Si el colegio quiere sus '
+      + 'colores de marca, eso es una AUTORIZACION, no un arreglo. '
+      + 'EL CANDADO QUINCE, y este es el hallazgo de verdad. El sistema dibuja cada icono DOS '
+      + 'VECES: `TRAZOS` en sistema/iconos/iconos.mjs para el catalogo y `TRAZOS_REACT` en '
+      + 'componentes/src/Icono.tsx para los productos. Son dos porque uno genera HTML y el otro '
+      + 'emite React. NADA comprobaba que dijeran lo mismo. Antes de tocar nada se compararon los '
+      + '45 que habia: coincidian los 45, trazo por trazo — o sea que el sistema llevaba 111 '
+      + 'versiones dependiendo de que nadie se equivocara al copiar, y acertando. Eso no es una '
+      + 'garantia, es una racha. Ninguno de los doce podia verlo: verificar-promesa compara '
+      + 'PROPIEDADES CSS y un icono distinto tiene las mismas; verificar-elemento compara '
+      + 'ETIQUETAS y svg contra svg es igual. Es el defecto de R111 —nueve iconos publicados '
+      + 'vacios— visto desde el otro lado. Se rompio a proposito de tres formas —trazo distinto, '
+      + 'icono que falta, trazo vacio— y caza las tres. '
+      + 'Y DOS COSAS QUE EL PROPIO DIA ENSEÑO, aplicadas sin que nadie las pidiera: no se emite '
+      + 'una clase `rs` de raiz porque ninguna regla la definiria —es `.pp-no` otra vez—, y las '
+      + 'tres clases de tamaño llevan regla propia en vez de ser marcadores. El marco tampoco es '
+      + 'adorno: un icono suelto de 18px deja un objetivo de 18px y SC 2.5.8 pide 24; con marco '
+      + 'son 40, y por eso en movil se recomienda circulo o cuadro.',
+    rompe: [],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.91.0', fecha: '2026-08-28',
     que: 'R111: nueve iconos que se publicaban VACIOS, y dos frases mias que la auditoria midio y eran falsas',

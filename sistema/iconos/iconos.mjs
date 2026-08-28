@@ -127,6 +127,18 @@ export const TRAZOS = {
   camara: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/>',
   filas: '<rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="13" width="18" height="5" rx="1"/>',
   filasFinas: '<rect x="3" y="4" width="18" height="3" rx="1"/><rect x="3" y="10" width="18" height="3" rx="1"/><rect x="3" y="16" width="18" height="3" rx="1"/>',
+
+  // R112 · REDES SOCIALES. Dibujados en el estilo del sistema, no calcados:
+  // los logotipos de marca son marcas registradas, vienen rellenos y traen
+  // colores que aqui NO estan autorizados. Estos son de trazo y heredan
+  // currentColor, como los otros cuarenta y cinco.
+  facebook: '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M15.5 7.5H14a2.5 2.5 0 0 0-2.5 2.5v10.5"/><path d="M9 13.5h5.5"/>',
+  instagram: '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17 7h.01"/>',
+  youtube: '<rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10.5 9 4.5 3-4.5 3V9Z"/>',
+  tiktok: '<path d="M14 3.5v11a4 4 0 1 1-4-4"/><path d="M14 3.5c.4 2.6 2 4.2 4.5 4.5"/>',
+  whatsapp: '<path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.5L3.5 20.5l1.3-4.3a8.5 8.5 0 1 1 15.7-4.4Z"/><path d="M9.5 9.2c0 3 2.3 5.3 5.3 5.3"/>',
+  x: '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="m8.5 8.5 7 7M15.5 8.5l-7 7"/>',
+  linkedin: '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 10.5V17M8 7.6h.01"/><path d="M12 17v-6.5"/><path d="M12.5 13.5a2.5 2.5 0 0 1 4.5 1.5V17"/>',
 };
 
 /** El conjunto ya dibujado al tamaño de texto, que es el caso más común. */

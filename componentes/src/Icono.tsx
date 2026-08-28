@@ -74,6 +74,16 @@ const TRAZOS_REACT = {
   tesoreria: <><rect x="2" y="6" width="20" height="12" rx="2" /><circle cx="12" cy="12" r="2.5" /></>,
   usuarios: <><circle cx="9" cy="8" r="3" /><path d="M3 20c0-3 3-5 6-5s6 2 6 5" /><path d="M17 6a3 3 0 0 1 0 6M18 20c0-2-1-3.5-2.5-4.5" /></>,
   visto: <><path d="m5 12 5 5L20 7" /></>,
+
+  // R112 · Redes sociales. MISMO trazo que `TRAZOS` en sistema/iconos/iconos.mjs;
+  // los mantiene iguales `verificar-iconos.mjs`, que nacio con ellos.
+  facebook: <><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M15.5 7.5H14a2.5 2.5 0 0 0-2.5 2.5v10.5" /><path d="M9 13.5h5.5" /></>,
+  instagram: <><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><path d="M17 7h.01" /></>,
+  youtube: <><rect x="2" y="5" width="20" height="14" rx="4" /><path d="m10.5 9 4.5 3-4.5 3V9Z" /></>,
+  tiktok: <><path d="M14 3.5v11a4 4 0 1 1-4-4" /><path d="M14 3.5c.4 2.6 2 4.2 4.5 4.5" /></>,
+  whatsapp: <><path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.5L3.5 20.5l1.3-4.3a8.5 8.5 0 1 1 15.7-4.4Z" /><path d="M9.5 9.2c0 3 2.3 5.3 5.3 5.3" /></>,
+  x: <><rect x="3" y="3" width="18" height="18" rx="4" /><path d="m8.5 8.5 7 7M15.5 8.5l-7 7" /></>,
+  linkedin: <><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M8 10.5V17M8 7.6h.01" /><path d="M12 17v-6.5" /><path d="M12.5 13.5a2.5 2.5 0 0 1 4.5 1.5V17" /></>,
 } as const;
 
 export type IconoProps = {

@@ -117,7 +117,7 @@ describe('Icono', () => {
     expect(container.querySelector('svg')).toHaveAttribute('width', '32');
   });
 
-  it('están los 46, los mismos que el catálogo', () => {
+  it('están los 53, los mismos que el catálogo', () => {
     // 42 desde la v1.37.0: subir (R35) y la pareja ojo/ojoTachado (contraseña).
     // 45 desde la v1.40.0, los tres de la carga de PDF: `documento` (la hoja en
     // blanco de cada archivo puesto), `papelera` (el tachito, en la línea del
@@ -126,8 +126,15 @@ describe('Icono', () => {
     // 46 desde la v1.57.0: `informacion` (R83), el cuarto glifo de intención.
     // Los otros tres ya estaban —visto, alerta y cerrar—, y sin este un mensaje
     // informativo quedaba dicho SOLO con el color (SC 1.4.1).
-    expect(NOMBRES_ICONO).toHaveLength(46);
-    for (const n of ['candado', 'lupa', 'cerrar', 'visto', 'alerta', 'informacion', 'subir', 'documento', 'papelera', 'pdf']) {
+    // 53 desde la v1.92.0: las siete redes sociales de R112.
+    //
+    // R112 · «los mismos que el catálogo» era hasta hoy una frase, no una
+    // comprobación: esta prueba cuenta los del PRODUCTO y nadie miraba los del
+    // catálogo. Ahora lo garantiza `verificar-iconos.mjs`, que además compara
+    // el trazo — el número puede cuadrar con dos dibujos distintos.
+    expect(NOMBRES_ICONO).toHaveLength(53);
+    for (const n of ['candado', 'lupa', 'cerrar', 'visto', 'alerta', 'informacion', 'subir', 'documento', 'papelera', 'pdf',
+      'facebook', 'instagram', 'youtube', 'tiktok', 'whatsapp', 'x', 'linkedin']) {
       expect(NOMBRES_ICONO).toContain(n);
     }
   });
