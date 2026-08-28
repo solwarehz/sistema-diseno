@@ -5566,6 +5566,245 @@ estila por variables, no por CSS propio — al revés que Culqi.</p>
   segundos</strong> o reintentan cada 15 minutos, y la firma <code>x-signature</code> se valida.</li>
 </ol>`;
 
+// ── Pasarela de pagos · Niubiz ──────────────────────────────────────────────
+// Quinta y ultima. Su aportacion propia: 77 codigos de rechazo con un eje
+// —TEMPORAL o PERMANENTE— que es lo que debe gobernar la pantalla.
+
+const pagNiubiz = `
+<p class="pag-intro">Las mismas pantallas del cobro con <strong>Niubiz</strong> —antes VisaNet—.
+Mismo andamiaje que las otras cuatro. Es la procesadora más grande del país y la única de las cinco
+que documenta <strong>American Express</strong>… y también la que menos deja parecerse a nosotros.</p>
+
+<h3 class="sub-seccion">1 · Dos formas, y la diferencia es todo</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Forma</th><th>Dónde aparece</th><th>Qué podemos estilar</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Botón de Pago Web</strong></td><td>Modal encima de nuestra página — <strong>sin redirección</strong></td><td><strong>Seis parámetros</strong>, y con topes duros</td></tr>
+    <tr><td><strong>Formulario desacoplado</strong></td><td><strong>Dentro de un contenedor nuestro</strong></td><td>Campos separados, tipografía y un objeto <code>style</code></td></tr>
+  </tbody>
+</table>
+<div class="aviso"><strong>El botón no puede llevar el color del colegio, y no es opinión.</strong>
+<code>buttoncolor</code> solo admite <strong><code>NAVY</code> o <code>GRAY</code></strong> — no un
+hexadecimal. Y en el botón de pagar del modal, el <strong>texto es blanco impuesto</strong>: solo
+elegimos el fondo con <code>formbuttoncolor</code>. Ese par de contraste <strong>no lo controlamos,
+así que no puede entrar en nuestro candado</strong>: es suyo. Si el colegio quiere que el cobro se
+vea suyo, la vía es el <strong>formulario desacoplado</strong>.</div>
+
+<h3 class="sub-seccion">2 · La pantalla de pago</h3>
+<div class="bloque">
+  <div class="psl-demo-marco">
+    <div class="psl-demo-barra">
+      <span>colegioalberteinstein.edu.pe/pagos</span>
+      <span>${icono('candado')} Conexión segura</span>
+    </div>
+    <div class="psl-demo-lienzo">
+
+      <div class="psl-hero">
+        <span>
+          <span class="psl-hero-et">Total a pagar</span>
+          <span class="psl-hero-monto">S/ 357,00</span>
+          <span class="psl-hero-sub">QUISPE RAMOS, Ana Lucía · 3.º B</span>
+        </span>
+        <span class="psl-hero-der">
+          Pedido <strong>PEN20260804471</strong><br>La sesión caduca en 15 min
+        </span>
+      </div>
+
+      <div class="psl-cols">
+        <article class="tn">
+          <div class="tn-cab"><h4>Lo que vas a pagar</h4><span class="chip chip-info">Pendiente</span></div>
+          <div class="tn-cuerpo">
+            <div class="psl-detalle">
+              <div class="psl-linea">
+                <span>Pensión de agosto 2026<span class="psl-linea-sub">Mensualidad regular</span></span>
+                <span class="psl-monto">S/ 350,00</span>
+              </div>
+              <div class="psl-linea">
+                <span>Mora por pago tardío<span class="psl-linea-sub">6 días · 1 % mensual</span></span>
+                <span class="psl-monto">S/ 7,00</span>
+              </div>
+              <div class="psl-linea psl-total">
+                <span>Total</span><span class="psl-monto">S/ 357,00</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tn">
+          <div class="tn-cab"><h4>Cómo vas a pagar</h4></div>
+          <div class="tn-cuerpo">
+            <div class="psl-sdk">
+              <span class="psl-sdk-et">${icono('informacion')} Formulario desacoplado de Niubiz</span>
+              <div class="psl-demo-sdk-caja">
+                <div class="psl-demo-falso">
+                  <span class="psl-demo-falso-et">Número de tarjeta</span>
+                  <span class="psl-demo-falso-in">•••• •••• •••• ••••</span>
+                </div>
+                <div class="psl-demo-falso-par">
+                  <div class="psl-demo-falso"><span class="psl-demo-falso-et">Vencimiento</span><span class="psl-demo-falso-in">MM / AA</span></div>
+                  <div class="psl-demo-falso"><span class="psl-demo-falso-et">CVV</span><span class="psl-demo-falso-in">•••</span></div>
+                </div>
+              </div>
+            </div>
+            <p>Los campos los inyecta su librería en un <code>div</code> nuestro. <strong>Trae su
+            propia hoja de estilos</strong> (<code>payform.min.css</code>) — CSS de un tercero
+            entrando en nuestra página, que es justo lo que vigilan los candados del empate y de la
+            promesa. Hay que medir qué declara antes de meterla.</p>
+          </div>
+          <div class="tn-pie">
+            <button class="btn btn-terc">Cancelar</button>
+            <button class="btn btn-1">Pagar S/ 357,00</button>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">3 · 77 códigos, dos pantallas — y el eje no es el código</h3>
+<p class="seccion-sub">Su tabla publica <strong>77 códigos de acción</strong>: solo <strong>dos son
+aprobación</strong> (<code>000</code> y <code>010</code>) y <strong>75 son rechazo</strong>. Pero
+además de la descripción, cada uno trae una columna <strong><code>TIPO DE RECHAZO</code></strong>
+con tres valores: <code>APROBADO</code>, <code>TEMPORAL</code> y <code>PERMANENTE</code>.
+<strong>Ese es el eje que debe gobernar la pantalla</strong>: 77 pantallas sería absurdo y una sola
+haría reintentar tarjetas robadas.</p>
+
+<div class="bloque">
+  <div class="psl-cols">
+    <article class="tn">
+      <div class="tn-cab"><h4>TEMPORAL — se puede reintentar</h4><span class="chip chip-aviso">116</span></div>
+      <div class="tn-cuerpo">
+        <div class="psl-estado psl-estado-aviso">
+          <span class="psl-sello">${icono('alerta', TAMANOS.estado)}</span>
+          <span class="psl-estado-tit">Tu tarjeta no tiene saldo suficiente</span>
+          <span class="psl-estado-txt">No se te cobró nada. Puedes intentar con otra tarjeta.</span>
+        </div>
+        <p>Fondos insuficientes, entidad no disponible, error de comunicación, clave incorrecta.
+        <strong>Reintentar tiene sentido.</strong></p>
+      </div>
+      <div class="tn-pie"><button class="btn btn-1">Intentar otra vez</button></div>
+    </article>
+
+    <article class="tn">
+      <div class="tn-cab"><h4>PERMANENTE — no se reintenta</h4><span class="chip chip-error">208</span></div>
+      <div class="tn-cuerpo">
+        <div class="psl-estado psl-estado-error">
+          <span class="psl-sello">${icono('cerrar', TAMANOS.estado)}</span>
+          <span class="psl-estado-tit">No pudimos procesar el pago</span>
+          <span class="psl-estado-txt">Usa otro medio de pago o acércate a la administración del
+          colegio.</span>
+        </div>
+        <p>Tarjeta vencida, no válida, perdida, robada, BIN en lista negra. Reintentar sobre un
+        <code>118</code> o un <code>208</code> <strong>solo produce frustración</strong>.</p>
+      </div>
+      <div class="tn-pie"><button class="btn btn-neutro">Volver a mis pagos</button></div>
+    </article>
+  </div>
+</div>
+
+<table class="tabla-simple">
+  <thead><tr><th>Código</th><th>Respuesta de la API</th><th>Origen</th><th>Tipo</th></tr></thead>
+  <tbody>
+    <tr><td><span class="chip chip-exito">000</span></td><td>Aprobado y completado con éxito</td><td>Emisor</td><td>APROBADO</td></tr>
+    <tr><td><span class="chip chip-exito">010</span></td><td>Aprobado y completado con éxito</td><td>Emisor</td><td>APROBADO</td></tr>
+    <tr><td><span class="chip chip-aviso">116</span></td><td>Fondos insuficientes</td><td>Emisor</td><td>TEMPORAL</td></tr>
+    <tr><td><span class="chip chip-error">101</span></td><td>Tarjeta vencida</td><td>Emisor</td><td><strong>PERMANENTE</strong></td></tr>
+    <tr><td><span class="chip chip-error">118</span></td><td>Tarjeta no valida</td><td>Emisor</td><td><strong>PERMANENTE</strong></td></tr>
+    <tr><td><span class="chip chip-error">208</span></td><td>Tarjeta perdida</td><td>Emisor</td><td><strong>PERMANENTE</strong></td></tr>
+    <tr><td><span class="chip chip-error">209</span></td><td>Tarjeta robada</td><td>Emisor</td><td><strong>PERMANENTE</strong></td></tr>
+    <tr><td><span class="chip chip-error">424</span></td><td>BIN en lista negra</td><td>Niubiz</td><td><strong>PERMANENTE</strong></td></tr>
+    <tr><td><span class="chip chip-aviso">129</span></td><td>Tarjeta no operativa</td><td>Emisor</td><td>TEMPORAL</td></tr>
+    <tr><td><span class="chip chip-aviso">408</span></td><td>Operación Denegada. CVV2 no coincide</td><td>Niubiz</td><td>TEMPORAL</td></tr>
+    <tr><td><span class="chip chip-aviso">912</span></td><td>Entidad emisora no disponible</td><td>Emisor</td><td>TEMPORAL</td></tr>
+    <tr><td><span class="chip chip-aviso">300</span></td><td>Número de pedido del comercio duplicado</td><td>Niubiz</td><td>TEMPORAL</td></tr>
+    <tr><td><span class="chip chip-aviso">667</span></td><td>Transacción sin autenticación</td><td>Autenticación</td><td>TEMPORAL</td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub">Una muestra de los 77. Lo que importa no es memorizarlos: es que
+<strong>la pantalla ramifique por <code>TIPO DE RECHAZO</code></strong>.</p>
+
+<div class="msj msj-aviso">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt"><strong>El <code>300</code> y el HTTP 406 merecen pantalla propia.</strong>
+  «Número de pedido duplicado» no es un fallo: es que <strong>ya se pagó</strong>. Su API responde
+  <strong>406 a una autorización duplicada</strong> por política de idempotencia — reintentar el
+  mismo pedido no cobra dos veces. La pantalla tiene que distinguir «ya está pagado» de «falló», o
+  la familia pagará dos veces por miedo.</span>
+</div>
+
+<h3 class="sub-seccion">4 · Sus textos NO son para quien paga</h3>
+<div class="msj msj-error">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt"><strong>La prueba está en el encabezado de su propia tabla:</strong>
+  «RESPUESTA QUE SE VISUALIZA EN <strong>BACKOFFICE Y REPORTES</strong>». Es la pantalla del
+  comercio, no la del comprador. Y la redacción lo confirma — habla <em>al comercio</em> del
+  comprador en tercera persona: «solicita a <strong>tu cliente</strong> que intente nuevamente con
+  otra tarjeta». Varios incluso mandan llamar a la central de Niubiz. <strong>Eso jamás puede verlo
+  un padre de familia.</strong></span>
+</div>
+<p class="seccion-sub">Tampoco sirve el <code>ACTION_DESCRIPTION</code> de la API: es telegráfico y
+a veces viene en inglés, con erratas incluidas —<code>Restrited Card</code>,
+<code>Transaction not Pemitted</code>—. <strong>Los mensajes al apoderado los escribimos
+nosotros</strong>: dos redacciones base por <code>TIPO DE RECHAZO</code>, afinadas para el puñado de
+códigos frecuentes, y <strong>el código técnico visible en pequeño</strong> para que administración
+pueda rastrear la incidencia sin pedirle capturas al padre.</p>
+
+<h3 class="sub-seccion">5 · Métodos de pago</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Qué</th><th>Detalle</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Marcas de tarjeta</strong></td><td>Su campo <code>BRAND</code> enumera <code>visa</code>, <code>mastercard</code>, <strong><code>amex</code></strong>, <code>dinersclub</code>, <code>unionpay</code></td></tr>
+    <tr><td><strong>Yape</strong></td><td>Flujo de API aparte: celular + OTP, devuelve un token que va a la autorización. <strong>Esa pantalla la diseñamos enteramente nosotros</strong></td></tr>
+    <tr><td>QR · Pago Efectivo · Puntos BBVA</td><td>Solo en el <strong>botón</strong>; el desacoplado no los trae</td></tr>
+    <tr><td>Cuotas</td><td>Campo <code>installment</code>, y la respuesta trae el detalle del programa</td></tr>
+    <tr><td>Lectura de BIN</td><td>Solo en el <strong>desacoplado</strong></td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub"><strong>Hay que elegir, y es una decisión de negocio:</strong> el botón trae
+QR, Pago Efectivo y Puntos BBVA pero no se puede tematizar; el desacoplado se ve como el sistema
+pero pierde esos tres.</p>
+
+<h3 class="sub-seccion">6 · Lo que NO se pudo verificar</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Qué falta</th><th>Por qué</th></tr></thead>
+  <tbody>
+    <tr><td>Que Amex <strong>solo</strong> vaya por Niubiz</td><td>Su <code>BRAND</code> confirma que <strong>lo procesan</strong>. La exclusividad solo aparece en <strong>blogs no oficiales</strong>. Si es criterio de decisión, <strong>pregúntenselo por escrito</strong></td></tr>
+    <tr><td>Soporte de <strong>Plin</strong></td><td>Su página de billeteras electrónicas está <strong>vacía</strong></td></tr>
+    <tr><td>Si 3-D Secure es obligatorio</td><td>Lo presentan como capacidad soportada, no como obligación. <strong>No se afirma en ningún sentido</strong></td></tr>
+    <tr><td>Si la autenticación saca al usuario del modal</td><td>Indicios fuertes —el campo <code>redirectToVbV</code> y los códigos 667, 678 y 265— pero <strong>no encontramos la página que lo describa</strong></td></tr>
+    <tr><td>La URL de <code>checkout.js</code> en pruebas</td><td><strong>Su documentación se contradice</strong>: declara una y su propio ejemplo usa otra</td></tr>
+    <tr><td>El nombre del campo que devuelve al <code>action</code></td><td><code>transactionCode</code> o <code>transactionToken</code> — <strong>dato de baja confianza</strong></td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub">Nota de método: el dominio <code>developers.niubiz.com.pe</code>
+<strong>no existe</strong> — no resuelve. El portal es
+<code>desarrolladores.niubiz.com.pe</code>.</p>
+
+<h3 class="sub-seccion">7 · Las cinco, de frente</h3>
+<table class="tabla-simple">
+  <thead><tr><th>&nbsp;</th><th>Izipay</th><th>Culqi</th><th>Openpay</th><th>Mercado Pago</th><th>Niubiz</th></tr></thead>
+  <tbody>
+    <tr><td>El formulario es…</td><td>suyo</td><td>suyo</td><td><strong>nuestro</strong></td><td>suyo</td><td>suyo, en nuestro <code>div</code></td></tr>
+    <tr><td>Se puede tematizar</td><td>colores</td><td>variables y reglas</td><td>todo</td><td>32 variables</td><td><strong>casi nada</strong></td></tr>
+    <tr><td>Tema oscuro</td><td>no</td><td>parece</td><td>sí</td><td><strong>documentado</strong></td><td>no documentado</td></tr>
+    <tr><td>Texto del rechazo</td><td>nosotros</td><td><strong>lo traen</strong></td><td>sin verificar</td><td>nosotros (viene en inglés)</td><td><strong>nosotros</strong> (el suyo es para el backoffice)</td></tr>
+    <tr><td>Amex</td><td>no doc.</td><td>no doc.</td><td>no doc.</td><td>sí</td><td><strong>sí</strong></td></tr>
+    <tr><td>Eje del rechazo</td><td>código</td><td><code>decline_code</code></td><td>sin verificar</td><td><strong>tres familias</strong></td><td><strong>TEMPORAL / PERMANENTE</strong></td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">8 · Lo que hay que decidir</h3>
+<ol class="man-lista">
+  <li><strong>Botón o desacoplado.</strong> El botón trae QR, Pago Efectivo y Puntos BBVA y no se
+  puede tematizar; el desacoplado se ve como el sistema y pierde los tres.</li>
+  <li><strong>Si entra su hoja de estilos</strong> (<code>payform.min.css</code>) hay que medir qué
+  declara antes: es CSS de un tercero en nuestra página.</li>
+  <li><strong>Preguntarles por Amex</strong> si la exclusividad es criterio de elección.</li>
+  <li><strong>La pantalla de «ya está pagado»</strong> — el <code>300</code> y el HTTP 406.</li>
+  <li><strong>Los mensajes al apoderado</strong>, por <code>TIPO DE RECHAZO</code>.</li>
+</ol>`;
+
 const pagMaquetas = `
 <p class="pag-intro">Los tres contextos. Landing y sistema <strong>comparten valores, no proporciones</strong>.
 El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
@@ -6426,6 +6665,7 @@ const CATALOGO = [
       { id: 'culqi', t: 'Culqi', estado: 'listo', c: pagCulqi },
       { id: 'openpay', t: 'Openpay Perú', estado: 'listo', c: pagOpenpay },
       { id: 'mercadopago', t: 'Mercado Pago', estado: 'listo', c: pagMercadoPago },
+      { id: 'niubiz', t: 'Niubiz', estado: 'listo', c: pagNiubiz },
     ],
   },
   {

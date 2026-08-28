@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.85.0";
+export const VERSION = "1.86.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,35 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.86.0', fecha: '2026-08-27',
+    que: 'Niubiz — la quinta y ultima pasarela: 77 codigos y un eje que no es el codigo',
+    porque:
+      'Con esta quedan las CINCO pasarelas conocidas del Peru en el catalogo, todas con el mismo '
+      + 'andamiaje psl-* y todas con sus huecos declarados. '
+      + 'SU APORTACION PROPIA es el eje del rechazo. Publica 77 codigos de accion: solo DOS son '
+      + 'aprobacion (000 y 010) y 75 son rechazo. Pero cada uno trae una columna TIPO DE RECHAZO '
+      + 'con tres valores —APROBADO, TEMPORAL, PERMANENTE—, y ESE es el eje que debe gobernar la '
+      + 'pantalla: 77 pantallas seria absurdo, y una sola haria reintentar tarjetas robadas. '
+      + 'Y ES LA QUE MENOS SE PUEDE PARECER A NOSOTROS: `buttoncolor` solo admite NAVY o GRAY —no un '
+      + 'hexadecimal— y el texto del boton de pagar es blanco impuesto, asi que ese par de '
+      + 'contraste NO LO CONTROLAMOS y no puede entrar en nuestro candado: es suyo. Si el colegio '
+      + 'quiere que el cobro se vea suyo, la via es el formulario desacoplado — que a cambio mete '
+      + 'la hoja de estilos de un tercero en nuestra pagina, justo lo que vigilan los candados del '
+      + 'empate y de la promesa, y pierde QR, Pago Efectivo y Puntos BBVA. '
+      + 'SUS TEXTOS NO SON PARA QUIEN PAGA, y la prueba esta en el encabezado de su propia tabla: '
+      + '«RESPUESTA QUE SE VISUALIZA EN BACKOFFICE Y REPORTES». Hablan AL COMERCIO del comprador en '
+      + 'tercera persona, y algunos mandan llamar a la central de Niubiz. Eso jamas puede verlo un '
+      + 'padre de familia. '
+      + 'DOS PANTALLAS QUE NINGUNA OTRA PASARELA PEDIA: la de «ya esta pagado» —su codigo 300 y el '
+      + 'HTTP 406 por idempotencia significan que el pedido YA se cobro, no que fallo— y la de '
+      + 'Yape, que es un flujo de API aparte con celular y OTP y por tanto la diseñamos entera. '
+      + 'SEIS HUECOS DECLARADOS, incluido que su documentacion se contradice sobre la URL de '
+      + 'checkout.js en pruebas, y que la exclusividad de Amex SOLO aparece en blogs no oficiales: '
+      + 'su campo BRAND confirma que lo procesan, no que sean los unicos.',
+    rompe: [],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.85.0', fecha: '2026-08-27',
     que: 'Mercado Pago Peru — y el rechazo deja de ser UNA pantalla para ser TRES',

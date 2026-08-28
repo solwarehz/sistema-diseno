@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.85.0
+# Actualizar al sistema de diseño v1.86.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.85.0"
+npm install "github:solwarehz/sistema-diseno#v1.86.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,19 +27,19 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.85.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.86.0
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.85.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.86.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.85.0 --repo solwarehz/sistema-diseno
+gh release download v1.86.0 --repo solwarehz/sistema-diseno
 ```
 
 Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
@@ -320,6 +320,8 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.84.0 | **Nada que tocar: es catálogo.** Nueva página **Pasarela de pagos › Openpay Perú**, debajo de Culqi. **La única de las tres en la que el formulario de tarjeta puede ser nuestro**: `Openpay.js` tokeniza desde nuestros propios `Campo` y manda los datos directo a Openpay, así que ahí el modo oscuro, la alineación y el anillo de foco son los del sistema. Trae sus agencias peruanas por nombre y el aviso de que **las cuotas solo van con BBVA y DINERS**. **Lo que NO trae, y está dicho en la página**: su tabla de códigos de rechazo, que no se pudo leer — hay que pedírsela antes de escribir un mensaje de error |
 
 | 1.85.0 | **Nada que tocar: es catálogo.** Nueva página **Pasarela de pagos › Mercado Pago**. Lo que conviene leer aunque no usen MP: **el rechazo se parte en tres pantallas** según lo que la persona pueda hacer, y en la de fraude **no hay botón de reintentar** — su documentación pide impedir nuevos intentos. Además es la primera pasarela con **tema oscuro documentado** y la primera que deja meter **nuestro anillo de foco** en su formulario. Aviso: sus treinta mensajes de rechazo **vienen en inglés**, así que redactarlos en español es trabajo nuestro |
+
+| 1.86.0 | **Nada que tocar: es catálogo.** Nueva página **Pasarela de pagos › Niubiz**, y con ella **las cinco pasarelas conocidas del Perú** quedan documentadas. Lo que conviene leer aunque no usen Niubiz: publica **77 códigos de rechazo**, y el eje que debe gobernar la pantalla **no es el código sino su `TIPO DE RECHAZO`** — `TEMPORAL` se reintenta, `PERMANENTE` no. Y sus textos **no son para quien paga**: su propia tabla los titula «respuesta que se visualiza en backoffice y reportes» |
 
 **Lo que no rompe pero conviene aprovechar:** `soloLectura` en `Selector`
 (§6.5 del manual), `persona.foto` en `CargaImagen` (§6.7), `CargaId` para el

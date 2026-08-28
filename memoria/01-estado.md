@@ -1,8 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 27 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.84.0** — **Openpay Perú**, la tercera
-pasarela, y la única en la que **el formulario de tarjeta puede ser nuestro**
+**Versión del sistema:** MMI-DS **v1.86.0** — las **cinco** pasarelas conocidas
+del Perú en el catálogo, cada una con sus huecos declarados: Izipay, Culqi,
+Openpay, Mercado Pago y Niubiz
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -39,12 +40,12 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
 | Componentes de React | ✅ | **499 pruebas en 34 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
-| Catálogo navegable | ✅ | `cascaron/index.html` · 45 páginas · lo genera `generar-cascaron.mjs` |
+| Catálogo navegable | ✅ | `cascaron/index.html` · 46 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.85.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.86.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.85.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.86.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -65,7 +66,35 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.85.0), con detalle
+### Lo de hoy (v1.86.0), con detalle
+
+**Niubiz — la quinta y última, y el eje del rechazo no es el código.**
+
+Con esta quedan **las cinco pasarelas conocidas del Perú** en el catálogo, todas
+con el mismo andamiaje y todas con sus huecos declarados.
+
+Publica **77 códigos de acción**: solo **dos** son aprobación (`000` y `010`) y
+75 son rechazo. Pero cada uno trae una columna **`TIPO DE RECHAZO`** —`APROBADO`,
+`TEMPORAL`, `PERMANENTE`—, y **ese** es el eje que debe gobernar la pantalla: 77
+pantallas sería absurdo y una sola haría reintentar tarjetas robadas.
+
+**Es la que menos se puede parecer a nosotros.** `buttoncolor` solo admite `NAVY`
+o `GRAY` —no un hexadecimal— y el texto del botón de pagar es **blanco
+impuesto**: ese par de contraste **no lo controlamos y no puede entrar en nuestro
+candado**. La vía para que se vea nuestro es el formulario desacoplado, que a
+cambio mete la hoja de estilos de un tercero en nuestra página.
+
+**Sus textos no son para quien paga**, y la prueba está en el encabezado de su
+propia tabla: «RESPUESTA QUE SE VISUALIZA EN **BACKOFFICE Y REPORTES**». Hablan
+al comercio del comprador en tercera persona, y algunos mandan llamar a su
+central.
+
+Y pide **dos pantallas que ninguna otra pedía**: la de «**ya está pagado**» —su
+código `300` y el HTTP 406 por idempotencia significan que el pedido ya se cobró,
+no que falló— y la de **Yape**, que es un flujo aparte con celular y OTP y por
+tanto se diseña entera.
+
+### Lo de la v1.85.0, con detalle
 
 **Mercado Pago Perú — y el rechazo deja de ser una pantalla para ser tres.**
 
@@ -1118,7 +1147,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.85.0
+Versión                      1.86.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes · 40 informativos,
                                       0 fallos)
@@ -1136,7 +1165,7 @@ Contrato de comportamiento      185   reglas · 152 obligatorias · 6 PENDIENTE
 Componentes publicados           32   38 módulos viajan en el paquete
                                       117 exportaciones, todas por el índice
 Iconos                           46
-Páginas del catálogo             45
+Páginas del catálogo             46
 Fila de un campo, medida      36,45   px · la fila de carga se fija en 36
 ```
 
