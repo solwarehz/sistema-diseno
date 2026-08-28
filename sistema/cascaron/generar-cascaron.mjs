@@ -2053,6 +2053,26 @@ const APODERADOS = [
   'Torres Bejarano, Iván', 'Valdivia Ccahuana, Sofía', 'Zúñiga Peralta, Martín',
 ];
 
+/**
+ * R115 · EL GRADO DEL APODERADO — la prop `ayuda` de `OpcionBusqueda`, que
+ * hasta la v1.94.0 no se pintaba en NINGUNA demostración del catálogo.
+ *
+ * Sin una demo no había promesa contra la que comparar, y por eso el defecto
+ * vivió tanto: la hoja le prometía 13 px y `--texto-secundario` con una regla
+ * —`.sel-notas p`— que el componente no podía casar nunca, así que en todos
+ * los productos salía a 15 px, del mismo cuerpo que el nombre y sin distinguirse
+ * de él.
+ *
+ * Solo cuatro la llevan, y a propósito: la ayuda desambigua, no decora. Si la
+ * llevaran las dieciocho, la demostración enseñaría un adorno.
+ */
+const AYUDA_APODERADOS = {
+  'Pérez Salazar, Ana': '3.º B',
+  'Quispe Mamani, Lucía': '5.º A',
+  'Rojas Vega, Luis': '1.º A',
+  'Torres Bejarano, Iván': '3.º B',
+};
+
 const pagSelector = `
 <p class="pag-intro">Dos componentes distintos con el mismo aspecto. La diferencia no es
 estética: <strong>por encima de cierto número de opciones, buscar es más rápido que
@@ -2143,7 +2163,7 @@ reportó Control Administrativos V2.0.</div>
       </div>
       <span class="cg-ayuda" data-sel-conteo>${APODERADOS.length} apoderados</span>
     </div>
-    <div class="sel-notas">
+    <div class="sel-demo-notas">
       <p><strong>La búsqueda ignora tildes y mayúsculas.</strong> <code>perez</code> encuentra «Pérez Salazar, Ana».</p>
       <p>Eso no es un detalle de la caja de búsqueda: en producción lo hacen las
       extensiones <code>unaccent</code> y <code>pg_trgm</code> de PostgreSQL.
@@ -9728,13 +9748,29 @@ input.campo.sel-in { width: 100%; padding-right: 32px; }
   padding: 8px 8px; border-radius: 6px; font-size: 15px; cursor: pointer; }
 .sel-op.marcado { background: var(--fondo-fila-hover); }
 .sel-op[aria-selected="true"] { color: var(--accion); font-weight: 500; }
+/* R115 · EL NOMBRE Y SU AYUDA VIAJAN JUNTOS, y por eso hay envoltura.
+   \`.sel-op\` reparte con space-between: con el nombre suelto y una ayuda al
+   lado eran TRES hijos, y el del medio —el nombre— se iba al centro. Medido:
+   la fila elegida empezaba su texto en 98,3px y sus vecinas en 8. Con la
+   envoltura vuelven a ser dos: el bloque de texto a la izquierda y el visto a
+   la derecha, que es lo que este catalogo ensenaba desde el principio. */
+.sel-op-txt { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+/* R115 · LA AYUDA DE LA OPCION, que hasta la v1.94.0 no tenia ninguna regla.
+   La hoja traia \`.sel-notas p\`, y el componente emite \`<span class="sel-notas">\`
+   con el texto dentro y sin ningun <p>: la regla no podia casar NUNCA y la
+   ayuda salia a 15px, del mismo cuerpo que el nombre. Y no era un descuido de
+   marcado: \`.sel-notas\` estaba nombrando DOS piezas distintas —la ayuda de la
+   opcion y la columna de notas de esta demostracion—. La demostracion pasa a
+   llamarse \`sel-demo-notas\`, que es mobiliario y no viaja; el nombre publico
+   se queda donde estaba, asi que ningun producto tiene que cambiar nada. */
+.sel-notas { font-size: 13px; color: var(--texto-secundario); font-weight: 400; flex: none; }
 .sel-check { color: var(--accion); display: grid; place-items: center; }
 .sel-check .ic { width: 16px; height: 16px; }
 .sel-vacio { padding: 12px 12px; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .sel-vacio strong { color: var(--texto-principal); }
 .sel-demo-fila { display: grid; grid-template-columns: minmax(260px,360px) 1fr; gap: 28px; align-items: start; }
-.sel-notas p { margin: 0 0 8px; font-size: 13px; line-height: 1.6; color: var(--texto-secundario); }
-.sel-notas strong { color: var(--texto-principal); }
+.sel-demo-notas p { margin: 0 0 8px; font-size: 13px; line-height: 1.6; color: var(--texto-secundario); }
+.sel-demo-notas strong { color: var(--texto-principal); }
 @media (max-width: 760px) { .sel-demo-fila { grid-template-columns: 1fr; } }
 
 /* Campo de texto */
@@ -13270,6 +13306,13 @@ ${COMPRESOR_PDF}
     var raizSel = document.querySelector('[data-sel]');
     if (!raizSel) return;
     var OPCIONES = ${JSON.stringify(APODERADOS)};
+    // R115 · LA AYUDA DE LA OPCION, que hasta la v1.94.0 no se pintaba en
+    // ninguna demostracion. Es la prop \`ayuda\` de \`OpcionBusqueda\`, y sin una
+    // demo no habia promesa contra la que comparar: la hoja le daba 13px por
+    // una regla que no podia casar, y en todos los productos salia a 15,
+    // indistinguible del nombre. Aqui desambigua a dos apoderados que llevan
+    // al mismo grado, que es exactamente para lo que existe.
+    var AYUDA = ${JSON.stringify(AYUDA_APODERADOS)};
     var input = raizSel.querySelector('.sel-in');
     var lista = raizSel.querySelector('.sel-lista');
     var conteo = document.querySelector('[data-sel-conteo]');
@@ -13307,9 +13350,15 @@ ${COMPRESOR_PDF}
         lista.innerHTML = visibles.map(function (f, i) {
           var esta = f.tipo === 'opcion' && f.texto === elegido;
           var et = esta ? '<span class="sel-check">${ICO_CHECK.replace(/'/g, "\\'")}</span>' : '';
+          // R115 · el nombre y su ayuda dentro de UNA envoltura, y el visto
+          // detras. Con los tres sueltos, space-between mandaba el nombre al
+          // centro y la fila elegida se desalineaba de sus vecinas.
+          var ay = (f.tipo === 'opcion' && AYUDA[f.texto])
+            ? '<span class="sel-notas">' + AYUDA[f.texto] + '</span>' : '';
           return '<li role="option" id="sel-op-' + i + '" data-i="' + i +
             '" class="sel-op' + (i === 0 ? ' marcado' : '') + '"' +
-            (esta ? ' aria-selected="true"' : '') + '>' + f.texto + et + '</li>';
+            (esta ? ' aria-selected="true"' : '') + '>' +
+            '<span class="sel-op-txt">' + f.texto + ay + '</span>' + et + '</li>';
         }).join('');
       }
       conteo.textContent = q

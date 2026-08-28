@@ -126,7 +126,12 @@ describe('R103 · crear lo que no existe, sin salir del selector', () => {
     const { container } = pintar();
     await abrir(u);
     await u.keyboard('zzz');
-    expect(container.querySelector('.sel-vacio')!.textContent).toBe('No hay coincidencias');
+    // R115 · lo que fija esta prueba es que la fila sea un CARTEL y no una
+    // opción pulsable. El texto exacto dejó de estar aquí a propósito: desde
+    // R115 el vacío por omisión nombra lo que se buscó, y quien lo fija es la
+    // prueba R16 de `selector-busqueda-promesa`. Repetir la cadena en dos
+    // sitios convierte un cambio de copia en dos pruebas rojas sin motivo.
+    expect(container.querySelector('.sel-vacio')).not.toBeNull();
     expect(screen.queryAllByRole('option')).toHaveLength(0);
   });
 

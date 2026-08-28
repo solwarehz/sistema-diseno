@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 28 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.94.0** — la cabecera gana su acción
-secundaria, y el que estaba mal **no era el caso del producto: era el contrato
-del componente**, que se contradecía con la regla del propio sistema
+**Versión del sistema:** MMI-DS **v1.95.0** — el selector con búsqueda entrega
+por fin lo que el catálogo enseña, y **nace el candado que lo vio**: los quince
+anteriores estaban en verde con nueve divergencias delante
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -17,14 +17,12 @@ del componente**, que se contradecía con la regla del propio sistema
 
 ## Dónde estamos, en una frase
 
-El sistema es un **paquete que un producto instala y consume** —32 componentes
-publicados, la hoja que viaja, **catorce candados**, 499 pruebas— y sigue
-aprendiendo la misma lección por otro lado: los peores defectos no están en lo
-que el catálogo enseña mal, sino en **lo que ningún candado estaba mirando**.
-R86 es de ese tipo: la tabla declaraba una altura de fila de 34px desde la
-v1.0.0 y **entregaba un mínimo**, porque nadie comprobaba que la celda no
-partiera el texto. Se veía en cada producto y en el propio catálogo. Ahora lo
-mira el candado de la cascada, a los once anchos y en los cinco casos.
+El sistema es un **paquete que un producto instala y consume** —34 componentes
+publicados, la hoja que viaja, **dieciséis candados**, 573 pruebas— y hoy ha
+aprendido la lección más incómoda hasta ahora: **quince candados en verde y un
+producto viendo otra cosa**. Los quince miraban lo que el catálogo pinta **en
+reposo**, y el selector con búsqueda es el único componente cuya pieza principal
+—la lista— **solo existe cuando alguien la abre**. Ahí no llegaba ninguno.
 
 ---
 
@@ -36,16 +34,17 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 |---|---|---|
 | Motor de tokens | ✅ | `generar.mjs` — 56 semánticos + 5 de marca, claro y oscuro |
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
-| Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
+| Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **499 pruebas en 34 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
-| Catálogo navegable | ✅ | `cascaron/index.html` · **67 páginas** (contadas en el HTML generado; decía 53 y llevaba tiempo desfasado) · lo genera `generar-cascaron.mjs` |
-| Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.94.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Componentes de React | ✅ | **573 pruebas en 38 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · **943 reglas de 1448** · **692 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
+| Catálogo navegable | ✅ | `cascaron/index.html` · **68 páginas** (contadas en el HTML generado; decía 53 y llevaba tiempo desfasado) · lo genera `generar-cascaron.mjs` |
+| Iconografía | ✅ | **53 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.95.0.zip` · **56 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.94.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.95.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Promesa muerta | ✅ | `verificar-promesa-muerta` — candado **dieciséis**, nacido hoy · 135 unidades compuestas · **9 de deuda declarada**, 0 nuevas |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +65,81 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.94.0), con detalle
+### Lo de hoy (v1.95.0), con detalle
+
+**R115 · El selector con búsqueda: la promesa no era la entrega, en nueve
+puntos.** Lo reportó el equipo que lo usa en un sistema — *«tengo la v1.94 y es
+con los estilos de la entrega»*—. Tenían razón, y lo primero fue descartar la
+causa fácil: **md5 del ZIP publicado contra el repositorio**, idénticos byte a
+byte. No era su instalación.
+
+**Cinco se veían**, medidas en Chrome sobre la hoja que viaja:
+
+| | Catálogo | Producto |
+|---|---|---|
+| chevron al abrir | `rotate(180deg)` | **`none`** — no giraba nunca |
+| el visto ✓ | x = 306,4 px | **x = 8,0 px** — al otro lado |
+| nombre de la fila elegida | 8,0 px | **98,3 px** — desalineado de sus vecinas |
+| `.sel-notas` | 13 px secundario | **15 px** — sin estilo ninguno |
+| fila de «sin resultados» | 64,3 px, dos líneas | **44,15 px**, una línea gris |
+
+Dos de ellas eran **CSS muerto que viajaba en el paquete de todos los
+productos**: `.sel-caja.abierta` sin que nadie emitiera `abierta`, y
+`.sel-notas p` sobre un `<span>` sin ningún `<p>` dentro. Y esa segunda no era
+un descuido de marcado: **`.sel-notas` nombraba dos piezas distintas** —la ayuda
+de la opción y la columna de notas de la demostración—. La que se renombró fue
+**la de la demostración** (`sel-demo-notas`, que ya no viaja): el nombre público
+se queda donde estaba y **ningún producto tiene que tocar nada**.
+
+La del visto no la decidía el CSS —las dos hojas declaran lo mismo— sino **el
+orden de los hijos** bajo `justify-content: space-between`. Por eso el candado
+de la promesa no podría haberla visto ni dándole la lista abierta: resuelve la
+cascada sobre el **mismo** marcado.
+
+**Cuatro se tecleaban**, contra la tabla de teclado que el catálogo publica: ↑
+no abría la lista, las flechas topaban en vez de ciclar, Inicio y Fin no
+existían, y **Tab no elegía lo marcado** —`onCambio`, cero veces—, así que quien
+tecleaba, veía su coincidencia y tabulaba al siguiente campo **se llevaba el
+campo vacío**.
+
+**Lo que más importa no es ninguno de los nueve: es que los quince candados
+estaban en verde.** En el catálogo la lista del selector es un `<ul hidden>`
+**vacío** que llena su guión al abrirla, así que `.sel-op`, `.sel-check`,
+`.sel-vacio` y `.sel-caja.abierta` no existen en el marcado estático que el
+candado de la promesa lee, y ninguno de sus 50 estados fijados a mano es del
+selector. El de huérfanas no ve `.sel-caja.abierta` porque `.sel-caja` sí se usa
+—**la ceguera de prefijo, otra vez**, la misma de `.sel-op.activa`—. El de la
+omisión hace la pregunta contraria. Y **la tabla de teclado no estaba en
+`comportamiento.md`**, sino solo en el catálogo, así que el del contrato no
+podía leerla: *un contrato publicado donde ningún candado mira no es un
+contrato, es una intención*. Ahora está ahí, como ocho reglas Obligatorio.
+
+**Nace `verificar-promesa-muerta`, el candado dieciséis.** Su pregunta: toda
+regla de la hoja **que viaja** que exija dos clases sobre el **mismo** elemento,
+donde el componente emite la base y **nadie** emite el modificador. Se ata **por
+archivo** y no en un montón común, y esa fue la corrección que hizo falta nada
+más probarlo: `abierta` la emite `MarcoApp` en `.nav-rama.abierta`, así que un
+montón global **daba por viva `.sel-caja.abierta`** y el candado salía en verde
+delante del defecto que nació para cazar. Visto en rojo contra el código de
+ayer.
+
+**Y encontró un décimo defecto que nadie buscaba:** `Paginacion` no emitía
+`activa`, así que **la página en curso no se pintaba en ningún producto** — el
+lector se enteraba por `aria-current` y la vista no. Arreglado en la misma
+versión.
+
+**Lleva deuda declarada:** nueve promesas muertas más —`chip-punto`,
+`fc-activo`, `tb-detalle`…—, verificadas a mano con `grep` contra
+`componentes/src` y escritas con su daño real. El candado **falla también si una
+se arregla y no se poda**.
+
+**Queda declarado y sin resolver:** el candado del contrato empareja la regla
+con su prueba por **número global** —`R9` en cualquier prueba respalda la regla
+9 de cualquier sección—, así que las ocho reglas nuevas del selector están
+**débilmente atadas** ahí. Quien las sostiene de verdad son sus diecisiete
+pruebas y el candado nuevo. Arreglarlo pide numerar por sección.
+
+### Lo de ayer (v1.94.0), con detalle
 
 **R114 · La acción secundaria de la cabecera.** Control Administrativos la pidió
 para Trabajadores —«Agregar» principal y «Carga masiva» secundaria— y con una
@@ -88,7 +161,7 @@ en línea para imitar el `h1` que emite el componente —hay un solo `h1` por
 documento—, así que `.pant-cab h1` **viaja sin que ninguna pantalla la
 demuestre**. Es R58 con una razón legítima detrás, y no lo ve ningún candado.
 
-### Lo de ayer (v1.93.0), con detalle
+### Lo de anteayer (v1.93.0), con detalle
 
 **R113 · El color de los iconos de redes.** Se pidió pintarlos con los colores
 de marca. Se midió antes de tocar nada, y la medida cambió la pregunta: **de los

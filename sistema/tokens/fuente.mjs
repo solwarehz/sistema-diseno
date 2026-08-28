@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.94.0";
+export const VERSION = "1.95.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,56 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.95.0', fecha: '2026-08-28',
+    que: 'R115: el selector con busqueda entrega por fin lo que el catalogo ensena — y nace el candado que lo vio',
+    porque:
+      'Lo reporto el equipo que lo usa en un sistema: con la v1.94.0 instalada, lo que veian no '
+      + 'era lo que ensena el catalogo. Tenian razon en NUEVE puntos, y md5 contra el ZIP '
+      + 'publicado descarto la causa facil: lo que tenian era byte a byte lo que se midio. '
+      + 'CINCO SE VEIAN, medidos en Chrome sobre la hoja QUE VIAJA. El chevron no giraba nunca '
+      + '—la hoja trae `.sel-caja.abierta` y el componente jamas emitia `abierta`, asi que esa '
+      + 'regla viajaba en el paquete de todos los productos sin que ninguno pudiera activarla—. '
+      + 'El visto de la opcion elegida salia en el lado contrario: 8,0px contra los 306,4 de la '
+      + 'demostracion, y no lo decidia el CSS —las dos hojas declaran lo mismo— sino el ORDEN de '
+      + 'los hijos bajo `justify-content: space-between`. Con `ayuda` puesta, la opcion tenia '
+      + 'TRES hijos flex y el nombre se iba al centro: la fila elegida arrancaba en 98,3px y sus '
+      + 'vecinas en 8, y la lista salia escalonada. La ayuda no recibia NINGUN estilo —15px, el '
+      + 'mismo cuerpo que el nombre— porque `.sel-notas` estaba nombrando dos piezas distintas: '
+      + 'la ayuda de la opcion y la columna de notas de la demostracion. Y la fila de «sin '
+      + 'resultados» entregaba 44,15px de una linea gris contra los 64,3 de dos, con un texto por '
+      + 'omision —«No hay coincidencias»— que es literalmente el patron que el catalogo ensena '
+      + 'como el EJEMPLO MALO, con su etiqueta roja al lado. '
+      + 'CUATRO SE TECLEABAN, contra la tabla de teclado que el catalogo publica: Arriba no abria '
+      + 'la lista, las flechas topaban en vez de ciclar, Inicio y Fin no existian, y Tab no '
+      + 'elegia lo marcado —`onCambio`, cero veces—, asi que quien tecleaba, veia su coincidencia '
+      + 'y tabulaba al siguiente campo SE LLEVABA EL CAMPO VACIO. '
+      + 'LO QUE MAS IMPORTA NO ES NINGUNO DE LOS NUEVE: es que los QUINCE candados estaban en '
+      + 'verde. En el catalogo la lista del selector es un `<ul hidden>` VACIO que llena su guion '
+      + 'al abrirla, asi que `.sel-op`, `.sel-check`, `.sel-vacio` y `.sel-caja.abierta` no '
+      + 'existen en el marcado estatico que el candado de la promesa lee, y ninguno de sus 50 '
+      + 'estados fijados a mano es del selector. El de huerfanas no ve `.sel-caja.abierta` porque '
+      + '`.sel-caja` si se usa —la ceguera de prefijo, otra vez—. El de la omision hace la '
+      + 'pregunta contraria. Y la tabla de teclado no estaba en `comportamiento.md`, asi que el '
+      + 'del contrato no podia leerla: un contrato publicado donde ningun candado mira no es un '
+      + 'contrato, es una intencion. Los quince miran lo que el catalogo pinta EN REPOSO, y este '
+      + 'es el unico componente cuya pieza principal solo existe cuando alguien la abre. '
+      + 'NACE `verificar-promesa-muerta`, el candado dieciseis: toda regla de la hoja que viaja '
+      + 'que exija dos clases sobre el MISMO elemento, donde el componente emite la base y NADIE '
+      + 'emite el modificador. Se ata POR ARCHIVO y no en un monton comun, que fue la correccion '
+      + 'que hizo falta nada mas probarlo: `abierta` la emite MarcoApp en `.nav-rama.abierta`, '
+      + 'asi que un monton global daba por viva `.sel-caja.abierta` y el candado salia en verde '
+      + 'delante del defecto que nacio para cazar. Se vio en rojo contra el codigo de ayer. '
+      + 'Y ENCONTRO UN DECIMO DEFECTO QUE NADIE BUSCABA: `Paginacion` no emitia `activa`, asi que '
+      + 'la pagina en curso NO SE PINTABA en ningun producto —el lector se enteraba por '
+      + '`aria-current` y la vista no—. Va arreglado en la misma version. '
+      + 'Lleva DEUDA DECLARADA: nueve promesas muertas mas, verificadas a mano con su dano real, '
+      + 'y el candado falla tambien si una se arregla y no se poda. '
+      + 'Ninguna clase publica cambia de nombre: la que se renombro es `.sel-notas` de la '
+      + 'DEMOSTRACION, que pasa a `sel-demo-notas` y deja de viajar. Los productos no tocan nada.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.94.0', fecha: '2026-08-28',
     que: 'R114: la cabecera gana su accion secundaria, y el que estaba mal era el contrato',

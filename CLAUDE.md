@@ -19,8 +19,9 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.94.0** — R114: la cabecera gana su acción secundaria, y el
-que estaba mal no era el caso del producto: era el contrato del componente.
+**Estado actual: v1.95.0** — R115: el selector con búsqueda entrega por fin lo
+que el catálogo enseña, y nace el candado que lo vio — los quince anteriores
+estaban en verde con nueve divergencias delante.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
@@ -189,7 +190,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
 - **`main` sí se actualiza en este proyecto** —y solo en este—, pero **únicamente
   cuando está verificado y sin errores**. La condición no es una formalidad: es
   lo que hace que la regla sea segura, porque `main` es de donde instala el área
-  de sistemas. Antes de subir, los **quince** candados **en verde** y las pruebas
+  de sistemas. Antes de subir, los **dieciséis** candados **en verde** y las pruebas
   pasando:
 
   ```bash
@@ -208,12 +209,41 @@ No las «mejores» por iniciativa propia. Están razonadas:
   node sistema/candado/verificar-forma.mjs    # lo publicado no cambia de FORMA sin decirlo
   node sistema/candado/verificar-omision.mjs  # el catálogo enseña lo que se ENTREGA por omisión
   node sistema/candado/verificar-iconos.mjs   # el catálogo y el producto dibujan el MISMO icono
+  node sistema/candado/verificar-promesa-muerta.mjs # lo que VIAJA lo puede activar alguien
   ```
 
   Los dos últimos faltaban de esta lista y **la memoria los contaba entre los
   ocho**: el 2026-08-10 pasaron un día entero sin correrse por eso, y al
   correrlos salieron en rojo los dos. Una lista incompleta de candados es un
   candado abierto.
+
+  El de la **promesa muerta** es el último, y el que enseña que quince no eran
+  suficientes. El 2026-08-28 el equipo que usa el sistema reportó que el
+  selector con búsqueda no se veía como el catálogo: tenían razón en **nueve**
+  puntos, y **los quince estaban en verde**. Dos de los nueve eran reglas que
+  viajaban en el paquete de todos los productos y que **ningún producto podía
+  activar** —`.sel-caja.abierta`, con el componente sin emitir nunca `abierta`—.
+
+  Ninguno de los otros podía verlo. El de huérfanas mira solo el **primer**
+  nombre del selector, así que `.sel-caja.abierta` no le parece huérfana porque
+  `.sel-caja` sí se usa: la ceguera de prefijo, la misma que dejó pasar
+  `.sel-op.activa`. El de la omisión hace la pregunta **contraria** —«¿el
+  catálogo enseña la base sin el modificador?»— y nadie hacía esta. Y el de la
+  promesa barre el marcado **estático** del catálogo, donde la lista del
+  selector es un `<ul hidden>` vacío que llena su guión: no había nada que
+  comparar.
+
+  Se ata **por archivo** y no en un montón común de clases. Fue la corrección
+  que hizo falta nada más probarlo: `abierta` la emite `MarcoApp` en
+  `.nav-rama.abierta`, así que con un montón global **el candado daba por viva
+  la clase y salía en verde delante del defecto que nació para cazar**. La
+  pregunta correcta no es «¿alguien emite esta clase?», es «¿alguien emite las
+  dos **juntas**?».
+
+  Y nada más escribirlo encontró un defecto que nadie buscaba: `Paginacion` no
+  emitía `activa`, así que **la página en curso no se pintaba en ningún
+  producto**. Lleva **deuda declarada** —nueve más, con su daño real— y falla
+  también si una se arregla y no se poda.
 
   El de la cascada es el único que no lee lo que hay, sino lo que **falta**: el
   defecto R25 —dos iconos pintados a la vez— vivía en la ausencia de una regla,

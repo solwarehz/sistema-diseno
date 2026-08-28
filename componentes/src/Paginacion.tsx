@@ -76,8 +76,16 @@ export function Paginacion({
             <button
               type="button"
               key={n}
-              className="pgn-btn"
-              // La página en curso se anuncia como tal, no solo se pinta.
+              /* R115 · `activa` FALTABA, y con ella la página en curso no se
+                 pintaba en ningún producto: la hoja solo colorea
+                 `.pgn-btn.activa` y aquí solo iba `aria-current`. El lector se
+                 enteraba y la vista no — que es al revés de lo que suele
+                 pasar, y no menos grave: quien mira la paginación no sabía en
+                 qué página estaba. Lo encontró `verificar-promesa-muerta` el
+                 día que se escribió, buscando el defecto del selector.
+                 El catálogo la emite desde siempre: `class="pgn-btn activa"`. */
+              className={['pgn-btn', n === pagina ? 'activa' : ''].filter(Boolean).join(' ')}
+              // La página en curso se anuncia como tal, además de pintarse.
               aria-current={n === pagina ? 'page' : undefined}
               onClick={() => onPagina(n)}
             >

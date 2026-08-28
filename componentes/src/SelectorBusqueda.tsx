@@ -18,6 +18,7 @@
  */
 
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import { Icono } from './Icono';
 
 export type OpcionBusqueda = { valor: string; texto: string; ayuda?: string };
@@ -49,9 +50,20 @@ export type SelectorBusquedaProps = {
   conLupa?: boolean;
   ayuda?: string;
   error?: string;
-  /** Qué decir cuando no hay coincidencias. Un «Sin resultados» seco no dice
-   *  si el problema es lo escrito o que no existe. */
-  textoVacio?: string;
+  /**
+   * R115 · QUÉ DECIR CUANDO NO HAY COINCIDENCIAS — y recibe **lo tecleado**.
+   *
+   * Hasta la v1.94.0 era una cadena, y su valor por omisión era «No hay
+   * coincidencias»: exactamente el patrón que el catálogo enseña **como el
+   * ejemplo malo** —*«No hay datos — callejón: ni dice qué se buscó ni qué
+   * hacer»*—. La demostración entregaba dos líneas, 64,3 px y un titular en
+   * negrita; el componente entregaba una línea gris de 44,15 px.
+   *
+   * Sigue admitiendo una cadena, así que **nadie tiene que cambiar nada**. Con
+   * una función recibe lo tecleado y puede decir qué se buscó, que es lo que
+   * convierte un callejón en una salida.
+   */
+  textoVacio?: ReactNode | ((texto: string) => ReactNode);
   deshabilitado?: boolean;
   /**
    * R103 · CÓMO SE VUELVE A «SIN ELEGIR». Texto de la opción de vaciar, igual
@@ -119,7 +131,10 @@ export function SelectorBusqueda({
   placeholder = 'Escribe para buscar',
   ayuda,
   error,
-  textoVacio = 'No hay coincidencias',
+  textoVacio = (t: string) =>
+    t
+      ? (<><strong>Sin resultados para «{t}».</strong><br />Prueba con menos letras.</>)
+      : 'No hay coincidencias',
   deshabilitado = false,
   conLupa = false,
   vacio,
@@ -163,6 +178,11 @@ export function SelectorBusqueda({
   /** Sin coincidencias y con `onCrear`, la fila vacía deja de ser un cartel. */
   const puedeCrear = !!onCrear && filas.length === 0 && !!texto.trim();
 
+  /** R115 · el texto del vacío admite cadena o función de lo tecleado. Se
+   *  resuelve aquí para que el marcado no tenga que saber cuál de las dos es. */
+  const vacioMostrado =
+    typeof textoVacio === 'function' ? textoVacio(texto.trim()) : textoVacio;
+
   // El índice activo no puede quedarse fuera de una lista que encogió.
   useEffect(() => { setActivo(0); }, [texto, abierto]);
 
@@ -176,21 +196,36 @@ export function SelectorBusqueda({
     return () => document.removeEventListener('mousedown', fuera);
   }, [abierto]);
 
-  /** Cerrar dejando el foco donde estaba. Lo comparten elegir y vaciar. */
-  function cerrarTras(nuevo: string | null) {
+  /**
+   * Cerrar dejando el foco donde estaba. Lo comparten elegir y vaciar.
+   *
+   * R115 · `devolverFoco` existe por **Tab**. El catálogo publica que salir del
+   * campo con una opción marcada la elige, y con el foco devuelto a la fuerza
+   * el Tab quedaba anulado: se elegía y el foco volvía al mismo campo del que
+   * la persona estaba saliendo. Al elegir con ratón o con Enter sí se devuelve,
+   * porque ahí nadie ha pedido irse.
+   */
+  function cerrarTras(nuevo: string | null, devolverFoco = true) {
     onCambio(nuevo);
     setAbierto(false);
     setTexto('');
-    campo.current?.focus();
+    if (devolverFoco) campo.current?.focus();
   }
 
-  function elegir(o: OpcionBusqueda) {
-    cerrarTras(o.valor);
+  function elegir(o: OpcionBusqueda, devolverFoco = true) {
+    cerrarTras(o.valor, devolverFoco);
   }
 
   /** R103 · el camino que la firma prometía y no existía. */
-  function vaciarEleccion() {
-    cerrarTras(null);
+  function vaciarEleccion(devolverFoco = true) {
+    cerrarTras(null, devolverFoco);
+  }
+
+  /** R115 · una fila cualquiera de la lista, elegida por el mismo camino sea
+   *  cual sea su tipo. Lo comparten Enter y Tab. */
+  function elegirFila(f: (typeof filas)[number], devolverFoco = true) {
+    if (f.tipo === 'vaciar') vaciarEleccion(devolverFoco);
+    else elegir(f.o, devolverFoco);
   }
 
   function crear() {
@@ -203,17 +238,30 @@ export function SelectorBusqueda({
   }
 
   function alTeclado(e: React.KeyboardEvent<HTMLInputElement>) {
-    // Abajo abre la lista además de moverse: si solo moviera, con la lista
-    // cerrada la tecla no haría nada y parecería que el control está muerto.
-    if (e.key === 'ArrowDown') {
+    /**
+     * R115 · LAS DOS FLECHAS ABREN, Y LAS DOS CICLAN.
+     *
+     * Abrir con la tecla ya lo hacía Abajo —si solo moviera, con la lista
+     * cerrada no pasaría nada y el control parecería muerto—, pero **Arriba
+     * no**: era la misma tecla muerta, solo que en la otra dirección. El
+     * catálogo publica las dos juntas en su tabla de teclado y las dos abren.
+     *
+     * Y ciclan, que es lo que el catálogo demuestra desde siempre. Topar en el
+     * extremo obliga a recorrer la lista entera para llegar a la última, y en
+     * un selector con búsqueda la última suele estar a una tecla de la primera.
+     */
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       e.preventDefault();
       if (!abierto) { setAbierto(true); return; }
-      setActivo((i) => Math.min(i + 1, filas.length - 1));
+      if (!filas.length) return;
+      const abajo = e.key === 'ArrowDown';
+      setActivo((i) => (abajo ? i + 1 : i - 1 + filas.length) % filas.length);
       return;
     }
-    if (e.key === 'ArrowUp') {
+    /** R115 · Inicio y Fin. Estaban en la tabla del catálogo y no existían. */
+    if ((e.key === 'Home' || e.key === 'End') && abierto && filas.length) {
       e.preventDefault();
-      setActivo((i) => Math.max(i - 1, 0));
+      setActivo(e.key === 'Home' ? 0 : filas.length - 1);
       return;
     }
     if (e.key === 'Enter' && abierto) {
@@ -223,8 +271,7 @@ export function SelectorBusqueda({
       if (puedeCrear) { crear(); return; }
       const f = filas[activo];
       if (!f) return;
-      if (f.tipo === 'vaciar') vaciarEleccion();
-      else elegir(f.o);
+      elegirFila(f);
       return;
     }
     /**
@@ -247,7 +294,20 @@ export function SelectorBusqueda({
       if (abierto) { e.preventDefault(); e.stopPropagation(); setAbierto(false); }
       return;
     }
-    if (e.key === 'Tab' && abierto) setAbierto(false);
+    /**
+     * R115 · TAB ELIGE LO MARCADO. Lo publica el catálogo —«sale del campo; si
+     * había una marcada, la elige»— y el componente solo cerraba: `onCambio` no
+     * se llamaba ni una vez. Quien teclea, ve su coincidencia marcada y tabula
+     * al siguiente campo, **se llevaba el campo vacío**.
+     *
+     * NO dispara «crear»: salir de un campo no es pedir un alta, y por eso sin
+     * filas esto solo cierra. Y no se devuelve el foco: la persona se va.
+     */
+    if (e.key === 'Tab' && abierto) {
+      const f = filas[activo];
+      if (f) { elegirFila(f, false); return; }
+      setAbierto(false);
+    }
   }
 
   const idLista = `${id}-lista`;
@@ -270,7 +330,14 @@ export function SelectorBusqueda({
           El catálogo sí la emite; al portar el componente se perdió.
           Lo encontró Control Administrativos V2.0, con las coordenadas medidas. */}
       <div className="sel">
-        <div className={['sel-caja', conLupa ? 'sel-con-lupa' : ''].filter(Boolean).join(' ')}>
+        {/* R115 · `abierta` faltaba, y con ella la hoja no podía girar el
+            chevron: `.sel-caja.abierta .sel-chev .ic` viajaba en el paquete y
+            NINGÚN producto podía activarla. Medido: el catálogo respondía
+            `matrix(-1,0,0,-1,0,0)` y el componente `none`. Es la misma familia
+            que `.sel-op.activa` de la v1.83.0 — una clase que la hoja estiliza
+            y el React no emite jamás. */}
+        <div className={['sel-caja', conLupa ? 'sel-con-lupa' : '', abierto ? 'abierta' : '']
+          .filter(Boolean).join(' ')}>
         {/* El chevron dice «esto se despliega» y va siempre — es lo que iguala
             este control con el `Selector`. La lupa dice «aquí se busca» y solo
             va cuando `conLupa`: en un formulario, su sangrado de 32 px sacaba
@@ -311,10 +378,10 @@ export function SelectorBusqueda({
               aria-selected={false}
               onMouseDown={(e) => { e.preventDefault(); crear(); }}
             >
-              {textoCrear(texto.trim())}
+              <span className="sel-op-txt">{textoCrear(texto.trim())}</span>
             </li>
           ) : (
-            <li className="sel-vacio">{textoVacio}</li>
+            <li className="sel-vacio">{vacioMostrado}</li>
           )
         ) : (
           filas.map((f, i) => f.tipo === 'vaciar' ? (
@@ -331,7 +398,7 @@ export function SelectorBusqueda({
               onMouseDown={(e) => { e.preventDefault(); vaciarEleccion(); }}
               onMouseEnter={() => setActivo(i)}
             >
-              {vacio}
+              <span className="sel-op-txt">{vacio}</span>
             </li>
           ) : (
             <li
@@ -349,13 +416,26 @@ export function SelectorBusqueda({
               onMouseDown={(e) => { e.preventDefault(); elegir(f.o); }}
               onMouseEnter={() => setActivo(i)}
             >
-              {/* El visto en la elegida: aria-selected ya lo dice al lector;
-                  esto se lo dice a la vista, que no lee atributos. */}
+              {/* R115 · EL NOMBRE Y SU AYUDA, DENTRO DE UNA ENVOLTURA.
+                  `.sel-op` reparte con `space-between`: con el visto, el nombre
+                  y la ayuda sueltos eran TRES hijos y el del medio —el nombre—
+                  se iba al centro. Medido: la fila elegida empezaba su texto en
+                  98,3 px y sus vecinas en 8. Con la envoltura vuelven a ser dos
+                  y la lista deja de salir escalonada. */}
+              <span className="sel-op-txt">
+                {f.o.texto}
+                {f.o.ayuda && <span className="sel-notas">{f.o.ayuda}</span>}
+              </span>
+              {/* R115 · el visto va DETRÁS, que es donde lo pone el catálogo.
+                  Delante lo mandaba al borde izquierdo: 8 px contra los 306,4
+                  de la demostración, 298,4 px de diferencia en la misma lista.
+                  No lo decidía el CSS —las dos hojas declaran lo mismo—, lo
+                  decidía el orden de los hijos.
+                  `aria-selected` ya se lo dice al lector; esto se lo dice a la
+                  vista, que no lee atributos. */}
               {f.o.valor === valor && (
                 <span className="sel-check"><Icono nombre="visto" /></span>
               )}
-              {f.o.texto}
-              {f.o.ayuda && <span className="sel-notas">{f.o.ayuda}</span>}
             </li>
           ))
           )}

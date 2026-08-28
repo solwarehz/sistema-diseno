@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.94.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.95.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -403,12 +403,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
   padding: 8px 8px; border-radius: 6px; font-size: 15px; cursor: pointer; }
 .sel-op.marcado{ background: var(--fondo-fila-hover); }
 .sel-op[aria-selected="true"]{ color: var(--accion); font-weight: 500; }
+.sel-op-txt{ display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.sel-notas{ font-size: 13px; color: var(--texto-secundario); font-weight: 400; flex: none; }
 .sel-check{ color: var(--accion); display: grid; place-items: center; }
 .sel-check .ic{ width: 16px; height: 16px; }
 .sel-vacio{ padding: 12px 12px; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .sel-vacio strong{ color: var(--texto-principal); }
-.sel-notas p{ margin: 0 0 8px; font-size: 13px; line-height: 1.6; color: var(--texto-secundario); }
-.sel-notas strong{ color: var(--texto-principal); }
 
 /* ───────────────────────────────────────────────────────────────────────────
    INTERRUPTOR — 19 reglas · clases .sw-*

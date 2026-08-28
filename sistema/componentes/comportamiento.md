@@ -231,6 +231,24 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 | **7** | **Obligatorio.** (R103, v1.79.0) **Con `onCrear`, la fila de «no hay coincidencias» deja de ser un cartel y pasa a ser el camino**: recibe **lo tecleado** y se activa con el ratón y con **Enter** —sin lista no hay opción activa que Enter pudiera elegir, así que ahí esa tecla está libre—. **Tab no lo dispara**: salir de un campo no es pedir un alta. El componente **no crea nada** y **no elige ni limpia** al pulsarlo: el alta es del producto y puede tardar o cancelarse, y cerrar dando por hecho un registro que quizá no ocurre dejaría el campo en blanco a quien vuelve de cancelar. |
 | **8** | Del proyecto: si hace falta decir que se puede escribir, se dice en el **`placeholder`** — es texto y no roba sangrado. Y qué significa el estado vacío: «Todos», «Sin asignar» y «Cualquiera» no dicen lo mismo, y por eso `vacio` pide el texto en vez de ser un booleano. |
 
+#### El teclado — y por qué esta tabla vive AQUÍ
+
+Hasta la v1.94.0 esta tabla existía **solo en el catálogo**, y por eso cuatro de
+sus siete filas llevaban tiempo sin cumplirse sin que nada lo notara: el candado
+del contrato lee este documento, no el catálogo. Un contrato publicado donde
+ningún candado mira no es un contrato, es una intención.
+
+| | Regla |
+|---|---|
+| **9** | **Obligatorio.** (R115, v1.95.0) **Abajo y Arriba abren la lista si está cerrada**, las dos. Abajo ya lo hacía; **Arriba no**, y era la misma tecla muerta en la otra dirección: se pulsaba y no pasaba nada, que es como se ve un control roto. |
+| **10** | **Obligatorio.** (R115, v1.95.0) **Las dos flechas ciclan**: de la última a la primera y al revés. Topar en el extremo obliga a recorrer la lista entera para llegar a la última, y en una lista filtrada la última suele estar a una tecla de la primera. Es lo que el catálogo demuestra desde el principio. |
+| **11** | **Obligatorio.** (R115, v1.95.0) **Inicio y Fin llevan a la primera y a la última.** Estaban publicadas y **no existían**. |
+| **12** | **Obligatorio.** (R115, v1.95.0) **Tab elige lo marcado y NO devuelve el foco.** El catálogo lo publica —«sale del campo; si había una marcada, la elige»— y el componente solo cerraba: `onCambio` no se llamaba ni una vez, así que quien tecleaba, veía su coincidencia marcada y tabulaba al siguiente campo **se llevaba el campo vacío**. Devolver el foco lo anularía igual: se elegiría y el cursor volvería al campo del que la persona está saliendo. **Tab no dispara `onCrear`**: salir de un campo no es pedir un alta. |
+| **13** | **Obligatorio.** (R115, v1.95.0) **Escape cierra la lista, no el diálogo**, y devuelve el valor anterior sin vaciar la elección. Ya se cumplía; se escribe porque estaba publicado en el mismo sitio sin candado. |
+| **14** | **Obligatorio.** (R115, v1.95.0) **El visto de la opción elegida va DETRÁS del texto**, y el nombre y su `ayuda` van dentro de una envoltura `.sel-op-txt`. No es cosmética: `.sel-op` reparte con `space-between`, así que el orden decide el lado. Con el visto delante salía a 8 px en vez de a 306,4, y con el nombre y la ayuda sueltos el nombre de la fila elegida se iba al centro —98,3 px contra los 8 de sus vecinas— y la lista salía escalonada. |
+| **15** | **Obligatorio.** (R115, v1.95.0) **Mientras la lista está abierta, `.sel-caja` lleva la clase `abierta`.** La hoja gira el chevron con ella, y sin emitirla esa regla viajaba en el paquete sin que ningún producto pudiera activarla: el control perdía su única señal visual de estar desplegado. Misma familia que `.sel-op.activa` de la v1.83.0. |
+| **16** | **Obligatorio.** (R115, v1.95.0) **`textoVacio` recibe lo tecleado.** Admite cadena —nadie tiene que cambiar nada— o función, y **por omisión dice qué se buscó**: hasta aquí entregaba «No hay coincidencias», que es literalmente el patrón que el catálogo enseña como el ejemplo malo, con su etiqueta roja y todo. |
+
 
 ## Fila de carga
 

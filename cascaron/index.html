@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.94.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.95.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.94.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.95.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -2417,13 +2417,29 @@ input.campo.sel-in { width: 100%; padding-right: 32px; }
   padding: 8px 8px; border-radius: 6px; font-size: 15px; cursor: pointer; }
 .sel-op.marcado { background: var(--fondo-fila-hover); }
 .sel-op[aria-selected="true"] { color: var(--accion); font-weight: 500; }
+/* R115 · EL NOMBRE Y SU AYUDA VIAJAN JUNTOS, y por eso hay envoltura.
+   `.sel-op` reparte con space-between: con el nombre suelto y una ayuda al
+   lado eran TRES hijos, y el del medio —el nombre— se iba al centro. Medido:
+   la fila elegida empezaba su texto en 98,3px y sus vecinas en 8. Con la
+   envoltura vuelven a ser dos: el bloque de texto a la izquierda y el visto a
+   la derecha, que es lo que este catalogo ensenaba desde el principio. */
+.sel-op-txt { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+/* R115 · LA AYUDA DE LA OPCION, que hasta la v1.94.0 no tenia ninguna regla.
+   La hoja traia `.sel-notas p`, y el componente emite `<span class="sel-notas">`
+   con el texto dentro y sin ningun <p>: la regla no podia casar NUNCA y la
+   ayuda salia a 15px, del mismo cuerpo que el nombre. Y no era un descuido de
+   marcado: `.sel-notas` estaba nombrando DOS piezas distintas —la ayuda de la
+   opcion y la columna de notas de esta demostracion—. La demostracion pasa a
+   llamarse `sel-demo-notas`, que es mobiliario y no viaja; el nombre publico
+   se queda donde estaba, asi que ningun producto tiene que cambiar nada. */
+.sel-notas { font-size: 13px; color: var(--texto-secundario); font-weight: 400; flex: none; }
 .sel-check { color: var(--accion); display: grid; place-items: center; }
 .sel-check .ic { width: 16px; height: 16px; }
 .sel-vacio { padding: 12px 12px; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .sel-vacio strong { color: var(--texto-principal); }
 .sel-demo-fila { display: grid; grid-template-columns: minmax(260px,360px) 1fr; gap: 28px; align-items: start; }
-.sel-notas p { margin: 0 0 8px; font-size: 13px; line-height: 1.6; color: var(--texto-secundario); }
-.sel-notas strong { color: var(--texto-principal); }
+.sel-demo-notas p { margin: 0 0 8px; font-size: 13px; line-height: 1.6; color: var(--texto-secundario); }
+.sel-demo-notas strong { color: var(--texto-principal); }
 @media (max-width: 760px) { .sel-demo-fila { grid-template-columns: 1fr; } }
 
 /* Campo de texto */
@@ -4345,7 +4361,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.94.0</option></select></label>
+          <select class="campo cg-in"><option>v1.95.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4433,8 +4449,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.94.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.94.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.95.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.95.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -7876,7 +7892,7 @@ reportó Control Administrativos V2.0.</div>
       </div>
       <span class="cg-ayuda" data-sel-conteo>18 apoderados</span>
     </div>
-    <div class="sel-notas">
+    <div class="sel-demo-notas">
       <p><strong>La búsqueda ignora tildes y mayúsculas.</strong> <code>perez</code> encuentra «Pérez Salazar, Ana».</p>
       <p>Eso no es un detalle de la caja de búsqueda: en producción lo hacen las
       extensiones <code>unaccent</code> y <code>pg_trgm</code> de PostgreSQL.
@@ -15281,6 +15297,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
 
 
+<h3 class="sub-seccion">v1.95.0 <span class="cam-fecha">2026-08-28</span></h3>
+<p class="pag-intro"><strong>R115: el selector con busqueda entrega por fin lo que el catalogo ensena — y nace el candado que lo vio.</strong> Lo reporto el equipo que lo usa en un sistema: con la v1.94.0 instalada, lo que veian no era lo que ensena el catalogo. Tenian razon en NUEVE puntos, y md5 contra el ZIP publicado descarto la causa facil: lo que tenian era byte a byte lo que se midio. CINCO SE VEIAN, medidos en Chrome sobre la hoja QUE VIAJA. El chevron no giraba nunca —la hoja trae `.sel-caja.abierta` y el componente jamas emitia `abierta`, asi que esa regla viajaba en el paquete de todos los productos sin que ninguno pudiera activarla—. El visto de la opcion elegida salia en el lado contrario: 8,0px contra los 306,4 de la demostracion, y no lo decidia el CSS —las dos hojas declaran lo mismo— sino el ORDEN de los hijos bajo `justify-content: space-between`. Con `ayuda` puesta, la opcion tenia TRES hijos flex y el nombre se iba al centro: la fila elegida arrancaba en 98,3px y sus vecinas en 8, y la lista salia escalonada. La ayuda no recibia NINGUN estilo —15px, el mismo cuerpo que el nombre— porque `.sel-notas` estaba nombrando dos piezas distintas: la ayuda de la opcion y la columna de notas de la demostracion. Y la fila de «sin resultados» entregaba 44,15px de una linea gris contra los 64,3 de dos, con un texto por omision —«No hay coincidencias»— que es literalmente el patron que el catalogo ensena como el EJEMPLO MALO, con su etiqueta roja al lado. CUATRO SE TECLEABAN, contra la tabla de teclado que el catalogo publica: Arriba no abria la lista, las flechas topaban en vez de ciclar, Inicio y Fin no existian, y Tab no elegia lo marcado —`onCambio`, cero veces—, asi que quien tecleaba, veia su coincidencia y tabulaba al siguiente campo SE LLEVABA EL CAMPO VACIO. LO QUE MAS IMPORTA NO ES NINGUNO DE LOS NUEVE: es que los QUINCE candados estaban en verde. En el catalogo la lista del selector es un `<ul hidden>` VACIO que llena su guion al abrirla, asi que `.sel-op`, `.sel-check`, `.sel-vacio` y `.sel-caja.abierta` no existen en el marcado estatico que el candado de la promesa lee, y ninguno de sus 50 estados fijados a mano es del selector. El de huerfanas no ve `.sel-caja.abierta` porque `.sel-caja` si se usa —la ceguera de prefijo, otra vez—. El de la omision hace la pregunta contraria. Y la tabla de teclado no estaba en `comportamiento.md`, asi que el del contrato no podia leerla: un contrato publicado donde ningun candado mira no es un contrato, es una intencion. Los quince miran lo que el catalogo pinta EN REPOSO, y este es el unico componente cuya pieza principal solo existe cuando alguien la abre. NACE `verificar-promesa-muerta`, el candado dieciseis: toda regla de la hoja que viaja que exija dos clases sobre el MISMO elemento, donde el componente emite la base y NADIE emite el modificador. Se ata POR ARCHIVO y no en un monton comun, que fue la correccion que hizo falta nada mas probarlo: `abierta` la emite MarcoApp en `.nav-rama.abierta`, asi que un monton global daba por viva `.sel-caja.abierta` y el candado salia en verde delante del defecto que nacio para cazar. Se vio en rojo contra el codigo de ayer. Y ENCONTRO UN DECIMO DEFECTO QUE NADIE BUSCABA: `Paginacion` no emitia `activa`, asi que la pagina en curso NO SE PINTABA en ningun producto —el lector se enteraba por `aria-current` y la vista no—. Va arreglado en la misma version. Lleva DEUDA DECLARADA: nueve promesas muertas mas, verificadas a mano con su dano real, y el candado falla tambien si una se arregla y no se poda. Ninguna clase publica cambia de nombre: la que se renombro es `.sel-notas` de la DEMOSTRACION, que pasa a `sel-demo-notas` y deja de viajar. Los productos no tocan nada.</p>
+
+
+
 <h3 class="sub-seccion">v1.94.0 <span class="cam-fecha">2026-08-28</span></h3>
 <p class="pag-intro"><strong>R114: la cabecera gana su accion secundaria, y el que estaba mal era el contrato.</strong> Requerimiento de Control Administrativos, medido sobre el paquete instalado y con las lineas citadas: una ranura para la accion secundaria en CabeceraPantalla. El caso es Trabajadores —«Agregar» principal y «Carga masiva» secundaria— y venia con una pregunta honesta: si dos acciones en la cabecera esta mal, digannos donde va la segunda, porque el hueco lo hemos buscado y no lo hay. LA RESPUESTA ES QUE NO ESTABA MAL EL CASO: ESTABA MAL EL CONTRATO. La documentacion del componente decia «una sola: si hay dos, ninguna es la principal», y la regla del sistema —la de la pagina de Acciones, escrita antes— dice otra cosa: «una sola PRINCIPAL por pantalla; el resto son secundarias o neutras». El contrato de la cabecera habia estrechado «una principal» hasta convertirla en «una accion», y el producto llevaba razon sin saber que el sistema ya se contradecia consigo mismo. La regla de una sola principal NO cambia: sigue habiendo una. Y TRAIAN UN DEFECTO MEDIDO: la unica regla de `.pant-accion` era el `width: 100%` del movil, o sea que no tenia ni `display` ni `gap`. Dos botones dentro salian PEGADOS, sin un pixel entre ellos. Ahora la ranura los separa con los 8px del sistema y en estrecho se REPARTEN el ancho en vez de amontonarse a la izquierda. La secundaria va a la IZQUIERDA de la principal por dos motivos que no son de gusto: la principal queda pegada al borde y al pulgar —lo que mas se usa, mas a mano— y asi el tabulador llega a la secundaria antes que a la principal, que es el orden en el que se leen. Las dos van en UN solo contenedor: dos las habria separado el `space-between` de la fila, con el titulo en medio. QUEDA DECLARADO Y NO RESUELTO: la demo de esta pagina pinta un `h2` con estilo en linea para imitar el `h1` que emite el componente —hay un solo h1 por documento en el catalogo—, asi que la regla `.pant-cab h1` VIAJA sin que ninguna pantalla la demuestre. Es el defecto de R58 con una razon legitima detras, y no lo ve ningun candado.</p>
 
@@ -19843,6 +19864,13 @@ async function esPdf(archivo) {
     var raizSel = document.querySelector('[data-sel]');
     if (!raizSel) return;
     var OPCIONES = ["Álvarez Ponce, Rosa","Bustamante Ríos, Julio","Castañeda Ludeña, Miriam","Fernández Cruz, María","García Núñez, Óscar","Gutiérrez Paredes, Elena","Huamán Soto, Pedro","Jiménez Vílchez, Andrés","López Ñahui, Teresa","Mendoza Quiñones, Raúl","Pérez Salazar, Ana","Quispe Mamani, Lucía","Ramírez Ochoa, Víctor","Rojas Vega, Luis","Sánchez Idrogo, Patricia","Torres Bejarano, Iván","Valdivia Ccahuana, Sofía","Zúñiga Peralta, Martín"];
+    // R115 · LA AYUDA DE LA OPCION, que hasta la v1.94.0 no se pintaba en
+    // ninguna demostracion. Es la prop `ayuda` de `OpcionBusqueda`, y sin una
+    // demo no habia promesa contra la que comparar: la hoja le daba 13px por
+    // una regla que no podia casar, y en todos los productos salia a 15,
+    // indistinguible del nombre. Aqui desambigua a dos apoderados que llevan
+    // al mismo grado, que es exactamente para lo que existe.
+    var AYUDA = {"Pérez Salazar, Ana":"3.º B","Quispe Mamani, Lucía":"5.º A","Rojas Vega, Luis":"1.º A","Torres Bejarano, Iván":"3.º B"};
     var input = raizSel.querySelector('.sel-in');
     var lista = raizSel.querySelector('.sel-lista');
     var conteo = document.querySelector('[data-sel-conteo]');
@@ -19880,9 +19908,15 @@ async function esPdf(archivo) {
         lista.innerHTML = visibles.map(function (f, i) {
           var esta = f.tipo === 'opcion' && f.texto === elegido;
           var et = esta ? '<span class="sel-check"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 5 5L20 7"/></svg></span>' : '';
+          // R115 · el nombre y su ayuda dentro de UNA envoltura, y el visto
+          // detras. Con los tres sueltos, space-between mandaba el nombre al
+          // centro y la fila elegida se desalineaba de sus vecinas.
+          var ay = (f.tipo === 'opcion' && AYUDA[f.texto])
+            ? '<span class="sel-notas">' + AYUDA[f.texto] + '</span>' : '';
           return '<li role="option" id="sel-op-' + i + '" data-i="' + i +
             '" class="sel-op' + (i === 0 ? ' marcado' : '') + '"' +
-            (esta ? ' aria-selected="true"' : '') + '>' + f.texto + et + '</li>';
+            (esta ? ' aria-selected="true"' : '') + '>' +
+            '<span class="sel-op-txt">' + f.texto + ay + '</span>' + et + '</li>';
         }).join('');
       }
       conteo.textContent = q
