@@ -29,7 +29,7 @@ docker run --rm -d --name mmi-cascaron -p 127.0.0.1:8080:80 `
 <http://127.0.0.1:8080> · solo en loopback y montado de solo lectura.
 Para pararlo: `docker rm -f mmi-cascaron`.
 
-## Los candados — CATORCE comandos
+## Los candados — DIECISEIS comandos
 
 ```powershell
 docker compose exec ds node sistema/tokens/generar.mjs
@@ -46,17 +46,49 @@ docker compose exec ds node sistema/candado/verificar-elemento.mjs
 docker compose exec ds node sistema/candado/verificar-empate.mjs
 docker compose exec ds node sistema/candado/verificar-forma.mjs
 docker compose exec ds node sistema/candado/verificar-omision.mjs
+docker compose exec ds node sistema/candado/verificar-iconos.mjs
+docker compose exec ds node sistema/candado/verificar-promesa-muerta.mjs
 ```
 
-**Esta lista ya se quedo corta dos veces**, y las dos costaron caro: el
+**Esta lista ya se quedo corta TRES veces**, y las tres costaron caro: el
 2026-08-10 faltaban dos y no se corrieron en todo el dia — al correrlos, los dos
-en rojo. Cuatro mas faltaban aqui hasta la v1.81.0. Una lista incompleta de
-candados es un candado abierto: si se añade uno, se añade en los DOS sitios,
-aqui y en `CLAUDE.md` §8.
+en rojo. Cuatro mas faltaban aqui hasta la v1.81.0. Y el 2026-08-28 seguia
+diciendo CATORCE con dieciseis en el repositorio: faltaban `verificar-iconos` y
+el recien nacido `verificar-promesa-muerta`. Una lista incompleta de candados es
+un candado abierto: si se añade uno, se añade en los DOS sitios, aqui y en
+`CLAUDE.md` §8.
 
-Comprobados el 2026-08-10 sobre `main`: **los siete en verde** — 178 pares
-recalculados con 0 fallos, 62 casos del candado de lint sin fallos, 485 clases
-declaradas y 0 huerfanas, y la cascada limpia a los once anchos.
+Comprobados el 2026-08-28 sobre `main`, en la v1.95.0: **los dieciseis en
+verde** — 186 pares recalculados con 0 fallos, 62 casos del candado de lint sin
+fallos, 692 clases declaradas y 0 huerfanas, la cascada limpia a los once
+anchos, y 573 pruebas en 38 archivos con `tsc --noEmit` limpio.
+
+## Publicar desde esta maquina — lo que falta en el contenedor
+
+`node` NO esta en la maquina y `git` y `gh` NO estan en el contenedor, asi que
+el publicador —que es node y llama a los dos— no corre en ninguno de los dos
+sitios tal cual. Se resuelve dandole al contenedor lo que le falta:
+
+```powershell
+docker compose exec ds sh -c "apk add --no-cache git github-cli"
+docker compose exec ds sh -c "git config --global --add safe.directory /trabajo"
+
+$t = (gh auth token).Trim()
+docker compose exec -e GH_TOKEN=$t ds gh auth setup-git
+docker compose exec -e GH_TOKEN=$t ds node sistema/paquete/publicar.mjs
+docker compose exec -e GH_TOKEN=$t ds node sistema/paquete/publicar.mjs --publicar
+```
+
+`gh auth setup-git` deja un ayudante de credenciales que **lee el token del
+entorno**: no se escribe ningun token en disco dentro del contenedor —
+comprobado, `~/.config/gh/hosts.yml` no existe—. Los `apk add` se pierden al
+recrear el contenedor, y hay que repetirlos.
+
+El 2026-08-28 esto costo dos intentos fallidos: sin `git` el publicador ni
+arranca, y con `git` pero sin credencial **crea la etiqueta local y falla al
+empujarla**, que deja el trabajo a medias. Y hay una trampa peor: sin `gh`, la
+poda de los ZIP viejos se salta **en silencio**, porque la lista de
+publicaciones sale vacia y el publicador cree que no hay nada que borrar.
 
 Pruebas de componentes: **180 en verde** (13 archivos) y `tsc --noEmit` limpio.
 
