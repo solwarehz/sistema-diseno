@@ -59,3 +59,12 @@ Thumbs.db
 # Registros
 *.log
 npm-debug.log*
+
+# Ajustes LOCALES del agente — de esta máquina, no del proyecto.
+# `settings.json` sí viaja si algún día hace falta; `settings.local.json` no:
+# lleva los permisos concedidos en esta máquina y nada más.
+#
+# Estaba fuera del repositorio solo por la configuración global de git del
+# anfitrión, así que dentro del contenedor —que no la tiene— aparecía como
+# cambio sin commitear y el publicador se negaba a publicar, con razón.
+.claude/settings.local.json
