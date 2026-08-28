@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.90.0";
+export const VERSION = "1.91.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -71,6 +71,56 @@ export const correcciones = [
  */
 export const CAMBIOS = [
   {
+    v: '1.91.0', fecha: '2026-08-28',
+    que: 'R111: nueve iconos que se publicaban VACIOS, y dos frases mias que la auditoria midio y eran falsas',
+    porque:
+      'Se encargo a dos agentes auditar que la promesa fuera igual a la entrega en R109 y R110, '
+      + 'con los doce candados en verde. Volvieron con catorce hallazgos. Los peores son mios. '
+      + 'UNO · NUEVE ICONOS PUBLICADOS COMO SVG VACIOS. `ic()` recibe el TRAZO y `icono()` recibe el '
+      + 'NOMBRE. Nueve llamadas de la pagina del panel de privilegios le pasaban el nombre a `ic()`, '
+      + 'asi que publicaban <svg>candado</svg>: un nodo de texto suelto dentro de un SVG no dibuja '
+      + 'NADA. Cuatro los meti esta mañana; los otros CINCO llevaban ahi desde R97. Ningun candado '
+      + 'puede verlo: verificar-elemento compara etiquetas —svg contra svg, iguales— y '
+      + 'verificar-promesa compara propiedades CSS, no si el elemento tiene hijos. Es el hueco de '
+      + 'R56 y R58 corrido un nivel: ya no es la etiqueta, es el CONTENIDO. De paso pedian 20px, '
+      + 'que no es ninguno de los cuatro pasos de la escala. '
+      + 'DOS · DOS AFIRMACIONES FALSAS QUE ESCRIBI YO. Que un privilegio con `depende` deja de '
+      + 'encender el base de rebote: MEDIDO, es falso —el bloque del base corre antes e '
+      + 'incondicionalmente—. Y que cambiar solo `accept` deja pasar cualquier cosa arrastrada: al '
+      + 'reves, lo que hace es que el dialogo OFREZCA lo que el componente va a rechazar. Las dos '
+      + 'estan corregidas donde se leen, no solo aqui. '
+      + 'TRES · `textoBoton` SE IGNORABA EN SILENCIO en la presentacion en-linea, que es justo la '
+      + 'que pide una pantalla dedicada a subir —el caso que trajo R109—, y los iconos clavados '
+      + 'eran DOS, no uno como decia el catalogo. Entran `nombreTipo` —de el cuelgan los cinco '
+      + 'textos por omision, asi que una sola prop deja de decir PDF— e `icono`. '
+      + 'CUATRO · LA RAMA en-linea ENTERA FALTABA DEL CATALOGO, y con ella .cpdf-acciones, que '
+      + 'viajaba sin que ninguna pantalla la demostrara. Van cinco veces el mismo defecto. Y '
+      + '.cpdf-panel era CSS MUERTO que viajaba apuntando a una animacion que NO viajaba: nadie la '
+      + 'emite. Es el gemelo de .pp-no de esta misma mañana. '
+      + 'CINCO · privilegiosEfectivos NO filtraba lo cerrado. Un mapa guardado antes de que una '
+      + 'regla cerrara ese permiso seguia viajando al backend concediendo lo que el panel dice que '
+      + 'no se puede conceder. Es el argumento del 403 al reves. '
+      + 'LO QUE SALIO BIEN, y conviene decirlo: el contraste del icono nuevo CUMPLE —4,81:1 en '
+      + 'claro y 5,30:1 en oscuro—, asi que no habia un R107 repetido. Pero el par no lo medía '
+      + 'NADIE. Se declaran ahora `aviso-acento` e `info-acento` contra `fondo-tarjeta`: en esos '
+      + 'cuatro estados el icono es EL CANAL que los distingue, o sea contenido no textual, y un '
+      + 'retoque de ambar_700 los rompia en silencio. 182 pares, 71 bloqueantes por modo. '
+      + 'QUEDA ABIERTO Y ESCRITO EN EL CATALOGO: que los cuatro estados bloqueados salen del orden '
+      + 'de tabulacion —defendible en tres, discutible en el cuarto, y cambiarlo es decision de '
+      + 'diseño sobre los cuatro—, y que .pp-sin-base baja las filas al 50% de opacidad dejando el '
+      + 'nombre a 2,07:1 y el icono a 2,03:1 CON LOS INTERRUPTORES AUN PULSABLES, asi que la '
+      + 'excepcion de WCAG para controles inactivos no aplica. Viene de R97.',
+    rompe: [
+      'privilegiosEfectivos() ya no devuelve los privilegios marcados `cerrado`, aunque el mapa '
+      + 'guardado los tuviera en true. Si un producto dependia de ese valor para algo que no sea '
+      + 'mandarlo al backend, deja de recibirlo.',
+      'Los textos por omision de CargaPdf salen de `nombreTipo`. Quien los tuviera copiados a mano '
+      + 'no nota nada; quien dependiera de la cadena exacta «Comprimiendo el PDF…» si: ahora es '
+      + '«Comprimiendo el archivo…» salvo que se pase nombreTipo.',
+    ],
+    tokens: { alta: [], baja: [] },
+  },
+  {
     v: '1.90.0', fecha: '2026-08-28',
     que: 'R109 y R110: dos componentes dejan de decidir por el producto, y sale una clase muerta desde R99',
     porque:
@@ -98,9 +148,13 @@ export const CAMBIOS = [
       + 'se vino a evitar. No se reutilizo NoRepartible a proposito, y el argumento es de ellos: '
       + 'describe por que algo no se PUEDE repartir, no un estado que cambia con lo que acaban de '
       + 'pulsar. '
-      + 'CONSECUENCIA QUE HAY QUE SABER: un privilegio con `depende` deja de encender el base de '
-      + 'rebote. Primero se enciende aquel del que depende. Es lo que se pidio, pero es un cambio de '
-      + 'tacto real en cuanto alguien apunta `depende` al propio base. '
+      + 'CONSECUENCIA QUE HAY QUE SABER: en la pantalla la cadena se enciende de uno en uno y de '
+      + 'arriba abajo, porque la fila bloqueada no es pulsable. '
+      + '[CORREGIDO EN v1.91.0] Esta entrada decia ademas que un privilegio con `depende` deja de '
+      + 'encender el base de rebote. Es FALSO, y se midio al dia siguiente: el bloque del base corre '
+      + 'antes e incondicionalmente. Se corrige aqui mismo en vez de dejarlo estar, porque una nota '
+      + 'de version se lee como si fuera cierta — y se deja dicho que se creyo lo contrario, que es '
+      + 'lo que el registro tiene que contar. '
       + 'Y UNA CLASE MUERTA. Al sacar el ternario anidado fuera del className —el candado de '
       + 'huerfanas leia trozos sueltos y se invento `.no` y `.falta`— salio `.pp-no`, que se emitia '
       + 'en cada fila bloqueada DESDE R99 y que ninguna regla define. Vivia escondida detras del '
@@ -3462,6 +3516,19 @@ export const pares = [
   ['aviso-acento',     'aviso-fondo',      'informativo', 'Filete del chip. Adorno, exento'],
   ['error-acento',     'error-fondo',      'informativo', 'Filete del chip. Adorno, exento'],
   ['info-acento',      'info-fondo',       'informativo', 'Filete del chip. Adorno, exento'],
+
+  // R111 · LOS ACENTOS DEJARON DE SER ADORNO EN EL PANEL DE PRIVILEGIOS, y
+  // nadie medía ese par. En `.pp-no-ajeno` y `.pp-no-depende` el icono es EL
+  // CANAL que distingue un motivo de otro —no hay otra diferencia visual entre
+  // los cuatro—, así que es contenido no textual y le toca SC 1.4.11.
+  //
+  // El de `ajeno` estaba así desde R99 y el de `depende` entró esta mañana. Se
+  // midieron a mano al auditar: 4,80 y 4,81 en claro, 5,28 y 5,30 en oscuro.
+  // Pasan holgados — no había un fallo escondido —, pero medirlos a mano no
+  // sirve de nada: un retoque de `ambar_700` los rompía en silencio y el
+  // candado no se enteraba. Declararlos es lo que los pone bajo vigilancia.
+  ['aviso-acento',     'fondo-tarjeta',    3.0, 'Icono del privilegio bloqueado por dependencia'],
+  ['info-acento',      'fondo-tarjeta',    3.0, 'Icono del privilegio que no se tiene'],
 
   // Interruptor apagado — el contorno NO está exento: es límite de control
   // identificable (SC 1.4.11) y por eso se mide contra los tres fondos donde

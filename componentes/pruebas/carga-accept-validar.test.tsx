@@ -119,3 +119,39 @@ describe('R109 · el archivo entregado no miente sobre lo que es', () => {
     expect(lista[0].archivo.type).toBe('application/pdf');
   });
 });
+
+describe('R111 · nombreTipo, icono y textoBoton en las DOS presentaciones', () => {
+  it('con nombreTipo="CSV" ningún texto por omisión dice PDF', () => {
+    const { container } = render(
+      <CargaPdf etiqueta="Padrón" presentacion="en-linea" nombreTipo="CSV"
+        accept=".csv,text/csv" comprimir={false} pesoMaximo={2 * 1024 * 1024}
+        onCambio={() => {}} />,
+    );
+    expect(container.textContent).not.toMatch(/PDF/);
+    expect(screen.getByText(/Arrastra el CSV aquí/)).toBeInTheDocument();
+    expect(screen.getByText(/Solo CSV/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Subir CSV/ })).toBeInTheDocument();
+  });
+
+  it('textoBoton SÍ manda en «en-linea» — antes se ignoraba en silencio', () => {
+    render(
+      <CargaPdf etiqueta="Padrón" presentacion="en-linea" textoBoton="Elegir el padrón"
+        onCambio={() => {}} />,
+    );
+    expect(screen.getByRole('button', { name: /Elegir el padrón/ })).toBeInTheDocument();
+  });
+
+  it('y sigue mandando en «panel», que es donde ya funcionaba', () => {
+    render(<CargaPdf etiqueta="Acta" textoBoton="Subir el acta" onCambio={() => {}} />);
+    expect(screen.getByRole('button', { name: /Subir el acta/ })).toBeInTheDocument();
+  });
+
+  it('la pista no promete compresión cuando comprimir está apagado', () => {
+    render(
+      <CargaPdf etiqueta="Padrón" presentacion="en-linea" comprimir={false}
+        pesoMaximo={2 * 1024 * 1024} onCambio={() => {}} />,
+    );
+    expect(screen.getByText(/máximo 2,0 MB cada uno./)).toBeInTheDocument();
+    expect(screen.queryByText(/una vez comprimido/)).toBeNull();
+  });
+});

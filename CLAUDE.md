@@ -19,8 +19,8 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.90.0** — R109 y R110: dos componentes dejan de decidir por
-el producto qué acepta y de qué depende, y sale una clase muerta desde R99.
+**Estado actual: v1.91.0** — R111: la auditoría encuentra nueve iconos que se
+publicaban vacíos y dos frases nuestras que, medidas, eran falsas.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

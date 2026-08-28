@@ -1,6 +1,6 @@
 {
   "documento": "MMI-DS",
-  "version": "1.90.0",
+  "version": "1.91.0",
   "norma": "WCAG 2.2 AA",
   "generado": "node sistema/tokens/generar.mjs",
   "modos": [
@@ -9,17 +9,17 @@
   ],
   "aviso": "Archivo generado. No editar a mano. La fuente es sistema/tokens/fuente.mjs. Cambiar un valor exige regenerar, re-verificar y subir versión (§2.5 regla 8).",
   "resumen": {
-    "paresTotales": 178,
-    "paresBloqueantes": 138,
+    "paresTotales": 182,
+    "paresBloqueantes": 142,
     "paresInformativos": 40,
     "fallos": 0,
     "porModo": {
       "claro": {
-        "bloqueantes": 69,
+        "bloqueantes": 71,
         "fallos": 0
       },
       "oscuro": {
-        "bloqueantes": 69,
+        "bloqueantes": 71,
         "fallos": 0
       }
     }
@@ -1452,6 +1452,28 @@
     },
     {
       "modo": "claro",
+      "frente": "aviso-acento",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#A46300",
+      "hexFondo": "#FFFFFF",
+      "ratio": 4.81,
+      "minimo": 3,
+      "motivo": "Icono del privilegio bloqueado por dependencia",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "info-acento",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#2F71CE",
+      "hexFondo": "#FFFFFF",
+      "ratio": 4.8,
+      "minimo": 3,
+      "motivo": "Icono del privilegio que no se tiene",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
       "frente": "apagado-bolita",
       "fondo": "apagado-fondo",
       "hexFrente": "#700000",
@@ -2428,6 +2450,28 @@
       "minimo": "informativo",
       "motivo": "Filete del chip. Adorno, exento",
       "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "aviso-acento",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#C88A3C",
+      "hexFondo": "#242422",
+      "ratio": 5.29,
+      "minimo": 3,
+      "motivo": "Icono del privilegio bloqueado por dependencia",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "info-acento",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#6D97DE",
+      "hexFondo": "#242422",
+      "ratio": 5.28,
+      "minimo": 3,
+      "motivo": "Icono del privilegio que no se tiene",
+      "cumple": true
     },
     {
       "modo": "oscuro",

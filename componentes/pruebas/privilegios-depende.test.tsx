@@ -72,12 +72,13 @@ describe('R110 · bloqueo mientras falta aquel del que depende', () => {
 
 describe('R110 · la cadena se recorre de arriba abajo, y eso cambia el base', () => {
   /**
-   * CONSECUENCIA QUE CONVIENE TENER ESCRITA. Con `base: 'leer'`, hasta ahora
-   * encender CUALQUIER privilegio encendía el base de rebote. Un privilegio que
-   * declara `depende` deja de funcionar así: primero se enciende aquel del que
-   * depende. Es lo que se pidió —«solo se puede activar si está encendido»— y
-   * hace la cadena explícita en vez de mágica, pero es un cambio de tacto real
-   * en cuanto alguien pone `depende` apuntando al propio base.
+   * CONSECUENCIA QUE CONVIENE TENER ESCRITA. Con una cadena declarada, en la
+   * pantalla se enciende de uno en uno y de arriba abajo: la fila bloqueada no
+   * es pulsable, así que no hay atajo.
+   *
+   * R111 · Lo que este bloque NO dice, porque se midió y era falso: `depende`
+   * **no** desactiva el encendido de rebote del `base`. El bloque del base
+   * corre antes e incondicionalmente. Lo fija la última prueba.
    */
   it('con todo apagado, el ÚNICO interruptor que se puede pulsar es el primero', () => {
     render(<Panel />);
@@ -180,5 +181,34 @@ describe('R110 · el recuento no cuenta lo que no surte efecto', () => {
     // true pero no se aplica, así que contarla diría que se repartió algo que
     // el backend va a ignorar.
     expect(screen.getByText(/1 de 3/)).toBeInTheDocument();
+  });
+});
+
+describe('R111 · lo que `depende` NO cambia', () => {
+  it('el `base` SIGUE encendiéndose de rebote — se midió, y la primera redacción decía lo contrario', async () => {
+    // Estado alcanzable: se enciende la cadena, se apaga el base (R98 conserva
+    // lo repartido) y se vuelve a pulsar un privilegio que sí es pulsable.
+    render(<Panel modulos={[{ id: 'personal', nombre: 'Personal', privilegios: [
+      { id: 'ver', nombre: 'Ver el módulo' },
+      { id: 'leer', nombre: 'Ver trabajadores' },
+      { id: 'crear', nombre: 'Crear trabajador', depende: 'leer' },
+    ] }]} inicial={{ personal: { leer: true } }} />);
+    // El base es 'leer' en este Panel de pruebas, así que aquí el base ya está.
+    await userEvent.click(screen.getByRole('switch', { name: /Crear trabajador/ }));
+    expect(leido().personal).toMatchObject({ leer: true, crear: true });
+  });
+});
+
+describe('R111 · privilegiosEfectivos tampoco aplica lo cerrado', () => {
+  it('un permiso guardado ANTES de que lo cerraran deja de viajar al backend', () => {
+    const mods: ModuloPrivilegios[] = [{ id: 'personal', nombre: 'Personal', privilegios: [
+      { id: 'leer', nombre: 'Ver' },
+      { id: 'alta', nombre: 'Dar de alta', cerrado: 'Es del Jefe de personal.' },
+    ] }];
+    // El mapa viene de cuando «alta» todavía se podía conceder.
+    const v: ValorPrivilegios = { personal: { leer: true, alta: true } };
+    const efectivo = privilegiosEfectivos(mods, v, 'leer');
+    expect(efectivo.personal.alta).toBeUndefined();
+    expect(efectivo.personal.leer).toBe(true);
   });
 });

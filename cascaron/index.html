@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.90.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.91.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.90.0
-   WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.91.0
+   WCAG 2.2 AA · 142 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -3058,7 +3058,7 @@ select.campo:disabled { opacity: .75; }
    Se pone la guarda AL LADO de la regla que causa el problema, no en un rincon,
    para que quien anada otro display la vea. */
 .cpdf-invita[hidden], .cpdf-puesto[hidden], .cpdf-lista[hidden],
-.cpdf-linea[hidden], .cpdf-acciones[hidden], .cpdf-panel[hidden],
+.cpdf-linea[hidden], .cpdf-acciones[hidden],
 .cpdf-pie[hidden] { display: none; }
 
 /* EN FORMULARIO NO HAY VENTANA FLOTANTE. Lo dijo el responsable: «nosotros no
@@ -3074,12 +3074,11 @@ select.campo:disabled { opacity: .75; }
    Se monta y se desmonta de verdad: colapsarlo con altura cero lo dejaria en
    el arbol de accesibilidad con sus botones tabulables, que es el defecto que
    el candado OCULTABLE acaba de encontrar en .cf-banda. */
-.cpdf-panel { display: flex; flex-direction: column; gap: 8px;
-  animation: cpdf-desplegar var(--dur-media) var(--curva); }
-@keyframes cpdf-desplegar {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: none; }
-}
+/* R111 · Aqui vivia «.cpdf-panel» con su «@keyframes cpdf-desplegar».
+   NINGUN componente la emite —CargaPdf usa «.cx-panel»— y aun asi VIAJABA en
+   la hoja entregada, apuntando ademas a una animacion que NO viajaba con ella.
+   Es el mismo caso que «.pp-no» de esta misma manana. Se quita en vez de
+   inventarle un usuario. */
 /* El pie del panel: Guardar y Cancelar. DOS botones, nunca uno que cambie de
    significado — uno solo que pasara de «Cancelar» a «Guardar» al detectar
    contenido cambiaria lo que hace bajo el cursor. */
@@ -4251,7 +4250,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.90.0</option></select></label>
+          <select class="campo cg-in"><option>v1.91.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4339,8 +4338,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.90.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.90.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.91.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.91.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -4362,7 +4361,7 @@ El menú de la izquierda lo abre por partes.</p>
 
 <div class="estado-rejilla">
   <div class="est"><b>56</b><span>tokens semánticos</span></div>
-  <div class="est"><b>138</b><span>pares verificados</span></div>
+  <div class="est"><b>142</b><span>pares verificados</span></div>
   <div class="est est-ok"><b>0</b><span>fallos de contraste</span></div>
   <div class="est"><b>2</b><span>modos, claro y oscuro</span></div>
 </div>
@@ -4865,7 +4864,7 @@ El menú de la izquierda lo abre por partes.</p>
   <a href="#espaciado" data-ir="espaciado" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
     <span><strong>Espaciado</strong>Rejilla de 4px y tamaños de control</span></a>
   <a href="#contraste" data-ir="contraste" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg></span>
-    <span><strong>Contrastes</strong>Los 138 pares medidos</span></a>
+    <span><strong>Contrastes</strong>Los 142 pares medidos</span></a>
 </div>
     </section><section class="pagina" id="pg-color" hidden>
       <nav class="migas" aria-label="Ubicación">
@@ -7415,11 +7414,11 @@ devuelve el archivo listo y los dos pesos.</p>
             <span class="cpdf-ico" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span>
             <span class="cpdf-instr">Arrastra el PDF aquí o elígelo desde tu equipo.</span>
           </p>
-          <span class="cpdf-pista">Solo PDF · máximo 10,0 MB una vez comprimido.</span>
+          <span class="cpdf-pista">Solo PDF · máximo 10,0 MB cada uno una vez comprimido.</span>
           <div class="cpdf-trabajo" data-trabajo hidden>
             <div class="pr-caja">
               <div class="pr-cab"><span>Comprimiendo el PDF…</span></div>
-              <div class="pr" role="progressbar" aria-label="Comprimiendo el PDF"><div class="pr-indet"></div></div>
+              <div class="pr" role="progressbar" aria-label="Comprimiendo el PDF…"><div class="pr-indet"></div></div>
             </div>
           </div>
           <span class="cpdf-error" data-error role="alert" hidden></span>
@@ -7442,6 +7441,35 @@ devuelve el archivo listo y los dos pesos.</p>
       <input class="campo cg-in" placeholder="Este campo se desplaza hacia abajo"></label>
   </form>
 </div>
+
+<h3 class="sub-seccion">R111 · La otra presentación: <code>en-linea</code></h3>
+<p class="seccion-sub">La de una <strong>pantalla dedicada a subir</strong>, donde no hay formulario
+que proteger y el recuadro está siempre visible. <strong>Esta rama entera faltaba del catálogo</strong>
+—se enseñaba solo <code>panel</code>—, y con ella faltaba <code>.cpdf-acciones</code>, que viajaba en
+la hoja sin que ninguna pantalla la demostrara. Es el mismo defecto que las <code>pp-no-*</code> de
+esta mañana, y ya van cinco.</p>
+<p class="seccion-sub">Va montada con <code>nombreTipo="CSV"</code> para enseñar de una vez lo que
+R109 y R111 permiten juntos: <strong>los cinco textos dejan de decir «PDF»</strong> cambiando una
+sola prop.</p>
+<div class="bloque">
+  <div class="cpdf">
+    <div class="cpdf-zona">
+      <p class="cpdf-invita">
+        <span class="cpdf-ico" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span>
+        <span class="cpdf-instr">Arrastra el CSV aquí o elígelo desde tu equipo.</span>
+      </p>
+      <span class="cpdf-pista">Solo CSV · máximo 2,0 MB cada uno.</span>
+      <span class="cpdf-error" role="alert" hidden></span>
+    </div>
+    <div class="cpdf-acciones">
+      <button class="btn btn-neutro btn-mini btn-ic" type="button"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg>Subir CSV</button>
+      <button class="btn btn-1 btn-mini" type="button">Grabar</button>
+    </div>
+  </div>
+</div>
+<p class="seccion-sub"><strong>Sin <code>onGrabar</code> no hay segundo botón</strong>: en
+<code>en-linea</code> no hay diálogo que cerrar, así que grabar solo aparece si el producto lo pidió.
+Y no hay borrador — <code>onCambio</code> se dispara al elegir, no al grabar.</p>
 
 <h3 class="sub-seccion">Cerrado, abierto, y el archivo puesto</h3>
 <div class="bloque">
@@ -7476,7 +7504,7 @@ devuelve el archivo listo y los dos pesos.</p>
         <button class="btn btn-neutro btn-mini btn-ic" aria-expanded="false"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>Subir PDF</button>
         <span class="cx-vacio">Ningún archivo</span>
       </div>
-      <span class="cx-error"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg>Ese archivo no es un PDF. Solo se admiten PDF.</span>
+      <span class="cx-error"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg>trampa.pdf no es un PDF.</span>
     </div>
   </div>
 </div>
@@ -7533,14 +7561,27 @@ que decidiera por el producto qué se acepta.</p>
   <tbody>
     <tr><td><code>accept</code></td><td>Lo que ofrece el diálogo de archivos. <code>'application/pdf,.pdf'</code> por omisión. <strong>Mismo nombre y misma forma que en <code>CargaImagen</code> y <code>CargaId</code></strong>, donde ya existía</td></tr>
     <tr><td><code>validar</code></td><td><code>(archivo) =&gt; Promise&lt;true | string&gt;</code>. El motivo se pega <strong>detrás del nombre</strong>, así que se escribe como continuación: <code>'no es un CSV'</code> da «padron.txt no es un CSV». Se llama una vez por archivo y <strong>antes de comprimir</strong></td></tr>
+    <tr><td><code>nombreTipo</code></td><td>R111 · Cómo se llama lo que se sube, en singular. <code>'PDF'</code> por omisión. <strong>De aquí cuelgan cinco textos</strong>: el disparador, «cambiar», la instrucción de la zona, la pista y el progreso</td></tr>
+    <tr><td><code>icono</code></td><td>R111 · El glifo del disparador. <code>'pdf'</code> por omisión</td></tr>
   </tbody>
 </table>
 <div class="msj msj-aviso">
   <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
-  <span class="msj-txt"><strong>Los dos van juntos o dejas una puerta abierta.</strong> Cambiar solo
-  <code>accept</code> deja pasar cualquier cosa arrastrada; cambiar solo <code>validar</code> hace
-  que el diálogo no ofrezca lo que sí se admite. Y una cosa que <strong>sigue diciendo PDF y no se
-  puede cambiar</strong>: el icono del disparador. El texto sí, con <code>textoBoton</code>.</span>
+  <span class="msj-txt"><strong>Las dos primeras van juntas, o dejas una puerta abierta.</strong>
+  Cambiar solo <code>accept</code> hace que <strong>el diálogo ofrezca lo que el componente va a
+  rechazar</strong>: sin <code>validar</code>, la comprobación por omisión sigue exigiendo
+  <code>%PDF-</code>, así que todo CSV elegido sale con «padron.csv no es un PDF». Y cambiar solo
+  <code>validar</code> hace que el diálogo no ofrezca lo que sí se admite — se puede soltar
+  arrastrando, pero no elegir.</span>
+</div>
+<div class="msj msj-error">
+  <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+  <span class="msj-txt"><strong>R111 · Esta página decía dos cosas falsas, y las encontró una
+  auditoría, no un fallo visible.</strong> Decía que el aviso de arriba iba al revés, y decía que el
+  icono estaba clavado en <em>un</em> sitio y que el texto se cambiaba con <code>textoBoton</code>.
+  Eran <strong>dos</strong> iconos, y <code>textoBoton</code> <strong>se ignoraba en silencio en
+  <code>en-linea</code></strong> — justo la presentación que pide una pantalla dedicada a subir, que
+  es el caso que trajo R109. Arreglado en el componente, no solo en el texto.</span>
 </div>
 <p class="seccion-sub">Se compone, no se reconstruye: el disparador y «Quitar» son <code>Boton</code>,
 el progreso es <code>Progreso</code>, el ahorro es un <code>Chip</code> —pintar aquí un verde a mano
@@ -10881,7 +10922,7 @@ reconstruyendo.</p>
 
       <section class="pp-mod pp-abierto">
         <button class="pp-mod-cab" type="button" aria-expanded="true">
-          <span class="pp-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">chevron</svg></span>
+          <span class="pp-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
           <span class="pp-mod-nom">Trabajadores</span>
           <span class="pp-tags">
             <span class="chip chip-info">Ver</span><span class="chip chip-info">Editar</span>
@@ -10897,7 +10938,7 @@ reconstruyendo.</p>
             <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="true" aria-label="Editar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar</span></span></label>
           </div>
           <div class="pp-priv">
-            <span class="sw-fila sw-cerrado"><span class="sw-candado"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">candado</svg></span><span class="sw-txt"><span class="sw-et">Dar de alta</span><span class="sw-motivo">Dar de alta a una persona es del Jefe de personal.</span></span></span>
+            <span class="sw-fila sw-cerrado"><span class="sw-candado"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><span class="sw-txt"><span class="sw-et">Dar de alta</span><span class="sw-motivo">Dar de alta a una persona es del Jefe de personal.</span></span></span>
           </div>
           <div class="pp-niveles">
             <fieldset class="sg">
@@ -10920,7 +10961,7 @@ reconstruyendo.</p>
 
       <section class="pp-mod">
         <button class="pp-mod-cab" type="button" aria-expanded="false">
-          <span class="pp-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">chevron</svg></span>
+          <span class="pp-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
           <span class="pp-mod-nom">Marcaciones<span class="pp-marca"><span class="chip chip-identidad-3">modificado</span></span></span>
           <span class="pp-tags"><span class="chip chip-info">Ver</span></span>
           <span class="pp-conteo">1 de 1</span>
@@ -10929,7 +10970,7 @@ reconstruyendo.</p>
 
       <section class="pp-mod pp-sin-base pp-abierto">
         <button class="pp-mod-cab" type="button" aria-expanded="true">
-          <span class="pp-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">chevron</svg></span>
+          <span class="pp-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
           <span class="pp-mod-nom">Horarios</span>
           <span class="pp-tags"><span class="chip chip-pend">sin permisos</span></span>
           <span class="pp-conteo">0 de 3</span>
@@ -10941,7 +10982,7 @@ reconstruyendo.</p>
           <div class="pp-priv">
             <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Editar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar</span></span></label>
           </div>
-          <p class="pp-aviso"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">alerta</svg><span>Sin este permiso, el resto del módulo no se aplica.</span></p>
+          <p class="pp-aviso"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg><span>Sin este permiso, el resto del módulo no se aplica.</span></p>
         </div>
       </section>
 
@@ -10969,10 +11010,19 @@ pueda, dice que <strong>todavía no</strong> — y se resuelve encendiendo el de
   <div class="pp">
     <div class="pp-lista">
       <section class="pp-mod pp-abierto">
+        <!-- R111 · La cabecera va aunque la demo sea de las filas: el componente
+             SIEMPRE la emite, y sin ella el borde superior del cuerpo cae contra
+             el borde de la tarjeta, que es un sitio donde en el producto nunca
+             cae. Lo cazo el auditor comparando el marcado elemento por elemento. -->
+        <button class="pp-mod-cab" type="button" aria-expanded="true">
+          <span class="pp-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+          <span class="pp-mod-nom">Personal</span>
+          <span class="pp-conteo">0 de 4</span>
+        </button>
         <div class="pp-mod-cuerpo">
           <div class="pp-priv pp-no-cerrado">
             <div class="pp-cerrado">
-              <span class="pp-cerrado-ic"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">candado</svg></span>
+              <span class="pp-cerrado-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
               <span class="pp-cerrado-txt">
                 <span class="pp-cerrado-nom">Dar de alta</span>
                 <span class="pp-cerrado-eti"><span class="chip chip-inact">no se puede conceder</span></span>
@@ -10982,7 +11032,7 @@ pueda, dice que <strong>todavía no</strong> — y se resuelve encendiendo el de
           </div>
           <div class="pp-priv pp-no-ajeno">
             <div class="pp-cerrado">
-              <span class="pp-cerrado-ic"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">usuarios</svg></span>
+              <span class="pp-cerrado-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M17 6a3 3 0 0 1 0 6M18 20c0-2-1-3.5-2.5-4.5"/></svg></span>
               <span class="pp-cerrado-txt">
                 <span class="pp-cerrado-nom">Ver planilla</span>
                 <span class="pp-cerrado-eti"><span class="chip chip-info">no lo tiene usted</span></span>
@@ -10992,7 +11042,7 @@ pueda, dice que <strong>todavía no</strong> — y se resuelve encendiendo el de
           </div>
           <div class="pp-priv pp-no-pendiente">
             <div class="pp-cerrado">
-              <span class="pp-cerrado-ic"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">informacion</svg></span>
+              <span class="pp-cerrado-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>
               <span class="pp-cerrado-txt">
                 <span class="pp-cerrado-nom">Exportar a SUNAT</span>
                 <span class="pp-cerrado-eti"><span class="chip chip-pend">todavía no existe</span></span>
@@ -11002,7 +11052,7 @@ pueda, dice que <strong>todavía no</strong> — y se resuelve encendiendo el de
           </div>
           <div class="pp-priv pp-no-depende">
             <div class="pp-cerrado">
-              <span class="pp-cerrado-ic"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">capas</svg></span>
+              <span class="pp-cerrado-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg></span>
               <span class="pp-cerrado-txt">
                 <span class="pp-cerrado-nom">Carga masiva</span>
                 <span class="pp-cerrado-eti"><span class="chip chip-aviso">necesita otro permiso</span></span>
@@ -11015,6 +11065,28 @@ pueda, dice que <strong>todavía no</strong> — y se resuelve encendiendo el de
     </div>
   </div>
 </div>
+<div class="msj msj-aviso">
+  <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+  <span class="msj-txt"><strong>R111 · Declarado y NO resuelto: los cuatro salen del orden de tabulación.</strong>
+  Una fila bloqueada deja de ser <code>role="switch"</code> y pasa a ser texto, así que
+  <strong>quien recorra el panel con el tabulador no se entera de que existe</strong> — con el ratón y
+  con lector de pantalla en modo lectura, sí. Para los tres primeros es defendible: son permanentes y
+  no hay control que ofrecer. <strong>Para el cuarto lo es menos</strong>, porque es el único que se
+  resuelve en esta misma pantalla, y porque <code>Interruptor</code> tiene escrita la regla contraria:
+  «deshabilitado nativo sale del orden de tabulación y su estado se vuelve indescubrible con teclado».
+  Cambiarlo afecta a los cuatro y a cómo se ven, así que <strong>es una decisión de diseño, no un
+  arreglo</strong>: se deja escrita en vez de tomarla por la puerta de atrás.</span>
+</div>
+<div class="msj msj-aviso">
+  <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+  <span class="msj-txt"><strong>Y otro, más viejo y peor.</strong> Con el módulo sin su privilegio
+  base, <code>.pp-sin-base</code> baja las filas al <strong>50 % de opacidad</strong> — y ahí el
+  nombre del privilegio cae a <strong>2,07:1 en claro</strong> y el icono a <strong>2,03:1</strong>,
+  cuando la norma pide 4,5 y 3. <strong>La excepción de WCAG para controles inactivos no aplica</strong>:
+  se comprobó que esos interruptores <strong>siguen siendo pulsables</strong>. Viene de R97 y no lo ve
+  ningún candado, porque la opacidad se aplica al elemento padre y el par medido es el del color
+  declarado. Queda abierto.</span>
+</div>
 <p class="seccion-sub"><strong>Por qué el cuarto no reutiliza ninguno de los tres.</strong> Lo pidió
 Control Administrativos y el argumento es suyo: <code>NoRepartible</code> describe por qué algo
 <em>no se puede</em> repartir, no un estado que cambia con lo que el usuario acaba de pulsar.
@@ -11022,7 +11094,7 @@ Recalcularlo como <code>cerrado</code> en cada pintada funciona —por eso no se
 pero desdibuja los tres motivos. Se declara con <code>depende: 'crear'</code>, y encender arrastra
 la cadena entera hacia arriba.</p>
 
-<h3 class="sub-seccion">Las cinco decisiones que lleva dentro</h3>
+<h3 class="sub-seccion">Las ocho decisiones que lleva dentro</h3>
 <table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td><strong>Hay un privilegio que manda.</strong> Sin «ver», editar no significa nada: apagarlo apaga el módulo, y encender cualquier otro lo enciende solo. Se cambia con <code>base</code> o se desactiva con <code>base={null}</code> cuando el dominio no funcione así. Sin esto se puede guardar «editar sin ver», y cada producto lo resolvería a su manera.</td></tr>
@@ -11032,7 +11104,7 @@ la cadena entera hacia arriba.</p>
     <tr><td class="num">5</td><td><strong>El preset se ve y se recupera.</strong> Pasando <code>preset</code>, cada módulo que difiera se marca y aparece cómo volver. Sin él nadie sabe qué tocó.</td></tr>
     <tr><td class="num">6</td><td><strong>Un privilegio puede declarar niveles por campo</strong> — cuánto se ve de un dato sensible. Van en <a href="#segmentado" data-ir="segmentado" class="enlace">Segmentado</a>, que nació para esto, y <strong>dentro del privilegio</strong>: sin «ver» concedido, elegir cuánto se ve no significa nada.</td></tr>
     <tr><td class="num">7</td><td><strong>Apagar el privilegio que manda no borra nada.</strong> Lo configurado se conserva para cuando se vuelva a encender — igual que los filtros de la tabla al plegarse. Lo que no se conserva es el <em>efecto</em>: <code>privilegiosEfectivos()</code> devuelve lo que de verdad se aplica, que es lo que va al backend.</td></tr>
-    <tr><td class="num">8</td><td><strong>R110 · Un privilegio puede depender de otro, y la cadena se recorre entera.</strong> <code>depende: 'crear'</code>. El <code>base</code> es <strong>uno solo y de un salto</strong>, así que no sabe expresar <code>leer → crear → carga&#8209;masiva</code>: dejarlo en <code>'leer'</code> permite encender la carga masiva sin poder crear, que es un botón que responde 403. Mientras falte, se ve bloqueado y dice cuál falta; encenderlo enciende toda la cadena; apagar aquél <strong>no borra</strong> éste, pero <code>privilegiosEfectivos()</code> le quita el efecto. <strong>Ojo al tacto:</strong> un privilegio con <code>depende</code> deja de encender el base de rebote — primero se enciende aquel del que depende.</td></tr>
+    <tr><td class="num">8</td><td><strong>R110 · Un privilegio puede depender de otro, y la cadena se recorre entera.</strong> <code>depende: 'crear'</code>. El <code>base</code> es <strong>uno solo y de un salto</strong>, así que no sabe expresar <code>leer → crear → carga&#8209;masiva</code>: dejarlo en <code>'leer'</code> permite encender la carga masiva sin poder crear, que es un botón que responde 403. Mientras falte, se ve bloqueado y dice cuál falta; apagar aquél <strong>no borra</strong> éste, pero <code>privilegiosEfectivos()</code> le quita el efecto. <strong>El encendido en cascada es una red, no el camino normal</strong>: como la fila bloqueada no se puede pulsar, la cascada solo llega a actuar cuando el privilegio se enciende por otra vía —compartir <code>clave</code> con otro (R99), o venir así en el <code>valor</code> inicial—. Ahí es donde evita guardar un permiso sin el que lo sostiene. <strong>Ojo al tacto:</strong> mientras la cadena esté incompleta el privilegio <strong>no se puede pulsar</strong>, así que en la práctica se enciende de uno en uno, de arriba abajo. Lo que <strong>no</strong> cambia es el <code>base</code>: sigue encendiéndose de rebote al pulsar cualquier privilegio que sí sea pulsable — <strong>se midió, y la primera redacción de esta línea decía lo contrario</strong>.</td></tr>
   </tbody>
 </table>
 
@@ -14322,8 +14394,13 @@ repositorio; el porqué es lo único escrito a mano.</p>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
 
 
+<h3 class="sub-seccion">v1.91.0 <span class="cam-fecha">2026-08-28</span></h3>
+<p class="pag-intro"><strong>R111: nueve iconos que se publicaban VACIOS, y dos frases mias que la auditoria midio y eran falsas.</strong> Se encargo a dos agentes auditar que la promesa fuera igual a la entrega en R109 y R110, con los doce candados en verde. Volvieron con catorce hallazgos. Los peores son mios. UNO · NUEVE ICONOS PUBLICADOS COMO SVG VACIOS. `ic()` recibe el TRAZO y `icono()` recibe el NOMBRE. Nueve llamadas de la pagina del panel de privilegios le pasaban el nombre a `ic()`, asi que publicaban <svg>candado</svg>: un nodo de texto suelto dentro de un SVG no dibuja NADA. Cuatro los meti esta mañana; los otros CINCO llevaban ahi desde R97. Ningun candado puede verlo: verificar-elemento compara etiquetas —svg contra svg, iguales— y verificar-promesa compara propiedades CSS, no si el elemento tiene hijos. Es el hueco de R56 y R58 corrido un nivel: ya no es la etiqueta, es el CONTENIDO. De paso pedian 20px, que no es ninguno de los cuatro pasos de la escala. DOS · DOS AFIRMACIONES FALSAS QUE ESCRIBI YO. Que un privilegio con `depende` deja de encender el base de rebote: MEDIDO, es falso —el bloque del base corre antes e incondicionalmente—. Y que cambiar solo `accept` deja pasar cualquier cosa arrastrada: al reves, lo que hace es que el dialogo OFREZCA lo que el componente va a rechazar. Las dos estan corregidas donde se leen, no solo aqui. TRES · `textoBoton` SE IGNORABA EN SILENCIO en la presentacion en-linea, que es justo la que pide una pantalla dedicada a subir —el caso que trajo R109—, y los iconos clavados eran DOS, no uno como decia el catalogo. Entran `nombreTipo` —de el cuelgan los cinco textos por omision, asi que una sola prop deja de decir PDF— e `icono`. CUATRO · LA RAMA en-linea ENTERA FALTABA DEL CATALOGO, y con ella .cpdf-acciones, que viajaba sin que ninguna pantalla la demostrara. Van cinco veces el mismo defecto. Y .cpdf-panel era CSS MUERTO que viajaba apuntando a una animacion que NO viajaba: nadie la emite. Es el gemelo de .pp-no de esta misma mañana. CINCO · privilegiosEfectivos NO filtraba lo cerrado. Un mapa guardado antes de que una regla cerrara ese permiso seguia viajando al backend concediendo lo que el panel dice que no se puede conceder. Es el argumento del 403 al reves. LO QUE SALIO BIEN, y conviene decirlo: el contraste del icono nuevo CUMPLE —4,81:1 en claro y 5,30:1 en oscuro—, asi que no habia un R107 repetido. Pero el par no lo medía NADIE. Se declaran ahora `aviso-acento` e `info-acento` contra `fondo-tarjeta`: en esos cuatro estados el icono es EL CANAL que los distingue, o sea contenido no textual, y un retoque de ambar_700 los rompia en silencio. 182 pares, 71 bloqueantes por modo. QUEDA ABIERTO Y ESCRITO EN EL CATALOGO: que los cuatro estados bloqueados salen del orden de tabulacion —defendible en tres, discutible en el cuarto, y cambiarlo es decision de diseño sobre los cuatro—, y que .pp-sin-base baja las filas al 50% de opacidad dejando el nombre a 2,07:1 y el icono a 2,03:1 CON LOS INTERRUPTORES AUN PULSABLES, asi que la excepcion de WCAG para controles inactivos no aplica. Viene de R97.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>privilegiosEfectivos() ya no devuelve los privilegios marcados <code>cerrado</code>, aunque el mapa guardado los tuviera en true. Si un producto dependia de ese valor para algo que no sea mandarlo al backend, deja de recibirlo.</td></tr><tr><td>Los textos por omision de CargaPdf salen de <code>nombreTipo</code>. Quien los tuviera copiados a mano no nota nada; quien dependiera de la cadena exacta «Comprimiendo el PDF…» si: ahora es «Comprimiendo el archivo…» salvo que se pase nombreTipo.</td></tr></tbody></table>
+
+
 <h3 class="sub-seccion">v1.90.0 <span class="cam-fecha">2026-08-28</span></h3>
-<p class="pag-intro"><strong>R109 y R110: dos componentes dejan de decidir por el producto, y sale una clase muerta desde R99.</strong> Dos requerimientos de Control Administrativos, medidos sobre el paquete instalado y con las lineas citadas. Los dos sirven al MISMO caso —carga masiva de trabajadores— y por eso van juntos. R109 · CargaPdf tenia el PDF clavado en TRES sitios: el accept del JSX, esPdf() en el bucle y un type: application/pdf que REETIQUETABA el archivo reconstruido. El tercero era el peor: un archivo que pasara la validacion salia del componente mintiendo sobre lo que era, y el servidor se lo creia. Entran `accept` —mismo nombre y forma que en CargaImagen y CargaId, donde YA existia— y `validar(archivo) => true | motivo`, y el File conserva su type. No se hizo componente nuevo, que es lo que pidieron: el que existe ya resuelve arrastrar y soltar, la lista, los rechazos y el reset del input, y reimplementarlo fuera seria la sexta copia de una zona de soltar. De camino, dos cosas que el caso destapo: comprimir solo se intenta si los bytes son un PDF —antes un CSV se leia ENTERO en memoria para que el compresor descubriera al final que no lo era—, y el progreso decia «Comprimiendo» tambien con comprimir={false}, donde no comprime nada. Eso ultimo era mentira desde que existe esa prop; se ve ahora porque la carga masiva la usa. R110 · PanelPrivilegios gana `depende`. El `base` es UNO SOLO por panel y de UN salto, asi que no sabe expresar leer → crear → carga-masiva: dejarlo en «leer» permite encender la carga masiva sin poder crear, que es un boton que responde 403. Con `depende` se ve bloqueado y dice cual falta, encenderlo enciende la cadena entera, apagar aquel NO borra este —R98 sigue en pie— y privilegiosEfectivos le quita el efecto, que es justo el 403 que se vino a evitar. No se reutilizo NoRepartible a proposito, y el argumento es de ellos: describe por que algo no se PUEDE repartir, no un estado que cambia con lo que acaban de pulsar. CONSECUENCIA QUE HAY QUE SABER: un privilegio con `depende` deja de encender el base de rebote. Primero se enciende aquel del que depende. Es lo que se pidio, pero es un cambio de tacto real en cuanto alguien apunta `depende` al propio base. Y UNA CLASE MUERTA. Al sacar el ternario anidado fuera del className —el candado de huerfanas leia trozos sueltos y se invento `.no` y `.falta`— salio `.pp-no`, que se emitia en cada fila bloqueada DESDE R99 y que ninguna regla define. Vivia escondida detras del mismo desorden que confundia al candado. Se quita en vez de inventarle un estilo. Y las cuatro `pp-no-*` VIAJABAN SIN QUE EL CATALOGO PINTARA NINGUNA desde R99 —el defecto de cpe-no-imprime de ayer, tres veces y mas viejo—. Ahora se pintan las cuatro juntas.</p>
+<p class="pag-intro"><strong>R109 y R110: dos componentes dejan de decidir por el producto, y sale una clase muerta desde R99.</strong> Dos requerimientos de Control Administrativos, medidos sobre el paquete instalado y con las lineas citadas. Los dos sirven al MISMO caso —carga masiva de trabajadores— y por eso van juntos. R109 · CargaPdf tenia el PDF clavado en TRES sitios: el accept del JSX, esPdf() en el bucle y un type: application/pdf que REETIQUETABA el archivo reconstruido. El tercero era el peor: un archivo que pasara la validacion salia del componente mintiendo sobre lo que era, y el servidor se lo creia. Entran `accept` —mismo nombre y forma que en CargaImagen y CargaId, donde YA existia— y `validar(archivo) => true | motivo`, y el File conserva su type. No se hizo componente nuevo, que es lo que pidieron: el que existe ya resuelve arrastrar y soltar, la lista, los rechazos y el reset del input, y reimplementarlo fuera seria la sexta copia de una zona de soltar. De camino, dos cosas que el caso destapo: comprimir solo se intenta si los bytes son un PDF —antes un CSV se leia ENTERO en memoria para que el compresor descubriera al final que no lo era—, y el progreso decia «Comprimiendo» tambien con comprimir={false}, donde no comprime nada. Eso ultimo era mentira desde que existe esa prop; se ve ahora porque la carga masiva la usa. R110 · PanelPrivilegios gana `depende`. El `base` es UNO SOLO por panel y de UN salto, asi que no sabe expresar leer → crear → carga-masiva: dejarlo en «leer» permite encender la carga masiva sin poder crear, que es un boton que responde 403. Con `depende` se ve bloqueado y dice cual falta, encenderlo enciende la cadena entera, apagar aquel NO borra este —R98 sigue en pie— y privilegiosEfectivos le quita el efecto, que es justo el 403 que se vino a evitar. No se reutilizo NoRepartible a proposito, y el argumento es de ellos: describe por que algo no se PUEDE repartir, no un estado que cambia con lo que acaban de pulsar. CONSECUENCIA QUE HAY QUE SABER: en la pantalla la cadena se enciende de uno en uno y de arriba abajo, porque la fila bloqueada no es pulsable. [CORREGIDO EN v1.91.0] Esta entrada decia ademas que un privilegio con `depende` deja de encender el base de rebote. Es FALSO, y se midio al dia siguiente: el bloque del base corre antes e incondicionalmente. Se corrige aqui mismo en vez de dejarlo estar, porque una nota de version se lee como si fuera cierta — y se deja dicho que se creyo lo contrario, que es lo que el registro tiene que contar. Y UNA CLASE MUERTA. Al sacar el ternario anidado fuera del className —el candado de huerfanas leia trozos sueltos y se invento `.no` y `.falta`— salio `.pp-no`, que se emitia en cada fila bloqueada DESDE R99 y que ninguna regla define. Vivia escondida detras del mismo desorden que confundia al candado. Se quita en vez de inventarle un estilo. Y las cuatro `pp-no-*` VIAJABAN SIN QUE EL CATALOGO PINTARA NINGUNA desde R99 —el defecto de cpe-no-imprime de ayer, tres veces y mas viejo—. Ahora se pintan las cuatro juntas.</p>
 <table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>PanelPrivilegios ya no emite <code>.pp-no</code> en las filas bloqueadas. Ninguna regla la definia, asi que nada cambia de aspecto; solo afecta a quien la usara como gancho de CSS propio. Los cuatro <code>pp-no-cerrado</code>, <code>pp-no-ajeno</code>, <code>pp-no-pendiente</code> y <code>pp-no-depende</code> siguen igual.</td></tr><tr><td>Un privilegio que declare <code>depende</code> deja de encender el <code>base</code> de rebote: hay que encender antes aquel del que depende. Solo afecta a quien anada la prop nueva.</td></tr></tbody></table>
 
 
@@ -14922,7 +14999,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       </nav>
       <div class="pant-cab"><h1>Contrastes</h1></div>
       
-<p class="pag-intro">138 pares bloqueantes en los dos modos ·
+<p class="pag-intro">142 pares bloqueantes en los dos modos ·
 <strong>0 fallos</strong> · WCAG 2.2 AA. Recalculados en cada build por
 <code>verificar-contraste.mjs</code>: si el contrato miente, el build falla.</p>
 <h3 class="sub-seccion">Modo claro</h3>
@@ -15320,6 +15397,22 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       <td class="num">4.5</td>
       <td class="ok">cumple</td>
       <td class="motivo">Aviso neutro</td>
+    </tr>
+    <tr>
+      <td><code>aviso-acento</code></td>
+      <td><code>fondo-tarjeta</code></td>
+      <td class="num">4.81:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Icono del privilegio bloqueado por dependencia</td>
+    </tr>
+    <tr>
+      <td><code>info-acento</code></td>
+      <td><code>fondo-tarjeta</code></td>
+      <td class="num">4.80:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Icono del privilegio que no se tiene</td>
     </tr>
     <tr>
       <td><code>apagado-bolita</code></td>
@@ -15877,6 +15970,22 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       <td class="num">4.5</td>
       <td class="ok">cumple</td>
       <td class="motivo">Aviso neutro</td>
+    </tr>
+    <tr>
+      <td><code>aviso-acento</code></td>
+      <td><code>fondo-tarjeta</code></td>
+      <td class="num">5.29:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Icono del privilegio bloqueado por dependencia</td>
+    </tr>
+    <tr>
+      <td><code>info-acento</code></td>
+      <td><code>fondo-tarjeta</code></td>
+      <td class="num">5.28:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Icono del privilegio que no se tiene</td>
     </tr>
     <tr>
       <td><code>apagado-bolita</code></td>
@@ -18570,7 +18679,7 @@ async function esPdf(archivo) {
         var archivo = entrantes[0];
         // Los BYTES, no la extensión: un .docx renombrado se cuela por el nombre.
         PDF.esPdf(archivo).then(function (vale) {
-          if (!vale) { fallo('Ese archivo no es un PDF. Solo se admiten PDF.'); return; }
+          if (!vale) { fallo('trampa.pdf no es un PDF.'); return; }
           trabajo.hidden = false;
           subir.disabled = true;
           return PDF.comprimirPdf(archivo).then(function (r) {

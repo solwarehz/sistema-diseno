@@ -65,7 +65,7 @@
 import { useId, useRef, useState } from 'react';
 import { Boton } from './Boton';
 import { Chip } from './Chip';
-import { Icono } from './Icono';
+import { Icono, type NombreIcono } from './Icono';
 import { Progreso } from './Estados';
 import { comprimirPdf, formatearPeso, ahorro, esPdf } from './interno/comprimir-pdf.mjs';
 import { FilaCarga, AdjuntoArchivo } from './interno/FilaCarga';
@@ -78,7 +78,12 @@ export type PdfListo = {
   pesoFinal: number;
   /** `false` si el original viajó tal cual. `motivo` dice por qué. */
   comprimido: boolean;
-  /** `null` si se comprimió. Si no: `cifrado`, `sin-ganancia`, `ilegible`… */
+  /**
+   * Por qué no se comprimió: `sin-ganancia`, `cifrado`, `ilegible`,
+   * `sin-comprimir` cuando `comprimir` está apagado, y desde R109
+   * `no-es-pdf` cuando `comprimir` está encendido y el archivo admitido por
+   * `validar` no es un PDF. Es un identificador, no un texto de pantalla.
+   */
   motivo: string | null;
   /** Cuántas páginas se contaron. `-1` cuando no se pudo leer. */
   paginas: number;
@@ -122,8 +127,25 @@ export type CargaPdfProps = {
    * el botón siempre está: es lo que cierra.
    */
   onGrabar?: (archivos: PdfListo[]) => void | Promise<void>;
-  /** Texto del disparador del formulario. */
+  /** Texto del disparador. Vale en las DOS presentaciones desde R111: en
+   *  `en-linea` se ignoraba en silencio. */
   textoBoton?: string;
+  /**
+   * R111 · Cómo se llama lo que se sube, para el texto por omisión. `'PDF'`.
+   *
+   * De aquí cuelgan CINCO textos: el del disparador, el de «cambiar», la
+   * instrucción de la zona, la pista y la etiqueta del progreso. Con R109 se
+   * podía admitir un CSV y los cinco seguían diciendo «PDF» —tres de ellos sin
+   * prop que los cambiara—. Se pone en singular y tal como se lee en la frase
+   * «Arrastra el ___ aquí»: `'CSV'`, `'archivo'`, `'acta'`.
+   *
+   * `instrucciones`, `pista` y `textoBoton` siguen mandando sobre esto cuando
+   * se pasan: esto es el texto por omisión, no un candado.
+   */
+  nombreTipo?: string;
+  /** R111 · El icono del disparador. `'pdf'`. Estaba clavado en los dos
+   *  botones, y el catálogo decía —mal— que era uno solo. */
+  icono?: NombreIcono;
   /** Texto del botón que confirma. */
   textoGrabar?: string;
   /**
@@ -192,6 +214,8 @@ export function CargaPdf({
   onQuitar,
   onGrabar,
   textoBoton,
+  nombreTipo = 'PDF',
+  icono = 'pdf',
   textoGrabar = 'Grabar',
   instrucciones,
   pista,
@@ -366,16 +390,22 @@ export function CargaPdf({
     emitir(nueva);
   }
 
+  // R111 · Un solo sitio del que cuelga TODO el texto por omisión. Con R109 se
+  // podía admitir un CSV y la pantalla seguía diciendo «PDF» en cinco sitios,
+  // tres de ellos sin prop que los cambiara. Cambiar `nombreTipo` los arregla
+  // los cinco a la vez; seguir poniendo props sueltas era pedirle al producto
+  // que acertara cinco veces.
+  const T = nombreTipo;
   const laInstruccion = instrucciones ?? (uno
-    ? 'Arrastra el PDF aquí o elígelo desde tu equipo.'
-    : 'Arrastra los PDF aquí o elígelos desde tu equipo.');
+    ? `Arrastra el ${T} aquí o elígelo desde tu equipo.`
+    : `Arrastra los ${T} aquí o elígelos desde tu equipo.`);
 
   const cuantos = tope === Infinity
-    ? 'Solo PDF · los que hagan falta'
-    : uno ? 'Solo PDF' : `Solo PDF · hasta ${tope}`;
+    ? `Solo ${T} · los que hagan falta`
+    : uno ? `Solo ${T}` : `Solo ${T} · hasta ${tope}`;
   const laPista = pista ?? (pesoMaximo === undefined
     ? `${cuantos}.`
-    : `${cuantos} · máximo ${formatearPeso(pesoMaximo)} cada uno una vez comprimido.`);
+    : `${cuantos} · máximo ${formatearPeso(pesoMaximo)} cada uno${comprimir ? ' una vez comprimido' : ''}.`);
 
   const hayBoton = uno || libres > 0;
   /**
@@ -470,8 +500,13 @@ export function CargaPdf({
             aria-describedby={descrito}
             onClick={() => entrada.current?.click()}
           >
-            <Icono nombre="pdf" />
-            {enCurso.length === 0 ? 'Subir PDF' : uno ? 'Cambiar PDF' : 'Añadir otro'}
+            {/* R111 · Este icono y este texto estaban clavados, y es la rama que
+                usa una pantalla dedicada a subir — la del caso de la carga
+                masiva. `textoBoton` existía y aquí se IGNORABA en silencio. */}
+            <Icono nombre={icono} />
+            {enCurso.length === 0
+              ? (textoBoton ?? `Subir ${T}`)
+              : uno ? `Cambiar ${T}` : 'Añadir otro'}
           </Boton>
           {/* En línea no hay diálogo que cierre, así que «Grabar» va aquí — y
               solo si el producto lo pidió. */}
@@ -500,7 +535,7 @@ export function CargaPdf({
               que existe esa prop; se ve ahora porque la carga masiva la usa. */}
           <Progreso etiqueta={trabajo.total > 1
             ? `${comprimir ? 'Comprimiendo' : 'Comprobando'} ${trabajo.hecho + 1} de ${trabajo.total}…`
-            : comprimir ? 'Comprimiendo el archivo…' : 'Comprobando el archivo…'} />
+            : comprimir ? `Comprimiendo el ${T}…` : `Comprobando el ${T}…`} />
         </div>
       )}
 
@@ -616,8 +651,8 @@ export function CargaPdf({
           aria-describedby={descrito}
           onClick={abrir}
         >
-          <Icono nombre="pdf" />
-          {textoBoton ?? 'Subir PDF'}
+          <Icono nombre={icono} />
+          {textoBoton ?? `Subir ${T}`}
         </Boton>
       }
       panel={abierto && (

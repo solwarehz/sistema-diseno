@@ -91,7 +91,17 @@ export type Privilegio = {
    *
    * Dos efectos, y son los dos que hasta ahora había que recomponer fuera:
    * mientras aquél esté apagado, éste se ve pero no se puede encender y dice
-   * qué falta; y encenderlo enciende también aquél, igual que el `base`.
+   * qué falta; y encenderlo enciende también aquél.
+   *
+   * R111 · EL SEGUNDO EFECTO ES UNA RED, NO EL CAMINO NORMAL, y conviene no
+   * venderlo de más: como la fila bloqueada deja de ser pulsable, la cascada
+   * solo llega a actuar cuando el privilegio se enciende POR OTRA VÍA —al
+   * compartir `clave` con otro (R99), o al venir así en el `valor` inicial—.
+   * En la pantalla se enciende de uno en uno, de arriba abajo.
+   *
+   * Y NO desactiva el `base`: ése sigue encendiéndose de rebote al pulsar
+   * cualquier privilegio que sí sea pulsable. La primera redacción de esta
+   * documentación decía lo contrario y se midió que era falso.
    *
    * POR QUÉ NO BASTABA `base`. El `base` es **uno solo por panel** y se aplica
    * en un salto: cualquier privilegio encendido enciende el base y ya. Una
@@ -262,8 +272,15 @@ export function privilegiosEfectivos(
     // quita el efecto. Sin esta línea el backend recibiría `carga-masiva: true`
     // sin `crear`, que es exactamente el botón que responde 403 y el motivo por
     // el que se pidió la prop.
+    //
+    // R111 · Y lo CERRADO tampoco se aplica. Salió midiendo esto: un mapa
+    // guardado ANTES de que una regla cerrara ese permiso seguía viajando al
+    // backend concediendo justo lo que el panel dice que no se puede conceder.
+    // Es el mismo argumento del 403, al revés. `resumirPrivilegios` ya lo
+    // filtraba (:222) y esta función no, aunque se documenta como «lo que de
+    // verdad se aplica».
     const quitados = todos(m)
-      .filter((p) => p.depende && faltaDepende(m, valor, p.id))
+      .filter((p) => p.cerrado || (p.depende && faltaDepende(m, valor, p.id)))
       .map((p) => p.id);
     const limpio = { ...del };
     for (const id of quitados) {

@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.90.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.91.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -314,7 +314,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .ci-zoom{ display: flex; gap: 8px; align-items: center; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CARGA DE PDF — 23 reglas · clases .cpdf-*
+   CARGA DE PDF — 22 reglas · clases .cpdf-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .cpdf{ display: flex; flex-direction: column; gap: 4px; }
@@ -337,10 +337,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .cpdf-linea{ display: flex; align-items: center; gap: 8px; width: 100%; }
 .cpdf-quitar{ flex: none; }
 .cpdf-invita[hidden], .cpdf-puesto[hidden], .cpdf-lista[hidden],
-.cpdf-linea[hidden], .cpdf-acciones[hidden], .cpdf-panel[hidden],
+.cpdf-linea[hidden], .cpdf-acciones[hidden],
 .cpdf-pie[hidden]{ display: none; }
-.cpdf-panel{ display: flex; flex-direction: column; gap: 8px;
-  animation: cpdf-desplegar var(--dur-media) var(--curva); }
 .cpdf-pie{ display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
 .cpdf-datos{ display: flex; flex-direction: column; gap: 4px; min-width: 0;
   align-items: flex-start; }

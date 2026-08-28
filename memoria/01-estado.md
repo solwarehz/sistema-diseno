@@ -1,9 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 28 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.90.0** — dos requerimientos de Control
-Administrativos para el mismo caso (carga masiva de trabajadores), y de camino
-una clase que se emitía **desde R99 sin que ninguna regla la definiera**
+**Versión del sistema:** MMI-DS **v1.91.0** — dos auditorías sobre R109 y R110
+con los doce candados en verde: **catorce hallazgos**, y los peores son propios
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -42,10 +41,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **67 páginas** (contadas en el HTML generado; decía 53 y llevaba tiempo desfasado) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.90.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.91.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.90.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.91.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +65,37 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.90.0), con detalle
+### Lo de hoy (v1.91.0), con detalle
+
+Se encargó a dos agentes auditar que la promesa fuera igual a la entrega en
+R109 y R110. **Con los doce candados en verde, volvieron con catorce hallazgos.**
+
+1. **Nueve iconos publicados como `<svg>` vacíos.** `ic()` recibe el trazo y
+   `icono()` el nombre; nueve llamadas de la página del panel le pasaban el
+   nombre a `ic()`. Cuatro entraron esta mañana; **cinco llevaban ahí desde
+   R97**. Ningún candado puede verlo: `verificar-elemento` compara etiquetas
+   —`svg` contra `svg`— y `verificar-promesa` compara propiedades, no si el
+   elemento tiene hijos. Es el hueco de R56 y R58 corrido un nivel: ya no es la
+   etiqueta, es el **contenido**.
+2. **Dos afirmaciones falsas escritas por nosotros**, las dos medidas: que
+   `depende` desactiva el encendido de rebote del `base` —no lo hace— y que el
+   aviso de `accept` iba al revés. Corregidas donde se leen, **y también en la
+   nota de versión de la v1.90.0**, que las publicaba como ciertas.
+3. **`textoBoton` se ignoraba en silencio** en `en-linea`. Entran `nombreTipo`
+   e `icono`.
+4. **La rama `en-linea` entera faltaba del catálogo** —van cinco veces el mismo
+   defecto— y `.cpdf-panel` era CSS muerto que viajaba.
+5. **`privilegiosEfectivos` no filtraba lo cerrado.**
+
+**Lo que salió bien:** el contraste del icono nuevo **cumple** (4,81 claro /
+5,30 oscuro). No había un R107 repetido. Pero **nadie medía ese par**: se
+declaran `aviso-acento` e `info-acento` contra `fondo-tarjeta`.
+
+**Queda abierto y escrito en el catálogo:** los cuatro estados bloqueados salen
+del orden de tabulación, y `.pp-sin-base` deja el nombre a **2,07:1** con los
+interruptores **aún pulsables**, así que la excepción de WCAG no aplica.
+
+### Lo de ayer (v1.90.0), con detalle
 
 **R109 · `CargaPdf` deja de decidir qué acepta.** El PDF estaba clavado en tres
 sitios; el peor era `type: 'application/pdf'` al reconstruir el `File`, que hacía
@@ -1266,9 +1295,9 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.90.0
+Versión                      1.91.0
 Tokens semánticos                56   + 5 de marca
-Pares de contraste              178   (138 bloqueantes · 40 informativos,
+Pares de contraste              182   (142 bloqueantes · 40 informativos,
                                       0 fallos)
 Pruebas                         521   en 36 archivos
 Reglas que viajan               864   de 1349 · 626 clases, 0 huérfanas
