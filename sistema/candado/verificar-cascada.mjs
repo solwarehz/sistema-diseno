@@ -231,6 +231,25 @@ function mediaCasa(cond, ancho) {
   // Las de preferencia no se evalúan: describen a la persona, no al ancho, y
   // aquí se mide el caso por omisión.
   if (/prefers-/.test(cond)) return false;
+  /**
+   * R107 · EL MEDIO IMPRESO NO ES UNA PANTALLA ESTRECHA. Sin esta línea,
+   * `@media print` no contenía ningún `(max|min)-width`, el bucle de abajo no
+   * encontraba nada que comprobar y la función devolvía `true`: los tres
+   * candados de cascada estaban midiendo `.cpe-impresa` **en pantalla con sus
+   * valores de impresión**, un estado que no existe en ningún medio.
+   *
+   * No daba rojo porque el error era simétrico —las dos hojas llevan el mismo
+   * bloque—, y ese es justo el tipo de verde que este repositorio no admite:
+   * todo lo que los candados afirmaban sobre esa clase en pantalla era falso, y
+   * una futura regla de impresión presente en una sola hoja habría alterado en
+   * silencio las mediciones DE PANTALLA de las demás clases.
+   *
+   * Lo encontró una auditoría, no un fallo: el sistema estrenó su primera hoja
+   * de impresión en la v1.87.0 y nadie había mirado si los candados sabían
+   * leerla. Aquí se mide la pantalla; lo impreso queda declarado como lo que
+   * NINGÚN candado comprueba todavía.
+   */
+  if (/\bprint\b/.test(cond)) return false;
   let ok = true;
   for (const m of cond.matchAll(/\(\s*(max|min)-width\s*:\s*(\d+)px\s*\)/g)) {
     ok = ok && (m[1] === 'max' ? ancho <= +m[2] : ancho >= +m[2]);

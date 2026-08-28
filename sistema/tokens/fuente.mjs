@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.87.0";
+export const VERSION = "1.88.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,46 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.88.0', fecha: '2026-08-27',
+    que: 'R107: un contraste de 1,91:1 que se publico, y un candado que media lo impreso como pantalla',
+    porque:
+      'R107 · Lo pidio el responsable: encargar a un agente que auditara si la promesa es igual a la '
+      + 'entrega en las dos familias nuevas —`psl-*` y `cpe-*`—. Los catorce candados estaban en '
+      + 'verde y aun asi la auditoria encontro tres cosas. Vale la pena decirlo: NINGUNA se veia '
+      + 'fallando. '
+      + 'UNO · UN CONTRASTE DE 1,91:1 EN OSCURO, PUBLICADO. `.psl-sdk-et` usaba `identidad-2` como '
+      + 'COLOR DE TEXTO sobre `fondo-encabezado`. Ese token vale lo mismo en los dos modos —es un '
+      + 'disco relleno con texto blanco encima, y su uso declarado es «Decorativo»—, asi que daba '
+      + '6,46:1 en claro y 1,91:1 en oscuro. SC 1.4.3 pide 4,5. Era el UNICO sitio de toda la hoja '
+      + 'donde un token de identidad se usaba como color de texto, y el candado de contraste no lo '
+      + 'vio porque solo mide los pares DECLARADOS: un par que nadie declara no se mide. Corregido a '
+      + '`texto-secundario`, que si esta medido —4,84 y 7,87—. El borde discontinuo del mismo bloque '
+      + 'daba lo mismo y pasa a `borde-campo`. '
+      + 'DOS · LOS CANDADOS DE CASCADA MEDIAN `@media print` COMO SI FUERA PANTALLA. `mediaCasa` '
+      + 'descartaba las consultas de preferencia y luego solo buscaba max/min-width; con «print» no '
+      + 'encontraba ninguna y devolvia true. Es decir: verificar-promesa, -cascada y -empate median '
+      + '`.cpe-impresa` en pantalla CON SUS VALORES DE IMPRESION, un estado que no existe en ningun '
+      + 'medio. No daba rojo porque el error era simetrico —las dos hojas llevan el mismo bloque—, y '
+      + 'ese es justo el verde que este repositorio no admite. El sistema estreno su primera hoja de '
+      + 'impresion en la v1.87.0 y nadie miro si los candados sabian leerla. '
+      + 'TRES · `.cpe-no-imprime` VIAJABA SIN DEMOSTRARSE. Declarada y entregada, pero el catalogo no '
+      + 'la pintaba ni una vez: un producto recibia la regla sin forma de saber a que elementos '
+      + 'ponerla. Es el mismo defecto que `sel-con-lupa` de esta mañana, y el candado de la omision '
+      + 'no puede verlo porque estas familias escriben sus modificadores como clases sueltas y no '
+      + 'como reglas compuestas. Ahora se pinta, y SOLA en su elemento: mezclarla con una clase de '
+      + 'andamio la habria sacado de la comparacion sin que nadie lo notara. '
+      + 'QUEDA DECLARADO Y NO RESUELTO: que lo IMPRESO no lo comprueba ningun candado —solo se '
+      + 'excluye de las mediciones de pantalla—, que `verificar-omision` es ciego a estas dos '
+      + 'familias por como estan escritos sus modificadores, y que no hay componente de React detras '
+      + 'de `psl-*` ni de `cpe-*`, asi que su marcado no tiene contrato y `verificar-elemento` no '
+      + 'las mira.',
+    rompe: [
+      'Si alguien copio `.psl-sdk-et` a mano, su color cambia de violeta a gris: era un fallo de '
+      + 'contraste en modo oscuro y no se conserva por compatibilidad.',
+    ],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.87.0', fecha: '2026-08-27',
     que: 'Nace «Boleta electronica» sobre Nubefact — y con ella la primera hoja de impresion del sistema',

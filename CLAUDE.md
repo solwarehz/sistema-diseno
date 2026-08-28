@@ -19,8 +19,8 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.87.0** — nace **Boleta electrónica** sobre Nubefact, y con
-ella la primera hoja de impresión del sistema.
+**Estado actual: v1.88.0** — R107: se corrige un contraste de 1,91:1 que se
+publicó, y el candado de la cascada aprende a no medir lo impreso como pantalla.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

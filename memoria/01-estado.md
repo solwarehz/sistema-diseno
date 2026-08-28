@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 27 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.87.0** — nace **Boleta electrónica**: emitir,
-notas, anular, cotizar, guía de remisión e **impresión**, la primera superficie
-del sistema cuyo contenido lo manda una norma
+**Versión del sistema:** MMI-DS **v1.88.0** — una auditoría encontró un
+contraste de **1,91:1** en oscuro que se había publicado, y un candado que medía
+la hoja de impresión **como si fuera pantalla**
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -42,10 +42,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 53 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.87.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.88.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.87.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.88.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,35 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.87.0), con detalle
+### Lo de hoy (v1.88.0), con detalle
+
+**R107 · una auditoría encontró lo que catorce candados en verde no veían.**
+
+El responsable pidió encargar a un agente que auditara si la promesa es igual a
+la entrega en `psl-*` y `cpe-*`. Los catorce estaban en verde y aun así
+aparecieron tres cosas. **Ninguna se veía fallando.**
+
+1. **Un contraste de 1,91:1 en oscuro, ya publicado.** `.psl-sdk-et` usaba
+   `identidad-2` como **color de texto**. Ese token vale lo mismo en los dos
+   modos —su uso declarado es «Decorativo»— así que daba 6,46 en claro y **1,91
+   en oscuro**; SC 1.4.3 pide 4,5. Era el **único sitio de toda la hoja** donde
+   un token de identidad se usaba como texto, y **el candado de contraste no lo
+   vio porque solo mide los pares declarados**: un par que nadie declara no se
+   mide.
+2. **Los candados de cascada medían ` print` como si fuera pantalla.**
+   `mediaCasa` no encontraba ningún `max/min-width` en «print» y devolvía
+   `true`, así que medían `.cpe-impresa` **en pantalla con sus valores de
+   impresión**. No daba rojo porque el error era **simétrico**, y ese es justo
+   el verde que este repositorio no admite.
+3. **`.cpe-no-imprime` viajaba sin demostrarse** — el mismo defecto que
+   `sel-con-lupa` esta mañana.
+
+**Queda declarado y sin resolver:** lo impreso no lo comprueba ningún candado
+—solo se excluye de las mediciones de pantalla—, `verificar-omision` es ciego a
+estas dos familias por cómo escriben sus modificadores, y no hay componente de
+React detrás, así que su marcado no tiene contrato.
+
+### Lo de la v1.87.0, con detalle
 
 **Nace «Boleta electrónica» sobre Nubefact — y la primera hoja de impresión.**
 
@@ -1182,7 +1210,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.87.0
+Versión                      1.88.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes · 40 informativos,
                                       0 fallos)

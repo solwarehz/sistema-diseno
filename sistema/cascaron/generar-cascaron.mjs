@@ -6282,7 +6282,18 @@ nivel de corrección <strong>Q</strong>, codificación <strong>UTF-8</strong>, p
 en <code>codigo_hash</code>: <strong>no se construyen a mano</strong>.</div>
 
 <h3 class="sub-seccion">A4 — la representación completa</h3>
+<p class="seccion-sub">Los mandos llevan <code>cpe-no-imprime</code>: existen en pantalla y
+<strong>desaparecen en el papel</strong>. Es la clase que hace que al imprimir un comprobante no se
+imprima la aplicación — y va aquí, pintada, porque una regla que viaja sin demostrarse no se puede
+comprobar.</p>
 <div class="bloque">
+  <!-- «cpe-no-imprime» va SOLA en su elemento a proposito: mezclarla con una
+       clase de andamio «psl-demo-*» la sacaria de la comparacion del candado de
+       la promesa sin que nadie lo notara. -->
+  <div class="cpe-no-imprime">
+    <button class="btn btn-neutro btn-mini btn-ic">${icono('descargar')}Descargar el PDF</button>
+    <button class="btn btn-1 btn-mini">Imprimir</button>
+  </div>
   <div class="cpe-impresa">
     <div class="cpe-impresa-cab">
       <div>
@@ -10545,10 +10556,17 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 /* EL TERRENO DE IZIPAY. La trama a rayas no es adorno: marca donde acaba lo
    nuestro. Dentro de esa caja el marcado lo escribe su SDK y lo unico que le
    podemos pasar son colores. */
-.psl-sdk { border: 1px dashed var(--identidad-2); border-radius: 6px;
+/* R107 · EL ROTULO NO PUEDE IR EN «identidad-2», y esto lo caza una auditoria,
+   no la vista. Ese token vale LO MISMO en los dos modos —es un disco relleno
+   con texto blanco encima, y su uso declarado es «Decorativo»—, asi que puesto
+   como COLOR DE TEXTO sobre «fondo-encabezado» daba 6,46:1 en claro y
+   **1,91:1 en oscuro**. SC 1.4.3 pide 4,5. Era el unico sitio de toda la hoja
+   donde un token de identidad se usaba como color de texto.
+   «texto-secundario» es par medido: 4,84 en claro y 7,87 en oscuro. */
+.psl-sdk { border: 1px dashed var(--borde-campo); border-radius: 6px;
   background: var(--fondo-encabezado); padding: 12px; }
 .psl-sdk-et { display: flex; align-items: center; gap: 4px; font-size: 12px;
-  font-weight: 500; color: var(--identidad-2); margin-bottom: 8px; }
+  font-weight: 500; color: var(--texto-secundario); margin-bottom: 8px; }
 .psl-sdk-et .ic { width: 14px; height: 14px; }
 .psl-demo-sdk-caja { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
   border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 12px; }

@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.87.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.88.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -1528,10 +1528,10 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 .psl-linea-sub{ display: block; font-size: 12px; color: var(--texto-secundario); }
 .psl-monto{ font-variant-numeric: tabular-nums; white-space: nowrap; }
 .psl-total{ border-top: 1px solid var(--borde); padding-top: 8px; font-weight: 600; }
-.psl-sdk{ border: 1px dashed var(--identidad-2); border-radius: 6px;
+.psl-sdk{ border: 1px dashed var(--borde-campo); border-radius: 6px;
   background: var(--fondo-encabezado); padding: 12px; }
 .psl-sdk-et{ display: flex; align-items: center; gap: 4px; font-size: 12px;
-  font-weight: 500; color: var(--identidad-2); margin-bottom: 8px; }
+  font-weight: 500; color: var(--texto-secundario); margin-bottom: 8px; }
 .psl-sdk-et .ic{ width: 14px; height: 14px; }
 .psl-estado{ border-radius: 6px; padding: 24px 16px; text-align: center;
   display: flex; flex-direction: column; align-items: center; gap: 8px; }
