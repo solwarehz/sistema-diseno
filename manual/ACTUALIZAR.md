@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.77.0
+# Actualizar al sistema de diseño v1.78.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.77.0"
+npm install "github:solwarehz/sistema-diseno#v1.78.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,19 +27,19 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.77.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.78.0
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.77.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.78.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.77.0 --repo solwarehz/sistema-diseno
+gh release download v1.78.0 --repo solwarehz/sistema-diseno
 ```
 
 Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
@@ -307,6 +307,7 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.75.0 | **`SelectorBusqueda` ya se ve como `Selector`.** Se veía distinto por la lupa, que sangraba el texto 32 px cuando el resto de los campos empieza en 8. **La lupa pasa a ser opcional** (`conLupa`) y por omisión no está: si la quieren —en un buscador de verdad— hay que pedirla. El buscador de `TablaDatos` la pide por su cuenta y no cambia |
 | 1.76.0 | **La tabla arranca ordenada y su primera columna no se puede quitar.** Sin declarar nada: orden alfabético por la primera columna ordenable, y esa columna deja de poder ocultarse — **antes su casilla se desmarcaba y no pasaba nada**. **Dos cambios visibles**: si alguna tabla dependía del orden de llegada de la consulta, pásenle `ordenInicial={null}`; si querían poder ocultar la primera columna, `columnasFijas={[]}`. En `modo="servidor"` no se impone orden |
 | 1.77.0 | **Las tres cargas dejan de romper el formulario.** `CargaImagen`, `CargaPdf` y `CargaId` arrancan y terminan igual: una fila que mide **lo que un campo** (36 px), con el disparador y lo ya cargado **al costado**, nunca encima ni debajo. **El funcionamiento interno no cambia** —lo que cada una comprueba, comprime y entrega es idéntico—; cambia cómo se presenta al empezar y qué forma tiene el resultado. **Tres cambios visibles**: en `CargaPdf` el resumen pasa de encima del botón a su lado (y el recuento de páginas y el chip del ahorro se quedan solo en el panel); en `CargaId` las miniaturas pasan de 76×48 a 35×22, con su proporción ID-1 intacta; en `CargaImagen` no cambia nada salvo que pidan la nueva `presentacion="fila"` |
+| 1.78.0 | **`CargaImagen` deja de ser la excepción, y ahora sí cambia sola.** En la 1.77.0 era la única de las tres que no usaba la fila por omisión; ahora **la fila es el defecto**, así que un `<CargaImagen>` que no toquen pasa de la caja de 96 px a la fila de 36. **Si esa pantalla está hecha para poner esa imagen** —el selector de foto del legajo, el logo de la marca—, pidan `presentacion="caja"` y queda como estaba. Además: el **rótulo pasa dentro de la fila** en las tres cargas (todo en un renglón), la **foto de una persona se ve redonda** en la miniatura, y `.ci-et`, `.ci-nota`, `.ci-error` y `.ci-vacia` **desaparecen de la hoja** — pasan a `.cx-*`, que es lo que ya usaban el PDF y el ID |
 
 **Lo que no rompe pero conviene aprovechar:** `soloLectura` en `Selector`
 (§6.5 del manual), `persona.foto` en `CargaImagen` (§6.7), `CargaId` para el

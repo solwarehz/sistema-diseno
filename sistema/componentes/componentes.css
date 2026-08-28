@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.77.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.78.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -232,17 +232,20 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .cp-ver:disabled{ opacity: .75; cursor: default; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   FILA DE CARGA — 25 reglas · clases .cx-*
+   FILA DE CARGA — 26 reglas · clases .cx-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .cx{ display: flex; flex-direction: column; gap: 4px; }
-.cx-et{ font-size: 13px; font-weight: 500; color: var(--texto-principal); }
+.cx-et{ font-size: 13px; font-weight: 500; color: var(--texto-principal);
+  flex: 0 1 auto; min-width: 3ch;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cx-fila{ display: flex; align-items: center; gap: 8px;
   min-height: 36px; min-width: 0; flex-wrap: nowrap; }
 .cx-fila > .btn{ flex: none; }
 .cx-vacio{ font-size: 12px; color: var(--texto-pista); }
 .cx-adjuntos{ display: flex; align-items: center; gap: 4px;
-  min-width: 0; overflow: hidden; list-style: none; margin: 0; padding: 0; }
+  flex: 1 100 auto; min-width: 0; overflow: hidden;
+  list-style: none; margin: 0; padding: 0; }
 .cx-adjuntos[hidden]{ display: none; }
 .cx-adj{ display: inline-flex; align-items: center; gap: 4px;
   min-width: 0; max-width: 100%; height: 27px; padding: 0 4px;
@@ -254,6 +257,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
   object-fit: cover; border-radius: 3px; border: 1px solid var(--borde);
   background: var(--fondo-encabezado); }
 .cx-mini-id{ width: 35px; }
+.cx-mini-redonda{ border-radius: 50%; }
 .cx-ver{ padding: 0; border: 0; background: transparent; cursor: pointer;
   display: block; border-radius: 3px; }
 .cx-ver:hover .cx-mini{ border-color: var(--accion); }
@@ -278,11 +282,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .cx-nota{ font-size: 12px; color: var(--texto-secundario); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CARGA DE IMAGEN — 26 reglas · clases .ci-*
+   CARGA DE IMAGEN — 23 reglas · clases .ci-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .ci{ display: flex; flex-direction: column; gap: 8px; align-items: center; }
-.ci-et{ font-size: 13px; font-weight: 500; }
 .ci-caja{ display: grid; place-items: center; overflow: hidden;
   border: 1px solid var(--borde-campo); border-radius: 6px;
   background: var(--fondo-encabezado); }
@@ -290,15 +293,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .ci-m{ width: 96px; height: 96px; }
 .ci-l{ width: 144px; height: 144px; }
 .ci-img{ display: block; width: 100%; height: 100%; object-fit: cover; }
-.ci-vacia{ font-size: 12px; color: var(--texto-pista); text-align: center; padding: 8px; }
+.ci-caja .cx-vacio{ text-align: center; padding: 8px; }
 .ci-caja:has(> .ci-avatar){ border-color: transparent; background: transparent; }
 .ci-caja .ci-avatar{ width: 100%; height: 100%; }
 .ci-s .ci-avatar{ font-size: 24px; }
 .ci-m .ci-avatar{ font-size: 34px; }
 .ci-l .ci-avatar{ font-size: 56px; }
 .ci-acciones{ display: flex; gap: 8px; }
-.ci-error{ font-size: 12px; color: var(--error-texto); font-weight: 500; }
-.ci-nota{ font-size: 12px; color: var(--texto-secundario); }
 .ci-entrada{ position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 .ci-editor{ display: flex; flex-direction: column; gap: 8px; align-items: center; }
 .ci-editor[hidden]{ display: none; }

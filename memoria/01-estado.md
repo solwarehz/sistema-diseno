@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 27 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.77.0** — subir imagen, subir archivo y
-subir ID **arrancan y terminan igual**, en una fila que mide lo que un campo:
-las tres rompían el formulario, cada una a su manera
+**Versión del sistema:** MMI-DS **v1.78.0** — subir imagen, subir archivo y
+subir ID **arrancan y terminan igual de verdad**: rótulo, botón y lo cargado en
+un solo renglón, y la carga de imagen deja de ser la excepción
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ las tres rompían el formulario, cada una a su manera
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —32 componentes
-publicados, la hoja que viaja, **trece candados**, 478 pruebas— y sigue
+publicados, la hoja que viaja, **trece candados**, 482 pruebas— y sigue
 aprendiendo la misma lección por otro lado: los peores defectos no están en lo
 que el catálogo enseña mal, sino en **lo que ningún candado estaba mirando**.
 R86 es de ese tipo: la tabla declaraba una altura de fila de 34px desde la
@@ -38,14 +38,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · 178 pares · 138 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **478 pruebas en 33 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · 866 reglas de 1351 · **629 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
+| Componentes de React | ✅ | **482 pruebas en 33 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 41 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.77.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.78.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.77.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.78.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,38 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.77.0), con detalle
+### Lo de hoy (v1.78.0), con detalle
+
+**R102, segunda parte · la carga de imagen deja de ser la excepción.**
+
+La v1.77.0 dejó `caja` como defecto de `CargaImagen` para no reformar en
+silencio los selectores de foto y de logo ya en producción. El responsable lo
+revisó **en el catálogo** y la medición le dio la razón: de las tres cargas,
+**solo dos arrancaban iguales sin tocar nada**. El anuncio decía una cosa y el
+comportamiento por omisión otra. Si se pidió que las tres arrancaran igual, **la
+que hay que pedir es la excepción, no la regla.**
+
+Tres cosas más, y las tres suyas:
+
+- **Todo en un solo renglón, también el rótulo.** Pasa dentro de la fila. Es la
+  excepción declarada a la regla del formulario —la etiqueta va encima del
+  campo— y se sostiene porque aquí no encabeza una caja de escribir: encabeza un
+  mando, como ya hacen `.top-filtros` y `.pgn`. **Coste declarado:** con
+  rótulos de distinta longitud, dos filas seguidas no alinean sus disparadores.
+- **La foto de una persona, redonda en la miniatura**, y sin crecer: 22 px como
+  las demás, solo cambia el radio. Un logo no — el círculo mentiría sobre su
+  forma.
+- **Tres duplicados que la revisión midió sobre el paquete instalado.**
+  `.ci-et` **no fijaba el color**, así que en un mismo formulario el rótulo de
+  la imagen podía salir de otro tono que el del PDF y el del ID. `.ci-nota` y
+  `.ci-error` eran declaraciones **idénticas** a las `.cx-*` con otro nombre. Y
+  el vacío se llamaba `.ci-vacia` — otro nombre, otro género y otro
+  comportamiento. El propio R102 había retirado `.cpdf-ayuda` diciendo que dos
+  nombres para el mismo estilo es la manera de que un día se separen, y no lo
+  había aplicado aquí. De `.ci-*` queda solo lo suyo: la caja, la máscara y el
+  editor de encuadre.
+
+### Lo de la v1.77.0, con detalle
 
 **R102 · las tres cargas arrancan y terminan igual, y dejan de romper el
 formulario.**
@@ -99,7 +130,9 @@ la estática otra vez, solo que hacia abajo.
 
 - **La extensión del archivo no se recorta jamás.** El nombre sí. Cortar
   `boleta-…-2026.pdf` por el final se lleva justo el dato que dice qué es.
-- **`CargaImagen` conserva `caja` como defecto.** Cambiarlo habría reformado en
+- **`CargaImagen` conserva `caja` como defecto** —**y duró una versión**: en la
+  v1.78.0 se invirtió, porque así solo dos de las tres cargas arrancaban
+  iguales. Lo que sigue es por qué se decidió entonces. Cambiarlo habría reformado en
   silencio cada selector de foto y de logo ya en producción, donde la caja no
   estorba sino que es el punto: enseña el hueco real donde la imagen va a vivir.
   La fila se pide con `presentacion="fila"`.
@@ -882,21 +915,21 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.77.0
+Versión                      1.78.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         478   en 33 archivos
-Reglas que viajan               866   de 1351 · 629 clases, 0 huérfanas
-                                      — y desde hoy tambien las de interno/
-Candado de la cascada           965   reglas leidas · 11 anchos
+Pruebas                         482   en 33 archivos
+Reglas que viajan               864   de 1349 · 626 clases, 0 huérfanas
+                                      — el barrido mira tambien interno/
+Candado de la cascada           963   reglas leidas · 11 anchos
 Candado del empate              311   combinaciones reales · 54 empates
                                       · 0 cambian de ganador
-Candado de la promesa          1064   elementos · 218.743 propiedades
+Candado de la promesa          1065   elementos · 218.948 propiedades
                                       a 5 anchos (1440, 1024, 900, 700, 390)
-Candado del elemento            168   clases comparadas · 5 divergencias
+Candado del elemento            166   clases comparadas · 5 divergencias
                                       DECLARADAS, ninguna nueva
-Contrato de comportamiento      179   reglas · 146 obligatorias · 6 PENDIENTE
+Contrato de comportamiento      181   reglas · 148 obligatorias · 6 PENDIENTE
 Componentes publicados           32   38 módulos viajan en el paquete
                                       117 exportaciones, todas por el índice
 Iconos                           46

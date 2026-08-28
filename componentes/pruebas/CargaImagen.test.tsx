@@ -4,6 +4,12 @@
  * canvas— y se prueba el CONTRATO: qué se abre, qué se entrega, qué se
  * alcanza con teclado. La geometría del recorte no se puede probar aquí y
  * DECIRLO importa: se verificó a mano en el catálogo.
+ *
+ * v1.78.0 · TODOS ESTOS CASOS PIDEN `presentacion="caja"` A PROPÓSITO. Lo que
+ * prueban es la vista previa a tamaño real —el avatar de reserva, la
+ * proporción de cada formato, el hueco rotulado—, y desde la v1.78.0 el
+ * defecto es `fila`, para que las tres cargas arranquen iguales. Lo que hace
+ * la fila se prueba en `FilaCarga.test.tsx`.
  */
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -46,14 +52,14 @@ function elegir(container: HTMLElement) {
 describe('Carga de imagen — R35', () => {
   it('vacío con texto propio, nota al pie y ranura de error', () => {
     const { container } = render(
-      <CargaImagen etiqueta="Foto del legajo" onCambio={() => {}}
+      <CargaImagen presentacion="caja" etiqueta="Foto del legajo" onCambio={() => {}}
         vacio="Aún sin foto" nota="JPG o PNG · máx. 2 MB" error="Pesa 6 MB y el máximo es 2 MB." />
     );
     expect(screen.getByText('Aún sin foto')).toBeTruthy();
     expect(screen.getByText('JPG o PNG · máx. 2 MB')).toBeTruthy();
     // El error lo pinta el componente y DESCRIBE al disparador.
     const boton = screen.getByRole('button', { name: 'Subir foto' });
-    expect(container.querySelector('.ci-error')!.id).toBe(boton.getAttribute('aria-describedby'));
+    expect(container.querySelector('.cx-error')!.id).toBe(boton.getAttribute('aria-describedby'));
   });
 
   /* R71 · La nota es instrucción para ELEGIR. Cumplida esa función, se queda
@@ -61,7 +67,7 @@ describe('Carga de imagen — R35', () => {
      reportó el responsable con una nota de tres frases que no cabía. */
   it('R71 · con imagen ya puesta, la nota se retira', () => {
     const { container } = render(
-      <CargaImagen etiqueta="Logo" onCambio={() => {}}
+      <CargaImagen presentacion="caja" etiqueta="Logo" onCambio={() => {}}
         valor="/logo.webp" nota="Hasta 8 MB." />
     );
     expect(container.querySelector('.ci-img')).toBeTruthy();
@@ -70,7 +76,7 @@ describe('Carga de imagen — R35', () => {
 
   it('R71 · con el avatar de reserva la nota SIGUE, porque la foto aún falta', () => {
     render(
-      <CargaImagen etiqueta="Foto" formato="foto" onCambio={() => {}}
+      <CargaImagen presentacion="caja" etiqueta="Foto" formato="foto" onCambio={() => {}}
         persona={{ id: '71234567', nombre: 'QUISPE MAMANI, Rosa' }}
         nota="Hasta 8 MB." />
     );
@@ -79,16 +85,16 @@ describe('Carga de imagen — R35', () => {
 
   it('R71 · al quitar la imagen, la nota vuelve', () => {
     const { rerender } = render(
-      <CargaImagen etiqueta="Logo" onCambio={() => {}} valor="/logo.webp" nota="Hasta 8 MB." />
+      <CargaImagen presentacion="caja" etiqueta="Logo" onCambio={() => {}} valor="/logo.webp" nota="Hasta 8 MB." />
     );
     expect(screen.queryByText('Hasta 8 MB.')).toBeNull();
-    rerender(<CargaImagen etiqueta="Logo" onCambio={() => {}} valor={null} nota="Hasta 8 MB." />);
+    rerender(<CargaImagen presentacion="caja" etiqueta="Logo" onCambio={() => {}} valor={null} nota="Hasta 8 MB." />);
     expect(screen.getByText('Hasta 8 MB.')).toBeTruthy();
   });
 
   it('R71 · el error NO se retira con la imagen: eso hay que verlo siempre', () => {
     render(
-      <CargaImagen etiqueta="Logo" onCambio={() => {}} valor="/logo.webp"
+      <CargaImagen presentacion="caja" etiqueta="Logo" onCambio={() => {}} valor="/logo.webp"
         nota="Hasta 8 MB." error="No se pudo guardar." />
     );
     expect(screen.queryByText('Hasta 8 MB.')).toBeNull();
@@ -96,7 +102,7 @@ describe('Carga de imagen — R35', () => {
   });
 
   it('elegir archivo abre el editor en un Dialogo que no se pierde por un clic fuera', async () => {
-    const { container } = render(<CargaImagen etiqueta="Foto" onCambio={() => {}} />);
+    const { container } = render(<CargaImagen presentacion="caja" etiqueta="Foto" onCambio={() => {}} />);
     elegir(container);
     const dialogo = await screen.findByRole('dialog', { name: /Encuadrar — Foto/ });
     expect(dialogo).toBeTruthy();
@@ -109,7 +115,7 @@ describe('Carga de imagen — R35', () => {
   it('confirmar entrega el recorte como Blob + URL local y cierra', async () => {
     const onCambio = vi.fn();
     const u = userEvent.setup();
-    const { container } = render(<CargaImagen etiqueta="Foto" onCambio={onCambio} />);
+    const { container } = render(<CargaImagen presentacion="caja" etiqueta="Foto" onCambio={onCambio} />);
     elegir(container);
     const usar = await screen.findByRole('button', { name: 'Grabar' });
     await u.click(usar);
@@ -126,7 +132,7 @@ describe('Carga de imagen — R35', () => {
   it('cancelar descarta sin entregar, y se puede volver a elegir EL MISMO archivo', async () => {
     const onCambio = vi.fn();
     const u = userEvent.setup();
-    const { container } = render(<CargaImagen etiqueta="Foto" onCambio={onCambio} />);
+    const { container } = render(<CargaImagen presentacion="caja" etiqueta="Foto" onCambio={onCambio} />);
     elegir(container);
     await screen.findByRole('dialog');
     await u.click(screen.getByRole('button', { name: 'Cancelar' }));
@@ -140,7 +146,7 @@ describe('Carga de imagen — R35', () => {
     const onQuitar = vi.fn();
     const u = userEvent.setup();
     const { container } = render(
-      <CargaImagen etiqueta="Logo" valor="blob:guardada" onCambio={() => {}} onQuitar={onQuitar} />
+      <CargaImagen presentacion="caja" etiqueta="Logo" valor="blob:guardada" onCambio={() => {}} onQuitar={onQuitar} />
     );
     expect(container.querySelector('.ci-img')!.getAttribute('src')).toBe('blob:guardada');
     expect(screen.getByRole('button', { name: 'Cambiar foto' })).toBeTruthy();
@@ -151,7 +157,7 @@ describe('Carga de imagen — R35', () => {
 
 describe('R6 · los tres formatos — la proporción del hueco real', () => {
   it('la foto se muestra REDONDA y se encuadra con máscara circular', async () => {
-    const { container } = render(<CargaImagen etiqueta="Foto" onCambio={() => {}} />);
+    const { container } = render(<CargaImagen presentacion="caja" etiqueta="Foto" onCambio={() => {}} />);
     expect(container.querySelector('.ci-caja')!.classList.contains('ci-redonda')).toBe(true);
     elegir(container);
     await screen.findByRole('dialog');
@@ -160,7 +166,7 @@ describe('R6 · los tres formatos — la proporción del hueco real', () => {
 
   it('el logo extendido encuadra a 212×44: el editor adopta la proporción', async () => {
     const { container } = render(
-      <CargaImagen etiqueta="Logo" formato="logo-extendido" onCambio={() => {}} />
+      <CargaImagen presentacion="caja" etiqueta="Logo" formato="logo-extendido" onCambio={() => {}} />
     );
     expect(container.querySelector('.ci-caja')!.classList.contains('ci-extendida')).toBe(true);
     elegir(container);
@@ -184,7 +190,7 @@ describe('R6 · los tres formatos — la proporción del hueco real', () => {
       original.call(this, cb, tipo);
     };
     const { container } = render(
-      <CargaImagen etiqueta="Logo" formato="logo-extendido" onCambio={onCambio} />
+      <CargaImagen presentacion="caja" etiqueta="Logo" formato="logo-extendido" onCambio={onCambio} />
     );
     elegir(container);
     await u.click(await screen.findByRole('button', { name: 'Grabar' }));
@@ -194,7 +200,7 @@ describe('R6 · los tres formatos — la proporción del hueco real', () => {
   });
 
   it('el botón lleva el icono y el texto del formato', () => {
-    render(<CargaImagen etiqueta="Foto" onCambio={() => {}} />);
+    render(<CargaImagen presentacion="caja" etiqueta="Foto" onCambio={() => {}} />);
     const boton = screen.getByRole('button', { name: 'Subir foto' });
     expect(boton.querySelector('svg')).not.toBeNull();
   });
@@ -217,7 +223,7 @@ describe('R7 (pedido R50) · sin foto y con persona, el hueco es el avatar', () 
 
   it('sin foto y con persona: avatar con sus iniciales, no el texto «Sin foto»', () => {
     const { container } = render(
-      <CargaImagen etiqueta="Foto" persona={PERSONA} onCambio={() => {}} vacio="Sin foto" />
+      <CargaImagen presentacion="caja" etiqueta="Foto" persona={PERSONA} onCambio={() => {}} vacio="Sin foto" />
     );
     const av = container.querySelector('.ci-caja .avatar')!;
     expect(av).not.toBeNull();
@@ -229,14 +235,14 @@ describe('R7 (pedido R50) · sin foto y con persona, el hueco es el avatar', () 
         .firstElementChild!.classList].find((c) => /^avatar-\d$/.test(c))
     );
     // El texto de vacío ya no se pinta como pista…
-    expect(container.querySelector('.ci-vacia')).toBeNull();
+    expect(container.querySelector('.cx-vacio')).toBeNull();
     // …pero el estado se sigue ANUNCIANDO: el avatar se ve, no dice que falte.
     expect(container.querySelector('.sr-solo')!.textContent).toBe('Sin foto');
   });
 
   it('con foto manda la foto: el avatar no se queda debajo', () => {
     const { container } = render(
-      <CargaImagen etiqueta="Foto" persona={PERSONA} valor="blob:foto" onCambio={() => {}} />
+      <CargaImagen presentacion="caja" etiqueta="Foto" persona={PERSONA} valor="blob:foto" onCambio={() => {}} />
     );
     expect(container.querySelector('.ci-caja img.ci-img')).not.toBeNull();
     expect(container.querySelector('.ci-caja .avatar')).toBeNull();
@@ -244,19 +250,19 @@ describe('R7 (pedido R50) · sin foto y con persona, el hueco es el avatar', () 
 
   it('sin persona se queda el texto: no se inventa una identidad', () => {
     const { container } = render(
-      <CargaImagen etiqueta="Foto" onCambio={() => {}} vacio="Sin foto" />
+      <CargaImagen presentacion="caja" etiqueta="Foto" onCambio={() => {}} vacio="Sin foto" />
     );
     expect(container.querySelector('.ci-caja .avatar')).toBeNull();
-    expect(container.querySelector('.ci-vacia')!.textContent).toBe('Sin foto');
+    expect(container.querySelector('.cx-vacio')!.textContent).toBe('Sin foto');
   });
 
   it('SOLO para foto: un logo con persona sigue sin avatar', () => {
     const { container } = render(
-      <CargaImagen etiqueta="Logo" formato="logo-extendido" persona={PERSONA}
+      <CargaImagen presentacion="caja" etiqueta="Logo" formato="logo-extendido" persona={PERSONA}
         onCambio={() => {}} vacio="Sin logo" />
     );
     expect(container.querySelector('.ci-caja .avatar')).toBeNull();
-    expect(container.querySelector('.ci-vacia')!.textContent).toBe('Sin logo');
+    expect(container.querySelector('.cx-vacio')!.textContent).toBe('Sin logo');
   });
 });
 
@@ -271,7 +277,7 @@ describe('R7 (pedido R50) · sin foto y con persona, el hueco es el avatar', () 
 describe('R55 · foto si la hay, avatar si no — con una sola prop', () => {
   it('con `persona.foto` se pinta la foto, no las iniciales', () => {
     const { container } = render(
-      <CargaImagen etiqueta="Foto" onCambio={() => {}}
+      <CargaImagen presentacion="caja" etiqueta="Foto" onCambio={() => {}}
         persona={{ id: 'u-1', nombre: 'PINEDA, José Isidro', foto: 'blob:retrato' }} />
     );
     const img = container.querySelector('.ci-caja img.ci-img') as HTMLImageElement;
@@ -284,7 +290,7 @@ describe('R55 · foto si la hay, avatar si no — con una sola prop', () => {
 
   it('sin `persona.foto` sigue el avatar: la regla no cambia', () => {
     const { container } = render(
-      <CargaImagen etiqueta="Foto" onCambio={() => {}}
+      <CargaImagen presentacion="caja" etiqueta="Foto" onCambio={() => {}}
         persona={{ id: 'u-1', nombre: 'PINEDA, José Isidro' }} />
     );
     expect(container.querySelector('.ci-caja .avatar')).not.toBeNull();
@@ -293,7 +299,7 @@ describe('R55 · foto si la hay, avatar si no — con una sola prop', () => {
 
   it('`valor` manda sobre la foto de la ficha: es el recorte recién hecho', () => {
     const { container } = render(
-      <CargaImagen etiqueta="Foto" valor="blob:recien" onCambio={() => {}}
+      <CargaImagen presentacion="caja" etiqueta="Foto" valor="blob:recien" onCambio={() => {}}
         persona={{ id: 'u-1', nombre: 'PINEDA, José Isidro', foto: 'blob:vieja' }} />
     );
     const img = container.querySelector('.ci-caja img.ci-img') as HTMLImageElement;

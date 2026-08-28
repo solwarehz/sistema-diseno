@@ -107,20 +107,23 @@ export type CargaImagenProps = {
   /**
    * R102 · DÓNDE VIVE, que es lo que decide su forma.
    *
-   *   caja  (por defecto)  la vista previa a tamaño real — el círculo del
-   *                        avatar, el hueco de 212×44 del logo—. Es una
+   *   fila  (por defecto)  UNA FILA DE FORMULARIO: el disparador, y la
+   *                        miniatura de lo cargado AL COSTADO. Mide lo que un
+   *                        `.campo` y no crece nunca.
+   *   caja                 la vista previa a tamaño real — el círculo del
+   *                        avatar, el hueco de 212×44 del logo—. Para una
    *                        pantalla dedicada a poner esa imagen.
-   *   fila                 UNA FILA DE FORMULARIO: el disparador y la
-   *                        miniatura de lo cargado, con el alto de un `.campo`.
    *
    * El defecto a resolver era medible: la caja mide 96 px de alto y un campo
-   * 36,45, así que entre dos campos rompía la rejilla. La misma fila que usan
-   * `CargaPdf` y `CargaId`, para que las tres arranquen y terminen igual.
+   * 36,45, así que entre dos campos rompía la rejilla. Es la misma fila que
+   * usan `CargaPdf` y `CargaId`, y por eso las tres arrancan y terminan igual.
    *
-   * `caja` SIGUE SIENDO EL DEFECTO a propósito, y no por prudencia: cambiarlo
-   * reformaría en silencio cada selector de foto y de logo ya en producción,
-   * donde la caja no es un estorbo sino el punto —enseña el hueco real donde
-   * la imagen va a vivir—. En un formulario se pide `fila`.
+   * EL DEFECTO CAMBIÓ EN LA v1.78.0, y con su coste declarado. En la v1.77.0
+   * salió al revés —`caja` por defecto, `fila` a petición— por no reformar en
+   * silencio los selectores de foto y de logo ya en producción. El responsable
+   * lo revisó en el catálogo y decidió lo contrario: **si se pidió que las
+   * tres arrancaran igual, la que hay que pedir es la excepción, no la regla.**
+   * Quien quiera la vista previa grande la pide con `presentacion="caja"`.
    */
   presentacion?: 'caja' | 'fila';
 };
@@ -140,7 +143,7 @@ export function CargaImagen({
   formato = 'foto',
   textoBoton,
   persona,
-  presentacion = 'caja',
+  presentacion = 'fila',
 }: CargaImagenProps) {
   const F = FORMATOS[formato];
   // Solo la FOTO tiene persona detras: un logo no tiene iniciales que poner.
@@ -262,7 +265,7 @@ export function CargaImagen({
         etiqueta={etiqueta}
         disparador={elDisparador}
         adjuntos={retrato
-          ? [<AdjuntoImagen key="imagen" url={retrato} alt={etiqueta} onQuitar={onQuitar} />]
+          ? [<AdjuntoImagen key="imagen" url={retrato} alt={etiqueta} forma={F.redondo ? 'redonda' : 'cuadrada'} onQuitar={onQuitar} />]
           : []}
         vacio={vacio}
         error={error}
@@ -277,7 +280,16 @@ export function CargaImagen({
 
   return (
     <div className="ci">
-      <span className="ci-et">{etiqueta}</span>
+      {/* R102 · EL ROTULO, LA NOTA, EL ERROR Y EL VACIO SON LOS COMUNES.
+          Eran `.ci-et`, `.ci-nota`, `.ci-error` y `.ci-vacia`, con la misma
+          declaracion que sus equivalentes `.cx-*` —salvo `.ci-et`, que ni
+          siquiera fijaba el color y por eso el rotulo de la imagen podia salir
+          de otro tono que el del PDF y el del ID en el mismo formulario—.
+          Dos nombres para el mismo estilo es la manera de que un dia se
+          separen, y ese argumento ya se habia aplicado a `CargaPdf` y no aqui.
+          De `.ci-*` solo queda lo que de verdad es suyo: la caja, la mascara y
+          el editor de encuadre. */}
+      <span className="cx-et">{etiqueta}</span>
       {/* La vista previa ES el hueco real: la foto en círculo (así se ve el
           avatar), el logo extendido a 212×44 (el hueco del lateral), el
           comprimido en cuadrado. Se ve cómo va a quedar, no una aproximación.
@@ -302,7 +314,7 @@ export function CargaImagen({
             <span className="sr-solo">{vacio}</span>
           </>
         ) : (
-          <span className="ci-vacia">{vacio}</span>
+          <span className="cx-vacio">{vacio}</span>
         )}
       </div>
       <div className="ci-acciones">
@@ -311,7 +323,7 @@ export function CargaImagen({
           <Boton mini variante="terciaria" onClick={onQuitar}>Quitar</Boton>
         )}
       </div>
-      {error && <span className="ci-error" id={idError}>{error}</span>}
+      {error && <span className="cx-error" id={idError}><Icono nombre="alerta" />{error}</span>}
       {/* R71 · LA NOTA SE RETIRA CUANDO YA HAY IMAGEN.
           Es instrucción para ELEGIR un archivo —qué se sube, dónde se ve, cuánto
           puede pesar—, y en cuanto la imagen está, ya se cumplió: se queda
@@ -329,7 +341,7 @@ export function CargaImagen({
 
           No se pierde nada para el lector de pantalla: la nota nunca estuvo
           enlazada por `aria-describedby` —solo el error lo está—. */}
-      {nota && !retrato && <span className="ci-nota">{nota}</span>}
+      {nota && !retrato && <span className="cx-nota">{nota}</span>}
 
       {laEntrada}
       {elEditor}

@@ -152,10 +152,63 @@ describe('R102 · las tres cargas emiten LA MISMA fila', () => {
     }
   });
 
-  it('R102 · la carga de imagen sigue en CAJA por defecto: nada cambió sin pedirlo', () => {
+  it('R102 · la carga de imagen arranca EN FILA, sin pedir nada', () => {
+    // v1.78.0 · invertido. En la v1.77.0 el defecto era `caja` y la fila había
+    // que pedirla, así que de las tres cargas solo dos arrancaban iguales.
     const { container } = render(<CargaImagen etiqueta="Foto" onCambio={() => {}} />);
-    expect(container.querySelector('.ci-caja')).not.toBeNull();
-    expect(container.querySelector('.cx-fila')).toBeNull();
+    expect(container.querySelector('.cx-fila')).not.toBeNull();
+    expect(container.querySelector('.ci-caja')).toBeNull();
+  });
+
+  it('R102 · la caja se sigue pudiendo pedir, y sigue siendo la vista previa real', () => {
+    const { container } = render(
+      <CargaImagen etiqueta="Logo" presentacion="caja" formato="logo-extendido" onCambio={() => {}} />,
+    );
+    expect(container.querySelector('.ci-caja.ci-extendida')).not.toBeNull();
+  });
+
+  it('R102 · la caja ya NO tiene su propio juego de rótulos: usa el común', () => {
+    // Lo reportó la revisión: `.ci-et` ni siquiera fijaba el color, así que en
+    // un mismo formulario el rótulo de la imagen podía salir de otro tono que
+    // el del PDF y el del ID. Y `.ci-nota`/`.ci-error` eran declaraciones
+    // idénticas a las `.cx-*` con otro nombre.
+    const { container } = render(
+      <CargaImagen
+        etiqueta="Logo"
+        presentacion="caja"
+        error="Pesa demasiado."
+        nota="JPG o PNG"
+        onCambio={() => {}}
+      />,
+    );
+    expect(container.querySelector('.cx-et')).not.toBeNull();
+    expect(container.querySelector('.cx-error')).not.toBeNull();
+    expect(container.querySelector('.cx-nota')).not.toBeNull();
+    expect(container.querySelector('.cx-vacio')).not.toBeNull();
+    for (const vieja of ['.ci-et', '.ci-error', '.ci-nota', '.ci-vacia']) {
+      expect(container.querySelector(vieja)).toBeNull();
+    }
+  });
+
+  it('R102 · la foto de una persona se ve REDONDA en la fila, sin crecer', () => {
+    const { container } = render(
+      <CargaImagen etiqueta="Foto" formato="foto" valor="blob:f" onCambio={() => {}} />,
+    );
+    expect(container.querySelector('img.cx-mini.cx-mini-redonda')).not.toBeNull();
+
+    // Un logo NO: no es una persona y el círculo mentiría sobre su forma.
+    const { container: logo } = render(
+      <CargaImagen etiqueta="Logo" formato="logo-extendido" valor="blob:l" onCambio={() => {}} />,
+    );
+    expect(logo.querySelector('img.cx-mini.cx-mini-redonda')).toBeNull();
+    expect(logo.querySelector('img.cx-mini')).not.toBeNull();
+  });
+
+  it('R102 · el rótulo va DENTRO de la fila: todo en un solo renglón', () => {
+    const { container } = render(<CargaImagen etiqueta="Foto del trabajador" onCambio={() => {}} />);
+    const f = container.querySelector('.cx-fila') as HTMLElement;
+    expect(f.querySelector('.cx-et')?.textContent).toBe('Foto del trabajador');
+    expect(within(f).getByRole('button', { name: /Subir foto/ })).toBeInTheDocument();
   });
 
   it('R102 · en fila, la imagen cargada se ve como miniatura y se puede quitar', async () => {

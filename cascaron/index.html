@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.77.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.78.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.77.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.78.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -2220,7 +2220,7 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 .tn-medio img { display: block; width: 100%; height: 100%; object-fit: cover;
   transition: transform var(--dur-media) var(--curva); }
 /* R57 · Sin imagen no sale un agujero: sale el mismo hueco rotulado que usa
-   .ci-vacia. En un catalogo real siempre falta alguna. */
+   .cx-vacio. En un catalogo real siempre falta alguna. */
 .tn-medio-vacio { font-size: 12px; color: var(--texto-pista); text-align: center; padding: 8px; }
 .tn-pulsable { cursor: pointer; }
 /* R70 · EL FOCO DEL TECLADO. WCAG 2.2 SC 2.4.7 (Focus Visible), Nivel AA.
@@ -2845,7 +2845,19 @@ select.campo:disabled { opacity: .75; }
    que esta regla garantiza no es un numero: es que la fila NO CRECE con lo
    que se cargue. Con uno, con cinco y con ninguno mide lo mismo. */
 .cx { display: flex; flex-direction: column; gap: 4px; }
-.cx-et { font-size: 13px; font-weight: 500; color: var(--texto-principal); }
+/* EL ROTULO VA DENTRO DE LA FILA, no encima. Es la excepcion declarada a la
+   regla del formulario, y se sostiene porque aqui no encabeza una caja de
+   escribir: encabeza un mando. Mismo trato que «.top-filtros» y «.pgn».
+   QUIEN CEDE PRIMERO. En estrecho algo tiene que encoger, y no puede ser
+   envolviendo: eso son dos renglones, que es lo que esta fila existe para
+   evitar. El orden es: primero los adjuntos —el nombre del archivo ya se
+   recorta y la extension se salva—, y solo cuando ya no queda nada que quitar
+   ahi, el rotulo. Por eso «.cx-adjuntos» encoge 100 veces mas rapido.
+   El rotulo se recorta con puntos suspensivos y NO se corta en seco: los
+   puntos dicen que hay mas; un corte limpio miente. */
+.cx-et { font-size: 13px; font-weight: 500; color: var(--texto-principal);
+  flex: 0 1 auto; min-width: 3ch;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* 'nowrap' es la regla, no un descuido: envolver es romper la estatica otra
    vez, solo que hacia abajo. Lo que no cabe se cuenta, ver «.cx-mas». */
 .cx-fila { display: flex; align-items: center; gap: 8px;
@@ -2853,7 +2865,8 @@ select.campo:disabled { opacity: .75; }
 .cx-fila > .btn { flex: none; }
 .cx-vacio { font-size: 12px; color: var(--texto-pista); }
 .cx-adjuntos { display: flex; align-items: center; gap: 4px;
-  min-width: 0; overflow: hidden; list-style: none; margin: 0; padding: 0; }
+  flex: 1 100 auto; min-width: 0; overflow: hidden;
+  list-style: none; margin: 0; padding: 0; }
 /* Sin esto, «display: flex» le gana a [hidden] y la lista vacia sigue ahi
    ocupando su hueco. Lo cazo el candado de la cascada, no la vista. */
 .cx-adjuntos[hidden] { display: none; }
@@ -2872,6 +2885,11 @@ select.campo:disabled { opacity: .75; }
 /* La miniatura del carne conserva su proporcion: ID-1 es 1,5858:1 y 35x22 da
    1,5909 — cinco milesimas por encima, y el alto sigue cabiendo en la fila. */
 .cx-mini-id { width: 35px; }
+/* La foto de una persona se ve en circulo en todo el sistema (Avatar), y aqui
+   tambien: es la misma persona con la misma pinta en la ficha, en la tabla y
+   en la fila. Solo cambia el radio — 22px de alto, como las demas, porque lo
+   que no puede pasar es que la fila ocupe dos renglones. */
+.cx-mini-redonda { border-radius: 50%; }
 .cx-ver { padding: 0; border: 0; background: transparent; cursor: pointer;
   display: block; border-radius: 3px; }
 .cx-ver:hover .cx-mini { border-color: var(--accion); }
@@ -2909,7 +2927,6 @@ select.campo:disabled { opacity: .75; }
    el rotulo otra cosa. Salia una escalera. Centrados, la caja manda y los tres
    caen sobre su eje. Lo pidio el responsable. */
 .ci { display: flex; flex-direction: column; gap: 8px; align-items: center; }
-.ci-et { font-size: 13px; font-weight: 500; }
 .ci-caja { display: grid; place-items: center; overflow: hidden;
   border: 1px solid var(--borde-campo); border-radius: 6px;
   background: var(--fondo-encabezado); }
@@ -2917,7 +2934,11 @@ select.campo:disabled { opacity: .75; }
 .ci-m { width: 96px; height: 96px; }
 .ci-l { width: 144px; height: 144px; }
 .ci-img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.ci-vacia { font-size: 12px; color: var(--texto-pista); text-align: center; padding: 8px; }
+/* R102 · EL VACIO ES «.cx-vacio», el mismo de las otras dos cargas. Lo unico
+   propio de la caja es como se COLOCA dentro de ella: centrado y con aire.
+   Antes era «.ci-vacia» —otro nombre para el mismo estilo, y hasta con otro
+   genero—, que es justo lo que R102 dijo que habia que dejar de hacer. */
+.ci-caja .cx-vacio { text-align: center; padding: 8px; }
 /* R50 · EL AVATAR COMO ESTADO VACIO, y solo cuando hay persona detras.
    Sin foto pero CON datos, «Sin foto» no dice nada que no se sepa; las
    iniciales con su color si dicen DE QUIEN es el hueco. Es el mismo Avatar del
@@ -2952,8 +2973,6 @@ select.campo:disabled { opacity: .75; }
 /* El visor: la cara a tamaño legible, sin pasarse del alto de la ventana. */
 .cid-visor-img { display: block; max-width: 100%; max-height: 60vh;
   border-radius: 6px; border: 1px solid var(--borde); }
-.ci-error { font-size: 12px; color: var(--error-texto); font-weight: 500; }
-.ci-nota { font-size: 12px; color: var(--texto-secundario); }
 /* El input real, fuera de la vista y del tabulador pero SIN display:none:
    algunos navegadores ignoran click() sobre lo que no se pinta. */
 .ci-entrada { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
@@ -4017,7 +4036,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.77.0</option></select></label>
+          <select class="campo cg-in"><option>v1.78.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4105,8 +4124,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.77.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.77.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.78.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.78.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -6832,8 +6851,8 @@ Las tres rompían la rejilla del formulario, cada una a su manera.</div>
       </div>
 
       <div class="cx">
-        <span class="cx-et">Boleta de notas</span>
         <div class="cx-fila">
+          <span class="cx-et">Boleta de notas</span>
           <button class="btn btn-neutro btn-mini btn-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Subir imagen</button>
           <ul class="cx-adjuntos">
             <li class="cx-adj cx-adj-img">
@@ -6846,8 +6865,8 @@ Las tres rompían la rejilla del formulario, cada una a su manera.</div>
       </div>
 
       <div class="cx">
-        <span class="cx-et">Acta firmada</span>
         <div class="cx-fila">
+          <span class="cx-et">Acta firmada</span>
           <button class="btn btn-neutro btn-mini btn-ic" aria-expanded="false"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>Subir PDF</button>
           <ul class="cx-adjuntos">
             <li class="cx-adj">
@@ -6861,8 +6880,8 @@ Las tres rompían la rejilla del formulario, cada una a su manera.</div>
       </div>
 
       <div class="cx">
-        <span class="cx-et">Documento de identidad</span>
         <div class="cx-fila">
+          <span class="cx-et">Documento de identidad</span>
           <button class="btn btn-neutro btn-mini btn-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Subir ID</button>
           <ul class="cx-adjuntos">
             <li class="cx-adj cx-adj-img">
@@ -6894,16 +6913,16 @@ Las tres rompían la rejilla del formulario, cada una a su manera.</div>
 <div class="bloque">
   <div class="caso-form">
     <div class="cx">
-      <span class="cx-et">Vacío</span>
       <div class="cx-fila">
+        <span class="cx-et">Vacío</span>
         <button class="btn btn-neutro btn-mini btn-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Subir imagen</button>
         <span class="cx-vacio">Ningún archivo</span>
       </div>
     </div>
 
     <div class="cx">
-      <span class="cx-et">Varios — el sobrante se cuenta, no se apila</span>
       <div class="cx-fila">
+        <span class="cx-et">Varios — el sobrante se cuenta, no se apila</span>
         <button class="btn btn-neutro btn-mini btn-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Subir imagen</button>
         <ul class="cx-adjuntos">
           <li class="cx-adj cx-adj-img"><img class="cx-mini" data-mini alt="Cara A"></li>
@@ -6914,8 +6933,8 @@ Las tres rompían la rejilla del formulario, cada una a su manera.</div>
     </div>
 
     <div class="cx">
-      <span class="cx-et">Con error</span>
       <div class="cx-fila">
+        <span class="cx-et">Con error</span>
         <button class="btn btn-neutro btn-mini btn-ic" aria-expanded="false"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>Subir PDF</button>
         <ul class="cx-adjuntos">
           <li class="cx-adj">
@@ -6929,8 +6948,8 @@ Las tres rompían la rejilla del formulario, cada una a su manera.</div>
     </div>
 
     <div class="cx">
-      <span class="cx-et">Con el panel abierto — se despliega aquí y empuja</span>
       <div class="cx-fila">
+        <span class="cx-et">Con el panel abierto — se despliega aquí y empuja</span>
         <button class="btn btn-neutro btn-mini btn-ic" aria-expanded="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>Subir PDF</button>
       </div>
       <div class="cx-panel">
@@ -6967,99 +6986,169 @@ botones para acercar, flechas con el teclado— y entregar el recorte <strong>en
 <strong>proporción del hueco real</strong> donde va a vivir. Tres formatos cerrados: la foto en
 círculo (1:1), el logo extendido a <strong>212×44</strong> —el hueco de la marca en el lateral—
 y el comprimido en cuadrado. La subida es del producto.</p>
+<div class="aviso"><strong>Por omisión es una fila</strong>, la misma que la carga de PDF y la de
+ID: <strong>el rótulo, el botón y la imagen cargada, en un solo renglón</strong> de 36 px. Nunca dos. La vista previa a tamaño real sigue existiendo y se pide —<code>presentacion="caja"</code>—
+para las pantallas que están hechas para poner esa imagen.</div>
+
 <div class="bloque">
-  <p class="seccion-sub"><strong>Pruébalo</strong>: elige una imagen en cualquiera de los tres y
-  encuadra. El editor adopta la proporción del formato —encuadrar un logo apaisado en un cuadro
-  cuadrado es encuadrar a ciegas— y la foto se encuadra con su máscara circular. Al confirmar,
-  la vista previa enseña <strong>cómo se verá</strong> en su hueco.</p>
+  <p class="seccion-sub"><strong>Pruébalo.</strong> Elige una imagen y encuadra. Al grabar, la
+  miniatura queda <strong>al costado del botón</strong>, dentro de la fila: 22 px, y en
+  <strong>círculo</strong> cuando lo que se sube es la foto de una persona —así se ve en la ficha
+  y en la tabla, y aquí tiene que ser la misma persona con la misma pinta—. El editor sí adopta la
+  proporción del formato: encuadrar un logo apaisado en un cuadro cuadrado es encuadrar a ciegas.</p>
+
+  <div class="caso-form">
+    <div class="campo-grupo">
+      <label class="campo-etiqueta" for="ci-f-1">Apellidos y nombres</label>
+      <input id="ci-f-1" class="campo cg-in" value="QUISPE MAMANI, Rosa" readonly>
+    </div>
+
+    <div class="cx" data-carga="foto">
+      <div class="cx-fila">
+        <span class="cx-et">Foto del trabajador</span>
+        <button class="btn btn-neutro btn-mini btn-ic" data-elegir><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>Subir foto</button>
+        <ul class="cx-adjuntos" data-minis hidden></ul>
+        <span class="cx-vacio" data-vacio>Sin foto</span>
+      </div>
+      <span class="cx-nota" data-peso hidden></span>
+      <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
+    </div>
+
+    <div class="cx" data-carga="ext">
+      <div class="cx-fila">
+        <span class="cx-et">Logo extendido</span>
+        <button class="btn btn-neutro btn-mini btn-ic" data-elegir><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Subir logo</button>
+        <ul class="cx-adjuntos" data-minis hidden></ul>
+        <span class="cx-vacio" data-vacio>Sin logo</span>
+      </div>
+      <span class="cx-nota" data-peso hidden></span>
+      <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
+    </div>
+
+    <div class="cx" data-carga="comp">
+      <div class="cx-fila">
+        <span class="cx-et">Logo comprimido</span>
+        <button class="btn btn-neutro btn-mini btn-ic" data-elegir><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Subir logo</button>
+        <ul class="cx-adjuntos" data-minis hidden></ul>
+        <span class="cx-vacio" data-vacio>Sin logo</span>
+      </div>
+      <span class="cx-nota" data-peso hidden></span>
+      <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
+    </div>
+
+    <div class="cx">
+      <div class="cx-fila">
+        <span class="cx-et">Con error</span>
+        <button class="btn btn-neutro btn-mini btn-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>Subir foto</button>
+        <span class="cx-vacio">Sin foto</span>
+      </div>
+      <span class="cx-error"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg>La imagen pesa 6 MB y el máximo es 2 MB.</span>
+    </div>
+
+    <div class="campo-grupo">
+      <label class="campo-etiqueta" for="ci-f-2">Observación</label>
+      <input id="ci-f-2" class="campo cg-in" placeholder="Opcional">
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">La vista previa a tamaño real: <code>presentacion="caja"</code></h3>
+<p class="seccion-sub">Para una pantalla <strong>dedicada</strong> a poner esa imagen, donde la caja
+no estorba sino que es el punto: enseña el <strong>hueco real</strong> donde va a vivir —el círculo
+del avatar, los 212×44 de la marca en el lateral—. En un formulario mide 96 px contra los 36,45 de
+un campo, y por eso ahí va la fila.</p>
+<div class="bloque">
   <div class="muestra-fila">
     <div class="ci" data-carga="foto">
-      <span class="ci-et">Foto del trabajador</span>
-      <div class="ci-caja ci-m ci-redonda"><span class="ci-vacia">Sin foto</span></div>
+      <span class="cx-et">Foto del trabajador</span>
+      <div class="ci-caja ci-m ci-redonda"><span class="cx-vacio">Sin foto</span></div>
       <div class="ci-acciones"><button class="btn btn-neutro btn-mini btn-ic" data-elegir><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>Subir foto</button></div>
-      <span class="ci-nota" data-peso hidden></span>
+      <span class="cx-nota" data-peso hidden></span>
       <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
     </div>
     <div class="ci" data-carga="foto">
-      <span class="ci-et">Foto del trabajador</span>
+      <span class="cx-et">Foto del trabajador</span>
       <div class="ci-caja ci-m ci-redonda"><span class="avatar avatar-xl avatar-2 ci-avatar" title="JOSE ISIDRO PINEDA">JI</span><span class="sr-solo">Sin foto</span></div>
       <div class="ci-acciones"><button class="btn btn-neutro btn-mini btn-ic" data-elegir><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>Subir foto</button></div>
-      <span class="ci-nota" data-peso hidden></span>
+      <span class="cx-nota" data-peso hidden></span>
       <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
     </div>
     <div class="ci" data-carga="ext">
-      <span class="ci-et">Logo extendido</span>
-      <div class="ci-caja ci-extendida"><span class="ci-vacia">Sin logo</span></div>
+      <span class="cx-et">Logo extendido</span>
+      <div class="ci-caja ci-extendida"><span class="cx-vacio">Sin logo</span></div>
       <div class="ci-acciones"><button class="btn btn-neutro btn-mini btn-ic" data-elegir><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Subir logo</button></div>
-      <span class="ci-nota" data-peso hidden></span>
+      <span class="cx-nota" data-peso hidden></span>
       <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
     </div>
     <div class="ci" data-carga="comp">
-      <span class="ci-et">Logo comprimido</span>
-      <div class="ci-caja ci-s"><span class="ci-vacia">Sin logo</span></div>
+      <span class="cx-et">Logo comprimido</span>
+      <div class="ci-caja ci-s"><span class="cx-vacio">Sin logo</span></div>
       <div class="ci-acciones"><button class="btn btn-neutro btn-mini btn-ic" data-elegir><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Subir logo</button></div>
-      <span class="ci-nota" data-peso hidden></span>
+      <span class="cx-nota" data-peso hidden></span>
       <input type="file" accept="image/*" class="ci-entrada" tabindex="-1" aria-hidden="true">
     </div>
     <div class="ci">
-      <span class="ci-et">Foto del trabajador</span>
-      <div class="ci-caja ci-l ci-redonda"><span class="ci-vacia">Sin foto</span></div>
+      <span class="cx-et">Foto del trabajador</span>
+      <div class="ci-caja ci-l ci-redonda"><span class="cx-vacio">Sin foto</span></div>
       <div class="ci-acciones"><button class="btn btn-neutro btn-mini btn-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>Subir foto</button></div>
-      <span class="ci-error">La imagen pesa 6 MB y el máximo es 2 MB.</span>
+      <span class="cx-error"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg>La imagen pesa 6 MB y el máximo es 2 MB.</span>
     </div>
   </div>
 
-  <div class="ci-editor" id="ci-demo-editor" hidden>
-    <div class="ci-marco-editor">
-      <canvas class="ci-lienzo" id="ci-demo-lienzo" width="260" height="260" tabindex="0"
-        aria-label="Encuadre. Flechas para mover la imagen; los botones acercan y alejan."></canvas>
-      <div class="ci-mascara" id="ci-demo-mascara" aria-hidden="true" hidden></div>
+  <!-- EL EDITOR VIVE EN UN DIALOGO, como en el componente. Estaba suelto al
+       final de la pagina, y con las filas arriba se abria a pantalla y media de
+       distancia de donde se habia pulsado: parecia que no pasaba nada. Ademas
+       era una divergencia con lo entregado — el componente lo abre en «Dialogo»
+       y el catalogo lo desplegaba en linea. El MISMO marcado que emite Dialogo:
+       caja, cabecera, cuerpo y pie con Cancelar a la izquierda. -->
+  <dialog class="dialogo" id="ci-demo-dlg" aria-labelledby="ci-demo-tit">
+    <div class="dialogo-caja">
+      <div class="dialogo-cab"><h2 class="dialogo-tit" id="ci-demo-tit" tabindex="-1">Encuadrar</h2></div>
+      <div class="dialogo-cuerpo">
+        <div class="ci-editor" id="ci-demo-editor">
+          <div class="ci-marco-editor">
+            <canvas class="ci-lienzo" id="ci-demo-lienzo" width="260" height="260" tabindex="0"
+              aria-label="Encuadre. Flechas para mover la imagen; los botones acercan y alejan."></canvas>
+            <div class="ci-mascara" id="ci-demo-mascara" aria-hidden="true" hidden></div>
+          </div>
+          <div class="ci-zoom">
+            <button class="btn btn-neutro btn-mini" id="ci-demo-menos" aria-label="Alejar">−</button>
+            <button class="btn btn-neutro btn-mini" id="ci-demo-mas" aria-label="Acercar">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="dialogo-pie">
+        <button class="btn btn-neutro" id="ci-demo-cancelar">Cancelar</button>
+        <button class="btn btn-1" id="ci-demo-usar">Grabar</button>
+      </div>
     </div>
-    <div class="ci-zoom">
-      <button class="btn btn-neutro btn-mini" id="ci-demo-menos" aria-label="Alejar">−</button>
-      <button class="btn btn-neutro btn-mini" id="ci-demo-mas" aria-label="Acercar">+</button>
-      <button class="btn btn-1 btn-mini" id="ci-demo-usar">Grabar</button>
-      <button class="btn btn-terc btn-mini" id="ci-demo-cancelar">Cancelar</button>
-      
-    </div>
-  </div>
+  </dialog>
 </div>
 <p class="seccion-sub">En React, el editor vive en un <code>Dialogo</code> con «pulsar fuera»
 APAGADO —un encuadre a medias no se pierde por un clic—. El recorte sale en <strong>WebP</strong>
 (0,85), con caída a PNG por especificación: se lee <code>blob.type</code>, no se asume extensión.</p>
 
-<h3 class="sub-seccion">En un formulario: <code>presentacion="fila"</code></h3>
-<p class="seccion-sub">La caja de arriba mide <strong>96 px</strong> y un campo <strong>36,45</strong>:
-entre dos campos rompe la rejilla. En un formulario se pide la <a href="#filacarga" data-ir="filacarga"
-class="enlace">fila de carga</a>, la misma que usan la carga de PDF y la de ID. La caja
-<strong>sigue siendo el defecto</strong> a propósito: en una pantalla dedicada a poner una foto o
-un logo no estorba, es el punto — enseña el hueco real donde la imagen va a vivir.</p>
-
-<div class="bloque">
-  <div class="caso-form">
-    <div class="cx">
-      <span class="cx-et">Foto del trabajador</span>
-      <div class="cx-fila">
-        <button class="btn btn-neutro btn-mini btn-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>Cambiar foto</button>
-        <ul class="cx-adjuntos">
-          <li class="cx-adj cx-adj-img">
-            <img class="cx-mini" data-mini alt="Foto del trabajador">
-            <button class="btn btn-terc btn-mini btn-solo-ic" aria-label="Quitar Foto del trabajador"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><path d="M9 7V4h6v3"/></svg></button>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
+<p class="seccion-sub">La caja mide <strong>96 px</strong> y un campo <strong>36,45</strong>: entre
+dos campos rompe la rejilla, y por eso el defecto es la <a href="#filacarga" data-ir="filacarga"
+class="enlace">fila de carga</a>. La caja se pide cuando la pantalla ES para poner esa imagen.</p>
 
 <div class="cod">
   <div class="cod-cab"><span class="cod-tit">Uso</span></div>
-  <pre class="cod-pre"><code>&lt;CargaImagen
+  <pre class="cod-pre"><code>&lt;!-- En un formulario. No hay que pedir nada: la fila es el defecto --&gt;
+&lt;CargaImagen
   etiqueta="Foto del trabajador"
-  presentacion="fila"
   valor={ficha.foto}
   onCambio={({ archivo }) =&gt; subir(archivo)}
   onQuitar={() =&gt; borrar()}
+/&gt;
+
+&lt;!-- En una pantalla dedicada a poner esa imagen --&gt;
+&lt;CargaImagen
+  etiqueta="Logo de la institución"
+  presentacion="caja"
+  formato="logo-extendido"
+  valor={marca.logo}
+  onCambio={({ archivo }) =&gt; subir(archivo)}
 /&gt;</code></pre>
 </div>
     </section><section class="pagina" id="pg-cargapdf" hidden>
@@ -7143,8 +7232,8 @@ devuelve el archivo listo y los dos pesos.</p>
 <div class="bloque">
   <div class="muestra-fila">
     <div class="cx">
-      <span class="cx-et">Cerrado y vacío</span>
       <div class="cx-fila">
+        <span class="cx-et">Cerrado y vacío</span>
         <button class="btn btn-neutro btn-mini btn-ic" aria-expanded="false"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>Subir PDF</button>
         <span class="cx-vacio">Ningún archivo</span>
       </div>
@@ -7152,8 +7241,8 @@ devuelve el archivo listo y los dos pesos.</p>
     </div>
 
     <div class="cx">
-      <span class="cx-et">Con el archivo puesto</span>
       <div class="cx-fila">
+        <span class="cx-et">Con el archivo puesto</span>
         <button class="btn btn-neutro btn-mini btn-ic" aria-expanded="false"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>Subir PDF</button>
         <ul class="cx-adjuntos">
           <li class="cx-adj">
@@ -7167,8 +7256,8 @@ devuelve el archivo listo y los dos pesos.</p>
     </div>
 
     <div class="cx">
-      <span class="cx-et">Con error</span>
       <div class="cx-fila">
+        <span class="cx-et">Con error</span>
         <button class="btn btn-neutro btn-mini btn-ic" aria-expanded="false"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>Subir PDF</button>
         <span class="cx-vacio">Ningún archivo</span>
       </div>
@@ -7249,8 +7338,8 @@ debajo del nominal. Encuadrar un carné en un cuadrado sería encuadrar a ciegas
   desactiva</strong>. Pulsa una miniatura para verla en grande.</p>
 
   <div class="cx" id="cid-demo">
-    <span class="cx-et">Documento de identidad</span>
     <div class="cx-fila">
+      <span class="cx-et">Documento de identidad</span>
       <button class="btn btn-neutro btn-mini btn-ic" id="cid-demo-btn"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Subir ID</button>
       <ul class="cx-adjuntos" id="cid-demo-minis"></ul>
     </div>
@@ -11534,6 +11623,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
 
 
+<h3 class="sub-seccion">v1.78.0 <span class="cam-fecha">2026-08-27</span></h3>
+<p class="pag-intro"><strong>R102 (segunda parte): la carga de imagen deja de ser la excepcion — las tres arrancan iguales de verdad.</strong> R102 · La v1.77.0 dejo `caja` como defecto de CargaImagen para no reformar en silencio los selectores de foto y de logo ya en produccion. El responsable lo reviso EN EL CATALOGO y la medicion le dio la razon: de las tres cargas solo dos arrancaban iguales sin tocar nada — CargaId y CargaPdf emitian la fila comun, y CargaImagen su propia caja de 96px. El anuncio decia una cosa y el comportamiento por omision otra. Si se pidio que las tres arrancaran igual, LA QUE HAY QUE PEDIR ES LA EXCEPCION, no la regla. TODO EN UNA SOLA LINEA, tambien el rotulo, y tambien pedido por el: «Foto del trabajador · Cambiar foto · Foto del trabajador, todo en una sola linea». El rotulo pasa DENTRO de la fila. Es la excepcion declarada a la regla del formulario —la etiqueta va encima del campo— y se sostiene porque aqui no encabeza una caja de escribir: encabeza un mando, como ya hacen el filtro de la barra y el tamaño de pagina de la paginacion. Se declara el coste: con rotulos de distinta longitud, dos filas seguidas no alinean sus disparadores. LA FOTO, REDONDA EN LA FILA, y sin crecer: 22px como las demas, solo cambia el radio. Se ve en circulo en la ficha y en la tabla, y aqui tiene que ser la misma persona con la misma pinta. Un logo no: el circulo mentiria sobre su forma. Y TRES DUPLICADOS QUE LA REVISION MIDIO EN EL PAQUETE INSTALADO. `.ci-et` no fijaba el color, asi que en un mismo formulario el rotulo de la imagen podia salir de otro tono que el del PDF y el del ID. `.ci-nota` y `.ci-error` eran declaraciones IDENTICAS a las `.cx-*` con otro nombre. Y el vacio se llamaba `.ci-vacia` — otro nombre, otro genero y ademas otro comportamiento. El propio R102 habia retirado `.cpdf-ayuda` con el argumento de que dos nombres para el mismo estilo es la manera de que un dia se separen, y no lo habia aplicado aqui. De `.ci-*` queda solo lo suyo: la caja, la mascara y el editor de encuadre.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td><strong><code>CargaImagen</code> cambia de forma sin que hagan nada</strong>: pasa de la caja de 96px a la fila de 36. Donde la caja era lo correcto —una pantalla dedicada a poner esa foto o ese logo— hay que pedirla ahora con <code>presentacion="caja"</code>. Es el cambio con mas alcance de esta version y por eso va el primero.</td></tr><tr><td>Si maquetaron a mano la carga de imagen, <strong><code>.ci-et</code>, <code>.ci-nota</code>, <code>.ci-error</code> y <code>.ci-vacia</code> desaparecen de la hoja</strong>: pasan a <code>.cx-et</code>, <code>.cx-nota</code>, <code>.cx-error</code> y <code>.cx-vacio</code>. El centrado del vacio dentro de la caja sigue, ahora como <code>.ci-caja .cx-vacio</code>.</td></tr><tr><td>El rotulo de las tres cargas <strong>va dentro de la fila</strong>, no encima. Quien lo tuviera colocado aparte con CSS propio lo vera moverse. Con rotulos de distinta longitud, dos filas seguidas ya no alinean sus disparadores: es la contrapartida de tenerlo todo en una linea.</td></tr></tbody></table>
+
+
 <h3 class="sub-seccion">v1.77.0 <span class="cam-fecha">2026-08-27</span></h3>
 <p class="pag-intro"><strong>R102: subir imagen, subir archivo y subir ID arrancan y terminan igual, sin romper el formulario.</strong> R102 · Lo pidio el responsable con estas palabras: «subir id, subir archivo, subir imagen, todas inician y terminan de forma similar sin romper el flujo». Y el defecto que arreglaba era MEDIBLE, no de gusto: un .campo mide 36,45px medido en el catalogo con el navegador — 13px de texto con 18,85 de interlinea real, mas 8+8 de relleno y 1+1 de borde—. CargaImagen pintaba una caja de 96px, CargaPdf apilaba la lista ENCIMA del boton —asi que la carga crecia hacia arriba cada vez que se anadia un archivo y el formulario entero se movia— y CargaId ponia dos miniaturas de 48. Las tres rompian la rejilla, cada una a su manera y con su propio marcado. AHORA LAS TRES EMITEN LA MISMA FILA (interno/FilaCarga), asi que no pueden divergir: no es que se parezcan, es que es la misma. El disparador es mini (27,6), la miniatura 22, el adjunto 27, y lo cargado va AL COSTADO del disparador y no encima. Lo que no cabe se CUENTA («+2») en vez de saltar de linea, porque envolver es romper la estatica otra vez, solo que hacia abajo. Y la extension del archivo no se recorta jamas: cortar «boleta-…-2026.pdf» por el final se lleva justo el dato que dice que es. EL FUNCIONAMIENTO INTERNO NO CAMBIA, y lo fijo el responsable: lo que cada carga comprueba, comprime, borronea y entrega es identico. Cambia como se presenta al empezar y que forma tiene el resultado. Por eso CargaImagen conserva «caja» como defecto —cambiarlo reformaria en silencio cada selector de foto y de logo ya en produccion, donde la caja no estorba sino que es el punto: ensena el hueco real donde la imagen va a vivir— y la fila se pide con presentacion="fila". DE PASO, UN AGUJERO PROPIO: el candado de huerfanas leia solo los .tsx sueltos de componentes/src, asi que todo lo extraido a interno/ salia de su alcance justo al extraerse — que es cuando mas falta hace, porque una pieza interna la comparten varios componentes. Las catorce clases cx-* no las miraba nadie, y EditorEncuadre llevaba ahi desde la v1.45.0.</p>
 <table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>Si maquetaron a mano el resumen de <code>CargaPdf</code>, cambia de sitio: las clases <code>.cpdf-lista</code> y <code>.cpdf-puesto</code> siguen existiendo DENTRO del panel, pero fuera de el lo cargado se pinta ahora con <code>.cx-adj</code>, al costado del disparador. Si usan el componente, no hay nada que hacer.</td></tr><tr><td>Si maquetaron a mano <code>CargaId</code>, sus clases propias <strong>desaparecen</strong>: <code>.cid</code>, <code>.cid-et</code>, <code>.cid-fila</code>, <code>.cid-minis</code>, <code>.cid-mini</code>, <code>.cid-mini-img</code>, <code>.cid-error</code> y <code>.cid-nota</code> pasan a ser <code>.cx-*</code>. Las miniaturas van de <strong>76×48 a 35×22</strong> —la proporcion ID-1 se conserva— y el documento se lee donde se leia antes: en el visor, pulsando la miniatura.</td></tr><tr><td><code>.cpdf-compacta</code> y <code>.cpdf-ayuda</code> <strong>se retiran de la hoja</strong>: ya no las emite nadie. La ayuda del componente sale ahora por <code>.cx-nota</code>.</td></tr><tr><td>En <code>CargaPdf</code>, el resumen de la fila deja de repetir <strong>dos</strong> datos que el resumen apilado si tenia: el <strong>recuento de paginas</strong> y —con <code>mostrarPesos</code> encendido— el <strong>Chip del ahorro</strong>. En 27px de alto no caben, y el chip son ~30 caracteres que en una columna de formulario se recortarian a la mitad: un dato cortado es peor que ese dato donde si se lee, que es el panel. Los dos siguen viajando enteros en <code>onCambio</code>.</td></tr><tr><td><code>CargaImagen</code> <strong>no cambia sola</strong>: su defecto sigue siendo <code>presentacion="caja"</code>. La fila se pide con <code>presentacion="fila"</code>, que es lo que va en un formulario.</td></tr></tbody></table>
@@ -15277,7 +15371,9 @@ async function esPdf(archivo) {
       ext:  { w: 318, h: 66,  redondo: false },
       comp: { w: 318, h: 318, redondo: false },
     };
+    var ICO_PAPELERA_CI = "<svg class=\"ic\" viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M4 7h16\"/><path d=\"M10 11v6M14 11v6\"/><path d=\"M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13\"/><path d=\"M9 7V4h6v3\"/></svg>";
     var editor = document.getElementById('ci-demo-editor');
+    var dlgCi = document.getElementById('ci-demo-dlg');
     if (!editor) return;
     var lienzo = document.getElementById('ci-demo-lienzo');
     var mascara = document.getElementById('ci-demo-mascara');
@@ -15309,7 +15405,13 @@ async function esPdf(archivo) {
         var img = new Image();
         img.onload = function () {
           st = { img: img, dx: 0, dy: 0, zoom: 1, f: f,
+            // R102 · dos destinos posibles, y el mismo editor para los dos:
+            // la CAJA de vista previa, o la FILA, donde lo cargado va al
+            // costado del boton como miniatura de 22px.
             caja: tarjeta.querySelector('.ci-caja'),
+            minis: tarjeta.querySelector('[data-minis]'),
+            vacio: tarjeta.querySelector('[data-vacio]'),
+            etiqueta: (tarjeta.querySelector('.cx-et') || tarjeta.querySelector('.cx-et') || {}).textContent || '',
             // Solo del cascaron: el peso original, para ensenar al grabar
             // cuanto adelgaza la conversion a WebP. El componente no lo
             // manda — es dato de demostracion, no de la pieza.
@@ -15317,7 +15419,9 @@ async function esPdf(archivo) {
             nota: tarjeta.querySelector('[data-peso]') };
           lienzo.width = f.w; lienzo.height = f.h;
           mascara.hidden = !f.redondo;
-          editor.hidden = false;
+          // El editor se abre EN SU DIALOGO, como el componente.
+          dlgCi.showModal();
+          document.getElementById('ci-demo-tit').focus();
           pintar();
           lienzo.focus();
         };
@@ -15340,7 +15444,7 @@ async function esPdf(archivo) {
     });
     document.getElementById('ci-demo-menos').addEventListener('click', function () { zum(1 / 1.15); });
     document.getElementById('ci-demo-mas').addEventListener('click', function () { zum(1.15); });
-    document.getElementById('ci-demo-cancelar').addEventListener('click', function () { editor.hidden = true; st = null; });
+    document.getElementById('ci-demo-cancelar').addEventListener('click', function () { dlgCi.close(); st = null; });
     document.getElementById('ci-demo-usar').addEventListener('click', function () {
       if (!st) return;
       var corte = document.createElement('canvas');
@@ -15352,17 +15456,37 @@ async function esPdf(archivo) {
         (st.img.naturalHeight - ah) / 2 - st.dy / escala(),
         aw, ah, 0, 0, corte.width, corte.height);
       var caja = st.caja, nota = st.nota, pesoOriginal = st.pesoOriginal;
+      var minis = st.minis, vacio = st.vacio, etiqueta = st.etiqueta, redonda = st.f.redondo;
       function peso(n) { return n < 1048576 ? Math.round(n / 1024) + ' KB' : (n / 1048576).toFixed(1) + ' MB'; }
       // WebP, como el componente: pesa menos y blob.type dice la verdad.
       corte.toBlob(function (blob) {
-        caja.innerHTML = '<img class="ci-img" src="' + URL.createObjectURL(blob) + '" alt="">';
+        var url = URL.createObjectURL(blob);
+        if (minis) {
+          // R102 · EN LA FILA. La miniatura va al costado del boton, 22px, y
+          // en circulo cuando lo que se sube es la foto de una persona.
+          minis.innerHTML = '<li class="cx-adj cx-adj-img">'
+            + '<img class="' + (redonda ? 'cx-mini cx-mini-redonda' : 'cx-mini') + '" src="' + url + '" alt="' + etiqueta + '">'
+            + '<button type="button" class="btn btn-terc btn-mini btn-solo-ic" data-quitar '
+            + 'aria-label="Quitar ' + etiqueta + '">' + ICO_PAPELERA_CI + '</button></li>';
+          minis.hidden = false;
+          if (vacio) vacio.hidden = true;
+          var quitar = minis.querySelector('[data-quitar]');
+          quitar.addEventListener('click', function () {
+            minis.innerHTML = '';
+            minis.hidden = true;
+            if (vacio) vacio.hidden = false;
+            if (nota) nota.hidden = true;
+          });
+        } else {
+          caja.innerHTML = '<img class="ci-img" src="' + url + '" alt="">';
+        }
         // El dato que prueba la conversion: de cuanto a cuanto, y en que.
         if (nota) {
           nota.textContent = blob.type + ' · ' + peso(pesoOriginal) + ' → ' + peso(blob.size);
           nota.hidden = false;
         }
       }, 'image/webp', 0.85);
-      editor.hidden = true; st = null;
+      dlgCi.close(); st = null;
     });
   })();
 

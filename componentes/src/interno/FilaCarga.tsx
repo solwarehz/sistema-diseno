@@ -94,12 +94,18 @@ export function FilaCarga({
 
   return (
     <div className="cx">
-      <span className="cx-et" id={idEtiqueta}>{etiqueta}</span>
+      {/* LA FILA, Y EL RÓTULO VA DENTRO. Lo pidió el responsable con estas
+          palabras —«Foto del trabajador · Cambiar foto · Foto del trabajador,
+          todo en una sola línea»—: qué se pide, cómo se hace y qué hay ya, en
+          un solo renglón de 36 px.
 
-      {/* LA FILA. Todo lo que hay que saber cabe aquí y mide lo que un campo:
-          qué se pide (el rótulo, arriba), cómo se hace (el disparador) y qué
-          hay ya (los adjuntos). Nada de esto está debajo de nada. */}
+          Es la excepción declarada a la regla del formulario —la etiqueta va
+          ENCIMA del campo—, y se sostiene porque aquí el rótulo no encabeza
+          una caja de escribir: encabeza un mando. Es el mismo trato que ya
+          reciben el filtro de la barra (`.top-filtros`) y el tamaño de página
+          de la paginación (`.pgn`), que también son rótulo + control en línea. */}
       <div className="cx-fila">
+        <span className="cx-et" id={idEtiqueta}>{etiqueta}</span>
         {disparador}
         {visibles.length > 0 && (
           <ul className="cx-adjuntos">
@@ -151,8 +157,17 @@ export type AdjuntoImagenProps = {
   url: string;
   /** Qué se ve. Va al `alt` cuando la miniatura no es pulsable. */
   alt: string;
-  /** Proporción de la miniatura. `id` conserva la ID-1 del carné. */
-  forma?: 'cuadrada' | 'id';
+  /**
+   * Forma de la miniatura. Ninguna cambia el ALTO —22 px las tres—, porque lo
+   * que no puede pasar es que la fila ocupe dos renglones:
+   *
+   *   cuadrada  lo normal.
+   *   redonda   la foto de una persona, que en el resto del sistema se ve en
+   *             círculo (`Avatar`). Aquí también, para que sea la misma
+   *             persona con la misma pinta en la ficha, en la tabla y aquí.
+   *   id        conserva la proporción ID-1 del carné: 35×22.
+   */
+  forma?: 'cuadrada' | 'redonda' | 'id';
   /** Si se puede abrir en grande. Entonces la miniatura ES un botón. */
   onVer?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onQuitar?: () => void;
@@ -164,7 +179,8 @@ export type AdjuntoImagenProps = {
 export function AdjuntoImagen({ url, alt, forma = 'cuadrada', onVer, onQuitar }: AdjuntoImagenProps) {
   // La clase se arma FUERA del className: una condición ahí dentro se la toma
   // por clase el candado de huérfanas, y con razón.
-  const clasesMini = forma === 'id' ? 'cx-mini cx-mini-id' : 'cx-mini';
+  const MODIFICADOR = { cuadrada: '', redonda: ' cx-mini-redonda', id: ' cx-mini-id' };
+  const clasesMini = `cx-mini${MODIFICADOR[forma]}`;
   return (
     <li className="cx-adj cx-adj-img">
       {onVer ? (

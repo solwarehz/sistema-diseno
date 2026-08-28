@@ -1,7 +1,7 @@
 # R102 · Las tres cargas dejan de romper el formulario
 
 **Para:** el área de sistemas y los equipos que consumen el sistema de diseño
-**Versión:** v1.77.0 · 27 de agosto de 2026
+**Versión:** v1.78.0 · 27 de agosto de 2026
 **Afecta a:** `CargaImagen`, `CargaPdf`, `CargaId`
 
 ---
@@ -45,30 +45,40 @@ volver a separarse: no es que se parezcan, es que es la misma pieza.
 **Si usan los componentes: nada.** Actualizan la versión y ya está.
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.77.0"
+npm install "github:solwarehz/sistema-diseno#v1.78.0"
 ```
 
-**Si quieren la carga de imagen en un formulario**, esto es nuevo y es opt-in:
+**Con una excepción, y es la única que exige revisar pantallas:** `CargaImagen`
+**cambia sola**. Pasa de la caja de 96 px a la fila de 36. Donde la caja era lo
+correcto —una pantalla **dedicada** a poner esa foto o ese logo, porque ahí
+enseña el hueco real donde la imagen va a vivir— hay que pedirla:
 
 ```jsx
-<CargaImagen
-  etiqueta="Foto del trabajador"
-  presentacion="fila"          // ← lo nuevo. Por omisión sigue siendo "caja"
-  valor={ficha.foto}
-  onCambio={({ archivo }) => subir(archivo)}
-  onQuitar={() => borrar()}
-/>
+<!-- En un formulario: no hay que pedir nada, la fila es el defecto -->
+<CargaImagen etiqueta="Foto del trabajador" valor={ficha.foto}
+  onCambio={({ archivo }) => subir(archivo)} onQuitar={() => borrar()} />
+
+<!-- En una pantalla hecha para poner esa imagen -->
+<CargaImagen etiqueta="Logo de la institución" presentacion="caja"
+  formato="logo-extendido" valor={marca.logo}
+  onCambio={({ archivo }) => subir(archivo)} />
 ```
 
-`caja` **sigue siendo el defecto a propósito**: en una pantalla dedicada a poner
-una foto o un logo la caja no estorba, es el punto — enseña el hueco real donde
-la imagen va a vivir. Cambiar el defecto habría reformado en silencio cada
-selector de foto ya en producción.
+Salió al revés en la v1.77.0 —`caja` por defecto— para no reformar nada en
+silencio. Duró un día: así **solo dos de las tres cargas arrancaban iguales**, y
+el anuncio decía una cosa y el código otra. Si se pide que las tres arranquen
+igual, la que hay que pedir es la excepción.
 
-## Lo que puede romperles — cinco cosas, todas de marcado
+## Lo que puede romperles
 
-Solo aplican si **maquetaron a mano** con las clases de la hoja en vez de usar
+Lo primero ya está dicho arriba —`CargaImagen` cambia de forma sola—. El resto
+solo aplica si **maquetaron a mano** con las clases de la hoja en vez de usar
 los componentes de React.
+
+0. **El rótulo va DENTRO de la fila**, en las tres cargas: rótulo, botón y lo
+   cargado en un solo renglón. Quien lo tuviera colocado aparte con CSS propio
+   lo verá moverse. Con rótulos de distinta longitud, dos filas seguidas ya no
+   alinean sus botones: es la contrapartida de tenerlo todo en una línea.
 
 1. **`CargaId` pierde sus clases propias.** `.cid`, `.cid-et`, `.cid-fila`,
    `.cid-minis`, `.cid-mini`, `.cid-mini-img`, `.cid-error` y `.cid-nota` pasan
@@ -89,7 +99,14 @@ los componentes de React.
    recortaría a la mitad, que es peor que tenerlo donde sí se lee. Los dos
    siguen en el panel y siguen viajando enteros en `onCambio`.
 
-Un sexto detalle, menor: con el panel abierto, el botón «Subir PDF» **ya no
+6. **`CargaImagen` pierde su juego propio de rótulos.** `.ci-et`, `.ci-nota`,
+   `.ci-error` y `.ci-vacia` desaparecen de la hoja: pasan a `.cx-et`,
+   `.cx-nota`, `.cx-error` y `.cx-vacio`, que es lo que ya usaban el PDF y el
+   ID. `.ci-et` **ni siquiera fijaba el color**, así que en un mismo formulario
+   el rótulo de la imagen podía salir de otro tono. El centrado del vacío
+   dentro de la caja sigue, ahora como `.ci-caja .cx-vacio`.
+
+Un séptimo detalle, menor: con el panel abierto, el botón «Subir PDF» **ya no
 desaparece, queda apagado**. Antes se desmontaba y con él se iba el ancla de la
 fila. Lo que decide qué pasa con el borrador siguen siendo «Grabar» y
 «Cancelar», igual que antes.
@@ -106,19 +123,21 @@ Ninguna regla de comportamiento de las tres cargas se ha tocado:
 - `CargaId` sigue pidiendo **anverso y después reverso en el mismo diálogo**,
   entregando las dos caras juntas y desactivando el botón al terminar.
 - `CargaImagen` sigue encuadrando con teclado, exportando en WebP y cubriendo
-  siempre el cuadro.
+  siempre el cuadro. Y con `presentacion="caja"` la vista previa es la de
+  siempre: el círculo del avatar, los 212×44 del logo, el avatar de reserva
+  cuando hay `persona` y todavía no hay foto.
 
 ## Cómo lo verificamos
 
 - **13 candados en verde**, incluidos los cuatro que comparan el catálogo con la
-  hoja que viaja: `verificar-promesa` (**1.064 elementos · 218.743 propiedades**
+  hoja que viaja: `verificar-promesa` (**1.065 elementos · 218.948 propiedades**
   a cinco anchos), `verificar-elemento`, `verificar-empate` y
-  `verificar-cascada` (**965 reglas · 11 anchos**).
-- **478 pruebas** en 33 archivos, **18 de ellas nuevas** para esta fila.
+  `verificar-cascada` (**963 reglas · 11 anchos**).
+- **482 pruebas** en 33 archivos, **23 de ellas nuevas** para esta fila.
 - `tsc --noEmit` limpio.
 - Medido en el navegador sobre el catálogo: las **siete** filas visibles de la
-  página nueva dan **36 px exactos**, ninguna desborda, y la miniatura del ID
-  mide 35×22.
+  página nueva dan **36 px exactos**, ninguna desborda, la miniatura del ID mide
+  35×22 y la de una foto sale con radio del 50 %.
 
 ## Dónde mirarlo
 

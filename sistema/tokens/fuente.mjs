@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.77.0";
+export const VERSION = "1.78.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,46 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.78.0', fecha: '2026-08-27',
+    que: 'R102 (segunda parte): la carga de imagen deja de ser la excepcion — las tres arrancan iguales de verdad',
+    porque:
+      'R102 · La v1.77.0 dejo `caja` como defecto de CargaImagen para no reformar en silencio los '
+      + 'selectores de foto y de logo ya en produccion. El responsable lo reviso EN EL CATALOGO y la '
+      + 'medicion le dio la razon: de las tres cargas solo dos arrancaban iguales sin tocar nada — '
+      + 'CargaId y CargaPdf emitian la fila comun, y CargaImagen su propia caja de 96px. El anuncio '
+      + 'decia una cosa y el comportamiento por omision otra. Si se pidio que las tres arrancaran '
+      + 'igual, LA QUE HAY QUE PEDIR ES LA EXCEPCION, no la regla. '
+      + 'TODO EN UNA SOLA LINEA, tambien el rotulo, y tambien pedido por el: «Foto del trabajador · '
+      + 'Cambiar foto · Foto del trabajador, todo en una sola linea». El rotulo pasa DENTRO de la '
+      + 'fila. Es la excepcion declarada a la regla del formulario —la etiqueta va encima del '
+      + 'campo— y se sostiene porque aqui no encabeza una caja de escribir: encabeza un mando, como '
+      + 'ya hacen el filtro de la barra y el tamaño de pagina de la paginacion. Se declara el coste: '
+      + 'con rotulos de distinta longitud, dos filas seguidas no alinean sus disparadores. '
+      + 'LA FOTO, REDONDA EN LA FILA, y sin crecer: 22px como las demas, solo cambia el radio. Se ve '
+      + 'en circulo en la ficha y en la tabla, y aqui tiene que ser la misma persona con la misma '
+      + 'pinta. Un logo no: el circulo mentiria sobre su forma. '
+      + 'Y TRES DUPLICADOS QUE LA REVISION MIDIO EN EL PAQUETE INSTALADO. `.ci-et` no fijaba el '
+      + 'color, asi que en un mismo formulario el rotulo de la imagen podia salir de otro tono que '
+      + 'el del PDF y el del ID. `.ci-nota` y `.ci-error` eran declaraciones IDENTICAS a las `.cx-*` '
+      + 'con otro nombre. Y el vacio se llamaba `.ci-vacia` — otro nombre, otro genero y ademas otro '
+      + 'comportamiento. El propio R102 habia retirado `.cpdf-ayuda` con el argumento de que dos '
+      + 'nombres para el mismo estilo es la manera de que un dia se separen, y no lo habia aplicado '
+      + 'aqui. De `.ci-*` queda solo lo suyo: la caja, la mascara y el editor de encuadre.',
+    rompe: [
+      '**`CargaImagen` cambia de forma sin que hagan nada**: pasa de la caja de 96px a la fila de '
+      + '36. Donde la caja era lo correcto —una pantalla dedicada a poner esa foto o ese logo— hay '
+      + 'que pedirla ahora con `presentacion="caja"`. Es el cambio con mas alcance de esta version '
+      + 'y por eso va el primero.',
+      'Si maquetaron a mano la carga de imagen, **`.ci-et`, `.ci-nota`, `.ci-error` y `.ci-vacia` '
+      + 'desaparecen de la hoja**: pasan a `.cx-et`, `.cx-nota`, `.cx-error` y `.cx-vacio`. El '
+      + 'centrado del vacio dentro de la caja sigue, ahora como `.ci-caja .cx-vacio`.',
+      'El rotulo de las tres cargas **va dentro de la fila**, no encima. Quien lo tuviera colocado '
+      + 'aparte con CSS propio lo vera moverse. Con rotulos de distinta longitud, dos filas '
+      + 'seguidas ya no alinean sus disparadores: es la contrapartida de tenerlo todo en una linea.',
+    ],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.77.0', fecha: '2026-08-27',
     que: 'R102: subir imagen, subir archivo y subir ID arrancan y terminan igual, sin romper el formulario',
