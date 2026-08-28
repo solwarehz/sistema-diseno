@@ -1,6 +1,6 @@
 {
   "documento": "MMI-DS",
-  "version": "1.92.0",
+  "version": "1.93.0",
   "norma": "WCAG 2.2 AA",
   "generado": "node sistema/tokens/generar.mjs",
   "modos": [
@@ -9,17 +9,17 @@
   ],
   "aviso": "Archivo generado. No editar a mano. La fuente es sistema/tokens/fuente.mjs. Cambiar un valor exige regenerar, re-verificar y subir versión (§2.5 regla 8).",
   "resumen": {
-    "paresTotales": 182,
-    "paresBloqueantes": 142,
+    "paresTotales": 186,
+    "paresBloqueantes": 146,
     "paresInformativos": 40,
     "fallos": 0,
     "porModo": {
       "claro": {
-        "bloqueantes": 71,
+        "bloqueantes": 73,
         "fallos": 0
       },
       "oscuro": {
-        "bloqueantes": 71,
+        "bloqueantes": 73,
         "fallos": 0
       }
     }
@@ -690,8 +690,8 @@
         "claro": "marca_rojo",
         "oscuro": "marca_rojo_claro"
       },
-      "uso": "Escudo, titulares de landing, impresos",
-      "prohibidoEn": "Interfaz"
+      "uso": "Escudo, titulares de landing, impresos · y desde v1.93.0 los iconos de redes sociales",
+      "prohibidoEn": "Interfaz, salvo iconos de redes sociales (autorizado 2026-08-28)"
     },
     "marca-rojo-panel": {
       "claro": "#E30613",
@@ -1449,6 +1449,28 @@
       "minimo": "informativo",
       "motivo": "Filete del chip. Adorno, exento",
       "cumple": null
+    },
+    {
+      "modo": "claro",
+      "frente": "marca-rojo",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#E30613",
+      "hexFondo": "#FFFFFF",
+      "ratio": 4.88,
+      "minimo": 3,
+      "motivo": "Icono de red social sobre tarjeta",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "marca-rojo",
+      "fondo": "fondo-pagina",
+      "hexFrente": "#E30613",
+      "hexFondo": "#F8F8F6",
+      "ratio": 4.59,
+      "minimo": 3,
+      "motivo": "Icono de red social en el pie de pagina",
+      "cumple": true
     },
     {
       "modo": "claro",
@@ -2450,6 +2472,28 @@
       "minimo": "informativo",
       "motivo": "Filete del chip. Adorno, exento",
       "cumple": null
+    },
+    {
+      "modo": "oscuro",
+      "frente": "marca-rojo",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#FF4C37",
+      "hexFondo": "#242422",
+      "ratio": 4.69,
+      "minimo": 3,
+      "motivo": "Icono de red social sobre tarjeta",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "marca-rojo",
+      "fondo": "fondo-pagina",
+      "hexFrente": "#FF4C37",
+      "hexFondo": "#1E1D1C",
+      "ratio": 5.08,
+      "minimo": 3,
+      "motivo": "Icono de red social en el pie de pagina",
+      "cumple": true
     },
     {
       "modo": "oscuro",

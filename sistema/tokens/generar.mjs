@@ -45,10 +45,30 @@ const medir = (a, b) => Math.floor(contraste(a, b) * 100) / 100;
 
 const MODOS = ['claro', 'oscuro'];
 
+/**
+ * R113 · Los pares pueden nombrar un token de MARCA, no solo un semantico.
+ *
+ * Hasta la v1.92.0 esto solo miraba `semanticos`, asi que un color de marca no
+ * se podia medir aunque se autorizara para algo — y «autorizado sin vigilancia»
+ * es exactamente lo que este repositorio no admite. Nombrar mete el color bajo
+ * el candado; esto es lo que hacia falta para que nombrarlo sirviera de algo.
+ *
+ * El orden importa: `semanticos` primero, para que un nombre repetido no pueda
+ * ser secuestrado por la marca.
+ */
+const medibles = { ...marca, ...semanticos };
+
 const verificar = (modo) =>
   pares.map(([frente, fondo, minimo, motivo]) => {
-    const hexFrente = semanticos[frente][modo];
-    const hexFondo = semanticos[fondo][modo];
+    const falta = [frente, fondo].filter((n) => !medibles[n]);
+    if (falta.length) {
+      console.error(`
+  El par [${frente}, ${fondo}] nombra algo que no existe: ${falta.join(', ')}
+`);
+      process.exit(1);
+    }
+    const hexFrente = medibles[frente][modo];
+    const hexFondo = medibles[fondo][modo];
     const ratio = medir(hexFrente, hexFondo);
     const bloqueante = minimo !== 'informativo';
     return {

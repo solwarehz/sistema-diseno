@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.92.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.93.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.92.0
-   WCAG 2.2 AA · 142 pares verificados en los dos modos, 0 fallos
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.93.0
+   WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -2118,7 +2118,33 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 /* §2.5.7 · el foco NUNCA se quita: con teclado es lo unico que dice donde estas. */
 .rs-enlace:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
 
-.rs-marco { display: inline-grid; place-items: center; }
+/* El relleno de 4px no es aire: con «box-sizing: border-box» los marcos siguen
+   midiendo lo mismo, y en la forma suelta sube el blanco de pulsacion de 18 a
+   26px — SC 2.5.8 pide 24. Ademas da sitio al fondo del hover. */
+.rs-marco { display: inline-grid; place-items: center; padding: 4px; }
+
+/* R113 · EL ROJO DEL ESCUDO, autorizado el 2026-08-28 y SOLO para esto.
+   Es el unico de la familia «marca» que tiene version oscura propia —#E30613 y
+   #FF4C37—, y por eso es el unico que aguanta los dos modos: 4,88:1 sobre la
+   tarjeta clara y 4,69:1 sobre la oscura, medido y en el contrato.
+   Los otros cuatro valen LO MISMO en claro y en oscuro, asi que se hunden en
+   uno de los dos: oro 1,81 · celeste 2,56 · amarillo 1,17 en claro, y
+   rojo-panel 1,66 en oscuro. Un color que no cambia con el modo no es un color
+   de interfaz, es un color de papel. */
+.rs-marca .rs-enlace { color: var(--marca-rojo); }
+/* Con el rojo puesto, el hover NO cambia de color: saltar de rojo a azul se lee
+   como otro enlace. El aviso lo da el fondo, que es lo mismo que hace la tabla. */
+.rs-marca .rs-enlace:hover { color: var(--marca-rojo); }
+.rs-marca .rs-enlace:hover .rs-marco { background: var(--fondo-fila-hover); }
+/* El nombre escrito NO se pinta de rojo: es texto, y el rojo de marca esta
+   autorizado para iconos, no para texto. Ahi manda «texto-principal». */
+.rs-marca .rs-nombre { color: var(--texto-principal); }
+
+/* Andamio del catalogo: la caja que fuerza el modo oscuro para poder enseñar
+   los dos rojos uno al lado del otro. Sin su propio fondo enseñaria el rojo de
+   oscuro sobre blanco, que es una combinacion que no existe en ningun sitio.
+   Lleva «-demo-» en el nombre: es andamio y NO viaja. */
+.rs-demo-oscuro { background: var(--fondo-tarjeta); padding: 16px; border-radius: 6px; }
 
 /* EL MARCO NO ES ADORNO: es el blanco de pulsacion. Un icono suelto de 18px deja
    un objetivo de 18px y SC 2.5.8 pide 24. Con marco son 40, y por eso en movil
@@ -4310,7 +4336,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.92.0</option></select></label>
+          <select class="campo cg-in"><option>v1.93.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4398,8 +4424,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.92.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.92.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.93.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.93.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -4421,7 +4447,7 @@ El menú de la izquierda lo abre por partes.</p>
 
 <div class="estado-rejilla">
   <div class="est"><b>56</b><span>tokens semánticos</span></div>
-  <div class="est"><b>142</b><span>pares verificados</span></div>
+  <div class="est"><b>146</b><span>pares verificados</span></div>
   <div class="est est-ok"><b>0</b><span>fallos de contraste</span></div>
   <div class="est"><b>2</b><span>modos, claro y oscuro</span></div>
 </div>
@@ -4924,7 +4950,7 @@ El menú de la izquierda lo abre por partes.</p>
   <a href="#espaciado" data-ir="espaciado" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
     <span><strong>Espaciado</strong>Rejilla de 4px y tamaños de control</span></a>
   <a href="#contraste" data-ir="contraste" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg></span>
-    <span><strong>Contrastes</strong>Los 142 pares medidos</span></a>
+    <span><strong>Contrastes</strong>Los 146 pares medidos</span></a>
 </div>
     </section><section class="pagina" id="pg-color" hidden>
       <nav class="migas" aria-label="Ubicación">
@@ -14138,7 +14164,7 @@ rellenos.</p>
 
 <h3 class="sub-seccion">Las siete que el sistema dibuja</h3>
 <div class="bloque">
-  <nav aria-label="Redes sociales" class="rs-fila rs-medio">
+  <nav aria-label="Redes sociales" class="rs-fila rs-medio rs-marca">
     <ul class="rs-lista">
       <li class="rs-item">
         <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva">
@@ -14186,7 +14212,7 @@ comprueba que digan lo mismo.</p>
 producto que quiera cambiar de forma no debería tener que cambiar de importación.</p>
 <div class="bloque">
   <div class="mf"><div>
-  <nav aria-label="Redes sociales" class="rs-fila rs-medio">
+  <nav aria-label="Redes sociales" class="rs-fila rs-medio rs-marca">
     <ul class="rs-lista">
       <li class="rs-item">
         <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva">
@@ -14226,7 +14252,7 @@ producto que quiera cambiar de forma no debería tener que cambiar de importaci�
     </ul>
   </nav></div><span class="mf-et"><code>forma="solo"</code> — por omisión. Lo que pide un pie de página</span></div>
   <div class="mf"><div>
-  <nav aria-label="Redes sociales" class="rs-fila rs-medio rs-circulo">
+  <nav aria-label="Redes sociales" class="rs-fila rs-medio rs-marca rs-circulo">
     <ul class="rs-lista">
       <li class="rs-item">
         <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva">
@@ -14266,7 +14292,7 @@ producto que quiera cambiar de forma no debería tener que cambiar de importaci�
     </ul>
   </nav></div><span class="mf-et"><code>forma="circulo"</code></span></div>
   <div class="mf"><div>
-  <nav aria-label="Redes sociales" class="rs-fila rs-medio rs-cuadro">
+  <nav aria-label="Redes sociales" class="rs-fila rs-medio rs-marca rs-cuadro">
     <ul class="rs-lista">
       <li class="rs-item">
         <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva">
@@ -14306,7 +14332,7 @@ producto que quiera cambiar de forma no debería tener que cambiar de importaci�
     </ul>
   </nav></div><span class="mf-et"><code>forma="cuadro"</code></span></div>
   <div class="mf"><div>
-  <nav aria-label="Redes sociales" class="rs-fila rs-medio rs-circulo rs-relleno">
+  <nav aria-label="Redes sociales" class="rs-fila rs-medio rs-marca rs-circulo rs-relleno">
     <ul class="rs-lista">
       <li class="rs-item">
         <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva">
@@ -14360,7 +14386,7 @@ producto que quiera cambiar de forma no debería tener que cambiar de importaci�
 grande 32. El sistema tiene cuatro pasos de icono y estos son tres de ellos.</p>
 <div class="bloque">
   <div class="mf"><div>
-  <nav aria-label="Redes sociales" class="rs-fila rs-chico rs-circulo">
+  <nav aria-label="Redes sociales" class="rs-fila rs-chico rs-marca rs-circulo">
     <ul class="rs-lista">
       <li class="rs-item">
         <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva">
@@ -14400,7 +14426,7 @@ grande 32. El sistema tiene cuatro pasos de icono y estos son tres de ellos.</p>
     </ul>
   </nav></div><span class="mf-et"><code>tamano="chico"</code> · 16px</span></div>
   <div class="mf"><div>
-  <nav aria-label="Redes sociales" class="rs-fila rs-medio rs-circulo">
+  <nav aria-label="Redes sociales" class="rs-fila rs-medio rs-marca rs-circulo">
     <ul class="rs-lista">
       <li class="rs-item">
         <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva">
@@ -14440,7 +14466,7 @@ grande 32. El sistema tiene cuatro pasos de icono y estos son tres de ellos.</p>
     </ul>
   </nav></div><span class="mf-et"><code>tamano="medio"</code> · 18px, por omisión</span></div>
   <div class="mf"><div>
-  <nav aria-label="Redes sociales" class="rs-fila rs-grande rs-circulo">
+  <nav aria-label="Redes sociales" class="rs-fila rs-grande rs-marca rs-circulo">
     <ul class="rs-lista">
       <li class="rs-item">
         <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva">
@@ -14485,7 +14511,7 @@ enseñan las dos porque el candado de la omisión tiene razón en lo que exige: 
 se ve acompañada de otra deja sin demostrar el estado que se entrega por defecto.</p>
 <div class="bloque">
   <div class="mf"><div>
-  <nav aria-label="Redes sociales" class="rs-fila rs-chico">
+  <nav aria-label="Redes sociales" class="rs-fila rs-chico rs-marca">
     <ul class="rs-lista">
       <li class="rs-item">
         <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva">
@@ -14525,7 +14551,7 @@ se ve acompañada de otra deja sin demostrar el estado que se entrega por defect
     </ul>
   </nav></div><span class="mf-et">chico, suelto</span></div>
   <div class="mf"><div>
-  <nav aria-label="Redes sociales" class="rs-fila rs-medio">
+  <nav aria-label="Redes sociales" class="rs-fila rs-medio rs-marca">
     <ul class="rs-lista">
       <li class="rs-item">
         <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva">
@@ -14565,7 +14591,7 @@ se ve acompañada de otra deja sin demostrar el estado que se entrega por defect
     </ul>
   </nav></div><span class="mf-et">medio, suelto</span></div>
   <div class="mf"><div>
-  <nav aria-label="Redes sociales" class="rs-fila rs-grande">
+  <nav aria-label="Redes sociales" class="rs-fila rs-grande rs-marca">
     <ul class="rs-lista">
       <li class="rs-item">
         <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva">
@@ -14612,7 +14638,7 @@ haber un enlace sin texto. Y con <code>usuario</code> se dice <strong>a qué cue
 que no es lo mismo que a qué plataforma.</p>
 <div class="bloque">
   <div class="mf">
-    <nav aria-label="Redes sociales" class="rs-columna rs-medio rs-circulo">
+    <nav aria-label="Redes sociales" class="rs-columna rs-medio rs-marca rs-circulo">
       <ul class="rs-lista">
         <li class="rs-item"><a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook Colegio Albert Einstein, se abre en una pestaña nueva"><span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M15.5 7.5H14a2.5 2.5 0 0 0-2.5 2.5v10.5"/><path d="M9 13.5h5.5"/></svg></span><span class="rs-txt"><span class="rs-nombre">Facebook</span><span class="rs-usuario">Colegio Albert Einstein</span></span></a></li>
         <li class="rs-item"><a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Instagram @ae.huaraz, se abre en una pestaña nueva"><span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17 7h.01"/></svg></span><span class="rs-txt"><span class="rs-nombre">Instagram</span><span class="rs-usuario">@ae.huaraz</span></span></a></li>
@@ -14622,7 +14648,7 @@ que no es lo mismo que a qué plataforma.</p>
     <span class="mf-et"><code>conNombre</code> con <code>direccion="columna"</code> — para un pie de contacto</span>
   </div>
   <div class="mf">
-    <nav aria-label="Redes sociales" class="rs-fila rs-medio">
+    <nav aria-label="Redes sociales" class="rs-fila rs-medio rs-marca">
       <ul class="rs-lista">
         <li class="rs-item"><a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva"><span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M15.5 7.5H14a2.5 2.5 0 0 0-2.5 2.5v10.5"/><path d="M9 13.5h5.5"/></svg></span><span class="rs-txt"><span class="rs-nombre">Facebook</span></span></a></li>
         <li class="rs-item"><a class="rs-enlace" href="#redes" data-ir="redes" aria-label="YouTube, se abre en una pestaña nueva"><span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10.5 9 4.5 3-4.5 3V9Z"/></svg></span><span class="rs-txt"><span class="rs-nombre">YouTube</span></span></a></li>
@@ -14631,6 +14657,214 @@ que no es lo mismo que a qué plataforma.</p>
     </nav>
     <span class="mf-et"><code>conNombre</code> en fila, sin marco</span>
   </div>
+</div>
+
+<h3 class="sub-seccion">R113 · El color, y qué cambia en oscuro</h3>
+<p class="seccion-sub">Los iconos van en el <strong>rojo del escudo</strong>, autorizado el
+28 de agosto de 2026 por el responsable y <strong>solo para esto</strong>: sigue prohibido como
+texto y como superficie. Se autorizó <strong>con la medida delante</strong>, y el motivo es el que
+decide todo en esta familia.</p>
+
+<div class="bloque">
+  <div class="mf">
+    <div>
+  <nav aria-label="Redes sociales" class="rs-fila rs-medio rs-marca rs-circulo">
+    <ul class="rs-lista">
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M15.5 7.5H14a2.5 2.5 0 0 0-2.5 2.5v10.5"/><path d="M9 13.5h5.5"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Instagram, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17 7h.01"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="YouTube, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10.5 9 4.5 3-4.5 3V9Z"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="TikTok, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3.5v11a4 4 0 1 1-4-4"/><path d="M14 3.5c.4 2.6 2 4.2 4.5 4.5"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="WhatsApp, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.5L3.5 20.5l1.3-4.3a8.5 8.5 0 1 1 15.7-4.4Z"/><path d="M9.5 9.2c0 3 2.3 5.3 5.3 5.3"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="X, antes Twitter, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m8.5 8.5 7 7M15.5 8.5l-7 7"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="LinkedIn, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 10.5V17M8 7.6h.01"/><path d="M12 17v-6.5"/><path d="M12.5 13.5a2.5 2.5 0 0 1 4.5 1.5V17"/></svg></span>
+        </a>
+      </li>
+    </ul>
+  </nav></div>
+    <span class="mf-et">Modo claro · <code>#E30613</code> · <strong>4,88:1</strong></span>
+  </div>
+  <div class="mf">
+    <div class="rs-demo-oscuro" data-tema="oscuro">
+  <nav aria-label="Redes sociales" class="rs-fila rs-medio rs-marca rs-circulo">
+    <ul class="rs-lista">
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M15.5 7.5H14a2.5 2.5 0 0 0-2.5 2.5v10.5"/><path d="M9 13.5h5.5"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Instagram, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17 7h.01"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="YouTube, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10.5 9 4.5 3-4.5 3V9Z"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="TikTok, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3.5v11a4 4 0 1 1-4-4"/><path d="M14 3.5c.4 2.6 2 4.2 4.5 4.5"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="WhatsApp, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.5L3.5 20.5l1.3-4.3a8.5 8.5 0 1 1 15.7-4.4Z"/><path d="M9.5 9.2c0 3 2.3 5.3 5.3 5.3"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="X, antes Twitter, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m8.5 8.5 7 7M15.5 8.5l-7 7"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="LinkedIn, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 10.5V17M8 7.6h.01"/><path d="M12 17v-6.5"/><path d="M12.5 13.5a2.5 2.5 0 0 1 4.5 1.5V17"/></svg></span>
+        </a>
+      </li>
+    </ul>
+  </nav></div>
+    <span class="mf-et">Modo oscuro · <code>#FF4C37</code> · <strong>4,69:1</strong></span>
+  </div>
+</div>
+
+<p class="seccion-sub"><strong>La variación es que el rojo cambia de valor</strong>, y eso es
+justamente lo que le permite cumplir en los dos modos. El de la izquierda y el de la derecha
+<strong>no son el mismo hexadecimal</strong>.</p>
+
+<div class="msj msj-error">
+  <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+  <span class="msj-txt"><strong>Y aquí está el motivo por el que solo se autorizó éste.</strong> De
+  los cinco colores de marca, <strong>cuatro valen lo mismo en claro y en oscuro</strong>, así que
+  se hunden en uno de los dos. No es opinión, está medido contra la tarjeta:</span>
+</div>
+<table class="tabla-simple">
+  <thead><tr><th>Token</th><th>Claro</th><th>Oscuro</th><th>¿Cambia con el modo?</th><th>¿Llega a 3:1?</th></tr></thead>
+  <tbody>
+    <tr><td><code>marca-rojo</code></td><td><code>#E30613</code> · 4,88:1</td><td><code>#FF4C37</code> · 4,69:1</td><td><strong>sí</strong></td><td><span class="chip chip-exito">sí</span></td></tr>
+    <tr><td><code>marca-oro</code></td><td><code>#DEBD68</code> · <strong>1,81:1</strong></td><td><code>#DEBD68</code> · 8,58:1</td><td>no</td><td><span class="chip chip-error">no, en claro</span></td></tr>
+    <tr><td><code>marca-celeste</code></td><td><code>#01ADED</code> · <strong>2,56:1</strong></td><td><code>#01ADED</code> · 6,07:1</td><td>no</td><td><span class="chip chip-error">no, en claro</span></td></tr>
+    <tr><td><code>marca-amarillo</code></td><td><code>#FDF200</code> · <strong>1,17:1</strong></td><td><code>#FDF200</code> · 13,24:1</td><td>no</td><td><span class="chip chip-error">no, en claro</span></td></tr>
+    <tr><td><code>marca-rojo-panel</code></td><td><code>#E30613</code> · 4,88:1</td><td><code>#930000</code> · <strong>1,66:1</strong></td><td>sí</td><td><span class="chip chip-error">no, en oscuro</span></td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub">Lo mismo les pasa a los cuatro <code>identidad-*</code>, que también son
+fijos: sobre la tarjeta oscura caen a <strong>2,07 – 2,57:1</strong>. De ahí salió el fallo de
+1,91:1 que se corrigió en R111. <strong>La regla que deja esto escrita: un color que no cambia con
+el modo no es un color de interfaz, es un color de papel.</strong></p>
+
+<h3 class="sub-seccion">Sin color, cuando el fondo no es el medido</h3>
+<p class="seccion-sub">Los 4,88 y 4,69 están medidos contra <strong>la tarjeta y la página</strong>.
+Sobre el encabezado, el marco de la aplicación o un fondo de campaña <strong>nadie ha medido
+nada</strong>, así que ahí va <code>color="heredado"</code>: los iconos toman el color del texto que
+los rodea, que sí está medido para ese sitio.</p>
+<div class="bloque">
+  <div class="mf"><div>
+  <nav aria-label="Redes sociales" class="rs-fila rs-medio rs-circulo">
+    <ul class="rs-lista">
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M15.5 7.5H14a2.5 2.5 0 0 0-2.5 2.5v10.5"/><path d="M9 13.5h5.5"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Instagram, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17 7h.01"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="YouTube, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10.5 9 4.5 3-4.5 3V9Z"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="TikTok, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3.5v11a4 4 0 1 1-4-4"/><path d="M14 3.5c.4 2.6 2 4.2 4.5 4.5"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="WhatsApp, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.5L3.5 20.5l1.3-4.3a8.5 8.5 0 1 1 15.7-4.4Z"/><path d="M9.5 9.2c0 3 2.3 5.3 5.3 5.3"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="X, antes Twitter, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m8.5 8.5 7 7M15.5 8.5l-7 7"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="LinkedIn, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 10.5V17M8 7.6h.01"/><path d="M12 17v-6.5"/><path d="M12.5 13.5a2.5 2.5 0 0 1 4.5 1.5V17"/></svg></span>
+        </a>
+      </li>
+    </ul>
+  </nav></div><span class="mf-et"><code>color="heredado"</code> — hereda del texto</span></div>
+  <div class="mf"><div>
+  <nav aria-label="Redes sociales" class="rs-fila rs-medio">
+    <ul class="rs-lista">
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M15.5 7.5H14a2.5 2.5 0 0 0-2.5 2.5v10.5"/><path d="M9 13.5h5.5"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Instagram, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17 7h.01"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="YouTube, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10.5 9 4.5 3-4.5 3V9Z"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="TikTok, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3.5v11a4 4 0 1 1-4-4"/><path d="M14 3.5c.4 2.6 2 4.2 4.5 4.5"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="WhatsApp, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.5L3.5 20.5l1.3-4.3a8.5 8.5 0 1 1 15.7-4.4Z"/><path d="M9.5 9.2c0 3 2.3 5.3 5.3 5.3"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="X, antes Twitter, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m8.5 8.5 7 7M15.5 8.5l-7 7"/></svg></span>
+        </a>
+      </li>
+      <li class="rs-item">
+        <a class="rs-enlace" href="#redes" data-ir="redes" aria-label="LinkedIn, se abre en una pestaña nueva">
+          <span class="rs-marco"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 10.5V17M8 7.6h.01"/><path d="M12 17v-6.5"/><path d="M12.5 13.5a2.5 2.5 0 0 1 4.5 1.5V17"/></svg></span>
+        </a>
+      </li>
+    </ul>
+  </nav></div><span class="mf-et">suelto y heredado, para un pie sobrio</span></div>
 </div>
 
 <h3 class="sub-seccion">Las tres decisiones que no son de aspecto</h3>
@@ -15005,6 +15239,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.93.0 <span class="cam-fecha">2026-08-28</span></h3>
+<p class="pag-intro"><strong>R113: el rojo del escudo pinta los iconos de redes — y es el UNICO color de marca que aguanta el oscuro.</strong> El responsable pidio pintar los iconos de redes con nuestros colores de marca, para que fueran coherentes con nuestros diseños. Se midio antes de tocar nada, y la medida cambio la pregunta. DE LOS CINCO COLORES DE MARCA, SOLO UNO SIRVE PARA PINTAR UN ICONO. Sobre la tarjeta: marca-rojo 4,88:1 en claro y 4,69:1 en oscuro — pasa. marca-oro 1,81 en claro. marca-celeste 2,56 en claro. marca-amarillo 1,17 en claro. marca-rojo-panel 1,66 en oscuro. Los cuatro que fallan tienen algo en comun: VALEN LO MISMO EN LOS DOS MODOS, asi que cuando el fondo cambia ellos no, y se hunden en uno de los dos. marca-rojo es el unico con version oscura propia —#E30613 y #FF4C37—, y por eso es el unico que aguanta. Lo mismo les pasa a los cuatro identidad-*, que caen a 2,07-2,57 en oscuro: de ahi salio el 1,91:1 de R107. LA REGLA QUE DEJA ESTO: un color que no cambia con el modo no es un color de interfaz, es un color de papel. AUTORIZADO EL 2026-08-28 POR EL RESPONSABLE, con la medida delante y con alcance escrito: marca-rojo para los iconos de redes sociales, y para nada mas. Sigue prohibido como texto y como superficie, y el nombre escrito al lado del icono sigue yendo en texto-principal. Y ENTRA BAJO VIGILANCIA, que es lo que separa un color autorizado de un color suelto: se declaran sus dos pares —contra tarjeta y contra pagina— y quedan en el contrato con sus cuatro medidas. Para poder hacerlo hubo que abrir DOS herramientas que solo sabian mirar los semanticos: el generador y el candado de contraste. Los dos devolvian undefined con un token de marca, o sea que el sistema no podia vigilar un color de marca aunque se autorizara. Autorizar sin poder medir habria sido repetir R107. El catalogo enseña los dos rojos UNO AL LADO DEL OTRO, forzando el modo oscuro en una caja con su propio fondo — sin ese fondo se veria el rojo de oscuro sobre blanco, una combinacion que no existe en ningun sitio. Y lleva la tabla de los cinco con sus medidas, para que la proxima vez que alguien quiera pintar algo de marca ya este contestado.</p>
+
 
 
 <h3 class="sub-seccion">v1.92.0 <span class="cam-fecha">2026-08-28</span></h3>
@@ -15617,7 +15856,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       </nav>
       <div class="pant-cab"><h1>Contrastes</h1></div>
       
-<p class="pag-intro">142 pares bloqueantes en los dos modos ·
+<p class="pag-intro">146 pares bloqueantes en los dos modos ·
 <strong>0 fallos</strong> · WCAG 2.2 AA. Recalculados en cada build por
 <code>verificar-contraste.mjs</code>: si el contrato miente, el build falla.</p>
 <h3 class="sub-seccion">Modo claro</h3>
@@ -16015,6 +16254,22 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       <td class="num">4.5</td>
       <td class="ok">cumple</td>
       <td class="motivo">Aviso neutro</td>
+    </tr>
+    <tr>
+      <td><code>marca-rojo</code></td>
+      <td><code>fondo-tarjeta</code></td>
+      <td class="num">4.88:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Icono de red social sobre tarjeta</td>
+    </tr>
+    <tr>
+      <td><code>marca-rojo</code></td>
+      <td><code>fondo-pagina</code></td>
+      <td class="num">4.59:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Icono de red social en el pie de pagina</td>
     </tr>
     <tr>
       <td><code>aviso-acento</code></td>
@@ -16588,6 +16843,22 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       <td class="num">4.5</td>
       <td class="ok">cumple</td>
       <td class="motivo">Aviso neutro</td>
+    </tr>
+    <tr>
+      <td><code>marca-rojo</code></td>
+      <td><code>fondo-tarjeta</code></td>
+      <td class="num">4.69:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Icono de red social sobre tarjeta</td>
+    </tr>
+    <tr>
+      <td><code>marca-rojo</code></td>
+      <td><code>fondo-pagina</code></td>
+      <td class="num">5.08:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Icono de red social en el pie de pagina</td>
     </tr>
     <tr>
       <td><code>aviso-acento</code></td>

@@ -56,8 +56,14 @@ for (const par of lock.contrastes) {
 
   // 1 · El hex guardado debe coincidir con el semántico declarado, en ESE modo.
   //     Detecta que alguien editó un token y no regeneró.
-  const realFrente = lock.semanticos[frente]?.[modo];
-  const realFondo = lock.semanticos[fondo]?.[modo];
+  // R113 · Un par puede nombrar un token de MARCA desde que el rojo del escudo
+  // se autorizó para los iconos de redes. Antes esto solo miraba `semanticos` y
+  // devolvía `undefined`, o sea que el candado se rompía justo cuando por fin
+  // tenía algo de marca que vigilar. `semanticos` va primero: un nombre
+  // repetido no puede quedar secuestrado por la marca.
+  const donde = (n) => lock.semanticos[n] ?? lock.marca?.[n];
+  const realFrente = donde(frente)?.[modo];
+  const realFondo = donde(fondo)?.[modo];
   if (realFrente !== hexFrente) {
     problemas.push(`  ${etiqueta}: el par dice ${hexFrente} pero ${frente} vale ${realFrente}`);
     continue;

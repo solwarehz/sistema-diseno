@@ -8,16 +8,26 @@
  *
  * TRES DECISIONES QUE NO SON DE ASPECTO:
  *
- *   1 · LOS COLORES DE MARCA NO ENTRAN. Ni el azul de Facebook, ni el degradado
- *       de Instagram. No es una preferencia: §2.5.5 dice que los colores
+ *   1 · LOS COLORES DE LAS PLATAFORMAS NO ENTRAN; EL DEL COLEGIO SÍ. Ni el azul
+ *       de Facebook ni el degradado de Instagram: §2.5.5 dice que los colores
  *       autorizados son el panel de escalas y ampliarlo no es decisión de quien
- *       escribe un componente. Los iconos van en `currentColor` como los otros
- *       cuarenta y cinco, así que toman el color del texto que los rodea y
- *       funcionan igual en claro y en oscuro, que es más de lo que hace un
- *       logotipo de marca.
+ *       escribe un componente. Los logotipos, además, son marcas registradas y
+ *       vienen rellenos, así que los iconos van DIBUJADOS en el estilo del
+ *       sistema —trazo de 1,5 sobre 24×24—, no calcados.
  *
- *       Van DIBUJADOS en el estilo del sistema —trazo de 1,5 sobre 24×24—, no
- *       calcados. Los logotipos son marcas registradas y vienen rellenos.
+ *       R113 · Lo que sí entra es el ROJO DEL ESCUDO, autorizado el 2026-08-28
+ *       por el responsable y solo para esto. Se autorizó con la medida delante,
+ *       y el motivo es el que decide todo en esta familia: `marca-rojo` es el
+ *       ÚNICO que tiene versión oscura propia —#E30613 y #FF4C37—, así que da
+ *       4,88:1 sobre la tarjeta clara y 4,69:1 sobre la oscura.
+ *
+ *       Los otros cuatro valen LO MISMO en los dos modos y por eso se hunden en
+ *       uno: oro 1,81 · celeste 2,56 · amarillo 1,17 en claro, y rojo-panel
+ *       1,66 en oscuro. Lo mismo les pasa a los cuatro `identidad-*`, que caen
+ *       a 2,07-2,57 en oscuro — y de ahí salió el fallo de R107.
+ *
+ *       La regla que deja esto: un color que no cambia con el modo no es un
+ *       color de interfaz, es un color de papel.
  *
  *   2 · EL NOMBRE ACCESIBLE LO LLEVA EL ENLACE, NO EL DIBUJO. Es la regla de
  *       §8.1 aplicada: el icono sale `aria-hidden` siempre y quien nombra es el
@@ -108,6 +118,21 @@ export type RedesSocialesProps = {
    * migas, esto— sin nombre se anuncian todas igual y no se distinguen.
    */
   etiqueta?: string;
+  /**
+   * R113 · Con qué se pintan los iconos. `'marca'` por omisión.
+   *
+   * `'marca'` usa el **rojo del escudo**, autorizado el 2026-08-28 por el
+   * responsable y **solo para esto**: sigue prohibido como texto y como
+   * superficie. Es el único de la familia `marca` que tiene versión oscura
+   * propia —#E30613 y #FF4C37—, y por eso es el único que cumple en los dos
+   * modos: 4,88:1 sobre la tarjeta clara y 4,69:1 sobre la oscura.
+   *
+   * `'heredado'` los deja en `currentColor`, o sea del color del texto que los
+   * rodea. Es lo que hay que usar **sobre cualquier fondo que no sea la tarjeta
+   * o la página**: los 4,88 y 4,69 están medidos contra esos dos, y sobre el
+   * encabezado o el marco de la aplicación nadie ha medido nada.
+   */
+  color?: 'marca' | 'heredado';
   /** Abrir en otra pestaña. Encendido: es lo normal en un enlace externo, y se
    *  avisa en el nombre accesible. */
   nuevaPestana?: boolean;
@@ -124,6 +149,7 @@ export function RedesSociales({
   conNombre = false,
   direccion = 'fila',
   etiqueta = 'Redes sociales',
+  color = 'marca',
   nuevaPestana = true,
   className = '',
 }: RedesSocialesProps) {
@@ -144,6 +170,7 @@ export function RedesSociales({
     `rs-${tamano}`,
     conMarco ? `rs-${forma}` : '',
     conMarco && relleno ? 'rs-relleno' : '',
+    color === 'marca' ? 'rs-marca' : '',
     className,
   ].filter(Boolean).join(' ');
 

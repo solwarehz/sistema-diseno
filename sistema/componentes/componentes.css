@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.92.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.93.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -1605,7 +1605,7 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   REDES SOCIALES — 19 reglas · clases .rs-*
+   REDES SOCIALES — 23 reglas · clases .rs-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .rs-lista{ display: flex; list-style: none; margin: 0; padding: 0; }
@@ -1615,7 +1615,11 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
   color: var(--texto-secundario); text-decoration: none; border-radius: 3px; }
 .rs-enlace:hover{ color: var(--enlace); }
 .rs-enlace:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px; }
-.rs-marco{ display: inline-grid; place-items: center; }
+.rs-marco{ display: inline-grid; place-items: center; padding: 4px; }
+.rs-marca .rs-enlace{ color: var(--marca-rojo); }
+.rs-marca .rs-enlace:hover{ color: var(--marca-rojo); }
+.rs-marca .rs-enlace:hover .rs-marco{ background: var(--fondo-fila-hover); }
+.rs-marca .rs-nombre{ color: var(--texto-principal); }
 .rs-circulo .rs-marco, .rs-cuadro .rs-marco{ border: 1px solid var(--borde-fuerte); }
 .rs-circulo .rs-marco{ border-radius: 999px; }
 .rs-cuadro .rs-marco{ border-radius: 6px; }

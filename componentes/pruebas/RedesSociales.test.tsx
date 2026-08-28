@@ -154,3 +154,21 @@ describe('R112 · el resto de lo configurable', () => {
     expect(nombres[2]).toContain('X');
   });
 });
+
+describe('R113 · el rojo del escudo, y solo donde está medido', () => {
+  it('por omisión van pintados con el color de marca', () => {
+    const { container } = render(<RedesSociales redes={CUENTAS} />);
+    expect(container.querySelector('nav')!.className).toContain('rs-marca');
+  });
+
+  it('`color="heredado"` los deja en currentColor, para fondos sin medir', () => {
+    const { container } = render(<RedesSociales redes={CUENTAS} color="heredado" />);
+    expect(container.querySelector('nav')!.className).not.toContain('rs-marca');
+  });
+
+  it('el color no cambia el marcado: sigue siendo la misma lista', () => {
+    const conColor = render(<RedesSociales redes={CUENTAS} />).container.querySelectorAll('li').length;
+    const sinColor = render(<RedesSociales redes={CUENTAS} color="heredado" />).container.querySelectorAll('li').length;
+    expect(conColor).toBe(sinColor);
+  });
+});

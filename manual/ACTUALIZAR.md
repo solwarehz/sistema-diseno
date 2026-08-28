@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.92.0
+# Actualizar al sistema de diseño v1.93.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.92.0"
+npm install "github:solwarehz/sistema-diseno#v1.93.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,19 +27,19 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.92.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.93.0
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.92.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.93.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.92.0 --repo solwarehz/sistema-diseno
+gh release download v1.93.0 --repo solwarehz/sistema-diseno
 ```
 
 Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
@@ -334,6 +334,8 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.91.0 | **Correcciones de una auditoría, y una les afecta si copiaron marcado.** Nueve iconos del catálogo se publicaban como `<svg>` **vacíos** —cuatro nuevos y cinco desde R97—; ya se dibujan. `CargaPdf` gana `nombreTipo` e `icono`, y **`textoBoton` ahora sí vale en `presentacion="en-linea"`**, donde se ignoraba. `privilegiosEfectivos()` **deja de devolver lo marcado `cerrado`**. Y el texto del progreso pasa a decir «el archivo» en vez de «el PDF» salvo que pasen `nombreTipo` |
 
 | 1.92.0 | **Componente nuevo: `RedesSociales`.** Siete redes, tres formas, tres tamaños, con nombre y con cuenta. **No añade ningún color**: los iconos heredan `currentColor`, así que los de marca **no** están —eso sería una autorización, no un arreglo—. **No rompe nada de lo anterior** |
+
+| 1.93.0 | **`RedesSociales` pinta los iconos con el rojo del escudo por omisión.** `marca-rojo` queda **autorizado solo para eso** — sigue prohibido como texto y como superficie. Si los ponen sobre un fondo que no sea la tarjeta o la página, usen `color="heredado"`: los 4,88:1 y 4,69:1 están medidos contra esos dos y **sobre el encabezado no ha medido nadie**. No rompe nada |
 
 **Lo que no rompe pero conviene aprovechar:** `soloLectura` en `Selector`
 (§6.5 del manual), `persona.foto` en `CargaImagen` (§6.7), `CargaId` para el

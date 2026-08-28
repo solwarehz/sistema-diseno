@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.92.0";
+export const VERSION = "1.93.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,38 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.93.0', fecha: '2026-08-28',
+    que: 'R113: el rojo del escudo pinta los iconos de redes — y es el UNICO color de marca que aguanta el oscuro',
+    porque:
+      'El responsable pidio pintar los iconos de redes con nuestros colores de marca, para que '
+      + 'fueran coherentes con nuestros diseños. Se midio antes de tocar nada, y la medida cambio '
+      + 'la pregunta. '
+      + 'DE LOS CINCO COLORES DE MARCA, SOLO UNO SIRVE PARA PINTAR UN ICONO. Sobre la tarjeta: '
+      + 'marca-rojo 4,88:1 en claro y 4,69:1 en oscuro — pasa. marca-oro 1,81 en claro. '
+      + 'marca-celeste 2,56 en claro. marca-amarillo 1,17 en claro. marca-rojo-panel 1,66 en '
+      + 'oscuro. Los cuatro que fallan tienen algo en comun: VALEN LO MISMO EN LOS DOS MODOS, asi '
+      + 'que cuando el fondo cambia ellos no, y se hunden en uno de los dos. marca-rojo es el '
+      + 'unico con version oscura propia —#E30613 y #FF4C37—, y por eso es el unico que aguanta. '
+      + 'Lo mismo les pasa a los cuatro identidad-*, que caen a 2,07-2,57 en oscuro: de ahi salio '
+      + 'el 1,91:1 de R107. LA REGLA QUE DEJA ESTO: un color que no cambia con el modo no es un '
+      + 'color de interfaz, es un color de papel. '
+      + 'AUTORIZADO EL 2026-08-28 POR EL RESPONSABLE, con la medida delante y con alcance escrito: '
+      + 'marca-rojo para los iconos de redes sociales, y para nada mas. Sigue prohibido como texto '
+      + 'y como superficie, y el nombre escrito al lado del icono sigue yendo en texto-principal. '
+      + 'Y ENTRA BAJO VIGILANCIA, que es lo que separa un color autorizado de un color suelto: se '
+      + 'declaran sus dos pares —contra tarjeta y contra pagina— y quedan en el contrato con sus '
+      + 'cuatro medidas. Para poder hacerlo hubo que abrir DOS herramientas que solo sabian mirar '
+      + 'los semanticos: el generador y el candado de contraste. Los dos devolvian undefined con '
+      + 'un token de marca, o sea que el sistema no podia vigilar un color de marca aunque se '
+      + 'autorizara. Autorizar sin poder medir habria sido repetir R107. '
+      + 'El catalogo enseña los dos rojos UNO AL LADO DEL OTRO, forzando el modo oscuro en una '
+      + 'caja con su propio fondo — sin ese fondo se veria el rojo de oscuro sobre blanco, una '
+      + 'combinacion que no existe en ningun sitio. Y lleva la tabla de los cinco con sus medidas, '
+      + 'para que la proxima vez que alguien quiera pintar algo de marca ya este contestado.',
+    rompe: [],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.92.0', fecha: '2026-08-28',
     que: 'R112: nace «Redes sociales», y con el un candado que faltaba desde la version 1.0',
@@ -3440,7 +3472,19 @@ export const semanticos = Object.fromEntries(
 const marcaDeclarada = {
   // En oscuro el titular sube a rojo-400: el #E30613 sobre página oscura
   // pierde legibilidad y el panel de marca se aplana (§2.4).
-  'marca-rojo':       { claro: 'marca_rojo', oscuro: 'marca_rojo_claro', uso: 'Escudo, titulares de landing, impresos', prohibidoEn: 'Interfaz' },
+  // AUTORIZADO EL 2026-08-28 POR EL RESPONSABLE, y solo para esto: pintar los
+  // iconos de redes sociales. Sigue prohibido como texto y como superficie.
+  //
+  // Se autorizo con la medida delante, y el motivo es que es el UNICO de la
+  // familia `marca` que TIENE VERSION OSCURA PROPIA: 4,88:1 sobre la tarjeta
+  // clara y 4,70:1 sobre la oscura. Los otros cuatro valen lo mismo en los dos
+  // modos, y por eso se hunden en uno de ellos —oro 1,81, celeste 2,56,
+  // amarillo 1,17 en claro; rojo-panel 1,66 en oscuro—. Lo mismo le pasa a los
+  // cuatro `identidad-*`, que caen a 2,07-2,57 en oscuro.
+  //
+  // Un color que no cambia con el modo no es un color de interfaz: es un color
+  // de papel.
+  'marca-rojo':       { claro: 'marca_rojo', oscuro: 'marca_rojo_claro', uso: 'Escudo, titulares de landing, impresos · y desde v1.93.0 los iconos de redes sociales', prohibidoEn: 'Interfaz, salvo iconos de redes sociales (autorizado 2026-08-28)' },
   'marca-rojo-panel': { claro: 'marca_rojo', oscuro: 'marca_rojo_panel', uso: 'Panel de marca de la landing',           prohibidoEn: 'Interfaz' },
   'marca-oro':        { claro: 'marca_oro',      oscuro: 'marca_oro',      uso: 'Escudo, filete de landing',            prohibidoEn: 'Interfaz. En sistema usar accion-2 o marco-acento' },
   'marca-amarillo':   { claro: 'marca_amarillo', oscuro: 'marca_amarillo', uso: 'Campaña, afiches, redes',              prohibidoEn: 'Todo el sistema. 1,2:1 — no admite texto' },
@@ -3564,6 +3608,11 @@ export const pares = [
   // Pasan holgados — no había un fallo escondido —, pero medirlos a mano no
   // sirve de nada: un retoque de `ambar_700` los rompía en silencio y el
   // candado no se enteraba. Declararlos es lo que los pone bajo vigilancia.
+  // R113 · El rojo del escudo pintando iconos. Autorizarlo sin medirlo seria
+  // repetir el 1,91:1 de R107: lo que separa un color autorizado de un color
+  // suelto es que el candado lo mire en cada version.
+  ['marca-rojo',       'fondo-tarjeta',    3.0, 'Icono de red social sobre tarjeta'],
+  ['marca-rojo',       'fondo-pagina',     3.0, 'Icono de red social en el pie de pagina'],
   ['aviso-acento',     'fondo-tarjeta',    3.0, 'Icono del privilegio bloqueado por dependencia'],
   ['info-acento',      'fondo-tarjeta',    3.0, 'Icono del privilegio que no se tiene'],
 

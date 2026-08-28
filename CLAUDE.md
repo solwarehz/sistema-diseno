@@ -19,8 +19,8 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.92.0** — R112: nace «Redes sociales», y con él el candado
-que comprueba que el catálogo y el producto dibujen el MISMO icono.
+**Estado actual: v1.93.0** — R113: se autoriza el rojo del escudo para los
+iconos de redes, y resulta que es el único color de marca que aguanta el oscuro.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

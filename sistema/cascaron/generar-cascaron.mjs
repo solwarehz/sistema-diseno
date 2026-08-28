@@ -7513,8 +7513,8 @@ const LAS_SIETE = [
   ['linkedin', 'LinkedIn'],
 ];
 
-const grupoRedes = (clases, tam = 'medio') => `
-  <nav aria-label="Redes sociales" class="rs-fila rs-${tam}${clases ? ' ' + clases : ''}">
+const grupoRedes = (clases, tam = 'medio', marca = 'rs-marca') => `
+  <nav aria-label="Redes sociales" class="rs-fila rs-${tam}${marca ? ' ' + marca : ''}${clases ? ' ' + clases : ''}">
     <ul class="rs-lista">${LAS_SIETE.map(([r, n]) => unaRed(r, n, tam)).join('')}
     </ul>
   </nav>`;
@@ -7585,7 +7585,7 @@ haber un enlace sin texto. Y con <code>usuario</code> se dice <strong>a qué cue
 que no es lo mismo que a qué plataforma.</p>
 <div class="bloque">
   <div class="mf">
-    <nav aria-label="Redes sociales" class="rs-columna rs-medio rs-circulo">
+    <nav aria-label="Redes sociales" class="rs-columna rs-medio rs-marca rs-circulo">
       <ul class="rs-lista">
         <li class="rs-item"><a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook Colegio Albert Einstein, se abre en una pestaña nueva"><span class="rs-marco">${icono('facebook')}</span><span class="rs-txt"><span class="rs-nombre">Facebook</span><span class="rs-usuario">Colegio Albert Einstein</span></span></a></li>
         <li class="rs-item"><a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Instagram @ae.huaraz, se abre en una pestaña nueva"><span class="rs-marco">${icono('instagram')}</span><span class="rs-txt"><span class="rs-nombre">Instagram</span><span class="rs-usuario">@ae.huaraz</span></span></a></li>
@@ -7595,7 +7595,7 @@ que no es lo mismo que a qué plataforma.</p>
     <span class="mf-et"><code>conNombre</code> con <code>direccion="columna"</code> — para un pie de contacto</span>
   </div>
   <div class="mf">
-    <nav aria-label="Redes sociales" class="rs-fila rs-medio">
+    <nav aria-label="Redes sociales" class="rs-fila rs-medio rs-marca">
       <ul class="rs-lista">
         <li class="rs-item"><a class="rs-enlace" href="#redes" data-ir="redes" aria-label="Facebook, se abre en una pestaña nueva"><span class="rs-marco">${icono('facebook')}</span><span class="rs-txt"><span class="rs-nombre">Facebook</span></span></a></li>
         <li class="rs-item"><a class="rs-enlace" href="#redes" data-ir="redes" aria-label="YouTube, se abre en una pestaña nueva"><span class="rs-marco">${icono('youtube')}</span><span class="rs-txt"><span class="rs-nombre">YouTube</span></span></a></li>
@@ -7604,6 +7604,58 @@ que no es lo mismo que a qué plataforma.</p>
     </nav>
     <span class="mf-et"><code>conNombre</code> en fila, sin marco</span>
   </div>
+</div>
+
+<h3 class="sub-seccion">R113 · El color, y qué cambia en oscuro</h3>
+<p class="seccion-sub">Los iconos van en el <strong>rojo del escudo</strong>, autorizado el
+28 de agosto de 2026 por el responsable y <strong>solo para esto</strong>: sigue prohibido como
+texto y como superficie. Se autorizó <strong>con la medida delante</strong>, y el motivo es el que
+decide todo en esta familia.</p>
+
+<div class="bloque">
+  <div class="mf">
+    <div>${grupoRedes('rs-circulo')}</div>
+    <span class="mf-et">Modo claro · <code>#E30613</code> · <strong>4,88:1</strong></span>
+  </div>
+  <div class="mf">
+    <div class="rs-demo-oscuro" data-tema="oscuro">${grupoRedes('rs-circulo')}</div>
+    <span class="mf-et">Modo oscuro · <code>#FF4C37</code> · <strong>4,69:1</strong></span>
+  </div>
+</div>
+
+<p class="seccion-sub"><strong>La variación es que el rojo cambia de valor</strong>, y eso es
+justamente lo que le permite cumplir en los dos modos. El de la izquierda y el de la derecha
+<strong>no son el mismo hexadecimal</strong>.</p>
+
+<div class="msj msj-error">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt"><strong>Y aquí está el motivo por el que solo se autorizó éste.</strong> De
+  los cinco colores de marca, <strong>cuatro valen lo mismo en claro y en oscuro</strong>, así que
+  se hunden en uno de los dos. No es opinión, está medido contra la tarjeta:</span>
+</div>
+<table class="tabla-simple">
+  <thead><tr><th>Token</th><th>Claro</th><th>Oscuro</th><th>¿Cambia con el modo?</th><th>¿Llega a 3:1?</th></tr></thead>
+  <tbody>
+    <tr><td><code>marca-rojo</code></td><td><code>#E30613</code> · 4,88:1</td><td><code>#FF4C37</code> · 4,69:1</td><td><strong>sí</strong></td><td><span class="chip chip-exito">sí</span></td></tr>
+    <tr><td><code>marca-oro</code></td><td><code>#DEBD68</code> · <strong>1,81:1</strong></td><td><code>#DEBD68</code> · 8,58:1</td><td>no</td><td><span class="chip chip-error">no, en claro</span></td></tr>
+    <tr><td><code>marca-celeste</code></td><td><code>#01ADED</code> · <strong>2,56:1</strong></td><td><code>#01ADED</code> · 6,07:1</td><td>no</td><td><span class="chip chip-error">no, en claro</span></td></tr>
+    <tr><td><code>marca-amarillo</code></td><td><code>#FDF200</code> · <strong>1,17:1</strong></td><td><code>#FDF200</code> · 13,24:1</td><td>no</td><td><span class="chip chip-error">no, en claro</span></td></tr>
+    <tr><td><code>marca-rojo-panel</code></td><td><code>#E30613</code> · 4,88:1</td><td><code>#930000</code> · <strong>1,66:1</strong></td><td>sí</td><td><span class="chip chip-error">no, en oscuro</span></td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub">Lo mismo les pasa a los cuatro <code>identidad-*</code>, que también son
+fijos: sobre la tarjeta oscura caen a <strong>2,07 – 2,57:1</strong>. De ahí salió el fallo de
+1,91:1 que se corrigió en R111. <strong>La regla que deja esto escrita: un color que no cambia con
+el modo no es un color de interfaz, es un color de papel.</strong></p>
+
+<h3 class="sub-seccion">Sin color, cuando el fondo no es el medido</h3>
+<p class="seccion-sub">Los 4,88 y 4,69 están medidos contra <strong>la tarjeta y la página</strong>.
+Sobre el encabezado, el marco de la aplicación o un fondo de campaña <strong>nadie ha medido
+nada</strong>, así que ahí va <code>color="heredado"</code>: los iconos toman el color del texto que
+los rodea, que sí está medido para ese sitio.</p>
+<div class="bloque">
+  <div class="mf"><div>${grupoRedes('rs-circulo', 'medio', '')}</div><span class="mf-et"><code>color="heredado"</code> — hereda del texto</span></div>
+  <div class="mf"><div>${grupoRedes('', 'medio', '')}</div><span class="mf-et">suelto y heredado, para un pie sobrio</span></div>
 </div>
 
 <h3 class="sub-seccion">Las tres decisiones que no son de aspecto</h3>
@@ -9346,7 +9398,33 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 /* §2.5.7 · el foco NUNCA se quita: con teclado es lo unico que dice donde estas. */
 .rs-enlace:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
 
-.rs-marco { display: inline-grid; place-items: center; }
+/* El relleno de 4px no es aire: con «box-sizing: border-box» los marcos siguen
+   midiendo lo mismo, y en la forma suelta sube el blanco de pulsacion de 18 a
+   26px — SC 2.5.8 pide 24. Ademas da sitio al fondo del hover. */
+.rs-marco { display: inline-grid; place-items: center; padding: 4px; }
+
+/* R113 · EL ROJO DEL ESCUDO, autorizado el 2026-08-28 y SOLO para esto.
+   Es el unico de la familia «marca» que tiene version oscura propia —#E30613 y
+   #FF4C37—, y por eso es el unico que aguanta los dos modos: 4,88:1 sobre la
+   tarjeta clara y 4,69:1 sobre la oscura, medido y en el contrato.
+   Los otros cuatro valen LO MISMO en claro y en oscuro, asi que se hunden en
+   uno de los dos: oro 1,81 · celeste 2,56 · amarillo 1,17 en claro, y
+   rojo-panel 1,66 en oscuro. Un color que no cambia con el modo no es un color
+   de interfaz, es un color de papel. */
+.rs-marca .rs-enlace { color: var(--marca-rojo); }
+/* Con el rojo puesto, el hover NO cambia de color: saltar de rojo a azul se lee
+   como otro enlace. El aviso lo da el fondo, que es lo mismo que hace la tabla. */
+.rs-marca .rs-enlace:hover { color: var(--marca-rojo); }
+.rs-marca .rs-enlace:hover .rs-marco { background: var(--fondo-fila-hover); }
+/* El nombre escrito NO se pinta de rojo: es texto, y el rojo de marca esta
+   autorizado para iconos, no para texto. Ahi manda «texto-principal». */
+.rs-marca .rs-nombre { color: var(--texto-principal); }
+
+/* Andamio del catalogo: la caja que fuerza el modo oscuro para poder enseñar
+   los dos rojos uno al lado del otro. Sin su propio fondo enseñaria el rojo de
+   oscuro sobre blanco, que es una combinacion que no existe en ningun sitio.
+   Lleva «-demo-» en el nombre: es andamio y NO viaja. */
+.rs-demo-oscuro { background: var(--fondo-tarjeta); padding: 16px; border-radius: 6px; }
 
 /* EL MARCO NO ES ADORNO: es el blanco de pulsacion. Un icono suelto de 18px deja
    un objetivo de 18px y SC 2.5.8 pide 24. Con marco son 40, y por eso en movil

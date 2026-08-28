@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 28 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.92.0** — nace **Redes sociales**, y con él
-el **candado quince**: nada comprobaba que el catálogo y el producto dibujaran
-el mismo icono, y llevaban 111 versiones coincidiendo por suerte
+**Versión del sistema:** MMI-DS **v1.93.0** — se autoriza el **rojo del escudo**
+para los iconos de redes, y la medida deja una regla: **un color que no cambia
+con el modo no es un color de interfaz, es un color de papel**
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -42,10 +42,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **67 páginas** (contadas en el HTML generado; decía 53 y llevaba tiempo desfasado) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.92.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.93.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.92.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.93.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,33 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.92.0), con detalle
+### Lo de hoy (v1.93.0), con detalle
+
+**R113 · El color de los iconos de redes.** Se pidió pintarlos con los colores
+de marca. Se midió antes de tocar nada, y la medida cambió la pregunta: **de los
+cinco colores de marca, solo uno sirve para pintar un icono**.
+
+| | claro | oscuro | ¿varía con el modo? |
+|---|---|---|---|
+| `marca-rojo` | 4,88:1 | 4,69:1 | **sí** |
+| `marca-oro` | **1,81:1** | 8,58:1 | no |
+| `marca-celeste` | **2,56:1** | 6,07:1 | no |
+| `marca-amarillo` | **1,17:1** | 13,24:1 | no |
+| `marca-rojo-panel` | 4,88:1 | **1,66:1** | sí |
+
+Los cuatro que fallan **valen lo mismo en los dos modos**: cuando el fondo
+cambia, ellos no. Lo mismo les pasa a los `identidad-*` —2,07 a 2,57 en
+oscuro—, y de ahí salió el 1,91:1 de R107.
+
+**Autorizado el 2026-08-28 por el responsable**, con alcance escrito: solo los
+iconos de redes. Sigue prohibido como texto y como superficie.
+
+**Y para poder vigilarlo hubo que abrir dos herramientas** que solo sabían mirar
+los semánticos: el generador y el candado de contraste devolvían `undefined` con
+un token de marca. O sea que el sistema **no podía vigilar un color de marca
+aunque se autorizara**. Autorizar sin poder medir habría sido repetir R107.
+
+### Lo de ayer (v1.92.0), con detalle
 
 **R112 · Redes sociales.** Siete iconos —Facebook, Instagram, YouTube, TikTok,
 WhatsApp, X y LinkedIn— dibujados en el estilo del sistema, y un componente con
@@ -1316,7 +1342,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.92.0
+Versión                      1.93.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              182   (142 bloqueantes · 40 informativos,
                                       0 fallos)
