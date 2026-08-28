@@ -39,12 +39,12 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
 | Componentes de React | ✅ | **499 pruebas en 34 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
-| Catálogo navegable | ✅ | `cascaron/index.html` · 44 páginas · lo genera `generar-cascaron.mjs` |
+| Catálogo navegable | ✅ | `cascaron/index.html` · 45 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.84.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.85.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.84.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.85.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -65,7 +65,33 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.84.0), con detalle
+### Lo de hoy (v1.85.0), con detalle
+
+**Mercado Pago Perú — y el rechazo deja de ser una pantalla para ser tres.**
+
+La documentación la leyó un agente y trajo dos cosas que cambian el diseño de
+las cuatro páginas, no solo de esta.
+
+**Su propia documentación agrupa los rechazos en tres familias** por lo que la
+persona tiene que hacer: corregir aquí mismo, hacer algo fuera, o **no
+reintentar**. Y en la tercera pide expresamente impedir nuevos intentos con los
+mismos datos. Así que la pantalla de rechazo se parte en tres, y **la tercera no
+lleva botón de reintentar**: esa ausencia es la decisión de diseño. Un botón de
+reintentar donde no se debe reintentar encadena rechazos y deja a la familia
+creyendo que es culpa suya.
+
+**Sus treinta mensajes vienen en inglés** incluso en la documentación en
+español —comprobado pidiendo la página en `/es/` y volviendo idéntica— y llevan
+variables dentro. Redactarlos es trabajo del sistema, no de la integración. Es
+lo contrario de Culqi.
+
+De paso es la primera con **tema oscuro documentado** y la primera que deja
+poner **nuestro anillo de foco** dentro de su formulario por variable — §2.5.7
+cumplido en territorio ajeno. Y seis huecos declarados en la página, incluida
+una **contradicción suya**: clasifica Yape como `bank_transfer` en una página y
+como `debit_card` en otra.
+
+### Lo de la v1.84.0, con detalle
 
 **Openpay Perú — y rompe el patrón de las otras dos.**
 
@@ -1092,7 +1118,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.84.0
+Versión                      1.85.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes · 40 informativos,
                                       0 fallos)
@@ -1110,7 +1136,7 @@ Contrato de comportamiento      185   reglas · 152 obligatorias · 6 PENDIENTE
 Componentes publicados           32   38 módulos viajan en el paquete
                                       117 exportaciones, todas por el índice
 Iconos                           46
-Páginas del catálogo             44
+Páginas del catálogo             45
 Fila de un campo, medida      36,45   px · la fila de carga se fija en 36
 ```
 

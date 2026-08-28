@@ -5251,6 +5251,321 @@ haría falta pedirles la lista o sacarla del panel antes de escribir un solo men
   cargo y el código de agencia.</li>
 </ol>`;
 
+// ── Pasarela de pagos · Mercado Pago Perú ───────────────────────────────────
+// Cuarta pasarela, mismo andamiaje psl-*. Su aportacion propia: es la primera
+// que documenta un TEMA OSCURO, y la primera que entrega la tabla de rechazos
+// EN INGLES — lo que convierte redactarlos en trabajo del sistema.
+
+const pagMercadoPago = `
+<p class="pag-intro">Las mismas pantallas del cobro con <strong>Mercado Pago Perú</strong>. Mismo
+andamiaje que las otras tres. Lo que cambia aquí es <strong>cuánto de la pantalla podemos
+ocupar</strong>: tiene tres formas de integrarse y no dan el mismo margen ni de lejos.</p>
+
+<h3 class="sub-seccion">1 · Tres formas de integrar, y solo una nos sirve</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Forma</th><th>¿Se embebe?</th><th>Qué podemos estilar</th><th>Coste</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Checkout Pro</strong></td><td><strong>No</strong> — redirige</td><td>Solo el botón</td><td>El cobro se va de nuestra pantalla</td></tr>
+    <tr><td><strong>Checkout Bricks</strong></td><td><strong>Sí</strong>, en un <code>div</code> nuestro</td><td><strong>32 variables</strong> + tema</td><td>Ninguno relevante</td></tr>
+    <tr><td><strong>Checkout API</strong></td><td>Sí, todo nuestro</td><td>Todo salvo los iframes de la tarjeta</td><td>Certificación <strong>PCI SAQ-A</strong></td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub"><strong>La recomendación es Bricks</strong>, y no por comodidad: embebe, deja
+32 variables de estilo —incluidas las del <strong>foco</strong> y el <strong>error</strong>— y no
+carga al colegio con una certificación PCI. Checkout Pro <strong>no tiene modo modal</strong>: su
+documentación solo describe <code>redirectMode: "self"</code> y <code>"blank"</code>, las dos
+redirecciones.</p>
+
+<div class="aviso"><strong>Y es la primera de las cuatro con tema oscuro documentado.</strong>
+<code>theme</code> admite <code>default</code>, <code>dark</code>, <code>bootstrap</code> y
+<code>flat</code>, y se puede fijar para todos los bricks o para uno solo. Con Izipay el modo
+oscuro quedó como problema abierto; con Culqi, sin comprobar; aquí <strong>está
+documentado</strong>.</div>
+
+<h3 class="sub-seccion">2 · La pantalla de pago</h3>
+<div class="bloque">
+  <div class="psl-demo-marco">
+    <div class="psl-demo-barra">
+      <span>colegioalberteinstein.edu.pe/pagos</span>
+      <span>${icono('candado')} Conexión segura</span>
+    </div>
+    <div class="psl-demo-lienzo">
+
+      <div class="psl-hero">
+        <span>
+          <span class="psl-hero-et">Total a pagar</span>
+          <span class="psl-hero-monto">S/ 357,00</span>
+          <span class="psl-hero-sub">QUISPE RAMOS, Ana Lucía · 3.º B</span>
+        </span>
+        <span class="psl-hero-der">
+          Orden <strong>PEN-2026-08-4471</strong><br>Vence el 31/08/2026
+        </span>
+      </div>
+
+      <div class="psl-cols">
+        <article class="tn">
+          <div class="tn-cab"><h4>Lo que vas a pagar</h4><span class="chip chip-info">Pendiente</span></div>
+          <div class="tn-cuerpo">
+            <div class="psl-detalle">
+              <div class="psl-linea">
+                <span>Pensión de agosto 2026<span class="psl-linea-sub">Mensualidad regular</span></span>
+                <span class="psl-monto">S/ 350,00</span>
+              </div>
+              <div class="psl-linea">
+                <span>Mora por pago tardío<span class="psl-linea-sub">6 días · 1 % mensual</span></span>
+                <span class="psl-monto">S/ 7,00</span>
+              </div>
+              <div class="psl-linea psl-total">
+                <span>Total</span><span class="psl-monto">S/ 357,00</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tn">
+          <div class="tn-cab"><h4>Cómo vas a pagar</h4></div>
+          <div class="tn-cuerpo">
+            <div class="psl-sdk">
+              <span class="psl-sdk-et">${icono('informacion')} Payment Brick — este marcado no es nuestro</span>
+              <div class="psl-demo-sdk-caja">
+                <div class="psl-demo-metodos">
+                  <span class="psl-demo-metodo activo">Tarjeta</span>
+                  <span class="psl-demo-metodo">Yape</span>
+                  <span class="psl-demo-metodo">PagoEfectivo</span>
+                  <span class="psl-demo-metodo">Dinero en cuenta</span>
+                </div>
+                <div class="psl-demo-falso">
+                  <span class="psl-demo-falso-et">Número de tarjeta</span>
+                  <span class="psl-demo-falso-in">•••• •••• •••• ••••</span>
+                </div>
+                <div class="psl-demo-falso-par">
+                  <div class="psl-demo-falso"><span class="psl-demo-falso-et">Vencimiento</span><span class="psl-demo-falso-in">MM / AA</span></div>
+                  <div class="psl-demo-falso"><span class="psl-demo-falso-et">CVV</span><span class="psl-demo-falso-in">•••</span></div>
+                </div>
+              </div>
+            </div>
+            <p>El brick se monta en un <code>div</code> nuestro y se destruye al salir de la
+            pantalla: su documentación insiste en llamar a <code>unmount()</code>, o la siguiente
+            visita monta dos.</p>
+          </div>
+          <div class="tn-pie">
+            <button class="btn btn-terc">Cancelar</button>
+            <button class="btn btn-1">Pagar S/ 357,00</button>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">3 · El rechazo se parte en TRES pantallas, no en una</h3>
+<p class="seccion-sub">Esto sale de su propia documentación, que agrupa los rechazos en tres
+familias — y cada familia pide una pantalla distinta porque <strong>lo que la persona debe hacer es
+distinto</strong>. Es el hallazgo más útil de las cuatro pasarelas.</p>
+
+<div class="bloque">
+  <div class="psl-cols">
+
+    <article class="tn">
+      <div class="tn-cab"><h4>a · Se puede corregir aquí mismo</h4><span class="chip chip-aviso">Reintentar</span></div>
+      <div class="tn-cuerpo">
+        <div class="psl-estado psl-estado-aviso">
+          <span class="psl-sello">${icono('alerta', TAMANOS.estado)}</span>
+          <span class="psl-estado-tit">Revisa el código de seguridad</span>
+          <span class="psl-estado-txt">Son los tres dígitos del reverso de la tarjeta.</span>
+        </div>
+        <p><code>cc_rejected_bad_filled_security_code</code>, <code>…_card_number</code>,
+        <code>…_date</code>, <code>…_other</code>. <strong>El foco vuelve al campo</strong> y se
+        reintenta sin salir.</p>
+      </div>
+      <div class="tn-pie"><button class="btn btn-1">Corregir y reintentar</button></div>
+    </article>
+
+    <article class="tn">
+      <div class="tn-cab"><h4>b · Hay que hacer algo fuera</h4><span class="chip chip-error">Banco</span></div>
+      <div class="tn-cuerpo">
+        <div class="psl-estado psl-estado-error">
+          <span class="psl-sello">${icono('cerrar', TAMANOS.estado)}</span>
+          <span class="psl-estado-tit">Tu tarjeta no tiene saldo suficiente</span>
+          <span class="psl-estado-txt">No se te cobró nada. Prueba con otra tarjeta, con Yape o con
+          PagoEfectivo.</span>
+        </div>
+        <p><code>cc_rejected_insufficient_amount</code>, <code>…_call_for_authorize</code>,
+        <code>…_card_disabled</code>, <code>…_duplicated_payment</code>,
+        <code>…_invalid_installments</code>, <code>…_max_attempts</code>. Reintentar igual
+        <strong>no sirve</strong>: se ofrece otro camino.</p>
+      </div>
+      <div class="tn-pie"><button class="btn btn-1">Pagar de otra forma</button></div>
+    </article>
+
+    <article class="tn">
+      <div class="tn-cab"><h4>c · NO se ofrece reintentar</h4><span class="chip chip-error">Fraude</span></div>
+      <div class="tn-cuerpo">
+        <div class="psl-estado psl-estado-error">
+          <span class="psl-sello">${icono('cerrar', TAMANOS.estado)}</span>
+          <span class="psl-estado-tit">No pudimos procesar el pago</span>
+          <span class="psl-estado-txt">Acércate a la administración del colegio para pagar por otro
+          medio.</span>
+        </div>
+        <p><code>cc_rejected_blacklist</code>, <code>…_high_risk</code>,
+        <code>…_other_reason</code>. Su documentación lo dice con todas las letras: conviene
+        <strong>impedir nuevos intentos inmediatos con los mismos datos</strong>. Así que aquí
+        <strong>no hay botón de reintentar</strong> — y esa ausencia es la decisión de diseño.</p>
+      </div>
+      <div class="tn-pie"><button class="btn btn-neutro">Volver a mis pagos</button></div>
+    </article>
+
+  </div>
+  <div class="msj msj-nota">
+    <span class="msj-txt"><strong>Un botón de reintentar donde no se debe reintentar no es un
+    detalle:</strong> encadena rechazos, sube el riesgo del comercio y deja a la familia creyendo
+    que es culpa suya. Por eso la tercera pantalla no lo tiene.</span>
+  </div>
+</div>
+
+<h3 class="sub-seccion">4 · Estados de un pago</h3>
+<table class="tabla-simple">
+  <thead><tr><th><code>status</code></th><th>Qué significa para la pantalla</th></tr></thead>
+  <tbody>
+    <tr><td><span class="chip chip-exito">approved</span></td><td>Cobrado. Se emite la constancia.</td></tr>
+    <tr><td><span class="chip chip-info">authorized</span></td><td>Autorizado pero <strong>sin capturar</strong> — el dinero aún no se movió.</td></tr>
+    <tr><td><span class="chip chip-aviso">in_process</span></td><td>En revisión. Su texto dice <strong>hasta 2 días hábiles</strong>.</td></tr>
+    <tr><td><span class="chip chip-aviso">pending</span></td><td>Falta que la persona termine de pagar — PagoEfectivo, transferencia.</td></tr>
+    <tr><td><span class="chip chip-error">rejected</span></td><td>Rechazado. El <code>status_detail</code> decide cuál de las tres pantallas de §3.</td></tr>
+  </tbody>
+</table>
+<div class="msj msj-aviso">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt"><strong><code>in_process</code> hasta dos días hábiles es una pantalla que
+  las otras tres pasarelas no necesitan.</strong> No es aprobado ni rechazado: la deuda no se puede
+  cerrar ni reabrir. Hay que decidir qué ve la familia mientras tanto.</span>
+</div>
+
+<h3 class="sub-seccion">5 · Los mensajes vienen en INGLÉS — y eso es trabajo nuestro</h3>
+<div class="msj msj-error">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt"><strong>Su tabla de <code>status_detail</code> trae los textos en inglés
+  incluso en la documentación en español.</strong> Se comprobó pidiendo la página en
+  <code>/es/</code> y vuelve idéntica. Para un colegio en Huaraz eso significa que
+  <strong>los treinta mensajes hay que escribirlos nosotros</strong>. Y llevan variables dentro
+  —<code>payment_method_id</code>, <code>amount</code>, <code>installments</code>— que hay que
+  interpolar, no imprimir.</span>
+</div>
+<p class="seccion-sub">Es lo contrario de Culqi, que entrega el <code>user_message</code> ya
+redactado para quien paga. Con Mercado Pago, <strong>la redacción es del sistema de diseño</strong>
+— igual que en su día el <code>texto-pista</code>: cuando lo que da el proveedor no cumple, se
+resuelve con regla de composición, no confiando en él.</p>
+<p class="seccion-sub">Hay un atajo: el <strong>Status Screen Brick</strong> pinta él mismo la
+pantalla de resultado a partir del <code>paymentId</code>, y deja ocultar piezas
+(<code>hideStatusDetails</code>, <code>hideTransactionDate</code>) y cambiar sus tres botones. Es
+menos trabajo y menos control. <strong>No está verificado qué texto exacto pinta en español
+peruano</strong>: eso solo se sabe montándolo, y si se adopta hay que <em>capturarlo</em>, no
+dibujarlo de memoria.</p>
+
+<h3 class="sub-seccion">6 · Métodos de pago en Perú</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Tipo</th><th>Medios</th><th>Identificador</th></tr></thead>
+  <tbody>
+    <tr><td><code>credit_card</code></td><td>Visa, Mastercard, <strong>American Express</strong>, Diners Club</td><td>—</td></tr>
+    <tr><td><code>debit_card</code></td><td>Visa, Mastercard</td><td>—</td></tr>
+    <tr><td><code>prepaid_card</code></td><td>Visa, Mastercard</td><td>—</td></tr>
+    <tr><td><code>bank_transfer</code></td><td>Yape</td><td><code>yape</code></td></tr>
+    <tr><td><code>ticket</code></td><td>PagoEfectivo</td><td><code>pagoefectivo_atm</code></td></tr>
+    <tr><td><code>account_money</code></td><td>Dinero en cuenta de Mercado Pago</td><td>—</td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub"><strong>Yape tiene tope y lo pone la familia, no nosotros:</strong> su
+documentación dice <em>S/ 500, S/ 900 o S/ 2000</em> según lo que cada persona tenga configurado en
+su app. Con una matrícula anual, eso no es un detalle.</p>
+
+<h3 class="sub-seccion">7 · Lo que NO se pudo verificar</h3>
+<div class="msj msj-error">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt">Va escrito en vez de rellenado, como en la página de Openpay.</span>
+</div>
+<table class="tabla-simple">
+  <thead><tr><th>Qué falta</th><th>Por qué</th></tr></thead>
+  <tbody>
+    <tr><td>La lista real de medios de pago del colegio</td><td>Su referencia renderiza vacía. <strong>La única lista fiable es <code>GET /v1/payment_methods</code> con las credenciales reales</strong> — lo dice su propia documentación</td></tr>
+    <tr><td>Si Yape es <code>bank_transfer</code> o <code>debit_card</code></td><td><strong>Su documentación peruana se contradice consigo misma</strong>: una página lo clasifica como transferencia y la de integración lo trata como débito, con <code>installments: 1</code></td></tr>
+    <tr><td>Valores por defecto de las 32 variables</td><td>No los publican. No se puede saber qué se está sobrescribiendo sin medirlo en el navegador</td></tr>
+    <tr><td>La tabla de atributos de la preferencia</td><td>Su página devuelve <strong>404</strong></td></tr>
+    <tr><td><code>es-PE</code> como idioma literal</td><td>Documentan el patrón, pero <strong>ese valor no aparece escrito</strong></td></tr>
+    <tr><td>Estados <code>cancelled</code>, <code>refunded</code>, <code>charged_back</code></td><td>No verificados en página peruana</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">8 · Nuestros tokens dentro de sus bricks</h3>
+<p class="seccion-sub">Las 32 variables incluyen las del <strong>foco</strong> y el
+<strong>error</strong>, que es lo que permite que su formulario respete §1.3 y §2.5.7 del documento.
+Valores reales del modo claro. <strong>Sin verificar</strong> hasta montarlo.</p>
+<div class="cod">
+  <div class="cod-cab"><span class="cod-tit">customization.visual.style — modo claro</span></div>
+  <pre class="cod-pre"><code>customization: {
+  visual: {
+    style: {
+      theme: 'default',            // default | dark | bootstrap | flat
+      customVariables: {
+        textPrimaryColor:       '#2C2A25',   // texto-principal
+        textSecondaryColor:     '#6A6864',   // texto-secundario
+        inputBackgroundColor:   '#FFFFFF',   // fondo-tarjeta
+        formBackgroundColor:    '#FFFFFF',
+        baseColor:              '#0063CB',   // accion
+        baseColorFirstVariant:  '#004EB2',   // accion-hover
+        errorColor:             '#D63231',   // error-acento
+        successColor:           '#338136',   // exito-acento
+        outlinePrimaryColor:    '#8B8985',   // borde-campo · 3,48:1
+        buttonTextColor:        '#FFFFFF',   // accion-texto
+        fontSizeSmall:          '12px',      // los pasos de la escala
+        fontSizeMedium:         '13px',
+        fontSizeLarge:          '15px',
+        fontWeightNormal:       '400',
+        fontWeightSemiBold:     '600',
+        borderRadiusSmall:      '3px',       // los radios del sistema
+        borderRadiusMedium:     '6px',
+        inputVerticalPadding:   '8px',
+        inputHorizontalPadding: '8px',
+        // El anillo de foco. §2.5.7: quitarlo esta prohibido, y aqui por fin
+        // se puede poner el nuestro dentro del formulario de un tercero.
+        inputFocusedBoxShadow:  '0 0 0 2px #BE7A14'
+      }
+    },
+    hideFormTitle: true
+  }
+}</code></pre>
+</div>
+<p class="seccion-sub">Su documentación avisa de algo que conviene respetar: <strong>no usar clases
+ni identificadores suyos como selectores</strong>, porque «cambian regularmente» al compilar. Se
+estila por variables, no por CSS propio — al revés que Culqi.</p>
+
+<h3 class="sub-seccion">9 · Las cuatro, de frente</h3>
+<table class="tabla-simple">
+  <thead><tr><th>&nbsp;</th><th>Izipay</th><th>Culqi</th><th>Openpay</th><th>Mercado Pago</th></tr></thead>
+  <tbody>
+    <tr><td>El formulario de tarjeta es…</td><td>suyo</td><td>suyo</td><td><strong>nuestro</strong></td><td>suyo (Bricks)</td></tr>
+    <tr><td>Tema oscuro</td><td>no documentado</td><td>parece posible</td><td>resuelto</td><td><strong>documentado</strong></td></tr>
+    <tr><td>Anillo de foco propio en su formulario</td><td>no</td><td>sí, por reglas CSS</td><td>sí, es nuestro</td><td><strong>sí, por variable</strong></td></tr>
+    <tr><td>Texto del rechazo</td><td>lo escribimos</td><td><strong>lo traen</strong></td><td>sin verificar</td><td>lo escribimos (viene en inglés)</td></tr>
+    <tr><td>Amex</td><td>no documentado</td><td>no documentado</td><td>no documentado</td><td><strong>sí</strong></td></tr>
+    <tr><td>Pago que no termina en el acto</td><td>no</td><td>agente, billetera</td><td>agencias, Yape</td><td>PagoEfectivo · y <code>in_process</code> 2 días</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">10 · Lo que hay que decidir</h3>
+<ol class="man-lista">
+  <li><strong>Bricks, no Checkout Pro.</strong> Pro redirige y solo deja estilar el botón.</li>
+  <li><strong>Correr <code>GET /v1/payment_methods</code> con las credenciales del colegio</strong>
+  antes de dibujar el selector de medios. Su documentación dice que es la única lista fiable.</li>
+  <li><strong>Preguntarles por Yape</strong>, que su propia documentación se contradice.</li>
+  <li><strong>Los treinta mensajes de rechazo, en español.</strong> Es redacción del sistema, y
+  hay que decidir quién los aprueba.</li>
+  <li><strong>Qué se le enseña a la familia mientras un pago está <code>in_process</code></strong>
+  hasta dos días hábiles.</li>
+  <li><strong>Webhook obligatorio para PagoEfectivo.</strong> Hay que responder <strong>200 en 22
+  segundos</strong> o reintentan cada 15 minutos, y la firma <code>x-signature</code> se valida.</li>
+</ol>`;
+
 const pagMaquetas = `
 <p class="pag-intro">Los tres contextos. Landing y sistema <strong>comparten valores, no proporciones</strong>.
 El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
@@ -6110,6 +6425,7 @@ const CATALOGO = [
       { id: 'izipay', t: 'Izipay', estado: 'listo', c: pagIzipay },
       { id: 'culqi', t: 'Culqi', estado: 'listo', c: pagCulqi },
       { id: 'openpay', t: 'Openpay Perú', estado: 'listo', c: pagOpenpay },
+      { id: 'mercadopago', t: 'Mercado Pago', estado: 'listo', c: pagMercadoPago },
     ],
   },
   {

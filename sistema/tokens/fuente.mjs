@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.84.0";
+export const VERSION = "1.85.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,34 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.85.0', fecha: '2026-08-27',
+    que: 'Mercado Pago Peru — y el rechazo deja de ser UNA pantalla para ser TRES',
+    porque:
+      'Cuarta pasarela, mismo andamiaje psl-*. La documentacion la leyo un agente y trajo dos cosas '
+      + 'que cambian el diseño de las cuatro paginas, no solo de esta. '
+      + 'PRIMERA: su propia documentacion agrupa los rechazos en TRES FAMILIAS por lo que la persona '
+      + 'tiene que hacer — corregir aqui mismo (datos mal escritos), hacer algo fuera (el banco), o '
+      + 'NO REINTENTAR (fraude). Y en la tercera pide expresamente impedir nuevos intentos con los '
+      + 'mismos datos. Asi que la pantalla de rechazo se parte en tres, y la tercera NO LLEVA BOTON '
+      + 'DE REINTENTAR: esa ausencia es la decision de diseño. Un boton de reintentar donde no se '
+      + 'debe reintentar encadena rechazos, sube el riesgo del comercio y deja a la familia creyendo '
+      + 'que es culpa suya. '
+      + 'SEGUNDA: sus treinta mensajes de rechazo vienen EN INGLES incluso en la documentacion en '
+      + 'español —comprobado pidiendo la pagina en /es/ y volviendo identica—, y llevan variables '
+      + 'dentro que hay que interpolar. Redactarlos en español es trabajo del sistema de diseño, no '
+      + 'de la integracion. Es lo contrario de Culqi, que los trae escritos para el pagador. '
+      + 'DE PASO ES LA PRIMERA CON TEMA OSCURO DOCUMENTADO (theme: default|dark|bootstrap|flat) y la '
+      + 'primera que deja poner NUESTRO anillo de foco dentro de su formulario por variable '
+      + '(inputFocusedBoxShadow), que es §2.5.7 cumplido en territorio ajeno. Se recomienda Bricks '
+      + 'y no Checkout Pro: Pro redirige —no tiene modo modal, solo redirectMode self o blank— y '
+      + 'solo deja estilar el boton. '
+      + 'Y SEIS HUECOS DECLARADOS EN LA PROPIA PAGINA, incluida una CONTRADICCION SUYA: su tabla de '
+      + 'medios clasifica Yape como bank_transfer y su pagina de integracion lo trata como '
+      + 'debit_card. No se resuelve inventando: se pregunta.',
+    rompe: [],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.84.0', fecha: '2026-08-27',
     que: 'Openpay Peru, debajo de Culqi — y es la unica de las tres en la que el formulario es NUESTRO',
