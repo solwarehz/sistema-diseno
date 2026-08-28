@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.83.0
+# Actualizar al sistema de diseño v1.84.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.83.0"
+npm install "github:solwarehz/sistema-diseno#v1.84.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,19 +27,19 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.83.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.84.0
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.83.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.84.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.83.0 --repo solwarehz/sistema-diseno
+gh release download v1.84.0 --repo solwarehz/sistema-diseno
 ```
 
 Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
@@ -316,6 +316,8 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.82.0 | **La pasarela de pagos ya viaja en la hoja — nada que tocar.** Las clases `psl-*` de la página de Izipay pasan a la entrega (26 reglas), así que quien monte la pantalla del cobro la ve **idéntica** a la del catálogo: el candado de la promesa compara siete de sus superficies a cinco anchos, y el de la cascada las resuelve a once. **No viaja** lo que se llama `psl-demo-*`: el navegador dibujado y **el formulario falso de tarjeta** — ese lo pinta el SDK de Izipay, y entregar una imitación sería invitar a maquetar campos de tarjeta propios |
 
 | 1.83.0 | **Nada que tocar: es catálogo.** Nueva página **Pasarela de pagos › Culqi**, debajo de la de Izipay y con **el mismo andamiaje** — no trae ni una clase nueva. Trae, de su documentación: los seis métodos con sus claves de `paymentMethods`, los doce `decline_code` con sus dos mensajes literales, y el mapeo de nuestros tokens a `appearance.variables` y `appearance.rules`. **Tres diferencias con Izipay que conviene leer antes de elegir**: Culqi deja estilar mucho más (incluidos los estados, así que el anillo de foco del sistema entra en su formulario), trae el texto del rechazo ya redactado para quien paga (`user_message`), y **agente y billetera no terminan en el acto** — necesitan un webhook o la familia paga y nadie se entera |
+
+| 1.84.0 | **Nada que tocar: es catálogo.** Nueva página **Pasarela de pagos › Openpay Perú**, debajo de Culqi. **La única de las tres en la que el formulario de tarjeta puede ser nuestro**: `Openpay.js` tokeniza desde nuestros propios `Campo` y manda los datos directo a Openpay, así que ahí el modo oscuro, la alineación y el anillo de foco son los del sistema. Trae sus agencias peruanas por nombre y el aviso de que **las cuotas solo van con BBVA y DINERS**. **Lo que NO trae, y está dicho en la página**: su tabla de códigos de rechazo, que no se pudo leer — hay que pedírsela antes de escribir un mensaje de error |
 
 **Lo que no rompe pero conviene aprovechar:** `soloLectura` en `Selector`
 (§6.5 del manual), `persona.foto` en `CargaImagen` (§6.7), `CargaId` para el

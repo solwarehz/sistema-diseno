@@ -19,8 +19,8 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.83.0** — nace la página de **Culqi**, debajo de Izipay y
-con el mismo andamiaje: dos pasarelas no pueden dar dos pantallas distintas.
+**Estado actual: v1.84.0** — **Openpay Perú**, y es la única de las tres en la
+que el formulario de tarjeta puede ser nuestro.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

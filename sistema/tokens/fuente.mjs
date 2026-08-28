@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.83.0";
+export const VERSION = "1.84.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,32 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.84.0', fecha: '2026-08-27',
+    que: 'Openpay Peru, debajo de Culqi — y es la unica de las tres en la que el formulario es NUESTRO',
+    porque:
+      'Tercera pasarela, con el mismo andamiaje psl-* que las otras dos y sin una sola clase nueva. '
+      + 'PERO ROMPE EL PATRON, y eso cambia el diseño entero: su integracion se hace con Openpay.js, '
+      + 'que TOKENIZA desde NUESTRO propio formulario y manda los datos directo a Openpay. El '
+      + 'navegador de la familia habla con ellos, el colegio nunca ve la tarjeta, y aun asi los '
+      + 'campos son `Campo` del sistema. Su documentacion lo dice: usar la libreria «minimiza el '
+      + 'alcance de la certificacion PCI». Con Izipay y Culqi el formulario lo pinta su SDK y solo '
+      + 'podemos pasarles colores; aqui NO HAY TRAMA A RAYAS. Consecuencia util: el modo oscuro, que '
+      + 'quedo abierto con Izipay y sin comprobar con Culqi, aqui esta resuelto — es nuestro CSS. '
+      + 'DE SU DOCUMENTACION PERUANA: las agencias por su nombre —BBVA, BCP, Interbank, Kasnet, Caja '
+      + 'Arequipa, Caja Huancayo— y Yape; las cuotas sin intereses SOLO con tarjetas BBVA y DINERS; '
+      + 'y el `device_session_id` del antifraude. Lo de las cuotas no es dato de backend: ofrecer '
+      + '«paga en cuotas» a quien trae una Visa de otro banco es prometer lo que no se le va a dar. '
+      + 'Y LO QUE NO SE PUDO VERIFICAR VA ESCRITO EN LA PAGINA, no rellenado: la tabla de codigos de '
+      + 'rechazo de Openpay NO se pudo leer — sus paginas de documentacion devuelven contenido vacio '
+      + 'a una lectura automatica porque se pintan con JavaScript. De la serie 3000 solo se '
+      + 'confirmaron 3004 y 3005, y ni siquiera desde su documentacion peruana. En la de Izipay hay '
+      + 'diez codigos literales y en la de Culqi doce con el texto del pagador ya redactado; aqui '
+      + 'hay que pedirla. Un codigo de rechazo inventado manda a una familia a llamar al banco '
+      + 'equivocado, asi que no se inventa.',
+    rompe: [],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.83.0', fecha: '2026-08-27',
     que: 'Nace la pagina de Culqi, debajo de Izipay y con el MISMO andamiaje',

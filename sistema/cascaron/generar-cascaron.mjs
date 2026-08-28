@@ -4989,6 +4989,268 @@ montarlo contra su entorno de integración y ver si el checkout las relee sin re
   <code>chr_live_x9k2m4p8</code> y el código de agente.</li>
 </ol>`;
 
+// ── Pasarela de pagos · Openpay Perú ────────────────────────────────────────
+// La tercera, y la que rompe el patron de las otras dos: con Openpay.js el
+// formulario de tarjeta puede ser NUESTRO. Mismo andamiaje `psl-*` que las
+// otras dos paginas — ni una clase nueva.
+
+const pagOpenpay = `
+<p class="pag-intro">Las mismas pantallas del cobro, con <strong>Openpay Perú</strong> —de BBVA—.
+Mismo andamiaje que Izipay y Culqi, y por la misma razón: quien paga tiene que ver siempre lo
+mismo. Pero aquí hay una diferencia que cambia el diseño entero.</p>
+
+<div class="aviso"><strong>Con Openpay, el formulario de tarjeta puede ser NUESTRO.</strong> Su
+integración se hace con <strong><code>Openpay.js</code></strong>, que <em>tokeniza</em> los datos
+desde <strong>nuestro propio formulario</strong> y los manda directo a Openpay: el navegador de la
+familia habla con ellos, el colegio nunca ve la tarjeta, y aun así <strong>los campos son
+<code>Campo</code> del sistema</strong>. Su documentación lo dice así: usar la librería «minimiza
+el alcance de la certificación PCI». Con Izipay y con Culqi, el formulario lo pinta su SDK y lo
+único que podemos pasarles son colores. <strong>Aquí no hay trama a rayas.</strong></div>
+
+<h3 class="sub-seccion">Qué pintamos nosotros y qué pone Openpay</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Pieza</th><th>De quién es</th><th>Con qué se hace</th></tr></thead>
+  <tbody>
+    <tr><td>Resumen de lo que se cobra</td><td><strong>Nuestro</strong></td><td><code>Tarjeta</code> + tokens</td></tr>
+    <tr><td><strong>Campos de tarjeta</strong></td><td><strong>Nuestro</strong></td><td><code>Campo</code> · los tokeniza <code>Openpay.js</code></td></tr>
+    <tr><td>Botón de pagar</td><td><strong>Nuestro</strong></td><td><code>Boton</code>, sin condiciones</td></tr>
+    <tr><td>Huella del dispositivo</td><td>De Openpay</td><td><code>device_session_id</code> — antifraude</td></tr>
+    <tr><td>Autenticación del banco (3-D Secure)</td><td>De Openpay</td><td>Redirección a su pantalla y vuelta</td></tr>
+    <tr><td>Pago en agencia</td><td>De Openpay</td><td>Devuelve un código para pagar después</td></tr>
+    <tr><td>Estados y constancia</td><td><strong>Nuestro</strong></td><td><code>Mensaje</code>, <code>Progreso</code>, <code>Boton</code></td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">1 · La pantalla de pago — sin marcado ajeno</h3>
+<div class="bloque">
+  <div class="psl-demo-marco">
+    <div class="psl-demo-barra">
+      <span>colegioalberteinstein.edu.pe/pagos</span>
+      <span>${icono('candado')} Conexión segura</span>
+    </div>
+    <div class="psl-demo-lienzo">
+
+      <div class="psl-hero">
+        <span>
+          <span class="psl-hero-et">Total a pagar</span>
+          <span class="psl-hero-monto">S/ 357,00</span>
+          <span class="psl-hero-sub">QUISPE RAMOS, Ana Lucía · 3.º B</span>
+        </span>
+        <span class="psl-hero-der">
+          Orden <strong>PEN-2026-08-4471</strong><br>Vence el 31/08/2026
+        </span>
+      </div>
+
+      <div class="psl-cols">
+        <article class="tn">
+          <div class="tn-cab"><h4>Lo que vas a pagar</h4><span class="chip chip-info">Pendiente</span></div>
+          <div class="tn-cuerpo">
+            <div class="psl-detalle">
+              <div class="psl-linea">
+                <span>Pensión de agosto 2026<span class="psl-linea-sub">Mensualidad regular</span></span>
+                <span class="psl-monto">S/ 350,00</span>
+              </div>
+              <div class="psl-linea">
+                <span>Mora por pago tardío<span class="psl-linea-sub">6 días · 1 % mensual</span></span>
+                <span class="psl-monto">S/ 7,00</span>
+              </div>
+              <div class="psl-linea psl-total">
+                <span>Total</span><span class="psl-monto">S/ 357,00</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tn">
+          <div class="tn-cab"><h4>Cómo vas a pagar</h4></div>
+          <div class="tn-cuerpo">
+            <div class="campos">
+              <label class="cg"><span class="cg-et">Número de tarjeta</span>
+                <input class="campo cg-in" inputmode="numeric" placeholder="0000 0000 0000 0000" readonly></label>
+              <label class="cg"><span class="cg-et">Nombre como aparece en la tarjeta</span>
+                <input class="campo cg-in" placeholder="ANA L QUISPE RAMOS" readonly></label>
+              <div class="campos-rejilla">
+                <label class="cg"><span class="cg-et">Vencimiento</span>
+                  <input class="campo cg-in" inputmode="numeric" placeholder="MM / AA" readonly></label>
+                <label class="cg"><span class="cg-et">CVV<span class="cg-req">*</span></span>
+                  <input class="campo cg-in" inputmode="numeric" placeholder="123" readonly>
+                  <span class="cg-ayuda">Los tres dígitos del reverso.</span></label>
+              </div>
+            </div>
+            <div class="msj msj-nota">
+              <span class="msj-txt">Estos campos son <code>Campo</code> del sistema. Lo que se
+              escribe <strong>no pasa por nuestro servidor</strong>: <code>Openpay.js</code> lo
+              convierte en un token en el propio navegador y solo viaja ese token.</span>
+            </div>
+          </div>
+          <div class="tn-pie">
+            <button class="btn btn-terc">Cancelar</button>
+            <button class="btn btn-1">Pagar S/ 357,00</button>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </div>
+  <p class="seccion-sub"><strong>Compárelo con las otras dos páginas.</strong> Allí el recuadro con
+  trama marcaba dónde acababa nuestro terreno; aquí no hay ninguno. Es la única de las tres en la
+  que la alineación, el anillo de foco y los mensajes de error son <em>literalmente</em> los del
+  sistema, porque son los nuestros.</p>
+</div>
+
+<h3 class="sub-seccion">2 · Los estados</h3>
+<div class="bloque">
+  <div class="psl-cols">
+
+    <article class="tn">
+      <div class="tn-cab"><h4>a · Verificando con tu banco (3-D Secure)</h4></div>
+      <div class="tn-cuerpo">
+        <div class="pr-caja">
+          <div class="pr-cab"><span>Te estamos llevando a tu banco…</span></div>
+          <div class="pr" role="progressbar" aria-label="Verificando con el banco"><div class="pr-indet"></div></div>
+        </div>
+        <div class="msj msj-aviso">
+          <span class="msj-ico">${icono('alerta')}</span>
+          <span class="msj-txt"><strong>Aquí se sale de nuestra pantalla</strong> y se vuelve.
+          Es de Openpay y no se puede maquetar: lo que sí es nuestro es avisar antes de que pase.</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="tn">
+      <div class="tn-cab"><h4>b · Aprobado</h4><span class="chip chip-exito">Pagado</span></div>
+      <div class="tn-cuerpo">
+        <div class="psl-estado psl-estado-exito">
+          <span class="psl-sello">${icono('visto', TAMANOS.estado)}</span>
+          <span class="psl-estado-tit">Pago aprobado</span>
+          <span class="psl-estado-txt">Le enviamos la constancia a ana.quispe@correo.com.</span>
+        </div>
+        <dl class="psl-datos">
+          <dt>Monto</dt><dd><strong>S/ 357,00</strong></dd>
+          <dt>Orden</dt><dd>PEN-2026-08-4471</dd>
+          <dt>Cargo</dt><dd>trvxaqkxvjmkhsvbqzcd</dd>
+          <dt>Tarjeta</dt><dd>Visa •••• 4837</dd>
+          <dt>Fecha</dt><dd>27/08/2026 15:42</dd>
+        </dl>
+      </div>
+      <div class="tn-pie">
+        <button class="btn btn-neutro btn-ic">${icono('descargar')}Descargar</button>
+        <button class="btn btn-1">Volver a mis pagos</button>
+      </div>
+    </article>
+
+    <article class="tn">
+      <div class="tn-cab"><h4>c · Rechazado</h4><span class="chip chip-error">3005</span></div>
+      <div class="tn-cuerpo">
+        <div class="psl-estado psl-estado-error">
+          <span class="psl-sello">${icono('cerrar', TAMANOS.estado)}</span>
+          <span class="psl-estado-tit">El pago no se completó</span>
+          <span class="psl-estado-txt">Tu banco no autorizó la operación. No se te cobró nada.</span>
+        </div>
+        <p><strong>Ese texto es propuesta nuestra, no suyo</strong> — y hay que revisarlo: ver §4.</p>
+      </div>
+      <div class="tn-pie"><button class="btn btn-1">Intentar otra vez</button></div>
+    </article>
+
+    <article class="tn">
+      <div class="tn-cab"><h4>d · Pendiente — pago en agencia</h4><span class="chip chip-aviso">Esperando</span></div>
+      <div class="tn-cuerpo">
+        <div class="psl-estado psl-estado-info">
+          <span class="psl-sello">${icono('informacion', TAMANOS.estado)}</span>
+          <span class="psl-estado-tit">Falta pagar en la agencia</span>
+          <span class="psl-estado-txt">Lleve este código a BBVA, BCP, Interbank, Kasnet, Caja
+          Arequipa o Caja Huancayo. También se puede pagar con Yape.</span>
+        </div>
+        <dl class="psl-datos">
+          <dt>Código</dt><dd><strong>1234 5678 9012</strong></dd>
+          <dt>Vence</dt><dd>29/08/2026 23:59</dd>
+          <dt>Monto</dt><dd>S/ 357,00</dd>
+        </dl>
+      </div>
+      <div class="tn-pie">
+        <button class="btn btn-neutro btn-ic">${icono('descargar')}Descargar el código</button>
+      </div>
+    </article>
+
+  </div>
+</div>
+
+<h3 class="sub-seccion">3 · Métodos, agencias y cuotas — de Perú</h3>
+<p class="seccion-sub">Esto <strong>sí</strong> sale de su página peruana, y es lo que la distingue
+de las otras dos: la red de agencias es propia y las cuotas están atadas a dos emisores.</p>
+<table class="tabla-simple">
+  <thead><tr><th>Cómo se paga</th><th>Dónde</th><th>Termina en el acto</th></tr></thead>
+  <tbody>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-1"></span>Tarjeta de crédito o débito</td><td>En nuestra pantalla, con <code>Openpay.js</code></td><td>Sí</td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-2"></span>Yape</td><td>Desde la app</td><td>Sí</td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-4"></span>Agencias</td><td><strong>BBVA, BCP, Interbank, Kasnet, Caja Arequipa, Caja Huancayo</strong></td><td><strong>No</strong> — código para pagar después</td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-3"></span>Cuotas sin intereses</td><td>Solo tarjetas <strong>BBVA</strong> y <strong>DINERS</strong></td><td>Sí</td></tr>
+  </tbody>
+</table>
+<div class="msj msj-nota">
+  <span class="msj-txt"><strong>Las cuotas atadas a dos emisores cambian la pantalla</strong>, no
+  solo el backend: ofrecer «paga en cuotas» a quien trae una Visa de otro banco es prometer algo que
+  no se le va a dar. O se detecta el emisor antes de ofrecerlo, o no se ofrece.</span>
+</div>
+
+<h3 class="sub-seccion">4 · Lo que NO se pudo verificar — y por qué se dice</h3>
+<div class="msj msj-error">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt"><strong>La tabla de códigos de rechazo de Openpay no está aquí porque no
+  se pudo leer.</strong> Sus páginas de documentación (<code>documents.openpay.pe</code>) devuelven
+  contenido vacío a una lectura automática: se pintan con JavaScript. De la serie 3000 solo se pudo
+  confirmar <strong><code>3004</code></strong> —tarjeta reportada— y <strong><code>3005</code></strong>
+  —rechazada por el sistema antifraude—, y ni siquiera desde su documentación peruana.</span>
+</div>
+<p class="seccion-sub">Esto es una diferencia real con las otras dos páginas, y por eso va escrita
+en vez de rellenada: en la de <strong>Izipay</strong> los diez códigos son literales suyos; en la de
+<strong>Culqi</strong>, los doce, <em>con el texto para el pagador ya redactado por ellos</em>. Aquí
+haría falta pedirles la lista o sacarla del panel antes de escribir un solo mensaje de error.
+<strong>Un código de rechazo inventado manda a una familia a llamar al banco equivocado.</strong></p>
+
+<h3 class="sub-seccion">5 · Las tres, de frente</h3>
+<table class="tabla-simple">
+  <thead><tr><th>&nbsp;</th><th>Izipay</th><th>Culqi</th><th>Openpay Perú</th></tr></thead>
+  <tbody>
+    <tr><td><strong>El formulario de tarjeta es…</strong></td><td>suyo</td><td>suyo</td><td><strong>nuestro</strong></td></tr>
+    <tr><td>Qué se puede estilar de su parte</td><td>un juego de colores</td><td>variables CSS + reglas y estados</td><td><strong>no aplica</strong></td></tr>
+    <tr><td>Modo oscuro</td><td>no documentado</td><td>parece posible</td><td><strong>resuelto: es nuestro CSS</strong></td></tr>
+    <tr><td>Texto del rechazo para quien paga</td><td>lo escribimos</td><td><strong>lo traen</strong></td><td><strong>sin verificar</strong></td></tr>
+    <tr><td>Pago que no termina en el acto</td><td>no</td><td>agente y billetera</td><td>agencias y Yape</td></tr>
+    <tr><td>Cuotas</td><td>no documentado</td><td>Cuotéalo (BCP)</td><td>BBVA y DINERS</td></tr>
+    <tr><td>Lo que hay que montar sí o sí</td><td colspan="3">Un servicio del colegio: llaves, cargo, y —en las tres— el aviso de los pagos que llegan tarde</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">6 · Lo que hay que decidir</h3>
+<ol class="man-lista">
+  <li><strong>Que el formulario sea nuestro no es gratis.</strong> Gana en aspecto y en teclado, y
+  a cambio el colegio se hace cargo de la validación en pantalla y del cumplimiento PCI que
+  <code>Openpay.js</code> <em>minimiza</em> pero no elimina. Es una decisión de riesgo, no de
+  diseño.</li>
+  <li><strong>Las cuotas solo con BBVA y DINERS.</strong> O se detecta el emisor antes de
+  ofrecerlas, o no se ofrecen.</li>
+  <li><strong>Los pagos en agencia llegan tarde</strong> y hacen falta las notificaciones de
+  Openpay. Sin eso, la familia paga y el colegio no se entera — igual que con Culqi.</li>
+  <li><strong>Pedirles la tabla de códigos.</strong> Ver §4. No se escribe un mensaje de error
+  hasta tenerla.</li>
+  <li><strong>Y lo de siempre:</strong> las llaves y el cargo se hacen desde el backend.</li>
+</ol>
+
+<h3 class="sub-seccion">7 · De dónde sale cada dato</h3>
+<ol class="man-lista">
+  <li><strong>De su documentación peruana:</strong> las agencias por su nombre —BBVA, BCP,
+  Interbank, Kasnet, Caja Arequipa, Caja Huancayo— y Yape; las cuotas sin intereses con tarjetas
+  BBVA y DINERS; que <code>Openpay.js</code> envía la tarjeta directo a Openpay y «minimiza el
+  alcance de la certificación PCI»; y el <code>device_session_id</code> para el antifraude.</li>
+  <li><strong>Verificado a medias:</strong> los códigos <code>3004</code> y <code>3005</code>, y no
+  desde la documentación peruana. Ver §4.</li>
+  <li><strong>Nuestro y por tanto discutible:</strong> la disposición, los textos, y que el
+  formulario se arme con <code>Campo</code>.</li>
+  <li><strong>Inventado para poder dibujar:</strong> los importes, la orden, el identificador del
+  cargo y el código de agencia.</li>
+</ol>`;
+
 const pagMaquetas = `
 <p class="pag-intro">Los tres contextos. Landing y sistema <strong>comparten valores, no proporciones</strong>.
 El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
@@ -5847,6 +6109,7 @@ const CATALOGO = [
     items: [
       { id: 'izipay', t: 'Izipay', estado: 'listo', c: pagIzipay },
       { id: 'culqi', t: 'Culqi', estado: 'listo', c: pagCulqi },
+      { id: 'openpay', t: 'Openpay Perú', estado: 'listo', c: pagOpenpay },
     ],
   },
   {

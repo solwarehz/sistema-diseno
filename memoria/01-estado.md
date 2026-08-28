@@ -1,9 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 27 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.83.0** — nace la página de **Culqi**,
-debajo de Izipay y con el **mismo andamiaje**: dos pasarelas distintas no pueden
-dar dos pantallas distintas a quien paga
+**Versión del sistema:** MMI-DS **v1.84.0** — **Openpay Perú**, la tercera
+pasarela, y la única en la que **el formulario de tarjeta puede ser nuestro**
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -40,12 +39,12 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
 | Componentes de React | ✅ | **499 pruebas en 34 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
-| Catálogo navegable | ✅ | `cascaron/index.html` · 43 páginas · lo genera `generar-cascaron.mjs` |
+| Catálogo navegable | ✅ | `cascaron/index.html` · 44 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.83.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.84.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.83.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.84.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +65,34 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.83.0), con detalle
+### Lo de hoy (v1.84.0), con detalle
+
+**Openpay Perú — y rompe el patrón de las otras dos.**
+
+Mismo andamiaje `psl-*`, ni una clase nueva. Pero su integración se hace con
+`Openpay.js`, que **tokeniza desde nuestro propio formulario**: el navegador de
+la familia habla con Openpay, el colegio nunca ve la tarjeta, y aun así **los
+campos son `Campo` del sistema**. Su documentación lo dice: la librería «minimiza
+el alcance de la certificación PCI». Con Izipay y Culqi el formulario lo pinta su
+SDK; **aquí no hay trama a rayas**. Consecuencia útil: el **modo oscuro**, que
+quedó abierto con Izipay y sin comprobar con Culqi, aquí **está resuelto** —es
+nuestro CSS—.
+
+**De su documentación peruana:** las agencias por su nombre —BBVA, BCP,
+Interbank, Kasnet, Caja Arequipa, Caja Huancayo— y Yape; y las cuotas sin
+intereses **solo con tarjetas BBVA y DINERS**. Eso último no es dato de backend:
+ofrecer «paga en cuotas» a quien trae una Visa de otro banco es prometer lo que
+no se le va a dar.
+
+**Y lo que no se pudo verificar va escrito, no rellenado.** La tabla de códigos
+de rechazo de Openpay **no se pudo leer**: sus páginas devuelven contenido vacío
+a una lectura automática porque se pintan con JavaScript. De la serie 3000 solo
+se confirmaron `3004` y `3005`, y ni siquiera desde su documentación peruana. En
+la de Izipay hay diez códigos literales y en la de Culqi doce con el texto del
+pagador ya redactado; aquí hay que pedirla. **Un código de rechazo inventado
+manda a una familia a llamar al banco equivocado.**
+
+### Lo de la v1.83.0, con detalle
 
 **Nace la página de Culqi, debajo de Izipay y con el mismo andamiaje.**
 
@@ -1066,7 +1092,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.83.0
+Versión                      1.84.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes · 40 informativos,
                                       0 fallos)
@@ -1084,7 +1110,7 @@ Contrato de comportamiento      185   reglas · 152 obligatorias · 6 PENDIENTE
 Componentes publicados           32   38 módulos viajan en el paquete
                                       117 exportaciones, todas por el índice
 Iconos                           46
-Páginas del catálogo             43
+Páginas del catálogo             44
 Fila de un campo, medida      36,45   px · la fila de carga se fija en 36
 ```
 
