@@ -124,6 +124,12 @@ const SOLO_CATALOGO = new Set([
   'color', 'token',
   // Chrome del propio catalogo, sin equivalente en un producto.
   'maquetas', 'escudo', 'opciones',
+  // La pagina de la pasarela de pagos es una COMPOSICION, no un elemento: se
+  // arma con Tarjeta, Mensaje, Progreso, Boton, Campo y Chip, que si viajan.
+  // Lo unico suyo es el andamiaje de esas pantallas —el navegador dibujado, la
+  // banda del total, el recuadro que marca el terreno del SDK de Izipay—, y eso
+  // no tiene sentido en un producto: lo que se copia son los componentes.
+  'psl',
 ]);
 
 // ── Troceado del CSS respetando las @media ──────────────────────────────────

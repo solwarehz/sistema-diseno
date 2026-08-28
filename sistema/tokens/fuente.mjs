@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.79.0";
+export const VERSION = "1.80.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,31 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.80.0', fecha: '2026-08-27',
+    que: 'El catalogo estrena grupo «Pasarela de pagos», con la pagina de Izipay',
+    porque:
+      'Encargo del responsable: las pantallas del cobro con Izipay, con nuestro sistema de diseño. '
+      + 'Antes de dibujar se leyo SU documentacion — no se invento ni un campo ni un codigo. '
+      + 'LO PRIMERO CAMBIA EL ENCARGO: el formulario de tarjeta NO lo pintamos nosotros. Lo pinta su '
+      + 'SDK dentro de un `container` que le damos, y su documentacion lo dice: «el ancho y el alto '
+      + 'del formulario se ajustan a las medidas del elemento contenedor». Lo unico que se le puede '
+      + 'pasar son nuestros colores, por `appearance.customTheme`. En la pagina, la trama a rayas '
+      + 'marca donde acaba nuestro terreno — que no es un adorno, es la frontera. '
+      + 'LO QUE SI ES NUESTRO y es la mayor parte: el resumen del cobro, los cinco estados, la '
+      + 'constancia, y el boton de pagar — con `showButtonProcessForm: false` el SDK deja de pintar '
+      + 'el suyo y se dispara con `checkout.form.events.submit()`, asi que puede ser nuestro Boton. '
+      + 'ES UNA COMPOSICION, NO UN ELEMENTO, y por eso sus clases `psl-*` son SOLO_CATALOGO y no '
+      + 'viajan: la pagina se arma con Tarjeta, Mensaje, Progreso, Boton, Campo y Chip, que si '
+      + 'viajan. Lo que se copia son los componentes, no este marcado. '
+      + 'EL COLOR SALE DE `identidad-1..4` CON `identidad-texto`, que es un par VERIFICADO a 4,5:1 '
+      + 'en los dos modos. No se autorizo ningun color nuevo: cobrar dinero es la pantalla donde '
+      + 'menos se puede improvisar un color que nadie midio. '
+      + 'Y el nombre es «Izipay», con i. El encargo llego como «IzyPay»; un nombre de proveedor mal '
+      + 'escrito en el catalogo se copia.',
+    rompe: [],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.79.0', fecha: '2026-08-27',
     que: 'R103: el selector con busqueda ya se puede vaciar, ocultar su rotulo y ofrecer «Crear»',

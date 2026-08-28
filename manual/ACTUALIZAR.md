@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.79.0
+# Actualizar al sistema de diseño v1.80.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.79.0"
+npm install "github:solwarehz/sistema-diseno#v1.80.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,19 +27,19 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.79.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.80.0
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.79.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.80.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.79.0 --repo solwarehz/sistema-diseno
+gh release download v1.80.0 --repo solwarehz/sistema-diseno
 ```
 
 Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
@@ -310,6 +310,8 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.78.0 | **`CargaImagen` deja de ser la excepción, y ahora sí cambia sola.** En la 1.77.0 era la única de las tres que no usaba la fila por omisión; ahora **la fila es el defecto**, así que un `<CargaImagen>` que no toquen pasa de la caja de 96 px a la fila de 36. **Si esa pantalla está hecha para poner esa imagen** —el selector de foto del legajo, el logo de la marca—, pidan `presentacion="caja"` y queda como estaba. Además: el **rótulo pasa dentro de la fila** en las tres cargas (todo en un renglón), la **foto de una persona se ve redonda** en la miniatura, y `.ci-et`, `.ci-nota`, `.ci-error` y `.ci-vacia` **desaparecen de la hoja** — pasan a `.cx-*`, que es lo que ya usaban el PDF y el ID |
 
 | 1.79.0 | **`SelectorBusqueda` ya se puede vaciar — y no rompe nada.** Tres props nuevas, las tres apagadas por omisión. **`vacio="Todos"`**: añade la fila para volver a *sin elegir* y con ella `onCambio(null)` **empieza a emitirse de verdad** — hasta ahora la firma decía `string \| null` y el componente **nunca** mandaba `null`, lo que lo bloqueaba en cualquier campo opcional. Con `vacio` puesto, **Retroceso** sobre el campo vacío hace lo mismo. **`etiquetaOculta`**: la que ya tenían `Campo` y `Selector` y faltaba solo aquí. **`onCrear`**: recibe lo tecleado y convierte la fila de «no hay coincidencias» en un «Crear …», con ratón y con Enter. **Aviso de lectura**: si tenían un `if (valor === null)` sobre este componente, esa rama nunca se ejecutaba y ahora puede |
+
+| 1.80.0 | **Nada que hacer: no cambia ni una línea de código.** El catálogo estrena un grupo, **Pasarela de pagos**, con la página de **Izipay**: las pantallas del cobro armadas con `Tarjeta`, `Mensaje`, `Progreso`, `Boton`, `Campo` y `Chip`. Es una **composición, no un elemento**, así que sus clases no viajan en la hoja — lo que se copia son los componentes. Trae, sacado de su documentación: los métodos con sus topes, los diez códigos de rechazo con sus mensajes, y el `appearance.customTheme` relleno con nuestros tokens |
 
 **Lo que no rompe pero conviene aprovechar:** `soloLectura` en `Selector`
 (§6.5 del manual), `persona.foto` en `CargaImagen` (§6.7), `CargaId` para el

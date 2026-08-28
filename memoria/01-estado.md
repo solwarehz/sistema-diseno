@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 27 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.79.0** — el selector con búsqueda ya se
-puede **vaciar**: su firma prometía un `null` que el componente **nunca**
-emitía, y eso lo bloqueaba en todo campo opcional
+**Versión del sistema:** MMI-DS **v1.80.0** — el catálogo estrena grupo
+**Pasarela de pagos**, con las pantallas del cobro con Izipay: una composición,
+no un elemento
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -40,12 +40,12 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
 | Componentes de React | ✅ | **499 pruebas en 34 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
-| Catálogo navegable | ✅ | `cascaron/index.html` · 41 páginas · lo genera `generar-cascaron.mjs` |
+| Catálogo navegable | ✅ | `cascaron/index.html` · 42 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.79.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.80.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.79.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.80.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,40 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.79.0), con detalle
+### Lo de hoy (v1.80.0), con detalle
+
+**El catálogo estrena grupo: «Pasarela de pagos».**
+
+Encargo del responsable: las pantallas del cobro con **Izipay**, con nuestro
+sistema de diseño. Antes de dibujar se leyó **su** documentación — no se inventó
+ni un campo ni un código.
+
+**Lo primero cambia el encargo: el formulario de tarjeta no lo pintamos
+nosotros.** Lo pinta su SDK dentro de un `container` que le damos, y su
+documentación lo dice: «el ancho y el alto del formulario se ajustan a las
+medidas del elemento contenedor». Lo único que se le puede pasar son nuestros
+colores, por `appearance.customTheme`. En la página, **la trama a rayas marca
+dónde acaba nuestro terreno** — no es un adorno, es la frontera.
+
+Lo que sí es nuestro, y es la mayor parte: el resumen del cobro, los cinco
+estados, la constancia, y **el botón de pagar** — con
+`showButtonProcessForm: false` el SDK deja de pintar el suyo y el pago se
+dispara con `checkout.form.events.submit()`, así que puede ser nuestro `Boton`.
+
+**Es una composición, no un elemento**, y por eso sus clases `psl-*` son
+`SOLO_CATALOGO` y no viajan: la página se arma con `Tarjeta`, `Mensaje`,
+`Progreso`, `Boton`, `Campo` y `Chip`, que sí viajan. Lo que se copia son los
+componentes, no ese marcado.
+
+**El color sale de `identidad-1..4` con `identidad-texto`**, que es un par
+**verificado a 4,5:1 en los dos modos**. No se autorizó ningún color nuevo:
+cobrar dinero es la pantalla donde menos se puede improvisar un color que nadie
+midió.
+
+Y el nombre es **Izipay**, con i. El encargo llegó como «IzyPay»; un nombre de
+proveedor mal escrito en el catálogo se copia.
+
+### Lo de la v1.79.0, con detalle
 
 **R103 · el selector con búsqueda prometía un `null` que nunca emitía.**
 
@@ -948,7 +981,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.79.0
+Versión                      1.80.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes · 40 informativos,
                                       0 fallos)
@@ -966,7 +999,7 @@ Contrato de comportamiento      185   reglas · 152 obligatorias · 6 PENDIENTE
 Componentes publicados           32   38 módulos viajan en el paquete
                                       117 exportaciones, todas por el índice
 Iconos                           46
-Páginas del catálogo             41
+Páginas del catálogo             42
 Fila de un campo, medida      36,45   px · la fila de carga se fija en 36
 ```
 

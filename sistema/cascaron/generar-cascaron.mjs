@@ -4259,6 +4259,358 @@ Heredan <code>currentColor</code> — que es exactamente lo que el emoji no hace
 </div>
 <p class="pag-intro" style="margin-top:16px">Es el tercer defecto real que el documento reporta en §1.3, y el único que seguía sin resolver.</p>`;
 
+// ── Pasarela de pagos · Izipay ──────────────────────────────────────────────
+// Composicion, no elemento: se arma con Tarjeta, Mensaje, Progreso, Boton,
+// Campo y Chip. Sus clases `psl-*` son SOLO CATALOGO y no viajan.
+//
+// EL NOMBRE ES «Izipay», con i. Se escribe asi en su documentacion y en su
+// dominio (developers.izipay.pe). Se deja anotado porque el encargo llego como
+// «IzyPay» y un nombre de proveedor mal escrito en el catalogo se copia.
+
+const pagIzipay = `
+<p class="pag-intro">Las pantallas del cobro con <strong>Izipay</strong>, armadas con los
+componentes del sistema. Todo lo que se ve aquí sale de <code>Tarjeta</code>, <code>Mensaje</code>,
+<code>Progreso</code>, <code>Boton</code>, <code>Campo</code> y <code>Chip</code> — salvo el
+recuadro con trama, que <strong>no es nuestro</strong>.</p>
+
+<div class="aviso"><strong>El formulario de tarjeta no lo pintamos nosotros.</strong> Lo pinta el
+SDK de Izipay dentro de un <code>container</code> que le damos, y su documentación lo dice: «el
+ancho y el alto del formulario se ajustan a las medidas del elemento contenedor». No se puede
+maquetar con nuestros componentes; lo único que se le pasa son <strong>nuestros colores</strong>, por
+<code>appearance.customTheme</code> (§5). En estas pantallas, <strong>la trama a rayas es terreno de
+ellos</strong>.</div>
+
+<h3 class="sub-seccion">Qué pintamos nosotros y qué pinta su SDK</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Pieza</th><th>De quién es</th><th>Con qué se hace</th></tr></thead>
+  <tbody>
+    <tr><td>Resumen de lo que se cobra</td><td><strong>Nuestro</strong></td><td><code>Tarjeta</code> + tokens</td></tr>
+    <tr><td>Campos de tarjeta, Yape, Plin, QR</td><td>De Izipay</td><td>Su SDK, dentro de <code>container</code></td></tr>
+    <tr><td>Colores y fuente de ese formulario</td><td>Compartido</td><td><code>appearance.customTheme</code></td></tr>
+    <tr><td>Botón de pagar</td><td><strong>Nuestro</strong></td><td><code>Boton</code> + <code>showButtonProcessForm: false</code></td></tr>
+    <tr><td>Procesando, aprobado, rechazado, caducado</td><td><strong>Nuestro</strong></td><td><code>Mensaje</code>, <code>Progreso</code>, <code>Boton</code></td></tr>
+    <tr><td>Constancia del pago</td><td><strong>Nuestro</strong></td><td>Con los datos de <code>callbackResponse</code></td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">1 · La pantalla de pago</h3>
+<div class="bloque">
+  <div class="psl-marco">
+    <div class="psl-barra">
+      <span>colegioalberteinstein.edu.pe/pagos</span>
+      <span>${icono('candado')} Conexión segura</span>
+    </div>
+    <div class="psl-lienzo">
+
+      <div class="psl-hero">
+        <span>
+          <span class="psl-hero-et">Total a pagar</span>
+          <span class="psl-hero-monto">S/ 357,00</span>
+          <span class="psl-hero-sub">QUISPE RAMOS, Ana Lucía · 3.º B</span>
+        </span>
+        <span class="psl-hero-der">
+          Orden <strong>PEN-2026-08-4471</strong><br>Vence el 31/08/2026
+        </span>
+      </div>
+
+      <div class="psl-cols">
+        <article class="tn">
+          <div class="tn-cab"><h4>Lo que vas a pagar</h4><span class="chip chip-info">Pendiente</span></div>
+          <div class="tn-cuerpo">
+            <div class="psl-detalle">
+              <div class="psl-linea">
+                <span>Pensión de agosto 2026<span class="psl-linea-sub">Mensualidad regular</span></span>
+                <span class="psl-monto">S/ 350,00</span>
+              </div>
+              <div class="psl-linea">
+                <span>Mora por pago tardío<span class="psl-linea-sub">6 días · 1 % mensual</span></span>
+                <span class="psl-monto">S/ 7,00</span>
+              </div>
+              <div class="psl-linea psl-total">
+                <span>Total</span><span class="psl-monto">S/ 357,00</span>
+              </div>
+            </div>
+            <div class="cg">
+              <label class="cg-et" for="psl-correo">Correo para la constancia</label>
+              <input id="psl-correo" class="campo cg-in" type="email" value="ana.quispe@correo.com">
+              <span class="cg-ayuda">Ahí llega el comprobante. Se puede cambiar.</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="tn">
+          <div class="tn-cab"><h4>Cómo vas a pagar</h4></div>
+          <div class="tn-cuerpo">
+            <div class="psl-sdk">
+              <span class="psl-sdk-et">${icono('informacion')} Formulario de Izipay — este marcado no es nuestro</span>
+              <div class="psl-sdk-caja">
+                <div class="psl-metodos">
+                  <span class="psl-metodo activo">Tarjeta</span>
+                  <span class="psl-metodo">Yape</span>
+                  <span class="psl-metodo">Plin</span>
+                  <span class="psl-metodo">QR</span>
+                </div>
+                <div class="psl-falso">
+                  <span class="psl-falso-et">Número de tarjeta</span>
+                  <span class="psl-falso-in">•••• •••• •••• ••••</span>
+                </div>
+                <div class="psl-falso-par">
+                  <div class="psl-falso"><span class="psl-falso-et">Vencimiento</span><span class="psl-falso-in">MM / AA</span></div>
+                  <div class="psl-falso"><span class="psl-falso-et">CVV</span><span class="psl-falso-in">•••</span></div>
+                </div>
+              </div>
+            </div>
+            <p>Los datos de la tarjeta viajan directo a Izipay. El colegio no los recibe ni los guarda.</p>
+          </div>
+          <div class="tn-pie">
+            <button class="btn btn-terc">Cancelar</button>
+            <button class="btn btn-1">Pagar S/ 357,00</button>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </div>
+  <p class="seccion-sub"><strong>El monto va en el botón</strong>, no solo arriba: es lo último que
+  se lee antes de pulsar, y es lo que evita el «creía que eran 350».</p>
+</div>
+
+<h3 class="sub-seccion">2 · Los estados, que son la mitad del trabajo</h3>
+<p class="seccion-sub">El token de sesión se pide <strong>desde el backend</strong> y caduca, el
+banco puede pedir su verificación, y el rechazo llega con un código que hay que traducir a algo que
+una madre pueda leer. Cinco pantallas, no una.</p>
+
+<div class="bloque">
+  <div class="psl-cols">
+
+    <article class="tn">
+      <div class="tn-cab"><h4>a · Pidiendo la sesión</h4></div>
+      <div class="tn-cuerpo">
+        <div class="pr-caja">
+          <div class="pr-cab"><span>Preparando el pago…</span></div>
+          <div class="pr" role="progressbar" aria-label="Preparando el pago"><div class="pr-indet"></div></div>
+        </div>
+        <p>El token lo pide <em>nuestro</em> servidor, nunca el navegador.</p>
+      </div>
+    </article>
+
+    <article class="tn">
+      <div class="tn-cab"><h4>b · Procesando el cobro</h4></div>
+      <div class="tn-cuerpo">
+        <div class="pr-caja">
+          <div class="pr-cab"><span>Procesando el pago…</span></div>
+          <div class="pr" role="progressbar" aria-label="Procesando el pago"><div class="pr-indet"></div></div>
+        </div>
+        <div class="msj msj-aviso">
+          <span class="msj-ico">${icono('alerta')}</span>
+          <span class="msj-txt"><strong>No cierres esta pantalla ni vuelvas atrás.</strong>
+          Aquí, volver atrás puede duplicar el cobro.</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="tn">
+      <div class="tn-cab"><h4>c · Aprobado</h4><span class="chip chip-exito">Autorizado</span></div>
+      <div class="tn-cuerpo">
+        <div class="psl-estado psl-estado-exito">
+          <span class="psl-sello">${icono('visto', TAMANOS.estado)}</span>
+          <span class="psl-estado-tit">Pago aprobado</span>
+          <span class="psl-estado-txt">Le enviamos la constancia a ana.quispe@correo.com.</span>
+        </div>
+        <dl class="psl-datos">
+          <dt>Monto</dt><dd><strong>S/ 357,00</strong></dd>
+          <dt>Orden</dt><dd>PEN-2026-08-4471</dd>
+          <dt>Autorización</dt><dd>103514</dd>
+          <dt>Tarjeta</dt><dd>Visa •••• 4837</dd>
+          <dt>Fecha</dt><dd>27/08/2026 15:42</dd>
+        </dl>
+      </div>
+      <div class="tn-pie">
+        <button class="btn btn-neutro btn-ic">${icono('descargar')}Descargar</button>
+        <button class="btn btn-1">Volver a mis pagos</button>
+      </div>
+    </article>
+
+    <article class="tn">
+      <div class="tn-cab"><h4>d · Rechazado</h4><span class="chip chip-error">Código 51</span></div>
+      <div class="tn-cuerpo">
+        <div class="psl-estado psl-estado-error">
+          <span class="psl-sello">${icono('cerrar', TAMANOS.estado)}</span>
+          <span class="psl-estado-tit">El pago no se completó</span>
+          <span class="psl-estado-txt">Tu banco rechazó la operación por <strong>fondos
+          insuficientes</strong>. No se te cobró nada.</span>
+        </div>
+        <p><strong>Qué puedes hacer:</strong> intentar con otra tarjeta, pagar con Yape o Plin, o
+        llamar a tu banco. La deuda sigue abierta hasta el 31/08.</p>
+      </div>
+      <div class="tn-pie"><button class="btn btn-1">Intentar otra vez</button></div>
+    </article>
+
+    <article class="tn">
+      <div class="tn-cab"><h4>e · Sesión caducada</h4></div>
+      <div class="tn-cuerpo">
+        <div class="psl-estado psl-estado-aviso">
+          <span class="psl-sello">${icono('alerta', TAMANOS.estado)}</span>
+          <span class="psl-estado-tit">La sesión de pago caducó</span>
+          <span class="psl-estado-txt">Por seguridad el formulario se cierra tras unos minutos sin
+          usarse. <strong>No se te cobró nada.</strong></span>
+        </div>
+      </div>
+      <div class="tn-pie"><button class="btn btn-1">Empezar de nuevo</button></div>
+    </article>
+
+  </div>
+</div>
+
+<h3 class="sub-seccion">3 · Los rechazos, traducidos</h3>
+<p class="seccion-sub">El código y el mensaje del medio son <strong>literalmente los suyos</strong>.
+La tercera columna es propuesta nuestra: «Rechazado por el emisor» no dice qué hacer.</p>
+<table class="tabla-simple">
+  <thead><tr><th>Código</th><th>Su mensaje</th><th>Lo que proponemos que se lea</th></tr></thead>
+  <tbody>
+    <tr><td><span class="chip chip-exito">00</span></td><td>Autorizado</td><td>Pago aprobado</td></tr>
+    <tr><td><span class="chip chip-error">02</span></td><td>Rechazado por el emisor.</td><td>Tu banco no autorizó el pago. Prueba con otra tarjeta o llámalos.</td></tr>
+    <tr><td><span class="chip chip-error">14</span></td><td>Número de tarjeta inválido.</td><td>Revisa el número de la tarjeta.</td></tr>
+    <tr><td><span class="chip chip-error">51</span></td><td>Fondos insuficientes.</td><td>La tarjeta no tiene saldo suficiente. No se te cobró nada.</td></tr>
+    <tr><td><span class="chip chip-error">54</span></td><td>Tarjeta vencida o fecha inválida.</td><td>Revisa la fecha de vencimiento.</td></tr>
+    <tr><td><span class="chip chip-error">59</span></td><td>Sospecha de fraude.</td><td>Tu banco bloqueó la operación. Tienes que llamarlos.</td></tr>
+    <tr><td><span class="chip chip-error">82</span></td><td>CVV inválido.</td><td>Revisa los tres dígitos del reverso.</td></tr>
+    <tr><td><span class="chip chip-aviso">91</span></td><td>El banco emisor no responde.</td><td>Tu banco no responde ahora. Vuelve a intentar en unos minutos.</td></tr>
+    <tr><td><span class="chip chip-aviso">98</span></td><td>Tiempo de espera excedido.</td><td><strong>Ver el aviso de abajo.</strong></td></tr>
+    <tr><td><span class="chip chip-error">99</span></td><td>Autenticación no exitosa.</td><td>No se completó la verificación de tu banco.</td></tr>
+  </tbody>
+</table>
+
+<div class="msj msj-error">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt"><strong>El 98 merece trato aparte, y es decisión de negocio.</strong>
+  «Tiempo de espera excedido» no dice si el cobro ocurrió. Ofrecer «Intentar otra vez» ahí puede
+  cobrar dos veces. Lo que proponemos: consultar el estado de la orden contra su servicio
+  <em>antes</em> de dejar pulsar.</span>
+</div>
+
+<h3 class="sub-seccion">4 · Métodos y sus topes — son suyos, no nuestros</h3>
+<p class="seccion-sub">Los topes importan al diseñar: con una pensión de S/ 357 entran los cuatro,
+pero una <strong>matrícula anual no cabe en Yape</strong>, y eso hay que decirlo antes de que lo
+intenten.</p>
+<table class="tabla-simple">
+  <thead><tr><th>Método</th><th>Clave</th><th>Tope por operación</th></tr></thead>
+  <tbody>
+    <tr><td><span class="psl-punto psl-punto-1"></span>Tarjeta</td><td><code>CARD</code></td><td>Sin tope declarado</td></tr>
+    <tr><td><span class="psl-punto psl-punto-2"></span>Yape</td><td><code>YAPE_CODE</code></td><td><strong>S/ 2000</strong></td></tr>
+    <tr><td><span class="psl-punto psl-punto-3"></span>Plin (Interbank)</td><td><code>PAGO_PUSH</code></td><td><strong>S/ 5000 · $ 1500</strong></td></tr>
+    <tr><td><span class="psl-punto psl-punto-4"></span>QR</td><td><code>QR</code></td><td>Sin tope declarado</td></tr>
+    <tr><td><span class="psl-punto psl-punto-4"></span>Apple Pay</td><td><code>APPLE_PAY</code></td><td>Sin tope declarado</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">5 · Nuestros tokens dentro de su formulario</h3>
+<p class="seccion-sub">Esto no es maqueta: son los <strong>valores reales</strong> de nuestro modo
+claro en la forma que su SDK espera. <strong>Sin verificar todavía</strong> — hasta montarlo contra
+su sandbox no sabemos si respeta todas las claves ni qué contraste sale.</p>
+
+<div class="cod">
+  <div class="cod-cab"><span class="cod-tit">appearance.customTheme — modo claro</span></div>
+  <pre class="cod-pre"><code>appearance: {
+  customTheme: {
+    isModeAdvance: true,
+    name: 'colegio-albert-einstein',
+    font: 'IBM Plex Sans',
+    colors: {
+      backgroundColor: '#FFFFFF',   // fondo-tarjeta
+      textColor:       '#2C2A25',   // texto-principal
+      primary: { background: '#0063CB', color: '#FFFFFF' },
+      button:  { primary: {
+        color:       '#FFFFFF',     // accion-texto
+        background:  '#0063CB',     // accion
+        mainColor:   '#0063CB',
+        activeColor: '#004EB2'      // accion-hover
+      } },
+      select:  { primary: {
+        color:       '#2C2A25',
+        borderColor: '#8B8985',     // borde-campo
+        arrow: { down: '#6A6864', up: '#6A6864' }
+      } },
+      text:  { color: '#2C2A25' },
+      input: { color: '#2C2A25', borderColor: '#8B8985' }   // 3,48:1 · SC 1.4.11
+    }
+  }
+}</code></pre>
+</div>
+
+<div class="aviso"><strong>El modo oscuro es un problema abierto.</strong> Su
+<code>customTheme</code> es <em>un</em> juego de colores, no dos: no hay forma documentada de darle
+un tema claro y otro oscuro y que cambie con el del sistema. O se rehace la configuración y se
+recarga el formulario al conmutar, o el trozo de Izipay se queda siempre en claro.</div>
+
+<h3 class="sub-seccion">6 · A 390 px</h3>
+<p class="seccion-sub">Aquí la mayoría paga desde el teléfono. Las dos columnas se apilan y el
+resumen va <strong>primero</strong>: se lee qué se paga antes de que pidan una tarjeta.</p>
+<div class="bloque">
+  <div class="psl-390">
+    <div class="psl-marco">
+      <div class="psl-barra"><span>pagos</span><span>${icono('candado')} Seguro</span></div>
+      <div class="psl-lienzo">
+        <div class="psl-hero">
+          <span>
+            <span class="psl-hero-et">Total a pagar</span>
+            <span class="psl-hero-monto">S/ 357,00</span>
+            <span class="psl-hero-sub">Pensión de agosto 2026</span>
+          </span>
+        </div>
+        <article class="tn">
+          <div class="tn-cuerpo">
+            <div class="psl-sdk">
+              <span class="psl-sdk-et">${icono('informacion')} Formulario de Izipay</span>
+              <div class="psl-sdk-caja">
+                <div class="psl-metodos">
+                  <span class="psl-metodo activo">Tarjeta</span>
+                  <span class="psl-metodo">Yape</span>
+                  <span class="psl-metodo">Plin</span>
+                </div>
+                <div class="psl-falso">
+                  <span class="psl-falso-et">Número de tarjeta</span>
+                  <span class="psl-falso-in">•••• •••• •••• ••••</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tn-pie"><button class="btn btn-1">Pagar S/ 357,00</button></div>
+        </article>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">7 · Lo que hay que decidir antes de construir esto</h3>
+<ol class="man-lista">
+  <li><strong>Modalidad: embebido, pop-up o redirect.</strong> Aquí se asume <em>embebido</em>, el
+  único con el que el cobro no se sale de nuestra pantalla. Redirect es el más simple de montar y el
+  que menos control deja.</li>
+  <li><strong>Qué se cobra por esta vía.</strong> Cambia el resumen y cambia si Yape sirve.</li>
+  <li><strong>El código 98.</strong> Es el único estado que puede acabar en doble cobro.</li>
+  <li><strong>El modo oscuro dentro de su formulario.</strong> Ver §5.</li>
+  <li><strong>Guardar la tarjeta.</strong> Su respuesta trae <code>card.save</code>. Si se ofrece,
+  hay que decidir quién lo autoriza y qué se le promete a la familia.</li>
+  <li><strong>Y algo que no es de diseño:</strong> el token se pide desde el backend. Esto no existe
+  sin un servicio del colegio que lo emita, valide la <code>signature</code> de la respuesta y
+  registre el pago. Dibujarlo no lo acerca.</li>
+</ol>
+
+<h3 class="sub-seccion">8 · De dónde sale cada dato</h3>
+<ol class="man-lista">
+  <li><strong>De su documentación:</strong> los métodos con sus claves y topes, los diez códigos con
+  sus mensajes literales, los campos de la respuesta (<code>codeAuth</code>, <code>card.brand</code>,
+  <code>card.pan</code>, <code>orderNumber</code>, <code>dateTransaction</code>), el
+  <code>container</code> del embebido, el botón externo
+  (<code>showButtonProcessForm: false</code> + <code>checkout.form.events.submit()</code>) y la forma
+  de <code>appearance.customTheme</code>.</li>
+  <li><strong>Nuestro y por tanto discutible:</strong> la disposición, los textos de cara a la
+  familia, el monto en el botón, los cinco estados y la columna «lo que proponemos que se lea».</li>
+  <li><strong>Inventado para poder dibujar:</strong> los importes, la orden
+  <code>PEN-2026-08-4471</code>, el código de autorización y la tarjeta terminada en 4837.</li>
+</ol>`;
+
 const pagMaquetas = `
 <p class="pag-intro">Los tres contextos. Landing y sistema <strong>comparten valores, no proporciones</strong>.
 El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
@@ -5107,6 +5459,15 @@ const CATALOGO = [
     items: [
       { id: 'casos', t: 'Casos de uso', estado: 'listo', c: casosDeUso },
       { id: 'maquetas', t: 'Maquetas', estado: 'listo', c: pagMaquetas },
+    ],
+  },
+  {
+    // Grupo propio y no un item de «Composición»: aquí caben las demás
+    // pasarelas el día que haya otra, y no obliga a renombrar nada.
+    grupo: 'Pasarela de pagos',
+    icono: 'tesoreria',
+    items: [
+      { id: 'izipay', t: 'Izipay', estado: 'listo', c: pagIzipay },
     ],
   },
   {
@@ -8259,6 +8620,91 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 /* Andamio del catalogo: la columna de campos con la que se mira si una fila
    rompe la rejilla. No viaja — «caso» esta en SOLO_CATALOGO. */
 .caso-form { display: flex; flex-direction: column; gap: 16px; max-width: 520px; }
+
+/* ── PASARELA DE PAGOS · clases .psl-* ────────────────────────────────────────
+   Andamiaje de la pagina de composicion, SOLO CATALOGO: no viaja. Lo que se
+   copia de aqui son los componentes que la arman —Tarjeta, Mensaje, Progreso,
+   Boton, Campo, Chip—, no este marcado.
+
+   EL COLOR SALE DE «identidad-1..4» CON «identidad-texto», que es un par
+   VERIFICADO a 4,5:1 en los dos modos («verificar-contraste»). No se invento
+   ninguno: cobrar dinero es la pantalla donde menos se puede improvisar un
+   color que nadie midio. */
+.psl-hero { background: var(--identidad-1); color: var(--identidad-texto);
+  border-radius: 6px; padding: 24px; display: flex; align-items: flex-end;
+  justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.psl-hero-et { display: block; font-size: 13px; font-weight: 500; opacity: .9; }
+.psl-hero-monto { display: block; font-size: 34px; font-weight: 600;
+  line-height: 1.2; font-variant-numeric: tabular-nums; }
+.psl-hero-sub { display: block; font-size: 13px; opacity: .9; margin-top: 4px; }
+.psl-hero-der { text-align: right; font-size: 13px; }
+
+/* El navegador dibujado, para que se vea que es una pantalla y no un trozo. */
+.psl-marco { border: 1px solid var(--borde-fuerte); border-radius: 6px;
+  overflow: hidden; background: var(--fondo-pagina); }
+.psl-barra { display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding: 8px 12px; background: var(--fondo-encabezado);
+  border-bottom: 1px solid var(--borde); font-size: 12px;
+  color: var(--texto-secundario); }
+.psl-barra .ic { width: 14px; height: 14px; vertical-align: -2px; }
+.psl-lienzo { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.psl-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px; align-items: start; }
+
+/* Las lineas del cobro. */
+.psl-detalle { display: flex; flex-direction: column; gap: 8px; }
+.psl-linea { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.psl-linea-sub { display: block; font-size: 12px; color: var(--texto-secundario); }
+.psl-monto { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.psl-total { border-top: 1px solid var(--borde); padding-top: 8px; font-weight: 600; }
+
+/* EL TERRENO DE IZIPAY. La trama a rayas no es adorno: marca donde acaba lo
+   nuestro. Dentro de esa caja el marcado lo escribe su SDK y lo unico que le
+   podemos pasar son colores. */
+.psl-sdk { border: 1px dashed var(--identidad-2); border-radius: 6px;
+  background: var(--fondo-encabezado); padding: 12px; }
+.psl-sdk-et { display: flex; align-items: center; gap: 4px; font-size: 12px;
+  font-weight: 500; color: var(--identidad-2); margin-bottom: 8px; }
+.psl-sdk-et .ic { width: 14px; height: 14px; }
+.psl-sdk-caja { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
+  border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+.psl-metodos { display: flex; gap: 4px; flex-wrap: wrap; }
+.psl-metodo { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px;
+  border: 1px solid var(--borde); border-radius: 6px; background: var(--fondo-tarjeta);
+  font-size: 12px; color: var(--texto-secundario); }
+.psl-metodo.activo { border-color: var(--accion); color: var(--accion); font-weight: 500; }
+.psl-falso { display: flex; flex-direction: column; gap: 4px; }
+.psl-falso-et { font-size: 12px; color: var(--texto-secundario); }
+.psl-falso-in { height: 32px; border: 1px solid var(--borde-campo); border-radius: 6px;
+  background: var(--fondo-tarjeta); display: flex; align-items: center; padding: 0 8px;
+  font-size: 13px; color: var(--texto-pista); }
+.psl-falso-par { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* Los estados, a panel completo y con su color semantico. */
+.psl-estado { border-radius: 6px; padding: 24px 16px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.psl-estado-exito { background: var(--exito-fondo); color: var(--exito-texto); }
+.psl-estado-error { background: var(--error-fondo); color: var(--error-texto); }
+.psl-estado-aviso { background: var(--aviso-fondo); color: var(--aviso-texto); }
+.psl-estado-info  { background: var(--info-fondo);  color: var(--info-texto); }
+.psl-estado-tit { font-size: 15px; font-weight: 600; }
+.psl-estado-txt { font-size: 13px; max-width: 44ch; }
+.psl-sello { display: grid; place-items: center; width: 48px; height: 48px;
+  border-radius: 50%; background: var(--fondo-tarjeta); }
+.psl-sello .ic { width: 24px; height: 24px; }
+
+.psl-datos { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px;
+  font-size: 13px; align-items: baseline; margin: 0; }
+.psl-datos dt { color: var(--texto-secundario); }
+.psl-datos dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+.psl-390 { width: 390px; max-width: 100%; }
+.psl-punto { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  vertical-align: 0; margin-right: 4px; }
+.psl-punto-1 { background: var(--identidad-1); }
+.psl-punto-2 { background: var(--identidad-2); }
+.psl-punto-3 { background: var(--identidad-3); }
+.psl-punto-4 { background: var(--identidad-4); }
 .caso-tokens { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--borde);
   font-size: 12px; color: var(--texto-secundario); }
 .caso-tokens code { background: var(--fondo-encabezado); padding: 4px 4px;
