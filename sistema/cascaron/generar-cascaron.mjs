@@ -4648,6 +4648,347 @@ resumen va <strong>primero</strong>: se lee qué se paga antes de que pidan una 
   <code>PEN-2026-08-4471</code>, el código de autorización y la tarjeta terminada en 4837.</li>
 </ol>`;
 
+// ── Pasarela de pagos · Culqi ───────────────────────────────────────────────
+// MISMO andamiaje que Izipay —las clases `psl-*`— a proposito: dos pasarelas
+// distintas no pueden dar dos pantallas distintas al que paga. Lo que cambia
+// es lo que cada proveedor deja hacer, y eso se dice donde toca.
+
+const pagCulqi = `
+<p class="pag-intro">Las mismas pantallas del cobro, con <strong>Culqi</strong>. Se arman con el
+<strong>mismo andamiaje</strong> que la de Izipay —las clases <code>psl-*</code>— y con los mismos
+componentes. Dos pasarelas distintas no pueden dar dos pantallas distintas a quien paga: lo que
+cambia por dentro es cosa nuestra, no suya.</p>
+
+<div class="aviso"><strong>Con Culqi podemos mucho más que con Izipay, y conviene saberlo antes de
+elegir.</strong> El <em>Checkout Custom</em> se embebe en un contenedor nuestro
+(<code>modal: false</code> + <code>container</code>) igual que el de Izipay, pero además expone
+<strong><code>appearance.variables</code></strong> —variables CSS: tipografía, radio, colores de
+fondo, de texto y de acento— y <strong><code>appearance.rules</code></strong>, que deja aplicar CSS
+propio sobre <strong>más de treinta clases</strong> suyas (<code>.Culqi-Input</code>,
+<code>.Culqi-Button</code>, <code>.Culqi-Menu</code>…) <strong>y sobre sus estados</strong>
+(<code>:focus</code>, <code>.active</code>). Izipay solo admite un juego de colores.</div>
+
+<h3 class="sub-seccion">Qué pintamos nosotros y qué pinta su SDK</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Pieza</th><th>De quién es</th><th>Con qué se hace</th></tr></thead>
+  <tbody>
+    <tr><td>Resumen de lo que se cobra</td><td><strong>Nuestro</strong></td><td><code>Tarjeta</code> + tokens</td></tr>
+    <tr><td>Campos de tarjeta, Yape, agente, billetera</td><td>De Culqi</td><td>Su checkout, dentro de <code>container</code></td></tr>
+    <tr><td>Menú de métodos de pago</td><td>De Culqi</td><td><code>menuType</code>: <code>sidebar</code>, <code>sliderTop</code> o <code>select</code></td></tr>
+    <tr><td>Colores, tipografía, radio y <strong>estados</strong></td><td><strong>Casi nuestro</strong></td><td><code>appearance.variables</code> + <code>appearance.rules</code></td></tr>
+    <tr><td>Procesando, aprobado, rechazado, caducado</td><td><strong>Nuestro</strong></td><td><code>Mensaje</code>, <code>Progreso</code>, <code>Boton</code></td></tr>
+    <tr><td>El texto del rechazo que lee la familia</td><td><strong>De Culqi</strong></td><td><code>user_message</code> — ver §3</td></tr>
+    <tr><td>Constancia del pago</td><td><strong>Nuestro</strong></td><td>Con <code>Culqi.token</code> / <code>Culqi.order</code></td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">1 · La pantalla de pago</h3>
+<div class="bloque">
+  <div class="psl-demo-marco">
+    <div class="psl-demo-barra">
+      <span>colegioalberteinstein.edu.pe/pagos</span>
+      <span>${icono('candado')} Conexión segura</span>
+    </div>
+    <div class="psl-demo-lienzo">
+
+      <div class="psl-hero">
+        <span>
+          <span class="psl-hero-et">Total a pagar</span>
+          <span class="psl-hero-monto">S/ 357,00</span>
+          <span class="psl-hero-sub">QUISPE RAMOS, Ana Lucía · 3.º B</span>
+        </span>
+        <span class="psl-hero-der">
+          Orden <strong>PEN-2026-08-4471</strong><br>Vence el 31/08/2026
+        </span>
+      </div>
+
+      <div class="psl-cols">
+        <article class="tn">
+          <div class="tn-cab"><h4>Lo que vas a pagar</h4><span class="chip chip-info">Pendiente</span></div>
+          <div class="tn-cuerpo">
+            <div class="psl-detalle">
+              <div class="psl-linea">
+                <span>Pensión de agosto 2026<span class="psl-linea-sub">Mensualidad regular</span></span>
+                <span class="psl-monto">S/ 350,00</span>
+              </div>
+              <div class="psl-linea">
+                <span>Mora por pago tardío<span class="psl-linea-sub">6 días · 1 % mensual</span></span>
+                <span class="psl-monto">S/ 7,00</span>
+              </div>
+              <div class="psl-linea psl-total">
+                <span>Total</span><span class="psl-monto">S/ 357,00</span>
+              </div>
+            </div>
+            <div class="cg">
+              <label class="cg-et" for="culqi-correo">Correo para la constancia</label>
+              <input id="culqi-correo" class="campo cg-in" type="email" value="ana.quispe@correo.com">
+              <span class="cg-ayuda">Culqi lo pide en <code>client.email</code>. Ahí llega el comprobante.</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="tn">
+          <div class="tn-cab"><h4>Cómo vas a pagar</h4></div>
+          <div class="tn-cuerpo">
+            <div class="psl-sdk">
+              <span class="psl-sdk-et">${icono('informacion')} Checkout de Culqi — este marcado no es nuestro</span>
+              <div class="psl-demo-sdk-caja">
+                <div class="psl-demo-metodos">
+                  <span class="psl-demo-metodo activo">Tarjeta</span>
+                  <span class="psl-demo-metodo">Yape</span>
+                  <span class="psl-demo-metodo">Agente</span>
+                  <span class="psl-demo-metodo">Billetera</span>
+                  <span class="psl-demo-metodo">Cuotéalo</span>
+                </div>
+                <div class="psl-demo-falso">
+                  <span class="psl-demo-falso-et">Número de tarjeta</span>
+                  <span class="psl-demo-falso-in">•••• •••• •••• ••••</span>
+                </div>
+                <div class="psl-demo-falso-par">
+                  <div class="psl-demo-falso"><span class="psl-demo-falso-et">Vencimiento</span><span class="psl-demo-falso-in">MM / AA</span></div>
+                  <div class="psl-demo-falso"><span class="psl-demo-falso-et">CVV</span><span class="psl-demo-falso-in">•••</span></div>
+                </div>
+              </div>
+            </div>
+            <p>Los datos de la tarjeta viajan directo a Culqi desde el navegador. El colegio no los
+            recibe ni los guarda — es la razón de que el token se genere en el dispositivo.</p>
+          </div>
+          <div class="tn-pie">
+            <button class="btn btn-terc">Cancelar</button>
+            <button class="btn btn-1">Pagar S/ 357,00</button>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </div>
+  <p class="seccion-sub"><strong>Cinco métodos en vez de cuatro</strong>, y uno cambia la pantalla:
+  <em>agente</em> y <em>billetera</em> no terminan en el acto — devuelven un código para pagar
+  después. Eso pide un estado más que no existe en la de Izipay, el de §2.</p>
+</div>
+
+<h3 class="sub-seccion">2 · Los estados — cuatro iguales y uno propio</h3>
+<div class="bloque">
+  <div class="psl-cols">
+
+    <article class="tn">
+      <div class="tn-cab"><h4>a · Procesando el cobro</h4></div>
+      <div class="tn-cuerpo">
+        <div class="pr-caja">
+          <div class="pr-cab"><span>Procesando el pago…</span></div>
+          <div class="pr" role="progressbar" aria-label="Procesando el pago"><div class="pr-indet"></div></div>
+        </div>
+        <div class="msj msj-aviso">
+          <span class="msj-ico">${icono('alerta')}</span>
+          <span class="msj-txt"><strong>No cierres esta pantalla ni vuelvas atrás.</strong>
+          Aquí, volver atrás puede duplicar el cobro.</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="tn">
+      <div class="tn-cab"><h4>b · Aprobado</h4><span class="chip chip-exito">Pagado</span></div>
+      <div class="tn-cuerpo">
+        <div class="psl-estado psl-estado-exito">
+          <span class="psl-sello">${icono('visto', TAMANOS.estado)}</span>
+          <span class="psl-estado-tit">Pago aprobado</span>
+          <span class="psl-estado-txt">Le enviamos la constancia a ana.quispe@correo.com.</span>
+        </div>
+        <dl class="psl-datos">
+          <dt>Monto</dt><dd><strong>S/ 357,00</strong></dd>
+          <dt>Orden</dt><dd>PEN-2026-08-4471</dd>
+          <dt>Cargo</dt><dd>chr_live_x9k2m4p8</dd>
+          <dt>Tarjeta</dt><dd>Visa •••• 4837</dd>
+          <dt>Fecha</dt><dd>27/08/2026 15:42</dd>
+        </dl>
+      </div>
+      <div class="tn-pie">
+        <button class="btn btn-neutro btn-ic">${icono('descargar')}Descargar</button>
+        <button class="btn btn-1">Volver a mis pagos</button>
+      </div>
+    </article>
+
+    <article class="tn">
+      <div class="tn-cab"><h4>c · Rechazado</h4><span class="chip chip-error">insufficient_funds</span></div>
+      <div class="tn-cuerpo">
+        <div class="psl-estado psl-estado-error">
+          <span class="psl-sello">${icono('cerrar', TAMANOS.estado)}</span>
+          <span class="psl-estado-tit">El pago no se completó</span>
+          <span class="psl-estado-txt">Su tarjeta no tiene fondos suficientes.</span>
+        </div>
+        <p><strong>Ese texto no lo escribimos nosotros:</strong> es el <code>user_message</code> que
+        devuelve Culqi, redactado por ellos para quien paga. Ver §3.</p>
+      </div>
+      <div class="tn-pie"><button class="btn btn-1">Intentar otra vez</button></div>
+    </article>
+
+    <article class="tn">
+      <div class="tn-cab"><h4>d · Pendiente de pago — SOLO Culqi</h4><span class="chip chip-aviso">Esperando</span></div>
+      <div class="tn-cuerpo">
+        <div class="psl-estado psl-estado-info">
+          <span class="psl-sello">${icono('informacion', TAMANOS.estado)}</span>
+          <span class="psl-estado-tit">Falta pagar en el agente</span>
+          <span class="psl-estado-txt">Lleve este código a un agente o banco autorizado. La deuda se
+          marca pagada cuando ellos nos avisen.</span>
+        </div>
+        <dl class="psl-datos">
+          <dt>Código</dt><dd><strong>1234 5678 9012</strong></dd>
+          <dt>Vence</dt><dd>29/08/2026 23:59</dd>
+          <dt>Monto</dt><dd>S/ 357,00</dd>
+        </dl>
+      </div>
+      <div class="tn-pie">
+        <button class="btn btn-neutro btn-ic">${icono('descargar')}Descargar el código</button>
+      </div>
+    </article>
+
+    <article class="tn">
+      <div class="tn-cab"><h4>e · Sesión caducada</h4></div>
+      <div class="tn-cuerpo">
+        <div class="psl-estado psl-estado-aviso">
+          <span class="psl-sello">${icono('alerta', TAMANOS.estado)}</span>
+          <span class="psl-estado-tit">La sesión de pago caducó</span>
+          <span class="psl-estado-txt">Por seguridad el formulario se cierra tras unos minutos sin
+          usarse. <strong>No se te cobró nada.</strong></span>
+        </div>
+      </div>
+      <div class="tn-pie"><button class="btn btn-1">Empezar de nuevo</button></div>
+    </article>
+
+  </div>
+  <div class="msj msj-aviso">
+    <span class="msj-ico">${icono('alerta')}</span>
+    <span class="msj-txt"><strong>El estado «pendiente» cambia el negocio, no solo la pantalla.</strong>
+    Con agente y billetera el pago <em>no termina</em> cuando la persona sale: llega después, por su
+    webhook. Sin un servicio que lo escuche, la deuda se queda abierta con el dinero ya pagado.</span>
+  </div>
+</div>
+
+<h3 class="sub-seccion">3 · El rechazo lo redacta Culqi, no nosotros</h3>
+<p class="seccion-sub">Diferencia real con Izipay, y a favor de Culqi: su respuesta trae
+<strong>dos textos</strong>. <code>merchant_message</code> es técnico y va al registro;
+<strong><code>user_message</code> está escrito para quien paga</strong> y es el que se pinta. Con
+Izipay tuvimos que redactar esa columna nosotros.</p>
+<table class="tabla-simple">
+  <thead><tr><th><code>decline_code</code></th><th><code>merchant_message</code></th><th><code>user_message</code> — lo que se lee</th></tr></thead>
+  <tbody>
+    <tr><td><code>insufficient_funds</code></td><td>Fondos insuficientes.</td><td>Su tarjeta no tiene fondos suficientes.</td></tr>
+    <tr><td><code>expired_card</code></td><td>Tarjeta vencida.</td><td>Su tarjeta está vencida o la fecha de vencimiento ingresada es incorrecta.</td></tr>
+    <tr><td><code>incorrect_cvv</code></td><td>CVV incorrecto.</td><td>El código de seguridad de la tarjeta es incorrecto.</td></tr>
+    <tr><td><code>too_many_attempts_cvv</code></td><td>Exceso CVV.</td><td>Ha intentado demasiadas veces ingresar el código de seguridad.</td></tr>
+    <tr><td><code>contact_issuer</code></td><td>Contactar emisor.</td><td>La operación fue denegada por el banco emisor. Contacte a su entidad.</td></tr>
+    <tr><td><code>issuer_not_available</code></td><td>Emisor no disponible.</td><td>El banco no responde. Intente nuevamente.</td></tr>
+    <tr><td><code>issuer_decline_operation</code></td><td>Operación denegada.</td><td>El banco emisor denegó la operación por razón desconocida.</td></tr>
+    <tr><td><code>invalid_card</code></td><td>Tarjeta inválida.</td><td>La tarjeta tiene restricciones. Contacte su banco emisor.</td></tr>
+    <tr><td><code>fraudulent</code></td><td>Operación fraudulenta.</td><td>El banco sospecha actividad fraudulenta.</td></tr>
+    <tr><td><code>stolen_card</code></td><td>Tarjeta robada.</td><td>La tarjeta fue bloqueada y reportada al banco emisor como robada.</td></tr>
+    <tr><td><code>lost_card</code></td><td>Tarjeta perdida.</td><td>La tarjeta fue bloqueada y reportada al banco emisor como perdida.</td></tr>
+    <tr><td><code>processing_error</code></td><td>Error de procesamiento.</td><td>Ocurrió un error. Contacte a soporte.</td></tr>
+  </tbody>
+</table>
+<div class="msj msj-nota">
+  <span class="msj-txt"><strong>Y su documentación dice algo que conviene respetar:</strong> por
+  privacidad, el banco da el motivo real del rechazo <em>solo a su cliente</em>, nunca al comercio.
+  Así que no se debe adornar el <code>user_message</code> con conjeturas: se pinta el suyo.</span>
+</div>
+
+<h3 class="sub-seccion">4 · Métodos de pago</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Método</th><th>Clave en <code>paymentMethods</code></th><th>Termina en el acto</th></tr></thead>
+  <tbody>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-1"></span>Tarjeta</td><td><code>tarjeta</code></td><td>Sí</td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-2"></span>Yape</td><td><code>yape</code></td><td>Sí</td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-3"></span>Banca móvil</td><td><code>bancaMovil</code></td><td>Sí</td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-4"></span>Agente / PagoEfectivo</td><td><code>agente</code></td><td><strong>No</strong> — código para pagar después</td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-4"></span>Billetera (QR)</td><td><code>billetera</code></td><td><strong>No</strong> — código para pagar después</td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-2"></span>Cuotéalo (BCP)</td><td><code>cuotealo</code></td><td>Sí, en cuotas</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">5 · Nuestros tokens dentro de su checkout</h3>
+<p class="seccion-sub">Aquí Culqi da mucho más juego que Izipay: <code>variables</code> son
+variables CSS, y <code>rules</code> deja aplicar CSS propio sobre sus clases <strong>y sus
+estados</strong>. Valores reales de nuestro modo claro. <strong>Sin verificar todavía</strong>:
+hasta montarlo contra su entorno de integración no sabemos qué respeta.</p>
+
+<div class="cod">
+  <div class="cod-cab"><span class="cod-tit">appearance — modo claro</span></div>
+  <pre class="cod-pre"><code>appearance: {
+  theme: 'default',
+  hiddenCulqiLogo: false,
+  menuType: 'sliderTop',          // sidebar | sliderTop | select
+  buttonCardPayText: 'Pagar S/ 357,00',
+
+  variables: {
+    fontFamily:           'IBM Plex Sans',
+    fontWeightNormal:     '400',
+    borderRadius:         '6px',        // el radio del sistema
+    colorBackground:      '#FFFFFF',    // fondo-tarjeta
+    colorPrimary:         '#0063CB',    // accion
+    colorPrimaryText:     '#FFFFFF',    // accion-texto
+    colorText:            '#2C2A25',    // texto-principal
+    colorTextSecondary:   '#6A6864',    // texto-secundario
+    colorTextPlaceholder: '#6A6864',    // texto-pista
+    colorIconTab:         '#0063CB'
+  },
+
+  // Lo que Izipay NO deja hacer: el anillo de foco del sistema, dentro de
+  // su formulario. §1.3 del documento: sin foco visible, con teclado te
+  // pierdes — y ese es el defecto real que el candado persigue.
+  rules: {
+    '.Culqi-Input':        { borderColor: '#8B8985' },   // borde-campo · 3,48:1
+    '.Culqi-Input:focus':  { outline: '2px solid #BE7A14', outlineOffset: '2px' },
+    '.Culqi-Button':       { borderRadius: '6px' }
+  }
+}</code></pre>
+</div>
+
+<div class="aviso"><strong>El modo oscuro sí parece resoluble aquí</strong>, y era el problema
+abierto con Izipay. <code>variables</code> son variables CSS, así que se pueden reemitir con los
+valores del modo oscuro al conmutar el tema. <strong>No está comprobado</strong> — hace falta
+montarlo contra su entorno de integración y ver si el checkout las relee sin recargarse.</div>
+
+<h3 class="sub-seccion">6 · Izipay o Culqi — lo que de verdad las separa</h3>
+<table class="tabla-simple">
+  <thead><tr><th>&nbsp;</th><th>Izipay</th><th>Culqi</th></tr></thead>
+  <tbody>
+    <tr><td>Se embebe en un contenedor nuestro</td><td>Sí</td><td>Sí — <code>modal: false</code></td></tr>
+    <tr><td>Botón de pagar propio</td><td>Sí — <code>showButtonProcessForm: false</code></td><td><code>buttonCardPayText</code>, dentro de su checkout</td></tr>
+    <tr><td>Qué se puede estilar</td><td>Un juego de colores</td><td><strong>Variables CSS + reglas sobre 30+ clases y sus estados</strong></td></tr>
+    <tr><td>Modo oscuro</td><td><strong>No documentado</strong></td><td>Parece posible — sin comprobar</td></tr>
+    <tr><td>Texto del rechazo para el pagador</td><td>Lo escribimos nosotros</td><td><strong>Lo trae en <code>user_message</code></strong></td></tr>
+    <tr><td>Pagos que no terminan en el acto</td><td>No</td><td><strong>Sí</strong> — agente y billetera</td></tr>
+    <tr><td>Cuotas</td><td>No documentado aquí</td><td>Cuotéalo (BCP)</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">7 · Lo que hay que decidir</h3>
+<ol class="man-lista">
+  <li><strong>Cuál de las dos, o las dos.</strong> Esta página y la de Izipay usan el mismo
+  andamiaje justo para que la elección no sea un rediseño.</li>
+  <li><strong>Si se admite pago en agente o billetera</strong>, hace falta un <strong>webhook</strong>
+  que escuche la confirmación y marque la deuda. Sin eso, la familia paga y el colegio no se entera.</li>
+  <li><strong>Checkout Custom o v4.</strong> Aquí se asume <em>Custom</em>: es el que se embebe y el
+  que permite <code>rules</code>. Su documentación dice que <strong>v4 se está retirando</strong>.</li>
+  <li><strong><code>menuType</code></strong> — <code>sidebar</code>, <code>sliderTop</code> o
+  <code>select</code>. Cambia el alto del contenedor, así que cambia nuestra maqueta.</li>
+  <li><strong>Y lo mismo que con Izipay:</strong> las llaves y el cargo se hacen desde el backend.
+  Esto no existe sin un servicio del colegio.</li>
+</ol>
+
+<h3 class="sub-seccion">8 · De dónde sale cada dato</h3>
+<ol class="man-lista">
+  <li><strong>De su documentación:</strong> los seis métodos con sus claves, los doce
+  <code>decline_code</code> con sus dos mensajes literales, las claves de
+  <code>settings</code>/<code>options</code>/<code>appearance</code>, los tres
+  <code>menuType</code>, las variables CSS y el hecho de que <code>rules</code> alcanza a sus
+  estados.</li>
+  <li><strong>Nuestro y por tanto discutible:</strong> la disposición, el estado «pendiente de
+  pago», el mapeo de nuestros tokens a sus variables y la comparación de §6.</li>
+  <li><strong>Inventado para poder dibujar:</strong> los importes, la orden, el cargo
+  <code>chr_live_x9k2m4p8</code> y el código de agente.</li>
+</ol>`;
+
 const pagMaquetas = `
 <p class="pag-intro">Los tres contextos. Landing y sistema <strong>comparten valores, no proporciones</strong>.
 El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
@@ -5505,6 +5846,7 @@ const CATALOGO = [
     icono: 'tesoreria',
     items: [
       { id: 'izipay', t: 'Izipay', estado: 'listo', c: pagIzipay },
+      { id: 'culqi', t: 'Culqi', estado: 'listo', c: pagCulqi },
     ],
   },
   {

@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 27 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.82.0** — la pasarela de pagos **viaja**.
-Nació como «solo catálogo», y con eso su promesa **no se podía garantizar**:
-lo que no viaja, `verificar-promesa` no lo compara
+**Versión del sistema:** MMI-DS **v1.83.0** — nace la página de **Culqi**,
+debajo de Izipay y con el **mismo andamiaje**: dos pasarelas distintas no pueden
+dar dos pantallas distintas a quien paga
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -40,12 +40,12 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
 | Componentes de React | ✅ | **499 pruebas en 34 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
-| Catálogo navegable | ✅ | `cascaron/index.html` · 42 páginas · lo genera `generar-cascaron.mjs` |
+| Catálogo navegable | ✅ | `cascaron/index.html` · 43 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.82.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.83.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.82.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.83.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,31 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.82.0), con detalle
+### Lo de hoy (v1.83.0), con detalle
+
+**Nace la página de Culqi, debajo de Izipay y con el mismo andamiaje.**
+
+El encargo pedía «mantener los colores de Izipay», y eso no es estética: **dos
+pasarelas distintas no pueden dar dos pantallas distintas a quien paga.** Por eso
+la página **no trae ni una clase nueva** — reúsa entera la familia `psl-*` que la
+de Izipay dejó viajando en la v1.82.0, y con ella hereda la garantía de
+promesa=entrega sin pedir nada.
+
+**Tres diferencias reales con Izipay, y las tres cambian decisiones:**
+
+1. **Culqi deja estilar mucho más.** Variables CSS y `appearance.rules` sobre
+   **30+ clases suyas y sus estados** — así que el anillo de foco del sistema
+   puede entrar en su formulario, que con Izipay no se podía. Y el **modo
+   oscuro parece resoluble**, aunque sin comprobar.
+2. **El texto del rechazo lo redacta Culqi.** Su respuesta trae `user_message`
+   escrito para quien paga. Con Izipay tuvimos que redactar esa columna
+   nosotros.
+3. **Agente y billetera no terminan en el acto**: devuelven un código para pagar
+   después, así que hay un **quinto estado** que en Izipay no existe — y detrás,
+   un **webhook**. Sin él, la familia paga y el colegio no se entera. Eso no es
+   una pantalla, es negocio, y va declarado en la página.
+
+### Lo de la v1.82.0, con detalle
 
 **R105 · la pasarela de pagos viaja, y sin eso su promesa no valía.**
 
@@ -1042,7 +1066,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.82.0
+Versión                      1.83.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes · 40 informativos,
                                       0 fallos)
@@ -1060,7 +1084,7 @@ Contrato de comportamiento      185   reglas · 152 obligatorias · 6 PENDIENTE
 Componentes publicados           32   38 módulos viajan en el paquete
                                       117 exportaciones, todas por el índice
 Iconos                           46
-Páginas del catálogo             42
+Páginas del catálogo             43
 Fila de un campo, medida      36,45   px · la fila de carga se fija en 36
 ```
 

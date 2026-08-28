@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.82.0";
+export const VERSION = "1.83.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,30 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.83.0', fecha: '2026-08-27',
+    que: 'Nace la pagina de Culqi, debajo de Izipay y con el MISMO andamiaje',
+    porque:
+      'Encargo del responsable: buscar la documentacion de Culqi, generar su pagina «manteniendo los '
+      + 'colores de Izipay» y ubicarla debajo. Lo de mantener los colores no es estetica: DOS '
+      + 'PASARELAS DISTINTAS NO PUEDEN DAR DOS PANTALLAS DISTINTAS A QUIEN PAGA. Por eso la pagina '
+      + 'no trae ni una clase nueva — reusa entera la familia psl-* que la de Izipay dejo viajando '
+      + 'en la v1.82.0, y por tanto hereda su garantia de promesa=entrega sin pedir nada. '
+      + 'DE SU DOCUMENTACION: los seis metodos con sus claves de paymentMethods, los doce '
+      + 'decline_code con sus DOS mensajes literales, las claves de settings/options/appearance, '
+      + 'los tres menuType y las variables CSS de appearance.variables. '
+      + 'TRES DIFERENCIAS REALES CON IZIPAY, y las tres cambian decisiones: '
+      + '(1) Culqi deja estilar MUCHO mas — variables CSS y appearance.rules sobre 30+ clases suyas '
+      + 'Y SUS ESTADOS, asi que el anillo de foco del sistema puede entrar en su formulario, que es '
+      + 'lo que con Izipay no se podia; y el modo oscuro PARECE resoluble, aunque sin comprobar. '
+      + '(2) El texto del rechazo lo redacta Culqi: su respuesta trae user_message escrito para '
+      + 'quien paga. Con Izipay tuvimos que redactar esa columna nosotros. '
+      + '(3) Agente y billetera NO TERMINAN EN EL ACTO: devuelven un codigo para pagar despues, asi '
+      + 'que hay un quinto estado que en Izipay no existe — y detras, un webhook. Sin el, la familia '
+      + 'paga y el colegio no se entera. Eso no es una pantalla, es negocio, y va declarado.',
+    rompe: [],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.82.0', fecha: '2026-08-27',
     que: 'R105: la pasarela de pagos VIAJA — sin eso, su promesa no se podia garantizar',
