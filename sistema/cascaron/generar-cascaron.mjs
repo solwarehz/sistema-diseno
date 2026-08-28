@@ -4332,12 +4332,12 @@ ellos</strong>.</div>
 
 <h3 class="sub-seccion">1 · La pantalla de pago</h3>
 <div class="bloque">
-  <div class="psl-marco">
-    <div class="psl-barra">
+  <div class="psl-demo-marco">
+    <div class="psl-demo-barra">
       <span>colegioalberteinstein.edu.pe/pagos</span>
       <span>${icono('candado')} Conexión segura</span>
     </div>
-    <div class="psl-lienzo">
+    <div class="psl-demo-lienzo">
 
       <div class="psl-hero">
         <span>
@@ -4380,20 +4380,20 @@ ellos</strong>.</div>
           <div class="tn-cuerpo">
             <div class="psl-sdk">
               <span class="psl-sdk-et">${icono('informacion')} Formulario de Izipay — este marcado no es nuestro</span>
-              <div class="psl-sdk-caja">
-                <div class="psl-metodos">
-                  <span class="psl-metodo activo">Tarjeta</span>
-                  <span class="psl-metodo">Yape</span>
-                  <span class="psl-metodo">Plin</span>
-                  <span class="psl-metodo">QR</span>
+              <div class="psl-demo-sdk-caja">
+                <div class="psl-demo-metodos">
+                  <span class="psl-demo-metodo activo">Tarjeta</span>
+                  <span class="psl-demo-metodo">Yape</span>
+                  <span class="psl-demo-metodo">Plin</span>
+                  <span class="psl-demo-metodo">QR</span>
                 </div>
-                <div class="psl-falso">
-                  <span class="psl-falso-et">Número de tarjeta</span>
-                  <span class="psl-falso-in">•••• •••• •••• ••••</span>
+                <div class="psl-demo-falso">
+                  <span class="psl-demo-falso-et">Número de tarjeta</span>
+                  <span class="psl-demo-falso-in">•••• •••• •••• ••••</span>
                 </div>
-                <div class="psl-falso-par">
-                  <div class="psl-falso"><span class="psl-falso-et">Vencimiento</span><span class="psl-falso-in">MM / AA</span></div>
-                  <div class="psl-falso"><span class="psl-falso-et">CVV</span><span class="psl-falso-in">•••</span></div>
+                <div class="psl-demo-falso-par">
+                  <div class="psl-demo-falso"><span class="psl-demo-falso-et">Vencimiento</span><span class="psl-demo-falso-in">MM / AA</span></div>
+                  <div class="psl-demo-falso"><span class="psl-demo-falso-et">CVV</span><span class="psl-demo-falso-in">•••</span></div>
                 </div>
               </div>
             </div>
@@ -4533,11 +4533,11 @@ intenten.</p>
 <table class="tabla-simple">
   <thead><tr><th>Método</th><th>Clave</th><th>Tope por operación</th></tr></thead>
   <tbody>
-    <tr><td><span class="psl-punto psl-punto-1"></span>Tarjeta</td><td><code>CARD</code></td><td>Sin tope declarado</td></tr>
-    <tr><td><span class="psl-punto psl-punto-2"></span>Yape</td><td><code>YAPE_CODE</code></td><td><strong>S/ 2000</strong></td></tr>
-    <tr><td><span class="psl-punto psl-punto-3"></span>Plin (Interbank)</td><td><code>PAGO_PUSH</code></td><td><strong>S/ 5000 · $ 1500</strong></td></tr>
-    <tr><td><span class="psl-punto psl-punto-4"></span>QR</td><td><code>QR</code></td><td>Sin tope declarado</td></tr>
-    <tr><td><span class="psl-punto psl-punto-4"></span>Apple Pay</td><td><code>APPLE_PAY</code></td><td>Sin tope declarado</td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-1"></span>Tarjeta</td><td><code>CARD</code></td><td>Sin tope declarado</td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-2"></span>Yape</td><td><code>YAPE_CODE</code></td><td><strong>S/ 2000</strong></td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-3"></span>Plin (Interbank)</td><td><code>PAGO_PUSH</code></td><td><strong>S/ 5000 · $ 1500</strong></td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-4"></span>QR</td><td><code>QR</code></td><td>Sin tope declarado</td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-4"></span>Apple Pay</td><td><code>APPLE_PAY</code></td><td>Sin tope declarado</td></tr>
   </tbody>
 </table>
 
@@ -4584,10 +4584,10 @@ recarga el formulario al conmutar, o el trozo de Izipay se queda siempre en clar
 <p class="seccion-sub">Aquí la mayoría paga desde el teléfono. Las dos columnas se apilan y el
 resumen va <strong>primero</strong>: se lee qué se paga antes de que pidan una tarjeta.</p>
 <div class="bloque">
-  <div class="psl-390">
-    <div class="psl-marco">
-      <div class="psl-barra"><span>pagos</span><span>${icono('candado')} Seguro</span></div>
-      <div class="psl-lienzo">
+  <div class="psl-demo-390">
+    <div class="psl-demo-marco">
+      <div class="psl-demo-barra"><span>pagos</span><span>${icono('candado')} Seguro</span></div>
+      <div class="psl-demo-lienzo">
         <div class="psl-hero">
           <span>
             <span class="psl-hero-et">Total a pagar</span>
@@ -4599,15 +4599,15 @@ resumen va <strong>primero</strong>: se lee qué se paga antes de que pidan una 
           <div class="tn-cuerpo">
             <div class="psl-sdk">
               <span class="psl-sdk-et">${icono('informacion')} Formulario de Izipay</span>
-              <div class="psl-sdk-caja">
-                <div class="psl-metodos">
-                  <span class="psl-metodo activo">Tarjeta</span>
-                  <span class="psl-metodo">Yape</span>
-                  <span class="psl-metodo">Plin</span>
+              <div class="psl-demo-sdk-caja">
+                <div class="psl-demo-metodos">
+                  <span class="psl-demo-metodo activo">Tarjeta</span>
+                  <span class="psl-demo-metodo">Yape</span>
+                  <span class="psl-demo-metodo">Plin</span>
                 </div>
-                <div class="psl-falso">
-                  <span class="psl-falso-et">Número de tarjeta</span>
-                  <span class="psl-falso-in">•••• •••• •••• ••••</span>
+                <div class="psl-demo-falso">
+                  <span class="psl-demo-falso-et">Número de tarjeta</span>
+                  <span class="psl-demo-falso-in">•••• •••• •••• ••••</span>
                 </div>
               </div>
             </div>
@@ -8677,14 +8677,14 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .psl-hero-der { text-align: right; font-size: 13px; }
 
 /* El navegador dibujado, para que se vea que es una pantalla y no un trozo. */
-.psl-marco { border: 1px solid var(--borde-fuerte); border-radius: 6px;
+.psl-demo-marco { border: 1px solid var(--borde-fuerte); border-radius: 6px;
   overflow: hidden; background: var(--fondo-pagina); }
-.psl-barra { display: flex; align-items: center; justify-content: space-between;
+.psl-demo-barra { display: flex; align-items: center; justify-content: space-between;
   gap: 8px; padding: 8px 12px; background: var(--fondo-encabezado);
   border-bottom: 1px solid var(--borde); font-size: 12px;
   color: var(--texto-secundario); }
-.psl-barra .ic { width: 14px; height: 14px; vertical-align: -2px; }
-.psl-lienzo { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.psl-demo-barra .ic { width: 14px; height: 14px; vertical-align: -2px; }
+.psl-demo-lienzo { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
 .psl-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 16px; align-items: start; }
 
@@ -8703,19 +8703,19 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .psl-sdk-et { display: flex; align-items: center; gap: 4px; font-size: 12px;
   font-weight: 500; color: var(--identidad-2); margin-bottom: 8px; }
 .psl-sdk-et .ic { width: 14px; height: 14px; }
-.psl-sdk-caja { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
+.psl-demo-sdk-caja { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
   border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
-.psl-metodos { display: flex; gap: 4px; flex-wrap: wrap; }
-.psl-metodo { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px;
+.psl-demo-metodos { display: flex; gap: 4px; flex-wrap: wrap; }
+.psl-demo-metodo { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px;
   border: 1px solid var(--borde); border-radius: 6px; background: var(--fondo-tarjeta);
   font-size: 12px; color: var(--texto-secundario); }
-.psl-metodo.activo { border-color: var(--accion); color: var(--accion); font-weight: 500; }
-.psl-falso { display: flex; flex-direction: column; gap: 4px; }
-.psl-falso-et { font-size: 12px; color: var(--texto-secundario); }
-.psl-falso-in { height: 32px; border: 1px solid var(--borde-campo); border-radius: 6px;
+.psl-demo-metodo.activo { border-color: var(--accion); color: var(--accion); font-weight: 500; }
+.psl-demo-falso { display: flex; flex-direction: column; gap: 4px; }
+.psl-demo-falso-et { font-size: 12px; color: var(--texto-secundario); }
+.psl-demo-falso-in { height: 32px; border: 1px solid var(--borde-campo); border-radius: 6px;
   background: var(--fondo-tarjeta); display: flex; align-items: center; padding: 0 8px;
   font-size: 13px; color: var(--texto-pista); }
-.psl-falso-par { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.psl-demo-falso-par { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
 /* Los estados, a panel completo y con su color semantico. */
 .psl-estado { border-radius: 6px; padding: 24px 16px; text-align: center;
@@ -8735,13 +8735,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .psl-datos dt { color: var(--texto-secundario); }
 .psl-datos dd { margin: 0; font-variant-numeric: tabular-nums; }
 
-.psl-390 { width: 390px; max-width: 100%; }
-.psl-punto { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+.psl-demo-390 { width: 390px; max-width: 100%; }
+.psl-demo-punto { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
   vertical-align: 0; margin-right: 4px; }
-.psl-punto-1 { background: var(--identidad-1); }
-.psl-punto-2 { background: var(--identidad-2); }
-.psl-punto-3 { background: var(--identidad-3); }
-.psl-punto-4 { background: var(--identidad-4); }
+.psl-demo-punto-1 { background: var(--identidad-1); }
+.psl-demo-punto-2 { background: var(--identidad-2); }
+.psl-demo-punto-3 { background: var(--identidad-3); }
+.psl-demo-punto-4 { background: var(--identidad-4); }
 .caso-tokens { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--borde);
   font-size: 12px; color: var(--texto-secundario); }
 .caso-tokens code { background: var(--fondo-encabezado); padding: 4px 4px;

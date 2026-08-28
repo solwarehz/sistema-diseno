@@ -95,6 +95,18 @@ const ELEMENTOS = [
   // R97 · Reparte permisos por modulo. Se COMPONE de Interruptor, Chip y Boton;
   // lo unico suyo es el andamiaje de la lista.
   { n: 'Panel de privilegios',  p: ['pp'] },
+  // R105 · Pasarela de pagos. VIAJA, y eso fue una correccion: nacio como
+  // composicion «solo catalogo», y con eso la promesa NO se podia garantizar —
+  // lo que no viaja, `verificar-promesa` no lo compara. Un producto montaba la
+  // pantalla del cobro a ojo, que es el defecto que este sistema existe para
+  // eliminar.
+  //
+  // Lo que NO viaja se llama `psl-demo-*` y lo corta `esParteAndamio`: el
+  // navegador dibujado y —esto importa— el FORMULARIO FALSO de tarjeta. Ese
+  // marcado imita el que pinta el SDK de Izipay, y entregarlo seria invitar a
+  // un producto a maquetar campos de tarjeta propios. Los campos de tarjeta los
+  // pinta Izipay o no los pinta nadie.
+  { n: 'Pasarela de pagos',     p: ['psl'] },
   { n: 'Diálogo',               p: ['dialogo'] },
   { n: 'Utilidades',            p: ['sr', 'mono'] },
 ];
@@ -124,12 +136,6 @@ const SOLO_CATALOGO = new Set([
   'color', 'token',
   // Chrome del propio catalogo, sin equivalente en un producto.
   'maquetas', 'escudo', 'opciones',
-  // La pagina de la pasarela de pagos es una COMPOSICION, no un elemento: se
-  // arma con Tarjeta, Mensaje, Progreso, Boton, Campo y Chip, que si viajan.
-  // Lo unico suyo es el andamiaje de esas pantallas —el navegador dibujado, la
-  // banda del total, el recuadro que marca el terreno del SDK de Izipay—, y eso
-  // no tiene sentido en un producto: lo que se copia son los componentes.
-  'psl',
 ]);
 
 // ── Troceado del CSS respetando las @media ──────────────────────────────────

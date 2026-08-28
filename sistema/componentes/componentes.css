@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.81.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.82.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -1508,6 +1508,46 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
   .pp-pie{ flex-direction: column; align-items: stretch; gap: 8px; }
   .pp-pie-txt{ text-align: center; }
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   PASARELA DE PAGOS — 26 reglas · clases .psl-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.psl-hero{ background: var(--identidad-1); color: var(--identidad-texto);
+  border-radius: 6px; padding: 24px; display: flex; align-items: flex-end;
+  justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.psl-hero-et{ display: block; font-size: 13px; font-weight: 500; opacity: .9; }
+.psl-hero-monto{ display: block; font-size: 34px; font-weight: 600;
+  line-height: 1.2; font-variant-numeric: tabular-nums; }
+.psl-hero-sub{ display: block; font-size: 13px; opacity: .9; margin-top: 4px; }
+.psl-hero-der{ text-align: right; font-size: 13px; }
+.psl-cols{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px; align-items: start; }
+.psl-detalle{ display: flex; flex-direction: column; gap: 8px; }
+.psl-linea{ display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.psl-linea-sub{ display: block; font-size: 12px; color: var(--texto-secundario); }
+.psl-monto{ font-variant-numeric: tabular-nums; white-space: nowrap; }
+.psl-total{ border-top: 1px solid var(--borde); padding-top: 8px; font-weight: 600; }
+.psl-sdk{ border: 1px dashed var(--identidad-2); border-radius: 6px;
+  background: var(--fondo-encabezado); padding: 12px; }
+.psl-sdk-et{ display: flex; align-items: center; gap: 4px; font-size: 12px;
+  font-weight: 500; color: var(--identidad-2); margin-bottom: 8px; }
+.psl-sdk-et .ic{ width: 14px; height: 14px; }
+.psl-estado{ border-radius: 6px; padding: 24px 16px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.psl-estado-exito{ background: var(--exito-fondo); color: var(--exito-texto); }
+.psl-estado-error{ background: var(--error-fondo); color: var(--error-texto); }
+.psl-estado-aviso{ background: var(--aviso-fondo); color: var(--aviso-texto); }
+.psl-estado-info{ background: var(--info-fondo);  color: var(--info-texto); }
+.psl-estado-tit{ font-size: 15px; font-weight: 600; }
+.psl-estado-txt{ font-size: 13px; max-width: 44ch; }
+.psl-sello{ display: grid; place-items: center; width: 48px; height: 48px;
+  border-radius: 50%; background: var(--fondo-tarjeta); }
+.psl-sello .ic{ width: 24px; height: 24px; }
+.psl-datos{ display: grid; grid-template-columns: auto 1fr; gap: 4px 16px;
+  font-size: 13px; align-items: baseline; margin: 0; }
+.psl-datos dt{ color: var(--texto-secundario); }
+.psl-datos dd{ margin: 0; font-variant-numeric: tabular-nums; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    DIÁLOGO — 8 reglas · clases .dialogo-*

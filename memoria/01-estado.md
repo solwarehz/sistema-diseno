@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 27 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.81.0** — el catálogo enseñaba **solo la
-variante con lupa**, que es justo la que no sale por omisión: seis demos con
-ella, cero sin ella. Y nace el **catorceavo candado**
+**Versión del sistema:** MMI-DS **v1.82.0** — la pasarela de pagos **viaja**.
+Nació como «solo catálogo», y con eso su promesa **no se podía garantizar**:
+lo que no viaja, `verificar-promesa` no lo compara
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -42,10 +42,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · 42 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.81.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.82.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.81.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.82.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,34 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.81.0), con detalle
+### Lo de hoy (v1.82.0), con detalle
+
+**R105 · la pasarela de pagos viaja, y sin eso su promesa no valía.**
+
+Corrección de una decisión mía de la v1.80.0. La página de Izipay nació como
+«composición, solo catálogo», así que sus clases `psl-*` **no viajaban**. El
+responsable pidió mirarlo y la consecuencia es exacta: **lo que no viaja,
+`verificar-promesa` no lo compara.** Un producto que montara la pantalla del
+cobro tenía que rehacer el andamiaje **a ojo** — que es literalmente el defecto
+que este sistema existe para eliminar, y el que ya costó 3.983 líneas con la
+tabla.
+
+**Ahora viaja: 26 reglas.** Con ellas, el candado de la promesa compara siete
+superficies nuevas del cobro a cinco anchos, y el barrido pasa de **1.065 a
+1.144 elementos** y de **218.948 a 235.237 propiedades**. El de la cascada las
+resuelve además a los **once anchos**, que es lo que responde a si la página
+aguanta en estrecho.
+
+**Lo que no viaja es deliberado**: todo lo que se llama `psl-demo-*` — el
+navegador dibujado, el marco de 390 y, sobre todo, **el formulario falso de
+tarjeta**. Ese marcado imita el que pinta el SDK de Izipay, y entregarlo sería
+invitar a un producto a maquetar campos de tarjeta propios. Los campos de
+tarjeta los pinta Izipay o no los pinta nadie.
+
+**Visto fallar:** se cambió a mano un color de `.psl-hero` en la hoja entregada
+y el candado salió en rojo señalando esa banda. Restaurada, verde.
+
+### Lo de la v1.81.0, con detalle
 
 **R104 · el catálogo enseñaba solo la excepción, no lo que se entrega.**
 
@@ -1015,7 +1042,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.81.0
+Versión                      1.82.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes · 40 informativos,
                                       0 fallos)

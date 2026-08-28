@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.81.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.82.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.81.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.82.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -3710,14 +3710,14 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .psl-hero-der { text-align: right; font-size: 13px; }
 
 /* El navegador dibujado, para que se vea que es una pantalla y no un trozo. */
-.psl-marco { border: 1px solid var(--borde-fuerte); border-radius: 6px;
+.psl-demo-marco { border: 1px solid var(--borde-fuerte); border-radius: 6px;
   overflow: hidden; background: var(--fondo-pagina); }
-.psl-barra { display: flex; align-items: center; justify-content: space-between;
+.psl-demo-barra { display: flex; align-items: center; justify-content: space-between;
   gap: 8px; padding: 8px 12px; background: var(--fondo-encabezado);
   border-bottom: 1px solid var(--borde); font-size: 12px;
   color: var(--texto-secundario); }
-.psl-barra .ic { width: 14px; height: 14px; vertical-align: -2px; }
-.psl-lienzo { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.psl-demo-barra .ic { width: 14px; height: 14px; vertical-align: -2px; }
+.psl-demo-lienzo { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
 .psl-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 16px; align-items: start; }
 
@@ -3736,19 +3736,19 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .psl-sdk-et { display: flex; align-items: center; gap: 4px; font-size: 12px;
   font-weight: 500; color: var(--identidad-2); margin-bottom: 8px; }
 .psl-sdk-et .ic { width: 14px; height: 14px; }
-.psl-sdk-caja { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
+.psl-demo-sdk-caja { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
   border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
-.psl-metodos { display: flex; gap: 4px; flex-wrap: wrap; }
-.psl-metodo { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px;
+.psl-demo-metodos { display: flex; gap: 4px; flex-wrap: wrap; }
+.psl-demo-metodo { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px;
   border: 1px solid var(--borde); border-radius: 6px; background: var(--fondo-tarjeta);
   font-size: 12px; color: var(--texto-secundario); }
-.psl-metodo.activo { border-color: var(--accion); color: var(--accion); font-weight: 500; }
-.psl-falso { display: flex; flex-direction: column; gap: 4px; }
-.psl-falso-et { font-size: 12px; color: var(--texto-secundario); }
-.psl-falso-in { height: 32px; border: 1px solid var(--borde-campo); border-radius: 6px;
+.psl-demo-metodo.activo { border-color: var(--accion); color: var(--accion); font-weight: 500; }
+.psl-demo-falso { display: flex; flex-direction: column; gap: 4px; }
+.psl-demo-falso-et { font-size: 12px; color: var(--texto-secundario); }
+.psl-demo-falso-in { height: 32px; border: 1px solid var(--borde-campo); border-radius: 6px;
   background: var(--fondo-tarjeta); display: flex; align-items: center; padding: 0 8px;
   font-size: 13px; color: var(--texto-pista); }
-.psl-falso-par { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.psl-demo-falso-par { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
 /* Los estados, a panel completo y con su color semantico. */
 .psl-estado { border-radius: 6px; padding: 24px 16px; text-align: center;
@@ -3768,13 +3768,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .psl-datos dt { color: var(--texto-secundario); }
 .psl-datos dd { margin: 0; font-variant-numeric: tabular-nums; }
 
-.psl-390 { width: 390px; max-width: 100%; }
-.psl-punto { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+.psl-demo-390 { width: 390px; max-width: 100%; }
+.psl-demo-punto { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
   vertical-align: 0; margin-right: 4px; }
-.psl-punto-1 { background: var(--identidad-1); }
-.psl-punto-2 { background: var(--identidad-2); }
-.psl-punto-3 { background: var(--identidad-3); }
-.psl-punto-4 { background: var(--identidad-4); }
+.psl-demo-punto-1 { background: var(--identidad-1); }
+.psl-demo-punto-2 { background: var(--identidad-2); }
+.psl-demo-punto-3 { background: var(--identidad-3); }
+.psl-demo-punto-4 { background: var(--identidad-4); }
 .caso-tokens { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--borde);
   font-size: 12px; color: var(--texto-secundario); }
 .caso-tokens code { background: var(--fondo-encabezado); padding: 4px 4px;
@@ -4135,7 +4135,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.81.0</option></select></label>
+          <select class="campo cg-in"><option>v1.82.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4223,8 +4223,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.81.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.81.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.82.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.82.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -11462,12 +11462,12 @@ ellos</strong>.</div>
 
 <h3 class="sub-seccion">1 · La pantalla de pago</h3>
 <div class="bloque">
-  <div class="psl-marco">
-    <div class="psl-barra">
+  <div class="psl-demo-marco">
+    <div class="psl-demo-barra">
       <span>colegioalberteinstein.edu.pe/pagos</span>
       <span><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> Conexión segura</span>
     </div>
-    <div class="psl-lienzo">
+    <div class="psl-demo-lienzo">
 
       <div class="psl-hero">
         <span>
@@ -11510,20 +11510,20 @@ ellos</strong>.</div>
           <div class="tn-cuerpo">
             <div class="psl-sdk">
               <span class="psl-sdk-et"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg> Formulario de Izipay — este marcado no es nuestro</span>
-              <div class="psl-sdk-caja">
-                <div class="psl-metodos">
-                  <span class="psl-metodo activo">Tarjeta</span>
-                  <span class="psl-metodo">Yape</span>
-                  <span class="psl-metodo">Plin</span>
-                  <span class="psl-metodo">QR</span>
+              <div class="psl-demo-sdk-caja">
+                <div class="psl-demo-metodos">
+                  <span class="psl-demo-metodo activo">Tarjeta</span>
+                  <span class="psl-demo-metodo">Yape</span>
+                  <span class="psl-demo-metodo">Plin</span>
+                  <span class="psl-demo-metodo">QR</span>
                 </div>
-                <div class="psl-falso">
-                  <span class="psl-falso-et">Número de tarjeta</span>
-                  <span class="psl-falso-in">•••• •••• •••• ••••</span>
+                <div class="psl-demo-falso">
+                  <span class="psl-demo-falso-et">Número de tarjeta</span>
+                  <span class="psl-demo-falso-in">•••• •••• •••• ••••</span>
                 </div>
-                <div class="psl-falso-par">
-                  <div class="psl-falso"><span class="psl-falso-et">Vencimiento</span><span class="psl-falso-in">MM / AA</span></div>
-                  <div class="psl-falso"><span class="psl-falso-et">CVV</span><span class="psl-falso-in">•••</span></div>
+                <div class="psl-demo-falso-par">
+                  <div class="psl-demo-falso"><span class="psl-demo-falso-et">Vencimiento</span><span class="psl-demo-falso-in">MM / AA</span></div>
+                  <div class="psl-demo-falso"><span class="psl-demo-falso-et">CVV</span><span class="psl-demo-falso-in">•••</span></div>
                 </div>
               </div>
             </div>
@@ -11663,11 +11663,11 @@ intenten.</p>
 <table class="tabla-simple">
   <thead><tr><th>Método</th><th>Clave</th><th>Tope por operación</th></tr></thead>
   <tbody>
-    <tr><td><span class="psl-punto psl-punto-1"></span>Tarjeta</td><td><code>CARD</code></td><td>Sin tope declarado</td></tr>
-    <tr><td><span class="psl-punto psl-punto-2"></span>Yape</td><td><code>YAPE_CODE</code></td><td><strong>S/ 2000</strong></td></tr>
-    <tr><td><span class="psl-punto psl-punto-3"></span>Plin (Interbank)</td><td><code>PAGO_PUSH</code></td><td><strong>S/ 5000 · $ 1500</strong></td></tr>
-    <tr><td><span class="psl-punto psl-punto-4"></span>QR</td><td><code>QR</code></td><td>Sin tope declarado</td></tr>
-    <tr><td><span class="psl-punto psl-punto-4"></span>Apple Pay</td><td><code>APPLE_PAY</code></td><td>Sin tope declarado</td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-1"></span>Tarjeta</td><td><code>CARD</code></td><td>Sin tope declarado</td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-2"></span>Yape</td><td><code>YAPE_CODE</code></td><td><strong>S/ 2000</strong></td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-3"></span>Plin (Interbank)</td><td><code>PAGO_PUSH</code></td><td><strong>S/ 5000 · $ 1500</strong></td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-4"></span>QR</td><td><code>QR</code></td><td>Sin tope declarado</td></tr>
+    <tr><td><span class="psl-demo-punto psl-demo-punto-4"></span>Apple Pay</td><td><code>APPLE_PAY</code></td><td>Sin tope declarado</td></tr>
   </tbody>
 </table>
 
@@ -11714,10 +11714,10 @@ recarga el formulario al conmutar, o el trozo de Izipay se queda siempre en clar
 <p class="seccion-sub">Aquí la mayoría paga desde el teléfono. Las dos columnas se apilan y el
 resumen va <strong>primero</strong>: se lee qué se paga antes de que pidan una tarjeta.</p>
 <div class="bloque">
-  <div class="psl-390">
-    <div class="psl-marco">
-      <div class="psl-barra"><span>pagos</span><span><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> Seguro</span></div>
-      <div class="psl-lienzo">
+  <div class="psl-demo-390">
+    <div class="psl-demo-marco">
+      <div class="psl-demo-barra"><span>pagos</span><span><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> Seguro</span></div>
+      <div class="psl-demo-lienzo">
         <div class="psl-hero">
           <span>
             <span class="psl-hero-et">Total a pagar</span>
@@ -11729,15 +11729,15 @@ resumen va <strong>primero</strong>: se lee qué se paga antes de que pidan una 
           <div class="tn-cuerpo">
             <div class="psl-sdk">
               <span class="psl-sdk-et"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg> Formulario de Izipay</span>
-              <div class="psl-sdk-caja">
-                <div class="psl-metodos">
-                  <span class="psl-metodo activo">Tarjeta</span>
-                  <span class="psl-metodo">Yape</span>
-                  <span class="psl-metodo">Plin</span>
+              <div class="psl-demo-sdk-caja">
+                <div class="psl-demo-metodos">
+                  <span class="psl-demo-metodo activo">Tarjeta</span>
+                  <span class="psl-demo-metodo">Yape</span>
+                  <span class="psl-demo-metodo">Plin</span>
                 </div>
-                <div class="psl-falso">
-                  <span class="psl-falso-et">Número de tarjeta</span>
-                  <span class="psl-falso-in">•••• •••• •••• ••••</span>
+                <div class="psl-demo-falso">
+                  <span class="psl-demo-falso-et">Número de tarjeta</span>
+                  <span class="psl-demo-falso-in">•••• •••• •••• ••••</span>
                 </div>
               </div>
             </div>
@@ -12121,6 +12121,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.82.0 <span class="cam-fecha">2026-08-27</span></h3>
+<p class="pag-intro"><strong>R105: la pasarela de pagos VIAJA — sin eso, su promesa no se podia garantizar.</strong> R105 · Correccion de una decision propia de la v1.80.0. La pagina de Izipay nacio como «composicion, solo catalogo», asi que sus clases `psl-*` NO viajaban en la hoja. La consecuencia la pidio mirar el responsable y es exacta: LO QUE NO VIAJA, `verificar-promesa` NO LO COMPARA. Un producto que montara la pantalla del cobro tenia que rehacer el andamiaje a ojo — que es literalmente el defecto que este sistema existe para eliminar, y el que ya costo 3.983 lineas con la tabla. AHORA VIAJA: 26 reglas, y con ellas el candado de la promesa compara siete superficies nuevas del cobro —la banda del total, su monto, el contenedor del SDK, la linea del total, los estados aprobado y rechazado, y los datos de la constancia— a cinco anchos. El barrido del marcado paso de 1.065 a 1.144 elementos y de 218.948 a 235.237 propiedades. Y el candado de la cascada las resuelve ademas a los ONCE anchos, que es lo que responde a si la pagina aguanta en estrecho. LO QUE NO VIAJA, Y ES DELIBERADO: todo lo que se llama `psl-demo-*` — el navegador dibujado, el marco de 390 y, esto es lo que importa, EL FORMULARIO FALSO DE TARJETA. Ese marcado imita el que pinta el SDK de Izipay, y entregarlo seria invitar a un producto a maquetar campos de tarjeta propios. Los campos de tarjeta los pinta Izipay o no los pinta nadie. Los corta `esParteAndamio`, que ya sabia hacerlo. VISTO FALLAR: se cambio a mano un color de `.psl-hero` en la hoja entregada y el candado de la promesa salio en rojo señalando esa banda. Restaurada, verde.</p>
+
 
 
 <h3 class="sub-seccion">v1.81.0 <span class="cam-fecha">2026-08-27</span></h3>

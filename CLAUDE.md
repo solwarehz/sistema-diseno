@@ -19,8 +19,8 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.81.0** — el catálogo enseñaba solo la variante con lupa,
-que es justo la que NO sale por omisión. Y nace el catorceavo candado.
+**Estado actual: v1.82.0** — la pasarela de pagos **viaja**: sin eso, su
+promesa no se podía garantizar, porque lo que no viaja no se compara.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

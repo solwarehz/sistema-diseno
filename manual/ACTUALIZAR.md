@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.81.0
+# Actualizar al sistema de diseño v1.82.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.81.0"
+npm install "github:solwarehz/sistema-diseno#v1.82.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,19 +27,19 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.81.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.82.0
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.81.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.82.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.81.0 --repo solwarehz/sistema-diseno
+gh release download v1.82.0 --repo solwarehz/sistema-diseno
 ```
 
 Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
@@ -312,6 +312,8 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.79.0 | **`SelectorBusqueda` ya se puede vaciar — y no rompe nada.** Tres props nuevas, las tres apagadas por omisión. **`vacio="Todos"`**: añade la fila para volver a *sin elegir* y con ella `onCambio(null)` **empieza a emitirse de verdad** — hasta ahora la firma decía `string \| null` y el componente **nunca** mandaba `null`, lo que lo bloqueaba en cualquier campo opcional. Con `vacio` puesto, **Retroceso** sobre el campo vacío hace lo mismo. **`etiquetaOculta`**: la que ya tenían `Campo` y `Selector` y faltaba solo aquí. **`onCrear`**: recibe lo tecleado y convierte la fila de «no hay coincidencias» en un «Crear …», con ratón y con Enter. **Aviso de lectura**: si tenían un `if (valor === null)` sobre este componente, esa rama nunca se ejecutaba y ahora puede |
 
 | 1.80.0 | **Nada que hacer: no cambia ni una línea de código.** El catálogo estrena un grupo, **Pasarela de pagos**, con la página de **Izipay**: las pantallas del cobro armadas con `Tarjeta`, `Mensaje`, `Progreso`, `Boton`, `Campo` y `Chip`. Es una **composición, no un elemento**, así que sus clases no viajan en la hoja — lo que se copia son los componentes. Trae, sacado de su documentación: los métodos con sus topes, los diez códigos de rechazo con sus mensajes, y el `appearance.customTheme` relleno con nuestros tokens |
+
+| 1.82.0 | **La pasarela de pagos ya viaja en la hoja — nada que tocar.** Las clases `psl-*` de la página de Izipay pasan a la entrega (26 reglas), así que quien monte la pantalla del cobro la ve **idéntica** a la del catálogo: el candado de la promesa compara siete de sus superficies a cinco anchos, y el de la cascada las resuelve a once. **No viaja** lo que se llama `psl-demo-*`: el navegador dibujado y **el formulario falso de tarjeta** — ese lo pinta el SDK de Izipay, y entregar una imitación sería invitar a maquetar campos de tarjeta propios |
 
 **Lo que no rompe pero conviene aprovechar:** `soloLectura` en `Selector`
 (§6.5 del manual), `persona.foto` en `CargaImagen` (§6.7), `CargaId` para el

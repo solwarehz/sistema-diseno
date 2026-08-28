@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.81.0";
+export const VERSION = "1.82.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,32 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.82.0', fecha: '2026-08-27',
+    que: 'R105: la pasarela de pagos VIAJA — sin eso, su promesa no se podia garantizar',
+    porque:
+      'R105 · Correccion de una decision propia de la v1.80.0. La pagina de Izipay nacio como '
+      + '«composicion, solo catalogo», asi que sus clases `psl-*` NO viajaban en la hoja. La '
+      + 'consecuencia la pidio mirar el responsable y es exacta: LO QUE NO VIAJA, '
+      + '`verificar-promesa` NO LO COMPARA. Un producto que montara la pantalla del cobro tenia que '
+      + 'rehacer el andamiaje a ojo — que es literalmente el defecto que este sistema existe para '
+      + 'eliminar, y el que ya costo 3.983 lineas con la tabla. '
+      + 'AHORA VIAJA: 26 reglas, y con ellas el candado de la promesa compara siete superficies '
+      + 'nuevas del cobro —la banda del total, su monto, el contenedor del SDK, la linea del total, '
+      + 'los estados aprobado y rechazado, y los datos de la constancia— a cinco anchos. El barrido '
+      + 'del marcado paso de 1.065 a 1.144 elementos y de 218.948 a 235.237 propiedades. Y el '
+      + 'candado de la cascada las resuelve ademas a los ONCE anchos, que es lo que responde a si '
+      + 'la pagina aguanta en estrecho. '
+      + 'LO QUE NO VIAJA, Y ES DELIBERADO: todo lo que se llama `psl-demo-*` — el navegador '
+      + 'dibujado, el marco de 390 y, esto es lo que importa, EL FORMULARIO FALSO DE TARJETA. Ese '
+      + 'marcado imita el que pinta el SDK de Izipay, y entregarlo seria invitar a un producto a '
+      + 'maquetar campos de tarjeta propios. Los campos de tarjeta los pinta Izipay o no los pinta '
+      + 'nadie. Los corta `esParteAndamio`, que ya sabia hacerlo. '
+      + 'VISTO FALLAR: se cambio a mano un color de `.psl-hero` en la hoja entregada y el candado de '
+      + 'la promesa salio en rojo señalando esa banda. Restaurada, verde.',
+    rompe: [],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.81.0', fecha: '2026-08-27',
     que: 'R104: el catalogo enseñaba SOLO la variante con lupa, que es justo la que NO sale por omision',

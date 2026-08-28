@@ -96,6 +96,16 @@ const CASOS = [
     elem('ul', ['cx-adjuntos']), elem('li', ['cx-adj', 'cx-adj-img']),
     elem('button', ['cx-ver']), elem('img', ['cx-mini', 'cx-mini-id']),
   ]],
+  // R105 · La pasarela de pagos. Va nombrada ademas del barrido porque es la
+  // superficie donde se cobra dinero: si un dia se cae del marcado, el barrido
+  // dejaria de mirarla en silencio y aqui se veria el hueco.
+  ['Banda del total a pagar', [elem('div', ['psl-hero'])]],
+  ['Monto de la banda', [elem('div', ['psl-hero']), elem('span', ['psl-hero-monto'])]],
+  ['Contenedor del SDK de Izipay', [elem('div', ['psl-sdk'])]],
+  ['Linea del total', [elem('div', ['psl-detalle']), elem('div', ['psl-linea', 'psl-total'])]],
+  ['Estado aprobado', [elem('div', ['psl-estado', 'psl-estado-exito'])]],
+  ['Estado rechazado', [elem('div', ['psl-estado', 'psl-estado-error'])]],
+  ['Datos de la constancia', [elem('dl', ['psl-datos'])]],
   ['Zona de soltar PDF', [elem('div', ['cpdf']), elem('div', ['cpdf-zona'])]],
   ['Fila de archivo PDF', [
     elem('div', ['cpdf']), elem('div', ['cpdf-panel']), elem('ul', ['cpdf-lista']),
