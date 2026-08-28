@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.86.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.87.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -1548,6 +1548,62 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
   font-size: 13px; align-items: baseline; margin: 0; }
 .psl-datos dt{ color: var(--texto-secundario); }
 .psl-datos dd{ margin: 0; font-variant-numeric: tabular-nums; }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   COMPROBANTE ELECTRONICO — 29 reglas · clases .cpe-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.cpe{ display: flex; flex-direction: column; gap: 16px; }
+.cpe-lineas{ width: 100%; border-collapse: collapse; font-size: 13px; }
+.cpe-lineas th{ text-align: left; font-weight: 600; padding: 8px 8px;
+  background: var(--fondo-encabezado); border-bottom: 1px solid var(--borde);
+  white-space: nowrap; }
+.cpe-lineas td{ padding: 4px 8px; border-bottom: 1px solid var(--borde);
+  vertical-align: middle; }
+.cpe-num{ text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.cpe-lineas input.campo{ width: 100%; }
+.cpe-lineas .cpe-num input.campo{ text-align: right; }
+.cpe-lin-quitar{ width: 40px; }
+.cpe-envoltura{ overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
+.cpe-sunat{ display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px; border-radius: 6px; border-left: 3px solid; }
+.cpe-sunat-ico{ flex: none; display: grid; place-items: center;
+  width: 32px; height: 32px; border-radius: 50%; background: var(--fondo-tarjeta); }
+.cpe-sunat-ico .ic{ width: 16px; height: 16px; }
+.cpe-sunat-txt{ min-width: 0; font-size: 13px; }
+.cpe-sunat-tit{ display: block; font-weight: 600; }
+.cpe-sunat-det{ display: block; font-size: 12px; margin-top: 4px; }
+.cpe-sunat-ok{ background: var(--exito-fondo); color: var(--exito-texto);
+  border-left-color: var(--exito-acento); }
+.cpe-sunat-espera{ background: var(--aviso-fondo); color: var(--aviso-texto);
+  border-left-color: var(--aviso-acento); }
+.cpe-sunat-mal{ background: var(--error-fondo); color: var(--error-texto);
+  border-left-color: var(--error-acento); }
+.cpe-sunat-baja{ background: var(--fondo-encabezado); color: var(--texto-secundario);
+  border-left-color: var(--borde-fuerte); }
+.cpe-impresa{ background: var(--fondo-tarjeta); border: 1px solid var(--borde);
+  border-radius: 6px; padding: 16px; font-size: 12px; }
+.cpe-impresa-cab{ display: flex; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; padding-bottom: 12px;
+  border-bottom: 1px solid var(--borde); }
+.cpe-impresa-caja{ border: 1px solid var(--texto-principal); border-radius: 3px;
+  padding: 8px 12px; text-align: center; }
+.cpe-impresa-ruc{ display: block; font-weight: 600; }
+.cpe-impresa-tipo{ display: block; font-weight: 600; margin-top: 4px; }
+.cpe-impresa-pie{ display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid var(--borde); }
+.cpe-qr{ width: 112px; height: 112px; flex: none; display: grid;
+  place-items: center; border: 1px solid var(--borde);
+  background: var(--fondo-encabezado); color: var(--texto-secundario);
+  font-size: 12px; text-align: center; border-radius: 3px; }
+.cpe-hash{ font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 12px; word-break: break-all; color: var(--texto-secundario); }
+.cpe-ticket{ width: 302px; max-width: 100%; }
+@media print {
+  .cpe-no-imprime{ display: none; }
+  .cpe-impresa{ border: 0; padding: 0; }
+}
 
 /* ───────────────────────────────────────────────────────────────────────────
    DIÁLOGO — 8 reglas · clases .dialogo-*

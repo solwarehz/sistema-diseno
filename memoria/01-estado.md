@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 27 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.86.0** — las **cinco** pasarelas conocidas
-del Perú en el catálogo, cada una con sus huecos declarados: Izipay, Culqi,
-Openpay, Mercado Pago y Niubiz
+**Versión del sistema:** MMI-DS **v1.87.0** — nace **Boleta electrónica**: emitir,
+notas, anular, cotizar, guía de remisión e **impresión**, la primera superficie
+del sistema cuyo contenido lo manda una norma
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -40,12 +40,12 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
 | Componentes de React | ✅ | **499 pruebas en 34 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
-| Catálogo navegable | ✅ | `cascaron/index.html` · 46 páginas · lo genera `generar-cascaron.mjs` |
+| Catálogo navegable | ✅ | `cascaron/index.html` · 53 páginas · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.86.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.87.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.86.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.87.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,42 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.86.0), con detalle
+### Lo de hoy (v1.87.0), con detalle
+
+**Nace «Boleta electrónica» sobre Nubefact — y la primera hoja de impresión.**
+
+Siete páginas: Nubefact, emitir, notas, anulación, cotización, guía de remisión
+e impresión. Un agente leyó su documentación entera —cuatro manuales y sesenta
+ejemplos JSON— y el inventario salió con **14 operaciones, 6 tipos de
+comprobante, 19 tipos de IGV, 13 motivos de nota de crédito y 5 de débito**.
+
+**Tres hallazgos cambian el diseño más que cualquier campo:**
+
+1. **El modelo revendedor.** Cada empresa emisora —y cada local— tiene **su
+   propia ruta y su propio token**; el RUC **no viaja en el JSON**. De ahí sale
+   una regla de **seguridad**: el selector de empresa emisora **no puede existir
+   en la pantalla del colegio**, porque un descuido emitiría un documento
+   tributario bajo el RUC de otro cliente. El rol se enciende por configuración y
+   decide qué piezas **ni siquiera se montan**.
+2. **Una boleta recién emitida sale «no aceptada» y eso es normal**: viaja en un
+   resumen diario a las 24 h, con plazo de hasta 7 días. Si la pantalla lo pinta
+   en rojo, el colegio llamará por teléfono todos los días.
+3. **La cotización no es un comprobante.** No está entre las 14 operaciones. Si
+   compartiera la maquinaria, la pantalla **mentiría**: enseñaría un estado ante
+   SUNAT que no existe y un botón de anular que no anula nada.
+
+**Anular no es borrar**, y la pantalla no debe preguntarlo: dentro de 7 días es
+comunicación de baja —asíncrona, con ticket—; pasados, nota de crédito. Con la
+fecha delante el sistema sabe cuál toca. Y **la guía de remisión ni siquiera se
+anula por API**: solo desde SUNAT con la Clave SOL.
+
+**Piezas nuevas que viajan** (familia `cpe-*`, 29 reglas): las **líneas** del
+documento —tabla de verdad, no rejilla de divs, porque son datos tabulares—, el
+**estado ante SUNAT** con sus cuatro caras, y la **representación impresa**. Esa
+última estrena la **primera regla ` print` del sistema**: hasta hoy no
+había ninguna.
+
+### Lo de la v1.86.0, con detalle
 
 **Niubiz — la quinta y última, y el eje del rechazo no es el código.**
 
@@ -1147,7 +1182,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.86.0
+Versión                      1.87.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              178   (138 bloqueantes · 40 informativos,
                                       0 fallos)
@@ -1165,7 +1200,7 @@ Contrato de comportamiento      185   reglas · 152 obligatorias · 6 PENDIENTE
 Componentes publicados           32   38 módulos viajan en el paquete
                                       117 exportaciones, todas por el índice
 Iconos                           46
-Páginas del catálogo             46
+Páginas del catálogo             53
 Fila de un campo, medida      36,45   px · la fila de carga se fija en 36
 ```
 

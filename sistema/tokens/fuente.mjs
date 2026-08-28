@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.86.0";
+export const VERSION = "1.87.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,49 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.87.0', fecha: '2026-08-27',
+    que: 'Nace «Boleta electronica» sobre Nubefact — y con ella la primera hoja de impresion del sistema',
+    porque:
+      'Encargo del responsable: emision de boleta, factura, notas de credito y debito, cotizaciones, '
+      + 'guia de remision, anulacion e impresion. Y con una instruccion que gobierna el modulo: '
+      + '«abarca todo el 100% de lo que se puede hacer, la configuracion habilita segun cliente». '
+      + 'Un agente leyo su documentacion entera —4 manuales y 60 ejemplos JSON— y el inventario '
+      + 'salio con 14 operaciones, 6 tipos de comprobante, 19 tipos de IGV, 13 motivos de nota de '
+      + 'credito y 5 de debito. '
+      + 'TRES HALLAZGOS CAMBIAN EL DISEÑO MAS QUE CUALQUIER CAMPO: '
+      + '(1) EL MODELO REVENDEDOR. Cada empresa emisora —y cada local— tiene su PROPIA ruta y su '
+      + 'PROPIO token; el RUC no viaja en el JSON, queda implicito en la ruta. De ahi sale una regla '
+      + 'de SEGURIDAD, no de estetica: el selector de empresa emisora NO puede existir en la '
+      + 'pantalla del colegio, porque un descuido emitiria un documento tributario bajo el RUC de '
+      + 'otro cliente — y eso no se deshace con un boton, se deshace con una comunicacion de baja. '
+      + 'El rol se enciende por configuracion y decide que piezas NI SIQUIERA SE MONTAN. '
+      + '(2) UNA BOLETA RECIEN EMITIDA SALE «no aceptada por SUNAT» Y ESO ES NORMAL: viaja en un '
+      + 'resumen diario a las 24 horas, con plazo de hasta 7 dias. Si la pantalla lo pinta en rojo, '
+      + 'el colegio llamara por telefono todos los dias. La factura si responde al momento. '
+      + '(3) LA COTIZACION NO ES UN COMPROBANTE. No esta entre las 14 operaciones ni entre los 6 '
+      + 'tipos: existe solo en su panel. Si compartiera la maquinaria del comprobante, la pantalla '
+      + 'mentiria — enseñaria un estado ante SUNAT que no existe y un boton de anular que no anula. '
+      + 'Va en pagina aparte y reusa solo las lineas y los totales. '
+      + 'ANULAR NO ES BORRAR, y la pantalla no debe preguntarlo: dentro de 7 dias es comunicacion de '
+      + 'baja —asincrona, con ticket, no anulada hasta que SUNAT lo diga—; pasados, hay que emitir '
+      + 'una nota de credito. Con la fecha delante el sistema sabe cual toca; trasladar esa regla '
+      + 'tributaria a quien esta en administracion es cargarle algo que no tiene por que saber. '
+      + 'Y LA GUIA DE REMISION NI SIQUIERA SE ANULA POR API: solo desde SUNAT con la Clave SOL. '
+      + 'PIEZAS NUEVAS QUE VIAJAN (familia cpe-*, 29 reglas): las LINEAS del documento —tabla de '
+      + 'verdad, no rejilla de divs, porque son datos tabulares—, el ESTADO ANTE SUNAT con sus '
+      + 'cuatro caras, y la REPRESENTACION IMPRESA. Esta ultima estrena la PRIMERA REGLA @media '
+      + 'print del sistema: hasta hoy no habia ninguna, y es la unica superficie cuyo contenido lo '
+      + 'manda una norma —el QR es obligatorio desde el 01/01/2019, abajo, negro, maximo 6x6 cm—. '
+      + 'Todo lo demas se compone de Campo, Selector, Boton, Confirmacion, Mensaje, Chip y Tarjeta. '
+      + 'Ningun color nuevo. '
+      + 'SEIS HUECOS DECLARADOS EN LA PROPIA PAGINA, entre ellos que Nubefact NO publica el catalogo '
+      + 'de errores de SUNAT —asi que se pinta sunat_description como texto libre, no traducido—, '
+      + 'que su manual de retencion se contradice sobre la serie, y que hay nuevas reglas de '
+      + 'validacion de notas anunciadas para agosto de 2026 y enero de 2027 cuyo detalle no se leyo.',
+    rompe: [],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.86.0', fecha: '2026-08-27',
     que: 'Niubiz — la quinta y ultima pasarela: 77 codigos y un eje que no es el codigo',

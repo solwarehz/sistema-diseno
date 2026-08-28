@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.86.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.87.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.86.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.87.0
    WCAG 2.2 AA · 138 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -3691,6 +3691,86 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    rompe la rejilla. No viaja — «caso» esta en SOLO_CATALOGO. */
 .caso-form { display: flex; flex-direction: column; gap: 16px; max-width: 520px; }
 
+/* ── COMPROBANTE ELECTRONICO · clases .cpe-* ─────────────────────────────────
+   Boleta, factura, nota de credito, nota de debito y guia de remision. VIAJAN:
+   un producto que emita documentos tributarios no puede rehacer esto a ojo.
+
+   Lo unico propio son tres piezas que el sistema no tenia: las LINEAS del
+   documento, el ESTADO ante SUNAT y la REPRESENTACION IMPRESA. Todo lo demas
+   —cabecera, cliente, botones, avisos— se compone de Campo, Selector, Boton,
+   Mensaje, Chip y Tarjeta, que ya existen.
+
+   El color sale de los semanticos ya verificados. Ninguno nuevo. */
+.cpe { display: flex; flex-direction: column; gap: 16px; }
+
+/* LAS LINEAS. Es una tabla de verdad —no una rejilla de divs— porque son datos
+   tabulares y un lector de pantalla necesita saber que columna esta leyendo. */
+.cpe-lineas { width: 100%; border-collapse: collapse; font-size: 13px; }
+.cpe-lineas th { text-align: left; font-weight: 600; padding: 8px 8px;
+  background: var(--fondo-encabezado); border-bottom: 1px solid var(--borde);
+  white-space: nowrap; }
+.cpe-lineas td { padding: 4px 8px; border-bottom: 1px solid var(--borde);
+  vertical-align: middle; }
+/* Los importes en columna, con cifras de ancho fijo: una columna de dinero que
+   baila no se puede leer de un vistazo, y aqui los numeros son el dato. */
+.cpe-num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.cpe-lineas input.campo { width: 100%; }
+.cpe-lineas .cpe-num input.campo { text-align: right; }
+.cpe-lin-quitar { width: 40px; }
+.cpe-envoltura { overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
+
+/* EL ESTADO ANTE SUNAT. No es un chip: lleva el codigo, la descripcion y el
+   enlace al CDR, que es lo que un administrativo necesita para reclamar. */
+.cpe-sunat { display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px; border-radius: 6px; border-left: 3px solid; }
+.cpe-sunat-ico { flex: none; display: grid; place-items: center;
+  width: 32px; height: 32px; border-radius: 50%; background: var(--fondo-tarjeta); }
+.cpe-sunat-ico .ic { width: 16px; height: 16px; }
+.cpe-sunat-txt { min-width: 0; font-size: 13px; }
+.cpe-sunat-tit { display: block; font-weight: 600; }
+.cpe-sunat-det { display: block; font-size: 12px; margin-top: 4px; }
+.cpe-sunat-ok { background: var(--exito-fondo); color: var(--exito-texto);
+  border-left-color: var(--exito-acento); }
+.cpe-sunat-espera { background: var(--aviso-fondo); color: var(--aviso-texto);
+  border-left-color: var(--aviso-acento); }
+.cpe-sunat-mal { background: var(--error-fondo); color: var(--error-texto);
+  border-left-color: var(--error-acento); }
+.cpe-sunat-baja { background: var(--fondo-encabezado); color: var(--texto-secundario);
+  border-left-color: var(--borde-fuerte); }
+
+/* LA REPRESENTACION IMPRESA. Es la unica superficie del sistema cuyo contenido
+   lo manda una norma y no nosotros: el QR es obligatorio desde el 01/01/2019,
+   va abajo, negro, con zona de silencio y como maximo 6 x 6 cm. */
+.cpe-impresa { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
+  border-radius: 6px; padding: 16px; font-size: 12px; }
+.cpe-impresa-cab { display: flex; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; padding-bottom: 12px;
+  border-bottom: 1px solid var(--borde); }
+.cpe-impresa-caja { border: 1px solid var(--texto-principal); border-radius: 3px;
+  padding: 8px 12px; text-align: center; }
+.cpe-impresa-ruc { display: block; font-weight: 600; }
+.cpe-impresa-tipo { display: block; font-weight: 600; margin-top: 4px; }
+.cpe-impresa-pie { display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid var(--borde); }
+/* 6 cm son 227px a 96 dpi. El cuadrado del catalogo es la MITAD, para que se
+   entienda que el tope existe sin ocupar media pantalla. */
+.cpe-qr { width: 112px; height: 112px; flex: none; display: grid;
+  place-items: center; border: 1px solid var(--borde);
+  background: var(--fondo-encabezado); color: var(--texto-secundario);
+  font-size: 12px; text-align: center; border-radius: 3px; }
+.cpe-hash { font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 12px; word-break: break-all; color: var(--texto-secundario); }
+/* El ticket de 80mm son 302px a 96 dpi. */
+.cpe-ticket { width: 302px; max-width: 100%; }
+
+/* AL IMPRIMIR no se imprime la aplicacion: se imprime el comprobante. Es la
+   primera regla de impresion del sistema — hasta la v1.87.0 no habia ninguna. */
+@media print {
+  .cpe-no-imprime { display: none; }
+  .cpe-impresa { border: 0; padding: 0; }
+}
+
 /* ── PASARELA DE PAGOS · clases .psl-* ────────────────────────────────────────
    Andamiaje de la pagina de composicion, SOLO CATALOGO: no viaja. Lo que se
    copia de aqui son los componentes que la arman —Tarjeta, Mensaje, Progreso,
@@ -4060,15 +4140,35 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   </div>
   <div class="nav-grupo" data-grupo="5">
     <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="5">
-      <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="2" y="13" width="4" height="6" rx="1.5"/><rect x="18" y="13" width="4" height="6" rx="1.5"/></svg></span>
-      <span class="nav-txt">Manual de uso</span>
+      <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg></span>
+      <span class="nav-txt">Boleta electrónica</span>
       <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
     </button>
     <div class="nav-hijos" id="grupo-5">
       <div class="nav-hijos-in">
+      <span class="nav-flot-tit">Boleta electrónica</span>
+      <a class="nav-hijo" href="#nubefact" data-ir="nubefact" title="Nubefact">
+                  <span class="nav-txt">Nubefact</span></a><a class="nav-hijo" href="#emitir" data-ir="emitir" title="Emitir boleta y factura">
+                  <span class="nav-txt">Emitir boleta y factura</span></a><a class="nav-hijo" href="#notas" data-ir="notas" title="Notas de crédito y débito">
+                  <span class="nav-txt">Notas de crédito y débito</span></a><a class="nav-hijo" href="#anulacion" data-ir="anulacion" title="Anulación">
+                  <span class="nav-txt">Anulación</span></a><a class="nav-hijo" href="#cotizacion" data-ir="cotizacion" title="Cotización">
+                  <span class="nav-txt">Cotización</span></a><a class="nav-hijo" href="#guiaremision" data-ir="guiaremision" title="Guía de remisión">
+                  <span class="nav-txt">Guía de remisión</span></a><a class="nav-hijo" href="#impresion" data-ir="impresion" title="Impresión">
+                  <span class="nav-txt">Impresión</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="nav-grupo" data-grupo="6">
+    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="6">
+      <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="2" y="13" width="4" height="6" rx="1.5"/><rect x="18" y="13" width="4" height="6" rx="1.5"/></svg></span>
+      <span class="nav-txt">Manual de uso</span>
+      <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+    </button>
+    <div class="nav-hijos" id="grupo-6">
+      <div class="nav-hijos-in">
       <span class="nav-flot-tit">Manual de uso</span>
-      <div class="nav-rama" data-rama="5-0">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="5-0">
+      <div class="nav-rama" data-rama="6-0">
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="6-0">
                     <span class="nav-txt">Cómo se aplica</span>
                     <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
@@ -4081,8 +4181,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                           <span class="nav-txt">Foco y accesibilidad</span></a><a class="nav-nieto" href="#man-composicion" data-ir="man-composicion" title="Composición">
                           <span class="nav-txt">Composición</span></a>
                   </div></div>
-                </div><div class="nav-rama" data-rama="5-1">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="5-1">
+                </div><div class="nav-rama" data-rama="6-1">
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="6-1">
                     <span class="nav-txt">Cómo se escribe</span>
                     <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
@@ -4103,13 +4203,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       </div>
     </div>
   </div>
-  <div class="nav-grupo" data-grupo="6">
-    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="6">
+  <div class="nav-grupo" data-grupo="7">
+    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="7">
       <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg></span>
       <span class="nav-txt">Referencia</span>
       <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
     </button>
-    <div class="nav-hijos" id="grupo-6">
+    <div class="nav-hijos" id="grupo-7">
       <div class="nav-hijos-in">
       <span class="nav-flot-tit">Referencia</span>
       <a class="nav-hijo" href="#cambios" data-ir="cambios" title="Registro de cambios">
@@ -4139,7 +4239,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.86.0</option></select></label>
+          <select class="campo cg-in"><option>v1.87.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4227,8 +4327,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.86.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.86.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.87.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.87.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -12951,6 +13051,648 @@ pero pierde esos tres.</p>
   <li><strong>La pantalla de «ya está pagado»</strong> — el <code>300</code> y el HTTP 406.</li>
   <li><strong>Los mensajes al apoderado</strong>, por <code>TIPO DE RECHAZO</code>.</li>
 </ol>
+    </section><section class="pagina" id="pg-nubefact" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#nubefact" data-ir="nubefact" class="migas-grupo">Boleta electrónica</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#nubefact" data-ir="nubefact" class="migas-actual" aria-current="page">Nubefact</a>
+      </nav>
+      <div class="pant-cab"><h1>Nubefact</h1></div>
+      
+<p class="pag-intro">Cómo se emite un comprobante electrónico con <strong>Nubefact</strong>, que
+está autorizado por SUNAT como <strong>OSE y como PSE</strong>. Antes de dibujar ninguna pantalla,
+tres cosas de su documentación que deciden el diseño entero.</p>
+
+<div class="aviso"><strong>1 · El colegio no necesita certificado digital.</strong> Su
+documentación lo dice literalmente: Nubefact es quien emite y valida el comprobante. Lo único que
+el colegio hace es un trámite <em>suyo</em> en SUNAT con su <strong>Clave SOL</strong>, dándoles de
+alta como PSE u OSE. <strong>La Clave SOL no se entrega a nadie.</strong></div>
+
+<h3 class="sub-seccion">2 · El modelo revendedor — y por qué parte el módulo en dos</h3>
+<p class="seccion-sub">Su versión <strong>RESELLER</strong> está documentada y es la que aplica
+aquí. Y trae un dato que decide la pantalla: <strong>cada empresa emisora —y cada local— tiene su
+propia ruta y su propio token</strong>. El RUC del emisor <strong>no viaja en el JSON</strong>:
+queda implícito en la ruta que se llama.</p>
+
+<div class="msj msj-error">
+  <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+  <span class="msj-txt"><strong>De ahí sale una regla de seguridad, no de estética: el selector de
+  empresa emisora NO puede existir en la pantalla del colegio.</strong> Si aparece, un descuido
+  emite un documento tributario bajo el RUC de otro cliente — y eso no se deshace con un botón, se
+  deshace con una comunicación de baja. El rol se enciende por configuración y decide qué piezas
+  <em>ni siquiera se montan</em>.</span>
+</div>
+
+<table class="tabla-simple">
+  <thead><tr><th>&nbsp;</th><th>El colegio (emisor)</th><th>Ustedes (revendedor)</th></tr></thead>
+  <tbody>
+    <tr><td>Qué hace</td><td>emite, anula, imprime y consulta <strong>lo suyo</strong></td><td>da de alta empresas, configura series, consulta <strong>todas</strong></td></tr>
+    <tr><td>Selector de empresa emisora</td><td><strong>no existe</strong></td><td>es la pieza central</td></tr>
+    <tr><td>Credenciales</td><td>una ruta + token, fijos</td><td><strong>N pares</strong>, uno por empresa y local</td></tr>
+    <tr><td>Ante SUNAT responde</td><td>el colegio, con su RUC</td><td>no</td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub"><strong>Dos límites que conviene saber ya:</strong> no hay API para dar de
+alta empresas —el alta es un formulario en su panel, así que <strong>no se puede
+automatizar</strong>—, y <strong>no hay consulta consolidada</strong>: como cada empresa tiene su
+ruta, una vista global se construye iterando sobre las N credenciales.</p>
+
+<h3 class="sub-seccion">3 · Una sola URL, catorce operaciones</h3>
+<p class="seccion-sub">No hay rutas por recurso: <strong>todo es un POST a la misma ruta</strong> y
+lo que cambia es el campo <code>operacion</code>. El token va en la cabecera
+<code>Authorization</code> <strong>pelado</strong> — sin <code>Bearer</code>.</p>
+<table class="tabla-simple">
+  <thead><tr><th><code>operacion</code></th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>generar_comprobante</code></td><td>Factura, boleta, nota de crédito y nota de débito</td></tr>
+    <tr><td><code>consultar_comprobante</code></td><td>Estado de uno emitido — devuelve además <code>anulado</code></td></tr>
+    <tr><td><code>generar_anulacion</code></td><td>Comunicación de baja</td></tr>
+    <tr><td><code>consultar_anulacion</code></td><td>Estado de la baja</td></tr>
+    <tr><td><code>generar_guia</code> · <code>consultar_guia</code></td><td>Guía de remisión, en dos pasos</td></tr>
+    <tr><td><code>generar_retencion</code> · <code>generar_percepcion</code></td><td>Y sus consultas y reversiones — <strong>BETA</strong> en su documentación</td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub"><strong>Lo que NO existe, y hay que saberlo antes de prometerlo:</strong> no
+hay endpoint para <strong>reenviar por correo</strong> —solo el envío automático al emitir—, ni
+para <strong>descargar</strong>, ni para <strong>listar o paginar</strong> comprobantes:
+<code>consultar_comprobante</code> exige serie y número exactos, así que <strong>el índice lo lleva
+nuestro sistema</strong>. Y el correlativo también.</p>
+
+<h3 class="sub-seccion">4 · Los seis tipos de comprobante</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Valor</th><th>Documento</th><th>Serie</th></tr></thead>
+  <tbody>
+    <tr><td><code>1</code></td><td>Factura</td><td>empieza por <strong>F</strong></td></tr>
+    <tr><td><code>2</code></td><td><strong>Boleta</strong></td><td>empieza por <strong>B</strong></td></tr>
+    <tr><td><code>3</code></td><td>Nota de crédito</td><td><strong>F o B</strong>, según el documento que corrige</td></tr>
+    <tr><td><code>4</code></td><td>Nota de débito</td><td>F o B</td></tr>
+    <tr><td><code>7</code></td><td>Guía de remisión remitente</td><td>empieza por <strong>T</strong></td></tr>
+    <tr><td><code>8</code></td><td>Guía de remisión transportista</td><td>empieza por <strong>V</strong></td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub">Retención y percepción <strong>no usan este campo</strong>: se distinguen por
+la operación. Y las notas de crédito <strong>llevan correlativos separados</strong> según corrijan
+una factura o una boleta.</p>
+
+<h3 class="sub-seccion">5 · Lo que devuelve, y el estado ante SUNAT</h3>
+<div class="bloque">
+  <div class="cpe">
+    <div class="cpe-sunat cpe-sunat-ok">
+      <span class="cpe-sunat-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 5 5L20 7"/></svg></span>
+      <span class="cpe-sunat-txt">
+        <span class="cpe-sunat-tit">Aceptada por SUNAT</span>
+        <span class="cpe-sunat-det">La Factura numero FFF1-1, ha sido aceptada · código
+        <code>0</code> · <a class="enlace" href="#nubefact" data-ir="nubefact">ver el CDR</a></span>
+      </span>
+    </div>
+    <div class="cpe-sunat cpe-sunat-espera">
+      <span class="cpe-sunat-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>
+      <span class="cpe-sunat-txt">
+        <span class="cpe-sunat-tit">Pendiente de envío — y esto es lo normal en una boleta</span>
+        <span class="cpe-sunat-det">Las boletas viajan a SUNAT en un <strong>resumen diario</strong>
+        que se crea a las 24 horas, con plazo de hasta 7 días. Recién emitida sale
+        <code>aceptada_por_sunat: false</code>.</span>
+      </span>
+    </div>
+    <div class="cpe-sunat cpe-sunat-mal">
+      <span class="cpe-sunat-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+      <span class="cpe-sunat-txt">
+        <span class="cpe-sunat-tit">Rechazada por SUNAT</span>
+        <span class="cpe-sunat-det">Se pinta el <code>sunat_description</code> tal cual llega — ver
+        el aviso de abajo.</span>
+      </span>
+    </div>
+    <div class="cpe-sunat cpe-sunat-baja">
+      <span class="cpe-sunat-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></span>
+      <span class="cpe-sunat-txt">
+        <span class="cpe-sunat-tit">Anulada</span>
+        <span class="cpe-sunat-det">Dada de baja, o corregida con una nota de crédito.</span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="msj msj-error">
+  <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+  <span class="msj-txt"><strong>Si la pantalla pinta en rojo una boleta recién emitida, el colegio
+  llamará por teléfono todos los días.</strong> «No aceptada» no es un fallo en una boleta: es que
+  todavía no le tocó el resumen diario. La factura sí se envía individualmente y responde al
+  momento.</span>
+</div>
+
+<h3 class="sub-seccion">6 · Los errores: los suyos sí, los de SUNAT no</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Código</th><th>Descripción</th></tr></thead>
+  <tbody>
+    <tr><td><span class="chip chip-error">10</span></td><td>No se pudo autenticar, token incorrecto o eliminado</td></tr>
+    <tr><td><span class="chip chip-error">11</span></td><td>La ruta o URL que estás usando no es correcta o no existe</td></tr>
+    <tr><td><span class="chip chip-error">20</span></td><td>El archivo enviado no cumple con el formato establecido</td></tr>
+    <tr><td><span class="chip chip-error">21</span></td><td>No se pudo completar la operación, se acompaña el problema con un mensaje</td></tr>
+    <tr><td><span class="chip chip-error">22</span></td><td>Documento enviado fuera del plazo permitido</td></tr>
+    <tr><td><span class="chip chip-aviso">23</span></td><td><strong>Este documento ya existe en NubeFacT</strong> — el correlativo se repitió</td></tr>
+    <tr><td><span class="chip chip-error">24</span></td><td>El documento indicado no existe o no fue enviado a NubeFacT</td></tr>
+    <tr><td><span class="chip chip-error">50</span> <span class="chip chip-error">51</span></td><td>Cuenta suspendida · suspendida por falta de pago</td></tr>
+  </tbody>
+</table>
+<div class="msj msj-aviso">
+  <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+  <span class="msj-txt"><strong>Los códigos de error de SUNAT no los publica Nubefact</strong> — se
+  buscaron en sus cuatro manuales y en su centro de ayuda. Ese catálogo es de SUNAT. Llegan opacos
+  en <code>sunat_description</code>, <code>sunat_note</code> y <code>sunat_soap_error</code>, así
+  que <strong>la pantalla los muestra como texto libre, no como código traducido</strong>.</span>
+</div>
+
+<h3 class="sub-seccion">7 · Lo que NO se pudo verificar</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Qué</th><th>Por qué</th></tr></thead>
+  <tbody>
+    <tr><td>Catálogo de errores de SUNAT</td><td><strong>Nubefact no lo publica.</strong> Solo aparece un código suelto en el manual de guías</td></tr>
+    <tr><td>Contadores o límites por empresa</td><td>No documentado; el precio se negocia con su comercial</td></tr>
+    <tr><td>Serie de retención: ¿<code>P</code> o <code>RRR1</code>?</td><td><strong>Su propio manual se contradice.</strong> Preguntar antes de implementar retención</td></tr>
+    <tr><td>Umbral de S/ 700 en boletas</td><td>Nubefact solo publica la etiqueta del valor. <strong>La regla es de SUNAT, no suya</strong></td></tr>
+    <tr><td>Nuevas reglas de validación de notas</td><td>Anunciadas en su blog para <strong>agosto de 2026 y enero de 2027</strong>; el detalle no se leyó</td></tr>
+    <tr><td>Texto de sus resoluciones OSE y PSE</td><td>Los PDF se descargaron pero <strong>no se pudo extraer su texto</strong></td></tr>
+  </tbody>
+</table>
+    </section><section class="pagina" id="pg-emitir" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#nubefact" data-ir="nubefact" class="migas-grupo">Boleta electrónica</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#emitir" data-ir="emitir" class="migas-actual" aria-current="page">Emitir boleta y factura</a>
+      </nav>
+      <div class="pant-cab"><h1>Emitir boleta y factura</h1></div>
+      
+<p class="pag-intro">La pantalla de emisión. <strong>Boleta y factura son el mismo formulario</strong>
+— se comprobó comparando sus ejemplos oficiales: solo difieren en cuatro cosas. Lo que cambia se
+enciende por configuración, no duplicando pantallas.</p>
+
+<h3 class="sub-seccion">Lo único que cambia entre boleta y factura</h3>
+<table class="tabla-simple">
+  <thead><tr><th>&nbsp;</th><th>Boleta</th><th>Factura</th></tr></thead>
+  <tbody>
+    <tr><td><code>tipo_de_comprobante</code></td><td><code>2</code></td><td><code>1</code></td></tr>
+    <tr><td><code>serie</code></td><td>empieza por <strong>B</strong></td><td>empieza por <strong>F</strong></td></tr>
+    <tr><td>Documento del cliente</td><td><strong>DNI</strong> es lo normal; también «VARIOS»</td><td>en la práctica, <strong>RUC</strong></td></tr>
+    <tr><td><code>cliente_direccion</code></td><td><strong>opcional</strong></td><td>obligatorio</td></tr>
+    <tr><td>Envío a SUNAT</td><td><strong>resumen diario</strong>, ≤ 7 días</td><td>individual, inmediato</td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub">Todo lo demás —ítems, totales, observaciones— es idéntico. Y una boleta
+<strong>con RUC también es válida</strong>: existe el ejemplo oficial.</p>
+
+<h3 class="sub-seccion">La pantalla</h3>
+<div class="bloque">
+  <div class="cpe">
+    <div class="campos-rejilla">
+      <label class="cg"><span class="cg-et">Tipo de comprobante</span>
+        <select class="campo cg-in"><option>Boleta de venta</option><option>Factura</option></select></label>
+      <label class="cg"><span class="cg-et">Serie y número</span>
+        <input class="campo cg-in" value="BBB1 — 000124" readonly>
+        <span class="cg-ayuda">El correlativo lo lleva nuestro sistema. No se puede saltar.</span></label>
+      <label class="cg"><span class="cg-et">Fecha de emisión</span>
+        <input class="campo cg-in" type="date" value="2026-08-27"></label>
+    </div>
+
+    <div class="campos-rejilla">
+      <label class="cg"><span class="cg-et">Tipo de documento del cliente</span>
+        <select class="campo cg-in"><option>DNI</option><option>RUC</option><option>Carné de extranjería</option><option>Pasaporte</option><option>Varios — ventas menores a S/ 700</option></select></label>
+      <label class="cg"><span class="cg-et">Número<span class="cg-req">*</span></span>
+        <input class="campo cg-in" value="71234567"></label>
+      <label class="cg"><span class="cg-et">Nombre o razón social<span class="cg-req">*</span></span>
+        <input class="campo cg-in" value="QUISPE RAMOS, ANA LUCÍA"></label>
+    </div>
+
+    <div class="cpe-envoltura">
+      <table class="cpe-lineas">
+        <thead>
+          <tr>
+            <th>Descripción</th><th>Unidad</th><th class="cpe-num">Cantidad</th>
+            <th class="cpe-num">Valor unit.</th><th>Tipo de IGV</th>
+            <th class="cpe-num">IGV</th><th class="cpe-num">Total</th><th class="cpe-lin-quitar"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input class="campo" value="Pensión de agosto 2026" aria-label="Descripción"></td>
+            <td><select class="campo" aria-label="Unidad"><option>ZZ — Servicio</option><option>NIU — Producto</option></select></td>
+            <td class="cpe-num"><input class="campo" value="1" aria-label="Cantidad"></td>
+            <td class="cpe-num"><input class="campo" value="350.00" aria-label="Valor unitario"></td>
+            <td><select class="campo" aria-label="Tipo de IGV"><option>9 — Inafecto</option><option>8 — Exonerado</option><option>1 — Gravado</option></select></td>
+            <td class="cpe-num">0.00</td>
+            <td class="cpe-num">350.00</td>
+            <td><button class="btn btn-terc btn-mini btn-solo-ic" aria-label="Quitar la línea Pensión de agosto 2026"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><path d="M9 7V4h6v3"/></svg></button></td>
+          </tr>
+          <tr>
+            <td><input class="campo" value="Mora por pago tardío" aria-label="Descripción"></td>
+            <td><select class="campo" aria-label="Unidad"><option>ZZ — Servicio</option></select></td>
+            <td class="cpe-num"><input class="campo" value="1" aria-label="Cantidad"></td>
+            <td class="cpe-num"><input class="campo" value="7.00" aria-label="Valor unitario"></td>
+            <td><select class="campo" aria-label="Tipo de IGV"><option>9 — Inafecto</option></select></td>
+            <td class="cpe-num">0.00</td>
+            <td class="cpe-num">7.00</td>
+            <td><button class="btn btn-terc btn-mini btn-solo-ic" aria-label="Quitar la línea Mora por pago tardío"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><path d="M9 7V4h6v3"/></svg></button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button class="btn btn-neutro btn-mini btn-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>Añadir línea</button>
+
+    <div class="psl-cols">
+      <div>
+        <label class="cg"><span class="cg-et">Observaciones</span>
+          <textarea class="campo cg-in ta" rows="2">Pensión correspondiente a agosto de 2026.</textarea></label>
+      </div>
+      <div class="psl-detalle">
+        <div class="psl-linea"><span>Total inafecta</span><span class="psl-monto">S/ 357,00</span></div>
+        <div class="psl-linea"><span>Total IGV</span><span class="psl-monto">S/ 0,00</span></div>
+        <div class="psl-linea psl-total"><span>Total</span><span class="psl-monto">S/ 357,00</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="msj msj-aviso">
+    <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+    <span class="msj-txt"><strong>Emitir es irreversible.</strong> La numeración es correlativa y no
+    se puede saltar, así que el paso de confirmación no es una formalidad: se usa
+    <code>Confirmacion</code>, que arranca el foco en «Cancelar».</span>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Dos campos que deciden y no son de diseño</h3>
+<ol class="man-lista">
+  <li><strong>El tipo de IGV.</strong> Son <strong>19 valores</strong>. La enseñanza suele ser
+  <strong>inafecta</strong> (<code>9</code>) o <strong>exonerada</strong> (<code>8</code>), y el
+  ejemplo oficial de inafecta pone <code>valor_unitario</code> igual a
+  <code>precio_unitario</code> y el IGV en blanco. <strong>Cuál corresponde es decisión tributaria
+  del colegio</strong>, no del sistema.</li>
+  <li><strong>El tipo de documento del cliente es texto, no número.</strong> Admite
+  <code>-</code> (VARIOS), <code>A</code>, <code>B</code> y <code>G</code>. Un selector que asuma
+  numérico rompe cuatro casos.</li>
+</ol>
+
+<h3 class="sub-seccion">Pensiones en armadas: <code>venta_al_credito</code></h3>
+<p class="seccion-sub">SUNAT exige declarar las cuotas en las ventas al crédito, y su API lo admite
+como una lista de <code>cuota</code>, <code>fecha_de_pago</code> e <code>importe</code>. <strong>Es
+exactamente el caso de una pensión en armadas</strong>, así que la pantalla lo enciende cuando el
+colegio cobra a plazos.</p>
+
+<div class="msj msj-error">
+  <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+  <span class="msj-txt"><strong>Y una fecha que hay que apuntar: el <code>codigo_producto_sunat</code>
+  deja de ser opcional el 1 de enero de 2027.</strong> Su blog ya avisa de rechazos por códigos
+  desactualizados. <strong>Conviene capturarlo desde ya</strong>, aunque hoy no haga falta: añadirlo
+  después obliga a repasar cada concepto que el colegio tenga dado de alta.</span>
+</div>
+    </section><section class="pagina" id="pg-notas" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#nubefact" data-ir="nubefact" class="migas-grupo">Boleta electrónica</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#notas" data-ir="notas" class="migas-actual" aria-current="page">Notas de crédito y débito</a>
+      </nav>
+      <div class="pant-cab"><h1>Notas de crédito y débito</h1></div>
+      
+<p class="pag-intro">Notas de <strong>crédito</strong> y de <strong>débito</strong>. Reúsan el
+formulario de emisión entero —cliente, líneas, totales— y añaden un solo bloque: <strong>a qué
+documento corrigen y por qué</strong>. La nota <em>no</em> es un delta: repite el comprobante
+completo.</p>
+
+<div class="bloque">
+  <div class="cpe">
+    <div class="campos-rejilla">
+      <label class="cg"><span class="cg-et">Documento que se modifica</span>
+        <select class="campo cg-in"><option>Boleta de venta</option><option>Factura</option></select></label>
+      <label class="cg"><span class="cg-et">Serie y número</span>
+        <input class="campo cg-in" value="BBB1 — 000124"></label>
+      <label class="cg"><span class="cg-et">Motivo<span class="cg-req">*</span></span>
+        <select class="campo cg-in">
+          <option>1 — Anulación de la operación</option>
+          <option>2 — Anulación por error en el RUC</option>
+          <option>3 — Corrección por error en la descripción</option>
+          <option>4 — Descuento global</option>
+          <option>6 — Devolución total</option>
+          <option>9 — Disminución en el valor</option>
+        </select></label>
+    </div>
+    <div class="cpe-sunat cpe-sunat-espera">
+      <span class="cpe-sunat-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>
+      <span class="cpe-sunat-txt">
+        <span class="cpe-sunat-tit">Esta nota corrige la boleta BBB1-000124</span>
+        <span class="cpe-sunat-det">Emitida el 27/08/2026 por S/ 357,00 a QUISPE RAMOS, Ana Lucía.</span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Los motivos, literales de su documentación</h3>
+<div class="psl-cols">
+  <table class="tabla-simple">
+    <thead><tr><th colspan="2">Nota de <strong>crédito</strong> — 13 motivos</th></tr></thead>
+    <tbody>
+      <tr><td><code>1</code></td><td>Anulación de la operación</td></tr>
+      <tr><td><code>2</code></td><td>Anulación por error en el RUC</td></tr>
+      <tr><td><code>3</code></td><td>Corrección por error en la descripción</td></tr>
+      <tr><td><code>4</code></td><td>Descuento global</td></tr>
+      <tr><td><code>5</code></td><td>Descuento por ítem</td></tr>
+      <tr><td><code>6</code></td><td>Devolución total</td></tr>
+      <tr><td><code>7</code></td><td>Devolución por ítem</td></tr>
+      <tr><td><code>8</code></td><td>Bonificación</td></tr>
+      <tr><td><code>9</code></td><td>Disminución en el valor</td></tr>
+      <tr><td><code>10</code></td><td>Otros conceptos</td></tr>
+      <tr><td><code>11</code></td><td>Ajustes afectos al IVAP</td></tr>
+      <tr><td><code>12</code></td><td>Ajustes de operaciones de exportación</td></tr>
+      <tr><td><code>13</code></td><td>Ajustes — montos y/o fechas de pago</td></tr>
+    </tbody>
+  </table>
+  <table class="tabla-simple">
+    <thead><tr><th colspan="2">Nota de <strong>débito</strong> — 5 motivos</th></tr></thead>
+    <tbody>
+      <tr><td><code>1</code></td><td><strong>Intereses por mora</strong></td></tr>
+      <tr><td><code>2</code></td><td>Aumento de valor</td></tr>
+      <tr><td><code>3</code></td><td>Penalidades</td></tr>
+      <tr><td><code>4</code></td><td>Ajustes afectos al IVAP</td></tr>
+      <tr><td><code>5</code></td><td>Ajustes de operaciones de exportación</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="seccion-sub"><strong>El motivo 1 de la nota de débito es el caso del colegio</strong>:
+intereses por mora en una pensión vencida. Y el motivo 1 de la de crédito es el camino de anulación
+cuando ya pasaron los siete días — ver la página de anulación.</p>
+
+<div class="msj msj-aviso">
+  <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+  <span class="msj-txt"><strong>Aviso vigente:</strong> su blog anuncia <strong>nuevas reglas de
+  validación de SUNAT para notas de crédito y débito</strong>, con parte aplazada a enero de 2027.
+  <strong>El detalle no se leyó</strong> y queda fuera de lo verificado: hay que revisarlo antes de
+  poner esto en producción.</span>
+</div>
+    </section><section class="pagina" id="pg-anulacion" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#nubefact" data-ir="nubefact" class="migas-grupo">Boleta electrónica</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#anulacion" data-ir="anulacion" class="migas-actual" aria-current="page">Anulación</a>
+      </nav>
+      <div class="pant-cab"><h1>Anulación</h1></div>
+      
+<p class="pag-intro">Anular <strong>no es borrar</strong>. Hay <strong>dos caminos</strong> y el que
+corresponde depende de una sola cosa: <strong>cuántos días han pasado</strong>. La pantalla debería
+elegir sola y no preguntar.</p>
+
+<div class="bloque">
+  <div class="psl-cols">
+    <article class="tn">
+      <div class="tn-cab"><h4>Dentro de 7 días — comunicación de baja</h4><span class="chip chip-info">generar_anulacion</span></div>
+      <div class="tn-cuerpo">
+        <p>Se da de baja el comprobante. Pide un <strong>motivo</strong> obligatorio de hasta 100
+        caracteres.</p>
+        <div class="cpe-sunat cpe-sunat-espera">
+          <span class="cpe-sunat-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>
+          <span class="cpe-sunat-txt">
+            <span class="cpe-sunat-tit">La baja es asíncrona</span>
+            <span class="cpe-sunat-det">Devuelve un <code>sunat_ticket_numero</code> y
+            <code>aceptada_por_sunat: false</code>. Hay que consultar después con
+            <code>consultar_anulacion</code>: <strong>no está anulada hasta que SUNAT lo diga</strong>.</span>
+          </span>
+        </div>
+      </div>
+    </article>
+    <article class="tn">
+      <div class="tn-cab"><h4>Pasados 7 días — nota de crédito</h4><span class="chip chip-aviso">tipo 3</span></div>
+      <div class="tn-cuerpo">
+        <p>Su documentación es explícita: pasado el plazo, <strong>si desea dar de baja el
+        comprobante debe emitir una nota de crédito</strong>. Con motivo <code>1</code>, anulación de
+        la operación.</p>
+        <p>Ya no es una baja: es <strong>otro comprobante</strong>, con su propia serie y su propio
+        correlativo.</p>
+      </div>
+    </article>
+  </div>
+
+  <div class="msj msj-error">
+    <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+    <span class="msj-txt"><strong>La pantalla no debe ofrecer «anular» a secas.</strong> Con la
+    fecha de emisión delante, el sistema sabe cuál de los dos caminos corresponde — preguntárselo a
+    quien está en administración es trasladarle una regla tributaria que no tiene por qué saber.
+    Y el que se equivoque de camino se entera cuando SUNAT rechaza, que es tarde.</span>
+  </div>
+</div>
+
+<h3 class="sub-seccion">La guía de remisión es la excepción</h3>
+<div class="msj msj-aviso">
+  <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+  <span class="msj-txt"><strong>La baja de una guía de remisión NO se hace por la API.</strong> Su
+  documentación dice que las GRE <strong>se dan de baja únicamente desde SUNAT con la Clave
+  SOL</strong>. Así que ahí la pantalla no puede ofrecer un botón: solo puede explicar dónde se
+  hace.</span>
+</div>
+    </section><section class="pagina" id="pg-cotizacion" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#nubefact" data-ir="nubefact" class="migas-grupo">Boleta electrónica</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#cotizacion" data-ir="cotizacion" class="migas-actual" aria-current="page">Cotización</a>
+      </nav>
+      <div class="pant-cab"><h1>Cotización</h1></div>
+      
+<p class="pag-intro">La cotización <strong>no es un comprobante electrónico</strong>, y por eso está
+en una página aparte en vez de junto a las demás.</p>
+
+<div class="aviso"><strong>Se comprobó en su documentación: la cotización NO se emite por la API de
+Nubefact.</strong> No aparece entre las catorce operaciones ni entre los seis tipos de comprobante.
+<strong>Existe como módulo de su panel</strong>, pero no como algo que un sistema pueda pedirle.
+Si el colegio necesita proformas, <strong>se construyen en nuestro sistema</strong>.</div>
+
+<h3 class="sub-seccion">Y eso cambia la pantalla, no solo el backend</h3>
+<table class="tabla-simple">
+  <thead><tr><th>&nbsp;</th><th>Comprobante</th><th>Cotización</th></tr></thead>
+  <tbody>
+    <tr><td>Serie fiscal y correlativo</td><td><strong>sí</strong>, y no se puede saltar</td><td>no — la numeración es nuestra</td></tr>
+    <tr><td>Estado ante SUNAT</td><td><strong>sí</strong></td><td><strong>no existe</strong></td></tr>
+    <tr><td>Se anula</td><td>baja o nota de crédito</td><td>se borra o caduca, sin más</td></tr>
+    <tr><td>Emitir es irreversible</td><td><strong>sí</strong></td><td>no</td></tr>
+    <tr><td>QR obligatorio</td><td><strong>sí</strong></td><td>no</td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub"><strong>Si la cotización compartiera la maquinaria del comprobante, la
+pantalla mentiría</strong>: enseñaría un estado que no existe y un botón de anular que no anula
+nada. Lo que sí comparte son las <strong>líneas</strong> y los <strong>totales</strong> — esas
+piezas se reusan enteras.</p>
+
+<div class="bloque">
+  <div class="cpe">
+    <div class="campos-rejilla">
+      <label class="cg"><span class="cg-et">Cotización</span>
+        <input class="campo cg-in" value="COT-2026-0087" readonly>
+        <span class="cg-ayuda">Numeración propia. No es una serie de SUNAT.</span></label>
+      <label class="cg"><span class="cg-et">Válida hasta</span>
+        <input class="campo cg-in" type="date" value="2026-09-15"></label>
+      <label class="cg"><span class="cg-et">Dirigida a</span>
+        <input class="campo cg-in" value="QUISPE RAMOS, ANA LUCÍA"></label>
+    </div>
+    <div class="psl-detalle">
+      <div class="psl-linea"><span>Matrícula 2027</span><span class="psl-monto">S/ 800,00</span></div>
+      <div class="psl-linea"><span>Pensión × 10 meses</span><span class="psl-monto">S/ 3 500,00</span></div>
+      <div class="psl-linea psl-total"><span>Total estimado</span><span class="psl-monto">S/ 4 300,00</span></div>
+    </div>
+    <div class="msj msj-nota">
+      <span class="msj-txt">Sin estado ante SUNAT, sin QR y sin botón de anular. Cuando el apoderado
+      acepte, <strong>de aquí sale una boleta</strong> — y ahí sí empieza lo irreversible.</span>
+    </div>
+  </div>
+</div>
+    </section><section class="pagina" id="pg-guiaremision" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#nubefact" data-ir="nubefact" class="migas-grupo">Boleta electrónica</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#guiaremision" data-ir="guiaremision" class="migas-actual" aria-current="page">Guía de remisión</a>
+      </nav>
+      <div class="pant-cab"><h1>Guía de remisión</h1></div>
+      
+<p class="pag-intro">La <strong>guía de remisión electrónica</strong>. Se documenta aquí por
+completitud del módulo — <strong>un colegio no traslada bienes</strong>, así que casi con seguridad
+no la va a usar. Pero la API la ofrece y el componente la cubre.</p>
+
+<div class="aviso"><strong>Se emite en DOS pasos, y esto no es un detalle.</strong> Su manual lo
+avisa en cabecera: <code>generar_guia</code> <strong>no devuelve PDF ni XML</strong> —los enlaces
+vuelven vacíos— porque SUNAT tiene que aceptarla primero. Hay que consultar después con
+<code>consultar_guia</code>, y <strong>«la SUNAT puede tomar un tiempo en aceptarla»</strong>. La
+pantalla necesita un estado de espera de verdad, no un girador de dos segundos.</div>
+
+<h3 class="sub-seccion">Los dos tipos</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Valor</th><th>Guía</th><th>Serie</th><th>Quién la emite</th></tr></thead>
+  <tbody>
+    <tr><td><code>7</code></td><td>Remitente</td><td>empieza por <strong>T</strong></td><td>quien envía los bienes</td></tr>
+    <tr><td><code>8</code></td><td>Transportista</td><td>empieza por <strong>V</strong></td><td>quien los transporta</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Lo que pide, agrupado como se pregunta</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Bloque</th><th>Campos</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Traslado</strong></td><td><code>motivo_de_traslado</code> — 14 valores, de venta a traslado entre establecimientos — <code>fecha_de_inicio_de_traslado</code>, <code>tipo_de_transporte</code> (<code>01</code> público · <code>02</code> privado)</td></tr>
+    <tr><td><strong>Carga</strong></td><td><code>peso_bruto_total</code>, <code>peso_bruto_unidad_de_medida</code> (<code>KGM</code>), <code>numero_de_bultos</code></td></tr>
+    <tr><td><strong>Transportista</strong></td><td>documento, denominación y <code>placa_numero</code></td></tr>
+    <tr><td><strong>Conductor</strong></td><td>documento, nombre, apellidos y <strong>número de licencia</strong></td></tr>
+    <tr><td><strong>Ruta</strong></td><td>ubigeo y dirección de <strong>partida</strong> y de <strong>llegada</strong>, con su código de establecimiento SUNAT</td></tr>
+  </tbody>
+</table>
+
+<div class="msj msj-aviso">
+  <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+  <span class="msj-txt"><strong>Dos cosas que quedan sin verificar y se dicen:</strong> Nubefact
+  <strong>no afirma</strong> si la guía va por el OSE o por la API GRE de SUNAT — el indicio es que
+  la cadena del QR apunta a un dominio de SUNAT, pero <strong>eso es inferencia, no dato</strong>. Y
+  su baja <strong>no se hace por la API</strong>: solo desde SUNAT con la Clave SOL.</span>
+</div>
+    </section><section class="pagina" id="pg-impresion" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#nubefact" data-ir="nubefact" class="migas-grupo">Boleta electrónica</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#impresion" data-ir="impresion" class="migas-actual" aria-current="page">Impresión</a>
+      </nav>
+      <div class="pant-cab"><h1>Impresión</h1></div>
+      
+<p class="pag-intro">La representación impresa. Es <strong>la única superficie del sistema cuyo
+contenido lo manda una norma</strong> y no nosotros — y hasta esta versión el sistema
+<strong>no tenía ni una sola regla de impresión</strong>.</p>
+
+<div class="aviso"><strong>El código QR es obligatorio desde el 1 de enero de 2019</strong>, y su
+especificación es precisa: simbología <strong>QR Code 2005</strong> —«no debe usarse Micro QR»—,
+nivel de corrección <strong>Q</strong>, codificación <strong>UTF-8</strong>, posición
+<strong>inferior</strong>, máximo <strong>6 × 6 cm</strong>, zona de silencio de 1 mm e impresión
+<strong>en negro</strong>. La cadena la da Nubefact en <code>cadena_para_codigo_qr</code> y el hash
+en <code>codigo_hash</code>: <strong>no se construyen a mano</strong>.</div>
+
+<h3 class="sub-seccion">A4 — la representación completa</h3>
+<div class="bloque">
+  <div class="cpe-impresa">
+    <div class="cpe-impresa-cab">
+      <div>
+        <strong>COLEGIO ALBERT EINSTEIN</strong><br>
+        Av. Centenario 1234, Huaraz — Áncash<br>
+        Boleta emitida a través de NUBEFACT S.A.
+      </div>
+      <div class="cpe-impresa-caja">
+        <span class="cpe-impresa-ruc">RUC 20123456789</span>
+        <span class="cpe-impresa-tipo">BOLETA DE VENTA ELECTRÓNICA</span>
+        <span>BBB1 — 000124</span>
+      </div>
+    </div>
+
+    <p><strong>Adquiriente:</strong> QUISPE RAMOS, ANA LUCÍA · DNI 71234567<br>
+    <strong>Fecha de emisión:</strong> 27-08-2026 · <strong>Moneda:</strong> Soles</p>
+
+    <div class="cpe-envoltura">
+      <table class="cpe-lineas">
+        <thead><tr><th>Descripción</th><th class="cpe-num">Cant.</th><th class="cpe-num">V. unit.</th><th class="cpe-num">Total</th></tr></thead>
+        <tbody>
+          <tr><td>Pensión de agosto 2026</td><td class="cpe-num">1</td><td class="cpe-num">350.00</td><td class="cpe-num">350.00</td></tr>
+          <tr><td>Mora por pago tardío</td><td class="cpe-num">1</td><td class="cpe-num">7.00</td><td class="cpe-num">7.00</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cpe-impresa-pie">
+      <div class="cpe-qr">QR<br>6 × 6 cm máx.</div>
+      <div>
+        <p><strong>SON:</strong> TRESCIENTOS CINCUENTA Y SIETE CON 00/100 SOLES</p>
+        <p class="cpe-hash">Hash: xMLFMnbgp1/bHEy572RKRTE9hPY=</p>
+      </div>
+      <div class="psl-detalle">
+        <div class="psl-linea"><span>Total inafecta</span><span class="psl-monto">S/ 357,00</span></div>
+        <div class="psl-linea"><span>IGV</span><span class="psl-monto">S/ 0,00</span></div>
+        <div class="psl-linea psl-total"><span>Importe total</span><span class="psl-monto">S/ 357,00</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Ticket de 80 mm</h3>
+<div class="bloque">
+  <div class="cpe-ticket">
+    <div class="cpe-impresa">
+      <p><strong>COLEGIO ALBERT EINSTEIN</strong><br>RUC 20123456789<br>
+      <strong>BOLETA DE VENTA ELECTRÓNICA</strong><br>BBB1 — 000124</p>
+      <p>QUISPE RAMOS, ANA LUCÍA<br>DNI 71234567 · 27-08-2026</p>
+      <div class="cpe-envoltura">
+        <table class="cpe-lineas">
+          <tbody>
+            <tr><td>Pensión de agosto</td><td class="cpe-num">350.00</td></tr>
+            <tr><td>Mora</td><td class="cpe-num">7.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="psl-linea psl-total"><span>Total</span><span class="psl-monto">S/ 357,00</span></div>
+      <div class="cpe-impresa-pie"><div class="cpe-qr">QR</div></div>
+    </div>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Tres decisiones que no son de gusto</h3>
+<ol class="man-lista">
+  <li><strong>El PDF lo puede generar Nubefact.</strong> Su campo <code>formato_de_pdf</code> admite
+  <strong>A4, A5 y TICKET</strong>, y el logo y los colores se configuran en su panel. <strong>Si se
+  usa el suyo, esta página sobra</strong> — y esa es la opción con menos riesgo, porque el
+  cumplimiento normativo es de ellos.</li>
+  <li><strong>Si generamos la nuestra, hay que incluir «la información mínima» que ellos
+  imprimen</strong> — su documentación lo exige. Y el QR con su especificación exacta.</li>
+  <li><strong>Al imprimir no se imprime la aplicación.</strong> El menú, la barra y los botones
+  desaparecen: es la regla <code>@media print</code> que estrena el sistema con esta versión.</li>
+</ol>
     </section><section class="pagina" id="pg-man-como-se-usa-este-manual" hidden>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
@@ -13295,6 +14037,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.87.0 <span class="cam-fecha">2026-08-27</span></h3>
+<p class="pag-intro"><strong>Nace «Boleta electronica» sobre Nubefact — y con ella la primera hoja de impresion del sistema.</strong> Encargo del responsable: emision de boleta, factura, notas de credito y debito, cotizaciones, guia de remision, anulacion e impresion. Y con una instruccion que gobierna el modulo: «abarca todo el 100% de lo que se puede hacer, la configuracion habilita segun cliente». Un agente leyo su documentacion entera —4 manuales y 60 ejemplos JSON— y el inventario salio con 14 operaciones, 6 tipos de comprobante, 19 tipos de IGV, 13 motivos de nota de credito y 5 de debito. TRES HALLAZGOS CAMBIAN EL DISEÑO MAS QUE CUALQUIER CAMPO: (1) EL MODELO REVENDEDOR. Cada empresa emisora —y cada local— tiene su PROPIA ruta y su PROPIO token; el RUC no viaja en el JSON, queda implicito en la ruta. De ahi sale una regla de SEGURIDAD, no de estetica: el selector de empresa emisora NO puede existir en la pantalla del colegio, porque un descuido emitiria un documento tributario bajo el RUC de otro cliente — y eso no se deshace con un boton, se deshace con una comunicacion de baja. El rol se enciende por configuracion y decide que piezas NI SIQUIERA SE MONTAN. (2) UNA BOLETA RECIEN EMITIDA SALE «no aceptada por SUNAT» Y ESO ES NORMAL: viaja en un resumen diario a las 24 horas, con plazo de hasta 7 dias. Si la pantalla lo pinta en rojo, el colegio llamara por telefono todos los dias. La factura si responde al momento. (3) LA COTIZACION NO ES UN COMPROBANTE. No esta entre las 14 operaciones ni entre los 6 tipos: existe solo en su panel. Si compartiera la maquinaria del comprobante, la pantalla mentiria — enseñaria un estado ante SUNAT que no existe y un boton de anular que no anula. Va en pagina aparte y reusa solo las lineas y los totales. ANULAR NO ES BORRAR, y la pantalla no debe preguntarlo: dentro de 7 dias es comunicacion de baja —asincrona, con ticket, no anulada hasta que SUNAT lo diga—; pasados, hay que emitir una nota de credito. Con la fecha delante el sistema sabe cual toca; trasladar esa regla tributaria a quien esta en administracion es cargarle algo que no tiene por que saber. Y LA GUIA DE REMISION NI SIQUIERA SE ANULA POR API: solo desde SUNAT con la Clave SOL. PIEZAS NUEVAS QUE VIAJAN (familia cpe-*, 29 reglas): las LINEAS del documento —tabla de verdad, no rejilla de divs, porque son datos tabulares—, el ESTADO ANTE SUNAT con sus cuatro caras, y la REPRESENTACION IMPRESA. Esta ultima estrena la PRIMERA REGLA @media print del sistema: hasta hoy no habia ninguna, y es la unica superficie cuyo contenido lo manda una norma —el QR es obligatorio desde el 01/01/2019, abajo, negro, maximo 6x6 cm—. Todo lo demas se compone de Campo, Selector, Boton, Confirmacion, Mensaje, Chip y Tarjeta. Ningun color nuevo. SEIS HUECOS DECLARADOS EN LA PROPIA PAGINA, entre ellos que Nubefact NO publica el catalogo de errores de SUNAT —asi que se pinta sunat_description como texto libre, no traducido—, que su manual de retencion se contradice sobre la serie, y que hay nuevas reglas de validacion de notas anunciadas para agosto de 2026 y enero de 2027 cuyo detalle no se leyo.</p>
+
 
 
 <h3 class="sub-seccion">v1.86.0 <span class="cam-fecha">2026-08-27</span></h3>

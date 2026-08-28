@@ -107,6 +107,12 @@ const ELEMENTOS = [
   // un producto a maquetar campos de tarjeta propios. Los campos de tarjeta los
   // pinta Izipay o no los pinta nadie.
   { n: 'Pasarela de pagos',     p: ['psl'] },
+  // R106 · Comprobante electronico: boleta, factura, notas de credito y debito,
+  // y guia de remision. VIAJA por la misma razon que la pasarela — y con mas
+  // motivo: un producto que emite DOCUMENTOS TRIBUTARIOS no puede rehacer a ojo
+  // ni las lineas, ni el estado ante SUNAT, ni la representacion impresa, que
+  // es la unica superficie del sistema cuyo contenido lo manda una norma.
+  { n: 'Comprobante electronico', p: ['cpe'] },
   { n: 'Diálogo',               p: ['dialogo'] },
   { n: 'Utilidades',            p: ['sr', 'mono'] },
 ];
