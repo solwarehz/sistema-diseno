@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.93.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.94.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.93.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.94.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -1007,11 +1007,20 @@ code { font-family: 'IBM Plex Mono', monospace; }
    accion debajo, la vista arranca con un boton antes que con el contenido. */
 .pant-fila { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .pant-desc { margin: 8px 0 0; color: var(--texto-secundario); max-width: 75ch; }
+/* R114 · La ranura de las acciones. Hasta la v1.93.0 su UNICA regla era el
+   «width: 100%» de mas abajo, o sea que no tenia ni «display» ni «gap»: dos
+   botones dentro salian PEGADOS, sin un pixel entre ellos. Lo midio Control
+   Administrativos sobre el paquete instalado, y tenian razon.
+   El 8px es el mismo que usan las otras parejas de botones del sistema. */
+.pant-accion { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 /* En movil la accion baja y ocupa el ancho: a 375px no cabe al lado del titulo
    sin partir una de las dos cosas. */
 @media (max-width: 640px) {
   .pant-fila { flex-direction: column; }
   .pant-fila > .pant-accion { width: 100%; }
+  /* Y se REPARTEN el ancho en vez de amontonarse a la izquierda. Con una sola
+     accion el efecto es el de siempre: ocupa la fila entera. */
+  .pant-fila > .pant-accion > * { flex: 1 1 0; }
 }
 
 .pag-intro { font-size: 15px; color: var(--texto-secundario); max-width: 90ch; margin: 0 0 20px; }
@@ -4336,7 +4345,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.93.0</option></select></label>
+          <select class="campo cg-in"><option>v1.94.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4424,8 +4433,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.93.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.93.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.94.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.94.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -10880,13 +10889,44 @@ marcado, un proyecto podria meter otro encabezado dentro y volveriamos al princi
     </nav>
     <div class="pant-fila">
       <h2 style="font-size:28px;font-weight:600;margin:0">Personal</h2>
-      <div class="pant-accion"><button class="btn btn-1">Nuevo</button></div>
+      <div class="pant-accion"><button class="btn btn-2">Carga masiva</button><button class="btn btn-1">Agregar</button></div>
     </div>
     <p class="pant-desc">Docentes y administrativos con contrato vigente.</p>
   </header>
 </div>
 <p class="seccion-sub">La descripcion va <strong>debajo</strong> de la accion, no en medio: entre
 las dos separaria la accion de aquello sobre lo que actua.</p>
+
+<h3 class="sub-seccion">R114 · La acción secundaria</h3>
+<p class="seccion-sub">Lo pidió Control Administrativos con el caso de Trabajadores —«Agregar»
+principal y «Carga masiva» secundaria— y con una pregunta honesta: <em>si dos acciones en la
+cabecera está mal, dígannos dónde va la segunda, porque el hueco lo hemos buscado y no lo hay</em>.</p>
+<div class="msj msj-aviso">
+  <span class="msj-ico"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg></span>
+  <span class="msj-txt"><strong>No estaba mal el caso: estaba mal el contrato.</strong> La
+  documentación del componente decía «<em>una sola: si hay dos, ninguna es la principal</em>», y la
+  regla del sistema —la de la página de Acciones— dice otra cosa: <strong>«una sola PRINCIPAL por
+  pantalla; el resto son secundarias o neutras»</strong>. El contrato había estrechado «una
+  principal» hasta convertirla en «una acción». <strong>La regla de una sola principal no cambia</strong>
+  — sigue habiendo una.</span>
+</div>
+<p class="seccion-sub">Y venía con un defecto medido: <code>.pant-accion</code> <strong>no tenía ni
+<code>display</code> ni <code>gap</code></strong>, así que dos botones dentro salían pegados, sin un
+píxel entre ellos. Ahora la ranura los separa con los 8px del sistema, y en estrecho <strong>se
+reparten el ancho</strong> en vez de amontonarse.</p>
+<div class="bloque">
+  <header class="pant-cab">
+    <div class="pant-fila">
+      <h2 style="font-size:28px;font-weight:600;margin:0">Solo la principal</h2>
+      <div class="pant-accion"><button class="btn btn-1">Agregar</button></div>
+    </div>
+    <p class="pant-desc">Sin secundaria no se pinta ningún hueco: se comporta como siempre.</p>
+  </header>
+</div>
+<p class="seccion-sub">La secundaria va <strong>a la izquierda</strong> de la principal, y por dos
+motivos: la principal es la que queda pegada al borde y al pulgar —lo que más se usa, más a mano—, y
+así el tabulador llega a la secundaria antes que a la principal, que es el orden en el que se
+leen.</p>
 
 <h3 class="sub-seccion">Codigo</h3>
 <pre class="cod"><code>&lt;CabeceraPantalla
@@ -15239,6 +15279,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.94.0 <span class="cam-fecha">2026-08-28</span></h3>
+<p class="pag-intro"><strong>R114: la cabecera gana su accion secundaria, y el que estaba mal era el contrato.</strong> Requerimiento de Control Administrativos, medido sobre el paquete instalado y con las lineas citadas: una ranura para la accion secundaria en CabeceraPantalla. El caso es Trabajadores —«Agregar» principal y «Carga masiva» secundaria— y venia con una pregunta honesta: si dos acciones en la cabecera esta mal, digannos donde va la segunda, porque el hueco lo hemos buscado y no lo hay. LA RESPUESTA ES QUE NO ESTABA MAL EL CASO: ESTABA MAL EL CONTRATO. La documentacion del componente decia «una sola: si hay dos, ninguna es la principal», y la regla del sistema —la de la pagina de Acciones, escrita antes— dice otra cosa: «una sola PRINCIPAL por pantalla; el resto son secundarias o neutras». El contrato de la cabecera habia estrechado «una principal» hasta convertirla en «una accion», y el producto llevaba razon sin saber que el sistema ya se contradecia consigo mismo. La regla de una sola principal NO cambia: sigue habiendo una. Y TRAIAN UN DEFECTO MEDIDO: la unica regla de `.pant-accion` era el `width: 100%` del movil, o sea que no tenia ni `display` ni `gap`. Dos botones dentro salian PEGADOS, sin un pixel entre ellos. Ahora la ranura los separa con los 8px del sistema y en estrecho se REPARTEN el ancho en vez de amontonarse a la izquierda. La secundaria va a la IZQUIERDA de la principal por dos motivos que no son de gusto: la principal queda pegada al borde y al pulgar —lo que mas se usa, mas a mano— y asi el tabulador llega a la secundaria antes que a la principal, que es el orden en el que se leen. Las dos van en UN solo contenedor: dos las habria separado el `space-between` de la fila, con el titulo en medio. QUEDA DECLARADO Y NO RESUELTO: la demo de esta pagina pinta un `h2` con estilo en linea para imitar el `h1` que emite el componente —hay un solo h1 por documento en el catalogo—, asi que la regla `.pant-cab h1` VIAJA sin que ninguna pantalla la demuestre. Es el defecto de R58 con una razon legitima detras, y no lo ve ningun candado.</p>
+
 
 
 <h3 class="sub-seccion">v1.93.0 <span class="cam-fecha">2026-08-28</span></h3>

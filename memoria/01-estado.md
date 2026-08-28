@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 28 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.93.0** — se autoriza el **rojo del escudo**
-para los iconos de redes, y la medida deja una regla: **un color que no cambia
-con el modo no es un color de interfaz, es un color de papel**
+**Versión del sistema:** MMI-DS **v1.94.0** — la cabecera gana su acción
+secundaria, y el que estaba mal **no era el caso del producto: era el contrato
+del componente**, que se contradecía con la regla del propio sistema
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -42,10 +42,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · 864 reglas de 1349 · **626 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **67 páginas** (contadas en el HTML generado; decía 53 y llevaba tiempo desfasado) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **46 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.93.0.zip` · **55 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.94.0.zip` · **55 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.93.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.94.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -66,7 +66,29 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.93.0), con detalle
+### Lo de hoy (v1.94.0), con detalle
+
+**R114 · La acción secundaria de la cabecera.** Control Administrativos la pidió
+para Trabajadores —«Agregar» principal y «Carga masiva» secundaria— y con una
+pregunta honesta: *si dos acciones en la cabecera está mal, dígannos dónde va la
+segunda, porque el hueco lo hemos buscado y no lo hay*.
+
+**No estaba mal el caso: estaba mal el contrato.** El componente decía «una
+sola: si hay dos, ninguna es la principal». La página de Acciones —escrita
+antes— dice **«una sola PRINCIPAL por pantalla; el resto son secundarias o
+neutras»**. El contrato había estrechado «una principal» hasta «una acción», y
+el producto llevaba razón sin saber que **el sistema ya se contradecía consigo
+mismo**. La regla de una sola principal no cambia.
+
+Y traían un defecto medido: la única regla de `.pant-accion` era el `width: 100%`
+del móvil, así que **no tenía ni `display` ni `gap`**: dos botones salían pegados.
+
+**Queda declarado y sin resolver:** la demo de esa página pinta un `h2` con estilo
+en línea para imitar el `h1` que emite el componente —hay un solo `h1` por
+documento—, así que `.pant-cab h1` **viaja sin que ninguna pantalla la
+demuestre**. Es R58 con una razón legítima detrás, y no lo ve ningún candado.
+
+### Lo de ayer (v1.93.0), con detalle
 
 **R113 · El color de los iconos de redes.** Se pidió pintarlos con los colores
 de marca. Se midió antes de tocar nada, y la medida cambió la pregunta: **de los
@@ -1342,7 +1364,7 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.93.0
+Versión                      1.94.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              182   (142 bloqueantes · 40 informativos,
                                       0 fallos)

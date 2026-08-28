@@ -7074,13 +7074,44 @@ marcado, un proyecto podria meter otro encabezado dentro y volveriamos al princi
     </nav>
     <div class="pant-fila">
       <h2 style="font-size:28px;font-weight:600;margin:0">Personal</h2>
-      <div class="pant-accion"><button class="btn btn-1">Nuevo</button></div>
+      <div class="pant-accion"><button class="btn btn-2">Carga masiva</button><button class="btn btn-1">Agregar</button></div>
     </div>
     <p class="pant-desc">Docentes y administrativos con contrato vigente.</p>
   </header>
 </div>
 <p class="seccion-sub">La descripcion va <strong>debajo</strong> de la accion, no en medio: entre
 las dos separaria la accion de aquello sobre lo que actua.</p>
+
+<h3 class="sub-seccion">R114 · La acción secundaria</h3>
+<p class="seccion-sub">Lo pidió Control Administrativos con el caso de Trabajadores —«Agregar»
+principal y «Carga masiva» secundaria— y con una pregunta honesta: <em>si dos acciones en la
+cabecera está mal, dígannos dónde va la segunda, porque el hueco lo hemos buscado y no lo hay</em>.</p>
+<div class="msj msj-aviso">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt"><strong>No estaba mal el caso: estaba mal el contrato.</strong> La
+  documentación del componente decía «<em>una sola: si hay dos, ninguna es la principal</em>», y la
+  regla del sistema —la de la página de Acciones— dice otra cosa: <strong>«una sola PRINCIPAL por
+  pantalla; el resto son secundarias o neutras»</strong>. El contrato había estrechado «una
+  principal» hasta convertirla en «una acción». <strong>La regla de una sola principal no cambia</strong>
+  — sigue habiendo una.</span>
+</div>
+<p class="seccion-sub">Y venía con un defecto medido: <code>.pant-accion</code> <strong>no tenía ni
+<code>display</code> ni <code>gap</code></strong>, así que dos botones dentro salían pegados, sin un
+píxel entre ellos. Ahora la ranura los separa con los 8px del sistema, y en estrecho <strong>se
+reparten el ancho</strong> en vez de amontonarse.</p>
+<div class="bloque">
+  <header class="pant-cab">
+    <div class="pant-fila">
+      <h2 style="font-size:28px;font-weight:600;margin:0">Solo la principal</h2>
+      <div class="pant-accion"><button class="btn btn-1">Agregar</button></div>
+    </div>
+    <p class="pant-desc">Sin secundaria no se pinta ningún hueco: se comporta como siempre.</p>
+  </header>
+</div>
+<p class="seccion-sub">La secundaria va <strong>a la izquierda</strong> de la principal, y por dos
+motivos: la principal es la que queda pegada al borde y al pulgar —lo que más se usa, más a mano—, y
+así el tabulador llega a la secundaria antes que a la principal, que es el orden en el que se
+leen.</p>
 
 <h3 class="sub-seccion">Codigo</h3>
 <pre class="cod"><code>&lt;CabeceraPantalla
@@ -8287,11 +8318,20 @@ code { font-family: 'IBM Plex Mono', monospace; }
    accion debajo, la vista arranca con un boton antes que con el contenido. */
 .pant-fila { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .pant-desc { margin: 8px 0 0; color: var(--texto-secundario); max-width: 75ch; }
+/* R114 · La ranura de las acciones. Hasta la v1.93.0 su UNICA regla era el
+   «width: 100%» de mas abajo, o sea que no tenia ni «display» ni «gap»: dos
+   botones dentro salian PEGADOS, sin un pixel entre ellos. Lo midio Control
+   Administrativos sobre el paquete instalado, y tenian razon.
+   El 8px es el mismo que usan las otras parejas de botones del sistema. */
+.pant-accion { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 /* En movil la accion baja y ocupa el ancho: a 375px no cabe al lado del titulo
    sin partir una de las dos cosas. */
 @media (max-width: 640px) {
   .pant-fila { flex-direction: column; }
   .pant-fila > .pant-accion { width: 100%; }
+  /* Y se REPARTEN el ancho en vez de amontonarse a la izquierda. Con una sola
+     accion el efecto es el de siempre: ocupa la fila entera. */
+  .pant-fila > .pant-accion > * { flex: 1 1 0; }
 }
 
 .pag-intro { font-size: 15px; color: var(--texto-secundario); max-width: 90ch; margin: 0 0 20px; }

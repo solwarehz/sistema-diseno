@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.93.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.94.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -1404,16 +1404,18 @@ input[type='date'].campo, input.fc-campo{ max-width: 172px; }
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CABECERA DE PANTALLA — 5 reglas · clases .pant-*
+   CABECERA DE PANTALLA — 6 reglas · clases .pant-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .pant-cab{ margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--borde); }
 .pant-cab h1{ font-size: 28px; font-weight: 600; margin: 0; }
 .pant-fila{ display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .pant-desc{ margin: 8px 0 0; color: var(--texto-secundario); max-width: 75ch; }
+.pant-accion{ display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 @media (max-width: 640px) {
   .pant-fila{ flex-direction: column; }
   .pant-fila > .pant-accion{ width: 100%; }
+  .pant-fila > .pant-accion > *{ flex: 1 1 0; }
 }
 
 /* ───────────────────────────────────────────────────────────────────────────

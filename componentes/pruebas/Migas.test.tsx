@@ -287,3 +287,43 @@ describe('SelectorBusqueda · la promesa del catálogo, entregada', () => {
     expect(conLupa.container.querySelector('.sel-caja .sel-chev svg')).not.toBeNull();
   });
 });
+
+describe('R114 · CabeceraPantalla · la acción secundaria', () => {
+  it('se pinta a la IZQUIERDA de la principal', () => {
+    const { container } = render(
+      <CabeceraPantalla titulo="Personal"
+        accionSecundaria={<button>Carga masiva</button>}
+        accion={<button>Agregar</button>} />,
+    );
+    const botones = [...container.querySelectorAll('.pant-accion button')].map((b) => b.textContent);
+    expect(botones).toEqual(['Carga masiva', 'Agregar']);
+  });
+
+  it('las dos van en UN solo contenedor: dos los separaría el título', () => {
+    const { container } = render(
+      <CabeceraPantalla titulo="Personal"
+        accionSecundaria={<button>Carga masiva</button>}
+        accion={<button>Agregar</button>} />,
+    );
+    expect(container.querySelectorAll('.pant-accion')).toHaveLength(1);
+  });
+
+  it('sin secundaria no cambia nada de lo de antes', () => {
+    const { container } = render(
+      <CabeceraPantalla titulo="Personal" accion={<button>Agregar</button>} />,
+    );
+    expect(container.querySelectorAll('.pant-accion button')).toHaveLength(1);
+  });
+
+  it('sin ninguna de las dos NO se pinta la ranura vacía', () => {
+    const { container } = render(<CabeceraPantalla titulo="Personal" />);
+    expect(container.querySelector('.pant-accion')).toBeNull();
+  });
+
+  it('la secundaria sola también vale: la ranura existe igual', () => {
+    const { container } = render(
+      <CabeceraPantalla titulo="Personal" accionSecundaria={<button>Carga masiva</button>} />,
+    );
+    expect(container.querySelectorAll('.pant-accion button')).toHaveLength(1);
+  });
+});

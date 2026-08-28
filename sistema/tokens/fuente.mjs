@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.93.0";
+export const VERSION = "1.94.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,38 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.94.0', fecha: '2026-08-28',
+    que: 'R114: la cabecera gana su accion secundaria, y el que estaba mal era el contrato',
+    porque:
+      'Requerimiento de Control Administrativos, medido sobre el paquete instalado y con las '
+      + 'lineas citadas: una ranura para la accion secundaria en CabeceraPantalla. El caso es '
+      + 'Trabajadores —«Agregar» principal y «Carga masiva» secundaria— y venia con una pregunta '
+      + 'honesta: si dos acciones en la cabecera esta mal, digannos donde va la segunda, porque el '
+      + 'hueco lo hemos buscado y no lo hay. '
+      + 'LA RESPUESTA ES QUE NO ESTABA MAL EL CASO: ESTABA MAL EL CONTRATO. La documentacion del '
+      + 'componente decia «una sola: si hay dos, ninguna es la principal», y la regla del sistema '
+      + '—la de la pagina de Acciones, escrita antes— dice otra cosa: «una sola PRINCIPAL por '
+      + 'pantalla; el resto son secundarias o neutras». El contrato de la cabecera habia '
+      + 'estrechado «una principal» hasta convertirla en «una accion», y el producto llevaba razon '
+      + 'sin saber que el sistema ya se contradecia consigo mismo. La regla de una sola principal '
+      + 'NO cambia: sigue habiendo una. '
+      + 'Y TRAIAN UN DEFECTO MEDIDO: la unica regla de `.pant-accion` era el `width: 100%` del '
+      + 'movil, o sea que no tenia ni `display` ni `gap`. Dos botones dentro salian PEGADOS, sin '
+      + 'un pixel entre ellos. Ahora la ranura los separa con los 8px del sistema y en estrecho se '
+      + 'REPARTEN el ancho en vez de amontonarse a la izquierda. '
+      + 'La secundaria va a la IZQUIERDA de la principal por dos motivos que no son de gusto: la '
+      + 'principal queda pegada al borde y al pulgar —lo que mas se usa, mas a mano— y asi el '
+      + 'tabulador llega a la secundaria antes que a la principal, que es el orden en el que se '
+      + 'leen. Las dos van en UN solo contenedor: dos las habria separado el `space-between` de la '
+      + 'fila, con el titulo en medio. '
+      + 'QUEDA DECLARADO Y NO RESUELTO: la demo de esta pagina pinta un `h2` con estilo en linea '
+      + 'para imitar el `h1` que emite el componente —hay un solo h1 por documento en el '
+      + 'catalogo—, asi que la regla `.pant-cab h1` VIAJA sin que ninguna pantalla la demuestre. '
+      + 'Es el defecto de R58 con una razon legitima detras, y no lo ve ningun candado.',
+    rompe: [],
+    tokens: { alta: [], baja: [] },
+  },
   {
     v: '1.93.0', fecha: '2026-08-28',
     que: 'R113: el rojo del escudo pinta los iconos de redes — y es el UNICO color de marca que aguanta el oscuro',
