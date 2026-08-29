@@ -1,9 +1,10 @@
 # Estado del proyecto
 
-**Última actualización:** 28 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.95.0** — el selector con búsqueda entrega
-por fin lo que el catálogo enseña, y **nace el candado que lo vio**: los quince
-anteriores estaban en verde con nueve divergencias delante
+**Última actualización:** 29 de agosto de 2026
+**Versión del sistema:** MMI-DS **v1.96.0** — el catálogo **se ejecuta** dentro
+de las pruebas y su lista desplegada se compara árbol contra árbol con la que
+emite el componente: R115 arregló las nueve a mano, esto es lo que impide que
+vuelvan
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,11 +19,17 @@ anteriores estaban en verde con nueve divergencias delante
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —34 componentes
-publicados, la hoja que viaja, **dieciséis candados**, 573 pruebas— y hoy ha
-aprendido la lección más incómoda hasta ahora: **quince candados en verde y un
-producto viendo otra cosa**. Los quince miraban lo que el catálogo pinta **en
-reposo**, y el selector con búsqueda es el único componente cuya pieza principal
-—la lista— **solo existe cuando alguien la abre**. Ahí no llegaba ninguno.
+publicados, la hoja que viaja, **dieciséis candados**, 581 pruebas—. Ayer
+aprendió que quince candados en verde no impedían que un producto viera otra
+cosa: todos miraban lo que el catálogo pinta **en reposo**, y la lista del
+selector **solo existe cuando alguien la abre**. Hoy ha cerrado la otra mitad de
+esa lección. Las nueve divergencias se arreglaron a mano, pero lo que las fijaba
+eran pruebas **escritas a mano** con lo que el catálogo enseñaba ese día: el día
+que el catálogo cambiara, seguirían en verde con las dos superficies otra vez
+distintas. Ahora **el catálogo se ejecuta dentro de las pruebas** —su HTML, su
+guion, en jsdom—, se despliega su lista y se compara con la del componente
+alimentado con **los mismos datos**. No queda una tercera copia de la verdad que
+pueda quedarse vieja.
 
 ---
 
@@ -36,15 +43,16 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **573 pruebas en 38 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **581 pruebas en 39 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **943 reglas de 1448** · **692 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **68 páginas** (contadas en el HTML generado; decía 53 y llevaba tiempo desfasado) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **53 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.95.0.zip` · **56 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.96.0.zip` · **56 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.95.0**, con el salto **desde la v1.19.0**, que es la instalada |
-| Promesa muerta | ✅ | `verificar-promesa-muerta` — candado **dieciséis**, nacido hoy · 135 unidades compuestas · **9 de deuda declarada**, 0 nuevas |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.96.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Promesa muerta | ✅ | `verificar-promesa-muerta` — candado **dieciséis** · 135 unidades compuestas · **9 de deuda declarada**, 0 nuevas |
+| Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
 ### Lo que cambió desde la v1.39.0
@@ -65,7 +73,56 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.95.0), con detalle
+### Lo de hoy (v1.96.0), con detalle
+
+**R116 · Lo que R115 dejó abierto: quién vigila que no vuelvan.** Las nueve
+divergencias del selector se arreglaron a mano y se fijaron con diecisiete
+pruebas — pero esas diecisiete **escriben a mano lo que el catálogo enseñaba ese
+día**. Protegen del olvido, no de la deriva: el día que alguien toque el guion
+del catálogo, siguen en verde con las dos superficies otra vez distintas. Que es
+exactamente cómo nacieron las nueve.
+
+Ahora **el catálogo se ejecuta dentro de las pruebas**: `cascaron/index.html`
+entero, con su guion, en jsdom. Se despliega su lista y se compara árbol contra
+árbol con la del componente, alimentado con **los datos del propio catálogo** —
+`OPCIONES`, `AYUDA` y `VACIO` se leen del HTML generado, no se copian—. Siete
+comparaciones: lista abierta sin texto, con una opción elegida (el mando de
+vaciar, el visto **y su lado**), texto sin coincidencia, texto con coincidencia,
+las clases de la caja abierta y cerrada, y el orden de sus hijos.
+
+**Visto en rojo tres veces**, que es lo que exige el §9:
+
+| Rotura | Qué salió |
+|---|---|
+| El visto ✓ delante del texto en el **componente** (defecto A2) | B en rojo |
+| Sin la clase `abierta` en el **componente** (defecto A1) | E en rojo |
+| El visto ✓ delante del texto en el **catálogo** | B en rojo — **y las 34 pruebas anteriores en verde** |
+
+La tercera es la que justifica que exista. Ninguna prueba escrita a mano puede
+ver que el catálogo se movió.
+
+**Comprobado además, y esto sí es una garantía sobre lo entregado:** las dos
+hojas declaran **22 reglas `.sel-*` contra 22**, declaración por declaración
+idénticas. Las 4 que solo están en el catálogo son `sel-demo-*` — el mobiliario
+de la demostración, que por diseño no viaja desde el renombrado de R115. Con el
+mismo árbol y las mismas reglas, lo que se pinta es lo mismo.
+
+**Queda declarado y sin cerrar:** el vacío **por omisión**. El guion del catálogo
+añade la fila de «crear» siempre que hay texto sin coincidencias, y sin texto
+trae las 19 opciones: su rama de `.sel-vacio` está escrita y **es inalcanzable**.
+El componente sí llega a ella —`onCrear` es opcional, así que un producto que no
+lo pase ve `.sel-vacio`—, y la hoja le entrega `.sel-vacio` y `.sel-vacio
+strong`. **Dos reglas que viajan sin ninguna demo que las prometa.** Es la misma
+familia que R104, la variante sin lupa. Mientras no haya demo, la prueba G fija
+lo único que se puede fijar sin inventar la promesa: que el componente emite el
+`<strong>` que la hoja estiliza — y **falla el día que el catálogo sí alcance
+`.sel-vacio`**, para que entonces se compare de verdad.
+
+**Y lo que esto NO garantiza, dicho con todas las letras:** solo cubre el
+`SelectorBusqueda`. Cualquier otro componente cuya pieza principal aparezca al
+desplegar sigue exactamente igual de descubierto que el selector el día 28.
+
+### Lo de ayer (v1.95.0), con detalle
 
 **R115 · El selector con búsqueda: la promesa no era la entrega, en nueve
 puntos.** Lo reportó el equipo que lo usa en un sistema — *«tengo la v1.94 y es
@@ -139,7 +196,7 @@ con su prueba por **número global** —`R9` en cualquier prueba respalda la reg
 **débilmente atadas** ahí. Quien las sostiene de verdad son sus diecisiete
 pruebas y el candado nuevo. Arreglarlo pide numerar por sección.
 
-### Lo de ayer (v1.94.0), con detalle
+### Lo de la v1.94.0, con detalle
 
 **R114 · La acción secundaria de la cabecera.** Control Administrativos la pidió
 para Trabajadores —«Agregar» principal y «Carga masiva» secundaria— y con una
@@ -1411,7 +1468,7 @@ de consumidor: dos errores sin la declaración, cero con ella.
 
 ---
 
-## Los trece candados
+## Los dieciséis candados, y lo que ninguno alcanza
 
 Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en rojo.
 
@@ -1427,8 +1484,19 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 | `verificar-cascada` | Lo que NO se escribió, a once anchos | ✅ |
 | `verificar-promesa` | Que lo entregado no se vea como lo enseñado | ✅ |
 | `verificar-elemento` | Que el catálogo enseñe un elemento y el componente emita otro | ✅ reproduciendo R56 |
+| `verificar-empate` | Que el ORDEN decida distinto en cada hoja | ✅ |
+| `verificar-forma` | Que lo publicado cambie de FORMA sin decirlo | ✅ |
+| `verificar-omision` | Que el catálogo no enseñe lo que se entrega por omisión | ✅ |
+| `verificar-iconos` | Que el catálogo y el producto dibujen distinto icono | ✅ |
+| `verificar-promesa-muerta` | Una regla que viaja y que nadie puede activar | ✅ reproduciendo R115 |
 | ESLint | El atributo `style`, el hex crudo, `outline:none` | ✅ el mismo día: cazó una comilla invertida que rompía el generador |
 | `tsc --noEmit` | Tipos | ✅ |
+
+**Los dieciséis leen marcado ESTÁTICO.** Lo que solo existe al desplegar no lo
+alcanza ninguno, y por eso R115 pasó. Esa mitad la cubren las pruebas que
+ejecutan el catálogo (`selector-desplegado-catalogo.test.tsx`), **hoy solo para
+el selector con búsqueda**: los demás componentes con estado desplegado siguen
+sin comparar.
 
 ---
 
@@ -1437,25 +1505,19 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.94.0
+Versión                      1.96.0
 Tokens semánticos                56   + 5 de marca
-Pares de contraste              182   (142 bloqueantes · 40 informativos,
+Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         521   en 36 archivos
-Reglas que viajan               864   de 1349 · 626 clases, 0 huérfanas
+Pruebas                         581   en 39 archivos
+Reglas que viajan               943   de 1448 · 692 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
-Candado de la cascada           963   reglas leidas · 11 anchos
-Candado del empate              311   combinaciones reales · 54 empates
-                                      · 0 cambian de ganador
-Candado de la promesa          1065   elementos · 218.948 propiedades
-                                      a 5 anchos (1440, 1024, 900, 700, 390)
-Candado del elemento            166   clases comparadas · 5 divergencias
-                                      DECLARADAS, ninguna nueva
-Contrato de comportamiento      185   reglas · 152 obligatorias · 6 PENDIENTE
-Componentes publicados           32   38 módulos viajan en el paquete
-                                      117 exportaciones, todas por el índice
-Iconos                           46
-Páginas del catálogo             53
+Reglas .sel-* en las dos hojas   22   contra 22, declaracion por declaracion
+                                      identicas (las 4 restantes son
+                                      `sel-demo-*`, que por diseño NO viajan)
+Comparaciones del desplegado      7   catalogo ejecutado contra componente
+Componentes publicados           34
+Páginas del catálogo             68
 Fila de un campo, medida      36,45   px · la fila de carga se fija en 36
 ```
 
@@ -1487,9 +1549,13 @@ docker compose exec ds sh -c "cd componentes && npm run probar"
 ## Repositorio
 
 - **`solwarehz/sistema-diseno`** · privado · https://github.com/solwarehz/sistema-diseno
-- En esta máquina (Windows) se trabaja en `main` directo, **únicamente con los
-  once candados y las pruebas en verde**. Es de donde instala el área de
-  sistemas: un `main` roto es un proyecto ajeno roto.
+- Se trabaja contra `main`, **únicamente con los dieciséis candados y las
+  pruebas en verde**. Es de donde instala el área de sistemas: un `main` roto es
+  un proyecto ajeno roto.
+- Hay **dos** máquinas. En la de Windows están las notas de
+  `LEVANTAR-EN-WINDOWS.md`; en la de macOS el demonio de Docker es **Colima**
+  (`colima start`) y el comando lleva guion: **`docker-compose`**, no
+  `docker compose`.
 - Nunca `--force`. Nunca `checkout` ni `stash` sobre el árbol compartido.
 - `.gitattributes` fija LF; los binarios de diseño no suben.
 - Notas de esta máquina: `LEVANTAR-EN-WINDOWS.md`.

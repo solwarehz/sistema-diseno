@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.95.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.96.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.95.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.96.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -4361,7 +4361,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.95.0</option></select></label>
+          <select class="campo cg-in"><option>v1.96.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4449,8 +4449,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.95.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.95.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.96.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.96.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -15295,6 +15295,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.96.0 <span class="cam-fecha">2026-08-29</span></h3>
+<p class="pag-intro"><strong>R116: el catalogo se EJECUTA dentro de las pruebas, y su lista desplegada se compara con la que emite el componente.</strong> R115 arreglo a mano las nueve divergencias del selector con busqueda y las fijo con diecisiete pruebas. Pero esas diecisiete ESCRIBEN A MANO lo que el catalogo ensenaba ese dia: protegen del olvido, no de la deriva. El dia que alguien toque el guion del catalogo siguen en verde con las dos superficies otra vez distintas — que es exactamente como nacieron las nueve. Ahora el catalogo entero, con su guion, se abre en jsdom dentro de las pruebas; se despliega su lista y se compara arbol contra arbol con la del componente alimentado con LOS DATOS DEL PROPIO CATALOGO, leidos del HTML generado y no copiados. No queda una tercera copia de la verdad que pueda quedarse vieja. Siete comparaciones, y visto en rojo TRES veces: reintroduciendo el visto delante del texto en el componente, quitando la clase `abierta` del componente, y —la que lo justifica— moviendo el visto en EL CATALOGO, donde las 34 pruebas anteriores se quedaron en verde. Comprobado ademas que las dos hojas declaran 22 reglas `.sel-*` contra 22, identicas declaracion por declaracion; las 4 restantes son `sel-demo-*`, mobiliario de la demostracion que por diseno no viaja. QUEDA DECLARADO Y SIN CERRAR: el vacio por omision. El guion del catalogo anade la fila de «crear» siempre que hay texto sin coincidencias, asi que su rama de `.sel-vacio` es INALCANZABLE; el componente si llega a ella cuando no se pasa `onCrear`, y la hoja le entrega `.sel-vacio` y `.sel-vacio strong` sin ninguna demo que las prometa. Misma familia que R104. Y esto solo cubre el SelectorBusqueda: cualquier otro componente cuya pieza principal aparezca al desplegar sigue igual de descubierto.</p>
+
 
 
 <h3 class="sub-seccion">v1.95.0 <span class="cam-fecha">2026-08-28</span></h3>

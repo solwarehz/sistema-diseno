@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.95.0";
+export const VERSION = "1.96.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,33 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.96.0', fecha: '2026-08-29',
+    que: 'R116: el catalogo se EJECUTA dentro de las pruebas, y su lista desplegada se compara con la que emite el componente',
+    porque:
+      'R115 arreglo a mano las nueve divergencias del selector con busqueda y las fijo con '
+      + 'diecisiete pruebas. Pero esas diecisiete ESCRIBEN A MANO lo que el catalogo ensenaba '
+      + 'ese dia: protegen del olvido, no de la deriva. El dia que alguien toque el guion del '
+      + 'catalogo siguen en verde con las dos superficies otra vez distintas — que es '
+      + 'exactamente como nacieron las nueve. Ahora el catalogo entero, con su guion, se abre '
+      + 'en jsdom dentro de las pruebas; se despliega su lista y se compara arbol contra arbol '
+      + 'con la del componente alimentado con LOS DATOS DEL PROPIO CATALOGO, leidos del HTML '
+      + 'generado y no copiados. No queda una tercera copia de la verdad que pueda quedarse '
+      + 'vieja. Siete comparaciones, y visto en rojo TRES veces: reintroduciendo el visto '
+      + 'delante del texto en el componente, quitando la clase `abierta` del componente, y '
+      + '—la que lo justifica— moviendo el visto en EL CATALOGO, donde las 34 pruebas '
+      + 'anteriores se quedaron en verde. Comprobado ademas que las dos hojas declaran 22 '
+      + 'reglas `.sel-*` contra 22, identicas declaracion por declaracion; las 4 restantes son '
+      + '`sel-demo-*`, mobiliario de la demostracion que por diseno no viaja. QUEDA DECLARADO '
+      + 'Y SIN CERRAR: el vacio por omision. El guion del catalogo anade la fila de «crear» '
+      + 'siempre que hay texto sin coincidencias, asi que su rama de `.sel-vacio` es '
+      + 'INALCANZABLE; el componente si llega a ella cuando no se pasa `onCrear`, y la hoja le '
+      + 'entrega `.sel-vacio` y `.sel-vacio strong` sin ninguna demo que las prometa. Misma '
+      + 'familia que R104. Y esto solo cubre el SelectorBusqueda: cualquier otro componente '
+      + 'cuya pieza principal aparezca al desplegar sigue igual de descubierto.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.95.0', fecha: '2026-08-28',
     que: 'R115: el selector con busqueda entrega por fin lo que el catalogo ensena — y nace el candado que lo vio',
