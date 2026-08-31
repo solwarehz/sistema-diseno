@@ -253,6 +253,34 @@ sin estilo en producción.
 
 ---
 
+## R117 · el segundo argumento para el navegador en el contenedor — 2026-08-30
+
+Control Administrativos reportó que el chevron del selector no gira, con la
+causa propuesta: la regla apunta al `<svg class="ic">` y ahí el `transform` no
+se honraría. Respuesta razonada en
+[`../peticiones/2026-08-30-respuesta-control-administrativos-r117.md`](../peticiones/2026-08-30-respuesta-control-administrativos-r117.md).
+
+**No hay defecto.** Medido en Chrome con la hoja que se entrega y el marcado que
+emite React, en dos páginas cargadas ya en su estado: cerrada da `none` y matriz
+`0,667 · 0,667`; abierta da `matrix(-1,0,0,-1,0,0)` y matriz `-0,667 · -0,667`.
+La rotación ocurre, y ocurre sobre el `<svg>`.
+
+Su medición dio identidad porque **`.sel-chev .ic` tiene `transition: transform`
+y el `<span class="sel-chev">` no tiene ninguna**: `getComputedStyle` durante una
+transición devuelve el valor en curso, no el de destino. Explica las cuatro
+filas de su tabla. **El mismo error nos pasó a nosotros al reproducirlo** —en
+sentido contrario, leyendo el chevron rotado siempre— hasta cargar cada estado
+desde cero.
+
+**Lo que sí queda como pendiente nuestro:** ninguno de los dieciséis candados
+mide un valor **calculado en un navegador**. Todos comparan hojas, marcado,
+elementos y orden, todo estático. La rotación del chevron no la comprueba nada:
+R115 la midió a mano y nadie ha vuelto a mirarla automáticamente. **Segundo
+argumento en dos semanas para el navegador sin cabeza en el contenedor**, que
+sigue siendo autorización del responsable.
+
+---
+
 ## El hueco que sigue abierto, y es el importante
 
 Tres defectos de la tanda del 14 al 16 de agosto —**R50** (el aviso invisible),
