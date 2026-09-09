@@ -19,10 +19,11 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.96.0** — R116: el catálogo **se ejecuta** dentro de las
-pruebas y su lista desplegada se compara árbol contra árbol con la que emite el
-componente. R115 arregló las nueve divergencias a mano; esto es lo que impide
-que vuelvan.
+**Estado actual: v1.97.0** — R118: el selector con búsqueda sabe **buscar
+contra el servidor** (`modo="servidor"`, la misma palabra que `TablaDatos`). El
+catálogo lo prometía desde su primera versión —«cientos o miles»— sin nada
+detrás. El componente se queda con el ciclo entero: rebote, cancelación y
+descarte de las respuestas que llegan fuera de orden.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

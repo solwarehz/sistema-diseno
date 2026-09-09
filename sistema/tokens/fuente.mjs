@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.96.0";
+export const VERSION = "1.97.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,40 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.97.0', fecha: '2026-09-09',
+    que: 'R118: el selector con busqueda sabe buscar CONTRA EL SERVIDOR, que el catalogo prometia sin nada detras',
+    porque:
+      'La tabla «Cual de los dos» del catalogo manda al servidor a partir de «cientos o '
+      + 'miles» desde que existe esa pagina, y el componente solo sabia `includes` sobre un '
+      + 'array fijo: catorce props y ninguna asincrona. Ningun candado podia verlo, porque '
+      + 'todos comparan el catalogo con el componente y lo que faltaba no estaba en ninguno '
+      + 'de los dos — estaba en la prosa. Nace `modo="servidor"`, con la misma palabra y el '
+      + 'mismo significado que en TablaDatos, y en ese modo el componente NO filtra: pregunta '
+      + 'con `onBuscar` y pinta lo que le devuelvan. EL CICLO ENTERO ES SUYO —rebote de 300 '
+      + 'ms, cancelacion de la consulta anterior por AbortSignal, y descarte de la respuesta '
+      + 'que llegue fuera de orden— y eso lo decidio el responsable sobre la alternativa de '
+      + 'dejarlo en cada producto. El argumento es el mismo por el que MMI-DS §9 acepta ayuda '
+      + 'externa justo en este patron: la carrera es un fallo SILENCIOSO —se teclea «ana», la '
+      + 'respuesta de «an» llega despues y la lista ensena otra busqueda sin que nada avise—, '
+      + 'y repartirla por cada pantalla es repartir el mismo defecto. Abortar pide que se '
+      + 'pare y no garantiza que no llegue, asi que ademas se descarta por bandera; y '
+      + '`onBuscar` se lee por referencia viva, para que escrita en linea no dispare un bucle '
+      + 'de peticiones al servidor de otro. El modo destapo un defecto que no estaba en la '
+      + 'peticion: `elegida` salia de buscar el valor dentro de `opciones`, asi que al seguir '
+      + 'buscando la opcion elegida dejaba de estar en ninguna lista y el campo se quedaba EN '
+      + 'BLANCO con un valor puesto — misma familia que el `null` que la firma prometia y no '
+      + 'emitia (R103). Mientras busca: esqueleto —la clase `.esqueleto` que ya viaja, no una '
+      + 'nueva— y solo pasados 300 ms desde que la consulta SALE, que es lo que publica la '
+      + 'tabla «Cargando: esqueleto, giro o nada»; el fallo es una fila pulsable que '
+      + 'reintenta con raton y con Enter, y no reaprovecha `textoVacio` porque «no hay '
+      + 'resultados» y «no se pudo preguntar» mandan a sitios distintos. Visto en rojo '
+      + 'quitando la bandera que cierra la carrera y devolviendo `elegida` a como estaba. Y '
+      + 'el candado de la omision cazo algo de paso: `.sel-op` no se veia sin modificador en '
+      + 'ningun marcado estatico, porque todas las filas del catalogo las pinta su guion.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.96.0', fecha: '2026-08-29',
     que: 'R116: el catalogo se EJECUTA dentro de las pruebas, y su lista desplegada se compara con la que emite el componente',

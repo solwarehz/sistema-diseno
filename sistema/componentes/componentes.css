@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.96.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.97.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -382,7 +382,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .ta-cuenta-mal{ color: var(--error-texto); font-weight: 500; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   SELECTOR — 18 reglas · clases .sel-*
+   SELECTOR — 23 reglas · clases .sel-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .sel{ position: relative; }
@@ -409,6 +409,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .sel-check .ic{ width: 16px; height: 16px; }
 .sel-vacio{ padding: 12px 12px; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .sel-vacio strong{ color: var(--texto-principal); }
+.sel-cargando{ display: grid; gap: 11px; padding: 13px 12px; }
+.sel-cargando .esqueleto:nth-child(2){ width: 62%; }
+.sel-cargando .esqueleto:nth-child(3){ width: 78%; }
+.sel-op.sel-fallo{ align-items: flex-start; font-size: 13px; line-height: 1.55;
+  color: var(--texto-secundario); padding: 12px; }
+.sel-op.sel-fallo strong{ color: var(--texto-principal); }
 
 /* ───────────────────────────────────────────────────────────────────────────
    INTERRUPTOR — 19 reglas · clases .sw-*

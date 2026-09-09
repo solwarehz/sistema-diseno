@@ -12,12 +12,17 @@
  * cuántos datos haya ese día, así que la misma pantalla se usa distinto el
  * lunes y el martes. Si el selector busca, busca siempre.
  *
+ * DOS SITIOS DONDE BUSCAR (R118). Con `modo="navegador"` filtra las `opciones`
+ * que le den; con `modo="servidor"` no filtra nada y pregunta con `onBuscar`.
+ * La palabra es la misma que en `TablaDatos` a propósito: el vocabulario del
+ * sistema ya nombraba esta distinción y no hacía falta inventarle otro.
+ *
  * Los estilos vienen de `componentes.css` con las clases del catálogo
  * —`sel-caja`, `sel-in`, `sel-lista`, `sel-op`—, que es el mismo control que se
  * ve ahí. No se inventa ninguna.
  */
 
-import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Icono } from './Icono';
 
@@ -27,6 +32,13 @@ export type SelectorBusquedaProps = {
   /** Obligatoria y visible. Igual que en `Campo`: el placeholder es ejemplo de
    *  formato, nunca etiqueta —desaparece al escribir y con él la pregunta—. */
   etiqueta: string;
+  /**
+   * En `navegador`, TODAS: son las que se filtran.
+   *
+   * En `servidor` son las de PARTIDA — lo que se ve antes de teclear nada, que
+   * es donde van las recientes o las frecuentes. Al escribir, manda lo que
+   * devuelva `onBuscar`; al borrar, se vuelve a estas.
+   */
   opciones: OpcionBusqueda[];
   valor: string | null;
   onCambio: (valor: string | null) => void;
@@ -98,6 +110,67 @@ export type SelectorBusquedaProps = {
    */
   etiquetaOculta?: boolean;
   /**
+   * R118 · DÓNDE SE BUSCA.
+   *
+   *   `navegador` — sobre las `opciones` recibidas, sin tildes ni mayúsculas.
+   *                 Vale cuando `opciones` trae TODO.
+   *   `servidor`  — el componente NO filtra: pregunta con `onBuscar` y pinta
+   *                 lo que le devuelvan.
+   *
+   * Es la misma palabra que en `TablaDatos`, y por la misma razón: filtrar en
+   * el navegador lo que el servidor ya recortó filtra SOLO el trozo que llegó.
+   * El resultado parece completo y no lo está, que es la clase de mentira que
+   * nadie comprueba porque no falla.
+   *
+   * El catálogo prometía esto desde antes de que existiera —su tabla «Cuál de
+   * los dos» manda al servidor a partir de «cientos o miles»— y no había con
+   * qué cumplirlo: el componente solo sabía `includes` sobre un array fijo.
+   */
+  modo?: 'navegador' | 'servidor';
+  /**
+   * R118 · LA CONSULTA. Obligatoria con `modo="servidor"`.
+   *
+   * Devuelve una promesa con las opciones. **El componente se queda con el
+   * ciclo entero** —el rebote, la cancelación de la consulta anterior y el
+   * descarte de las respuestas que llegan fuera de orden— y por eso entrega
+   * una `AbortSignal` que hay que pasarle a `fetch`.
+   *
+   * No es comodidad, es que la carrera es un fallo SILENCIOSO: se teclea
+   * «ana», la respuesta de «an» llega después, y la lista enseña los
+   * resultados de otra búsqueda sin que nada falle ni avise. Dejarlo en cada
+   * producto es repartir el mismo defecto tantas veces como pantallas haya —
+   * el mismo argumento por el que §9 acepta ayuda externa justo en este patrón
+   * y no en los demás.
+   *
+   * La función se lee por referencia viva, así que **puede escribirse en línea**
+   * sin volver a disparar la consulta en cada dibujado.
+   *
+   * Con el campo vacío no se pregunta nada: se enseñan las `opciones`.
+   */
+  onBuscar?: (texto: string, senal: AbortSignal) => Promise<OpcionBusqueda[]>;
+  /**
+   * Cuánto se espera desde la última tecla antes de preguntar, en ms.
+   *
+   * 300 no es un número redondo puesto a ojo: es el mismo umbral que publica
+   * el catálogo en «Cargando: esqueleto, giro o nada». Preguntar por cada
+   * tecla son seis consultas para escribir «Quispe» y cinco se tiran.
+   */
+  rebote?: number;
+  /**
+   * R118 · QUÉ DECIR CUANDO LA CONSULTA FALLA. Recibe lo tecleado.
+   *
+   * NO se reaprovecha `textoVacio`: «no hay resultados» y «no se pudo
+   * preguntar» son cosas distintas y mandan a sitios distintos. Con la primera
+   * se prueba con menos letras; con la segunda no hay nada que reescribir y
+   * decirle a alguien que pruebe otra cosa es mandarlo a dar vueltas. Es la
+   * misma separación que `EstadoPantalla` hace entre `sin-resultados` y
+   * `error`, y por el mismo motivo.
+   *
+   * La fila es pulsable y **reintenta** —con el ratón y con Enter—, porque
+   * ningún estado del sistema es un callejón sin salida.
+   */
+  textoFallo?: ReactNode | ((texto: string) => ReactNode);
+  /**
    * R103 · QUÉ HACER CUANDO NO EXISTE. Recibe **lo tecleado** y, si se pasa,
    * la fila de «no hay coincidencias» pasa a ser pulsable: es el «Crear "…"»
    * dentro del propio selector, sin componer nada por fuera.
@@ -123,6 +196,11 @@ export type SelectorBusquedaProps = {
 const normalizar = (t: string) =>
   t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 
+/** R118 · Desde que la consulta SALE hasta que se pinta el esqueleto. Es el
+ *  mismo umbral de la tabla «Cargando: esqueleto, giro o nada» del catálogo:
+ *  bajo 300 ms no se enseña nada porque un parpadeo se percibe como un fallo. */
+const UMBRAL = 300;
+
 export function SelectorBusqueda({
   etiqueta,
   opciones,
@@ -141,6 +219,16 @@ export function SelectorBusqueda({
   etiquetaOculta = false,
   onCrear,
   textoCrear = (t) => `Crear «${t}»`,
+  modo = 'navegador',
+  onBuscar,
+  rebote = 300,
+  textoFallo = (t: string) => (
+    <>
+      <strong>No se pudo buscar{t ? ` «${t}»` : ''}.</strong>
+      <br />
+      Pulsa aquí para reintentar.
+    </>
+  ),
 }: SelectorBusquedaProps) {
   const id = useId();
   const [abierto, setAbierto] = useState(false);
@@ -149,7 +237,134 @@ export function SelectorBusqueda({
   const caja = useRef<HTMLDivElement>(null);
   const campo = useRef<HTMLInputElement>(null);
 
-  const elegida = opciones.find((o) => o.valor === valor) ?? null;
+  /* ── R118 · la búsqueda contra el servidor ───────────────────────────── */
+
+  const remoto = modo === 'servidor';
+  const [remotas, setRemotas] = useState<OpcionBusqueda[] | null>(null);
+  const [buscando, setBuscando] = useState(false);
+  const [tardando, setTardando] = useState(false);
+  const [fallo, setFallo] = useState(false);
+  const [intento, setIntento] = useState(0);
+
+  if (process.env.NODE_ENV !== 'production' && remoto && !onBuscar) {
+    console.error(
+      'SelectorBusqueda: con modo="servidor" hace falta `onBuscar`. Sin él el ' +
+      'control no pregunta nada y la lista se queda en las opciones de partida ' +
+      'pase lo que pase — parece que busca y no busca.',
+    );
+  }
+
+  /** Por referencia viva. Si `onBuscar` entrara en las dependencias del efecto,
+   *  una función escrita en línea —que es como se escribe— cambiaría de
+   *  identidad en cada dibujado y la consulta se repetiría sin parar. Es la
+   *  trampa de este patrón, y se paga en peticiones al servidor ajeno. */
+  const consultar = useRef(onBuscar);
+  useEffect(() => { consultar.current = onBuscar; });
+
+  const reintentar = useCallback(() => setIntento((n) => n + 1), []);
+
+  /**
+   * R118 · LA ELECCIÓN TIENE QUE SOBREVIVIR A LA SIGUIENTE BÚSQUEDA.
+   *
+   * `elegida` salía de buscar `valor` dentro de `opciones`, y contra el
+   * servidor eso se rompe solo: se elige a Ana, se teclea otra cosa, la lista
+   * se reemplaza por la respuesta nueva y Ana ya no está en ninguna parte. El
+   * campo se quedaba EN BLANCO con un valor puesto.
+   *
+   * Es la misma familia que el `null` que la firma prometía y no emitía
+   * (R103) — el estado diciendo una cosa y la pantalla otra—, y por eso se
+   * arregla aquí dentro y no pidiéndole al producto que pase el texto: lo que
+   * el producto no puede olvidarse de hacer es lo que no se le pide.
+   *
+   * Se recuerda la última opción vista que casaba con `valor`. No es una caché
+   * de rendimiento: es la única copia que queda del texto de algo que ya no
+   * está en ninguna lista.
+   */
+  const visibles = useMemo(
+    () => (remoto && remotas ? [...opciones, ...remotas] : opciones),
+    [remoto, opciones, remotas],
+  );
+  const hallada = visibles.find((o) => o.valor === valor) ?? null;
+  const recordada = useRef<OpcionBusqueda | null>(null);
+  useEffect(() => {
+    if (hallada) recordada.current = hallada;
+    else if (valor === null) recordada.current = null;
+  }, [hallada, valor]);
+  const elegida =
+    hallada ?? (recordada.current?.valor === valor ? recordada.current : null);
+
+  /**
+   * LA CONSULTA, con su rebote y su cancelación.
+   *
+   * Tres relojes y no uno, y cada uno responde a algo distinto:
+   *
+   *   · `rebote` (300 ms) — desde la última tecla hasta preguntar. Sin él se
+   *     pregunta seis veces para escribir «Quispe» y cinco respuestas se tiran.
+   *   · `UMBRAL` (300 ms) — desde que la consulta SALE hasta pintar el
+   *     esqueleto. Arranca al salir la petición y no al teclear, que es la
+   *     diferencia entre «bajo 300 ms no se enseña nada» y enseñarlo siempre.
+   *   · el `AbortController` — no es un reloj, es la salida. Cancela la
+   *     consulta anterior en cuanto hay una nueva.
+   *
+   * Y sobre la cancelación va `vivo`, que es lo que de verdad cierra la
+   * carrera: abortar pide que se pare, no garantiza que no llegue. Una
+   * respuesta ya en vuelo puede resolverse igual, y sin esta bandera pintaría
+   * los resultados de una búsqueda que ya nadie está haciendo.
+   */
+  useEffect(() => {
+    if (!remoto || !abierto) return;
+    const q = texto.trim();
+    if (!q) {
+      setRemotas(null);
+      setBuscando(false);
+      setTardando(false);
+      setFallo(false);
+      return;
+    }
+
+    let vivo = true;
+    let umbral: ReturnType<typeof setTimeout> | undefined;
+    const mando = new AbortController();
+
+    const lanzar = setTimeout(() => {
+      const fn = consultar.current;
+      if (!fn || !vivo) return;
+      setBuscando(true);
+      setFallo(false);
+      umbral = setTimeout(() => { if (vivo) setTardando(true); }, UMBRAL);
+
+      Promise.resolve(fn(q, mando.signal)).then(
+        (ops) => {
+          if (!vivo) return;
+          setRemotas(Array.isArray(ops) ? ops : []);
+          setBuscando(false);
+          setTardando(false);
+        },
+        (e: unknown) => {
+          // Abortar es lo que hacemos NOSOTROS al teclear otra letra: no es un
+          // fallo de nadie y pintar un error ahí sería mentir sobre el servidor.
+          if (!vivo || mando.signal.aborted) return;
+          if (e instanceof Error && e.name === 'AbortError') return;
+          setFallo(true);
+          setBuscando(false);
+          setTardando(false);
+        },
+      );
+    }, rebote);
+
+    return () => {
+      vivo = false;
+      clearTimeout(lanzar);
+      if (umbral) clearTimeout(umbral);
+      mando.abort();
+    };
+  }, [remoto, abierto, texto, rebote, intento]);
+
+  /** El esqueleto solo si la consulta pasa del umbral. Bajo 300 ms no se
+   *  enseña nada, que es lo que publica el catálogo —«un parpadeo se percibe
+   *  como un fallo»—; y una lista que parpadea por cada tecla es el peor sitio
+   *  posible para tenerlo. */
+  const esperando = remoto && buscando && tardando;
 
   // Con la lista cerrada se muestra lo ELEGIDO, no lo que se tecleó. Dejar el
   // texto a medias hace creer que hay un filtro puesto que no existe.
@@ -157,9 +372,14 @@ export function SelectorBusqueda({
 
   const filtradas = useMemo(() => {
     if (!abierto || !texto.trim()) return opciones;
+    /* En `servidor` el componente NO filtra. Volver a filtrar lo que el
+       servidor ya recortó esconde lo que devolvió a propósito —una coincidencia
+       aproximada, un alias, un DNI que no se parece al nombre— y deja al
+       buscador contradiciéndose a sí mismo sin que nada falle. */
+    if (remoto) return fallo ? [] : remotas ?? [];
     const q = normalizar(texto);
     return opciones.filter((o) => normalizar(o.texto).includes(q));
-  }, [opciones, texto, abierto]);
+  }, [remoto, remotas, fallo, opciones, texto, abierto]);
 
   /**
    * R103 · LAS FILAS DE LA LISTA, que no son solo las opciones.
@@ -176,15 +396,25 @@ export function SelectorBusqueda({
   }, [filtradas, vacio, valor, texto]);
 
   /** Sin coincidencias y con `onCrear`, la fila vacía deja de ser un cartel. */
-  const puedeCrear = !!onCrear && filas.length === 0 && !!texto.trim();
+  /* R118 · ni mientras se busca ni sobre un fallo. Ofrecer «Crear «Ana»»
+     porque la respuesta no ha llegado todavía es invitar a dar de alta a
+     alguien que ya existe; y ofrecerlo cuando la consulta se cayó es peor,
+     porque ahí no se sabe nada de nada. */
+  const puedeCrear =
+    !!onCrear && filas.length === 0 && !!texto.trim() && !buscando && !fallo;
 
   /** R115 · el texto del vacío admite cadena o función de lo tecleado. Se
    *  resuelve aquí para que el marcado no tenga que saber cuál de las dos es. */
   const vacioMostrado =
     typeof textoVacio === 'function' ? textoVacio(texto.trim()) : textoVacio;
 
-  // El índice activo no puede quedarse fuera de una lista que encogió.
-  useEffect(() => { setActivo(0); }, [texto, abierto]);
+  /** R118 · igual que el del vacío: cadena o función de lo tecleado. */
+  const falloMostrado =
+    typeof textoFallo === 'function' ? textoFallo(texto.trim()) : textoFallo;
+
+  // El índice activo no puede quedarse fuera de una lista que encogió — y con
+  // el servidor la lista cambia sin que nadie toque el teclado.
+  useEffect(() => { setActivo(0); }, [texto, abierto, remotas, fallo]);
 
   // Cerrar al pulsar fuera. Sin esto la lista se queda abierta sobre otra cosa.
   useEffect(() => {
@@ -266,6 +496,14 @@ export function SelectorBusqueda({
     }
     if (e.key === 'Enter' && abierto) {
       e.preventDefault();
+      /* R118 · sobre el fallo, Enter REINTENTA. La fila es lo único que hay en
+         la lista, así que la tecla está libre por el mismo motivo por el que lo
+         estaba para «Crear» — y un estado al que solo se sale con el ratón deja
+         fuera a quien no lo usa. */
+      if (remoto && fallo) { reintentar(); return; }
+      // Mientras la consulta está en vuelo no hay nada que elegir todavía, y
+      // Enter no puede elegir la respuesta anterior a lo que se está viendo.
+      if (esperando) return;
       // R103 · sin lista no hay opción activa que Enter pudiera elegir, así que
       // ahí la tecla está libre y es donde cae «Crear».
       if (puedeCrear) { crear(); return; }
@@ -353,6 +591,10 @@ export function SelectorBusqueda({
           aria-autocomplete="list"
           aria-activedescendant={abierto && filas[activo] ? `${id}-op-${activo}` : undefined}
           aria-invalid={error ? true : undefined}
+          // R118 · mientras se busca, el control está OCUPADO. Sin esto el
+          // lector de pantalla anuncia una lista vacía y da por hecho que no
+          // hay resultados, que es lo contrario de lo que está pasando.
+          aria-busy={esperando || undefined}
           aria-describedby={[idError, idAyuda].filter(Boolean).join(' ') || undefined}
           autoComplete="off"
           placeholder={placeholder}
@@ -366,7 +608,36 @@ export function SelectorBusqueda({
         </div>
 
         <ul className="sel-lista" id={idLista} role="listbox" aria-labelledby={`${id}-et`} hidden={!abierto}>
-        {filas.length === 0 ? (
+        {esperando ? (
+          /* R118 · ESQUELETO, NO UN GIRO. Lo manda la tabla «Cargando:
+             esqueleto, giro o nada» del catálogo: el giro es «el último
+             recurso, no el primero» y solo vale cuando no se conoce la forma de
+             lo que viene. Aquí se conoce —son filas de una lista— y tres
+             renglones reservan el sitio para que no salte al llegar.
+
+             `.esqueleto` ya existe y ya viaja en el paquete, así que se
+             reutiliza: la regla 1 de la política dice que un componente nuevo
+             se arma con lo que hay, y esto vale también para una clase. */
+          <li className="sel-cargando">
+            <span className="esqueleto" />
+            <span className="esqueleto" />
+            <span className="esqueleto" />
+            <span className="sr-solo">Buscando…</span>
+          </li>
+        ) : remoto && fallo ? (
+          /* R118 · el fallo de la consulta es PULSABLE y reintenta. Ningún
+             estado del sistema es un callejón sin salida, y aquí la salida no
+             puede ser «prueba con menos letras»: no hay nada que reescribir. */
+          <li
+            id={`${id}-op-0`}
+            className="sel-op sel-fallo marcado"
+            role="option"
+            aria-selected={false}
+            onMouseDown={(e) => { e.preventDefault(); reintentar(); }}
+          >
+            <span className="sel-op-txt">{falloMostrado}</span>
+          </li>
+        ) : filas.length === 0 ? (
           puedeCrear ? (
             /* R103 · la fila de «no hay» deja de ser un cartel y pasa a ser el
                camino. Sigue siendo `option` porque está dentro del listbox y

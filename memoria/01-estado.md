@@ -1,10 +1,10 @@
 # Estado del proyecto
 
-**Última actualización:** 29 de agosto de 2026
-**Versión del sistema:** MMI-DS **v1.96.0** — el catálogo **se ejecuta** dentro
-de las pruebas y su lista desplegada se compara árbol contra árbol con la que
-emite el componente: R115 arregló las nueve a mano, esto es lo que impide que
-vuelvan
+**Última actualización:** 9 de septiembre de 2026
+**Versión del sistema:** MMI-DS **v1.97.0** — el selector con búsqueda sabe
+buscar **contra el servidor**, que el catálogo prometía desde su primera versión
+sin nada detrás. El ciclo entero —rebote, cancelación y descarte de lo que llega
+fuera de orden— es del componente, no del producto
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -19,17 +19,21 @@ vuelvan
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —34 componentes
-publicados, la hoja que viaja, **dieciséis candados**, 581 pruebas—. Ayer
-aprendió que quince candados en verde no impedían que un producto viera otra
-cosa: todos miraban lo que el catálogo pinta **en reposo**, y la lista del
-selector **solo existe cuando alguien la abre**. Hoy ha cerrado la otra mitad de
-esa lección. Las nueve divergencias se arreglaron a mano, pero lo que las fijaba
-eran pruebas **escritas a mano** con lo que el catálogo enseñaba ese día: el día
-que el catálogo cambiara, seguirían en verde con las dos superficies otra vez
-distintas. Ahora **el catálogo se ejecuta dentro de las pruebas** —su HTML, su
-guion, en jsdom—, se despliega su lista y se compara con la del componente
-alimentado con **los mismos datos**. No queda una tercera copia de la verdad que
-pueda quedarse vieja.
+publicados, la hoja que viaja, **dieciséis candados**, 594 pruebas—. Las últimas
+versiones fueron sobre **quién vigila que las dos superficies no se separen**.
+Ésta es distinta: es una **promesa publicada que no tenía nada detrás**. La
+tabla «Cuál de los dos» del catálogo manda al servidor a partir de «cientos o
+miles» desde que existe esa página, y el componente solo sabía `includes` sobre
+un array fijo. Ningún candado podía verlo — todos comparan el catálogo con el
+componente, y aquí lo que faltaba no estaba en ninguno de los dos: estaba en la
+prosa.
+
+Ahora existe `modo="servidor"`, con la misma palabra y el mismo significado que
+en `TablaDatos`. Y **el ciclo de la consulta es del componente**: el rebote, la
+cancelación de la anterior y el descarte de la que llega fuera de orden. Esa
+carrera es un fallo silencioso —se teclea «ana», la respuesta de «an» llega
+después, y la lista enseña otra búsqueda sin que nada avise—, y dejarla en cada
+producto era repartir el mismo defecto tantas veces como pantallas haya.
 
 ---
 
@@ -47,10 +51,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · **943 reglas de 1448** · **692 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **68 páginas** (contadas en el HTML generado; decía 53 y llevaba tiempo desfasado) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **53 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.96.0.zip` · **56 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.97.0.zip` · **56 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.96.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.97.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — candado **dieciséis** · 135 unidades compuestas · **9 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -73,7 +77,62 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.96.0), con detalle
+### Lo de hoy (v1.97.0), con detalle
+
+**R118 · El selector busca contra el servidor.** Sus props eran catorce y
+ninguna asíncrona: `filtradas` era `normalizar(o.texto).includes(q)` sobre el
+array recibido. Sin `onBuscar`, sin `cargando`, sin rebote y sin cancelación.
+
+Lo que decidió la forma fue mirar el repositorio antes de inventar nada:
+
+| Se encontró | Y por eso |
+|---|---|
+| `TablaDatos` ya tiene `modo: 'navegador' \| 'servidor'` | La palabra no se inventa: se reutiliza, con el mismo significado |
+| El catálogo publica «Cargando: esqueleto, giro o nada» | El aspecto ya estaba decidido: **esqueleto**, y nada bajo 300 ms. El giro es «el último recurso, no el primero» |
+| `.esqueleto` ya existe y ya viaja | No nace otra clase para lo mismo (POLÍTICA, regla 1) |
+| La tabla «Cuál de los dos» ya mandaba al servidor | Esto no es una función nueva: es **cumplir lo publicado** |
+
+**Quién se queda el ciclo — lo decidió el responsable.** Las dos opciones eran
+`onBuscar` avisando y el producto actualizando `opciones`, o `onBuscar`
+devolviendo una promesa y el componente quedándose con todo. Se eligió lo
+segundo, y el argumento es el mismo por el que MMI-DS §9 acepta ayuda externa
+justo en este patrón: **la carrera es un fallo silencioso**, y lo que cada
+producto tiene que acordarse de hacer es lo que un día no hace.
+
+**Un defecto que el modo destapó, y que no estaba en la petición.** `elegida`
+salía de buscar `valor` dentro de `opciones`. Contra el servidor eso se rompe
+solo: se elige a Ana, se teclea otra cosa, la lista se reemplaza y **Ana ya no
+está en ninguna parte** — el campo en blanco con un valor puesto. Misma familia
+que el `null` que la firma prometía y no emitía (R103). Se arregla dentro y no
+pidiéndole al producto que pase el texto.
+
+**Visto en rojo, que es lo que exige el §9:**
+
+| Rotura | Qué salió |
+|---|---|
+| Quitar la bandera `vivo` que cierra la carrera | «una respuesta vieja que llega tarde NO pisa a la nueva» en rojo: pintó «An la vieja» |
+| Devolver `elegida` a `opciones.find(...)` | «la elección sobrevive» en rojo: el campo salió vacío |
+
+**Y una lección del arnés, no del componente.** Las trece pruebas nacieron con
+`vi.useFakeTimers()` y **las trece se colgaron**. No era el componente: el
+`@testing-library/dom` instalado detecta relojes falsos con
+`typeof jest !== 'undefined'`, que bajo vitest da **siempre falso**; la librería
+toma su camino de relojes reales y se queda esperando un `setTimeout(…, 0)` que
+esos relojes ya no van a disparar. Comprobado con un `<button>` pelado y un solo
+`click`. Se reescribieron con relojes de verdad y el rebote acortado por la prop
+—que existe—, midiendo contra el reloj de pared solo los dos umbrales, con
+margen de 150 ms contra 300.
+
+**Lo que se añadió al catálogo, y por qué el candado de la omisión tenía razón.**
+Al montar la demostración salió en rojo: `.sel-op` **nunca se veía sin
+modificador** en ningún marcado estático, porque todas las filas del catálogo
+las pinta su guion. Ahora hay tres paradas quietas —la fila por omisión, la
+`marcado` y la elegida con su visto—, que no existían en ninguna versión
+anterior.
+
+---
+
+### Lo de ayer (v1.96.0), con detalle
 
 **R116 · Lo que R115 dejó abierto: quién vigila que no vuelvan.** Las nueve
 divergencias del selector se arreglaron a mano y se fijaron con diecisiete
@@ -122,7 +181,7 @@ lo único que se puede fijar sin inventar la promesa: que el componente emite el
 `SelectorBusqueda`. Cualquier otro componente cuya pieza principal aparezca al
 desplegar sigue exactamente igual de descubierto que el selector el día 28.
 
-### Lo de ayer (v1.95.0), con detalle
+### Lo de la v1.95.0, con detalle
 
 **R115 · El selector con búsqueda: la promesa no era la entrega, en nueve
 puntos.** Lo reportó el equipo que lo usa en un sistema — *«tengo la v1.94 y es
@@ -1505,16 +1564,17 @@ sin comparar.
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.96.0
+Versión                      1.97.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         581   en 39 archivos
-Reglas que viajan               943   de 1448 · 692 clases, 0 huérfanas
+Pruebas                         594   en 40 archivos
+Reglas que viajan               948   de 1454 · 694 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
-Reglas .sel-* en las dos hojas   22   contra 22, declaracion por declaracion
-                                      identicas (las 4 restantes son
-                                      `sel-demo-*`, que por diseño NO viajan)
+Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el
+                                      catalogo, que por diseño NO viajan).
+                                      Contadas por bloque de regla cuyo
+                                      selector menciona `sel-`, en las dos
 Comparaciones del desplegado      7   catalogo ejecutado contra componente
 Componentes publicados           34
 Páginas del catálogo             68

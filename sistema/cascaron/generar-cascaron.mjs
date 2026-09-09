@@ -2239,6 +2239,106 @@ el código y no se pintaba en ninguna demo.</div>
   </div>
 </div>
 
+<h3 class="sub-seccion">Contra el servidor — <code>modo="servidor"</code></h3>
+<p class="seccion-sub">La cuarta fila de la tabla de arriba —<strong>cientos o miles</strong>— llevaba
+prometido el servidor desde la primera versión de esta página, y hasta la <strong>v1.97.0</strong>
+no había con qué cumplirlo: el componente solo sabía <code>includes</code> sobre un array fijo.
+Ahora es la misma palabra que en <code>TablaDatos</code>, con el mismo significado:
+<strong>en <code>servidor</code> el componente no filtra nada</strong>, pregunta y pinta lo que
+le devuelvan.</p>
+
+<div class="aviso"><strong>El componente se queda con el ciclo entero.</strong>
+<code>onBuscar</code> devuelve una promesa y recibe una <code>AbortSignal</code>; el rebote, la
+cancelación de la consulta anterior y el descarte de las respuestas que llegan tarde son suyos.
+No es comodidad: <strong>la carrera es un fallo silencioso</strong>. Se teclea <code>ana</code>, la
+respuesta de <code>an</code> llega después, y la lista enseña los resultados de otra búsqueda sin
+que nada falle ni avise. Repartir eso por cada pantalla es repartir el mismo defecto.</div>
+
+<h3 class="sub-seccion">Tres relojes, y cada uno responde a algo distinto</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Cuál</th><th>Cuánto</th><th>Desde dónde cuenta</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Rebote</strong></td><td>300&nbsp;ms</td><td class="motivo">Desde la última tecla hasta preguntar. Sin él son seis consultas para escribir «Quispe» y cinco se tiran</td></tr>
+    <tr><td><strong>Umbral del esqueleto</strong></td><td>300&nbsp;ms</td><td class="motivo">Desde que la consulta <strong>sale</strong>, no desde la tecla. Es la diferencia entre «bajo 300 ms no se enseña nada» y enseñarlo siempre</td></tr>
+    <tr><td><strong>Cancelación</strong></td><td>—</td><td class="motivo">No es un reloj, es la salida. Aborta la consulta anterior en cuanto hay otra</td></tr>
+  </tbody>
+</table>
+
+<div class="aviso"><strong>Abortar pide que se pare, no garantiza que no llegue.</strong> Una
+respuesta ya en vuelo puede resolverse igual, así que además de cancelar se descarta por bandera.
+Sin eso, la última en llegar pinta — y la última en llegar no es la última que se pidió.</div>
+
+<h3 class="sub-seccion">Los dos estados que solo existen contra el servidor</h3>
+<p class="seccion-sub">Se ven <strong>desplegados</strong> a propósito: son estados de la lista, y la
+lista solo existe abierta.</p>
+<div class="bloque">
+  <div class="campos-rejilla">
+    <div class="cg">
+      <span class="cg-et" id="sel-srv-et">Buscando — el esqueleto</span>
+      <div class="sel sel-demo-abierto">
+        <div class="sel-caja abierta">
+          <input class="campo sel-in" value="quisp" aria-busy="true" readonly>
+          <span class="sel-chev">${ICONOS.chevron}</span>
+        </div>
+        <ul class="sel-lista" role="listbox" aria-labelledby="sel-srv-et">
+          <li class="sel-cargando">
+            <span class="esqueleto"></span>
+            <span class="esqueleto"></span>
+            <span class="esqueleto"></span>
+            <span class="sr-solo">Buscando…</span>
+          </li>
+        </ul>
+      </div>
+      <span class="cg-ayuda">Tres renglones, porque van a llegar filas. <strong>El esqueleto imita
+      la maqueta</strong>: un giro aquí sería el último recurso usado como primero.</span>
+    </div>
+    <div class="cg">
+      <span class="cg-et" id="sel-srv-ok-et">Con respuesta — la fila por omisión</span>
+      <div class="sel sel-demo-abierto">
+        <div class="sel-caja abierta">
+          <input class="campo sel-in" value="quisp" readonly>
+          <span class="sel-chev">${ICONOS.chevron}</span>
+        </div>
+        <ul class="sel-lista" role="listbox" aria-labelledby="sel-srv-ok-et">
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Quispe Huamán, César</span></li>
+          <li class="sel-op marcado" role="option" aria-selected="false"><span class="sel-op-txt">Quispe Mamani, Lucía<span class="sel-notas">5.º A</span></span></li>
+          <li class="sel-op" role="option" aria-selected="true"><span class="sel-op-txt">Quispe Rojas, Elsa</span><span class="sel-check">${ICO_CHECK}</span></li>
+        </ul>
+      </div>
+      <span class="cg-ayuda"><strong>Las tres formas de una fila, quietas.</strong> La de arriba es
+      la de por omisión; la del medio va <code>marcado</code> —resaltada por el teclado—; la de
+      abajo es la elegida, con su visto detrás. Hasta la v1.97.0 esta página no enseñaba
+      <strong>ninguna</strong> parada: todas las pintaba su guión, así que el candado de la omisión
+      no tenía dónde mirar.</span>
+    </div>
+    <div class="cg">
+      <span class="cg-et" id="sel-mal-et">La consulta se cayó</span>
+      <div class="sel sel-demo-abierto">
+        <div class="sel-caja abierta">
+          <input class="campo sel-in" value="quisp" readonly>
+          <span class="sel-chev">${ICONOS.chevron}</span>
+        </div>
+        <ul class="sel-lista" role="listbox" aria-labelledby="sel-mal-et">
+          <li class="sel-op sel-fallo marcado" role="option">
+            <span class="sel-op-txt"><strong>No se pudo buscar «quisp».</strong><br>Pulsa aquí para reintentar.</span>
+          </li>
+        </ul>
+      </div>
+      <span class="cg-ayuda"><strong>No se reaprovecha «sin resultados»</strong>: mandan a sitios
+      distintos. Con uno se prueba con menos letras; aquí no hay nada que reescribir. La fila
+      reintenta, con el ratón y con Enter.</span>
+    </div>
+  </div>
+</div>
+
+<div class="aviso"><strong>Y un defecto que este modo destapó.</strong> <code>elegida</code> salía de
+buscar el valor dentro de <code>opciones</code>. Contra el servidor eso se rompe solo: se elige a
+Ana, se teclea otra cosa, la lista se reemplaza y <strong>Ana ya no está en ninguna parte</strong> —
+el campo se quedaba en blanco con un valor puesto. Es la misma familia que el <code>null</code> que
+la firma prometía y no emitía (R103). El componente recuerda la última opción que casaba con el
+valor: no es una caché, es <strong>la única copia que queda</strong> del texto de algo que ya no
+está en ninguna lista.</div>
+
 <h3 class="sub-seccion">Teclado — es donde se cae este componente</h3>
 <table class="tabla-simple">
   <thead><tr><th>Tecla</th><th>Qué hace</th></tr></thead>
@@ -9768,6 +9868,21 @@ input.campo.sel-in { width: 100%; padding-right: 32px; }
 .sel-check .ic { width: 16px; height: 16px; }
 .sel-vacio { padding: 12px 12px; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .sel-vacio strong { color: var(--texto-principal); }
+/* R118 · LA BUSQUEDA CONTRA EL SERVIDOR — esqueleto y fallo.
+   El esqueleto reutiliza \`.esqueleto\`, que ya viaja: tres renglones que
+   imitan tres filas de la lista, no un adorno. Los anchos van por \`nth-child\`
+   y no en el atributo \`style\`, que el candado prohibe (2.5.6). */
+.sel-cargando { display: grid; gap: 11px; padding: 13px 12px; }
+.sel-cargando .esqueleto:nth-child(2) { width: 62%; }
+.sel-cargando .esqueleto:nth-child(3) { width: 78%; }
+/* Se ata con DOS clases —\`.sel-op.sel-fallo\`— y no con una. Con \`.sel-fallo\`
+   suelta empataria en especificidad con \`.sel-op\` y decidiria el ORDEN, que
+   es justo lo que el candado del empate nacio para cazar: el extractor agrupa
+   por elemento y les cambia el orden relativo entre las dos hojas. */
+.sel-op.sel-fallo { align-items: flex-start; font-size: 13px; line-height: 1.55;
+  color: var(--texto-secundario); padding: 12px; }
+.sel-op.sel-fallo strong { color: var(--texto-principal); }
+.sel-demo-abierto { position: relative; min-height: 148px; }
 .sel-demo-fila { display: grid; grid-template-columns: minmax(260px,360px) 1fr; gap: 28px; align-items: start; }
 .sel-demo-notas p { margin: 0 0 8px; font-size: 13px; line-height: 1.6; color: var(--texto-secundario); }
 .sel-demo-notas strong { color: var(--texto-principal); }
