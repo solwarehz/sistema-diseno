@@ -9,6 +9,8 @@
  * un cambio de apellido no debe cambiarle el color a nadie.
  */
 
+import { useEffect, useState } from 'react';
+
 export type TamanoAvatar = 's' | 'm' | 'l' | 'xl';
 
 export type AvatarProps = {
@@ -16,7 +18,7 @@ export type AvatarProps = {
   id: string;
   /** «QUISPE MAMANI, Rosa». De aquí salen las iniciales. */
   nombre: string;
-  /** URL de la foto. Si falla la carga, quedan las iniciales debajo. */
+  /** URL de la foto. **Si falla la carga, se cae a las iniciales.** */
   foto?: string;
   tamano?: TamanoAvatar;
   className?: string;
@@ -48,6 +50,10 @@ export function iniciales(nombre: string): string {
 
 export function Avatar({ id, nombre, foto, tamano = 'm', className = '' }: AvatarProps) {
   const ini = iniciales(nombre);
+  const [roto, setRoto] = useState(false);
+  // Se rearma al cambiar de foto: si no, una persona con la imagen caída
+  // dejaría rota la del siguiente que ocupe el mismo hueco de la lista.
+  useEffect(() => { setRoto(false); }, [foto]);
   const clases = ['avatar', `avatar-${tamano}`, `avatar-${colorIdentidad(id)}`, className]
     .filter(Boolean)
     .join(' ');
@@ -57,7 +63,20 @@ export function Avatar({ id, nombre, foto, tamano = 'm', className = '' }: Avata
     <span className={clases} title={nombre}>
       {/* alt vacío a propósito: el nombre ya está en el título de la fila o en
           el texto de al lado. Con alt, el lector lo diría dos veces. */}
-      {foto ? <img src={foto} alt="" /> : ini}
+      {/* LA FOTO QUE NO CARGA CAE A LAS INICIALES, y hasta aquí no caía.
+          El tipo lo prometía —«si falla la carga, quedan las iniciales
+          debajo»— y era falso dos veces: no había `onError`, y con `foto`
+          puesta las iniciales NI SIQUIERA ESTABAN en el DOM. Una URL firmada
+          caducada o un 403 del almacén —lo normal en un colegio— pintaba el
+          icono de imagen rota del navegador dentro del círculo, en la barra
+          superior de todas las pantallas.
+          El estado se rearma al cambiar `foto`: si no, una persona con la
+          foto caída dejaría rota la del siguiente que ocupe el mismo hueco. */}
+      {foto && !roto ? (
+        <img src={foto} alt="" onError={() => setRoto(true)} />
+      ) : (
+        ini
+      )}
     </span>
   );
 }

@@ -1,10 +1,10 @@
 # Estado del proyecto
 
 **Última actualización:** 10 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.99.0** — el contrato de comportamiento
-estaba **roto desde la v1.78.0** y ningún candado lo veía; y se declara la
-concordancia entre el registro de requerimientos del equipo y los números que
-este sistema acuñó sin que le correspondieran
+**Versión del sistema:** MMI-DS **v1.100.0** — auditar los 35 documentos de
+`peticiones/` contra el código destapó dos defectos del **avatar** vivos desde la
+v1.7.0: la foto que no carga no caía a las iniciales, y la regla del recorte
+apuntaba al aviso en vez de al avatar
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -48,10 +48,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · **943 reglas de 1448** · **692 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **68 páginas** (contadas en el HTML generado; decía 53 y llevaba tiempo desfasado) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **53 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.99.0.zip` · **56 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.100.0.zip` · **56 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.99.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.100.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — candado **dieciséis** · 135 unidades compuestas · **9 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -74,7 +74,34 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.99.0), con detalle
+### Lo de hoy (v1.100.0), con detalle
+
+**Auditar los documentos contra el código, con cinco agentes en paralelo.** Los
+35 documentos de `peticiones/` se leyeron enteros y cada afirmación verificable
+se comprobó contra el árbol de hoy. El resultado no fue una lista de erratas:
+fueron **dos defectos vivos en produccion desde la v1.7.0**, los dos en el
+`Avatar`, los dos prometidos por escrito y ninguno cumplido.
+
+**1 · La foto que no carga no caía a las iniciales.** No había `onError`, y con
+`foto` puesta las iniciales **ni siquiera estaban en el DOM**. Una URL firmada
+caducada pintaba el icono de imagen rota del navegador dentro del círculo, en la
+barra superior de todas las pantallas. El JSDoc del propio tipo lo prometía, así
+que la fuente instalada mentía sobre sí misma.
+
+**2 · El recorte apuntaba a la clase equivocada.** `.av img` —el **aviso**
+temporal— en vez de `.avatar img`. Una letra. Y `.av img` no casaba con nada en
+ninguna parte: el aviso no lleva imágenes. Regla muerta de un lado y ausente del
+otro. Una foto de 400×400 se pintaba a tamaño natural dentro de un círculo con
+`overflow:hidden`: un trozo de la cara, ampliado.
+
+**Por qué duró 1,7 años:** el catálogo **no pinta ni un solo avatar con `<img>`**
+—solo la silueta en SVG, que sí estaba cubierta por esa misma regla— y no había
+ninguna prueba de `Avatar`. Es, otra vez, «lo que el catálogo no pinta no lo
+compara nadie».
+
+---
+
+### Lo de ayer (v1.99.0), con detalle
 
 **Dos defectos de papeles, y los dos en documentos que VIAJAN.**
 
@@ -102,7 +129,7 @@ CLAUDE.md §4ter: **el agente no acuña números.**
 
 ---
 
-### Lo de ayer (v1.98.0), con detalle
+### Lo de la v1.98.0, con detalle
 
 **R119 · Los activos de marca, medidos en vez de recordados.** El encargo era
 pasarle requerimientos al equipo de diseño. Al escribirlos se decodificaron los
@@ -1621,11 +1648,11 @@ sin comparar.
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.99.0
+Versión                      1.100.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         594   en 40 archivos
+Pruebas                         601   en 41 archivos
 Reglas que viajan               948   de 1454 · 694 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el

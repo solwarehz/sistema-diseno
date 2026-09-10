@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.99.0";
+export const VERSION = "1.100.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,33 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.100.0', fecha: '2026-09-10',
+    que: 'La foto del avatar: ni caia a las iniciales ni recibia recorte. Dos defectos de 1,7 anos',
+    porque:
+      'Salieron de AUDITAR LOS DOCUMENTOS de peticiones/ contra el codigo, no de una queja. '
+      + 'El documento del 2026-08-08 a Control de Asistencia prometio dos cosas del avatar y '
+      + 'ninguna era cierta. '
+      + 'UNO: «si la imagen no carga, vuelve a las iniciales». No habia `onError`, y con '
+      + '`foto` puesta las iniciales NI SIQUIERA estaban en el DOM — una URL firmada '
+      + 'caducada o un 403 del almacen pintaba el icono de imagen rota del navegador dentro '
+      + 'del circulo, en la barra superior de TODAS las pantallas (MarcoApp, MenuUsuario y '
+      + 'TarjetaPersona pasan `foto` sin salvaguarda). El propio tipo lo prometia en su '
+      + 'JSDoc, asi que la fuente instalada mentia sobre si misma. '
+      + 'DOS: «con foto, proporcion 1:1 y recorte centrado». La regla que da tamano y '
+      + 'recorte se llamaba `.av img` —el AVISO temporal— y no `.avatar img`. Una letra. Y '
+      + '`.av img` no casaba con NADA en ninguna parte: el aviso no lleva imagenes. Regla '
+      + 'muerta de un lado y regla ausente del otro desde la v1.7.0, que es la version que '
+      + 'respondio aquella peticion. Dentro de un `.avatar` de lado fijo con '
+      + '`overflow:hidden`, una foto de 400x400 se pintaba a tamano natural y se recortaba '
+      + 'al circulo: se veia un trozo de la cara ampliado, no la cara. '
+      + 'EL CATALOGO NO PODIA ENSENARLO, y por eso duro tanto: no pinta ni un solo avatar '
+      + 'con <img> —solo la silueta en SVG, que si estaba cubierta por esa misma regla—, y '
+      + 'no habia NINGUNA prueba de Avatar. Ahora hay siete, y se vieron las tres en rojo '
+      + 'reintroduciendo los dos defectos.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.99.0', fecha: '2026-09-10',
     que: 'El contrato de comportamiento estaba ROTO desde la v1.78.0, y se declara la concordancia de registros',

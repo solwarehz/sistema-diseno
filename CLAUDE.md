@@ -19,10 +19,11 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.99.0** — el contrato de comportamiento estaba **roto desde
-la v1.78.0**: tres reglas sueltas al principio del archivo y el titular metido
-dentro de una celda. Veintiuna versiones, y ningún candado lo veía. Se declara
-además la **concordancia de registros** (§4ter).
+**Estado actual: v1.100.0** — auditar los documentos de `peticiones/` contra el
+código destapó dos defectos del **avatar** que llevaban desde la v1.7.0: la foto
+que no carga no caía a las iniciales, y la regla del recorte apuntaba a `.av img`
+—el aviso— en vez de a `.avatar img`. El catálogo no podía enseñarlo: no pinta
+ni un solo avatar con `<img>`.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

@@ -9441,7 +9441,15 @@ input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 
 .tp-inact .avatar-vacio { background: var(--borde); }
 /* La foto se recorta centrada y nunca se deforma. Si no carga, el navegador
    deja ver las iniciales que hay detrás. */
-.av img, .avatar-silueta { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* El selector decia \`.av img\` —el AVISO temporal— y no \`.avatar img\`. Una letra,
+   y con ella la foto de una persona no recibia NI tamano NI recorte: dentro de un
+   \`.avatar\` de lado fijo con \`overflow:hidden\`, una foto de 400x400 se pintaba a
+   tamano natural y se recortaba al circulo — se veia un trozo de la cara ampliado.
+   Y \`.av img\` no casaba con NADA: el aviso no lleva imagenes. Regla muerta de un
+   lado y regla ausente del otro, desde la v1.7.0.
+   El catalogo no podia ensenarlo: no pinta ni un solo avatar con <img>, solo la
+   silueta en SVG, que si estaba cubierta por esta misma regla. */
+.avatar img, .avatar-silueta { width: 100%; height: 100%; object-fit: cover; display: block; }
 .avatar-marco { background: var(--marco-acento); color: var(--marco-fondo); }
 .avatar-rejilla { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
 .avatar-caso { display: flex; flex-direction: column; align-items: center; gap: 4px;
