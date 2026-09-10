@@ -263,6 +263,12 @@ export function SelectorBusqueda({
 
   const reintentar = useCallback(() => setIntento((n) => n + 1), []);
 
+  /** R103 (corregido) · lo tecleado que sobrevive a «Crear» hasta que haya
+   *  elección. Se suelta en cuanto el producto responde con un `valor`, o en
+   *  cuanto la persona vuelve a escribir: a partir de ahí manda lo nuevo. */
+  const [pendiente, setPendiente] = useState<string | null>(null);
+  useEffect(() => { if (valor !== null) setPendiente(null); }, [valor]);
+
   /**
    * R118 · LA ELECCIÓN TIENE QUE SOBREVIVIR A LA SIGUIENTE BÚSQUEDA.
    *
@@ -368,7 +374,20 @@ export function SelectorBusqueda({
 
   // Con la lista cerrada se muestra lo ELEGIDO, no lo que se tecleó. Dejar el
   // texto a medias hace creer que hay un filtro puesto que no existe.
-  const mostrado = abierto ? texto : elegida?.texto ?? '';
+  /**
+   * R103 (corregido) · LO QUE SE VE CON LA LISTA CERRADA.
+   *
+   * Con la lista cerrada se muestra lo ELEGIDO. Pero «Crear» no elige —el alta
+   * es del producto y puede tardar o cancelarse— así que al cerrar tras pulsarlo
+   * no había nada que mostrar y **el campo salía en blanco**: exactamente lo que
+   * R103 dice que se evitó por diseño. El comentario de `crear()` afirmaba «NO
+   * se cierra ni se limpia» y la línea siguiente cerraba.
+   *
+   * Ahora lo tecleado sobrevive al cierre hasta que llegue una elección de
+   * verdad. Quien abra el alta, la cancele y vuelva, encuentra el nombre donde
+   * lo dejó.
+   */
+  const mostrado = abierto ? texto : elegida?.texto ?? pendiente ?? '';
 
   const filtradas = useMemo(() => {
     if (!abierto || !texto.trim()) return opciones;
@@ -461,9 +480,11 @@ export function SelectorBusqueda({
   function crear() {
     const t = texto.trim();
     onCrear?.(t);
-    // NO se cierra ni se limpia: crear es del producto y puede tardar o
-    // cancelarse. Cerrar aquí daría por hecho un alta que quizá no ocurre, y
-    // quien vuelva de cancelar se encontraría el campo en blanco.
+    // Se cierra la lista —ya no hay nada que elegir en ella— pero NO se limpia
+    // lo tecleado: crear es del producto y puede tardar o cancelarse, y dar por
+    // hecho un alta que quizá no ocurre dejaría el campo en blanco a quien
+    // vuelve de cancelar. `pendiente` es lo que lo sostiene.
+    setPendiente(t);
     setAbierto(false);
   }
 
@@ -600,7 +621,7 @@ export function SelectorBusqueda({
           placeholder={placeholder}
           disabled={deshabilitado}
           value={mostrado}
-          onChange={(e) => { setTexto(e.target.value); setAbierto(true); }}
+          onChange={(e) => { setPendiente(null); setTexto(e.target.value); setAbierto(true); }}
           onFocus={() => setAbierto(true)}
           onKeyDown={alTeclado}
         />

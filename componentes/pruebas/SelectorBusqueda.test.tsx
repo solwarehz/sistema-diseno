@@ -32,6 +32,46 @@ const pintar = (props: Partial<React.ComponentProps<typeof SelectorBusqueda>> = 
 const abrir = async (u: ReturnType<typeof userEvent.setup>) =>
   u.click(screen.getByRole('combobox'));
 
+describe('R103 · lo tecleado sobrevive a «Crear»', () => {
+  it('R103 · tras crear, el campo NO se queda en blanco', async () => {
+    const u = userEvent.setup();
+    const onCrear = vi.fn();
+    pintar({ onCrear, textoCrear: (t) => `Crear «${t}»` });
+    const campo = screen.getByRole('combobox');
+
+    await u.click(campo);
+    await u.type(campo, 'Huaraz Vega, Ana');
+    await u.click(screen.getByText('Crear «Huaraz Vega, Ana»'));
+
+    // El comentario del código prometía «NO se limpia» y la línea siguiente
+    // cerraba: al cerrar se enseña lo ELEGIDO, y crear no elige, así que el
+    // campo salía vacío justo al disparar el alta. Quien abría el alta, la
+    // cancelaba y volvía, se encontraba su texto borrado.
+    expect(onCrear).toHaveBeenCalledWith('Huaraz Vega, Ana');
+    expect(campo).toHaveValue('Huaraz Vega, Ana');
+  });
+
+  it('R103 · y se suelta en cuanto llega una elección de verdad', async () => {
+    const u = userEvent.setup();
+    const onCrear = vi.fn();
+    const { rerender } = pintar({ onCrear });
+    const campo = screen.getByRole('combobox');
+    await u.click(campo);
+    await u.type(campo, 'Áncash');
+    // El producto vuelve del alta con el registro hecho y lo pasa por `valor`.
+    rerender(
+      <SelectorBusqueda
+        etiqueta="Departamento"
+        opciones={OPCIONES}
+        valor="anc"
+        onCambio={() => {}}
+        onCrear={onCrear}
+      />,
+    );
+    expect(campo).toHaveValue('Áncash');
+  });
+});
+
 describe('R103 · se puede volver a «sin elegir»', () => {
   it('R103 · sin `vacio` NO se ofrece vaciar: lo de producción no cambia', async () => {
     const u = userEvent.setup();

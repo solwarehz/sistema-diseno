@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.100.0";
+export const VERSION = "1.101.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,47 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.101.0', fecha: '2026-09-10',
+    que: 'RangoFecha entregaba MEDIO calendario: dos meses, panel de periodos, resumen y guion no existian',
+    porque:
+      'Lo reporto el equipo como «hay un error» y no era un error suelto. La hoja que viaja '
+      + 'estilizaba 24 clases `fc-*` y el componente emitia 14: ONCE viajaban en el paquete '
+      + 'sin que ningun producto pudiera activarlas. Faltaban `.fc-cal-marco` y '
+      + '`.fc-cal-cuerpo` —el marco y la rejilla de DOS meses—, `.fc-atajos` con sus cuatro '
+      + 'periodos, `.fc-resumen`, `.fc-guion` entre los dos campos, `.fc-meses`, '
+      + '`.fc-previo`, `.fc-vacio` y `.fc-activo`. Y la regla de <=620px que colapsa el '
+      + 'calendario a una columna cuelga de `.fc-cal-cuerpo`: sin esa clase NO PODIA '
+      + 'DISPARARSE NUNCA, asi que en un telefono el calendario salia a dos columnas '
+      + 'apretadas. '
+      + 'Ademas las reglas del campo iban atadas a `input.fc-campo` y el componente emite '
+      + '<button class="campo fc-campo"> —decidido y defendido en su cabecera: un input no '
+      + 'abre un dialogo—, asi que en cada producto el campo de fecha salia SIN icono de '
+      + 'calendario, SIN tope de ancho y SIN estado activo. La hoja pasa a seguir al '
+      + 'componente. '
+      + 'NINGUN CANDADO PODIA VERLO, y es la misma familia que R116: el cuerpo del '
+      + 'calendario del catalogo es un <div id="fc-cuerpo"> VACIO que rellena su guion, asi '
+      + 'que los que leen marcado estatico no tenian con que comparar. '
+      + 'De paso, arreglar esto podo DOS deudas declaradas que ya no divergen —`.fc-campo` '
+      + 'en el candado del elemento y `.fc-activo` en el de la promesa muerta— y descubrio '
+      + 'un defecto propio del foco: al saltar un ano el foco se perdia, porque mover la '
+      + 'ventana de meses es un dibujado mas y la bandera de enfocar ya se habia consumido.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
+  {
+    v: '1.100.1', fecha: '2026-09-10',
+    que: 'R103: lo tecleado sobrevive a «Crear». El comentario decia «NO se limpia» y el campo salia en blanco',
+    porque:
+      'Lo encontro la auditoria de peticiones/. R103 prometio que crear no limpia porque '
+      + '«cerrar dando por hecho un registro que quiza no ocurre dejaria el campo en blanco '
+      + 'a quien vuelve de cancelar». El comentario del codigo decia «NO se cierra ni se '
+      + 'limpia» y la LINEA SIGUIENTE cerraba; y al cerrar el campo enseña lo ELEGIDO, que '
+      + 'con crear es nada. Ese comentario viaja en el paquete, asi que quien leia la fuente '
+      + 'instalada leia una afirmacion falsa sobre el propio codigo.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.100.0', fecha: '2026-09-10',
     que: 'La foto del avatar: ni caia a las iniciales ni recibia recorte. Dos defectos de 1,7 anos',

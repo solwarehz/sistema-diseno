@@ -216,7 +216,6 @@ for (const [nombre, fuente] of fuentes) {
 const DEUDA = new Map([
   ['ep-titulo', 'SEMÁNTICO. El catálogo lo pinta <h4> y el componente <p>. Se ve igual —la hoja estiliza la clase, no la etiqueta— pero quien navega por encabezados con lector pierde el título del estado vacío.'],
   ['ms-ayuda', 'VISUAL. El catálogo lo pinta <p> y el componente <span>. Un span es en línea: la ayuda se pega al texto de la opción en vez de caer debajo, y el margen inferior de 12px no se aplica. Ojo al arreglarlo: <p> dentro de <label> no es válido, así que lo que cambia es el CATÁLOGO y la hoja gana display:block.'],
-  ['fc-campo', 'El catálogo enseña un <input> y el componente emite un <button>. El componente tiene razón —un campo que abre un calendario es un botón, no un campo de escritura— así que lo que está mal es lo que se enseña.'],
   ['cg-in', 'El catálogo lo pinta sobre <input> y el componente sobre <span>. Consecuencia: las reglas :disabled de .cg-in NO pueden casar nunca en el producto.'],
 ]);
 

@@ -1,10 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 10 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.100.0** — auditar los 35 documentos de
-`peticiones/` contra el código destapó dos defectos del **avatar** vivos desde la
-v1.7.0: la foto que no carga no caía a las iniciales, y la regla del recorte
-apuntaba al aviso en vez de al avatar
+**Versión del sistema:** MMI-DS **v1.101.0** — `RangoFecha` entregaba **medio
+calendario**: once clases `fc-*` viajaban en el paquete sin que ningún producto
+pudiera activarlas, incluida aquella de la que cuelga el colapso a ≤620px
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -48,10 +47,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · **943 reglas de 1448** · **692 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **68 páginas** (contadas en el HTML generado; decía 53 y llevaba tiempo desfasado) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **53 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.100.0.zip` · **56 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.101.0.zip` · **56 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.100.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.101.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — candado **dieciséis** · 135 unidades compuestas · **9 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -74,7 +73,36 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.100.0), con detalle
+### Lo de hoy (v1.101.0), con detalle
+
+**El equipo dijo «hay un error» en fecha y rango. No era un error suelto:
+`RangoFecha` entregaba la mitad del calendario que el catálogo enseña.** La hoja
+que viaja estilizaba **24** clases `fc-*` y el componente emitía **14**. Once
+viajaban sin que ningún producto pudiera activarlas: el marco, la rejilla de dos
+meses, el panel de periodos, el resumen, el guion, la vista previa y el campo
+activo.
+
+Y la regla de `≤620px` que colapsa el calendario a una columna **cuelga de
+`.fc-cal-cuerpo`**, que nadie emitía: en un teléfono salía a dos columnas
+apretadas y nadie sabía por qué.
+
+Encima, las reglas del campo iban atadas a `input.fc-campo` mientras el
+componente emite `<button class="campo fc-campo">` —decisión suya, defendida en
+su cabecera—, así que el campo de fecha salía **sin icono de calendario, sin
+tope de ancho y sin estado activo**. La hoja pasa a seguir al componente.
+
+**Ningún candado podía verlo**, y es la misma familia que R116: el cuerpo del
+calendario del catálogo es un `<div id="fc-cuerpo">` **vacío** que rellena su
+guion. Los que leen marcado estático no tenían con qué comparar.
+
+Arreglarlo **podó dos deudas declaradas** que ya no divergen y destapó un
+defecto propio del foco: al saltar un año el foco se perdía, porque mover la
+ventana de meses es un dibujado más y la bandera de enfocar ya se había
+consumido.
+
+---
+
+### Lo de ayer (v1.100.0), con detalle
 
 **Auditar los documentos contra el código, con cinco agentes en paralelo.** Los
 35 documentos de `peticiones/` se leyeron enteros y cada afirmación verificable
@@ -101,7 +129,7 @@ compara nadie».
 
 ---
 
-### Lo de ayer (v1.99.0), con detalle
+### Lo de la v1.99.0, con detalle
 
 **Dos defectos de papeles, y los dos en documentos que VIAJAN.**
 
@@ -1648,11 +1676,11 @@ sin comparar.
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.100.0
+Versión                      1.101.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         601   en 41 archivos
+Pruebas                         618   en 42 archivos
 Reglas que viajan               948   de 1454 · 694 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el

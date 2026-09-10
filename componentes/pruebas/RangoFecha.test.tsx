@@ -139,10 +139,18 @@ describe('Rango de fechas · lo que se anuncia', () => {
     const u = userEvent.setup();
     pintar();
     const dialogo = await abrirDesde(u);
-    const rejilla = within(dialogo).getByRole('grid');
-    expect(within(rejilla).getAllByRole('columnheader')).toHaveLength(7);
-    expect(within(rejilla).getAllByRole('row').length).toBeGreaterThanOrEqual(6);
-    expect(within(rejilla).getAllByRole('gridcell').length).toBe(42);
+    // Dos meses a la vista, dos rejillas: cada una con su propio nombre, que es
+    // lo que el patrón pide cuando se enseña más de un mes.
+    const rejillas = within(dialogo).getAllByRole('grid');
+    expect(rejillas).toHaveLength(2);
+    for (const rejilla of rejillas) {
+      expect(within(rejilla).getAllByRole('columnheader')).toHaveLength(7);
+      expect(within(rejilla).getAllByRole('row').length).toBeGreaterThanOrEqual(5);
+      // Ya no se pintan días del mes vecino: los huecos son huecos, porque con
+      // dos meses el mismo día saldría dos veces.
+      const celdas = within(rejilla).getAllByRole('gridcell').length;
+      expect(celdas % 7).toBe(0);
+    }
   });
 
   it('el mes se anuncia al cambiar', async () => {
@@ -150,8 +158,9 @@ describe('Rango de fechas · lo que se anuncia', () => {
     pintar();
     const dialogo = await abrirDesde(u);
     const titulo = dialogo.querySelector('[aria-live="polite"]')!;
-    expect(titulo).toHaveTextContent('marzo de 2026');
+    // Con dos meses, la cabecera los nombra a los dos.
+    expect(titulo).toHaveTextContent('marzo – abril de 2026');
     await u.click(screen.getByRole('button', { name: 'Mes siguiente' }));
-    expect(titulo).toHaveTextContent('abril de 2026');
+    expect(titulo).toHaveTextContent('abril – mayo de 2026');
   });
 });

@@ -18,7 +18,7 @@
  *   import 'sistema-diseno-ae/componentes.css';
  */
 export { TablaDatos, type Columna, type EstadoTabla, type TablaDatosProps } from './TablaDatos';
-export { RangoFecha, type RangoFechaProps } from './RangoFecha';
+export { RangoFecha, ATAJOS_POR_OMISION, type AtajoRango, type RangoFechaProps } from './RangoFecha';
 export { ZonaAvisos, type ZonaAvisosProps, type EnZonaAvisos } from './ZonaAvisos';
 export { CargaImagen, type FormatoCarga, type CargaImagenProps } from './CargaImagen';
 export { CargaId, MARCO_ID, type CaraId, type PasoId, type CargaIdProps } from './CargaId';

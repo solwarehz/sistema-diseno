@@ -8703,17 +8703,22 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .fc-guion .ic { width: 16px; height: 16px; }
 /* Cada campo lleva su icono de calendario. Como son de solo lectura, el icono
    es la única señal de que abren un calendario. */
-input.fc-campo { padding-right: 32px;
+/* NO se ata a \`input\`. El catalogo demuestra con <input> y el componente
+   emite <button class="campo fc-campo"> —decidido y defendido en su cabecera:
+   un input no abre un dialogo—. Atadas a \`input.\`, estas reglas NO alcanzaban
+   al componente: en cada producto el campo de fecha salia sin icono de
+   calendario, sin tope de ancho y sin estado activo. */
+.fc-campo { padding-right: 32px;
   background-repeat: no-repeat; background-position: right 12px center;
   background-size: 16px 16px;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236A6864' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='16' rx='2'/><path d='M3 10h18M8 3v4M16 3v4'/></svg>");
   cursor: pointer; }
-[data-tema='oscuro'] input.fc-campo {
+[data-tema='oscuro'] .fc-campo {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C3C1BD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='16' rx='2'/><path d='M3 10h18M8 3v4M16 3v4'/></svg>");
 }
 /* El campo que se está eligiendo se marca: con dos campos y un calendario hay
    que saber cuál se va a rellenar. */
-input.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 1px var(--accion); }
+.fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 1px var(--accion); }
 
 .fc-zona { position: relative; }
 .fc-cal { position: absolute; z-index: 40; top: calc(100% + 6px); left: 0;
@@ -10674,7 +10679,7 @@ select.campo:disabled { opacity: .75; }
    abrir para averiguarlo. Se dibuja con el del sistema. */
 /* Una fecha ocupa lo que ocupa: 10 caracteres. Estirarla a toda la columna la
    hace parecer un campo de texto libre. Mismo ancho que el rango. */
-input[type='date'].campo, input.fc-campo { max-width: 172px; }
+input[type='date'].campo, .fc-campo { max-width: 172px; }
 /* 32px de hueco: el icono ocupa de 12 a 28 desde el borde. */
 input[type='date'].campo {
   appearance: none; -webkit-appearance: none;

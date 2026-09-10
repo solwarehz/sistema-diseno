@@ -154,7 +154,6 @@ const DEUDA = new Map([
   ['cf-aviso',   'Confirmación en línea · la variante de aviso de la banda. El componente emite `.cf-banda` a secas, así que la confirmación con tono de advertencia —su caja y su texto— no se puede pedir desde ningún producto.'],
   ['chip-punto', 'Chip · el punto que acompaña al texto. Es la enfermedad R34, ya auditada el 2026-08-10: el catálogo lo pinta y el React entrega solo texto. Duele más que las demás porque el punto existe para NO depender del color (SC 1.4.1).'],
   ['corto',      'Estados · la línea corta del esqueleto de carga. Sin ella, todas las líneas salen del mismo ancho y el esqueleto no se parece al texto que va a sustituir.'],
-  ['fc-activo',  'RangoFecha · qué extremo del rango se está editando. Ningún producto puede resaltar el campo activo, así que con el calendario abierto no se ve si se está poniendo el desde o el hasta.'],
   ['fijo',       'MarcoApp · el grupo de navegación clavado abierto. No hay forma de fijarlo desde ningún producto.'],
   ['mono-lista', 'Utilidades · la variante de lista del bloque monoespaciado. Solo viaja el bloque suelto.'],
   ['tb-detalle', 'TablaDatos · el detalle plegable de la fila. Declarado PENDIENTE en `comportamiento.md` (R16 y R17 de la tabla): el componente no lo hace todavía, y la hoja ya lo lleva.'],
