@@ -19,11 +19,10 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.97.0** — R118: el selector con búsqueda sabe **buscar
-contra el servidor** (`modo="servidor"`, la misma palabra que `TablaDatos`). El
-catálogo lo prometía desde su primera versión —«cientos o miles»— sin nada
-detrás. El componente se queda con el ciclo entero: rebote, cancelación y
-descarte de las respuestas que llegan fuera de orden.
+**Estado actual: v1.98.0** — R119: el **tercer** rojo de la identidad entra
+bajo vigilancia. §8.5 dice dos; midiendo los PNG hay tres, y el tercero
+—`#EC1C24`— está **dentro del escudo que el lockup lleva incrustado**. El mismo
+escudo sale de dos rojos distintos según de qué archivo se saque.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.97.0
+# Actualizar al sistema de diseño v1.98.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.97.0"
+npm install "github:solwarehz/sistema-diseno#v1.98.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,19 +27,19 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.97.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.98.0
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.97.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.98.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.97.0 --repo solwarehz/sistema-diseno
+gh release download v1.98.0 --repo solwarehz/sistema-diseno
 ```
 
 Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
@@ -341,6 +341,7 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 
 | 1.95.0 | **`SelectorBusqueda` entrega por fin lo que el catálogo enseña, en nueve puntos.** Se ven cuatro: el chevron **ahora gira** al abrir la lista, el visto ✓ de la opción elegida pasa **a la derecha** (estaba a la izquierda, 298,4 px de diferencia), la ayuda de la opción recibe su tipografía —13 px, secundario— y deja de salir del mismo cuerpo que el nombre, y la fila de «sin resultados» **dice qué se buscó** en vez de «No hay coincidencias». Se teclean cuatro: **↑ abre la lista**, las flechas **ciclan**, **Inicio y Fin** funcionan, y **Tab elige lo marcado** — antes tabular con una coincidencia marcada dejaba el campo **vacío**. **Nada rompe:** ninguna clase pública cambia de nombre y `textoVacio` sigue admitiendo una cadena. **Y les afecta aunque no usen el selector:** `Paginacion` no emitía `activa`, así que **la página en curso no se pintaba en ninguna pantalla** — ahora sí |
 
+| 1.98.0 | **Nada que cambiar en su código: es vigilancia, no una función.** MMI-DS §8.5 declara **dos** rojos en la identidad; midiendo los PNG píxel a píxel hay **tres**. El tercero, `#EC1C24`, está **dentro del escudo que el lockup lleva incrustado** —y el escudo suelto pinta ese mismo escudo en `#E30613`—, así que el defecto no es «el escudo usa un rojo y el lockup otro»: es que **el mismo escudo sale de dos rojos distintos** según de qué archivo se saque. Entra en la familia `marca` como `marca_rojo_escudo_lockup`: **conocido y NO autorizado**, igual que `marca_rojo_lockup`. Si lo escriben a mano en un producto, el candado de color ahora lo ve. Corregidas de paso dos cosas que este repositorio daba por ciertas: el escudo suelto **sí existe** (`AE.png`, 1063×1291, fondo transparente), y el casi-negro `#1D1D1B` **no es** el wordmark «ALBERT EINSTEIN» —ese es rojo— sino «COLEGIO» y el lema |
 | 1.97.0 | **`SelectorBusqueda` sabe buscar contra el servidor.** Nuevo `modo="servidor"` —la misma palabra que en `TablaDatos`— con `onBuscar(texto, senal) => Promise<OpcionBusqueda[]>`. **Nada que cambiar en su código si no lo usa:** sin `modo`, todo sigue filtrando en local exactamente igual. Esta página lo prometía desde su primera versión en la tabla «Cuál de los dos» —«cientos o miles: con búsqueda **contra el servidor**»— y no había con qué cumplirlo. **El ciclo entero es del componente**, no suyo: rebote de 300 ms, cancelación de la consulta anterior con `AbortSignal` y descarte de la respuesta que llegue fuera de orden —esa carrera es un fallo silencioso, y repartirla por cada pantalla es repartir el mismo defecto—. Mientras busca pinta **esqueleto** (nunca antes de 300 ms) con `aria-busy`; si la consulta se cae, la fila **reintenta** con ratón y con Enter. Y arregla un defecto que este modo destapó: **la elección ya no se evapora** al seguir buscando |
 | 1.96.0 | **Nada que cambiar en su código: es una garantía, no una función.** La v1.95.0 arregló a mano las nueve divergencias del `SelectorBusqueda`, pero lo que las fijaba eran pruebas **escritas a mano** con lo que el catálogo enseñaba ese día: el día que el catálogo cambie, seguirían en verde y las dos superficies otra vez distintas. Ahora el catálogo **se ejecuta** dentro de las pruebas, se despliega su lista, y se compara árbol contra árbol con la que emite el componente **alimentado con los mismos datos**. Verificado en rojo reintroduciendo dos de los nueve defectos, y también rompiendo **el catálogo**: ahí las 34 pruebas anteriores seguían en verde. **Queda declarado y sin cerrar:** el vacío por omisión (`.sel-vacio`, cuando no se pasa `onCrear`) **no tiene demo en el catálogo** y por tanto no tiene promesa con la que compararse |
 

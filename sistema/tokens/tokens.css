@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.97.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.98.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -287,7 +287,7 @@
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   RAMPAS Y FAMILIAS CATEGÓRICAS — el inventario completo, 123 escalones.
+   RAMPAS Y FAMILIAS CATEGÓRICAS — el inventario completo, 124 escalones.
 
    Un solo deletreo en todo el sistema. El escalón se llama `ambar_900` y esa
    MISMA cadena es la variable `--ambar_900` y la clase `.color-ambar_900`.
@@ -428,6 +428,7 @@
   --marca_azul: #004AAD;
   --marca_rojo_lockup: #EC2027;
   --marca_negro_lockup: #1D1D1B;
+  --marca_rojo_escudo_lockup: #EC1C24;
 }
 
 .color-azul_50 { background-color: var(--azul_50); }
@@ -553,6 +554,7 @@
 .color-marca_azul { background-color: var(--marca_azul); }
 .color-marca_rojo_lockup { background-color: var(--marca_rojo_lockup); }
 .color-marca_negro_lockup { background-color: var(--marca_negro_lockup); }
+.color-marca_rojo_escudo_lockup { background-color: var(--marca_rojo_escudo_lockup); }
 
 /* Y una por TOKEN SEMANTICO, con el mismo deletreo: `.token-accion`.
 

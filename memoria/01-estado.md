@@ -1,10 +1,9 @@
 # Estado del proyecto
 
-**Última actualización:** 9 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.97.0** — el selector con búsqueda sabe
-buscar **contra el servidor**, que el catálogo prometía desde su primera versión
-sin nada detrás. El ciclo entero —rebote, cancelación y descarte de lo que llega
-fuera de orden— es del componente, no del producto
+**Última actualización:** 10 de septiembre de 2026
+**Versión del sistema:** MMI-DS **v1.98.0** — el **tercer** rojo de la
+identidad, que nadie había contado, entra bajo vigilancia. El mismo escudo sale
+de dos rojos distintos según de qué archivo se saque
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -19,21 +18,18 @@ fuera de orden— es del componente, no del producto
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —34 componentes
-publicados, la hoja que viaja, **dieciséis candados**, 594 pruebas—. Las últimas
-versiones fueron sobre **quién vigila que las dos superficies no se separen**.
-Ésta es distinta: es una **promesa publicada que no tenía nada detrás**. La
-tabla «Cuál de los dos» del catálogo manda al servidor a partir de «cientos o
-miles» desde que existe esa página, y el componente solo sabía `includes` sobre
-un array fijo. Ningún candado podía verlo — todos comparan el catálogo con el
-componente, y aquí lo que faltaba no estaba en ninguno de los dos: estaba en la
-prosa.
+publicados, la hoja que viaja, **dieciséis candados**, 594 pruebas—. Lo de hoy no
+es código: es **mirar los activos de marca con una herramienta en vez de con la
+memoria**. Se decodificaron los PNG, se contaron píxeles opacos y se localizó
+cada color por su caja, y de ahí salieron tres cosas que el repositorio daba por
+ciertas y no lo eran.
 
-Ahora existe `modo="servidor"`, con la misma palabra y el mismo significado que
-en `TablaDatos`. Y **el ciclo de la consulta es del componente**: el rebote, la
-cancelación de la anterior y el descarte de la que llega fuera de orden. Esa
-carrera es un fallo silencioso —se teclea «ana», la respuesta de «an» llega
-después, y la lista enseña otra búsqueda sin que nada avise—, y dejarla en cada
-producto era repartir el mismo defecto tantas veces como pantallas haya.
+La primera es un **tercer rojo** que §8.5 no cuenta, y que no está donde nadie
+buscaba: `#EC1C24` vive **dentro del escudo que el lockup lleva incrustado**,
+mientras el escudo suelto pinta ese mismo escudo en `#E30613`. El defecto no es
+«el escudo usa un rojo y el lockup usa otro» — es que **el mismo escudo sale de
+dos rojos distintos según de qué archivo se saque**. Ya tiene nombre, y por tanto
+candado.
 
 ---
 
@@ -51,10 +47,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · **943 reglas de 1448** · **692 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **68 páginas** (contadas en el HTML generado; decía 53 y llevaba tiempo desfasado) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **53 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.97.0.zip` · **56 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.98.0.zip` · **56 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.97.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.98.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — candado **dieciséis** · 135 unidades compuestas · **9 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -77,7 +73,39 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.97.0), con detalle
+### Lo de hoy (v1.98.0), con detalle
+
+**R119 · Los activos de marca, medidos en vez de recordados.** El encargo era
+pasarle requerimientos al equipo de diseño. Al escribirlos se decodificaron los
+PNG con un lector escrito a mano —no hay ImageMagick ni se instala nada— y
+aparecieron tres correcciones a lo que este repositorio afirmaba:
+
+| Lo que se decía | Lo que hay |
+|---|---|
+| «El escudo suelto **no existe**; solo está incrustado en los lockups» (`LEEME.md`) | **Sí existe**: `imagenes/AE.png`, 1063 × 1291, fondo transparente. Lo que no existe es el **juego de tamaños** de §10 |
+| «§8.5: **dos** rojos en la identidad» | **Tres.** `#E30613` (escudo suelto), `#EC2027` (wordmark) y `#EC1C24` (el escudo **dentro** del lockup) |
+| «`#1D1D1B` es el texto del lockup» | Lo es, pero **no el wordmark**: «ALBERT EINSTEIN» es rojo. El casi-negro son dos bandas de 7 px — «COLEGIO» arriba e «UN EINSTINO: UN TRIUNFADOR» abajo |
+
+**El tercer rojo es el hallazgo, y su forma importa.** Localizado por su caja:
+x 23-53, y 32-71, que cae **dentro** de la zona del escudo (x 0-66) y no en
+ningún texto. Cuatro unidades de verde y tres de azul de diferencia con
+`#E30613` no son una decisión de diseño: son la huella de un recoloreado o de un
+perfil de color distinto. Entra en `categoricas.marca` como
+`rojo_escudo_lockup` — **conocido y no autorizado**, que es lo que la regla del
+usuario permite hacer sin consultar. Nombrarlo lo mete bajo el candado de color;
+autorizarlo no lo decide el agente.
+
+**Y una corrección a un documento propio, ya publicado.** El anuncio de
+requerimientos decía que el `#1D1D1B` era el wordmark y que el caso era un
+«incumplimiento de SC 1.4.3». Las dos cosas mal: el wordmark es rojo, y **WCAG
+2.1 exime expresamente a los logotipos** del mínimo de contraste. Sigue siendo
+un problema real de legibilidad —«COLEGIO» y el lema desaparecen sobre la
+lateral— pero **no es un incumplimiento normativo**, y llamarlo así era
+sobreactuar. Corregido en el repositorio y en la página que se pasó al equipo.
+
+---
+
+### Lo de ayer (v1.97.0), con detalle
 
 **R118 · El selector busca contra el servidor.** Sus props eran catorce y
 ninguna asíncrona: `filtradas` era `normalizar(o.texto).includes(q)` sobre el
@@ -132,7 +160,7 @@ anterior.
 
 ---
 
-### Lo de ayer (v1.96.0), con detalle
+### Lo de la v1.96.0, con detalle
 
 **R116 · Lo que R115 dejó abierto: quién vigila que no vuelvan.** Las nueve
 divergencias del selector se arreglaron a mano y se fijaron con diecisiete
@@ -1564,7 +1592,7 @@ sin comparar.
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.97.0
+Versión                      1.98.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)

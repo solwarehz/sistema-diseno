@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.97.0";
+export const VERSION = "1.98.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,29 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.98.0', fecha: '2026-09-10',
+    que: 'R119: el TERCER rojo de la identidad, que nadie habia contado, entra bajo vigilancia',
+    porque:
+      'MMI-DS §8.5 declara DOS rojos en la identidad —el del escudo y el del lockup— y el '
+      + 'sistema los nombraba los dos. Al decodificar los PNG y localizar cada color por su '
+      + 'caja aparecio un TERCERO: #EC1C24, en x 23-53 e y 32-71 del lockup, que es DENTRO '
+      + 'del escudo incrustado y no en ningun texto. El escudo suelto (`AE.png`) pinta ese '
+      + 'mismo escudo en #E30613. Asi que el defecto no es «el escudo usa un rojo y el '
+      + 'lockup usa otro»: es que EL MISMO ESCUDO sale de dos rojos distintos segun de que '
+      + 'archivo se saque, y 4 unidades de verde de diferencia es lo que deja un recoloreado '
+      + 'o un perfil de color distinto, no un criterio de diseno. Se NOMBRA, que es libre, y '
+      + 'no se autoriza, que lo decide el responsable: mientras no tuviera nombre nada '
+      + 'impedia que alguien lo sacara del PNG y lo escribiera a mano en un producto, que es '
+      + 'exactamente el agujero que la familia `marca` existe para tapar. De paso quedan '
+      + 'corregidas dos cosas que este repositorio daba por ciertas y no lo eran: el escudo '
+      + 'suelto SI existe —`imagenes/AE.png`, 1063x1291 con fondo transparente—, contra lo '
+      + 'que decia el inventario de `marca/02_identidad/LEEME.md`; y el casi-negro #1D1D1B '
+      + 'del lockup NO es el wordmark «ALBERT EINSTEIN» —ese es rojo #EC2027— sino las dos '
+      + 'bandas de 7px de «COLEGIO» e «UN EINSTINO: UN TRIUNFADOR».',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.97.0', fecha: '2026-09-09',
     que: 'R118: el selector con busqueda sabe buscar CONTRA EL SERVIDOR, que el catalogo prometia sin nada detras',
@@ -3515,6 +3538,23 @@ export const categoricas = {
     // coinciden con los nuestros.
     rojo_lockup:   '#EC2027',
     negro_lockup:  '#1D1D1B', // texto del lockup. 1,08:1 sobre pagina oscura
+
+    // EL TERCERO, que nadie habia contado. §8.5 dice «dos rojos»; hay TRES.
+    //
+    // Salio de decodificar el PNG y localizar cada color por su caja. Este vive
+    // en x 23-53, y 32-71 — DENTRO del escudo que el lockup lleva incrustado,
+    // no en el texto. Y el escudo suelto (`AE.png`) usa `marca_rojo` #E30613.
+    //
+    // Es decir: no son «el rojo del escudo y el rojo del lockup». Es EL MISMO
+    // ESCUDO pintado de dos rojos distintos segun de que archivo se saque.
+    // Eso no es una decision de identidad, es deriva de reexportacion — se
+    // separan 4 unidades de verde y 3 de azul, que es lo que deja un
+    // recoloreado o un perfil de color distinto, no un criterio.
+    //
+    // Nombrarlo no lo autoriza: lo mete bajo vigilancia, que es justo lo que
+    // no tenia. Mientras no tuviera nombre, nadie impedia que alguien lo
+    // sacara del PNG y lo escribiera a mano en un producto.
+    rojo_escudo_lockup: '#EC1C24',
   },
   identidad: {
     1: '#0E6F63', // verde azulado
