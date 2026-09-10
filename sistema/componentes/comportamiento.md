@@ -1,6 +1,4 @@
-| **7** | **Obligatorio.** (R102, v1.78.0) **El rótulo va DENTRO de la fila**, no encima: rótulo, disparador y lo cargado en **un solo renglón**. Lo pidió el responsable —«Foto del trabajador · Cambiar foto · Foto del trabajador, todo en una sola línea»—. Es la excepción declarada a la regla del formulario (la etiqueta va encima del campo) y se sostiene porque aquí el rótulo no encabeza una caja de escribir, encabeza un mando: el mismo trato que ya reciben el filtro de la barra (`.top-filtros`) y el tamaño de página de la paginación (`.pgn`). **Consecuencia declarada:** con rótulos de distinta longitud, los disparadores de dos filas seguidas no caen sobre la misma columna. |
-| **8** | **Obligatorio.** (R102, v1.78.0) **Las tres cargas comparten rótulo, nota, error y vacío** — `.cx-et`, `.cx-nota`, `.cx-error`, `.cx-vacio`—, también `CargaImagen` en `caja`. Antes tenía los suyos: `.ci-et` **ni siquiera fijaba el color**, así que en un mismo formulario el rótulo de la imagen podía salir de otro tono que el del PDF y el del ID; `.ci-nota` y `.ci-error` eran declaraciones idénticas con otro nombre, y el vacío se llamaba `.ci-vacia` —hasta con otro género—. De `.ci-*` queda solo lo que de verdad es suyo: la caja, la máscara y el editor de encuadre. Dos nombres para el mismo estilo es la manera de que un día se separen. |
-| **9** | Del proyecto: qué dice la nota y qué dice el estado vacío. El sistema decide dónde van y cuánto ocupan. |# Contrato de comportamiento
+# Contrato de comportamiento
 
 Qué **hace** cada elemento, no cómo se ve. El aspecto ya lo entrega
 `componentes.css`; esto es la otra mitad, y es la que hoy se descubre pulsando.
@@ -25,6 +23,32 @@ memoria de nadie.
 > puede confiar en él. Ahora lo comprueba un candado —`verificar-contrato.mjs`—
 > que falla la publicación si una regla obligatoria no tiene prueba que la
 > respalde.
+
+---
+
+## Concordancia de registros — léase antes de citar una «R»
+
+**Hay dos registros de requerimientos y durante dos versiones se solaparon.** El
+del equipo que pide —`requerimiento-R###-*.md`— y unos números que este sistema
+acuñó por su cuenta. Acuñarlos fue un error: **el registro es de quien escribe
+el requerimiento**, no de quien lo implementa.
+
+| Publicado como | En el registro del equipo | Versión |
+|---|---|---|
+| **R118** · búsqueda contra el servidor | **R123** · selector búsqueda asíncrono | v1.97.0 |
+| **R119** · el tercer rojo de la identidad | *(sin número: hallazgo interno, no pedido)* | v1.98.0 |
+
+Los dos números **se quedan como están** en lo ya publicado. Una etiqueta no se
+mueve y un ZIP entregado no se reescribe: quien instale `v1.97.0` leerá R118 en
+este mismo documento, y tiene que seguir cuadrando con lo que descargó.
+
+**Desde la v1.99.0 manda el registro del equipo.** Este sistema no acuña
+números: si un trabajo no tiene requerimiento, se describe por lo que hace y por
+la versión en que entró, sin inventarle una «R».
+
+> Cuidado con `R118` y `R119` a secas: en el registro del equipo son *diálogo
+> con acción en gerundio* y *editor de texto con huecos*, dos cosas que nada
+> tienen que ver con lo que este documento publica bajo esos números.
 
 ---
 
@@ -267,7 +291,9 @@ instancia suelta: la emiten las tres, y por eso no pueden divergir.
 | **4** | **Obligatorio.** (R102, v1.77.0) **El nombre del archivo se recorta; la extensión, jamás.** Cortar `boleta-…-2026.pdf` por el final se lleva justo el dato que dice qué es el archivo. El corte es por el último punto, y solo si no es el primer carácter: `.gitignore` no tiene extensión, tiene nombre. |
 | **5** | **Obligatorio.** (R102, v1.77.0) **La miniatura no sirve para reconocer**, sirve para saber que hay algo puesto y cuál de los dos es: a 22 px no se lee un documento. Reconocerlo es trabajo del visor, que se abre pulsándola — y entonces la miniatura **es un botón**, no una imagen con `onClick`, así que se alcanza con el tabulador y se abre con Enter. |
 | **6** | **Obligatorio.** (R102, v1.77.0) **El comportamiento no cambió con la forma.** Lo que cada carga comprueba, comprime, borronea y entrega es exactamente lo de antes: R102 solo cambia cómo se presenta al empezar y qué forma tiene el resultado. Ninguna regla de las tres secciones siguientes se toca. |
-| **7** | Del proyecto: qué dice la nota y qué dice el estado vacío. El sistema decide dónde van y cuánto ocupan. |
+| **7** | **Obligatorio.** (R102, v1.78.0) **El rótulo va DENTRO de la fila**, no encima: rótulo, disparador y lo cargado en **un solo renglón**. Lo pidió el responsable —«Foto del trabajador · Cambiar foto · Foto del trabajador, todo en una sola línea»—. Es la excepción declarada a la regla del formulario (la etiqueta va encima del campo) y se sostiene porque aquí el rótulo no encabeza una caja de escribir, encabeza un mando: el mismo trato que ya reciben el filtro de la barra (`.top-filtros`) y el tamaño de página de la paginación (`.pgn`). **Consecuencia declarada:** con rótulos de distinta longitud, los disparadores de dos filas seguidas no caen sobre la misma columna. |
+| **8** | **Obligatorio.** (R102, v1.78.0) **Las tres cargas comparten rótulo, nota, error y vacío** — `.cx-et`, `.cx-nota`, `.cx-error`, `.cx-vacio`—, también `CargaImagen` en `caja`. Antes tenía los suyos: `.ci-et` **ni siquiera fijaba el color**, así que en un mismo formulario el rótulo de la imagen podía salir de otro tono que el del PDF y el del ID; `.ci-nota` y `.ci-error` eran declaraciones idénticas con otro nombre, y el vacío se llamaba `.ci-vacia` —hasta con otro género—. De `.ci-*` queda solo lo que de verdad es suyo: la caja, la máscara y el editor de encuadre. Dos nombres para el mismo estilo es la manera de que un día se separen. |
+| **9** | Del proyecto: qué dice la nota y qué dice el estado vacío. El sistema decide dónde van y cuánto ocupan. |
 
 ---
 

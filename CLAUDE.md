@@ -19,10 +19,10 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.98.0** — R119: el **tercer** rojo de la identidad entra
-bajo vigilancia. §8.5 dice dos; midiendo los PNG hay tres, y el tercero
-—`#EC1C24`— está **dentro del escudo que el lockup lleva incrustado**. El mismo
-escudo sale de dos rojos distintos según de qué archivo se saque.
+**Estado actual: v1.99.0** — el contrato de comportamiento estaba **roto desde
+la v1.78.0**: tres reglas sueltas al principio del archivo y el titular metido
+dentro de una celda. Veintiuna versiones, y ningún candado lo veía. Se declara
+además la **concordancia de registros** (§4ter).
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
@@ -97,6 +97,25 @@ Dos huecos son **trabajo de diseñador** y no se resuelven con código:
 Y un defecto de identidad abierto (§8.5): el escudo usa `#E30613`, el lockup usa
 `#EC2027`. **Son dos rojos distintos en la misma identidad.** El sistema adopta
 `#E30613` porque el escudo es el elemento primario.
+
+---
+
+## 4ter · El registro de requerimientos no es del agente
+
+Los requerimientos llegan numerados desde el equipo que los pide
+—`requerimiento-R###-*.md`—. **Ese registro es la fuente de verdad y el agente
+no acuña números en él.**
+
+Se saltó el 2026-09-09: existía `R123 · selector búsqueda asíncrono` desde las
+16:52 y el trabajo se publicó a las 20:27 como **R118**, un número inventado
+mirando el `R117` del historial de git. Colisionó con el R118 real del equipo
+—*diálogo con acción en gerundio*— y con el R119 —*editor de texto con
+huecos*—. Como la etiqueta y el ZIP de `v1.97.0` ya estaban entregados y no se
+reescriben, el arreglo fue una **tabla de concordancia** en
+`sistema/componentes/comportamiento.md`, no un renombrado.
+
+Si un trabajo no tiene requerimiento detrás, se describe por lo que hace y por
+la versión en que entra. **Sin «R» inventada.**
 
 ---
 

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.98.0";
+export const VERSION = "1.99.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,33 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.99.0', fecha: '2026-09-10',
+    que: 'El contrato de comportamiento estaba ROTO desde la v1.78.0, y se declara la concordancia de registros',
+    porque:
+      'Dos defectos de papeles, los dos en documentos QUE VIAJAN EN EL PAQUETE. '
+      + 'El primero: `comportamiento.md` empezaba con TRES FILAS DE TABLA sueltas y sin '
+      + 'cabecera, y su titular —«# Contrato de comportamiento»— estaba pegado al final de '
+      + 'la tercera, sin salto de linea, asi que no era un titular sino texto dentro de una '
+      + 'celda. La edicion de la v1.78.0 quiso insertar dos reglas en «Fila de carga» y '
+      + 'renumerar la vieja 7 a 9; el bloque entero aterrizo en la linea 1 del archivo en '
+      + 'vez de en su seccion. Lleva asi VEINTIUNA versiones y ningun candado lo veia: '
+      + 'verificar-contrato lee las filas por su numero y le da igual donde esten, asi que '
+      + 'las tres contaban como reglas validas y salian en verde. Devueltas a «Fila de '
+      + 'carga», que vuelve a ir del 1 al 9. '
+      + 'El segundo: este sistema ACUNO numeros de requerimiento que no le pertenecian. El '
+      + 'registro lo escribe el equipo que pide —`requerimiento-R###-*.md`— y ya existia '
+      + '`R123 · selector busqueda asincrono` a las 16:52 del 09/09 cuando el trabajo se '
+      + 'publico a las 20:27 como R118, numero sacado de mirar el R117 del historial de '
+      + 'git. Choca con el R118 real —diálogo con accion en gerundio— y el R119 —editor de '
+      + 'texto con huecos—. Como la etiqueta y el ZIP de v1.97.0 ya estaban entregados y no '
+      + 'se reescriben, se declara una TABLA DE CONCORDANCIA en vez de renombrar: renombrar '
+      + 'dejaria a main diciendo una cosa y al ZIP descargado otra, que es la contradiccion '
+      + 'viva que este repositorio prohibe. Desde aqui manda el registro del equipo y el '
+      + 'agente no acuna numeros, regla escrita en CLAUDE.md §4ter.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.98.0', fecha: '2026-09-10',
     que: 'R119: el TERCER rojo de la identidad, que nadie habia contado, entra bajo vigilancia',

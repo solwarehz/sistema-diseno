@@ -1,9 +1,10 @@
 # Estado del proyecto
 
 **Última actualización:** 10 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.98.0** — el **tercer** rojo de la
-identidad, que nadie había contado, entra bajo vigilancia. El mismo escudo sale
-de dos rojos distintos según de qué archivo se saque
+**Versión del sistema:** MMI-DS **v1.99.0** — el contrato de comportamiento
+estaba **roto desde la v1.78.0** y ningún candado lo veía; y se declara la
+concordancia entre el registro de requerimientos del equipo y los números que
+este sistema acuñó sin que le correspondieran
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -47,10 +48,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · **943 reglas de 1448** · **692 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **68 páginas** (contadas en el HTML generado; decía 53 y llevaba tiempo desfasado) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **53 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.98.0.zip` · **56 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.99.0.zip` · **56 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.98.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.99.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — candado **dieciséis** · 135 unidades compuestas · **9 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -73,7 +74,35 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.98.0), con detalle
+### Lo de hoy (v1.99.0), con detalle
+
+**Dos defectos de papeles, y los dos en documentos que VIAJAN.**
+
+**1 · El contrato de comportamiento estaba roto desde la v1.78.0.** Empezaba con
+tres filas de tabla sueltas, sin cabecera, y el titular `# Contrato de
+comportamiento` pegado al final de la tercera **sin salto de línea** — es decir,
+no era un titular: era texto dentro de una celda. La edición de la v1.78.0 quiso
+insertar dos reglas en «Fila de carga» y renumerar la vieja 7 a 9; el bloque
+aterrizó en la línea 1 del archivo. **Veintiuna versiones así.**
+
+Y el candado no podía verlo: `verificar-contrato` localiza las filas por su
+número con una expresión regular y **le da igual dónde estén**, así que las tres
+contaban como reglas válidas y salía en verde. Es la misma familia que todo lo
+demás de este repositorio — un candado solo dice que lo que ese candado mira
+está bien.
+
+**2 · Este sistema acuñó números de requerimiento que no le pertenecían.** El
+registro lo escribe el equipo que pide, y `R123 · selector búsqueda asíncrono`
+ya existía a las 16:52 del 09/09 cuando el trabajo se publicó a las 20:27 como
+**R118** — número sacado de mirar el `R117` del historial de git. Choca con el
+R118 real (diálogo con acción en gerundio) y con el R119 (editor de texto con
+huecos). Se declara una **tabla de concordancia** en vez de renombrar: renombrar
+dejaría `main` diciendo una cosa y el ZIP ya descargado otra. Regla nueva en
+CLAUDE.md §4ter: **el agente no acuña números.**
+
+---
+
+### Lo de ayer (v1.98.0), con detalle
 
 **R119 · Los activos de marca, medidos en vez de recordados.** El encargo era
 pasarle requerimientos al equipo de diseño. Al escribirlos se decodificaron los
@@ -105,7 +134,7 @@ sobreactuar. Corregido en el repositorio y en la página que se pasó al equipo.
 
 ---
 
-### Lo de ayer (v1.97.0), con detalle
+### Lo de la v1.97.0, con detalle
 
 **R118 · El selector busca contra el servidor.** Sus props eran catorce y
 ninguna asíncrona: `filtradas` era `normalizar(o.texto).includes(q)` sobre el
@@ -1592,7 +1621,7 @@ sin comparar.
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.98.0
+Versión                      1.99.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
