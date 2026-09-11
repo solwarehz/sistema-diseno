@@ -8760,11 +8760,23 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
    el mes va en minuscula y solo sube la primera letra de la frase. */
 .fc-meses { font-size: 13px; font-weight: 600; }
 .fc-meses::first-letter { text-transform: uppercase; }
-.fc-cal-cuerpo { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 16px; }
+/* R129 · las columnas salen del NUMERO DE MESES, no cableadas a dos. Con
+   \`meses = 1\` y \`1fr 1fr\` el desplegable salia del doble de ancho con la
+   mitad derecha en blanco: la prop estaba publicada y entregaba un panel roto. */
+.fc-cal-cuerpo { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  gap: 20px; padding: 16px; }
 .fc-mes-tit { font-size: 12px; font-weight: 600;
   text-align: center; margin-bottom: 8px; }
 .fc-mes-tit::first-letter { text-transform: uppercase; }
-.fc-sem, .fc-dias { display: grid; grid-template-columns: repeat(7,1fr); }
+/* R126.1 (bis) · \`.fc-dias\` NO es rejilla de siete columnas. No contiene dias:
+   contiene FILAS. Darle siete columnas aplastaba cada semana entera dentro de
+   una de ~9px —«123456 78910111213»—, que es lo que midio Control
+   Administrativos en el DOM de la v1.103.0.
+   La v1.103.0 anadio la regla de la fila y NO retiro esta: el arreglo iba a
+   medias y en una pagina montada a mano parecia correcto. Se comprueba en el
+   catalogo de verdad, no en una maqueta propia. */
+.fc-sem { display: grid; grid-template-columns: repeat(7,1fr); }
+.fc-dias { display: grid; }
 /* R126.1 · LAS FILAS DEL CALENDARIO. Lo reporto Control Administrativos con la
    medicion: el catalogo mete las 42 celdas PLANAS en \`.fc-dias\`, pero el
    componente anida FILAS —\`role="row"\`— porque el patron \`grid\` de ARIA las
@@ -8788,7 +8800,11 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
    elegir, y el uso declarado de texto-pista dice «nunca contenido real».
    Sus pares ya son bloqueantes en el candado (sobre tarjeta y sobre hover).
    Va ANTES de .fc-ini/.fc-fin para que el extremo gane el color si coincide. */
-.fc-otro-mes { color: var(--texto-secundario); }
+/* R129 · \`.fc-otro-mes\` RETIRADA. Con dos meses a la vista el componente pinta
+   HUECOS y no dias del mes vecino —el mismo dia saldria dos veces y no se
+   sabria cual vale—, asi que desde la v1.101.0 no la emite nadie: ni React ni
+   el guion del catalogo. Una version anterior prometio mantenerla; se retira
+   DECLARANDOLO, que es lo contrario de dejarla viajando muerta. */
 .fc-vacio { cursor: default; }
 .fc-vacio:hover { background: transparent; }
 /* El interior del tramo y los extremos NO se pintan igual: si no, no se sabe
@@ -8803,7 +8819,15 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
    va a quedar. Antes usaba un azul más oscuro que aparecía de golpe. */
 .fc-previo { background: var(--accion); }
 .fc-resumen { font-size: 13px; color: var(--texto-secundario); margin: 16px 0 0; }
-@media (max-width: 620px) { .fc-cal-cuerpo { grid-template-columns: 1fr; } }
+/* R129 · en angosto se apilan los meses Y BAJA el panel de periodos. Antes solo
+   colapsaba la rejilla y los atajos seguian clavados al lado, con su borde
+   izquierdo y sus 152px, dentro de un desplegable absoluto sin limite derecho. */
+@media (max-width: 620px) {
+  .fc-cal-cuerpo { grid-auto-flow: row; }
+  .fc-cal-marco { flex-direction: column; }
+  .fc-atajos { border-left: 0; border-top: 1px solid var(--borde);
+    flex-direction: row; flex-wrap: wrap; gap: 12px; min-width: 0; }
+}
 
 /* Barra de progreso */
 .pr-rejilla { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 20px; }
@@ -12348,6 +12372,15 @@ ${COMPRESOR_PDF}
       // Semana que empieza en lunes: el domingo pasa de 0 a 6.
       var primero = (new Date(y, m, 1).getDay() + 6) % 7;
       var total = new Date(y, m + 1, 0).getDate();
+      // Las celdas se agrupan en FILAS, igual que el componente: el patron
+      // grid de ARIA las exige, y asi la hoja sirve a las dos superficies.
+      function filas(cs) {
+        var out = '';
+        for (var i = 0; i < cs.length; i += 7) {
+          out += '<div role="row">' + cs.slice(i, i + 7).join('') + '</div>';
+        }
+        return out;
+      }
       var celdas = [];
       for (var i = 0; i < primero; i++) celdas.push('<span class="fc-d fc-vacio"></span>');
       for (var d = 1; d <= total; d++) {
@@ -12367,7 +12400,7 @@ ${COMPRESOR_PDF}
       }
       return '<div class="fc-mes"><div class="fc-mes-tit">' + MESES[m] + ' ' + y + '</div>' +
         '<div class="fc-sem">' + DIAS.map(function (x) { return '<span>' + x + '</span>'; }).join('') + '</div>' +
-        '<div class="fc-dias">' + celdas.join('') + '</div></div>';
+        '<div class="fc-dias">' + filas(celdas) + '</div></div>';
     }
 
     var cajaIni = document.getElementById('fc-ini');

@@ -42,7 +42,7 @@ const abrir = async (
 };
 
 describe('los dos meses', () => {
-  it('se ven dos meses, y la cabecera los nombra a los dos', async () => {
+  it('[3] se ven dos meses, y la cabecera los nombra a los dos', async () => {
     const u = userEvent.setup();
     const dialogo = await abrir(u);
     expect(within(dialogo).getAllByRole('grid')).toHaveLength(2);
@@ -58,14 +58,14 @@ describe('los dos meses', () => {
     expect(dialogo.querySelector('.fc-cal-marco')).not.toBeNull();
   });
 
-  it('con `meses={1}` se vuelve a un solo mes', async () => {
+  it('[3] con `meses={1}` se vuelve a un solo mes', async () => {
     const u = userEvent.setup();
     pintar({ meses: 1 });
     await u.click(screen.getByRole('button', { name: /Desde/ }));
     expect(within(screen.getByRole('dialog')).getAllByRole('grid')).toHaveLength(1);
   });
 
-  it('no se pintan días del mes vecino: los huecos son huecos', async () => {
+  it('[4] no se pintan días del mes vecino: los huecos son huecos', async () => {
     const u = userEvent.setup();
     const dialogo = await abrir(u);
     const marzo = within(dialogo).getByRole('grid', { name: 'marzo de 2026' });
@@ -76,7 +76,7 @@ describe('los dos meses', () => {
 });
 
 describe('el panel de periodos', () => {
-  it('trae los cuatro del catálogo, en su orden', async () => {
+  it('[5] trae los cuatro del catálogo, en su orden', async () => {
     const u = userEvent.setup();
     const dialogo = await abrir(u);
     const nombres = ATAJOS_POR_OMISION.map((a) => a.texto);
@@ -86,7 +86,7 @@ describe('el panel de periodos', () => {
     }
   });
 
-  it('«Este mes» fija el rango entero y cierra', async () => {
+  it('[5] «Este mes» fija el rango entero y cierra', async () => {
     const u = userEvent.setup();
     const onCambio = vi.fn();
     pintar({ onCambio });
@@ -107,7 +107,7 @@ describe('el panel de periodos', () => {
     expect(onCambio).toHaveBeenCalledWith({ desde: '2026-02-01', hasta: '2026-02-28' });
   });
 
-  it('se puede sustituir por los periodos del producto', async () => {
+  it('[5] se puede sustituir por los periodos del producto', async () => {
     const u = userEvent.setup();
     pintar({
       atajos: [{
@@ -120,7 +120,7 @@ describe('el panel de periodos', () => {
     expect(within(dialogo).queryByRole('button', { name: 'Este mes' })).not.toBeInTheDocument();
   });
 
-  it('con `atajos={[]}` el panel no se pinta', async () => {
+  it('[5] con `atajos={[]}` el panel no se pinta', async () => {
     const u = userEvent.setup();
     pintar({ atajos: [] });
     const dialogo = await abrir(u, true);
@@ -134,7 +134,7 @@ describe('el resumen y el guion', () => {
     expect(container.querySelector('.fc-resumen')!.textContent).toBe('Sin rango elegido.');
   });
 
-  it('con el rango puesto, lo dice EN PALABRAS y no en ISO', () => {
+  it('[6] con el rango puesto, lo dice EN PALABRAS y no en ISO', () => {
     const { container } = pintar({ desde: '2026-03-02', hasta: '2026-03-06' });
     const t = container.querySelector('.fc-resumen')!.textContent!;
     expect(t).toContain('lunes 2 de marzo de 2026');
@@ -163,7 +163,7 @@ describe('el campo activo y la vista previa', () => {
     expect(container.querySelector('.fc-activo')).not.toBeNull();
   });
 
-  it('eligiendo el final, sobrevolar enseña el rango que SALDRÍA', async () => {
+  it('[7] eligiendo el final, sobrevolar enseña el rango que SALDRÍA', async () => {
     const u = userEvent.setup();
     const { container } = pintar({ desde: '2026-03-02' });
     await u.click(screen.getByRole('button', { name: /Hasta/ }));
@@ -191,7 +191,7 @@ describe('el campo activo y la vista previa', () => {
  * aspecto se comprobó en un navegador con la hoja entregada.
  */
 describe('R126 · el calendario se pinta como rejilla', () => {
-  it('R126 · cada semana es una fila propia, no un hijo suelto de `.fc-dias`', async () => {
+  it('[1] R126 · cada semana es una fila propia, no un hijo suelto de `.fc-dias`', async () => {
     const u = userEvent.setup();
     const dialogo = await abrir(u);
     const dias = dialogo.querySelector('.fc-dias')!;
@@ -208,7 +208,7 @@ describe('R126 · el calendario se pinta como rejilla', () => {
     }
   });
 
-  it('R126 · la cabecera de días es una fila más, con sus siete columnas', async () => {
+  it('[1] R126 · la cabecera de días es una fila más, con sus siete columnas', async () => {
     const u = userEvent.setup();
     const dialogo = await abrir(u);
     const sem = dialogo.querySelector('.fc-sem')!;
@@ -216,7 +216,7 @@ describe('R126 · el calendario se pinta como rejilla', () => {
     expect(sem.children.length).toBe(7);
   });
 
-  it('R126.2 · el rótulo y el valor son DOS hijos del botón, para poder apilarse', async () => {
+  it('[2] R126.2 · el rótulo y el valor son DOS hijos del botón, para poder apilarse', async () => {
     const { container } = pintar({ desde: '2026-03-05' });
     const campo = container.querySelector('button.fc-campo')!;
     expect(campo.querySelector('.cg-et')!.textContent).toBe('Desde');
@@ -224,5 +224,65 @@ describe('R126 · el calendario se pinta como rejilla', () => {
     // Se leía «DesdeElegir fecha» de corrido porque las reglas que los apilan
     // estaban escritas para `input.fc-campo` y esto es un <button>.
     expect(campo.tagName).toBe('BUTTON');
+  });
+});
+
+/**
+ * R129 · CAMBIAR DE MES NO DESBORDA.
+ *
+ * `new Date(a, m+n, 31)` con destino en un mes de 30 salta al siguiente. Lo
+ * encontró una auditoría adversaria, no una queja: AvPág desde el 31 de enero
+ * aterrizaba el **3 de marzo** —febrero entero saltado— y RePág desde el 31 de
+ * marzo no se movía. La prueba que cubría el teclado usaba siempre el día 15,
+ * que es el único tramo donde el desbordamiento no puede ocurrir.
+ */
+describe('R129 · los meses límite', () => {
+  const enDia = (dia: number, mes: number) => new Date(2026, mes, dia);
+
+  it('[10] AvPág desde un 31 cae en el último día del mes destino, no dos meses después', async () => {
+    const u = userEvent.setup();
+    // 31 de enero de 2026. Febrero tiene 28.
+    pintar({ hoy: enDia(31, 0), atajos: [] });
+    await u.click(screen.getByRole('button', { name: /Desde/ }));
+    await u.keyboard('{PageDown}');
+
+    expect(screen.getByRole('button', { name: /28 de febrero de 2026/ })).toHaveFocus();
+    expect(screen.queryByRole('button', { name: /de marzo de 2026/ })).toBeNull();
+  });
+
+  it('[10] RePág desde un 31 sí cambia de mes', async () => {
+    const u = userEvent.setup();
+    // 31 de marzo. Antes se quedaba en marzo, porque 31 de febrero desborda.
+    pintar({ hoy: enDia(31, 2), atajos: [] });
+    await u.click(screen.getByRole('button', { name: /Desde/ }));
+    await u.keyboard('{PageUp}');
+
+    expect(screen.getByRole('button', { name: /28 de febrero de 2026/ })).toHaveFocus();
+  });
+
+  it('[10] los cuatro atajos siguen cuadrando en meses de distinto largo', async () => {
+    const u = userEvent.setup();
+    const onCambio = vi.fn();
+    // 31 de marzo: «Mes pasado» tiene que dar febrero entero, no 3 de marzo.
+    pintar({ hoy: enDia(31, 2), onCambio });
+    await u.click(screen.getByRole('button', { name: /Desde/ }));
+    await u.click(screen.getByRole('button', { name: 'Mes pasado' }));
+    expect(onCambio).toHaveBeenCalledWith({ desde: '2026-02-01', hasta: '2026-02-28' });
+  });
+});
+
+describe('R129 · la vista previa se suelta', () => {
+  it('[7] al cerrar no queda medio mes pintado', async () => {
+    const u = userEvent.setup();
+    const { container } = pintar({ desde: '2026-03-02', atajos: [] });
+    await u.click(screen.getByRole('button', { name: /Hasta/ }));
+    await u.hover(screen.getByRole('button', { name: /viernes 6 de marzo de 2026/ }));
+    expect(container.querySelectorAll('.fc-dentro').length).toBeGreaterThan(0);
+
+    // Escape cierra. Antes `sobre` solo se limpiaba con `mouseleave`, así que
+    // al reabrir seguía pintado el tramo de un ratón que ya no está.
+    await u.keyboard('{Escape}');
+    await u.click(screen.getByRole('button', { name: /Hasta/ }));
+    expect(container.querySelectorAll('.fc-previo').length).toBe(0);
   });
 });

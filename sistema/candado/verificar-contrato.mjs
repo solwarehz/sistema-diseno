@@ -45,28 +45,107 @@ if (!existsSync(CONTRATO)) {
 
 const md = readFileSync(CONTRATO, 'utf8');
 
-// Cada regla es una fila de tabla que empieza por su número: `| **8** | …`
-const reglas = [...md.matchAll(/^\|\s*\*\*(\d+)\*\*\s*\|\s*(.+?)\s*\|\s*$/gm)].map((m) => ({
-  n: Number(m[1]),
-  texto: m[2],
-  obligatoria: m[2].includes('**Obligatorio.**'),
-  pendiente: m[2].includes('**PENDIENTE'),
-  delProyecto: /^Del proyecto/i.test(m[2]),
-}));
+/**
+ * EL NÚMERO DE REGLA NO ES ÚNICO, y por eso hace falta decir DÓNDE buscarlo.
+ *
+ * La numeración reinicia en cada sección, así que «17» existe en la tabla de
+ * datos y en el selector con búsqueda. Buscar `\bR17\b` en el montón de todas
+ * las pruebas hacía que una regla nueva saliera respaldada por una prueba de
+ * otro componente escrita meses antes: las cuatro reglas 17-20 del selector
+ * habrían salido en verde con CERO pruebas nuevas, porque `MarcoApp.test.tsx`
+ * y `TablaDatos.test.tsx` ya decían R17, R18, R19 y R20.
+ *
+ * Una sección puede declarar sus archivos de prueba con un comentario:
+ *
+ *     <!-- pruebas: RangoFecha.test.tsx, rango-fecha-anatomia.test.tsx -->
+ *
+ * Declarado, la búsqueda se limita a esos archivos y el respaldo pasa a ser
+ * real. Sin declarar, se mantiene el comportamiento antiguo —y se cuenta,
+ * porque una sección sin declarar es una sección cuyo respaldo no significa
+ * nada todavía.
+ */
+const leer = (f) => readFileSync(join(PRUEBAS, f), 'utf8');
+const ARCHIVOS = existsSync(PRUEBAS)
+  ? readdirSync(PRUEBAS).filter((f) => /\.tsx?$/.test(f))
+  : [];
+const TODO = ARCHIVOS.map(leer).join('\n');
 
-// Todo el texto de las pruebas, junto. Se busca la referencia al número de
-// regla en el nombre del `it`, que es donde se escribe.
-const textoPruebas = existsSync(PRUEBAS)
-  ? readdirSync(PRUEBAS)
-      .filter((f) => /\.tsx?$/.test(f))
-      .map((f) => readFileSync(join(PRUEBAS, f), 'utf8'))
-      .join('\n')
-  : '';
+/** Solo las líneas que NOMBRAN una prueba. Buscar `[0]` en el archivo entero
+ *  lo hacía casar con `filas[0]`, que aparece en veinte archivos: dos reglas
+ *  obligatorias salían en verde respaldadas por un índice de array. */
+const titulos = (texto) =>
+  texto.split('\n').filter((l) => /\b(it|test|describe)\s*\(/.test(l)).join('\n');
 
-const respaldada = (n) =>
-  new RegExp(`\\bR${n}\\b`).test(textoPruebas) || new RegExp(`\\[${n}\\]`).test(textoPruebas);
+const reglas = [];
+let seccion = '(principio)';
+let archivos = null;
+for (const linea of md.split('\n')) {
+  const h2 = linea.match(/^##\s+(.*)/);
+  const hsub = linea.match(/^#{3,4}\s+(.*)/);
+  // Una `##` abre ámbito nuevo. Las `###` y `####` HEREDAN: son subsecciones
+  // del mismo componente, y perderlo ahí dejaba fuera justo las reglas que
+  // motivaron este candado —el teclado del selector con búsqueda—.
+  if (h2) { seccion = h2[1].trim(); archivos = null; continue; }
+  if (hsub) { seccion = hsub[1].trim(); continue; }
+  const d = linea.match(/^<!--\s*pruebas:\s*(.+?)\s*-->/);
+  if (d) { archivos = d[1].split(',').map((x) => x.trim()).filter(Boolean); continue; }
+  // El número puede llevar sufijo —`17bis`, `0b`—. Sin esto, trece filas
+  // marcadas Obligatorio quedaban fuera de toda verificación.
+  const m = linea.match(/^\|\s*\*\*(\d+[a-z]*)\*\*\s*\|\s*(.+?)\s*\|\s*$/);
+  if (!m) continue;
+  reglas.push({
+    n: m[1],
+    texto: m[2],
+    seccion,
+    archivos,
+    obligatoria: m[2].includes('**Obligatorio.**'),
+    pendiente: m[2].includes('**PENDIENTE'),
+    delProyecto: /^Del proyecto/i.test(m[2]),
+  });
+}
 
-const sinRespaldo = reglas.filter((r) => r.obligatoria && !respaldada(r.n));
+/**
+ * CÓMO SE ATA UNA REGLA A SU PRUEBA, y por qué son dos formas.
+ *
+ * El número de FILA reinicia en cada sección, así que por sí solo no identifica
+ * nada: «17» existe en la tabla y en el selector. Hay dos maneras honestas de
+ * nombrarla en una prueba:
+ *
+ *   · Por el REQUERIMIENTO que la regla cita —`(R101, v1.76.0)`—, que es como
+ *     se ha escrito siempre en este repositorio: `it('R101 · …')`. Es único de
+ *     verdad y no depende de dónde caiga la fila.
+ *   · Por el número de fila entre corchetes —`it('[3] …')`—, para reglas que no
+ *     nacen de un requerimiento.
+ *
+ * Buscar el número de fila a secas era el error: daba por respaldadas las cinco
+ * reglas de «Estados de pantalla» con pruebas de `CargaId` y `TablaDatos` que
+ * solo compartían el número.
+ */
+const requisitos = (texto) => [...texto.matchAll(/\(R(\d+[a-z]*)[,)]/g)].map((m) => m[1]);
+
+const respaldada = (r) => {
+  let texto = TODO;
+  if (r.archivos) {
+    const faltan = r.archivos.filter((f) => !ARCHIVOS.includes(f));
+    if (faltan.length) return false;
+    texto = r.archivos.map(leer).join('\n');
+  }
+  const t = titulos(texto);
+  if (t.includes(`[${r.n}]`)) return true;
+  // Por el requerimiento citado, que es único de verdad…
+  if (requisitos(r.texto).some((q) => new RegExp(`\\bR${q}\\b`).test(t))) return true;
+  // …o por el número de fila, que es la otra convención viva en el repositorio.
+  // Sin `<!-- pruebas: -->` esta forma vale poco —el número reinicia en cada
+  // sección— y por eso se cuenta y se dice cuántas secciones van sin declarar.
+  return new RegExp(`\\bR${r.n}\\b`).test(t);
+};
+
+// Secciones sin declarar: su respaldo se busca en el MONTÓN de todas las
+// pruebas, así que una coincidencia de número basta. Se cuentan y se dicen.
+const sinDeclarar = [...new Set(reglas.filter((r) => !r.archivos).map((r) => r.seccion))];
+const cubiertas = reglas.filter((r) => r.obligatoria && r.archivos).length;
+
+const sinRespaldo = reglas.filter((r) => r.obligatoria && !respaldada(r));
 const pendientes = reglas.filter((r) => r.pendiente);
 
 console.log(`\n  Candado del contrato — MMI-DS v${VERSION}\n`);
@@ -74,7 +153,10 @@ console.log(`  Reglas:       ${reglas.length}`);
 console.log(`  Obligatorias: ${reglas.filter((r) => r.obligatoria).length}`);
 console.log(`  Pendientes:   ${pendientes.length} — declaradas, el componente no las hace`);
 console.log(`  Del proyecto: ${reglas.filter((r) => r.delProyecto).length}`);
-console.log(`  Sin respaldo: ${sinRespaldo.length}\n`);
+console.log(`  Sin respaldo: ${sinRespaldo.length}`);
+console.log(`  Atadas a SU archivo de pruebas: ${cubiertas} de ${reglas.filter((r) => r.obligatoria).length} obligatorias`);
+console.log(`  Secciones sin declarar: ${sinDeclarar.length} — su respaldo se busca en el`);
+console.log('                          montón y una coincidencia de número basta\n');
 
 if (pendientes.length) {
   console.log('  Declaradas PENDIENTE, que es decir la verdad:\n');

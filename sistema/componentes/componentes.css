@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.103.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.104.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -560,11 +560,13 @@ button.fc-campo{ display: flex; flex-direction: column; align-items: flex-start;
   border-bottom: 1px solid var(--borde); }
 .fc-meses{ font-size: 13px; font-weight: 600; }
 .fc-meses::first-letter{ text-transform: uppercase; }
-.fc-cal-cuerpo{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 16px; }
+.fc-cal-cuerpo{ display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  gap: 20px; padding: 16px; }
 .fc-mes-tit{ font-size: 12px; font-weight: 600;
   text-align: center; margin-bottom: 8px; }
 .fc-mes-tit::first-letter{ text-transform: uppercase; }
-.fc-sem, .fc-dias{ display: grid; grid-template-columns: repeat(7,1fr); }
+.fc-sem{ display: grid; grid-template-columns: repeat(7,1fr); }
+.fc-dias{ display: grid; }
 .fc-dias > [role='row']{ display: grid; grid-template-columns: repeat(7,1fr);
   grid-column: 1 / -1; }
 .fc-sem span{ font-size: 12px; font-weight: 500; color: var(--texto-secundario);
@@ -572,7 +574,6 @@ button.fc-campo{ display: flex; flex-direction: column; align-items: flex-start;
 .fc-d{ height: 30px; font: inherit; font-size: 12px; cursor: pointer;
   background: transparent; border: 0; color: var(--texto-principal); border-radius: 6px; }
 .fc-d:hover{ background: var(--fondo-fila-hover); }
-.fc-otro-mes{ color: var(--texto-secundario); }
 .fc-vacio{ cursor: default; }
 .fc-vacio:hover{ background: transparent; }
 .fc-dentro{ background: var(--fondo-fila-hover); border-radius: 0; }
@@ -584,7 +585,10 @@ button.fc-campo{ display: flex; flex-direction: column; align-items: flex-start;
 .fc-previo{ background: var(--accion); }
 .fc-resumen{ font-size: 13px; color: var(--texto-secundario); margin: 16px 0 0; }
 @media (max-width: 620px) {
-  .fc-cal-cuerpo{ grid-template-columns: 1fr; }
+  .fc-cal-cuerpo{ grid-auto-flow: row; }
+  .fc-cal-marco{ flex-direction: column; }
+  .fc-atajos{ border-left: 0; border-top: 1px solid var(--borde);
+    flex-direction: row; flex-wrap: wrap; gap: 12px; min-width: 0; }
 }
 input[type='date'].campo, .fc-campo{ max-width: 172px; }
 

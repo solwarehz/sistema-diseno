@@ -13,7 +13,7 @@ const hoja = readFileSync(
 );
 
 describe('R26 · la tabla simple es UNA tabla', () => {
-  it('cabecera y cuerpo NUNCA vuelven a ser dos tablas independientes', () => {
+  it('R42b · cabecera y cuerpo NUNCA vuelven a ser dos tablas independientes', () => {
     // El defecto: `.tabla-simple > thead { display: table }` — cada grupo
     // repartía columnas por su cuenta y los rótulos no caían sobre las celdas.
     expect(hoja).not.toMatch(/\.tabla-simple\s*>\s*thead[^{]*\{[^}]*display:\s*table\b/);

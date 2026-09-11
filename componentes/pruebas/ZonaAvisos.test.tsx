@@ -9,7 +9,7 @@ import { ZonaAvisos } from '../src/ZonaAvisos';
 import { Aviso } from '../src/Estados';
 
 describe('Zona de avisos — las dos regiones y su reparto', () => {
-  it('las regiones alert y status existen desde la carga, VACÍAS', () => {
+  it('[0] las regiones alert y status existen desde la carga, VACÍAS', () => {
     const { container } = render(<ZonaAvisos />);
     // Una región viva creada en el momento del fallo no la anuncian la
     // mayoría de lectores: tienen que estar en el árbol desde el principio.

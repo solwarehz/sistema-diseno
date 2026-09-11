@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.103.0";
+export const VERSION = "1.104.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,42 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.104.0', fecha: '2026-09-11',
+    que: 'R126-bis: el arreglo del calendario estaba A MEDIAS. Y el candado del contrato protegia 18 reglas de 175',
+    porque:
+      'Control Administrativos devolvio R126 con la medicion del DOM: la v1.103.0 anadio '
+      + 'la regla nueva y NO RETIRO LA VIEJA, asi que `.fc-dias` seguia recibiendo siete '
+      + 'columnas y cada semana se aplastaba en una de 9,26px — «123456 78910111213». '
+      + 'La verificacion de aquella version fallo por montar una pagina A MANO en vez de '
+      + 'abrir el catalogo: en una maqueta propia las filas ocupaban todo el ancho y '
+      + 'parecia correcto. Ahora se mide en el DOM del catalogo real: `.fc-dias` es UNA '
+      + 'columna de 184,8px, sus cinco hijos son todos `role="row"`, y cada fila tiene '
+      + 'siete columnas de 26,4px. '
+      + 'Su arreglo tal cual habria roto el catalogo, que metia las celdas PLANAS. Se hizo '
+      + 'que haya UNA SOLA ANATOMIA: el guion del catalogo emite filas como el componente. '
+      + 'Ademas cierra los cuatro defectos que una auditoria adversaria dejo abiertos: '
+      + '`.fc-otro-mes` retirada —la creo muerta la propia v1.101.0 y no lo declaro—, las '
+      + 'columnas salen del NUMERO de meses y no cableadas a dos, `sumarMeses` ya no '
+      + 'desborda (31-ene + 1 mes daba 3 de marzo y febrero entero saltado), y la vista '
+      + 'previa se suelta al cerrar y al cambiar de mes. '
+      + 'RANGOFECHA GANA CONTRATO: doce reglas, cuando no tenia ninguna. Era el componente '
+      + 'con mas promesa publicada y cero candado. '
+      + 'Y EL CANDADO DEL CONTRATO, que otra auditoria demostro que protegia 18 reglas de '
+      + '175 —39 de los 43 archivos de prueba se podian borrar sin que se inmutara—: ahora '
+      + 'las subsecciones HEREDAN la declaracion de su seccion, ve los numeros con sufijo '
+      + '(17bis, 0b, 4bis: eran TRECE obligatorias invisibles), busca solo en TITULOS de '
+      + 'prueba —`[0]` casaba con `filas[0]` en veinte archivos— y ata por el '
+      + 'REQUERIMIENTO citado, que es unico, ademas de por el numero de fila. Dice en su '
+      + 'salida cuantas reglas estan atadas a SU archivo: hoy 11 de 188, y las 29 secciones '
+      + 'sin declarar se cuentan y se nombran en vez de pasar por buenas. '
+      + 'Dos trampas del generador aprendidas a golpes: un backtick en un comentario rompe '
+      + 'la plantilla y el HTML se queda viejo —el build muere y nadie lo mira—, y unas '
+      + 'LLAVES en un comentario CSS parten el troceador por bloques y el resto del '
+      + 'comentario se cuela como basura en la hoja entregada.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.103.0', fecha: '2026-09-11',
     que: 'R126 y siete defectos propios que encontro una auditoria adversaria de lo publicado esta semana',

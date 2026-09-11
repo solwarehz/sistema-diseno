@@ -77,7 +77,19 @@ const deIso = (s: string) => {
 };
 const mismoDia = (a: Date, b: Date) => iso(a) === iso(b);
 const sumarDias = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
-const sumarMeses = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth() + n, d.getDate());
+/**
+ * R129 · SUMAR MESES SIN DESBORDAR. `new Date(a, m+n, 31)` con destino en un mes
+ * de 30 desborda al siguiente: PageDown desde el 31 de enero aterrizaba el 3 de
+ * marzo —febrero entero saltado— y PageUp desde el 31 de marzo no se movía. El
+ * día se recorta al último del mes destino, que es lo que hace cualquier
+ * calendario. Los cuatro atajos ya estaban a salvo porque parten de día 1.
+ */
+const sumarMeses = (d: Date, n: number) => {
+  const a = d.getFullYear();
+  const m = d.getMonth() + n;
+  const ultimo = new Date(a, m + 1, 0).getDate();
+  return new Date(a, m, Math.min(d.getDate(), ultimo));
+};
 
 /** Texto largo para el lector: «lunes 3 de marzo de 2026». */
 const enPalabras = (d: Date) =>
@@ -145,6 +157,10 @@ export function RangoFecha({
 
   function cerrar(devolverFoco = true) {
     setAbierto(false);
+    // R129 · se suelta el día sobrevolado. Solo se limpiaba con `mouseleave`,
+    // así que cerrar con Escape o elegir con teclado dejaba medio mes pintado
+    // como «dentro del rango» sin nadie encima.
+    setSobre(null);
     // El foco vuelve al campo que abrió, siempre. En el del catálogo hacía
     // `blur()` y el foco caía a <body>.
     if (devolverFoco) disparador.current?.focus();
@@ -342,13 +358,13 @@ export function RangoFecha({
           <div className="fc-cal-cab">
             <Boton mini variante="terciaria"
               aria-label="Mes anterior"
-              onClick={() => { setMesBase((m) => sumarMeses(m, -1)); setFoco((f) => sumarMeses(f, -1)); debeEnfocar.current = true; }}>‹</Boton>
+              onClick={() => { setSobre(null); setMesBase((m) => sumarMeses(m, -1)); setFoco((f) => sumarMeses(f, -1)); debeEnfocar.current = true; }}>‹</Boton>
             {/* El cambio de mes se anuncia: sin esto, con lector de pantalla la
                 rejilla cambia entera en silencio. */}
             <span className="fc-meses" id={`${id}-mes`} aria-live="polite">{cabecera}</span>
             <Boton mini variante="terciaria"
               aria-label="Mes siguiente"
-              onClick={() => { setMesBase((m) => sumarMeses(m, 1)); setFoco((f) => sumarMeses(f, 1)); debeEnfocar.current = true; }}>›</Boton>
+              onClick={() => { setSobre(null); setMesBase((m) => sumarMeses(m, 1)); setFoco((f) => sumarMeses(f, 1)); debeEnfocar.current = true; }}>›</Boton>
           </div>
 
           {/* `.fc-cal-marco` reparte el cuerpo y el panel de periodos en dos

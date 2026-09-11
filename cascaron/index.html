@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.103.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.104.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.103.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.104.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -1331,11 +1331,23 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
    el mes va en minuscula y solo sube la primera letra de la frase. */
 .fc-meses { font-size: 13px; font-weight: 600; }
 .fc-meses::first-letter { text-transform: uppercase; }
-.fc-cal-cuerpo { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 16px; }
+/* R129 · las columnas salen del NUMERO DE MESES, no cableadas a dos. Con
+   `meses = 1` y `1fr 1fr` el desplegable salia del doble de ancho con la
+   mitad derecha en blanco: la prop estaba publicada y entregaba un panel roto. */
+.fc-cal-cuerpo { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  gap: 20px; padding: 16px; }
 .fc-mes-tit { font-size: 12px; font-weight: 600;
   text-align: center; margin-bottom: 8px; }
 .fc-mes-tit::first-letter { text-transform: uppercase; }
-.fc-sem, .fc-dias { display: grid; grid-template-columns: repeat(7,1fr); }
+/* R126.1 (bis) · `.fc-dias` NO es rejilla de siete columnas. No contiene dias:
+   contiene FILAS. Darle siete columnas aplastaba cada semana entera dentro de
+   una de ~9px —«123456 78910111213»—, que es lo que midio Control
+   Administrativos en el DOM de la v1.103.0.
+   La v1.103.0 anadio la regla de la fila y NO retiro esta: el arreglo iba a
+   medias y en una pagina montada a mano parecia correcto. Se comprueba en el
+   catalogo de verdad, no en una maqueta propia. */
+.fc-sem { display: grid; grid-template-columns: repeat(7,1fr); }
+.fc-dias { display: grid; }
 /* R126.1 · LAS FILAS DEL CALENDARIO. Lo reporto Control Administrativos con la
    medicion: el catalogo mete las 42 celdas PLANAS en `.fc-dias`, pero el
    componente anida FILAS —`role="row"`— porque el patron `grid` de ARIA las
@@ -1359,7 +1371,11 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
    elegir, y el uso declarado de texto-pista dice «nunca contenido real».
    Sus pares ya son bloqueantes en el candado (sobre tarjeta y sobre hover).
    Va ANTES de .fc-ini/.fc-fin para que el extremo gane el color si coincide. */
-.fc-otro-mes { color: var(--texto-secundario); }
+/* R129 · `.fc-otro-mes` RETIRADA. Con dos meses a la vista el componente pinta
+   HUECOS y no dias del mes vecino —el mismo dia saldria dos veces y no se
+   sabria cual vale—, asi que desde la v1.101.0 no la emite nadie: ni React ni
+   el guion del catalogo. Una version anterior prometio mantenerla; se retira
+   DECLARANDOLO, que es lo contrario de dejarla viajando muerta. */
 .fc-vacio { cursor: default; }
 .fc-vacio:hover { background: transparent; }
 /* El interior del tramo y los extremos NO se pintan igual: si no, no se sabe
@@ -1374,7 +1390,15 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
    va a quedar. Antes usaba un azul más oscuro que aparecía de golpe. */
 .fc-previo { background: var(--accion); }
 .fc-resumen { font-size: 13px; color: var(--texto-secundario); margin: 16px 0 0; }
-@media (max-width: 620px) { .fc-cal-cuerpo { grid-template-columns: 1fr; } }
+/* R129 · en angosto se apilan los meses Y BAJA el panel de periodos. Antes solo
+   colapsaba la rejilla y los atajos seguian clavados al lado, con su borde
+   izquierdo y sus 152px, dentro de un desplegable absoluto sin limite derecho. */
+@media (max-width: 620px) {
+  .fc-cal-cuerpo { grid-auto-flow: row; }
+  .fc-cal-marco { flex-direction: column; }
+  .fc-atajos { border-left: 0; border-top: 1px solid var(--borde);
+    flex-direction: row; flex-wrap: wrap; gap: 12px; min-width: 0; }
+}
 
 /* Barra de progreso */
 .pr-rejilla { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 20px; }
@@ -4415,7 +4439,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.103.0</option></select></label>
+          <select class="campo cg-in"><option>v1.104.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4503,8 +4527,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.103.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.103.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.104.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.104.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -15456,6 +15480,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
 
 
+<h3 class="sub-seccion">v1.104.0 <span class="cam-fecha">2026-09-11</span></h3>
+<p class="pag-intro"><strong>R126-bis: el arreglo del calendario estaba A MEDIAS. Y el candado del contrato protegia 18 reglas de 175.</strong> Control Administrativos devolvio R126 con la medicion del DOM: la v1.103.0 anadio la regla nueva y NO RETIRO LA VIEJA, asi que `.fc-dias` seguia recibiendo siete columnas y cada semana se aplastaba en una de 9,26px — «123456 78910111213». La verificacion de aquella version fallo por montar una pagina A MANO en vez de abrir el catalogo: en una maqueta propia las filas ocupaban todo el ancho y parecia correcto. Ahora se mide en el DOM del catalogo real: `.fc-dias` es UNA columna de 184,8px, sus cinco hijos son todos `role="row"`, y cada fila tiene siete columnas de 26,4px. Su arreglo tal cual habria roto el catalogo, que metia las celdas PLANAS. Se hizo que haya UNA SOLA ANATOMIA: el guion del catalogo emite filas como el componente. Ademas cierra los cuatro defectos que una auditoria adversaria dejo abiertos: `.fc-otro-mes` retirada —la creo muerta la propia v1.101.0 y no lo declaro—, las columnas salen del NUMERO de meses y no cableadas a dos, `sumarMeses` ya no desborda (31-ene + 1 mes daba 3 de marzo y febrero entero saltado), y la vista previa se suelta al cerrar y al cambiar de mes. RANGOFECHA GANA CONTRATO: doce reglas, cuando no tenia ninguna. Era el componente con mas promesa publicada y cero candado. Y EL CANDADO DEL CONTRATO, que otra auditoria demostro que protegia 18 reglas de 175 —39 de los 43 archivos de prueba se podian borrar sin que se inmutara—: ahora las subsecciones HEREDAN la declaracion de su seccion, ve los numeros con sufijo (17bis, 0b, 4bis: eran TRECE obligatorias invisibles), busca solo en TITULOS de prueba —`[0]` casaba con `filas[0]` en veinte archivos— y ata por el REQUERIMIENTO citado, que es unico, ademas de por el numero de fila. Dice en su salida cuantas reglas estan atadas a SU archivo: hoy 11 de 188, y las 29 secciones sin declarar se cuentan y se nombran en vez de pasar por buenas. Dos trampas del generador aprendidas a golpes: un backtick en un comentario rompe la plantilla y el HTML se queda viejo —el build muere y nadie lo mira—, y unas LLAVES en un comentario CSS parten el troceador por bloques y el resto del comentario se cuela como basura en la hoja entregada.</p>
+
+
+
 <h3 class="sub-seccion">v1.103.0 <span class="cam-fecha">2026-09-11</span></h3>
 <p class="pag-intro"><strong>R126 y siete defectos propios que encontro una auditoria adversaria de lo publicado esta semana.</strong> Se pidio GARANTIZAR que la entrega era igual a la promesa. Cinco auditores adversarios revisaron las seis versiones de la semana con el encargo de TUMBARLAS, no de confirmarlas, y lo consiguieron en cinco de las seis. Esto cierra lo mas grave. R126 (Control Administrativos, prioridad alta, rompe una pantalla en uso). DOS defectos que la v1.101.0 NO arreglo pese a rehacer el componente entero: (1) el catalogo mete las 42 celdas PLANAS en `.fc-dias` y el componente anida FILAS porque el patron `grid` de ARIA las exige, asi que `repeat(7,1fr)` repartia las SIETE SEMANAS en siete columnas de ~33px — cabeceras «LMXJVSD» pegadas y dias de dos en dos; (2) el rotulo y el valor del campo no se apilaban y se leia «DesdeElegir fecha», porque las reglas que los colocan seguian escritas para `input.fc-campo` y el componente emite un <button>. Las dos vistas en un navegador con la hoja ENTREGADA antes y despues. SELECTOR CON BUSQUEDA, cuatro defectos de la v1.97.0: el reloj del umbral no se apagaba al responder, asi que de la SEGUNDA consulta en adelante el esqueleto salia con umbral CERO —el parpadeo por pulsacion que la regla 20 prohibe y que se anuncio como resuelto—; un `AbortError` del PRODUCTO dejaba el control colgado sin salida, con esqueleto y `aria-busy` eternos y sin fila de reintento; Escape dejaba `aria-busy` puesto sobre un campo cerrado; y «Pulsa aqui para reintentar» no daba acuse durante 300ms, leyendose como un boton muerto. EL CANDADO DE COLOR, que la v1.98.0 DEBILITO sin darse cuenta: `declaraSuVariable` comparaba solo la FAMILIA, asi que nombrar `#EC1C24` convirtio cualquier `--marca-loquesea:` en coartada legal —antes de tener nombre esa misma linea fallaba— y el censo de prosa filtra los conocidos, asi que nombrarlo lo SACO del censo. Se le dijo lo contrario a dos equipos. Ahora compara el nombre COMPLETO, y las variables semanticas de marca siguen valiendo por su definicion. Visto en rojo con una sonda. EL LAPIZ que la v1.102.0 dice haber mirado en un navegador: su filete sobresalia 1,41 unidades del cuerpo —una pua—. Medido contra las aristas del lapiz y corregido a `3 3`, que cae a ras de las dos. Mirar la hoja entera no es mirar el icono que acabas de cambiar. `Icono.tsx` decia «ARCHIVO GENERADO. No editar a mano» y «46 trazos» teniendo 60 y editandose a mano desde hace catorce iconos: la fuente VIAJA, asi que mentia sobre si misma. Y CAMBIOS anunciaba una `1.100.1` SIN ETIQUETA: quien la instalara siguiendo el manual recibia un 404.</p>
 
@@ -18953,6 +18982,15 @@ async function esPdf(archivo) {
       // Semana que empieza en lunes: el domingo pasa de 0 a 6.
       var primero = (new Date(y, m, 1).getDay() + 6) % 7;
       var total = new Date(y, m + 1, 0).getDate();
+      // Las celdas se agrupan en FILAS, igual que el componente: el patron
+      // grid de ARIA las exige, y asi la hoja sirve a las dos superficies.
+      function filas(cs) {
+        var out = '';
+        for (var i = 0; i < cs.length; i += 7) {
+          out += '<div role="row">' + cs.slice(i, i + 7).join('') + '</div>';
+        }
+        return out;
+      }
       var celdas = [];
       for (var i = 0; i < primero; i++) celdas.push('<span class="fc-d fc-vacio"></span>');
       for (var d = 1; d <= total; d++) {
@@ -18972,7 +19010,7 @@ async function esPdf(archivo) {
       }
       return '<div class="fc-mes"><div class="fc-mes-tit">' + MESES[m] + ' ' + y + '</div>' +
         '<div class="fc-sem">' + DIAS.map(function (x) { return '<span>' + x + '</span>'; }).join('') + '</div>' +
-        '<div class="fc-dias">' + celdas.join('') + '</div></div>';
+        '<div class="fc-dias">' + filas(celdas) + '</div></div>';
     }
 
     var cajaIni = document.getElementById('fc-ini');

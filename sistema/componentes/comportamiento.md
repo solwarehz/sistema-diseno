@@ -278,6 +278,34 @@ ningún candado mira no es un contrato, es una intención.
 | **20** | **Obligatorio.** (R118, v1.97.0) **Mientras se busca: esqueleto, y solo pasado el umbral.** Tres renglones con la clase `.esqueleto` del sistema —no un giro, que la tabla del catálogo reserva para «cuando no se puede dibujar el esqueleto»— y **no antes de 300 ms desde que la consulta sale**, no desde la tecla: un parpadeo por pulsación se percibe como un fallo. El campo lleva `aria-busy` mientras tanto, o el lector anuncia una lista vacía y da por hecho que no hay resultados. **El fallo de la consulta no reaprovecha `textoVacio`** —«no hay resultados» y «no se pudo preguntar» mandan a sitios distintos— y es una fila **pulsable que reintenta**, con el ratón y con Enter. Sobre un fallo **no se ofrece «Crear»**: ahí no se sabe si existe o no. |
 
 
+## Rango de fechas
+
+**No tenía sección.** Era el componente con más promesa publicada —dos meses,
+panel de periodos, resumen— y **cero contrato**, así que nada impedía que la
+próxima versión cambiara el valor por omisión de `meses` o el orden de los
+atajos sin registrarlo. Lo destapó una auditoría adversaria el 2026-09-11,
+cuatro días después de que Control Administrativos reportara que el componente
+no se podía usar (R126).
+
+<!-- pruebas: RangoFecha.test.tsx, rango-fecha-anatomia.test.tsx -->
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R126, v1.103.0) **Cada semana es una FILA propia** —`role="row"`— y no una celda suelta. El patrón `grid` de ARIA las exige, y la hoja las reparte: cada fila ocupa las siete columnas y es a su vez rejilla de siete. Hasta la v1.103.0 la hoja daba `grid-template-columns: repeat(7,1fr)` solo a `.fc-dias`, que con el marcado anidado repartía **las siete semanas** en siete columnas de ~33 px: cabeceras «LMXJVSD» pegadas y días de dos en dos. El catálogo mete las 42 celdas **planas** y la misma hoja sirve a los dos — por eso la regla es sobre `> [role='row']` y no sobre el contenedor. |
+| **2** | **Obligatorio.** (R126, v1.103.0) **El rótulo y el valor se apilan dentro del disparador.** El componente emite `<button class="campo fc-campo">` con `.cg-et` y `.cg-in` dentro; las reglas que los colocan estaban escritas para `input.fc-campo` y no alcanzaban, así que se leía literalmente «DesdeElegir fecha». La regla de apilado **sí** va atada al `button`: describe cómo se colocan unos hijos que un `<input>` no puede tener. |
+| **3** | **Obligatorio.** (R118, v1.101.0) **Dos meses a la vista por omisión.** Elegir un rango con un solo mes obliga a navegar a ciegas. `meses={1}` vuelve a uno, y las columnas salen del número de meses — no cableadas a dos, que dejaba media rejilla en blanco. |
+| **4** | **Obligatorio.** (R118, v1.101.0) **No se pintan días del mes vecino: huecos.** Con dos meses a la vista el mismo día saldría dos veces y no se sabría cuál vale. |
+| **5** | **Obligatorio.** (R118, v1.101.0) **El panel de periodos va con cuatro por omisión** —«Este mes», «Mes pasado», «Últimos 2 meses», «Este año»—, se sustituye entero con `atajos` y se quita con `atajos={[]}`. Un colegio piensa en bimestres, no en trimestres naturales. Elegir un periodo fija los dos extremos y cierra. |
+| **6** | **Obligatorio.** (R118, v1.101.0) **El resumen dice lo elegido en palabras**, no en ISO. Dos fechas `2026-03-05 / 2026-03-12` no se leen de un vistazo, y esa línea es además la que anuncia el cambio al lector. |
+| **7** | **Obligatorio.** (R118, v1.101.0) **Sobrevolar enseña el rango que SALDRÍA.** Sin ello no se ve qué se está a punto de elegir hasta después de elegirlo. **Se suelta al cerrar y al cambiar de mes**: solo se limpiaba con `mouseleave`, así que salir con Escape o con el teclado dejaba medio mes pintado como «dentro del rango» sin nadie encima. |
+| **8** | **Obligatorio.** (v1.39.0) **Abrir NO borra el rango.** El del catálogo hacía `ini = null; fin = null` al abrir, así que un Shift+Tab de vuelta destruía la selección en silencio. Abrir es abrir. |
+| **9** | **Obligatorio.** (v1.39.0) **El teclado completo del patrón**: flechas, Inicio y Fin de **semana**, RePág/AvPág de mes —con Shift, de año—, Escape, y **roving tabindex** (un solo día alcanzable con Tab, no los sesenta). |
+| **10** | **Obligatorio.** (R129, v1.103.0) **Cambiar de mes no desborda.** `new Date(a, m+n, 31)` con destino en un mes de 30 salta al siguiente: AvPág desde el 31 de enero aterrizaba el **3 de marzo** —febrero entero saltado— y RePág desde el 31 de marzo no se movía. El día se recorta al último del mes destino. |
+| **11** | **Obligatorio.** (v1.39.0) **Elegir un final anterior al inicio reinicia el rango**, no produce un rango invertido. Y el interior del rango se dice en el nombre accesible, no solo con color (SC 1.4.1). |
+| **12** | Del proyecto: de dónde salen las fechas, qué significan y qué se hace con ellas. El sistema entrega el control y su comportamiento. |
+
+---
+
 ## Fila de carga
 
 El arranque y el final **comunes** de las tres cargas —imagen, PDF e ID—. No se
