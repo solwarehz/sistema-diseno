@@ -19,7 +19,7 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.105.0** — R126, y **siete defectos propios** que encontró
+**Estado actual: v1.106.0** — R126, y **siete defectos propios** que encontró
 una auditoría adversaria de lo publicado esta semana. El calendario repartía las
 siete semanas en siete columnas; el esqueleto del selector parpadeaba por
 pulsación desde la segunda consulta; y nombrar un color **debilitó** el candado

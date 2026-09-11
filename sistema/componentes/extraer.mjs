@@ -403,6 +403,35 @@ ${dependenciasSueltas.length ? '/* Dependencias del paquete que no pertenecen a 
 mkdirSync(AQUI, { recursive: true });
 writeFileSync(join(AQUI, 'componentes.css'), salida);
 
+/**
+ * Y SE INYECTA EN EL CATÁLOGO, para que su página «La entrega real» pueda
+ * pintar los componentes con la hoja QUE SE ENTREGA y nada más.
+ *
+ * Va aquí y no en el generador por un problema de orden: `componentes.css` se
+ * EXTRAE del catálogo, así que cuando el catálogo se genera todavía no existe
+ * —o existe la de la versión anterior, que es peor—. Inyectarla en una segunda
+ * pasada garantiza que la página muestra el archivo real y no una copia que
+ * puede quedarse vieja, que es de lo que va todo este repositorio.
+ */
+const MARCA_INI = '<script type="text/plain" id="hoja-entregada">';
+const MARCA_FIN = '</' + 'script>';
+const catalogo = readFileSync(join(RAIZ, 'cascaron', 'index.html'), 'utf8');
+const desde = catalogo.indexOf(MARCA_INI);
+if (desde >= 0) {
+  const hasta = catalogo.indexOf(MARCA_FIN, desde);
+  // El `<` de un selector como `.fc-dias > [role]` no rompe nada dentro de un
+  // `text/plain`, pero un `</script` sí cerraría el bloque. No los hay en CSS.
+  const nuevo = catalogo.slice(0, desde + MARCA_INI.length) + '\n' + salida + '\n'
+    + catalogo.slice(hasta);
+  writeFileSync(join(RAIZ, 'cascaron', 'index.html'), nuevo);
+  console.log(`  ✓ hoja entregada inyectada en el catálogo (${(salida.length / 1024) | 0} KB)`);
+} else {
+  console.error('\n  El catálogo no tiene el hueco `hoja-entregada`: la página');
+  console.error('  «La entrega real» pintaría con la hoja del CATÁLOGO, que es');
+  console.error('  justo lo que esa página existe para no hacer.\n');
+  process.exit(1);
+}
+
 // ── Reporte ─────────────────────────────────────────────────────────────────
 
 const totalReglas = ELEMENTOS.reduce((n, e) => n + porElemento.get(e.n).length, 0);

@@ -249,6 +249,11 @@ function recorrerMarcado(html, attrsVigilados) {
   const cuerpo = html
     .replace(/<style[^>]*>[\s\S]*?<\/style>/g, '')
     .replace(/<script[^>]*>[\s\S]*?<\/script>/g, '')
+    // El contenido de un `<template>` es INERTE: no se dibuja, así que no
+    // tiene estilo calculado y compararlo es comparar humo. La página «La
+    // entrega real» guarda ahí su marcado, y sin esto el candado lo resolvía
+    // como si estuviera en pantalla.
+    .replace(/<template[^>]*>[\s\S]*?<\/template>/g, '')
     .replace(/<!--[\s\S]*?-->/g, '');
 
   const pila = [];

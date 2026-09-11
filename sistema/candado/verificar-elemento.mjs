@@ -66,7 +66,18 @@ const CATALOGO = join(RAIZ, 'cascaron', 'index.html');
 
 /* ── Lo que el catálogo enseña ────────────────────────────────────────────── */
 
-const html = readFileSync(CATALOGO, 'utf8');
+/* El contenido de un `<template>` NO cuenta como demostración.
+ *
+ * La página «La entrega real» guarda ahí el marcado que EMITEN los componentes
+ * para pintarlo en un marco aislado. Contarlo aquí hacía desaparecer
+ * divergencias reales: `.cg-in` sigue siendo `<input>` en las demostraciones
+ * del catálogo y `<span>` en el componente, y el candado dejaba de verlo solo
+ * porque la forma correcta aparecía en OTRO sitio de la misma página.
+ *
+ * Esa página existe para ENSEÑAR lo que se entrega, no para tapar lo que
+ * diverge. */
+const html = readFileSync(CATALOGO, 'utf8')
+  .replace(/<template[^>]*>[\s\S]*?<\/template>/g, '');
 
 /**
  * EL LÍMITE, DECLARADO. Parte del catálogo se pinta con JavaScript en tiempo de
@@ -80,7 +91,12 @@ const html = readFileSync(CATALOGO, 'utf8');
  * del hueco. Un candado con falsos positivos se desactiva a la semana, así que
  * las clases que el JS del catálogo toca quedan FUERA y se dicen en el informe.
  */
-const guionCatalogo = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)]
+/* Solo el guion DE VERDAD. Los bloques `type="text/plain"` son cargamento
+ * —la página «La entrega real» lleva ahí los 98 KB de `componentes.css` para
+ * pintar los componentes con la hoja entregada—, y contarlos como guion hacía
+ * que TODA clase apareciera «pintada por el guion»: el candado pasaba a
+ * comparar CERO clases y salía dando lecciones sobre deuda que ya no existía. */
+const guionCatalogo = [...html.matchAll(/<script\b(?![^>]*text\/plain)[^>]*>([\s\S]*?)<\/script>/g)]
   .map((m) => m[1]).join('\n');
 const laPintaElGuion = (clase) =>
   new RegExp('["\'`][^"\'`]*\\b' + clase.replace(/[-]/g, '\\-') + '\\b').test(guionCatalogo);

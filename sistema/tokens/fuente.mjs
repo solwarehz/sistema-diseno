@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.105.0";
+export const VERSION = "1.106.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,37 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.106.0', fecha: '2026-09-11',
+    que: 'Nace «La entrega real»: el catalogo pinta los componentes con la hoja QUE SE ENTREGA, y encuentra un defecto a la primera',
+    porque:
+      'Lo pidio el responsable, y es la pieza que faltaba. Todos los defectos gordos de '
+      + 'este sistema han sido el mismo: una regla que el catalogo tiene y el paquete no, o '
+      + 'un marcado que el catalogo ensena y el componente no emite. Los candados los cazan '
+      + 'MIDIENDO; esta pagina los ENSENA. '
+      + 'Cada caso se pinta dentro de un iframe con `tokens.css` y `componentes.css` y NADA '
+      + 'MAS —el catalogo tiene cientos de reglas de mobiliario que no viajan—, y con el '
+      + 'marcado que EMITEN los componentes, no el de las demostraciones. La hoja no es una '
+      + 'copia: `extraer.mjs` la inyecta en el catalogo cada vez que se extrae, asi que no '
+      + 'puede quedarse vieja, y se niega si el hueco no esta. '
+      + 'ENCONTRO UN DEFECTO A LA PRIMERA, y de los que llevaban anos: la foto del avatar '
+      + 'salia 32x39 en un circulo de 32x32. `.avatar` es una rejilla con '
+      + '`place-items:center`, asi que su hijo no se estira; con la fila en `auto` el '
+      + '`height:100%` no tiene contra que resolver y la imagen conservaba su proporcion. El '
+      + '`overflow:hidden` la recortaba, asi que PARECIA correcta. Ni los quince candados ni '
+      + 'tres auditorias adversarias lo habian visto, porque todos comparan las dos '
+      + 'superficies entre si y aqui las dos estaban igual de mal. Se resuelve dando caja '
+      + 'definida a la imagen y dejando el centrado para las iniciales. '
+      + 'Y la pagina obligo a arreglar DOS CANDADOS que ella misma rompia: el del elemento '
+      + 'daba por «pintada por el guion» toda clase que apareciera en un `<script>`, y los '
+      + '98 KB de hoja inyectada envenenaban la comparacion entera —paso a comparar CERO '
+      + 'clases y seguia saliendo en verde—; y los dos candados que leen marcado contaban el '
+      + 'contenido de un `<template>`, que es INERTE, asi que la pagina hacia desaparecer '
+      + 'divergencias reales por ensenar la forma correcta en otro sitio. Enseñar no puede '
+      + 'ser tapar.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.105.0', fecha: '2026-09-11',
     que: 'Una sola anatomia de calendario, con el candado que lo comprueba. Y el publicador corre los candados por su cuenta',

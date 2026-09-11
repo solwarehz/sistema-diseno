@@ -7838,11 +7838,154 @@ competir por atención. Y lo que dice la parte de accesibilidad es unánime en d
   </tbody>
 </table>`;
 
+
+// ── Página: La entrega real ─────────────────────────────────────────────────
+//
+// Pinta los componentes con la hoja QUE SE ENTREGA y nada mas, dentro de un
+// iframe. El catalogo tiene 900 reglas de mobiliario —rejillas de demostracion,
+// bloques, comparadores— que NO viajan, y por eso un producto ve menos de lo
+// que el catalogo ensena. Esta pagina ensena lo que ve el producto.
+//
+// El marcado es el que EMITEN LOS COMPONENTES, no el de las demostraciones: lo
+// que se quiere detectar es justo la diferencia entre las dos superficies.
+
+const casos = [
+  ['Botón', 'Las cinco variantes y el estado ocupado.',
+   '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">' +
+   '<button class="btn btn-1">Guardar</button>' +
+   '<button class="btn btn-2">Cancelar</button>' +
+   '<button class="btn btn-3">Terciaria</button>' +
+   '<button class="btn btn-4">Eliminar</button>' +
+   '<button class="btn btn-1" disabled>Sin permiso</button>' +
+   '<button class="btn btn-1 btn-mini">Mini</button></div>'],
+
+  ['Campo y selector', 'Rótulo, ayuda y error, tal como los emite el componente.',
+   '<div style="display:flex;gap:16px;flex-wrap:wrap">' +
+   '<div class="campo-grupo"><label class="campo-etiqueta">Nombre</label>' +
+   '<input class="campo" value="QUISPE MAMANI, Rosa">' +
+   '<span class="campo-ayuda">Como figura en el DNI.</span></div>' +
+   '<div class="campo-grupo"><label class="campo-etiqueta">Sede</label>' +
+   '<input class="campo campo-mal" value="">' +
+   '<span class="campo-error">Elige una sede.</span></div></div>'],
+
+  ['Avatar', 'Con iniciales y con foto. La foto que no carga cae a las iniciales.',
+   '<div style="display:flex;gap:12px;align-items:center">' +
+   '<span class="avatar avatar-s avatar-1">QR</span>' +
+   '<span class="avatar avatar-m avatar-2">TB</span>' +
+   '<span class="avatar avatar-l avatar-3">LP</span>' +
+   '<span class="avatar avatar-m avatar-4"><img src="' + ESCUDO_PNG + '" alt=""></span>' +
+   '</div>'],
+
+  ['Chip', 'Los tonos de estado y los de identidad.',
+   '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+   '<span class="chip chip-ok">Activo</span>' +
+   '<span class="chip chip-avi">Parcial</span>' +
+   '<span class="chip chip-mal">Deuda</span>' +
+   '<span class="chip chip-neutro">Sin asignar</span></div>'],
+
+  ['Tabla de datos', 'Cabecera, filas alternas y el pie con su rango.',
+   '<div class="tb-bloque"><div class="tb-envoltura"><table class="tb">' +
+   '<thead><tr><th>Trabajador</th><th>Documento</th><th>Sede</th></tr></thead>' +
+   '<tbody><tr><td>LEÓN TUYA, Mayori Elizabeth</td><td>72455296</td><td>Sede 1</td></tr>' +
+   '<tr><td>MANRIQUE PARIAMACHI, Tony</td><td>74493588</td><td>Sede 1</td></tr>' +
+   '<tr><td>QUISPE MAMANI, Rosa</td><td>71234567</td><td>Sede 2</td></tr></tbody>' +
+   '</table></div></div>'],
+
+  ['Selector con búsqueda', 'Desplegado, con una opción elegida y su ayuda.',
+   '<div class="campo-grupo"><label class="campo-etiqueta">Apoderado</label>' +
+   '<div class="sel"><div class="sel-caja abierta">' +
+   '<input class="campo sel-in" value="quisp" readonly>' +
+   '<span class="sel-chev">' + ICONOS.chevron + '</span></div>' +
+   '<ul class="sel-lista" role="listbox" style="position:static">' +
+   '<li class="sel-op" role="option"><span class="sel-op-txt">Quispe Huamán, César</span></li>' +
+   '<li class="sel-op marcado" role="option"><span class="sel-op-txt">Quispe Mamani, Lucía' +
+   '<span class="sel-notas">5.º A</span></span></li>' +
+   '<li class="sel-op" role="option" aria-selected="true"><span class="sel-op-txt">Quispe Rojas, Elsa</span>' +
+   '<span class="sel-check">' + ICO_CHECK + '</span></li></ul></div></div>'],
+
+  ['Rango de fechas', 'El calendario abierto, con el tramo elegido. Es el que reportó R126.',
+   (function () {
+     const dias = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+     const cab = '<div role="row" class="fc-sem">' +
+       dias.map((d) => '<span role="columnheader">' + d + '</span>').join('') + '</div>';
+     const mes = (titulo, largo, hueco, ini, fin) => {
+       const cs = [];
+       for (let i = 0; i < hueco; i++) cs.push('<span role="gridcell"><span class="fc-d fc-vacio"></span></span>');
+       for (let d = 1; d <= largo; d++) {
+         let cl = 'fc-d';
+         if (d === ini) cl += ' fc-ini';
+         else if (d === fin) cl += ' fc-fin';
+         else if (ini && fin && d > ini && d < fin) cl += ' fc-dentro';
+         cs.push('<span role="gridcell"><button class="' + cl + '">' + d + '</button></span>');
+       }
+       while (cs.length % 7) cs.push('<span role="gridcell"><span class="fc-d fc-vacio"></span></span>');
+       let filas = '';
+       for (let i = 0; i < cs.length; i += 7) filas += '<div role="row">' + cs.slice(i, i + 7).join('') + '</div>';
+       return '<div><div class="fc-mes-tit">' + titulo + '</div>' +
+         '<div class="fc-dias" role="grid" aria-label="' + titulo + '">' + cab + filas + '</div></div>';
+     };
+     return '<div class="fc-zona"><div class="fc-campos" role="group">' +
+       '<button class="campo fc-campo fc-activo"><span class="cg-et">Desde</span>' +
+       '<span class="cg-in">2026-03-05</span></button>' +
+       '<span class="fc-guion">' + ICONOS.chevronDer + '</span>' +
+       '<button class="campo fc-campo"><span class="cg-et">Hasta</span>' +
+       '<span class="cg-in">2026-03-12</span></button></div>' +
+       '<div class="fc-cal" role="dialog" style="position:static;max-width:560px">' +
+       '<div class="fc-cal-cab"><button class="btn btn-3 btn-mini">&lsaquo;</button>' +
+       '<span class="fc-meses">marzo &ndash; abril de 2026</span>' +
+       '<button class="btn btn-3 btn-mini">&rsaquo;</button></div>' +
+       '<div class="fc-cal-marco"><div class="fc-cal-cuerpo">' +
+       mes('marzo de 2026', 31, 6, 5, 12) + mes('abril de 2026', 30, 2, 0, 0) +
+       '</div><div class="fc-atajos"><span class="fc-atajos-tit">Periodos</span>' +
+       '<button class="fc-atajo">Este mes</button><button class="fc-atajo">Mes pasado</button>' +
+       '<button class="fc-atajo">&Uacute;ltimos 2 meses</button><button class="fc-atajo">Este a&ntilde;o</button>' +
+       '</div></div><div class="fc-cal-pie">Elige la fecha de inicio.</div></div>' +
+       '<p class="fc-resumen">Del jueves 5 al jueves 12 de marzo de 2026.</p></div>';
+   })()],
+
+  ['Estados de pantalla', 'Sin resultados y error, con su acción.',
+   '<div class="ep ep-sin-resultados" role="status">' +
+   '<p class="ep-titulo">Sin resultados para «zapata»</p>' +
+   '<p class="ep-linea">Prueba con menos letras, o revisa si está matriculado.</p>' +
+   '<button class="btn btn-1 btn-mini">Quitar filtros</button></div>'],
+];
+
+const pagEntregaReal = `
+<p class="pag-intro">Estos son los componentes <strong>con la hoja que se entrega y nada más</strong>:
+<code>tokens.css</code> y <code>componentes.css</code>, dentro de un marco aislado. El catálogo pinta
+además con cientos de reglas de <strong>mobiliario</strong> —rejillas de demostración, bloques,
+comparadores— que <strong>no viajan</strong>. Aquí no hay ninguna.</p>
+
+<div class="aviso"><strong>Para qué sirve esta página.</strong> Todos los defectos gordos de este
+sistema han sido el mismo: una regla que el catálogo tiene y el paquete no, o un marcado que el
+catálogo enseña y el componente no emite. Los candados los cazan midiendo; esta página los
+<strong>enseña</strong>. Si algo se ve mal aquí, así se ve en el producto.</div>
+
+<div class="aviso"><strong>El marcado es el que emiten los componentes</strong>, no el de las
+demostraciones de al lado. Y la hoja no es una copia: se inyecta desde
+<code>sistema/componentes/componentes.css</code> cada vez que se extrae, así que no puede quedarse
+vieja.</div>
+
+<script type="text/plain" id="tokens-entregados">${tokensCss}</script>
+<script type="text/plain" id="hoja-entregada"></script>
+
+<div id="er-casos">${casos.map(([t, d, m], i) => `
+  <h3 class="sub-seccion">${t}</h3>
+  <p class="seccion-sub">${d}</p>
+  <div class="bloque er-caso">
+    <template data-er="${i}">${m}</template>
+    <iframe class="er-marco" title="${t} con la hoja entregada"></iframe>
+  </div>`).join('')}</div>
+`;
+
 const CATALOGO = [
   {
     grupo: 'Inicio',
     icono: 'panel',
-    items: [{ id: 'inicio', t: 'Vista general', estado: 'listo', c: pagInicio }],
+    items: [
+      { id: 'inicio', t: 'Vista general', estado: 'listo', c: pagInicio },
+      { id: 'entrega-real', t: 'La entrega real', estado: 'listo', c: pagEntregaReal },
+    ],
   },
   {
     grupo: 'Fundamentos',
@@ -9490,7 +9633,7 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
    El color NO significa nada. Es ayuda de reconocimiento en una lista larga, y
    por eso usa la paleta de IDENTIDAD y no la de estado: un avatar rojo diría
    que esa persona tiene un problema sin que nadie lo haya dicho. */
-.avatar { border-radius: 50%; flex: none; overflow: hidden; display: grid;
+.avatar { position: relative; border-radius: 50%; flex: none; overflow: hidden; display: grid;
   place-items: center; font-weight: 600; line-height: 1; user-select: none;
   background: var(--identidad-4); color: var(--identidad-texto); }
 .avatar-s  { width: 24px; height: 24px; font-size: 12px; }
@@ -9514,7 +9657,14 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
    lado y regla ausente del otro, desde la v1.7.0.
    El catalogo no podia ensenarlo: no pinta ni un solo avatar con <img>, solo la
    silueta en SVG, que si estaba cubierta por esta misma regla. */
-.avatar img, .avatar-silueta { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* R130 · SE ESTIRA A LA CELDA. El avatar es una rejilla con place-items:center,
+   asi que su hijo NO se estira: con la fila en auto, el height:100% no tiene
+   contra que resolver y la imagen conserva su proporcion. Medido con la hoja
+   entregada: contenedor 32x32 e imagen 32x39 — se desbordaba 7px y el
+   overflow:hidden lo recortaba, asi que parecia correcto sin serlo.
+   El centrado se queda para las INICIALES, que si tienen que ir centradas. */
+.avatar img, .avatar-silueta { position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover; display: block; }
 .avatar-marco { background: var(--marco-acento); color: var(--marco-fondo); }
 .avatar-rejilla { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
 .avatar-caso { display: flex; flex-direction: column; align-items: center; gap: 4px;
@@ -9956,6 +10106,11 @@ input.campo.sel-in { width: 100%; padding-right: 32px; }
   color: var(--texto-secundario); padding: 12px; }
 .sel-op.sel-fallo strong { color: var(--texto-principal); }
 .sel-demo-abierto { position: relative; min-height: 148px; }
+/* La entrega real: el marco aislado. Estas reglas son MOBILIARIO y no viajan
+   —lo que va dentro del iframe es lo unico que cuenta—. */
+.er-caso { padding: 0; overflow: hidden; }
+.er-marco { display: block; width: 100%; border: 0; background: var(--fondo-pagina); }
+.er-caso template { display: none; }
 .sel-demo-fila { display: grid; grid-template-columns: minmax(260px,360px) 1fr; gap: 28px; align-items: start; }
 .sel-demo-notas p { margin: 0 0 8px; font-size: 13px; line-height: 1.6; color: var(--texto-secundario); }
 .sel-demo-notas strong { color: var(--texto-principal); }
@@ -12361,6 +12516,63 @@ ${COMPRESOR_PDF}
     var indet = document.querySelector('[data-indet]');
     if (indet) indet.indeterminate = true;
     refrescar();
+  })();
+
+  // ── La entrega real: cada caso en su marco aislado ───────────────────────
+  //
+  // El iframe NO hereda nada del catalogo: dentro solo van tokens.css y
+  // componentes.css, que es lo que instala un producto. Si algo se ve mal ahi,
+  // asi se ve en el producto.
+  (function () {
+    var hoja = document.getElementById('hoja-entregada');
+    var toks = document.getElementById('tokens-entregados');
+    if (!hoja || !toks) return;
+    function montar(tpl) {
+      var marco = tpl.parentNode.querySelector('.er-marco');
+      if (!marco) return;
+      var doc = '<!doctype html><html><head><meta charset="utf-8">' +
+        '<style>' + toks.textContent + String.fromCharCode(10) + hoja.textContent + '</style>' +
+        '<style>html,body{margin:0}body{background:var(--fondo-pagina);' +
+        'color:var(--texto-principal);font-family:system-ui,sans-serif;padding:20px}</style>' +
+        '</head><body>' + tpl.innerHTML + '</body></html>';
+      marco.srcdoc = doc;
+      marco.addEventListener('load', function () {
+        try {
+          var d = marco.contentDocument;
+          // Se mide el contenido y se le da esa altura: un iframe con alto fijo
+          // corta justo lo que se quiere mirar.
+          marco.style.height = (d.body.scrollHeight + 8) + 'px';
+          // El tema del catalogo se lleva dentro, o el marco saldria siempre en claro.
+          var tema = document.documentElement.getAttribute('data-tema');
+          if (tema) d.documentElement.setAttribute('data-tema', tema);
+        } catch (e) { marco.style.height = '320px'; }
+      });
+    }
+    // El catalogo INSERTA las paginas al navegar, asi que cuando este guion
+    // corre los casos todavia no existen. Se montan cuando aparecen, y solo una
+    // vez: un iframe dentro de un contenedor oculto mide 0 y saldria cortado.
+    function montarPendientes() {
+      document.querySelectorAll('[data-er]').forEach(function (tpl) {
+        var marco = tpl.parentNode.querySelector('.er-marco');
+        if (!marco || marco.dataset.montado) return;
+        if (!marco.offsetParent) return;   // todavia oculto
+        marco.dataset.montado = '1';
+        montar(tpl);
+      });
+    }
+    montarPendientes();
+    addEventListener('hashchange', function () { setTimeout(montarPendientes, 50); });
+    new MutationObserver(montarPendientes).observe(document.body, {
+      childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'style', 'class'],
+    });
+
+    // Al cambiar de tema, los marcos lo siguen.
+    new MutationObserver(function () {
+      var tema = document.documentElement.getAttribute('data-tema');
+      document.querySelectorAll('.er-marco').forEach(function (m) {
+        try { m.contentDocument.documentElement.setAttribute('data-tema', tema || ''); } catch (e) {}
+      });
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-tema'] });
   })();
 
   // ── Rango de fechas con calendario ───────────────────────────────────────
