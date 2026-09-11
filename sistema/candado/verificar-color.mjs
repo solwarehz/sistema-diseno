@@ -60,9 +60,43 @@ const AUTORIZADOS = new Set(autorizados.map(([, h]) => h.toUpperCase()));
 //
 // En cualquier otro sitio —una regla, un componente, un `style=`— es un color
 // de marca metido en la interfaz, que es justo lo que §2.3 prohíbe.
+/**
+ * Las variables `--marca-*` que el sistema declara de verdad, con el escalón
+ * que cada una resuelve en claro y en oscuro. De aquí sale la única forma
+ * legítima de que un hexadecimal restringido aparezca escrito.
+ */
+const VARIABLES_MARCA = new Map();
+for (const [nombre, def] of Object.entries(marca)) {
+  // `claro` y `oscuro` YA son hexadecimales resueltos, no nombres de escalón.
+  for (const hex of [def.claro, def.oscuro]) {
+    if (hex) VARIABLES_MARCA.set(`${nombre}|${hex.toUpperCase()}`, true);
+  }
+}
+
 const declaraSuVariable = (linea, hex) => {
-  const familia = (DEFINIDOS.get(hex.toUpperCase()) ?? '').split('_')[0];
-  return new RegExp(`--${familia}[_-][A-Za-z0-9_-]*\\s*:`).test(linea);
+  const H = hex.toUpperCase();
+  const token = DEFINIDOS.get(H) ?? '';
+  if (!token) return false;
+
+  /**
+   * SU PROPIA variable, con el nombre COMPLETO — no con la familia.
+   *
+   * Comparar solo la familia convertía cualquier `--marca-loquesea:` en
+   * coartada para los diez restringidos, y con eso NOMBRAR UN COLOR ABRÍA UN
+   * ESCONDITE en vez de cerrarlo: antes de tener nombre, esa misma línea
+   * fallaba. Es lo contrario de lo que se le dijo a los equipos.
+   */
+  const patron = token.split('_').join('[_-]');
+  if (new RegExp(`--${patron}\\s*:`).test(linea)) return true;
+
+  /**
+   * Y las variables semánticas de marca, que SÍ pueden llevar el hex de otro
+   * escalón de su familia — pero solo el que su propia definición resuelve.
+   * `--marca-rojo-panel` vale `marca_rojo` en claro y `marca_rojo_panel` en
+   * oscuro: las dos son legítimas, cualquier otra no.
+   */
+  const m = linea.match(/--(marca[_-][A-Za-z0-9_-]*)\s*:/);
+  return !!m && VARIABLES_MARCA.has(`${m[1].replace(/_/g, '-')}|${H}`);
 };
 
 const fallos = [];
@@ -263,7 +297,10 @@ for (const [abs, rel] of todos) {
   if (!/\.(md|mjs|js|ts|tsx|json|sh)$/.test(rel) || BANCADAS.has(rel)) continue;
   if (rel.startsWith('componentes/src/')) continue; // se revisan aparte, y sí bloquean
   const hs = readFileSync(abs, 'utf8').match(HEX) ?? [];
-  const fuera = [...new Set(hs.map((h) => h.toUpperCase()))].filter((h) => !DEFINIDOS.has(h));
+  // Se filtran los AUTORIZADOS, no los definidos. Con `DEFINIDOS`, nombrar un
+  // color de marca lo sacaba del censo: dejaba de verse en la prosa justo
+  // cuando se acababa de decidir que había que vigilarlo.
+  const fuera = [...new Set(hs.map((h) => h.toUpperCase()))].filter((h) => !AUTORIZADOS.has(h));
   if (fuera.length) censoProsa.push([rel, fuera]);
 }
 

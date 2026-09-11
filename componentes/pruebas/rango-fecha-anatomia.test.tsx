@@ -177,3 +177,52 @@ describe('el campo activo y la vista previa', () => {
     expect(container.querySelectorAll('.fc-dentro').length).toBeGreaterThan(0);
   });
 });
+
+/**
+ * R126 · LO QUE REPORTÓ CONTROL ADMINISTRATIVOS, y que la v1.101.0 NO arregló.
+ *
+ * Rehacer la anatomía no tocó la discordancia que ellos midieron: el catálogo
+ * mete las 42 celdas PLANAS en `.fc-dias`, y el componente anida FILAS porque
+ * el patrón `grid` de ARIA las exige. Con `grid-template-columns: repeat(7,1fr)`
+ * sobre `.fc-dias`, sus siete hijos —las siete semanas— caían en siete columnas
+ * de ~33px: cabeceras «LMXJVSD» pegadas y días de dos en dos.
+ *
+ * Estas pruebas fijan el MARCADO que la hoja necesita para no repetirlo. El
+ * aspecto se comprobó en un navegador con la hoja entregada.
+ */
+describe('R126 · el calendario se pinta como rejilla', () => {
+  it('R126 · cada semana es una fila propia, no un hijo suelto de `.fc-dias`', async () => {
+    const u = userEvent.setup();
+    const dialogo = await abrir(u);
+    const dias = dialogo.querySelector('.fc-dias')!;
+
+    // Todos los hijos directos son filas. Si alguna celda cuelga suelta de
+    // `.fc-dias`, la rejilla de siete columnas vuelve a repartir semanas.
+    const hijos = [...dias.children];
+    expect(hijos.length).toBeGreaterThan(1);
+    for (const h of hijos) expect(h.getAttribute('role')).toBe('row');
+
+    // Y cada fila lleva exactamente siete celdas.
+    for (const fila of hijos.slice(1)) {
+      expect(fila.children.length).toBe(7);
+    }
+  });
+
+  it('R126 · la cabecera de días es una fila más, con sus siete columnas', async () => {
+    const u = userEvent.setup();
+    const dialogo = await abrir(u);
+    const sem = dialogo.querySelector('.fc-sem')!;
+    expect(sem.getAttribute('role')).toBe('row');
+    expect(sem.children.length).toBe(7);
+  });
+
+  it('R126.2 · el rótulo y el valor son DOS hijos del botón, para poder apilarse', async () => {
+    const { container } = pintar({ desde: '2026-03-05' });
+    const campo = container.querySelector('button.fc-campo')!;
+    expect(campo.querySelector('.cg-et')!.textContent).toBe('Desde');
+    expect(campo.querySelector('.cg-in')!.textContent).toBe('2026-03-05');
+    // Se leía «DesdeElegir fecha» de corrido porque las reglas que los apilan
+    // estaban escritas para `input.fc-campo` y esto es un <button>.
+    expect(campo.tagName).toBe('BUTTON');
+  });
+});

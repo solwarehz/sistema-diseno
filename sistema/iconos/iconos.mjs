@@ -146,7 +146,7 @@ export const TRAZOS = {
   deshacer: '<path d="m9 14-5-5 5-5"/><path d="M4 9h9a7 7 0 0 1 0 14h-3"/>',
   rehacer: '<path d="m15 14 5-5-5-5"/><path d="M20 9h-9a7 7 0 0 0 0 14h3"/>',
   guardar: '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/>',
-  lapiz: '<path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/><path d="m14.5 5.5 4 4"/>',
+  lapiz: '<path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/><path d="m14.5 5.5 3 3"/>',
 
   facebook: '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M15.5 7.5H14a2.5 2.5 0 0 0-2.5 2.5v10.5"/><path d="M9 13.5h5.5"/>',
   instagram: '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17 7h.01"/>',

@@ -8708,6 +8708,15 @@ code { font-family: 'IBM Plex Mono', monospace; }
    un input no abre un dialogo—. Atadas a \`input.\`, estas reglas NO alcanzaban
    al componente: en cada producto el campo de fecha salia sin icono de
    calendario, sin tope de ancho y sin estado activo. */
+/* R126.2 · EL ROTULO Y EL VALOR SE APILAN, y esta SI va atada al elemento.
+   El componente emite <button class="campo fc-campo"> con \`.cg-et\` y \`.cg-in\`
+   dentro; el catalogo emite un <input>, que no puede tener hijos. La regla
+   describe como se colocan unos hijos que solo el boton tiene, asi que atarla
+   al boton no es el defecto de antes —aquello ataba a \`input\` reglas que el
+   boton SI necesitaba—. Sin esto se leia literalmente «DesdeElegir fecha». */
+button.fc-campo { display: flex; flex-direction: column; align-items: flex-start;
+  justify-content: center; gap: 2px; text-align: left; height: auto; }
+
 .fc-campo { padding-right: 32px;
   background-repeat: no-repeat; background-position: right 12px center;
   background-size: 16px 16px;
@@ -8747,11 +8756,26 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .fc-cal-cab { display: flex; align-items: center; justify-content: space-between;
   gap: 12px; padding: 8px 12px; background: var(--fondo-encabezado);
   border-bottom: 1px solid var(--borde); }
-.fc-meses { font-size: 13px; font-weight: 600; text-transform: capitalize; }
+/* \`capitalize\` ponia en mayuscula CADA palabra: «Marzo De 2026». En espanol
+   el mes va en minuscula y solo sube la primera letra de la frase. */
+.fc-meses { font-size: 13px; font-weight: 600; }
+.fc-meses::first-letter { text-transform: uppercase; }
 .fc-cal-cuerpo { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 16px; }
-.fc-mes-tit { font-size: 12px; font-weight: 600; text-transform: capitalize;
+.fc-mes-tit { font-size: 12px; font-weight: 600;
   text-align: center; margin-bottom: 8px; }
+.fc-mes-tit::first-letter { text-transform: uppercase; }
 .fc-sem, .fc-dias { display: grid; grid-template-columns: repeat(7,1fr); }
+/* R126.1 · LAS FILAS DEL CALENDARIO. Lo reporto Control Administrativos con la
+   medicion: el catalogo mete las 42 celdas PLANAS en \`.fc-dias\`, pero el
+   componente anida FILAS —\`role="row"\`— porque el patron \`grid\` de ARIA las
+   exige. Con la regla de arriba sola, \`.fc-dias\` repartia sus SIETE HIJOS —que
+   son las siete semanas— en siete columnas de ~33px: las cabeceras salian
+   \`LMXJVSD\` pegadas y los dias amontonados de dos en dos. Ilegible, y era el
+   primer uso real del componente.
+   Cada fila ocupa las siete columnas y es a su vez una rejilla de siete, asi
+   que la misma hoja sirve para el marcado plano y para el anidado. */
+.fc-dias > [role='row'] { display: grid; grid-template-columns: repeat(7,1fr);
+  grid-column: 1 / -1; }
 .fc-sem span { font-size: 12px; font-weight: 500; color: var(--texto-secundario);
   text-align: center; padding-bottom: 4px; }
 .fc-d { height: 30px; font: inherit; font-size: 12px; cursor: pointer;

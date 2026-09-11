@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.102.0";
+export const VERSION = "1.103.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -71,6 +71,48 @@ export const correcciones = [
  */
 export const CAMBIOS = [
   {
+    v: '1.103.0', fecha: '2026-09-11',
+    que: 'R126 y siete defectos propios que encontro una auditoria adversaria de lo publicado esta semana',
+    porque:
+      'Se pidio GARANTIZAR que la entrega era igual a la promesa. Cinco auditores '
+      + 'adversarios revisaron las seis versiones de la semana con el encargo de TUMBARLAS, '
+      + 'no de confirmarlas, y lo consiguieron en cinco de las seis. Esto cierra lo mas '
+      + 'grave. '
+      + 'R126 (Control Administrativos, prioridad alta, rompe una pantalla en uso). DOS '
+      + 'defectos que la v1.101.0 NO arreglo pese a rehacer el componente entero: (1) el '
+      + 'catalogo mete las 42 celdas PLANAS en `.fc-dias` y el componente anida FILAS '
+      + 'porque el patron `grid` de ARIA las exige, asi que `repeat(7,1fr)` repartia las '
+      + 'SIETE SEMANAS en siete columnas de ~33px — cabeceras «LMXJVSD» pegadas y dias de '
+      + 'dos en dos; (2) el rotulo y el valor del campo no se apilaban y se leia '
+      + '«DesdeElegir fecha», porque las reglas que los colocan seguian escritas para '
+      + '`input.fc-campo` y el componente emite un <button>. Las dos vistas en un navegador '
+      + 'con la hoja ENTREGADA antes y despues. '
+      + 'SELECTOR CON BUSQUEDA, cuatro defectos de la v1.97.0: el reloj del umbral no se '
+      + 'apagaba al responder, asi que de la SEGUNDA consulta en adelante el esqueleto '
+      + 'salia con umbral CERO —el parpadeo por pulsacion que la regla 20 prohibe y que se '
+      + 'anuncio como resuelto—; un `AbortError` del PRODUCTO dejaba el control colgado sin '
+      + 'salida, con esqueleto y `aria-busy` eternos y sin fila de reintento; Escape dejaba '
+      + '`aria-busy` puesto sobre un campo cerrado; y «Pulsa aqui para reintentar» no daba '
+      + 'acuse durante 300ms, leyendose como un boton muerto. '
+      + 'EL CANDADO DE COLOR, que la v1.98.0 DEBILITO sin darse cuenta: `declaraSuVariable` '
+      + 'comparaba solo la FAMILIA, asi que nombrar `#EC1C24` convirtio cualquier '
+      + '`--marca-loquesea:` en coartada legal —antes de tener nombre esa misma linea '
+      + 'fallaba— y el censo de prosa filtra los conocidos, asi que nombrarlo lo SACO del '
+      + 'censo. Se le dijo lo contrario a dos equipos. Ahora compara el nombre COMPLETO, y '
+      + 'las variables semanticas de marca siguen valiendo por su definicion. Visto en rojo '
+      + 'con una sonda. '
+      + 'EL LAPIZ que la v1.102.0 dice haber mirado en un navegador: su filete sobresalia '
+      + '1,41 unidades del cuerpo —una pua—. Medido contra las aristas del lapiz y '
+      + 'corregido a `3 3`, que cae a ras de las dos. Mirar la hoja entera no es mirar el '
+      + 'icono que acabas de cambiar. '
+      + '`Icono.tsx` decia «ARCHIVO GENERADO. No editar a mano» y «46 trazos» teniendo 60 y '
+      + 'editandose a mano desde hace catorce iconos: la fuente VIAJA, asi que mentia sobre '
+      + 'si misma. Y CAMBIOS anunciaba una `1.100.1` SIN ETIQUETA: quien la instalara '
+      + 'siguiendo el manual recibia un 404.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
+  {
     v: '1.102.0', fecha: '2026-09-11',
     que: 'R124: los siete iconos de edicion. Sin ellos no hay barra que montar',
     porque:
@@ -118,19 +160,6 @@ export const CAMBIOS = [
       + 'en el candado del elemento y `.fc-activo` en el de la promesa muerta— y descubrio '
       + 'un defecto propio del foco: al saltar un ano el foco se perdia, porque mover la '
       + 'ventana de meses es un dibujado mas y la bandera de enfocar ya se habia consumido.',
-    tokens: { alta: [], baja: [] },
-    rompe: false,
-  },
-  {
-    v: '1.100.1', fecha: '2026-09-10',
-    que: 'R103: lo tecleado sobrevive a «Crear». El comentario decia «NO se limpia» y el campo salia en blanco',
-    porque:
-      'Lo encontro la auditoria de peticiones/. R103 prometio que crear no limpia porque '
-      + '«cerrar dando por hecho un registro que quiza no ocurre dejaria el campo en blanco '
-      + 'a quien vuelve de cancelar». El comentario del codigo decia «NO se cierra ni se '
-      + 'limpia» y la LINEA SIGUIENTE cerraba; y al cerrar el campo enseña lo ELEGIDO, que '
-      + 'con crear es nada. Ese comentario viaja en el paquete, asi que quien leia la fuente '
-      + 'instalada leia una afirmacion falsa sobre el propio codigo.',
     tokens: { alta: [], baja: [] },
     rompe: false,
   },

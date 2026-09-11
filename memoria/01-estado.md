@@ -1,7 +1,7 @@
 # Estado del proyecto
 
-**Última actualización:** 10 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.102.0** — R124: los siete iconos de
+**Última actualización:** 11 de septiembre de 2026
+**Versión del sistema:** MMI-DS **v1.103.0** — R124: los siete iconos de
 edición, que bloqueaban cualquier barra futura. Vistos en un navegador antes de
 publicarlos, y el lápiz salió mal a la primera
 
@@ -18,18 +18,17 @@ publicarlos, y el lápiz salió mal a la primera
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —34 componentes
-publicados, la hoja que viaja, **dieciséis candados**, 594 pruebas—. Lo de hoy no
-es código: es **mirar los activos de marca con una herramienta en vez de con la
-memoria**. Se decodificaron los PNG, se contaron píxeles opacos y se localizó
-cada color por su caja, y de ahí salieron tres cosas que el repositorio daba por
-ciertas y no lo eran.
+publicados, la hoja que viaja, **quince candados**, 621 pruebas—. Lo de hoy es la
+factura de una semana rápida: se pidió **garantizar** que lo entregado era igual
+a lo prometido, cinco auditores adversarios revisaron las seis versiones con el
+encargo de **tumbarlas**, y lo consiguieron en cinco de las seis.
 
-La primera es un **tercer rojo** que §8.5 no cuenta, y que no está donde nadie
-buscaba: `#EC1C24` vive **dentro del escudo que el lockup lleva incrustado**,
-mientras el escudo suelto pinta ese mismo escudo en `#E30613`. El defecto no es
-«el escudo usa un rojo y el lockup usa otro» — es que **el mismo escudo sale de
-dos rojos distintos según de qué archivo se saque**. Ya tiene nombre, y por tanto
-candado.
+Lo más caro no fue un defecto nuevo: fue descubrir que **rehacer `RangoFecha`
+entero no arregló lo que el equipo había reportado**. La v1.101.0 le puso los dos
+meses, los atajos y el resumen, y dejó intacta la discordancia que rompía la
+pantalla — el catálogo mete las celdas planas y el componente anida filas, así
+que la rejilla de siete columnas repartía las siete semanas. Se arregla tarde y
+mirándolo en un navegador, que es lo que no se hizo entonces.
 
 ---
 
@@ -43,15 +42,15 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **581 pruebas en 39 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · **943 reglas de 1448** · **692 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
+| Componentes de React | ✅ | **621 pruebas en 42 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · **951 reglas de 1459** · **694 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **68 páginas** (contadas en el HTML generado; decía 53 y llevaba tiempo desfasado) · lo genera `generar-cascaron.mjs` |
-| Iconografía | ✅ | **53 trazos** en `iconos.mjs`, React real · `informacion` entró con R83 |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.102.0.zip` · **56 archivos** · se publica con `npm run publicar` |
+| Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.103.0.zip` · **56 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.102.0**, con el salto **desde la v1.19.0**, que es la instalada |
-| Promesa muerta | ✅ | `verificar-promesa-muerta` — candado **dieciséis** · 135 unidades compuestas · **9 de deuda declarada**, 0 nuevas |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.103.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Promesa muerta | ✅ | `verificar-promesa-muerta` — candado **quince** · 137 unidades compuestas · **8 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -1676,11 +1675,11 @@ sin comparar.
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.102.0
+Versión                      1.103.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         618   en 42 archivos
+Pruebas                         621   en 42 archivos
 Reglas que viajan               948   de 1454 · 694 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el

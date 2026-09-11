@@ -261,7 +261,14 @@ export function SelectorBusqueda({
   const consultar = useRef(onBuscar);
   useEffect(() => { consultar.current = onBuscar; });
 
-  const reintentar = useCallback(() => setIntento((n) => n + 1), []);
+  /** El fallo se borra AQUÍ y no dentro del temporizador: si no, se pulsaba
+   *  «Pulsa aquí para reintentar» y durante los 300 ms del rebote no pasaba
+   *  nada visible — la misma fila de fallo seguía ahí y se leía como un botón
+   *  muerto. */
+  const reintentar = useCallback(() => {
+    setFallo(false);
+    setIntento((n) => n + 1);
+  }, []);
 
   /** R103 (corregido) · lo tecleado que sobrevive a «Crear» hasta que haya
    *  elección. Se suelta en cuanto el producto responde con un `valor`, o en
@@ -318,7 +325,16 @@ export function SelectorBusqueda({
    * los resultados de una búsqueda que ya nadie está haciendo.
    */
   useEffect(() => {
-    if (!remoto || !abierto) return;
+    if (!remoto) return;
+    // Al CERRAR se limpia el estado de la consulta. Antes se salía por el
+    // `return` de arriba sin reponer nada, así que un Escape con el esqueleto
+    // puesto dejaba `aria-busy="true"` sobre un control cerrado y ocioso — y al
+    // volver a abrir, el esqueleto aparecía instantáneo.
+    if (!abierto) {
+      setBuscando(false);
+      setTardando(false);
+      return;
+    }
     const q = texto.trim();
     if (!q) {
       setRemotas(null);
@@ -339,21 +355,46 @@ export function SelectorBusqueda({
       setFallo(false);
       umbral = setTimeout(() => { if (vivo) setTardando(true); }, UMBRAL);
 
+      /**
+       * APAGAR EL RELOJ DEL UMBRAL AL TERMINAR, y no solo en la limpieza.
+       *
+       * Sin esto, contra un servidor rápido —el caso normal— el reloj seguía
+       * vivo después de responder y disparaba `tardando` a los 300 ms con la
+       * consulta ya resuelta. No se veía nada entonces, pero dejaba el estado
+       * sucio: **a la siguiente tecla el esqueleto salía con umbral cero**, que
+       * es exactamente el parpadeo por pulsación que la regla 20 prohíbe. De la
+       * segunda consulta en adelante, el umbral no existía.
+       */
+      const rematar = () => {
+        if (umbral) clearTimeout(umbral);
+        setBuscando(false);
+        setTardando(false);
+      };
+
       Promise.resolve(fn(q, mando.signal)).then(
         (ops) => {
           if (!vivo) return;
           setRemotas(Array.isArray(ops) ? ops : []);
-          setBuscando(false);
-          setTardando(false);
+          rematar();
         },
         (e: unknown) => {
           // Abortar es lo que hacemos NOSOTROS al teclear otra letra: no es un
           // fallo de nadie y pintar un error ahí sería mentir sobre el servidor.
           if (!vivo || mando.signal.aborted) return;
-          if (e instanceof Error && e.name === 'AbortError') return;
+          /**
+           * PERO UN `AbortError` QUE NO ES NUESTRO SÍ HAY QUE REMATARLO.
+           *
+           * Si el producto cancela con su propio controlador —cambio de ruta,
+           * `AbortSignal.any`— la señal nuestra no está abortada y `vivo` sigue
+           * en true. Antes se salía por `return` sin tocar nada: `buscando` se
+           * quedaba en true para siempre, el umbral disparaba, y el control
+           * quedaba con esqueleto eterno, `aria-busy` eterno y SIN fila de
+           * reintento. Un callejón sin salida, que es justo lo que este sistema
+           * dice no tener.
+           */
+          if (e instanceof Error && e.name === 'AbortError') { rematar(); return; }
           setFallo(true);
-          setBuscando(false);
-          setTardando(false);
+          rematar();
         },
       );
     }, rebote);

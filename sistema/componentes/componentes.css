@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.102.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.103.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -519,13 +519,15 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   FECHA Y RANGO — 37 reglas · clases .fc-*
+   FECHA Y RANGO — 41 reglas · clases .fc-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .fc-campos{ display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 .fc-campos .cg{ width: 172px; flex: none; }
 .fc-guion{ color: var(--texto-pista); padding-bottom: 8px; display: grid; place-items: center; }
 .fc-guion .ic{ width: 16px; height: 16px; }
+button.fc-campo{ display: flex; flex-direction: column; align-items: flex-start;
+  justify-content: center; gap: 2px; text-align: left; height: auto; }
 .fc-campo{ padding-right: 32px;
   background-repeat: no-repeat; background-position: right 12px center;
   background-size: 16px 16px;
@@ -556,11 +558,15 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .fc-cal-cab{ display: flex; align-items: center; justify-content: space-between;
   gap: 12px; padding: 8px 12px; background: var(--fondo-encabezado);
   border-bottom: 1px solid var(--borde); }
-.fc-meses{ font-size: 13px; font-weight: 600; text-transform: capitalize; }
+.fc-meses{ font-size: 13px; font-weight: 600; }
+.fc-meses::first-letter{ text-transform: uppercase; }
 .fc-cal-cuerpo{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 16px; }
-.fc-mes-tit{ font-size: 12px; font-weight: 600; text-transform: capitalize;
+.fc-mes-tit{ font-size: 12px; font-weight: 600;
   text-align: center; margin-bottom: 8px; }
+.fc-mes-tit::first-letter{ text-transform: uppercase; }
 .fc-sem, .fc-dias{ display: grid; grid-template-columns: repeat(7,1fr); }
+.fc-dias > [role='row']{ display: grid; grid-template-columns: repeat(7,1fr);
+  grid-column: 1 / -1; }
 .fc-sem span{ font-size: 12px; font-weight: 500; color: var(--texto-secundario);
   text-align: center; padding-bottom: 4px; }
 .fc-d{ height: 30px; font: inherit; font-size: 12px; cursor: pointer;

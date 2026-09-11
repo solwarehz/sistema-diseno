@@ -1,10 +1,20 @@
 /**
  * ICONOS COMO COMPONENTE DE REACT
  *
- * ARCHIVO GENERADO. No editar a mano.
- * Fuente: sistema/iconos/iconos.mjs → node sistema/iconos/generar-react.mjs
+ * SE MANTIENE A MANO, y no se genera. El rótulo decía «ARCHIVO GENERADO. No
+ * editar a mano» y era falso desde hace catorce iconos: los siete de redes
+ * (R112) y los siete de edición (R124) se escribieron aquí directamente, y el
+ * comentario de las redes no lo emite ningún generador. Ejecutar hoy
+ * `generar-react.mjs` borraría ese comentario y reordenaría siete entradas.
  *
- * Los mismos 46 trazos que usa el catálogo, como elementos de React.
+ * Declararlo generado tenía un coste real: la fuente VIAJA en el paquete, así
+ * que quien la leía instalada leía una mentira sobre el propio archivo — el
+ * mismo pecado que este sistema corrigió en `crear()` del selector.
+ *
+ * Lo que de verdad garantiza que las dos copias no divergen es
+ * `sistema/candado/verificar-iconos.mjs`, que las compara TRAZO A TRAZO. El
+ * número no se escribe aquí a propósito: escrito a mano se queda viejo, y ya
+ * se quedó —decía 46 con 60 dentro—.
  *
  * Existe para que NADIE tenga que usar `dangerouslySetInnerHTML`. El módulo
  * `iconos.mjs` devuelve cadenas de SVG —lo cómodo en una plantilla— y en React
@@ -56,7 +66,7 @@ const TRAZOS_REACT = {
   guardar: <><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z" /><path d="M17 21v-8H7v8" /><path d="M7 3v5h8" /></>,
   hamburguesa: <><path d="M4 6h16M4 12h16M4 18h16" /></>,
   informacion: <><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></>,
-  lapiz: <><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" /><path d="m14.5 5.5 4 4" /></>,
+  lapiz: <><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" /><path d="m14.5 5.5 3 3" /></>,
   libro: <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" /></>,
   lista: <><path d="M9 6h11M9 12h11M9 18h11" /><circle cx="4.5" cy="6" r="1" /><circle cx="4.5" cy="12" r="1" /><circle cx="4.5" cy="18" r="1" /></>,
   luna: <><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" /></>,
