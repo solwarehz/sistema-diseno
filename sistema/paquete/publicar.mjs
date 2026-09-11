@@ -92,6 +92,63 @@ if (yaEtiquetada && yaEtiquetada !== cabeza) {
   problemas.push(`${etiqueta} ya existe y apunta a ${yaEtiquetada.slice(0, 7)}, no a ${cabeza.slice(0, 7)}. NO se mueve: sube de versión`);
 }
 
+/**
+ * LOS CANDADOS SE CORREN AQUÍ, y no se confía en que alguien los haya corrido.
+ *
+ * La v1.103.0 se publicó con la regla de `.fc-cal-cuerpo` FUERA de la hoja
+ * entregada. Los candados la habrían cazado —`verificar-promesa` la vio en
+ * cuanto se corrió después—, pero la publicación se hizo apoyada en una pasada
+ * anterior a la última edición. El fallo no fue del candado: fue que correrlo
+ * dependía de acordarse.
+ *
+ * Es exactamente lo que la cabecera de este archivo dice que ya pasó con las
+ * etiquetas, y el motivo por el que este guion existe. Faltaba aplicárselo a sí
+ * mismo.
+ */
+const CANDADOS = [
+  'sistema/tokens/generar.mjs',
+  'sistema/cascaron/generar-cascaron.mjs',
+  'sistema/componentes/extraer.mjs',
+  'sistema/candado/verificar-contraste.mjs',
+  'sistema/candado/verificar-color.mjs',
+  'sistema/candado/auditar-cascaron.mjs',
+  'sistema/candado/probar-candado.mjs',
+  'sistema/candado/verificar-cascada.mjs',
+  'sistema/candado/verificar-contrato.mjs',
+  'sistema/candado/verificar-entrega.mjs',
+  'sistema/candado/verificar-promesa.mjs',
+  'sistema/candado/verificar-elemento.mjs',
+  'sistema/candado/verificar-empate.mjs',
+  'sistema/candado/verificar-forma.mjs',
+  'sistema/candado/verificar-omision.mjs',
+  'sistema/candado/verificar-iconos.mjs',
+  'sistema/candado/verificar-promesa-muerta.mjs',
+];
+
+/** Por CÓDIGO DE SALIDA, no por si imprimió algo: `intenta` devuelve '' cuando
+ *  el guion calla, y '' es falso — un candado mudo habría contado como rojo. */
+const verde = (cmd, args) => {
+  try { execFileSync(cmd, args, { cwd: RAIZ, stdio: 'ignore' }); return true; }
+  catch { return false; }
+};
+
+process.stdout.write('  candados… ');
+const enRojo = [];
+for (const c of CANDADOS) {
+  if (!verde('node', [c])) enRojo.push(c.split('/').pop().replace('.mjs', ''));
+}
+console.log(enRojo.length ? `${enRojo.length} EN ROJO` : `${CANDADOS.length} en verde`);
+if (enRojo.length) {
+  problemas.push(`en rojo: ${enRojo.join(', ')} — córrelos y mira qué dicen antes de publicar`);
+}
+
+// Regenerar puede haber tocado archivos. Si el árbol quedó sucio DESPUÉS de
+// esto, lo publicado no sería lo commiteado.
+const sucioTras = intenta('git', ['status', '--porcelain']);
+if (sucioTras) {
+  problemas.push('los candados regeneraron algo: el árbol quedó sucio. Commitea y vuelve a intentarlo');
+}
+
 if (problemas.length) {
   console.error('  No se puede publicar:\n');
   for (const p of problemas) console.error(`    · ${p}`);

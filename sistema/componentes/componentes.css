@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.104.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.105.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -519,7 +519,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   FECHA Y RANGO — 41 reglas · clases .fc-*
+   FECHA Y RANGO — 42 reglas · clases .fc-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .fc-campos{ display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
@@ -571,7 +571,8 @@ button.fc-campo{ display: flex; flex-direction: column; align-items: flex-start;
   grid-column: 1 / -1; }
 .fc-sem span{ font-size: 12px; font-weight: 500; color: var(--texto-secundario);
   text-align: center; padding-bottom: 4px; }
-.fc-d{ height: 30px; font: inherit; font-size: 12px; cursor: pointer;
+.fc-dias [role='gridcell']{ display: grid; }
+.fc-d{ height: 30px; width: 100%; font: inherit; font-size: 12px; cursor: pointer;
   background: transparent; border: 0; color: var(--texto-principal); border-radius: 6px; }
 .fc-d:hover{ background: var(--fondo-fila-hover); }
 .fc-vacio{ cursor: default; }

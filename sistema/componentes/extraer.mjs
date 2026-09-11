@@ -149,15 +149,48 @@ const SOLO_CATALOGO = new Set([
 
 /** Parte el CSS en bloques de primer nivel, contando llaves. Un `split('}')`
  *  parte las @media por la mitad y produce reglas inválidas. */
+/**
+ * Busca el siguiente carácter SALTANDO LOS COMENTARIOS.
+ *
+ * Sin esto, una llave dentro de un comentario abría un bloque falso: el
+ * comentario `/* … `meses={1}` … *\/` hacía que el troceador empezara el bloque
+ * en esa llave, el selector saliera inválido y **se descartara la regla
+ * siguiente entera**. Pasó de verdad: la v1.103.0 se publicó con la regla de
+ * `.fc-cal-cuerpo` fuera de la hoja entregada, y el arreglo que documentaba ese
+ * mismo comentario no llegó a ningún producto. El texto que explicaba el
+ * arreglo era lo que lo anulaba.
+ *
+ * Reescribir la prosa esquiva el síntoma; esto cierra el agujero.
+ */
+function fueraDeComentario(css, desde, ch) {
+  let i = desde;
+  while (i < css.length) {
+    if (css[i] === '/' && css[i + 1] === '*') {
+      const fin = css.indexOf('*/', i + 2);
+      if (fin < 0) return -1;
+      i = fin + 2;
+      continue;
+    }
+    if (css[i] === ch) return i;
+    i++;
+  }
+  return -1;
+}
+
 function bloques(css) {
   const salida = [];
   let i = 0;
   while (i < css.length) {
-    const abre = css.indexOf('{', i);
+    const abre = fueraDeComentario(css, i, '{');
     if (abre < 0) break;
     let prof = 1;
     let j = abre + 1;
     while (j < css.length && prof > 0) {
+      if (css[j] === '/' && css[j + 1] === '*') {
+        const fin = css.indexOf('*/', j + 2);
+        j = fin < 0 ? css.length : fin + 2;
+        continue;
+      }
       if (css[j] === '{') prof++;
       else if (css[j] === '}') prof--;
       j++;

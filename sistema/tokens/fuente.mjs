@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.104.0";
+export const VERSION = "1.105.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,44 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.105.0', fecha: '2026-09-11',
+    que: 'Una sola anatomia de calendario, con el candado que lo comprueba. Y el publicador corre los candados por su cuenta',
+    porque:
+      'Segunda vuelta del bucle de auditoria. La ronda anterior encontro que R126 seguia '
+      + 'roto UN NIVEL MAS ABAJO: el hijo de la fila es un `role="gridcell"` y no tenia '
+      + 'NINGUNA regla, asi que el dia quedaba inline dentro de su columna —botones de '
+      + '~20px en columnas de ~33—, el tramo se pintaba a trozos y los redondeos de '
+      + '`.fc-ini`/`.fc-fin` no encajaban. '
+      + 'El arreglo de fondo es que el catalogo emite AHORA el mismo marcado que el '
+      + 'componente: `role="grid"`, la cabecera como una fila mas dentro, `role="gridcell"` '
+      + 'tambien en los huecos, filas rellenadas a siete, y el mismo `aria-label` largo. De '
+      + 'paso se corrige un defecto de accesibilidad del catalogo que el componente ya '
+      + 'tenia bien: marcaba los extremos del rango con `aria-current="date"`, que significa '
+      + 'HOY. '
+      + 'Y NACE EL CANDADO QUE FALTABA: `calendario-catalogo.test.tsx` ejecuta el catalogo '
+      + 'de verdad en jsdom, abre su calendario y compara el arbol contra el que emite '
+      + 'React. Es el metodo de R116 y existe por lo mismo: lo que el catalogo no pinta en '
+      + 'reposo no lo compara nadie, y el cuerpo del calendario esta vacio hasta que alguien '
+      + 'lo abre. Visto en rojo quitando `role="gridcell"` del catalogo. '
+      + 'EL PUBLICADOR CORRE LOS DIECISIETE PASOS POR SU CUENTA y se niega si alguno sale en '
+      + 'rojo o si el arbol queda sucio despues. La v1.103.0 salio con la regla de '
+      + '`.fc-cal-cuerpo` FUERA de la hoja entregada: el candado la habria cazado —la vio en '
+      + 'cuanto se corrio despues— pero la publicacion se apoyo en una pasada anterior a la '
+      + 'ultima edicion. El fallo no fue del candado, fue que correrlo dependia de '
+      + 'acordarse. Es exactamente lo que la cabecera de ese guion dice que ya paso con las '
+      + 'etiquetas; faltaba aplicarselo a si mismo. '
+      + 'Y se cierra la causa raiz del troceador: `extraer.mjs` buscaba la llave de apertura '
+      + 'SIN saltar comentarios, asi que unas llaves dentro de un comentario abrian un '
+      + 'bloque falso y se descartaba en silencio la regla siguiente. El texto que explicaba '
+      + 'un arreglo era lo que lo anulaba. '
+      + 'Corregidas ademas tres regresiones propias metidas AL ARREGLAR lo anterior: la '
+      + 'vista movil del catalogo dejo `.anatomia` y `.sel-demo-fila` a dos columnas, una '
+      + 'regla quedo duplicada, y la regla 7 del contrato se reescribio para decir lo '
+      + 'contrario de lo que el codigo hace — la prosa se cambio sin mirar el codigo.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.104.0', fecha: '2026-09-11',
     que: 'R126-bis: el arreglo del calendario estaba A MEDIAS. Y el candado del contrato protegia 18 reglas de 175',

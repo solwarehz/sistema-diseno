@@ -8790,7 +8790,13 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
   grid-column: 1 / -1; }
 .fc-sem span { font-size: 12px; font-weight: 500; color: var(--texto-secundario);
   text-align: center; padding-bottom: 4px; }
-.fc-d { height: 30px; font: inherit; font-size: 12px; cursor: pointer;
+/* R126 (ter) · LA CELDA DE REJILLA SE ESTIRA. El hijo de la fila es un
+   \`role="gridcell"\`, y sin regla el \`.fc-d\` de dentro queda inline-block con
+   anchura de contenido: botones de ~20px pegados a la izquierda de columnas de
+   ~33, el tramo pintado a trozos y los redondeos de \`.fc-ini\`/\`.fc-fin\` sin
+   encajar. Era R126 otra vez, un nivel mas abajo. */
+.fc-dias [role='gridcell'] { display: grid; }
+.fc-d { height: 30px; width: 100%; font: inherit; font-size: 12px; cursor: pointer;
   background: transparent; border: 0; color: var(--texto-principal); border-radius: 6px; }
 /* El hover es el del sistema, fondo-fila-hover, el mismo que la fila de tabla
    bajo el cursor. Antes usaba fondo-encabezado, un gris que no es un hover. */
@@ -9119,9 +9125,15 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
    campo de 189px encima. Apiladas, el divisor pasa de vertical a horizontal. */
 [data-vista='movil'] .mal-par { grid-template-columns: 1fr; }
 [data-vista='movil'] .mal-caja.bien { border-left: 0; border-top: 1px solid var(--borde); }
+/* Estas dos siguen necesitando UNA COLUMNA: tienen grid-template-columns
+   explicito, y grid-auto-flow: row es el valor por omision — no las colapsa.
+   Cambiar la declaracion sin sacarlas de la lista las dejo a dos columnas
+   sobre 390px. Regresion metida AL ARREGLAR otra cosa. */
 [data-vista='movil'] .anatomia,
-[data-vista='movil'] .sel-demo-fila,
-[data-vista='movil'] .fc-cal-cuerpo { grid-template-columns: 1fr; }
+[data-vista='movil'] .sel-demo-fila { grid-template-columns: 1fr; }
+/* El calendario es el unico que fluye por columnas, y ahi hay que cambiar el
+   FLUJO: fijar una columna explicita no detiene grid-auto-flow: column. */
+[data-vista='movil'] .fc-cal-cuerpo { grid-auto-flow: row; }
 [data-vista='movil'] .fc-cal { position: static; max-width: none; }
 [data-vista='movil'] .fc-cal-marco { flex-direction: column; }
 [data-vista='movil'] .fc-atajos { border-left: 0; border-top: 1px solid var(--borde); }
@@ -12358,6 +12370,10 @@ ${COMPRESOR_PDF}
     var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
       'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
     var DIAS = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+    var LARGOS = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+    function mismoDiaQue(a, b) {
+      return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+    }
     var hoy = new Date();
     var ancla = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
     var ini = null, fin = null, sobre = null;
@@ -12375,14 +12391,21 @@ ${COMPRESOR_PDF}
       // Las celdas se agrupan en FILAS, igual que el componente: el patron
       // grid de ARIA las exige, y asi la hoja sirve a las dos superficies.
       function filas(cs) {
+        // Se RELLENA hasta multiplo de siete, como el componente: una fila de
+        // un solo hijo rompe la anatomia que el contrato fija.
+        var t = cs.slice();
+        while (t.length % 7) t.push('<span role="gridcell"><span class="fc-d fc-vacio"></span></span>');
         var out = '';
-        for (var i = 0; i < cs.length; i += 7) {
-          out += '<div role="row">' + cs.slice(i, i + 7).join('') + '</div>';
+        for (var i = 0; i < t.length; i += 7) {
+          out += '<div role="row">' + t.slice(i, i + 7).join('') + '</div>';
         }
         return out;
       }
       var celdas = [];
-      for (var i = 0; i < primero; i++) celdas.push('<span class="fc-d fc-vacio"></span>');
+      // Celda vacia con su gridcell, igual que el componente: dentro de un
+      // role=grid todo hijo de fila tiene que ser una celda.
+      for (var i = 0; i < primero; i++)
+        celdas.push('<span role="gridcell"><span class="fc-d fc-vacio"></span></span>');
       for (var d = 1; d <= total; d++) {
         var f = new Date(y, m, d);
         var t = f.getTime();
@@ -12394,13 +12417,25 @@ ${COMPRESOR_PDF}
           (esIni ? ' fc-ini' : '') + (esFin ? ' fc-fin' : '') +
           (dentro ? ' fc-dentro' : '') +
           (!fin && ini && sobre && t === sobre.getTime() && t > ini.getTime() ? ' fc-fin fc-previo' : '');
-        celdas.push('<button type="button" class="' + clases + '" data-f="' + clave(f) + '"' +
-          (esIni || esFin ? ' aria-current="date"' : '') +
-          ' aria-label="' + d + ' de ' + MESES[m] + ' de ' + y + '">' + d + '</button>');
+        celdas.push('<span role="gridcell" aria-selected="' + (esIni || esFin || dentro) + '">' +
+          '<button type="button" class="' + clases + '" data-f="' + clave(f) + '"' +
+          // aria-current=date significa HOY, no «extremo del rango». El
+          // catalogo marcaba los extremos, que es el defecto critico que el
+          // componente declara corregido en su cabecera.
+          (mismoDiaQue(f, hoy) ? ' aria-current="date"' : '') +
+          ' aria-label="' + LARGOS[f.getDay()] + ' ' + d + ' de ' + MESES[m] + ' de ' + y +
+            (dentro ? ', dentro del rango' : '') + (esIni || esFin ? ', extremo del rango' : '') + '">' + d + '</button></span>');
       }
-      return '<div class="fc-mes"><div class="fc-mes-tit">' + MESES[m] + ' ' + y + '</div>' +
-        '<div class="fc-sem">' + DIAS.map(function (x) { return '<span>' + x + '</span>'; }).join('') + '</div>' +
-        '<div class="fc-dias">' + filas(celdas) + '</div></div>';
+      // La MISMA anatomia que emite el componente: la cabecera va DENTRO de
+      // .fc-dias como una fila mas, el contenedor lleva role=grid, y el
+      // envoltorio del mes va sin clase. Tenerlas distintas es lo que hizo que
+      // una regla sirviera a una superficie y destrozara la otra (R126).
+      var titulo = MESES[m] + ' de ' + y;
+      return '<div><div class="fc-mes-tit">' + titulo + '</div>' +
+        '<div class="fc-dias" role="grid" aria-label="' + titulo + '">' +
+        '<div role="row" class="fc-sem">' +
+        DIAS.map(function (x) { return '<span role="columnheader">' + x + '</span>'; }).join('') +
+        '</div>' + filas(celdas) + '</div></div>';
     }
 
     var cajaIni = document.getElementById('fc-ini');
@@ -12411,7 +12446,8 @@ ${COMPRESOR_PDF}
     function abrir(cual) {
       // Si aún no hay inicio, siempre se empieza por el inicio.
       modo = (cual === 'fin' && ini) ? 'fin' : 'ini';
-      if (modo === 'ini') { ini = null; fin = null; }
+      /* La regla 8 del contrato dice que ABRIR NO BORRA. El catalogo hacia justo
+         lo que esa regla censura, y era la fuente del defecto. */
       cal.hidden = false;
       cajaIni.setAttribute('aria-expanded', 'true');
       cajaFin.setAttribute('aria-expanded', 'true');

@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.104.0
+# Actualizar al sistema de diseño v1.105.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.104.0"
+npm install "github:solwarehz/sistema-diseno#v1.105.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,19 +27,19 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.104.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.105.0
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.104.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.105.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.104.0 --repo solwarehz/sistema-diseno
+gh release download v1.105.0 --repo solwarehz/sistema-diseno
 ```
 
 Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
@@ -341,6 +341,7 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 
 | 1.95.0 | **`SelectorBusqueda` entrega por fin lo que el catálogo enseña, en nueve puntos.** Se ven cuatro: el chevron **ahora gira** al abrir la lista, el visto ✓ de la opción elegida pasa **a la derecha** (estaba a la izquierda, 298,4 px de diferencia), la ayuda de la opción recibe su tipografía —13 px, secundario— y deja de salir del mismo cuerpo que el nombre, y la fila de «sin resultados» **dice qué se buscó** en vez de «No hay coincidencias». Se teclean cuatro: **↑ abre la lista**, las flechas **ciclan**, **Inicio y Fin** funcionan, y **Tab elige lo marcado** — antes tabular con una coincidencia marcada dejaba el campo **vacío**. **Nada rompe:** ninguna clase pública cambia de nombre y `textoVacio` sigue admitiendo una cadena. **Y les afecta aunque no usen el selector:** `Paginacion` no emitía `activa`, así que **la página en curso no se pintaba en ninguna pantalla** — ahora sí |
 
+| 1.105.0 | **Cierra R126 del todo, y esta vez con candado.** El arreglo anterior dejaba el día **inline dentro de su columna** —la celda de rejilla no tenía ninguna regla—, así que el tramo se pintaba a trozos. Ahora el catálogo emite **el mismo marcado** que el componente, y hay una prueba que **ejecuta el catálogo** y compara el árbol: si las dos superficies se separan, sale en rojo. Corregido además un defecto de accesibilidad del catálogo: marcaba los extremos del rango con `aria-current="date"`, que significa **hoy**. Y el publicador **corre los diecisiete candados por su cuenta** y se niega si alguno está en rojo — la v1.103.0 salió rota porque correrlos dependía de acordarse |
 | 1.104.0 | **R126 de verdad: el arreglo anterior estaba a medias.** Se añadió la regla nueva y **no se retiró la vieja**, así que `.fc-dias` seguía repartiendo las siete semanas en siete columnas de 9,26 px. Ahora está medido en el DOM del catálogo real: `.fc-dias` es **una** columna, sus hijos son filas, y cada fila tiene siete columnas de 26,4 px. **Pueden migrar sus dos `Campo tipo="date"` al componente.** Cierra además cuatro defectos: `.fc-otro-mes` retirada, `meses = 1` ya no deja media rejilla vacía, cambiar de mes **ya no desborda** (31-ene + 1 mes daba 3 de marzo), y la vista previa se suelta al cerrar. Y `RangoFecha` **gana contrato**: doce reglas donde no tenía ninguna |
 | 1.103.0 | **Actualicen. Cierra R126 y siete defectos nuestros.** **`RangoFecha`**: el calendario repartía las **siete semanas en siete columnas** —cabeceras «LMXJVSD» pegadas— porque el componente anida filas (ARIA lo exige) y la hoja esperaba celdas planas; y el campo se leía «DesdeElegir fecha». **`SelectorBusqueda`**: el esqueleto salía **con umbral cero desde la segunda consulta** (parpadeo por pulsación), un `AbortError` **del producto** dejaba el control colgado sin salida, Escape dejaba `aria-busy` puesto, y «reintentar» no daba acuse. **Candado de color**: nombrar un color de marca lo **debilitaba** —cualquier `--marca-*` servía de coartada—; ahora compara el nombre completo. **Iconos**: el filete del lápiz sobresalía 1,41 unidades. Y si leyeron «1.100.1» en el registro de cambios, **esa versión nunca existió** — no la busquen |
 | 1.102.0 | **Siete iconos nuevos, para la barra de edición.** `negrita`, `cursiva`, `lista`, `deshacer`, `rehacer`, `guardar` y `lapiz`. Se pidieron seis; `rehacer` entra igual porque deshacer sin su par es media función. Se usan como cualquier otro: `<Icono nombre="negrita" />`. **Nada que cambiar**: solo hay siete más donde había 53 |

@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.104.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.105.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.104.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.105.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -1361,7 +1361,13 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
   grid-column: 1 / -1; }
 .fc-sem span { font-size: 12px; font-weight: 500; color: var(--texto-secundario);
   text-align: center; padding-bottom: 4px; }
-.fc-d { height: 30px; font: inherit; font-size: 12px; cursor: pointer;
+/* R126 (ter) · LA CELDA DE REJILLA SE ESTIRA. El hijo de la fila es un
+   `role="gridcell"`, y sin regla el `.fc-d` de dentro queda inline-block con
+   anchura de contenido: botones de ~20px pegados a la izquierda de columnas de
+   ~33, el tramo pintado a trozos y los redondeos de `.fc-ini`/`.fc-fin` sin
+   encajar. Era R126 otra vez, un nivel mas abajo. */
+.fc-dias [role='gridcell'] { display: grid; }
+.fc-d { height: 30px; width: 100%; font: inherit; font-size: 12px; cursor: pointer;
   background: transparent; border: 0; color: var(--texto-principal); border-radius: 6px; }
 /* El hover es el del sistema, fondo-fila-hover, el mismo que la fila de tabla
    bajo el cursor. Antes usaba fondo-encabezado, un gris que no es un hover. */
@@ -1690,9 +1696,15 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
    campo de 189px encima. Apiladas, el divisor pasa de vertical a horizontal. */
 [data-vista='movil'] .mal-par { grid-template-columns: 1fr; }
 [data-vista='movil'] .mal-caja.bien { border-left: 0; border-top: 1px solid var(--borde); }
+/* Estas dos siguen necesitando UNA COLUMNA: tienen grid-template-columns
+   explicito, y grid-auto-flow: row es el valor por omision — no las colapsa.
+   Cambiar la declaracion sin sacarlas de la lista las dejo a dos columnas
+   sobre 390px. Regresion metida AL ARREGLAR otra cosa. */
 [data-vista='movil'] .anatomia,
-[data-vista='movil'] .sel-demo-fila,
-[data-vista='movil'] .fc-cal-cuerpo { grid-template-columns: 1fr; }
+[data-vista='movil'] .sel-demo-fila { grid-template-columns: 1fr; }
+/* El calendario es el unico que fluye por columnas, y ahi hay que cambiar el
+   FLUJO: fijar una columna explicita no detiene grid-auto-flow: column. */
+[data-vista='movil'] .fc-cal-cuerpo { grid-auto-flow: row; }
 [data-vista='movil'] .fc-cal { position: static; max-width: none; }
 [data-vista='movil'] .fc-cal-marco { flex-direction: column; }
 [data-vista='movil'] .fc-atajos { border-left: 0; border-top: 1px solid var(--borde); }
@@ -4439,7 +4451,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.104.0</option></select></label>
+          <select class="campo cg-in"><option>v1.105.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4527,8 +4539,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.104.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.104.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.105.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.105.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -15480,6 +15492,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
 
 
+<h3 class="sub-seccion">v1.105.0 <span class="cam-fecha">2026-09-11</span></h3>
+<p class="pag-intro"><strong>Una sola anatomia de calendario, con el candado que lo comprueba. Y el publicador corre los candados por su cuenta.</strong> Segunda vuelta del bucle de auditoria. La ronda anterior encontro que R126 seguia roto UN NIVEL MAS ABAJO: el hijo de la fila es un `role="gridcell"` y no tenia NINGUNA regla, asi que el dia quedaba inline dentro de su columna —botones de ~20px en columnas de ~33—, el tramo se pintaba a trozos y los redondeos de `.fc-ini`/`.fc-fin` no encajaban. El arreglo de fondo es que el catalogo emite AHORA el mismo marcado que el componente: `role="grid"`, la cabecera como una fila mas dentro, `role="gridcell"` tambien en los huecos, filas rellenadas a siete, y el mismo `aria-label` largo. De paso se corrige un defecto de accesibilidad del catalogo que el componente ya tenia bien: marcaba los extremos del rango con `aria-current="date"`, que significa HOY. Y NACE EL CANDADO QUE FALTABA: `calendario-catalogo.test.tsx` ejecuta el catalogo de verdad en jsdom, abre su calendario y compara el arbol contra el que emite React. Es el metodo de R116 y existe por lo mismo: lo que el catalogo no pinta en reposo no lo compara nadie, y el cuerpo del calendario esta vacio hasta que alguien lo abre. Visto en rojo quitando `role="gridcell"` del catalogo. EL PUBLICADOR CORRE LOS DIECISIETE PASOS POR SU CUENTA y se niega si alguno sale en rojo o si el arbol queda sucio despues. La v1.103.0 salio con la regla de `.fc-cal-cuerpo` FUERA de la hoja entregada: el candado la habria cazado —la vio en cuanto se corrio despues— pero la publicacion se apoyo en una pasada anterior a la ultima edicion. El fallo no fue del candado, fue que correrlo dependia de acordarse. Es exactamente lo que la cabecera de ese guion dice que ya paso con las etiquetas; faltaba aplicarselo a si mismo. Y se cierra la causa raiz del troceador: `extraer.mjs` buscaba la llave de apertura SIN saltar comentarios, asi que unas llaves dentro de un comentario abrian un bloque falso y se descartaba en silencio la regla siguiente. El texto que explicaba un arreglo era lo que lo anulaba. Corregidas ademas tres regresiones propias metidas AL ARREGLAR lo anterior: la vista movil del catalogo dejo `.anatomia` y `.sel-demo-fila` a dos columnas, una regla quedo duplicada, y la regla 7 del contrato se reescribio para decir lo contrario de lo que el codigo hace — la prosa se cambio sin mirar el codigo.</p>
+
+
+
 <h3 class="sub-seccion">v1.104.0 <span class="cam-fecha">2026-09-11</span></h3>
 <p class="pag-intro"><strong>R126-bis: el arreglo del calendario estaba A MEDIAS. Y el candado del contrato protegia 18 reglas de 175.</strong> Control Administrativos devolvio R126 con la medicion del DOM: la v1.103.0 anadio la regla nueva y NO RETIRO LA VIEJA, asi que `.fc-dias` seguia recibiendo siete columnas y cada semana se aplastaba en una de 9,26px — «123456 78910111213». La verificacion de aquella version fallo por montar una pagina A MANO en vez de abrir el catalogo: en una maqueta propia las filas ocupaban todo el ancho y parecia correcto. Ahora se mide en el DOM del catalogo real: `.fc-dias` es UNA columna de 184,8px, sus cinco hijos son todos `role="row"`, y cada fila tiene siete columnas de 26,4px. Su arreglo tal cual habria roto el catalogo, que metia las celdas PLANAS. Se hizo que haya UNA SOLA ANATOMIA: el guion del catalogo emite filas como el componente. Ademas cierra los cuatro defectos que una auditoria adversaria dejo abiertos: `.fc-otro-mes` retirada —la creo muerta la propia v1.101.0 y no lo declaro—, las columnas salen del NUMERO de meses y no cableadas a dos, `sumarMeses` ya no desborda (31-ene + 1 mes daba 3 de marzo y febrero entero saltado), y la vista previa se suelta al cerrar y al cambiar de mes. RANGOFECHA GANA CONTRATO: doce reglas, cuando no tenia ninguna. Era el componente con mas promesa publicada y cero candado. Y EL CANDADO DEL CONTRATO, que otra auditoria demostro que protegia 18 reglas de 175 —39 de los 43 archivos de prueba se podian borrar sin que se inmutara—: ahora las subsecciones HEREDAN la declaracion de su seccion, ve los numeros con sufijo (17bis, 0b, 4bis: eran TRECE obligatorias invisibles), busca solo en TITULOS de prueba —`[0]` casaba con `filas[0]` en veinte archivos— y ata por el REQUERIMIENTO citado, que es unico, ademas de por el numero de fila. Dice en su salida cuantas reglas estan atadas a SU archivo: hoy 11 de 188, y las 29 secciones sin declarar se cuentan y se nombran en vez de pasar por buenas. Dos trampas del generador aprendidas a golpes: un backtick en un comentario rompe la plantilla y el HTML se queda viejo —el build muere y nadie lo mira—, y unas LLAVES en un comentario CSS parten el troceador por bloques y el resto del comentario se cuela como basura en la hoja entregada.</p>
 
@@ -18968,6 +18985,10 @@ async function esPdf(archivo) {
     var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
       'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
     var DIAS = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+    var LARGOS = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+    function mismoDiaQue(a, b) {
+      return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+    }
     var hoy = new Date();
     var ancla = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
     var ini = null, fin = null, sobre = null;
@@ -18985,14 +19006,21 @@ async function esPdf(archivo) {
       // Las celdas se agrupan en FILAS, igual que el componente: el patron
       // grid de ARIA las exige, y asi la hoja sirve a las dos superficies.
       function filas(cs) {
+        // Se RELLENA hasta multiplo de siete, como el componente: una fila de
+        // un solo hijo rompe la anatomia que el contrato fija.
+        var t = cs.slice();
+        while (t.length % 7) t.push('<span role="gridcell"><span class="fc-d fc-vacio"></span></span>');
         var out = '';
-        for (var i = 0; i < cs.length; i += 7) {
-          out += '<div role="row">' + cs.slice(i, i + 7).join('') + '</div>';
+        for (var i = 0; i < t.length; i += 7) {
+          out += '<div role="row">' + t.slice(i, i + 7).join('') + '</div>';
         }
         return out;
       }
       var celdas = [];
-      for (var i = 0; i < primero; i++) celdas.push('<span class="fc-d fc-vacio"></span>');
+      // Celda vacia con su gridcell, igual que el componente: dentro de un
+      // role=grid todo hijo de fila tiene que ser una celda.
+      for (var i = 0; i < primero; i++)
+        celdas.push('<span role="gridcell"><span class="fc-d fc-vacio"></span></span>');
       for (var d = 1; d <= total; d++) {
         var f = new Date(y, m, d);
         var t = f.getTime();
@@ -19004,13 +19032,25 @@ async function esPdf(archivo) {
           (esIni ? ' fc-ini' : '') + (esFin ? ' fc-fin' : '') +
           (dentro ? ' fc-dentro' : '') +
           (!fin && ini && sobre && t === sobre.getTime() && t > ini.getTime() ? ' fc-fin fc-previo' : '');
-        celdas.push('<button type="button" class="' + clases + '" data-f="' + clave(f) + '"' +
-          (esIni || esFin ? ' aria-current="date"' : '') +
-          ' aria-label="' + d + ' de ' + MESES[m] + ' de ' + y + '">' + d + '</button>');
+        celdas.push('<span role="gridcell" aria-selected="' + (esIni || esFin || dentro) + '">' +
+          '<button type="button" class="' + clases + '" data-f="' + clave(f) + '"' +
+          // aria-current=date significa HOY, no «extremo del rango». El
+          // catalogo marcaba los extremos, que es el defecto critico que el
+          // componente declara corregido en su cabecera.
+          (mismoDiaQue(f, hoy) ? ' aria-current="date"' : '') +
+          ' aria-label="' + LARGOS[f.getDay()] + ' ' + d + ' de ' + MESES[m] + ' de ' + y +
+            (dentro ? ', dentro del rango' : '') + (esIni || esFin ? ', extremo del rango' : '') + '">' + d + '</button></span>');
       }
-      return '<div class="fc-mes"><div class="fc-mes-tit">' + MESES[m] + ' ' + y + '</div>' +
-        '<div class="fc-sem">' + DIAS.map(function (x) { return '<span>' + x + '</span>'; }).join('') + '</div>' +
-        '<div class="fc-dias">' + filas(celdas) + '</div></div>';
+      // La MISMA anatomia que emite el componente: la cabecera va DENTRO de
+      // .fc-dias como una fila mas, el contenedor lleva role=grid, y el
+      // envoltorio del mes va sin clase. Tenerlas distintas es lo que hizo que
+      // una regla sirviera a una superficie y destrozara la otra (R126).
+      var titulo = MESES[m] + ' de ' + y;
+      return '<div><div class="fc-mes-tit">' + titulo + '</div>' +
+        '<div class="fc-dias" role="grid" aria-label="' + titulo + '">' +
+        '<div role="row" class="fc-sem">' +
+        DIAS.map(function (x) { return '<span role="columnheader">' + x + '</span>'; }).join('') +
+        '</div>' + filas(celdas) + '</div></div>';
     }
 
     var cajaIni = document.getElementById('fc-ini');
@@ -19021,7 +19061,8 @@ async function esPdf(archivo) {
     function abrir(cual) {
       // Si aún no hay inicio, siempre se empieza por el inicio.
       modo = (cual === 'fin' && ini) ? 'fin' : 'ini';
-      if (modo === 'ini') { ini = null; fin = null; }
+      /* La regla 8 del contrato dice que ABRIR NO BORRA. El catalogo hacia justo
+         lo que esa regla censura, y era la fuente del defecto. */
       cal.hidden = false;
       cajaIni.setAttribute('aria-expanded', 'true');
       cajaFin.setAttribute('aria-expanded', 'true');
