@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.101.0
+# Actualizar al sistema de diseño v1.102.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.101.0"
+npm install "github:solwarehz/sistema-diseno#v1.102.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,19 +27,19 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.101.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.102.0
 ```
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.101.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.102.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.101.0 --repo solwarehz/sistema-diseno
+gh release download v1.102.0 --repo solwarehz/sistema-diseno
 ```
 
 Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
@@ -341,6 +341,7 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 
 | 1.95.0 | **`SelectorBusqueda` entrega por fin lo que el catálogo enseña, en nueve puntos.** Se ven cuatro: el chevron **ahora gira** al abrir la lista, el visto ✓ de la opción elegida pasa **a la derecha** (estaba a la izquierda, 298,4 px de diferencia), la ayuda de la opción recibe su tipografía —13 px, secundario— y deja de salir del mismo cuerpo que el nombre, y la fila de «sin resultados» **dice qué se buscó** en vez de «No hay coincidencias». Se teclean cuatro: **↑ abre la lista**, las flechas **ciclan**, **Inicio y Fin** funcionan, y **Tab elige lo marcado** — antes tabular con una coincidencia marcada dejaba el campo **vacío**. **Nada rompe:** ninguna clase pública cambia de nombre y `textoVacio` sigue admitiendo una cadena. **Y les afecta aunque no usen el selector:** `Paginacion` no emitía `activa`, así que **la página en curso no se pintaba en ninguna pantalla** — ahora sí |
 
+| 1.102.0 | **Siete iconos nuevos, para la barra de edición.** `negrita`, `cursiva`, `lista`, `deshacer`, `rehacer`, `guardar` y `lapiz`. Se pidieron seis; `rehacer` entra igual porque deshacer sin su par es media función. Se usan como cualquier otro: `<Icono nombre="negrita" />`. **Nada que cambiar**: solo hay siete más donde había 53 |
 | 1.101.0 | **Si usan `RangoFecha`, actualicen: les faltaba medio calendario.** La hoja estilizaba **24** clases `fc-*` y el componente emitía **14**. No existían: la rejilla de **dos meses**, el **panel de periodos** («Este mes», «Mes pasado», «Últimos 2 meses», «Este año»), el **resumen** en palabras, el **guion** entre los dos campos, la vista previa del rango al sobrevolar y el resaltado del campo activo. Y la regla de **≤620px** que colapsa el calendario a una columna cuelga de `.fc-cal-cuerpo`: sin esa clase **no podía dispararse nunca**, así que en un teléfono salía a dos columnas apretadas. Además las reglas del campo iban atadas a `input.fc-campo` y el componente emite `<button>`, así que el campo salía **sin icono de calendario y sin tope de ancho**. Nuevas props: `atajos` (sustituibles, o `[]` para quitarlos) y `meses` (2 por omisión). **Nada que cambiar en su código**: lo que ya pasaban sigue igual |
 | 1.100.0 | **Si muestran fotos de personas, actualicen.** Dos defectos del `Avatar` desde la **v1.7.0**, encontrados auditando nuestros propios documentos contra el código. **(1)** La foto que no carga **no caía a las iniciales**: no había `onError` y las iniciales ni siquiera estaban en el DOM, así que una URL caducada o un 403 pintaba el icono de imagen rota del navegador dentro del círculo — en la barra superior de todas las pantallas. **(2)** La regla que da tamaño y recorte se llamaba `.av img` —el **aviso** temporal— y no `.avatar img`: una letra, y con ella la foto se pintaba a tamaño natural dentro de un círculo recortado, un trozo de la cara ampliado. Nuestro catálogo no podía enseñarlo porque no pinta ni un avatar con `<img>`, y no había ninguna prueba de `Avatar`. Ahora hay siete |
 | 1.99.0 | **Nada que cambiar en su código: son dos papeles, pero de los que viajan.** **(1)** `comportamiento.md` —el contrato al que les remitimos— empezaba con **tres filas de tabla sueltas y sin cabecera**, y su titular estaba pegado al final de la tercera sin salto de línea, dentro de una celda. La edición de la v1.78.0 quiso insertar dos reglas en «Fila de carga» y el bloque aterrizó en la línea 1 del archivo. **Lleva así veintiuna versiones** y ningún candado lo veía: `verificar-contrato` lee las filas por su número y no le importa dónde estén. Ya están en su sección, que vuelve a ir del 1 al 9. **(2)** Se declara la **concordancia de registros**: lo que publicamos como **R118** es su **R123** (selector búsqueda asíncrono). Acuñamos ese número sin que nos correspondiera y choca con su R118 y su R119 reales. Los números publicados **no se mueven** —una etiqueta movida entrega cosas distintas—, así que la tabla vive en `comportamiento.md`. De aquí en adelante manda su registro |

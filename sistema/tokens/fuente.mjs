@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.101.0";
+export const VERSION = "1.102.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,29 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.102.0', fecha: '2026-09-11',
+    que: 'R124: los siete iconos de edicion. Sin ellos no hay barra que montar',
+    porque:
+      'Control Administrativos los declaro BLOQUEANTES para cualquier barra de edicion '
+      + 'futura, y de los que hacian falta no existia NI UNO. Son trazo de 1,5px sobre la '
+      + 'reticula de 24 que heredan `currentColor`: NO son activos de marca, asi que el '
+      + 'sistema los dibuja sin pedirle nada a nadie. '
+      + 'Se pidieron seis —negrita, cursiva, lista, deshacer, guardar y lapiz— y entran '
+      + 'SIETE: `rehacer` no estaba en la lista y se anade igual, porque deshacer sin su par '
+      + 'es media funcion y una barra con deshacer y sin rehacer ensena a la gente a no '
+      + 'fiarse de deshacer. '
+      + 'Van en las DOS copias que el sistema mantiene —`TRAZOS` en el modulo y '
+      + '`TRAZOS_REACT` en JSX— porque el candado de iconos las compara trazo a trazo: 60 en '
+      + 'el catalogo y 60 en el producto. '
+      + 'VISTOS EN UN NAVEGADOR antes de publicarlos, a 48px y a los 18px reales de la '
+      + 'barra, y no fue ceremonia: el lapiz llevaba la linea de base `M12 20h9`, que '
+      + 'arranca a media altura y se leia como un GUION SUELTO a la derecha de la punta en '
+      + 'vez de como un renglon. Se cambio por el filete del casquillo. Un icono que no se ha '
+      + 'mirado no esta verificado.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.101.0', fecha: '2026-09-10',
     que: 'RangoFecha entregaba MEDIO calendario: dos meses, panel de periodos, resumen y guion no existian',

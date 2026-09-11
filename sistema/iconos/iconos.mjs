@@ -132,6 +132,22 @@ export const TRAZOS = {
   // los logotipos de marca son marcas registradas, vienen rellenos y traen
   // colores que aqui NO estan autorizados. Estos son de trazo y heredan
   // currentColor, como los otros cuarenta y cinco.
+  // ── EDICIÓN DE TEXTO (R124) ──────────────────────────────────────────────
+  // Para la barra del editor de motivos de Control Administrativos. Trazo de
+  // 1,5px sobre la retícula de 24, como todos: NO son activos de marca, así
+  // que el sistema los dibuja sin pedir nada a nadie.
+  //
+  // `rehacer` no estaba entre los seis que se pidieron y entra igual: deshacer
+  // sin su par es media función, y una barra con deshacer y sin rehacer enseña
+  // a la gente a no fiarse de deshacer.
+  negrita: '<path d="M7 4v16"/><path d="M7 4h6.5a4 4 0 0 1 0 8H7"/><path d="M7 12h7.5a4 4 0 0 1 0 8H7"/>',
+  cursiva: '<path d="M18 4h-7M13 20H6M15 4l-4 16"/>',
+  lista: '<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',
+  deshacer: '<path d="m9 14-5-5 5-5"/><path d="M4 9h9a7 7 0 0 1 0 14h-3"/>',
+  rehacer: '<path d="m15 14 5-5-5-5"/><path d="M20 9h-9a7 7 0 0 0 0 14h3"/>',
+  guardar: '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/>',
+  lapiz: '<path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/><path d="m14.5 5.5 4 4"/>',
+
   facebook: '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M15.5 7.5H14a2.5 2.5 0 0 0-2.5 2.5v10.5"/><path d="M9 13.5h5.5"/>',
   instagram: '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17 7h.01"/>',
   youtube: '<rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10.5 9 4.5 3-4.5 3V9Z"/>',
