@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.106.0
+# Actualizar al sistema de diseño v1.107.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.106.0"
+npm install "github:solwarehz/sistema-diseno#v1.107.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,24 +27,59 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.106.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.107.0
 ```
+
+### 1ter · La tipografía NO viaja, y hay que cargarla
+
+La hoja pide **`IBM Plex Sans`** y **`IBM Plex Mono`** en siete reglas, y la
+entrega **no trae `@font-face` ni `@import`**: el catálogo la carga con un
+`<link>` a Google Fonts que no viaja. Sin cargarla, la tabla numérica y los
+bloques monoespaciados caen al `monospace` del navegador y las columnas de
+cifras dejan de alinearse.
+
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+```
+
+Es el mismo modo de fallo silencioso que los `@keyframes` que faltaban: se
+declara algo que no está, y el navegador **no protesta** — se cae al recurso de
+reserva y nadie se entera. Lo encontró una auditoría el 2026-09-11 buscando la
+familia entera de ese defecto.
 
 ### 1bis · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.106.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.107.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.106.0 --repo solwarehz/sistema-diseno
+gh release download v1.107.0 --repo solwarehz/sistema-diseno
 ```
 
-Son 53 archivos —tokens, hoja de estilos, los treinta componentes de React, el
-contrato de comportamiento y los candados— y trae el catálogo dentro, así que
-se puede abrir sin conexión.
+Son **56 archivos**: tokens, hoja de estilos, los **33 módulos de componente**
+—más `index.ts` y cinco de `interno/`; el sistema publica **34 componentes**,
+porque algunos módulos exportan más de uno—, el contrato de comportamiento, y
+**el catálogo**, que se abre sin conexión.
+
+**Las dos vías NO entregan lo mismo, y conviene saberlo antes de elegir.** Se
+midió el 2026-09-11 y hasta entonces este apartado daba a entender que sí:
+
+| | `npm install` | ZIP |
+|---|---|---|
+| Archivos | 74 | 56 |
+| **El catálogo** | **no** | **sí** (`catalogo/index.html`) |
+| **Los candados** | **los 17** | **4** (contraste, color, lint y su configuración) |
+| `package.json` | sí | **no** — por eso el comando de comprobación del §1 no sirve aquí |
+| Componentes, tokens, hoja y contrato | sí | sí, **byte a byte lo mismo** |
+
+Lo que se **usa** está en las dos. Lo que cambia es lo que se usa para
+**verificar**: quien instala por npm puede correr los diecisiete candados
+contra su propio proyecto; quien baja el ZIP tiene el catálogo para mirar.
 
 **Solo la última versión conserva su ZIP.** Al publicar una nueva, el adjunto de
 la anterior se borra. La etiqueta y la publicación se quedan, así que
@@ -308,39 +343,23 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.76.0 | **La tabla arranca ordenada y su primera columna no se puede quitar.** Sin declarar nada: orden alfabético por la primera columna ordenable, y esa columna deja de poder ocultarse — **antes su casilla se desmarcaba y no pasaba nada**. **Dos cambios visibles**: si alguna tabla dependía del orden de llegada de la consulta, pásenle `ordenInicial={null}`; si querían poder ocultar la primera columna, `columnasFijas={[]}`. En `modo="servidor"` no se impone orden |
 | 1.77.0 | **Las tres cargas dejan de romper el formulario.** `CargaImagen`, `CargaPdf` y `CargaId` arrancan y terminan igual: una fila que mide **lo que un campo** (36 px), con el disparador y lo ya cargado **al costado**, nunca encima ni debajo. **El funcionamiento interno no cambia** —lo que cada una comprueba, comprime y entrega es idéntico—; cambia cómo se presenta al empezar y qué forma tiene el resultado. **Tres cambios visibles**: en `CargaPdf` el resumen pasa de encima del botón a su lado (y el recuento de páginas y el chip del ahorro se quedan solo en el panel); en `CargaId` las miniaturas pasan de 76×48 a 35×22, con su proporción ID-1 intacta; en `CargaImagen` no cambia nada salvo que pidan la nueva `presentacion="fila"` |
 | 1.78.0 | **`CargaImagen` deja de ser la excepción, y ahora sí cambia sola.** En la 1.77.0 era la única de las tres que no usaba la fila por omisión; ahora **la fila es el defecto**, así que un `<CargaImagen>` que no toquen pasa de la caja de 96 px a la fila de 36. **Si esa pantalla está hecha para poner esa imagen** —el selector de foto del legajo, el logo de la marca—, pidan `presentacion="caja"` y queda como estaba. Además: el **rótulo pasa dentro de la fila** en las tres cargas (todo en un renglón), la **foto de una persona se ve redonda** en la miniatura, y `.ci-et`, `.ci-nota`, `.ci-error` y `.ci-vacia` **desaparecen de la hoja** — pasan a `.cx-*`, que es lo que ya usaban el PDF y el ID |
-
 | 1.79.0 | **`SelectorBusqueda` ya se puede vaciar — y no rompe nada.** Tres props nuevas, las tres apagadas por omisión. **`vacio="Todos"`**: añade la fila para volver a *sin elegir* y con ella `onCambio(null)` **empieza a emitirse de verdad** — hasta ahora la firma decía `string \| null` y el componente **nunca** mandaba `null`, lo que lo bloqueaba en cualquier campo opcional. Con `vacio` puesto, **Retroceso** sobre el campo vacío hace lo mismo. **`etiquetaOculta`**: la que ya tenían `Campo` y `Selector` y faltaba solo aquí. **`onCrear`**: recibe lo tecleado y convierte la fila de «no hay coincidencias» en un «Crear …», con ratón y con Enter. **Aviso de lectura**: si tenían un `if (valor === null)` sobre este componente, esa rama nunca se ejecutaba y ahora puede |
-
 | 1.80.0 | **Nada que hacer: no cambia ni una línea de código.** El catálogo estrena un grupo, **Pasarela de pagos**, con la página de **Izipay**: las pantallas del cobro armadas con `Tarjeta`, `Mensaje`, `Progreso`, `Boton`, `Campo` y `Chip`. Es una **composición, no un elemento**, así que sus clases no viajan en la hoja — lo que se copia son los componentes. Trae, sacado de su documentación: los métodos con sus topes, los diez códigos de rechazo con sus mensajes, y el `appearance.customTheme` relleno con nuestros tokens |
-
 | 1.82.0 | **La pasarela de pagos ya viaja en la hoja — nada que tocar.** Las clases `psl-*` de la página de Izipay pasan a la entrega (26 reglas), así que quien monte la pantalla del cobro la ve **idéntica** a la del catálogo: el candado de la promesa compara siete de sus superficies a cinco anchos, y el de la cascada las resuelve a once. **No viaja** lo que se llama `psl-demo-*`: el navegador dibujado y **el formulario falso de tarjeta** — ese lo pinta el SDK de Izipay, y entregar una imitación sería invitar a maquetar campos de tarjeta propios |
-
 | 1.83.0 | **Nada que tocar: es catálogo.** Nueva página **Pasarela de pagos › Culqi**, debajo de la de Izipay y con **el mismo andamiaje** — no trae ni una clase nueva. Trae, de su documentación: los seis métodos con sus claves de `paymentMethods`, los doce `decline_code` con sus dos mensajes literales, y el mapeo de nuestros tokens a `appearance.variables` y `appearance.rules`. **Tres diferencias con Izipay que conviene leer antes de elegir**: Culqi deja estilar mucho más (incluidos los estados, así que el anillo de foco del sistema entra en su formulario), trae el texto del rechazo ya redactado para quien paga (`user_message`), y **agente y billetera no terminan en el acto** — necesitan un webhook o la familia paga y nadie se entera |
-
 | 1.84.0 | **Nada que tocar: es catálogo.** Nueva página **Pasarela de pagos › Openpay Perú**, debajo de Culqi. **La única de las tres en la que el formulario de tarjeta puede ser nuestro**: `Openpay.js` tokeniza desde nuestros propios `Campo` y manda los datos directo a Openpay, así que ahí el modo oscuro, la alineación y el anillo de foco son los del sistema. Trae sus agencias peruanas por nombre y el aviso de que **las cuotas solo van con BBVA y DINERS**. **Lo que NO trae, y está dicho en la página**: su tabla de códigos de rechazo, que no se pudo leer — hay que pedírsela antes de escribir un mensaje de error |
-
 | 1.85.0 | **Nada que tocar: es catálogo.** Nueva página **Pasarela de pagos › Mercado Pago**. Lo que conviene leer aunque no usen MP: **el rechazo se parte en tres pantallas** según lo que la persona pueda hacer, y en la de fraude **no hay botón de reintentar** — su documentación pide impedir nuevos intentos. Además es la primera pasarela con **tema oscuro documentado** y la primera que deja meter **nuestro anillo de foco** en su formulario. Aviso: sus treinta mensajes de rechazo **vienen en inglés**, así que redactarlos en español es trabajo nuestro |
-
 | 1.86.0 | **Nada que tocar: es catálogo.** Nueva página **Pasarela de pagos › Niubiz**, y con ella **las cinco pasarelas conocidas del Perú** quedan documentadas. Lo que conviene leer aunque no usen Niubiz: publica **77 códigos de rechazo**, y el eje que debe gobernar la pantalla **no es el código sino su `TIPO DE RECHAZO`** — `TEMPORAL` se reintenta, `PERMANENTE` no. Y sus textos **no son para quien paga**: su propia tabla los titula «respuesta que se visualiza en backoffice y reportes» |
-
 | 1.87.0 | **Nace un módulo entero: «Boleta electrónica»**, sobre Nubefact. Siete páginas —emitir, notas de crédito y débito, anulación, cotización, guía de remisión e impresión— y **una familia de clases nueva que SÍ viaja**, `cpe-*` (29 reglas): las **líneas del documento**, el **estado ante SUNAT** y la **representación impresa**. Con ella entra la **primera regla ` print`** del sistema: al imprimir un comprobante, la aplicación desaparece. Nada de lo anterior cambia |
-
 | 1.88.0 | **Un fallo de contraste corregido, y les afecta si copiaron marcado a mano.** `.psl-sdk-et` usaba un token de identidad como color de texto: **1,91:1 en modo oscuro**, cuando SC 1.4.3 pide 4,5. Pasa a `texto-secundario`, que sí está medido. Lo encontró una auditoría, **no un fallo visible** — y el candado de contraste no podía verlo porque solo mide los pares declarados. Si usan los componentes, no hay nada que hacer |
-
 | 1.89.0 | **Una página nueva en el catálogo y nada más: «Boleta electrónica → EFACT».** El segundo proveedor evaluado. **No cambia ni una regla de CSS ni un componente** — se compone entera con lo que ya existía, así que no hay nada que hacer al actualizar. Se lee si alguien tiene que decidir proveedor: EFACT vende **tres productos distintos**, y del que se parece a Nubefact **no hay especificación pública** |
-
 | 1.90.0 | **Dos props nuevas y una clase que desaparece.** `CargaPdf` gana `accept` y `validar`: deja de imponer PDF, y **el `File` que entrega conserva su `type`** en vez de reetiquetarlo. `PanelPrivilegios` gana `depende`, para cadenas que el `base` no sabe expresar. **Lo que puede romperles:** las filas bloqueadas ya no llevan `.pp-no` —ninguna regla la definía, así que no cambia el aspecto, pero era un gancho de CSS posible—, y un privilegio con `depende` deja de encender el `base` de rebote |
-
 | 1.91.0 | **Correcciones de una auditoría, y una les afecta si copiaron marcado.** Nueve iconos del catálogo se publicaban como `<svg>` **vacíos** —cuatro nuevos y cinco desde R97—; ya se dibujan. `CargaPdf` gana `nombreTipo` e `icono`, y **`textoBoton` ahora sí vale en `presentacion="en-linea"`**, donde se ignoraba. `privilegiosEfectivos()` **deja de devolver lo marcado `cerrado`**. Y el texto del progreso pasa a decir «el archivo» en vez de «el PDF» salvo que pasen `nombreTipo` |
-
 | 1.92.0 | **Componente nuevo: `RedesSociales`.** Siete redes, tres formas, tres tamaños, con nombre y con cuenta. **No añade ningún color**: los iconos heredan `currentColor`, así que los de marca **no** están —eso sería una autorización, no un arreglo—. **No rompe nada de lo anterior** |
-
 | 1.93.0 | **`RedesSociales` pinta los iconos con el rojo del escudo por omisión.** `marca-rojo` queda **autorizado solo para eso** — sigue prohibido como texto y como superficie. Si los ponen sobre un fondo que no sea la tarjeta o la página, usen `color="heredado"`: los 4,88:1 y 4,69:1 están medidos contra esos dos y **sobre el encabezado no ha medido nadie**. No rompe nada |
-
 | 1.94.0 | **`CabeceraPantalla` gana `accionSecundaria`.** Se pinta a la izquierda de `accion`, con 8px de separación, y en estrecho las dos se reparten el ancho. **Les afecta aunque no la usen:** `.pant-accion` no tenía ni `display` ni `gap`, así que si metieron dos botones ahí a mano, salían pegados y ahora se separan. Y la documentación del componente decía «una sola acción»: era un error de redacción, la regla es **una sola principal** |
-
 | 1.95.0 | **`SelectorBusqueda` entrega por fin lo que el catálogo enseña, en nueve puntos.** Se ven cuatro: el chevron **ahora gira** al abrir la lista, el visto ✓ de la opción elegida pasa **a la derecha** (estaba a la izquierda, 298,4 px de diferencia), la ayuda de la opción recibe su tipografía —13 px, secundario— y deja de salir del mismo cuerpo que el nombre, y la fila de «sin resultados» **dice qué se buscó** en vez de «No hay coincidencias». Se teclean cuatro: **↑ abre la lista**, las flechas **ciclan**, **Inicio y Fin** funcionan, y **Tab elige lo marcado** — antes tabular con una coincidencia marcada dejaba el campo **vacío**. **Nada rompe:** ninguna clase pública cambia de nombre y `textoVacio` sigue admitiendo una cadena. **Y les afecta aunque no usen el selector:** `Paginacion` no emitía `activa`, así que **la página en curso no se pintaba en ninguna pantalla** — ahora sí |
-
+| 1.107.0 | **Lean esto aunque no usen `Dialogo`: hay cinco arreglos en `Boton` y tres en la hoja.** Lo pedido era R118 —`accion.textoOcupado`, para que la acción del pie diga «Grabando…» en vez de apagarse muda—; auditarlo destapó el resto. **En la hoja:** (1) **no llevaba ni un `@keyframes`**, así que `animation: btn-girar` viajaba sin definición y el navegador la ignora **en silencio** — el giro del botón ocupado y la barra indeterminada estaban **quietos** en su producto. Ya viajan; si copiaron los `@keyframes` a mano, **quítenlo**. (2) `.btn-ocupado{cursor:progress}` era **regla muerta** —`.btn:disabled` le ganaba—, así que un botón ocupado mostraba el cursor de *prohibido*; **ahora muestra el de espera**. Cambio visible en todos los productos. (3) El hueco del giro dejó de **girar invisible para siempre** en cada botón con gerundio. **En `Boton`:** (4) un `textoOcupado` que no pinta texto —`null`, `false`, `''`, `<span>{t('clave.ausente')}</span>`, un generador vacío— dejaba el botón ocupado **sin nombre accesible**; ahora se cae al comportamiento de siempre. (5) Cada acción que fallaba dejaba un **rechazo sin manejar**; ahora se reporta por `console.error` — **ojo: eso lo baja de evento a miga de pan** en Sentry y compañía, así que si dependían de `unhandledrejection`, **capturen en su `onClick` y reporten ustedes**. (6) Con `textoOcupado` y **sin icono**, el botón **crecía 22 px** al ocuparse; ya no. *Sin* `textoOcupado` sigue creciendo igual que antes. Con `icono`, encoge 4 px (el icono mide 18 y el giro 14), tampoco cambia. (7) `soloIcono` **ignora** `textoOcupado`: no tiene texto que sustituir. (8) Un `throw` **síncrono** en `onClick` **sí** llega a su vigilante como error no capturado — lo que no ocurre es que el botón se entere: ni se ocupa ni protege del doble envío. **Devuelvan la promesa.** **En `Dialogo`:** el foco **no volvía** al cerrar por código —el camino más frecuente—, ni si desmontaban el diálogo al cerrarlo, ni en **modo estricto** (Vite, CRA y Next lo traen puesto); y ahora **no se lo quita** a quien ya lo colocó. Nuevas: `accion.ocupado` y `accion.destructiva` documentada. **Un límite que no podemos cerrar:** si montan el diálogo como `{abierto && <Dialogo …/>}`, cerrarlo con la acción en vuelo **mata el guardia del doble envío** y el botón vuelve pulsable. O no lo desmontan, o llevan el estado con `accion.ocupado`. Y el contrato estrena **sección de Diálogo**: **dieciocho reglas** y **veinticuatro pruebas nuevas** —de 7 a 31—, más un archivo de pruebas que **ejecuta el catálogo** |
 | 1.106.0 | **Nueva página del catálogo: «La entrega real».** Pinta los componentes con `tokens.css` y `componentes.css` **y nada más**, en un marco aislado, con el marcado que emiten los componentes. Si algo se ve mal ahí, así se ve en su producto. **Encontró un defecto a la primera:** la foto del `Avatar` salía **32×39 en un círculo de 32×32** — el `overflow:hidden` la recortaba, así que parecía correcta. Si muestran fotos de personas, actualicen |
 | 1.105.0 | **Cierra R126 del todo, y esta vez con candado.** El arreglo anterior dejaba el día **inline dentro de su columna** —la celda de rejilla no tenía ninguna regla—, así que el tramo se pintaba a trozos. Ahora el catálogo emite **el mismo marcado** que el componente, y hay una prueba que **ejecuta el catálogo** y compara el árbol: si las dos superficies se separan, sale en rojo. Corregido además un defecto de accesibilidad del catálogo: marcaba los extremos del rango con `aria-current="date"`, que significa **hoy**. Y el publicador **corre los diecisiete candados por su cuenta** y se niega si alguno está en rojo — la v1.103.0 salió rota porque correrlos dependía de acordarse |
 | 1.104.0 | **R126 de verdad: el arreglo anterior estaba a medias.** Se añadió la regla nueva y **no se retiró la vieja**, así que `.fc-dias` seguía repartiendo las siete semanas en siete columnas de 9,26 px. Ahora está medido en el DOM del catálogo real: `.fc-dias` es **una** columna, sus hijos son filas, y cada fila tiene siete columnas de 26,4 px. **Pueden migrar sus dos `Campo tipo="date"` al componente.** Cierra además cuatro defectos: `.fc-otro-mes` retirada, `meses = 1` ya no deja media rejilla vacía, cambiar de mes **ya no desborda** (31-ene + 1 mes daba 3 de marzo), y la vista previa se suelta al cerrar. Y `RangoFecha` **gana contrato**: doce reglas donde no tenía ninguna |

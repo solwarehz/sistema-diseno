@@ -951,6 +951,37 @@ principal.</p>
   </div>
 </div>
 
+<h3 class="sub-seccion">Ocupado: el gerundio</h3>
+<p class="seccion-sub">Si <code>onClick</code> <strong>devuelve</strong> la promesa, el boton se ocupa y se
+libera solo, descarta el segundo clic y —con <code>textoOcupado</code>— dice QUE esta haciendo. Los dos
+textos se dibujan siempre y el giro reserva su hueco, asi que <strong>el boton mide lo mismo en los dos
+estados</strong>: comparalos de ancho. Sin <code>textoOcupado</code> el giro se INSERTA y el boton crece
+22px; eso no ha cambiado.</p>
+<div class="bloque">
+  <div class="muestra-fila">
+    <div class="mf">
+      <button class="btn btn-1">
+        <span class="btn-giro btn-texto-oculto" aria-hidden="true"></span>
+        <span class="btn-textos"><span>Guardar</span><span class="btn-texto-oculto" aria-hidden="true">Grabando&hellip;</span></span>
+      </button>
+      <span class="mf-et">Reposo<br>con <code>textoOcupado</code></span>
+    </div>
+    <div class="mf">
+      <button class="btn btn-1 btn-ocupado" disabled aria-busy="true">
+        <span class="btn-giro" aria-hidden="true"></span>
+        <span class="btn-textos"><span class="btn-texto-oculto" aria-hidden="true">Guardar</span><span>Grabando&hellip;</span></span>
+      </button>
+      <span class="mf-et">Ocupado<br>mismo ancho</span>
+    </div>
+    <div class="mf">
+      <button class="btn btn-1 btn-ocupado" disabled aria-busy="true">
+        <span class="btn-giro" aria-hidden="true"></span>Guardar<span class="sr-solo">, enviando</span>
+      </button>
+      <span class="mf-et">Sin <code>textoOcupado</code><br>el lector oye &laquo;, enviando&raquo;</span>
+    </div>
+  </div>
+</div>
+
 <h3 class="sub-seccion">Con icono</h3>
 <div class="bloque">
   <div class="muestra-fila">
@@ -7344,15 +7375,44 @@ fila, o elegir entre opciones que hay que ver juntas.</p>
 <p class="seccion-sub"><strong>Cancelar a la izquierda y la accion a la derecha.</strong> No es
 estetica: es el orden que la gente ya tiene aprendido, e invertirlo hace que se pulse el que no era.</p>
 <div class="bloque">
-  <div class="dlg">
-    <div class="dlg-cuerpo"><strong>Editar los datos de contacto</strong><p>Telefono y correo de la persona.</p></div>
-    <div class="dlg-pie"><button class="btn btn-neutro">Cancelar</button><button class="btn btn-1">Guardar</button></div>
+  <div class="dialogo-caja">
+    <div class="dialogo-cab"><h2 class="dialogo-tit" tabindex="-1">Editar los datos de contacto</h2></div>
+    <div class="dialogo-cuerpo">Telefono y correo de la persona.</div>
+    <div class="dialogo-pie">
+      <button class="btn btn-neutro">Cancelar</button>
+      <button class="btn btn-1">Guardar</button>
+    </div>
   </div>
 </div>
+<p class="seccion-sub">Esto de arriba es <strong>el marcado que emite el componente</strong>, sin el
+<code>&lt;dialog&gt;</code> que lo envuelve. Hasta la v1.106.0 esta pagina dibujaba
+<code>.dlg</code>, <code>.dlg-cuerpo</code> y <code>.dlg-pie</code> &mdash;clases de
+demostracion de otra pagina, que <strong>no viajan en la hoja</strong>&mdash;, asi que los tres
+candados que comparan el catalogo con lo entregado <strong>no tenian nada que comparar aqui</strong>.
+Cambiar el titulo de <code>h2</code> a <code>h3</code> no lo habria visto nadie.</p>
 
 <h3 class="sub-seccion">Cerrar al pulsar el fondo</h3>
 <p class="seccion-sub">Viene puesto, y <strong>hay que quitarlo cuando haya datos sin guardar</strong>:
 perder lo escrito por un clic fuera es peor que un clic de mas.</p>
+
+<h3 class="sub-seccion">La accion, mientras trabaja</h3>
+<p class="seccion-sub">R118 del equipo. <code>textoOcupado</code> hace que el boton
+<strong>diga el gerundio</strong> en vez de apagarse mudo. Se apoya en que
+<code>onClick</code> <strong>devuelva</strong> la promesa: eso es lo que ocupa el boton, lo
+deshabilita y descarta el segundo clic. Si la accion hace el envio sin devolverlo &mdash;que el
+tipo permite y nada avisa&mdash; no hay ninguna de las tres cosas, y la salida es
+<code>ocupado</code>.</p>
+<table class="tabla-simple">
+  <thead><tr><th>Prop de <code>accion</code></th><th>Que hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>texto</code></td><td class="motivo">El verbo. <em>Eliminar</em>, no <em>Aceptar</em></td></tr>
+    <tr><td><code>onClick</code></td><td class="motivo"><strong>Devuelve la promesa.</strong> Es de donde sale todo lo demas</td></tr>
+    <tr><td><code>textoOcupado</code></td><td class="motivo">El gerundio. Los dos textos se dibujan siempre y el giro reserva su hueco, asi que el boton <strong>no cambia de ancho</strong>. Un valor vacio &mdash;<code>null</code>, <code>false</code>, cadena vacia&mdash; se cae al comportamiento de siempre en vez de dejarlo sin nombre</td></tr>
+    <tr><td><code>ocupado</code></td><td class="motivo">Fuerza el estado. <strong>Casi nunca hace falta</strong>: solo cuando el estado vive fuera y <code>onClick</code> no puede devolver la promesa</td></tr>
+    <tr><td><code>destructiva</code></td><td class="motivo">Pinta la variante destructiva</td></tr>
+    <tr><td><code>deshabilitada</code></td><td class="motivo">A la vista y apagada. No es lo mismo que no pasar <code>accion</code>: un boton que aparece y desaparece mueve el pie bajo el raton</td></tr>
+  </tbody>
+</table>
 
 <h3 class="sub-seccion">Codigo</h3>
 <pre class="cod"><code>&lt;Dialogo
@@ -7360,7 +7420,11 @@ perder lo escrito por un clic fuera es peor que un clic de mas.</p>
   titulo="Editar los datos de contacto"
   origen={botonQueLoAbrio}
   onCerrar={() =&gt; setAbierto(false)}
-  accion={{ texto: 'Guardar', onClick: guardar }}
+  accion={{
+    texto: 'Guardar',
+    textoOcupado: 'Grabando...',
+    onClick: () =&gt; guardar(datos),   // DEVUELVE la promesa
+  }}
   cerrarAlPulsarFuera={false}
 &gt;
   {formulario}
@@ -10539,9 +10603,20 @@ h2.seccion {
    no garantiza nada: el dia que alguien pone el boton normal en Guardar, el
    doble envio vuelve. Ademas el sistema ya tuvo dos paginaciones y divergieron.
 
-   El giro NO sustituye al texto: cambiar «Guardar» por «Enviando…» mueve el
-   ancho del boton y la fila entera baila. Gira, se apaga, y lo dice aria-busy. */
-.btn-ocupado { cursor: progress; }
+   El giro NO sustituia al texto, y desde R118 (v1.107.0) SI PUEDE: la objecion
+   —cambiar «Guardar» por «Grabando…» mueve el ancho y la fila baila— era real
+   y se resolvio en vez de esquivarla. Con textoOcupado se dibujan los dos
+   textos apilados y el giro reserva su hueco, asi que el ancho no se mueve.
+   Sin textoOcupado sigue como estaba: gira, se apaga, y lo dice aria-busy. */
+/* .btn.btn-ocupado y no .btn-ocupado a secas: el componente pone la clase y
+   disabled SIEMPRE juntos, y .btn:disabled (cursor: not-allowed) le ganaba,
+   asi que el cursor de espera NO SE APLICABA NUNCA en ningun estado
+   alcanzable. Regla muerta desde que existe. Medido el 2026-09-11.
+   OJO CON EL PORQUE, que se escribio mal la primera vez: las dos reglas
+   EMPATAN en especificidad —una clase mas una pseudoclase es lo mismo que dos
+   clases—, asi que esto gana por ORDEN, por ir despues en la hoja. Quien
+   reordene el extractor lo rompe. verificar-empate lo vigila. */
+.btn.btn-ocupado { cursor: progress; }
 /* LOS DOS TEXTOS APILADOS. El botón reserva el ancho del más largo desde el
    principio, asi que pasar a «Guardando…» no mueve nada. Es la unica forma de
    dar el texto de espera sin que la fila baile, y por eso vive aqui y no en
@@ -10556,6 +10631,11 @@ h2.seccion {
 .btn-giro { width: 14px; height: 14px; flex: none; border-radius: 50%;
   border: 2px solid currentColor; border-top-color: transparent;
   animation: btn-girar var(--dur-giro) var(--curva-giro) infinite; }
+/* El HUECO del giro —el que reserva su sitio en reposo— no puede seguir
+   girando. visibility:hidden NO detiene una animacion de CSS: el elemento
+   sigue generando caja y la rueda daba vueltas invisible, para siempre, en cada
+   boton con gerundio de cada pantalla. Medido el 2026-09-11. */
+.btn-giro.btn-texto-oculto { animation: none; }
 @keyframes btn-girar { to { transform: rotate(360deg); } }
 /* Quien pide menos movimiento no ve un aspa girando: se queda quieta y sigue
    diciendo que hay algo en marcha. WCAG 2.2, y ademas marea. */

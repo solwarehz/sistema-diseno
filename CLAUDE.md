@@ -19,11 +19,16 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.106.0** — R126, y **siete defectos propios** que encontró
-una auditoría adversaria de lo publicado esta semana. El calendario repartía las
-siete semanas en siete columnas; el esqueleto del selector parpadeaba por
-pulsación desde la segunda consulta; y nombrar un color **debilitó** el candado
-en vez de reforzarlo.
+**Estado actual: v1.107.0** — R118: la acción del diálogo ya puede decir el
+gerundio. Escribir su regla destapó que `Dialogo` entró en la **v1.13.0** y
+llevaba **111 versiones publicado sin una sola regla de contrato**; ahora tiene
+**dieciocho**, y **veinticuatro pruebas nuevas**. Cinco rondas de auditoría
+adversaria encontraron defectos reales —un `textoOcupado` vacío dejaba el botón
+**sin nombre accesible**; toda acción fallida dejaba un rechazo sin manejar; y
+**la hoja que viaja no llevaba ni un `@keyframes`**, así que el giro del botón
+estaba quieto en todos los productos—, **cuatro regresiones que introdujeron mis
+propios arreglos**, y **dos cifras que me inventé** en la primera versión de la
+regla.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
@@ -211,16 +216,21 @@ No las «mejores» por iniciativa propia. Están razonadas:
 - **`main` sí se actualiza en este proyecto** —y solo en este—, pero **únicamente
   cuando está verificado y sin errores**. La condición no es una formalidad: es
   lo que hace que la regla sea segura, porque `main` es de donde instala el área
-  de sistemas. Antes de subir, los **dieciséis** candados **en verde** y las pruebas
-  pasando:
+  de sistemas. Antes de subir, los **diecisiete** pasos **en verde** y las pruebas
+  pasando. **Son exactamente los de `sistema/paquete/publicar.mjs`, y en su mismo orden**, y esta lista
+  decía «dieciséis» y **le faltaba `generar-cascaron.mjs`** hasta la v1.107.0: el
+  catálogo se quedaba sin regenerar y los candados que lo leen medían la versión
+  anterior. Lo encontró una auditoría el 2026-09-11. Es el mismo defecto que esta
+  sección declara fatal dos párrafos más abajo, cometido aquí mismo:
 
   ```bash
   node sistema/tokens/generar.mjs
+  node sistema/cascaron/generar-cascaron.mjs  # el catálogo, ANTES de lo que lo lee
+  node sistema/componentes/extraer.mjs        # incluye el candado de huérfanas Y los @keyframes
   node sistema/candado/verificar-contraste.mjs
   node sistema/candado/verificar-color.mjs
   node sistema/candado/auditar-cascaron.mjs
   node sistema/candado/probar-candado.mjs
-  node sistema/componentes/extraer.mjs        # incluye el candado de huérfanas
   node sistema/candado/verificar-cascada.mjs  # la hoja QUE VIAJA, a once anchos
   node sistema/candado/verificar-contrato.mjs # toda regla Obligatorio tiene prueba
   node sistema/candado/verificar-entrega.mjs  # lo publicado está EN el paquete
@@ -263,7 +273,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
 
   Y nada más escribirlo encontró un defecto que nadie buscaba: `Paginacion` no
   emitía `activa`, así que **la página en curso no se pintaba en ningún
-  producto**. Lleva **deuda declarada** —nueve más, con su daño real— y falla
+  producto**. Lleva **deuda declarada** —nueve el día que nació, **ocho** hoy, con su daño real— y falla
   también si una se arregla y no se poda.
 
   El de la cascada es el único que no lee lo que hay, sino lo que **falta**: el
@@ -280,7 +290,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
   responden lo mismo. Verde, y la pantalla mal.
 
   Lleva **deuda declarada**: cinco divergencias que encontró el día que se
-  escribió, verificadas a mano y escritas con su daño real. Protege ya de las
+  escribió —hoy quedan **dos**—, verificadas a mano y escritas con su daño real. Protege ya de las
   nuevas y no finge que las viejas no existen. Arreglar una es quitar su línea
   —y si se arregla y no se quita, el candado también falla, porque una lista de
   excepciones que nadie poda vuelve a ser el inventario a mano de siempre.

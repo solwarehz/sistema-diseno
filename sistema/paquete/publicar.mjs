@@ -142,6 +142,57 @@ if (enRojo.length) {
   problemas.push(`en rojo: ${enRojo.join(', ')} — córrelos y mira qué dicen antes de publicar`);
 }
 
+/* LAS PRUEBAS TAMBIÉN, y no «acordándose». `CLAUDE.md` §8 exige los diecisiete
+ * pasos en verde **y las pruebas pasando**, y lo segundo era el único requisito
+ * de esta lista que dependía de que alguien se acordara — que es exactamente lo
+ * que este guion existe para eliminar, y lo que esa misma sección declara
+ * fatal. Lo encontró una auditoría el 2026-09-11.
+ *
+ * Corren en Docker porque `node_modules` vive en un volumen con nombre y NO en
+ * la máquina: §3 prohíbe instalar nada aquí. Si el contenedor no está en pie,
+ * NO se da por bueno — se para y se dice, que es lo contrario de saltárselo. */
+process.stdout.write('  pruebas… ');
+/* POR CÓDIGO DE SALIDA, igual que `verde()` treinta líneas más arriba, que lo
+ * dice con todas las letras. La primera versión de este paso juzgaba por TEXTO
+ * y se equivocaba en las dos direcciones; las dos las midió una auditoría el
+ * 2026-09-11:
+ *
+ *  · VERDE en falso. vitest sale con 1 por un rechazo sin manejar y su resumen
+ *    sigue diciendo «Tests N passed», sin la palabra «failed» en ninguna parte.
+ *    El publicador daba el visto bueno — justo delante de la clase de defecto
+ *    que el `.catch` de `Boton` acababa de nacer para impedir.
+ *  · ROJO en falso. Buscar «failed» en TODA la salida caza el nombre de una
+ *    prueba, una ruta, o —literalmente— el `console.error` que el propio
+ *    `Boton` imprime al fallar una acción: `TypeError: fetch failed`. Los dos
+ *    cambios del mismo día eran hostiles entre sí.
+ *
+ * Se mira el código de salida, y el resumen solo para poder decir cuántas.
+ * Corre en Docker porque `node_modules` vive en un volumen y §3 prohíbe
+ * instalar nada en la máquina; si el contenedor no está en pie NO se da por
+ * bueno, se para y se dice. */
+const correrPruebas = () => {
+  try {
+    const salida = execFileSync('docker-compose',
+      ['exec', '-T', 'ds', 'sh', '-c', 'cd componentes && npx vitest run 2>&1'],
+      { cwd: RAIZ, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+    return { ok: true, salida };
+  } catch (e) {
+    return { ok: false, salida: (e.stdout ?? '') + (e.stderr ?? '') };
+  }
+};
+const pruebas = correrPruebas();
+// Sin los códigos de color: vitest los emite aunque no haya terminal.
+const resumen = pruebas.salida.replace(/\x1b\[[0-9;]*m/g, '');
+const cuantas = (resumen.match(/Tests\s+(\d+) passed/) ?? [])[1];
+if (pruebas.ok && cuantas) {
+  console.log(`${cuantas} en verde`);
+} else {
+  console.log('NO');
+  problemas.push(!pruebas.salida
+    ? 'no pude correr las pruebas: ¿está levantado el contenedor? `docker-compose up -d`'
+    : `las pruebas no pasan (vitest salió con error). Corre: docker-compose exec -T ds sh -c "cd componentes && npx vitest run"`);
+}
+
 // Regenerar puede haber tocado archivos. Si el árbol quedó sucio DESPUÉS de
 // esto, lo publicado no sería lo commiteado.
 const sucioTras = intenta('git', ['status', '--porcelain']);

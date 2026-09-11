@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 11 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.106.0** — R124: los siete iconos de
-edición, que bloqueaban cualquier barra futura. Vistos en un navegador antes de
-publicarlos, y el lápiz salió mal a la primera
+**Versión del sistema:** MMI-DS **v1.107.0** — R118: la acción del diálogo ya
+puede decir el gerundio. Y al escribir la regla se vio que `Dialogo` entró en la **v1.13.0** y llevaba
+**111 versiones publicado sin una sola regla de contrato**
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,17 +18,26 @@ publicarlos, y el lápiz salió mal a la primera
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —34 componentes
-publicados, la hoja que viaja, **quince candados**, 621 pruebas—. Lo de hoy es la
-factura de una semana rápida: se pidió **garantizar** que lo entregado era igual
-a lo prometido, cinco auditores adversarios revisaron las seis versiones con el
-encargo de **tumbarlas**, y lo consiguieron en cinco de las seis.
+publicados (`verificar-entrega`, que los cruza con sus páginas del catálogo), la hoja que viaja,
+**dieciocho pasos de verificación** —los diecisiete candados y las pruebas, que `publicar.mjs` corre ya por su cuenta—, **657
+pruebas en 44 archivos**, todas en verde
+(`npx vitest run`)—.
 
-Lo más caro no fue un defecto nuevo: fue descubrir que **rehacer `RangoFecha`
-entero no arregló lo que el equipo había reportado**. La v1.101.0 le puso los dos
-meses, los atajos y el resumen, y dejó intacta la discordancia que rompía la
-pantalla — el catálogo mete las celdas planas y el componente anida filas, así
-que la rejilla de siete columnas repartía las siete semanas. Se arregla tarde y
-mirándolo en un navegador, que es lo que no se hizo entonces.
+Lo de hoy es R118: una propiedad opcional, la más pequeña de la lista y la que
+bloqueaba dos pantallas. Lo caro fue lo que apareció al ir a escribir su regla:
+**`Dialogo` no tenía sección de contrato**. Publicado desde la **v1.13.0**, con
+siete pruebas y **cero** reglas escritas, así que nada impedía que la próxima
+versión moviera Cancelar a la derecha o dejara el foco fuera. Es el mismo hueco
+que `RangoFecha` tenía el 09/09 y por el mismo motivo: el contrato se escribe
+cuando alguien reporta, no cuando se publica. Quedan **29 secciones sin declarar**
+su archivo de pruebas (`node sistema/candado/verificar-contrato.mjs`).
+
+Y romper las reglas nuevas a propósito —que es lo que exige el §9— destapó una
+mentira de la casa: el comentario del componente llevaba **111 versiones**
+diciendo que el `stopPropagation` de la caja es lo que impide que pulsar dentro
+cuente como pulsar el fondo. No lo es: la guarda `e.target === dlg.current` ya lo
+impide ella sola. Son dos mecanismos redundantes y **quitar cualquiera de los dos
+deja la prueba en verde**.
 
 ---
 
@@ -42,15 +51,15 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **629 pruebas en 43 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · **951 reglas de 1459** · **694 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
-| Catálogo navegable | ✅ | `cascaron/index.html` · **68 páginas** (contadas en el HTML generado; decía 53 y llevaba tiempo desfasado) · lo genera `generar-cascaron.mjs` |
+| Componentes de React | ✅ | **657 pruebas en 44 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · **952 reglas de 1464** · **693 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
+| Catálogo navegable | ✅ | `cascaron/index.html` · **69 páginas** (`grep -c '<section class="pagina"'`; decía 68 y antes 53) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.106.0.zip` · **56 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.107.0.zip` · **56 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.106.0**, con el salto **desde la v1.19.0**, que es la instalada |
-| Promesa muerta | ✅ | `verificar-promesa-muerta` — candado **quince** · 137 unidades compuestas · **8 de deuda declarada**, 0 nuevas |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.107.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los diecisiete · 137 unidades compuestas · **8 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -1638,7 +1647,7 @@ de consumidor: dos errores sin la declaración, cero con ella.
 
 ---
 
-## Los dieciséis candados, y lo que ninguno alcanza
+## Los diecisiete pasos, y lo que ninguno alcanza
 
 Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en rojo.
 
@@ -1675,12 +1684,12 @@ sin comparar.
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.106.0
+Versión                      1.107.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         629   en 43 archivos
-Reglas que viajan               948   de 1454 · 694 clases, 0 huérfanas
+Pruebas                         657   en 44 archivos
+Reglas que viajan               952   de 1464 · 693 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el
                                       catalogo, que por diseño NO viajan).
@@ -1688,7 +1697,7 @@ Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el
                                       selector menciona `sel-`, en las dos
 Comparaciones del desplegado      7   catalogo ejecutado contra componente
 Componentes publicados           34
-Páginas del catálogo             68
+Páginas del catálogo             69
 Fila de un campo, medida      36,45   px · la fila de carga se fija en 36
 ```
 
@@ -1720,7 +1729,7 @@ docker compose exec ds sh -c "cd componentes && npm run probar"
 ## Repositorio
 
 - **`solwarehz/sistema-diseno`** · privado · https://github.com/solwarehz/sistema-diseno
-- Se trabaja contra `main`, **únicamente con los dieciséis candados y las
+- Se trabaja contra `main`, **únicamente con los diecisiete pasos y las
   pruebas en verde**. Es de donde instala el área de sistemas: un `main` roto es
   un proyecto ajeno roto.
 - Hay **dos** máquinas. En la de Windows están las notas de

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.106.0";
+export const VERSION = "1.107.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,85 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.107.0', fecha: '2026-09-11',
+    que: 'El dialogo deja pasar el gerundio de su accion. Y la auditoria de esa propiedad encontro seis defectos mas, cuatro de ellos en Boton, que afectan a TODOS los productos',
+    porque:
+      'R118 del registro del equipo. Control Administrativos leyo el paquete instalado: '
+      + '`Dialogo` pasaba `onClick` a `Boton` SIN `textoOcupado`, asi que el doble envio SI '
+      + 'quedaba protegido —el boton espera la promesa— pero el boton ENMUDECIA. Su regla '
+      + 'de producto no admite excepciones: toda accion contra el servidor dice gerundio, '
+      + 'queda deshabilitada y no se dispara dos veces. '
+      + 'Cuidado al citar: en este mismo documento R118 es «busqueda contra el servidor» '
+      + '(v1.97.0) y TAMBIEN las cinco reglas del calendario (v1.101.0). La concordancia de '
+      + 'los tres esta al principio del contrato. '
+      + 'LO QUE ENCONTRO LA AUDITORIA, que es casi todo lo de esta version. Cuatro defectos '
+      + 'estan en `Boton` y por tanto en TODOS los productos, no solo en el dialogo: '
+      + '(1) `textoOcupado` con un valor VACIO —`null`, `false`, cadena vacia, los tres '
+      + 'ReactNode legales— pasaba la guarda `=== undefined` y dejaba el boton ocupado SIN '
+      + 'NINGUN NOMBRE ACCESIBLE: el texto de reposo con `aria-hidden`, el hueco del '
+      + 'gerundio vacio y el «, enviando» suprimido. Es la mudez que R118 vino a arreglar, '
+      + 'con un valor mas, y llega sola con un `t(clave.ausente)`. '
+      + '(2) Cada accion que FALLA dejaba un rechazo sin manejar: `.finally()` devuelve una '
+      + 'promesa DERIVADA que rechaza igual, y se tiraba sin `catch`. Ocurria AUNQUE el '
+      + 'proyecto capturara la suya. En Node >=15 eso mata el proceso; en navegador lo '
+      + 'reporta el vigilante de errores como fallo del producto. '
+      + '(3) «El boton mide igual antes, durante y despues» era FALSO y llevaba versiones '
+      + 'escrito en cuatro sitios: se reservaba el ancho del TEXTO y luego se INSERTABA el '
+      + 'giro como un hijo mas del flex, 22px de salto en los botones sin icono. Ahora el '
+      + 'giro reserva su hueco. '
+      + '(4) Un `throw` sincrono en `onClick` se pierde y el boton no se ocupa: declarado, '
+      + 'no resuelto. '
+      + '(5) Y el mas viejo de todos, que no tiene que ver con R118 y les afecta a todos: '
+      + 'LA HOJA QUE VIAJA NO LLEVABA NI UN @keyframes. `animation: btn-girar` se '
+      + 'entregaba sin su definicion, y el navegador la ignora EN SILENCIO: en el catalogo '
+      + 'el giro giraba y en TODOS los productos era un anillo quieto, igual que la barra '
+      + 'indeterminada. Ningun candado podia verlo —`verificar-promesa` compara la cascada '
+      + 'resuelta, y `animation-name` computa IGUAL en las dos hojas: lo que faltaba no era '
+      + 'la declaracion sino la DEFINICION—. Es el `box-sizing` que no viajaba, con otra '
+      + 'cara. El extractor ahora recoge los @keyframes que las reglas invocan, y SE PARA '
+      + 'si alguien declara una animacion que nadie define. '
+      + 'Y dos en `Dialogo`: (5) el foco NO volvia por el cierre programatico —el proyecto '
+      + 'pone `abierto={false}` cuando la accion sale bien, que es lo que el contrato le '
+      + 'obliga a hacer y el cierre mas frecuente en produccion—, asi que se quedaba en el '
+      + 'titulo de un dialogo ya cerrado; y encima se enfocaba el origen con el dialogo '
+      + 'TODAVIA abierto, y `showModal()` hace inerte todo lo de fuera. (6) Cerrar con la '
+      + 'accion en vuelo dejaba el boton ocupado y deshabilitado PARA SIEMPRE, tambien al '
+      + 'reabrir. '
+      + 'EL CONTRATO DEL DIALOGO NO EXISTIA. `Dialogo` entro en la v1.13.0 y llega a tener '
+      + 'reglas escritas en la v1.107.0: 111 versiones publicadas. Ahora son DIECIOCHO '
+      + 'reglas y veinticuatro pruebas nuevas —de 7 a 31—, con cuatro huecos declarados. '
+      + 'El candado de contrato pasa de 11 reglas atadas a su archivo a 27. '
+      + 'TRES RONDAS DE AUDITORIA, Y LAS DOS ULTIMAS ENCONTRARON REGRESIONES DE LOS '
+      + 'ARREGLOS DE LA ANTERIOR. Se dicen porque ninguna la habria visto un candado: '
+      + 'una `key` puesta para que cerrar no dejara el boton muerto cambiaba un boton '
+      + 'bloqueado por una SEGUNDA ESCRITURA en el servidor; la devolucion del foco paso '
+      + 'de no ocurrir a ROBARSELO a quien ya lo habia colocado; la guarda del '
+      + '`textoOcupado` vacio comparaba valores y dejaba fuera seis variantes mas; y la '
+      + 'limpieza de desmontaje se disparaba en el montaje FALSO del modo estricto, asi '
+      + 'que en Vite, CRA y Next el dialogo se abria CON EL FOCO FUERA. '
+      + 'El candado de animaciones fantasma tambien nacio roto dos veces: leia solo el '
+      + 'primer token del valor, asi que `animation: 2s ease X` se le escapaba, y '
+      + '`animation: var(--x)` le paraba la entrega diciendo que faltaba una animacion '
+      + 'llamada «var». Y un `@-webkit-keyframes` pisaba al estandar y lo dejaba fuera. '
+      + 'Ademas el catalogo no dibujaba NINGUN boton ocupado, asi que los cinco candados '
+      + 'de superficie no median ese estado; ahora dibuja los tres. '
+      + 'Y LA PRIMERA VERSION DE ESA SECCION DECIA v1.60.0 Y 47 VERSIONES. Las dos '
+      + 'inventadas: el numero se copio de la seccion de arriba sin mirar el historial, que '
+      + 'es el defecto exacto que la seccion dice estar corrigiendo. Queda escrito. '
+      + 'Tres arreglos mas de entrega, ninguno de codigo: la pagina del catalogo del '
+      + 'dialogo dibujaba `.dlg`, `.dlg-cuerpo` y `.dlg-pie` —clases de demostracion de '
+      + 'otra pagina, que NO VIAJAN—, asi que los candados que comparan las dos superficies '
+      + 'no tenian nada real que medir ahi, y `textoOcupado` no aparecia en ninguna parte '
+      + 'del catalogo; la tabla de historial de ACTUALIZAR.md llevaba 17 lineas en blanco '
+      + 'ENTRE FILAS, y en Markdown eso termina la tabla: las 27 filas desde la 1.79.0 se '
+      + 'veian como texto con barras; y la lista de candados de CLAUDE.md, la que se corre '
+      + 'a mano, decia dieciseis y le faltaba `generar-cascaron.mjs`, que el publicador si '
+      + 'corre —una lista incompleta de candados es un candado abierto, y lo dice esa misma '
+      + 'seccion.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.106.0', fecha: '2026-09-11',
     que: 'Nace «La entrega real»: el catalogo pinta los componentes con la hoja QUE SE ENTREGA, y encuentra un defecto a la primera',

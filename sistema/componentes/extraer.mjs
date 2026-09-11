@@ -277,7 +277,49 @@ const sinClasificar = new Map();
 const dependenciasSueltas = [];
 let dentroDeMedia = 0;
 
+/* ── LAS ANIMACIONES QUE SE DECLARAN, DEFINIDAS ───────────────────────────────
+ *
+ * `animation: btn-girar …` sin `@keyframes btn-girar` NO ES UN AVISO: el
+ * navegador la ignora en silencio. La hoja entregada declaraba DOS animaciones
+ * —el giro del boton ocupado y el vaiven de la barra indeterminada— y no
+ * llevaba ni un `@keyframes`: en el catalogo el giro giraba y en TODOS los
+ * productos era un anillo quieto. Descubierto el 2026-09-11 por una auditoria;
+ * llevaba asi desde que existe la hoja.
+ *
+ * Ningun candado podia verlo. `verificar-promesa` compara la cascada resuelta,
+ * y `animation-name: btn-girar` computa IGUAL en las dos hojas: lo que falta no
+ * es la declaracion, es la definicion. Es el mismo defecto del `box-sizing` que
+ * no viajaba, con otra cara.
+ *
+ * Se viaja solo lo que alguien usa: se leen los nombres que las reglas ya
+ * seleccionadas invocan, y se recogen SUS `@keyframes`. Si mañana alguien
+ * declara una animacion que el catalogo no define, se dice y se para: una
+ * animacion fantasma es una regla muerta que nadie ve morir.
+ * ──────────────────────────────────────────────────────────────────────────── */
+// nombre -> [bloques]. LISTA y no un solo bloque: indexar por el nombre pelado
+// hacia que un `@-webkit-keyframes X` SUSTITUYERA al `@keyframes X` estandar, y
+// el candado seguia verde porque el nombre existia. La entrega se quedaba con
+// la variante prefijada y el giro volvia a estar quieto — el defecto original.
+const keyframesDelCatalogo = new Map();
+/* TAMBIEN LOS ANIDADOS. `bloques()` no entra en el cuerpo de un `@media` ni de
+ * un `@supports`, asi que un `@keyframes` de dentro era invisible y el candado
+ * habria PARADO LA ENTREGA diciendo que la animacion no existe. Se baja un
+ * nivel, que es donde vive el CSS de verdad. */
+const recogerKeyframes = (lista, prof = 0) => {
+  for (const b of lista) {
+    const k = b.sel.match(/^@(?:-webkit-|-moz-|-o-)?keyframes\s+([\w-]+)$/);
+    if (k) {
+      if (!keyframesDelCatalogo.has(k[1])) keyframesDelCatalogo.set(k[1], []);
+      keyframesDelCatalogo.get(k[1]).push(b.entero);
+    } else if (prof < 2 && /^@(media|supports|layer|container)\b/.test(b.sel)) {
+      recogerKeyframes(bloques(b.cuerpo), prof + 1);
+    }
+  }
+};
+recogerKeyframes(todos);
+
 for (const b of todos) {
+  if (/^@(?:-webkit-|-moz-|-o-)?keyframes\b/.test(b.sel)) continue;
   if (b.sel.startsWith('@media')) {
     // R27: la politica de movimiento reducido es UNA regla resuelta una vez;
     // sin ella los tokens de duracion viajarian sin su apagado y cada producto
@@ -360,6 +402,164 @@ for (const b of todos) {
 
 // ── Escritura ───────────────────────────────────────────────────────────────
 
+/* Los nombres que INVOCAN las reglas ya seleccionadas. `animation: none` no
+ * invoca nada, y la envoltura de `prefers-reduced-motion` tampoco. */
+const cssSeleccionado = [
+  ...ELEMENTOS.flatMap((e) => porElemento.get(e.n)),
+  ...dependenciasSueltas,
+].join('\n');
+/* CÓMO SE LEE UN VALOR DE `animation`, y las seis formas en que esto falló.
+ *
+ * El atajo de CSS no obliga a poner el nombre primero —`animation: 2s ease X
+ * infinite` es tan válido como `animation: X 2s`— y admite varias animaciones
+ * separadas por comas. La primera versión leía solo el PRIMER token; la
+ * segunda tokenizaba pero seguía teniendo cinco agujeros que una auditoría
+ * encontró el 2026-09-11, tres de ellos PARANDO LA ENTREGA en falso:
+ *
+ *   · un COMENTARIO de CSS que mencionara `animation:` convertía cada palabra
+ *     de la prosa en una animación fantasma. En un catálogo tan comentado como
+ *     éste, era cuestión de tiempo.
+ *   · `animation: EASE 1s` — las palabras clave de CSS NO distinguen mayúsculas.
+ *   · `steps(4 , jump-end )` con un espacio delante del paréntesis: el cierre
+ *     dejaba de ir pegado al token y `jump-end` pasaba por nombre.
+ *   · `ANIMATION-NAME:` en mayúsculas era invisible: los nombres de propiedad
+ *     de CSS tampoco distinguen mayúsculas.
+ *   · `animation: --mi-ident 1s` quedaba sin comprobar, porque se descartaba
+ *     todo token que empezara por `-` para no confundirlo con `-1s`.
+ *
+ * Se resuelve limpiando primero —comentarios fuera, grupos entre paréntesis
+ * fuera— y comparando las palabras clave en minúscula. Lo que no alcanza, y se
+ * dice: un nombre con escapes (`aud4\.esc`) no se ve, ni el que vive dentro de
+ * un `@media` anidado, porque el reparto lo descarta antes de llegar aquí. */
+const PALABRAS_DE_ANIMACION = new Set([
+  'none', 'normal', 'reverse', 'alternate', 'alternate-reverse',
+  'forwards', 'backwards', 'both', 'running', 'paused', 'infinite',
+  'linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out',
+  'step-start', 'step-end', 'start', 'end',
+  'jump-start', 'jump-end', 'jump-none', 'jump-both',
+  'initial', 'inherit', 'unset', 'revert', 'revert-layer',
+]);
+/** Los tokens del valor que solo pueden ser un NOMBRE de animación. */
+/**
+ * Los nombres de animación de un valor, LEÍDOS COMO LOS LEE EL NAVEGADOR.
+ *
+ * El atajo `animation` admite, por cada grupo separado por comas, **un solo**
+ * `<keyframes-name>`, y los demás tokens se consumen como tiempo, curva,
+ * repeticiones, dirección o estado. Así que en `animation: btn-girar 1s ease`
+ * el nombre es `btn-girar` y `ease` es la CURVA — no un segundo nombre. Un
+ * rescate por subcadena se traía un `@keyframes ease` que nadie invoca, y peor:
+ * en `animation: linear 1s` el navegador lee `linear` como curva y la regla se
+ * queda SIN NOMBRE, así que un `@keyframes linear` ahí es CSS muerto.
+ *
+ * En `animation-name`, en cambio, no hay ambigüedad: todo token es un nombre,
+ * incluso uno que se llame como una palabra clave.
+ */
+const nombresDe = (valor, esAtajo) => valor
+  // La llamada ENTERA, con su nombre: quitando solo el paréntesis quedaba
+  // `var` suelto y el candado paraba la entrega diciendo que faltaba una
+  // animación llamada así. Anidadas de un nivel, que es lo que hay en CSS.
+  .replace(/[\w-]*\([^()]*(?:\([^()]*\)[^()]*)*\)/g, ' ')
+  .split(',')
+  .flatMap((grupo) => {
+    const tokens = grupo.trim().split(/\s+/)
+      .map((t) => t.trim())
+      .filter((t) => t
+        && !/^[-+.]?\d/.test(t)             // 2s, .5s, -1s, 300ms
+        && t !== '!important'
+        && /^-{0,2}[A-Za-z_][\w-]*$/.test(t));
+    if (!esAtajo) {
+      // `animation-name`: todo es nombre menos los valores globales.
+      return tokens.filter((t) => !['none', 'initial', 'inherit', 'unset', 'revert', 'revert-layer']
+        .includes(t.toLowerCase()));
+    }
+    return tokens.filter((t) => !PALABRAS_DE_ANIMACION.has(t.toLowerCase()));
+  });
+
+/**
+ * Sin comentarios NI cadenas, en una sola pasada y en el orden correcto.
+ *
+ * Hacerlo con dos reemplazos independientes fallaba en los dos sentidos, y las
+ * dos las midio una auditoria el 2026-09-11:
+ *   · `content: "animation: Foo Bar"` fabricaba fantasmas y PARABA LA ENTREGA.
+ *   · una cadena que abriera un comentario se comia todo lo que hubiera en
+ *     medio, asi que una animacion muerta declarada ahi viajaba EN SILENCIO.
+ * Un comentario no puede empezar dentro de una cadena ni al reves, asi que la
+ * unica forma honesta es recorrerlo una vez sabiendo en que se esta.
+ */
+const sinComentarios = (css) => {
+  let fuera = '';
+  let i = 0;
+  while (i < css.length) {
+    const c = css[i];
+    if (c === '/' && css[i + 1] === '*') {
+      const fin = css.indexOf('*/', i + 2);
+      i = fin === -1 ? css.length : fin + 2;
+      fuera += ' ';
+      continue;
+    }
+    if (c === '"' || c === "'") {
+      let j = i + 1;
+      while (j < css.length && css[j] !== c) { j += css[j] === '\\' ? 2 : 1; }
+      i = j + 1;
+      fuera += ' ';
+      continue;
+    }
+    fuera += c;
+    i += 1;
+  }
+  return fuera;
+};
+
+const limpio = sinComentarios(cssSeleccionado);
+const invocadas = new Set();
+/** Invocadas por un `animation` SIN prefijo: solo ésas exigen el estándar. */
+const invocadasSinPrefijo = new Set();
+const fantasmas = [];
+for (const m of limpio.matchAll(/(-webkit-|-moz-|-o-)?animation(-name)?\s*:\s*([^;}]+)/gi)) {
+  const prefijada = Boolean(m[1]);
+  const esAtajo = !m[2];
+  // Las mayúsculas se respetan: un `<custom-ident>` de CSS las distingue, así
+  // que `@keyframes Ease` y `ease` NO son el mismo nombre.
+  for (const token of nombresDe(m[3], esAtajo)) {
+    if (keyframesDelCatalogo.has(token)) {
+      invocadas.add(token);
+      if (!prefijada) invocadasSinPrefijo.add(token);
+    } else {
+      fantasmas.push(token);
+    }
+  }
+}
+/* UNA VARIANTE PREFIJADA NO SUSTITUYE AL ESTÁNDAR. Si solo existe
+ * `@-webkit-keyframes X`, en cualquier navegador moderno la animación NO
+ * EXISTE: es el defecto original —el anillo quieto— con otra cara, y el mapa
+ * por nombre lo daba por bueno. Solo se exige a las que invoca un `animation`
+ * SIN prefijo: un par `-webkit-animation` + `@-webkit-keyframes` es coherente
+ * consigo mismo, y pararlo sería un falso positivo. */
+const soloPrefijadas = [...invocadasSinPrefijo].filter((n) => !keyframesDelCatalogo.get(n)
+  .some((bloque) => /^@keyframes\b/.test(bloque.trimStart())));
+if (soloPrefijadas.length) {
+  console.error(`\n  Animaciones definidas SOLO con prefijo: ${soloPrefijadas.join(', ')}`);
+  console.error('  Sin la variante sin prefijo, el navegador moderno la ignora.\n');
+  process.exit(1);
+}
+if (fantasmas.length) {
+  console.error(`\n  Animaciones DECLARADAS y no definidas: ${[...new Set(fantasmas)].join(', ')}`);
+  console.error('  El navegador las ignora en silencio. Define su @keyframes en el');
+  console.error('  catálogo o quita la declaración.\n');
+  process.exit(1);
+}
+const bloqueAnimaciones = invocadas.size
+  ? `/* ───────────────────────────────────────────────────────────────────────────
+   ANIMACIONES — ${invocadas.size} · las que estas reglas invocan, con sus variantes
+   Sin su @keyframes, \`animation:\` se ignora EN SILENCIO. Hasta la v1.107.0
+   no viajaban: el giro del botón ocupado y la barra indeterminada estaban
+   quietos en todos los productos.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+${[...invocadas].sort().flatMap((n) => keyframesDelCatalogo.get(n)).join('\n')}
+`
+  : '';
+
 const secciones = ELEMENTOS.filter((e) => porElemento.get(e.n).length).map((e) => {
   const reglas = porElemento.get(e.n);
   return `/* ───────────────────────────────────────────────────────────────────────────
@@ -398,7 +598,7 @@ const salida = `/* ────────────────────�
            \`componentes.md\`, junto a esta hoja.
    ─────────────────────────────────────────────────────────────────────────── */
 
-${dependenciasSueltas.length ? '/* Dependencias del paquete que no pertenecen a ningun elemento */\n' + dependenciasSueltas.join('\n') + '\n\n' : ''}${secciones.join('\n')}`;
+${dependenciasSueltas.length ? '/* Dependencias del paquete que no pertenecen a ningun elemento */\n' + dependenciasSueltas.join('\n') + '\n\n' : ''}${secciones.join('\n')}${bloqueAnimaciones ? '\n' + bloqueAnimaciones : ''}`;
 
 mkdirSync(AQUI, { recursive: true });
 writeFileSync(join(AQUI, 'componentes.css'), salida);

@@ -28,7 +28,7 @@ memoria de nadie.
 
 ## Concordancia de registros — léase antes de citar una «R»
 
-**Hay dos registros de requerimientos y durante dos versiones se solaparon.** El
+**Hay dos registros de requerimientos y el solape llegó a TRES versiones.** El
 del equipo que pide —`requerimiento-R###-*.md`— y unos números que este sistema
 acuñó por su cuenta. Acuñarlos fue un error: **el registro es de quien escribe
 el requerimiento**, no de quien lo implementa.
@@ -37,14 +37,21 @@ el requerimiento**, no de quien lo implementa.
 |---|---|---|
 | **R118** · búsqueda contra el servidor | **R123** · selector búsqueda asíncrono | v1.97.0 |
 | **R119** · el tercer rojo de la identidad | *(sin número: hallazgo interno, no pedido)* | v1.98.0 |
+| **R118** · las cinco reglas del calendario | *(sin número: se acuñó otra vez, ya con la regla puesta)* | v1.101.0 |
 
-Los dos números **se quedan como están** en lo ya publicado. Una etiqueta no se
+Los tres números **se quedan como están** en lo ya publicado. Una etiqueta no se
 mueve y un ZIP entregado no se reescribe: quien instale `v1.97.0` leerá R118 en
 este mismo documento, y tiene que seguir cuadrando con lo que descargó.
 
 **Desde la v1.99.0 manda el registro del equipo.** Este sistema no acuña
 números: si un trabajo no tiene requerimiento, se describe por lo que hace y por
 la versión en que entró, sin inventarle una «R».
+
+**Y se volvió a saltar en la v1.101.0**, dos versiones después de escribir esa
+frase: las cinco reglas de «Rango de fechas» citan `(R118, v1.101.0)` y no hay
+tal requerimiento — es el mismo número acuñado por tercera vez. Se deja como
+está por lo mismo que las otras dos, la etiqueta y el ZIP ya entregados, y se
+apunta arriba. Lo descubrió una auditoría adversaria el 2026-09-11.
 
 > Cuidado con `R118` y `R119` a secas: en el registro del equipo son *diálogo
 > con acción en gerundio* y *editor de texto con huecos*, dos cosas que nada
@@ -147,6 +154,98 @@ Es el 80 % de la superficie del sistema. Si solo se lee una sección, esta.
 | **2** | **Obligatorio.** El foco **va a la banda** al aparecer. |
 | **3** | **Obligatorio.** Al cerrar —confirmando, cancelando o con Escape— el foco **vuelve al control que la abrió**. |
 | **4** | Del proyecto: qué acciones piden confirmación. Regla del sistema: **solo lo irreversible**. Lo reversible se hace y se ofrece «Deshacer» en el aviso. |
+
+---
+
+## Diálogo modal
+
+**No tenía sección.** `Dialogo` entró en la **v1.13.0** y llega aquí en la
+v1.107.0: **111 versiones publicadas** sin una sola regla escrita
+(`git log --follow --diff-filter=A`). Lo destapó R118, que pedía una propiedad y
+encontró la sección vacía.
+
+Lo que faltaba era el contrato **escrito**, no toda la defensa: las siete pruebas
+que ya había cubrían el orden de los botones y la ida y vuelta del foco, y caen
+en rojo si alguien los toca. Lo que no estaba escrito en ninguna parte —y por
+tanto nadie tenía que respetar— es el rango de lo prometido: `showModal` y no
+`show`, la intercepción de `cancel`, `cerrarAlPulsarFuera`, `deshabilitada`,
+`destructiva`, y qué pasa al cerrar con la acción en vuelo.
+
+**Y la primera versión de esta sección decía «v1.60.0» y «47 versiones».** Las
+dos inventadas: el número se copió de la sección de arriba sin ir a mirar el
+historial, que es el defecto exacto que esta sección dice estar corrigiendo. Lo
+cazó una auditoría adversaria antes de publicar. Queda escrito porque el
+registro de este repositorio sirve para eso.
+
+Cuidado al citar: en el registro de este documento **R118** es *búsqueda contra
+el servidor* (v1.97.0). Aquí se cita el **registro del equipo**, donde R118 es
+*el diálogo que no puede decir el gerundio*. La concordancia está arriba.
+
+<!-- pruebas: Dialogo.test.tsx, boton-ocupado-catalogo.test.tsx -->
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** El diálogo lleva **nombre accesible** —`aria-labelledby` al título—. Sin él se anuncia «diálogo» a secas y no se sabe qué se ha abierto. |
+| **2** | **Obligatorio.** Se abre con **`showModal()`**, no con `show()`: solo el primero hace inerte el resto de la página. Con `show()` el foco se pasea por detrás. |
+| **3b** | **Obligatorio.** (v1.107.0) **El título NO lleva anillo de foco**, y es una decisión, no un descuido: `componentes.css` entrega `.dialogo-tit:focus{ outline: none }` mientras `CLAUDE.md` §6 prohíbe `outline-none`. Se admite **solo aquí** porque ese `<h2>` tiene `tabIndex={-1}`: no está en el recorrido del tabulador, así que nadie llega a él navegando y el anillo solo aparecería al abrir, señalando un texto que no es un control. La excepción vale para este caso y para ninguno más. |
+| **3** | **Obligatorio.** Al abrir, el foco **entra en el TÍTULO** —`tabIndex={-1}`, fuera del recorrido del tabulador— y no en el primer control: lo primero que se oye es qué es esto, y no «campo de texto» sin contexto. **Y también en modo estricto**, que es el que traen Vite, CRA y Next por omisión: React monta, **limpia** y vuelve a montar, y la primera versión de la devolución del foco (v1.107.0, sin publicar) corría en esa limpieza falsa y se lo llevaba al origen — el efecto recreado ya veía el diálogo abierto y no volvía a enfocar. Diálogo abierto y foco fuera. La devolución se aplaza un turno y se cancela si el componente vuelve a montarse; es el mismo rodeo que `Boton` tiene documentado para `vivo`. |
+| **4** | **Obligatorio.** (v1.107.0) Al cerrar, el foco **vuelve al elemento que lo abrió**, y con tres condiciones que costaron tres intentos: (a) por **los cuatro caminos** —botón, Escape, pulsar fuera, y el **cierre programático**, que es el que el contrato obliga a usar cuando la acción sale bien y el más frecuente en producción—; (b) **aunque el proyecto desmonte el diálogo** al cerrarlo, que es el patrón `{abierto && <Dialogo …/>}`; y (c) **sin robarlo**: si el foco no está ni dentro del diálogo ni caído en `<body>`, lo puso alguien a propósito —la fila recién creada— y no se toca. Se devuelve **después** de `close()`: `showModal()` hace inerte todo lo de fuera, así que enfocar el origen con el diálogo todavía abierto puede ignorarse en un navegador de verdad. En jsdom no, y por eso la versión vieja salía verde. |
+| **5** | **Obligatorio.** Escape lo cierra el navegador solo, pero se intercepta `cancel`: sin eso el diálogo se cerraría y el proyecto **seguiría creyéndolo abierto**. |
+| **6** | **Obligatorio.** **Cancelar a la izquierda y la acción a la derecha.** No es estética: es el orden documentado y el que ya está aprendido. Invertirlo hace que se pulse el que no era. |
+| **7** | **Obligatorio.** La acción **no cierra el diálogo**. Cerrar lo decide el proyecto, que es el único que sabe si lo que se mandó salió bien. |
+| **8** | **Obligatorio.** Pulsar el fondo cierra, y **se desactiva** con `cerrarAlPulsarFuera={false}` cuando hay datos sin guardar. «Fondo» es el propio `<dialog>`, y pulsar DENTRO no cierra. Eso lo sostienen **dos mecanismos, y cada uno basta por sí solo**: la guarda `e.target === dlg.current` y el `stopPropagation` de la caja. Se comprobó quitando cada uno por separado —la prueba siguió en verde las dos veces— y solo los dos a la vez la ponen en rojo. Se dice porque el comentario del componente llevaba **desde la v1.13.0** —desde el commit que lo creó— atribuyéndoselo solo al segundo, y **la prueba no distingue cuál trabaja**: comprueba el resultado. |
+| **9** | **Obligatorio.** `accion.deshabilitada` deja el botón **a la vista y apagado**, que no es lo mismo que no pasar `accion`: un botón que aparece y desaparece según lo que haya dentro mueve el pie bajo el ratón y obliga a adivinar qué falta. |
+| **10** | **Obligatorio.** (R118 del equipo, v1.107.0) **La acción puede decir el gerundio mientras trabaja**, con `accion.textoOcupado`. Hasta la v1.106.0 el diálogo pasaba `onClick` a solas, así que el doble envío **sí** estaba protegido —`Boton` espera la promesa— pero el botón **enmudecía**: se apagaba sin decir por qué. Se deja pasar lo que `Boton` ya hacía —los dos textos dibujados siempre, apilados, reservando el del más largo— y **sin `textoOcupado` no cambia nada** de lo que ya estaba. |
+| **10b** | **Obligatorio.** (v1.107.0) **El giro reserva su sitio también, con `textoOcupado` y sin icono.** «El botón mide igual antes, durante y después» era falso y llevaba versiones escrito en cuatro sitios: se reservaba el ancho del TEXTO y luego se **insertaba** el giro como un hijo más del flex — 14 px de rueda y 8 de hueco, **22 px de salto**. Tres límites medidos: **sin `textoOcupado` el salto de 22 px sigue** —reservarlo siempre cambiaría el ancho en reposo de todos los botones de texto de todos los productos, y eso es una versión mayor—; **con `icono` el botón encoge 4 px**, porque el icono mide 18 y el giro 14, y viene de antes; y **el hueco no gira**: `visibility:hidden` no detiene una animación de CSS, así que la rueda daba vueltas invisible para siempre en cada botón con gerundio de cada pantalla hasta que se le puso `animation: none`. |
+| **10c** | **Obligatorio.** (v1.107.0) **Un `textoOcupado` que no pinta texto se cae al comportamiento de siempre.** Muchos `ReactNode` son legales y no pintan una letra —`null`, `false`, **`true`**, `''`, espacios, `[]`, `[null, false]`, `<>{null}</>`, `<span>{t('clave.ausente')}</span>`, un `Set` vacío—, y con la guarda `=== undefined` **todos** pasaban: el texto de reposo quedaba con `aria-hidden`, el hueco del gerundio salía vacío y el «, enviando» se suprimía. El botón ocupado se quedaba **sin ningún nombre accesible**. La primera corrección comparaba **valores** y dejaba fuera seis de esas variantes; se mira dentro del árbol. **`soloIcono` ignora `textoOcupado` entero**: no tiene texto que sustituir, y el apilado le reservaba el ancho del gerundio al lado del icono. Sin cubrir, declarado: un componente que devuelve `null`, y un elemento sin prop `children` —`<span />`, `<Trans i18nKey="x" />`—, que se cuentan como texto a propósito porque `<Trans>` es el caso real. |
+| **10d** | **Obligatorio.** (v1.107.0) **Una acción que falla no deja un rechazo sin manejar.** `.finally()` devuelve una promesa **derivada** que rechaza con la misma razón, y se tiraba sin `catch`: cada acción fallida producía un `unhandledRejection` **aunque el proyecto capturara la suya**, y en Node ≥15 eso tumba el proceso — y las pruebas de quien nos consume. **Lo que cuesta, dicho tal cual:** observar el rechazo es lo que libera el botón, y observarlo lo marca como manejado, así que `unhandledrejection` deja de dispararse. Para los vigilantes de errores eso es **un evento que baja a miga de pan** (`console.error`). Sí hay una forma de recuperarlo —re-elevar la razón desde un `setTimeout`, que el vigilante registra como error no capturado— y **no se toma**: vuelve a tumbar el proceso en Node, que es el defecto que esto vino a arreglar. Quien necesite el evento, que capture en su `onClick` y reporte — que además es donde sabe qué estaba guardando. |
+| **11** | **Obligatorio.** (v1.107.0) **`accion.destructiva` pinta la variante destructiva.** No estaba en ninguna regla ni en ninguna prueba: ignorar la prop dejaba todo «Eliminar» pintado como acción principal y las quince pruebas de entonces en verde. |
+| **12** | **Obligatorio.** (v1.107.0) **`accion.ocupado` existe, y casi nunca hace falta.** La protección del doble envío se apoya en que `onClick` **devuelva** la promesa. Si la acción hace el `fetch` sin `return` —que el tipo `() => void \| Promise<unknown>` permite y nada avisa— no hay gerundio, ni bloqueo, ni protección: tres clics llaman tres veces. Lo primero es devolver la promesa; cuando el estado vive fuera y no se puede, ésta es la salida, y `Boton` la tenía desde antes sin que el diálogo la dejara pasar. |
+| **13** | **Obligatorio.** (v1.107.0) **Cerrar con la acción en vuelo conserva el estado ocupado mientras el diálogo siga MONTADO**, y en cuanto la promesa termina el botón se libera solo, con el diálogo abierto o cerrado. Esta versión llegó a montar el botón limpio al cerrar —para que un `fetch` abortado que no se resuelve nunca no lo dejara muerto— y **se retiró antes de publicar**: con el botón remontado, abrir · Guardar · Cancelar · abrir · Guardar disparaba la acción **dos veces con la primera todavía en vuelo**. **EL LÍMITE, medido y sin arreglo posible desde aquí:** si el proyecto **desmonta** el diálogo al cerrarlo —`{abierto && <Dialogo …/>}`, que la regla 4 bendice para el foco— el guardia del doble envío vive dentro de `Boton` y **muere con él**, así que el botón remontado acepta el segundo clic. Le pasa a cualquier estado de componente. Dos salidas: no desmontar (`abierto={abierto}` y ya está), o llevar el estado fuera con **`accion.ocupado`**. |
+| **14** | Del proyecto: **cuándo NO usarlo**, que importa más que cómo. Para confirmar una acción está `Confirmacion`, que es una banda en línea y no tapa. Un diálogo detiene la tarea entera, y eso solo se justifica cuando lo que hay dentro **es** la tarea. **Ojo:** `Confirmacion.onConfirmar` es `() => void` y no acepta promesa, así que en esa banda **la regla del gerundio de R118 no se puede cumplir**. Está declarado, no resuelto. |
+
+**Cuatro huecos declarados, que ninguna prueba de aquí cubre:**
+
+1. **El foco cuando el botón pasa a `disabled`.** Al ocuparse, `Boton` pone
+   `disabled`. jsdom conserva el foco; **los navegadores reales lo mueven a
+   `<body>`**, y entonces el cambio de texto al gerundio no se anuncia. Es la
+   diferencia entre «se oye el gerundio» y «no se oye nada». **No hay navegador
+   en este entorno para medirlo** y no se ha comprobado.
+2. **La regla 8 no la puede hacer cumplir ningún candado.** Sus dos mecanismos
+   son redundantes, así que cualquiera de los dos se puede borrar mañana con las
+   30 pruebas en verde. Es el patrón «promesa muerta» que este repositorio ya se
+   cazó dos veces.
+3. **Los píxeles no los mide nada.** Los «22 px» de la regla 10b y los «4 px»
+   son ciertos **por construcción** —`.btn{gap:8px}` más `.btn-giro{width:14px}`,
+   y el icono a 18— pero **no hay navegador sin cabeza en este entorno** y jsdom
+   no maqueta. Se comprobó lo que eso permite: cambiar
+   `.btn-texto-oculto{visibility:hidden}` por `display:none` —que resucita a la
+   vez el salto de 22 px y la inestabilidad del ancho— deja **los diecisiete
+   pasos y las 656 pruebas en verde**. Lo que sí está atado es la **anatomía**:
+   que los dos estados tengan los mismos hijos, y que el catálogo emita lo
+   mismo que el componente.
+4. **`verificar-elemento` compara conjuntos, no la página.** Hasta la v1.106.0
+   la página del catálogo dibujaba `.dlg`, `.dlg-cuerpo` y `.dlg-pie` —clases de
+   demostración de otra página, que **no viajan**—, así que los candados que
+   comparan las dos superficies no tenían nada real que medir aquí. **Corregido
+   en la v1.107.0**: la página emite ahora `.dialogo-caja`, `.dialogo-cab`,
+   `.dialogo-cuerpo` y `.dialogo-pie`.
+   Lo que **sigue abierto** se midió al comprobar el arreglo: poner un `<h3>` en
+   el título de esa página **no pone el candado en rojo**, porque `.dialogo-tit`
+   ya sale como `<h2>` en las demostraciones de `CargaImagen` y `CargaId`, y el
+   candado pregunta «¿la etiqueta del componente está entre las que usa el
+   catálogo?», no «¿usa el catálogo alguna otra?». Un elemento correcto en una
+   página tapa uno incorrecto en otra.
+   Y lo mismo pasaba con **el botón ocupado**: `.btn-giro`, `.btn-textos` y
+   `.btn-texto-oculto` existían solo como reglas CSS y **nunca en marcado**, así
+   que cinco candados no medían ese estado en absoluto. La página del botón
+   dibuja ahora los tres estados —reposo con gerundio, ocupado, y ocupado sin
+   gerundio—, **y eso por sí solo no compró nada**: borrar la sección entera
+   dejaba los diecisiete pasos en verde, porque los candados comparan conjuntos
+   de clases y de etiquetas y `<span>` está en todas partes. Lo que sí lo
+   cubre es `boton-ocupado-catalogo.test.tsx`, que **ejecuta el catálogo** y
+   compara el árbol con el que emite `Boton` — el método de R116 y R126. Cinco
+   mutaciones que antes pasaban sin rojo ahora caen.
 
 ---
 

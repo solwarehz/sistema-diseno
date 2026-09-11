@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.106.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.107.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -78,7 +78,7 @@
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   BOTÓN — 31 reglas · clases .btn-*
+   BOTÓN — 32 reglas · clases .btn-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .btn-ic{ display: inline-flex; align-items: center; gap: 8px; }
@@ -108,13 +108,14 @@
 .btn-terc:disabled:hover, .btn-terc[aria-disabled='true']:hover{
   background: transparent; border-color: transparent; color: var(--accion-texto-desh); }
 .btn-mini{ font-size: 12px; padding: 4px 12px; }
-.btn-ocupado{ cursor: progress; }
+.btn.btn-ocupado{ cursor: progress; }
 .btn-textos{ display: inline-grid; }
 .btn-textos > *{ grid-area: 1 / 1; }
 .btn-texto-oculto{ visibility: hidden; }
 .btn-giro{ width: 14px; height: 14px; flex: none; border-radius: 50%;
   border: 2px solid currentColor; border-top-color: transparent;
   animation: btn-girar var(--dur-giro) var(--curva-giro) infinite; }
+.btn-giro.btn-texto-oculto{ animation: none; }
 @media (prefers-reduced-motion: reduce) {
   .btn-giro{ animation: none; border-top-color: currentColor; opacity: .5; }
 }
@@ -1692,3 +1693,13 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .mono-lista{ font-size: 19px; line-height: 1.6; }
 .mono-lista.sans{ font-family: 'IBM Plex Sans', sans-serif; }
 .mono-lista.mono{ font-family: 'IBM Plex Mono', monospace; }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   ANIMACIONES — 2 · las que estas reglas invocan, con sus variantes
+   Sin su @keyframes, `animation:` se ignora EN SILENCIO. Hasta la v1.107.0
+   no viajaban: el giro del botón ocupado y la barra indeterminada estaban
+   quietos en todos los productos.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+@keyframes btn-girar{ to { transform: rotate(360deg); } }
+@keyframes pr-va{ 0% { transform: translateX(-110%); } 100% { transform: translateX(320%); } }
