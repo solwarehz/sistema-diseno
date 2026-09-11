@@ -47,7 +47,13 @@ const abrirCatalogo = () => {
      lo usa, así que una excepción mataba el bloque entero y el calendario no
      llegaba a pintarse — con la consola muda, la prueba solo decía «null». */
   const fallos: string[] = [];
-  consola.on('jsdomError', (e: Error) => fallos.push(String(e.message)));
+  consola.on('jsdomError', (e: Error) => {
+    const m = String(e.message);
+    // `canvas.getContext` es una carencia de jsdom, no del catálogo: hay demos
+    // que dibujan en lienzo. Lo que sí importa es que el GUION no reviente.
+    if (m.includes('Not implemented')) return;
+    fallos.push(m);
+  });
   const dom = new JSDOM(HTML, {
     virtualConsole: consola,
     runScripts: 'dangerously',
@@ -76,8 +82,20 @@ const abrirCatalogo = () => {
   if (!campo) throw new Error('el catálogo no tiene el campo del rango');
   campo.dispatchEvent(new dom.window.Event('focus', { bubbles: true }));
   campo.click();
-  if (!doc.querySelector('.fc-dias') && fallos.length) {
-    throw new Error('el guion del catálogo falló: ' + fallos[0].slice(0, 140));
+  /**
+   * EL GUION DEL CATÁLOGO NO PUEDE LANZAR, pase lo que pase.
+   *
+   * El CSS y el marcado viven en una plantilla de JavaScript, así que un
+   * backtick en un comentario del guion no rompe el generador: rompe el
+   * archivo GENERADO. El generador termina con éxito y publica un catálogo
+   * cuyo guion muere en la primera línea — sin navegación y sin nada. Pasó
+   * cuatro veces en un solo día.
+   *
+   * Se comprueba EJECUTÁNDOLO, no leyéndolo: un troceador por texto se corta
+   * solo en cuanto hay un `</script>` dentro de un bloque de cargamento.
+   */
+  if (fallos.length) {
+    throw new Error('el guion del catálogo lanzó: ' + fallos[0].slice(0, 160));
   }
   return doc;
 };

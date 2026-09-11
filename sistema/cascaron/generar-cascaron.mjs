@@ -25,6 +25,8 @@ const SALIDA = join(RAIZ, 'cascaron');
 
 const tokensCss = readFileSync(join(RAIZ, 'sistema', 'tokens', 'tokens.css'), 'utf8');
 
+
+
 /**
  * EL COMPRESOR DE PDF, EL MISMO QUE USA REACT.
  *
@@ -3883,13 +3885,13 @@ día.</p>
 <div class="bloque">
   <div class="fc-zona" id="fc-zona">
     <div class="fc-campos">
-      <label class="cg"><span class="cg-et">Desde</span>
-        <input class="campo cg-in mono fc-campo" id="fc-ini" placeholder="dd/mm/aaaa"
-               readonly aria-haspopup="dialog" aria-expanded="false" aria-controls="fc-cal"></label>
+      <button type="button" class="campo fc-campo" id="fc-ini"
+              aria-haspopup="dialog" aria-expanded="false" aria-controls="fc-cal">
+        <span class="cg-et">Desde</span><span class="cg-in">Elegir fecha</span></button>
       <span class="fc-guion" aria-hidden="true">${ICO_CHEV_DER}</span>
-      <label class="cg"><span class="cg-et">Hasta</span>
-        <input class="campo cg-in mono fc-campo" id="fc-fin" placeholder="dd/mm/aaaa"
-               readonly aria-haspopup="dialog" aria-expanded="false" aria-controls="fc-cal"></label>
+      <button type="button" class="campo fc-campo" id="fc-fin"
+              aria-haspopup="dialog" aria-expanded="false" aria-controls="fc-cal">
+        <span class="cg-et">Hasta</span><span class="cg-in">Elegir fecha</span></button>
       <button class="btn btn-neutro" id="fc-limpiar">Limpiar</button>
     </div>
 
@@ -4322,6 +4324,12 @@ const pendiente = (nombre) => `
 // Conversor mínimo. Cubre solo lo que el manual usa: encabezados, tablas,
 // listas, negrita, cursiva, código, enlaces y citas. No es un parser general.
 
+/* Se usa tambien para el REGISTRO DE CAMBIOS, que iba sin escapar. Una entrada
+   que mencionaba una etiqueta la convertia en etiqueta DE VERDAD: la que decia
+   «toda clase que apareciera en un script» abrio un bloque de guion en mitad de
+   la prosa y mato el guion real del catalogo —sin navegacion, sin calendario— y
+   el generador termino con exito. Explicar un defecto obliga a nombrar
+   etiquetas; nombrarlas no puede romper la pagina que lo explica. */
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 const enLinea = (s) =>
@@ -6646,7 +6654,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
 ${CAMBIOS.map(
   (c) => `
 <h3 class="sub-seccion">v${c.v} <span class="cam-fecha">${c.fecha}</span></h3>
-<p class="pag-intro"><strong>${c.que}.</strong> ${c.porque}</p>
+<p class="pag-intro"><strong>${esc(c.que)}.</strong> ${esc(c.porque)}</p>
 ${
   c.rompe.length
     ? `<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody>${c.rompe
@@ -12679,8 +12687,11 @@ ${COMPRESOR_PDF}
       document.getElementById('fc-cuerpo').innerHTML = mes(ancla) + mes(sig);
       document.getElementById('fc-titulo').textContent =
         MESES[ancla.getMonth()] + ' – ' + MESES[sig.getMonth()] + ' ' + sig.getFullYear();
-      cajaIni.value = ini ? esp(ini) : '';
-      cajaFin.value = fin ? esp(fin) : '';
+      // El disparador es un BOTON, como el que emite el componente: se escribe
+      // en su span, no en el value que un boton no tiene. Tenerlos distintos
+      // era la ultima divergencia de anatomia que quedaba en esta pantalla.
+      cajaIni.querySelector('.cg-in').textContent = ini ? esp(ini) : 'Elegir fecha';
+      cajaFin.querySelector('.cg-in').textContent = fin ? esp(fin) : 'Elegir fecha';
       cajaIni.classList.toggle('fc-activo', !cal.hidden && modo === 'ini');
       cajaFin.classList.toggle('fc-activo', !cal.hidden && modo === 'fin');
       var pista = document.getElementById('fc-pista');
