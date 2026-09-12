@@ -68,3 +68,11 @@ npm-debug.log*
 # anfitrión, así que dentro del contenedor —que no la tiene— aparecía como
 # cambio sin commitear y el publicador se negaba a publicar, con razón.
 .claude/settings.local.json
+
+# Volcados de memoria. Un worker de vitest que revienta por falta de memoria
+# deja un `core` de gigabytes junto al codigo, sin trackear y sin ignorar: un
+# `git add -A` lo commitearia, y el publicador se niega con el arbol sucio.
+# Paso el 2026-09-11 y costo 2,1 GB.
+core
+*.core
+core.*
