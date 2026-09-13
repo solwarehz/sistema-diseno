@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 13 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.110.0** — R133: la acción del diálogo
-salía descentrada dentro de su propio botón, por un hueco que la v1.107.0
-reservó solo a un lado
+**Versión del sistema:** MMI-DS **v1.111.0** — componente nuevo: el editor de
+texto con huecos. No es un editor, es la garantía de que lo que sale cabe en el
+destino
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -17,9 +17,9 @@ reservó solo a un lado
 
 ## Dónde estamos, en una frase
 
-El sistema es un **paquete que un producto instala y consume** —34 componentes
+El sistema es un **paquete que un producto instala y consume** —35 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **diecisiete pasos de
-verificación** —los que corre `publicar.mjs`—, **680 pruebas en 45 archivos**,
+verificación** —los que corre `publicar.mjs`—, **787 pruebas en 48 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -57,15 +57,15 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **680 pruebas en 45 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · **952 reglas de 1464** · **693 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
-| Catálogo navegable | ✅ | `cascaron/index.html` · **69 páginas** (`grep -c '<section class="pagina"'`; decía 68 y antes 53) · lo genera `generar-cascaron.mjs` |
+| Componentes de React | ✅ | **787 pruebas en 48 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · **972 reglas de 1487** · **701 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
+| Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.107.0.zip` · **56 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.111.0.zip` · **59 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.107.0**, con el salto **desde la v1.19.0**, que es la instalada |
-| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los diecisiete · 137 unidades compuestas · **8 de deuda declarada**, 0 nuevas |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.111.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los diecisiete pasos · **140 unidades compuestas** · **8 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -87,7 +87,60 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.101.0), con detalle
+### Lo de hoy (v1.111.0), con detalle
+
+**El editor de texto con huecos (R119 del equipo). La pieza no es un editor: es
+la garantía de que lo que sale cabe en el destino.** Tres listas entran desde
+fuera —`etiquetas`, `huecos`, `maximo`—, una invariante sale: lo que llega a
+`onCambio` **siempre** está dentro de ellas, venga de teclear, de pegar, de
+arrastrar o de deshacer. Y lo que **entra** por `valor` se sanea igual.
+
+La garantía vive en una función pura —`interno/sanear.ts`— que se prueba entera
+sin navegador: **49 pruebas**. El componente aporta 54 más y la comparación
+contra el catálogo 4.
+
+**Lo importante de esta entrega no es lo que se construyó, sino lo que hizo
+falta tumbar antes de publicarlo.** Dos rondas de auditoría adversaria, y la
+segunda encontró, entre otras cosas, **un defecto que ninguna prueba podía ver**:
+el saneo llamaba a `DOMParser` dentro del render, y `DOMParser` no existe en
+Node — así que cualquier producto con renderizado de servidor moría con
+`ReferenceError` y **la página entera no se pintaba**. Las 787 pruebas corren en
+jsdom, donde `DOMParser` sí existe. Lo cazó un `renderToStaticMarkup`, no una
+prueba.
+
+El patrón que se repite en casi todos los hallazgos es el mismo de siempre en
+esta casa: **se afirma un comportamiento que no está construido, o que está
+construido y no se ejecuta.** Las tres formas que tomó aquí:
+
+- «la ficha es indivisible» escrito en tres sitios **sin una línea de código**;
+  luego construido con `onBeforeInput` de React, que React 18 **no conecta** al
+  `beforeinput` nativo, así que seguía sin correr;
+- el aviso de «esto se retiró al pegar», que se borraba **en el mismo cuadro en
+  que se ponía** — dos veces, por dos caminos distintos: el `input` que el
+  navegador despacha tras `execCommand`, y el `blur` de irse a pulsar la barra.
+  **El gesto natural de reaccionar al aviso lo destruía**;
+- una prueba cuyo título decía comprobar el origen del aviso y cuya única
+  aserción era otra cosa: **se le quitó entero el mecanismo que nombraba y
+  siguió en verde**.
+
+También cayeron cifras publicadas que no eran ciertas, y una de ellas enseñó
+algo de método: el tiempo de pegado se daba como **un número solo** —«4,3 MB en
+2,3 s»— y **depende tanto del contenido que un número solo engaña**. Con HTML
+sucio de Word medimos 3,0 s; una auditoría con otro corpus midió 2,7 s; con HTML
+limpio del mismo tamaño las dos medidas ni siquiera coinciden en el orden. El
+2,3 s es anterior y **no dejó escrito con qué se midió**. Ahora el apartado dice
+las tres, con su corpus, y lo único que las tres sostienen: **bloquea el hilo
+segundos**.
+
+Y una que es del sistema entero, no del editor: **ESLint no se corre en ninguno
+de los diecisiete pasos.** Solo corre `probar-candado.mjs`, que prueba los
+patrones contra casos sintéticos. Al correrlo sobre el repositorio salen **dos
+errores que viajan hoy en el paquete**: `Estados.tsx` usa el atributo `style` en
+línea en dos sitios, que es justo lo que §2.5.6 prohíbe. **Queda declarado y sin
+cerrar**: no se toca un componente publicado la víspera de una entrega, y el
+arreglo de fondo —que el paso de lint exista— es trabajo con nombre propio.
+
+### Lo de la v1.101.0, con detalle
 
 **El equipo dijo «hay un error» en fecha y rango. No era un error suelto:
 `RangoFecha` entregaba la mitad del calendario que el catálogo enseña.** La hoja
@@ -1655,17 +1708,29 @@ de consumidor: dos errores sin la declaración, cero con ella.
 
 ## Los diecisiete pasos, y lo que ninguno alcanza
 
-Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en rojo.
+**Los diecisiete son exactamente los de `sistema/paquete/publicar.mjs`, y en su
+orden: tres generadores y catorce candados.** Esta tabla decía diecisiete y
+**contaba otra cosa**: metía ESLint y `tsc --noEmit` —que el publicador **no
+corre**— y se dejaba fuera `generar.mjs` y `generar-cascaron.mjs`. Lo cazó una
+auditoría el 2026-09-13, y el error importa porque los dos colados **son justo
+los que no se pasan**: hoy ESLint sale en **rojo** con dos errores en
+`Estados.tsx`, que viajan en el paquete.
 
-| Candado | Qué impide | Se ha visto en rojo |
+Los diecisiete se pasan todos antes de subir a `main`. Ninguna versión sube con
+uno en rojo. Los dos de abajo de la tabla **no son de los diecisiete** y se
+marcan como lo que son.
+
+| Paso | Qué impide | Se ha visto en rojo |
 |---|---|---|
+| `generar.mjs` *(generador)* | Que el contrato de color se escriba a mano | — |
+| `generar-cascaron.mjs` *(generador)* | Que los candados midan el catálogo de la versión anterior | — |
 | `verificar-contraste` | Que el contrato mienta sobre un par | ✅ |
 | `verificar-color` | Un hexadecimal, `rgb()` o `hsl()` suelto | ✅ |
 | `auditar-cascaron` | Estilo en línea, marcado fuera de norma y duraciones a mano | ✅ |
 | `probar-candado` | Que las reglas de ESLint no hagan nada | ✅ |
 | `verificar-contrato` | Una regla obligatoria sin prueba que la nombre | ✅ |
 | `verificar-entrega` | Que el catálogo enseñe lo que no viaja, y al revés | ✅ |
-| huérfanas (en `extraer.mjs`) | Clase emitida sin regla | ✅ |
+| `extraer.mjs` *(generador)* + huérfanas | Clase emitida sin regla | ✅ |
 | `verificar-cascada` | Lo que NO se escribió, a once anchos | ✅ |
 | `verificar-promesa` | Que lo entregado no se vea como lo enseñado | ✅ |
 | `verificar-elemento` | Que el catálogo enseñe un elemento y el componente emita otro | ✅ reproduciendo R56 |
@@ -1674,11 +1739,16 @@ Se pasan **todos** antes de subir a `main`. Ninguna versión sube con uno en roj
 | `verificar-omision` | Que el catálogo no enseñe lo que se entrega por omisión | ✅ |
 | `verificar-iconos` | Que el catálogo y el producto dibujen distinto icono | ✅ |
 | `verificar-promesa-muerta` | Una regla que viaja y que nadie puede activar | ✅ reproduciendo R115 |
-| ESLint | El atributo `style`, el hex crudo, `outline:none` | ✅ el mismo día: cazó una comilla invertida que rompía el generador |
-| `tsc --noEmit` | Tipos | ✅ |
+| ~~ESLint~~ **FUERA de los diecisiete** | El atributo `style`, el hex crudo, `outline:none` | ✅ — pero **no se corre**, y hoy está en rojo |
+| ~~`tsc --noEmit`~~ **FUERA de los diecisiete** | Tipos | ✅ · limpio, se corre a mano |
 
-**Los dieciséis leen marcado ESTÁTICO.** Lo que solo existe al desplegar no lo
-alcanza ninguno, y por eso R115 pasó. Esa mitad la cubren las pruebas que
+**Los nueve que leen marcado lo leen ESTÁTICO** —`auditar-cascaron`,
+`verificar-cascada`, `verificar-entrega`, `verificar-promesa`,
+`verificar-elemento`, `verificar-empate`, `verificar-omision`,
+`verificar-iconos`, `verificar-promesa-muerta`—. Los otros cinco no miran
+marcado: miran pares de color, la tabla del contrato, la forma de lo exportado y
+casos sintéticos. Decía «los dieciséis» y era falso por los dos lados. Lo que
+solo existe al desplegar no lo alcanza ninguno, y por eso R115 pasó. Esa mitad la cubren las pruebas que
 ejecutan el catálogo (`selector-desplegado-catalogo.test.tsx`), **hoy solo para
 el selector con búsqueda**: los demás componentes con estado desplegado siguen
 sin comparar.
@@ -1690,20 +1760,23 @@ sin comparar.
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.110.0
+Versión                      1.111.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         680   en 45 archivos
-Reglas que viajan               952   de 1464 · 693 clases, 0 huérfanas
+Pruebas                         787   en 48 archivos
+Reglas que viajan               972   de 1487 · 701 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el
                                       catalogo, que por diseño NO viajan).
                                       Contadas por bloque de regla cuyo
                                       selector menciona `sel-`, en las dos
 Comparaciones del desplegado      7   catalogo ejecutado contra componente
-Componentes publicados           34
-Páginas del catálogo             69
+Componentes publicados           35
+Módulos que viajan               42   + 17 archivos de sistema = 59 en el ZIP
+Exportaciones de componente     127   todas salen por el índice
+Unidades compuestas             140   dos clases sobre el MISMO elemento
+Páginas del catálogo             70
 Fila de un campo, medida      36,45   px · la fila de carga se fija en 36
 ```
 
@@ -1720,7 +1793,7 @@ docker compose exec ds sh -c "cd componentes && npm run probar"
 |---|---|
 | **El marco abre TODOS los grupos al desplegar; el catálogo abre solo el de la página** | Divergencia medida hoy y **no resuelta**: son dos modelos de navegación distintos, los dos escritos y defendidos. Decidirlo cambia el menú de todos los productos o la documentación: **es del responsable** |
 | **El candado de la promesa compara CSS, no comportamiento** | Y es el hueco que queda abierto. R38, R42, R47 y R48 fueron **comportamiento** —qué se abre, qué se cierra, qué se pliega—, y ahí no hay nada que compare el catálogo con el componente: lo único que los caza son las pruebas del componente, que sólo miran un lado. Cerrarlo pide ejecutar las dos superficies en un navegador y comparar estados; **eso necesita un navegador sin cabeza en el contenedor, y eso es autorización del responsable** |
-| **Lo que el catálogo no pinta, no se compara** | Los 29 estados fijados a mano existen por eso. Un estado nuevo que nadie fije ni el catálogo enseñe, no lo mira nadie |
+| **Lo que el catálogo no pinta, no se compara** | Los **50** estados fijados a mano existen por eso (eran 29 el día que nació el candado; la cifra estaba en presente y desfasada). Un estado nuevo que nadie fije ni el catálogo enseñe, no lo mira nadie |
 | Compresión de imágenes que no sean JPEG | El compresor solo toca `/DCTDecode` |
 | El compresor en Node no toca imágenes | Necesita `canvas`; lo de imágenes se verificó en el navegador |
 | Fuentes incrustadas | No se tocan. Es el otro gran peso de un PDF |

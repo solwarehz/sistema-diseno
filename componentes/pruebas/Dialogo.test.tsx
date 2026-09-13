@@ -352,7 +352,7 @@ describe('Diálogo', () => {
     expect(accion()).not.toHaveAttribute('aria-busy');
   });
 
-  it('[3b] el título es enfocable pero NO tabulable, que es lo que justifica el `outline:none`', () => {
+  it('[3b] el título es enfocable pero NO tabulable, que es lo que justifica quitarle el anillo', () => {
     // La excepción al §6 de CLAUDE.md se apoya en un hecho comprobable: ese
     // `<h2>` tiene `tabIndex={-1}`, así que nadie llega a él navegando con el
     // teclado y el anillo solo aparecería al abrir, señalando un texto que no

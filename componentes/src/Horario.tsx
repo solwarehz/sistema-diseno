@@ -167,9 +167,10 @@ export function Horario({
     if (ultima.current === huella) return;
     ultima.current = huella;
     onAjuste(avisos);
-    // `avisos` queda fuera a propósito: su identidad cambia en cada render y
-    // lo que decide si hay algo nuevo que decir es la huella.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    /* `avisos` queda fuera a propósito: su identidad cambia en cada render y
+       lo que decide si hay algo nuevo que decir es la huella.
+       SIN `eslint-disable`: el proyecto no carga `eslint-plugin-react-hooks` y
+       el comentario era un error de ESLint, no un silenciador. */
   }, [huella, onAjuste]);
 
   const vertical = eje === 'vertical';

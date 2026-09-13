@@ -79,6 +79,7 @@ const ELEMENTOS = [
   // tabla + pie. Estaba en SOLO_CATALOGO y cada consumidor copiaba sus cuatro
   // declaraciones a mano.
   { n: 'Bloque de contenido',   p: ['bloque'] },
+  { n: 'Editor de texto',       p: ['ed'] },
   { n: 'Tabla de datos',        p: ['tb'] },
   { n: 'Tabla simple',          p: ['tabla'] },
   { n: 'Paginación',            p: ['pgn', 'pg-pos'] },
@@ -143,6 +144,13 @@ const SOLO_CATALOGO = new Set([
   'color', 'token',
   // Chrome del propio catalogo, sin equivalente en un producto.
   'maquetas', 'escudo', 'opciones',
+  // `er-*` es el andamio de «La entrega real»: el bloque que encierra cada
+  // caso y el iframe donde se monta con la hoja entregada. Es la pagina que
+  // MIDE la entrega, no parte de ella — si viajara, cada producto recibiria el
+  // marco de una demostracion. Estaba sin clasificar y el extractor lo avisaba
+  // en cada pasada sin exigir la decision; un paso que pide algo y no lo exige
+  // es un paso que depende de acordarse.
+  'er',
 ]);
 
 // ── Troceado del CSS respetando las @media ──────────────────────────────────

@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.110.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.111.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.110.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.111.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -35,7 +35,7 @@
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.110.0;
+  --mmi-version: 1.111.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -1344,7 +1344,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    como cualquier otra regla, para que el catalogo y la entrega digan lo mismo:
    inyectarlo solo en la entrega dejaba una regla que el catalogo no tenia, y
    el candado de la promesa lo caza —con razon—. Los dos salen de VERSION. */
-:root { --mmi-componentes: 1.110.0; }
+:root { --mmi-componentes: 1.111.0; }
 
 .fc-zona { position: relative; }
 /* R129.2 · EL TOPE ERA MENOR QUE EL CONTENIDO. Con R129.1 puesto, lo que el
@@ -1992,7 +1992,20 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 
 /* Filtros por columna */
 .tb-buscar .sel-caja { display: flex; }
-.tb-buscar input.campo.sel-in { min-width: 230px; font-size: 13px; padding-block: 4px; }
+/* EL SUELO SE QUEDA, PERO DEJA DE SER ABSOLUTO. El mismo selector declaraba
+   min-width dos veces —0 arriba, 230px aqui— y EMPATAN en especificidad, asi
+   que ganaba el ultimo: el 0 que acompaña al flex de .tb-buscar, puesto por el
+   arreglo de vista movil, estaba MUERTO, y el buscador no bajaba de 230px ni en
+   373px de ancho.
+
+   Quitarlo a secas habria sido peor de otra forma: el suelo de escritorio
+   desaparecia y aqui NO HAY NAVEGADOR PARA MEDIR el ancho resultante. Con
+   min(230px, 100%) el escritorio queda EXACTAMENTE IGUAL —el contenedor es
+   ancho, gana 230px— y en estrecho el suelo se rinde al ancho disponible en vez
+   de desbordar. Las dos intenciones, sin inventar una medida que no se ha
+   tomado. Lo cazo una auditoria el 2026-09-13; el diagnostico era suyo y el
+   primer arreglo, equivocado. */
+.tb-buscar input.campo.sel-in { min-width: min(230px, 100%); font-size: 13px; padding-block: 4px; }
 #tb-filtros-btn.activo { border-color: var(--accion); color: var(--accion); }
 .tb-fila-filtros .tb-f-celda { padding: 4px 8px; background: var(--fondo-encabezado);
   border-bottom: 1px solid var(--borde); }
@@ -3434,6 +3447,64 @@ select.campo:disabled { opacity: .75; }
   border: 1px solid transparent; border-radius: 6px;
 }
 .ta-pie { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+
+/* EDITOR DE TEXTO CON HUECOS.
+   El cuadro se dibuja como un .campo porque LO ES para quien mira: mismo
+   borde, mismo redondeo, mismo anillo de foco. Lo que cambia es que dentro
+   hay marcado y no texto plano.
+   EL CONTENIDO VA NEUTRO A PROPOSITO. Un h3 aqui sale en negrita y del mismo
+   cuerpo que el resto, no a 24px: este editor ensena ESTRUCTURA, no apariencia
+   final, porque la apariencia final la decide un destino que el componente no
+   conoce. Pintar una jerarquia que el papel no tiene es la misma mentira que
+   ofrecer una etiqueta que el destino ignora. */
+.ed { display: flex; flex-direction: column; gap: 0; }
+.ed-barra { display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+  padding: 4px 8px; background: var(--fondo-encabezado);
+  border: 1px solid var(--borde-campo); border-bottom: 0;
+  border-radius: 6px 6px 0 0; }
+.ed-sep { width: 1px; align-self: stretch; margin: 4px;
+  background: var(--borde); }
+.ed-texto { font: inherit; font-size: 13px; line-height: 1.5;
+  min-height: 8em; max-height: 24em; overflow-y: auto;
+  padding: 8px 8px; background: var(--fondo-tarjeta);
+  color: var(--texto-principal);
+  border: 1px solid var(--borde-campo); border-radius: 0 0 6px 6px; }
+/* SIN BARRA DELANTE, LAS CUATRO ESQUINAS. Con una sola etiqueta sin control y
+   sin huecos la barra no se pinta —esta probado—, y la caja se quedaba con el
+   borde de arriba recto y nada encima: no se parecia a ningun otro campo. Se
+   resuelve con :first-child y no con una clase nueva porque la condicion ya
+   esta en el arbol: si no hay barra, el texto es el primer hijo. */
+.ed-texto:first-child { border-radius: 6px; }
+.ed-texto:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
+/* 2px, COMO CUALQUIER CAMPO. La clase campo-mal engorda el borde ademas de
+   teñirlo —el engrosamiento es la señal NO CROMATICA del sistema— y el editor
+   solo lo teñia: en un formulario con un area de texto y un editor los dos en
+   error, uno engordaba y el otro no.
+
+   LA BARRA VA APARTE, Y NO ES ESTETICA. Su regla base pone el borde de abajo a
+   CERO para que barra y caja formen un solo campo, y ese cero tiene
+   especificidad 100 contra el 200 de aqui: con border-width de 2px en el mismo
+   saco, la barra RECUPERABA su borde inferior y entre barra y texto salian
+   CUATRO pixeles de filete donde el diseño quiere dos —con las esquinas de la
+   barra aun redondeadas contra una linea que ya no es continua—. Ningun candado
+   podia verlo: cascada, empate y promesa comparan por NOMBRE de propiedad, y
+   border-bottom y border-width son nombres distintos. Lo midio una auditoria el
+   2026-09-13, sobre este mismo arreglo. */
+.ed-mal .ed-texto { border-color: var(--error-acento); border-width: 2px; }
+.ed-mal .ed-barra { border-color: var(--error-acento); border-width: 2px 2px 0; }
+.ed-texto > :first-child { margin-top: 0; }
+.ed-texto > :last-child { margin-bottom: 0; }
+.ed-texto p { margin: 0 0 8px; }
+.ed-texto h2, .ed-texto h3, .ed-texto h4 {
+  font-size: 13px; font-weight: 600; margin: 12px 0 4px; }
+.ed-texto ul, .ed-texto ol { margin: 0 0 8px; padding-left: 20px; }
+.ed-texto li { margin: 0 0 4px; }
+.ed-texto hr { border: 0; border-top: 1px solid var(--borde); margin: 12px 0; }
+.ed-texto blockquote { margin: 0 0 8px; padding-left: 12px;
+  border-left: 3px solid var(--borde); color: var(--texto-secundario); }
+.ed-retirado { font-size: 12px; color: var(--error-texto); margin: 4px 0 0; }
+.ed-puestos { font-size: 12px; color: var(--texto-secundario); margin: 4px 0 0;
+  font-family: 'IBM Plex Mono', monospace; }
 .ta-cuenta { flex: none; font-variant-numeric: tabular-nums; }
 .ta-cuenta-mal { color: var(--error-texto); font-weight: 500; }
 
@@ -4367,7 +4438,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                   <div class="nav-nietos"><div class="nav-nietos-in">
                     <a class="nav-nieto" href="#campo" data-ir="campo" title="Campo de texto">
                           <span class="nav-txt">Campo de texto</span></a><a class="nav-nieto" href="#areatexto" data-ir="areatexto" title="Área de texto">
-                          <span class="nav-txt">Área de texto</span></a><a class="nav-nieto" href="#filacarga" data-ir="filacarga" title="Fila de carga">
+                          <span class="nav-txt">Área de texto</span></a><a class="nav-nieto" href="#editortexto" data-ir="editortexto" title="Editor de texto">
+                          <span class="nav-txt">Editor de texto</span></a><a class="nav-nieto" href="#filacarga" data-ir="filacarga" title="Fila de carga">
                           <span class="nav-txt">Fila de carga</span></a><a class="nav-nieto" href="#cargaimagen" data-ir="cargaimagen" title="Carga de imagen">
                           <span class="nav-txt">Carga de imagen</span></a><a class="nav-nieto" href="#cargapdf" data-ir="cargapdf" title="Carga de PDF">
                           <span class="nav-txt">Carga de PDF</span></a><a class="nav-nieto" href="#cargaid" data-ir="cargaid" title="Carga de ID">
@@ -4375,8 +4447,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                           <span class="nav-txt">Selector</span></a><a class="nav-nieto" href="#interruptor" data-ir="interruptor" title="Interruptor">
                           <span class="nav-txt">Interruptor</span></a><a class="nav-nieto" href="#multiple" data-ir="multiple" title="Selección múltiple">
                           <span class="nav-txt">Selección múltiple</span></a><a class="nav-nieto" href="#segmentado" data-ir="segmentado" title="Segmentado">
-                          <span class="nav-txt">Segmentado</span></a><a class="nav-nieto" href="#fecha" data-ir="fecha" title="Fecha y rango">
-                          <span class="nav-txt">Fecha y rango</span></a>
+                          <span class="nav-txt">Segmentado</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="2-2">
                   <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-2">
@@ -4384,13 +4455,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                     <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
                   <div class="nav-nietos"><div class="nav-nietos-in">
-                    <a class="nav-nieto" href="#horario" data-ir="horario" title="Horario">
+                    <a class="nav-nieto" href="#fecha" data-ir="fecha" title="Fecha y rango">
+                          <span class="nav-txt">Fecha y rango</span></a><a class="nav-nieto" href="#horario" data-ir="horario" title="Horario">
                           <span class="nav-txt">Horario</span></a><a class="nav-nieto" href="#chip" data-ir="chip" title="Chip de estado">
                           <span class="nav-txt">Chip de estado</span></a><a class="nav-nieto" href="#avatar" data-ir="avatar" title="Avatar">
                           <span class="nav-txt">Avatar</span></a><a class="nav-nieto" href="#tarjeta" data-ir="tarjeta" title="Tarjeta">
                           <span class="nav-txt">Tarjeta</span></a><a class="nav-nieto" href="#tabla" data-ir="tabla" title="Tabla de datos">
-                          <span class="nav-txt">Tabla de datos</span></a><a class="nav-nieto" href="#paginacion" data-ir="paginacion" title="Paginación">
-                          <span class="nav-txt">Paginación</span></a>
+                          <span class="nav-txt">Tabla de datos</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="2-3">
                   <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-3">
@@ -4398,13 +4469,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                     <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
                   <div class="nav-nietos"><div class="nav-nietos-in">
-                    <a class="nav-nieto" href="#progreso" data-ir="progreso" title="Barra de progreso">
+                    <a class="nav-nieto" href="#paginacion" data-ir="paginacion" title="Paginación">
+                          <span class="nav-txt">Paginación</span></a><a class="nav-nieto" href="#progreso" data-ir="progreso" title="Barra de progreso">
                           <span class="nav-txt">Barra de progreso</span></a><a class="nav-nieto" href="#aviso" data-ir="aviso" title="Aviso temporal">
                           <span class="nav-txt">Aviso temporal</span></a><a class="nav-nieto" href="#confirmar" data-ir="confirmar" title="Confirmación">
                           <span class="nav-txt">Confirmación</span></a><a class="nav-nieto" href="#estados" data-ir="estados" title="Estados de pantalla">
                           <span class="nav-txt">Estados de pantalla</span></a><a class="nav-nieto" href="#nota" data-ir="nota" title="Nota permanente">
-                          <span class="nav-txt">Nota permanente</span></a><a class="nav-nieto" href="#dialogo" data-ir="dialogo" title="Diálogo">
-                          <span class="nav-txt">Diálogo</span></a>
+                          <span class="nav-txt">Nota permanente</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="2-4">
                   <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-4">
@@ -4412,7 +4483,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                     <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
                   <div class="nav-nietos"><div class="nav-nietos-in">
-                    <a class="nav-nieto" href="#migas" data-ir="migas" title="Migas de pan">
+                    <a class="nav-nieto" href="#dialogo" data-ir="dialogo" title="Diálogo">
+                          <span class="nav-txt">Diálogo</span></a><a class="nav-nieto" href="#migas" data-ir="migas" title="Migas de pan">
                           <span class="nav-txt">Migas de pan</span></a><a class="nav-nieto" href="#cabecera" data-ir="cabecera" title="Cabecera de pantalla">
                           <span class="nav-txt">Cabecera de pantalla</span></a><a class="nav-nieto" href="#panelbarra" data-ir="panelbarra" title="Panel de la barra">
                           <span class="nav-txt">Panel de la barra</span></a><a class="nav-nieto" href="#panelprivilegios" data-ir="panelprivilegios" title="Panel de privilegios">
@@ -4571,7 +4643,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.110.0</option></select></label>
+          <select class="campo cg-in"><option>v1.111.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4659,8 +4731,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.110.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.110.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.111.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.111.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -5207,13 +5279,19 @@ sistema han sido el mismo: una regla que el catálogo tiene y el paquete no, o u
 catálogo enseña y el componente no emite. Los candados los cazan midiendo; esta página los
 <strong>enseña</strong>. Si algo se ve mal aquí, así se ve en el producto.</div>
 
+<div class="aviso"><strong>Se omite <code>contenteditable</code> a proposito</strong> en las muestras
+del editor. Un editor vivo <strong>sin saneador detras</strong> refutaria la garantia que la pieza
+promete, y ya paso: la version anterior de la pagina del componente invitaba a pegar desde Word sobre
+uno. El precio esta dicho: <code>.ed-texto:focus-visible</code> <strong>no se puede ver en el
+catalogo</strong>, porque sin <code>contenteditable</code> la caja no es enfocable.</div>
+
 <div class="aviso"><strong>El marcado es el que emiten los componentes</strong>, no el de las
 demostraciones de al lado. Y la hoja no es una copia: se inyecta desde
 <code>sistema/componentes/componentes.css</code> cada vez que se extrae, así que no puede quedarse
 vieja.</div>
 
 <script type="text/plain" id="tokens-entregados">/* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.110.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.111.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -5241,7 +5319,7 @@ vieja.</div>
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.110.0;
+  --mmi-version: 1.111.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -5854,7 +5932,7 @@ vieja.</div>
 </script>
 <script type="text/plain" id="hoja-entregada">
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.110.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.111.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -5931,7 +6009,7 @@ vieja.</div>
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.110.0; }
+:root{ --mmi-componentes: 1.111.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -6664,6 +6742,40 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .bloque, .app-main { min-width: 0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
+   EDITOR DE TEXTO — 18 reglas · clases .ed-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.ed{ display: flex; flex-direction: column; gap: 0; }
+.ed-barra{ display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+  padding: 4px 8px; background: var(--fondo-encabezado);
+  border: 1px solid var(--borde-campo); border-bottom: 0;
+  border-radius: 6px 6px 0 0; }
+.ed-sep{ width: 1px; align-self: stretch; margin: 4px;
+  background: var(--borde); }
+.ed-texto{ font: inherit; font-size: 13px; line-height: 1.5;
+  min-height: 8em; max-height: 24em; overflow-y: auto;
+  padding: 8px 8px; background: var(--fondo-tarjeta);
+  color: var(--texto-principal);
+  border: 1px solid var(--borde-campo); border-radius: 0 0 6px 6px; }
+.ed-texto:first-child{ border-radius: 6px; }
+.ed-texto:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px; }
+.ed-mal .ed-texto{ border-color: var(--error-acento); border-width: 2px; }
+.ed-mal .ed-barra{ border-color: var(--error-acento); border-width: 2px 2px 0; }
+.ed-texto > :first-child{ margin-top: 0; }
+.ed-texto > :last-child{ margin-bottom: 0; }
+.ed-texto p{ margin: 0 0 8px; }
+.ed-texto h2, .ed-texto h3, .ed-texto h4{
+  font-size: 13px; font-weight: 600; margin: 12px 0 4px; }
+.ed-texto ul, .ed-texto ol{ margin: 0 0 8px; padding-left: 20px; }
+.ed-texto li{ margin: 0 0 4px; }
+.ed-texto hr{ border: 0; border-top: 1px solid var(--borde); margin: 12px 0; }
+.ed-texto blockquote{ margin: 0 0 8px; padding-left: 12px;
+  border-left: 3px solid var(--borde); color: var(--texto-secundario); }
+.ed-retirado{ font-size: 12px; color: var(--error-texto); margin: 4px 0 0; }
+.ed-puestos{ font-size: 12px; color: var(--texto-secundario); margin: 4px 0 0;
+  font-family: 'IBM Plex Mono', monospace; }
+
+/* ───────────────────────────────────────────────────────────────────────────
    TABLA DE DATOS — 83 reglas · clases .tb-*
    ─────────────────────────────────────────────────────────────────────────── */
 
@@ -6723,7 +6835,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .tb td.tb-vacio{ white-space: normal; }
 .tb-vacio strong{ color: var(--texto-principal); }
 .tb-buscar .sel-caja{ display: flex; }
-.tb-buscar input.campo.sel-in{ min-width: 230px; font-size: 13px; padding-block: 4px; }
+.tb-buscar input.campo.sel-in{ min-width: min(230px, 100%); font-size: 13px; padding-block: 4px; }
 .tb-fila-filtros .tb-f-celda{ padding: 4px 8px; background: var(--fondo-encabezado);
   border-bottom: 1px solid var(--borde); }
 .tb-f{ width: 100%; }
@@ -7607,10 +7719,28 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
     <template data-er="6"><div class="fc-zona"><div class="fc-campos" role="group"><div class="cg"><span class="cg-et">Desde</span><button class="campo fc-campo fc-activo"><span>05/03/2026</span></button></div><span class="fc-guion"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg></span><div class="cg"><span class="cg-et">Hasta</span><button class="campo fc-campo"><span>12/03/2026</span></button></div></div><div class="fc-cal" role="dialog" style="position:static;max-width:640px"><div class="fc-cal-cab"><button class="btn btn-3 btn-mini">&lsaquo;</button><span class="fc-meses">marzo &ndash; abril de 2026</span><button class="btn btn-3 btn-mini">&rsaquo;</button></div><div class="fc-cal-marco"><div class="fc-cal-cuerpo"><div><div class="fc-mes-tit">marzo de 2026</div><div class="fc-dias" role="grid" aria-label="marzo de 2026"><div role="row" class="fc-sem"><span role="columnheader">L</span><span role="columnheader">M</span><span role="columnheader">X</span><span role="columnheader">J</span><span role="columnheader">V</span><span role="columnheader">S</span><span role="columnheader">D</span></div><div role="row"><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><button class="fc-d">1</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">2</button></span><span role="gridcell"><button class="fc-d">3</button></span><span role="gridcell"><button class="fc-d">4</button></span><span role="gridcell"><button class="fc-d fc-ini">5</button></span><span role="gridcell"><button class="fc-d fc-dentro">6</button></span><span role="gridcell"><button class="fc-d fc-dentro">7</button></span><span role="gridcell"><button class="fc-d fc-dentro">8</button></span></div><div role="row"><span role="gridcell"><button class="fc-d fc-dentro">9</button></span><span role="gridcell"><button class="fc-d fc-dentro">10</button></span><span role="gridcell"><button class="fc-d fc-dentro">11</button></span><span role="gridcell"><button class="fc-d fc-fin">12</button></span><span role="gridcell"><button class="fc-d">13</button></span><span role="gridcell"><button class="fc-d">14</button></span><span role="gridcell"><button class="fc-d">15</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">16</button></span><span role="gridcell"><button class="fc-d">17</button></span><span role="gridcell"><button class="fc-d">18</button></span><span role="gridcell"><button class="fc-d">19</button></span><span role="gridcell"><button class="fc-d">20</button></span><span role="gridcell"><button class="fc-d">21</button></span><span role="gridcell"><button class="fc-d">22</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">23</button></span><span role="gridcell"><button class="fc-d">24</button></span><span role="gridcell"><button class="fc-d">25</button></span><span role="gridcell"><button class="fc-d">26</button></span><span role="gridcell"><button class="fc-d">27</button></span><span role="gridcell"><button class="fc-d">28</button></span><span role="gridcell"><button class="fc-d">29</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">30</button></span><span role="gridcell"><button class="fc-d">31</button></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span></div></div></div><div><div class="fc-mes-tit">abril de 2026</div><div class="fc-dias" role="grid" aria-label="abril de 2026"><div role="row" class="fc-sem"><span role="columnheader">L</span><span role="columnheader">M</span><span role="columnheader">X</span><span role="columnheader">J</span><span role="columnheader">V</span><span role="columnheader">S</span><span role="columnheader">D</span></div><div role="row"><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><button class="fc-d">1</button></span><span role="gridcell"><button class="fc-d">2</button></span><span role="gridcell"><button class="fc-d">3</button></span><span role="gridcell"><button class="fc-d">4</button></span><span role="gridcell"><button class="fc-d">5</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">6</button></span><span role="gridcell"><button class="fc-d">7</button></span><span role="gridcell"><button class="fc-d">8</button></span><span role="gridcell"><button class="fc-d">9</button></span><span role="gridcell"><button class="fc-d">10</button></span><span role="gridcell"><button class="fc-d">11</button></span><span role="gridcell"><button class="fc-d">12</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">13</button></span><span role="gridcell"><button class="fc-d">14</button></span><span role="gridcell"><button class="fc-d">15</button></span><span role="gridcell"><button class="fc-d">16</button></span><span role="gridcell"><button class="fc-d">17</button></span><span role="gridcell"><button class="fc-d">18</button></span><span role="gridcell"><button class="fc-d">19</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">20</button></span><span role="gridcell"><button class="fc-d">21</button></span><span role="gridcell"><button class="fc-d">22</button></span><span role="gridcell"><button class="fc-d">23</button></span><span role="gridcell"><button class="fc-d">24</button></span><span role="gridcell"><button class="fc-d">25</button></span><span role="gridcell"><button class="fc-d">26</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">27</button></span><span role="gridcell"><button class="fc-d">28</button></span><span role="gridcell"><button class="fc-d">29</button></span><span role="gridcell"><button class="fc-d">30</button></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span></div></div></div></div><div class="fc-atajos"><span class="fc-atajos-tit">Periodos</span><button class="fc-atajo">Este mes</button><button class="fc-atajo">Mes pasado</button><button class="fc-atajo">&Uacute;ltimos 2 meses</button><button class="fc-atajo">Este a&ntilde;o</button></div></div><div class="fc-cal-pie">Elige la fecha de inicio.</div></div><p class="fc-resumen">Del jueves 5 al jueves 12 de marzo de 2026.</p></div></template>
     <iframe class="er-marco" title="Rango de fechas con la hoja entregada"></iframe>
   </div>
+  <h3 class="sub-seccion">Área de texto</h3>
+  <p class="seccion-sub">Con contador, y con el envoltorio de autocrecido.</p>
+  <div class="bloque er-caso">
+    <template data-er="7"><div class="campo-grupo"><label class="campo-etiqueta" for="er-ta">Motivo del memorando</label><div class="ta-crece" data-replica="Se le descuenta el dia por inasistencia injustificada."><textarea id="er-ta" class="campo ta" rows="3">Se le descuenta el dia por inasistencia injustificada.</textarea></div><span class="sr-solo" role="status" aria-live="polite"></span><span class="campo-ayuda"><span class="ta-pie"><span>Texto plano. No admite negrita ni listas.</span><span class="ta-cuenta">446 restantes</span></span></span></div></template>
+    <iframe class="er-marco" title="Área de texto con la hoja entregada"></iframe>
+  </div>
+  <h3 class="sub-seccion">Editor de texto</h3>
+  <p class="seccion-sub">La barra, el contenido y los huecos, sin mobiliario.</p>
+  <div class="bloque er-caso">
+    <template data-er="8"><div class="ed"><div class="ed-barra" role="toolbar" aria-label="Formato de Cuerpo del documento"><button type="button" class="btn btn-terc btn-mini btn-ic btn-solo-ic" aria-label="Negrita" tabindex="0"><span aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 4v16"/><path d="M7 4h6.5a4 4 0 0 1 0 8H7"/><path d="M7 12h7.5a4 4 0 0 1 0 8H7"/></svg></span></button><button type="button" class="btn btn-terc btn-mini" tabindex="-1">Subt&iacute;tulo</button><button type="button" class="btn btn-terc btn-mini btn-ic btn-solo-ic" aria-label="Lista" tabindex="-1"><span aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg></span></button><button type="button" class="btn btn-terc btn-mini" tabindex="-1">Separador</button><span class="ed-sep" aria-hidden="true"></span><button type="button" class="btn btn-2 btn-mini" tabindex="-1" title="Sale: LEON TUYA, Mayori">Trabajador</button><button type="button" class="btn btn-2 btn-mini" tabindex="-1">Sede</button><button type="button" class="btn btn-2 btn-mini" tabindex="-1" title="Sale: 08/09/2026">Fecha</button><button type="button" class="btn btn-2 btn-mini" tabindex="-1">Fecha larga</button></div><div class="ed-texto" role="textbox" aria-label="Cuerpo del documento" aria-multiline="true"><h3>Memorando de inasistencia</h3><p>Se comunica a {{trabajador}}, de la sede {{sede}}, lo <strong>siguiente</strong>:</p><ul><li>Inasistencia del dia {{fechaHechoLarga}}.</li><li>Sin justificacion presentada.</li></ul><hr><p>Se descuenta la jornada.</p></div><span class="sr-solo" role="status" aria-live="polite"></span><p class="ed-puestos">Huecos en el texto: {{trabajador}} &middot; {{sede}} &middot; {{fechaHechoLarga}}</p></div></template>
+    <iframe class="er-marco" title="Editor de texto con la hoja entregada"></iframe>
+  </div>
+  <h3 class="sub-seccion">Editor de texto en error</h3>
+  <p class="seccion-sub">El borde de 2px, y lo que se retiro al abrir.</p>
+  <div class="bloque er-caso">
+    <template data-er="9"><div class="ed ed-mal"><div class="ed-barra" role="toolbar" aria-label="Formato de Cuerpo del documento"><button type="button" class="btn btn-terc btn-mini btn-ic btn-solo-ic" aria-label="Negrita" tabindex="0"><span aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 4v16"/><path d="M7 4h6.5a4 4 0 0 1 0 8H7"/><path d="M7 12h7.5a4 4 0 0 1 0 8H7"/></svg></span></button><button type="button" class="btn btn-terc btn-mini" tabindex="-1">Subt&iacute;tulo</button><button type="button" class="btn btn-terc btn-mini btn-ic btn-solo-ic" aria-label="Lista" tabindex="-1"><span aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg></span></button><button type="button" class="btn btn-terc btn-mini" tabindex="-1">Separador</button><span class="ed-sep" aria-hidden="true"></span><button type="button" class="btn btn-2 btn-mini" tabindex="-1" title="Sale: LEON TUYA, Mayori">Trabajador</button><button type="button" class="btn btn-2 btn-mini" tabindex="-1">Sede</button><button type="button" class="btn btn-2 btn-mini" tabindex="-1" title="Sale: 08/09/2026">Fecha</button><button type="button" class="btn btn-2 btn-mini" tabindex="-1">Fecha larga</button></div><div class="ed-texto" role="textbox" aria-label="Cuerpo del documento" aria-multiline="true">Se comunica a {{trabajador}} y a .</div><span class="sr-solo" role="status" aria-live="polite">se quit&oacute; el formato que no se admite (div, font) y el hueco {{documento}}, que no existe</span><p class="ed-retirado">Al abrir, se quit&oacute; el formato que no se admite (div, font) y el hueco {{documento}}, que no existe.</p><p class="ed-puestos">Huecos en el texto: {{trabajador}}</p></div><span class="campo-error"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg>Revisa el documento antes de guardar.</span></template>
+    <iframe class="er-marco" title="Editor de texto en error con la hoja entregada"></iframe>
+  </div>
   <h3 class="sub-seccion">Estados de pantalla</h3>
   <p class="seccion-sub">Sin resultados y error, con su acción.</p>
   <div class="bloque er-caso">
-    <template data-er="7"><div class="ep ep-sin-resultados" role="status"><p class="ep-titulo">Sin resultados para «zapata»</p><p class="ep-linea">Prueba con menos letras, o revisa si está matriculado.</p><button class="btn btn-1 btn-mini">Quitar filtros</button></div></template>
+    <template data-er="10"><div class="ep ep-sin-resultados" role="status"><p class="ep-titulo">Sin resultados para «zapata»</p><p class="ep-linea">Prueba con menos letras, o revisa si está matriculado.</p><button class="btn btn-1 btn-mini">Quitar filtros</button></div></template>
     <iframe class="er-marco" title="Estados de pantalla con la hoja entregada"></iframe>
   </div></div>
 
@@ -9816,6 +9946,131 @@ texto, no basura.</p>
     </div>
   </div>
 </div>
+    </section><section class="pagina" id="pg-editortexto" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#editortexto" data-ir="editortexto" class="migas-actual" aria-current="page">Editor de texto</a>
+      </nav>
+      <div class="pant-cab"><h1>Editor de texto</h1></div>
+      
+<p class="pag-intro"><code>AreaTexto</code> es texto plano. Esto es lo que hace falta cuando el texto
+<strong>viaja a otro formato</strong> —un PDF, una impresora, un correo— y por el camino hay un saneador
+que admite muchisimo menos de lo que un editor de navegador emite.</p>
+
+<h3 class="sub-seccion">La pieza no es un editor: es la garantia</h3>
+<p class="seccion-sub">Lo dijo quien la pidio mejor que nosotros: <em>&laquo;un editor de navegador emite
+el HTML que le da la gana; el destino admite muchisimo menos, y lo que el editor ofrece de mas se guarda
+sin error y desaparece en el destino&raquo;</em>. Lo que se garantiza es una sola frase:</p>
+<div class="bloque">
+  <p class="seccion-sub"><strong>Lo que llega a <code>onCambio</code> SIEMPRE esta dentro
+  de <code>etiquetas</code> y <code>huecos</code></strong> &mdash; venga de teclear, de pegar, de arrastrar
+  o de deshacer.</p>
+</div>
+
+<h3 class="sub-seccion">Las tres listas entran desde FUERA</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Propiedad</th><th>Que es</th><th>Por que no vive aqui dentro</th></tr></thead>
+  <tbody>
+    <tr><td><code>etiquetas</code></td><td>Las que el editor puede emitir. <strong>Cerrada</strong></td><td class="motivo">Cada producto admite cosas distintas: uno no tiene cursiva porque su destino embebe dos fuentes, otro puede tener cursiva y no listas</td></tr>
+    <tr><td><code>huecos</code></td><td>Los marcadores que se pueden insertar. <strong>Cerrada</strong></td><td class="motivo">La lista cambia sin que este sistema publique. Hay huecos que un producto <strong>se prohibe a si mismo</strong> y el componente no puede saberlo</td></tr>
+    <tr><td><code>maximo</code></td><td>Tope del <strong>HTML</strong>, no del texto visible</td><td class="motivo">Es lo que mide el saneador del otro lado. Contando lo visible, se avisa tarde</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">La barra se dibuja DESDE la lista</h3>
+<p class="seccion-sub">No es un juego fijo de botones con algunos apagados, y el motivo es de fondo:
+<strong>una etiqueta que el destino IGNORA es peor que una que rechaza</strong>. Rechazada, quien escribe
+se entera. Ignorada, guarda sin error y lo descubre cuando ya firmo el papel. Un boton apagado promete
+que algun dia valdra.</p>
+
+<h3 class="sub-seccion">Asi se ve</h3>
+<p class="seccion-sub">Esta configurado con <strong>siete etiquetas</strong> &mdash;<code>p strong ul li hr br h3</code>&mdash;,
+<strong>cero atributos</strong> y cuatro huecos. <strong>Es una muestra, no un editor vivo</strong>: la version anterior
+de esta pagina invitaba a pegar desde Word sobre un <code>contenteditable</code> <strong>sin saneador detras</strong>,
+asi que la unica pagina hecha para probar la garantia la <strong>refutaba</strong>. Lo cazo una auditoria el 2026-09-13.
+Para ver el componente de verdad, montalo &mdash;el codigo esta abajo&mdash; o mira
+<a href="#entrega-real" data-ir="entrega-real">La entrega real</a>, donde ademas esta
+<strong>el editor en error</strong>: el borde de 2px y el aviso de lo que se retiro al abrir.
+Esas dos piezas &mdash;<code>.ed-mal</code> y <code>.ed-retirado</code>&mdash; <strong>viajaban en la
+hoja de todos los productos sin que el catalogo las pintara en ningun sitio</strong>, asi que el aviso
+que es la unica prueba visible de la promesa central de esta pieza se entregaba sin que nadie lo
+hubiera visto. Lo cazo una auditoria el 2026-09-13.</p>
+<div class="bloque">
+  <div class="campo-grupo">
+    <label class="campo-etiqueta" for="ed-demo">Cuerpo del documento</label>
+    <div class="ed">
+      <div class="ed-barra" role="toolbar" aria-label="Formato de Cuerpo del documento">
+        <button type="button" class="btn btn-terc btn-mini btn-ic btn-solo-ic" aria-label="Negrita" tabindex="0"><span aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 4v16"/><path d="M7 4h6.5a4 4 0 0 1 0 8H7"/><path d="M7 12h7.5a4 4 0 0 1 0 8H7"/></svg></span></button>
+        <button type="button" class="btn btn-terc btn-mini" tabindex="-1">Subt&iacute;tulo</button>
+        <button type="button" class="btn btn-terc btn-mini btn-ic btn-solo-ic" aria-label="Lista" tabindex="-1"><span aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg></span></button>
+        <button type="button" class="btn btn-terc btn-mini" tabindex="-1">Separador</button>
+        <span class="ed-sep" aria-hidden="true"></span>
+        <button type="button" class="btn btn-2 btn-mini" tabindex="-1" title="Sale: LEON TUYA, Mayori">Trabajador</button>
+        <button type="button" class="btn btn-2 btn-mini" tabindex="-1">Sede</button>
+        <button type="button" class="btn btn-2 btn-mini" tabindex="-1" title="Sale: 08/09/2026">Fecha</button>
+        <button type="button" class="btn btn-2 btn-mini" tabindex="-1">Fecha larga</button>
+      </div>
+      <div class="ed-texto" id="ed-demo" role="textbox" aria-label="Cuerpo del documento" aria-multiline="true"><p>Por medio del <strong>presente</strong> se comunica a {{trabajador}}, de la sede {{sede}}, que el dia {{fechaHechoLarga}} se registro una inasistencia.</p></div>
+      <span class="sr-solo" role="status" aria-live="polite"></span>
+      <p class="ed-puestos">Huecos en el texto: {{trabajador}} &middot; {{sede}} &middot; {{fechaHechoLarga}}</p>
+    </div>
+    <span class="campo-ayuda"><span class="ta-pie"><span>Siete etiquetas, cero atributos.</span><span class="ta-cuenta">2342 restantes</span></span></span>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Cero atributos, siempre</h3>
+<p class="seccion-sub">Ni <code>class</code>, ni <code>style</code>, ni <code>id</code>, ni <code>data-*</code>,
+ni en las etiquetas permitidas. <strong>No es la rareza de un producto</strong>: es lo que pasa siempre que el
+HTML se <strong>traduce</strong> a otro formato en vez de renderizarse. Un atributo no significa nada para
+quien dibuja un PDF, y admitirlo solo sirve para que alguien lo escriba y no pase nada.</p>
+
+<h3 class="sub-seccion">Los huecos</h3>
+<p class="seccion-sub"><strong>La ficha no la pinta el componente</strong>: lo guardado y lo que se ve es el
+<strong>texto literal</strong>. En la muestra de arriba la negrita esta sobre una palabra normal y no sobre un hueco,
+a proposito &mdash; la version anterior ponia <code>{{trabajador}}</code> en negrita y <code>{{sede}}</code> no, y eso
+sugeria que el componente los pinta distinto. No lo hace.</p>
+<p class="seccion-sub">Se escriben <code>{{nombre}}</code> &mdash; dobles llaves, la convencion de plantillas
+mas extendida y que no choca con HTML. Se admite espacio dentro y <strong>distingue mayusculas</strong>.</p>
+<table class="tabla-simple">
+  <thead><tr><th>Detalle</th><th>Por que</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Lo guardado es el texto literal</strong>, no un marcado propio</td><td class="motivo">Un <code>&lt;span data-hueco&gt;</code> se rechazaria por el atributo, y ademas ata el documento al editor que lo escribio. El texto literal lo lee cualquier motor de plantillas, hoy y dentro de cinco anos</td></tr>
+    <tr><td><strong>La ficha es indivisible</strong></td><td class="motivo">Un Retroceso al lado borra el hueco entero, nunca <code>{{trabajado}}</code>. Si se puede partir, el guardado falla y quien escribe no entiende por que: en pantalla ve el nombre puesto</td></tr>
+    <tr><td><strong>Un hueco desconocido se retira, y SE DICE</strong></td><td class="motivo">La invariante no admite que salga. Quitarlo en silencio es lo que hace el destino, y es justo lo que esta pieza viene a evitar</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Pegar desde otro sitio</h3>
+<p class="seccion-sub"><strong>Es la funcion mas valiosa de la pieza</strong>, y no un extra. Quien redacta
+tiene el texto en Word, en Docs o en un correo. Lo que llega trae <code>&lt;span style&gt;</code>,
+<code>&lt;o:p&gt;</code>, <code>&lt;font&gt;</code>, clases y comentarios condicionales. Se limpia
+<strong>en el momento de pegar</strong>, no al guardar: al guardar, quien escribe pierde lo pegado en el peor
+momento posible.</p>
+
+<h3 class="sub-seccion">Lo que NO se pinta</h3>
+<p class="seccion-sub">Un <code>h3</code> aqui dentro sale <strong>en negrita y del mismo cuerpo</strong>, no a
+24&nbsp;px. Este editor ensena <strong>estructura</strong>, no apariencia final &mdash; la apariencia final la
+decide un destino que el componente no conoce. Pintar una jerarquia que el papel no tiene es la misma mentira
+que ofrecer una etiqueta que el destino ignora.</p>
+
+<h3 class="sub-seccion">Codigo</h3>
+<pre class="cod"><code>&lt;EditorTexto
+  etiqueta="Cuerpo del documento"
+  etiquetas={['p', 'strong', 'ul', 'li', 'hr', 'br', 'h3']}
+  huecos={[
+    { nombre: 'trabajador',       rotulo: 'Trabajador', ejemplo: 'LEON TUYA, Mayori' },
+    { nombre: 'sede',             rotulo: 'Sede' },
+    { nombre: 'fechaHecho',       rotulo: 'Fecha',      ejemplo: '08/09/2026' },
+    { nombre: 'fechaHechoLarga',  rotulo: 'Fecha larga' },
+  ]}
+  maximo={2500}
+  ayuda="Siete etiquetas, cero atributos."
+  valor={cuerpo}
+  onCambio={setCuerpo}
+/&gt;</code></pre>
     </section><section class="pagina" id="pg-filacarga" hidden>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
@@ -18140,6 +18395,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.111.0 <span class="cam-fecha">2026-09-13</span></h3>
+<p class="pag-intro"><strong>Componente nuevo: EDITOR DE TEXTO CON HUECOS. No es un editor, es la garantia de que lo que sale cabe en el destino.</strong> R119 del registro del equipo, y llevaba parado desde el 09/09 esperando una cosa: saber que formato sobrevive al papel. Ahora el PDF esta escrito y medido, y con eso la peticion se reescribio entera. `AreaTexto` es texto plano; esto es lo que hace falta cuando el texto VIAJA A OTRO FORMATO —un PDF, una impresora, un correo— y por el camino hay un saneador que admite muchisimo menos de lo que un editor de navegador emite. En sus palabras: «lo que el editor ofrece de mas se guarda sin error y DESAPARECE EN EL DESTINO». LA PIEZA NO ES UN EDITOR: ES LA GARANTIA, y cabe en una frase — lo que llega a `onCambio` SIEMPRE esta dentro de `etiquetas` y `huecos`, venga de teclear, de pegar, de arrastrar o de deshacer. Si eso se cumple, el mismo componente sirve para un memorandum, para una carta de diez paginas, para el cuerpo de un correo o para una plantilla de SMS. Si no, NO SIRVE PARA NINGUNO: cada producto tendria que volver a sanear lo que el editor le entrega. LAS TRES LISTAS ENTRAN DESDE FUERA —`etiquetas`, `huecos`, `maximo`— y no es configurabilidad por gusto. La lista cambia SIN QUE ESTE SISTEMA PUBLIQUE: ellos retiraron tres huecos un martes porque salian impresos como «[falta jornada]», y si la lista viviera dentro eso habria sido una version nuestra. Cada producto admite cosas distintas: el suyo no tiene cursiva porque su destino embebe DOS fuentes. Y el componente no debe saber que hay al otro lado. LA BARRA SE DIBUJA DESDE LA LISTA, no es un juego fijo con botones apagados, y el motivo es de fondo: una etiqueta que el destino IGNORA es peor que una que rechaza. Rechazada, quien escribe se entera; ignorada, guarda sin error y lo descubre CUANDO YA FIRMO EL PAPEL. El icono `cursiva` existe en este sistema y aun asi no sale si `em` no esta en la lista. CERO ATRIBUTOS, siempre, ni en las etiquetas permitidas. No es la rareza de un producto: es lo que pasa siempre que el HTML se TRADUCE a otro formato en vez de renderizarse. Y se sanea RECORRIENDO EL DOM y no con expresiones sobre el texto: un troceador por texto se engana con `&lt;p title="&lt;strong&gt;"&gt;` y con los comentarios condicionales de Word. PEGAR ES LA FUNCION MAS VALIOSA, y lo dijeron ellos: vale mas que cualquier boton de la barra. Es el camino por el que de verdad entra el contenido —Word, Docs, un correo— y se limpia EN EL MOMENTO DE PEGAR, no al guardar, porque al guardar quien escribe pierde lo pegado en el peor momento posible. Y NO SE PINTA LO QUE EL DESTINO NO PUEDE PROMETER: un `h3` sale en negrita y del mismo cuerpo, no a 24px. Este editor ensena ESTRUCTURA, no apariencia final. Pintar una jerarquia que el papel no tiene es la misma mentira que ofrecer una etiqueta que se ignora. SIN LIBRERIA (§9.4 solo la admite para dialogo, menu y selector con busqueda), y aqui ademas seria contraproducente: ninguna libreria conoce la lista del producto, asi que la invariante habria que montarla igual encima. EL SANEADOR VIVE EN SU PROPIO ARCHIVO, y no es estetica: es una funcion PURA sobre texto, asi que se prueba entera sin navegador —incluido lo que pega Word con sus comentarios condicionales—. jsdom no implementa `contenteditable`, ni la seleccion, ni `execCommand`, asi que lo que se prueba a conciencia son las DOS FUNCIONES PURAS —el saneador y la decision de que se lleva un Retroceso, 49 pruebas— y del componente lo que no depende del navegador. «La entrega real» ensena el marcado con la hoja que viaja y nada mas. Y DOS AUDITORIAS ADVERSARIAS LO TUMBARON ENTERO ANTES DE PUBLICAR, con hallazgos que ninguno de los CATORCE candados vio —son catorce candados dentro de diecisiete pasos: los otros tres son generadores—: (1) LA IDEMPOTENCIA ERA FALSA. Borrar un hueco desconocido FABRICABA otro juntando las llaves de los lados —`{{ {{documento}}sede}}` daba `{{ sede}}` y despues `{{sede}}`—, asi que el documento guardado CAMBIABA SOLO entre una sesion y la siguiente. Y el motivo que la regla daba tambien era falso: asignar `innerHTML` no dispara `input`, asi que el bucle que describia no puede ocurrir. (2) EL VALOR QUE ENTRABA NO SE SANEABA. La invariante cubria la salida y la entrada no tenia guarda: un `&lt;img onerror&gt;` guardado por otra version SE EJECUTA al asignar `innerHTML`. Una garantia con un solo sentido no es una garantia. (3) LA CAJA NO TENIA NOMBRE ACCESIBLE. Un `&lt;label for&gt;` NO nombra a un elemento no etiquetable, y este sistema lo tiene escrito DOS VECES —en `Interruptor` y en `RangoFecha`— y aun asi se incumplio. (4) «LA FICHA ES INDIVISIBLE» SE AFIRMABA EN TRES SITIOS Y NO HABIA NADA: ni un `onKeyDown`, ni un `beforeinput`. Un Retroceso al lado dejaba `{{sede}`. Ahora esta construido, con la decision en una funcion pura para poder probarla. (5) LA BARRA DECIA SER UN `toolbar` y no tenia ni roving tabindex ni flechas: eran OCHO tabulaciones antes de llegar al texto. (6) LA PAGINA «PRUEBALO» DEL CATALOGO ESTABA MUERTA y REFUTABA la garantia: invitaba a pegar desde Word sobre un `contenteditable` SIN SANEADOR DETRAS. (7) El catalogo y el componente no emitian lo mismo en cinco puntos —el icono a 18 contra 16 entre ellos—, y `verificar-iconos` pasaba en verde porque compara nombres y trazo, NO TAMANO. Nace `editor-catalogo.test.tsx`, que compara arbol contra arbol. Y OTRO MAS, este cazado por su propia prueba: el aviso de «esto se retiro al pegar» NO SE VEIA NUNCA. El pegado lo anotaba y llamaba inmediatamente al emisor, que volvia a mirar una caja YA limpia y lo borraba en el mismo cuadro. La funcion entera era decorativa. Cada camino reporta ahora lo que EL retiro. Y (8) EL BOTON PRINCIPAL NO HACIA NADA. Lo midio el equipo en un navegador de verdad: `execCommand("bold")` emite `&lt;b&gt;`, la lista blanca tiene `strong`, y el saneador lo desenvolvia — pulsar Negrita no dejaba negrita. El arreglo es suyo y es pequeño: TRADUCIR despues del comando —`b`→`strong`, `i`→`em`, `strike`/`del`→`s`, `ins`→`u`—, NO ampliar la lista blanca, que es el contrato. LA SEGUNDA AUDITORIA, sobre lo ya arreglado, encontro seis mas. El peor NO LO PODIA VER NINGUNA PRUEBA: el saneo llamaba a `DOMParser` DENTRO DEL RENDER y `DOMParser` NO EXISTE EN NODE, asi que cualquier producto con renderizado de servidor —Next, Remix— moria con `ReferenceError` y LA PAGINA ENTERA NO SE PINTABA. Las 787 pruebas corren en jsdom, que si lo tiene. Se cierra con una regla entera y no con un parche: nada que dependa del contenido de la caja se pinta hasta que la caja existe. Y EL AVISO DE LO RETIRADO SE BORRABA SOLO, por dos caminos que no se habian mirado: el `input` que el navegador despacha DESPUES de `execCommand`, y el `blur` de irse a pulsar la barra. EL GESTO NATURAL DE REACCIONAR AL AVISO LO DESTRUIA. Ahora el aviso recuerda DE QUE CONTENIDO habla. Ademas: el borrado de LINEA estaba roto —se metio en el mismo saco que el de caracter y borraba solo la ficha—; la region viva se CALLABA el aviso del tope en cuanto algo se retiraba, que es justo lo que el contador compartido dice haberse extraido para impedir; una prueba decia comprobar el origen del aviso y su unica asercion era otra cosa (se le quito entero el mecanismo que nombra y siguio EN VERDE); y `.ed-mal` y `.ed-retirado` VIAJABAN EN LA HOJA DE TODOS LOS PRODUCTOS sin que el catalogo los pintara en ningun sitio — el aviso que es la unica prueba visible de la promesa central de la pieza se entregaba sin que nadie lo hubiera visto. Ya tiene muestra en «La entrega real», y se compara arbol contra arbol. CIFRAS QUE ESTABAN MAL Y AHORA ESTAN MEDIDAS: el tiempo de pegado se daba como un numero solo —2,3 s para 4,3 MB— y DEPENDE TANTO DEL CONTENIDO QUE UN NUMERO SOLO ENGAÑA: con HTML sucio de Word medimos 3,0 s (3,02 / 2,88 / 3,03) y una auditoria con otro corpus midio 2,7 s. El 2,3 s es anterior y no dejo escrito con que se midio, asi que no se compara. Lo que sostienen las tres medidas, y es lo que importa, es que un documento de ese tamaño bloquea el hilo SEGUNDOS. Todo con jsdom dentro del contenedor, que no es un navegador. TRES HUECOS DECLARADOS: lo que no tiene prueba es el `execCommand` real, NO la costura del rango —esa si la tiene, y la declaracion anterior era mas pesimista que la realidad—; `document.execCommand` esta OBSOLETO en la norma y sigue siendo la unica forma de hacer esto sin libreria; y pegar un documento muy grande bloquea el hilo, con la cifra de arriba, porque `maximo` avisa DESPUES y no impide. DOS ARREGLOS EN LA HOJA QUE TOCAN A QUIEN NO USE EL EDITOR: el buscador de `TablaDatos` declaraba `min-width` DOS VECES en el mismo selector —0 y 230px— y ganaba el ultimo, asi que NO BAJABA DE 230px y empujaba la barra de filtros en anchos estrechos, lo contrario de lo que dice su propio comentario; y el editor en error llevaba filete de 1px donde todo campo del sistema lleva 2, que es la señal NO CROMATICA. QUEDA DECLARADO Y SIN CERRAR: ESLint NO SE CORRE en ninguno de los diecisiete pasos —solo `probar-candado.mjs`, que prueba los patrones contra casos sinteticos—, y al correrlo sobre el repositorio salen DOS ERRORES QUE VIAJAN HOY: `Estados.tsx` usa el atributo `style` en linea en dos sitios, que es lo que §2.5.6 prohibe. No se toca un componente publicado la vispera de una entrega; el arreglo de fondo es que el paso de lint exista.</p>
+
 
 
 <h3 class="sub-seccion">v1.110.0 <span class="cam-fecha">2026-09-13</span></h3>

@@ -24,6 +24,7 @@ export { CargaImagen, type FormatoCarga, type CargaImagenProps } from './CargaIm
 export { CargaId, MARCO_ID, type CaraId, type PasoId, type CargaIdProps } from './CargaId';
 export { CargaPdf, type PdfListo, type CargaPdfProps } from './CargaPdf';
 export { AreaTexto, type AreaTextoProps } from './AreaTexto';
+export { EditorTexto, type EditorTextoProps, type HuecoEditor, type EtiquetaEditor } from './EditorTexto';
 // El compresor viaja aparte del componente: un producto que suba PDF por su
 // cuenta —desde un formulario que no usa `CargaPdf`— puede comprimir igual.
 export { comprimirPdf, formatearPeso, ahorro, esPdf } from './interno/comprimir-pdf.mjs';

@@ -575,6 +575,91 @@ instancia suelta: la emiten las tres, y por eso no pueden divergir.
 | **12** | Del proyecto: a dónde se sube, el peso máximo, cuántos archivos, y si se apaga la compresión —un PDF **firmado** hay que dejarlo intacto o la firma deja de validar. |
 | **13** | **PENDIENTE.** (v1.77.0) **En modo controlado, el borrador arranca vacío** aunque `valor` traiga archivos, y por eso la regla 8 —«volver a abrir arranca de lo ya guardado»— **solo se cumple en modo no controlado**. La causa no es un descuido: `valor` es `{nombre, peso}[]` y el borrador necesita `PdfListo`, con su `File` dentro; el componente **no tiene los archivos del producto** y no puede reconstruirlos. Con `maximoArchivos: 1` no hay daño —elegir otro sustituye, que es lo documentado—, pero **con más de uno, grabar emite solo lo recién elegido y el producto pierde lo que ya tenía**. Se declara en vez de fingir que no pasa: cerrarlo pide decidir la forma de `valor` —que cargue el `File`, o que el quitar se haga solo por `onQuitar`—, y eso es una decisión de API, no del componente. Lo encontró la revisión de R102 y **es anterior a ella** (v1.40.0). |
 
+## Editor de texto con huecos
+
+**La pieza no es un editor: es la garantía.** `AreaTexto` es texto plano; esto
+es lo que hace falta cuando el texto **viaja a otro formato** —un PDF, una
+impresora, un correo— y por el camino hay un saneador que admite muchísimo menos
+de lo que un editor de navegador emite. Lo dijo quien lo pidió mejor que
+nosotros: *«lo que el editor ofrece de más se guarda sin error y desaparece en
+el destino»*.
+
+> **De dónde sale este contrato, porque no está archivado.** El R119 del equipo
+> llegó **por el chat**, no como archivo: en `peticiones/` no hay ningún
+> `*R119*`, y la única constancia escrita es la fila «parado por vuestra
+> prioridad» del informe de la v1.107.0. Lo que el equipo pidió está
+> **transcrito en esta tabla** —las tres listas de entrada, la invariante de
+> salida, las siete etiquetas, los cuatro huecos y el tope de 2500—, y ésta es
+> la fuente. Se dice porque una cita sin fuente archivada se lee como si la
+> tuviera.
+
+<!-- pruebas: sanear.test.ts, EditorTexto.test.tsx -->
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R119 del equipo, v1.111.0) **LA INVARIANTE, que es todo el valor de la pieza:** lo que llega a `onCambio` **siempre** está dentro de `etiquetas` y `huecos` — **y lo que ENTRA por `valor` también se sanea**, que la primera versión no hacía: un valor guardado por otra versión, por otro editor o a mano se metía crudo en la caja, y en un navegador de verdad un `<img onerror>` **se ejecuta** al asignar `innerHTML`. La garantía tiene un solo sentido si solo cubre la salida — venga de teclear, de pegar, de arrastrar o de deshacer. Si eso se cumple, el mismo componente sirve para un memorándum de 2 500 caracteres, para una carta de diez páginas, para el cuerpo de un correo o para una plantilla de SMS. Si no se cumple, **no sirve para ninguno**: cada producto tendría que volver a sanear lo que el editor le entrega. |
+| **2** | **Obligatorio.** (R119 del equipo, v1.111.0) **Las tres listas entran desde FUERA** —`etiquetas`, `huecos`, `maximo`— y no es configurabilidad por gusto. Tres motivos, los tres vividos por quien lo pidió: la lista **cambia sin que este sistema publique** —retiraron tres huecos un martes porque salían impresos como «[falta jornada]»—; **cada producto admite cosas distintas** —uno no tiene cursiva porque su destino embebe dos fuentes—; y el componente **no debe saber qué hay al otro lado**, ni PDF ni impresora ni correo, solo el conjunto que le dan. |
+| **3** | **Obligatorio.** (R119 del equipo, v1.111.0) **La barra se dibuja DESDE `etiquetas`**, no es un juego fijo con botones apagados. El motivo es de fondo: **una etiqueta que el destino IGNORA es peor que una que rechaza**. Rechazada, quien escribe se entera; ignorada, guarda sin error y lo descubre **cuando ya firmó el papel**. Un botón apagado promete que algún día valdrá. El icono `cursiva` existe en el sistema y aun así no sale si `em` no está en la lista. |
+| **4** | **Obligatorio.** (R119 del equipo, v1.111.0) **Cero atributos, siempre**, ni en las etiquetas permitidas: ni `class`, ni `style`, ni `id`, ni `data-*`. **No es la rareza de un producto**: es lo que pasa siempre que el HTML se **traduce** a otro formato en vez de renderizarse. Un atributo no significa nada para quien dibuja un PDF, y admitirlo solo sirve para que alguien lo escriba y no pase nada. |
+| **5** | **Obligatorio.** (R119 del equipo, v1.111.0) **Se quita la etiqueta y se CONSERVA el contenido.** Quien pega desde Word trae cada párrafo envuelto en tres `<span>`: tirar el contenido con ellos dejaría el documento vacío, que es peor que perder el formato. **Las dos excepciones son `script` y `style`**, que se van con lo suyo. |
+| **6** | **Obligatorio.** (R119 del equipo, v1.111.0) **Se sanea recorriendo el DOM, no con expresiones sobre el texto.** Un troceador por texto se engaña con `<p title="<strong>">`, con los comentarios condicionales de Word y con cualquier `<` dentro de un atributo. El navegador ya sabe parsear HTML; lo que no sabe es qué hay que tirar. |
+| **7** | **Obligatorio.** (R119 del equipo, v1.111.0) **Los huecos son `{{nombre}}`, texto literal**, con la expresión `/\{\{\s*([a-zA-Z][a-zA-Z0-9_]*)\s*\}\}/g`: se admite espacio dentro y **distingue mayúsculas**. Lo guardado es el texto, **no un marcado propio** — un `<span data-hueco>` se rechazaría por el atributo (regla 4) y además **ata el documento al editor que lo escribió**; el texto literal lo lee cualquier motor de plantillas, hoy y dentro de cinco años. |
+| **8** | **Obligatorio.** (R119 del equipo, v1.111.0) **Un hueco desconocido se RETIRA, y se dice cuál era. Y el aviso NO SE BORRA SOLO.** Esto último costó dos rondas: el aviso lo ponía un camino y lo borraba el siguiente paso que no retirara nada — y esos pasos llegan siempre, porque el navegador despacha un `input` **después** de `execCommand`, y pulsar un botón de la barra desenfoca la caja antes. **El gesto natural de reaccionar al aviso lo destruía.** Ahora el aviso recuerda **de qué contenido habla**, y un paso que no retira nada solo lo calla si el contenido ya no es aquél. La invariante no admite que salga: el destino lo rechazaría y quien escribe perdería el documento al guardar. Y no se quita en silencio — **quitar en silencio es lo que hace el destino**, y es justo lo que esta pieza viene a evitar. |
+| **9** | **Obligatorio.** (R119 del equipo, v1.111.0) **Pegar se limpia EN EL MOMENTO, no al guardar**, y es la función más valiosa de la pieza: es el camino por el que de verdad entra el contenido. Quien redacta lo tiene en Word, en Docs o en un correo, y lo que llega trae `<span style>`, `<o:p>`, `<font>`, clases y comentarios condicionales. Al guardar, quien escribe **pierde lo pegado en el peor momento posible**. |
+| **10** | **Obligatorio.** (R119 del equipo, v1.111.0) **El tope cuenta el HTML, no el texto visible**, porque es lo que mide el saneador del otro lado. Un texto que se ve corto puede pasarse de largo por las etiquetas, y contando lo visible **se avisa tarde**. |
+| **11** | **Obligatorio.** (R119 del equipo, v1.111.0) **El saneo es IDEMPOTENTE**, y se llega al punto fijo **a nivel de documento**, no solo de texto. Dos defectos, los dos medidos: borrar un hueco desconocido **fabricaba otro** juntando las llaves de los lados —`{{ {{documento}}sede}}` → `{{ sede}}` → `{{sede}}`—, así que el documento guardado **cambiaba solo** entre sesiones. Y peor: cada nodo de texto se sanea por separado, así que un hueco **partido por una etiqueta que se desenvuelve** nunca se veía como hueco y **aparecía entero en la salida** —`{{doc<b>umento</b>}}` con `b` fuera de la lista daba `{{documento}}`, y `huecosFuera` salía **vacío**, así que ni se podía decir—. Era el único camino por el que la garantía se rompía de verdad, y sobrevivió a 43 pruebas en verde. **El tope de vueltas sale del contenido**, no de un número a ojo: cada vuelta que cambia algo retira contenido, así que converger está garantizado; un tope fijo entregaba algo inestable, y sin avisar, en cuanto alguien anidaba más capas. **Y el motivo que esta regla daba era falso:** decía «sin eso el editor entra en bucle», y asignar `innerHTML` **no dispara `input`**. |
+| **11b** | **Obligatorio.** (R119 del equipo, v1.111.0) **Lo que emite el navegador se TRADUCE, no se añade a la lista.** `execCommand('bold')` emite `<b>` y la lista blanca tiene `strong`: el saneador lo desenvolvía, **el botón «Negrita» no ponía negrita**, y el aviso decía «se quitó el formato que no se admite (b)» — el componente **acusaba de meter un formato prohibido a quien había pulsado su propio botón**. Es el modo de fallo que esta pieza existe para impedir, reproducido dentro de ella. Se normaliza **antes** de mirar la lista —`b`→`strong`, `i`→`em`, `strike`/`del`→`s`, `ins`→`u`— y el argumento es del equipo: **la lista blanca es el contrato**, y `<b>` es un detalle de implementación de `execCommand`, que está obsoleto y puede cambiar de salida sin avisar. **La lista sigue mandando**: sin `strong`, un `<b>` se va igual. Y el aviso nombra lo que se escribió, no su traducción. |
+| **12** | **Obligatorio.** (R119 del equipo, v1.111.0) **La ficha es INDIVISIBLE:** un `{{trabajador}}` es una cosa, no trece caracteres. Un Retroceso al lado se lleva el hueco entero, nunca `{{trabajado}}`; Suprimir hace lo mismo por el otro lado; y si el cursor acaba dentro —pegando, o con el ratón— el borrado tampoco lo parte. Si se pudiera partir, el guardado falla y quien escribe no entiende por qué: **en la pantalla ve una ficha con el nombre puesto**. La primera versión de este componente **lo afirmó en tres sitios sin construir nada**, y lo cazó una auditoría. Se escucha `beforeinput` **nativo** y no `keydown` ni el `onBeforeInput` de React —que React 18 **no conecta** al del navegador—, y eso cubre también el gesto del teléfono y lo que mande un lector. **Se interceptan el carácter y la palabra, y NO la línea:** un borrado de línea se lleva la línea entera, huecos incluidos, así que no puede partir una ficha — y meterlo en el mismo saco **rompía el borrado de línea**, que dejaba `Hola ` donde se pedía vaciar. **Lo que NO cubre, dicho:** el corte y el arrastre (`deleteByCut`, `deleteByDrag`) llevan un rango y no un cursor, y un hueco repartido entre dos nodos de texto no lo ve la decisión, que mira uno solo. En los dos casos **la invariante sigue en pie** —lo que quede es texto plano y se entrega tal cual—; lo que se pierde es comodidad. |
+| **13** | **Obligatorio.** (R119 del equipo, v1.111.0) **No se pinta lo que el destino no puede prometer.** Un `h3` sale aquí **en negrita y del mismo cuerpo**, no a 24 px: este editor enseña **estructura**, no apariencia final — la apariencia final la decide un destino que el componente no conoce. Pintar una jerarquía que el papel no tiene es la misma mentira que ofrecer una etiqueta que el destino ignora. |
+| **14** | **Obligatorio.** (R119 del equipo, v1.111.0) **La caja tiene NOMBRE ACCESIBLE propio**, con `aria-label`. Un `<label for>` **no nombra** a un elemento que no es etiquetable, y `div[role=textbox]` no lo es: HTML-AAM no calcula el nombre por ahí. `Campo` ata el rótulo con `htmlFor`, que sirve para llevar el foco al pulsar y **no** para el nombre. Sin esto la caja salía **sin nombre**: medido, cero coincidencias buscando el `textbox` por su rótulo. Este sistema ya lo tenía escrito **dos veces** —en `Interruptor` y en `RangoFecha`— y aun así se incumplió, que es el motivo de que ahora sea regla y no comentario. |
+| **15** | **Obligatorio.** (R119 del equipo, v1.111.0) **La barra es un `toolbar` DE VERDAD: una sola parada de tabulador y las flechas recorren.** El `role` es un atributo; el patrón lo implementa quien lo escribe, y la primera versión puso el atributo y **ninguna de las dos cosas**: los botones eran paradas de tabulador una a una, y la configuración del catálogo —cuatro etiquetas con control más cuatro huecos— eran **ocho tabulaciones antes de llegar al texto**. Flecha izquierda y derecha recorren dando la vuelta, `Home` y `End` van a los extremos, y el `tabindex` viaja con el foco. Con **cero** mandos la barra no se pinta: un `toolbar` vacío con nombre es ruido para el lector. |
+| **16** | **Obligatorio.** (R119 del equipo, v1.111.0) **Se puede renderizar en SERVIDOR.** `DOMParser` no existe en Node y el saneo corría en el render, así que un producto con renderizado de servidor —Next, Remix— moría con `ReferenceError: DOMParser is not defined` y **la página entera no se pintaba**. Ninguna prueba podía verlo: jsdom **sí** tiene `DOMParser`. Lo cierra una regla entera y no un parche — **nada que dependa del contenido de la caja se pinta hasta que la caja existe**: el texto ya era así (lo escribe un efecto por `innerHTML`, no React), y ahora el contador y la lista de huecos también. El servidor y el primer render del cliente emiten lo mismo, que es lo que evita el desfase de hidratación; **el contador aparece al montar**, y eso es el precio. |
+| **17** | Del proyecto: **qué admite su destino**. Las tres listas son suyas, y el componente no opina. |
+
+**Tres huecos declarados.**
+
+1. **Lo que no existe en jsdom**: `contenteditable`, la selección y
+   `execCommand`. **Y quitar la demostración viva del catálogo tuvo un coste**:
+   era un `contenteditable` sin saneador —mentía— pero era el único sitio donde
+   pulsar «Negrita» habría enseñado que no hacía nada. Lo ocupa ahora la tabla
+   de la regla 11b, que encierra lo que cada comando emite **en un navegador
+   real**, medido por el equipo; es mejor, porque corre sola. Por eso lo que se
+   prueba a conciencia son las **dos funciones puras** —el saneador y la
+   decisión de qué borra un Retroceso, 49 pruebas— y del componente se prueba lo
+   que no depende del navegador. **Lo sin probar es el `execCommand` real**, no
+   la costura del rango: ésa sí tiene prueba —se monta un `Range` de verdad
+   sobre el nodo de texto, se fija con `getSelection`, se despacha un
+   `beforeinput` nativo y se comprueba que la ficha se fue entera—. La
+   declaración anterior era **más pesimista que la realidad**, y una declaración
+   falsa por abajo también es falsa.
+2. **`document.execCommand` está obsoleto** en la norma y sigue siendo la única
+   forma de hacer esto sin librería. El día que un navegador lo retire, esta
+   pieza necesita una versión mayor. Se dice ahora en vez de descubrirlo
+   entonces.
+3. **Pegar un documento muy grande bloquea el hilo, varios segundos.** Medido:
+   4,30 MB de HTML **sucio de Word** —`<p class="MsoNormal" style>`,
+   `<span style>`, `<o:p>`— tardan **3,0 s** (3,02 / 2,88 / 3,03 en tres
+   pasadas), síncrono y sin tope.
+
+   **Y la cifra depende tanto del contenido que dar una sola es engañoso.** Una
+   auditoría repitió la medida el 2026-09-13 con **otro** corpus de Word y midió
+   2,7 s; con HTML ya limpio del mismo tamaño, su medida y la nuestra **no
+   coinciden ni en el orden** —el saneo recorre hasta el punto fijo, y el sucio
+   encoge en la primera vuelta mientras el limpio se recorre entero—. La cifra
+   que este apartado traía antes, **2,3 s**, es anterior y **no dejó escrito con
+   qué se midió**, así que no se puede comparar con ninguna de las tres: se dice
+   en vez de inventarle una explicación. Lo que sostienen las tres mediciones es
+   lo único que aquí importa: **un documento de ese tamaño bloquea el hilo
+   segundos**.
+
+   La medida es con `jsdom` **dentro del contenedor**, que no es un navegador: en
+   uno real será otra, y **ahí no se ha medido**. `maximo` avisa **después**, no
+   impide. Si algún producto pega documentos de ese tamaño, hace falta trocear el
+   saneo — y entonces deja de ser una función pura, que es lo que hoy la hace
+   demostrable.
+
+---
+
 ## Área de texto
 
 | | Regla |

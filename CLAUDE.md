@@ -19,12 +19,11 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.110.0** — R133: la acción del diálogo salía **descentrada
-dentro de su propio botón** cuando llevaba gerundio, y era un defecto que
-introdujo la v1.107.0 al arreglar otro. Se corrige, se mide **en un navegador de
-verdad** —22,00 px, desvío 0— y se declaran los dos casos que **siguen**
-torcidos. Y una auditoría tumbó la razón que se había publicado para descartar
-la otra salida: era inventada.
+**Estado actual: v1.111.0** — componente nuevo: **editor de texto con huecos**.
+No es un editor: es **la garantía** de que lo que sale cabe en el destino, con
+las tres listas entrando desde fuera. La pieza que faltaba cuando el texto viaja
+a un PDF, a una impresora o a un correo y por el camino hay un saneador que
+admite mucho menos de lo que un editor de navegador emite.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

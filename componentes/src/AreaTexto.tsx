@@ -40,6 +40,7 @@
 
 import { useState } from 'react';
 import { Campo } from './Campo';
+import { usarContador } from './interno/contador';
 
 export type AreaTextoProps =
   Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'rows' | 'children'> & {
@@ -59,8 +60,6 @@ export type AreaTextoProps =
     autoCrecer?: boolean;
   };
 
-/** Cuando quedan estos o menos, el contador avisa y la región viva habla. */
-const AVISO = 20;
 
 export function AreaTexto({
   etiqueta,
@@ -82,27 +81,10 @@ export function AreaTexto({
   const [escrito, setEscrito] = useState(String(defaultValue ?? ''));
   const texto = value !== undefined ? String(value) : escrito;
 
-  const quedan = maximo === undefined ? null : maximo - [...texto].length;
-  const pasado = quedan !== null && quedan < 0;
-  const cerca = quedan !== null && quedan >= 0 && quedan <= AVISO;
-
-  const contador = quedan === null ? null : (
-    <span className={['ta-cuenta', pasado ? 'ta-cuenta-mal' : ''].filter(Boolean).join(' ')}>
-      {pasado ? `${-quedan} de más` : `${quedan} restantes`}
-    </span>
-  );
-
-  const pie = contador && (
-    <span className="ta-pie">
-      <span>{ayuda}</span>
-      {contador}
-    </span>
-  );
-
-  // El error del producto manda; el del límite aparece solo si no hay otro.
-  const elError = error ?? (pasado
-    ? `El texto se pasa por ${-quedan!} ${-quedan! === 1 ? 'carácter' : 'caracteres'}. Acórtalo antes de guardar.`
-    : undefined);
+  /* El pie, el contador, su anuncio y el error del tope salen de
+     `interno/contador`: estaban escritos aqui y COPIADOS en `EditorTexto`, y
+     habian divergido en dos puntos antes de que el editor se publicara. */
+  const { pie, error: elError, anuncio } = usarContador(texto, maximo, ayuda, error);
 
   return (
     <Campo
@@ -144,7 +126,7 @@ export function AreaTexto({
           </div>
           {/* Solo habla en el último tramo. Ver la diferencia 3. */}
           <span className="sr-solo" role="status" aria-live="polite">
-            {pasado ? `Te pasas por ${-quedan!}` : cerca ? `Quedan ${quedan}` : ''}
+            {anuncio}
           </span>
         </>
       )}

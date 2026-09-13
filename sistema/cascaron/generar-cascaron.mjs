@@ -7470,6 +7470,124 @@ tipo permite y nada avisa&mdash; no hay ninguna de las tres cosas, y la salida e
 &lt;/Dialogo&gt;</code></pre>`;
 
 
+
+const pagEditorTexto = `
+<p class="pag-intro"><code>AreaTexto</code> es texto plano. Esto es lo que hace falta cuando el texto
+<strong>viaja a otro formato</strong> —un PDF, una impresora, un correo— y por el camino hay un saneador
+que admite muchisimo menos de lo que un editor de navegador emite.</p>
+
+<h3 class="sub-seccion">La pieza no es un editor: es la garantia</h3>
+<p class="seccion-sub">Lo dijo quien la pidio mejor que nosotros: <em>&laquo;un editor de navegador emite
+el HTML que le da la gana; el destino admite muchisimo menos, y lo que el editor ofrece de mas se guarda
+sin error y desaparece en el destino&raquo;</em>. Lo que se garantiza es una sola frase:</p>
+<div class="bloque">
+  <p class="seccion-sub"><strong>Lo que llega a <code>onCambio</code> SIEMPRE esta dentro
+  de <code>etiquetas</code> y <code>huecos</code></strong> &mdash; venga de teclear, de pegar, de arrastrar
+  o de deshacer.</p>
+</div>
+
+<h3 class="sub-seccion">Las tres listas entran desde FUERA</h3>
+<table class="tabla-simple">
+  <thead><tr><th>Propiedad</th><th>Que es</th><th>Por que no vive aqui dentro</th></tr></thead>
+  <tbody>
+    <tr><td><code>etiquetas</code></td><td>Las que el editor puede emitir. <strong>Cerrada</strong></td><td class="motivo">Cada producto admite cosas distintas: uno no tiene cursiva porque su destino embebe dos fuentes, otro puede tener cursiva y no listas</td></tr>
+    <tr><td><code>huecos</code></td><td>Los marcadores que se pueden insertar. <strong>Cerrada</strong></td><td class="motivo">La lista cambia sin que este sistema publique. Hay huecos que un producto <strong>se prohibe a si mismo</strong> y el componente no puede saberlo</td></tr>
+    <tr><td><code>maximo</code></td><td>Tope del <strong>HTML</strong>, no del texto visible</td><td class="motivo">Es lo que mide el saneador del otro lado. Contando lo visible, se avisa tarde</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">La barra se dibuja DESDE la lista</h3>
+<p class="seccion-sub">No es un juego fijo de botones con algunos apagados, y el motivo es de fondo:
+<strong>una etiqueta que el destino IGNORA es peor que una que rechaza</strong>. Rechazada, quien escribe
+se entera. Ignorada, guarda sin error y lo descubre cuando ya firmo el papel. Un boton apagado promete
+que algun dia valdra.</p>
+
+<h3 class="sub-seccion">Asi se ve</h3>
+<p class="seccion-sub">Esta configurado con <strong>siete etiquetas</strong> &mdash;<code>p strong ul li hr br h3</code>&mdash;,
+<strong>cero atributos</strong> y cuatro huecos. <strong>Es una muestra, no un editor vivo</strong>: la version anterior
+de esta pagina invitaba a pegar desde Word sobre un <code>contenteditable</code> <strong>sin saneador detras</strong>,
+asi que la unica pagina hecha para probar la garantia la <strong>refutaba</strong>. Lo cazo una auditoria el 2026-09-13.
+Para ver el componente de verdad, montalo &mdash;el codigo esta abajo&mdash; o mira
+<a href="#entrega-real" data-ir="entrega-real">La entrega real</a>, donde ademas esta
+<strong>el editor en error</strong>: el borde de 2px y el aviso de lo que se retiro al abrir.
+Esas dos piezas &mdash;<code>.ed-mal</code> y <code>.ed-retirado</code>&mdash; <strong>viajaban en la
+hoja de todos los productos sin que el catalogo las pintara en ningun sitio</strong>, asi que el aviso
+que es la unica prueba visible de la promesa central de esta pieza se entregaba sin que nadie lo
+hubiera visto. Lo cazo una auditoria el 2026-09-13.</p>
+<div class="bloque">
+  <div class="campo-grupo">
+    <label class="campo-etiqueta" for="ed-demo">Cuerpo del documento</label>
+    <div class="ed">
+      <div class="ed-barra" role="toolbar" aria-label="Formato de Cuerpo del documento">
+        <button type="button" class="btn btn-terc btn-mini btn-ic btn-solo-ic" aria-label="Negrita" tabindex="0"><span aria-hidden="true">${icono('negrita', 16)}</span></button>
+        <button type="button" class="btn btn-terc btn-mini" tabindex="-1">Subt&iacute;tulo</button>
+        <button type="button" class="btn btn-terc btn-mini btn-ic btn-solo-ic" aria-label="Lista" tabindex="-1"><span aria-hidden="true">${icono('lista', 16)}</span></button>
+        <button type="button" class="btn btn-terc btn-mini" tabindex="-1">Separador</button>
+        <span class="ed-sep" aria-hidden="true"></span>
+        <button type="button" class="btn btn-2 btn-mini" tabindex="-1" title="Sale: LEON TUYA, Mayori">Trabajador</button>
+        <button type="button" class="btn btn-2 btn-mini" tabindex="-1">Sede</button>
+        <button type="button" class="btn btn-2 btn-mini" tabindex="-1" title="Sale: 08/09/2026">Fecha</button>
+        <button type="button" class="btn btn-2 btn-mini" tabindex="-1">Fecha larga</button>
+      </div>
+      <div class="ed-texto" id="ed-demo" role="textbox" aria-label="Cuerpo del documento" aria-multiline="true"><p>Por medio del <strong>presente</strong> se comunica a {{trabajador}}, de la sede {{sede}}, que el dia {{fechaHechoLarga}} se registro una inasistencia.</p></div>
+      <span class="sr-solo" role="status" aria-live="polite"></span>
+      <p class="ed-puestos">Huecos en el texto: {{trabajador}} &middot; {{sede}} &middot; {{fechaHechoLarga}}</p>
+    </div>
+    <span class="campo-ayuda"><span class="ta-pie"><span>Siete etiquetas, cero atributos.</span><span class="ta-cuenta">2342 restantes</span></span></span>
+  </div>
+</div>
+
+<h3 class="sub-seccion">Cero atributos, siempre</h3>
+<p class="seccion-sub">Ni <code>class</code>, ni <code>style</code>, ni <code>id</code>, ni <code>data-*</code>,
+ni en las etiquetas permitidas. <strong>No es la rareza de un producto</strong>: es lo que pasa siempre que el
+HTML se <strong>traduce</strong> a otro formato en vez de renderizarse. Un atributo no significa nada para
+quien dibuja un PDF, y admitirlo solo sirve para que alguien lo escriba y no pase nada.</p>
+
+<h3 class="sub-seccion">Los huecos</h3>
+<p class="seccion-sub"><strong>La ficha no la pinta el componente</strong>: lo guardado y lo que se ve es el
+<strong>texto literal</strong>. En la muestra de arriba la negrita esta sobre una palabra normal y no sobre un hueco,
+a proposito &mdash; la version anterior ponia <code>{{trabajador}}</code> en negrita y <code>{{sede}}</code> no, y eso
+sugeria que el componente los pinta distinto. No lo hace.</p>
+<p class="seccion-sub">Se escriben <code>{{nombre}}</code> &mdash; dobles llaves, la convencion de plantillas
+mas extendida y que no choca con HTML. Se admite espacio dentro y <strong>distingue mayusculas</strong>.</p>
+<table class="tabla-simple">
+  <thead><tr><th>Detalle</th><th>Por que</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Lo guardado es el texto literal</strong>, no un marcado propio</td><td class="motivo">Un <code>&lt;span data-hueco&gt;</code> se rechazaria por el atributo, y ademas ata el documento al editor que lo escribio. El texto literal lo lee cualquier motor de plantillas, hoy y dentro de cinco anos</td></tr>
+    <tr><td><strong>La ficha es indivisible</strong></td><td class="motivo">Un Retroceso al lado borra el hueco entero, nunca <code>{{trabajado}}</code>. Si se puede partir, el guardado falla y quien escribe no entiende por que: en pantalla ve el nombre puesto</td></tr>
+    <tr><td><strong>Un hueco desconocido se retira, y SE DICE</strong></td><td class="motivo">La invariante no admite que salga. Quitarlo en silencio es lo que hace el destino, y es justo lo que esta pieza viene a evitar</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Pegar desde otro sitio</h3>
+<p class="seccion-sub"><strong>Es la funcion mas valiosa de la pieza</strong>, y no un extra. Quien redacta
+tiene el texto en Word, en Docs o en un correo. Lo que llega trae <code>&lt;span style&gt;</code>,
+<code>&lt;o:p&gt;</code>, <code>&lt;font&gt;</code>, clases y comentarios condicionales. Se limpia
+<strong>en el momento de pegar</strong>, no al guardar: al guardar, quien escribe pierde lo pegado en el peor
+momento posible.</p>
+
+<h3 class="sub-seccion">Lo que NO se pinta</h3>
+<p class="seccion-sub">Un <code>h3</code> aqui dentro sale <strong>en negrita y del mismo cuerpo</strong>, no a
+24&nbsp;px. Este editor ensena <strong>estructura</strong>, no apariencia final &mdash; la apariencia final la
+decide un destino que el componente no conoce. Pintar una jerarquia que el papel no tiene es la misma mentira
+que ofrecer una etiqueta que el destino ignora.</p>
+
+<h3 class="sub-seccion">Codigo</h3>
+<pre class="cod"><code>&lt;EditorTexto
+  etiqueta="Cuerpo del documento"
+  etiquetas={['p', 'strong', 'ul', 'li', 'hr', 'br', 'h3']}
+  huecos={[
+    { nombre: 'trabajador',       rotulo: 'Trabajador', ejemplo: 'LEON TUYA, Mayori' },
+    { nombre: 'sede',             rotulo: 'Sede' },
+    { nombre: 'fechaHecho',       rotulo: 'Fecha',      ejemplo: '08/09/2026' },
+    { nombre: 'fechaHechoLarga',  rotulo: 'Fecha larga' },
+  ]}
+  maximo={2500}
+  ayuda="Siete etiquetas, cero atributos."
+  valor={cuerpo}
+  onCambio={setCuerpo}
+/&gt;</code></pre>`;
+
 const pagPanelPrivilegios = `
 <p class="pag-intro">Reparte permisos <strong>por módulo</strong>: qué puede hacer alguien en cada parte de una
 aplicación. No sabe de negocio —ni de cargos, ni de sedes— así que el mismo panel sirve para los permisos de un
@@ -7960,6 +8078,21 @@ competir por atención. Y lo que dice la parte de accesibilidad es unánime en d
 // El marcado es el que EMITEN LOS COMPONENTES, no el de las demostraciones: lo
 // que se quiere detectar es justo la diferencia entre las dos superficies.
 
+/* LA BARRA DEL EDITOR, UNA VEZ. Estaba escrita dos veces y con la muestra en
+   error habrian sido tres; la ultima que se copio ya nacio con dos botones de
+   hueco de menos que el contrato. `title` solo en los dos huecos que traen
+   `ejemplo`, que es lo que emite el componente. */
+const BARRA_EDITOR = '<div class="ed-barra" role="toolbar" aria-label="Formato de Cuerpo del documento">'
+  + '<button type="button" class="btn btn-terc btn-mini btn-ic btn-solo-ic" aria-label="Negrita" tabindex="0"><span aria-hidden="true">' + icono('negrita', 16) + '</span></button>'
+  + '<button type="button" class="btn btn-terc btn-mini" tabindex="-1">Subt&iacute;tulo</button>'
+  + '<button type="button" class="btn btn-terc btn-mini btn-ic btn-solo-ic" aria-label="Lista" tabindex="-1"><span aria-hidden="true">' + icono('lista', 16) + '</span></button>'
+  + '<button type="button" class="btn btn-terc btn-mini" tabindex="-1">Separador</button>'
+  + '<span class="ed-sep" aria-hidden="true"></span>'
+  + '<button type="button" class="btn btn-2 btn-mini" tabindex="-1" title="Sale: LEON TUYA, Mayori">Trabajador</button>'
+  + '<button type="button" class="btn btn-2 btn-mini" tabindex="-1">Sede</button>'
+  + '<button type="button" class="btn btn-2 btn-mini" tabindex="-1" title="Sale: 08/09/2026">Fecha</button>'
+  + '<button type="button" class="btn btn-2 btn-mini" tabindex="-1">Fecha larga</button></div>';
+
 const casos = [
   ['Botón', 'Las cinco variantes y el estado ocupado.',
    '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">' +
@@ -8054,6 +8187,68 @@ const casos = [
        '<p class="fc-resumen">Del jueves 5 al jueves 12 de marzo de 2026.</p></div>';
    })()],
 
+  /* AreaTexto no estaba, y es el componente al que el equipo mira cuando
+     pregunta por el editor de texto enriquecido: conviene ver exactamente
+     lo que se entrega, no una demostracion maquillada. El marcado es el que
+     emite el componente: `Campo` pone el grupo y el rotulo, y la ranura de
+     contenido mete el envoltorio de autocrecido con el textarea dentro. */
+  ['Área de texto', 'Con contador, y con el envoltorio de autocrecido.',
+   '<div class="campo-grupo"><label class="campo-etiqueta" for="er-ta">Motivo del memorando</label>' +
+   '<div class="ta-crece" data-replica="Se le descuenta el dia por inasistencia injustificada.">' +
+   '<textarea id="er-ta" class="campo ta" rows="3">' +
+   'Se le descuenta el dia por inasistencia injustificada.</textarea></div>' +
+   /* LA REGION VIVA VA AQUI. Faltaba, y es EXACTAMENTE la quinta de las cinco
+      divergencias que `editor-catalogo.test.tsx` nacio para impedir, viva en la
+      muestra de al lado porque esa prueba solo mira `.ed`. */
+   '<span class="sr-solo" role="status" aria-live="polite"></span>' +
+   /* DOS `span` ANIDADOS, no uno con las dos clases: `Campo` envuelve en
+      `.campo-ayuda` lo que `usarContador` ya devolvio como `.ta-pie`. */
+   '<span class="campo-ayuda"><span class="ta-pie">' +
+   '<span>Texto plano. No admite negrita ni listas.</span>' +
+   /* «446 restantes», y no «148 de 500»: `interno/contador.tsx` solo emite
+      «N restantes» o «N de mas». El texto mide 54, y 500 - 54 = 446. La
+      sintaxis anterior no la puede producir ningun producto. */
+   '<span class="ta-cuenta">446 restantes</span></span></span></div>'],
+  /* El editor de texto, con la hoja que viaja y nada mas. Aqui se ven las tres
+     cosas que SOLO se ven en el marco aislado, y las nombro quien lo pidio:
+     que el <strong> salga sin class, que la ficha no se pueda partir, y que
+     un h3 salga en negrita del mismo cuerpo y no a 24px. */
+  /* El editor de texto, con la hoja que viaja y nada mas. Este marcado tiene
+     que ser EL QUE EMITE EL COMPONENTE: `editor-catalogo.test.tsx` compara los
+     dos arbol contra arbol, y conservaba cinco divergencias —el icono a 18 en
+     vez de 16, el orden de la barra, el icono sin su envoltura, `.ed-puestos`
+     fuera de `.ed` y la region viva ausente— que ningun candado veia, porque
+     los dos que leen marcado BORRAN los <template> a proposito. */
+  ['Editor de texto', 'La barra, el contenido y los huecos, sin mobiliario.',
+   '<div class="ed">' +
+   BARRA_EDITOR +
+   '<div class="ed-texto" role="textbox" aria-label="Cuerpo del documento" aria-multiline="true">' +
+   '<h3>Memorando de inasistencia</h3>' +
+   '<p>Se comunica a {{trabajador}}, de la sede {{sede}}, lo <strong>siguiente</strong>:</p>' +
+   '<ul><li>Inasistencia del dia {{fechaHechoLarga}}.</li>' +
+   '<li>Sin justificacion presentada.</li></ul><hr>' +
+   '<p>Se descuenta la jornada.</p></div>' +
+   '<span class="sr-solo" role="status" aria-live="polite"></span>' +
+   '<p class="ed-puestos">Huecos en el texto: {{trabajador}} &middot; {{sede}} &middot; {{fechaHechoLarga}}</p>' +
+   '</div>'],
+  /* EL EDITOR EN ERROR, Y CON EL AVISO DE LO RETIRADO.
+     `.ed-mal` y `.ed-retirado` VIAJABAN EN LA HOJA DE TODOS LOS PRODUCTOS y el
+     catalogo no las pintaba en ningun sitio: cero apariciones en marcado, en
+     las dos paginas. Ningun candado tapaba el hueco —el de la promesa compara
+     lo que el catalogo PINTA, el de la promesa muerta pregunta si alguien las
+     emite (y si), el de la omision pregunta lo contrario—, asi que el aviso
+     que es la unica prueba VISIBLE de la promesa central de la pieza —«se
+     retira y SE DICE»— se entregaba sin que nadie lo hubiera visto nunca.
+     Lo cazo una auditoria el 2026-09-13. */
+  ['Editor de texto en error', 'El borde de 2px, y lo que se retiro al abrir.',
+   '<div class="ed ed-mal">' +
+   BARRA_EDITOR +
+   '<div class="ed-texto" role="textbox" aria-label="Cuerpo del documento" aria-multiline="true">Se comunica a {{trabajador}} y a .</div>' +
+   '<span class="sr-solo" role="status" aria-live="polite">se quit&oacute; el formato que no se admite (div, font) y el hueco {{documento}}, que no existe</span>' +
+   '<p class="ed-retirado">Al abrir, se quit&oacute; el formato que no se admite (div, font) y el hueco {{documento}}, que no existe.</p>' +
+   '<p class="ed-puestos">Huecos en el texto: {{trabajador}}</p>' +
+   '</div>' +
+   '<span class="campo-error">' + icono('alerta', 18) + 'Revisa el documento antes de guardar.</span>'],
   ['Estados de pantalla', 'Sin resultados y error, con su acción.',
    '<div class="ep ep-sin-resultados" role="status">' +
    '<p class="ep-titulo">Sin resultados para «zapata»</p>' +
@@ -8071,6 +8266,12 @@ comparadores— que <strong>no viajan</strong>. Aquí no hay ninguna.</p>
 sistema han sido el mismo: una regla que el catálogo tiene y el paquete no, o un marcado que el
 catálogo enseña y el componente no emite. Los candados los cazan midiendo; esta página los
 <strong>enseña</strong>. Si algo se ve mal aquí, así se ve en el producto.</div>
+
+<div class="aviso"><strong>Se omite <code>contenteditable</code> a proposito</strong> en las muestras
+del editor. Un editor vivo <strong>sin saneador detras</strong> refutaria la garantia que la pieza
+promete, y ya paso: la version anterior de la pagina del componente invitaba a pegar desde Word sobre
+uno. El precio esta dicho: <code>.ed-texto:focus-visible</code> <strong>no se puede ver en el
+catalogo</strong>, porque sin <code>contenteditable</code> la caja no es enfocable.</div>
 
 <div class="aviso"><strong>El marcado es el que emiten los componentes</strong>, no el de las
 demostraciones de al lado. Y la hoja no es una copia: se inyecta desde
@@ -8139,6 +8340,7 @@ const CATALOGO = [
       { id: 'enlace', t: 'Enlace', estado: 'listo', c: pagEnlace },
       { id: 'campo', t: 'Campo de texto', estado: 'listo', c: pagCampo },
       { id: 'areatexto', t: 'Área de texto', estado: 'listo', c: pagAreaTexto },
+      { id: 'editortexto', t: 'Editor de texto', estado: 'listo', c: pagEditorTexto },
       // R102 · va ANTES que las tres cargas: lo primero que hay que entender
       // es la medida que las tres respetan.
       { id: 'filacarga', t: 'Fila de carga', estado: 'listo', c: pagFilaCarga },
@@ -9659,7 +9861,20 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 
 /* Filtros por columna */
 .tb-buscar .sel-caja { display: flex; }
-.tb-buscar input.campo.sel-in { min-width: 230px; font-size: 13px; padding-block: 4px; }
+/* EL SUELO SE QUEDA, PERO DEJA DE SER ABSOLUTO. El mismo selector declaraba
+   min-width dos veces —0 arriba, 230px aqui— y EMPATAN en especificidad, asi
+   que ganaba el ultimo: el 0 que acompaña al flex de .tb-buscar, puesto por el
+   arreglo de vista movil, estaba MUERTO, y el buscador no bajaba de 230px ni en
+   373px de ancho.
+
+   Quitarlo a secas habria sido peor de otra forma: el suelo de escritorio
+   desaparecia y aqui NO HAY NAVEGADOR PARA MEDIR el ancho resultante. Con
+   min(230px, 100%) el escritorio queda EXACTAMENTE IGUAL —el contenedor es
+   ancho, gana 230px— y en estrecho el suelo se rinde al ancho disponible en vez
+   de desbordar. Las dos intenciones, sin inventar una medida que no se ha
+   tomado. Lo cazo una auditoria el 2026-09-13; el diagnostico era suyo y el
+   primer arreglo, equivocado. */
+.tb-buscar input.campo.sel-in { min-width: min(230px, 100%); font-size: 13px; padding-block: 4px; }
 #tb-filtros-btn.activo { border-color: var(--accion); color: var(--accion); }
 .tb-fila-filtros .tb-f-celda { padding: 4px 8px; background: var(--fondo-encabezado);
   border-bottom: 1px solid var(--borde); }
@@ -11087,6 +11302,64 @@ select.campo:disabled { opacity: .75; }
   border: 1px solid transparent; border-radius: 6px;
 }
 .ta-pie { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+
+/* EDITOR DE TEXTO CON HUECOS.
+   El cuadro se dibuja como un .campo porque LO ES para quien mira: mismo
+   borde, mismo redondeo, mismo anillo de foco. Lo que cambia es que dentro
+   hay marcado y no texto plano.
+   EL CONTENIDO VA NEUTRO A PROPOSITO. Un h3 aqui sale en negrita y del mismo
+   cuerpo que el resto, no a 24px: este editor ensena ESTRUCTURA, no apariencia
+   final, porque la apariencia final la decide un destino que el componente no
+   conoce. Pintar una jerarquia que el papel no tiene es la misma mentira que
+   ofrecer una etiqueta que el destino ignora. */
+.ed { display: flex; flex-direction: column; gap: 0; }
+.ed-barra { display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+  padding: 4px 8px; background: var(--fondo-encabezado);
+  border: 1px solid var(--borde-campo); border-bottom: 0;
+  border-radius: 6px 6px 0 0; }
+.ed-sep { width: 1px; align-self: stretch; margin: 4px;
+  background: var(--borde); }
+.ed-texto { font: inherit; font-size: 13px; line-height: 1.5;
+  min-height: 8em; max-height: 24em; overflow-y: auto;
+  padding: 8px 8px; background: var(--fondo-tarjeta);
+  color: var(--texto-principal);
+  border: 1px solid var(--borde-campo); border-radius: 0 0 6px 6px; }
+/* SIN BARRA DELANTE, LAS CUATRO ESQUINAS. Con una sola etiqueta sin control y
+   sin huecos la barra no se pinta —esta probado—, y la caja se quedaba con el
+   borde de arriba recto y nada encima: no se parecia a ningun otro campo. Se
+   resuelve con :first-child y no con una clase nueva porque la condicion ya
+   esta en el arbol: si no hay barra, el texto es el primer hijo. */
+.ed-texto:first-child { border-radius: 6px; }
+.ed-texto:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
+/* 2px, COMO CUALQUIER CAMPO. La clase campo-mal engorda el borde ademas de
+   teñirlo —el engrosamiento es la señal NO CROMATICA del sistema— y el editor
+   solo lo teñia: en un formulario con un area de texto y un editor los dos en
+   error, uno engordaba y el otro no.
+
+   LA BARRA VA APARTE, Y NO ES ESTETICA. Su regla base pone el borde de abajo a
+   CERO para que barra y caja formen un solo campo, y ese cero tiene
+   especificidad 100 contra el 200 de aqui: con border-width de 2px en el mismo
+   saco, la barra RECUPERABA su borde inferior y entre barra y texto salian
+   CUATRO pixeles de filete donde el diseño quiere dos —con las esquinas de la
+   barra aun redondeadas contra una linea que ya no es continua—. Ningun candado
+   podia verlo: cascada, empate y promesa comparan por NOMBRE de propiedad, y
+   border-bottom y border-width son nombres distintos. Lo midio una auditoria el
+   2026-09-13, sobre este mismo arreglo. */
+.ed-mal .ed-texto { border-color: var(--error-acento); border-width: 2px; }
+.ed-mal .ed-barra { border-color: var(--error-acento); border-width: 2px 2px 0; }
+.ed-texto > :first-child { margin-top: 0; }
+.ed-texto > :last-child { margin-bottom: 0; }
+.ed-texto p { margin: 0 0 8px; }
+.ed-texto h2, .ed-texto h3, .ed-texto h4 {
+  font-size: 13px; font-weight: 600; margin: 12px 0 4px; }
+.ed-texto ul, .ed-texto ol { margin: 0 0 8px; padding-left: 20px; }
+.ed-texto li { margin: 0 0 4px; }
+.ed-texto hr { border: 0; border-top: 1px solid var(--borde); margin: 12px 0; }
+.ed-texto blockquote { margin: 0 0 8px; padding-left: 12px;
+  border-left: 3px solid var(--borde); color: var(--texto-secundario); }
+.ed-retirado { font-size: 12px; color: var(--error-texto); margin: 4px 0 0; }
+.ed-puestos { font-size: 12px; color: var(--texto-secundario); margin: 4px 0 0;
+  font-family: 'IBM Plex Mono', monospace; }
 .ta-cuenta { flex: none; font-variant-numeric: tabular-nums; }
 .ta-cuenta-mal { color: var(--error-texto); font-weight: 500; }
 
