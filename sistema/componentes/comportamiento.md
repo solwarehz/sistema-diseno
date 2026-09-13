@@ -28,7 +28,7 @@ memoria de nadie.
 
 ## Concordancia de registros — léase antes de citar una «R»
 
-**Hay dos registros de requerimientos y el solape llegó a TRES versiones.** El
+**Hay dos registros de requerimientos y el solape llegó a SIETE versiones.** El
 del equipo que pide —`requerimiento-R###-*.md`— y unos números que este sistema
 acuñó por su cuenta. Acuñarlos fue un error: **el registro es de quien escribe
 el requerimiento**, no de quien lo implementa.
@@ -38,20 +38,44 @@ el requerimiento**, no de quien lo implementa.
 | **R118** · búsqueda contra el servidor | **R123** · selector búsqueda asíncrono | v1.97.0 |
 | **R119** · el tercer rojo de la identidad | *(sin número: hallazgo interno, no pedido)* | v1.98.0 |
 | **R118** · las cinco reglas del calendario | *(sin número: se acuñó otra vez, ya con la regla puesta)* | v1.101.0 |
+| **R129** · cambiar de mes no desborda | *(sin número: acuñado por tercera vez)* | v1.103.0 |
+| **R50** · la carga de imagen y su avatar | *(sin número: acuñado. El R50 **real** del equipo es el aviso que no se veía, v1.55.0)* | v1.44.0 |
+| **R56** · la tarjeta pulsable es un `<button>` | *(sin número: «R56 no lo pidió nadie, apareció al ir a construir R57»)* | v1.49.0 |
+| **R61** · la cuadrícula de tarjetas | *(sin número: lo consumió este sistema por un hallazgo propio)* | v1.51.0 |
 
-Los tres números **se quedan como están** en lo ya publicado. Una etiqueta no se
+Los siete números **se quedan como están** en lo ya publicado. Una etiqueta no se
 mueve y un ZIP entregado no se reescribe: quien instale `v1.97.0` leerá R118 en
 este mismo documento, y tiene que seguir cuadrando con lo que descargó.
 
-**Desde la v1.99.0 manda el registro del equipo.** Este sistema no acuña
+**Desde la v1.99.0 manda el registro del equipo** —la política se había fijado ya el 2026-08-16, y se tardó—.** Este sistema no acuña
 números: si un trabajo no tiene requerimiento, se describe por lo que hace y por
 la versión en que entró, sin inventarle una «R».
 
-**Y se volvió a saltar en la v1.101.0**, dos versiones después de escribir esa
-frase: las cinco reglas de «Rango de fechas» citan `(R118, v1.101.0)` y no hay
-tal requerimiento — es el mismo número acuñado por tercera vez. Se deja como
-está por lo mismo que las otras dos, la etiqueta y el ZIP ya entregados, y se
-apunta arriba. Lo descubrió una auditoría adversaria el 2026-09-11.
+**Y se volvió a saltar dos veces más.** En la v1.101.0, dos versiones después
+de escribir esa frase: las cinco reglas de «Rango de fechas» citan
+`(R118, v1.101.0)` y no hay tal requerimiento. Y en la v1.103.0 con
+`(R129, v1.103.0)` — «cambiar de mes no desborda»—, que el **2026-09-13** chocó
+de frente con el **R129 real del equipo**, el del calendario que se encoge.
+
+Esa última colisión **hizo saltar en verde al candado de contrato**: las reglas
+nuevas citaban `R129` y el candado las dio por respaldadas casando con las
+pruebas del R129 viejo. Por eso las de la v1.108.0 citan **«R129 del equipo»** y
+se atan por número de fila. Un registro compartido con quien no lo gobierna no
+solo confunde a las personas: **engaña a los candados**.
+
+Se deja como está por lo mismo que las otras, la etiqueta y el ZIP ya
+entregados, y se apunta aquí.
+
+**Y la tabla estaba incompleta hasta el 2026-09-13.** Una auditoría barrió las
+146 citas de este documento contra los 43 de `peticiones/` y encontró tres más,
+una de ellas —`R50`— **colisión consumada desde la v1.55.0**, diagnosticada en
+`peticiones/2026-08-16-privilegios-r68-r69.md` y **64 versiones sin aviso al
+lector**. La política `S-nn` para hallazgos internos se fijó ese mismo día, no
+«desde la v1.99.0» como decía este párrafo.
+
+**Desde la v1.108.0 esto no depende de que alguien se acuerde.** El candado de
+contrato falla si un número se cita con **dos versiones distintas** y no está en
+esta tabla.
 
 > Cuidado con `R118` y `R119` a secas: en el registro del equipo son *diálogo
 > con acción en gerundio* y *editor de texto con huecos*, dos cosas que nada
@@ -388,20 +412,58 @@ no se podía usar (R126).
 
 <!-- pruebas: RangoFecha.test.tsx, rango-fecha-anatomia.test.tsx, calendario-catalogo.test.tsx -->
 
+> **R129 lo vigila el candado de la cascada, no una prueba.** Es una regla sobre
+> qué declaración GANA a cada ancho, y eso es precisamente lo que
+> `verificar-cascada` resuelve; jsdom no maqueta y no podría verlo. La
+> afirmación `R129` de ese candado sale en **rojo contra la v1.107.0**, que es
+> como se comprobó que protege algo.
+
 | | Regla |
 |---|---|
 | **1** | **Obligatorio.** (R126, v1.103.0) **Cada semana es una FILA propia** —`role="row"`— y no una celda suelta. El patrón `grid` de ARIA las exige, y la hoja las reparte: cada fila ocupa las siete columnas y es a su vez rejilla de siete. Hasta la v1.103.0 la hoja daba `grid-template-columns: repeat(7,1fr)` solo a `.fc-dias`, que con el marcado anidado repartía **las siete semanas** en siete columnas de ~33 px: cabeceras «LMXJVSD» pegadas y días de dos en dos. Desde la v1.105.0 el catálogo emite **la misma anatomía** —contenedor con `role="grid"`, cabecera como una fila más dentro, celdas `role="gridcell"`, filas rellenadas a siete—, así que la hoja describe UNA superficie y no dos. Y la celda de rejilla se estira: sin eso el día quedaba inline dentro de su columna, el tramo se pintaba a trozos y los redondeos de `.fc-ini`/`.fc-fin` no encajaban. |
-| **2** | **Obligatorio.** (R126, v1.103.0) **El rótulo y el valor se apilan dentro del disparador.** El componente emite `<button class="campo fc-campo">` con `.cg-et` y `.cg-in` dentro; las reglas que los colocan estaban escritas para `input.fc-campo` y no alcanzaban, así que se leía literalmente «DesdeElegir fecha». La regla de apilado **sí** va atada al `button`: describe cómo se colocan unos hijos que un `<input>` no puede tener. |
+| **2** | **Obligatorio.** (R130 del equipo, v1.108.0) **El rótulo va FUERA del recuadro, en su `.cg`, igual que en cualquier otro campo del sistema.** Iba **dentro** del botón y era el único del sistema que lo hacía: `Campo` compone `.campo-grupo` > `.campo-etiqueta` + `.campo`, con el rótulo encima de la caja. Puestos en la misma fila —que es lo normal— el rótulo de uno salía arriba y el del otro dentro, y **las cajas ni siquiera medían lo mismo**, porque el disparador apilaba dos líneas. La hoja **ya lo preveía**: `.fc-campos .cg{ width: 172px }` viajaba en el paquete desde siempre y **ningún producto podía activarla**, porque el componente no emitía ningún `.cg` ahí dentro — una promesa muerta que el candado no vio por ser un descendiente y no dos clases juntas. El rótulo se ata al botón con `aria-labelledby` (un `<label>` no nombra a un botón) y el nombre accesible sigue siendo «Desde 05/03/2026». El disparador declara su propio `line-height: 20px`: con sus 16 de relleno son los **36 px de un campo, exactos**, que es la lección de la v1.40.1 con `.btn`. |
+| **2b** | **Obligatorio.** (R130 del equipo, v1.108.0) **En el disparador la fecha se muestra en formato peruano, no en ISO.** La tabla «Formato» del catálogo lo dice desde siempre —se muestra `31/03/2026`, se guarda `2026-03-31`— y el disparador imprimía el valor tal cual: el formato de **guardar**, enseñado a quien mira. Lo grave no es el despiste: **este mismo componente ya formateaba** para el resumen y no para el disparador. El contrato de la propiedad sigue siendo ISO —es lo que se guarda— y **el formateo al pintar es del componente**: si lo hace cada pantalla, habrá tantos formatos como pantallas. |
 | **3** | **Obligatorio.** (R118, v1.101.0) **Dos meses a la vista por omisión.** Elegir un rango con un solo mes obliga a navegar a ciegas. `meses={1}` vuelve a uno, y las columnas salen del número de meses — no cableadas a dos, que dejaba media rejilla en blanco. |
 | **4** | **Obligatorio.** (R118, v1.101.0) **No se pintan días del mes vecino: huecos.** Con dos meses a la vista el mismo día saldría dos veces y no se sabría cuál vale. |
 | **5** | **Obligatorio.** (R118, v1.101.0) **El panel de periodos va con cuatro por omisión** —«Este mes», «Mes pasado», «Últimos 2 meses», «Este año»—, se sustituye entero con `atajos` y se quita con `atajos={[]}`. Un colegio piensa en bimestres, no en trimestres naturales. Elegir un periodo fija los dos extremos y cierra. |
-| **6** | **Obligatorio.** (R118, v1.101.0) **El resumen dice lo elegido en palabras**, no en ISO. Dos fechas `2026-03-05 / 2026-03-12` no se leen de un vistazo, y esa línea es además la que anuncia el cambio al lector. |
+| **6** | **Obligatorio.** (R118, v1.101.0 · matizada en v1.108.0) **El resumen dice lo elegido en palabras**, no en ISO. Dos fechas `2026-03-05 / 2026-03-12` no se leen de un vistazo, y esa línea es además **la que anuncia el cambio al lector**. **Sin rango, calla** —decía «Sin rango elegido.» y era una tercera frase para lo mismo, con los dos disparadores ya diciendo «Elegir fecha»—, **pero no desaparece**: el elemento se queda siempre en el árbol y lo que se vacía es su texto. Una región viva creada en el momento no la anuncian la mayoría de lectores, así que quitarla rompería el anuncio de la **primera** elección; es la regla 0 de «Aviso temporal». Y **no lleva propiedad para apagarla**, a propósito: esa línea es el anuncio, y dejarlo a criterio de cada pantalla es dejar el componente mudo. |
 | **7** | **Obligatorio.** (R118, v1.101.0) **Sobrevolar enseña el rango que SALDRÍA.** Sin ello no se ve qué se está a punto de elegir hasta después de elegirlo. **Se suelta al cerrar y al cambiar de mes.** Solo se limpiaba con `mouseleave`, así que salir con Escape dejaba medio mes pintado como «dentro del rango» sin nadie encima. Al cambiar de mes el foco se mueve al día equivalente y ese día pasa a ser el sobrevolado — el tramo que se ve es el que se elegiría, no un resto del mes anterior. |
 | **8** | **Obligatorio.** (v1.39.0) **Abrir NO borra el rango.** El del catálogo hacía `ini = null; fin = null` al abrir, así que un Shift+Tab de vuelta destruía la selección en silencio. Abrir es abrir. |
 | **9** | **Obligatorio.** (v1.39.0) **El teclado completo del patrón**: flechas, Inicio y Fin de **semana**, RePág/AvPág de mes —con Shift, de año—, Escape, y **roving tabindex** (un solo día alcanzable con Tab, no los sesenta). |
 | **10** | **Obligatorio.** (R129, v1.103.0) **Cambiar de mes no desborda.** `new Date(a, m+n, 31)` con destino en un mes de 30 salta al siguiente: AvPág desde el 31 de enero aterrizaba el **3 de marzo** —febrero entero saltado— y RePág desde el 31 de marzo no se movía. El día se recorta al último del mes destino. |
 | **11** | **Obligatorio.** (v1.39.0) **Elegir un final anterior al inicio reinicia el rango**, no produce un rango invertido. Y el interior del rango se dice en el nombre accesible, no solo con color (SC 1.4.1). |
-| **12** | Del proyecto: de dónde salen las fechas, qué significan y qué se hace con ellas. El sistema entrega el control y su comportamiento. |
+| **12** | **Obligatorio.** (R129 del equipo, v1.108.0) **La celda del día tiene ancho mínimo propio: `min-width: 30px`.** `width: 100%` **no aporta ancho intrínseco** dentro de una rejilla: las siete columnas se dimensionan por el contenido, y el contenido es un número. Control Administrativos midió el DOM y salían a **16,16 px** — los días de dos cifras se tocaban (`141516171819 20`) y ninguna columna cuadraba con su cabecera `LMXJVSD`. Los 30 px son la altura que la celda ya tenía: la celda cuadrada que este componente siempre quiso ser. |
+| **13** | **Obligatorio.** (R129 del equipo, v1.108.0) **El tope del calendario no puede quedar por debajo de lo que el contenido pide, que son 626 px**: 472 los dos meses (7×30 ×2 + 20 de hueco + 32 de relleno) + 152 la barra de periodos (su `min-width`, que con `box-sizing: border-box` ya incluye sus 32 de relleno) + 2 de bordes. Topaba en **560** y encima lleva `overflow: hidden`, así que la columna del domingo del segundo mes salía cortada y **la barra de periodos desaparecía entera** — los cuatro periodos dejaban de existir para quien mira, **sin ningún aviso**. El `overflow` se queda: hace falta para que los fondos cuadrados de cabecera, periodos y pie no asomen por las esquinas redondeadas. Lo que se arregla es la caja, no el recorte. El tope se ata a la ventana con `min(640px, calc(100vw - 24px))`, que es el único límite real de una capa flotante. |
+| **14** | **Obligatorio.** (R129 del equipo, v1.108.0) **La reserva que apila entra ANTES de que el tope por ventana recorte.** Cortaba en 620 px y el contenido pide 626: entre esos dos números volvía a recortar en silencio. Corta en **660**. Control Administrativos lo reportó como «la reserva mira la ventana y no el calendario», y tenían razón en el síntoma: con una ventana de 918 px y un calendario de 432, no entraba nunca. **El diagnóstico se queda corto**, y la diferencia importa: la causa era la regla 12. Sin ancho intrínseco el calendario se encogía al ancho de su **disparador**; con él, la fórmula de ajuste de una caja absoluta toma el máximo entre lo disponible y su mínimo de contenido, así que ya no depende del disparador y **medir la ventana vuelve a ser lo correcto para el caso que reportaron**. `@container` no haría falta **ahí**, y conviene no decirlo más fuerte: cuando lo que recorta no es la ventana sino un antecesor —un panel lateral, un diálogo, una columna de una rejilla—, el tope por ventana da 640 y el sitio real es menor, y ni `@container` lo resuelve, porque un contenedor no se consulta a sí mismo. Está al pie de esta sección. |
+| **15** | Del proyecto: de dónde salen las fechas, qué significan y qué se hace con ellas. El sistema entrega el control y su comportamiento. |
+
+**Los 626 px son con los valores por omisión.** Con `meses={1}` o `atajos={[]}` —las dos son props públicas— el contenido pide 396 o 474, así que el corte en 660 apila antes de lo necesario; y un atajo con una etiqueta muy larga empuja `.fc-atajos` por encima de sus 152 y se come la holgura hasta 640. El candado los tiene clavados como si el contenido fuera fijo, y se dice.
+
+**Un límite declarado, medido el 2026-09-13 por una auditoría de familia.** Con
+el suelo de la regla 13 el calendario ya no se encoge, pero **tampoco cabe en
+cualquier sitio**: pide 626 px y hay contenedores del propio sistema que
+recortan por debajo de eso. El caso medido es `Dialogo`: `.dialogo-caja` mide
+`min(520px, …)` y `.dialogo-cuerpo` lleva `overflow-y: auto` —que en CSS hace
+computar también `overflow-x` a `auto`—, así que el interior son **480 px** y
+sobran 146.
+
+Qué pasa ahí, exactamente: el calendario **se ve entero y se llega a los
+periodos desplazando**. Es mejor que antes, cuando a ese mismo ancho se encogía
+a columnas de 16 px y la barra de periodos **se perdía sin recuperación**; pero
+no es bueno. La reserva que apila **no puede entrar**, porque mide la ventana y
+la ventana es grande.
+
+**No se arregla con CSS**, y conviene decirlo en vez de fingir: una capa
+posicionada no puede preguntar cuánto mide el antecesor que la recorta. `@container`
+tampoco sirve —un contenedor no se consulta a sí mismo, y el único consultable
+es `.fc-zona`, que es el disparador, no el espacio disponible—. La salida es
+sacar la capa a la **capa superior** del navegador (`popover`), que es trabajo
+de otra versión. **Mientras tanto: si se monta un `RangoFecha` dentro de un
+`Dialogo`, cuéntese con el desplazamiento horizontal.** Lo mismo vale para
+cualquier antecesor que recorte —`.app-contenido`, `.tb-envoltura`,
+`.cf-banda-in`—, y para cualquier otra capa flotante del sistema.
+
+**Y hay un coste que esta versión introduce, medido:** la capa pasó de 560 a 626 px reales, así que el desbordamiento por el **canto derecho** creció 66 px para todos. `.fc-cal` es `position: absolute; left: 0` **sin lógica de volteo**, y el `min()` acota el **ancho**, no la **posición**. Aparece una franja nueva —ventana de ~661 a ~690 con la columna de contenido a 606— donde el calendario se sale por la derecha y antes no lo hacía, porque el tope de 560 lo tapaba. Es el mismo problema de fondo que el del pie: sin capa superior, una capa anclada no sabe dónde está el borde.
 
 ---
 

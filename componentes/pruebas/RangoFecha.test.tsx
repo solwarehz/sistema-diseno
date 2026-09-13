@@ -104,8 +104,10 @@ describe('Rango de fechas · el fallo que borraba la selección', () => {
 
     // Abrir «Desde» otra vez —lo que un Shift+Tab provocaba— no destruye nada.
     await abrirDesde(u);
-    expect(screen.getByRole('button', { name: /Desde/ })).toHaveTextContent('2026-03-10');
-    expect(screen.getByRole('button', { name: /Hasta/ })).toHaveTextContent('2026-03-20');
+    // En pantalla va en formato peruano, no en ISO (R130.2): el ISO es lo que
+    // se guarda, y lo que se guarda no se ensena.
+    expect(screen.getByRole('button', { name: /Desde/ })).toHaveTextContent('10/03/2026');
+    expect(screen.getByRole('button', { name: /Hasta/ })).toHaveTextContent('20/03/2026');
   });
 
   it('[11] elegir «hasta» anterior a «desde» reinicia el rango en vez de invertirlo', async () => {

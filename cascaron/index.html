@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.107.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.108.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.107.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.108.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -1285,8 +1285,16 @@ code { font-family: 'IBM Plex Mono', monospace; }
    describe como se colocan unos hijos que solo el boton tiene, asi que atarla
    al boton no es el defecto de antes —aquello ataba a `input` reglas que el
    boton SI necesitaba—. Sin esto se leia literalmente «DesdeElegir fecha». */
-button.fc-campo { display: flex; flex-direction: column; align-items: flex-start;
-  justify-content: center; gap: 2px; text-align: left; height: auto; }
+/* R130.1 · EL DISPARADOR MIDE LO QUE UN CAMPO, y antes no.
+   Apilaba rotulo y valor DENTRO del recuadro, asi que salia mas alto que
+   cualquier .campo de al lado y su etiqueta era la unica del sistema puesta
+   dentro de la caja. Ahora el rotulo vive fuera, en su .cg, como en Campo, y
+   aqui solo queda el valor.
+   El line-height va declarado a proposito: es la leccion de v1.40.1 con .btn
+   —lo que no fija su propia caja la hereda de la pagina que lo monte—. 20px
+   mas los 16 de relleno son los 36 de un campo, exactos. */
+button.fc-campo { display: flex; align-items: center; justify-content: flex-start;
+  text-align: left; line-height: 20px; }
 
 .fc-campo { padding-right: 32px;
   background-repeat: no-repeat; background-position: right 12px center;
@@ -1300,10 +1308,39 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
    que saber cuál se va a rellenar. */
 .fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 1px var(--accion); }
 
+/* Del catalogo, NO viaja: reproduce el montaje del consumidor —el disparador
+   en una fila estrecha junto a un boton— para que R129 y su familia se vean
+   AQUI y no en su pantalla de trabajo. 606px son los suyos, medidos. */
+.demo-fila-estrecha { display: flex; align-items: flex-end; gap: 8px;
+  max-width: 606px; }
+/* .fc-campos lleva margin-bottom:16px y como item de flex no lo colapsa, asi
+   que el boton de al lado quedaba 16px por debajo del canto de los campos. */
+.demo-fila-estrecha .fc-campos { margin-bottom: 0; }
+
 .fc-zona { position: relative; }
+/* R129.2 · EL TOPE ERA MENOR QUE EL CONTENIDO. Con R129.1 puesto, lo que el
+   calendario pide se puede sumar a mano y da 626px:
+       472  los dos meses   (7x30 x2 + 20 de hueco + 32 de relleno)
+     + 152  la barra de atajos (su min-width, que con box-sizing:border-box
+            ya incluye sus 32 de relleno)
+     +   2  los dos bordes
+   El tope estaba en 560 y encima hay overflow:hidden, asi que la columna del
+   domingo del segundo mes salia cortada y LA BARRA DE ATAJOS DESAPARECIA
+   ENTERA —los cuatro periodos dejaban de existir para quien mira, sin ningun
+   aviso—. El overflow se queda: hace falta para que los fondos cuadrados de la
+   cabecera, los atajos y el pie no asomen por las esquinas redondeadas. Lo que
+   se arregla es la caja, no el recorte.
+   El min() ata el tope al ancho de la VENTANA. Los 32 del canalon no son un
+   numero nuevo: es el que esta hoja ya usa en .dialogo-caja, y R129 habia
+   elegido 24 sin motivo.
+   OJO CON LA PALABRA «unico», que la primera version escribio de mas: la
+   ventana no es el unico limite de una capa flotante, es el unico que el CSS
+   puede preguntar. Los antecesores que recortan —.app-contenido,
+   .dialogo-cuerpo, .tb-envoltura— son limites reales y no se pueden consultar
+   desde aqui. Esta declarado al pie de la seccion del contrato. */
 .fc-cal { position: absolute; z-index: 40; top: calc(100% + 6px); left: 0;
   border: 1px solid var(--borde-campo); border-radius: 6px; overflow: hidden;
-  background: var(--fondo-tarjeta); max-width: 560px;
+  background: var(--fondo-tarjeta); max-width: min(640px, calc(100vw - 32px));
   box-shadow: var(--sombra-capa); }
 /* Los atajos viven DENTRO del calendario y en COLUMNA LATERAL, como en los
    selectores de periodo de Facebook o Analytics: debajo no se ven, y fuera
@@ -1367,8 +1404,16 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
    ~33, el tramo pintado a trozos y los redondeos de `.fc-ini`/`.fc-fin` sin
    encajar. Era R126 otra vez, un nivel mas abajo. */
 .fc-dias [role='gridcell'] { display: grid; }
-.fc-d { height: 30px; width: 100%; font: inherit; font-size: 12px; cursor: pointer;
-  background: transparent; border: 0; color: var(--texto-principal); border-radius: 6px; }
+/* R129.1 · min-width, y no solo width:100%. Dentro de una rejilla, width:100%
+   NO APORTA ANCHO INTRINSECO: las siete columnas se dimensionan por el
+   contenido, y el contenido es un numero. Control Administrativos midio el DOM
+   y las columnas resolvian a 16,16px: los dias de dos cifras SE TOCABAN
+   —141516171819 20— y ninguna cuadraba con su cabecera LMXJVSD.
+   30px es exactamente la altura que la celda ya tenia: la celda cuadrada que
+   este componente siempre quiso ser. */
+.fc-d { height: 30px; min-width: 30px; width: 100%; font: inherit; font-size: 12px;
+  cursor: pointer; background: transparent; border: 0; color: var(--texto-principal);
+  border-radius: 6px; }
 /* El hover es el del sistema, fondo-fila-hover, el mismo que la fila de tabla
    bajo el cursor. Antes usaba fondo-encabezado, un gris que no es un hover. */
 .fc-d:hover { background: var(--fondo-fila-hover); }
@@ -1396,10 +1441,27 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
    va a quedar. Antes usaba un azul más oscuro que aparecía de golpe. */
 .fc-previo { background: var(--accion); }
 .fc-resumen { font-size: 13px; color: var(--texto-secundario); margin: 16px 0 0; }
+/* R130.3 · Sin rango no dice nada, y entonces tampoco ocupa. El elemento se
+   queda en el arbol —la region viva tiene que existir desde la carga o la
+   primera eleccion no se anuncia— pero vacio no deja hueco. */
+.fc-resumen:empty { margin: 0; }
 /* R129 · en angosto se apilan los meses Y BAJA el panel de periodos. Antes solo
    colapsaba la rejilla y los atajos seguian clavados al lado, con su borde
    izquierdo y sus 152px, dentro de un desplegable absoluto sin limite derecho. */
-@media (max-width: 620px) {
+/* R129.3 · EL CORTE SUBE DE 620 A 660, y el porque importa. Control
+   Administrativos reporto que esta reserva "mira la ventana y no el
+   calendario": con una ventana de 918px y un calendario de 432 no entraba
+   nunca, justo cuando hacia falta. Tenian razon en el sintoma y el diagnostico
+   se queda corto — la causa era R129.1. Sin ancho intrinseco, el calendario se
+   encogia hasta el ancho de su disparador; CON el, la formula de ajuste de una
+   caja absoluta toma el MAXIMO entre lo disponible y su minimo de contenido
+   (624px), asi que ya no depende del disparador y medir la ventana vuelve a
+   ser lo correcto.
+   Lo que si quedaba mal es DONDE cortaba. El tope vale min(640, ventana-32), y
+   recorta cuando ventana-32 < 626, es decir por debajo de 658: la banda mala
+   real era 621-657, no «620 a 660» como decia la primera version de este
+   comentario. Se apila en 660, por encima de los 658. */
+@media (max-width: 660px) {
   .fc-cal-cuerpo { grid-auto-flow: row; }
   .fc-cal-marco { flex-direction: column; }
   .fc-atajos { border-left: 0; border-top: 1px solid var(--borde);
@@ -4480,7 +4542,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.107.0</option></select></label>
+          <select class="campo cg-in"><option>v1.108.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4568,8 +4630,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.107.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.107.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.108.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.108.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -5122,7 +5184,7 @@ demostraciones de al lado. Y la hoja no es una copia: se inyecta desde
 vieja.</div>
 
 <script type="text/plain" id="tokens-entregados">/* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.107.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.108.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -5747,7 +5809,7 @@ vieja.</div>
 </script>
 <script type="text/plain" id="hoja-entregada">
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.107.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.108.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -6268,15 +6330,15 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   FECHA Y RANGO — 42 reglas · clases .fc-*
+   FECHA Y RANGO — 43 reglas · clases .fc-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .fc-campos{ display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 .fc-campos .cg{ width: 172px; flex: none; }
 .fc-guion{ color: var(--texto-pista); padding-bottom: 8px; display: grid; place-items: center; }
 .fc-guion .ic{ width: 16px; height: 16px; }
-button.fc-campo{ display: flex; flex-direction: column; align-items: flex-start;
-  justify-content: center; gap: 2px; text-align: left; height: auto; }
+button.fc-campo{ display: flex; align-items: center; justify-content: flex-start;
+  text-align: left; line-height: 20px; }
 .fc-campo{ padding-right: 32px;
   background-repeat: no-repeat; background-position: right 12px center;
   background-size: 16px 16px;
@@ -6289,7 +6351,7 @@ button.fc-campo{ display: flex; flex-direction: column; align-items: flex-start;
 .fc-zona{ position: relative; }
 .fc-cal{ position: absolute; z-index: 40; top: calc(100% + 6px); left: 0;
   border: 1px solid var(--borde-campo); border-radius: 6px; overflow: hidden;
-  background: var(--fondo-tarjeta); max-width: 560px;
+  background: var(--fondo-tarjeta); max-width: min(640px, calc(100vw - 32px));
   box-shadow: var(--sombra-capa); }
 .fc-cal-marco{ display: flex; align-items: stretch; }
 .fc-atajos{ display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
@@ -6321,8 +6383,9 @@ button.fc-campo{ display: flex; flex-direction: column; align-items: flex-start;
 .fc-sem span{ font-size: 12px; font-weight: 500; color: var(--texto-secundario);
   text-align: center; padding-bottom: 4px; }
 .fc-dias [role='gridcell']{ display: grid; }
-.fc-d{ height: 30px; width: 100%; font: inherit; font-size: 12px; cursor: pointer;
-  background: transparent; border: 0; color: var(--texto-principal); border-radius: 6px; }
+.fc-d{ height: 30px; min-width: 30px; width: 100%; font: inherit; font-size: 12px;
+  cursor: pointer; background: transparent; border: 0; color: var(--texto-principal);
+  border-radius: 6px; }
 .fc-d:hover{ background: var(--fondo-fila-hover); }
 .fc-vacio{ cursor: default; }
 .fc-vacio:hover{ background: transparent; }
@@ -6334,7 +6397,8 @@ button.fc-campo{ display: flex; flex-direction: column; align-items: flex-start;
 .fc-ini.fc-fin{ border-radius: 6px; }
 .fc-previo{ background: var(--accion); }
 .fc-resumen{ font-size: 13px; color: var(--texto-secundario); margin: 16px 0 0; }
-@media (max-width: 620px) {
+.fc-resumen:empty{ margin: 0; }
+@media (max-width: 660px) {
   .fc-cal-cuerpo{ grid-auto-flow: row; }
   .fc-cal-marco{ flex-direction: column; }
   .fc-atajos{ border-left: 0; border-top: 1px solid var(--borde);
@@ -7494,7 +7558,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   <h3 class="sub-seccion">Rango de fechas</h3>
   <p class="seccion-sub">El calendario abierto, con el tramo elegido. Es el que reportó R126.</p>
   <div class="bloque er-caso">
-    <template data-er="6"><div class="fc-zona"><div class="fc-campos" role="group"><button class="campo fc-campo fc-activo"><span class="cg-et">Desde</span><span class="cg-in">2026-03-05</span></button><span class="fc-guion"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg></span><button class="campo fc-campo"><span class="cg-et">Hasta</span><span class="cg-in">2026-03-12</span></button></div><div class="fc-cal" role="dialog" style="position:static;max-width:560px"><div class="fc-cal-cab"><button class="btn btn-3 btn-mini">&lsaquo;</button><span class="fc-meses">marzo &ndash; abril de 2026</span><button class="btn btn-3 btn-mini">&rsaquo;</button></div><div class="fc-cal-marco"><div class="fc-cal-cuerpo"><div><div class="fc-mes-tit">marzo de 2026</div><div class="fc-dias" role="grid" aria-label="marzo de 2026"><div role="row" class="fc-sem"><span role="columnheader">L</span><span role="columnheader">M</span><span role="columnheader">X</span><span role="columnheader">J</span><span role="columnheader">V</span><span role="columnheader">S</span><span role="columnheader">D</span></div><div role="row"><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><button class="fc-d">1</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">2</button></span><span role="gridcell"><button class="fc-d">3</button></span><span role="gridcell"><button class="fc-d">4</button></span><span role="gridcell"><button class="fc-d fc-ini">5</button></span><span role="gridcell"><button class="fc-d fc-dentro">6</button></span><span role="gridcell"><button class="fc-d fc-dentro">7</button></span><span role="gridcell"><button class="fc-d fc-dentro">8</button></span></div><div role="row"><span role="gridcell"><button class="fc-d fc-dentro">9</button></span><span role="gridcell"><button class="fc-d fc-dentro">10</button></span><span role="gridcell"><button class="fc-d fc-dentro">11</button></span><span role="gridcell"><button class="fc-d fc-fin">12</button></span><span role="gridcell"><button class="fc-d">13</button></span><span role="gridcell"><button class="fc-d">14</button></span><span role="gridcell"><button class="fc-d">15</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">16</button></span><span role="gridcell"><button class="fc-d">17</button></span><span role="gridcell"><button class="fc-d">18</button></span><span role="gridcell"><button class="fc-d">19</button></span><span role="gridcell"><button class="fc-d">20</button></span><span role="gridcell"><button class="fc-d">21</button></span><span role="gridcell"><button class="fc-d">22</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">23</button></span><span role="gridcell"><button class="fc-d">24</button></span><span role="gridcell"><button class="fc-d">25</button></span><span role="gridcell"><button class="fc-d">26</button></span><span role="gridcell"><button class="fc-d">27</button></span><span role="gridcell"><button class="fc-d">28</button></span><span role="gridcell"><button class="fc-d">29</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">30</button></span><span role="gridcell"><button class="fc-d">31</button></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span></div></div></div><div><div class="fc-mes-tit">abril de 2026</div><div class="fc-dias" role="grid" aria-label="abril de 2026"><div role="row" class="fc-sem"><span role="columnheader">L</span><span role="columnheader">M</span><span role="columnheader">X</span><span role="columnheader">J</span><span role="columnheader">V</span><span role="columnheader">S</span><span role="columnheader">D</span></div><div role="row"><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><button class="fc-d">1</button></span><span role="gridcell"><button class="fc-d">2</button></span><span role="gridcell"><button class="fc-d">3</button></span><span role="gridcell"><button class="fc-d">4</button></span><span role="gridcell"><button class="fc-d">5</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">6</button></span><span role="gridcell"><button class="fc-d">7</button></span><span role="gridcell"><button class="fc-d">8</button></span><span role="gridcell"><button class="fc-d">9</button></span><span role="gridcell"><button class="fc-d">10</button></span><span role="gridcell"><button class="fc-d">11</button></span><span role="gridcell"><button class="fc-d">12</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">13</button></span><span role="gridcell"><button class="fc-d">14</button></span><span role="gridcell"><button class="fc-d">15</button></span><span role="gridcell"><button class="fc-d">16</button></span><span role="gridcell"><button class="fc-d">17</button></span><span role="gridcell"><button class="fc-d">18</button></span><span role="gridcell"><button class="fc-d">19</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">20</button></span><span role="gridcell"><button class="fc-d">21</button></span><span role="gridcell"><button class="fc-d">22</button></span><span role="gridcell"><button class="fc-d">23</button></span><span role="gridcell"><button class="fc-d">24</button></span><span role="gridcell"><button class="fc-d">25</button></span><span role="gridcell"><button class="fc-d">26</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">27</button></span><span role="gridcell"><button class="fc-d">28</button></span><span role="gridcell"><button class="fc-d">29</button></span><span role="gridcell"><button class="fc-d">30</button></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span></div></div></div></div><div class="fc-atajos"><span class="fc-atajos-tit">Periodos</span><button class="fc-atajo">Este mes</button><button class="fc-atajo">Mes pasado</button><button class="fc-atajo">&Uacute;ltimos 2 meses</button><button class="fc-atajo">Este a&ntilde;o</button></div></div><div class="fc-cal-pie">Elige la fecha de inicio.</div></div><p class="fc-resumen">Del jueves 5 al jueves 12 de marzo de 2026.</p></div></template>
+    <template data-er="6"><div class="fc-zona"><div class="fc-campos" role="group"><div class="cg"><span class="cg-et">Desde</span><button class="campo fc-campo fc-activo"><span>05/03/2026</span></button></div><span class="fc-guion"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg></span><div class="cg"><span class="cg-et">Hasta</span><button class="campo fc-campo"><span>12/03/2026</span></button></div></div><div class="fc-cal" role="dialog" style="position:static;max-width:640px"><div class="fc-cal-cab"><button class="btn btn-3 btn-mini">&lsaquo;</button><span class="fc-meses">marzo &ndash; abril de 2026</span><button class="btn btn-3 btn-mini">&rsaquo;</button></div><div class="fc-cal-marco"><div class="fc-cal-cuerpo"><div><div class="fc-mes-tit">marzo de 2026</div><div class="fc-dias" role="grid" aria-label="marzo de 2026"><div role="row" class="fc-sem"><span role="columnheader">L</span><span role="columnheader">M</span><span role="columnheader">X</span><span role="columnheader">J</span><span role="columnheader">V</span><span role="columnheader">S</span><span role="columnheader">D</span></div><div role="row"><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><button class="fc-d">1</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">2</button></span><span role="gridcell"><button class="fc-d">3</button></span><span role="gridcell"><button class="fc-d">4</button></span><span role="gridcell"><button class="fc-d fc-ini">5</button></span><span role="gridcell"><button class="fc-d fc-dentro">6</button></span><span role="gridcell"><button class="fc-d fc-dentro">7</button></span><span role="gridcell"><button class="fc-d fc-dentro">8</button></span></div><div role="row"><span role="gridcell"><button class="fc-d fc-dentro">9</button></span><span role="gridcell"><button class="fc-d fc-dentro">10</button></span><span role="gridcell"><button class="fc-d fc-dentro">11</button></span><span role="gridcell"><button class="fc-d fc-fin">12</button></span><span role="gridcell"><button class="fc-d">13</button></span><span role="gridcell"><button class="fc-d">14</button></span><span role="gridcell"><button class="fc-d">15</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">16</button></span><span role="gridcell"><button class="fc-d">17</button></span><span role="gridcell"><button class="fc-d">18</button></span><span role="gridcell"><button class="fc-d">19</button></span><span role="gridcell"><button class="fc-d">20</button></span><span role="gridcell"><button class="fc-d">21</button></span><span role="gridcell"><button class="fc-d">22</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">23</button></span><span role="gridcell"><button class="fc-d">24</button></span><span role="gridcell"><button class="fc-d">25</button></span><span role="gridcell"><button class="fc-d">26</button></span><span role="gridcell"><button class="fc-d">27</button></span><span role="gridcell"><button class="fc-d">28</button></span><span role="gridcell"><button class="fc-d">29</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">30</button></span><span role="gridcell"><button class="fc-d">31</button></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span></div></div></div><div><div class="fc-mes-tit">abril de 2026</div><div class="fc-dias" role="grid" aria-label="abril de 2026"><div role="row" class="fc-sem"><span role="columnheader">L</span><span role="columnheader">M</span><span role="columnheader">X</span><span role="columnheader">J</span><span role="columnheader">V</span><span role="columnheader">S</span><span role="columnheader">D</span></div><div role="row"><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><button class="fc-d">1</button></span><span role="gridcell"><button class="fc-d">2</button></span><span role="gridcell"><button class="fc-d">3</button></span><span role="gridcell"><button class="fc-d">4</button></span><span role="gridcell"><button class="fc-d">5</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">6</button></span><span role="gridcell"><button class="fc-d">7</button></span><span role="gridcell"><button class="fc-d">8</button></span><span role="gridcell"><button class="fc-d">9</button></span><span role="gridcell"><button class="fc-d">10</button></span><span role="gridcell"><button class="fc-d">11</button></span><span role="gridcell"><button class="fc-d">12</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">13</button></span><span role="gridcell"><button class="fc-d">14</button></span><span role="gridcell"><button class="fc-d">15</button></span><span role="gridcell"><button class="fc-d">16</button></span><span role="gridcell"><button class="fc-d">17</button></span><span role="gridcell"><button class="fc-d">18</button></span><span role="gridcell"><button class="fc-d">19</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">20</button></span><span role="gridcell"><button class="fc-d">21</button></span><span role="gridcell"><button class="fc-d">22</button></span><span role="gridcell"><button class="fc-d">23</button></span><span role="gridcell"><button class="fc-d">24</button></span><span role="gridcell"><button class="fc-d">25</button></span><span role="gridcell"><button class="fc-d">26</button></span></div><div role="row"><span role="gridcell"><button class="fc-d">27</button></span><span role="gridcell"><button class="fc-d">28</button></span><span role="gridcell"><button class="fc-d">29</button></span><span role="gridcell"><button class="fc-d">30</button></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span><span role="gridcell"><span class="fc-d fc-vacio"></span></span></div></div></div></div><div class="fc-atajos"><span class="fc-atajos-tit">Periodos</span><button class="fc-atajo">Este mes</button><button class="fc-atajo">Mes pasado</button><button class="fc-atajo">&Uacute;ltimos 2 meses</button><button class="fc-atajo">Este a&ntilde;o</button></div></div><div class="fc-cal-pie">Elige la fecha de inicio.</div></div><p class="fc-resumen">Del jueves 5 al jueves 12 de marzo de 2026.</p></div></template>
     <iframe class="er-marco" title="Rango de fechas con la hoja entregada"></iframe>
   </div>
   <h3 class="sub-seccion">Estados de pantalla</h3>
@@ -11234,16 +11298,31 @@ día.</p>
 
 <h3 class="sub-seccion">Rango con calendario — pruébalo</h3>
 <p class="seccion-sub">Primer clic marca el inicio, segundo marca el fin, y el tramo entre ambos queda sombreado. Al pasar el cursor se previsualiza el tramo antes de fijarlo.</p>
+<p class="seccion-sub"><strong>Y va dentro de una fila estrecha a propósito.</strong> Hasta la v1.108.0
+esta demostración ponía el disparador al ancho de la página, y por eso R129 no se vio aquí:
+el calendario es una capa absoluta y se encogía al ancho de su contenedor, hasta que los
+días de dos cifras se tocaban y la barra de periodos desaparecía entera. Control
+Administrativos lo monta junto a un botón «Buscar» en una fila de 606&nbsp;px, así que aquí
+también. <strong>Si algo se rompe por estrechez, se rompe aquí primero.</strong></p>
 <div class="bloque">
+ <div class="demo-fila-estrecha">
   <div class="fc-zona" id="fc-zona">
     <div class="fc-campos">
-      <button type="button" class="campo fc-campo" id="fc-ini"
-              aria-haspopup="dialog" aria-expanded="false" aria-controls="fc-cal">
-        <span class="cg-et">Desde</span><span class="cg-in">Elegir fecha</span></button>
+      <div class="cg">
+        <span class="cg-et" id="fc-ini-et">Desde</span>
+        <button type="button" class="campo fc-campo" id="fc-ini"
+                aria-haspopup="dialog" aria-expanded="false" aria-controls="fc-cal"
+                aria-labelledby="fc-ini-et fc-ini-v">
+          <span id="fc-ini-v">Elegir fecha</span></button>
+      </div>
       <span class="fc-guion" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg></span>
-      <button type="button" class="campo fc-campo" id="fc-fin"
-              aria-haspopup="dialog" aria-expanded="false" aria-controls="fc-cal">
-        <span class="cg-et">Hasta</span><span class="cg-in">Elegir fecha</span></button>
+      <div class="cg">
+        <span class="cg-et" id="fc-fin-et">Hasta</span>
+        <button type="button" class="campo fc-campo" id="fc-fin"
+                aria-haspopup="dialog" aria-expanded="false" aria-controls="fc-cal"
+                aria-labelledby="fc-fin-et fc-fin-v">
+          <span id="fc-fin-v">Elegir fecha</span></button>
+      </div>
       <button class="btn btn-neutro" id="fc-limpiar">Limpiar</button>
     </div>
 
@@ -11267,6 +11346,8 @@ día.</p>
     </div>
   </div>
 
+  <button class="btn btn-1" type="button">Buscar</button>
+ </div>
   <p class="fc-resumen" id="fc-resumen">Sin rango elegido.</p>
 </div>
 <table class="tabla-simple" style="margin-top:16px">
@@ -17993,6 +18074,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
 
 
+<h3 class="sub-seccion">v1.108.0 <span class="cam-fecha">2026-09-13</span></h3>
+<p class="pag-intro"><strong>R129 y R130: el calendario tenia SUELO de mentira, y ademas ponia la etiqueta donde ningun otro campo la pone y ensenaba la fecha en el formato de guardar.</strong> R129 del registro del equipo. Control Administrativos midio el DOM en su pantalla de trabajo diario —la de RRHH, todos los dias— y reporto tres cosas encadenadas. (1) `.fc-d` declaraba `height:30px; width:100%`, y dentro de una rejilla el `width:100%` NO APORTA ANCHO INTRINSECO: las siete columnas se dimensionan por el contenido, y el contenido es un numero. `grid-template-columns` resolvia a 16,16px. Los dias de dos cifras SE TOCABAN —141516171819 20— y ninguna columna cuadraba con su cabecera LMXJVSD. (2) Sin ancho intrinseco, el calendario —que es una capa absoluta— se encogia al ancho de su DISPARADOR. Con el tope en 560px y `overflow:hidden`, la columna del domingo del segundo mes salia cortada y LA BARRA DE PERIODOS DESAPARECIA ENTERA: los cuatro periodos dejaban de existir para quien mira, sin ningun aviso. Lo que el contenido pide son 626px y se puede sumar a mano: 472 los dos meses + 152 la barra + 2 de bordes. (3) La reserva que apila cortaba en 620, y el contenido pide 626: entre esos dos numeros volvia a recortar en silencio. Ahora corta en 660. SU DIAGNOSTICO DE LA TERCERA SE QUEDA CORTO, y la diferencia importa. Reportaron que «la reserva mira la ventana y no el calendario» y sugirieron `@container`. Tenian razon en el sintoma —ventana de 918px y calendario de 432— pero la causa era (1): sin ancho intrinseco el calendario se encogia al disparador; CON el, la formula de ajuste de una caja absoluta toma el maximo entre lo disponible y su minimo de contenido, asi que ya no depende del disparador y medir la ventana vuelve a ser lo correcto. No hizo falta `@container`. POR QUE NO SE VIO AQUI, que es lo que habia que arreglar de verdad: en el catalogo el disparador ocupaba el ancho de la pagina. Ellos lo ponen junto a un boton «Buscar» en una fila de 606px. El componente no tenia suelo: se encogia tanto como le dejara su contenedor y a partir de cierto punto dejaba de ser legible SIN QUE NADA FALLARA. La demostracion del catalogo pasa a vivir en una fila estrecha de 606px, con su boton al lado, para que la proxima de esta familia se rompa AQUI. Y LO VIGILA UN CANDADO, no solo una prueba. `verificar-cascada` gana una afirmacion R129 que resuelve la cascada a los once anchos: que `.fc-d` reciba min-width, que el tope no quede por debajo de lo que el contenido pide, y que la reserva entre antes de que el tope por ventana recorte. Sale en ROJO contra la v1.107.0, que es como se comprobo que protege algo. Tres pruebas mas leen la hoja QUE VIAJA. CUARTA COLISION DE NUMEROS, y esta engano a un candado. `R129` ya estaba usado en este documento: este sistema lo acuno en la v1.103.0 para «cambiar de mes no desborda». Las reglas nuevas lo citaban y el candado de contrato LAS DIO POR RESPALDADAS casando con las pruebas del R129 viejo — verde en falso. Por eso citan «R129 del equipo» y se atan por numero de fila. Un registro compartido con quien no lo gobierna no solo confunde a las personas: engana a los candados. Y R130, del mismo equipo y el mismo dia, son tres veces el sistema contradiciendose a si mismo. (1) LA ETIQUETA IBA DENTRO DEL RECUADRO, y era la unica del sistema que lo hacia: `Campo` compone `.campo-grupo` &gt; `.campo-etiqueta` + `.campo`, con el rotulo encima de la caja. Puestos en la misma fila, uno arriba y otro dentro, y las cajas ni siquiera median lo mismo. La hoja YA lo preveia: `.fc-campos .cg{width:172px}` viajaba desde siempre y NINGUN producto podia activarla, porque el componente no emitia ningun `.cg` ahi dentro — una promesa muerta que el candado no vio por ser un descendiente y no dos clases juntas. Ahora el disparador declara su propio line-height y mide los 36px de un campo, exactos. (2) LA FECHA SE MOSTRABA EN ISO, contra la tabla «Formato» del propio catalogo, que dice desde siempre que se MUESTRA 31/03/2026 y se GUARDA 2026-03-31. Lo grave no es el despiste: este mismo componente YA formateaba para el resumen y no para el disparador. El contrato de la propiedad sigue siendo ISO y el formateo al pintar es del componente — si lo hace cada pantalla, habra tantos formatos como pantallas. (3) EL RESUMEN DECIA «Sin rango elegido.» y era una tercera frase para lo mismo. De las dos salidas que proponian no se toma ninguna tal cual: una propiedad para apagarlo dejaria el componente sin anunciar lo que acaba de pasar, y NO PINTAR NADA romperia el anuncio de la PRIMERA eleccion, porque una region viva creada en el momento no la anuncian la mayoria de lectores. El elemento se queda siempre y lo que se vacia es su texto. Y QUEDA UN LIMITE DECLARADO que encontro una auditoria de familia: con el suelo puesto, el calendario pide 626px y hay contenedores del sistema que recortan por debajo —`.dialogo-cuerpo` deja 480—. Ahi se ve entero y se llega desplazando, que es mejor que encogerse a 16px y perder los periodos, pero no es bueno. No se arregla con CSS: una capa posicionada no puede preguntar cuanto mide el antecesor que la recorta, y `@container` tampoco, porque un contenedor no se consulta a si mismo. La salida es la capa superior del navegador, y es trabajo de otra version.</p>
+
+
+
 <h3 class="sub-seccion">v1.107.0 <span class="cam-fecha">2026-09-11</span></h3>
 <p class="pag-intro"><strong>El dialogo deja pasar el gerundio de su accion. Y la auditoria de esa propiedad encontro seis defectos mas, cuatro de ellos en Boton, que afectan a TODOS los productos.</strong> R118 del registro del equipo. Control Administrativos leyo el paquete instalado: `Dialogo` pasaba `onClick` a `Boton` SIN `textoOcupado`, asi que el doble envio SI quedaba protegido —el boton espera la promesa— pero el boton ENMUDECIA. Su regla de producto no admite excepciones: toda accion contra el servidor dice gerundio, queda deshabilitada y no se dispara dos veces. Cuidado al citar: en este mismo documento R118 es «busqueda contra el servidor» (v1.97.0) y TAMBIEN las cinco reglas del calendario (v1.101.0). La concordancia de los tres esta al principio del contrato. LO QUE ENCONTRO LA AUDITORIA, que es casi todo lo de esta version. Cuatro defectos estan en `Boton` y por tanto en TODOS los productos, no solo en el dialogo: (1) `textoOcupado` con un valor VACIO —`null`, `false`, cadena vacia, los tres ReactNode legales— pasaba la guarda `=== undefined` y dejaba el boton ocupado SIN NINGUN NOMBRE ACCESIBLE: el texto de reposo con `aria-hidden`, el hueco del gerundio vacio y el «, enviando» suprimido. Es la mudez que R118 vino a arreglar, con un valor mas, y llega sola con un `t(clave.ausente)`. (2) Cada accion que FALLA dejaba un rechazo sin manejar: `.finally()` devuelve una promesa DERIVADA que rechaza igual, y se tiraba sin `catch`. Ocurria AUNQUE el proyecto capturara la suya. En Node &gt;=15 eso mata el proceso; en navegador lo reporta el vigilante de errores como fallo del producto. (3) «El boton mide igual antes, durante y despues» era FALSO y llevaba versiones escrito en cuatro sitios: se reservaba el ancho del TEXTO y luego se INSERTABA el giro como un hijo mas del flex, 22px de salto en los botones sin icono. Ahora el giro reserva su hueco. (4) Un `throw` sincrono en `onClick` se pierde y el boton no se ocupa: declarado, no resuelto. (5) Y el mas viejo de todos, que no tiene que ver con R118 y les afecta a todos: LA HOJA QUE VIAJA NO LLEVABA NI UN @keyframes. `animation: btn-girar` se entregaba sin su definicion, y el navegador la ignora EN SILENCIO: en el catalogo el giro giraba y en TODOS los productos era un anillo quieto, igual que la barra indeterminada. Ningun candado podia verlo —`verificar-promesa` compara la cascada resuelta, y `animation-name` computa IGUAL en las dos hojas: lo que faltaba no era la declaracion sino la DEFINICION—. Es el `box-sizing` que no viajaba, con otra cara. El extractor ahora recoge los @keyframes que las reglas invocan, y SE PARA si alguien declara una animacion que nadie define. Y dos en `Dialogo`: (5) el foco NO volvia por el cierre programatico —el proyecto pone `abierto={false}` cuando la accion sale bien, que es lo que el contrato le obliga a hacer y el cierre mas frecuente en produccion—, asi que se quedaba en el titulo de un dialogo ya cerrado; y encima se enfocaba el origen con el dialogo TODAVIA abierto, y `showModal()` hace inerte todo lo de fuera. (6) Cerrar con la accion en vuelo dejaba el boton ocupado y deshabilitado PARA SIEMPRE, tambien al reabrir. EL CONTRATO DEL DIALOGO NO EXISTIA. `Dialogo` entro en la v1.13.0 y llega a tener reglas escritas en la v1.107.0: 111 versiones publicadas. Ahora son DIECIOCHO reglas y veinticuatro pruebas nuevas —de 7 a 31—, con cuatro huecos declarados. El candado de contrato pasa de 11 reglas atadas a su archivo a 27. TRES RONDAS DE AUDITORIA, Y LAS DOS ULTIMAS ENCONTRARON REGRESIONES DE LOS ARREGLOS DE LA ANTERIOR. Se dicen porque ninguna la habria visto un candado: una `key` puesta para que cerrar no dejara el boton muerto cambiaba un boton bloqueado por una SEGUNDA ESCRITURA en el servidor; la devolucion del foco paso de no ocurrir a ROBARSELO a quien ya lo habia colocado; la guarda del `textoOcupado` vacio comparaba valores y dejaba fuera seis variantes mas; y la limpieza de desmontaje se disparaba en el montaje FALSO del modo estricto, asi que en Vite, CRA y Next el dialogo se abria CON EL FOCO FUERA. El candado de animaciones fantasma tambien nacio roto dos veces: leia solo el primer token del valor, asi que `animation: 2s ease X` se le escapaba, y `animation: var(--x)` le paraba la entrega diciendo que faltaba una animacion llamada «var». Y un `@-webkit-keyframes` pisaba al estandar y lo dejaba fuera. Ademas el catalogo no dibujaba NINGUN boton ocupado, asi que los cinco candados de superficie no median ese estado; ahora dibuja los tres. Y LA PRIMERA VERSION DE ESA SECCION DECIA v1.60.0 Y 47 VERSIONES. Las dos inventadas: el numero se copio de la seccion de arriba sin mirar el historial, que es el defecto exacto que la seccion dice estar corrigiendo. Queda escrito. Tres arreglos mas de entrega, ninguno de codigo: la pagina del catalogo del dialogo dibujaba `.dlg`, `.dlg-cuerpo` y `.dlg-pie` —clases de demostracion de otra pagina, que NO VIAJAN—, asi que los candados que comparan las dos superficies no tenian nada real que medir ahi, y `textoOcupado` no aparecia en ninguna parte del catalogo; la tabla de historial de ACTUALIZAR.md llevaba 17 lineas en blanco ENTRE FILAS, y en Markdown eso termina la tabla: las 27 filas desde la 1.79.0 se veian como texto con barras; y la lista de candados de CLAUDE.md, la que se corre a mano, decia dieciseis y le faltaba `generar-cascaron.mjs`, que el publicador si corre —una lista incompleta de candados es un candado abierto, y lo dice esa misma seccion.</p>
 
@@ -21653,8 +21739,8 @@ async function esPdf(archivo) {
       // El disparador es un BOTON, como el que emite el componente: se escribe
       // en su span, no en el value que un boton no tiene. Tenerlos distintos
       // era la ultima divergencia de anatomia que quedaba en esta pantalla.
-      cajaIni.querySelector('.cg-in').textContent = ini ? esp(ini) : 'Elegir fecha';
-      cajaFin.querySelector('.cg-in').textContent = fin ? esp(fin) : 'Elegir fecha';
+      document.getElementById('fc-ini-v').textContent = ini ? esp(ini) : 'Elegir fecha';
+      document.getElementById('fc-fin-v').textContent = fin ? esp(fin) : 'Elegir fecha';
       cajaIni.classList.toggle('fc-activo', !cal.hidden && modo === 'ini');
       cajaFin.classList.toggle('fc-activo', !cal.hidden && modo === 'fin');
       var pista = document.getElementById('fc-pista');

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.107.0";
+export const VERSION = "1.108.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,79 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.108.0', fecha: '2026-09-13',
+    que: 'R129 y R130: el calendario tenia SUELO de mentira, y ademas ponia la etiqueta donde ningun otro campo la pone y ensenaba la fecha en el formato de guardar',
+    porque:
+      'R129 del registro del equipo. Control Administrativos midio el DOM en su pantalla de '
+      + 'trabajo diario —la de RRHH, todos los dias— y reporto tres cosas encadenadas. '
+      + '(1) `.fc-d` declaraba `height:30px; width:100%`, y dentro de una rejilla el '
+      + '`width:100%` NO APORTA ANCHO INTRINSECO: las siete columnas se dimensionan por el '
+      + 'contenido, y el contenido es un numero. `grid-template-columns` resolvia a 16,16px. '
+      + 'Los dias de dos cifras SE TOCABAN —141516171819 20— y ninguna columna cuadraba con '
+      + 'su cabecera LMXJVSD. '
+      + '(2) Sin ancho intrinseco, el calendario —que es una capa absoluta— se encogia al '
+      + 'ancho de su DISPARADOR. Con el tope en 560px y `overflow:hidden`, la columna del '
+      + 'domingo del segundo mes salia cortada y LA BARRA DE PERIODOS DESAPARECIA ENTERA: '
+      + 'los cuatro periodos dejaban de existir para quien mira, sin ningun aviso. Lo que el '
+      + 'contenido pide son 626px y se puede sumar a mano: 472 los dos meses + 152 la barra '
+      + '+ 2 de bordes. '
+      + '(3) La reserva que apila cortaba en 620, y el contenido pide 626: entre esos dos '
+      + 'numeros volvia a recortar en silencio. Ahora corta en 660. '
+      + 'SU DIAGNOSTICO DE LA TERCERA SE QUEDA CORTO, y la diferencia importa. Reportaron que '
+      + '«la reserva mira la ventana y no el calendario» y sugirieron `@container`. Tenian '
+      + 'razon en el sintoma —ventana de 918px y calendario de 432— pero la causa era (1): '
+      + 'sin ancho intrinseco el calendario se encogia al disparador; CON el, la formula de '
+      + 'ajuste de una caja absoluta toma el maximo entre lo disponible y su minimo de '
+      + 'contenido, asi que ya no depende del disparador y medir la ventana vuelve a ser lo '
+      + 'correcto. No hizo falta `@container`. '
+      + 'POR QUE NO SE VIO AQUI, que es lo que habia que arreglar de verdad: en el catalogo '
+      + 'el disparador ocupaba el ancho de la pagina. Ellos lo ponen junto a un boton '
+      + '«Buscar» en una fila de 606px. El componente no tenia suelo: se encogia tanto como '
+      + 'le dejara su contenedor y a partir de cierto punto dejaba de ser legible SIN QUE '
+      + 'NADA FALLARA. La demostracion del catalogo pasa a vivir en una fila estrecha de '
+      + '606px, con su boton al lado, para que la proxima de esta familia se rompa AQUI. '
+      + 'Y LO VIGILA UN CANDADO, no solo una prueba. `verificar-cascada` gana una afirmacion '
+      + 'R129 que resuelve la cascada a los once anchos: que `.fc-d` reciba min-width, que el '
+      + 'tope no quede por debajo de lo que el contenido pide, y que la reserva entre antes '
+      + 'de que el tope por ventana recorte. Sale en ROJO contra la v1.107.0, que es como se '
+      + 'comprobo que protege algo. Tres pruebas mas leen la hoja QUE VIAJA. '
+      + 'CUARTA COLISION DE NUMEROS, y esta engano a un candado. `R129` ya estaba usado en '
+      + 'este documento: este sistema lo acuno en la v1.103.0 para «cambiar de mes no '
+      + 'desborda». Las reglas nuevas lo citaban y el candado de contrato LAS DIO POR '
+      + 'RESPALDADAS casando con las pruebas del R129 viejo — verde en falso. Por eso citan '
+      + '«R129 del equipo» y se atan por numero de fila. Un registro compartido con quien no '
+      + 'lo gobierna no solo confunde a las personas: engana a los candados. '
+      + 'Y R130, del mismo equipo y el mismo dia, son tres veces el sistema '
+      + 'contradiciendose a si mismo. (1) LA ETIQUETA IBA DENTRO DEL RECUADRO, y era la '
+      + 'unica del sistema que lo hacia: `Campo` compone `.campo-grupo` > `.campo-etiqueta` '
+      + '+ `.campo`, con el rotulo encima de la caja. Puestos en la misma fila, uno arriba '
+      + 'y otro dentro, y las cajas ni siquiera median lo mismo. La hoja YA lo preveia: '
+      + '`.fc-campos .cg{width:172px}` viajaba desde siempre y NINGUN producto podia '
+      + 'activarla, porque el componente no emitia ningun `.cg` ahi dentro — una promesa '
+      + 'muerta que el candado no vio por ser un descendiente y no dos clases juntas. Ahora '
+      + 'el disparador declara su propio line-height y mide los 36px de un campo, exactos. '
+      + '(2) LA FECHA SE MOSTRABA EN ISO, contra la tabla «Formato» del propio catalogo, que '
+      + 'dice desde siempre que se MUESTRA 31/03/2026 y se GUARDA 2026-03-31. Lo grave no es '
+      + 'el despiste: este mismo componente YA formateaba para el resumen y no para el '
+      + 'disparador. El contrato de la propiedad sigue siendo ISO y el formateo al pintar es '
+      + 'del componente — si lo hace cada pantalla, habra tantos formatos como pantallas. '
+      + '(3) EL RESUMEN DECIA «Sin rango elegido.» y era una tercera frase para lo mismo. De '
+      + 'las dos salidas que proponian no se toma ninguna tal cual: una propiedad para '
+      + 'apagarlo dejaria el componente sin anunciar lo que acaba de pasar, y NO PINTAR NADA '
+      + 'romperia el anuncio de la PRIMERA eleccion, porque una region viva creada en el '
+      + 'momento no la anuncian la mayoria de lectores. El elemento se queda siempre y lo que '
+      + 'se vacia es su texto. '
+      + 'Y QUEDA UN LIMITE DECLARADO que encontro una auditoria de familia: con el suelo '
+      + 'puesto, el calendario pide 626px y hay contenedores del sistema que recortan por '
+      + 'debajo —`.dialogo-cuerpo` deja 480—. Ahi se ve entero y se llega desplazando, que es '
+      + 'mejor que encogerse a 16px y perder los periodos, pero no es bueno. No se arregla '
+      + 'con CSS: una capa posicionada no puede preguntar cuanto mide el antecesor que la '
+      + 'recorta, y `@container` tampoco, porque un contenedor no se consulta a si mismo. La '
+      + 'salida es la capa superior del navegador, y es trabajo de otra version.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.107.0', fecha: '2026-09-11',
     que: 'El dialogo deja pasar el gerundio de su accion. Y la auditoria de esa propiedad encontro seis defectos mas, cuatro de ellos en Boton, que afectan a TODOS los productos',

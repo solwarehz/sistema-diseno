@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 11 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.107.0** — R118: la acción del diálogo ya
-puede decir el gerundio. Y al escribir la regla se vio que `Dialogo` entró en la **v1.13.0** y llevaba
-**111 versiones publicado sin una sola regla de contrato**
+**Versión del sistema:** MMI-DS **v1.108.0** — R129 y R130: el calendario tenía
+**suelo de mentira**, ponía la etiqueta donde ningún otro campo la pone, y
+mostraba la fecha en el formato de **guardar**
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -19,25 +19,27 @@ puede decir el gerundio. Y al escribir la regla se vio que `Dialogo` entró en l
 
 El sistema es un **paquete que un producto instala y consume** —34 componentes
 publicados (`verificar-entrega`, que los cruza con sus páginas del catálogo), la hoja que viaja,
-**dieciocho pasos de verificación** —los diecisiete candados y las pruebas, que `publicar.mjs` corre ya por su cuenta—, **657
+**dieciocho pasos de verificación** —los diecisiete candados y las pruebas, que `publicar.mjs` corre ya por su cuenta—, **662
 pruebas en 44 archivos**, todas en verde
 (`npx vitest run`)—.
 
-Lo de hoy es R118: una propiedad opcional, la más pequeña de la lista y la que
-bloqueaba dos pantallas. Lo caro fue lo que apareció al ir a escribir su regla:
-**`Dialogo` no tenía sección de contrato**. Publicado desde la **v1.13.0**, con
-siete pruebas y **cero** reglas escritas, así que nada impedía que la próxima
-versión moviera Cancelar a la derecha o dejara el foco fuera. Es el mismo hueco
-que `RangoFecha` tenía el 09/09 y por el mismo motivo: el contrato se escribe
-cuando alguien reporta, no cuando se publica. Quedan **29 secciones sin declarar**
-su archivo de pruebas (`node sistema/candado/verificar-contrato.mjs`).
+Lo de hoy es **R129**, y es el defecto que mejor explica por qué existe este
+repositorio: `.fc-d` declaraba `width: 100%`, que dentro de una rejilla **no
+aporta ancho intrínseco**. Las siete columnas se dimensionaban por el contenido
+—un número— y resolvían a **16,16 px**. Los días de dos cifras se tocaban y la
+barra de periodos desaparecía entera, **sin que nada fallara**: ni un error, ni
+un candado en rojo, ni una prueba caída. Solo una pantalla ilegible en el
+trabajo diario de RRHH.
 
-Y romper las reglas nuevas a propósito —que es lo que exige el §9— destapó una
-mentira de la casa: el comentario del componente llevaba **111 versiones**
-diciendo que el `stopPropagation` de la caja es lo que impide que pulsar dentro
-cuente como pulsar el fondo. No lo es: la guarda `e.target === dlg.current` ya lo
-impide ella sola. Son dos mecanismos redundantes y **quitar cualquiera de los dos
-deja la prueba en verde**.
+**No se veía aquí porque el catálogo mentía por omisión.** Ponía el disparador
+al ancho de la página; el equipo lo monta junto a un botón «Buscar» en una fila
+de 606 px. El componente **no tenía suelo**: se encogía tanto como le dejara su
+contenedor. La demostración pasa a vivir en esa misma fila estrecha, para que la
+próxima de esta familia se rompa aquí y no allí.
+
+Y una cuarta colisión de números que **engañó a un candado**: `R129` ya estaba
+acuñado por este sistema en la v1.103.0, así que el de contrato dio las reglas
+nuevas por respaldadas casando con las pruebas del viejo. Verde en falso.
 
 ---
 
@@ -51,7 +53,7 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **657 pruebas en 44 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **662 pruebas en 44 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **952 reglas de 1464** · **693 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **69 páginas** (`grep -c '<section class="pagina"'`; decía 68 y antes 53) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
@@ -1688,7 +1690,7 @@ Versión                      1.107.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         657   en 44 archivos
+Pruebas                         662   en 44 archivos
 Reglas que viajan               952   de 1464 · 693 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el

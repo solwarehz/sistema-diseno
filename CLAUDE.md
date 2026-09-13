@@ -19,16 +19,13 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.107.0** — R118: la acción del diálogo ya puede decir el
-gerundio. Escribir su regla destapó que `Dialogo` entró en la **v1.13.0** y
-llevaba **111 versiones publicado sin una sola regla de contrato**; ahora tiene
-**dieciocho**, y **veinticuatro pruebas nuevas**. Cinco rondas de auditoría
-adversaria encontraron defectos reales —un `textoOcupado` vacío dejaba el botón
-**sin nombre accesible**; toda acción fallida dejaba un rechazo sin manejar; y
-**la hoja que viaja no llevaba ni un `@keyframes`**, así que el giro del botón
-estaba quieto en todos los productos—, **cuatro regresiones que introdujeron mis
-propios arreglos**, y **dos cifras que me inventé** en la primera versión de la
-regla.
+**Estado actual: v1.108.0** — R129: el calendario tenía **suelo de mentira**.
+`width: 100%` no aporta ancho intrínseco dentro de una rejilla, así que las
+siete columnas se encogían con el disparador hasta **16 px** —los días de dos
+cifras se tocaban— y la barra de periodos **desaparecía entera, sin aviso**. Lo
+midió el equipo en su pantalla de trabajo diario. No se veía aquí porque el
+catálogo ponía el disparador al ancho de la página; ahora va en una fila
+estrecha, como la suya.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

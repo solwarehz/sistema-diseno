@@ -3913,16 +3913,31 @@ día.</p>
 
 <h3 class="sub-seccion">Rango con calendario — pruébalo</h3>
 <p class="seccion-sub">Primer clic marca el inicio, segundo marca el fin, y el tramo entre ambos queda sombreado. Al pasar el cursor se previsualiza el tramo antes de fijarlo.</p>
+<p class="seccion-sub"><strong>Y va dentro de una fila estrecha a propósito.</strong> Hasta la v1.108.0
+esta demostración ponía el disparador al ancho de la página, y por eso R129 no se vio aquí:
+el calendario es una capa absoluta y se encogía al ancho de su contenedor, hasta que los
+días de dos cifras se tocaban y la barra de periodos desaparecía entera. Control
+Administrativos lo monta junto a un botón «Buscar» en una fila de 606&nbsp;px, así que aquí
+también. <strong>Si algo se rompe por estrechez, se rompe aquí primero.</strong></p>
 <div class="bloque">
+ <div class="demo-fila-estrecha">
   <div class="fc-zona" id="fc-zona">
     <div class="fc-campos">
-      <button type="button" class="campo fc-campo" id="fc-ini"
-              aria-haspopup="dialog" aria-expanded="false" aria-controls="fc-cal">
-        <span class="cg-et">Desde</span><span class="cg-in">Elegir fecha</span></button>
+      <div class="cg">
+        <span class="cg-et" id="fc-ini-et">Desde</span>
+        <button type="button" class="campo fc-campo" id="fc-ini"
+                aria-haspopup="dialog" aria-expanded="false" aria-controls="fc-cal"
+                aria-labelledby="fc-ini-et fc-ini-v">
+          <span id="fc-ini-v">Elegir fecha</span></button>
+      </div>
       <span class="fc-guion" aria-hidden="true">${ICO_CHEV_DER}</span>
-      <button type="button" class="campo fc-campo" id="fc-fin"
-              aria-haspopup="dialog" aria-expanded="false" aria-controls="fc-cal">
-        <span class="cg-et">Hasta</span><span class="cg-in">Elegir fecha</span></button>
+      <div class="cg">
+        <span class="cg-et" id="fc-fin-et">Hasta</span>
+        <button type="button" class="campo fc-campo" id="fc-fin"
+                aria-haspopup="dialog" aria-expanded="false" aria-controls="fc-cal"
+                aria-labelledby="fc-fin-et fc-fin-v">
+          <span id="fc-fin-v">Elegir fecha</span></button>
+      </div>
       <button class="btn btn-neutro" id="fc-limpiar">Limpiar</button>
     </div>
 
@@ -3946,6 +3961,8 @@ día.</p>
     </div>
   </div>
 
+  <button class="btn btn-1" type="button">Buscar</button>
+ </div>
   <p class="fc-resumen" id="fc-resumen">Sin rango elegido.</p>
 </div>
 <table class="tabla-simple" style="margin-top:16px">
@@ -7997,12 +8014,12 @@ const casos = [
          '<div class="fc-dias" role="grid" aria-label="' + titulo + '">' + cab + filas + '</div></div>';
      };
      return '<div class="fc-zona"><div class="fc-campos" role="group">' +
-       '<button class="campo fc-campo fc-activo"><span class="cg-et">Desde</span>' +
-       '<span class="cg-in">2026-03-05</span></button>' +
-       '<span class="fc-guion">' + ICONOS.chevronDer + '</span>' +
-       '<button class="campo fc-campo"><span class="cg-et">Hasta</span>' +
-       '<span class="cg-in">2026-03-12</span></button></div>' +
-       '<div class="fc-cal" role="dialog" style="position:static;max-width:560px">' +
+      '<div class="cg"><span class="cg-et">Desde</span>' +
+      '<button class="campo fc-campo fc-activo"><span>05/03/2026</span></button></div>' +
+      '<span class="fc-guion">' + ICONOS.chevronDer + '</span>' +
+      '<div class="cg"><span class="cg-et">Hasta</span>' +
+      '<button class="campo fc-campo"><span>12/03/2026</span></button></div></div>' +
+      '<div class="fc-cal" role="dialog" style="position:static;max-width:640px">' +
        '<div class="fc-cal-cab"><button class="btn btn-3 btn-mini">&lsaquo;</button>' +
        '<span class="fc-meses">marzo &ndash; abril de 2026</span>' +
        '<button class="btn btn-3 btn-mini">&rsaquo;</button></div>' +
@@ -8929,8 +8946,16 @@ code { font-family: 'IBM Plex Mono', monospace; }
    describe como se colocan unos hijos que solo el boton tiene, asi que atarla
    al boton no es el defecto de antes —aquello ataba a \`input\` reglas que el
    boton SI necesitaba—. Sin esto se leia literalmente «DesdeElegir fecha». */
-button.fc-campo { display: flex; flex-direction: column; align-items: flex-start;
-  justify-content: center; gap: 2px; text-align: left; height: auto; }
+/* R130.1 · EL DISPARADOR MIDE LO QUE UN CAMPO, y antes no.
+   Apilaba rotulo y valor DENTRO del recuadro, asi que salia mas alto que
+   cualquier .campo de al lado y su etiqueta era la unica del sistema puesta
+   dentro de la caja. Ahora el rotulo vive fuera, en su .cg, como en Campo, y
+   aqui solo queda el valor.
+   El line-height va declarado a proposito: es la leccion de v1.40.1 con .btn
+   —lo que no fija su propia caja la hereda de la pagina que lo monte—. 20px
+   mas los 16 de relleno son los 36 de un campo, exactos. */
+button.fc-campo { display: flex; align-items: center; justify-content: flex-start;
+  text-align: left; line-height: 20px; }
 
 .fc-campo { padding-right: 32px;
   background-repeat: no-repeat; background-position: right 12px center;
@@ -8944,10 +8969,39 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
    que saber cuál se va a rellenar. */
 .fc-campo.fc-activo { border-color: var(--accion); box-shadow: inset 0 0 0 1px var(--accion); }
 
+/* Del catalogo, NO viaja: reproduce el montaje del consumidor —el disparador
+   en una fila estrecha junto a un boton— para que R129 y su familia se vean
+   AQUI y no en su pantalla de trabajo. 606px son los suyos, medidos. */
+.demo-fila-estrecha { display: flex; align-items: flex-end; gap: 8px;
+  max-width: 606px; }
+/* .fc-campos lleva margin-bottom:16px y como item de flex no lo colapsa, asi
+   que el boton de al lado quedaba 16px por debajo del canto de los campos. */
+.demo-fila-estrecha .fc-campos { margin-bottom: 0; }
+
 .fc-zona { position: relative; }
+/* R129.2 · EL TOPE ERA MENOR QUE EL CONTENIDO. Con R129.1 puesto, lo que el
+   calendario pide se puede sumar a mano y da 626px:
+       472  los dos meses   (7x30 x2 + 20 de hueco + 32 de relleno)
+     + 152  la barra de atajos (su min-width, que con box-sizing:border-box
+            ya incluye sus 32 de relleno)
+     +   2  los dos bordes
+   El tope estaba en 560 y encima hay overflow:hidden, asi que la columna del
+   domingo del segundo mes salia cortada y LA BARRA DE ATAJOS DESAPARECIA
+   ENTERA —los cuatro periodos dejaban de existir para quien mira, sin ningun
+   aviso—. El overflow se queda: hace falta para que los fondos cuadrados de la
+   cabecera, los atajos y el pie no asomen por las esquinas redondeadas. Lo que
+   se arregla es la caja, no el recorte.
+   El min() ata el tope al ancho de la VENTANA. Los 32 del canalon no son un
+   numero nuevo: es el que esta hoja ya usa en .dialogo-caja, y R129 habia
+   elegido 24 sin motivo.
+   OJO CON LA PALABRA «unico», que la primera version escribio de mas: la
+   ventana no es el unico limite de una capa flotante, es el unico que el CSS
+   puede preguntar. Los antecesores que recortan —.app-contenido,
+   .dialogo-cuerpo, .tb-envoltura— son limites reales y no se pueden consultar
+   desde aqui. Esta declarado al pie de la seccion del contrato. */
 .fc-cal { position: absolute; z-index: 40; top: calc(100% + 6px); left: 0;
   border: 1px solid var(--borde-campo); border-radius: 6px; overflow: hidden;
-  background: var(--fondo-tarjeta); max-width: 560px;
+  background: var(--fondo-tarjeta); max-width: min(640px, calc(100vw - 32px));
   box-shadow: var(--sombra-capa); }
 /* Los atajos viven DENTRO del calendario y en COLUMNA LATERAL, como en los
    selectores de periodo de Facebook o Analytics: debajo no se ven, y fuera
@@ -9011,8 +9065,16 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
    ~33, el tramo pintado a trozos y los redondeos de \`.fc-ini\`/\`.fc-fin\` sin
    encajar. Era R126 otra vez, un nivel mas abajo. */
 .fc-dias [role='gridcell'] { display: grid; }
-.fc-d { height: 30px; width: 100%; font: inherit; font-size: 12px; cursor: pointer;
-  background: transparent; border: 0; color: var(--texto-principal); border-radius: 6px; }
+/* R129.1 · min-width, y no solo width:100%. Dentro de una rejilla, width:100%
+   NO APORTA ANCHO INTRINSECO: las siete columnas se dimensionan por el
+   contenido, y el contenido es un numero. Control Administrativos midio el DOM
+   y las columnas resolvian a 16,16px: los dias de dos cifras SE TOCABAN
+   —141516171819 20— y ninguna cuadraba con su cabecera LMXJVSD.
+   30px es exactamente la altura que la celda ya tenia: la celda cuadrada que
+   este componente siempre quiso ser. */
+.fc-d { height: 30px; min-width: 30px; width: 100%; font: inherit; font-size: 12px;
+  cursor: pointer; background: transparent; border: 0; color: var(--texto-principal);
+  border-radius: 6px; }
 /* El hover es el del sistema, fondo-fila-hover, el mismo que la fila de tabla
    bajo el cursor. Antes usaba fondo-encabezado, un gris que no es un hover. */
 .fc-d:hover { background: var(--fondo-fila-hover); }
@@ -9040,10 +9102,27 @@ button.fc-campo { display: flex; flex-direction: column; align-items: flex-start
    va a quedar. Antes usaba un azul más oscuro que aparecía de golpe. */
 .fc-previo { background: var(--accion); }
 .fc-resumen { font-size: 13px; color: var(--texto-secundario); margin: 16px 0 0; }
+/* R130.3 · Sin rango no dice nada, y entonces tampoco ocupa. El elemento se
+   queda en el arbol —la region viva tiene que existir desde la carga o la
+   primera eleccion no se anuncia— pero vacio no deja hueco. */
+.fc-resumen:empty { margin: 0; }
 /* R129 · en angosto se apilan los meses Y BAJA el panel de periodos. Antes solo
    colapsaba la rejilla y los atajos seguian clavados al lado, con su borde
    izquierdo y sus 152px, dentro de un desplegable absoluto sin limite derecho. */
-@media (max-width: 620px) {
+/* R129.3 · EL CORTE SUBE DE 620 A 660, y el porque importa. Control
+   Administrativos reporto que esta reserva "mira la ventana y no el
+   calendario": con una ventana de 918px y un calendario de 432 no entraba
+   nunca, justo cuando hacia falta. Tenian razon en el sintoma y el diagnostico
+   se queda corto — la causa era R129.1. Sin ancho intrinseco, el calendario se
+   encogia hasta el ancho de su disparador; CON el, la formula de ajuste de una
+   caja absoluta toma el MAXIMO entre lo disponible y su minimo de contenido
+   (624px), asi que ya no depende del disparador y medir la ventana vuelve a
+   ser lo correcto.
+   Lo que si quedaba mal es DONDE cortaba. El tope vale min(640, ventana-32), y
+   recorta cuando ventana-32 < 626, es decir por debajo de 658: la banda mala
+   real era 621-657, no «620 a 660» como decia la primera version de este
+   comentario. Se apila en 660, por encima de los 658. */
+@media (max-width: 660px) {
   .fc-cal-cuerpo { grid-auto-flow: row; }
   .fc-cal-marco { flex-direction: column; }
   .fc-atajos { border-left: 0; border-top: 1px solid var(--borde);
@@ -12770,8 +12849,8 @@ ${COMPRESOR_PDF}
       // El disparador es un BOTON, como el que emite el componente: se escribe
       // en su span, no en el value que un boton no tiene. Tenerlos distintos
       // era la ultima divergencia de anatomia que quedaba en esta pantalla.
-      cajaIni.querySelector('.cg-in').textContent = ini ? esp(ini) : 'Elegir fecha';
-      cajaFin.querySelector('.cg-in').textContent = fin ? esp(fin) : 'Elegir fecha';
+      document.getElementById('fc-ini-v').textContent = ini ? esp(ini) : 'Elegir fecha';
+      document.getElementById('fc-fin-v').textContent = fin ? esp(fin) : 'Elegir fecha';
       cajaIni.classList.toggle('fc-activo', !cal.hidden && modo === 'ini');
       cajaFin.classList.toggle('fc-activo', !cal.hidden && modo === 'fin');
       var pista = document.getElementById('fc-pista');

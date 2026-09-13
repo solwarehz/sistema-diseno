@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.107.0
+# Actualizar al sistema de diseño v1.108.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.107.0"
+npm install "github:solwarehz/sistema-diseno#v1.108.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -27,7 +27,7 @@ comando: es acceso al repositorio, que es privado. Pídelo.
 Comprueba que quedó lo que esperabas:
 
 ```bash
-node -p "require('sistema-diseno-ae/package.json').version"   # 1.107.0
+node -p "require('sistema-diseno-ae/package.json').version"   # 1.108.0
 ```
 
 ### 1ter · La tipografía NO viaja, y hay que cargarla
@@ -53,12 +53,12 @@ familia entera de ese defecto.
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.107.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.108.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.107.0 --repo solwarehz/sistema-diseno
+gh release download v1.108.0 --repo solwarehz/sistema-diseno
 ```
 
 Son **56 archivos**: tokens, hoja de estilos, los **33 módulos de componente**
@@ -359,6 +359,7 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.93.0 | **`RedesSociales` pinta los iconos con el rojo del escudo por omisión.** `marca-rojo` queda **autorizado solo para eso** — sigue prohibido como texto y como superficie. Si los ponen sobre un fondo que no sea la tarjeta o la página, usen `color="heredado"`: los 4,88:1 y 4,69:1 están medidos contra esos dos y **sobre el encabezado no ha medido nadie**. No rompe nada |
 | 1.94.0 | **`CabeceraPantalla` gana `accionSecundaria`.** Se pinta a la izquierda de `accion`, con 8px de separación, y en estrecho las dos se reparten el ancho. **Les afecta aunque no la usen:** `.pant-accion` no tenía ni `display` ni `gap`, así que si metieron dos botones ahí a mano, salían pegados y ahora se separan. Y la documentación del componente decía «una sola acción»: era un error de redacción, la regla es **una sola principal** |
 | 1.95.0 | **`SelectorBusqueda` entrega por fin lo que el catálogo enseña, en nueve puntos.** Se ven cuatro: el chevron **ahora gira** al abrir la lista, el visto ✓ de la opción elegida pasa **a la derecha** (estaba a la izquierda, 298,4 px de diferencia), la ayuda de la opción recibe su tipografía —13 px, secundario— y deja de salir del mismo cuerpo que el nombre, y la fila de «sin resultados» **dice qué se buscó** en vez de «No hay coincidencias». Se teclean cuatro: **↑ abre la lista**, las flechas **ciclan**, **Inicio y Fin** funcionan, y **Tab elige lo marcado** — antes tabular con una coincidencia marcada dejaba el campo **vacío**. **Nada rompe:** ninguna clase pública cambia de nombre y `textoVacio` sigue admitiendo una cadena. **Y les afecta aunque no usen el selector:** `Paginacion` no emitía `activa`, así que **la página en curso no se pintaba en ninguna pantalla** — ahora sí |
+| 1.108.0 | **`RangoFecha`: cuatro cosas, y dos se ven.** **(R129) El calendario tenía suelo de mentira.** En una fila estrecha —junto a un botón, dentro de una columna— las siete columnas de días se encogían con el disparador hasta **16 px**: los días de dos cifras **se tocaban** (`141516171819 20`) y la **barra de periodos desaparecía entera**, **sin aviso**. `.fc-d` gana `min-width: 30px`; el tope de `.fc-cal` sube de 560 a `min(640px, calc(100vw - 24px))` porque el contenido pide **626 px** y hay `overflow: hidden`; y la reserva que apila corta en **660** en vez de 620. **Si llevan el apaño en su hoja, ya lo pueden quitar.** **(R130.1) La etiqueta sale del recuadro.** Era la única del sistema puesta dentro: ahora va encima, en su `.cg`, como en `Campo`, y el disparador mide **los 36 px de un campo, exactos**. **Cambio visible**: si alinearon a mano la altura del rango con la de un campo vecino, **quítenlo**. El marcado cambia —`.fc-campos > .cg > .cg-et + button.fc-campo`— así que si lo copiaron a mano, actualícenlo. **(R130.2) La fecha ya no sale en ISO.** Se mostraba `2026-09-01` contra la tabla «Formato» del propio catálogo; ahora `01/09/2026`. La propiedad **sigue siendo ISO**: lo que cambia es lo que se pinta. Si formateaban por su cuenta leyendo el DOM, sobra. **(R130.3) Sin rango, el resumen calla.** Decía «Sin rango elegido.»; ahora queda vacío. El elemento **no desaparece**, para no romper el anuncio de la primera elección. **Un límite declarado**: el calendario pide 626 px, así que dentro de un `Dialogo` (480 px de interior) se ve entero pero **con desplazamiento horizontal**. Es mejor que encogerse hasta ser ilegible, y no se arregla con CSS — la salida es la capa superior del navegador, en otra versión. |
 | 1.107.0 | **Lean esto aunque no usen `Dialogo`: hay cinco arreglos en `Boton` y tres en la hoja.** Lo pedido era R118 —`accion.textoOcupado`, para que la acción del pie diga «Grabando…» en vez de apagarse muda—; auditarlo destapó el resto. **En la hoja:** (1) **no llevaba ni un `@keyframes`**, así que `animation: btn-girar` viajaba sin definición y el navegador la ignora **en silencio** — el giro del botón ocupado y la barra indeterminada estaban **quietos** en su producto. Ya viajan; si copiaron los `@keyframes` a mano, **quítenlo**. (2) `.btn-ocupado{cursor:progress}` era **regla muerta** —`.btn:disabled` le ganaba—, así que un botón ocupado mostraba el cursor de *prohibido*; **ahora muestra el de espera**. Cambio visible en todos los productos. (3) El hueco del giro dejó de **girar invisible para siempre** en cada botón con gerundio. **En `Boton`:** (4) un `textoOcupado` que no pinta texto —`null`, `false`, `''`, `<span>{t('clave.ausente')}</span>`, un generador vacío— dejaba el botón ocupado **sin nombre accesible**; ahora se cae al comportamiento de siempre. (5) Cada acción que fallaba dejaba un **rechazo sin manejar**; ahora se reporta por `console.error` — **ojo: eso lo baja de evento a miga de pan** en Sentry y compañía, así que si dependían de `unhandledrejection`, **capturen en su `onClick` y reporten ustedes**. (6) Con `textoOcupado` y **sin icono**, el botón **crecía 22 px** al ocuparse; ya no. *Sin* `textoOcupado` sigue creciendo igual que antes. Con `icono`, encoge 4 px (el icono mide 18 y el giro 14), tampoco cambia. (7) `soloIcono` **ignora** `textoOcupado`: no tiene texto que sustituir. (8) Un `throw` **síncrono** en `onClick` **sí** llega a su vigilante como error no capturado — lo que no ocurre es que el botón se entere: ni se ocupa ni protege del doble envío. **Devuelvan la promesa.** **En `Dialogo`:** el foco **no volvía** al cerrar por código —el camino más frecuente—, ni si desmontaban el diálogo al cerrarlo, ni en **modo estricto** (Vite, CRA y Next lo traen puesto); y ahora **no se lo quita** a quien ya lo colocó. Nuevas: `accion.ocupado` y `accion.destructiva` documentada. **Un límite que no podemos cerrar:** si montan el diálogo como `{abierto && <Dialogo …/>}`, cerrarlo con la acción en vuelo **mata el guardia del doble envío** y el botón vuelve pulsable. O no lo desmontan, o llevan el estado con `accion.ocupado`. Y el contrato estrena **sección de Diálogo**: **dieciocho reglas** y **veinticuatro pruebas nuevas** —de 7 a 31—, más un archivo de pruebas que **ejecuta el catálogo** |
 | 1.106.0 | **Nueva página del catálogo: «La entrega real».** Pinta los componentes con `tokens.css` y `componentes.css` **y nada más**, en un marco aislado, con el marcado que emiten los componentes. Si algo se ve mal ahí, así se ve en su producto. **Encontró un defecto a la primera:** la foto del `Avatar` salía **32×39 en un círculo de 32×32** — el `overflow:hidden` la recortaba, así que parecía correcta. Si muestran fotos de personas, actualicen |
 | 1.105.0 | **Cierra R126 del todo, y esta vez con candado.** El arreglo anterior dejaba el día **inline dentro de su columna** —la celda de rejilla no tenía ninguna regla—, así que el tramo se pintaba a trozos. Ahora el catálogo emite **el mismo marcado** que el componente, y hay una prueba que **ejecuta el catálogo** y compara el árbol: si las dos superficies se separan, sale en rojo. Corregido además un defecto de accesibilidad del catálogo: marcaba los extremos del rango con `aria-current="date"`, que significa **hoy**. Y el publicador **corre los diecisiete candados por su cuenta** y se niega si alguno está en rojo — la v1.103.0 salió rota porque correrlos dependía de acordarse |

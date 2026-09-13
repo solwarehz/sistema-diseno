@@ -91,6 +91,26 @@ const sumarMeses = (d: Date, n: number) => {
   return new Date(a, m, Math.min(d.getDate(), ultimo));
 };
 
+/**
+ * R130.2 · EL FORMATO QUE SE MUESTRA, que este componente no aplicaba.
+ *
+ * La tabla «Formato» del catalogo lo dice desde siempre: se MUESTRA 31/03/2026,
+ * se GUARDA 2026-03-31. El disparador imprimia el valor tal cual y en pantalla
+ * salia el ISO — el formato de guardar, ensenado a quien mira.
+ *
+ * Lo grave no es el despiste: es que este mismo archivo YA formateaba. El
+ * resumen usaba `enPalabras` y el disparador no usaba nada. Una superficie del
+ * mismo componente cumplia la regla y la otra no.
+ *
+ * Y se resuelve AQUI y no en cada producto. El contrato de la propiedad es ISO
+ * —y esta bien que lo sea, porque es lo que se guarda—, asi que el formateo al
+ * pintar le toca al componente. Si lo hace cada pantalla por su cuenta,
+ * acabaran habiendo tantos formatos como pantallas, que es exactamente lo que
+ * un sistema de diseno existe para evitar.
+ */
+const enCorto = (d: Date) =>
+  `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+
 /** Texto largo para el lector: «lunes 3 de marzo de 2026». */
 const enPalabras = (d: Date) =>
   `${DIAS_LARGOS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
@@ -302,8 +322,28 @@ export function RangoFecha({
   const activoDesde = abierto && modo === 'desde';
   const activoHasta = abierto && modo === 'hasta';
 
+  /**
+   * R130.3 · SIN RANGO, EL RESUMEN CALLA — pero no desaparece.
+   *
+   * Decia «Sin rango elegido.» y era una tercera frase para lo mismo: los dos
+   * disparadores ya dicen «Elegir fecha». Lo reporto Control Administrativos.
+   *
+   * De las dos salidas que proponian —una propiedad para apagarlo, o no pintar
+   * nada— no se toma ninguna de las dos tal cual, y el motivo importa:
+   *
+   *  · Una propiedad no vale porque esta linea ES el anuncio al lector cuando
+   *    se elige (regla 6). Apagarla seria dejar el componente sin decir lo que
+   *    acaba de pasar, y eso no puede quedar a criterio de cada pantalla.
+   *  · Y NO PINTAR NADA romperia el anuncio de la PRIMERA eleccion: una region
+   *    viva creada en el momento no la anuncian la mayoria de lectores. Es la
+   *    regla 0 de «Aviso temporal», que este sistema ya aprendio.
+   *
+   * Asi que el elemento se queda SIEMPRE en el arbol y lo que se vacia es su
+   * texto. La region viva existe desde la carga, no se ve nada cuando no hay
+   * nada, y `.fc-resumen:empty` le quita el margen para que no deje hueco.
+   */
   const resumen = !desde
-    ? 'Sin rango elegido.'
+    ? ''
     : !hasta
       ? `Desde el ${enPalabras(deIso(desde))}. Falta la fecha final.`
       : `Del ${enPalabras(deIso(desde))} al ${enPalabras(deIso(hasta))}.`;
@@ -317,18 +357,34 @@ export function RangoFecha({
           Es la unica excepcion a la regla 1 de la politica, y esta aqui escrita
           para que se discuta si alguien la ve, no para que pase inadvertida. */}
       <div className="fc-campos" role="group" aria-label={titulo}>
-        <button
-          type="button"
-          ref={modo === 'desde' ? disparador : undefined}
-          className={['campo', 'fc-campo', activoDesde ? 'fc-activo' : '']
-            .filter(Boolean).join(' ')}
-          aria-haspopup="dialog"
-          aria-expanded={abierto && modo === 'desde'}
-          onClick={() => abrir('desde')}
-        >
-          <span className="cg-et">Desde</span>
-          <span className="cg-in">{desde ?? 'Elegir fecha'}</span>
-        </button>
+        {/* R130.1 · LA ETIQUETA VA FUERA DEL RECUADRO, como en todos los demas
+            campos del sistema. Estaba DENTRO, y era la unica que lo estaba:
+            `Campo` compone `.campo-grupo` > `.campo-etiqueta` + `.campo`, con
+            el rotulo encima de la caja. Puestos en la misma fila, el rotulo de
+            uno salia arriba y el del otro dentro, y las cajas ni siquiera
+            median lo mismo. Lo reporto Control Administrativos.
+            La hoja YA lo preveia: `.fc-campos .cg{ width:172px }` viajaba en el
+            paquete desde siempre y NINGUN producto podia activarla, porque el
+            componente no emitia ningun `.cg` ahi dentro. Una promesa muerta que
+            el candado no vio por ser un descendiente y no dos clases juntas.
+            El rotulo se ata al boton con `aria-labelledby` —un `<label>` no
+            nombra a un boton—, y el nombre accesible sigue siendo «Desde
+            01/09/2026», que es lo que se leia antes. */}
+        <div className="cg">
+          <span className="cg-et" id={`${id}-e-desde`}>Desde</span>
+          <button
+            type="button"
+            ref={modo === 'desde' ? disparador : undefined}
+            className={['campo', 'fc-campo', activoDesde ? 'fc-activo' : '']
+              .filter(Boolean).join(' ')}
+            aria-haspopup="dialog"
+            aria-expanded={abierto && modo === 'desde'}
+            aria-labelledby={`${id}-e-desde ${id}-v-desde`}
+            onClick={() => abrir('desde')}
+          >
+            <span id={`${id}-v-desde`}>{desde ? enCorto(deIso(desde)) : 'Elegir fecha'}</span>
+          </button>
+        </div>
         {/* El guion entre los dos campos. La hoja lo entrega desde siempre y
             ningún producto lo emitía: los dos campos salían pegados, sin nada
             que dijera que son los dos extremos de una misma cosa. */}
@@ -339,18 +395,21 @@ export function RangoFecha({
             <path d="m9 18 6-6-6-6" />
           </svg>
         </span>
-        <button
-          type="button"
-          ref={modo === 'hasta' ? disparador : undefined}
-          className={['campo', 'fc-campo', activoHasta ? 'fc-activo' : '']
-            .filter(Boolean).join(' ')}
-          aria-haspopup="dialog"
-          aria-expanded={abierto && modo === 'hasta'}
-          onClick={() => abrir('hasta')}
-        >
-          <span className="cg-et">Hasta</span>
-          <span className="cg-in">{hasta ?? 'Elegir fecha'}</span>
-        </button>
+        <div className="cg">
+          <span className="cg-et" id={`${id}-e-hasta`}>Hasta</span>
+          <button
+            type="button"
+            ref={modo === 'hasta' ? disparador : undefined}
+            className={['campo', 'fc-campo', activoHasta ? 'fc-activo' : '']
+              .filter(Boolean).join(' ')}
+            aria-haspopup="dialog"
+            aria-expanded={abierto && modo === 'hasta'}
+            aria-labelledby={`${id}-e-hasta ${id}-v-hasta`}
+            onClick={() => abrir('hasta')}
+          >
+            <span id={`${id}-v-hasta`}>{hasta ? enCorto(deIso(hasta)) : 'Elegir fecha'}</span>
+          </button>
+        </div>
       </div>
 
       {abierto && (

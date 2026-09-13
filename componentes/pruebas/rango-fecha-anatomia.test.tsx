@@ -12,7 +12,7 @@
  *   · `.fc-guion` — el separador entre los dos campos
  *   · `.fc-meses`, `.fc-previo`, `.fc-vacio`, `.fc-activo`
  *
- * Y la regla de `≤620px` que colapsa el calendario a una columna cuelga de
+ * Y la regla de `≤660px` que colapsa el calendario a una columna cuelga de
  * `.fc-cal-cuerpo`: sin esa clase **no podía dispararse nunca**.
  *
  * NINGÚN CANDADO LO VEÍA, y es la misma familia que R116: el cuerpo del
@@ -23,6 +23,8 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { RangoFecha, ATAJOS_POR_OMISION } from '../src/RangoFecha';
 
 const HOY = new Date(2026, 2, 15); // 15 de marzo de 2026
@@ -50,7 +52,7 @@ describe('los dos meses', () => {
     expect(within(dialogo).getByRole('grid', { name: 'abril de 2026' })).toBeInTheDocument();
   });
 
-  it('el cuerpo lleva `.fc-cal-cuerpo`, de la que cuelga el colapso a ≤620px', async () => {
+  it('el cuerpo lleva `.fc-cal-cuerpo`, de la que cuelga el colapso a ≤660px', async () => {
     const u = userEvent.setup();
     const dialogo = await abrir(u);
     // Sin esta clase la regla responsive de la hoja es inalcanzable.
@@ -129,9 +131,17 @@ describe('el panel de periodos', () => {
 });
 
 describe('el resumen y el guion', () => {
-  it('sin rango, lo dice', () => {
+  it('R130.3 · sin rango CALLA, pero la región viva sigue en el árbol', () => {
+    // Decía «Sin rango elegido.» y era una tercera frase para lo mismo: los dos
+    // disparadores ya dicen «Elegir fecha». Lo reportó el equipo consumidor.
+    // Lo que NO se hace es dejar de pintarlo: una región viva creada en el
+    // momento no la anuncian la mayoría de lectores, así que la primera
+    // elección no se anunciaría. Se queda el elemento y se vacía el texto.
     const { container } = pintar();
-    expect(container.querySelector('.fc-resumen')!.textContent).toBe('Sin rango elegido.');
+    const p = container.querySelector('.fc-resumen');
+    expect(p, 'la región viva tiene que existir desde el primer pintado').not.toBeNull();
+    expect(p!.getAttribute('role')).toBe('status');
+    expect(p!.textContent).toBe('');
   });
 
   it('[6] con el rango puesto, lo dice EN PALABRAS y no en ISO', () => {
@@ -216,14 +226,51 @@ describe('R126 · el calendario se pinta como rejilla', () => {
     expect(sem.children.length).toBe(7);
   });
 
-  it('[2] R126.2 · el rótulo y el valor son DOS hijos del botón, para poder apilarse', async () => {
+  it('[2] R130.1 · el rótulo va FUERA del recuadro, en su `.cg`, como en todo campo', () => {
+    // Hasta la v1.108.0 el rótulo iba DENTRO del botón y era el único del
+    // sistema que lo hacía: `Campo` compone `.campo-grupo` > `.campo-etiqueta`
+    // + `.campo`. Puestos en la misma fila, uno arriba y otro dentro, y las
+    // cajas ni siquiera medían lo mismo.
     const { container } = pintar({ desde: '2026-03-05' });
-    const campo = container.querySelector('button.fc-campo')!;
-    expect(campo.querySelector('.cg-et')!.textContent).toBe('Desde');
-    expect(campo.querySelector('.cg-in')!.textContent).toBe('2026-03-05');
-    // Se leía «DesdeElegir fecha» de corrido porque las reglas que los apilan
-    // estaban escritas para `input.fc-campo` y esto es un <button>.
+    const grupo = container.querySelector('.fc-campos > .cg')!;
+    expect(grupo, 'el disparador vive en un .cg, como cualquier campo').not.toBeNull();
+
+    const et = grupo.querySelector('.cg-et')!;
+    const campo = grupo.querySelector('button.fc-campo')!;
+    expect(et.textContent).toBe('Desde');
+    // El rótulo es HERMANO del recuadro, no hijo.
+    expect(campo.contains(et)).toBe(false);
+    expect(et.nextElementSibling).toBe(campo);
+    // Y dentro del recuadro solo queda el valor, en formato peruano.
+    expect(campo.textContent).toBe('05/03/2026');
     expect(campo.tagName).toBe('BUTTON');
+  });
+
+  it('[2b] R130.2 · el disparador muestra la fecha en peruano, y el ISO es solo lo que se guarda', () => {
+    // El componente YA formateaba —el resumen usa `enPalabras`— y el
+    // disparador imprimía el valor tal cual. Una superficie del mismo
+    // componente cumplía la regla del catálogo y la otra no.
+    const cambios: Array<{ desde: string | null; hasta: string | null }> = [];
+    const { container } = pintar({
+      desde: '2026-03-05', hasta: '2026-12-31',
+      onCambio: (v: { desde: string | null; hasta: string | null }) => cambios.push(v),
+    });
+    const botones = [...container.querySelectorAll('button.fc-campo')];
+    expect(botones.map((b) => b.textContent)).toEqual(['05/03/2026', '31/12/2026']);
+    // Con cero a la izquierda: `5/3/2026` no alinea en una columna.
+    expect(botones[0].textContent).not.toBe('5/3/2026');
+    // Y en ninguna superficie visible aparece el ISO.
+    expect(container.textContent).not.toContain('2026-03-05');
+  });
+
+  it('[2] R130.1 · y el rótulo sigue nombrando al botón, que un `<label>` no puede', async () => {
+    const u = userEvent.setup();
+    pintar({ desde: '2026-03-05' });
+    // El nombre accesible es el mismo que se leía cuando el rótulo iba dentro.
+    const b = screen.getByRole('button', { name: 'Desde 05/03/2026' });
+    expect(b).toBeInTheDocument();
+    await u.click(b);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 });
 
@@ -284,5 +331,130 @@ describe('R129 · la vista previa se suelta', () => {
     await u.keyboard('{Escape}');
     await u.click(screen.getByRole('button', { name: /Hasta/ }));
     expect(container.querySelectorAll('.fc-previo').length).toBe(0);
+  });
+});
+
+/**
+ * R129 DEL EQUIPO · EL SUELO DEL CALENDARIO, SOBRE LA HOJA QUE VIAJA.
+ *
+ * Cuidado con el número: `R129` es también, en este repositorio, «cambiar de
+ * mes no desborda» (v1.103.0) — un número que este sistema se acuñó y que el
+ * 2026-09-13 chocó con el R129 real del equipo. La concordancia está al
+ * principio de `comportamiento.md`.
+ *
+ * QUÉ SE COMPRUEBA AQUÍ Y QUÉ NO. Estas tres reglas son sobre **medidas**, y
+ * jsdom no maqueta: no puede decir cuánto mide una columna. Lo que sí se puede
+ * comprobar, y es lo que importa entregar, es que **la hoja que viaja declara
+ * el suelo**. Quien resuelve la cascada a los once anchos es
+ * `sistema/candado/verificar-cascada.mjs`, cuya afirmación `R129` sale en
+ * **rojo contra la v1.107.0** — así se comprobó que protege algo.
+ *
+ * Se lee `sistema/componentes/componentes.css`, el archivo que se entrega, y
+ * no el catálogo: son dos hojas y el defecto vivía en la que viaja.
+ */
+describe('R129 del equipo · el calendario no se encoge con su disparador', () => {
+  const hoja = readFileSync(
+    resolve(process.cwd(), '..', 'sistema', 'componentes', 'componentes.css'),
+    'utf8',
+  );
+  /**
+   * TODAS las reglas cuyo selector describe a `sel`, no la primera.
+   *
+   * La primera version devolvia el primer cuerpo que casaba, y una auditoria la
+   * engano metiendo `.fc-d{ min-width: 0 }` DESPUES de la regla buena: la
+   * prueba seguia en verde con el suelo muerto. Quien resuelve la cascada de
+   * verdad es `verificar-cascada`; aqui se comprueba algo mas simple y que
+   * tambien basta: que NINGUNA regla de la hoja entregada baje el suelo.
+   */
+  const reglasDe = (base: string) => {
+    const fuera: string[] = [];
+    const re = /([^{}]+)\{([^}]*)\}/g;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(hoja)) !== null) {
+      const sel = m[1].trim();
+      // `.fc-d` describe a `.fc-d`, `button.fc-d`, `X .fc-d` — pero no a
+      // `.fc-dias` ni a `.fc-dentro`: la clase tiene que terminar ahi.
+      if (new RegExp(`\\${base}(?![\\w-])`).test(sel)) fuera.push(m[2]);
+    }
+    expect(fuera.length, `la hoja entregada no declara ${base}`).toBeGreaterThan(0);
+    return fuera;
+  };
+  /** px de un valor de CSS a un ancho de ventana dado. `null` si no se sabe. */
+  const enPx = (txt: string, w: number): number | null => {
+    const t = txt.trim().toLowerCase();
+    const fn = /^(min|max)\(([\s\S]*)\)$/.exec(t);
+    if (fn) {
+      const partes: string[] = []; let prof = 0; let act = '';
+      for (const c of fn[2]) {
+        if (c === '(') prof += 1;
+        if (c === ')') prof -= 1;
+        if (c === ',' && prof === 0) { partes.push(act); act = ''; continue; }
+        act += c;
+      }
+      partes.push(act);
+      const v = partes.map((x) => enPx(x, w));
+      return v.some((x) => x === null) ? null : (fn[1] === 'min' ? Math.min(...v as number[]) : Math.max(...v as number[]));
+    }
+    const c = /^calc\(([\s\S]*)\)$/.exec(t);
+    if (c) return enPx(c[1], w);
+    const term = t.split(/\s+([+-])\s+/);
+    if (term.length > 1) {
+      let acc = enPx(term[0], w);
+      if (acc === null) return null;
+      for (let i = 1; i < term.length; i += 2) {
+        const v = enPx(term[i + 1], w);
+        if (v === null) return null;
+        acc = term[i] === '+' ? acc + v : acc - v;
+      }
+      return acc;
+    }
+    const u = /^(-?\d+(?:\.\d+)?)(px|rem|em|vw)?$/.exec(t);
+    if (!u) return null;
+    const n = Number(u[1]);
+    if (u[2] === 'vw') return (n / 100) * w;
+    if (u[2] === 'rem' || u[2] === 'em') return n * 16;
+    return n;
+  };
+
+  it('[12] NINGUNA regla de `.fc-d` baja el suelo de 30px', () => {
+    const mins = reglasDe('.fc-d')
+      .map((c) => /min-width:\s*([^;]+)/.exec(c)?.[1])
+      .filter((v): v is string => Boolean(v));
+    expect(mins.length, '.fc-d no declara min-width en ninguna regla').toBeGreaterThan(0);
+    for (const v of mins) {
+      const px = enPx(v, 1440);
+      expect(px, `no se sabe cuanto vale min-width: ${v}`).not.toBeNull();
+      expect(px!, `min-width: ${v} deja la rejilla colapsar`).toBeGreaterThanOrEqual(30);
+    }
+    // Y sigue siendo cuadrada: el mínimo es la altura que ya tenía.
+    expect(reglasDe('.fc-d').some((c) => /height:\s*30px/.test(c))).toBe(true);
+  });
+
+  it('[13] el tope de `.fc-cal` no queda por debajo de los 626px, EVALUADO', () => {
+    const topes = reglasDe('.fc-cal')
+      .map((c) => /max-width:\s*([^;]+)/.exec(c)?.[1])
+      .filter((v): v is string => Boolean(v))
+      .filter((v) => v.trim() !== 'none');
+    expect(topes.length, '.fc-cal no declara max-width').toBeGreaterThan(0);
+    for (const v of topes) {
+      const px = enPx(v, 1440);
+      expect(px, `no se sabe cuanto vale max-width: ${v}`).not.toBeNull();
+      expect(px!, `max-width: ${v} recorta a 1440px de ventana`).toBeGreaterThanOrEqual(626);
+    }
+    // El recorte se queda: hace falta para las esquinas redondeadas.
+    expect(reglasDe('.fc-cal').some((c) => /overflow:\s*hidden/.test(c))).toBe(true);
+  });
+
+  it('[14] la reserva APILA de verdad, y corta antes de que el tope recorte', () => {
+    const medias = [...hoja.matchAll(/@media[^{]*\(max-width:\s*(\d+)px\)[^{]*\{([\s\S]*?)\n\}/g)]
+      .map(([, px, cuerpo]) => ({ px: Number(px), cuerpo }))
+      // No basta con que MENCIONE la clase: tiene que apilar. Una auditoría
+      // cambió `grid-auto-flow: row` por `background: red` y esto pasaba.
+      .filter((m) => /\.fc-cal-cuerpo\s*\{[^}]*grid-auto-flow:\s*row/.test(m.cuerpo)
+        && /\.fc-cal-marco\s*\{[^}]*flex-direction:\s*column/.test(m.cuerpo));
+    expect(medias.length, 'no hay reserva que apile el calendario de verdad').toBeGreaterThan(0);
+    // El contenido pide 626 y el tope descuenta el canalón de ventana (32):
+    // por debajo de 658 hay que apilar, o se recorta sin avisar.
+    expect(Math.max(...medias.map((m) => m.px))).toBeGreaterThanOrEqual(658);
   });
 });

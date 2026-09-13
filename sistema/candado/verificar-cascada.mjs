@@ -465,6 +465,162 @@ const AFIRMACIONES = [
     },
   },
   {
+    id: 'R129',
+    que: 'el calendario tiene SUELO: ni la celda ni la caja dependen de su disparador',
+    /**
+     * R129, y nace medido por quien lo sufre. Control Administrativos midio el
+     * DOM en su pantalla de trabajo diario:
+     *
+     *   «.fc-d declara height:30px; width:100%. Dentro de una rejilla,
+     *    width:100% NO APORTA ANCHO INTRINSECO: las siete columnas se
+     *    dimensionan por el contenido, y el contenido es un numero.
+     *    grid-template-columns resuelve a 16,16px. Los dias de dos cifras se
+     *    tocan y ninguna columna cuadra con su cabecera.»
+     *
+     * Y la consecuencia en cadena: sin ancho intrinseco el calendario —una caja
+     * absoluta— se encogia al ancho de su disparador; con el tope en 560px y
+     * overflow:hidden, la barra de atajos DESAPARECIA ENTERA, los cuatro
+     * periodos dejaban de existir para quien mira, sin ningun aviso.
+     *
+     * POR QUE NO SE VIO AQUI, que es la parte que importa: en el catalogo el
+     * disparador ocupa el ancho de la pagina. Ellos lo ponen junto a un boton
+     * «Buscar» en una fila de 606px. El componente no tenia suelo: se encogia
+     * tanto como le dejara su contenedor, y a partir de cierto punto dejaba de
+     * ser legible SIN QUE NADA FALLARA.
+     *
+     * Este candado NO mide pixeles —lo dice la cabecera del archivo y sigue
+     * siendo verdad—. Mide lo que si puede: que las declaraciones que dan el
+     * suelo GANAN la cascada a los once anchos, y que el tope no queda por
+     * debajo de lo que el contenido pide.
+     */
+    revisar(reglas) {
+      const fallos = [];
+      // 7 columnas x 30 + 20 de hueco + 32 de relleno = 472 los dos meses,
+      // + 152 la barra de atajos (su min-width, con box-sizing:border-box),
+      // + 2 de bordes = 626. Apilado, un mes solo: 210 + 32 + 2 = 244.
+      const CELDA = 30;
+      const PIDE = 626;
+      const PIDE_APILADO = 244;
+      const CORTE = 660;
+
+      /**
+       * EVALUAR EL TOPE DE VERDAD, y no amnistiarlo por su forma.
+       *
+       * La primera version de esto solo miraba topes FIJOS en px y daba por
+       * legitimo cualquiera escrito con `min()`, `calc()` o `vw` «porque es el
+       * limite real de una capa flotante». Eso no es una comprobacion, es una
+       * amnistia — y justo sobre la unica forma que el sistema usa hoy. Una
+       * auditoria dejo en verde `min(200px, calc(100vw - 24px))`, que es R129.2
+       * otra vez, y `calc(100vw - 2000px)`, con el que el calendario DESAPARECE.
+       * Se evalua a cada ancho: px, rem, vw, calc, min y max.
+       */
+      const evaluar = (txt, w) => {
+        const t = String(txt).trim().toLowerCase();
+        const fn = /^(min|max)\(([\s\S]*)\)$/.exec(t);
+        if (fn) {
+          // Se parten los argumentos de primer nivel, contando parentesis.
+          const partes = [];
+          let prof = 0; let actual = '';
+          for (const c of fn[2]) {
+            if (c === '(') prof += 1;
+            if (c === ')') prof -= 1;
+            if (c === ',' && prof === 0) { partes.push(actual); actual = ''; continue; }
+            actual += c;
+          }
+          partes.push(actual);
+          const vals = partes.map((x) => evaluar(x, w));
+          if (vals.some((v) => v === null)) return null;
+          return fn[1] === 'min' ? Math.min(...vals) : Math.max(...vals);
+        }
+        const calc = /^calc\(([\s\S]*)\)$/.exec(t);
+        if (calc) return evaluar(calc[1], w);
+        // Suma y resta de terminos simples, que es todo lo que hay en esta hoja.
+        const terminos = t.split(/\s+([+-])\s+/);
+        if (terminos.length > 1) {
+          let acc = evaluar(terminos[0], w);
+          if (acc === null) return null;
+          for (let i = 1; i < terminos.length; i += 2) {
+            const v = evaluar(terminos[i + 1], w);
+            if (v === null) return null;
+            acc = terminos[i] === '+' ? acc + v : acc - v;
+          }
+          return acc;
+        }
+        const u = /^(-?\d+(?:\.\d+)?)(px|rem|em|vw|%)?$/.exec(t);
+        if (!u) return null;
+        const n = Number(u[1]);
+        switch (u[2]) {
+          case 'vw': return (n / 100) * w;
+          case 'rem': case 'em': return n * 16;
+          case '%': return null;          // depende del contenedor: no se juzga
+          case 'px': case undefined: return n;
+          default: return null;
+        }
+      };
+
+      const cal = () => [elem('div', ['fc-zona']), elem('div', ['fc-cal'], { role: 'dialog' })];
+      /* EL ARBOL ES EL QUE EMITE EL COMPONENTE, y antes no lo era: declaraba
+       * `.fc-d` como `div` y se saltaba `[role='row']` y `[role='gridcell']`.
+       * Con eso, un `button.fc-d{min-width:0}` —o un
+       * `.fc-dias [role='gridcell'] .fc-d{min-width:0}`, y la hoja YA usa ese
+       * descendiente— ganaba la cascada y el candado seguia en verde: el suelo
+       * muerto en todos los productos. Lo midio una auditoria el 2026-09-13. */
+      const dia = () => [...cal(),
+        elem('div', ['fc-cal-marco']),
+        elem('div', ['fc-cal-cuerpo']),
+        elem('div', ['fc-dias'], { role: 'grid' }),
+        elem('div', [], { role: 'row' }),
+        elem('span', [], { role: 'gridcell' }),
+        elem('button', ['fc-d'])];
+
+      for (const w of ANCHOS) {
+        const min = resolver(reglas, dia(), 'min-width', w);
+        const medido = min ? evaluar(min.valor, w) : null;
+        if (medido === null || medido < CELDA) {
+          fallos.push(`  a ${String(w).padStart(4)}px .fc-d recibe min-width: ${min ? min.valor : 'NINGUNA REGLA'} (hace falta >= ${CELDA}px, o la rejilla colapsa al ancho del disparador)`);
+        }
+        const tope = resolver(reglas, cal(), 'max-width', w);
+        if (!tope) {
+          fallos.push(`  a ${String(w).padStart(4)}px .fc-cal no recibe max-width de ninguna regla`);
+          continue;
+        }
+        if (tope.valor.trim().toLowerCase() === 'none') continue;
+        const px = evaluar(tope.valor, w);
+        if (px === null) {
+          fallos.push(`  a ${String(w).padStart(4)}px no se sabe cuanto vale el tope de .fc-cal: ${tope.valor}`);
+          continue;
+        }
+        // Por encima del corte el calendario va en fila y pide PIDE; por debajo
+        // ya se apila y con un mes solo le basta mucho menos.
+        const necesita = w > CORTE ? PIDE : PIDE_APILADO;
+        if (px < necesita) {
+          fallos.push(`  a ${String(w).padStart(4)}px .fc-cal topa en ${tope.valor} = ${Math.round(px)}px y el contenido pide ${necesita}px: con overflow:hidden, se recorta SIN AVISO`);
+        }
+      }
+
+      /* Y la reserva que apila tiene que ENTRAR y APILAR DE VERDAD, no solo
+       * mencionar la clase: una auditoria cambio `grid-auto-flow: row` por
+       * `background: red` dentro del @media y la prueba siguio en verde. Se
+       * comprueban las dos declaraciones que hacen el apilado, resolviendo. */
+      const cuerpo = resolver(reglas, [...cal(), elem('div', ['fc-cal-marco']), elem('div', ['fc-cal-cuerpo'])], 'grid-auto-flow', CORTE);
+      if (!cuerpo || cuerpo.valor !== 'row') {
+        fallos.push(`  a ${CORTE}px los dos meses NO se apilan (grid-auto-flow: ${cuerpo ? cuerpo.valor : 'SIN REGLA'})`);
+      }
+      const marco = resolver(reglas, [...cal(), elem('div', ['fc-cal-marco'])], 'flex-direction', CORTE);
+      if (!marco || marco.valor !== 'column') {
+        fallos.push(`  a ${CORTE}px la barra de periodos NO baja (flex-direction: ${marco ? marco.valor : 'SIN REGLA'})`);
+      }
+      /* Y por encima del corte NO puede apilarse: si se apilara siempre, las
+       * dos comprobaciones de arriba pasarian con un calendario de una columna
+       * para todo el mundo. */
+      const enAncho = resolver(reglas, [...cal(), elem('div', ['fc-cal-marco'])], 'flex-direction', CORTE + 41);
+      if (enAncho && enAncho.valor === 'column') {
+        fallos.push(`  a ${CORTE + 41}px ya se apila: el corte esta puesto demasiado arriba`);
+      }
+      return fallos;
+    },
+  },
+  {
     id: 'ANCHO-LIBRE',
     que: 'una tabla puede DECLARAR que no lleva ancho minimo, y se le respeta',
     /**

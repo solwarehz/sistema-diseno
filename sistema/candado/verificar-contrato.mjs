@@ -142,6 +142,55 @@ const respaldada = (r) => {
 
 // Secciones sin declarar: su respaldo se busca en el MONTÓN de todas las
 // pruebas, así que una coincidencia de número basta. Se cuentan y se dicen.
+/* ── UN NUMERO AMBIGUO NO RESPALDA NADA ───────────────────────────────────────
+ *
+ * Este sistema acuno numeros que no eran suyos siete veces, y la ultima —R129,
+ * el 2026-09-13— no solo confundio a las personas: ENGANO A ESTE CANDADO. Tres
+ * reglas nuevas citaban `(R129, …)` y quedaron por respaldadas casando con las
+ * pruebas del R129 VIEJO, de otra version y otro componente. Verde en falso
+ * delante de tres reglas sin nada detras.
+ *
+ * La condicion exacta del dano es esta: una regla que SOLO se sostiene por el
+ * numero citado, cuando ese numero significa dos cosas en este documento. No
+ * basta con que un numero aparezca en dos versiones —R41 y R102 son un mismo
+ * requerimiento entregado en dos tandas, y eso es normal—: lo que no vale es
+ * apoyarse en el numero para decir que algo esta probado cuando el numero no
+ * identifica una sola cosa.
+ *
+ * La salida es la de siempre y no cuesta nada: atarla por numero de fila,
+ * `it('[3] …')`, que es inequivoco.
+ * ──────────────────────────────────────────────────────────────────────────── */
+const versionesPorNumero = new Map();
+for (const m of md.matchAll(/\(R(\d+)[^)]*?,\s*v(\d+\.\d+\.\d+)\)/g)) {
+  if (!versionesPorNumero.has(m[1])) versionesPorNumero.set(m[1], new Set());
+  versionesPorNumero.get(m[1]).add(m[2]);
+}
+const ambiguo = (n) => (versionesPorNumero.get(n)?.size ?? 0) > 1;
+
+/** ¿Se sostiene SOLO por el numero citado, y no por su fila? */
+const soloPorNumero = (r) => {
+  let texto = TODO;
+  if (r.archivos) {
+    if (r.archivos.some((f) => !ARCHIVOS.includes(f))) return false;
+    texto = r.archivos.map(leer).join('\n');
+  }
+  const t = titulos(texto);
+  if (t.includes(`[${r.n}]`)) return false;                 // atada por fila
+  if (new RegExp(`\\bR${r.n}\\b`).test(t)) return false;    // por numero de fila
+  return requisitos(r.texto).some((q) => ambiguo(q) && new RegExp(`\\bR${q}\\b`).test(t));
+};
+const ambiguas = reglas.filter((r) => r.obligatoria && soloPorNumero(r));
+if (ambiguas.length) {
+  console.error('\n  Reglas respaldadas por un numero que significa DOS cosas:\n');
+  for (const r of ambiguas) {
+    const q = requisitos(r.texto).find(ambiguo);
+    console.error(`    ${r.seccion} · fila ${r.n} cita R${q}, que en este documento es ${[...versionesPorNumero.get(q)].sort().join(' y ')}`);
+  }
+  console.error('\n  El respaldo casa con la prueba del OTRO. Atala por su fila —`it(\'[3] …\')`—,');
+  console.error('  que es inequivoco, o cita el registro: «R129 del equipo».\n');
+  process.exit(1);
+}
+
 const sinDeclarar = [...new Set(reglas.filter((r) => !r.archivos).map((r) => r.seccion))];
 const cubiertas = reglas.filter((r) => r.obligatoria && r.archivos).length;
 
