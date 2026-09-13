@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.108.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.109.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -12,6 +12,22 @@
 
 :root,
 [data-tema='claro'] {
+  /* LA HOJA DICE SU VERSION, y se puede preguntar EN EJECUCION:
+       getComputedStyle(document.documentElement).getPropertyValue('--mmi-version').trim()
+     SIN COMILLAS a proposito: entrecomillado, getPropertyValue devuelve la
+     comilla DENTRO del valor y una comparacion estricta contra package.json
+     falla SIEMPRE. Y peor: el minificador reescribe la comilla simple en
+     doble, asi que quien recortara una se rompia al desplegar. El trim() si
+     hace falta: el valor conserva el espacio de delante.
+     Nace de un reporte de Control Administrativos el 2026-09-13: hicieron el
+     `npm install`, midieron, y les salio lo mismo que antes. Estuvieron a punto
+     de reportar R129 como no resuelto. El servidor de desarrollo seguia
+     sirviendo el paquete viejo y hubo que reiniciar el contenedor.
+     La comprobacion que este manual daba —leer package.json con node— mira EL
+     DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
+     navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
+     CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
+  --mmi-version: 1.109.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;

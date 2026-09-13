@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.108.0";
+export const VERSION = "1.109.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,67 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.109.0', fecha: '2026-09-13',
+    que: 'R131: el calendario no se podia cerrar. Y la version se puede comprobar en EJECUCION, no solo en disco',
+    porque:
+      'R131 del registro del equipo, prioridad alta. Con el calendario abierto NO HABIA FORMA '
+      + 'DE CERRARLO sin cambiar el rango: lo midieron con raton y teclado reales, accion por '
+      + 'accion. Clic fuera, Escape, volver a pulsar el disparador, pulsar otro boton de la '
+      + 'pagina: las cuatro lo dejaban abierto. Solo cerraba eligiendo un rango completo. Quien '
+      + 'abria para mirar otro periodo y cambiaba de idea se quedaba con 626px flotando sobre '
+      + 'los resultados que acababa de pedir. '
+      + '`cerrar()` existia y funcionaba desde siempre; faltaba QUIEN LO LLAMARA. `onKeyDown` '
+      + 'cuelga de la rejilla, asi que Escape solo funcionaba con el foco DENTRO, y al pulsar '
+      + 'fuera el foco cae a <body>. Ahora un efecto escucha `pointerdown` y `keydown` en '
+      + '`document` mientras esta abierto, y el disparador alterna. '
+      + 'Sus tres advertencias se siguieron al pie: `pointerdown` y no `click`, porque con '
+      + '`click` el cierre llega despues de que el navegador decida el foco; el clic fuera NO '
+      + 'devuelve el foco, que se lo quitaria a donde se acaba de pulsar; y cerrar NO DESCARTA '
+      + 'nada, o rozar la pantalla costaria el rango. La segunda costo una segunda vuelta: con '
+      + 'un clic entero la asercion no distinguia, porque el navegador enfoca el destino '
+      + 'igualmente, asi que se mide sobre el `pointerdown` solo. '
+      + 'Y una cuarta que no venia en el reporte: el Escape SE DETIENE AHI, asi que dentro de '
+      + 'un Dialogo la primera cierra el calendario y no el dialogo. '
+      + 'INSTALAR NO ES SERVIR, y esto costo un reporte en falso. El mismo equipo actualizo a '
+      + 'la v1.108.0, midio, le salio identico a antes, y estuvo a punto de reportar R129 como '
+      + 'NO RESUELTO. El paquete estaba bien: el servidor de desarrollo seguia sirviendo el '
+      + 'anterior y hubo que reiniciar el contenedor. La culpa es de este sistema: la '
+      + 'comprobacion que el manual publicaba —leer package.json con node— mira EL DISCO, y '
+      + 'desde otro proceso, asi que salia en verde mientras el navegador recibia la version '
+      + 'vieja. Y la otra mitad era peor: lo que cambio en R129 y R130 era CSS, y desde '
+      + 'JavaScript no habia NINGUNA forma de preguntarle a la hoja servida que version era. '
+      + 'Ahora `tokens.css` declara `--mmi-version` en `:root`, que se pregunta con '
+      + '`getComputedStyle`, y el manual trae el reinicio como paso obligatorio y una tabla de '
+      + 'TRES comprobaciones: disco, JavaScript servido y hoja servida. Si discrepan, es la '
+      + 'cache y no el componente. '
+      + 'Se probo ademas anadir `VERSION` al barril de componentes y el candado de entrega lo '
+      + 'cazo bien: lo contaba como un componente publicado sin pagina en el catalogo. No es '
+      + 'un componente, y se importa desde la raiz del paquete, que ya existia y nadie sabia. '
+      + 'Y LA AUDITORIA TUMBO LAS DOS MITADES DE LA PRIMERA VERSION DE ESTO. '
+      + 'R131 se habia escrito como un efecto propio con escuchas en `document`, en fase de '
+      + 'CAPTURA y con `stopPropagation()`. Era la CUARTA copia de un comportamiento que '
+      + '`interno/desplegable.ts` ya tenia —y cuya cabecera avisa: «dos copias de un '
+      + 'comportamiento divergen»—, divergia de verdad (captura contra burbuja, `pointerdown` '
+      + 'contra `mousedown`), y LE ROBABA EL ESCAPE a las otras tres escuchas de `document` '
+      + 'de este mismo sistema: con el calendario y el menu de usuario abiertos, una Escape '
+      + 'cerraba el calendario —la capa que la persona NO estaba usando— y dejaba el menu '
+      + 'abierto, ademas de llevarse el foco. Tampoco se apuntaba en el conjunto de «solo uno '
+      + 'abierto», que existe justo para eso. Se rehizo COMPONIENDO sobre el desplegable del '
+      + 'sistema, que es lo que la politica dice desde el principio, y de paso ese gancho gana '
+      + 'lo bueno del intento: `pointerdown` en vez de `mousedown`, `preventDefault` en Escape '
+      + 'para que un Dialogo de fuera no cierre tambien, un `alCerrar` para lo que cada '
+      + 'consumidor tenga que soltar, y la guarda de foco perdido que `Dialogo` ya tenia. '
+      + 'Y EL SELLO ESTABA EN LA HOJA QUE NO CAMBIA. Se puso solo en `tokens.css`, y el CSS de '
+      + 'R129 y R130 —lo que el equipo estaba midiendo— vive ENTERO en `componentes.css`, que '
+      + 'no decia ninguna version. Son dos importaciones distintas. Ahora cada hoja lleva la '
+      + 'suya, y SIN COMILLAS: entrecomillado, `getPropertyValue` devuelve la comilla dentro y '
+      + 'una comparacion estricta falla siempre, ademas de que el minificador reescribe la '
+      + 'comilla simple en doble. Y el manual daba la frase de diagnostico con el MISMO numero '
+      + 'en los dos lados, asi que decia lo contrario de lo que queria decir.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.108.0', fecha: '2026-09-13',
     que: 'R129 y R130: el calendario tenia SUELO de mentira, y ademas ponia la etiqueta donde ningun otro campo la pone y ensenaba la fecha en el formato de guardar',

@@ -20,12 +20,13 @@
  * guion, así que los candados que leen marcado estático no tenían con qué
  * comparar. Igual que la lista del selector antes de que R116 la ejecutara.
  */
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, within, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { RangoFecha, ATAJOS_POR_OMISION } from '../src/RangoFecha';
+import { MenuUsuario } from '../src/MenuUsuario';
 
 const HOY = new Date(2026, 2, 15); // 15 de marzo de 2026
 
@@ -456,5 +457,182 @@ describe('R129 del equipo · el calendario no se encoge con su disparador', () =
     // El contenido pide 626 y el tope descuenta el canalón de ventana (32):
     // por debajo de 658 hay que apilar, o se recorta sin avisar.
     expect(Math.max(...medias.map((m) => m.px))).toBeGreaterThanOrEqual(658);
+  });
+});
+
+/**
+ * R131 DEL EQUIPO · EL CALENDARIO SE PUEDE CERRAR.
+ *
+ * `cerrar()` existía y funcionaba desde siempre; lo que faltaba era quién lo
+ * llamara. Control Administrativos lo midió con ratón y teclado reales, acción
+ * por acción, y las cuatro dejaban el calendario abierto: clic fuera, Escape,
+ * volver a pulsar el disparador, y pulsar otro botón de la página. La única
+ * forma de cerrarlo era **elegir un rango completo**.
+ *
+ * El daño no es estético: son 626 px flotando sobre los resultados que la
+ * persona acaba de pedir, sin forma de quitarlos.
+ *
+ * Se prueban las cuatro, y la quinta que NO debe pasar: cerrar no descarta.
+ */
+describe('R131 del equipo · el calendario se cierra', () => {
+  const abierto = (c: HTMLElement) => c.querySelector('.fc-cal') !== null;
+
+  it('[15] clic FUERA cierra, y NO le quita el foco a donde se pulsó', async () => {
+    const u = userEvent.setup();
+    const { container } = pintar();
+    render(<button>Buscar</button>);
+    await u.click(screen.getByRole('button', { name: /Desde/ }));
+    expect(abierto(container)).toBe(true);
+
+    const otro = screen.getByRole('button', { name: 'Buscar' });
+    const disparador = screen.getByRole('button', { name: /Desde/ });
+    // El destino recibe el foco, que es lo que hace un navegador al pulsar
+    // sobre algo enfocable. Se le enfoca ANTES para poder medir si se lo
+    // quitamos: con un clic entero el navegador lo enfoca después y la
+    // aserción no distinguiría — se comprobó, y por eso se mide así.
+    otro.focus();
+    fireEvent.pointerDown(otro);
+    expect(abierto(container), 'pulsar otro botón de la página no cerraba').toBe(false);
+    expect(otro, 'se le robó el foco a donde se acababa de pulsar').toHaveFocus();
+    expect(disparador).not.toHaveFocus();
+  });
+
+  it('[15] pero si el foco se IBA A PERDER, lo devuelve al campo', async () => {
+    // El otro lado de la misma moneda: si lo que se pulsa no es enfocable, el
+    // foco cae a `<body>` y quien va con teclado tiene que tabular desde el
+    // principio de la página. Es la guarda que `Dialogo` ya tenía escrita.
+    const u = userEvent.setup();
+    const { container } = pintar();
+    const disparador = screen.getByRole('button', { name: /Desde/ });
+    await u.click(disparador);
+    expect(abierto(container)).toBe(true);
+
+    fireEvent.pointerDown(document.body);
+    expect(abierto(container)).toBe(false);
+    expect(disparador, 'el foco se quedó en el limbo').toHaveFocus();
+  });
+
+  it('[15] Escape cierra AUNQUE el foco esté fuera, y devuelve el foco al campo', async () => {
+    const u = userEvent.setup();
+    const { container } = pintar();
+    const disparador = screen.getByRole('button', { name: /Desde/ });
+    await u.click(disparador);
+    expect(abierto(container)).toBe(true);
+
+    // El foco se va fuera: es lo que pasa en cuanto se pulsa en la página.
+    (document.activeElement as HTMLElement)?.blur();
+    document.body.focus();
+    await u.keyboard('{Escape}');
+    expect(abierto(container), 'Escape solo funcionaba con el foco dentro').toBe(false);
+    expect(disparador).toHaveFocus();
+  });
+
+  it('[15] volver a pulsar el disparador cierra: es un interruptor', async () => {
+    const u = userEvent.setup();
+    const { container } = pintar();
+    const disparador = screen.getByRole('button', { name: /Desde/ });
+    await u.click(disparador);
+    expect(abierto(container)).toBe(true);
+    await u.click(disparador);
+    expect(abierto(container), 'reabría sobre lo ya abierto').toBe(false);
+    // Y vuelve a abrir: alternar es alternar.
+    await u.click(disparador);
+    expect(abierto(container)).toBe(true);
+  });
+
+  it('[15] pulsar DENTRO del calendario no lo cierra', async () => {
+    const u = userEvent.setup();
+    const { container } = pintar();
+    await u.click(screen.getByRole('button', { name: /Desde/ }));
+    await u.click(container.querySelector('.fc-cal-cab')!);
+    expect(abierto(container)).toBe(true);
+  });
+
+  it('[15] cerrar NO descarta lo ya elegido', async () => {
+    // Si cerrar equivaliera a limpiar, rozar la pantalla costaría el rango.
+    const u = userEvent.setup();
+    const { container } = pintar({ desde: '2026-03-05', hasta: '2026-03-12' });
+    await u.click(screen.getByRole('button', { name: /Desde/ }));
+    await u.keyboard('{Escape}');
+    expect(abierto(container)).toBe(false);
+    const botones = [...container.querySelectorAll('button.fc-campo')];
+    expect(botones.map((b) => b.textContent)).toEqual(['05/03/2026', '12/03/2026']);
+  });
+});
+
+/**
+ * R131 · LO QUE UNA CAPA NO PUEDE HACERLE A LAS DEMÁS.
+ *
+ * La primera versión de R131 escribió en `RangoFecha` su propio efecto con
+ * escuchas en `document`, **en fase de captura y con `stopPropagation()`**. Una
+ * auditoría lo tumbó midiendo el daño: con el calendario y el menú de usuario
+ * abiertos a la vez, una Escape cerraba **el calendario** —la capa que la
+ * persona no estaba usando— y dejaba el menú abierto, además de llevarse el
+ * foco. Le robaba el Escape a las otras tres escuchas de `document` que este
+ * mismo sistema registra.
+ *
+ * Se arregló componiendo sobre `interno/desplegable.ts`, que es donde ese
+ * comportamiento ya vivía. Esto lo fija para que no vuelva.
+ */
+describe('R131 · el calendario no decide por las demás capas', () => {
+  it('[15] Escape NO se para: las otras escuchas de `document` siguen llegando', async () => {
+    const u = userEvent.setup();
+    pintar();
+    const oidas: string[] = [];
+    const espia = (e: KeyboardEvent) => { if (e.key === 'Escape') oidas.push('burbuja'); };
+    document.addEventListener('keydown', espia);
+    try {
+      await u.click(screen.getByRole('button', { name: /Desde/ }));
+      await u.keyboard('{Escape}');
+      expect(oidas, 'el calendario se comía el Escape de las demás capas').toEqual(['burbuja']);
+    } finally {
+      document.removeEventListener('keydown', espia);
+    }
+  });
+
+  it('[15] pero SÍ impide el defecto, para que un `Dialogo` de fuera no cierre', async () => {
+    // Sin `preventDefault`, una sola Escape cerraría el calendario Y el diálogo
+    // que lo contiene. La capa de más adentro primero.
+    const u = userEvent.setup();
+    pintar();
+    let impedido: boolean | null = null;
+    const espia = (e: KeyboardEvent) => { if (e.key === 'Escape') impedido = e.defaultPrevented; };
+    // El espía se registra DESPUÉS de abrir, a propósito: las escuchas de
+    // burbuja corren en orden de registro, así que registrándolo antes vería
+    // siempre `false` y la prueba pasaría dijera lo que dijera el componente.
+    // Se comprobó: así pasaba también con el `preventDefault` quitado.
+    await u.click(screen.getByRole('button', { name: /Desde/ }));
+    // Y con el foco FUERA de la rejilla, que es el caso que importa: dentro, el
+    // `preventDefault` que se mediría sería el del manejador de teclas del
+    // calendario, no el de la capa. Se comprobó: así pasaba con el de la capa
+    // quitado.
+    (document.activeElement as HTMLElement)?.blur();
+    document.addEventListener('keydown', espia);
+    try {
+      await u.keyboard('{Escape}');
+      expect(impedido, 'sin impedir el defecto, un Dialogo de fuera cerraría también').toBe(true);
+    } finally {
+      document.removeEventListener('keydown', espia);
+    }
+  });
+
+  it('[15] abrir el calendario cierra los demás desplegables del sistema', async () => {
+    // El conjunto «solo uno abierto» de `interno/desplegable.ts`. La primera
+    // versión no se apuntaba en él, así que el calendario y el menú de usuario
+    // podían quedarse los dos encima del contenido — el defecto exacto que ese
+    // conjunto existe para evitar.
+    const u = userEvent.setup();
+    render(<MenuUsuario id="p-1" nombre="Ana Pérez" onSalir={() => {}} />);
+    const menu = screen.getByRole('button', { name: /Ana Pérez/ });
+    await u.click(menu);
+    expect(menu).toHaveAttribute('aria-expanded', 'true');
+
+    pintar();
+    // Se abre CON TECLADO: un clic dispararía el `pointerdown` fuera del menú y
+    // lo cerraría su propia escucha, así que la prueba pasaría sin que el
+    // calendario se apuntara en el conjunto. Se comprobó, y pasaba.
+    screen.getByRole('button', { name: /Desde/ }).focus();
+    await u.keyboard('{Enter}');
+    expect(menu, 'el menú se quedó abierto debajo del calendario').toHaveAttribute('aria-expanded', 'false');
   });
 });

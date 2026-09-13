@@ -19,13 +19,13 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.108.0** — R129: el calendario tenía **suelo de mentira**.
-`width: 100%` no aporta ancho intrínseco dentro de una rejilla, así que las
-siete columnas se encogían con el disparador hasta **16 px** —los días de dos
-cifras se tocaban— y la barra de periodos **desaparecía entera, sin aviso**. Lo
-midió el equipo en su pantalla de trabajo diario. No se veía aquí porque el
-catálogo ponía el disparador al ancho de la página; ahora va en una fila
-estrecha, como la suya.
+**Estado actual: v1.109.0** — R131: el calendario **no se podía cerrar**. Clic
+fuera, Escape, volver a pulsar el disparador y pulsar otro botón: las cuatro lo
+dejaban abierto, y
+`cerrar()` existía desde siempre sin que nadie lo llamara. Y **instalar no es
+servir**: el equipo actualizó, midió, le salió idéntico, y estuvo a punto de
+reportar un defecto ya corregido como no resuelto — porque la comprobación que
+este manual publicaba mira **el disco**, no lo que la aplicación sirve.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

@@ -1,9 +1,9 @@
 # Estado del proyecto
 
-**Última actualización:** 11 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.108.0** — R129 y R130: el calendario tenía
-**suelo de mentira**, ponía la etiqueta donde ningún otro campo la pone, y
-mostraba la fecha en el formato de **guardar**
+**Última actualización:** 13 de septiembre de 2026
+**Versión del sistema:** MMI-DS **v1.109.0** — R131: el calendario no se podía
+cerrar. Y la versión ya se puede comprobar **en ejecución**, que es lo que
+faltaba para no volver a dar por no resuelto algo que sí lo estaba
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,28 +18,32 @@ mostraba la fecha en el formato de **guardar**
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —34 componentes
-publicados (`verificar-entrega`, que los cruza con sus páginas del catálogo), la hoja que viaja,
-**dieciocho pasos de verificación** —los diecisiete candados y las pruebas, que `publicar.mjs` corre ya por su cuenta—, **662
-pruebas en 44 archivos**, todas en verde
-(`npx vitest run`)—.
+publicados (`verificar-entrega`), la hoja que viaja, **diecisiete pasos de
+verificación** —los que corre `publicar.mjs`—, **676 pruebas en 45 archivos**,
+todas en verde—.
 
-Lo de hoy es **R129**, y es el defecto que mejor explica por qué existe este
-repositorio: `.fc-d` declaraba `width: 100%`, que dentro de una rejilla **no
-aporta ancho intrínseco**. Las siete columnas se dimensionaban por el contenido
-—un número— y resolvían a **16,16 px**. Los días de dos cifras se tocaban y la
-barra de periodos desaparecía entera, **sin que nada fallara**: ni un error, ni
-un candado en rojo, ni una prueba caída. Solo una pantalla ilegible en el
-trabajo diario de RRHH.
+**Tres días seguidos entregando a Control Administrativos, y los tres reportes
+eran defectos reales del sistema, no de su pantalla.** R129: el calendario no
+tenía suelo y se encogía con su disparador hasta que los días de dos cifras se
+tocaban. R130: la etiqueta iba dentro del recuadro —la única del sistema— y la
+fecha se mostraba en el formato de **guardar**. R131: el calendario **no se
+podía cerrar** sin cambiar el rango.
 
-**No se veía aquí porque el catálogo mentía por omisión.** Ponía el disparador
-al ancho de la página; el equipo lo monta junto a un botón «Buscar» en una fila
-de 606 px. El componente **no tenía suelo**: se encogía tanto como le dejara su
-contenedor. La demostración pasa a vivir en esa misma fila estrecha, para que la
-próxima de esta familia se rompa aquí y no allí.
+**Lo que más enseña es lo que apareció alrededor.** El arreglo de R131 escribió
+una **cuarta copia** de un comportamiento que `interno/desplegable.ts` ya tenía
+—y cuya cabecera avisa: «dos copias de un comportamiento divergen»—. Divergía de
+verdad: escuchaba en **captura** y paraba la propagación, así que le **robaba el
+Escape** al menú de usuario, a los paneles de la barra y al selector con
+búsqueda. Se cerraba la capa que la persona no estaba usando. Lo tumbó una
+auditoría y se rehízo **componiendo**, que es lo que la política dice desde el
+principio.
 
-Y una cuarta colisión de números que **engañó a un candado**: `R129` ya estaba
-acuñado por este sistema en la v1.103.0, así que el de contrato dio las reglas
-nuevas por respaldadas casando con las pruebas del viejo. Verde en falso.
+**Y un reporte que casi no llega.** El equipo actualizó a la v1.108.0, midió,
+le salió idéntico, y estuvo a punto de reportar R129 como **no resuelto**: el
+servidor seguía sirviendo el paquete viejo. La culpa era nuestra — la
+comprobación que el manual publicaba mira **el disco**, no lo que la aplicación
+sirve, y lo que cambió era **CSS**, que desde JavaScript no se podía preguntar.
+Ahora las dos hojas llevan su versión en una variable de CSS.
 
 ---
 
@@ -53,7 +57,7 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **662 pruebas en 44 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **676 pruebas en 45 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **952 reglas de 1464** · **693 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **69 páginas** (`grep -c '<section class="pagina"'`; decía 68 y antes 53) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
@@ -1686,11 +1690,11 @@ sin comparar.
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.107.0
+Versión                      1.109.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         662   en 44 archivos
+Pruebas                         676   en 45 archivos
 Reglas que viajan               952   de 1464 · 693 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el

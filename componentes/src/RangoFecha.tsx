@@ -15,6 +15,7 @@
  */
 
 import { useEffect, useMemo, useRef, useState, useId } from 'react';
+import { usarDesplegable } from './interno/desplegable';
 import { Boton } from './Boton';
 
 export type RangoFechaProps = {
@@ -128,7 +129,29 @@ export function RangoFecha({
   const id = useId();
   const [desde, setDesde] = useState<string | null>(desdeProp);
   const [hasta, setHasta] = useState<string | null>(hastaProp);
-  const [abierto, setAbierto] = useState(false);
+  /**
+   * R131 · SE USA EL DESPLEGABLE DEL SISTEMA, no una cuarta copia.
+   *
+   * `cerrar()` existia y no habia quien lo llamara: ni clic fuera, ni Escape
+   * desde fuera, ni alternar en el disparador. La primera version de R131
+   * escribio aqui su propio efecto con escuchas en `document`, y una auditoria
+   * lo tumbo por dos motivos, los dos justos:
+   *
+   *  · Era la CUARTA copia de un comportamiento que `interno/desplegable.ts`
+   *    ya tenia, y cuya propia cabecera avisa: «dos copias de un comportamiento
+   *    divergen. La paginacion ya lo demostro». Divergian de verdad —captura
+   *    contra burbuja, `pointerdown` contra `mousedown`— y no en teoria.
+   *  · Y no se apuntaba en el conjunto de «solo uno abierto», asi que el
+   *    calendario y el menu de usuario podian quedarse los dos encima del
+   *    contenido, que es el defecto exacto que ese conjunto existe para evitar.
+   *
+   * Lo que el calendario tiene de suyo —el modo, el mes a la vista, el dia con
+   * el foco— se queda aqui. Lo de ser una capa que se abre y se cierra, no.
+   */
+  const {
+    abierto, setAbierto, abrir: abrirCapa, caja: zona, disparador,
+    cerrarYDevolverFoco, cerrarPorClicFuera,
+  } = usarDesplegable({ alCerrar: () => setSobre(null) });
   /** Qué extremo se está eligiendo. */
   const [modo, setModo] = useState<'desde' | 'hasta'>('desde');
   /** El día que tiene el foco dentro de la rejilla. Es lo que mueve el teclado
@@ -143,7 +166,6 @@ export function RangoFecha({
    *  hoja llama `.fc-previo` y ningún producto podía activar. */
   const [sobre, setSobre] = useState<Date | null>(null);
   const rejilla = useRef<HTMLDivElement>(null);
-  const disparador = useRef<HTMLButtonElement>(null);
   const debeEnfocar = useRef(false);
 
   // El foco se mueve DESPUÉS de pintar, o se enfocaría un nodo que aún no
@@ -171,19 +193,20 @@ export function RangoFecha({
     // La ventana se coloca al abrir, no de rebote por el efecto: así el primer
     // dibujado ya trae el mes correcto y no hay salto visible.
     setMesBase(inicioDeMes(d));
-    setAbierto(true);
+    // `abrirCapa` y no `setAbierto`: cierra los demas desplegables antes.
+    abrirCapa();
     debeEnfocar.current = true;
   }
 
+  /**
+   * El dia sobrevolado se suelta en `alCerrar`, arriba: asi ocurre venga el
+   * cierre de donde venga —Escape, clic fuera, o que otro desplegable se
+   * abriera—. Solo se limpiaba con `mouseleave`, y cerrar con teclado dejaba
+   * medio mes pintado como «dentro del rango» sin nadie encima (R129).
+   */
   function cerrar(devolverFoco = true) {
-    setAbierto(false);
-    // R129 · se suelta el día sobrevolado. Solo se limpiaba con `mouseleave`,
-    // así que cerrar con Escape o elegir con teclado dejaba medio mes pintado
-    // como «dentro del rango» sin nadie encima.
-    setSobre(null);
-    // El foco vuelve al campo que abrió, siempre. En el del catálogo hacía
-    // `blur()` y el foco caía a <body>.
-    if (devolverFoco) disparador.current?.focus();
+    if (devolverFoco) cerrarYDevolverFoco();
+    else cerrarPorClicFuera();
   }
 
   function elegir(d: Date) {
@@ -349,7 +372,7 @@ export function RangoFecha({
       : `Del ${enPalabras(deIso(desde))} al ${enPalabras(deIso(hasta))}.`;
 
   return (
-    <div className="fc-zona">
+    <div className="fc-zona" ref={zona}>
       {/* Los dos disparadores NO son <Campo>, y es a proposito. Campo renderiza
           un <input>, y un input no abre un dialogo: esto tiene que SER un
           boton -aria-haspopup, aria-expanded, teclado de boton- y PARECER un
@@ -380,7 +403,7 @@ export function RangoFecha({
             aria-haspopup="dialog"
             aria-expanded={abierto && modo === 'desde'}
             aria-labelledby={`${id}-e-desde ${id}-v-desde`}
-            onClick={() => abrir('desde')}
+            onClick={() => (abierto && modo === 'desde' ? cerrar() : abrir('desde'))}
           >
             <span id={`${id}-v-desde`}>{desde ? enCorto(deIso(desde)) : 'Elegir fecha'}</span>
           </button>
@@ -405,7 +428,7 @@ export function RangoFecha({
             aria-haspopup="dialog"
             aria-expanded={abierto && modo === 'hasta'}
             aria-labelledby={`${id}-e-hasta ${id}-v-hasta`}
-            onClick={() => abrir('hasta')}
+            onClick={() => (abierto && modo === 'hasta' ? cerrar() : abrir('hasta'))}
           >
             <span id={`${id}-v-hasta`}>{hasta ? enCorto(deIso(hasta)) : 'Elegir fecha'}</span>
           </button>

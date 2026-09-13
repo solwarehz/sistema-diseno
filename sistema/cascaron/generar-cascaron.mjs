@@ -8978,6 +8978,12 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    que el boton de al lado quedaba 16px por debajo del canto de los campos. */
 .demo-fila-estrecha .fc-campos { margin-bottom: 0; }
 
+/* El sello de la hoja de componentes. Se emite AQUI y lo recoge el extractor
+   como cualquier otra regla, para que el catalogo y la entrega digan lo mismo:
+   inyectarlo solo en la entrega dejaba una regla que el catalogo no tenia, y
+   el candado de la promesa lo caza —con razon—. Los dos salen de VERSION. */
+:root { --mmi-componentes: ${VERSION}; }
+
 .fc-zona { position: relative; }
 /* R129.2 · EL TOPE ERA MENOR QUE EL CONTENIDO. Con R129.1 puesto, lo que el
    calendario pide se puede sumar a mano y da 626px:

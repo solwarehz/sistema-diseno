@@ -339,6 +339,15 @@ for (const b of todos) {
     }
     continue;
   }
+  /* EL SELLO DE VERSION ES LA EXCEPCION AL SALTO DE `:root`. Los `:root` se
+     saltan porque los tokens de color los entrega `tokens.css`; este no es un
+     color, es como esta hoja dice QUE VERSION ES. Sin el, `componentes.css`
+     —que es la que de verdad cambia version a version— no se podia comprobar
+     en ejecucion, y una auditoria lo tumbo el 2026-09-13 con esa pregunta. */
+  if (b.sel === ':root' && /--mmi-componentes/.test(b.cuerpo)) {
+    dependenciasSueltas.push(b.entero);
+    continue;
+  }
   // Los `:root` se saltan porque los tokens de color los entrega `tokens.css`.
   // PERO había uno que no es de color y no lo entrega nadie: el de las sombras.
   // Nueve reglas del paquete escriben `box-shadow: var(--sombra-capa)` y el

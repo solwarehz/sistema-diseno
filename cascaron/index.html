@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.108.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.109.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.108.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.109.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -20,6 +20,22 @@
 
 :root,
 [data-tema='claro'] {
+  /* LA HOJA DICE SU VERSION, y se puede preguntar EN EJECUCION:
+       getComputedStyle(document.documentElement).getPropertyValue('--mmi-version').trim()
+     SIN COMILLAS a proposito: entrecomillado, getPropertyValue devuelve la
+     comilla DENTRO del valor y una comparacion estricta contra package.json
+     falla SIEMPRE. Y peor: el minificador reescribe la comilla simple en
+     doble, asi que quien recortara una se rompia al desplegar. El trim() si
+     hace falta: el valor conserva el espacio de delante.
+     Nace de un reporte de Control Administrativos el 2026-09-13: hicieron el
+     `npm install`, midieron, y les salio lo mismo que antes. Estuvieron a punto
+     de reportar R129 como no resuelto. El servidor de desarrollo seguia
+     sirviendo el paquete viejo y hubo que reiniciar el contenedor.
+     La comprobacion que este manual daba —leer package.json con node— mira EL
+     DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
+     navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
+     CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
+  --mmi-version: 1.109.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -1316,6 +1332,12 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 /* .fc-campos lleva margin-bottom:16px y como item de flex no lo colapsa, asi
    que el boton de al lado quedaba 16px por debajo del canto de los campos. */
 .demo-fila-estrecha .fc-campos { margin-bottom: 0; }
+
+/* El sello de la hoja de componentes. Se emite AQUI y lo recoge el extractor
+   como cualquier otra regla, para que el catalogo y la entrega digan lo mismo:
+   inyectarlo solo en la entrega dejaba una regla que el catalogo no tenia, y
+   el candado de la promesa lo caza —con razon—. Los dos salen de VERSION. */
+:root { --mmi-componentes: 1.109.0; }
 
 .fc-zona { position: relative; }
 /* R129.2 · EL TOPE ERA MENOR QUE EL CONTENIDO. Con R129.1 puesto, lo que el
@@ -4542,7 +4564,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.108.0</option></select></label>
+          <select class="campo cg-in"><option>v1.109.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4630,8 +4652,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.108.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.108.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.109.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.109.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -5184,7 +5206,7 @@ demostraciones de al lado. Y la hoja no es una copia: se inyecta desde
 vieja.</div>
 
 <script type="text/plain" id="tokens-entregados">/* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.108.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.109.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -5197,6 +5219,22 @@ vieja.</div>
 
 :root,
 [data-tema='claro'] {
+  /* LA HOJA DICE SU VERSION, y se puede preguntar EN EJECUCION:
+       getComputedStyle(document.documentElement).getPropertyValue('--mmi-version').trim()
+     SIN COMILLAS a proposito: entrecomillado, getPropertyValue devuelve la
+     comilla DENTRO del valor y una comparacion estricta contra package.json
+     falla SIEMPRE. Y peor: el minificador reescribe la comilla simple en
+     doble, asi que quien recortara una se rompia al desplegar. El trim() si
+     hace falta: el valor conserva el espacio de delante.
+     Nace de un reporte de Control Administrativos el 2026-09-13: hicieron el
+     `npm install`, midieron, y les salio lo mismo que antes. Estuvieron a punto
+     de reportar R129 como no resuelto. El servidor de desarrollo seguia
+     sirviendo el paquete viejo y hubo que reiniciar el contenedor.
+     La comprobacion que este manual daba —leer package.json con node— mira EL
+     DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
+     navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
+     CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
+  --mmi-version: 1.109.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -5809,7 +5847,7 @@ vieja.</div>
 </script>
 <script type="text/plain" id="hoja-entregada">
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.108.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.109.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -5886,6 +5924,7 @@ vieja.</div>
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
+:root{ --mmi-componentes: 1.109.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -18072,6 +18111,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.109.0 <span class="cam-fecha">2026-09-13</span></h3>
+<p class="pag-intro"><strong>R131: el calendario no se podia cerrar. Y la version se puede comprobar en EJECUCION, no solo en disco.</strong> R131 del registro del equipo, prioridad alta. Con el calendario abierto NO HABIA FORMA DE CERRARLO sin cambiar el rango: lo midieron con raton y teclado reales, accion por accion. Clic fuera, Escape, volver a pulsar el disparador, pulsar otro boton de la pagina: las cuatro lo dejaban abierto. Solo cerraba eligiendo un rango completo. Quien abria para mirar otro periodo y cambiaba de idea se quedaba con 626px flotando sobre los resultados que acababa de pedir. `cerrar()` existia y funcionaba desde siempre; faltaba QUIEN LO LLAMARA. `onKeyDown` cuelga de la rejilla, asi que Escape solo funcionaba con el foco DENTRO, y al pulsar fuera el foco cae a &lt;body&gt;. Ahora un efecto escucha `pointerdown` y `keydown` en `document` mientras esta abierto, y el disparador alterna. Sus tres advertencias se siguieron al pie: `pointerdown` y no `click`, porque con `click` el cierre llega despues de que el navegador decida el foco; el clic fuera NO devuelve el foco, que se lo quitaria a donde se acaba de pulsar; y cerrar NO DESCARTA nada, o rozar la pantalla costaria el rango. La segunda costo una segunda vuelta: con un clic entero la asercion no distinguia, porque el navegador enfoca el destino igualmente, asi que se mide sobre el `pointerdown` solo. Y una cuarta que no venia en el reporte: el Escape SE DETIENE AHI, asi que dentro de un Dialogo la primera cierra el calendario y no el dialogo. INSTALAR NO ES SERVIR, y esto costo un reporte en falso. El mismo equipo actualizo a la v1.108.0, midio, le salio identico a antes, y estuvo a punto de reportar R129 como NO RESUELTO. El paquete estaba bien: el servidor de desarrollo seguia sirviendo el anterior y hubo que reiniciar el contenedor. La culpa es de este sistema: la comprobacion que el manual publicaba —leer package.json con node— mira EL DISCO, y desde otro proceso, asi que salia en verde mientras el navegador recibia la version vieja. Y la otra mitad era peor: lo que cambio en R129 y R130 era CSS, y desde JavaScript no habia NINGUNA forma de preguntarle a la hoja servida que version era. Ahora `tokens.css` declara `--mmi-version` en `:root`, que se pregunta con `getComputedStyle`, y el manual trae el reinicio como paso obligatorio y una tabla de TRES comprobaciones: disco, JavaScript servido y hoja servida. Si discrepan, es la cache y no el componente. Se probo ademas anadir `VERSION` al barril de componentes y el candado de entrega lo cazo bien: lo contaba como un componente publicado sin pagina en el catalogo. No es un componente, y se importa desde la raiz del paquete, que ya existia y nadie sabia. Y LA AUDITORIA TUMBO LAS DOS MITADES DE LA PRIMERA VERSION DE ESTO. R131 se habia escrito como un efecto propio con escuchas en `document`, en fase de CAPTURA y con `stopPropagation()`. Era la CUARTA copia de un comportamiento que `interno/desplegable.ts` ya tenia —y cuya cabecera avisa: «dos copias de un comportamiento divergen»—, divergia de verdad (captura contra burbuja, `pointerdown` contra `mousedown`), y LE ROBABA EL ESCAPE a las otras tres escuchas de `document` de este mismo sistema: con el calendario y el menu de usuario abiertos, una Escape cerraba el calendario —la capa que la persona NO estaba usando— y dejaba el menu abierto, ademas de llevarse el foco. Tampoco se apuntaba en el conjunto de «solo uno abierto», que existe justo para eso. Se rehizo COMPONIENDO sobre el desplegable del sistema, que es lo que la politica dice desde el principio, y de paso ese gancho gana lo bueno del intento: `pointerdown` en vez de `mousedown`, `preventDefault` en Escape para que un Dialogo de fuera no cierre tambien, un `alCerrar` para lo que cada consumidor tenga que soltar, y la guarda de foco perdido que `Dialogo` ya tenia. Y EL SELLO ESTABA EN LA HOJA QUE NO CAMBIA. Se puso solo en `tokens.css`, y el CSS de R129 y R130 —lo que el equipo estaba midiendo— vive ENTERO en `componentes.css`, que no decia ninguna version. Son dos importaciones distintas. Ahora cada hoja lleva la suya, y SIN COMILLAS: entrecomillado, `getPropertyValue` devuelve la comilla dentro y una comparacion estricta falla siempre, ademas de que el minificador reescribe la comilla simple en doble. Y el manual daba la frase de diagnostico con el MISMO numero en los dos lados, asi que decia lo contrario de lo que queria decir.</p>
+
 
 
 <h3 class="sub-seccion">v1.108.0 <span class="cam-fecha">2026-09-13</span></h3>

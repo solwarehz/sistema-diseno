@@ -349,6 +349,22 @@ const css = `/* ─────────────────────�
 
 :root,
 [data-tema='claro'] {
+  /* LA HOJA DICE SU VERSION, y se puede preguntar EN EJECUCION:
+       getComputedStyle(document.documentElement).getPropertyValue('--mmi-version').trim()
+     SIN COMILLAS a proposito: entrecomillado, getPropertyValue devuelve la
+     comilla DENTRO del valor y una comparacion estricta contra package.json
+     falla SIEMPRE. Y peor: el minificador reescribe la comilla simple en
+     doble, asi que quien recortara una se rompia al desplegar. El trim() si
+     hace falta: el valor conserva el espacio de delante.
+     Nace de un reporte de Control Administrativos el 2026-09-13: hicieron el
+     \`npm install\`, midieron, y les salio lo mismo que antes. Estuvieron a punto
+     de reportar R129 como no resuelto. El servidor de desarrollo seguia
+     sirviendo el paquete viejo y hubo que reiniciar el contenedor.
+     La comprobacion que este manual daba —leer package.json con node— mira EL
+     DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
+     navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
+     CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
+  --mmi-version: ${VERSION};
 ${variables('claro')}
   /* Marca — FUERA del sistema. Prohibidos en interfaz (§2.3) */
 ${Object.entries(marca)
