@@ -169,11 +169,17 @@ process.stdout.write('  pruebas… ');
  * Se mira el código de salida, y el resumen solo para poder decir cuántas.
  * Corre en Docker porque `node_modules` vive en un volumen y §3 prohíbe
  * instalar nada en la máquina; si el contenedor no está en pie NO se da por
- * bueno, se para y se dice. */
+ * bueno, se para y se dice.
+ *
+ * `ulimit -c 0` porque un worker de vitest que revienta por falta de memoria
+ * deja un VOLCADO de 2,1 GB dentro de `componentes/`. Pasó dos veces el mismo
+ * día —4,2 GB— y la segunda ya estaba en `.gitignore`, así que ni siquiera
+ * ensuciaba el árbol para que alguien lo notara. El volcado no sirve de nada
+ * aquí: lo que hace falta saber lo dice vitest antes de morir. */
 const correrPruebas = () => {
   try {
     const salida = execFileSync('docker-compose',
-      ['exec', '-T', 'ds', 'sh', '-c', 'cd componentes && npx vitest run 2>&1'],
+      ['exec', '-T', 'ds', 'sh', '-c', 'ulimit -c 0; cd componentes && npx vitest run 2>&1'],
       { cwd: RAIZ, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
     return { ok: true, salida };
   } catch (e) {

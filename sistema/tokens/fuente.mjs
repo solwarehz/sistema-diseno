@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.109.0";
+export const VERSION = "1.110.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,48 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.110.0', fecha: '2026-09-13',
+    que: 'R133: la accion del dialogo salia descentrada dentro de su propio boton, y ningun pie de dialogo podia llevar icono',
+    porque:
+      'R133 del registro del equipo, y la primera mitad es un defecto que introdujo la '
+      + 'v1.107.0 al arreglar otro. El hueco de 14px del girador se reservaba SOLO ANTES del '
+      + 'texto, asi que el rotulo quedaba descentrado dentro de su propio boton: con `.btn` a '
+      + '`padding: 8px 16px` y `border: 1px`, hueco izquierdo 39 y derecho 17. Al lado de un '
+      + '«Cancelar» —que no lleva gerundio y si esta centrado— el pie se veia torcido, y desde '
+      + 'R118 eso es TODOS los dialogos que escriben. '
+      + 'Sus dos huecos reproducen exactos desde la hoja. Una correccion al reporte: eso deja '
+      + 'el rotulo 11px a la derecha del centro, no 22 — los 22 son la diferencia entre los dos '
+      + 'huecos y el desvio es la mitad. '
+      + 'Se toma la primera de sus dos salidas, el hueco simetrico, y el espejo cuesta 22px '
+      + 'de ancho y los paga: medido en navegador, el boton mide EXACTAMENTE lo mismo en los '
+      + 'dos estados —22,00px de crecimiento— y el desvio del rotulo pasa a CERO en reposo y '
+      + 'ocupado, en principal, destructiva, terciaria y mini. '
+      + 'Y LA RAZON PARA DESCARTAR LA SEGUNDA SALIDA SE CORRIGE, porque la primera version de '
+      + 'esta entrada se la invento. Se dijo que sacar el girador del flujo con '
+      + 'position:absolute haria caer la rueda ENCIMA del gerundio. Una auditoria lo midio en '
+      + 'un navegador de verdad y NO CAE: en un `.btn` normal la rueda acaba en 15,67 y el '
+      + 'texto empieza en 16,67, asi que cabe con 1px de holgura y ademas no cuesta 22px. Lo '
+      + 'que si decide, y es lo que habia que haber escrito: ese 1px de separacion es '
+      + 'inaceptable al lado de los 8 que el sistema usa en todas partes, y en `.btn-mini` la '
+      + 'rueda SI solapa 3px. La decision se queda; la razon publicada no era cierta. '
+      + 'CON `icono` no se anade espejo, y tiene su prueba: un icono no es un hueco vacio, '
+      + 'ocupa su sitio porque significa algo, y duplicarlo descentraria al reves. '
+      + 'Y QUEDAN DOS CASOS TORCIDOS, dichos porque la regla no los cubre: SIN `textoOcupado` '
+      + 'el rotulo sigue a 11px del centro y el boton sigue creciendo 22 al ocuparse, y con '
+      + '`icono` + `textoOcupado` va a 13px en reposo y el boton ENCOGE 4,00 —el icono mide 18 '
+      + 'y el giro 14, y eso es anterior a R118—. Ojo a la combinacion: `accion.icono`, que '
+      + 'esta misma version habilita, es justo el caso que el espejo NO centra. '
+      + 'R133.2 · `accion.icono`. `Boton` lo acepta desde siempre y el dialogo no lo dejaba '
+      + 'pasar, asi que NINGUN boton del pie de NINGUN dialogo podia llevarlo aunque el resto '
+      + 'de los botones del sistema si. El de cerrar se queda sin el A PROPOSITO, y queda '
+      + 'escrito para que no lo pregunten otra vez: siempre dice lo mismo y lo que hace es '
+      + 'irse; un icono ahi no anade informacion y compite con el de la accion, que si la '
+      + 'tiene. Si algun dia un pie necesita dos botones con icono, sera porque el segundo dejo '
+      + 'de ser una salida, y entonces el sitio es `children`.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.109.0', fecha: '2026-09-13',
     que: 'R131: el calendario no se podia cerrar. Y la version se puede comprobar en EJECUCION, no solo en disco',

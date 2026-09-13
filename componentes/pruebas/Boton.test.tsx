@@ -127,8 +127,15 @@ describe('Botón — acción de servidor', () => {
     await u.click(b);
     // Después: siguen los dos, y sigue habiendo exactamente uno oculto.
     expect(b.querySelectorAll('.btn-textos > .btn-texto-oculto')).toHaveLength(1);
-    // Y el giro ya no es un hueco: ahora gira de verdad.
-    expect(b.querySelector('.btn-giro.btn-texto-oculto')).toBeNull();
+    // Ocupado hay DOS ranuras de giro: la de delante gira de verdad y la de
+    // detras sigue siendo hueco. Es lo que centra el rotulo (R133.1).
+    //
+    // Se comprueban SOBRE LOS HIJOS DIRECTOS y por posicion, no con
+    // `querySelectorAll('.btn-giro')`: eso devuelve lo mismo este el espejo
+    // delante o detras del texto, asi que la asercion decia centrar y no lo
+    // medía. Lo demostró una auditoría moviendo el espejo.
+    expect([...b.children].map((e) => e.className))
+      .toEqual(['btn-giro', 'btn-textos', 'btn-giro btn-texto-oculto']);
   });
 
   it('`soloIcono` IGNORA `textoOcupado`: un botón de icono no tiene texto que sustituir', async () => {

@@ -19,13 +19,12 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.109.0** — R131: el calendario **no se podía cerrar**. Clic
-fuera, Escape, volver a pulsar el disparador y pulsar otro botón: las cuatro lo
-dejaban abierto, y
-`cerrar()` existía desde siempre sin que nadie lo llamara. Y **instalar no es
-servir**: el equipo actualizó, midió, le salió idéntico, y estuvo a punto de
-reportar un defecto ya corregido como no resuelto — porque la comprobación que
-este manual publicaba mira **el disco**, no lo que la aplicación sirve.
+**Estado actual: v1.110.0** — R133: la acción del diálogo salía **descentrada
+dentro de su propio botón** cuando llevaba gerundio, y era un defecto que
+introdujo la v1.107.0 al arreglar otro. Se corrige, se mide **en un navegador de
+verdad** —22,00 px, desvío 0— y se declaran los dos casos que **siguen**
+torcidos. Y una auditoría tumbó la razón que se había publicado para descartar
+la otra salida: era inventada.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

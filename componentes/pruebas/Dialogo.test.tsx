@@ -29,6 +29,7 @@ function Anfitrion({
   deshabilitada = false,
   destructiva = false,
   ocupado = false,
+  icono = undefined as ReactNode,
   cerrarAlPulsarFuera = true,
 }) {
   const origen = useRef<HTMLButtonElement>(null);
@@ -42,7 +43,7 @@ function Anfitrion({
         origen={origen}
         onCerrar={() => setAbierto(false)}
         cerrarAlPulsarFuera={cerrarAlPulsarFuera}
-        accion={conAccion ? { texto: 'Guardar', onClick: onAccion, textoOcupado, deshabilitada, destructiva, ocupado } : undefined}
+        accion={conAccion ? { texto: 'Guardar', onClick: onAccion, textoOcupado, deshabilitada, destructiva, ocupado, icono } : undefined}
       >
         <p>Contenido del diálogo</p>
       </Dialogo>
@@ -520,7 +521,93 @@ describe('R118 · la acción dice el gerundio', () => {
     const antes = btn().children.length;
     await u.click(screen.getByRole('button', { name: 'Guardar' }));
     expect(btn().children.length).toBe(antes);
-    expect(container.querySelector('.btn-giro.btn-texto-oculto')).toBeNull(); // ocupado: gira de verdad
+    // R133.1 · El hueco va a los DOS lados, o el rotulo queda 11px a la
+    // derecha del centro y el pie del dialogo se ve torcido. Ocupado, la
+    // ranura de delante gira y la de detras sigue esperando.
+    const giros = [...btn().querySelectorAll('.btn-giro')];
+    expect(giros.map((g) => g.className)).toEqual(['btn-giro', 'btn-giro btn-texto-oculto']);
+  });
+
+  it('[10e] R133.1 · el rótulo queda CENTRADO: el hueco va a los dos lados', async () => {
+    // Reservarlo solo delante dejaba el rótulo 11px a la derecha del centro
+    // —hueco izquierdo 39, derecho 17, con `.btn` a `padding: 8px 16px` y
+    // `border: 1px`—, y al lado de un «Cancelar» centrado el pie se veía
+    // torcido. Lo midió Control Administrativos sobre el DOM.
+    // jsdom no maqueta, así que lo que se comprueba es la ANATOMÍA que produce
+    // el centrado: una ranura de giro a cada lado de la caja de textos.
+    const u = userEvent.setup();
+    const { container } = render(
+      <Anfitrion conAccion onAccion={() => new Promise(() => {})} textoOcupado="Grabando…" />,
+    );
+    await abrir(u);
+    const btn = container.querySelectorAll('.dialogo-pie button')[1] as HTMLElement;
+    const hijos = [...btn.children].map((e) => e.className);
+    expect(hijos).toEqual(['btn-giro btn-texto-oculto', 'btn-textos', 'btn-giro btn-texto-oculto']);
+    // Y la caja de textos va EN MEDIO, que es lo que centra el rótulo.
+    expect(hijos.indexOf('btn-textos')).toBe(1);
+  });
+
+  it('[10e] R133.1 · y con icono NO se añade espejo: el icono sí dice algo', async () => {
+    // El espejo existe para compensar un hueco vacío. Un icono no es un hueco:
+    // ocupa su sitio porque significa algo, y duplicarlo descentraría al revés.
+    const u = userEvent.setup();
+    const { container } = render(
+      <Anfitrion conAccion icono={<i data-t="ic" />} onAccion={() => new Promise(() => {})}
+        textoOcupado="Grabando…" />,
+    );
+    await abrir(u);
+    const btn = container.querySelectorAll('.dialogo-pie button')[1] as HTMLElement;
+    expect(btn.querySelectorAll('.btn-giro').length).toBe(0);
+    expect(btn.querySelector('[data-t="ic"]')).not.toBeNull();
+  });
+
+  it('[10f] R133.1 · los DOS casos que el espejo NO centra, fijados', async () => {
+    // No es una prueba de que algo funcione: es de que el límite esté donde
+    // dice el contrato. Si algún día se centran, esto cae y hay que reescribir
+    // la regla 10f — que es exactamente lo que se quiere.
+    const u = userEvent.setup();
+
+    // (1) SIN `textoOcupado`: no hay espejo, y el giro se INSERTA al ocuparse.
+    const sinGerundio = render(
+      <Anfitrion conAccion onAccion={() => new Promise(() => {})} />,
+    );
+    await abrir(u);
+    const b1 = () => sinGerundio.container.querySelectorAll('.dialogo-pie button')[1] as HTMLElement;
+    // En reposo no hay NINGUNA ranura reservada: el rótulo es un nodo de texto
+    // suelto. Por eso al ocuparse el giro se inserta y el botón crece 22px.
+    expect(b1().querySelectorAll('.btn-giro').length).toBe(0);
+    await u.click(screen.getByRole('button', { name: 'Guardar' }));
+    expect(b1().querySelectorAll('.btn-giro').length, 'sin gerundio el giro se INSERTA').toBe(1);
+    // Y no hay espejo que lo compense: el rótulo queda a 11px del centro.
+    expect(b1().querySelectorAll('.btn-giro.btn-texto-oculto').length).toBe(0);
+    sinGerundio.unmount();
+
+    // (2) CON `icono`: el icono ocupa el hueco delantero y no hay espejo.
+    const u2 = userEvent.setup();
+    const conIcono = render(
+      <Anfitrion conAccion icono={<i data-t="ic" />} textoOcupado="Grabando…"
+        onAccion={() => new Promise(() => {})} />,
+    );
+    await abrir(u2);
+    const b2 = conIcono.container.querySelectorAll('.dialogo-pie button')[1] as HTMLElement;
+    expect([...b2.children].map((e) => e.className))
+      .toEqual(['', 'btn-textos']);   // icono + textos, sin espejo detrás
+  });
+
+  it('[14] R133.2 · `accion.icono` llega al botón, y el de cerrar NO lo admite', async () => {
+    // `Boton` acepta icono desde siempre y el diálogo no lo dejaba pasar:
+    // ningún botón del pie de ningún diálogo podía llevarlo.
+    const u = userEvent.setup();
+    const { container } = render(<Anfitrion conAccion icono={<i data-t="ic" />} />);
+    await abrir(u);
+    const pie = container.querySelector('.dialogo-pie')!;
+    const [cerrar, accion] = [...pie.querySelectorAll('button')];
+    expect(accion.querySelector('[data-t="ic"]'), 'el icono no llegó').not.toBeNull();
+    expect(accion.className).toContain('btn-ic');
+    // El de cerrar va sin icono A PROPÓSITO: siempre dice lo mismo y lo que
+    // hace es irse. Un icono ahí compite con el de la acción, que sí informa.
+    expect(cerrar.querySelector('[data-t="ic"]')).toBeNull();
+    expect(cerrar.className).not.toContain('btn-ic');
   });
 
   it('[10c] R118 · un `textoOcupado` VACÍO no deja el botón mudo', async () => {

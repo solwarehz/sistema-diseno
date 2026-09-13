@@ -302,6 +302,29 @@ export const Boton = forwardRef<HTMLButtonElement, BotonProps>(function Boton(
       {/* Sin `textoOcupado`, el estado solo lo dicen el giro y `aria-busy`, así
           que hace falta decirlo también para el lector. CON `textoOcupado` ya
           lo dice el propio texto y repetirlo sería oírlo dos veces. */}
+      {/* R133.1 · Y EL HUECO VA A LOS DOS LADOS, no solo delante.
+          Reservarlo solo delante dejaba el rotulo DESCENTRADO dentro de su
+          propio boton: con `.btn` a `padding: 8px 16px` y `border: 1px`, el
+          hueco izquierdo mide 39px y el derecho 17, asi que el texto queda
+          11px a la derecha del centro. Al lado de un «Cancelar» —que no lleva
+          gerundio y si esta centrado— el pie del dialogo se ve torcido. Lo
+          midio Control Administrativos el 2026-09-13 sobre el DOM.
+          De sus dos salidas se toma la primera, y el motivo NO es el que esta
+          version publico primero. Se dijo que sacar el giro del flujo con
+          `position: absolute` haria caer la rueda ENCIMA del gerundio, y se
+          midio en un navegador: NO CAE. En un `.btn` normal la rueda acaba en
+          15,67 y el texto empieza en 16,67 — cabe, con 1px de holgura, centra
+          el rotulo y no cuesta los 22px del espejo.
+          Lo que si es cierto, y es lo que decide: ese 1px de separacion es
+          inaceptable al lado de los 8 que el sistema usa en todas partes, y en
+          `.btn-mini` el relleno baja y la rueda SI solapa 3px. La decision se
+          queda; la razon se corrige, porque la primera era inventada.
+          El espejo cuesta 22px de ancho y los paga: el boton mide lo mismo en
+          los dos estados —que es la promesa de la v1.107.0— y ademas el
+          rotulo queda centrado en los dos. */}
+      {diceElGerundio && !icono
+        && <span className="btn-giro btn-texto-oculto" aria-hidden="true" />}
+
       {trabajando && !diceElGerundio && <span className="sr-solo">, enviando</span>}
     </button>
   );

@@ -1,9 +1,9 @@
 # Estado del proyecto
 
 **Última actualización:** 13 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.109.0** — R131: el calendario no se podía
-cerrar. Y la versión ya se puede comprobar **en ejecución**, que es lo que
-faltaba para no volver a dar por no resuelto algo que sí lo estaba
+**Versión del sistema:** MMI-DS **v1.110.0** — R133: la acción del diálogo
+salía descentrada dentro de su propio botón, por un hueco que la v1.107.0
+reservó solo a un lado
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -19,7 +19,7 @@ faltaba para no volver a dar por no resuelto algo que sí lo estaba
 
 El sistema es un **paquete que un producto instala y consume** —34 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **diecisiete pasos de
-verificación** —los que corre `publicar.mjs`—, **676 pruebas en 45 archivos**,
+verificación** —los que corre `publicar.mjs`—, **680 pruebas en 45 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -57,7 +57,7 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **676 pruebas en 45 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **680 pruebas en 45 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **952 reglas de 1464** · **693 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **69 páginas** (`grep -c '<section class="pagina"'`; decía 68 y antes 53) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
@@ -1690,11 +1690,11 @@ sin comparar.
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.109.0
+Versión                      1.110.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         676   en 45 archivos
+Pruebas                         680   en 45 archivos
 Reglas que viajan               952   de 1464 · 693 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el

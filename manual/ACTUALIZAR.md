@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.109.0
+# Actualizar al sistema de diseño v1.110.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.109.0"
+npm install "github:solwarehz/sistema-diseno#v1.110.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -37,7 +37,7 @@ está en marcha tiene el código viejo en memoria, y su caché de compilación n
 se entera de que cambió algo dentro de `node_modules`.
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.109.0"
+npm install "github:solwarehz/sistema-diseno#v1.110.0"
 # y ENTONCES, sin excepción:
 docker compose restart <su-servicio>     # o el reinicio que usen
 # si aun así ven lo de antes, tiren la caché de compilación —y reinicien OTRA
@@ -47,7 +47,7 @@ rm -rf node_modules/.vite   # Vite
 ```
 
 **Y comprueben lo que se SIRVE, no lo que hay en disco.** Ésta es la parte que
-este manual daba mal hasta la v1.109.0: mandaba leer `package.json` con `node`,
+este manual daba mal hasta la v1.110.0: mandaba leer `package.json` con `node`,
 que mira **el disco** y **desde otro proceso**, así que salía en verde mientras
 el navegador recibía la versión anterior.
 
@@ -63,7 +63,7 @@ const v = (n) => getComputedStyle(document.documentElement)
 | **La hoja de tokens** que se sirve | `v('--mmi-version')` |
 | **La hoja de componentes** que se sirve | `v('--mmi-componentes')` |
 
-**Las cuatro tienen que decir lo mismo.** Si el primero dice `1.109.0` y
+**Las cuatro tienen que decir lo mismo.** Si el primero dice `1.110.0` y
 cualquiera de los otros dice `1.108.0`, **no es un defecto del componente: es
 la caché**.
 
@@ -101,12 +101,12 @@ familia entera de ese defecto.
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.109.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.110.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.109.0 --repo solwarehz/sistema-diseno
+gh release download v1.110.0 --repo solwarehz/sistema-diseno
 ```
 
 Son **56 archivos**: tokens, hoja de estilos, los **33 módulos de componente**
@@ -407,6 +407,7 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.93.0 | **`RedesSociales` pinta los iconos con el rojo del escudo por omisión.** `marca-rojo` queda **autorizado solo para eso** — sigue prohibido como texto y como superficie. Si los ponen sobre un fondo que no sea la tarjeta o la página, usen `color="heredado"`: los 4,88:1 y 4,69:1 están medidos contra esos dos y **sobre el encabezado no ha medido nadie**. No rompe nada |
 | 1.94.0 | **`CabeceraPantalla` gana `accionSecundaria`.** Se pinta a la izquierda de `accion`, con 8px de separación, y en estrecho las dos se reparten el ancho. **Les afecta aunque no la usen:** `.pant-accion` no tenía ni `display` ni `gap`, así que si metieron dos botones ahí a mano, salían pegados y ahora se separan. Y la documentación del componente decía «una sola acción»: era un error de redacción, la regla es **una sola principal** |
 | 1.95.0 | **`SelectorBusqueda` entrega por fin lo que el catálogo enseña, en nueve puntos.** Se ven cuatro: el chevron **ahora gira** al abrir la lista, el visto ✓ de la opción elegida pasa **a la derecha** (estaba a la izquierda, 298,4 px de diferencia), la ayuda de la opción recibe su tipografía —13 px, secundario— y deja de salir del mismo cuerpo que el nombre, y la fila de «sin resultados» **dice qué se buscó** en vez de «No hay coincidencias». Se teclean cuatro: **↑ abre la lista**, las flechas **ciclan**, **Inicio y Fin** funcionan, y **Tab elige lo marcado** — antes tabular con una coincidencia marcada dejaba el campo **vacío**. **Nada rompe:** ninguna clase pública cambia de nombre y `textoVacio` sigue admitiendo una cadena. **Y les afecta aunque no usen el selector:** `Paginacion` no emitía `activa`, así que **la página en curso no se pintaba en ninguna pantalla** — ahora sí |
+| 1.110.0 | **El botón de la acción del diálogo ya sale centrado, y admite icono** (R133). **(1)** El hueco del girador se reservaba **solo delante**, así que el rótulo quedaba **11 px a la derecha del centro** de su propio botón —huecos de 39 y 17— y al lado de un «Cancelar» centrado el pie se veía torcido. Desde R118 eso son **todos los diálogos que escriben**. Ahora el hueco va a los dos lados: medido en navegador, el botón crece **22,00 px** y el desvío pasa a **0** en reposo y ocupado, también en `mini`, `destructiva` y `terciaria`. **Es un cambio de ancho**: si compensaron el desvío a mano, **quítenlo**. **Dos casos NO se centran, y conviene saberlo antes de actualizar:** *sin* `textoOcupado` el rótulo sigue a 11 px y el botón sigue creciendo 22 al ocuparse; y **con `icono`** va a **13 px** en reposo y el botón **encoge 4 px** (el icono mide 18 y el girador 14, y eso viene de antes). **(2) `accion.icono`**, que `Boton` aceptaba desde siempre y el diálogo no dejaba pasar. **Ojo a la combinación**: es justo el caso que (1) no centra, así que una acción con icono queda **más** torcida que antes, no menos. **El botón de cerrar no lo admite, a propósito**: siempre dice lo mismo y lo que hace es irse; un icono ahí compite con el de la acción, que sí informa. Está escrito en el contrato para que no haya que volver a preguntarlo. |
 | 1.109.0 | **`RangoFecha` ya se puede cerrar** (R131), **y lean lo de la caché aunque no usen el rango.** **(R131)** Con el calendario abierto no había forma de cerrarlo sin cambiar el rango: clic fuera, Escape, volver a pulsar el disparador y pulsar otro botón de la página **dejaban los 626 px flotando sobre los resultados**. Ahora cierra con las cuatro. El clic fuera **no** devuelve el foco —se lo quitaría a donde acaban de pulsar—, Escape sí, y **cerrar no descarta el rango**. Dentro de un `Dialogo`, la primera Escape cierra el calendario y no el diálogo. **(Caché) `npm install` no basta: reinicien el servidor.** El 13/09 este mismo equipo actualizó, midió, le salió **idéntico a antes** y estuvo a punto de reportar un defecto ya corregido como no resuelto. La culpa era nuestra: la comprobación que dábamos —leer `package.json` con `node`— mira **el disco**, así que pasa en verde mientras el navegador recibe lo anterior. Y lo que cambia en la mayoría de versiones es **CSS**, que desde JavaScript no se podía preguntar. Ahora sí: `tokens.css` declara **`--mmi-version`** y **`--mmi-componentes`** en `:root`, legibles con `getComputedStyle`. **Son dos** porque `tokens.css` y `componentes.css` son dos importaciones distintas y **la mayoría de las versiones cambian la segunda**: si van a medir anchos o alineaciones, la que responde por eso es `--mmi-componentes`. Van **sin comillas** a propósito —entrecomilladas, `getPropertyValue` devuelve la comilla dentro y un `===` falla siempre—, así que hace falta `.trim()`. El **§1bis** trae el reinicio como paso obligatorio, el recordatorio de reiniciar **otra vez** tras borrar la caché, y las **cuatro** comprobaciones. Si discrepan, **es la caché, no el componente**. |
 | 1.108.0 | **`RangoFecha`: cuatro cosas, y dos se ven.** **(R129) El calendario tenía suelo de mentira.** En una fila estrecha —junto a un botón, dentro de una columna— las siete columnas de días se encogían con el disparador hasta **16 px**: los días de dos cifras **se tocaban** (`141516171819 20`) y la **barra de periodos desaparecía entera**, **sin aviso**. `.fc-d` gana `min-width: 30px`; el tope de `.fc-cal` sube de 560 a `min(640px, calc(100vw - 24px))` porque el contenido pide **626 px** y hay `overflow: hidden`; y la reserva que apila corta en **660** en vez de 620. **Si llevan el apaño en su hoja, ya lo pueden quitar.** **(R130.1) La etiqueta sale del recuadro.** Era la única del sistema puesta dentro: ahora va encima, en su `.cg`, como en `Campo`, y el disparador mide **los 36 px de un campo, exactos**. **Cambio visible**: si alinearon a mano la altura del rango con la de un campo vecino, **quítenlo**. El marcado cambia —`.fc-campos > .cg > .cg-et + button.fc-campo`— así que si lo copiaron a mano, actualícenlo. **(R130.2) La fecha ya no sale en ISO.** Se mostraba `2026-09-01` contra la tabla «Formato» del propio catálogo; ahora `01/09/2026`. La propiedad **sigue siendo ISO**: lo que cambia es lo que se pinta. Si formateaban por su cuenta leyendo el DOM, sobra. **(R130.3) Sin rango, el resumen calla.** Decía «Sin rango elegido.»; ahora queda vacío. El elemento **no desaparece**, para no romper el anuncio de la primera elección. **Un límite declarado**: el calendario pide 626 px, así que dentro de un `Dialogo` (480 px de interior) se ve entero pero **con desplazamiento horizontal**. Es mejor que encogerse hasta ser ilegible, y no se arregla con CSS — la salida es la capa superior del navegador, en otra versión. |
 | 1.107.0 | **Lean esto aunque no usen `Dialogo`: hay cinco arreglos en `Boton` y tres en la hoja.** Lo pedido era R118 —`accion.textoOcupado`, para que la acción del pie diga «Grabando…» en vez de apagarse muda—; auditarlo destapó el resto. **En la hoja:** (1) **no llevaba ni un `@keyframes`**, así que `animation: btn-girar` viajaba sin definición y el navegador la ignora **en silencio** — el giro del botón ocupado y la barra indeterminada estaban **quietos** en su producto. Ya viajan; si copiaron los `@keyframes` a mano, **quítenlo**. (2) `.btn-ocupado{cursor:progress}` era **regla muerta** —`.btn:disabled` le ganaba—, así que un botón ocupado mostraba el cursor de *prohibido*; **ahora muestra el de espera**. Cambio visible en todos los productos. (3) El hueco del giro dejó de **girar invisible para siempre** en cada botón con gerundio. **En `Boton`:** (4) un `textoOcupado` que no pinta texto —`null`, `false`, `''`, `<span>{t('clave.ausente')}</span>`, un generador vacío— dejaba el botón ocupado **sin nombre accesible**; ahora se cae al comportamiento de siempre. (5) Cada acción que fallaba dejaba un **rechazo sin manejar**; ahora se reporta por `console.error` — **ojo: eso lo baja de evento a miga de pan** en Sentry y compañía, así que si dependían de `unhandledrejection`, **capturen en su `onClick` y reporten ustedes**. (6) Con `textoOcupado` y **sin icono**, el botón **crecía 22 px** al ocuparse; ya no. *Sin* `textoOcupado` sigue creciendo igual que antes. Con `icono`, encoge 4 px (el icono mide 18 y el giro 14), tampoco cambia. (7) `soloIcono` **ignora** `textoOcupado`: no tiene texto que sustituir. (8) Un `throw` **síncrono** en `onClick` **sí** llega a su vigilante como error no capturado — lo que no ocurre es que el botón se entere: ni se ocupa ni protege del doble envío. **Devuelvan la promesa.** **En `Dialogo`:** el foco **no volvía** al cerrar por código —el camino más frecuente—, ni si desmontaban el diálogo al cerrarlo, ni en **modo estricto** (Vite, CRA y Next lo traen puesto); y ahora **no se lo quita** a quien ya lo colocó. Nuevas: `accion.ocupado` y `accion.destructiva` documentada. **Un límite que no podemos cerrar:** si montan el diálogo como `{abierto && <Dialogo …/>}`, cerrarlo con la acción en vuelo **mata el guardia del doble envío** y el botón vuelve pulsable. O no lo desmontan, o llevan el estado con `accion.ocupado`. Y el contrato estrena **sección de Diálogo**: **dieciocho reglas** y **veinticuatro pruebas nuevas** —de 7 a 31—, más un archivo de pruebas que **ejecuta el catálogo** |

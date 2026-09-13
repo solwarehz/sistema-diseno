@@ -82,6 +82,18 @@ export type DialogoProps = {
      * pasar aunque `Boton` la tuviera.
      */
     ocupado?: boolean;
+    /**
+     * R133.2 · EL ICONO, que `Boton` acepta desde siempre y este diálogo no
+     * dejaba pasar. Ningún botón del pie de ningún diálogo podía llevarlo,
+     * aunque el resto de los botones del sistema sí.
+     *
+     * **El de cerrar NO lo admite, y es una decisión.** Ese botón siempre dice
+     * lo mismo —«Cancelar» o «Cerrar»— y lo que hace es **irse**: un icono ahí
+     * no añade información y compite con el de la acción, que sí la tiene. Si
+     * algún día un pie necesita dos botones con icono, será porque el segundo
+     * dejó de ser una salida, y entonces el sitio es `children`, no aquí.
+     */
+    icono?: React.ReactNode;
   };
   /** Texto del botón que cierra. «Cancelar» cuando hay acción; si no, «Cerrar». */
   textoCerrar?: string;
@@ -259,6 +271,7 @@ export function Dialogo({
               // se libera solo, con el dialogo abierto o cerrado.
               variante={accion.destructiva ? 'destructiva' : 'principal'}
               disabled={accion.deshabilitada}
+              icono={accion.icono}
               textoOcupado={accion.textoOcupado}
               ocupado={accion.ocupado}
               onClick={accion.onClick}

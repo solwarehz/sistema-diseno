@@ -963,6 +963,7 @@ estados</strong>: comparalos de ancho. Sin <code>textoOcupado</code> el giro se 
       <button class="btn btn-1">
         <span class="btn-giro btn-texto-oculto" aria-hidden="true"></span>
         <span class="btn-textos"><span>Guardar</span><span class="btn-texto-oculto" aria-hidden="true">Grabando&hellip;</span></span>
+        <span class="btn-giro btn-texto-oculto" aria-hidden="true"></span>
       </button>
       <span class="mf-et">Reposo<br>con <code>textoOcupado</code></span>
     </div>
@@ -970,6 +971,7 @@ estados</strong>: comparalos de ancho. Sin <code>textoOcupado</code> el giro se 
       <button class="btn btn-1 btn-ocupado" disabled aria-busy="true">
         <span class="btn-giro" aria-hidden="true"></span>
         <span class="btn-textos"><span class="btn-texto-oculto" aria-hidden="true">Guardar</span><span>Grabando&hellip;</span></span>
+        <span class="btn-giro btn-texto-oculto" aria-hidden="true"></span>
       </button>
       <span class="mf-et">Ocupado<br>mismo ancho</span>
     </div>
@@ -7412,6 +7414,26 @@ Cambiar el titulo de <code>h2</code> a <code>h3</code> no lo habria visto nadie.
 <p class="seccion-sub">Viene puesto, y <strong>hay que quitarlo cuando haya datos sin guardar</strong>:
 perder lo escrito por un clic fuera es peor que un clic de mas.</p>
 
+<h3 class="sub-seccion">El pie, con icono en la accion</h3>
+<p class="seccion-sub"><code>accion.icono</code> existe desde la v1.110.0: <code>Boton</code> lo aceptaba
+desde siempre y este dialogo no lo dejaba pasar, asi que <strong>ningun boton del pie de ningun
+dialogo podia llevarlo</strong>. <strong>El de cerrar no lo admite, a proposito</strong>: siempre dice lo
+mismo y lo que hace es irse; un icono ahi compite con el de la accion, que si informa.</p>
+<p class="seccion-sub"><strong>Y mira el centrado.</strong> Con icono el rotulo queda
+<strong>13&nbsp;px</strong> a la derecha del centro y el boton <strong>encoge 4&nbsp;px</strong> al
+ocuparse — el icono mide 18 y el girador 14. Es el caso que el espejo de la v1.110.0
+<strong>no</strong> centra, y esta dicho en el contrato en vez de disimulado.</p>
+<div class="bloque">
+  <div class="dialogo-caja">
+    <div class="dialogo-cab"><h2 class="dialogo-tit" tabindex="-1">Generar memorandum</h2></div>
+    <div class="dialogo-cuerpo">Se creara un PDF con la plantilla elegida.</div>
+    <div class="dialogo-pie">
+      <button class="btn btn-neutro">Cancelar</button>
+      <button class="btn btn-1 btn-ic">${icono('descargar')}<span class="btn-textos"><span>Generar</span><span class="btn-texto-oculto" aria-hidden="true">Generando&hellip;</span></span></button>
+    </div>
+  </div>
+</div>
+
 <h3 class="sub-seccion">La accion, mientras trabaja</h3>
 <p class="seccion-sub">R118 del equipo. <code>textoOcupado</code> hace que el boton
 <strong>diga el gerundio</strong> en vez de apagarse mudo. Se apoya en que
@@ -8700,7 +8722,14 @@ code { font-family: 'IBM Plex Mono', monospace; }
    que sin esto un <Boton hidden> se seguia viendo. Lo pidio el candado de la
    cascada, que es el unico que mira lo que NO se escribio. */
 .btn[hidden] { display: none; }
-.btn-solo-ic { padding-inline: 8px; }
+/* Calificado con .btn y no a secas: empataba en especificidad con el relleno
+   de .btn (8px 16px) y estaba ESCRITA ANTES, asi que el atajo fisico la pisaba
+   y el relleno de 8 NO SE APLICABA NUNCA. El boton de solo icono salia 51x35
+   en vez de cuadrado. Lo midio una auditoria en navegador el 2026-09-13, y el
+   candado del empate no lo veia porque no cruzaba padding-inline con padding:
+   son los mismos longhands fisicos. Se arregla por ESPECIFICIDAD y no
+   moviendolo mas abajo, que es lo que convierte el estilo en suerte. */
+.btn.btn-solo-ic { padding-inline: 8px; }
 .movil-btn-demo { max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
 
 /* Confirmación en línea */

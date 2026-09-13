@@ -61,6 +61,15 @@ const forma = (el: Element): unknown => ({
   ariaHidden: el.getAttribute('aria-hidden') ?? null,
   ariaBusy: el.getAttribute('aria-busy') ?? null,
   deshabilitado: el.hasAttribute('disabled'),
+  /* EL `style` EN LINEA CUENTA. Una auditoría le puso `style="width:0"` al
+     espejo del catálogo y los 47 tests y los 14 candados siguieron en verde,
+     con el catálogo enseñando el botón 22px más estrecho y el rótulo torcido
+     — es decir, enseñando el defecto que R133 dice haber arreglado. `forma()`
+     comparaba clases y atributos de estado, y ninguno de los que deciden la
+     geometría. El componente no emite `style` en ninguna parte —lo prohíbe el
+     §6—, así que aquí vale `null` y cualquier cosa que aparezca es una
+     divergencia. */
+  estilo: el.getAttribute('style') ?? null,
   hijos: [...el.children].map(forma),
 });
 

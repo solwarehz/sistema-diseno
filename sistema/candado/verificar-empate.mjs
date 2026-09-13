@@ -118,6 +118,24 @@ const ATAJOS = {
   flex: ['flex-grow', 'flex-shrink', 'flex-basis'],
   padding: ['padding-top', 'padding-right', 'padding-bottom', 'padding-left'],
   margin: ['margin-top', 'margin-right', 'margin-bottom', 'margin-left'],
+  /* LOS LOGICOS TAMBIEN, y faltaban. `padding-inline` fija los MISMOS
+     longhands fisicos que `padding`, asi que un `.btn-solo-ic{padding-inline}`
+     escrito ANTES de `.btn{padding}` —misma especificidad— queda pisado y no
+     se aplica nunca. Estaba asi en la hoja entregada y este candado lo daba por
+     bueno: comparaba `padding-inline` contra `padding-inline` y nunca contra
+     `padding`, asi que no los cruzaba. El boton de solo icono salia 51x35 en
+     vez de cuadrado. Lo destapo una auditoria midiendo en navegador el
+     2026-09-13. */
+  'padding-inline': ['padding-right', 'padding-left'],
+  'padding-block': ['padding-top', 'padding-bottom'],
+  'padding-inline-start': ['padding-left'],
+  'padding-inline-end': ['padding-right'],
+  'margin-inline': ['margin-right', 'margin-left'],
+  'margin-block': ['margin-top', 'margin-bottom'],
+  'inset': ['top', 'right', 'bottom', 'left'],
+  'inset-inline': ['right', 'left'],
+  'inset-block': ['top', 'bottom'],
+  gap: ['row-gap', 'column-gap'],
 };
 const expandir = (prop) => ATAJOS[prop] ?? [prop];
 
