@@ -598,6 +598,7 @@ el destino»*.
 | | Regla |
 |---|---|
 | **1** | **Obligatorio.** (R119 del equipo, v1.111.0) **LA INVARIANTE, que es todo el valor de la pieza:** lo que llega a `onCambio` **siempre** está dentro de `etiquetas` y `huecos` — **y lo que ENTRA por `valor` también se sanea**, que la primera versión no hacía: un valor guardado por otra versión, por otro editor o a mano se metía crudo en la caja, y en un navegador de verdad un `<img onerror>` **se ejecuta** al asignar `innerHTML`. La garantía tiene un solo sentido si solo cubre la salida — venga de teclear, de pegar, de arrastrar o de deshacer. Si eso se cumple, el mismo componente sirve para un memorándum de 2 500 caracteres, para una carta de diez páginas, para el cuerpo de un correo o para una plantilla de SMS. Si no se cumple, **no sirve para ninguno**: cada producto tendría que volver a sanear lo que el editor le entrega. |
+| **1c** | **Obligatorio.** (R119 del equipo, v1.112.0) **Lo saneado vuelve IDÉNTICO de un `innerHTML`, y el cursor sobrevive a una reescritura.** No es cosmética: el editor decide si reescribe la caja comparando lo que sanea con lo que `innerHTML` le devuelve, y **reasignar `innerHTML` destruye todos los nodos y con ellos la selección**. Si los dos serializadores difieren en **un solo carácter**, la respuesta es «cambió» siempre, la caja se reescribe en cada tecla y el cursor vuelve al principio: **no se puede escribir de corrido**. Eso se publicó. El espacio duro salía crudo y `innerHTML` lo devuelve como `&nbsp;` — y el navegador mete uno **cada vez que se teclea un espacio al final**. Lo reportó el responsable el 2026-09-14 con la v1.111.0 en producción, y **ninguna de las 49 pruebas lo vio, porque todas escribían el HTML a mano y a mano nadie escribe un espacio duro: lo pone el navegador.** Se cierra por los dos lados: se escapan los **cuatro** caracteres de la norma de serialización —`&`, `<`, `>` y U+00A0—, y cuando la reescritura hace falta de verdad **el cursor se conserva**, contado en caracteres de texto. Así una quinta diferencia futura costaría una posición de cursor por un instante, no el componente. **Y la posición se resuelve hacia el nodo SIGUIENTE cuando cae justo en una frontera**: con la regla contraria, pulsar Intro y escribir metía la letra **en la línea de arriba** y la nueva se quedaba vacía — el flujo por omisión de Chrome, cuyo Intro deja un `<div><br></div>` que el saneador desenvuelve, y desenvolver es reescribir. Lo cazó una auditoría sobre el arreglo del primer defecto, el mismo día. **Verificado tecleando en Chrome**, no solo en jsdom: escribir de corrido, Intro, negrita y botón de hueco. |
 | **2** | **Obligatorio.** (R119 del equipo, v1.111.0) **Las tres listas entran desde FUERA** —`etiquetas`, `huecos`, `maximo`— y no es configurabilidad por gusto. Tres motivos, los tres vividos por quien lo pidió: la lista **cambia sin que este sistema publique** —retiraron tres huecos un martes porque salían impresos como «[falta jornada]»—; **cada producto admite cosas distintas** —uno no tiene cursiva porque su destino embebe dos fuentes—; y el componente **no debe saber qué hay al otro lado**, ni PDF ni impresora ni correo, solo el conjunto que le dan. |
 | **3** | **Obligatorio.** (R119 del equipo, v1.111.0) **La barra se dibuja DESDE `etiquetas`**, no es un juego fijo con botones apagados. El motivo es de fondo: **una etiqueta que el destino IGNORA es peor que una que rechaza**. Rechazada, quien escribe se entera; ignorada, guarda sin error y lo descubre **cuando ya firmó el papel**. Un botón apagado promete que algún día valdrá. El icono `cursiva` existe en el sistema y aun así no sale si `em` no está en la lista. |
 | **4** | **Obligatorio.** (R119 del equipo, v1.111.0) **Cero atributos, siempre**, ni en las etiquetas permitidas: ni `class`, ni `style`, ni `id`, ni `data-*`. **No es la rareza de un producto**: es lo que pasa siempre que el HTML se **traduce** a otro formato en vez de renderizarse. Un atributo no significa nada para quien dibuja un PDF, y admitirlo solo sirve para que alguien lo escriba y no pase nada. |
@@ -616,7 +617,7 @@ el destino»*.
 | **16** | **Obligatorio.** (R119 del equipo, v1.111.0) **Se puede renderizar en SERVIDOR.** `DOMParser` no existe en Node y el saneo corría en el render, así que un producto con renderizado de servidor —Next, Remix— moría con `ReferenceError: DOMParser is not defined` y **la página entera no se pintaba**. Ninguna prueba podía verlo: jsdom **sí** tiene `DOMParser`. Lo cierra una regla entera y no un parche — **nada que dependa del contenido de la caja se pinta hasta que la caja existe**: el texto ya era así (lo escribe un efecto por `innerHTML`, no React), y ahora el contador y la lista de huecos también. El servidor y el primer render del cliente emiten lo mismo, que es lo que evita el desfase de hidratación; **el contador aparece al montar**, y eso es el precio. |
 | **17** | Del proyecto: **qué admite su destino**. Las tres listas son suyas, y el componente no opina. |
 
-**Tres huecos declarados.**
+**Seis huecos declarados.**
 
 1. **Lo que no existe en jsdom**: `contenteditable`, la selección y
    `execCommand`. **Y quitar la demostración viva del catálogo tuvo un coste**:
@@ -636,7 +637,20 @@ el destino»*.
    forma de hacer esto sin librería. El día que un navegador lo retire, esta
    pieza necesita una versión mayor. Se dice ahora en vez de descubrirlo
    entonces.
-3. **Pegar un documento muy grande bloquea el hilo, varios segundos.** Medido:
+3. **`etiquetas` sin `br` deja Intro inservible, y el componente no avisa.** Todo
+   navegador rellena una línea vacía con un `<br>`; si `br` no está en la lista,
+   el saneador se lo lleva y queda un `<p></p>` **sin altura**, inalcanzable. Y
+   sin `p` ni `br` —plausible para un destino muy cerrado— Intro no hace nada en
+   absoluto. Quien configure la lista tiene que incluir `br` si quiere párrafos.
+4. **Escribir DENTRO de un `{{hueco}}` lo borra entero.** Una sola tecla en medio
+   convierte `{{sede}}` en `{{seXde}}`, que ya no es un hueco conocido, así que
+   se retira con todo su texto. **Se avisa** —«Del texto, el hueco {{seXde}},
+   que no existe»— y es el contrato funcionando, pero `tramoDeHueco` protege el
+   **borrado** y no la escritura. Se dice para que nadie lo descubra guardando.
+5. **Un padre que devuelve un `valor` viejo revierte lo tecleado.** Es la regla
+   «el valor MANDA» y con un `debounce` correcto no pasa; con uno ingenuo —un
+   temporizador por pulsación sin cancelar el anterior— sí. No hay guarda.
+6. **Pegar un documento muy grande bloquea el hilo, varios segundos.** Medido:
    4,30 MB de HTML **sucio de Word** —`<p class="MsoNormal" style>`,
    `<span style>`, `<o:p>`— tardan **3,0 s** (3,02 / 2,88 / 3,03 en tres
    pasadas), síncrono y sin tope.

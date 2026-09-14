@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.111.0";
+export const VERSION = "1.112.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,38 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.112.0', fecha: '2026-09-14',
+    que: 'EDITOR DE TEXTO: no se podia escribir de corrido. El cursor volvia al principio en CADA TECLA',
+    porque:
+      'Lo reporto el responsable con la v1.111.0 ya publicada, y con sus palabras: «cada vez '
+      + 'que digito un caracter, el cursor pasa a ocupar el primer caracter, no es posible '
+      + 'escribir textos continuos». Reproducido antes de tocar nada. '
+      + 'LA CAUSA ES UN CARACTER. El saneador serializaba el espacio duro como caracter crudo '
+      + 'y `innerHTML` lo devuelve como `&nbsp;`: dos cadenas distintas para el MISMO '
+      + 'contenido. El editor decide si reescribe la caja comparando las dos, asi que la '
+      + 'respuesta era «cambio» SIEMPRE; reasignar `innerHTML` destruye todos los nodos y con '
+      + 'ellos la seleccion, y el cursor volvia al principio. Y el navegador mete un espacio '
+      + 'duro CADA VEZ QUE SE TECLEA UN ESPACIO al final de un texto, asi que desde la primera '
+      + 'palabra el componente quedaba inservible. '
+      + 'POR QUE NO LO VIO NINGUNA DE LAS 49 PRUEBAS DEL SANEADOR: todas escribian el HTML a '
+      + 'mano, y a mano nadie escribe un espacio duro. Lo pone el navegador. La prueba nueva '
+      + 'no compara contra una cadena escrita a mano — mete el contenido en un elemento de '
+      + 'verdad y compara contra lo que ESE elemento devuelve, en dieciseis casos. '
+      + 'SE CIERRA POR LOS DOS LADOS, y el segundo importa mas que el primero. (1) `escapar` '
+      + 'escapa los CUATRO caracteres de la norma de serializacion de nodos de texto —`&`, '
+      + '`<`, `>` y U+00A0—, y eran tres. (2) `interno/cursor.ts`: cuando la reescritura hace '
+      + 'falta de verdad —al pegar, o al abrir un documento sucio— EL CURSOR SE CONSERVA, '
+      + 'contado en caracteres de texto desde el principio de la caja. Con eso, una quinta '
+      + 'diferencia de serializacion en el futuro costaria una posicion de cursor por un '
+      + 'instante en vez de dejar la pieza inservible. Regla 1c del contrato. '
+      + 'LO QUE ESTO ENSEÑA, que es lo que hay que llevarse: tres rondas de auditoria '
+      + 'adversaria, diecisiete pasos en verde y 787 pruebas no cazaron que EL COMPONENTE NO '
+      + 'SE PODIA USAR. Ninguna de las pruebas escribia; todas montaban estados. Una pieza que '
+      + 'se teclea hay que probarla TECLEANDO.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.111.0', fecha: '2026-09-13',
     que: 'Componente nuevo: EDITOR DE TEXTO CON HUECOS. No es un editor, es la garantia de que lo que sale cabe en el destino',

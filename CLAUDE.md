@@ -19,11 +19,12 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.111.0** — componente nuevo: **editor de texto con huecos**.
-No es un editor: es **la garantía** de que lo que sale cabe en el destino, con
-las tres listas entrando desde fuera. La pieza que faltaba cuando el texto viaja
-a un PDF, a una impresora o a un correo y por el camino hay un saneador que
-admite mucho menos de lo que un editor de navegador emite.
+**Estado actual: v1.112.0** — el editor de texto **no se podía usar**: el cursor
+volvía al principio en cada tecla. La causa era **un carácter** —el saneador
+serializaba el espacio duro distinto que `innerHTML`—, y lo enseña mejor que
+cualquier otra cosa de este repositorio: tres rondas de auditoría, diecisiete
+pasos en verde y 787 pruebas no cazaron que la pieza fuera inservible, porque
+**ninguna prueba escribía**. Una pieza que se teclea hay que probarla tecleando.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

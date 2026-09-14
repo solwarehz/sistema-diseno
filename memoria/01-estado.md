@@ -1,9 +1,9 @@
 # Estado del proyecto
 
-**Última actualización:** 13 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.111.0** — componente nuevo: el editor de
-texto con huecos. No es un editor, es la garantía de que lo que sale cabe en el
-destino
+**Última actualización:** 14 de septiembre de 2026
+**Versión del sistema:** MMI-DS **v1.112.0** — el editor de texto no se podía
+usar: el cursor volvía al principio en cada tecla, por un carácter de diferencia
+entre dos serializadores
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -19,7 +19,7 @@ destino
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **diecisiete pasos de
-verificación** —los que corre `publicar.mjs`—, **787 pruebas en 48 archivos**,
+verificación** —los que corre `publicar.mjs`—, **820 pruebas en 49 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -57,14 +57,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **787 pruebas en 48 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **820 pruebas en 49 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **972 reglas de 1487** · **701 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.111.0.zip` · **59 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.112.0.zip` · **59 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.111.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.112.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los diecisiete pasos · **140 unidades compuestas** · **8 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -87,7 +87,48 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.111.0), con detalle
+### Lo de hoy (v1.112.0), con detalle
+
+**El editor de texto no se podía usar.** Lo reportó el responsable con la
+v1.111.0 ya publicada: *«cada vez que digito un caracter, el cursor pasa a
+ocupar el primer caracter, no es posible escribir textos continuos»*.
+
+La causa era **un carácter**. El saneador serializaba el espacio duro como
+carácter crudo y `innerHTML` lo devuelve como `&nbsp;`: dos cadenas distintas
+para el mismo contenido. El componente decide si reescribe la caja comparando
+las dos, así que la respuesta era «cambió» siempre; reasignar `innerHTML`
+destruye todos los nodos y con ellos la selección. Y el navegador mete un
+espacio duro **cada vez que se teclea un espacio al final**, así que desde la
+primera palabra la pieza quedaba inservible.
+
+**Lo que esto enseña es más caro que el arreglo.** Tres rondas de auditoría
+adversaria, diecisiete pasos en verde y 787 pruebas no cazaron que el componente
+no se pudiera usar. Ninguna prueba escribía: todas montaban estados y comparaban
+HTML escrito a mano — y a mano nadie escribe un espacio duro, lo pone el
+navegador. **Una pieza que se teclea hay que probarla tecleando.**
+
+Se cierra por los dos lados: `escapar` escapa los **cuatro** caracteres de la
+norma de serialización —eran tres—, y nace `interno/cursor.ts`, que conserva el
+cursor cuando la reescritura hace falta de verdad. La segunda mitad importa más
+que la primera: una quinta diferencia futura costaría una posición de cursor por
+un instante, no el componente.
+
+**Y una auditoría encontró un defecto EN EL ARREGLO**: `ponerElCursor` resolvía
+una posición en la frontera entre dos nodos hacia atrás, así que tras Intro la
+letra siguiente entraba en la línea de arriba. Un `>=` que tenía que ser `>`.
+
+**Verificado tecleando en Chrome**, con el componente real empaquetado y servido
+en loopback: escribir de corrido 157 caracteres por encima de un `&nbsp;`, Intro
+y seguir en la línea nueva, el botón de negrita —que emite `<strong>`, no `<b>`—
+y el botón de hueco. Es la primera vez que esta pieza se prueba en un navegador,
+y es la lección de la versión.
+
+Quedan **seis huecos declarados**, tres nuevos: `etiquetas` sin `br` deja Intro
+inservible y el componente no avisa; escribir dentro de un `{{hueco}}` lo borra
+entero (avisando); y un padre con un `debounce` ingenuo puede revertir lo
+tecleado.
+
+### Lo de la v1.111.0, con detalle
 
 **El editor de texto con huecos (R119 del equipo). La pieza no es un editor: es
 la garantía de que lo que sale cabe en el destino.** Tres listas entran desde
@@ -1760,11 +1801,11 @@ sin comparar.
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.111.0
+Versión                      1.112.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         787   en 48 archivos
+Pruebas                         820   en 49 archivos
 Reglas que viajan               972   de 1487 · 701 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el

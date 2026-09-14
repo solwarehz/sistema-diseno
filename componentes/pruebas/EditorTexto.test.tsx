@@ -558,6 +558,71 @@ describe('lo que la segunda auditoría dejó al descubierto', () => {
     expect(container.querySelector('.ed-retirado')).toBeNull();
   });
 
+  /**
+   * SE PUEDE ESCRIBIR DE CORRIDO. Lo reportó el responsable el 2026-09-14 con
+   * la v1.111.0 ya publicada: «cada vez que digito un caracter, el cursor pasa
+   * a ocupar el primer caracter, no es posible escribir textos continuos».
+   *
+   * La causa era una diferencia de UN carácter entre dos serializadores —el
+   * espacio duro—, y el efecto era el componente inservible.
+   */
+  /** Teclear NO reasigna `innerHTML`: muta el nodo de texto. Así se simula. */
+  const teclear = (caja: Element, texto: string) => {
+    (caja.querySelector('p')!.firstChild as Text).data = texto;
+    fireEvent.input(caja);
+  };
+
+  it('[1c] escribir NO reconstruye la caja, así que el cursor no se mueve', () => {
+    /* La única forma fiable de verlo sin navegador: si el componente reasignó
+       `innerHTML`, los nodos de antes quedan huérfanos. Se guarda uno y se mira
+       si sigue siendo el mismo objeto. Con nodos nuevos, la selección se habría
+       perdido — que es justo lo que se reportó. */
+    const { container } = pintar({ valor: '<p>Hola</p>' });
+    const caja = container.querySelector('.ed-texto')!;
+    const parrafo = caja.querySelector('p')!;
+    // El navegador convierte en duro el espacio tecleado al final.
+    teclear(caja, 'Hola\u00a0');
+    teclear(caja, 'Hola\u00a0m');
+    teclear(caja, 'Hola\u00a0mundo');
+    expect(caja.querySelector('p'), 'la caja se reconstruyó al teclear: el cursor se pierde')
+      .toBe(parrafo);
+  });
+
+  it('[1c] y el espacio duro llega al producto tal como el navegador lo escribe', () => {
+    const cambios: string[] = [];
+    const { container } = render(
+      <EditorTexto etiqueta="Cuerpo" etiquetas={SIETE} huecos={HUECOS}
+        valor="<p>Hola</p>" onCambio={(h) => cambios.push(h)} />,
+    );
+    teclear(container.querySelector('.ed-texto')!, 'Hola\u00a0mundo');
+    expect(cambios.at(-1)).toBe('<p>Hola&nbsp;mundo</p>');
+  });
+
+  it('[1c] cuando SÍ hay que reescribir, el cursor se queda donde estaba', () => {
+    /* La otra mitad del arreglo: que el cursor no dependa de que dos
+       serializadores coincidan byte a byte. Aquí el saneo sí retira algo
+       —`<font>`—, así que la caja se reescribe de verdad. */
+    const { container } = pintar({ valor: '<p>Hola</p>' });
+    const caja = container.querySelector('.ed-texto')! as HTMLElement;
+    caja.focus();
+    caja.innerHTML = '<p>Hola <font>mundo</font></p>';
+    // El cursor detrás de la «d» de «mundo»: 10 caracteres de texto.
+    const dentro = caja.querySelectorAll('p font')[0].firstChild!;
+    const r = document.createRange();
+    r.setStart(dentro, 5);
+    r.collapse(true);
+    const sel = document.getSelection()!;
+    sel.removeAllRanges();
+    sel.addRange(r);
+    fireEvent.input(caja);
+    expect(caja.innerHTML, 'no se saneó').toBe('<p>Hola mundo</p>');
+    const despues = document.getSelection()!.getRangeAt(0);
+    const hasta = despues.cloneRange();
+    hasta.selectNodeContents(caja);
+    hasta.setEnd(despues.endContainer, despues.endOffset);
+    expect(hasta.toString().length, 'el cursor saltó al reescribir').toBe(10);
+  });
+
   it('[16] se renderiza en SERVIDOR: sin `DOMParser` no revienta', () => {
     /* `DOMParser` no existe en Node. El saneo corría en el render, así que
        cualquier producto con renderizado de servidor moría con

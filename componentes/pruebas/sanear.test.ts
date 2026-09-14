@@ -125,8 +125,59 @@ describe('los huecos', () => {
   });
 
   it('[5] el espacio duro es contenido, y no se tira', () => {
+    // Sale como `&nbsp;` y no como carácter crudo: es lo que devuelve
+    // `innerHTML`, y esa coincidencia es lo que salva el cursor. Ver `[1c]`.
     const r = limpio('<p><strong>\u00a0</strong>x</p>');
-    expect(r.html).toBe('<p><strong>\u00a0</strong>x</p>');
+    expect(r.html).toBe('<p><strong>&nbsp;</strong>x</p>');
+  });
+
+  /**
+   * LA SALIDA SE SERIALIZA COMO LO HACE EL NAVEGADOR, byte a byte.
+   *
+   * No es cosmética: el editor decide si reescribe la caja comparando lo que
+   * sanea con lo que `innerHTML` le devuelve. Si difieren en un solo carácter,
+   * la respuesta es «cambió» SIEMPRE, la caja se reescribe en cada tecla y el
+   * cursor vuelve al principio — no se puede escribir de corrido.
+   *
+   * Eso se publicó. El espacio duro salía crudo y `innerHTML` lo devuelve como
+   * `&nbsp;`, y el navegador mete uno **cada vez que se teclea un espacio**.
+   * Lo reportó el responsable el 2026-09-14 con la v1.111.0 en producción.
+   * Ninguna de las 49 pruebas lo vio porque todas escribían el HTML a mano, y
+   * a mano nadie escribe un espacio duro: lo pone el navegador.
+   *
+   * Por eso esta prueba no compara contra una cadena escrita a mano. Mete el
+   * contenido en un elemento de verdad y compara contra lo que ESE elemento
+   * devuelve.
+   */
+  describe('[1c] lo saneado vuelve idéntico de un `innerHTML`', () => {
+    const comoElNavegador = (html: string) => {
+      const caja = document.createElement('div');
+      caja.innerHTML = html;
+      return caja.innerHTML;
+    };
+    const CASOS: [string, string][] = [
+      ['un párrafo', '<p>Hola</p>'],
+      ['escribiendo, aún sin párrafo', 'Hola'],
+      ['un espacio al final, que el navegador hace duro', '<p>Hola&nbsp;</p>'],
+      ['un espacio en medio', '<p>Hola&nbsp;mundo</p>'],
+      ['dos duros seguidos', '<p>a&nbsp;&nbsp;b</p>'],
+      ['duro dentro de negrita', '<p>a <strong>b&nbsp;c</strong></p>'],
+      ['duro en una lista', '<ul><li>uno&nbsp;dos</li></ul>'],
+      ['duro pegado a un hueco', '<p>Hola&nbsp;{{sede}}&nbsp;fin</p>'],
+      ['negrita', '<p>Hola <strong>tú</strong></p>'],
+      ['salto de línea', '<p>Hola<br>mundo</p>'],
+      ['el párrafo vacío que deja el navegador', '<p><br></p>'],
+      ['separador', '<p>a</p><hr><p>b</p>'],
+      ['ampersand y menor que', '<p>Tú &amp; yo, 3 &lt; 5</p>'],
+      ['comillas', '<p>Dijo "hola" y \'adiós\'</p>'],
+      ['acentos y eñe', '<p>Año, sesión, ñandú</p>'],
+      ['todo junto', '<h3>T&nbsp;t</h3><p>a &amp; b&nbsp;</p><hr><ul><li>x<br>y</li></ul>'],
+    ];
+    it.each(CASOS)('%s', (_, html) => {
+      const enLaCaja = comoElNavegador(html);
+      expect(limpio(enLaCaja).html, 'el editor reescribiría la caja y perdería el cursor')
+        .toBe(enLaCaja);
+    });
   });
 
   it('lo que no casa con la forma no es un hueco y se queda como texto', () => {

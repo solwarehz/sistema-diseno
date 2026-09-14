@@ -90,13 +90,32 @@ export type ResultadoSaneo = {
  */
 export const HUECO = /\{\{\s*([a-zA-Z][a-zA-Z0-9_]*)\s*\}\}/g;
 
+/**
+ * LOS CUATRO QUE ESCAPA EL NAVEGADOR AL SERIALIZAR UN NODO DE TEXTO, y son
+ * cuatro y no tres.
+ *
+ * **El espacio duro faltaba, y costó el componente entero.** `innerHTML`
+ * devuelve `&nbsp;` donde hay un U+00A0, y aquí salía el carácter crudo: dos
+ * cadenas distintas para el mismo contenido. El navegador mete un espacio duro
+ * **cada vez que se teclea un espacio al final de un texto**, así que desde la
+ * primera palabra la comparación «¿cambió el saneo algo?» decía que sí
+ * siempre, el editor reescribía `innerHTML` en CADA TECLA y **el cursor volvía
+ * al principio**: no se podía escribir de corrido.
+ *
+ * Lo reportó el responsable el 2026-09-14, con la v1.111.0 ya publicada.
+ * Ninguna prueba lo vio porque todas escribían HTML a mano, y a mano nadie
+ * escribe un espacio duro — lo pone el navegador.
+ *
+ * La lista es la de la norma de serialización de HTML para nodos de texto:
+ * `&`, `<`, `>` y U+00A0. No hay un quinto.
+ */
 const ESCAPES: Record<string, string> = {
-  '&': '&amp;', '<': '&lt;', '>': '&gt;',
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '\u00a0': '&nbsp;',
 };
 /* SE EXPORTA aunque sea interno: `EditorTexto` escribia a mano el MISMO mapa
    para el pegado de texto plano, y dos verdades sobre el mismo conjunto de
    caracteres divergen — es lo que ya le paso a `usarDesplegable`. */
-export const escapar = (t: string) => t.replace(/[&<>]/g, (c) => ESCAPES[c]);
+export const escapar = (t: string) => t.replace(/[&<> ]/g, (c) => ESCAPES[c]);
 
 /**
  * Deja en el texto solo los huecos permitidos. **Hasta el punto fijo**, y ese

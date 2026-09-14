@@ -51,6 +51,7 @@ import { Boton } from './Boton';
 import { Icono } from './Icono';
 import { sanear, huecosDe, tramoDeHueco, escapar, type EtiquetaEditor } from './interno/sanear';
 import { usarContador } from './interno/contador';
+import { reescribirConservandoElCursor } from './interno/cursor';
 
 export type { EtiquetaEditor };
 
@@ -235,7 +236,7 @@ export function EditorTexto({
      * vez de quedarse discrepando en silencio.
      */
     const r = saneado;
-    if (nodo.innerHTML !== r.html) nodo.innerHTML = r.html;
+    reescribirConservandoElCursor(nodo, r.html);
     if (r.html !== valor) {
       // Y SE DICE. Este camino retiraba en SILENCIO: abrir un documento viejo
       // borraba medio texto sin una palabra, que es literalmente lo que la
@@ -293,9 +294,13 @@ export function EditorTexto({
         return { etiquetas: [], huecos: [], de, sobre: r.html };
       });
     }
-    // Se reescribe la caja SOLO si el saneo cambió algo: si no, se respeta el
-    // cursor. Pegar sí la cambia, y ahí el salto del cursor es lo de menos.
-    if (r.html !== nodo.innerHTML) nodo.innerHTML = r.html;
+    /* Se reescribe la caja SOLO si el saneo cambió algo — y cuando cambia, EL
+       CURSOR SE CONSERVA. Reasignar `innerHTML` destruye todos los nodos y con
+       ellos la selección, así que el cursor volvía al principio; con el
+       saneador serializando el espacio duro distinto que el navegador, eso
+       pasaba en CADA TECLA y no se podía escribir de corrido. Lo reportó el
+       responsable el 2026-09-14, con la v1.111.0 ya publicada. */
+    reescribirConservandoElCursor(nodo, r.html);
     if (r.html !== valor) onCambio(r.html);
   };
 
