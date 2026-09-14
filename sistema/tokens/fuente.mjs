@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.113.0";
+export const VERSION = "1.114.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,65 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.114.0', fecha: '2026-09-14',
+    que: 'MARCO DE APLICACION: el menu plegado era una fila de iconos MUDOS, y el catalogo prometia un hover que la entrega no tenia',
+    porque:
+      'Lo pidio el responsable con una frase que es el metodo entero: «quiero que pases el '
+      + 'mouse sobre el menu extendido y comprimido, y me digas si esa forma de prometer el '
+      + 'funcionamiento del menu esta en la entrega». Se paso el raton en Chrome, en los dos '
+      + 'estados, y la respuesta era NO en tres puntos. '
+      + '(1) EL ICONO MUDO. Plegado, `.nav-txt` iba a `display:none` —que lo saca TAMBIEN del '
+      + 'arbol de accesibilidad— y el `<svg>` va `aria-hidden`. Una opcion SIN HIJOS se '
+      + 'quedaba sin rotulo de ninguna clase, y tampoco abre panel flotante, que es lo que '
+      + 'identifica a las que si los tienen. EL CATALOGO LO ROTULABA CON `title` DESDE SIEMPRE '
+      + 'Y EL COMPONENTE NO EMITIA NINGUNO: cero coincidencias de `title=` en `MarcoApp.tsx`. '
+      + 'Ahora lo emite en los cinco sitios —opcion, titulo de grupo, hijo, rama y nieto— y el '
+      + 'rotulo se ESCONDE A LA VISTA con el tratamiento de `.sr-solo` en vez de borrarse. '
+      + 'Dentro del panel flotante vuelve entero, y hay que deshacer las SEIS declaraciones y '
+      + 'no solo el display: una regla mas especifica solo gana en lo que declara. '
+      + '(2) EL HOVER QUE NO EXISTE. La barra del catalogo abria los grupos AL PASAR EL RATON '
+      + 'con el menu DESPLEGADO; el componente solo lo hace plegado, que es cuando hace falta '
+      + 'porque el rotulo no se ve. Estaba decidido y probado, pero NO ESCRITO, asi que el '
+      + 'catalogo podia contradecirlo sin que nada fallara. Ahora las dos superficies hacen lo '
+      + 'mismo, y es regla de contrato. '
+      + '(3) LA MAQUETA NO ENSEÑABA UN SOLO GRUPO. Pintaba ocho enlaces con un chevron dentro '
+      + '—marcado que `MarcoApp` NO PRODUCE NUNCA— y con eso el panel flotante no se '
+      + 'demostraba en ninguna parte del catalogo. Ahora emite grupos de verdad, con su '
+      + '`.nav-grupo` > `.nav-grupo-tit` > `.nav-hijos` > `.nav-flot-tit`. '
+      + 'Y EN CUANTO EMPEZO A EMITIRLOS, `verificar-cascada` DESTAPO UN CUARTO: `.nav-hijos` '
+      + 'declara `display:grid`, que gana a la regla `[hidden]` del navegador, asi que el '
+      + 'atributo que el componente emite NO OCULTABA NADA —la apertura la hacia solo '
+      + '`.abierto` y el `hidden` MENTIA. El grupo si se cerraba —lo cierran '
+      + '`grid-template-rows: 0fr` y el `visibility: hidden` de `.nav-hijos-in`—, asi que el '
+      + 'daño no era «no se cierra»: era que quien se apoyara en el atributo para ocultarlo '
+      + 'por su cuenta no obtenia nada. La hoja lleva ahora `.nav-hijos[hidden]` Y '
+      + '`.nav-nietos[hidden]`, y el componente emite el atributo en LOS DOS NIVELES: sin eso '
+      + 'la segunda era una regla que viaja y nadie puede activar. '
+      + 'POR QUE NO LO VIO NINGUNO DE LOS CATORCE CANDADOS: dos cegueras que se cruzan justo '
+      + 'aqui. `verificar-promesa` DESCARTA LOS ESTADOS —una linea salta CINCO pseudoclases: '
+      + 'hover, focus, active, focus-visible y focus-within—, y NINGUN candado compara '
+      + 'ATRIBUTOS de marcado entre catalogo y componente, y `title` es un atributo. '
+      + 'Nace `CARRIL-CON-NOMBRE` en '
+      + '`verificar-cascada`, que resuelve la hoja QUE VIAJA y falla si el rotulo del carril '
+      + 'plegado sale del arbol; el `title` y el hover se atan con pruebas. '
+      + 'TRES REGLAS DE CONTRATO NUEVAS —8, 9 y 10— con sus pruebas, vistas en rojo una a una. '
+      + 'Y DOS AUDITORIAS TUMBARON LA PRIMERA VERSION DE ESTE ARREGLO, que es lo que mas '
+      + 'enseña. (a) El guard del hover miraba EL ELEMENTO EQUIVOCADO —preguntaba por el '
+      + 'lateral del CATALOGO y no por el de la maqueta—, asi que la maqueta plegada no abria '
+      + 'panel y la desplegada si. (b) Los guiones del catalogo gobernaban las maquetas con '
+      + 'selectores globales: las cerraban al cargar, las dejaban sin poder pulsar y con un '
+      + 'estado que el componente no produce jamas. Ahora TODOS estan acotados al lateral del '
+      + 'catalogo. (c) Las dos maquetas repetian cuatro id. (d) Dos de los cinco title no '
+      + 'estaban protegidos: la prueba montaba un menu SIN TERCER NIVEL. (e) Y la prueba del '
+      + 'arbol de accesibilidad NO PODIA VER NADA —jsdom no carga la hoja—, asi que era verde '
+      + 'con el rotulo y sin el; se reescribio para decir lo que si comprueba. '
+      + 'Y AL DECLARAR LA SECCION DEL CONTRATO salio a la luz que las reglas TRANSVERSALES '
+      + 'vivian pegadas a la tabla del marco SIN TITULO PROPIO: el candado las daba por del '
+      + 'marco y su respaldo salia de una coincidencia de numero. Ya tienen seccion.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.113.0', fecha: '2026-09-14',
     que: 'EDITOR DE TEXTO: la letra escrita al final de un parrafo se salia del parrafo',

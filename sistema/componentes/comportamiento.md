@@ -689,6 +689,8 @@ el destino»*.
 
 ## Marco de aplicación
 
+<!-- pruebas: MarcoApp.test.tsx -->
+
 | | Regla |
 |---|---|
 | **1** | **Obligatorio.** El marco **envuelve a la aplicación entera** —el enrutador vive DENTRO de su zona de contenido—, no se monta uno por página. Montado por página, cada navegación crea un marco nuevo y **el plegado del lateral se olvida**: el usuario lo pliega, elige una opción y lo encuentra desplegado sin haberlo pedido. El estado interno de React no sobrevive al remontaje, y no debe: la corrección es dónde se monta, no un parche de persistencia. |
@@ -697,7 +699,20 @@ el destino»*.
 | **4** | **Obligatorio.** (R38a, v1.34.0) La banda del **riel** (≤900px) es **estado, no CSS forzado**: al cruzarla el marco se pliega de verdad — la clase, el `aria-expanded` y el logo compacto de `MarcaMenu` salen del mismo estado. Quien quiera re-desplegar a ese ancho, puede: los 236px caben en línea. La hoja pinta estados; no los impone a espaldas del componente. |
 | **5** | **Obligatorio.** (R47, v1.41.3) **Plegado, el panel flotante se cierra CON MARGEN**: 220 ms desde que el cursor sale del grupo, y volver a entrar dentro de ese margen lo cancela. No es un adorno: el panel nace al otro lado del carril y el cursor tiene que **cruzar sus 56 px** para alcanzarlo — cerrando en seco desaparece por el camino y no hay forma de elegir nada. El catálogo lo llevaba desde el principio; la entrega cerraba al instante. Y **con teclado abre al enfocar dentro**: sin ratón, el panel era inalcanzable. |
 | **6** | **Obligatorio.** (R42a, v1.38.0) La navegación llega al **tercer nivel**: una `OpcionNav` con `hijos` se dibuja como **rama plegable** (`aria-expanded`, chevron), no como enlace. Las ramas arrancan **cerradas** —doce ítems seguidos no se leen— salvo la que contiene a la opción activa: llegar a una pantalla y no ver dónde estás en el menú es peor que un clic de más. |
+| **8** | **Obligatorio.** (v1.114.0) **El carril plegado NO es una fila de iconos mudos.** Plegado, `.nav-txt` no se ve y el `<svg>` va `aria-hidden`, así que una opción **sin hijos** se quedaba **sin rótulo de ninguna clase** —ni visual ni para un lector— y tampoco abre panel flotante, que es lo que identifica a las que sí los tienen. Se cierra por los dos lados: cada elemento de navegación emite **`title`** con su texto —el globito del ratón, que es como el catálogo lo prometía desde siempre— y el rótulo, en vez de borrarse con `display:none`, se **esconde a la vista** con el tratamiento de `.sr-solo` —ocho de sus nueve declaraciones; sobra `border: 0`, que un `<span>` no necesita—, de modo que **sigue en el árbol de accesibilidad**. Dentro del panel flotante vuelve entero, y hay que deshacer **siete de las ocho** declaraciones y no solo el `display`: una regla más específica solo gana en lo que declara. (`padding: 0` se queda, y es inocuo: `.nav-txt` no tiene relleno propio.) **El componente no emitía ni un solo `title`**: la promesa se quedaba en la demostración, y lo midió el responsable pasando el ratón el 2026-09-14. |
+| **9** | **Obligatorio.** (v1.114.0) **Desplegado, el cursor NO abre los grupos: se gobiernan con el clic.** Solo **plegado** el panel flotante se abre al pasar por encima, que es cuando hace falta porque el rótulo no se ve. Estaba decidido y probado, pero **no escrito** — y el catálogo demostraba lo contrario: su propia barra abría los grupos al pasar el ratón con el menú desplegado. Quien lo probaba ahí veía una cosa y recibía otra. Ahora las dos superficies hacen lo mismo. |
+| **10** | **Obligatorio.** (v1.114.0) **El `hidden` de los hijos oculta de verdad.** `.nav-hijos` declara `display: grid`, que **gana a la regla `[hidden]`** del navegador: el atributo que el componente emite **no ocultaba nada** y la apertura la hacía solo `.abierto`. **El grupo sí se cerraba** —lo cierran `grid-template-rows: 0fr` y el `visibility: hidden` de `.nav-hijos-in`—, así que el daño no era «no se cierra»: era que el atributo **mentía**, y quien se apoyara en él para ocultarlo por su cuenta no obtenía nada. La hoja lleva ahora `.nav-hijos[hidden]` **y `.nav-nietos[hidden]`**, y el componente emite el atributo en los dos niveles: sin eso, la segunda era una regla que viaja y nadie puede activar. Lo destapó `verificar-cascada` en cuanto la maqueta del catálogo empezó a emitir **grupos de verdad** en vez de enlaces con un chevron dentro — marcado que el componente **no produce nunca**. |
 | **7** | **Obligatorio.** (R48, v1.42.0) La apertura de los grupos sigue al plegado que **queda**, no al que se **pide**. Controlado (regla 2), el que manda es el producto: si no devuelve el valor nuevo, el carril sigue plegado — y los grupos **no se abren**. Abrirlos igual dejaba los paneles flotantes de **todos** los grupos encima del contenido con la barra todavía a 56 px, que es justo el estado que la regla 4 existe para evitar. Por lo mismo, un marco que **nace plegado** nace con los grupos cerrados. |
+
+## Reglas transversales
+
+Estas **no son del marco**, aunque vivían pegadas a su tabla sin título propio y
+el candado del contrato las daba por suyas: al declarar la sección del marco se
+quedaron sin respaldo, porque sus pruebas están en `TablaDatos.test.tsx`,
+`basicos.test.tsx` y `CargaImagen.test.tsx`. Una tabla sin encabezado es una
+sección que no existe, y lo que no existe no se puede atar.
+
+<!-- pruebas: TablaDatos.test.tsx, basicos.test.tsx, CargaImagen.test.tsx -->
 
 | | Regla |
 |---|---|

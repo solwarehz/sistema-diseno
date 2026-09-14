@@ -272,16 +272,24 @@ const filas = [
 const ICO_CHEV_IZQ = icono('chevronIzq', TAMANOS.etiqueta);
 const ICO_CHEV_DER = icono('chevronDer', TAMANOS.etiqueta);
 
+/* EL TERCER CAMPO SON LOS HIJOS DE VERDAD, y antes era un booleano `sub` que
+   solo pintaba un chevron dentro del enlace. `MarcoApp` NO EMITE ESO NUNCA: una
+   opcion con hijos es un `.nav-grupo` con su `<button class="nav-grupo-tit">` y
+   su panel `.nav-hijos`, y el chevron vive ahi dentro. Con el booleano, esta
+   maqueta pintaba ocho enlaces con chevron que el componente no produce, y
+   —peor— NO DEMOSTRABA EL PANEL FLOTANTE, que es lo unico que identifica un
+   icono del carril plegado cuando la opcion tiene hijos.
+   Lo cazo el responsable pasando el raton el 2026-09-14. */
 const MENU = [
-  ['panel', 'Dashboard', false],
-  ['matricula', 'Matrícula', true],
-  ['asistencia', 'Asistencia', true],
-  ['usuarios', 'Usuarios', true],
-  ['comunicaciones', 'Comunicaciones', true],
-  ['administracion', 'Administración', true],
-  ['tesoreria', 'Tesorería', true],
-  ['academico', 'Académico', true],
-  ['configuracion', 'Configuración', true],
+  ['panel', 'Dashboard'],
+  ['matricula', 'Matrícula', ['Fichas', 'Traslados', 'Vacantes']],
+  ['asistencia', 'Asistencia', ['Marcas del día', 'Justificaciones']],
+  ['usuarios', 'Usuarios'],
+  ['comunicaciones', 'Comunicaciones', ['Comunicados', 'Mensajes']],
+  ['administracion', 'Administración'],
+  ['tesoreria', 'Tesorería', ['Pagos', 'Deudas']],
+  ['academico', 'Académico'],
+  ['configuracion', 'Configuración'],
 ];
 
 /* ───────────────────────────────────────────────────────────────────────────
@@ -321,15 +329,35 @@ function comprobarTramos(grupos) {
   }
 }
 
-const itemsMenu = (activo = 'panel') =>
-  MENU.map(
-    ([k, txt, sub]) => `
+/* EL MARCADO ES EL QUE EMITE `MarcoApp`, elemento a elemento: `<a.nav-item>`
+   cuando no hay hijos, y `<div.nav-grupo>` con `<button.nav-item.nav-grupo-tit>`
+   + `.nav-hijos` > `.nav-hijos-in` > `.nav-flot-tit` + `<a.nav-hijo>` cuando los
+   hay. El `title` lo lleva cada uno, que es lo que rotula el carril plegado. */
+const itemsMenu = (activo = 'panel', abierto = 'matricula', marca = 'a') =>
+  MENU.map(([k, txt, hijos]) => {
+    if (!hijos) {
+      return `
       <a class="nav-item${k === activo ? ' activo' : ''}" href="#" title="${txt}">
         <span class="nav-ic">${ICONOS[k]}</span>
         <span class="nav-txt">${txt}</span>
-        ${sub ? `<span class="nav-chev">${ICONOS.chevron}</span>` : ''}
-      </a>`
-  ).join('');
+      </a>`;
+    }
+    const ab = k === abierto;
+    return `
+      <div class="nav-grupo${ab ? ' abierto' : ''}">
+        <button class="nav-item nav-grupo-tit" aria-expanded="${ab}" aria-controls="mq-${marca}-${k}" title="${txt}">
+          <span class="nav-ic">${ICONOS[k]}</span>
+          <span class="nav-txt">${txt}</span>
+          <span class="nav-chev" aria-hidden="true">${ICONOS.chevron}</span>
+        </button>
+        <div class="nav-hijos" id="mq-${marca}-${k}"${ab ? '' : ' hidden'}>
+          <div class="nav-hijos-in">
+            <span class="nav-flot-tit">${txt}</span>
+            ${hijos.map((h) => `<a class="nav-hijo" href="#" title="${h}"><span class="nav-txt">${h}</span></a>`).join('')}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
 
 const barraSuperior = `
   <div class="top">
@@ -347,13 +375,18 @@ const barraSuperior = `
     </div>
   </div>`;
 
+/* LAS DOS MAQUETAS LLEVAN MARCA DISTINTA: usan el mismo generador y con un id
+   fijo salian CUATRO id repetidos, con el `aria-controls` de una apuntando al
+   panel de la otra. Y la plegada enseña un grupo ABIERTO a proposito: es el
+   panel flotante, que es lo unico que identifica un icono del carril cuando la
+   opcion tiene hijos, y no se demostraba en ninguna parte del catalogo. */
 const lateral = (colapsado) => `
   <aside class="lat${colapsado ? ' colapsado' : ''}">
     <div class="lat-marca">
       ${escudo(30)}
       <div class="lat-id"><span class="lat-colegio">COLEGIO</span><span class="lat-nombre">ALBERT EINSTEIN</span></div>
     </div>
-    <nav class="lat-nav">${itemsMenu()}</nav>
+    <nav class="lat-nav" aria-label="Navegación principal">${itemsMenu('panel', 'matricula', colapsado ? 'b' : 'a')}</nav>
     <div class="lat-usuario">
       <span class="avatar avatar-m avatar-2">JI</span>
       <div class="lat-user-txt">
@@ -8720,6 +8753,14 @@ code { font-family: 'IBM Plex Mono', monospace; }
 /* grid-template-rows de 0fr a 1fr: lo único que anima hasta altura automática. */
 /* El arbol tiene dos niveles y se comportan igual: una sola regla. */
 .nav-hijos, .nav-nietos { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--dur-media) var(--curva); }
+/* EL [hidden] TIENE QUE OCULTAR. La declaracion display grid gana a la regla
+   [hidden] del navegador, asi que el atributo que el componente emite —hidden
+   cuando el grupo no esta abierto— NO OCULTABA NADA: la apertura la hacia solo
+   la clase abierto, y el hidden era decorativo. Quien copiara el marcado a mano
+   se encontraba un panel que no se cierra. Lo destapo verificar-cascada el
+   2026-09-14, en cuanto la maqueta del catalogo empezo a emitir grupos de
+   verdad. */
+.nav-hijos[hidden], .nav-nietos[hidden] { display: none; }
 .nav-grupo.abierto .nav-hijos { grid-template-rows: 1fr; }
 /* El padding va en los hijos, no en la caja: el padding de la caja NO lo
    recorta overflow, y un grupo cerrado se quedaba ocupando 8px. */
@@ -8784,7 +8825,14 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .lat.colapsado .nav-hijos-in { border-radius: 6px; }
 /* El texto vuelve DENTRO del panel: la regla que lo oculta es para el carril
    de 56px, no para una capa que sale fuera y tiene sitio de sobra. */
-.lat.colapsado .nav-hijos .nav-txt,
+/* DENTRO DEL PANEL FLOTANTE EL TEXTO VUELVE ENTERO, y hay que deshacer las
+   seis declaraciones de arriba y no solo el display: una regla mas especifica
+   solo gana en lo que declara, y el resto —position absolute, 1px, clip-path—
+   seguiria escondiendolo. */
+.lat.colapsado .nav-hijos .nav-txt {
+  position: static; width: auto; height: auto;
+  margin: 0; overflow: visible;
+  clip-path: none; white-space: normal; display: block; }
 .lat.colapsado .nav-hijos .pt { display: block; }
 .lat.colapsado .nav-hijos .nav-chev { display: grid; }
 .lat.colapsado .nav-hijo { padding-left: 12px; }
@@ -11453,7 +11501,17 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   transition: width var(--dur-lenta) var(--curva); }
 .lat.colapsado { width: 56px; }
 @media (prefers-reduced-motion: reduce) { .lat { transition: none; } }
-.lat.colapsado .nav-txt, .lat.colapsado .nav-chev,
+/* EL ROTULO NO SE BORRA, SE ESCONDE A LA VISTA. Con display:none salia tambien
+   del arbol de accesibilidad, y como el svg va aria-hidden, una opcion del
+   carril plegado se quedaba SIN NOMBRE DE NINGUNA CLASE. El icono mudo. Lo
+   midio el responsable pasando el raton el 2026-09-14.
+   Mismo tratamiento que .sr-solo: ocupa cero y el lector lo lee. El globito del
+   raton lo pone el atributo title, que ahora si emite el componente. */
+.lat.colapsado .nav-txt {
+  position: absolute; width: 1px; height: 1px;
+  margin: -1px; padding: 0; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; }
+.lat.colapsado .nav-chev,
 .lat.colapsado .lat-id, .lat.colapsado .lat-user-txt { display: none; }
 .lat.colapsado .lat-marca, .lat.colapsado .lat-usuario { justify-content: center; }
 .lat.colapsado .nav-item { justify-content: center; padding-inline: 0; }
@@ -12493,12 +12551,22 @@ ${COMPRESOR_PDF}
 
   // Los grupos nacen comprimidos. Se abren al pasar el ratón y se cierran al
   // salir, salvo el que está FIJADO, que es el de la página en curso.
-  var grupos = document.querySelectorAll('.nav-grupo');
+/* SIEMPRE DENTRO DEL LATERAL DEL CATALOGO, y nunca el selector global.
+     Estos guiones son MOBILIARIO: gobiernan la barra de esta pagina. Con el
+     selector global tambien gobernaban las MAQUETAS del marco, que son
+     demostraciones estaticas — y con eso las cerraban al cargar (el componente
+     las abre), las dejaban diciendo que estaban cerradas con el panel sin su
+     atributo de ocultar, un estado que MarcoApp no produce jamas; y el guard
+     del plegado preguntaba por el lateral del catalogo y no por el de la
+     maqueta, asi que el panel flotante de la maqueta no abria nunca. Lo
+     midieron dos auditorias el 2026-09-14, sobre este mismo arreglo. */
+  var lateralCat = document.getElementById('lateral');
+  var grupos = lateralCat.querySelectorAll('.nav-grupo');
 
   function sincronizarGrupo(g) {
     // Plegada, el FIJADO no abre el panel flotante: solo el cursor. Si no, al
     // elegir una opción el grupo queda fijado y el panel se reabre solo.
-    var plegada = document.getElementById('lateral').classList.contains('colapsado');
+    var plegada = lateralCat.classList.contains('colapsado');
     var abierto = (!plegada && g.classList.contains('fijo')) || g.classList.contains('hover');
     g.classList.toggle('abierto', abierto);
     g.querySelector('.nav-grupo-tit').setAttribute('aria-expanded', String(abierto));
@@ -12509,21 +12577,34 @@ ${COMPRESOR_PDF}
     // carril hasta el panel flotante. Sin margen, el panel se cierra por el
     // camino y no hay forma de llegar a elegir.
     var salida = null;
+    /* SOLO PLEGADA. Desplegada, el componente NO abre los grupos al pasar el
+       cursor: se gobiernan con el clic, y esta pagina lo demostraba al reves.
+       Quien pasaba el raton por el menu desplegado del catalogo veia los grupos
+       abrirse solos y recibia otra cosa en su producto. Lo midio el responsable
+       el 2026-09-14 pasando el raton, que es como se cazan estas. */
+    var estaPlegada = function () { return lateralCat.classList.contains('colapsado'); };
     g.addEventListener('mouseenter', function () {
+      if (!estaPlegada()) return;
       clearTimeout(salida);
       g.classList.add('hover');
       sincronizarGrupo(g);
     });
     g.addEventListener('mouseleave', function () {
+      if (!estaPlegada()) return;
       clearTimeout(salida);
       salida = setTimeout(function () {
         g.classList.remove('hover');
         sincronizarGrupo(g);
       }, 220);
     });
-    // Con teclado no hay ratón: al enfocar dentro, se abre igual.
-    g.addEventListener('focusin', function () { g.classList.add('hover'); sincronizarGrupo(g); });
+    // Con teclado no hay ratón: al enfocar dentro, se abre igual — y tambien
+    // solo plegada, que es lo que hace el componente.
+    g.addEventListener('focusin', function () {
+      if (!estaPlegada()) return;
+      g.classList.add('hover'); sincronizarGrupo(g);
+    });
     g.addEventListener('focusout', function (e) {
+      if (!estaPlegada()) return;
       if (!g.contains(e.relatedTarget)) { g.classList.remove('hover'); sincronizarGrupo(g); }
     });
     sincronizarGrupo(g);
@@ -12584,7 +12665,7 @@ ${COMPRESOR_PDF}
     // Al plegar cambia la regla de apertura: fijado deja de abrir y solo abre
     // el cursor. Sin re-sincronizar, el grupo fijado se quedaba como panel
     // flotante atascado, abierto sin que nadie lo hubiera pedido.
-    document.querySelectorAll('.nav-grupo').forEach(function (g) {
+    document.getElementById('lateral').querySelectorAll('.nav-grupo').forEach(function (g) {
       g.classList.remove('hover');
       sincronizarGrupo(g);
     });
@@ -12611,16 +12692,17 @@ ${COMPRESOR_PDF}
     // El grupo de la página en curso queda FIJADO: se queda abierto aunque el
     // cursor se vaya. Los demás vuelven a comprimirse. Si el activo está en
     // una rama de segundo nivel, la rama también se abre.
-    var plegada = document.getElementById('lateral').classList.contains('colapsado');
-    var activo = document.querySelector('.nav-hijo.activo, .nav-nieto.activo');
-    document.querySelectorAll('.nav-rama').forEach(function (r) {
+    var lat = document.getElementById('lateral');
+    var plegada = lat.classList.contains('colapsado');
+    var activo = lat.querySelector('.nav-hijo.activo, .nav-nieto.activo');
+    lat.querySelectorAll('.nav-rama').forEach(function (r) {
       var dentro = !!activo && r.contains(activo);
       if (dentro) {
         r.classList.add('abierta');
         r.querySelector('.nav-rama-tit').setAttribute('aria-expanded', 'true');
       }
     });
-    document.querySelectorAll('.nav-grupo').forEach(function (g) {
+    lat.querySelectorAll('.nav-grupo').forEach(function (g) {
       g.classList.toggle('fijo', !!activo && g.contains(activo));
       var ab = (!plegada && g.classList.contains('fijo')) || g.classList.contains('hover');
       g.classList.toggle('abierto', ab);
@@ -12648,7 +12730,7 @@ ${COMPRESOR_PDF}
     if (g && document.getElementById('lateral').classList.contains('colapsado')) {
       // Se quita el hover a mano: el cursor sigue encima tras el clic, así que
       // no habrá mouseleave hasta que la persona lo mueva.
-      document.querySelectorAll('.nav-grupo').forEach(function (o) {
+      document.getElementById('lateral').querySelectorAll('.nav-grupo').forEach(function (o) {
         o.classList.remove('hover');
         o.classList.remove('abierto');
         o.querySelector('.nav-grupo-tit').setAttribute('aria-expanded', 'false');
@@ -14555,7 +14637,13 @@ ${COMPRESOR_PDF}
   var ICO_MAS = '${ICONOS.mas}';
   var ICO_CHEV = '${ICONOS.chevron}';
 
-  var secciones = [].map.call(document.querySelectorAll('.lat-nav .nav-grupo'), function (g) {
+  /* Con el id del lateral Y NO con .lat-nav a secas. Este guion construye el menu movil DEL
+     CATALOGO desde la barra DEL CATALOGO, y su selector cazaba tambien los
+     grupos de la MAQUETA del marco —que no llevan ese atributo— en cuanto
+     la maqueta empezo a emitir grupos de verdad en vez de enlaces con chevron.
+     El guion entero reventaba. Un selector de mobiliario tiene que decir de que
+     mobiliario habla. */
+  var secciones = [].map.call(document.querySelectorAll('#lateral .nav-grupo'), function (g) {
     var t = g.querySelector('[data-desplegar]');
     return {
       titulo: t.querySelector('.nav-txt').textContent.trim(),

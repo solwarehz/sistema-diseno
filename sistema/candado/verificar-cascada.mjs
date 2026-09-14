@@ -465,6 +465,43 @@ const AFIRMACIONES = [
     },
   },
   {
+    id: 'CARRIL-CON-NOMBRE',
+    que: 'el menu plegado esconde el rotulo a la vista, pero NO lo borra del arbol',
+    /**
+     * EL ICONO MUDO. Plegado, `.lat.colapsado .nav-txt` lo ocultaba con
+     * `display:none`, que lo saca TAMBIEN del arbol de accesibilidad. Y el
+     * `<svg>` del icono va `aria-hidden`. Resultado: una opcion sin hijos —que
+     * ademas no abre panel flotante— se quedaba SIN NOMBRE DE NINGUNA CLASE.
+     *
+     * El catalogo lo rotulaba con `title` desde siempre y el componente no
+     * emitia ninguno: la promesa se quedaba en la demostracion. Lo midio el
+     * responsable pasando el raton el 2026-09-14.
+     *
+     * Esto no lo puede proteger una prueba de jsdom, que no aplica la hoja:
+     * se comprueba resolviendo la cascada de la hoja QUE VIAJA. `title` y el
+     * rotulo vivo se prueban aparte, en `MarcoApp.test.tsx` [8].
+     */
+    revisar(reglas) {
+      const fallos = [];
+      const enElCarril = [elem('div', ['lat', 'colapsado']), elem('span', ['nav-txt'])];
+      const d = resolver(reglas, enElCarril, 'display', 1280);
+      if (d && d.valor.trim() === 'none') {
+        fallos.push('  .lat.colapsado .nav-txt resuelve a display:none, asi que el rotulo sale');
+        fallos.push('  tambien del arbol de accesibilidad: con el <svg> aria-hidden, una opcion');
+        fallos.push('  del carril plegado se queda SIN NOMBRE. Escondelo a la vista —el');
+        fallos.push('  tratamiento de .sr-solo— en vez de borrarlo.');
+      }
+      // Y dentro del panel flotante tiene que volver ENTERO, no solo el display.
+      const enElPanel = [elem('div', ['lat', 'colapsado']), elem('div', ['nav-hijos']), elem('span', ['nav-txt'])];
+      const pos = resolver(reglas, enElPanel, 'position', 1280);
+      if (pos && pos.valor.trim() === 'absolute') {
+        fallos.push('  dentro de .nav-hijos el rotulo sigue en position:absolute: una regla mas');
+        fallos.push('  especifica solo gana en lo que declara, y el panel flotante se queda mudo.');
+      }
+      return fallos;
+    },
+  },
+  {
     id: 'R129',
     que: 'el calendario tiene SUELO: ni la celda ni la caja dependen de su disparador',
     /**

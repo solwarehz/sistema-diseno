@@ -1,9 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 14 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.113.0** — el editor de texto no se podía
-usar: el cursor volvía al principio en cada tecla, por un carácter de diferencia
-entre dos serializadores
+**Versión del sistema:** MMI-DS **v1.114.0** — el menú lateral plegado era una
+fila de iconos mudos, y el catálogo prometía un hover que la entrega no tenía
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -19,7 +18,7 @@ entre dos serializadores
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **diecisiete pasos de
-verificación** —los que corre `publicar.mjs`—, **824 pruebas en 49 archivos**,
+verificación** —los que corre `publicar.mjs`—, **831 pruebas en 49 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -57,15 +56,15 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **824 pruebas en 49 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · **972 reglas de 1487** · **701 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
+| Componentes de React | ✅ | **831 pruebas en 49 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · **975 reglas de 1490** · **701 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.113.0.zip` · **59 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.114.0.zip` · **60 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.113.0**, con el salto **desde la v1.19.0**, que es la instalada |
-| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los diecisiete pasos · **140 unidades compuestas** · **8 de deuda declarada**, 0 nuevas |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.114.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los diecisiete pasos · **142 unidades compuestas** · **8 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -87,7 +86,69 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.113.0), con detalle
+### Lo de hoy (v1.114.0), con detalle
+
+**El menú plegado era una fila de iconos mudos, y el catálogo prometía un hover
+que la entrega no tenía.** Lo pidió el responsable con una frase que es el método
+entero: *«quiero que pases el mouse sobre el menu extendido y comprimido, y me
+digas si esa forma de prometer el funcionamiento del menu esta en la entrega»*.
+Se pasó el ratón en Chrome, en los dos estados, y la respuesta era **no** en tres
+puntos.
+
+**1 · El icono mudo.** Plegado, `.nav-txt` iba a `display:none` —que lo saca
+también del árbol de accesibilidad— y el `<svg>` va `aria-hidden`. Una opción
+**sin hijos** se quedaba sin rótulo de ninguna clase, y tampoco abre panel
+flotante, que es lo que identifica a las que sí los tienen. **El catálogo lo
+rotulaba con `title` desde siempre y el componente no emitía ninguno**: cero
+coincidencias de `title=` en `MarcoApp.tsx`.
+
+**2 · El hover que no existe.** La barra del catálogo abría los grupos al pasar
+el ratón con el menú **desplegado**; el componente solo lo hace plegado. Estaba
+decidido y probado, pero **no escrito**, así que el catálogo podía contradecirlo
+sin que nada fallara.
+
+**3 · La maqueta no enseñaba un solo grupo.** Pintaba ocho enlaces con un chevron
+dentro —marcado que `MarcoApp` **no produce nunca**— y con eso el panel flotante
+no se demostraba en ninguna parte del catálogo.
+
+**Y en cuanto la maqueta empezó a emitir grupos de verdad, `verificar-cascada`
+destapó un cuarto**: `.nav-hijos` declara `display:grid`, que gana a la regla
+`[hidden]` del navegador, así que el atributo que el componente emite **no
+ocultaba nada**. Un guion del catálogo reventó además entero, porque construía
+el menú móvil desde `.lat-nav .nav-grupo` y ese selector no decía de qué
+mobiliario hablaba.
+
+**Por qué no lo vio ninguno de los catorce candados.** Dos cegueras que se cruzan
+justo aquí: `verificar-promesa` **descarta todos los estados** —hay una línea que
+salta `:hover`, `:focus` y compañía— y **ninguno compara atributos de marcado**
+entre catálogo y componente. `title` es un atributo. Nace `CARRIL-CON-NOMBRE` en
+`verificar-cascada`, que resuelve la hoja **que viaja** y falla si el rótulo del
+carril plegado sale del árbol.
+
+Tres reglas de contrato nuevas —**8, 9 y 10**— con sus pruebas.
+
+**Y dos auditorías tumbaron la primera versión de este arreglo**, que es lo que
+más enseña de la versión:
+
+- **El guard del hover miraba el elemento equivocado**: preguntaba por el lateral
+  del *catálogo* y no por el de la maqueta. Resultado: la maqueta plegada no
+  abría panel y la desplegada sí — lo contrario de lo que el arreglo decía hacer.
+- **Los guiones del catálogo gobernaban las maquetas** con selectores globales:
+  las cerraban al cargar —el componente las abre—, las dejaban sin poder pulsar,
+  y con un estado que `MarcoApp` no produce jamás. Ya están todos acotados.
+- Las dos maquetas **repetían cuatro `id`**.
+- **Dos de los cinco `title` no estaban protegidos**: la prueba montaba un menú
+  sin tercer nivel, así que no había rama ni nieto que mirar.
+- Y la prueba del árbol de accesibilidad **no podía ver nada** —jsdom no carga la
+  hoja—: era verde con el rótulo y sin él. Se reescribió para decir lo que sí
+  comprueba, y esa mitad la protege `CARRIL-CON-NOMBRE`.
+
+**Al declarar la sección del contrato salió a la luz otra cosa:** las reglas
+**transversales** vivían pegadas a la tabla del marco **sin título propio**, así
+que el candado las daba por del marco y su respaldo salía de una coincidencia de
+número. Ya tienen sección, con sus tres archivos de prueba declarados.
+
+### Lo de la v1.113.0, con detalle
 
 **La letra escrita al final de un párrafo se salía del párrafo.** Lo cazó una
 auditoría sobre el arreglo de la v1.112.0, y es el mismo error dos veces
@@ -1823,12 +1884,12 @@ sin comparar.
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.113.0
+Versión                      1.114.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         824   en 49 archivos
-Reglas que viajan               972   de 1487 · 701 clases, 0 huérfanas
+Pruebas                         831   en 49 archivos
+Reglas que viajan               975   de 1490 · 701 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el
                                       catalogo, que por diseño NO viajan).
@@ -1836,9 +1897,9 @@ Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el
                                       selector menciona `sel-`, en las dos
 Comparaciones del desplegado      7   catalogo ejecutado contra componente
 Componentes publicados           35
-Módulos que viajan               42   + 17 archivos de sistema = 59 en el ZIP
+Módulos que viajan               43   + 17 archivos de sistema = 60 en el ZIP
 Exportaciones de componente     127   todas salen por el índice
-Unidades compuestas             140   dos clases sobre el MISMO elemento
+Unidades compuestas             142   dos clases sobre el MISMO elemento
 Páginas del catálogo             70
 Fila de un campo, medida      36,45   px · la fila de carga se fija en 36
 ```

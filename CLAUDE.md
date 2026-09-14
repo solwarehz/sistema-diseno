@@ -19,12 +19,13 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.113.0** — el editor de texto **no se podía usar**: el cursor
-volvía al principio en cada tecla. La causa era **un carácter** —el saneador
-serializaba el espacio duro distinto que `innerHTML`—, y lo enseña mejor que
-cualquier otra cosa de este repositorio: tres rondas de auditoría, diecisiete
-pasos en verde y 787 pruebas no cazaron que la pieza fuera inservible, porque
-**ninguna prueba escribía**. Una pieza que se teclea hay que probarla tecleando.
+**Estado actual: v1.114.0** — el menú lateral plegado era **una fila de iconos
+mudos**, y el catálogo prometía un hover que la entrega no tenía. Lo cazó el
+responsable **pasando el ratón**, y enseña lo mismo que la versión anterior por
+otro lado: lo que no se ejerce como lo ejerce una persona, no se comprueba. Dos
+cegueras cruzadas lo dejaron pasar: `verificar-promesa` **descarta los estados**
+—salta cinco pseudoclases— y **ningún candado compara atributos** de marcado, y
+`title` es un atributo.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

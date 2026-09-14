@@ -26,6 +26,24 @@ const NAV: GrupoNav[] = [
   },
 ];
 
+/** Menú con los TRES niveles. Vive aquí porque lo usan dos secciones: sin
+ *  nietos ni ramas en el árbol, media regla 8 se quedaba sin proteger. */
+const TRES_NIVELES: GrupoNav[] = [
+  {
+    clave: 'config', texto: 'Configuración',
+    hijos: [
+      { clave: 'general', texto: 'General', href: '/general' },
+      {
+        clave: 'catalogos', texto: 'Catálogos',
+        hijos: [
+          { clave: 'sedes', texto: 'Sedes', href: '/catalogos/sedes' },
+          { clave: 'cargos', texto: 'Cargos', href: '/catalogos/cargos' },
+        ],
+      },
+    ],
+  },
+];
+
 const USUARIO = {
   id: 'u-1',
   nombre: 'PINEDA, José Isidro',
@@ -84,6 +102,18 @@ describe('Marco de aplicación', () => {
   // `display: flex`, la lateral ocupa todo el ancho y el contenido cae bajo el
   // pliegue. Se prueba la CLASE y no el diseno porque jsdom no calcula diseno,
   // y decirlo importa: esto fija el olvido, no la maquetacion.
+  it('[1] el marco ENVUELVE a la aplicación: lo que le pasas vive en su zona de contenido', () => {
+    /* La regla 1 dice que el enrutador vive DENTRO del marco y que no se monta
+       uno por página. Lo comprobable aquí es la mitad estructural: los hijos
+       que el producto pasa salen dentro de la zona de contenido del marco, no
+       colgando fuera. Montado por página, el plegado del lateral se olvida en
+       cada navegación, y eso ya no es del componente. */
+    const { container } = montar();
+    const zona = container.querySelector('.app-main, .app-contenido, main');
+    expect(zona, 'el marco no tiene zona de contenido').not.toBeNull();
+    expect(zona!.textContent).toContain('Contenido');
+  });
+
   it('el cascaron lleva las DOS clases: sin `app` el contenido cae fuera', () => {
     const { container } = montar();
     const raiz = container.firstElementChild!;
@@ -308,7 +338,7 @@ describe('Plegado — el panel flotante', () => {
    */
   const esperar = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-  it('plegado, el grupo abre al pasar el cursor y cierra CON MARGEN para llegar', async () => {
+  it('[5] plegado, el grupo abre al pasar el cursor y cierra CON MARGEN para llegar', async () => {
     const u = userEvent.setup();
     const { container } = montar();
     await u.click(screen.getByRole('button', { name: 'Plegar menú' }));
@@ -326,7 +356,7 @@ describe('Plegado — el panel flotante', () => {
     await waitFor(() => expect(grupo.classList.contains('abierto')).toBe(false));
   });
 
-  it('volver a entrar dentro del margen CANCELA el cierre: es lo que deja cambiar de menú', async () => {
+  it('[5] volver a entrar dentro del margen CANCELA el cierre: es lo que deja cambiar de menú', async () => {
     const u = userEvent.setup();
     const { container } = montar();
     await u.click(screen.getByRole('button', { name: 'Plegar menú' }));
@@ -340,7 +370,7 @@ describe('Plegado — el panel flotante', () => {
     expect(grupo.classList.contains('abierto')).toBe(true);
   });
 
-  it('con teclado también abre: sin ratón el panel era inalcanzable', async () => {
+  it('[5] con teclado también abre: sin ratón el panel era inalcanzable', async () => {
     const u = userEvent.setup();
     const { container } = montar();
     await u.click(screen.getByRole('button', { name: 'Plegar menú' }));
@@ -362,13 +392,92 @@ describe('Plegado — el panel flotante', () => {
     expect(titulo.textContent).toBe('Académico');
   });
 
-  it('desplegado NO hay hover: los grupos se gobiernan con el clic', () => {
+  it('[9] desplegado NO hay hover: los grupos se gobiernan con el clic', async () => {
+    /* La primera versión de esta prueba solo disparaba `mouseLeave` y miraba
+       que nada cambiara — y el cierre es DIFERIDO 220 ms, así que pasaba
+       aunque el manejador estuviera puesto. No protegía nada. Ahora se cierra
+       el grupo con el clic, se ENTRA con el cursor, y se comprueba que sigue
+       cerrado: eso sí solo puede pasar si `onMouseEnter` está apagado. */
+    const u = userEvent.setup();
+    const { container } = montar({ activa: 'inicio' });
+    const grupo = container.querySelector('.nav-grupo')!;
+    await u.click(grupo.querySelector('.nav-grupo-tit')!);
+    expect(grupo.classList.contains('abierto'), 'el clic no cerró el grupo').toBe(false);
+    fireEvent.mouseEnter(grupo);
+    expect(grupo.classList.contains('abierto'), 'el cursor abrió un grupo con el menú desplegado').toBe(false);
+  });
+
+  it('[9] pero PLEGADO sí abre al pasar el cursor: ahí el rótulo no se ve', () => {
+    const { container } = montar({ plegado: true, activa: 'inicio' });
+    const grupo = container.querySelector('.nav-grupo')!;
+    expect(grupo.classList.contains('abierto')).toBe(false);
+    fireEvent.mouseEnter(grupo);
+    expect(grupo.classList.contains('abierto'), 'plegado el cursor tiene que abrir el panel').toBe(true);
+  });
+});
+
+describe('[8] el carril plegado no es una fila de iconos mudos', () => {
+  /* Plegado, `.nav-txt` no se ve y el `<svg>` va `aria-hidden`: sin rótulo, una
+     opción sin hijos se queda sin nombre de ninguna clase —y tampoco abre panel
+     flotante—. El catálogo lo rotulaba con `title` desde siempre y el
+     componente NO EMITÍA NINGUNO. Lo midió el responsable pasando el ratón. */
+
+  it('[8] cada opción lleva `title` con su texto, que es el globito del ratón', () => {
+    /* Con `TRES_NIVELES` y no con el `NAV` de siempre: sin nietos ni ramas en
+       el árbol, quitarle el `title` a `.nav-rama-tit` o a `.nav-nieto` dejaba
+       la prueba EN VERDE — dos de las cinco piezas sin proteger. */
+    const { container } = montar({ navegacion: TRES_NIVELES, activa: 'notas' });
+    const sinTitle = [...container.querySelectorAll('.nav-item, .nav-hijo, .nav-nieto')]
+      .filter((a) => a.getAttribute('title') === null)
+      .map((a) => a.textContent?.trim());
+    expect(sinTitle, 'hay opciones de navegación sin rótulo para el ratón').toEqual([]);
+  });
+
+  it('[8] y el `title` dice lo mismo que el rótulo, no otra cosa', () => {
     const { container } = montar();
-    const grupo = [...container.querySelectorAll('.nav-grupo')].find((g) =>
-      !g.classList.contains('abierto')) ?? container.querySelector('.nav-grupo')!;
-    const antes = grupo.classList.contains('abierto');
-    fireEvent.mouseLeave(grupo);
-    expect(grupo.classList.contains('abierto')).toBe(antes);
+    for (const a of container.querySelectorAll('.nav-item, .nav-hijo')) {
+      expect(a.getAttribute('title')).toBe(a.querySelector('.nav-txt')!.textContent);
+    }
+  });
+
+  it('[8] el rótulo sigue EN EL MARCADO estando plegado, no se desmonta', () => {
+    /* LO QUE ESTA PRUEBA **NO** COMPRUEBA, y su primera versión decía que sí:
+       que el rótulo llegue al árbol de accesibilidad. Aquí no hay hoja de
+       estilos —`preparar.ts` no carga ninguna—, así que jsdom nunca vería un
+       `display:none` viniera de donde viniera, y además el nombre caería al
+       `title`: era verde con el rótulo y sin él. Lo cazó una auditoría el
+       2026-09-14.
+       Esa mitad de la regla 8 la protege `CARRIL-CON-NOMBRE` en
+       `verificar-cascada`, que resuelve la hoja QUE VIAJA. Lo que sí se
+       comprueba aquí es lo otro: que plegado el rótulo siga EN EL MARCADO, que
+       es la condición para que la hoja pueda esconderlo sin borrarlo. */
+    const { container } = montar({ plegado: true, activa: 'inicio' });
+    const rotulos = [...container.querySelectorAll('.nav-item .nav-txt')].map((e) => e.textContent);
+    expect(rotulos, 'plegado se desmontan los rótulos: la hoja ya no puede salvarlos').toContain('Inicio');
+  });
+
+  it('[10] los hijos de un grupo cerrado llevan `hidden`', () => {
+    // `.nav-hijos` declara `display: grid`, que gana a la regla `[hidden]` del
+    // navegador: sin `.nav-hijos[hidden]` en la hoja, el atributo no ocultaba.
+    /* Desplegado los grupos nacen ABIERTOS (R48); plegado nacen cerrados,
+       porque un grupo abierto plegado es un panel flotante encima del
+       contenido. Así que el grupo cerrado que hay que mirar está aquí. */
+    const { container } = montar({ plegado: true, activa: 'inicio' });
+    const cerrado = [...container.querySelectorAll('.nav-grupo')]
+      .find((g) => !g.classList.contains('abierto'));
+    expect(cerrado, 'no hay ningún grupo cerrado que mirar').not.toBeUndefined();
+    expect(cerrado!.querySelector('.nav-hijos')!.hasAttribute('hidden')).toBe(true);
+  });
+
+  it('[10] y el TERCER nivel se cierra igual, no de otra forma', () => {
+    /* `.nav-nietos[hidden]` viaja en la hoja de todos los productos: si el
+       componente no lo emite, es una regla que nadie puede activar —la
+       categoría de `.sel-caja.abierta`— y además el tercer nivel se cerraría
+       de otra manera que el segundo. Lo cazó una auditoría el 2026-09-14. */
+    const { container } = montar({ navegacion: TRES_NIVELES });
+    const rama = container.querySelector('.nav-rama')!;
+    expect(rama.classList.contains('abierta'), 'la rama arranca abierta').toBe(false);
+    expect(rama.querySelector('.nav-nietos')!.hasAttribute('hidden')).toBe(true);
   });
 });
 
@@ -527,22 +636,6 @@ describe('R48 · los grupos siguen al plegado que QUEDA, no al que se pide', () 
 });
 
 describe('R42a · el tercer nivel del menú por fin se emite', () => {
-  const TRES_NIVELES: GrupoNav[] = [
-    {
-      clave: 'config', texto: 'Configuración',
-      hijos: [
-        { clave: 'general', texto: 'General', href: '/general' },
-        {
-          clave: 'catalogos', texto: 'Catálogos',
-          hijos: [
-            { clave: 'sedes', texto: 'Sedes', href: '/catalogos/sedes' },
-            { clave: 'cargos', texto: 'Cargos', href: '/catalogos/cargos' },
-          ],
-        },
-      ],
-    },
-  ];
-
   it('una opción con hijos es una RAMA plegable, con el marcado que la hoja estiliza', async () => {
     const u = userEvent.setup();
     const { container } = montar({ navegacion: TRES_NIVELES });

@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.113.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.114.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -76,7 +76,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.113.0; }
+:root{ --mmi-componentes: 1.114.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -1132,7 +1132,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .esqueleto.corto{ width: 62%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MARCO DE APLICACIÓN — 184 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
+   MARCO DE APLICACIÓN — 187 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 :where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
@@ -1162,6 +1162,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .nav-grupo-tit .nav-chev .ic{ transition: transform var(--dur-media) var(--curva); transform: rotate(-90deg); }
 .nav-grupo.abierto .nav-chev .ic{ transform: rotate(0deg); }
 .nav-hijos, .nav-nietos{ display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--dur-media) var(--curva); }
+.nav-hijos[hidden], .nav-nietos[hidden]{ display: none; }
 .nav-grupo.abierto .nav-hijos{ grid-template-rows: 1fr; }
 .nav-hijos-in{ overflow: hidden; visibility: hidden; transition: visibility 0s var(--dur-media); }
 .nav-grupo.abierto .nav-hijos-in{ visibility: visible; transition: visibility 0s; }
@@ -1208,7 +1209,10 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .lat.colapsado .nav-grupo.abierto .nav-hijos{
   opacity: 1; visibility: visible; transform: translateX(0); }
 .lat.colapsado .nav-hijos-in{ border-radius: 6px; }
-.lat.colapsado .nav-hijos .nav-txt,
+.lat.colapsado .nav-hijos .nav-txt{
+  position: static; width: auto; height: auto;
+  margin: 0; overflow: visible;
+  clip-path: none; white-space: normal; display: block; }
 .lat.colapsado .nav-hijos .pt{ display: block; }
 .lat.colapsado .nav-hijos .nav-chev{ display: grid; }
 .lat.colapsado .nav-hijo{ padding-left: 12px; }
@@ -1290,7 +1294,11 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 @media (prefers-reduced-motion: reduce) {
   .lat{ transition: none; }
 }
-.lat.colapsado .nav-txt, .lat.colapsado .nav-chev,
+.lat.colapsado .nav-txt{
+  position: absolute; width: 1px; height: 1px;
+  margin: -1px; padding: 0; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; }
+.lat.colapsado .nav-chev,
 .lat.colapsado .lat-id, .lat.colapsado .lat-user-txt{ display: none; }
 .lat.colapsado .lat-marca, .lat.colapsado .lat-usuario{ justify-content: center; }
 .lat.colapsado .nav-item{ justify-content: center; padding-inline: 0; }

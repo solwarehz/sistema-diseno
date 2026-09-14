@@ -363,9 +363,19 @@ export function MarcoApp({
                   // pantalla no ve el sombreado, y saber dónde está es lo
                   // primero que necesita.
                   aria-current={activa === g.clave ? 'page' : undefined}
+                  /* EL CARRIL PLEGADO NO PUEDE SER UNA FILA DE ICONOS MUDOS.
+                     Plegada, `.nav-txt` no se ve y el `<svg>` va `aria-hidden`:
+                     sin esto, una opcion SIN HIJOS no tenia rotulo de ninguna
+                     clase —ni visual ni para un lector— y tampoco abre panel
+                     flotante, que es lo que identifica a las que si los tienen.
+                     El catalogo lo rotulaba con `title` desde siempre y el
+                     componente NO EMITIA NINGUNO: la promesa se quedaba en la
+                     demostracion. Lo midio el responsable pasando el raton el
+                     2026-09-14. */
+                  title={g.texto}
                   onClick={(e) => navegar(e, g.clave, g.href)}
                 >
-                  {g.icono && <span className="nav-ic">{g.icono}</span>}
+                  {g.icono && <span className="nav-ic" aria-hidden="true">{g.icono}</span>}
                   <span className="nav-txt">{g.texto}</span>
                 </a>
               );
@@ -407,9 +417,13 @@ export function MarcoApp({
                   className="nav-item nav-grupo-tit"
                   aria-expanded={abierto}
                   aria-controls={idHijos}
+                  title={g.texto}
                   onClick={() => alternarGrupo(g.clave)}
                 >
-                  {g.icono && <span className="nav-ic">{g.icono}</span>}
+                  {/* `aria-hidden` TAMBIÉN AQUÍ: quien nombra es el rótulo. Lo
+                      llevaba el del móvil y no el del carril, y el `aria-hidden`
+                      del `<svg>` depende de que el producto pase un `<Icono>`. */}
+                  {g.icono && <span className="nav-ic" aria-hidden="true">{g.icono}</span>}
                   <span className="nav-txt">{g.texto}</span>
                   <span className="nav-chev" aria-hidden="true"><Icono nombre="chevron" /></span>
                 </button>
@@ -435,13 +449,20 @@ export function MarcoApp({
                               className="nav-hijo nav-rama-tit"
                               aria-expanded={ramaAbierta}
                               aria-controls={idNietos}
+                              title={h.texto}
                               onClick={() => alternarRama(h.clave)}
                             >
                               {h.icono && <span className="nav-ic">{h.icono}</span>}
                               <span className="nav-txt">{h.texto}</span>
                               <span className="nav-chev" aria-hidden="true"><Icono nombre="chevron" /></span>
                             </button>
-                            <div className="nav-nietos" id={idNietos}>
+                            {/* `hidden` COMO EN `.nav-hijos`, y no solo la clase:
+                                sin él, `.nav-nietos[hidden]` viajaba en la hoja de
+                                todos los productos SIN QUE NADIE PUDIERA ACTIVARLA
+                                —la categoría de `.sel-caja.abierta`— y el tercer
+                                nivel se cerraba de otra forma que el segundo. Lo
+                                cazó una auditoría el 2026-09-14. */}
+                            <div className="nav-nietos" id={idNietos} hidden={!ramaAbierta}>
                               <div className="nav-nietos-in">
                                 {h.hijos.map((nieto) => (
                                   <a
@@ -449,6 +470,7 @@ export function MarcoApp({
                                     className={['nav-nieto', activa === nieto.clave ? 'activo' : ''].filter(Boolean).join(' ')}
                                     href={nieto.href}
                                     aria-current={activa === nieto.clave ? 'page' : undefined}
+                                    title={nieto.texto}
                                     onClick={(e) => navegar(e, nieto.clave, nieto.href)}
                                   >
                                     {nieto.icono && <span className="nav-ic">{nieto.icono}</span>}
@@ -466,6 +488,7 @@ export function MarcoApp({
                           className={['nav-hijo', activa === h.clave ? 'activo' : ''].filter(Boolean).join(' ')}
                           href={h.href}
                           aria-current={activa === h.clave ? 'page' : undefined}
+                          title={h.texto}
                           onClick={(e) => navegar(e, h.clave, h.href)}
                         >
                           {h.icono && <span className="nav-ic">{h.icono}</span>}
