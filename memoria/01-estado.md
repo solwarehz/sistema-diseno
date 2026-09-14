@@ -1,7 +1,7 @@
 # Estado del proyecto
 
 **Última actualización:** 14 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.112.0** — el editor de texto no se podía
+**Versión del sistema:** MMI-DS **v1.113.0** — el editor de texto no se podía
 usar: el cursor volvía al principio en cada tecla, por un carácter de diferencia
 entre dos serializadores
 
@@ -19,7 +19,7 @@ entre dos serializadores
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **diecisiete pasos de
-verificación** —los que corre `publicar.mjs`—, **820 pruebas en 49 archivos**,
+verificación** —los que corre `publicar.mjs`—, **824 pruebas en 49 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -57,14 +57,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **820 pruebas en 49 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **824 pruebas en 49 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **972 reglas de 1487** · **701 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.112.0.zip` · **59 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.113.0.zip` · **59 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.112.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.113.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los diecisiete pasos · **140 unidades compuestas** · **8 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -87,7 +87,29 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.112.0), con detalle
+### Lo de hoy (v1.113.0), con detalle
+
+**La letra escrita al final de un párrafo se salía del párrafo.** Lo cazó una
+auditoría sobre el arreglo de la v1.112.0, y es el mismo error dos veces
+seguidas: **una posición contada en caracteres es ambigua en toda frontera**. En
+`<p>uno</p><p>dos</p>`, el 3 es a la vez «al final de uno» y «al principio de
+dos», y las dos resoluciones son correctas la mitad de las veces. Se probaron las
+dos y **las dos se publicaron**: hacia atrás mete la letra en la línea de arriba
+tras un Intro; hacia delante la saca del párrafo al escribir al final.
+
+No se puede resolver la ambigüedad con el dato que la produce, así que ahora se
+guarda también **de qué lado** estaba el cursor. Solo se nota cuando el saneo
+reescribe —al pegar, al abrir un documento sucio o al escribir dentro de un
+hueco—: teclear normal no reescribe nada.
+
+Verificado tecleando en Chrome otra vez, comprobando además que el cursor queda
+**dentro** de su párrafo.
+
+**Hueco declarado y sin cerrar:** si el saneo retira texto **por delante** del
+cursor, el cursor se corre esos caracteres. Arreglarlo pide comparar el antes y
+el después, y eso es otra pieza. Hay una prueba que fija lo que hace hoy.
+
+### Lo de la v1.112.0, con detalle
 
 **El editor de texto no se podía usar.** Lo reportó el responsable con la
 v1.111.0 ya publicada: *«cada vez que digito un caracter, el cursor pasa a
@@ -1801,11 +1823,11 @@ sin comparar.
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.112.0
+Versión                      1.113.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         820   en 49 archivos
+Pruebas                         824   en 49 archivos
 Reglas que viajan               972   de 1487 · 701 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el

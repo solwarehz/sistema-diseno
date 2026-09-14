@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.112.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.113.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -76,7 +76,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.112.0; }
+:root{ --mmi-componentes: 1.113.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*

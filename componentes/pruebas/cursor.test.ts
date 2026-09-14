@@ -48,8 +48,8 @@ describe('[1c] leer el cursor y volver a ponerlo NO lo mueve', () => {
     const d = caja(html);
     const paseo = document.createTreeWalker(d, 4);
     // Se coloca el cursor a esa distancia, y se comprueba la ida y la vuelta.
-    ponerElCursor(d, donde);
-    expect(dondeEstaElCursor(d), 'la vuelta no cae donde la ida').toBe(donde);
+    ponerElCursor(d, { donde, pegadoAlSiguiente: false });
+    expect(dondeEstaElCursor(d)?.donde, 'la vuelta no cae donde la ida').toBe(donde);
     d.remove();
     expect(paseo).toBeTruthy();
   });
@@ -61,8 +61,11 @@ describe('[1c] una reescritura no deja el cursor en la línea anterior', () => {
        saneador desenvuelve el `<div>` y eso es una reescritura. El cursor tiene
        que quedar DESPUÉS del `<br>`, no al final de «Hola». Con `>=` quedaba
        antes, y la letra siguiente entraba en la línea de arriba. */
-    const d = caja('Hola');
-    ponerEn(d.firstChild!, 4);
+    /* Chrome deja `Hola<div><br></div>` y el cursor DENTRO del bloque nuevo
+       —contenedor de tipo elemento, desplazamiento 0—, no al final de «Hola».
+       Simularlo al final del texto sería simular otra cosa. */
+    const d = caja('Hola<div><br></div>');
+    ponerEn(d.querySelector('div')!, 0);
     reescribirConservandoElCursor(d, 'Hola<br>');
     const sel = document.getSelection()!;
     const r = sel.getRangeAt(0);
@@ -75,7 +78,7 @@ describe('[1c] una reescritura no deja el cursor en la línea anterior', () => {
   it('en la frontera de dos párrafos, gana el SIGUIENTE', () => {
     const d = caja('<p>Hola</p><p>mundo</p>');
     ponerEn(d.querySelectorAll('p')[1].firstChild!, 0);
-    expect(dondeEstaElCursor(d)).toBe(4);
+    expect(dondeEstaElCursor(d)?.donde).toBe(4);
     reescribirConservandoElCursor(d, '<p>Hola</p><p>mundo!</p>');
     const r = document.getSelection()!.getRangeAt(0);
     expect(r.startContainer.textContent, 'el cursor se fue al párrafo de arriba').toBe('mundo!');
@@ -84,11 +87,65 @@ describe('[1c] una reescritura no deja el cursor en la línea anterior', () => {
   });
 });
 
+describe('[1c] el lado de la frontera decide, y un numero solo no lo dice', () => {
+  it('escribir al FINAL del documento deja la letra DENTRO del párrafo', () => {
+    /* Con la regla «hacia delante» el cursor caía al final de la RAÍZ y la
+       letra salía fuera del `<p>`: `<p>Hola</p>M`. Lo midió una auditoría el
+       2026-09-14, sobre el arreglo del defecto de Intro. */
+    const d = caja('<p>HolaQ</p>');
+    const t = d.querySelector('p')!.firstChild as Text;
+    ponerEn(t, 5);
+    // La `Q` no está permitida en este ejemplo: el saneo la retira y reescribe.
+    reescribirConservandoElCursor(d, '<p>Hola</p>');
+    document.getSelection()!.getRangeAt(0).insertNode(document.createTextNode('M'));
+    expect(d.innerHTML, 'la letra salió del párrafo').toBe('<p>HolaM</p>');
+    d.remove();
+  });
+
+  it('con el cursor al final del párrafo 1, la letra NO salta al párrafo 2', () => {
+    /* El otro lado de la frontera. El saneo retira un `<font>` del párrafo de
+       abajo —eso reescribe— pero el texto de delante del cursor no cambia, así
+       que el cursor tiene que quedarse donde estaba: al final de «uno». Sin
+       distinguir el lado, se iba al principio de «dos». */
+    const d = caja('<p>uno</p><p><font>dos</font></p>');
+    ponerEn(d.querySelectorAll('p')[0].firstChild!, 3);
+    reescribirConservandoElCursor(d, '<p>uno</p><p>dos</p>');
+    document.getSelection()!.getRangeAt(0).insertNode(document.createTextNode('M'));
+    expect(d.innerHTML, 'la letra saltó al párrafo siguiente').toBe('<p>unoM</p><p>dos</p>');
+    d.remove();
+  });
+
+  it('si el saneo retira texto POR DELANTE del cursor, el cursor se corre — y se dice', () => {
+    /* HUECO DECLARADO, no defecto tapado. La posición se guarda como un número
+       de caracteres, así que si el saneo retira algo **antes** del cursor, ese
+       número apunta N caracteres más allá. Arreglarlo de verdad pide comparar
+       el antes y el después, y eso es otra pieza.
+       Pasa solo cuando el saneo retira mientras se escribe —escribir dentro de
+       un `{{hueco}}`, o pegar—, no al teclear normal, que no reescribe nada. */
+    const d = caja('<p>unoQ</p><p>dos</p>');
+    ponerEn(d.querySelectorAll('p')[0].firstChild!, 4);
+    reescribirConservandoElCursor(d, '<p>uno</p><p>dos</p>');
+    document.getSelection()!.getRangeAt(0).insertNode(document.createTextNode('M'));
+    // Lo que hace HOY, escrito para que se vea si algún día cambia.
+    expect(d.innerHTML).toBe('<p>uno</p><p>dMos</p>');
+    d.remove();
+  });
+
+  it('pero al final del documento NO se sale del párrafo aunque el texto encoja', () => {
+    const d = caja('<p>Hola</p><p>dosQ</p>');
+    ponerEn(d.querySelectorAll('p')[1].firstChild!, 4);
+    reescribirConservandoElCursor(d, '<p>Hola</p><p>dos</p>');
+    document.getSelection()!.getRangeAt(0).insertNode(document.createTextNode('M'));
+    expect(d.innerHTML, 'la letra salió del párrafo').toBe('<p>Hola</p><p>dosM</p>');
+    d.remove();
+  });
+});
+
 describe('[1c] los bordes', () => {
   it('una posición más allá del texto se queda al final', () => {
     const d = caja('<p>Hola</p>');
-    ponerElCursor(d, 99);
-    expect(dondeEstaElCursor(d)).toBe(4);
+    ponerElCursor(d, { donde: 99, pegadoAlSiguiente: false });
+    expect(dondeEstaElCursor(d)?.donde).toBe(4);
     d.remove();
   });
   it('sin cursor dentro, no se inventa uno', () => {

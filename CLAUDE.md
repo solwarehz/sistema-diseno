@@ -19,7 +19,7 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.112.0** — el editor de texto **no se podía usar**: el cursor
+**Estado actual: v1.113.0** — el editor de texto **no se podía usar**: el cursor
 volvía al principio en cada tecla. La causa era **un carácter** —el saneador
 serializaba el espacio duro distinto que `innerHTML`—, y lo enseña mejor que
 cualquier otra cosa de este repositorio: tres rondas de auditoría, diecisiete

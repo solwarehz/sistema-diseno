@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.112.0";
+export const VERSION = "1.113.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,35 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.113.0', fecha: '2026-09-14',
+    que: 'EDITOR DE TEXTO: la letra escrita al final de un parrafo se salia del parrafo',
+    porque:
+      'Lo cazo una auditoria sobre el arreglo de la v1.112.0, y es el mismo error dos veces '
+      + 'seguidas: UNA POSICION CONTADA EN CARACTERES ES AMBIGUA EN TODA FRONTERA. En '
+      + '`<p>uno</p><p>dos</p>` el 3 es a la vez «al final de uno» y «al principio de dos», y '
+      + 'las dos resoluciones son correctas la mitad de las veces. Se probaron las dos y las '
+      + 'dos rompen algo: resolver hacia atras mete la letra EN LA LINEA DE ARRIBA despues de '
+      + 'un Intro —el defecto que reporto el responsable—; resolver hacia delante saca la '
+      + 'letra FUERA DEL PARRAFO al escribir al final del documento —el que cazo la '
+      + 'auditoria—. Las dos versiones se publicaron. '
+      + 'NO SE PUEDE RESOLVER LA AMBIGUEDAD CON EL DATO QUE LA PRODUCE, asi que ahora se '
+      + 'guarda tambien DE QUE LADO estaba el cursor: pegado a lo que viene despues —donde lo '
+      + 'deja Intro, dentro del bloque nuevo y todavia sin texto— o dentro del texto, donde lo '
+      + 'deja escribir. Y el respaldo, cuando el texto encogio, deja el cursor al final del '
+      + 'ULTIMO TEXTO y no colgando de la raiz, que era por donde la letra se salia. '
+      + 'ESTO SOLO SE NOTA CUANDO EL SANEO REESCRIBE —al pegar, al abrir un documento sucio o '
+      + 'al escribir dentro de un hueco—, no al teclear normal, que no reescribe nada. '
+      + 'VERIFICADO TECLEANDO EN CHROME otra vez, y ahora tambien se comprueba que el cursor '
+      + 'queda DENTRO de su parrafo: escribir de corrido por encima de un espacio duro, Intro '
+      + 'y seguir en la linea nueva, y el boton de negrita, que emite `<strong>`. '
+      + 'HUECO DECLARADO Y SIN CERRAR: si el saneo retira texto POR DELANTE del cursor, el '
+      + 'cursor se corre esos caracteres. Arreglarlo pide comparar el antes y el despues, y '
+      + 'eso es otra pieza. Esta escrito, con una prueba que fija lo que hace HOY para que se '
+      + 'vea el dia que cambie.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.112.0', fecha: '2026-09-14',
     que: 'EDITOR DE TEXTO: no se podia escribir de corrido. El cursor volvia al principio en CADA TECLA',

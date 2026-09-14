@@ -26,10 +26,31 @@
  */
 
 /**
- * Cuántos caracteres de texto hay antes del cursor, contando desde el principio
- * de `raiz`. Devuelve `null` si no hay cursor o si está fuera de la caja.
+ * DÓNDE ESTÁ EL CURSOR. Un número **no basta**, y hacen falta dos cosas.
+ *
+ * Una posición contada en caracteres es **ambigua en toda frontera**: en
+ * `<p>uno</p><p>dos</p>`, el 3 es a la vez «al final de uno» y «al principio de
+ * dos», y las dos resoluciones son correctas la mitad de las veces. Se probaron
+ * las dos y las dos rompen algo:
+ *
+ *   · resolver hacia atrás mete la letra **en la línea de arriba** después de
+ *     un Intro, y deja la nueva vacía;
+ *   · resolver hacia delante saca la letra **fuera del párrafo** cuando se
+ *     escribe al final del documento.
+ *
+ * Las dos versiones se publicaron —el primer defecto lo reportó el responsable,
+ * el segundo lo cazó una auditoría el 2026-09-14— y las dos son el mismo error
+ * de fondo: **no se puede resolver la ambigüedad con el dato que la produce.**
+ *
+ * Así que se guarda también **de qué lado estaba**. `pegadoAlSiguiente` es
+ * cierto cuando el cursor está al principio de su contenedor —que es donde lo
+ * deja Intro, en la línea nueva— y falso cuando está dentro o al final de un
+ * texto, que es donde lo deja escribir.
  */
-export function dondeEstaElCursor(raiz: HTMLElement): number | null {
+export type PosicionDelCursor = { donde: number; pegadoAlSiguiente: boolean };
+
+/** Devuelve `null` si no hay cursor o si está fuera de la caja. */
+export function dondeEstaElCursor(raiz: HTMLElement): PosicionDelCursor | null {
   const sel = raiz.ownerDocument.getSelection();
   if (!sel || sel.rangeCount === 0) return null;
   const rango = sel.getRangeAt(0);
@@ -37,50 +58,54 @@ export function dondeEstaElCursor(raiz: HTMLElement): number | null {
   const hastaAqui = rango.cloneRange();
   hastaAqui.selectNodeContents(raiz);
   hastaAqui.setEnd(rango.endContainer, rango.endOffset);
-  return hastaAqui.toString().length;
+  return {
+    donde: hastaAqui.toString().length,
+    /* Al principio de un nodo de texto, o dentro de un ELEMENTO —que es como
+       queda tras un Intro, dentro del bloque nuevo y todavía sin texto—, el
+       cursor pertenece a lo que viene DESPUÉS. */
+    pegadoAlSiguiente: rango.endContainer.nodeType !== 3 || rango.endOffset === 0,
+  };
 }
 
 /**
- * Deja el cursor en esa posición, contada igual. Si el texto encogió —porque el
- * saneo retiró algo— se queda en el final, que es lo menos sorprendente.
+ * Deja el cursor en esa posición. Si el texto encogió —porque el saneo retiró
+ * algo— se queda al final del último texto, **dentro** de su bloque, y no
+ * colgando de la raíz.
  */
-export function ponerElCursor(raiz: HTMLElement, donde: number): void {
+export function ponerElCursor(raiz: HTMLElement, pos: PosicionDelCursor): void {
   const doc = raiz.ownerDocument;
   const sel = doc.getSelection();
   if (!sel) return;
+  const donde = Math.max(0, pos.donde);
   const rango = doc.createRange();
+  const poner = () => { rango.collapse(true); sel.removeAllRanges(); sel.addRange(rango); };
   const paseo = doc.createTreeWalker(raiz, 4 /* NodeFilter.SHOW_TEXT */);
   let visto = 0;
+  let ultimo: Text | null = null;
   for (let nodo = paseo.nextNode() as Text | null; nodo; nodo = paseo.nextNode() as Text | null) {
-    /**
-     * `>` Y NO `>=`, y la diferencia es Intro.
-     *
-     * Cuando la posición cae **exactamente en la frontera** entre dos nodos de
-     * texto, contarla con `>=` la resuelve hacia ATRÁS: el cursor acaba al
-     * final del nodo anterior en vez de al principio del siguiente. Con eso,
-     * pulsar Intro y escribir metía la letra **en la línea de arriba** y la
-     * nueva se quedaba vacía — que es el flujo por omisión de Chrome, porque
-     * su Intro deja un `<div><br></div>` que el saneador desenvuelve, y ese
-     * desenvolver es una reescritura.
-     *
-     * Con `>`, una posición en la frontera se la queda el nodo siguiente. Y si
-     * no hay ninguno —Intro al final del documento, donde lo único que sigue
-     * es un `<br>`— el bucle se agota y cae al final del contenido, que es
-     * justo la línea nueva.
-     *
-     * Lo cazó una auditoría el 2026-09-14, sobre este mismo archivo recién
-     * escrito para arreglar otra cosa.
-     */
-    if (visto + nodo.data.length > donde) {
+    const fin = visto + nodo.data.length;
+    if (fin > donde) {                      // dentro de este nodo: sin ambigüedad
       rango.setStart(nodo, donde - visto);
-      rango.collapse(true);
-      sel.removeAllRanges();
-      sel.addRange(rango);
+      poner();
       return;
     }
-    visto += nodo.data.length;
+    if (fin === donde && !pos.pegadoAlSiguiente) {   // en la frontera, y del lado de atrás
+      rango.setStart(nodo, nodo.data.length);
+      poner();
+      return;
+    }
+    visto = fin;
+    ultimo = nodo;
   }
-  // Se acabó el texto antes de llegar: al final de lo que haya.
+  /* No hay más texto. Si el cursor pertenecía a lo que viene después —Intro al
+     final, donde lo único que sigue es un `<br>`— va al final del contenido,
+     que es la línea nueva. Si no, al final del último texto: así una letra
+     escrita al final de un párrafo se queda DENTRO del párrafo. */
+  if (!pos.pegadoAlSiguiente && ultimo) {
+    rango.setStart(ultimo, ultimo.data.length);
+    poner();
+    return;
+  }
   rango.selectNodeContents(raiz);
   rango.collapse(false);
   sel.removeAllRanges();
@@ -97,8 +122,8 @@ export function ponerElCursor(raiz: HTMLElement, donde: number): void {
 export function reescribirConservandoElCursor(raiz: HTMLElement, html: string): boolean {
   if (raiz.innerHTML === html) return false;
   const teniaElFoco = raiz.ownerDocument.activeElement === raiz;
-  const donde = teniaElFoco ? dondeEstaElCursor(raiz) : null;
+  const pos = teniaElFoco ? dondeEstaElCursor(raiz) : null;
   raiz.innerHTML = html;
-  if (donde !== null) ponerElCursor(raiz, donde);
+  if (pos !== null) ponerElCursor(raiz, pos);
   return true;
 }
