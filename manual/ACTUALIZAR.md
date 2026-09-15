@@ -123,7 +123,7 @@ midió el 2026-09-11 y hasta entonces este apartado daba a entender que sí:
 
 | | `npm install` | ZIP |
 |---|---|---|
-| Archivos | **78** | **60** |
+| Archivos | **79** | **60** |
 | **El catálogo** | **no** | **sí** (`catalogo/index.html`) |
 | **Los candados** | **los 15**, y 2 de los 3 generadores | **4** (contraste, color, lint y su configuración) |
 | `package.json` | sí | **no** — por eso el comando de comprobación del §1 no sirve aquí |
