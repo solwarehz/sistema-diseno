@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.115.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.116.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -76,7 +76,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.115.0; }
+:root{ --mmi-componentes: 1.116.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -1188,7 +1188,14 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   opacity: .78; white-space: nowrap; overflow: hidden; }
 .nav-nieto .nav-txt{ min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .lat.colapsado .nav-hijos .nav-nieto .nav-txt{
-  overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  overflow: hidden; text-overflow: ellipsis; min-width: 0;
+  /* nowrap TAMBIEN, y no sobra: la regla que devuelve el texto al panel lo pone
+     en normal, y con normal los puntos suspensivos solo actuan sobre lo que no
+     se puede partir — un rotulo de varias palabras ENVUELVE en vez de
+     recortarse. Con los rotulos cortos de hoy no se nota, y por eso el registro
+     llego a afirmar que el recorte funcionaba. Lo midio una auditoria
+     resolviendo la cascada el 2026-09-15. */
+  white-space: nowrap; }
 .nav-nieto:hover{ background: var(--marco-item-activo); opacity: 1; }
 .nav-nieto.activo{ background: var(--marco-item-activo); opacity: 1;
   color: var(--marco-acento); font-weight: 500;

@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.115.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.116.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.115.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.116.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -35,7 +35,7 @@
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.115.0;
+  --mmi-version: 1.116.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -908,7 +908,14 @@ code { font-family: 'IBM Plex Mono', monospace; }
    al pasar la fila a flex el recorte se mudo al rotulo y esta regla se lo
    comia. Los puntos dicen que hay mas; un corte limpio miente. */
 .lat.colapsado .nav-hijos .nav-nieto .nav-txt {
-  overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  overflow: hidden; text-overflow: ellipsis; min-width: 0;
+  /* nowrap TAMBIEN, y no sobra: la regla que devuelve el texto al panel lo pone
+     en normal, y con normal los puntos suspensivos solo actuan sobre lo que no
+     se puede partir — un rotulo de varias palabras ENVUELVE en vez de
+     recortarse. Con los rotulos cortos de hoy no se nota, y por eso el registro
+     llego a afirmar que el recorte funcionaba. Lo midio una auditoria
+     resolviendo la cascada el 2026-09-15. */
+  white-space: nowrap; }
 .nav-nieto:hover { background: var(--marco-item-activo); opacity: 1; }
 .nav-nieto.activo { background: var(--marco-item-activo); opacity: 1;
   color: var(--marco-acento); font-weight: 500;
@@ -1378,7 +1385,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    como cualquier otra regla, para que el catalogo y la entrega digan lo mismo:
    inyectarlo solo en la entrega dejaba una regla que el catalogo no tenia, y
    el candado de la promesa lo caza —con razon—. Los dos salen de VERSION. */
-:root { --mmi-componentes: 1.115.0; }
+:root { --mmi-componentes: 1.116.0; }
 
 .fc-zona { position: relative; }
 /* R129.2 · EL TOPE ERA MENOR QUE EL CONTENIDO. Con R129.1 puesto, lo que el
@@ -4480,21 +4487,33 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       <div class="nav-hijos-in">
       <span class="nav-flot-tit">Elementos</span>
       <div class="nav-rama" data-rama="2-0">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-0" title="Acciones">
+                  <!-- aria-controls e id, como los emite el componente: un
+                       boton que anuncia su estado plegado y no dice QUE controla
+                       deja al lector sin el otro extremo. Y el atributo de
+                       ocultar en los nietos cerrados, que es como el sistema
+                       cierra el tercer nivel: la barra lo cerraba por otro
+                       mecanismo. -->
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" aria-controls="rama-2-0" data-abrir-rama="2-0" title="Acciones">
                     <span class="nav-txt">Acciones</span>
-                    <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+                    <span class="nav-chev" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
-                  <div class="nav-nietos"><div class="nav-nietos-in">
+                  <div class="nav-nietos" id="rama-2-0" hidden><div class="nav-nietos-in">
                     <a class="nav-nieto" href="#boton" data-ir="boton" title="Botón">
                           <span class="nav-txt">Botón</span></a><a class="nav-nieto" href="#enlace" data-ir="enlace" title="Enlace">
                           <span class="nav-txt">Enlace</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="2-1">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-1" title="Formulario">
+                  <!-- aria-controls e id, como los emite el componente: un
+                       boton que anuncia su estado plegado y no dice QUE controla
+                       deja al lector sin el otro extremo. Y el atributo de
+                       ocultar en los nietos cerrados, que es como el sistema
+                       cierra el tercer nivel: la barra lo cerraba por otro
+                       mecanismo. -->
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" aria-controls="rama-2-1" data-abrir-rama="2-1" title="Formulario">
                     <span class="nav-txt">Formulario</span>
-                    <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+                    <span class="nav-chev" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
-                  <div class="nav-nietos"><div class="nav-nietos-in">
+                  <div class="nav-nietos" id="rama-2-1" hidden><div class="nav-nietos-in">
                     <a class="nav-nieto" href="#campo" data-ir="campo" title="Campo de texto">
                           <span class="nav-txt">Campo de texto</span></a><a class="nav-nieto" href="#areatexto" data-ir="areatexto" title="Área de texto">
                           <span class="nav-txt">Área de texto</span></a><a class="nav-nieto" href="#editortexto" data-ir="editortexto" title="Editor de texto">
@@ -4509,11 +4528,17 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                           <span class="nav-txt">Segmentado</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="2-2">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-2" title="Datos">
+                  <!-- aria-controls e id, como los emite el componente: un
+                       boton que anuncia su estado plegado y no dice QUE controla
+                       deja al lector sin el otro extremo. Y el atributo de
+                       ocultar en los nietos cerrados, que es como el sistema
+                       cierra el tercer nivel: la barra lo cerraba por otro
+                       mecanismo. -->
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" aria-controls="rama-2-2" data-abrir-rama="2-2" title="Datos">
                     <span class="nav-txt">Datos</span>
-                    <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+                    <span class="nav-chev" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
-                  <div class="nav-nietos"><div class="nav-nietos-in">
+                  <div class="nav-nietos" id="rama-2-2" hidden><div class="nav-nietos-in">
                     <a class="nav-nieto" href="#fecha" data-ir="fecha" title="Fecha y rango">
                           <span class="nav-txt">Fecha y rango</span></a><a class="nav-nieto" href="#horario" data-ir="horario" title="Horario">
                           <span class="nav-txt">Horario</span></a><a class="nav-nieto" href="#chip" data-ir="chip" title="Chip de estado">
@@ -4523,11 +4548,17 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                           <span class="nav-txt">Tabla de datos</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="2-3">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-3" title="Respuesta">
+                  <!-- aria-controls e id, como los emite el componente: un
+                       boton que anuncia su estado plegado y no dice QUE controla
+                       deja al lector sin el otro extremo. Y el atributo de
+                       ocultar en los nietos cerrados, que es como el sistema
+                       cierra el tercer nivel: la barra lo cerraba por otro
+                       mecanismo. -->
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" aria-controls="rama-2-3" data-abrir-rama="2-3" title="Respuesta">
                     <span class="nav-txt">Respuesta</span>
-                    <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+                    <span class="nav-chev" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
-                  <div class="nav-nietos"><div class="nav-nietos-in">
+                  <div class="nav-nietos" id="rama-2-3" hidden><div class="nav-nietos-in">
                     <a class="nav-nieto" href="#paginacion" data-ir="paginacion" title="Paginación">
                           <span class="nav-txt">Paginación</span></a><a class="nav-nieto" href="#progreso" data-ir="progreso" title="Barra de progreso">
                           <span class="nav-txt">Barra de progreso</span></a><a class="nav-nieto" href="#aviso" data-ir="aviso" title="Aviso temporal">
@@ -4537,11 +4568,17 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                           <span class="nav-txt">Nota permanente</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="2-4">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-4" title="Marco y navegación">
+                  <!-- aria-controls e id, como los emite el componente: un
+                       boton que anuncia su estado plegado y no dice QUE controla
+                       deja al lector sin el otro extremo. Y el atributo de
+                       ocultar en los nietos cerrados, que es como el sistema
+                       cierra el tercer nivel: la barra lo cerraba por otro
+                       mecanismo. -->
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" aria-controls="rama-2-4" data-abrir-rama="2-4" title="Marco y navegación">
                     <span class="nav-txt">Marco y navegación</span>
-                    <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+                    <span class="nav-chev" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
-                  <div class="nav-nietos"><div class="nav-nietos-in">
+                  <div class="nav-nietos" id="rama-2-4" hidden><div class="nav-nietos-in">
                     <a class="nav-nieto" href="#dialogo" data-ir="dialogo" title="Diálogo">
                           <span class="nav-txt">Diálogo</span></a><a class="nav-nieto" href="#migas" data-ir="migas" title="Migas de pan">
                           <span class="nav-txt">Migas de pan</span></a><a class="nav-nieto" href="#cabecera" data-ir="cabecera" title="Cabecera de pantalla">
@@ -4656,11 +4693,17 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       <div class="nav-hijos-in">
       <span class="nav-flot-tit">Manual de uso</span>
       <div class="nav-rama" data-rama="7-0">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="7-0" title="Cómo se aplica">
+                  <!-- aria-controls e id, como los emite el componente: un
+                       boton que anuncia su estado plegado y no dice QUE controla
+                       deja al lector sin el otro extremo. Y el atributo de
+                       ocultar en los nietos cerrados, que es como el sistema
+                       cierra el tercer nivel: la barra lo cerraba por otro
+                       mecanismo. -->
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" aria-controls="rama-7-0" data-abrir-rama="7-0" title="Cómo se aplica">
                     <span class="nav-txt">Cómo se aplica</span>
-                    <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+                    <span class="nav-chev" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
-                  <div class="nav-nietos"><div class="nav-nietos-in">
+                  <div class="nav-nietos" id="rama-7-0" hidden><div class="nav-nietos-in">
                     <a class="nav-nieto" href="#man-como-se-usa-este-manual" data-ir="man-como-se-usa-este-manual" title="Cómo se usa este manual">
                           <span class="nav-txt">Cómo se usa este manual</span></a><a class="nav-nieto" href="#man-las-seis-reglas-que-resuelven-el-9" data-ir="man-las-seis-reglas-que-resuelven-el-9" title="Las seis reglas que resuelven el 90 % de las dudas">
                           <span class="nav-txt">Las seis reglas que resuelven el 90 % de las dudas</span></a><a class="nav-nieto" href="#man-color-como-elegir-el-token" data-ir="man-color-como-elegir-el-token" title="Color — cómo elegir el token">
@@ -4670,11 +4713,17 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                           <span class="nav-txt">Composición</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="7-1">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="7-1" title="Cómo se escribe">
+                  <!-- aria-controls e id, como los emite el componente: un
+                       boton que anuncia su estado plegado y no dice QUE controla
+                       deja al lector sin el otro extremo. Y el atributo de
+                       ocultar en los nietos cerrados, que es como el sistema
+                       cierra el tercer nivel: la barra lo cerraba por otro
+                       mecanismo. -->
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" aria-controls="rama-7-1" data-abrir-rama="7-1" title="Cómo se escribe">
                     <span class="nav-txt">Cómo se escribe</span>
-                    <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+                    <span class="nav-chev" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
-                  <div class="nav-nietos"><div class="nav-nietos-in">
+                  <div class="nav-nietos" id="rama-7-1" hidden><div class="nav-nietos-in">
                     <a class="nav-nieto" href="#man-5bis-movimiento-el-tiempo-tambien-" data-ir="man-5bis-movimiento-el-tiempo-tambien-" title="5bis · Movimiento — el tiempo también es del sistema">
                           <span class="nav-txt">5bis · Movimiento — el tiempo también es del sistema</span></a><a class="nav-nieto" href="#man-formularios" data-ir="man-formularios" title="Formularios">
                           <span class="nav-txt">Formularios</span></a><a class="nav-nieto" href="#man-6bis-la-frontera-de-escritura-regl" data-ir="man-6bis-la-frontera-de-escritura-regl" title="6bis · La frontera de escritura — regla de composición, no del paquete">
@@ -4732,7 +4781,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.115.0</option></select></label>
+          <select class="campo cg-in"><option>v1.116.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4820,8 +4869,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.115.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.115.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.116.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.116.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -5380,7 +5429,7 @@ demostraciones de al lado. Y la hoja no es una copia: se inyecta desde
 vieja.</div>
 
 <script type="text/plain" id="tokens-entregados">/* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.115.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.116.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -5408,7 +5457,7 @@ vieja.</div>
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.115.0;
+  --mmi-version: 1.116.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -6021,7 +6070,7 @@ vieja.</div>
 </script>
 <script type="text/plain" id="hoja-entregada">
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.115.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.116.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -6098,7 +6147,7 @@ vieja.</div>
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.115.0; }
+:root{ --mmi-componentes: 1.116.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -7210,7 +7259,14 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   opacity: .78; white-space: nowrap; overflow: hidden; }
 .nav-nieto .nav-txt{ min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .lat.colapsado .nav-hijos .nav-nieto .nav-txt{
-  overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  overflow: hidden; text-overflow: ellipsis; min-width: 0;
+  /* nowrap TAMBIEN, y no sobra: la regla que devuelve el texto al panel lo pone
+     en normal, y con normal los puntos suspensivos solo actuan sobre lo que no
+     se puede partir — un rotulo de varias palabras ENVUELVE en vez de
+     recortarse. Con los rotulos cortos de hoy no se nota, y por eso el registro
+     llego a afirmar que el recorte funcionaba. Lo midio una auditoria
+     resolviendo la cascada el 2026-09-15. */
+  white-space: nowrap; }
 .nav-nieto:hover{ background: var(--marco-item-activo); opacity: 1; }
 .nav-nieto.activo{ background: var(--marco-item-activo); opacity: 1;
   color: var(--marco-acento); font-weight: 500;
@@ -18608,6 +18664,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
 
 
+<h3 class="sub-seccion">v1.116.0 <span class="cam-fecha">2026-09-15</span></h3>
+<p class="pag-intro"><strong>La regla 12 entro SOLO en el componente: la barra del catalogo seguia contradiciendola.</strong> Se comprobo PASANDO EL RATON en Chrome, que es como se cazo R135b y como el equipo lo reprodujo. La v1.115.0 puso la regla 12 —plegado, las ramas del panel flotante llegan ABIERTAS— y la metio en `MarcoApp` y en la maqueta, pero NO en la barra propia del catalogo, que es la que la gente recorre y la que los pasos de reproduccion del equipo señalan. Medido con el raton el 2026-09-15, con la regla ya publicada: el panel abria y las CINCO ramas seguian cerradas, nietos a 0px y visibility hidden. Exactamente el defecto que R135b reporto, vivo despues de arreglarlo. Es el patron de esta casa en su forma mas pura: se arregla el componente, se escribe la regla, y la superficie que la gente toca se queda atras. Ahora `plegarLateral` abre las ramas al plegar y las cierra al desplegar —salvo la que lleva la pagina en curso, donde manda la regla 6—. Y LA PRUEBA NUEVA EJECUTA EL CATALOGO, no lee su marcado en reposo: el defecto no estaba en el HTML, estaba en lo que el HTML hace al plegarse. Vista en rojo. DE PASO, VERIFICADO EN NAVEGADOR lo de la v1.115.0, que hasta ahora era cascada resuelta y no pintado: el tercer nivel sale en `flex`, icono y rotulo en la MISMA linea —centros a 1px— y la fila mide 26px, una sola linea. El sangrado ahi es de 28px y no 56, por una regla del panel anterior a esto y correcta: dentro del flotante no hay carril que compensar. Y LA AUDITORIA CAZO UNA AFIRMACION FALSA: se dijo que el recorte con puntos suspensivos funcionaba dentro del panel, y NO funcionaba — `white-space: normal` ganaba la cascada, y con `normal` los puntos solo actuan sobre lo que no se puede partir, asi que un rotulo de varias palabras ENVUELVE en vez de recortarse. Con los rotulos cortos de hoy no se nota, y por eso se vio bien en Chrome. Arreglado en la hoja. Y LA BARRA DEL CATALOGO DIVERGIA EN CINCO ATRIBUTOS del componente: `aria-controls`, `id` en los nietos, el atributo de ocultar, y `aria-hidden` en el chevron. Un boton que anuncia su estado plegado y no dice QUE controla deja al lector sin el otro extremo. Corregidos. Y dos pruebas apuntaban al sitio equivocado: `aside.lat` caza TAMBIEN la barra del catalogo, asi que «la maqueta extendida» resolvia a la barra.</p>
+
+
+
 <h3 class="sub-seccion">v1.115.0 <span class="cam-fecha">2026-09-14</span></h3>
 <p class="pag-intro"><strong>R135 del equipo: el tercer nivel del menu no podia llevar icono, y con el riel plegado no se llegaba a el.</strong> Tres cosas medidas por Control Administrativos V2.0 sobre la v1.114.0 ya instalada, y una de ellas la tenian desde el 11/09 sin mandar. (a) EL ICONO CAIA ENCIMA DEL ROTULO. `.nav-nieto` era `display: block` mientras `.nav-hijo` es `flex`, asi que cualquier icono en el TERCER nivel se apilaba sobre el texto y la fila media el doble. Lo descubrieron montando «Marcaciones &gt; Configuracion» y TUVIERON QUE QUITAR EL ICONO: un menu con icono en los niveles 1 y 2 y sin el en el 3, sin que ninguna regla del sistema dijera que asi debia ser. Es el desvio promesa/entrega de siempre — la hoja admitia un tercer nivel que no podia llevar icono como los otros dos, y nada avisaba. Ahora es `flex` con `align-items: center`; el sangrado de 56px y el cuerpo de 12px NO se tocan, que es lo que pidieron. El recorte con puntos suspensivos pasa al rotulo, que es quien desborda cuando la fila es flex. (b) CON EL RIEL PLEGADO NO SE LLEGABA AL TERCER NIVEL. Dentro del panel flotante, una rama cerrada NO se abre al pasar por encima —solo el grupo lo hace—, asi que quedaba detras de un clic DENTRO DE UN PANEL QUE SOLO VIVE MIENTRAS EL PUNTERO ESTE ENCIMA. Pidieron una decision explicita entre tres, y se toma la segunda: EL PANEL LLEGA DESPLEGADO. El motivo es el mismo por el que el panel existe —ahi el rotulo no se ve, asi que se enseña todo— y uno mas: anidar un segundo «abrir al pasar» dentro de un panel que se cierra al salir es una TRAMPA DE TEMPORIZACION, no una funcion. Un resumen con secciones plegadas no resume. No contradice a R42a: aquella las cierra porque doce items seguidos no se leen, y eso vale para el riel EXTENDIDO, donde el menu es una columna larga; dentro del panel de UN grupo la lista es corta. El mando sigue vivo: se pueden cerrar a mano. (c) LOS GLOBITOS QUE EL RESUMEN PROMETE NO ESTABAN EN EL CATALOGO, y este va al reves de lo habitual: su producto los tenia y el catalogo no. 16 de 86 elementos de la barra del catalogo sin rotulo para el raton, justo donde la entrega deberia demostrarlo. Ya los llevan los 86. Y EL CATALOGO NO ENSEÑABA EL TERCER NIVEL DEL MARCO EN NINGUNA PARTE, asi que (a) solo se descubria montandolo. La maqueta lo pinta ahora, con rama, nietos e ICONO EN LOS TRES NIVELES — que responde de paso a la divergencia que anunciaron: el sistema admite icono en los hijos (R17) y quien no lo quiera, no lo pasa. DOS REGLAS DE CONTRATO NUEVAS —11 y 12— y un candado nuevo, `NIVELES-QUE-SE-COMPONEN-IGUAL` en `verificar-cascada`: la (a) es de la HOJA, y ninguna prueba de jsdom la ve con fiabilidad porque jsdom resuelve por orden de archivo e IGNORA LA ESPECIFICIDAD. Las dos vistas en rojo. Y LA AUDITORIA TUMBO LA PRIMERA VERSION DE ESTE ARREGLO, otra vez. Encontro CINCO cosas que no protegia nada, y la peor era LA RAZON DE SER DEL EFECTO: sus dependencias son solo `plegado`, y con `navegacion` dentro —un array literal en cada render del producto— se reabriria todo lo que el usuario cierre. Estaba escrito en el componente y al romperlo LAS 57 PRUEBAS SEGUIAN EN VERDE. Ademas: el tercer nivel de la maqueta estaba en el marcado y en display:none —se veia en el HTML y no en la pantalla, el mismo defecto un nivel mas abajo—; el recorte con puntos suspensivos se perdia DENTRO del panel flotante, porque la regla que devuelve el texto al panel gana a la del nieto y lo dejaba cortando en seco; y el `aria-hidden` del icono estaba en la maqueta y NO en el componente, en los niveles 2 y 3, contra lo que su propio comentario dice.</p>
 
@@ -21710,6 +21771,8 @@ async function esPdf(archivo) {
       var ab = !r.classList.contains('abierta');
       r.classList.toggle('abierta', ab);
       b.setAttribute('aria-expanded', String(ab));
+      // El atributo de ocultar viaja con la clase: el componente lo emite asi.
+      r.querySelector('.nav-nietos').toggleAttribute('hidden', !ab);
     });
   });
 
@@ -21762,6 +21825,22 @@ async function esPdf(archivo) {
       g.classList.remove('hover');
       sincronizarGrupo(g);
     });
+    /* REGLA 12 · PLEGADO, LAS RAMAS DEL PANEL FLOTANTE LLEGAN ABIERTAS.
+       El componente lo hace desde la v1.115.0 y esta barra no: plegada, sus
+       ramas seguian cerradas —las cinco del panel de Elementos, y las siete de
+       la barra— y pasar el raton por una solo la resaltaba,
+       que es EXACTAMENTE lo que reporto Control Administrativos en R135b —y
+       siguio vivo aqui despues de arreglarlo en el componente—. Reproducido con
+       el raton el 2026-09-15: el panel abria y «Acciones» se quedaba a 0px.
+       Al desplegar vuelven a cerrarse, salvo la que lleva la pagina en curso:
+       ahi manda la regla 6, doce items seguidos no se leen. */
+    lateral.querySelectorAll('.nav-rama').forEach(function (r) {
+      var dentro = !!r.querySelector('.nav-nieto.activo');
+      var ab = nuevo || dentro;
+      r.classList.toggle('abierta', ab);
+      r.querySelector('.nav-rama-tit').setAttribute('aria-expanded', String(ab));
+      r.querySelector('.nav-nietos').toggleAttribute('hidden', !ab);
+    });
     return nuevo;
   }
 
@@ -21793,6 +21872,7 @@ async function esPdf(archivo) {
       if (dentro) {
         r.classList.add('abierta');
         r.querySelector('.nav-rama-tit').setAttribute('aria-expanded', 'true');
+        r.querySelector('.nav-nietos').removeAttribute('hidden');
       }
     });
     lat.querySelectorAll('.nav-grupo').forEach(function (g) {

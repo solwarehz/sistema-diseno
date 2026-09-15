@@ -8538,11 +8538,17 @@ const menuCatalogo = CATALOGO.map(
           ? g.ramas
               .map(
                 (r, k) => `<div class="nav-rama" data-rama="${n}-${k}">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="${n}-${k}" title="${r.t}">
+                  <!-- aria-controls e id, como los emite el componente: un
+                       boton que anuncia su estado plegado y no dice QUE controla
+                       deja al lector sin el otro extremo. Y el atributo de
+                       ocultar en los nietos cerrados, que es como el sistema
+                       cierra el tercer nivel: la barra lo cerraba por otro
+                       mecanismo. -->
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" aria-controls="rama-${n}-${k}" data-abrir-rama="${n}-${k}" title="${r.t}">
                     <span class="nav-txt">${r.t}</span>
-                    <span class="nav-chev">${ICONOS.chevron}</span>
+                    <span class="nav-chev" aria-hidden="true">${ICONOS.chevron}</span>
                   </button>
-                  <div class="nav-nietos"><div class="nav-nietos-in">
+                  <div class="nav-nietos" id="rama-${n}-${k}" hidden><div class="nav-nietos-in">
                     ${g.items
                       .slice(r.desde, r.hasta)
                       .map(
@@ -8853,7 +8859,14 @@ code { font-family: 'IBM Plex Mono', monospace; }
    al pasar la fila a flex el recorte se mudo al rotulo y esta regla se lo
    comia. Los puntos dicen que hay mas; un corte limpio miente. */
 .lat.colapsado .nav-hijos .nav-nieto .nav-txt {
-  overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  overflow: hidden; text-overflow: ellipsis; min-width: 0;
+  /* nowrap TAMBIEN, y no sobra: la regla que devuelve el texto al panel lo pone
+     en normal, y con normal los puntos suspensivos solo actuan sobre lo que no
+     se puede partir — un rotulo de varias palabras ENVUELVE en vez de
+     recortarse. Con los rotulos cortos de hoy no se nota, y por eso el registro
+     llego a afirmar que el recorte funcionaba. Lo midio una auditoria
+     resolviendo la cascada el 2026-09-15. */
+  white-space: nowrap; }
 .nav-nieto:hover { background: var(--marco-item-activo); opacity: 1; }
 .nav-nieto.activo { background: var(--marco-item-activo); opacity: 1;
   color: var(--marco-acento); font-weight: 500;
@@ -12679,6 +12692,8 @@ ${COMPRESOR_PDF}
       var ab = !r.classList.contains('abierta');
       r.classList.toggle('abierta', ab);
       b.setAttribute('aria-expanded', String(ab));
+      // El atributo de ocultar viaja con la clase: el componente lo emite asi.
+      r.querySelector('.nav-nietos').toggleAttribute('hidden', !ab);
     });
   });
 
@@ -12731,6 +12746,22 @@ ${COMPRESOR_PDF}
       g.classList.remove('hover');
       sincronizarGrupo(g);
     });
+    /* REGLA 12 · PLEGADO, LAS RAMAS DEL PANEL FLOTANTE LLEGAN ABIERTAS.
+       El componente lo hace desde la v1.115.0 y esta barra no: plegada, sus
+       ramas seguian cerradas —las cinco del panel de Elementos, y las siete de
+       la barra— y pasar el raton por una solo la resaltaba,
+       que es EXACTAMENTE lo que reporto Control Administrativos en R135b —y
+       siguio vivo aqui despues de arreglarlo en el componente—. Reproducido con
+       el raton el 2026-09-15: el panel abria y «Acciones» se quedaba a 0px.
+       Al desplegar vuelven a cerrarse, salvo la que lleva la pagina en curso:
+       ahi manda la regla 6, doce items seguidos no se leen. */
+    lateral.querySelectorAll('.nav-rama').forEach(function (r) {
+      var dentro = !!r.querySelector('.nav-nieto.activo');
+      var ab = nuevo || dentro;
+      r.classList.toggle('abierta', ab);
+      r.querySelector('.nav-rama-tit').setAttribute('aria-expanded', String(ab));
+      r.querySelector('.nav-nietos').toggleAttribute('hidden', !ab);
+    });
     return nuevo;
   }
 
@@ -12762,6 +12793,7 @@ ${COMPRESOR_PDF}
       if (dentro) {
         r.classList.add('abierta');
         r.querySelector('.nav-rama-tit').setAttribute('aria-expanded', 'true');
+        r.querySelector('.nav-nietos').removeAttribute('hidden');
       }
     });
     lat.querySelectorAll('.nav-grupo').forEach(function (g) {

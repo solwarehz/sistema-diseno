@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.115.0";
+export const VERSION = "1.116.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,43 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.116.0', fecha: '2026-09-15',
+    que: 'La regla 12 entro SOLO en el componente: la barra del catalogo seguia contradiciendola',
+    porque:
+      'Se comprobo PASANDO EL RATON en Chrome, que es como se cazo R135b y como el equipo lo '
+      + 'reprodujo. La v1.115.0 puso la regla 12 —plegado, las ramas del panel flotante '
+      + 'llegan ABIERTAS— y la metio en `MarcoApp` y en la maqueta, pero NO en la barra propia '
+      + 'del catalogo, que es la que la gente recorre y la que los pasos de reproduccion del '
+      + 'equipo señalan. Medido con el raton el 2026-09-15, con la regla ya publicada: el '
+      + 'panel abria y las CINCO ramas seguian cerradas, nietos a 0px y visibility hidden. '
+      + 'Exactamente el defecto que R135b reporto, vivo despues de arreglarlo. '
+      + 'Es el patron de esta casa en su forma mas pura: se arregla el componente, se escribe '
+      + 'la regla, y la superficie que la gente toca se queda atras. Ahora `plegarLateral` '
+      + 'abre las ramas al plegar y las cierra al desplegar —salvo la que lleva la pagina en '
+      + 'curso, donde manda la regla 6—. '
+      + 'Y LA PRUEBA NUEVA EJECUTA EL CATALOGO, no lee su marcado en reposo: el defecto no '
+      + 'estaba en el HTML, estaba en lo que el HTML hace al plegarse. Vista en rojo. '
+      + 'DE PASO, VERIFICADO EN NAVEGADOR lo de la v1.115.0, que hasta ahora era cascada '
+      + 'resuelta y no pintado: el tercer nivel sale en `flex`, icono y rotulo en la MISMA '
+      + 'linea —centros a 1px— y la fila mide 26px, una sola linea. El sangrado ahi es de '
+      + '28px y no 56, '
+      + 'por una regla del panel anterior a esto y correcta: dentro del flotante no hay carril '
+      + 'que compensar. '
+      + 'Y LA AUDITORIA CAZO UNA AFIRMACION FALSA: se dijo que el recorte con puntos '
+      + 'suspensivos funcionaba dentro del panel, y NO funcionaba — `white-space: normal` '
+      + 'ganaba la cascada, y con `normal` los puntos solo actuan sobre lo que no se puede '
+      + 'partir, asi que un rotulo de varias palabras ENVUELVE en vez de recortarse. Con los '
+      + 'rotulos cortos de hoy no se nota, y por eso se vio bien en Chrome. Arreglado en la '
+      + 'hoja. '
+      + 'Y LA BARRA DEL CATALOGO DIVERGIA EN CINCO ATRIBUTOS del componente: `aria-controls`, '
+      + '`id` en los nietos, el atributo de ocultar, y `aria-hidden` en el chevron. Un boton '
+      + 'que anuncia su estado plegado y no dice QUE controla deja al lector sin el otro '
+      + 'extremo. Corregidos. Y dos pruebas apuntaban al sitio equivocado: `aside.lat` caza '
+      + 'TAMBIEN la barra del catalogo, asi que «la maqueta extendida» resolvia a la barra.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.115.0', fecha: '2026-09-14',
     que: 'R135 del equipo: el tercer nivel del menu no podia llevar icono, y con el riel plegado no se llegaba a el',

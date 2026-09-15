@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.115.0
+# Actualizar al sistema de diseño v1.116.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.115.0"
+npm install "github:solwarehz/sistema-diseno#v1.116.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -37,7 +37,7 @@ está en marcha tiene el código viejo en memoria, y su caché de compilación n
 se entera de que cambió algo dentro de `node_modules`.
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.115.0"
+npm install "github:solwarehz/sistema-diseno#v1.116.0"
 # y ENTONCES, sin excepción:
 docker compose restart <su-servicio>     # o el reinicio que usen
 # si aun así ven lo de antes, tiren la caché de compilación —y reinicien OTRA
@@ -101,12 +101,12 @@ familia entera de ese defecto.
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.115.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.116.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.115.0 --repo solwarehz/sistema-diseno
+gh release download v1.116.0 --repo solwarehz/sistema-diseno
 ```
 
 Son **60 archivos**: tokens, hoja de estilos, los **43 módulos de componente**
@@ -418,6 +418,7 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.93.0 | **`RedesSociales` pinta los iconos con el rojo del escudo por omisión.** `marca-rojo` queda **autorizado solo para eso** — sigue prohibido como texto y como superficie. Si los ponen sobre un fondo que no sea la tarjeta o la página, usen `color="heredado"`: los 4,88:1 y 4,69:1 están medidos contra esos dos y **sobre el encabezado no ha medido nadie**. No rompe nada |
 | 1.94.0 | **`CabeceraPantalla` gana `accionSecundaria`.** Se pinta a la izquierda de `accion`, con 8px de separación, y en estrecho las dos se reparten el ancho. **Les afecta aunque no la usen:** `.pant-accion` no tenía ni `display` ni `gap`, así que si metieron dos botones ahí a mano, salían pegados y ahora se separan. Y la documentación del componente decía «una sola acción»: era un error de redacción, la regla es **una sola principal** |
 | 1.95.0 | **`SelectorBusqueda` entrega por fin lo que el catálogo enseña, en nueve puntos.** Se ven cuatro: el chevron **ahora gira** al abrir la lista, el visto ✓ de la opción elegida pasa **a la derecha** (estaba a la izquierda, 298,4 px de diferencia), la ayuda de la opción recibe su tipografía —13 px, secundario— y deja de salir del mismo cuerpo que el nombre, y la fila de «sin resultados» **dice qué se buscó** en vez de «No hay coincidencias». Se teclean cuatro: **↑ abre la lista**, las flechas **ciclan**, **Inicio y Fin** funcionan, y **Tab elige lo marcado** — antes tabular con una coincidencia marcada dejaba el campo **vacío**. **Nada rompe:** ninguna clase pública cambia de nombre y `textoVacio` sigue admitiendo una cadena. **Y les afecta aunque no usen el selector:** `Paginacion` no emitía `activa`, así que **la página en curso no se pintaba en ninguna pantalla** — ahora sí |
+| 1.116.0 | **Nada que cambiar en su código: es el catálogo el que no cumplía.** La regla 12 de la v1.115.0 —plegado, las ramas del panel flotante llegan abiertas— entró en el componente y **no en la barra propia del catálogo**, que es la que ustedes recorrieron para reproducir R135b. Comprobado pasando el ratón: el panel abría y las cinco ramas seguían cerradas. Si volvieron al catálogo a verificar y les pareció que no estaba hecho, **tenían razón y era del catálogo, no del componente**. `MarcoApp` ya lo hacía desde la v1.115.0. |
 | 1.115.0 | **R135, y es para ustedes si montan un menú de tres niveles.** **(a)** `.nav-nieto` era `display: block` mientras `.nav-hijo` es `flex`: **cualquier icono en el tercer nivel caía encima del rótulo** y la fila medía el doble. Ya es `flex`; **el sangrado de 56 px y el cuerpo de 12 px no se tocan**. Si quitaron el icono de ese nivel para que no se partiera, pueden devolverlo. **(b)** Con el riel plegado, una rama dentro del panel flotante **no se abría al pasar el ratón** y quedaba detrás de un clic en un panel que solo vive mientras el puntero está encima. **Decisión tomada: el panel llega desplegado.** Un resumen con secciones plegadas no resume, y anidar un segundo «abrir al pasar» dentro de un panel que se cierra al salir es una trampa de temporización. Extendido **no cambia nada**: las ramas siguen arrancando cerradas. **(c)** Los 16 títulos de grupo y de rama de la barra del **catálogo** no tenían globito; ya lo llevan los 86 elementos. Y la maqueta del catálogo **enseña ahora el tercer nivel**, con icono en los tres. |
 | 1.114.0 | **Lean esto si usan `MarcoApp`: el menú plegado era una fila de iconos mudos.** Plegado, el rótulo iba a `display:none` —que lo saca también del árbol de accesibilidad— y el icono va `aria-hidden`: una opción **sin hijos** se quedaba **sin nombre de ninguna clase**, ni para el ratón ni para un lector de pantalla. El catálogo la rotulaba con `title` desde siempre y **el componente no emitía ninguno**. Ahora lo emite en los cinco sitios y el rótulo se **esconde a la vista** en vez de borrarse. **Tres cosas más, y les tocan aunque no toquen nada:** (1) el `hidden` de `.nav-hijos` **no ocultaba** —`display:grid` gana a la regla del navegador—, así que un grupo cerrado seguía pintado si copiaron el marcado a mano; ya está en la hoja. (2) La barra del catálogo abría los grupos **al pasar el ratón con el menú desplegado** y el componente no lo hace: ahora las dos hacen lo mismo, y es regla de contrato. (3) La maqueta del catálogo pintaba los grupos como enlaces con un chevron dentro —marcado que el componente **no produce nunca**— y con eso **el panel flotante del menú plegado no se demostraba en ninguna parte**. Ya se demuestra. **No cambia ninguna prop ni ninguna firma.** |
 | 1.113.0 | **Si probaron la v1.112.0, actualicen también.** Escribir de corrido ya funcionaba, pero la letra escrita **al final de un párrafo** podía salirse del párrafo cuando el saneo reescribía la caja —al pegar, al abrir un documento sucio o al escribir dentro de un `{{hueco}}`—. El fondo era el mismo error dos veces: **una posición contada en caracteres es ambigua en toda frontera**, y las dos formas de resolverla rompen algo (hacia atrás, la letra va a la línea de arriba tras un Intro; hacia delante, se sale del párrafo). Ahora se guarda **de qué lado** estaba el cursor. **Al teclear normal no se notaba nada**, porque teclear no reescribe. **Queda declarado y sin cerrar:** si el saneo retira texto **por delante** del cursor, el cursor se corre esos caracteres. |

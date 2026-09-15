@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-**Última actualización:** 14 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.115.0** — R135: el tercer nivel del menú no
-podía llevar icono, y con el riel plegado no se llegaba a él
+**Última actualización:** 15 de septiembre de 2026
+**Versión del sistema:** MMI-DS **v1.116.0** — la regla 12 entró solo en el
+componente: la barra del catálogo seguía contradiciéndola
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ podía llevar icono, y con el riel plegado no se llegaba a él
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **diecisiete pasos de
-verificación** —los que corre `publicar.mjs`—, **844 pruebas en 50 archivos**,
+verificación** —los que corre `publicar.mjs`—, **846 pruebas en 50 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -56,15 +56,15 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **844 pruebas en 50 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **846 pruebas en 50 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **977 reglas de 1492** · **701 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.115.0.zip` · **60 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.116.0.zip` · **60 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.115.0**, con el salto **desde la v1.19.0**, que es la instalada |
-| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los diecisiete pasos · **142 unidades compuestas** · **8 de deuda declarada**, 0 nuevas |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.116.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los diecisiete pasos · **143 unidades compuestas** · **8 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -86,7 +86,43 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.115.0), con detalle
+### Lo de hoy (v1.116.0), con detalle
+
+**La regla 12 entró en el componente y no en la barra del catálogo.** La
+v1.115.0 publicó *plegado, las ramas del panel flotante llegan abiertas*, y lo
+metió en `MarcoApp` y en la maqueta. La **barra propia del catálogo** —la que la
+gente recorre, y la que los pasos de reproducción del equipo señalan— se quedó
+atrás.
+
+Medido con el ratón en Chrome el 2026-09-15, **con la regla ya publicada**: el
+panel abría y las ramas seguían cerradas, nietos a 0 px y `visibility: hidden`.
+Exactamente el defecto que R135b reportó, **vivo después de arreglarlo**.
+
+Es el patrón de esta casa en su forma más pura: se arregla el componente, se
+escribe la regla, y la superficie que la gente toca se queda atrás. Ahora
+`plegarLateral` abre las ramas al plegar y las cierra al desplegar, salvo la que
+lleva la página en curso, donde manda la regla 6.
+
+**La prueba nueva ejecuta el catálogo**, no lee su marcado en reposo: el defecto
+no estaba en el HTML, estaba en lo que el HTML hace al plegarse.
+
+**De paso, verificado en navegador lo de la v1.115.0**, que hasta ahora era
+cascada resuelta y no pintado: el tercer nivel sale en `flex`, icono y rótulo en
+la misma línea, y la fila mide 26 px. El sangrado dentro del panel es de 28 px y
+no 56, por una regla anterior y correcta: ahí no hay carril que compensar.
+
+**Y la auditoría cazó una afirmación falsa mía**: dije que el recorte con puntos
+suspensivos funcionaba dentro del panel. No funcionaba — `white-space: normal`
+ganaba la cascada, y con `normal` los puntos solo actúan sobre lo que no se
+puede partir, así que un rótulo de varias palabras **envuelve**. Con los rótulos
+cortos de hoy no se nota, y por eso lo vi bien en Chrome. Arreglado en la hoja.
+
+La barra del catálogo divergía además en cinco atributos del componente:
+`aria-controls`, `id` en los nietos, `hidden`, `aria-hidden` en el chevron.
+Un botón que anuncia `aria-expanded` y no dice **qué** controla deja al lector
+sin el otro extremo. Corregidos.
+
+### Lo de la v1.115.0, con detalle
 
 **R135, de Control Administrativos V2.0, sobre la v1.114.0 ya instalada.** Tres
 cosas medidas, y una de ellas la tenían desde el 11/09 sin mandar.
@@ -1923,11 +1959,11 @@ sin comparar.
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.115.0
+Versión                      1.116.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         844   en 50 archivos
+Pruebas                         846   en 50 archivos
 Reglas que viajan               977   de 1492 · 701 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el
@@ -1938,7 +1974,7 @@ Comparaciones del desplegado      7   catalogo ejecutado contra componente
 Componentes publicados           35
 Módulos que viajan               43   + 17 archivos de sistema = 60 en el ZIP
 Exportaciones de componente     127   todas salen por el índice
-Unidades compuestas             142   dos clases sobre el MISMO elemento
+Unidades compuestas             143   dos clases sobre el MISMO elemento
 Páginas del catálogo             70
 Fila de un campo, medida      36,45   px · la fila de carga se fija en 36
 ```

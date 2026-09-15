@@ -19,13 +19,13 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.115.0** — R135: el **tercer nivel** del menú no podía llevar
-icono —`.nav-nieto` era `display: block` donde `.nav-hijo` es `flex`— y con el
-riel plegado no se llegaba a él. Lo midió el equipo consumidor montándolo, que
-es la lección de la semana: **lo que el catálogo no demuestra, lo descubre quien
-lo monta**. Nace `marco-catalogo.test.tsx`, que compara el menú del catálogo con
-el que emite el componente **atributo a atributo** — lo que ningún candado mira,
-porque ninguno lee atributos.
+**Estado actual: v1.116.0** — la regla 12 se publicó en la v1.115.0 y entró
+**solo en el componente**: la barra del catálogo siguió contradiciéndola, y es la
+superficie que la gente recorre. Se cazó **pasando el ratón**. La lección de la
+semana cabe en una línea: *se arregla el componente, se escribe la regla, y la
+superficie que la gente toca se queda atrás*. Por eso `marco-catalogo.test.tsx`
+**ejecuta** el catálogo además de leerlo: el defecto no estaba en el HTML, estaba
+en lo que el HTML hace al plegarse.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
