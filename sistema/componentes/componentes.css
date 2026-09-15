@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.117.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.118.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -56,6 +56,7 @@
   --canto-marco: inset -1px 0 0 var(--marco-borde);
 }
 :root{
+  --alto-control: 36px;
   --dur-rapida: 140ms;
   --dur-media: 180ms;
   --dur-lenta: 220ms;
@@ -64,7 +65,17 @@
   --curva: ease;
   --curva-vaiven: ease-in-out;
   --curva-giro: linear;
-  --permanencia-aviso: 5s;
+  /* DOS SEGUNDOS, no cinco. Lo pidio el responsable el 2026-09-15: «maximo que
+     permanezcan en 2seg, creo esta 5seg, es mucho, son muy intrusivas». Un
+     aviso temporal confirma que algo paso; no se lee dos veces, y cinco
+     segundos de algo que flota sobre el contenido es tiempo de estorbo, no de
+     lectura. El error NO usa esto: no se va solo.
+     Y AHORA ESTE NUMERO GOBIERNA DE VERDAD. Existia desde siempre, el catalogo
+     lo publicaba en su tabla de tokens como «cuanto queda en pantalla un aviso
+     temporal», y NO LO LEIA NADIE —cero usos en la hoja—: el tiempo de verdad
+     estaba escrito dentro del componente. Dos fuentes, y la documentada era la
+     decorativa. Ahora el componente lo lee al montar. */
+  --permanencia-aviso: 2s;
 }
 @media (prefers-reduced-motion: reduce){
   :root {
@@ -76,7 +87,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.117.0; }
+:root{ --mmi-componentes: 1.118.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -155,7 +166,7 @@ a.enlace.enl-nosub{ text-decoration: none; }
 .enlace:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px; border-radius: 3px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CAMPO DE TEXTO — 32 reglas · clases .campo-*, .cg-*, .msj-*
+   CAMPO DE TEXTO — 35 reglas · clases .campo-*, .cg-*, .msj-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 input.campo.sel-in{ width: 100%; padding-right: 32px; }
@@ -169,8 +180,18 @@ input.campo.sel-in{ width: 100%; padding-right: 32px; }
 .campo[aria-readonly="true"]{ cursor: default; }
 .campo{ font: inherit; font-size: 13px; padding: 8px 8px; border-radius: 6px;
   border: 1px solid var(--borde-campo); background: var(--fondo-tarjeta);
-  color: var(--texto-principal); }
+  color: var(--texto-principal);
+  /* EL MISMO INTERLINEADO QUE .btn, y declarado. Aqui no habia ninguno, asi que
+     NO DECLARABA NINGUNO: la altura de un campo era la que heredara la hoja
+     del producto. En el catalogo, con su interlinea de 1,45, media 36,45 —hay
+     una medicion en navegador escrita en FilaCarga desde la v1.102.0— y en
+     cada proyecto lo que dictara su hoja. No era una diferencia de pixeles:
+     era que .campo no tenia altura propia. */
+  line-height: 18px; }
 .campo::placeholder{ color: var(--texto-pista); }
+textarea.campo{ line-height: 1.5; }
+.cg-mal, .campo-mal{ padding-block: 7px; }
+input[type='date'].campo::-webkit-datetime-edit{ padding-block: 0; }
 select.campo{
   appearance: none; -webkit-appearance: none;
   padding-right: 32px;
@@ -242,7 +263,10 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
   flex: 0 1 auto; min-width: 3ch;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cx-fila{ display: flex; align-items: center; gap: 8px;
-  min-height: 36px; min-width: 0; flex-wrap: nowrap; }
+  /* LO QUE MIDE UN CAMPO, y ahora dicho con el mismo numero que lo dice: era
+     un 36 literal al lado de otro 36 literal, y cuando uno de los dos se
+     moviera nadie lo habria notado. */
+  min-height: var(--alto-control); min-width: 0; flex-wrap: nowrap; }
 .cx-fila > .btn{ flex: none; }
 .cx-vacio{ font-size: 12px; color: var(--texto-pista); }
 .cx-adjuntos{ display: flex; align-items: center; gap: 4px;
@@ -529,7 +553,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .fc-guion{ color: var(--texto-pista); padding-bottom: 8px; display: grid; place-items: center; }
 .fc-guion .ic{ width: 16px; height: 16px; }
 button.fc-campo{ display: flex; align-items: center; justify-content: flex-start;
-  text-align: left; line-height: 20px; }
+  /* 18 COMO TODO LO DEMAS. Declaraba 20 con este razonamiento escrito al lado:
+     «con sus 16 de relleno son los 36 px de un campo, exactos». La suma se
+     dejaba fuera el borde —20 + 16 + 2 = 38— y el campo con el que queria
+     casar no tenia altura propia: heredaba la del producto. Dos numeros mal y
+     ninguno de los dos era 36. */
+  text-align: left; line-height: 18px; }
 .fc-campo{ padding-right: 32px;
   background-repeat: no-repeat; background-position: right 12px center;
   background-size: 16px 16px;
@@ -1060,7 +1089,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .av-aviso{ border-color: var(--aviso-acento); background: var(--aviso-fondo); }
 .av-error{ border-color: var(--error-acento); background: var(--error-fondo); }
 .av-txt{ flex: 1; line-height: 1.45; }
-.av-accion{ font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+.av .av-accion{ font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
   background: transparent; border: 0; color: var(--enlace); text-decoration: underline;
   padding: 4px; border-radius: 6px; flex: none; }
 .av-x{ display: grid; place-items: center; background: transparent; border: 0;
@@ -1261,7 +1290,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .top-filtros .campo-grupo{ flex-direction: row; align-items: center; gap: 8px; min-width: 0; }
 .top-filtros .campo-etiqueta{ font-size: 12px; color: var(--texto-secundario); white-space: nowrap; }
 .top-filtros .campo-grupo .campo{ padding: 4px 8px; width: auto; min-width: 0; }
-.fg-panel .campo{ width: 100%; min-width: 0; font-size: 16px; }
+.fg-panel .campo{ width: 100%; min-width: 0; font-size: 16px; line-height: 1.5; }
 .app-zona-arriba, .app-zona-abajo, .app-tabs{ display: none; }
 .app-marco .app-tabs{ display: flex; position: fixed; left: 0; right: 0;
   bottom: 0; z-index: 44; background: var(--fondo-tarjeta);
@@ -1441,11 +1470,11 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .m-hamb{ background: transparent; border: 0; cursor: pointer; padding: 4px;
   color: var(--marco-texto); display: grid; place-items: center; }
 .m-filtros-movil{ display: flex; gap: 8px; margin-bottom: 12px; }
-.m-filtros-movil .campo{ flex: 1; min-width: 0; font-size: 15px; }
+.m-filtros-movil .campo{ flex: 1; min-width: 0; font-size: 15px; line-height: 1.5; }
 .m-cuerpo{ padding: 12px; background: var(--fondo-pagina); }
 .m-cabecera h3{ font-size: 20px; font-weight: 600; }
 .m-cabecera p{ margin: 4px 0 12px; font-size: 12px; color: var(--texto-secundario); }
-.m-cuerpo .campo{ width: 100%; margin-bottom: 12px; font-size: 16px; }
+.m-cuerpo .campo{ width: 100%; margin-bottom: 12px; font-size: 16px; line-height: 1.5; }
 .m-tarjeta{ background: var(--fondo-tarjeta); border: 1px solid var(--borde);
   border-radius: 6px; padding: 12px 12px; margin-bottom: 8px; }
 .m-nom{ font-size: 15px; font-weight: 500; }

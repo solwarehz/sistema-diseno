@@ -335,7 +335,7 @@ la misma deriva que los hex a mano.
 | `--dur-media` | 180ms | Lo normal: transform, plegados pequeños, diálogos |
 | `--dur-lenta` | 220ms | Paneles, lateral, acordeones |
 | `--curva` | `ease` | La curva estándar de toda transición |
-| `--permanencia-aviso` | 5s | Cuánto queda en pantalla un aviso temporal |
+| `--permanencia-aviso` | **2s** | Cuánto **permanece** un aviso temporal, sin contar la entrada ni la salida. Lo **lee el componente**: cambiarlo en su hoja vale para todos sus avisos. El error no lo usa — no se va solo |
 
 ```css
 /* SÍ */  transition: transform var(--dur-media) var(--curva);

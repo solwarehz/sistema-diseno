@@ -267,6 +267,15 @@ function resolver(reglas, cadena, prop, ancho) {
     if (!r.decl.has(prop)) continue;
     if (r.media.length && !r.media.every((c) => mediaCasa(c, ancho))) continue;
     if (/:(hover|focus|active|focus-visible|focus-within)/.test(r.sel)) continue;
+    /* UN PSEUDO-ELEMENTO ESTILIZA OTRA CAJA, no el elemento. Aquí no se miraba,
+       así que `input[type='date'].campo::-webkit-calendar-picker-indicator`
+       —que declara `padding: 0` y `height: 100%` para el iconito del reloj—
+       ganaba por especificidad y este resolutor respondía que un campo de fecha
+       tiene relleno 0 y altura 100%. Ninguna de las dos cosas es cierta del
+       campo. Lo mismo valía para `.campo::placeholder`, que habría dado el
+       color del texto de pista como color del campo. Lo encontró el candado de
+       la altura el 2026-09-15, al nacer. */
+    if (r.sel.includes('::')) continue;
     if (!SOPORTADO.test(r.sel)) continue;
     const c = casa(r.sel, cadena);
     if (c !== true) continue;

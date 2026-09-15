@@ -82,9 +82,12 @@ for (const { sel, decl } of bloques) {
     for (const m of d.match(/\bvar\(--([a-z0-9-]+)\)/g) || []) {
       const t = m.slice(6, -1);
       // sombra/canto son la elevación; dur/curva/permanencia, el movimiento
-      // (R27). No son tokens de color pero sí del sistema, con su definición
-      // en el mismo :root que las sombras.
-      if (!TOKENS.has(t) && !/^(sombra|canto|dur|curva|permanencia)(-|$)/.test(t)) anota(hallazgos.color, sel, `token inexistente --${t}`);
+      // (R27); `alto-control` es la altura de un control de fila (R136). No son
+      // tokens de color pero sí del sistema, con su definición en el mismo
+      // :root que las sombras. Esta comprobación mira COLOR: una variable de
+      // medida que no esté aquí se reporta como «token inexistente», que es un
+      // diagnóstico falso — y el candado que sí la vigila es verificar-altura.
+      if (!TOKENS.has(t) && !/^(sombra|canto|dur|curva|permanencia|alto)(-|$)/.test(t)) anota(hallazgos.color, sel, `token inexistente --${t}`);
     }
   }
 

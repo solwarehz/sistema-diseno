@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 15 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.117.0** — un menú corto que enseña dónde
-estás, y el catálogo monta por fin el componente de verdad
+**Versión del sistema:** MMI-DS **v1.118.0** — una fila de controles es una
+fila: la altura de los controles deja de ser un accidente del interlineado
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -17,8 +17,8 @@ estás, y el catálogo monta por fin el componente de verdad
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
-publicados (`verificar-entrega`), la hoja que viaja, **diecisiete pasos de
-verificación** —los que corre `publicar.mjs`—, **875 pruebas en 50 archivos**,
+publicados (`verificar-entrega`), la hoja que viaja, **dieciocho pasos de
+verificación** —los que corre `publicar.mjs`—, **892 pruebas en 50 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -56,15 +56,15 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **875 pruebas en 50 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · **977 reglas de 1492** · **701 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
+| Componentes de React | ✅ | **892 pruebas en 50 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · **980 reglas de 1495** · **701 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.117.0.zip` · **60 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.118.0.zip` · **60 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.117.0**, con el salto **desde la v1.19.0**, que es la instalada |
-| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los diecisiete pasos · **143 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.118.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los dieciocho pasos · **143 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -85,6 +85,184 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.46.0 | **R52** · todos los iconos de la entrega salían 2px más pequeños que en el catálogo |
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
+
+### Lo de hoy (v1.118.0), con detalle
+
+**R136 · Una fila de controles es una fila.** Lo reportó Control Administrativos
+V2.0 midiendo en su producto sobre la v1.117.0 ya instalada: una barra de
+filtros —una fecha, un selector y el botón que dispara la consulta— entregaba
+los **bordes superiores escalonados**. Tienen razón, y lo dicen mejor:
+
+> *«Con tres alturas distintas, no hay alineación que salve la fila.»*
+
+**La causa no era una diferencia de píxeles: era que `.campo` no tenía altura
+propia.** `.btn` declaraba su interlineado —18 px, que es además el tamaño del
+icono de interfaz, y por eso un botón mide lo mismo lleve icono o no—; `.campo`
+**no declaraba ninguno**, así que su altura era la que heredase la hoja del
+producto. La hoja que viaja **no declara ningún interlineado ambiente** —cero
+reglas, comprobado—, y el catálogo corre a 1,45: ahí un campo medía **36,45**.
+En cada proyecto, otra cosa.
+
+Y estaba escrito desde la v1.102.0, en `FilaCarga`, leído como un detalle:
+
+> *«La cifra exacta depende de la interlínea que herede el producto.»*
+
+| Control | Interlineado | Alto |
+|---|---|---|
+| `.btn` | 18 declarado | **36** |
+| `.campo` | **ninguno** | **lo que herede** — 36,45 en el catálogo |
+| `button.fc-campo` | 20 declarado | **38** |
+| `input[type=date].campo` | — | +2 px del reloj nativo |
+
+El disparador del rango declaraba 20 **con el razonamiento escrito al lado**
+—«con sus 16 de relleno son los 36 px de un campo, exactos»—, una suma que se
+dejaba fuera el borde.
+
+**Los 2 px de la fecha son del reloj nativo** y se quitan donde nacen: es el
+relleno que WebKit y Blink ponen en `::-webkit-datetime-edit`, y cuadra exacto
+con los 39 contra 37 que midió el equipo. **No se ha podido medir aquí** —en el
+contenedor no hay navegador— y por eso se elige la forma que no puede empeorar
+nada: si no bastara, la fecha se queda como estaba en vez de recortarse.
+
+**Y el error deja de mover la fila:** el filete pasa de 1 a 2 px —señal no
+cromática, SC 1.4.1— y ahora se los devuelve al relleno.
+
+### Y aparte: el aviso temporal duraba 5 s y su token no lo leía nadie
+
+Lo pidió el responsable el 2026-09-15 con el sistema delante: *«máximo que
+permanezcan en 2seg, creo está 5seg, es mucho, son muy intrusivas»*. Tenía razón
+en el número, y debajo había algo peor: **tres fuentes de verdad y ninguna
+mandando.**
+
+| | Decía |
+|---|---|
+| `--permanencia-aviso` | 5s, y **cero usos en toda la hoja** |
+| El componente | `5000` escrito dentro |
+| El catálogo | 4, 5, 7 y 10 s, uno por demostración |
+
+El token estaba publicado en la tabla del manual como *«cuánto queda en pantalla
+un aviso temporal»* — un mando que no gobernaba nada. Ahora el token baja a
+**2 s**, **el componente lo lee al montar**, el catálogo lee el mismo, y la prop
+`duracion` sigue mandando sobre los dos.
+
+**Y se va desvaneciéndose.** Entraba animado y **salía de un fotograma a otro**:
+se llamaba a `onCerrar` y el producto lo desmontaba de golpe, que se lee como un
+fallo de pintado — el motivo exacto por el que se animó la entrada. La salida es
+la entrada al revés, sin clase nueva: se quita `.av-dentro` y corre la transición
+que `.av` ya declaraba. **El catálogo lo hacía desde el principio y la entrega
+no**: otra promesa que el cartón enseñaba y el componente no cumplía.
+
+Y al arreglarlo salió otra: las pruebas del aviso llamaban a `useRealTimers()`
+**al final, sin `try/finally`**, así que una sola prueba rota se dejaba los
+temporizadores falsos puestos y envenenaba a las siguientes del archivo — seis
+de *Tarjetas* cayeron con «Test timed out» sin tener nada que ver. El
+diagnóstico que se lee entonces es el equivocado.
+
+### Y la auditoría del aviso encontró que nada de eso estaba probado
+
+Los 18 candados y las 885 pruebas estaban en verde **delante de una máquina de
+cierre entera sin tocar**. jsdom **no despacha `transitionend`**, así que cada
+prueba del aviso recorría el respaldo de 400 ms y ninguna entraba por el camino
+normal. Siete mutaciones sobrevivían:
+
+| Mutación | Resultado entonces |
+|---|---|
+| borrar el oyente de `transitionend` | todo en verde |
+| invertir su filtro (`transform` en vez de `opacity`) | todo en verde |
+| quitar el guardia de doble cierre | todo en verde |
+| recortar el respaldo de 400 a 100 ms | todo en verde |
+| **apagar la pausa por cursor y foco** | **18 candados y 885 pruebas en verde** |
+
+La última es la que más duele: **la regla 3 lleva versiones siendo obligatoria y
+no tenía una sola prueba** — y es la que justifica bajar de 5 s a 2 s, porque lo
+que da tiempo no es el reloj sino la pausa. Se compró la bajada con una garantía
+que nada verificaba.
+
+Y `verificar-contrato` lo daba por bueno porque la sección **no declaraba sus
+archivos de prueba**: caía en el montón común y le valía cualquier prueba con un
+`[N]` que coincidiera. Al declararlos saltaron además las reglas **1 y 2**, que
+llevaban desde su nacimiento sin una prueba que las nombrara.
+
+**Tres defectos reales**, aparte de la cobertura:
+
+1. **`transitionend` burbujea**, y el filtro miraba la propiedad pero no el
+   `target`: la transición de un botón que el producto meta dentro del aviso
+   —su «Deshacer» es un nodo suyo— lo cerraba antes de tiempo. Con la hoja que
+   viaja hoy no pasa, porque ningún hijo transiciona la opacidad; pasaría con
+   cualquier hoja propia que lo hiciera.
+2. **`onCerrar` se quedaba viejo**: el efecto de salida capturaba el de su
+   render, así que un producto que lo cambiara durante el desvanecido recibía
+   el anterior.
+3. **«Deshacer» cerraba el aviso en el catálogo y no en la entrega.** El mismo
+   botón hacía dos cosas según dónde se mirara. Cierra, que es lo correcto:
+   deshacer deja de ser verdad lo que el aviso dice.
+
+Y dos divergencias más viejas que nadie podía ver: **la ✕ era el carácter `×` en
+la entrega y un SVG en el catálogo** —con `.av-x .ic` viajando en la hoja sin que
+ningún producto pudiera activarla—, y el «Deshacer» entregado arrastra las clases
+de `Boton` que el del catálogo no tenía. Al igualar el catálogo saltó
+**`verificar-empate`**: `.av-accion` empata con `.btn-terc` y `.btn-mini` sobre el
+mismo elemento, y cada hoja lo resolvía al revés —azul de enlace a 13 px en el
+producto, negro a 12 px en el catálogo—. Se ancla al aviso, `.av .av-accion`, que
+es donde esa regla tiene sentido.
+
+### El candado quince mide FILAS, y no un número
+
+Un sistema no tiene **una** altura de control: tiene **filas**, y lo que importa
+es que los que se ponen juntos midan igual. `verificar-altura` comprueba tres
+sobre la hoja que viaja —normal 36, en error 36, compacta 28— y lleva **deuda
+declarada** de dos que hoy no cuadran, con sus números.
+
+**La fila compacta tampoco cuadraba, y nadie lo había mirado:** el botón mini
+medía 28 y el filtro de columna 29,5. Ahora los dos 28.
+
+Ninguno de los catorce anteriores podía verlo, y no por descuido: el de la
+**cascada** busca reglas que **faltan**, y aquí no faltaba ninguna —sobraban
+tres, cada una correcta por su cuenta—; el del **empate** busca quién gana un
+desempate, y `.btn` y `.campo` no empatan porque caen sobre elementos distintos;
+el de la **promesa** resuelve las dos hojas sobre el **mismo** marcado, así que
+las dos responden lo mismo y **las dos aciertan**. La pregunta que faltaba no
+era sobre un componente: era **entre** componentes.
+
+### Dos auditorías pararon el primer arreglo, y tenían razón
+
+La primera versión puso **altura fija** a todos los controles y **mínimo** a
+todos los botones. Con eso:
+
+- el **botón mini** pasaba de 28 a 36 —66 en el catálogo—, la barra del editor
+  crecía 8 px por fila, y el disparador de las cargas pasaba de 1 a 9 px de
+  desnivel con su chip, contradiciendo la medida sobre la que está construida
+  esa fila;
+- los **filtros compactos** de tabla y de la barra, que declaran `padding: 4px`
+  a propósito, saltaban de 28 a 36;
+- **recortaba 2 px el campo en error**, que lleva borde de 2 px — justo el caso
+  que el docstring del candado decía temer, y que el candado no miraba;
+- dejaba muerto el `min-height: 0` del área de texto.
+
+**Una altura fija no arregla una altura mal calculada: la tapa.** El candado
+nació sin ver ninguna de esas tres cosas; ahora las caza, vistas en rojo una a
+una.
+
+Y la prueba que ata la lista del candado **no ataba nada**: emparejaba por
+subconjunto, así que la entrada genérica `input.campo` cubría también al de
+contraseña y al del selector con búsqueda, y se podían borrar del candado sin
+que nada se pusiera en rojo. Ahora la pregunta es **por componente**.
+
+### Y un defecto en el resolutor compartido, que usan otros cuatro
+
+Al escribirlo apareció: el resolutor de cascada **aplicaba al elemento las
+reglas de sus pseudo-elementos**. Respondía que un campo de fecha tiene relleno
+`0` y altura `100%` —los valores del iconito del reloj— y habría dado el color
+del texto de pista como color del campo. Corregido, y **comprobado que los otros
+cuatro candados dan exactamente la misma salida que antes**: gana precisión sin
+perder cobertura.
+
+### La ceguera que se cerró
+
+**El catálogo no enseñaba una barra de filtros en ninguna página.** Es de lo más
+común que monta nadie, y el caso exacto del R136. Ahora está en *La entrega
+real*, que es donde se pinta **solo con la hoja que viaja**: ahí se habría visto
+a simple vista.
 
 ### Lo de hoy (v1.117.0), con detalle
 
@@ -445,7 +623,7 @@ ocultaba nada**. Un guion del catálogo reventó además entero, porque constru�
 el menú móvil desde `.lat-nav .nav-grupo` y ese selector no decía de qué
 mobiliario hablaba.
 
-**Por qué no lo vio ninguno de los catorce candados.** Dos cegueras que se cruzan
+**Por qué no lo vio ninguno de los candados de entonces.** Dos cegueras que se cruzan
 justo aquí: `verificar-promesa` **descarta todos los estados** —hay una línea que
 salta `:hover`, `:focus` y compañía— y **ninguno compara atributos de marcado**
 entre catálogo y componente. `title` es un atributo. Nace `CARRIL-CON-NOMBRE` en
@@ -584,7 +762,7 @@ las tres, con su corpus, y lo único que las tres sostienen: **bloquea el hilo
 segundos**.
 
 Y una que es del sistema entero, no del editor: **ESLint no se corre en ninguno
-de los diecisiete pasos.** Solo corre `probar-candado.mjs`, que prueba los
+de los dieciocho pasos.** Solo corre `probar-candado.mjs`, que prueba los
 patrones contra casos sintéticos. Al correrlo sobre el repositorio salen **dos
 errores que viajan hoy en el paquete**: `Estados.tsx` usa el atributo `style` en
 línea en dos sitios, que es justo lo que §2.5.6 prohíbe. **Queda declarado y sin
@@ -2215,8 +2393,8 @@ Versión                      1.117.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         875   en 50 archivos
-Reglas que viajan               977   de 1492 · 701 clases, 0 huérfanas
+Pruebas                         892   en 50 archivos
+Reglas que viajan               980   de 1495 · 701 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el
                                       catalogo, que por diseño NO viajan).

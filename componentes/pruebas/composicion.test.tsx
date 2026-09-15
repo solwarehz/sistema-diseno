@@ -3,7 +3,7 @@
  * Se prueba la promesa de cada uno, no que rendericen.
  */
 
-import { render, screen, within, waitFor } from '@testing-library/react';
+import { render, screen, within, waitFor, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { Interruptor, SeleccionMultiple } from '../src/Interruptor';
@@ -109,29 +109,224 @@ describe('Estados de pantalla', () => {
 });
 
 describe('Aviso temporal', () => {
-  it('el éxito es status; el error es alert', () => {
+  it('[1] y [2] el éxito es status —no interrumpe la lectura— y el error es alert', () => {
     const { rerender } = render(<Aviso tono="exito" texto="Guardado" onCerrar={() => {}} />);
     expect(screen.getByRole('status')).toHaveTextContent('Guardado');
     rerender(<Aviso tono="error" texto="No se pudo guardar" onCerrar={() => {}} />);
     expect(screen.getByRole('alert')).toHaveTextContent('No se pudo guardar');
   });
 
-  it('el error NO se va solo, aunque le pasen duración', () => {
+  /* `try/finally` EN TODA PRUEBA CON TEMPORIZADORES FALSOS. Sin él, una que
+     falle se deja los falsos puestos y envenena TODAS las siguientes del
+     archivo: al cambiar el aviso, una sola prueba rota se llevó por delante
+     seis de Tarjetas que no tienen nada que ver, con «Test timed out». El
+     diagnóstico que se lee entonces es el equivocado. */
+  it('[2] el error NO se va solo, aunque le pasen duración', () => {
     vi.useFakeTimers();
-    const fn = vi.fn();
-    render(<Aviso tono="error" texto="Falló" onCerrar={fn} duracion={1000} />);
-    vi.advanceTimersByTime(5000);
-    expect(fn).not.toHaveBeenCalled();
-    vi.useRealTimers();
+    try {
+      const fn = vi.fn();
+      render(<Aviso tono="error" texto="Falló" onCerrar={fn} duracion={1000} />);
+      vi.advanceTimersByTime(5000);
+      expect(fn).not.toHaveBeenCalled();
+    } finally { vi.useRealTimers(); }
   });
 
-  it('el éxito sí se va solo', () => {
+  it('[5] el éxito se va solo, pero DESVANECIÉNDOSE: primero sale, después avisa', () => {
+    /* Entraba animado y salía de un fotograma a otro. Ahora el temporizador no
+       llama a `onCerrar`: quita `.av-dentro` y deja que la transición corra; el
+       desmontaje llega cuando termina. Sin esto, el producto lo arrancaba de la
+       pantalla y se leía como un fallo de pintado — que es exactamente por lo
+       que se animó la entrada. */
     vi.useFakeTimers();
-    const fn = vi.fn();
-    render(<Aviso tono="exito" texto="Guardado" onCerrar={fn} duracion={1000} />);
-    vi.advanceTimersByTime(1100);
-    expect(fn).toHaveBeenCalled();
-    vi.useRealTimers();
+    try {
+      const fn = vi.fn();
+      const { container } = render(<Aviso tono="exito" texto="Guardado" onCerrar={fn} duracion={1000} />);
+      const av = container.querySelector('.av')!;
+      act(() => { vi.advanceTimersByTime(1100); });
+      expect(av.className, 'no empezó a salir').not.toContain('av-dentro');
+      expect(fn, 'desmontó sin dar tiempo a la transición').not.toHaveBeenCalled();
+      act(() => { vi.advanceTimersByTime(500); });
+      expect(fn, 'se quedó a medio salir y no cerró nunca').toHaveBeenCalled();
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('[4] dura DOS segundos por omisión, no cinco', () => {
+    /* Lo pidió el responsable el 2026-09-15: «máximo que permanezcan en 2seg,
+       creo está 5seg, es mucho, son muy intrusivas». El 5000 estaba escrito en
+       el componente. */
+    vi.useFakeTimers();
+    try {
+      const fn = vi.fn();
+      const { container } = render(<Aviso tono="exito" texto="Guardado" onCerrar={fn} />);
+      const av = container.querySelector('.av')!;
+      act(() => { vi.advanceTimersByTime(1900); });
+      expect(av.className, 'se fue antes de los 2 s').toContain('av-dentro');
+      act(() => { vi.advanceTimersByTime(200); });
+      expect(av.className, 'sigue dentro pasados los 2 s').not.toContain('av-dentro');
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('[4] y ese número sale de la HOJA, no del componente', () => {
+    /* `--permanencia-aviso` existía, el catálogo lo publicaba como «cuánto
+       queda en pantalla un aviso temporal» y NO LO LEÍA NADIE: cero usos en la
+       hoja. Dos fuentes de verdad, y la documentada era la decorativa. */
+    vi.useFakeTimers();
+    const real = window.getComputedStyle;
+    try {
+      vi.spyOn(window, 'getComputedStyle').mockImplementation((el: Element) => ({
+        ...real(el),
+        getPropertyValue: (prop: string) => (prop === '--permanencia-aviso' ? '4s' : ''),
+      }) as CSSStyleDeclaration);
+      const fn = vi.fn();
+      const { container } = render(<Aviso tono="exito" texto="Guardado" onCerrar={fn} />);
+      const av = container.querySelector('.av')!;
+      act(() => { vi.advanceTimersByTime(2100); });
+      expect(av.className, 'ignoró la hoja y usó su número de dentro').toContain('av-dentro');
+      act(() => { vi.advanceTimersByTime(2000); });
+      expect(av.className, 'no llegó a irse con los 4 s de la hoja').not.toContain('av-dentro');
+    } finally { vi.useRealTimers(); vi.restoreAllMocks(); }
+  });
+
+  /* jsdom NO despacha `transitionend` por su cuenta, así que sin estas pruebas
+     TODO el camino normal del cierre quedaba sin tocar: cada prueba del aviso
+     recorría el respaldo de 400 ms. Se podía borrar el oyente entero, invertir
+     su filtro o recortar el respaldo, y las 885 seguían en verde. Lo midió una
+     auditoría: ocho mutaciones vivas. */
+  const finDeTransicion = (el: Element, prop: string, desde: Element = el) => {
+    const e = new Event('transitionend', { bubbles: true }) as TransitionEvent;
+    Object.defineProperty(e, 'propertyName', { value: prop });
+    act(() => { desde.dispatchEvent(e); });
+  };
+
+  it('[5] al ACABAR el desvanecido cierra, sin esperar al respaldo', () => {
+    vi.useFakeTimers();
+    try {
+      const fn = vi.fn();
+      const { container } = render(<Aviso tono="exito" texto="Guardado" onCerrar={fn} duracion={1000} />);
+      const av = container.querySelector('.av')!;
+      act(() => { vi.advanceTimersByTime(1100); });
+      expect(fn).not.toHaveBeenCalled();
+      finDeTransicion(av, 'opacity');
+      expect(fn, 'la transición acabó y el aviso siguió ahí').toHaveBeenCalledTimes(1);
+      // Y el respaldo ya no vuelve a cerrar: una sola llamada.
+      act(() => { vi.advanceTimersByTime(1000); });
+      expect(fn, 'cerró dos veces').toHaveBeenCalledTimes(1);
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('[5] pero NO cierra con la transición de otra propiedad', () => {
+    /* `.av` transiciona `transform` y `opacity`. La de `transform` termina
+       antes de que el aviso haya acabado de desaparecer. */
+    vi.useFakeTimers();
+    try {
+      const fn = vi.fn();
+      const { container } = render(<Aviso tono="exito" texto="Guardado" onCerrar={fn} duracion={1000} />);
+      const av = container.querySelector('.av')!;
+      act(() => { vi.advanceTimersByTime(1100); });
+      finDeTransicion(av, 'transform');
+      expect(fn, 'se fue a mitad del desvanecido').not.toHaveBeenCalled();
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('[5] ni con la de un HIJO: `transitionend` burbujea', () => {
+    /* La acción es un nodo del producto. Con una hoja propia que transicione la
+       opacidad de ese botón, el aviso se cerraba antes de tiempo. */
+    vi.useFakeTimers();
+    try {
+      const fn = vi.fn();
+      const { container } = render(
+        <Aviso tono="exito" texto="Guardado" onCerrar={fn} duracion={1000}
+          accion={{ texto: 'Deshacer', onClick: () => {} }} />
+      );
+      const av = container.querySelector('.av')!;
+      const hijo = container.querySelector('.av-accion')!;
+      act(() => { vi.advanceTimersByTime(1100); });
+      finDeTransicion(av, 'opacity', hijo);
+      expect(fn, 'la transición de un hijo cerró el aviso').not.toHaveBeenCalled();
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('[5] y si la transición no corre, el respaldo lo cierra igual', () => {
+    /* Un producto con `transition: none`, o el aviso oculto: sin respaldo se
+       quedaría en pantalla para siempre, que es el peor final posible. */
+    vi.useFakeTimers();
+    try {
+      const fn = vi.fn();
+      render(<Aviso tono="exito" texto="Guardado" onCerrar={fn} duracion={1000} />);
+      act(() => { vi.advanceTimersByTime(1100); });
+      act(() => { vi.advanceTimersByTime(399); });
+      expect(fn, 'el respaldo se disparó antes de tiempo').not.toHaveBeenCalled();
+      act(() => { vi.advanceTimersByTime(2); });
+      expect(fn, 'sin transición, el aviso se quedaría para siempre').toHaveBeenCalled();
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('[3] el cursor encima PARA el reloj, y quitarlo lo reanuda', () => {
+    /* Regla 3, obligatoria desde hace versiones y sin una sola prueba: apagarla
+       dejaba los 18 candados y las 885 en verde. Y es la que justifica bajar de
+       5 s a 2 s — el tiempo lo da la pausa, no el reloj. */
+    vi.useFakeTimers();
+    try {
+      const fn = vi.fn();
+      const { container } = render(<Aviso tono="exito" texto="Guardado" onCerrar={fn} duracion={1000} />);
+      const av = container.querySelector('.av')!;
+      act(() => { fireEvent.mouseEnter(av); });
+      act(() => { vi.advanceTimersByTime(5000); });
+      expect(av.className, 'el reloj corrió con el cursor encima').toContain('av-dentro');
+      act(() => { fireEvent.mouseLeave(av); });
+      act(() => { vi.advanceTimersByTime(1100); });
+      expect(av.className, 'al retirar el cursor no se reanudó').not.toContain('av-dentro');
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('[3] y el FOCO dentro también: si no, Deshacer nunca se alcanza con teclado', () => {
+    vi.useFakeTimers();
+    try {
+      const fn = vi.fn();
+      const { container } = render(
+        <Aviso tono="exito" texto="Guardado" onCerrar={fn} duracion={1000}
+          accion={{ texto: 'Deshacer', onClick: () => {} }} />
+      );
+      const av = container.querySelector('.av')!;
+      act(() => { fireEvent.focus(container.querySelector('.av-accion')!); });
+      act(() => { vi.advanceTimersByTime(5000); });
+      expect(av.className, 'se fue con el foco dentro').toContain('av-dentro');
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('[4] pulsar la acción CIERRA el aviso: deshacer deja de ser verdad lo que dice', () => {
+    vi.useFakeTimers();
+    try {
+      const alPulsar = vi.fn();
+      const fn = vi.fn();
+      const { container } = render(
+        <Aviso tono="exito" texto="Se archivaron 12 expedientes" onCerrar={fn}
+          accion={{ texto: 'Deshacer', onClick: alPulsar }} />
+      );
+      const av = container.querySelector('.av')!;
+      /* PRIMERO ENTRA. Con relojes falsos `requestAnimationFrame` también lo
+         es, así que sin avanzarlo el aviso nunca llega a llevar `.av-dentro` y
+         la comprobación de abajo pasaría sola: la prueba no podría fallar. */
+      act(() => { vi.advanceTimersByTime(20); });
+      expect(av.className, 'el aviso no llegó a entrar: la prueba no mediría nada').toContain('av-dentro');
+      act(() => { screen.getByRole('button', { name: 'Deshacer' }).click(); });
+      expect(alPulsar).toHaveBeenCalled();
+      expect(av.className, 'deshizo y el aviso se quedó diciendo lo contrario').not.toContain('av-dentro');
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('[5] cerrar a mano también se desvanece: el aviso se va de UNA sola forma', () => {
+    vi.useFakeTimers();
+    try {
+      const fn = vi.fn();
+      const { container } = render(<Aviso tono="info" texto="X" onCerrar={fn} />);
+      const av = container.querySelector('.av')!;
+      act(() => { screen.getByRole('button', { name: 'Cerrar aviso' }).click(); });
+      expect(av.className, 'cerrar a mano lo arrancó de golpe').not.toContain('av-dentro');
+      expect(fn).not.toHaveBeenCalled();
+      act(() => { vi.advanceTimersByTime(500); });
+      expect(fn).toHaveBeenCalled();
+    } finally { vi.useRealTimers(); }
   });
 
   it('el botón de cerrar tiene nombre', () => {

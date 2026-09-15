@@ -4213,6 +4213,27 @@ const pagAviso = `
 nada y no tapa el contenido. Si hace falta que la persona lea y decida, no es un aviso temporal:
 es un diálogo.</p>
 
+<div class="msj msj-info">
+  <span class="msj-ico">${icono('informacion')}</span>
+  <span class="msj-txt"><strong>Un mensaje responde a algo.</strong> A una acci&oacute;n de quien mira,
+  a una que el sistema acaba de hacer, o a una condici&oacute;n que cambia lo que esa persona puede
+  hacer ahora. Lo que solo <strong>describe lo que ya est&aacute; en pantalla no es un mensaje: es la
+  pantalla</strong>. Si la tabla ense&ntilde;a una marcaci&oacute;n, escribir encima
+  &laquo;hay 1 marcaci&oacute;n&raquo; no informa: repite, y gasta la atenci&oacute;n que har&aacute;
+  falta el d&iacute;a que el mensaje s&iacute; importe. <strong>Consultar no es una acci&oacute;n que
+  merezca respuesta</strong> &mdash; la respuesta a consultar son los datos.</span>
+</div>
+
+<div class="msj msj-aviso">
+  <span class="msj-ico">${icono('alerta')}</span>
+  <span class="msj-txt"><strong>Dos excepciones, y son las &uacute;nicas.</strong> Una condici&oacute;n
+  que <strong>bloquea</strong> &mdash;la sede suspendida, el periodo cerrado&mdash; s&iacute; aparece al
+  llegar, porque cambia lo que se puede hacer. Y si lo que hay que decir es que <strong>los datos est&aacute;n
+  raros</strong>, el sitio es el dato &mdash;una fila marcada, un chip&mdash; y no una banda encima.
+  Esto <strong>el sistema no lo puede hacer cumplir</strong>: es criterio de uso, no marcado, y no hay
+  candado que lo vea. Se escribe para que sea una decisi&oacute;n y no un descuido.</span>
+</div>
+
 <h3 class="sub-seccion">Pruébalo</h3>
 <div class="bloque">
   <div class="av-botones">
@@ -8392,6 +8413,22 @@ const casos = [
    '<p class="ep-titulo">Sin resultados para «zapata»</p>' +
    '<p class="ep-linea">Prueba con menos letras, o revisa si está matriculado.</p>' +
    '<button class="btn btn-1 btn-mini">Quitar filtros</button></div>'],
+  /* LA BARRA DE FILTROS, que es de lo mas comun que monta nadie y el catalogo
+     no ensenaba en ninguna parte. R136 de Control Administrativos: una fecha,
+     un selector y el boton que dispara la consulta, en una fila. Entregaba los
+     bordes escalonados porque los tres median distinto, y aqui —donde se pinta
+     SOLO con la hoja que viaja— se habria visto a simple vista.
+     El marcado es el que emiten Campo, Selector y Boton. */
+  ['Barra de filtros', 'Fecha, selector y bot\u00f3n en una fila. Los tres miden 36 px: los bordes van a ras.',
+   '<div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">' +
+   '<div class="campo-grupo"><label class="campo-etiqueta" for="er-f">Fecha</label>' +
+   '<input id="er-f" class="campo" type="date" value="2026-09-15"></div>' +
+   '<div class="campo-grupo"><label class="campo-etiqueta" for="er-t">Trabajador</label>' +
+   '<select id="er-t" class="campo"><option>LE&Oacute;N TUYA, Mayori</option></select></div>' +
+   /* `type="button"` PORQUE ES LO QUE EMITE `Boton` siempre. Sin el, dentro de
+      un <form> esto es un submit — la familia exacta de defecto que hizo nacer
+      verificar-elemento (R56). Lo cazo una auditoria el 2026-09-15. */
+   '<button type="button" class="btn btn-1">Buscar marcaciones</button></div>'],
 ];
 
 const pagEntregaReal = `
@@ -8726,7 +8763,13 @@ ${tokensCss}
    a 0.01ms —no a 0: un transitionend que nunca llega cuelga a quien lo
    espera— y la PERMANENCIA del aviso no se toca, porque leer no es moverse y
    quien pide menos movimiento no pide menos tiempo de lectura. */
+/* LA ALTURA DE UN CONTROL DE FILA. Un solo numero, y declarado: sin el, la
+   altura sale de lo que cada control herede de interlineado, y eso NO ES UNA
+   DECISION, es un accidente. R136 de Control Administrativos: una barra de
+   filtros con fecha, selector y boton entregaba TRES alturas distintas y los
+   bordes escalonados. Medido, eran CUATRO. */
 :root {
+  --alto-control: 36px;
   --dur-rapida: 140ms;
   --dur-media: 180ms;
   --dur-lenta: 220ms;
@@ -8735,7 +8778,17 @@ ${tokensCss}
   --curva: ease;
   --curva-vaiven: ease-in-out;
   --curva-giro: linear;
-  --permanencia-aviso: 5s;
+  /* DOS SEGUNDOS, no cinco. Lo pidio el responsable el 2026-09-15: «maximo que
+     permanezcan en 2seg, creo esta 5seg, es mucho, son muy intrusivas». Un
+     aviso temporal confirma que algo paso; no se lee dos veces, y cinco
+     segundos de algo que flota sobre el contenido es tiempo de estorbo, no de
+     lectura. El error NO usa esto: no se va solo.
+     Y AHORA ESTE NUMERO GOBIERNA DE VERDAD. Existia desde siempre, el catalogo
+     lo publicaba en su tabla de tokens como «cuanto queda en pantalla un aviso
+     temporal», y NO LO LEIA NADIE —cero usos en la hoja—: el tiempo de verdad
+     estaba escrito dentro del componente. Dos fuentes, y la documentada era la
+     decorativa. Ahora el componente lo lee al montar. */
+  --permanencia-aviso: 2s;
 }
 @media (prefers-reduced-motion: reduce) {
   :root {
@@ -9195,7 +9248,17 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .av-aviso { border-color: var(--aviso-acento); background: var(--aviso-fondo); }
 .av-error { border-color: var(--error-acento); background: var(--error-fondo); }
 .av-txt { flex: 1; line-height: 1.45; }
-.av-accion { font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+/* DENTRO DEL AVISO MANDA ESTA, y se dice con la especificidad en vez de con el
+   orden. El componente compone la accion con Boton —btn btn-terc btn-mini— y
+   le anade av-accion, asi que las dos caen sobre el MISMO elemento y empatan:
+   una clase contra una clase. Cuando dos empatan gana la ultima, y el extractor
+   reagrupa la hoja por componente, asi que el orden relativo cambia entre el
+   catalogo y lo que viaja — el producto veia la accion en azul de enlace a 13px
+   y el catalogo en negro a 12px. Es exactamente el defecto que caza
+   verificar-empate, y lo cazo el 2026-09-15 en cuanto el catalogo empezo a
+   emitir las mismas clases que el componente. Se ancla al aviso, que es donde
+   esta regla tiene sentido: la accion de un aviso se ve como un enlace. */
+.av .av-accion { font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
   background: transparent; border: 0; color: var(--enlace); text-decoration: underline;
   padding: 4px; border-radius: 6px; flex: none; }
 .av-x { display: grid; place-items: center; background: transparent; border: 0;
@@ -9381,7 +9444,12 @@ code { font-family: 'IBM Plex Mono', monospace; }
    —lo que no fija su propia caja la hereda de la pagina que lo monte—. 20px
    mas los 16 de relleno son los 36 de un campo, exactos. */
 button.fc-campo { display: flex; align-items: center; justify-content: flex-start;
-  text-align: left; line-height: 20px; }
+  /* 18 COMO TODO LO DEMAS. Declaraba 20 con este razonamiento escrito al lado:
+     «con sus 16 de relleno son los 36 px de un campo, exactos». La suma se
+     dejaba fuera el borde —20 + 16 + 2 = 38— y el campo con el que queria
+     casar no tenia altura propia: heredaba la del producto. Dos numeros mal y
+     ninguno de los dos era 36. */
+  text-align: left; line-height: 18px; }
 
 .fc-campo { padding-right: 32px;
   background-repeat: no-repeat; background-position: right 12px center;
@@ -9692,7 +9760,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .top-filtros .campo-grupo { flex-direction: row; align-items: center; gap: 8px; min-width: 0; }
 .top-filtros .campo-etiqueta { font-size: 12px; color: var(--texto-secundario); white-space: nowrap; }
 .top-filtros .campo-grupo .campo { padding: 4px 8px; width: auto; min-width: 0; }
-.fg-panel .campo { width: 100%; min-width: 0; font-size: 16px; }
+.fg-panel .campo { width: 100%; min-width: 0; font-size: 16px; line-height: 1.5; }
 #fg-btn.activo { color: var(--accion); background: var(--fondo-fila-hover); }
 /* LA MARCA EN MÓVIL. Con la lateral fuera de pantalla, la barra superior es lo
    único que queda del marco: sin logo aquí la marca desaparece de toda la
@@ -11183,8 +11251,59 @@ h2.seccion {
 
 .campo { font: inherit; font-size: 13px; padding: 8px 8px; border-radius: 6px;
   border: 1px solid var(--borde-campo); background: var(--fondo-tarjeta);
-  color: var(--texto-principal); }
+  color: var(--texto-principal);
+  /* EL MISMO INTERLINEADO QUE .btn, y declarado. Aqui no habia ninguno, asi que
+     NO DECLARABA NINGUNO: la altura de un campo era la que heredara la hoja
+     del producto. En el catalogo, con su interlinea de 1,45, media 36,45 —hay
+     una medicion en navegador escrita en FilaCarga desde la v1.102.0— y en
+     cada proyecto lo que dictara su hoja. No era una diferencia de pixeles:
+     era que .campo no tenia altura propia. */
+  line-height: 18px; }
 .campo::placeholder { color: var(--texto-pista); }
+
+/* ── UNA FILA DE CONTROLES ES UNA FILA ────────────────────────────────────
+   R136, de Control Administrativos V2.0, medido en su producto: una barra de
+   filtros —fecha, selector y boton, que es de lo mas comun que monta nadie—
+   entregaba los bordes escalonados. Tienen razon en que no hay alineacion que
+   salve esa fila: alinear por arriba solo mueve el escalon abajo.
+
+   LA CAUSA ERA QUE LA ALTURA NO ESTABA DECIDIDA. .btn declaraba su
+   interlineado —18px, que es ademas el tamano del icono de interfaz, y por eso
+   un boton mide lo mismo lleve icono o no (regla 0)—; .campo NO DECLARABA
+   NINGUNO, asi que su altura era la que heredara del producto. Eso no es una
+   diferencia de 1,5px: es que .campo no tenia altura propia. El mismo
+   componente medía 36,45 en el catalogo —interlinea 1,45— y otra cosa en cada
+   producto, segun lo que declarara su hoja. Esta escrito en FilaCarga desde la
+   v1.102.0: «la cifra exacta depende de la interlinea que herede el producto».
+
+   Se declara el interlineado y se acaba la dependencia. Nada de altura fija:
+   la primera version de este arreglo puso height a todos los controles y
+   min-height a todos los botones, y con eso aplastaba las variantes que
+   existen a proposito —el boton mini pasaba de 28 a 36, la barra del editor
+   crecia 8px por fila, los filtros compactos de tabla de 28 a 36— y RECORTABA
+   el campo en error, que lleva borde de 2px. Lo midieron dos auditorias antes
+   de publicar. Una altura fija no arregla una altura mal calculada: la tapa.
+
+   El area de texto queda fuera: es de VARIAS lineas y conserva su interlineado
+   de lectura. Se declara por elemento —especificidad 0,1,1— y no por orden de
+   aparicion, que es lo que caza verificar-empate. */
+textarea.campo { line-height: 1.5; }
+
+/* EL ERROR NO MUEVE LA FILA. El filete pasa de 1 a 2px —es la senal no
+   cromatica del sistema, SC 1.4.1— y sin compensarlo un campo en error crece
+   2px y rompe la fila justo cuando mas se mira. Se le devuelven al relleno. */
+.cg-mal, .campo-mal { padding-block: 7px; }
+
+/* LA FECHA: los 2px son del RELOJ NATIVO, y se quitan donde estan.
+   El equipo midio 39 donde un campo de texto daba 37: exactamente los 2px que
+   WebKit y Blink ponen de relleno en ::-webkit-datetime-edit. Se quitan ahi,
+   que es donde nacen, en vez de recortar la caja entera con una altura fija:
+   asi el campo de fecha sigue creciendo con el cuerpo de letra como cualquier
+   otro, y en las variantes compactas y en movil sigue casando con sus vecinos.
+   NO SE HA PODIDO MEDIR AQUI —en el contenedor no hay navegador— y por eso se
+   elige la forma que no puede empeorar nada: si no bastara, la fecha se queda
+   como estaba en vez de recortarse. */
+input[type='date'].campo::-webkit-datetime-edit { padding-block: 0; }
 
 /* La flecha nativa del desplegable la dibuja el navegador: va pegada al borde,
    no respeta el espaciado y no es de trazo. Se sustituye por el chevron del
@@ -11234,7 +11353,10 @@ select.campo:disabled { opacity: .75; }
 /* 'nowrap' es la regla, no un descuido: envolver es romper la estatica otra
    vez, solo que hacia abajo. Lo que no cabe se cuenta, ver «.cx-mas». */
 .cx-fila { display: flex; align-items: center; gap: 8px;
-  min-height: 36px; min-width: 0; flex-wrap: nowrap; }
+  /* LO QUE MIDE UN CAMPO, y ahora dicho con el mismo numero que lo dice: era
+     un 36 literal al lado de otro 36 literal, y cuando uno de los dos se
+     moviera nadie lo habria notado. */
+  min-height: var(--alto-control); min-width: 0; flex-wrap: nowrap; }
 .cx-fila > .btn { flex: none; }
 .cx-vacio { font-size: 12px; color: var(--texto-pista); }
 .cx-adjuntos { display: flex; align-items: center; gap: 4px;
@@ -12009,11 +12131,14 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .m-hamb { background: transparent; border: 0; cursor: pointer; padding: 4px;
   color: var(--marco-texto); display: grid; place-items: center; }
 .m-filtros-movil { display: flex; gap: 8px; margin-bottom: 12px; }
-.m-filtros-movil .campo { flex: 1; min-width: 0; font-size: 15px; }
+.m-filtros-movil .campo { flex: 1; min-width: 0; font-size: 15px; line-height: 1.5; }
 .m-cuerpo { padding: 12px; background: var(--fondo-pagina); }
 .m-cabecera h3 { font-size: 20px; font-weight: 600; }
 .m-cabecera p { margin: 4px 0 12px; font-size: 12px; color: var(--texto-secundario); }
-.m-cuerpo .campo { width: 100%; margin-bottom: 12px; font-size: 16px; }
+/* CON EL CUERPO A 16 EL INTERLINEADO SUBE CON EL. Los 16px estan para que iOS
+   no haga zoom al enfocar; con el 18px del control serian 1,125 de proporcion,
+   por debajo del area de glifo, y las descendentes se recortarian. */
+.m-cuerpo .campo { width: 100%; margin-bottom: 12px; font-size: 16px; line-height: 1.5; }
 .m-tarjeta { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
   border-radius: 6px; padding: 12px 12px; margin-bottom: 8px; }
 .m-nom { font-size: 15px; font-weight: 500; }
@@ -14409,24 +14534,50 @@ ${COMPRESOR_PDF}
     zona.appendChild(zonaEstado);
     document.body.appendChild(zona);
 
+    /* EL MISMO NUMERO QUE LA ENTREGA, y leido del mismo sitio. Esta pagina
+       demostraba 4, 5, 7 y 10 segundos mientras el componente entregaba 5 fijos
+       y el token decia otra cosa: tres fuentes y ninguna mandaba. Ahora las
+       tres son una — el componente lee --permanencia-aviso al montar, y esta
+       pagina tambien—, asi que lo que se prueba aqui es lo que se recibe. */
+    function permanencia() {
+      var crudo = getComputedStyle(document.documentElement)
+        .getPropertyValue('--permanencia-aviso').trim();
+      var m = /^([\d.]+)(ms|s)$/.exec(crudo);
+      return m ? Number(m[1]) * (m[2] === 's' ? 1000 : 1) : 2000;
+    }
+    var MS = permanencia();
+    function duracionLenta() {
+      var crudo = getComputedStyle(document.documentElement)
+        .getPropertyValue('--dur-lenta').trim();
+      var m = /^([\d.]+)(ms|s)$/.exec(crudo);
+      return m ? Number(m[1]) * (m[2] === 's' ? 1000 : 1) : 220;
+    }
     var TEXTOS = {
-      exito: ['exito', 'Se guardó la asistencia de marzo', 4000],
-      info: ['info', 'Se exportaron 38 filas a CSV', 5000],
-      aviso: ['aviso', 'Se envió con 3 faltas sin justificar', 7000],
+      exito: ['exito', 'Se guardó la asistencia de marzo', MS],
+      info: ['info', 'Se exportaron 38 filas a CSV', MS],
+      aviso: ['aviso', 'Se envió con 3 faltas sin justificar', MS],
       // El error NO se va solo: uno que desaparece es uno que nadie leyó.
       error: ['error', 'No se guardó: falta el DNI de 2 trabajadores', 0],
-      deshacer: ['exito', 'Se archivaron 12 expedientes', 10000],
+      /* Con Deshacer el reloj es el mismo, y lo que da tiempo es que SE PARA
+         con el cursor encima o el foco dentro. Darle diez segundos a este y dos
+         a los demas seria enseñar un aviso que el sistema no entrega. */
+      deshacer: ['exito', 'Se archivaron 12 expedientes', MS],
     };
 
     function avisar(tono, texto, conAccion) {
-      var d = TEXTOS[tono] || [tono, texto, tono === 'error' ? 0 : 4000];
+      var d = TEXTOS[tono] || [tono, texto, tono === 'error' ? 0 : MS];
       if (texto) d = [d[0], texto, d[2]];
       var el = document.createElement('div');
       el.className = 'av av-' + d[0];
       // El rol lo pone la REGIÓN, no el aviso: la de alert interrumpe, la de
       // status espera turno, y las dos ya existían al cargar.
       el.innerHTML = '<span class="av-txt">' + d[1] + '</span>' +
-        (conAccion || tono === 'deshacer' ? '<button class="av-accion">Deshacer</button>' : '') +
+        /* LAS MISMAS CLASES QUE EMITE EL COMPONENTE. Aqui iba .av-accion a
+           secas y el componente compone con Boton: btn btn-terc btn-mini
+           av-accion, que arrastra display, gap y line-height. La demostracion
+           ensenaba un boton que el producto no recibe. */
+        (conAccion || tono === 'deshacer'
+          ? '<button type="button" class="btn btn-terc btn-mini av-accion">Deshacer</button>' : '') +
         '<button class="av-x" aria-label="Cerrar aviso">' + '${ICO_X.replace(/'/g, "\\'")}' + '</button>';
       (d[0] === 'error' ? zonaAlerta : zonaEstado).appendChild(el);
       // Máximo tres a la vista: el cuarto expulsa al más antiguo QUE NO SEA UN
@@ -14439,7 +14590,10 @@ ${COMPRESOR_PDF}
       function cerrar() {
         clearTimeout(t);
         el.classList.remove('av-dentro');
-        setTimeout(function () { el.remove(); }, 220);
+        /* LA MISMA ESPERA QUE LA ENTREGA, y leida del mismo token: aqui habia
+           un 220 literal al lado de --dur-lenta, asi que el dia que el token se
+           moviera la demostracion se desincronizaba en silencio. */
+        setTimeout(function () { el.remove(); }, duracionLenta());
       }
       function arrancar() { if (d[2]) t = setTimeout(cerrar, d[2]); }
       // El reloj se detiene con el cursor encima o con el foco dentro: si se va

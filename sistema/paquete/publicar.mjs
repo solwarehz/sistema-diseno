@@ -114,6 +114,7 @@ const CANDADOS = [
   'sistema/candado/auditar-cascaron.mjs',
   'sistema/candado/probar-candado.mjs',
   'sistema/candado/verificar-cascada.mjs',
+  'sistema/candado/verificar-altura.mjs',
   'sistema/candado/verificar-contrato.mjs',
   'sistema/candado/verificar-entrega.mjs',
   'sistema/candado/verificar-promesa.mjs',

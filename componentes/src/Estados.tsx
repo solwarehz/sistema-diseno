@@ -8,6 +8,7 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Boton } from './Boton';
 import { EnZonaAvisos } from './ZonaAvisos';
+import { Icono } from './Icono';
 
 /* ── Estados de pantalla ─────────────────────────────────────────────────── */
 
@@ -94,21 +95,112 @@ export type AvisoProps = {
   /** Acción de vuelta atrás. «Deshacer» es lo que sustituye a preguntar. */
   accion?: { texto: string; onClick: () => void };
   onCerrar: () => void;
-  /** Milisegundos. El error NO se va solo: duración 0. */
+  /**
+   * Milisegundos que **permanece**, sin contar la entrada ni la salida. El
+   * error NO se va solo: duración 0.
+   *
+   * Sin valor, **sale de la hoja**: `--permanencia-aviso`. Así el día que un
+   * producto quiera otro tiempo lo cambia en su CSS y vale para todos sus
+   * avisos, en vez de pasar la misma prop en cada llamada.
+   */
   duracion?: number;
 };
 
+/** Los 2s por omisión, en un solo sitio y con su porqué. */
+const PERMANENCIA_POR_OMISION = 2000;
+
+/**
+ * LO QUE DURA UN AVISO SALE DE LA HOJA, y esto es la corrección de una promesa
+ * muerta: `--permanencia-aviso` existía, el catálogo lo publicaba en su tabla
+ * de tokens como «cuánto queda en pantalla un aviso temporal», y **no lo leía
+ * nadie** — cero usos en toda la hoja—. El tiempo de verdad estaba escrito
+ * aquí dentro, así que había dos fuentes y la documentada era la decorativa.
+ *
+ * Se lee al montar y no en el render: `getComputedStyle` necesita DOM, y este
+ * componente se renderiza también en servidor.
+ */
+function permanenciaDeLaHoja(el: HTMLElement | null): number {
+  if (!el || typeof getComputedStyle !== 'function') return PERMANENCIA_POR_OMISION;
+  const crudo = getComputedStyle(el).getPropertyValue('--permanencia-aviso').trim();
+  if (!crudo) return PERMANENCIA_POR_OMISION;
+  const m = /^([\d.]+)(ms|s)$/.exec(crudo);
+  if (!m) return PERMANENCIA_POR_OMISION;
+  const n = Number(m[1]) * (m[2] === 's' ? 1000 : 1);
+  return Number.isFinite(n) && n > 0 ? n : PERMANENCIA_POR_OMISION;
+}
+
 export function Aviso({ tono, texto, accion, onCerrar, duracion }: AvisoProps) {
+  const caja = useRef<HTMLDivElement>(null);
+  const [deLaHoja, setDeLaHoja] = useState(PERMANENCIA_POR_OMISION);
+  useEffect(() => {
+    // Sin cambio, sin re-render: React descarta el `setState` que devuelve lo
+    // mismo, y con eso desaparece el aviso de `act(...)` que ensuciaba la
+    // salida de dos archivos de prueba.
+    const v = permanenciaDeLaHoja(caja.current);
+    setDeLaHoja((p) => (p === v ? p : v));
+  }, []);
+
   // El error no se va solo aunque le pasen duración: algo no se hizo, y que
   // desaparezca deja seguir adelante sobre un estado falso.
-  const ms = tono === 'error' ? 0 : duracion ?? 5000;
+  const ms = tono === 'error' ? 0 : duracion ?? deLaHoja;
   const [pausado, setPausado] = useState(false);
 
+  /**
+   * Y SE VA DESVANECIÉNDOSE, no de golpe.
+   *
+   * Entraba animado y **salía de un fotograma a otro**: se llamaba a `onCerrar`
+   * y el producto lo desmontaba. Un elemento que aparece con cuidado y
+   * desaparece de golpe se lee como un fallo de pintado, que es exactamente el
+   * motivo por el que se animó la entrada.
+   *
+   * La salida es **la entrada al revés**, sin clase nueva: se quita `.av-dentro`
+   * y la transición que ya declara `.av` hace el resto. Una clase nueva habría
+   * sido otra promesa que el componente tendría que acordarse de emitir.
+   *
+   * El desmontaje espera a que la transición acabe —`transitionend` de la
+   * opacidad— con un plazo de respaldo por si no llega a correr: si el elemento
+   * está oculto, si el navegador no dispara el evento o si alguien anula la
+   * transición, el aviso se cierra igual. Con movimiento reducido las
+   * duraciones caen a 0,01ms y esto se vuelve instantáneo solo.
+   */
+  const [saliendo, setSaliendo] = useState(false);
+  const yaCerro = useRef(false);
+  /* El efecto de salida vive entre renders, y `onCerrar` puede cambiar por el
+     camino: sin esto se llamaba al de cuando empezó a salir. */
+  const cerrarAhora = useRef(onCerrar);
+  cerrarAhora.current = onCerrar;
+  const salir = () => setSaliendo(true);
+
   useEffect(() => {
-    if (!ms || pausado) return;
-    const t = setTimeout(onCerrar, ms);
+    if (!saliendo) return;
+    const el = caja.current;
+    const cerrar = () => {
+      if (yaCerro.current) return;
+      yaCerro.current = true;
+      cerrarAhora.current();
+    };
+    const fin = (e: TransitionEvent) => {
+      /* DEL AVISO, no de un hijo. `transitionend` burbujea, así que la
+         transición de un botón que el producto meta dentro —su «Deshacer» es
+         un nodo suyo— cerraba el aviso antes de tiempo. Con la hoja que viaja
+         hoy no pasa, porque ningún hijo transiciona la opacidad; pasaría con
+         cualquier hoja propia que lo hiciera. */
+      if (e.target !== el || e.propertyName !== 'opacity') return;
+      cerrar();
+    };
+    el?.addEventListener('transitionend', fin);
+    /* RESPALDO. Si la transición no llega a correr —el elemento oculto, el
+       producto con `transition: none`, o un entorno de prueba que no despacha
+       el evento— el aviso se cierra igual. Es un tope, no el camino normal. */
+    const respaldo = setTimeout(cerrar, 400);
+    return () => { el?.removeEventListener('transitionend', fin); clearTimeout(respaldo); };
+  }, [saliendo]);
+
+  useEffect(() => {
+    if (!ms || pausado || saliendo) return;
+    const t = setTimeout(salir, ms);
     return () => clearTimeout(t);
-  }, [ms, pausado, onCerrar]);
+  }, [ms, pausado, saliendo]);
 
   // Dentro de ZonaAvisos el rol lo pone la zona —dos regiones hermanas que
   // existen desde la carga— y repetirlo aquí anidaría regiones vivas.
@@ -141,7 +233,8 @@ export function Aviso({ tono, texto, accion, onCerrar, duracion }: AvisoProps) {
 
   return (
     <div
-      className={['av', `av-${tono}`, dentro ? 'av-dentro' : ''].filter(Boolean).join(' ')}
+      ref={caja}
+      className={['av', `av-${tono}`, dentro && !saliendo ? 'av-dentro' : ''].filter(Boolean).join(' ')}
       // Error interrumpe; el resto espera turno. Y van en zonas hermanas, no
       // anidadas: un role=alert dentro de una región polite se comporta distinto
       // en cada lector.
@@ -153,11 +246,25 @@ export function Aviso({ tono, texto, accion, onCerrar, duracion }: AvisoProps) {
     >
       <span className="av-txt">{texto}</span>
       {accion && (
-        <Boton mini variante="terciaria" className="av-accion" onClick={accion.onClick}>
+        /* Y AL PULSARLA, EL AVISO SE VA. «Deshacer» deshace lo que este aviso
+           anuncia, así que dejarlo en pantalla es dejar escrito algo que ya no
+           es verdad. El catálogo lo cerraba desde el principio y la entrega no:
+           el mismo botón hacía dos cosas distintas según dónde se mirara. */
+        <Boton mini variante="terciaria" className="av-accion"
+          onClick={() => { accion.onClick(); salir(); }}>
           {accion.texto}
         </Boton>
       )}
-      <button type="button" className="av-x" aria-label="Cerrar aviso" onClick={onCerrar}>×</button>
+      {/* Cerrar a mano también se desvanece: si no, el mismo aviso se iría de
+          dos formas distintas según quién lo cerrara. */}
+      {/* EL ICONO DEL SISTEMA, no el carácter `×`. La hoja lleva
+          `.av-x .ic{ width:16px; height:16px }` desde siempre y **ningún
+          producto podía activarla**: este era el único emisor de `.av-x` y
+          pintaba un carácter. El catálogo sí dibujaba el icono, así que la ✕
+          se veía de una forma en la demostración y de otra en la entrega. */}
+      <button type="button" className="av-x" aria-label="Cerrar aviso" onClick={salir}>
+        <Icono nombre="cerrar" tam="control" />
+      </button>
     </div>
   );
 }

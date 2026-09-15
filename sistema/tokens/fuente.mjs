@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.117.0";
+export const VERSION = "1.118.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,96 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.118.0', fecha: '2026-09-15',
+    que: 'UNA FILA DE CONTROLES ES UNA FILA (R136) — y el AVISO dura 2s y se va desvaneciendose',
+    porque:
+      'Lo reporto Control Administrativos V2.0 midiendo en su producto sobre la v1.117.0 '
+      + 'instalada: una barra de filtros —una fecha, un selector y el boton que dispara la '
+      + 'consulta, en una fila, que es de lo mas comun que monta nadie— entregaba los bordes '
+      + 'superiores ESCALONADOS. Tienen razon en el diagnostico y en el remedio: «con tres '
+      + 'alturas distintas, no hay alineacion que salve la fila», porque alinear por arriba '
+      + 'solo mueve el escalon abajo. '
+      + 'LA CAUSA NO ERA UNA DIFERENCIA DE PIXELES: ERA QUE .campo NO TENIA ALTURA PROPIA. '
+      + '.btn declaraba su interlineado —18px, que es ademas el tamano del icono de interfaz, '
+      + 'y por eso un boton mide lo mismo lleve icono o no—, y .campo NO DECLARABA NINGUNO: su '
+      + 'altura era la que heredara la hoja del producto. En el catalogo, con interlinea 1,45, '
+      + 'media 36,45 —hay una medicion en navegador escrita en FilaCarga desde la v1.102.0, que '
+      + 'ademas avisaba: «la cifra exacta depende de la interlinea que herede el producto»— y en '
+      + 'cada proyecto, otra cosa. Eso es lo que se acaba. Y el disparador de RangoFecha '
+      + 'declaraba 20 CON EL RAZONAMIENTO ESCRITO AL LADO («con sus 16 de relleno son los 36 px '
+      + 'de un campo, exactos»), una suma que se dejaba fuera el borde. '
+      + 'LOS 2 px DE LA FECHA SON DEL RELOJ NATIVO y se quitan donde nacen: es el relleno que '
+      + 'WebKit y Blink ponen en ::-webkit-datetime-edit, y cuadra exactamente con los 39 contra '
+      + '37 que midio el equipo. Asi el campo de fecha sigue creciendo con el cuerpo de letra '
+      + 'como cualquier otro. NO SE HA PODIDO MEDIR AQUI —en el contenedor no hay navegador— y '
+      + 'por eso se elige la forma que no puede empeorar nada: si no bastara, la fecha se queda '
+      + 'como estaba en vez de recortarse. '
+      + 'Y EL ERROR DEJA DE MOVER LA FILA: el filete pasa de 1 a 2px —senal no cromatica, '
+      + 'SC 1.4.1— y ahora se le devuelven al relleno, asi que un campo en error mide lo mismo '
+      + 'que sus vecinos justo cuando mas se mira. '
+      + 'NACE verificar-altura, el candado quince, y mide FILAS y no un numero: un sistema no '
+      + 'tiene UNA altura de control, tiene filas, y lo que importa es que los que se ponen '
+      + 'juntos midan igual. Comprueba tres —normal 36, en error 36, compacta 28— sobre la hoja '
+      + 'QUE VIAJA, y lleva DEUDA DECLARADA de dos que hoy no cuadran, con sus numeros. '
+      + 'LA FILA COMPACTA TAMPOCO CUADRABA y nadie lo habia mirado: el boton mini media 28 y el '
+      + 'filtro de columna 29,5. Ahora los dos 28. '
+      + 'DOS AUDITORIAS PARARON EL PRIMER ARREGLO, y tenian razon: ponia altura fija a todos los '
+      + 'controles y minimo a todos los botones, y con eso APLASTABA LAS VARIANTES que existen a '
+      + 'proposito —el boton mini de 28 a 36, la barra del editor +8px por fila, los filtros '
+      + 'compactos de 28 a 36—, RECORTABA 2px el campo en error, y dejaba muerto el min-height:0 '
+      + 'del area de texto. Una altura fija no arregla una altura mal calculada: la tapa. El '
+      + 'candado nacio sin ver ninguna de esas tres cosas y ahora las caza. '
+      + 'Y al escribirlo aparecio un defecto en el RESOLUTOR DE CASCADA compartido, que usan '
+      + 'otros cuatro candados: aplicaba al elemento las reglas de sus PSEUDO-ELEMENTOS, asi que '
+      + 'respondia que un campo de fecha tiene relleno 0 y altura 100% —los valores del iconito '
+      + 'del reloj— y habria dado el color del texto de pista como color del campo. Corregido, y '
+      + 'comprobado que los otros cuatro dan exactamente la misma salida que antes. '
+      + 'EL CATALOGO ENSENA AHORA UNA BARRA DE FILTROS en «La entrega real», que es donde se '
+      + 'pinta solo con la hoja que viaja: el caso exacto del R136 no estaba en ninguna pagina. '
+      + 'Y APARTE, EL AVISO TEMPORAL. Lo pidio el responsable con el sistema delante: «maximo que '
+      + 'permanezcan en 2seg, creo esta 5seg, es mucho, son muy intrusivas». Tenia razon en el '
+      + 'numero: eran 5000 ms, y escritos DENTRO del componente. El token --permanencia-aviso '
+      + 'existia, el catalogo lo publicaba en su tabla como «cuanto queda en pantalla un aviso '
+      + 'temporal», y NO LO LEIA NADIE: cero usos en la hoja. Habia TRES fuentes y ninguna mandaba '
+      + '—el token a 5s, el componente a 5000, y la demostracion del catalogo a 4, 5, 7 y 10 '
+      + 'segundos—. Ahora son una: el token baja a 2s, el componente LO LEE al montar, el catalogo '
+      + 'lee el mismo, y la prop `duracion` sigue mandando sobre los dos. '
+      + 'Y SE VA DESVANECIENDOSE. Entraba animado y salia de un fotograma a otro: se llamaba a '
+      + 'onCerrar y el producto lo desmontaba de golpe, que se lee como un fallo de pintado —el '
+      + 'motivo exacto por el que se animo la entrada—. La salida es la entrada al reves, sin clase '
+      + 'nueva: se quita .av-dentro y corre la transicion que .av ya declaraba. EL CATALOGO LO HACIA '
+      + 'DESDE EL PRINCIPIO Y LA ENTREGA NO: otra promesa que el carton ensenaba y el componente no '
+      + 'cumplia. Cerrar a mano usa el mismo camino. '
+      + 'Y AL ARREGLARLO SALIO OTRA COSA: las pruebas del aviso llamaban a useRealTimers al FINAL '
+      + 'sin try/finally, asi que una sola prueba rota se dejaba los temporizadores falsos puestos y '
+      + 'envenenaba a las siguientes del archivo — seis de Tarjetas cayeron con «Test timed out» sin '
+      + 'tener nada que ver. El diagnostico que se lee entonces es el equivocado.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'EL CAMPO YA NO HEREDA EL INTERLINEADO DE SU PRODUCTO: lo declara. Si la hoja de ustedes '
+      + 'fijaba una interlinea distinta de 1,3846 y contaban con que los campos la siguieran, '
+      + 'ahora miden 36 px fijos. En el catalogo la diferencia es de 0,45 px; en su producto, lo '
+      + 'que dictara su hoja. Es el punto de todo el cambio: un control cuya altura depende de '
+      + 'quien lo monte no tiene altura.',
+      'EL DISPARADOR DE RangoFecha mide 2 px menos: de 38 a 36.',
+      'UN CAMPO EN ERROR ya no crece 2 px al engrosar su filete: se los devuelve al relleno. '
+      + 'Si tenian una anulacion propia para compensarlo, sobra.',
+      'Un area de texto NO cambia: conserva su interlineado de lectura de 1,5.',
+      'EL AVISO TEMPORAL DURA 2 SEGUNDOS, no 5. Si alguna pantalla necesita mas, la prop `duracion` '
+      + 'manda; y si lo quieren para TODOS sus avisos, cambien --permanencia-aviso en su hoja, que '
+      + 'ahora el componente si lo lee. El error no cambia: no se va solo.',
+      'Y `onCerrar` LLEGA MAS TARDE: el aviso se desvanece primero y avisa al terminar la transicion '
+      + '—unos 220 ms— o, si la transicion no corre (transition: none, el aviso oculto), a los 400 ms '
+      + 'del plazo de respaldo, que esta para que un aviso no se quede NUNCA en pantalla. Si su '
+      + 'producto medía el tiempo exacto entre mostrar y desmontar, cuenta esa cola.',
+      'PULSAR LA ACCION («Deshacer») AHORA CIERRA EL AVISO. Deshacer deshace lo que el aviso anuncia, '
+      + 'asi que dejarlo en pantalla es dejar escrito algo que ya no es verdad. El catalogo lo cerraba '
+      + 'desde el principio y la entrega no.',
+      'LA ✕ DEL AVISO PASA A SER EL ICONO DEL SISTEMA, no el caracter «×». La hoja llevaba '
+      + '.av-x .ic{width:16px;height:16px} desde siempre y NINGUN PRODUCTO PODIA ACTIVARLA.',
+    ],
+  },
   {
     v: '1.117.0', fecha: '2026-09-15',
     que: 'UN MENU CORTO QUE ENSEÑA DONDE ESTAS — y el CATALOGO MONTA EL COMPONENTE DE VERDAD',

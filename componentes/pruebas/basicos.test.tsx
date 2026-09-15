@@ -12,6 +12,11 @@ import { Enlace } from '../src/Enlace';
 import { Campo, Selector } from '../src/Campo';
 import { Avatar, colorIdentidad, iniciales } from '../src/Avatar';
 import { Paginacion } from '../src/Paginacion';
+import { CampoContrasena } from '../src/CampoContrasena';
+import { SelectorBusqueda } from '../src/SelectorBusqueda';
+import { RangoFecha } from '../src/RangoFecha';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 describe('Botón', () => {
   it('la variante la elige la ACCIÓN y se refleja en la clase', () => {
@@ -270,5 +275,57 @@ describe('R54 · Selector en solo lectura: se lee, se enfoca y no cambia', () =>
     const raton = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
     sel.dispatchEvent(raton);
     expect(raton.defaultPrevented).toBe(false);
+  });
+});
+
+/* ── R136 · UNA FILA DE CONTROLES ES UNA FILA ──────────────────────────────
+   La altura la mide `verificar-altura.mjs` sobre la hoja que viaja; aquí no
+   hay navegador y jsdom no maqueta. Lo que esta prueba cierra es el OTRO
+   extremo, que es donde ese candado es ciego: **sus filas están escritas a
+   mano**. Si mañana un componente emite un control de fila y nadie lo apunta
+   ahí, el candado sigue en verde y ese control puede medir lo que quiera — que
+   es exactamente cómo el disparador de `RangoFecha` llegó a 38 px sin que nada
+   protestara.
+
+   La primera versión de esta prueba emparejaba **por subconjunto**, y con eso
+   no ataba nada: la entrada genérica `elem('input', ['campo'])` cubría también
+   al de contraseña y al del selector con búsqueda, así que se podían borrar del
+   candado y esto seguía en verde. Lo cazó una auditoría. Ahora la pregunta es
+   por COMPONENTE: *¿nombra el candado a cada componente que emite un control de
+   fila?* Borrar una entrada deja a su componente sin nombrar, y eso sí se ve. */
+describe('[0e] el candado de la altura nombra a todo el que emite un control de fila', () => {
+  const CANDADO = resolve(process.cwd(), '..', 'sistema', 'candado', 'verificar-altura.mjs');
+
+  /** Cada componente que emite algo con `.campo` o `.btn`, y qué emite. */
+  const EMISORES: [string, () => React.ReactElement][] = [
+    ['Boton', () => <Boton variante="principal">Buscar marcaciones</Boton>],
+    ['Campo', () => <Campo etiqueta="Documento" />],
+    ['Selector', () => <Selector etiqueta="Trabajador" opciones={[{ valor: '1', texto: 'LEÓN TUYA' }]} />],
+    ['CampoContrasena', () => <CampoContrasena etiqueta="Contraseña" value="" onChange={() => {}} />],
+    ['SelectorBusqueda', () => <SelectorBusqueda etiqueta="Trabajador" opciones={[{ valor: '1', texto: 'LEÓN TUYA' }]} valor={null} onCambio={() => {}} />],
+    ['RangoFecha', () => <RangoFecha titulo="Periodo" />],
+  ];
+
+  it('el archivo del candado se lee y trae filas: si no, esto no prueba nada', () => {
+    const src = readFileSync(CANDADO, 'utf8');
+    expect(src.length, 'no se pudo leer el candado').toBeGreaterThan(1000);
+    expect(/const FILAS = \[/.test(src), 'el candado ya no declara FILAS').toBe(true);
+  });
+
+  it.each(EMISORES)('%s emite un control de fila, y el candado lo nombra', (nombre, pintar) => {
+    const { container } = render(pintar());
+    const controles = [...container.querySelectorAll('.campo, .btn')]
+      .filter((el) => el.tagName !== 'TEXTAREA');
+    expect(controles.length, `${nombre} no emitió ningún control de una línea`).toBeGreaterThan(0);
+
+    /* Solo la parte de FILAS: el docstring del candado cita componentes al
+       contar la historia, y eso no es haberlos medido. */
+    const src = readFileSync(CANDADO, 'utf8');
+    const filas = src.slice(src.indexOf('const FILAS = ['), src.indexOf('const MULTILINEA'));
+    expect(
+      filas.includes(`'${nombre}'`),
+      `${nombre} emite un control de fila y no está en ninguna fila de verificar-altura: `
+      + 'puede medir lo que quiera y nada lo comprueba',
+    ).toBe(true);
   });
 });

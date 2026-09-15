@@ -19,14 +19,13 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.117.0** — dos cosas, y la segunda impide que la primera
-vuelva a pasar. **(1)** Cambia el criterio del menú: desplegado ya no llegan
-todos los grupos abiertos, sino **solo el de la pantalla en curso**, y el cursor
-revela los demás. Lo decidió el responsable, y **deroga la regla 9** que este
-mismo documento defendía. **(2)** El catálogo **monta `MarcoApp` de verdad**, no
-una maqueta — que es lo que §9.1 dice desde el principio y lo que no se estaba
-haciendo: en cuatro versiones seguidas el HTML escrito a mano divergió del
-componente, y cada vez costó una versión encontrarlo.
+**Estado actual: v1.118.0** — **una fila de controles es una fila.** Lo reportó
+el equipo consumidor midiendo una barra de filtros: fecha, selector y botón
+entregaban los bordes escalonados porque los tres medían distinto. La causa no
+era un valor mal puesto: era que **nadie lo ponía** — la altura salía de lo que
+cada control heredara de interlineado. Ahora se declara, y nace el candado
+**quince**, `verificar-altura`, que hace una pregunta que ninguno hacía: no
+sobre un componente, sino **entre** componentes.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
@@ -216,7 +215,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
 - **`main` sí se actualiza en este proyecto** —y solo en este—, pero **únicamente
   cuando está verificado y sin errores**. La condición no es una formalidad: es
   lo que hace que la regla sea segura, porque `main` es de donde instala el área
-  de sistemas. Antes de subir, los **diecisiete** pasos **en verde** y las pruebas
+  de sistemas. Antes de subir, los **dieciocho** pasos **en verde** y las pruebas
   pasando. **Son exactamente los de `sistema/paquete/publicar.mjs`, y en su mismo orden**, y esta lista
   decía «dieciséis» y **le faltaba `generar-cascaron.mjs`** hasta la v1.107.0: el
   catálogo se quedaba sin regenerar y los candados que lo leen medían la versión
@@ -232,6 +231,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
   node sistema/candado/auditar-cascaron.mjs
   node sistema/candado/probar-candado.mjs
   node sistema/candado/verificar-cascada.mjs  # la hoja QUE VIAJA, a once anchos
+  node sistema/candado/verificar-altura.mjs   # una fila de controles es UNA fila
   node sistema/candado/verificar-contrato.mjs # toda regla Obligatorio tiene prueba
   node sistema/candado/verificar-entrega.mjs  # lo publicado está EN el paquete
   node sistema/candado/verificar-promesa.mjs  # se VE igual que en el catálogo
