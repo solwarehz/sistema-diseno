@@ -29,15 +29,20 @@ docker run --rm -d --name mmi-cascaron -p 127.0.0.1:8080:80 `
 <http://127.0.0.1:8080> · solo en loopback y montado de solo lectura.
 Para pararlo: `docker rm -f mmi-cascaron`.
 
-## Los candados — DIECISEIS comandos
+## Los candados — DIECISIETE comandos, EN ESTE ORDEN
+
+El orden no es de adorno: `generar-cascaron` tiene que ir **antes** de los
+candados que leen el catalogo, y `extraer` antes de los que leen la hoja que
+viaja. Son exactamente los de `sistema/paquete/publicar.mjs`, en su mismo orden.
 
 ```powershell
 docker compose exec ds node sistema/tokens/generar.mjs
+docker compose exec ds node sistema/cascaron/generar-cascaron.mjs
+docker compose exec ds node sistema/componentes/extraer.mjs
 docker compose exec ds node sistema/candado/verificar-contraste.mjs
 docker compose exec ds node sistema/candado/verificar-color.mjs
 docker compose exec ds node sistema/candado/auditar-cascaron.mjs
 docker compose exec ds node sistema/candado/probar-candado.mjs
-docker compose exec ds node sistema/componentes/extraer.mjs
 docker compose exec ds node sistema/candado/verificar-cascada.mjs
 docker compose exec ds node sistema/candado/verificar-contrato.mjs
 docker compose exec ds node sistema/candado/verificar-entrega.mjs
@@ -50,13 +55,25 @@ docker compose exec ds node sistema/candado/verificar-iconos.mjs
 docker compose exec ds node sistema/candado/verificar-promesa-muerta.mjs
 ```
 
-**Esta lista ya se quedo corta TRES veces**, y las tres costaron caro: el
+**Esta lista ya se quedo corta CUATRO veces**, y las cuatro costaron caro: el
 2026-08-10 faltaban dos y no se corrieron en todo el dia — al correrlos, los dos
 en rojo. Cuatro mas faltaban aqui hasta la v1.81.0. Y el 2026-08-28 seguia
 diciendo CATORCE con dieciseis en el repositorio: faltaban `verificar-iconos` y
 el recien nacido `verificar-promesa-muerta`. Una lista incompleta de candados es
 un candado abierto: si se añade uno, se añade en los DOS sitios, aqui y en
 `CLAUDE.md` §8.
+
+La cuarta fue esta misma lista: decia DIECISEIS y le faltaba
+`generar-cascaron.mjs`, el mismo hueco que `CLAUDE.md` §8 registra de si mismo
+desde la v1.107.0 — **se arreglo alli y no aqui**. Con el generador fuera, quien
+siguiera estas instrucciones corria los candados del catalogo contra el catalogo
+de la version ANTERIOR y los veia en verde. Corregido el 2026-09-15.
+
+Y desde la v1.117.0 el generador del catalogo empaqueta el componente vivo con
+esbuild. Lo hace **donde este**: si corre en la maquina llama a `docker compose`,
+y si corre dentro del contenedor —que es lo que manda esta pagina— llama a
+`npx esbuild` directamente. Nacio sabiendo solo lo primero y **aqui dentro
+fallaba**, con un consejo, «levanta el contenedor», que era el que menos servia.
 
 Comprobados el 2026-08-28 sobre `main`, en la v1.95.0: **los dieciseis en
 verde** — 186 pares recalculados con 0 fallos, 62 casos del candado de lint sin

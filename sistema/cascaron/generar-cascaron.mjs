@@ -9,10 +9,19 @@
  * Se genera desde `fuente.mjs` y desde el `tokens.css` ya generado, así que
  * no puede divergir del sistema. Si cambias un color, regeneras y ya está.
  *
- * Es un CASCARÓN: estructura y color. No son los componentes reales.
+ * Es un CASCARÓN: estructura y color. Las maquetas NO son los componentes
+ * reales — y eso ha costado cuatro versiones seguidas persiguiendo copias.
+ *
+ * DESDE LA v1.117.0 EL MARCO SE MONTA DE VERDAD. `marco-vivo.tsx` se empaqueta
+ * con esbuild dentro del contenedor y se incrusta aquí: en la página de
+ * maquetas, debajo de las de cartón, está `MarcoApp` montado y vivo. Lo pidió
+ * el responsable —«en el cascarón usa tus componentes, así podré detectar algún
+ * cambio no solicitado»— y es lo que MMI-DS §9.1 dice desde el principio:
+ * «el catálogo importa los componentes reales y NO PUEDE DIVERGIR».
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { VERSION, primitivas, categoricas, autorizados, restringidos, semanticos, correcciones, CAMBIOS } from '../tokens/fuente.mjs';
@@ -345,14 +354,18 @@ const itemsMenu = (activo = 'panel', abierto = 'matricula', marca = 'a', plegado
   MENU.map(([k, txt, hijos]) => {
     if (!hijos) {
       return `
-      <a class="nav-item${k === activo ? ' activo' : ''}" href="#" title="${txt}">
-        <span class="nav-ic">${ICONOS[k]}</span>
+      <a class="nav-item${k === activo ? ' activo' : ''}" href="#"${k === activo ? ' aria-current="page"' : ''} title="${txt}">
+        <span class="nav-ic" aria-hidden="true">${ICONOS[k]}</span>
         <span class="nav-txt">${txt}</span>
       </a>`;
     }
+    /* `.fijo` JUNTO A `.abierto` cuando es el grupo de la pantalla en curso:
+       es el modelo de la regla 9 desde la v1.117.0 —menu corto, solo donde
+       estas— y la clase que la hoja pinta con el acento. Plegado no se pinta
+       fijo: alli manda solo el cursor. */
     const ab = k === abierto;
     return `
-      <div class="nav-grupo${ab ? ' abierto' : ''}">
+      <div class="nav-grupo${ab ? ' abierto' : ''}${ab && !plegado ? ' fijo' : ''}">
         <button class="nav-item nav-grupo-tit" aria-expanded="${ab}" aria-controls="mq-${marca}-${k}" title="${txt}">
           <span class="nav-ic">${ICONOS[k]}</span>
           <span class="nav-txt">${txt}</span>
@@ -361,8 +374,12 @@ const itemsMenu = (activo = 'panel', abierto = 'matricula', marca = 'a', plegado
         <div class="nav-hijos" id="mq-${marca}-${k}"${ab ? '' : ' hidden'}>
           <div class="nav-hijos-in">
             <span class="nav-flot-tit">${txt}</span>
-            ${hijos.map((h) => {
-              if (typeof h === 'string') return `<a class="nav-hijo" href="#" title="${h}"><span class="nav-txt">${h}</span></a>`;
+            ${hijos.map((h, iH) => {
+              if (typeof h === 'string') {
+                // La primera opcion del grupo fijado es la pantalla en curso.
+                const act = ab && !plegado && iH === 0;
+                return `<a class="nav-hijo${act ? ' activo' : ''}" href="#"${act ? ' aria-current="page"' : ''} title="${h}"><span class="nav-txt">${h}</span></a>`;
+              }
               const [ht, hic, nietos] = h;
               if (!nietos) {
                 return `<a class="nav-hijo" href="#" title="${ht}"><span class="nav-ic" aria-hidden="true">${ICONOS[hic]}</span><span class="nav-txt">${ht}</span></a>`;
@@ -6722,13 +6739,63 @@ pantalla necesita un estado de espera de verdad, no un girador de dos segundos.<
   su baja <strong>no se hace por la API</strong>: solo desde SUNAT con la Clave SOL.</span>
 </div>`;
 
+/* EL COMPONENTE DE VERDAD, EMPAQUETADO. Si esto falla, el generador PARA: un
+   catálogo que se quedara sin el componente vivo y no lo dijera sería
+   exactamente la mentira que esta pieza viene a cerrar. */
+function empaquetarMarcoVivo() {
+  /* DENTRO DEL CONTENEDOR NO HAY DOCKER. `LEVANTAR-EN-WINDOWS.md` manda correr
+     los generadores dentro —es la unica forma en una maquina sin node—, y esta
+     funcion nacio llamando a `docker-compose` a secas: ahi dentro fallaba con
+     «command not found» y el consejo que imprimia, «levanta el contenedor»,
+     era precisamente el que no servia. Se pregunta donde estamos. */
+  const dentro = existsSync('/.dockerenv');
+  const orden = `cd /trabajo/componentes && npx esbuild ../sistema/cascaron/marco-vivo.tsx`
+    + ` --bundle --format=iife --jsx=automatic --minify`
+    + ` --alias:react=/trabajo/componentes/node_modules/react`
+    + ` --alias:react-dom=/trabajo/componentes/node_modules/react-dom`
+    + ` --define:process.env.NODE_ENV='"production"' --outfile=/tmp/marco-vivo.js`
+    /* A un archivo y luego `cat`, no a `/dev/stdout`: cuando la salida estandar
+       es una tuberia —que es como la abre `execFileSync`— esbuild no puede
+       abrirla como archivo y responde «no such device or address». */
+    + ` && cat /tmp/marco-vivo.js`;
+  const [mandato, args] = dentro
+    ? ['sh', ['-c', orden]]
+    : ['docker-compose', ['exec', '-T', 'ds', 'sh', '-c', orden]];
+  try {
+    /* El paquete sale por la salida estandar y los diagnosticos de esbuild por
+       la de errores, heredada: asi el motivo REAL de un fallo se ve. Antes iba
+       un `>/dev/null 2>&1` que se lo tragaba, y un error de tipos en
+       `marco-vivo.tsx` se anunciaba como «levanta el contenedor». */
+    return execFileSync(mandato, args,
+      { cwd: RAIZ, maxBuffer: 64 * 1024 * 1024, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] });
+  } catch (e) {
+    console.error('\n  No se pudo empaquetar el marco vivo del catálogo.');
+    console.error('  El motivo real va arriba, en la salida de esbuild.\n');
+    console.error('  El catálogo monta `MarcoApp` DE VERDAD desde la v1.117.0, y sin eso');
+    console.error('  volvería a enseñar solo maquetas de cartón — que es de donde salieron');
+    console.error('  los cuatro defectos de esta semana. Se para en vez de publicar una');
+    console.error('  página que promete lo que no tiene.\n');
+    if (!dentro) console.error('  Si el fallo es de `docker-compose`:  docker-compose up -d\n');
+    throw e;
+  }
+}
+const MARCO_VIVO_JS = empaquetarMarcoVivo();
+
 const pagMaquetas = `
 <p class="pag-intro">Los tres contextos. Landing y sistema <strong>comparten valores, no proporciones</strong>.
 El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
+
+<div class="aviso"><strong>Lo de abajo del todo no es una maqueta.</strong> Las tres primeras son
+<strong>cartón</strong>: marcado escrito a mano que imita al componente, y que por eso puede divergir
+—y ha divergido cuatro versiones seguidas—. La última es <code>MarcoApp</code> <strong>montado y
+vivo</strong>, con la hoja que viaja. Si las dos no se comportan igual, la que manda es la de abajo.</div>
 <div class="maqueta-tit">Web — landing</div>${maquetaWeb}
 <div class="maqueta-tit">Sistema — lateral desplegada</div>${maquetaSistema}
 <div class="maqueta-tit">Sistema — lateral plegada</div>${maquetaColapsada}
-<div class="maqueta-tit">App — móvil, 375px</div>${maquetaMovil}`;
+<div class="maqueta-tit">App — móvil, 375px</div>${maquetaMovil}
+
+<div class="maqueta-tit">Sistema — <strong>el componente de verdad</strong>, montado y vivo</div>
+<div class="lienzo lienzo-sistema"><div id="marco-vivo" class="app-cascaron"></div></div>`;
 
 const pagInicio = `
 <p class="pag-intro">Vista general del sistema. Todo lo que hay, de una vez.
@@ -8525,12 +8592,17 @@ const menuCatalogo = CATALOGO.map(
          elementos sin el, justo donde la entrega deberia demostrarlo. Lo midio
          Control Administrativos V2.0, y va al reves de lo habitual: su producto
          los tenia y el catalogo no. -->
-    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="${n}" title="${g.grupo}">
-      <span class="nav-ic">${ICONOS[g.icono]}</span>
+    <button class="nav-item nav-grupo-tit" aria-expanded="${n === 0}" aria-controls="grupo-${n}" data-desplegar="${n}" title="${g.grupo}">
+      <span class="nav-ic" aria-hidden="true">${ICONOS[g.icono]}</span>
       <span class="nav-txt">${g.grupo}</span>
       <span class="nav-chev">${ICONOS.chevron}</span>
     </button>
-    <div class="nav-hijos" id="grupo-${n}">
+    <!-- EL MARCADO ESTATICO YA NACE COHERENTE. Salia con los nueve grupos
+         diciendo aria-expanded="true" y sin el atributo de ocultar, y solo el
+         guion los cerraba al cargar: antes de que corriera, el archivo que se
+         entrega decia «todos abiertos» — el criterio que la regla 9 deroga.
+         Ahora nace como queda: abierto el primero, que es la pagina de inicio. -->
+    <div class="nav-hijos" id="grupo-${n}"${n === 0 ? '' : ' hidden'}>
       <div class="nav-hijos-in">
       <span class="nav-flot-tit">${g.grupo}</span>
       ${
@@ -12642,9 +12714,24 @@ ${COMPRESOR_PDF}
     // Plegada, el FIJADO no abre el panel flotante: solo el cursor. Si no, al
     // elegir una opción el grupo queda fijado y el panel se reabre solo.
     var plegada = lateralCat.classList.contains('colapsado');
-    var abierto = (!plegada && g.classList.contains('fijo')) || g.classList.contains('hover');
+    /* DOS SENALIZADORES, como MarcoApp desde la v1.117.0: el raton esta en un
+       sitio y el foco del teclado en otro, y ninguno desaloja al otro. Esta
+       barra llevaba UNO solo, puesto y quitado por los dos, asi que pasar el
+       raton por encima CERRABA EL PANEL DONDE VIVIA EL FOCO de alguien y
+       aria-expanded decia «false» sobre el grupo donde estaba — WCAG 2.4.3 y
+       4.1.2. Es el mismo defecto que el componente acababa de cerrar, vivo en
+       la barra que la gente recorre. Lo midio la tercera auditoria del
+       2026-09-15 ejecutando el mismo gesto en las dos. */
+    var abierto = (!plegada && g.classList.contains('fijo'))
+      || g.hasAttribute('data-cursor') || g.hasAttribute('data-foco');
     g.classList.toggle('abierto', abierto);
     g.querySelector('.nav-grupo-tit').setAttribute('aria-expanded', String(abierto));
+    /* Y EL ATRIBUTO DE OCULTAR, que esta funcion no tocaba: los ocho grupos
+       cerrados de esta barra lo llevaban ausente mientras el componente lo
+       emite siempre. El manejador de rama, diez lineas mas abajo, si lo
+       sincronizaba — y el propio comentario de ahi llama a esto «un estado que
+       MarcoApp no produce jamas». Lo cazo una auditoria el 2026-09-15. */
+    g.querySelector('.nav-hijos').toggleAttribute('hidden', !abierto);
   }
 
   grupos.forEach(function (g) {
@@ -12657,30 +12744,32 @@ ${COMPRESOR_PDF}
        Quien pasaba el raton por el menu desplegado del catalogo veia los grupos
        abrirse solos y recibia otra cosa en su producto. Lo midio el responsable
        el 2026-09-14 pasando el raton, que es como se cazan estas. */
-    var estaPlegada = function () { return lateralCat.classList.contains('colapsado'); };
+    /* EL CURSOR REVELA EN LOS DOS ESTADOS, que es como esta barra funcionó
+       siempre. La v1.114.0 le puso un guard para que solo revelara plegada —
+       cumplía la regla 9 de entonces, que decía que desplegado el cursor no
+       abre—, y con eso ESTA PAGINA DEJO DE HACER lo que el responsable venía a
+       ver. Lo noto el 2026-09-15 mirandola. La regla 9 cambia de signo en la
+       v1.117.0 y el guard se va: el componente hace ahora lo que esta barra
+       lleva haciendo desde el principio. */
     g.addEventListener('mouseenter', function () {
-      if (!estaPlegada()) return;
       clearTimeout(salida);
-      g.classList.add('hover');
+      g.setAttribute('data-cursor', '');
       sincronizarGrupo(g);
     });
     g.addEventListener('mouseleave', function () {
-      if (!estaPlegada()) return;
       clearTimeout(salida);
       salida = setTimeout(function () {
-        g.classList.remove('hover');
+        g.removeAttribute('data-cursor');
         sincronizarGrupo(g);
       }, 220);
     });
-    // Con teclado no hay ratón: al enfocar dentro, se abre igual — y tambien
-    // solo plegada, que es lo que hace el componente.
-    g.addEventListener('focusin', function () {
-      if (!estaPlegada()) return;
-      g.classList.add('hover'); sincronizarGrupo(g);
-    });
+    /* Con teclado no hay raton: al enfocar dentro, se abre igual — y con SU
+       propio senalizador. Sin margen de gracia: los 220 ms existen porque el
+       raton tiene que cruzar los 56px del carril, y el foco salta al destino
+       sin recorrer nada. */
+    g.addEventListener('focusin', function () { g.setAttribute('data-foco', ''); sincronizarGrupo(g); });
     g.addEventListener('focusout', function (e) {
-      if (!estaPlegada()) return;
-      if (!g.contains(e.relatedTarget)) { g.classList.remove('hover'); sincronizarGrupo(g); }
+      if (!g.contains(e.relatedTarget)) { g.removeAttribute('data-foco'); sincronizarGrupo(g); }
     });
     sincronizarGrupo(g);
   });
@@ -12705,6 +12794,14 @@ ${COMPRESOR_PDF}
       var yaFijo = g.classList.contains('fijo');
       grupos.forEach(function (o) { o.classList.remove('fijo'); sincronizarGrupo(o); });
       if (!yaFijo) g.classList.add('fijo');
+      /* SOLTAR APAGA TAMBIEN EL REVELADO, como hace MarcoApp. Esta barra se
+         dejaba data-cursor puesto, asi que soltar con el raton encima la
+         dejaba ABIERTA y el componente la dejaba CERRADA: el mismo gesto, dos
+         resultados. Es la divergencia carton/entrega de siempre, y ningun
+         candado la ve —el de la promesa resuelve la cascada sobre el mismo
+         marcado, el del elemento compara etiquetas—. La cazo una auditoria
+         el 2026-09-15 ejecutando las dos. */
+      else { g.removeAttribute('data-cursor'); g.removeAttribute('data-foco'); }
       sincronizarGrupo(g);
     });
   });
@@ -12742,8 +12839,15 @@ ${COMPRESOR_PDF}
     // Al plegar cambia la regla de apertura: fijado deja de abrir y solo abre
     // el cursor. Sin re-sincronizar, el grupo fijado se quedaba como panel
     // flotante atascado, abierto sin que nadie lo hubiera pedido.
+    /* EL FOCO NO SE QUEDA DENTRO DE LO QUE SE VA A OCULTAR. Cerrar un grupo le
+       pone el atributo de ocultar a su panel —display:none— y el navegador tira
+       al body el foco que hubiera dentro. Va al boton de plegar, que es lo que
+       queda a la vista. Igual que MarcoApp. */
+    var dentro = document.activeElement;
+    if (dentro && dentro.closest && dentro.closest('#lateral .nav-hijos')) boton.focus();
     document.getElementById('lateral').querySelectorAll('.nav-grupo').forEach(function (g) {
-      g.classList.remove('hover');
+      g.removeAttribute('data-cursor');
+      g.removeAttribute('data-foco');
       sincronizarGrupo(g);
     });
     /* REGLA 12 · PLEGADO, LAS RAMAS DEL PANEL FLOTANTE LLEGAN ABIERTAS.
@@ -12781,6 +12885,14 @@ ${COMPRESOR_PDF}
     enlaces.forEach(function (a) {
       var act = a.getAttribute('data-ir') === id;
       a.classList.toggle('activo', act);
+      /* Y EL ANUNCIO, no solo el color. Esta barra marcaba la pagina en curso
+         con la clase y nada mas, mientras la pagina de Paginacion de este mismo
+         catalogo publica como regla que «la pagina actual lleva
+         aria-current="page"; EL COLOR SOLO NO LA MARCA». Es el patron de
+         R135c —el catalogo incumpliendo lo que exige— cerrado para el rotulo
+         del raton y no para esto. Lo cazo una auditoria el 2026-09-15. */
+      if (act) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
     });
     // El grupo de la página en curso queda FIJADO: se queda abierto aunque el
     // cursor se vaya. Los demás vuelven a comprimirse. Si el activo está en
@@ -12798,9 +12910,7 @@ ${COMPRESOR_PDF}
     });
     lat.querySelectorAll('.nav-grupo').forEach(function (g) {
       g.classList.toggle('fijo', !!activo && g.contains(activo));
-      var ab = (!plegada && g.classList.contains('fijo')) || g.classList.contains('hover');
-      g.classList.toggle('abierto', ab);
-      g.querySelector('.nav-grupo-tit').setAttribute('aria-expanded', String(ab));
+      sincronizarGrupo(g);   // y no a mano: se dejaba fuera el atributo de ocultar
     });
     if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
     document.querySelector('.cat-cuerpo').scrollTop = 0;
@@ -12825,9 +12935,9 @@ ${COMPRESOR_PDF}
       // Se quita el hover a mano: el cursor sigue encima tras el clic, así que
       // no habrá mouseleave hasta que la persona lo mueva.
       document.getElementById('lateral').querySelectorAll('.nav-grupo').forEach(function (o) {
-        o.classList.remove('hover');
-        o.classList.remove('abierto');
-        o.querySelector('.nav-grupo-tit').setAttribute('aria-expanded', 'false');
+        o.removeAttribute('data-cursor');
+        o.removeAttribute('data-foco');
+        sincronizarGrupo(o);
       });
     }
   });
@@ -14867,6 +14977,11 @@ ${COMPRESOR_PDF}
   } catch (e) {}
 })();
 </script>
+
+<!-- EL COMPONENTE DE VERDAD. Va al final: monta sobre el contenedor
+     marco-vivo, que ya existe cuando este guion corre. Empaquetado con esbuild
+     dentro del contenedor; si falla, el generador para. -->
+<script>${MARCO_VIVO_JS}</script>
 </body>
 </html>
 `;
@@ -14915,7 +15030,6 @@ console.log(`  ${Object.keys(semanticos).length} semánticos · ${Object.keys(pr
 // Los estilos de componente se extraen del catalogo RECIEN escrito. Corre aqui
 // y no aparte para que no puedan quedarse atras: si el catalogo cambia, la hoja
 // entregada cambia en el mismo comando.
-const { execFileSync } = await import('node:child_process');
 execFileSync(process.execPath, [join(AQUI, '..', 'componentes', 'extraer.mjs')], { stdio: 'inherit' });
 
 const entrega = empaquetar({

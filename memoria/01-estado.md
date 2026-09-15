@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 15 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.116.0** — la regla 12 entró solo en el
-componente: la barra del catálogo seguía contradiciéndola
+**Versión del sistema:** MMI-DS **v1.117.0** — un menú corto que enseña dónde
+estás, y el catálogo monta por fin el componente de verdad
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ componente: la barra del catálogo seguía contradiciéndola
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **diecisiete pasos de
-verificación** —los que corre `publicar.mjs`—, **846 pruebas en 50 archivos**,
+verificación** —los que corre `publicar.mjs`—, **875 pruebas en 50 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -56,15 +56,15 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **846 pruebas en 50 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **875 pruebas en 50 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **977 reglas de 1492** · **701 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.116.0.zip` · **60 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.117.0.zip` · **60 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.116.0**, con el salto **desde la v1.19.0**, que es la instalada |
-| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los diecisiete pasos · **143 unidades compuestas** · **8 de deuda declarada**, 0 nuevas |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.117.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los diecisiete pasos · **143 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -86,7 +86,259 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.116.0), con detalle
+### Lo de hoy (v1.117.0), con detalle
+
+Dos cosas, y **la segunda es la que impide que la primera vuelva a pasar**.
+
+#### Cambia el criterio del menú
+
+Lo decidió el responsable con el menú delante: *«mostrar un menú corto y solo
+donde estoy ahora»*. Desplegado, los grupos llegaban **todos abiertos** y el
+cursor no los tocaba: con cuatro grupos de cinco opciones son veinte renglones
+siempre a la vista, y ninguno dice dónde estás mejor que los otros.
+
+Ahora llegan plegados; solo está abierto el de la pantalla en curso, que lleva
+`.fijo` y su título en el acento; **el cursor revela** cualquier otro y al salir
+se pliega; y **elegir una opción mueve el fijado**, plegando el anterior.
+Plegado no cambia nada.
+
+**Esto deroga la regla 9**, que escribí yo hace tres versiones —*«desplegado el
+cursor NO abre los grupos»*— y que el equipo consumidor **respaldó por escrito**
+en R135. Su argumento era que abrir al pasar por encima *cuando ya se lee todo*
+es ruido, y se apoyaba en que **ya se leía todo**. Con un menú corto deja de
+sostenerse. La regla vieja se queda escrita como derogada, con su motivo: una
+regla que desaparece sin rastro obliga a redescubrir por qué se pensó lo
+contrario.
+
+**Y resucita `.nav-grupo.fijo`**, que la hoja estilizaba desde hacía versiones y
+que **ningún producto podía activar** — deuda declarada en
+`verificar-promesa-muerta`, podada hoy porque se diseñó para exactamente esto.
+El modelo no es nuevo: **es el que la barra del catálogo llevaba funcionando
+desde el principio, a mano.**
+
+#### El catálogo monta el componente de verdad
+
+Lo pidió el responsable: *«en el cascarón usa tus componentes, así podré
+detectar algún cambio no solicitado»*. Y es lo que MMI-DS §9.1 dice desde el
+principio —*«el catálogo importa los componentes reales y no puede divergir»*—
+y lo que no se estaba haciendo: había un HTML escrito a mano que **sí puede
+divergir, y divergió cuatro versiones seguidas**:
+
+| Versión | Lo que divergía |
+|---|---|
+| v1.114.0 | el `title` que el catálogo pintaba y el componente no emitía |
+| v1.114.0 | el hover que el catálogo demostraba y el componente no hacía |
+| v1.115.0 | la maqueta con enlaces y chevron, marcado que el componente no produce |
+| v1.116.0 | la regla 12, que entró en el componente y no en el catálogo |
+
+`sistema/cascaron/marco-vivo.tsx` es código real que importa `MarcoApp`. El
+generador lo empaqueta con esbuild **dentro del contenedor** y lo incrusta:
+**162,9 KB** minificados, y el catálogo pasa de **2 360 605** a **2 543 235
+bytes** — **+178 KiB**. La primera cifra que se escribió aquí —«de 2,30 a
+2,38 MB»— **no la había medido nadie**, y las dos estaban mal; lo cazó una
+auditoría. Medir ésta tiene un pliegue que conviene contar: **el texto que dice
+el tamaño vive dentro del archivo que mide**, así que la cifra se mueve al
+escribirla. Se regeneró hasta el punto fijo y se comprobó que la segunda vuelta
+daba el mismo número. **Si el empaquetado falla, el generador para** — un catálogo sin el componente vivo que no lo dijera
+sería la misma mentira que esto viene a cerrar.
+
+Está en *Maquetas*, debajo de las tres de cartón, con el aviso de cuál manda.
+
+**Verificado con el ratón en el componente real**, no en el cascarón: al cargar,
+solo el grupo de la pantalla en curso abierto y fijo; pasar el ratón revela
+otro; pulsar una opción mueve el bloqueo y el anterior se pliega solo.
+
+### Lo que encontró la auditoría de la v1.117.0 — y entró antes de publicar
+
+Seis cosas, y la primera bloqueaba la entrega.
+
+**1 · Con teclado, el título de un grupo no lo cerraba nunca.** `alternarGrupo`
+soltaba el fijado y dejaba vivo el cursor, así que el grupo seguía abierto y
+`aria-expanded` respondía `"true"` **justo después de pulsarlo para cerrarlo**.
+Con ratón se disimulaba —el `mouseleave` llegaba al apartarlo—; con teclado no
+hay `mouseleave`. Es **WCAG 4.1.2**: el estado que se anuncia no es el que hay.
+Ahora soltar limpia también el cursor, y hay dos pruebas, una por cada entrada.
+
+**2 · La barra del catálogo no sincronizaba el atributo de ocultar** de los
+hijos. Sus ocho grupos cerrados lo llevaban **ausente** mientras `MarcoApp` lo
+emite siempre — y el manejador de rama, diez líneas más abajo en el mismo
+archivo, sí lo sincronizaba, con un comentario que llama a ese estado *«uno que
+MarcoApp no produce jamás»*. La función de al lado lo producía.
+
+**3 · La misma barra marcaba el cursor con una clase `.hover`** que **ninguna
+regla de la hoja atiende**, que `MarcoApp` no emite, y que además **choca de
+nombre** con `.s-tabla tbody tr.hover`, que sí existe y es de la tabla. Era
+estado interno disfrazado de clase. Ahora es `data-cursor`, un atributo.
+
+**4 · Las maquetas de cartón pintaban la opción activa sin `aria-current`.**
+El componente lo emite desde siempre; la maqueta enseñaba el color y callaba lo
+que oye un lector de pantalla — que es justo el defecto de R135(c) otra vez.
+
+**5 · El empaquetado del marco vivo se tragaba el error real de esbuild** con
+`>/dev/null 2>&1`, así que un fallo de tipos en `marco-vivo.tsx` se anunciaba
+como «levanta el contenedor»: el consejo equivocado, y el que más tiempo hace
+perder. Ahora los diagnósticos van a la salida de errores, heredada.
+
+**6 · El generador no podía correrse dentro del contenedor.** Llamaba a
+`docker-compose`, que ahí dentro no existe — y correr los generadores dentro es
+**exactamente lo que manda `LEVANTAR-EN-WINDOWS.md`**, porque en esa máquina no
+hay `node`. Ahora pregunta dónde está (`/.dockerenv`) y llama a `npx esbuild`
+directamente. Al arreglarlo apareció un segundo fallo que el primero tapaba:
+`--outfile=/dev/stdout` no funciona cuando la salida estándar es una tubería.
+
+Y de regalo, **la lista de candados de `LEVANTAR-EN-WINDOWS.md` decía DIECISÉIS
+y le faltaba `generar-cascaron.mjs`** — el mismo hueco que `CLAUDE.md` §8
+registra de sí mismo desde la v1.107.0, arreglado allí y no aquí. Es la cuarta
+vez que esa lista se queda corta. Quien siguiera esas instrucciones corría los
+candados del catálogo contra el catálogo de la versión **anterior**, en verde.
+
+**Y las notas de la publicación de GitHub eran una plantilla fija** —la misma en
+las 117 versiones—. `fuente.mjs` lleva por cada versión qué cambió, por qué, y
+una lista `rompe` con lo que puede romperle a quien actualiza; el catálogo la
+pinta y **la publicación no decía una palabra**. Quien entra por ahí, que es la
+puerta que abre `npm install`, recibía el aviso de cambio de comportamiento sólo
+si además se le ocurría abrir el catálogo. Ahora salen de `CAMBIOS`, con su
+sección «⚠️ Puede romperte», y se reescriben también si la publicación ya existía.
+
+Tres cifras de la documentación **no coincidían con lo que miden las
+herramientas** —§9 «cero invención»—: la deuda declarada decía 8 y son **7** en
+dos sitios, y el tamaño del catálogo estaba mal en los dos que lo citaban.
+
+### La SEGUNDA auditoría de la v1.117.0 — la que encontró un defecto de verdad
+
+La primera ronda encontró huecos. La segunda, con el trabajo ya corregido,
+encontró **un defecto funcional nuevo que la primera no vio**, y por eso la
+entrega no salió ese día.
+
+**EL RATÓN EXPULSABA EL FOCO DEL TECLADO.** Al reescribir el menú, «qué grupo
+está revelado» pasó de ser un conjunto a **un solo valor**, movido a la vez por
+el ratón y por el foco. Con eso, pasar el cursor por un grupo **desalojaba al
+anterior en el acto** aunque el anterior estuviera abierto porque **ahí vivía el
+foco de alguien**. Y como `.nav-hijos[hidden]` es `display:none`, el navegador
+**expulsa ese foco al `<body>`**: quien navega con teclado perdía el sitio
+porque otra persona movió el ratón, con `aria-expanded` diciendo `"false"` sobre
+el grupo donde estaba. **WCAG 2.4.3 y 4.1.2**, y pasaba con el riel extendido y
+también plegado.
+
+Era **nuevo de esta versión** —hasta la v1.116.0 era un conjunto y nadie
+desalojaba a nadie— y **ninguna de las 870 pruebas lo miraba**.
+
+El arreglo es **dos señalizadores en vez de uno**: el ratón está en un sitio y
+el foco en otro, son dos hechos independientes, y un grupo se ve abierto si lo
+reclama cualquiera de los dos. Los 220 ms de gracia son **solo del cursor** —
+existen porque el ratón tiene que cruzar los 56 px del carril, y el foco salta
+sin recorrer nada.
+
+**Siete mutaciones sobrevivían en verde**, y las siete son ahora rojo:
+
+| Pieza | La mutación que pasaba desapercibida |
+|---|---|
+| `aria-expanded` | `{estaFijo}` en vez de `{abierto}` — 70/70 y 8/8 en verde |
+| `onBlur` entero | vaciarlo: tabular dejaba **todos** los grupos abiertos |
+| la guarda `contains` del `onBlur` | quitarla: ir del título a una opción de dentro cerraba el panel **bajo el foco** |
+| la clase `.fijo` | pintarla sobre `abierto`: **dos acentos a la vez** |
+| `sincronizarGrupos`, rama controlada | borrarla entera |
+| `GRACIA_SALIDA` | 220 → 120, o → 101: el número no estaba sujeto por abajo |
+| `navegar` | el respaldo `?? clave` era **rama inalcanzable** — código muerto, retirado |
+
+**Y el catálogo tenía tres cosas más**, todas del mismo patrón —el catálogo
+incumpliendo lo que él mismo publica—:
+
+1. **`#lateral` no emitía `aria-current` en ninguna parte.** Marcaba la página
+   en curso solo con la clase, mientras la página de *Paginación* de ese mismo
+   catálogo publica como regla que *«la página actual lleva `aria-current`;
+   **el color solo no la marca**»*. Es R135c otra vez, cerrado para el rótulo
+   del ratón y no para esto.
+2. **Soltar un grupo con el cursor encima dejaba resultados distintos**: el
+   componente cerraba, la barra del catálogo no. El mismo gesto, dos entregas.
+3. **El HTML estático nacía incoherente**: nueve grupos diciendo
+   `aria-expanded="true"` sin el atributo de ocultar, y solo el guion los
+   cerraba al cargar. El archivo que se entrega decía «todos abiertos» — el
+   criterio que la regla 9 deroga.
+
+**Y una prueba que no se corría sin decirlo.** Al añadir las pruebas nuevas del
+catálogo, la suite empezó a responder:
+
+```
+Error: Worker exited unexpectedly
+Test Files  49 passed (50)
+Tests  857 passed (870)
+```
+
+Ningún fallo, ninguna prueba en rojo, y **trece pruebas que no se ejecutaron**;
+el archivo que faltaba no aparece por ninguna parte del resumen. Cada catálogo
+vivo cuesta **unos 150 MB** medidos —32 MB → 187 → 314 → 476 con tres—, y con
+seis *workers* en paralelo el contenedor se quedaba sin memoria. **Lo cazó
+`publicar.mjs`**, que juzga por código de salida y no por el texto: la
+corrección que le hizo una auditoría el 2026-09-11, demostrando aquí para qué
+servía. `fileParallelism: false` — 50 de 50 y 875 de 875, en 82 s en vez de 24.
+
+**Y ocho cifras más de la documentación que no coincidían** con lo que miden las
+herramientas: 846 pruebas eran **870** el día que se midió —y **875** al cerrar la versión, con las cinco que trajo la tercera auditoría— en tres sitios, «178 pares en vez de 89»
+son **186 en vez de 93**, «9 conocidos pero prohibidos» son **10**, la tabla de
+las dos vías decía 77 y 59 archivos y son **78 y 60** —y el 59 se contradecía
+con el «60 archivos» de catorce líneas antes—, «los diecisiete candados» son
+**catorce** *ocho líneas después de corregir exactamente eso*, y «son 56
+versiones» desde la v1.19.0 son **112**.
+
+**Lo que se deja como está, y por qué:** la entrada de `CAMBIOS` de la v1.19.0
+dice «178 pares en vez de 89» y **no se toca**. Es el registro de lo que se midió
+el 2026-08-09; hoy son 186 porque en 98 versiones se añadieron pares. Reescribir
+una medición fechada es peor que tenerla vieja.
+
+### La TERCERA auditoría — la que auditó la corrección
+
+Se auditó el arreglo, no solo el trabajo. Encontró **dos defectos más**, y el
+primero es el que este repositorio declara fatal.
+
+**1 · La corrección no había llegado al catálogo.** Se arreglaron los dos
+señalizadores en `MarcoApp` y **la barra propia del catálogo se quedó con uno**,
+puesto y quitado por el ratón *y* por el foco. Midiendo **el mismo gesto en las
+dos hojas**:
+
+| gesto | barra del catálogo | componente |
+|---|---|---|
+| foco dentro del grupo, el ratón pasa por encima y se va | `abierto:false · aria:"false" · oculto:true` | `abierto:true · aria:"true" · oculto:false` |
+| ratón encima, el foco sale del grupo | `abierto:false · aria:"false" · oculto:true` | `abierto:true · aria:"true" · oculto:false` |
+
+Es el defecto cartón/entrega **sobre el punto exacto que define la versión**, y
+en la versión que se publica para cerrarlo. Ningún candado podía verlo: los
+estáticos no ejecutan y los de cascada comparan estilos, no gestos. Ahora la
+barra lleva `data-cursor` y `data-foco`, y hay dos pruebas que ejecutan el
+catálogo y hacen ese gesto.
+
+**2 · Plegar el riel expulsaba el foco del teclado.** `sincronizarGrupos` suelta
+los grupos, y cerrar un grupo le pone `hidden` a su panel: `display:none`. Con
+el foco dentro, el navegador lo tira al `<body>`. Llegaba por **las dos puertas
+que nadie miraba** —la ventana cruzando los 900 px sola, y el producto plegando
+desde fuera (R21)—; las otras dos ya movían el foco antes, y por eso no se veía:
+el clic en el botón se lo lleva y Escape lo devuelve a mano. **Es preexistente**
+—la v1.116.0 vaciaba su conjunto igual— y se cierra aquí porque esta versión se
+publica precisamente por este daño. Ahora el foco se va al botón de plegar.
+
+**Tres mutaciones más sobrevivían en verde** con 90 pruebas: `sincronizarGrupos`
+soltando solo el cursor y no el foco —que es justo el hueco del defecto 2—, la
+limpieza de temporizadores al desmontar, y el rescate del foco. Las tres están
+en rojo.
+
+Y dos cosas menores: un señalizador podía quedarse **rancio** si cambiaba la
+navegación —un grupo que volviera a montarse con la misma clave llegaba revelado
+sin que nadie lo tocara—, y una prueba se titulaba *«SIN RATÓN se llega a todas
+las pantallas»* midiendo solo que el grupo se abre. **El título prometía más de
+lo que la prueba mide**, que es el mismo defecto que esta versión persigue,
+cometido en el sitio donde más engaña.
+
+**Lo que la auditoría confirmó que sí funciona**, midiendo en vez de razonar: las
+ocho combinaciones de ratón y foco, el recorrido con teclado en los dos estados
+del riel —18 paradas, `aria-expanded` sin mentir en ninguna—, y que los
+temporizadores no se fugan al desmontar.
+
+**Sobre serializar las pruebas:** se midió que `maxWorkers: 3` pasa cuatro de
+cuatro en 32 s, y que con **4 muere**. El margen es de un obrero, y eso no se
+escribe en un archivo que viaja a máquinas con otra memoria. Se queda
+serializado.
+
+### Lo de la v1.116.0, con detalle
 
 **La regla 12 entró en el componente y no en la barra del catálogo.** La
 v1.115.0 publicó *plegado, las ramas del panel flotante llegan abiertas*, y lo
@@ -1959,11 +2211,11 @@ sin comparar.
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.116.0
+Versión                      1.117.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         846   en 50 archivos
+Pruebas                         875   en 50 archivos
 Reglas que viajan               977   de 1492 · 701 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el

@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.116.0
+# Actualizar al sistema de diseño v1.117.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.116.0"
+npm install "github:solwarehz/sistema-diseno#v1.117.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -37,7 +37,7 @@ está en marcha tiene el código viejo en memoria, y su caché de compilación n
 se entera de que cambió algo dentro de `node_modules`.
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.116.0"
+npm install "github:solwarehz/sistema-diseno#v1.117.0"
 # y ENTONCES, sin excepción:
 docker compose restart <su-servicio>     # o el reinicio que usen
 # si aun así ven lo de antes, tiren la caché de compilación —y reinicien OTRA
@@ -101,12 +101,12 @@ familia entera de ese defecto.
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.116.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.117.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.116.0 --repo solwarehz/sistema-diseno
+gh release download v1.117.0 --repo solwarehz/sistema-diseno
 ```
 
 Son **60 archivos**: tokens, hoja de estilos, los **43 módulos de componente**
@@ -123,7 +123,7 @@ midió el 2026-09-11 y hasta entonces este apartado daba a entender que sí:
 
 | | `npm install` | ZIP |
 |---|---|---|
-| Archivos | 77 | 59 |
+| Archivos | **78** | **60** |
 | **El catálogo** | **no** | **sí** (`catalogo/index.html`) |
 | **Los candados** | **los 14**, y 2 de los 3 generadores | **4** (contraste, color, lint y su configuración) |
 | `package.json` | sí | **no** — por eso el comando de comprobación del §1 no sirve aquí |
@@ -137,8 +137,9 @@ las dos vías**. Tiene consecuencia y conviene decirla: varios candados sí viaj
 no mide nada.
 
 Lo que se **usa** está en las dos. Lo que cambia es lo que se usa para
-**verificar**: quien instala por npm puede correr los diecisiete candados
+**verificar**: quien instala por npm puede correr los **catorce** candados
 contra su propio proyecto; quien baja el ZIP tiene el catálogo para mirar.
+Decía «los diecisiete» ocho líneas después de corregir exactamente eso.
 
 **Solo la última versión conserva su ZIP.** Al publicar una nueva, el adjunto de
 la anterior se borra. La etiqueta y la publicación se quedan, así que
@@ -280,7 +281,7 @@ puedes quitar ese parche.
 
 ## 3 · El color: qué puedes usar y qué no
 
-Hay **114 colores autorizados** y **9 conocidos pero prohibidos**. La diferencia
+Hay **114 colores autorizados** y **10 conocidos pero prohibidos**. La diferencia
 importa:
 
 - **Autorizado** — puede vivir en el sistema. Se nombra `familia_paso`:
@@ -331,7 +332,7 @@ Dos cosas que conviene que sepáis antes de encenderlo:
 - **El marco va en escala de negros, no en el azul del colegio.** Un azul
   saturado sobre una página casi negra no lee como modo oscuro. El acento
   dorado se queda: es lo único que sigue diciendo de quién es el producto.
-- **Los 178 pares están medidos en los dos modos**, no solo en claro. Si un
+- **Los 186 pares están medidos en los dos modos** —146 bloqueantes, 73 por modo—, no solo en claro. Si un
   color vuestro falla en oscuro, es vuestro: pasadle el candado de contraste.
 
 ---
@@ -354,7 +355,7 @@ color, que no es lo que la documentación describía.
 
 ### 4.2 Si vienes de la v1.19.0 — que es la que instaló el área de sistemas
 
-Son 56 versiones. Esto es **solo lo que cambia algo que ya tenías**; lo demás
+Son **112 versiones**. Esto es **solo lo que cambia algo que ya tenías**; lo demás
 son piezas nuevas, y una pieza nueva no rompe nada.
 
 **Cambios de API — el compilador te los dirá:**
@@ -418,6 +419,7 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.93.0 | **`RedesSociales` pinta los iconos con el rojo del escudo por omisión.** `marca-rojo` queda **autorizado solo para eso** — sigue prohibido como texto y como superficie. Si los ponen sobre un fondo que no sea la tarjeta o la página, usen `color="heredado"`: los 4,88:1 y 4,69:1 están medidos contra esos dos y **sobre el encabezado no ha medido nadie**. No rompe nada |
 | 1.94.0 | **`CabeceraPantalla` gana `accionSecundaria`.** Se pinta a la izquierda de `accion`, con 8px de separación, y en estrecho las dos se reparten el ancho. **Les afecta aunque no la usen:** `.pant-accion` no tenía ni `display` ni `gap`, así que si metieron dos botones ahí a mano, salían pegados y ahora se separan. Y la documentación del componente decía «una sola acción»: era un error de redacción, la regla es **una sola principal** |
 | 1.95.0 | **`SelectorBusqueda` entrega por fin lo que el catálogo enseña, en nueve puntos.** Se ven cuatro: el chevron **ahora gira** al abrir la lista, el visto ✓ de la opción elegida pasa **a la derecha** (estaba a la izquierda, 298,4 px de diferencia), la ayuda de la opción recibe su tipografía —13 px, secundario— y deja de salir del mismo cuerpo que el nombre, y la fila de «sin resultados» **dice qué se buscó** en vez de «No hay coincidencias». Se teclean cuatro: **↑ abre la lista**, las flechas **ciclan**, **Inicio y Fin** funcionan, y **Tab elige lo marcado** — antes tabular con una coincidencia marcada dejaba el campo **vacío**. **Nada rompe:** ninguna clase pública cambia de nombre y `textoVacio` sigue admitiendo una cadena. **Y les afecta aunque no usen el selector:** `Paginacion` no emitía `activa`, así que **la página en curso no se pintaba en ninguna pantalla** — ahora sí |
+| 1.117.0 | **CAMBIA EL COMPORTAMIENTO DEL MENÚ DESPLEGADO. Léanlo antes de actualizar.** Hasta ahora los grupos llegaban **todos abiertos** y el cursor no los tocaba. Ahora llegan **plegados**: solo está abierto el de la pantalla en curso, que además lleva `.fijo` y su título en el color de acento; **el cursor revela** cualquier otro y al salir se pliega; y **elegir una opción mueve el bloqueo**, plegando el anterior. **Plegado no cambia nada.** Lo decidió el responsable del sistema: *«mostrar un menú corto y solo donde estoy ahora»*. **Esto deroga la regla 9**, que ustedes respaldaron por escrito en R135 —y tienen razón en que decía lo contrario—: aquel argumento (*abrir al pasar por encima cuando ya se lee todo es ruido*) se apoyaba en que **ya se leía todo**, y con un menú corto deja de sostenerse. La regla vieja queda escrita como derogada, con su motivo. **En su código no hay nada que tocar**: ninguna prop cambia. **Y el catálogo monta ahora `MarcoApp` de verdad**, no una maqueta: en *Maquetas*, debajo de las tres de cartón. Si algo se comporta distinto entre las dos, manda la de abajo. |
 | 1.116.0 | **Nada que cambiar en su código: es el catálogo el que no cumplía.** La regla 12 de la v1.115.0 —plegado, las ramas del panel flotante llegan abiertas— entró en el componente y **no en la barra propia del catálogo**, que es la que ustedes recorrieron para reproducir R135b. Comprobado pasando el ratón: el panel abría y las cinco ramas seguían cerradas. Si volvieron al catálogo a verificar y les pareció que no estaba hecho, **tenían razón y era del catálogo, no del componente**. `MarcoApp` ya lo hacía desde la v1.115.0. |
 | 1.115.0 | **R135, y es para ustedes si montan un menú de tres niveles.** **(a)** `.nav-nieto` era `display: block` mientras `.nav-hijo` es `flex`: **cualquier icono en el tercer nivel caía encima del rótulo** y la fila medía el doble. Ya es `flex`; **el sangrado de 56 px y el cuerpo de 12 px no se tocan**. Si quitaron el icono de ese nivel para que no se partiera, pueden devolverlo. **(b)** Con el riel plegado, una rama dentro del panel flotante **no se abría al pasar el ratón** y quedaba detrás de un clic en un panel que solo vive mientras el puntero está encima. **Decisión tomada: el panel llega desplegado.** Un resumen con secciones plegadas no resume, y anidar un segundo «abrir al pasar» dentro de un panel que se cierra al salir es una trampa de temporización. Extendido **no cambia nada**: las ramas siguen arrancando cerradas. **(c)** Los 16 títulos de grupo y de rama de la barra del **catálogo** no tenían globito; ya lo llevan los 86 elementos. Y la maqueta del catálogo **enseña ahora el tercer nivel**, con icono en los tres. |
 | 1.114.0 | **Lean esto si usan `MarcoApp`: el menú plegado era una fila de iconos mudos.** Plegado, el rótulo iba a `display:none` —que lo saca también del árbol de accesibilidad— y el icono va `aria-hidden`: una opción **sin hijos** se quedaba **sin nombre de ninguna clase**, ni para el ratón ni para un lector de pantalla. El catálogo la rotulaba con `title` desde siempre y **el componente no emitía ninguno**. Ahora lo emite en los cinco sitios y el rótulo se **esconde a la vista** en vez de borrarse. **Tres cosas más, y les tocan aunque no toquen nada:** (1) el `hidden` de `.nav-hijos` **no ocultaba** —`display:grid` gana a la regla del navegador—, así que un grupo cerrado seguía pintado si copiaron el marcado a mano; ya está en la hoja. (2) La barra del catálogo abría los grupos **al pasar el ratón con el menú desplegado** y el componente no lo hace: ahora las dos hacen lo mismo, y es regla de contrato. (3) La maqueta del catálogo pintaba los grupos como enlaces con un chevron dentro —marcado que el componente **no produce nunca**— y con eso **el panel flotante del menú plegado no se demostraba en ninguna parte**. Ya se demuestra. **No cambia ninguna prop ni ninguna firma.** |

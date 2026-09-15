@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.116.0";
+export const VERSION = "1.117.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,102 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.117.0', fecha: '2026-09-15',
+    que: 'UN MENU CORTO QUE ENSEÑA DONDE ESTAS — y el CATALOGO MONTA EL COMPONENTE DE VERDAD',
+    porque:
+      'Dos cosas, y la segunda es la que impide que la primera vuelva a pasar. '
+      + 'CAMBIA EL CRITERIO DEL MENU, y lo decide el responsable con el menu delante: '
+      + '«mostrar un menu corto y solo donde estoy ahora». Desplegado, los grupos llegaban '
+      + 'TODOS ABIERTOS y el cursor no los tocaba: con cuatro grupos de cinco opciones son '
+      + 'veinte renglones siempre a la vista, y ninguno dice donde estas mejor que los otros. '
+      + 'Ahora llegan plegados; solo esta abierto el de la pantalla en curso, que lleva '
+      + '`.fijo` y su titulo en el acento; el cursor revela cualquier otro y al salir se '
+      + 'pliega; y elegir una opcion MUEVE el fijado, plegando el anterior. Plegado no cambia. '
+      + 'ESTO DEROGA LA REGLA 9, que yo mismo escribi hace tres versiones —«desplegado el '
+      + 'cursor NO abre los grupos»— y que el equipo consumidor RESPALDO POR ESCRITO en R135. '
+      + 'Su argumento era que abrir al pasar por encima cuando ya se lee todo es ruido, y se '
+      + 'apoyaba en que YA SE LEIA TODO. Con un menu corto deja de sostenerse. La regla vieja '
+      + 'se queda escrita como derogada, con su motivo: una regla que desaparece sin rastro '
+      + 'obliga a redescubrir por que se penso lo contrario. '
+      + 'Y RESUCITA `.nav-grupo.fijo`, que la hoja estilizaba desde hacia versiones y que '
+      + 'NINGUN PRODUCTO PODIA ACTIVAR — deuda declarada en `verificar-promesa-muerta`, podada '
+      + 'hoy porque se diseño para exactamente esto. El modelo no es nuevo: es el que la barra '
+      + 'del catalogo llevaba funcionando desde el principio, A MANO. '
+      + 'EL CATALOGO MONTA AHORA EL COMPONENTE DE VERDAD. Lo pidio el responsable: «en el '
+      + 'cascaron usa tus componentes, asi podre detectar algun cambio no solicitado». Es lo '
+      + 'que MMI-DS §9.1 dice desde el principio —«el catalogo importa los componentes reales '
+      + 'y NO PUEDE DIVERGIR»— y lo que no se estaba haciendo: habia un HTML escrito a mano '
+      + 'que si puede divergir, y divergio CUATRO VERSIONES SEGUIDAS (el title que el catalogo '
+      + 'pintaba y el componente no; el hover que el catalogo demostraba y el componente no '
+      + 'hacia; la maqueta con enlaces y chevron que el componente no produce nunca; la regla '
+      + '12 que entro en el componente y no en el catalogo). '
+      + '`sistema/cascaron/marco-vivo.tsx` es codigo real que importa `MarcoApp`; el generador '
+      + 'lo empaqueta con esbuild DENTRO DEL CONTENEDOR y lo incrusta: 162,9 KB minificados, y el '
+      + 'catalogo pasa de 2 360 605 a 2 543 235 bytes (+178 KiB) — MEDIDO, porque la primera cifra '
+      + 'que se escribio aqui, «de 2,30 a 2,38 MB», no la habia medido nadie y las dos estaban mal. '
+      + 'Si el empaquetado falla EL GENERADOR PARA — un '
+      + 'catalogo sin el componente vivo que no lo dijera seria la misma mentira que esto viene '
+      + 'a cerrar. Esta en Maquetas, debajo de las tres de carton, con el aviso de cual manda. '
+      + 'UNA AUDITORIA SOBRE ESTE MISMO TRABAJO encontro seis cosas mas, y entran aqui: con teclado, '
+      + 'pulsar el titulo de un grupo NO LO CERRABA NUNCA y `aria-expanded` respondia «true» justo '
+      + 'despues de pulsarlo para cerrar (WCAG 4.1.2), porque soltar el fijado dejaba vivo el cursor; '
+      + 'la barra del catalogo no sincronizaba el atributo de ocultar de los hijos ni emitia '
+      + '`aria-controls`, y marcaba el cursor con una clase `.hover` QUE NINGUNA REGLA DE LA HOJA '
+      + 'ATIENDE y que ademas choca de nombre con `.s-tabla tbody tr.hover` — ahora es un atributo; '
+      + 'las maquetas de carton pintaban la opcion activa sin `aria-current`; el empaquetado del marco '
+      + 'vivo se tragaba el error real de esbuild con `>/dev/null 2>&1`, asi que un fallo de tipos se '
+      + 'anunciaba como «levanta el contenedor»; el generador NO PODIA CORRERSE DENTRO DEL CONTENEDOR '
+      + '—ahi no hay `docker-compose`— que es justo lo que manda `LEVANTAR-EN-WINDOWS.md`; y las notas '
+      + 'de la publicacion de GitHub eran una plantilla fija en las 117 versiones, asi que esta misma '
+      + 'lista de «Puede romperte» no llegaba a quien entra por ahi. '
+      + 'UNA SEGUNDA AUDITORIA, con lo anterior ya corregido, encontro UN DEFECTO FUNCIONAL NUEVO '
+      + 'que la primera no vio, y por eso esto no salio ese dia: EL RATON EXPULSABA EL FOCO DEL '
+      + 'TECLADO. «Que grupo esta revelado» paso de ser un conjunto a UN SOLO VALOR, movido a la vez '
+      + 'por el raton y por el foco, asi que pasar el cursor por un grupo desalojaba al anterior '
+      + 'aunque ahi viviera el foco de alguien; y como el panel oculto es display:none, el navegador '
+      + 'expulsa ese foco al body. Quien navega con teclado perdia el sitio porque otra persona movio '
+      + 'el raton, con aria-expanded diciendo «false» sobre el grupo donde estaba. WCAG 2.4.3 y 4.1.2. '
+      + 'Ninguna de las 870 pruebas lo miraba. Ahora son DOS SENALIZADORES: el raton esta en un sitio '
+      + 'y el foco en otro, y ninguno desaloja al otro. SIETE MUTACIONES sobrevivian en verde y las '
+      + 'siete son ahora rojo (aria-expanded, el onBlur entero, su guarda, la clase fijo, la rama '
+      + 'controlada de sincronizarGrupos, los 220 ms y una rama inalcanzable que era codigo muerto). '
+      + 'El catalogo tenia tres cosas mas del mismo patron —el catalogo incumpliendo lo que publica—: '
+      + 'su barra NO EMITIA aria-current en ninguna parte, marcando la pagina en curso solo con el '
+      + 'color, que es justo lo que su propia pagina de Paginacion prohibe; soltar un grupo con el '
+      + 'cursor encima cerraba en el componente y dejaba abierto en el catalogo; y su HTML estatico '
+      + 'nacia diciendo «todos abiertos», el criterio derogado, hasta que el guion lo corregia al '
+      + 'cargar. Y LA SUITE DEJO DE CORRER ENTERA SIN DECIRLO: «Worker exited unexpectedly», 49 '
+      + 'archivos de 50 y 857 pruebas de 870, sin una sola en rojo — cada catalogo vivo cuesta unos '
+      + '150 MB y seis workers en paralelo agotan el contenedor. Lo cazo publicar.mjs por codigo de '
+      + 'salida. Se serializan los archivos: 50 de 50 y todas las pruebas, 82 s en vez de 24. Y OCHO CIFRAS de la '
+      + 'documentacion no coincidian con lo medido. '
+      + 'Y UNA TERCERA AUDITORIA, sobre la correccion misma, encontro el defecto que este '
+      + 'repositorio declara fatal: LA CORRECCION NO HABIA LLEGADO AL CATALOGO. Se arreglaron los dos '
+      + 'senalizadores en MarcoApp y la barra propia del catalogo se quedo con uno, asi que el mismo '
+      + 'gesto —foco dentro de un grupo, el raton pasando por otro— cerraba el panel en el catalogo y '
+      + 'lo dejaba abierto en el componente: la divergencia carton/entrega SOBRE EL PUNTO EXACTO QUE '
+      + 'DEFINE LA VERSION, en la version que se publica para cerrarla. Y encontro que PLEGAR EL RIEL '
+      + 'EXPULSABA EL FOCO por las dos puertas que nadie miraba —la ventana cruzando los 900px sola y '
+      + 'el producto plegando desde fuera—; es preexistente, y se cierra aqui: ahora el foco se va al '
+      + 'boton de plegar, como ya hacia Escape. Tres mutaciones mas sobrevivian en verde con 90 '
+      + 'pruebas y las tres estan en rojo. '
+      + 'VERIFICADO CON EL RATON en el componente real, no en el cascaron: al cargar solo el '
+      + 'grupo de la pantalla en curso abierto y fijo; pasar el raton revela otro; pulsar una '
+      + 'opcion mueve el bloqueo y el anterior se pliega solo.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'EL MENU DESPLEGADO SE COMPORTA DISTINTO. Los grupos ya no llegan todos abiertos: llega '
+      + 'abierto SOLO el de la pantalla en curso, y los demas se revelan al pasar el raton. '
+      + 'Ninguna prop cambia y no hay nada que tocar en el codigo, pero **lo que ve quien usa '
+      + 'la aplicacion cambia**, asi que conviene avisarlo antes de actualizar.',
+      'Si un producto se apoyaba en que TODOS los grupos estuvieran abiertos al cargar —por '
+      + 'ejemplo, una prueba propia que contara enlaces visibles, o una captura de referencia— '
+      + 'deja de cumplirse.',
+      'Si un producto ya usaba la clase `.fijo` para algo suyo, ahora la emite el componente: '
+      + '`MarcoApp` la pone en el grupo de la pantalla en curso.',
+    ],
+  },
   {
     v: '1.116.0', fecha: '2026-09-15',
     que: 'La regla 12 entro SOLO en el componente: la barra del catalogo seguia contradiciendola',

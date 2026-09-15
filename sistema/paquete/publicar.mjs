@@ -31,7 +31,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { VERSION } from '../tokens/fuente.mjs';
+import { VERSION, CAMBIOS } from '../tokens/fuente.mjs';
 import { NOMBRE_ZIP } from './empaquetar.mjs';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
@@ -219,12 +219,52 @@ const pasos = [];
 if (!yaEtiquetada) pasos.push(['etiqueta local', 'git', ['tag', '-a', etiqueta, '-m', `${etiqueta} — entrega del sistema de diseño`]]);
 pasos.push(['etiqueta al remoto', 'git', ['push', 'origin', etiqueta]]);
 
+/**
+ * LAS NOTAS SALEN DE `CAMBIOS`, Y SOBRE TODO DE `rompe`.
+ *
+ * Eran una plantilla fija —«Instalación: … O el ZIP adjunto»— idéntica en las
+ * ciento diecisiete versiones. `fuente.mjs` lleva por cada versión qué cambió,
+ * por qué, y una lista `rompe` con lo que puede romperle a quien actualice; el
+ * catálogo la pinta en su tabla «Puede romperte» y **la publicación de GitHub
+ * no decía una palabra**. Quien entra por la publicación —que es la puerta que
+ * abre `npm install`— recibía el aviso de cambio de comportamiento **sólo si
+ * además se le ocurría abrir el catálogo**. Lo cazó una auditoría el 2026-09-15.
+ */
+function notasDeLaVersion() {
+  const c = CAMBIOS.find((x) => x.v === VERSION);
+  const instalar = `**Instalación**\n\n    npm install "github:${REPO}#${etiqueta}"\n\nO el ZIP adjunto.`;
+  if (!c) return instalar;   // versión sin entrada: se instala igual, y se nota
+  const partes = [`## ${c.que}`, '', c.porque, ''];
+  /* `rompe` es una lista de textos, y a veces `false`. Medido sobre las 143
+     entradas de `CAMBIOS`: 121 arrays y 22 `false`. El guard mira la FORMA
+     porque `false.length` —igual que `true.length`— es `undefined`, y con eso
+     la tabla «Puede romperte» desaparecería sin un solo error. Esto llegó a
+     pasar escribiendo `rompe: true` en una versión de esta misma semana; la
+     entrada se corrigió antes de publicarse, así que hoy no queda ninguna. */
+  if (Array.isArray(c.rompe) && c.rompe.length) {
+    partes.push('## ⚠️ Puede romperte', '');
+    for (const r of c.rompe) partes.push(`- ${r}`);
+    partes.push('');
+  }
+  partes.push('---', '', instalar);
+  return partes.join('\n');
+}
+const NOTAS = notasDeLaVersion();
+
 const hayPublicacion = intenta('gh', ['release', 'view', etiqueta, '--repo', REPO, '--json', 'tagName']);
 if (hayPublicacion) {
+  /* LAS NOTAS PRIMERO, y el ZIP después. Los dos pasos son idempotentes y
+     reintentar arregla cualquier corte, pero el orden decide CÓMO se ve el
+     estado intermedio si algo falla entre medias: con las notas antes, un corte
+     deja la publicación describiendo la versión nueva con el ZIP de la
+     anterior —visible y coherente de leer—; al revés dejaba el ZIP nuevo bajo
+     las notas viejas, que es la combinación que engaña. Lo señaló una
+     auditoría el 2026-09-15. */
+  pasos.push(['notas al día', 'gh', ['release', 'edit', etiqueta, '--repo', REPO, '--notes', NOTAS]]);
   pasos.push(['ZIP adjunto', 'gh', ['release', 'upload', etiqueta, `${zip}#Entrega ${etiqueta}`, '--clobber', '--repo', REPO]]);
 } else {
   pasos.push(['publicación con ZIP', 'gh', ['release', 'create', etiqueta, `${zip}#Entrega ${etiqueta}`,
-    '--repo', REPO, '--title', `${etiqueta}`, '--notes', `Instalación:\n\n    npm install "github:${REPO}#${etiqueta}"\n\nO el ZIP adjunto.`]]);
+    '--repo', REPO, '--title', `${etiqueta}`, '--notes', NOTAS]]);
 }
 
 /* ── 3 · La poda ──────────────────────────────────────────────────────────── */
@@ -242,6 +282,17 @@ for (const t of otras) {
 /* ── Informe y ejecución ──────────────────────────────────────────────────── */
 
 for (const [que] of pasos) console.log(`    ${HACERLO ? '·' : '→'} ${que}`);
+
+/* EL ENSAYO EN SECO ENSEÑA LAS NOTAS. La función de este comando es «decir qué
+   haría», y desde que las notas salen de `CAMBIOS` son lo único variable y
+   editorial que se publica: el texto que lee quien instala. Era justo lo único
+   que no se podía revisar antes — se publicaba y se leía después, que es el
+   patrón que este repositorio declara fatal. Lo cazó una auditoría. */
+if (!HACERLO) {
+  console.log('\n  ── Notas de la publicación ' + '─'.repeat(46));
+  for (const linea of NOTAS.split('\n')) console.log(`  │ ${linea}`);
+  console.log('  ' + '─'.repeat(74));
+}
 if (aPodar.length) {
   console.log(`\n  ZIP de versiones anteriores a borrar (${aPodar.length}):`);
   for (const [t, n] of aPodar) console.log(`    ${HACERLO ? '·' : '→'} ${t}  ${n}`);

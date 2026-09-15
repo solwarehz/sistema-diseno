@@ -19,13 +19,14 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.116.0** — la regla 12 se publicó en la v1.115.0 y entró
-**solo en el componente**: la barra del catálogo siguió contradiciéndola, y es la
-superficie que la gente recorre. Se cazó **pasando el ratón**. La lección de la
-semana cabe en una línea: *se arregla el componente, se escribe la regla, y la
-superficie que la gente toca se queda atrás*. Por eso `marco-catalogo.test.tsx`
-**ejecuta** el catálogo además de leerlo: el defecto no estaba en el HTML, estaba
-en lo que el HTML hace al plegarse.
+**Estado actual: v1.117.0** — dos cosas, y la segunda impide que la primera
+vuelva a pasar. **(1)** Cambia el criterio del menú: desplegado ya no llegan
+todos los grupos abiertos, sino **solo el de la pantalla en curso**, y el cursor
+revela los demás. Lo decidió el responsable, y **deroga la regla 9** que este
+mismo documento defendía. **(2)** El catálogo **monta `MarcoApp` de verdad**, no
+una maqueta — que es lo que §9.1 dice desde el principio y lo que no se estaba
+haciendo: en cuatro versiones seguidas el HTML escrito a mano divergió del
+componente, y cada vez costó una versión encontrarlo.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
@@ -196,7 +197,9 @@ No las «mejores» por iniciativa propia. Están razonadas:
    oscuro entran en el candado de contraste igual que los de claro, y ninguna
    versión sube con uno en rojo. Lo que la prohibición decía sigue siendo cierto
    —duplica la superficie de prueba— y por eso lo que se compra con la
-   aprobación es trabajo, no una casilla: 178 pares en vez de 89.
+   aprobación es trabajo, no una casilla: **186 pares** en vez de 93 —146
+   bloqueantes, 73 por modo—. Aquí decía «178 en vez de 89» y llevaba versiones
+   sin medirse; lo cazó una auditoría el 2026-09-15.
 3. **No mostrar el markup interno de los componentes compartidos.** Lo que se
    copia es **la importación y las props**. Copiar utilidades de Tailwind aplica
    solo a composiciones puntuales.
@@ -270,7 +273,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
 
   Y nada más escribirlo encontró un defecto que nadie buscaba: `Paginacion` no
   emitía `activa`, así que **la página en curso no se pintaba en ningún
-  producto**. Lleva **deuda declarada** —nueve el día que nació, **ocho** hoy, con su daño real— y falla
+  producto**. Lleva **deuda declarada** —nueve el día que nació, **siete** hoy, con su daño real— y falla
   también si una se arregla y no se poda.
 
   El de la cascada es el único que no lee lo que hay, sino lo que **falta**: el

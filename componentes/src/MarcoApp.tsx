@@ -152,13 +152,40 @@ export function MarcoApp({
   // Controlado si llega de fuera; si no, se gobierna solo. El aviso sale en los
   // dos casos: un producto puede querer PERSISTIR sin querer MANDAR.
   const plegado = plegadoFuera ?? plegadoDentro;
-  // Al plegar cambia la REGLA de apertura, así que la apertura de los grupos se
-  // re-sincroniza —igual que hace el catálogo—. Plegado, los grupos cierran: si
-  // quedaran abiertos, cada uno sería un panel flotante atascado, y como
-  // arrancan TODOS abiertos, plegar mostraba todos los flotantes a la vez.
-  // Desplegado, vuelven todos abiertos, que es como nace el menú.
-  const sincronizarGrupos = (estaPlegado: boolean) =>
-    setAbiertos(estaPlegado ? new Set() : new Set(navegacion.map((g) => g.clave)));
+  /* Al plegar cambia la REGLA de apertura —fijado deja de abrir— y lo único que
+     hay que soltar es el grupo que tuviera el cursor: si no, al plegar quedaba
+     un panel flotante atascado, abierto sin que nadie lo hubiera pedido. El
+     FIJO se conserva: es dónde estás, y eso no cambia por plegar. */
+  const sincronizarGrupos = () => {
+    rescatarElFoco();
+    setEnElCursor(null);
+    setEnElFoco(null);
+  };
+
+  /**
+   * EL FOCO NO SE QUEDA DENTRO DE LO QUE SE VA A OCULTAR.
+   *
+   * Plegar cierra los grupos, y cerrar un grupo le pone `hidden` a su panel:
+   * `display:none`. Si el foco de alguien estaba ahí dentro, el navegador lo
+   * **tira al `<body>`** y esa persona pierde el sitio. Pasaba por dos puertas
+   * que nadie miraba —la ventana cruzando los 900px sola, y el producto
+   * plegando desde fuera (R21)—, porque las otras dos ya movían el foco antes:
+   * el clic en el botón se lo lleva, y Escape lo devuelve a mano.
+   *
+   * Va al botón de plegar, que es la misma salida que usa Escape: es lo que
+   * quedará a la vista, y desde ahí se vuelve a entrar tabulando.
+   *
+   * Es preexistente —la v1.116.0 vaciaba su conjunto igual—, y se cierra aquí
+   * porque esta versión se publica precisamente por este daño. Lo cazó la
+   * tercera auditoría del día, el 2026-09-15.
+   */
+  const rescatarElFoco = () => {
+    const lat = lateral.current;
+    const activo = lat?.ownerDocument.activeElement;
+    if (activo && lat.contains(activo) && (activo as HTMLElement).closest('.nav-hijos')) {
+      plegarBtn.current?.focus();
+    }
+  };
 
   const setPlegado = (v: boolean | ((p: boolean) => boolean)) => {
     const nuevo = typeof v === 'function' ? v(plegado) : v;
@@ -177,7 +204,7 @@ export function MarcoApp({
     // opciones de extendido».
     if (plegadoFuera === undefined) {
       setPlegadoDentro(nuevo);
-      sincronizarGrupos(nuevo);
+      sincronizarGrupos();
     }
     onPlegar?.(nuevo);
   };
@@ -186,24 +213,77 @@ export function MarcoApp({
   // no cuando se le pide. Y llega igual si lo cambia por su cuenta —restaurar
   // la preferencia del perfil al cargar la sesión— que es un pliegue que este
   // componente no ve pasar por su botón.
+  /* LOS SEÑALIZADORES NO SOBREVIVEN A UN CAMBIO DE NAVEGACIÓN. Si un grupo
+     desaparece del menú mientras lo señalaba el cursor o el foco, su clave se
+     quedaba guardada; y si más tarde volvía a montarse un grupo con LA MISMA
+     clave, llegaba revelado sin que nadie lo estuviera tocando. Se mira la
+     lista de claves y no el array: un producto que reconstruya `navegacion` en
+     cada render pasa una referencia nueva cada vez, y con eso esto se
+     dispararía siempre y no habría cursor que durara. */
+  const clavesNav = navegacion.map((g) => g.clave).join('|');
+  useEffect(() => { setEnElCursor(null); setEnElFoco(null); }, [clavesNav]);
+
   const plegadoPrevio = useRef(plegado);
   useEffect(() => {
     if (plegadoPrevio.current === plegado) return;
     plegadoPrevio.current = plegado;
-    if (plegadoFuera !== undefined) sincronizarGrupos(plegado);
+    if (plegadoFuera !== undefined) sincronizarGrupos();
   }, [plegado]);
   // «Más» en la vista de app: la lista de lo que no cupo en las cinco pestañas.
   const [masAbierto, setMasAbierto] = useState(false);
-  // Qué grupos están abiertos. Arrancan ABIERTOS: un menú que empieza cerrado
-  // esconde la navegación entera y obliga a un clic antes de poder mirar.
-  //
-  // R48 · salvo que NAZCA plegado, que es lo que pasa cuando el producto manda
-  // `plegado` y restaura la preferencia de la persona. Plegado, un grupo
-  // abierto es un panel flotante: arrancando todos abiertos, el marco se
-  // pintaba con los cuatro paneles encima del contenido antes de tocar nada.
-  const [abiertos, setAbiertos] = useState<Set<string>>(
-    () => (plegado ? new Set() : new Set(navegacion.map((g) => g.clave)))
-  );
+  /**
+   * UN MENÚ CORTO QUE ENSEÑA DÓNDE ESTÁS, y no la navegación entera desplegada.
+   *
+   * Hasta la v1.116.0 los grupos nacían TODOS ABIERTOS con el riel extendido, y
+   * el cursor no los tocaba. Con cuatro grupos de cinco opciones eso son veinte
+   * renglones siempre a la vista, y ninguno dice dónde estás mejor que los
+   * otros. Lo pidió el responsable el 2026-09-15 con el menú delante: *«mostrar
+   * un menú corto y solo donde estoy ahora»*.
+   *
+   * El modelo es el que **la barra del catálogo lleva funcionando desde
+   * siempre**, y el que la hoja estiliza desde entonces con `.nav-grupo.fijo`
+   * —«el grupo clavado abierto»—, que hasta hoy era **deuda declarada: una
+   * regla que viajaba a todos los productos y que ningún producto podía
+   * activar**. Deja de serlo.
+   *
+   *   · **FIJO** es el grupo de la pantalla en curso. Se queda abierto aunque el
+   *     cursor se vaya, y su título va en el color de acento.
+   *   · **EL CURSOR** revela cualquier otro mientras esté encima, con el mismo
+   *     margen de salida de 220 ms que el panel flotante.
+   *   · Elegir una opción MUEVE el fijo, y el anterior se pliega solo.
+   *
+   * Plegado no cambia nada: ahí el fijado **no** abre —si no, elegir una opción
+   * dejaría el panel flotante reabriéndose solo— y manda únicamente el cursor.
+   */
+  const grupoDe = (nav: GrupoNav[], cual: string | undefined) => {
+    if (!cual) return null;
+    const g = nav.find((x) => x.clave === cual
+      || x.hijos?.some((h) => h.clave === cual || h.hijos?.some((n) => n.clave === cual)));
+    return g?.clave ?? null;
+  };
+  const [fijo, setFijo] = useState<string | null>(() => grupoDe(navegacion, activa));
+  /**
+   * DOS SEÑALIZADORES, NO UNO — y ésta es la corrección de un defecto propio.
+   *
+   * Aquí había **un solo** valor para «qué grupo está revelado», y lo movían a
+   * la vez el ratón y el foco del teclado. Con eso, entrar con el cursor en un
+   * grupo **desalojaba al anterior en el acto** aunque el anterior estuviera
+   * abierto porque **ahí vive el foco de alguien**. Como `.nav-hijos[hidden]`
+   * es `display:none`, en un navegador de verdad eso **expulsa el foco al
+   * `<body>`**: quien navega con teclado pierde el sitio porque otra persona
+   * —o su propia mano— movió el ratón. Y el `aria-expanded` del grupo donde
+   * está su foco pasaba a decir `"false"`. WCAG 2.4.3 y 4.1.2.
+   *
+   * Lo cazó una auditoría adversaria el 2026-09-15, antes de publicar. Era
+   * nuevo de esta versión: hasta la v1.116.0 esto era un `Set` y nadie
+   * desalojaba a nadie.
+   *
+   * El ratón está en UN sitio y el foco en OTRO; son dos hechos independientes
+   * y por eso son dos estados. Un grupo se ve abierto si lo reclama cualquiera
+   * de los dos.
+   */
+  const [enElCursor, setEnElCursor] = useState<string | null>(null);
+  const [enElFoco, setEnElFoco] = useState<string | null>(null);
   // R42a · qué RAMAS (tercer nivel) están abiertas. Al revés que los grupos,
   // arrancan CERRADAS —«doce ítems seguidos no se leen»— salvo la que
   // contiene a la opción activa: llegar a una pantalla y no ver dónde estás
@@ -244,6 +324,14 @@ export function MarcoApp({
   navAhora.current = navegacion;
   const activaAhora = useRef(activa);
   activaAhora.current = activa;
+  /* EL FIJO SIGUE A LA PANTALLA EN CURSO. Si el producto cambia `activa` —al
+     navegar, o al restaurar una ruta— el grupo clavado es el de esa pantalla:
+     «solo donde estoy ahora». Depende solo de `activa`, no de `navegacion`: un
+     array literal en cada render reabriria lo que se acabe de soltar. */
+  useEffect(() => {
+    setFijo(grupoDe(navAhora.current, activa));
+  }, [activa]);
+
   useEffect(() => {
     setRamas(() => {
       if (!plegado) return ramasConLaActiva(navAhora.current, activaAhora.current);
@@ -279,16 +367,22 @@ export function MarcoApp({
   const GRACIA_SALIDA = 220;
   const salidas = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
-  const abrirGrupo = (clave: string) => {
+  const entraElCursor = (clave: string) => {
     clearTimeout(salidas.current[clave]);
-    setAbiertos((s) => (s.has(clave) ? s : new Set(s).add(clave)));
+    setEnElCursor(clave);
   };
-  const cerrarGrupoConGracia = (clave: string) => {
+  const saleElCursor = (clave: string) => {
     clearTimeout(salidas.current[clave]);
     salidas.current[clave] = setTimeout(() => {
-      setAbiertos((s) => { const n = new Set(s); n.delete(clave); return n; });
+      setEnElCursor((c) => (c === clave ? null : c));
     }, GRACIA_SALIDA);
   };
+  /* EL FOCO NO LLEVA MARGEN DE GRACIA. Los 220 ms existen porque el cursor
+     tiene que CRUZAR los 56px del carril para alcanzar el panel flotante; el
+     foco salta al destino sin recorrer nada. Y si lo llevara, tabular fuera
+     dejaría el panel encima del contenido un quinto de segundo de más. */
+  const entraElFoco = (clave: string) => setEnElFoco(clave);
+  const saleElFoco = (clave: string) => setEnElFoco((f) => (f === clave ? null : f));
 
   // Los temporizadores pendientes se cancelan al desmontar: sin esto, salir de
   // la pantalla con un panel abierto dispara un `setState` sobre un componente
@@ -333,14 +427,38 @@ export function MarcoApp({
     return () => document.removeEventListener('keydown', tecla);
   }, [plegado]);
 
-  const alternarGrupo = (clave: string) =>
-    setAbiertos((previos) => {
-      const s = new Set(previos);
-      s.has(clave) ? s.delete(clave) : s.add(clave);
-      return s;
-    });
+  /**
+   * El título del grupo FIJA o SUELTA. Es el mando con el que alguien se queda
+   * un grupo abierto sin tener el cursor encima — y el que lo devuelve.
+   *
+   * SOLTAR CIERRA, y hay que decirlo aparte porque no es obvio: el título es a
+   * la vez el mando y un elemento **enfocable**, y enfocarlo revela el grupo.
+   * Con el ratón eso se deshace al retirar el cursor; **con teclado el foco se
+   * queda en el propio botón**, así que sin esto el grupo no se cerraba JAMÁS y
+   * `aria-expanded` respondía `"true"` justo después de que alguien lo pulsara
+   * para cerrarlo. Un estado anunciado al revés es WCAG 4.1.2, y lo cazó una
+   * auditoría el 2026-09-15 — con la prueba reescrita mirando para otro lado.
+   */
+  const alternarGrupo = (clave: string) => {
+    const soltando = fijo === clave;
+    setFijo(soltando ? null : clave);
+    /* SOLTAR APAGA TAMBIÉN LOS DOS REVELADOS. Si no, el mando no hace nada
+       visible: con el ratón encima —o con el foco en el propio botón, que es
+       donde el teclado lo deja— el grupo seguiría revelado y `aria-expanded`
+       seguiría diciendo `"true"` justo después de pulsarlo para cerrar.
+       Vuelve a revelarse saliendo y volviendo a entrar, que es lo que
+       significa soltar. */
+    if (soltando) {
+      setEnElCursor((c) => (c === clave ? null : c));
+      setEnElFoco((f) => (f === clave ? null : f));
+    }
+  };
 
   const navegar = (e: React.MouseEvent, clave: string, href?: string) => {
+    /* ELEGIR MUEVE EL FIJO, y el anterior se pliega solo. Se hace aquí y no
+       solo derivándolo de `activa` porque el producto puede tardar en
+       actualizarla —o no controlarla— y el menú no puede quedarse esperando. */
+    setFijo(grupoDe(navegacion, clave));
     if (!onNavegar) return;
     e.preventDefault();
     onNavegar(clave, href);
@@ -384,7 +502,12 @@ export function MarcoApp({
 
         <nav className="lat-nav" aria-label="Navegación principal">
           {[...navegacion.filter((g) => !g.alPie), ...navegacion.filter((g) => g.alPie)].map((g) => {
-            const abierto = abiertos.has(g.clave);
+            /* PLEGADO manda solo el cursor; el fijado NO abre, o al elegir
+               una opción el panel flotante se reabriría solo. Es la misma
+               condición que la barra del catálogo resuelve desde siempre. */
+            const estaFijo = fijo === g.clave;
+            const revelado = enElCursor === g.clave || enElFoco === g.clave;
+            const abierto = plegado ? revelado : (estaFijo || revelado);
             const tieneHijos = !!g.hijos?.length;
             const idHijos = `${id}-${g.clave}`;
 
@@ -430,26 +553,34 @@ export function MarcoApp({
               // abria ni se cerraba. Lo midio Control Administrativos V2.0 en el
               // navegador: 0px de alto sin la clase, 39,5px con ella.
               <div
-                className={['nav-grupo', abierto ? 'abierto' : '', g.alPie ? 'nav-al-pie' : ''].filter(Boolean).join(' ')}
+                className={['nav-grupo', abierto ? 'abierto' : '',
+                  // `.fijo` deja de ser una promesa muerta: la hoja la estiliza
+                  // desde siempre y ningún producto podía activarla.
+                  !plegado && estaFijo ? 'fijo' : '',
+                  g.alPie ? 'nav-al-pie' : ''].filter(Boolean).join(' ')}
                 key={g.clave}
                 // Plegado, el panel flotante abre AL PASAR EL CURSOR y cierra al
                 // salir CON MARGEN — ver `GRACIA_SALIDA`. El manejador va en el
                 // grupo entero, no en el título: el panel es hijo del grupo, así
                 // que entrar al panel no lo cierra.
-                onMouseEnter={plegado ? () => abrirGrupo(g.clave) : undefined}
-                onMouseLeave={plegado ? () => cerrarGrupoConGracia(g.clave) : undefined}
+                /* EN LOS DOS ESTADOS. Antes el cursor solo contaba plegado;
+                   ahora es el gesto que revela un grupo también con el riel
+                   extendido, que es lo que mantiene el menú corto. */
+                onMouseEnter={() => entraElCursor(g.clave)}
+                onMouseLeave={() => saleElCursor(g.clave)}
                 // CON TECLADO NO HAY RATÓN. Sin esto, tabulando dentro de un
                 // grupo plegado el panel no se abría nunca y sus opciones eran
                 // inalcanzables. El catálogo lo hacía con focusin/focusout y la
                 // entrega no lo llevaba.
-                onFocus={plegado ? () => abrirGrupo(g.clave) : undefined}
-                onBlur={plegado ? (e) => {
+                // Con teclado no hay ratón: enfocar dentro revela igual.
+                onFocus={() => entraElFoco(g.clave)}
+                onBlur={(e) => {
                   // Solo si el foco SALE del grupo: moverse del título a una
                   // opción de dentro no puede cerrarlo.
                   if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
-                    cerrarGrupoConGracia(g.clave);
+                    saleElFoco(g.clave);
                   }
-                } : undefined}
+                }}
               >
                 <button
                   className="nav-item nav-grupo-tit"

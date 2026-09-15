@@ -69,18 +69,122 @@ describe('Marco de aplicación', () => {
     expect(screen.getByRole('link', { name: 'Matrícula' })).not.toHaveAttribute('aria-current');
   });
 
-  it('los grupos arrancan abiertos: un menú cerrado esconde la navegación', () => {
-    montar();
+  it('[6] el menú llega CORTO: solo el grupo de la pantalla en curso está abierto', () => {
+    /* Hasta la v1.116.0 los grupos nacían TODOS abiertos: con cuatro grupos de
+       cinco opciones, veinte renglones siempre a la vista y ninguno diciendo
+       dónde estás. Lo pidió el responsable con el menú delante: «mostrar un
+       menú corto y solo donde estoy ahora». */
+    const { container } = montar({ activa: 'notas' });
     expect(screen.getByRole('button', { name: /Académico/ })).toHaveAttribute('aria-expanded', 'true');
-    expect(screen.getByRole('link', { name: 'Notas' })).toBeVisible();
+    expect(container.querySelectorAll('.nav-grupo.abierto').length).toBe(1);
   });
 
-  it('plegar un grupo lo dice en aria-expanded y oculta sus hijos', async () => {
+  it('[6] y sin pantalla en curso dentro de un grupo, no hay ninguno abierto', () => {
+    const { container } = montar({ activa: 'inicio' });
+    expect(container.querySelectorAll('.nav-grupo.abierto').length).toBe(0);
+  });
+
+  it('[6] el grupo de la pantalla en curso lleva `.fijo`, que la hoja pinta con el acento', () => {
+    /* `.nav-grupo.fijo` viajaba en la hoja de TODOS los productos desde hacía
+       versiones y ningún producto podía activarla: deuda declarada en
+       `verificar-promesa-muerta`. Se diseñó para esto. */
+    const { container } = montar({ activa: 'notas' });
+    const fijo = container.querySelector('.nav-grupo.fijo');
+    expect(fijo, 'nadie puede fijar un grupo: `.fijo` sigue siendo promesa muerta').not.toBeNull();
+    expect(fijo!.querySelector('.nav-txt')!.textContent).toBe('Académico');
+  });
+
+  it('[7] soltar CIERRA de verdad: el aria no puede decir «abierto» tras pulsar para cerrar', async () => {
+    /* El título es a la vez el mando y un elemento ENFOCABLE, y enfocarlo revela
+       el grupo. Con el ratón eso se deshace al salir; con TECLADO el foco se
+       queda en el propio botón, así que el grupo no se cerraba jamás y
+       `aria-expanded` respondía «true» justo después de pulsarlo para cerrar.
+       La prueba anterior exigía `aria-expanded === 'false'` y `not.toBeVisible`;
+       al reescribirla para el modelo nuevo se quedó mirando solo `.fijo` y dejó
+       de cazarlo. Lo cazó una auditoría el 2026-09-15. */
     const u = userEvent.setup();
-    montar();
-    await u.click(screen.getByRole('button', { name: /Académico/ }));
-    expect(screen.getByRole('button', { name: /Académico/ })).toHaveAttribute('aria-expanded', 'false');
-    expect(screen.getByRole('link', { name: 'Notas', hidden: true })).not.toBeVisible();
+    const { container } = montar({ activa: 'notas' });
+    const tit = screen.getByRole('button', { name: /Académico/ });
+    await u.click(tit);
+    expect(container.querySelector('.nav-grupo.fijo')).toBeNull();
+    expect(tit, 'dice que está abierto justo después de cerrarlo').toHaveAttribute('aria-expanded', 'false');
+    expect(container.querySelector('.nav-grupo')).not.toHaveClass('abierto');
+    expect(container.querySelector('.nav-hijos')!.hasAttribute('hidden')).toBe(true);
+  });
+
+  it('[7] y con TECLADO igual: sin ratón que retirar, el grupo tiene que cerrarse', async () => {
+    const u = userEvent.setup();
+    const { container } = montar({ activa: 'notas' });
+    const tit = screen.getByRole('button', { name: /Académico/ });
+    tit.focus();
+    await u.keyboard('{Enter}');
+    expect(tit).toHaveAttribute('aria-expanded', 'false');
+    expect(container.querySelector('.nav-grupo')).not.toHaveClass('abierto');
+  });
+
+  it('[9] SIN RATÓN, enfocar un grupo revela sus opciones de segundo nivel', () => {
+    /* El título decía «se llega a todas las pantallas» y solo mide esto: que
+       el grupo se abre y que hay un `.nav-hijo`. El tercer nivel sigue detrás
+       de un clic con el riel extendido, que es política declarada (R42a). Una
+       auditoría señaló que el título prometía más de lo que la prueba mide. */
+    /* Con el menú corto, un grupo que no se abra al enfocar deja sus opciones
+       INALCANZABLES para quien navega con teclado. Ninguna prueba lo sujetaba:
+       quitar el `onFocus` dejaba las 78 en verde y cuatro pantallas sin ruta. */
+    const { container } = montar({ navegacion: TRES_NIVELES, activa: 'inicio' });
+    const grupo = container.querySelector('.nav-grupo')!;
+    expect(grupo).not.toHaveClass('abierto');
+    fireEvent.focus(grupo.querySelector('.nav-grupo-tit')!);
+    expect(grupo, 'enfocar el grupo no revela sus opciones: sin ratón no hay forma de entrar')
+      .toHaveClass('abierto');
+    expect(grupo.querySelector('.nav-hijo')).not.toBeNull();
+  });
+
+  it('[7] elegir una opción MUEVE el fijado aunque el producto no controle `activa`', async () => {
+    /* `navegar` fija el grupo además de avisar, porque el producto puede tardar
+       en actualizar `activa` —o no controlarla— y el menú no puede esperar. Ese
+       camino entero no tenía prueba: quitarlo dejaba las 70 en verde. */
+    const u = userEvent.setup();
+    const { container } = montar({ activa: 'inicio', onNavegar: () => {} });
+    const grupo = container.querySelector('.nav-grupo')!;
+    fireEvent.mouseEnter(grupo);
+    await u.click(screen.getByRole('link', { name: 'Notas' }));
+    expect(container.querySelector('.nav-grupo.fijo'), 'elegir no movió el bloqueo').not.toBeNull();
+    expect(container.querySelector('.nav-grupo.fijo')!.querySelector('.nav-txt')!.textContent)
+      .toBe('Académico');
+  });
+
+  it('[7] y el fijado SIGUE a `activa` cuando el producto sí la controla', () => {
+    /* Tapada por el inicializador: solo rompiendo los dos a la vez se veía.
+       Aquí se monta con `activa` FUERA del grupo y se cambia después. */
+    const { container, rerender } = render(
+      <MarcoApp titulo="AE" hrefInicio="/" navegacion={NAV} usuario={USUARIO} activa="inicio">
+        <p>x</p>
+      </MarcoApp>,
+    );
+    expect(container.querySelector('.nav-grupo.fijo')).toBeNull();
+    rerender(
+      <MarcoApp titulo="AE" hrefInicio="/" navegacion={NAV} usuario={USUARIO} activa="notas">
+        <p>x</p>
+      </MarcoApp>,
+    );
+    expect(container.querySelector('.nav-grupo.fijo'), 'cambiar de pantalla no movió el bloqueo').not.toBeNull();
+  });
+
+  it('[9] plegado NO se pinta `.fijo`: ahí el acento no dice nada y manda el cursor', () => {
+    const { container } = montar({ activa: 'notas', plegado: true });
+    expect(container.querySelector('.nav-grupo.fijo'),
+      'plegado se pinta el acento de un grupo que ni siquiera se ve abierto').toBeNull();
+  });
+
+  it('[7] el título del grupo FIJA y SUELTA', async () => {
+    const u = userEvent.setup();
+    const { container } = montar({ activa: 'inicio' });
+    const tit = screen.getByRole('button', { name: /Académico/ });
+    await u.click(tit);
+    expect(container.querySelector('.nav-grupo.fijo'), 'el clic no fijó el grupo').not.toBeNull();
+    expect(tit).toHaveAttribute('aria-expanded', 'true');
+    await u.click(tit);
+    expect(container.querySelector('.nav-grupo.fijo'), 'el clic no soltó el grupo').toBeNull();
   });
 
   it('el botón de plegar dice si el panel está desplegado', async () => {
@@ -95,7 +199,8 @@ describe('Marco de aplicación', () => {
   it('navegar avisa al proyecto con la clave, sin recargar', async () => {
     const u = userEvent.setup();
     const ir = vi.fn();
-    montar({ onNavegar: ir });
+    // Con la pantalla en curso dentro del grupo, sus opciones están a la vista.
+    montar({ onNavegar: ir, activa: 'notas' });
     await u.click(screen.getByRole('link', { name: 'Matrícula' }));
     expect(ir).toHaveBeenCalledWith('matricula', '/matricula');
   });
@@ -239,16 +344,21 @@ describe('Menú de usuario', () => {
  */
 describe('Marco — requerimientos R16 a R23', () => {
   it('R16 · el grupo abierto lleva la clase `abierto`, que es la que la hoja espera', () => {
-    const { container } = montar();
-    const grupo = container.querySelector('.nav-grupo')!;
-    expect(grupo).toHaveClass('abierto');
+    const { container } = montar({ activa: 'notas' });
+    expect(container.querySelector('.nav-grupo')!).toHaveClass('abierto');
   });
 
-  it('R16 · al plegarlo, la clase se va', async () => {
+  it('R16 · al soltarlo se va `.fijo`, y `.abierto` en cuanto el cursor se marcha', async () => {
+    /* `userEvent.click` PASA EL CURSOR por encima antes de pulsar, así que el
+       grupo sigue abierto —correctamente— mientras el ratón está ahí. Lo que
+       el clic suelta es el fijado; el abierto se va al salir. */
     const u = userEvent.setup();
-    const { container } = montar();
+    const { container } = montar({ activa: 'notas' });
+    const grupo = container.querySelector('.nav-grupo')!;
     await u.click(screen.getByRole('button', { name: /Académico/ }));
-    expect(container.querySelector('.nav-grupo')).not.toHaveClass('abierto');
+    expect(grupo, 'el clic no soltó el fijado').not.toHaveClass('fijo');
+    fireEvent.mouseLeave(grupo);
+    await waitFor(() => expect(grupo).not.toHaveClass('abierto'));
   });
 
   it('R17 · las opciones hijas admiten icono', () => {
@@ -321,11 +431,262 @@ describe('Pie del lateral — R30', () => {
 
 describe('Plegado — el panel flotante', () => {
   it('plegar CIERRA todos los grupos: sin esto, cada uno era un flotante atascado', async () => {
+    /* Plegado el FIJADO no abre —si no, elegir una opción dejaría el panel
+       flotante reabriéndose solo— así que al plegar no puede quedar ninguno. */
     const u = userEvent.setup();
-    const { container } = montar();
+    const { container } = montar({ activa: 'notas' });
     expect(container.querySelectorAll('.nav-grupo.abierto').length).toBeGreaterThan(0);
     await u.click(screen.getByRole('button', { name: 'Plegar menú' }));
     expect(container.querySelectorAll('.nav-grupo.abierto')).toHaveLength(0);
+  });
+
+  it('[7] plegar SUELTA el grupo que tuviera el cursor: si no, queda un flotante atascado', async () => {
+    /* `sincronizarGrupos` existe para esto y era un no-op sin prueba: quitarlo
+       dejaba las 70 en verde. Al plegar, el grupo que el cursor tenía abierto
+       se quedaba como panel flotante encima del contenido sin que nadie lo
+       pidiera. */
+    const u = userEvent.setup();
+    const { container } = montar({ activa: 'inicio' });
+    const grupo = container.querySelector('.nav-grupo')!;
+    fireEvent.mouseEnter(grupo);
+    expect(grupo).toHaveClass('abierto');
+    await u.click(screen.getByRole('button', { name: 'Plegar menú' }));
+    expect(grupo, 'al plegar quedó un panel flotante abierto que nadie pidió').not.toHaveClass('abierto');
+  });
+
+  it('[9] plegar NO deja el foco dentro de lo que acaba de ocultar', () => {
+    /* Plegar cierra los grupos, y cerrar pone `hidden` —`display:none`— en el
+       panel. Con el foco de alguien ahí dentro, el navegador lo tira al `body`.
+       Pasaba por las dos puertas que nadie miraba: la ventana cruzando los
+       900px sola y el producto plegando desde fuera. Las otras dos ya movían el
+       foco antes, y por eso no se veía. */
+    let oyente: ((e: { matches: boolean }) => void) | null = null;
+    vi.stubGlobal('matchMedia', (media: string) => ({
+      matches: false, media,
+      addEventListener: (_: string, f: (e: { matches: boolean }) => void) => {
+        if (media.includes('900')) oyente = f;
+      },
+      removeEventListener: () => {},
+    }));
+    const { container } = montar({ navegacion: TRES_NIVELES, activa: 'general' });
+    const dentro = container.querySelector('.nav-hijos .nav-hijo') as HTMLElement;
+    dentro.focus();
+    expect(document.activeElement, 'no se pudo poner el foco dentro del panel').toBe(dentro);
+    // La ventana cruza a tableta y el marco se pliega solo. Nadie tocó nada.
+    act(() => oyente?.({ matches: true }));
+    expect(
+      (document.activeElement as HTMLElement)?.closest('[hidden]'),
+      'el foco se quedó dentro de un contenedor oculto',
+    ).toBeNull();
+    expect(document.activeElement, 'el foco se perdió en el body').not.toBe(document.body);
+  });
+
+  it('[7] plegar suelta TAMBIÉN el grupo que tuviera el foco, no solo el del cursor', () => {
+    /* `sincronizarGrupos` suelta dos señalizadores y solo uno tenía prueba:
+       dejar el del foco puesto pasaba 90/90 en verde. */
+    const { container } = montar({ navegacion: TRES_NIVELES, activa: 'inicio' });
+    const grupo = container.querySelector('.nav-grupo')!;
+    fireEvent.focus(grupo.querySelector('.nav-grupo-tit')!);
+    expect(grupo).toHaveClass('abierto');
+    fireEvent.click(screen.getByRole('button', { name: 'Plegar menú' }));
+    expect(grupo, 'plegar dejó abierto el grupo que tenía el foco').not.toHaveClass('abierto');
+  });
+
+  it('[5] al desmontar no queda ningún temporizador de salida vivo', () => {
+    /* Sin la limpieza, un `setTimeout` de `saleElCursor` despierta sobre un
+       componente que ya no existe y React avisa de una actualización en algo
+       desmontado. No tenía prueba: quitarla dejaba 90/90 en verde. */
+    vi.useFakeTimers();
+    try {
+      const { container, unmount } = montar({ activa: 'inicio' });
+      const grupo = container.querySelector('.nav-grupo')!;
+      fireEvent.mouseEnter(grupo);
+      fireEvent.mouseLeave(grupo);
+      expect(vi.getTimerCount(), 'no hay temporizador pendiente que comprobar').toBeGreaterThan(0);
+      unmount();
+      expect(vi.getTimerCount(), 'quedó un temporizador vivo tras desmontar').toBe(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('[7] CONTROLADO, plegar desde fuera también suelta el grupo del cursor', () => {
+    /* La regla 7 dice que la sincronización llega cuando el producto DEVUELVE
+       el cambio, no cuando se le pide. Esa rama —la del `useEffect`— no tenía
+       prueba: borrarla entera dejaba las 70 en verde. Y es la que importa,
+       porque es la que corre cuando el producto persiste el plegado en el
+       perfil y lo restaura al cargar la sesión, sin pasar por el botón. */
+    const { container, rerender } = render(
+      <MarcoApp titulo="Colegio Albert Einstein" hrefInicio="/" navegacion={NAV}
+        usuario={USUARIO} activa="inicio" plegado={false} onPlegar={() => {}}>
+        <p>Contenido</p>
+      </MarcoApp>
+    );
+    const grupo = container.querySelector('.nav-grupo')!;
+    fireEvent.mouseEnter(grupo);
+    expect(grupo).toHaveClass('abierto');
+    // El producto pliega por su cuenta. Nadie tocó el botón.
+    rerender(
+      <MarcoApp titulo="Colegio Albert Einstein" hrefInicio="/" navegacion={NAV}
+        usuario={USUARIO} activa="inicio" plegado onPlegar={() => {}}>
+        <p>Contenido</p>
+      </MarcoApp>
+    );
+    expect(grupo, 'quedó un panel flotante atascado que nadie pidió').not.toHaveClass('abierto');
+  });
+
+  it('[9] salir con el TECLADO cierra el grupo: si no, tabular los deja todos abiertos', () => {
+    /* Mutación superviviente: `onBlur={() => {}}` dejaba 70/70 y 8/8 en verde.
+       Con ella, quien tabula de arriba abajo acaba con TODOS los grupos
+       abiertos y `aria-expanded="true"`, y el «menú corto» de la regla 9
+       simplemente no existe para el teclado. */
+    const { container } = montar({ navegacion: TRES_NIVELES, activa: 'inicio' });
+    const grupo = container.querySelector('.nav-grupo')!;
+    const tit = grupo.querySelector('.nav-grupo-tit')!;
+    fireEvent.focus(tit);
+    expect(grupo).toHaveClass('abierto');
+    // El foco se va FUERA del grupo — al botón de plegar, que está en la cabecera.
+    fireEvent.blur(tit, { relatedTarget: screen.getByRole('button', { name: 'Plegar menú' }) });
+    expect(grupo, 'el foco salió del grupo y el panel se quedó abierto').not.toHaveClass('abierto');
+    expect(tit).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('[9] pero moverse del título a una OPCIÓN de dentro no lo cierra', () => {
+    /* La otra mitad, y la mutación opuesta: quitar la guarda `contains` dejaba
+       también 70/70 en verde. Sin ella, tabular del título a su primera opción
+       cierra el panel DEBAJO DEL FOCO y la opción se vuelve inalcanzable — que
+       es el mismo daño que el defecto del ratón, por la otra puerta. */
+    const { container } = montar({ navegacion: TRES_NIVELES, activa: 'inicio' });
+    const grupo = container.querySelector('.nav-grupo')!;
+    const tit = grupo.querySelector('.nav-grupo-tit')!;
+    fireEvent.focus(tit);
+    const dentro = grupo.querySelector('.nav-hijo')!;
+    fireEvent.blur(tit, { relatedTarget: dentro });
+    expect(grupo, 'ir del título a una opción de dentro cerró el grupo').toHaveClass('abierto');
+  });
+
+  it('[5] el margen de salida son 220 ms: ni 100 ni un segundo', () => {
+    /* El número estaba sin sujetar por abajo: con 101 o con 120 las 70 seguían
+       en verde. Y el número IMPORTA — es el tiempo que el cursor tarda en
+       cruzar los 56px del carril hasta el panel flotante. */
+    vi.useFakeTimers();
+    try {
+      const { container } = montar({ activa: 'inicio' });
+      const grupo = container.querySelector('.nav-grupo')!;
+      fireEvent.mouseEnter(grupo);
+      fireEvent.mouseLeave(grupo);
+      act(() => { vi.advanceTimersByTime(219); });
+      expect(grupo, 'cerró antes de los 220 ms: no da tiempo a cruzar el carril').toHaveClass('abierto');
+      act(() => { vi.advanceTimersByTime(2); });
+      expect(grupo, 'sigue abierto pasados los 220 ms: se queda colgado').not.toHaveClass('abierto');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('[9] el RATÓN en otro grupo NO puede cerrar el panel donde está el FOCO', async () => {
+    /* DEFECTO DE LA v1.117.0, cazado por una auditoría antes de publicar.
+       `enElCursor` paso de ser un `Set` a UN SOLO VALOR, asi que entrar con el
+       raton en un grupo desalojaba al anterior en el acto — aunque el anterior
+       estuviera abierto por el FOCO DEL TECLADO. Como `.nav-hijos[hidden]` es
+       `display:none`, en un navegador de verdad eso EXPULSA EL FOCO al `body`:
+       quien navega con teclado pierde el sitio porque alguien movio el raton.
+       Y `aria-expanded` del grupo donde esta su foco pasa a decir «false».
+       WCAG 2.4.3 (orden del foco) y 4.1.2 (nombre, funcion, valor). */
+    const dos: GrupoNav[] = [
+      ...NAV,
+      { clave: 'reportes', texto: 'Reportes', hijos: [{ clave: 'mensual', texto: 'Mensual', href: '/m' }] },
+    ];
+    const { container } = montar({ activa: 'inicio', navegacion: dos });
+    // Solo los que TIENEN panel: 'inicio' no lleva hijos y no es comparable.
+    const [uno, otro] = [...container.querySelectorAll('.nav-grupo')]
+      .filter((g) => g.querySelector('.nav-hijos'));
+
+    // El foco entra en el primer grupo: su panel se revela.
+    fireEvent.focus(uno.querySelector('.nav-grupo-tit')!);
+    expect(uno.querySelector('.nav-hijos')).not.toHaveAttribute('hidden');
+
+    // Y ahora el ratón se pasea por el otro. El foco no se ha movido.
+    fireEvent.mouseEnter(otro);
+    expect(
+      uno.querySelector('.nav-hijos'),
+      'el ratón cerró el panel donde vive el foco del teclado',
+    ).not.toHaveAttribute('hidden');
+    expect(
+      uno.querySelector('.nav-grupo-tit'),
+      'aria-expanded miente sobre el grupo donde está el foco',
+    ).toHaveAttribute('aria-expanded', 'true');
+    // Y el del ratón también se revela: son dos señales, no una.
+    expect(otro.querySelector('.nav-hijos')).not.toHaveAttribute('hidden');
+  });
+
+  it('[9] con el cursor sobre otro grupo hay EXACTAMENTE UN `.fijo`', () => {
+    /* `.nav-grupo.fijo > .nav-grupo-tit` pinta el acento, y la regla 9 dice que
+       el acento identifica al retenido. Dos acentos a la vez no identifican
+       nada. La mutación `!plegado && abierto` en vez de `!plegado && estaFijo`
+       dejaba las 70 en verde. */
+    const dos: GrupoNav[] = [
+      ...NAV,
+      { clave: 'reportes', texto: 'Reportes', hijos: [{ clave: 'mensual', texto: 'Mensual', href: '/m' }] },
+    ];
+    const { container } = montar({ activa: 'notas', navegacion: dos });
+    const otro = [...container.querySelectorAll('.nav-grupo')]
+      .find((g) => !g.classList.contains('fijo'))!;
+    fireEvent.mouseEnter(otro);
+    expect(otro, 'el cursor no reveló el otro grupo').toHaveClass('abierto');
+    expect(container.querySelectorAll('.nav-grupo.fijo')).toHaveLength(1);
+  });
+
+  it('[9] `aria-expanded` dice la verdad cuando quien abre es el TECLADO', () => {
+    /* Mutación superviviente: `aria-expanded={estaFijo}` en vez de `{abierto}`
+       dejaba 70/70 y 8/8 en verde. Con ella, un grupo revelado por el foco está
+       visiblemente abierto y anuncia «false». */
+    const { container } = montar({ activa: 'inicio' });
+    const g = [...container.querySelectorAll('.nav-grupo')]
+      .find((x) => x.querySelector('.nav-hijos'))!;
+    const tit = g.querySelector('.nav-grupo-tit')!;
+    expect(tit).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.focus(tit);
+    expect(g.querySelector('.nav-hijos')).not.toHaveAttribute('hidden');
+    expect(tit, 'se ve abierto y anuncia cerrado').toHaveAttribute('aria-expanded', 'true');
+  });
+
+  it('[9] `.fijo` se mueve a mano, pero `aria-current` NO: son dos señales distintas', async () => {
+    /* El contrato afirma que quien pregunte por la pantalla en curso tiene
+       `aria-current` y que ése no se mueve. Sin esta prueba era una frase: el
+       acento de `.fijo` SÍ se va al grupo que pulses, y si `aria-current` se
+       fuera con él, un lector de pantalla anunciaría como página actual una en
+       la que no estás. */
+    const u = userEvent.setup();
+    /* Hacen falta DOS grupos: `NAV` solo trae uno con hijos, y con uno solo la
+       pregunta «¿se mueve la retención al pulsar otro?» no se puede hacer. */
+    const dos: GrupoNav[] = [
+      ...NAV,
+      { clave: 'reportes', texto: 'Reportes', hijos: [{ clave: 'mensual', texto: 'Mensual', href: '/m' }] },
+    ];
+    const { container } = montar({ activa: 'notas', navegacion: dos });
+    const antes = container.querySelector('[aria-current="page"]')!.textContent;
+    const otro = [...container.querySelectorAll('.nav-grupo')]
+      .find((g) => !g.classList.contains('fijo'))!;
+    await u.click(otro.querySelector('.nav-grupo-tit')!);
+    expect(otro, 'pulsar el título de otro grupo no movió la retención').toHaveClass('fijo');
+    expect(
+      container.querySelectorAll('[aria-current="page"]'),
+      'hay más de una página anunciada como actual',
+    ).toHaveLength(1);
+    expect(
+      container.querySelector('[aria-current="page"]')!.textContent,
+      'la retención se llevó consigo el anuncio de página actual',
+    ).toBe(antes);
+  });
+
+  it('pero el FIJO se conserva al plegar y vuelve al desplegar: es dónde estás', async () => {
+    const u = userEvent.setup();
+    const { container } = montar({ activa: 'notas' });
+    const b = screen.getByRole('button', { name: 'Plegar menú' });
+    await u.click(b);
+    await u.click(screen.getByRole('button', { name: 'Desplegar menú' }));
+    expect(container.querySelector('.nav-grupo.fijo'), 'plegar perdió dónde estabas').not.toBeNull();
   });
 
   /**
@@ -394,19 +755,31 @@ describe('Plegado — el panel flotante', () => {
     expect(titulo.textContent).toBe('Académico');
   });
 
-  it('[9] desplegado NO hay hover: los grupos se gobiernan con el clic', async () => {
-    /* La primera versión de esta prueba solo disparaba `mouseLeave` y miraba
-       que nada cambiara — y el cierre es DIFERIDO 220 ms, así que pasaba
-       aunque el manejador estuviera puesto. No protegía nada. Ahora se cierra
-       el grupo con el clic, se ENTRA con el cursor, y se comprueba que sigue
-       cerrado: eso sí solo puede pasar si `onMouseEnter` está apagado. */
-    const u = userEvent.setup();
+  it('[9] DESPLEGADO el cursor REVELA el grupo, y al salir se pliega solo', async () => {
+    /* LA REGLA 9 CAMBIA DE SIGNO en la v1.117.0, y conviene saber por qué:
+       decía «desplegado el cursor NO abre los grupos» y el argumento era que
+       abrir al pasar por encima cuando ya se lee todo es ruido. Ese argumento
+       se apoyaba en que **ya se leía todo** — con los cuatro grupos abiertos.
+       Al pasar a un menú corto deja de sostenerse: si el grupo está plegado, el
+       cursor es justo lo que hace falta para mirar dentro sin perder el sitio.
+       Lo pidió el responsable el 2026-09-15. */
     const { container } = montar({ activa: 'inicio' });
     const grupo = container.querySelector('.nav-grupo')!;
-    await u.click(grupo.querySelector('.nav-grupo-tit')!);
-    expect(grupo.classList.contains('abierto'), 'el clic no cerró el grupo').toBe(false);
+    expect(grupo.classList.contains('abierto'), 'arranca abierto sin estar fijado').toBe(false);
     fireEvent.mouseEnter(grupo);
-    expect(grupo.classList.contains('abierto'), 'el cursor abrió un grupo con el menú desplegado').toBe(false);
+    expect(grupo.classList.contains('abierto'), 'el cursor no reveló el grupo').toBe(true);
+    fireEvent.mouseLeave(grupo);
+    await waitFor(() => expect(grupo.classList.contains('abierto')).toBe(false));
+  });
+
+  it('[9] y el FIJADO no se cierra al salir: se queda porque es dónde estás', async () => {
+    const { container } = montar({ activa: 'notas' });
+    const grupo = container.querySelector('.nav-grupo.fijo')!;
+    expect(grupo).not.toBeNull();
+    fireEvent.mouseEnter(grupo);
+    fireEvent.mouseLeave(grupo);
+    await new Promise((r) => { setTimeout(r, 300); });
+    expect(grupo.classList.contains('abierto'), 'el grupo de la pantalla en curso se cerró al salir').toBe(true);
   });
 
   it('[9] pero PLEGADO sí abre al pasar el cursor: ahí el rótulo no se ve', () => {
@@ -730,39 +1103,42 @@ describe('R48 · los grupos siguen al plegado que QUEDA, no al que se pide', () 
 
   it('controlado y honrado: los grupos se re-sincronizan al llegar el cambio', () => {
     const { container, rerender } = render(
-      <MarcoApp titulo="AE" hrefInicio="/" navegacion={NAV} usuario={USUARIO} plegado>
+      <MarcoApp titulo="AE" hrefInicio="/" navegacion={NAV} usuario={USUARIO} activa="notas" plegado>
         <p>Contenido</p>
       </MarcoApp>
     );
+    // Plegado el fijado NO abre: solo el cursor.
     expect(container.querySelectorAll('.nav-grupo.abierto')).toHaveLength(0);
 
-    // El producto devuelve el valor nuevo. Aquí sí abre, y abre por el cambio
-    // EFECTIVO — así funciona igual si el pliegue no vino del botón, como al
-    // restaurar la preferencia del perfil al abrir sesión.
+    /* El producto devuelve el valor nuevo. Al desplegar vuelve el FIJO —dónde
+       estás—, y solo ése: así funciona igual si el pliegue no vino del botón,
+       como al restaurar la preferencia del perfil al abrir sesión. */
     rerender(
-      <MarcoApp titulo="AE" hrefInicio="/" navegacion={NAV} usuario={USUARIO} plegado={false}>
+      <MarcoApp titulo="AE" hrefInicio="/" navegacion={NAV} usuario={USUARIO} activa="notas" plegado={false}>
         <p>Contenido</p>
       </MarcoApp>
     );
-    expect(container.querySelectorAll('.nav-grupo.abierto').length).toBeGreaterThan(0);
+    expect(container.querySelectorAll('.nav-grupo.abierto')).toHaveLength(1);
+    expect(container.querySelector('.nav-grupo.fijo')).not.toBeNull();
   });
 
   it('sin control de fuera nada cambia: pedir ES aplicar', async () => {
     const u = userEvent.setup();
-    const { container } = montar();
+    const { container } = montar({ activa: 'notas' });
     await u.click(screen.getByRole('button', { name: 'Plegar menú' }));
     expect(container.querySelector('.lat.colapsado')).not.toBeNull();
     expect(container.querySelectorAll('.nav-grupo.abierto')).toHaveLength(0);
     await u.click(screen.getByRole('button', { name: 'Desplegar menú' }));
     expect(container.querySelector('.lat.colapsado')).toBeNull();
-    expect(container.querySelectorAll('.nav-grupo.abierto').length).toBeGreaterThan(0);
+    expect(container.querySelectorAll('.nav-grupo.abierto')).toHaveLength(1);
   });
 });
 
 describe('R42a · el tercer nivel del menú por fin se emite', () => {
   it('una opción con hijos es una RAMA plegable, con el marcado que la hoja estiliza', async () => {
     const u = userEvent.setup();
-    const { container } = montar({ navegacion: TRES_NIVELES });
+    // `activa` dentro del grupo: si no, llega plegado y la rama no se ve.
+    const { container } = montar({ navegacion: TRES_NIVELES, activa: 'general' });
     const rama = screen.getByRole('button', { name: 'Catálogos' });
     // Arranca cerrada: doce ítems seguidos no se leen.
     expect(rama).toHaveAttribute('aria-expanded', 'false');

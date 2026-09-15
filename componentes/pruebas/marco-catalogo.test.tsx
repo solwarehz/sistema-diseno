@@ -11,7 +11,7 @@
  * Lo que se mira aquí es lo que ellos no miran.
  */
 import { render } from '@testing-library/react';
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterEach } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { JSDOM, VirtualConsole } from 'jsdom';
@@ -32,6 +32,30 @@ const navegacionDelCatalogo = (d: Document) => [
   ...[...d.querySelectorAll('template')]
     .flatMap((t) => [...(t as HTMLTemplateElement).content.querySelectorAll('.nav-item, .nav-hijo, .nav-nieto')]),
 ];
+
+describe('[10] el archivo que se ENTREGA ya nace coherente, sin ejecutar nada', () => {
+  it('ningún grupo anuncia abierto con su panel oculto, ni al revés', () => {
+    /* El catálogo salía con sus nueve grupos diciendo `aria-expanded="true"` y
+       ninguno con el atributo de ocultar: era el guión, al cargar, quien los
+       cerraba. El daño en pantalla es pequeño —dura un instante—, pero el
+       ARCHIVO que se entrega decía «todos abiertos», que es exactamente el
+       criterio que la regla 9 deroga, y la regla 10 llama a eso «el atributo
+       miente». Quien lea el HTML, lo indexe o lo sirva sin JavaScript ve el
+       menú viejo. Lo cazó una auditoría el 2026-09-15: 9 de 19 incoherentes. */
+    const d = doc();
+    const grupos = [...d.querySelectorAll('.nav-grupo')];
+    expect(grupos.length, 'no hay grupos que mirar en el catálogo').toBeGreaterThan(5);
+    const mienten = grupos
+      .filter((g) => g.querySelector('.nav-grupo-tit') && g.querySelector('.nav-hijos'))
+      .filter((g) => {
+        const dice = g.querySelector('.nav-grupo-tit')!.getAttribute('aria-expanded') === 'true';
+        const seVe = !g.querySelector('.nav-hijos')!.hasAttribute('hidden');
+        return dice !== seVe;
+      })
+      .map((g) => g.querySelector('.nav-txt')?.textContent?.trim());
+    expect(mienten, 'grupos que anuncian un estado y enseñan otro').toEqual([]);
+  });
+});
 
 describe('[8] el catálogo cumple la regla del globito que él mismo exige', () => {
   it('ni un solo elemento de navegación sin `title`', () => {
@@ -152,6 +176,15 @@ describe('[12] la barra del catálogo cumple la regla 12 que el catálogo public
    * Por eso esto ejecuta los guiones: el defecto no está en el HTML, está en
    * lo que el HTML hace al plegarse.
    */
+  /* SE CIERRAN AL TERMINAR. Cada catálogo vivo es un jsdom que EJECUTA la
+     página entera —2,5 MB de HTML y el paquete de React de 162 KB—, y con seis
+     abiertos a la vez el worker de vitest se quedaba sin memoria y moría:
+     «Worker exited unexpectedly», 49 archivos en verde de 50 y el archivo que
+     faltaba sin decir ni una palabra. El publicador lo cazó por código de
+     salida, que es exactamente para lo que mira el código de salida. */
+  const vivos: InstanceType<typeof JSDOM>[] = [];
+  afterEach(() => { while (vivos.length) vivos.pop()!.window.close(); });
+
   const catalogoVivo = () => {
     const consola = new VirtualConsole();
     const fallos: string[] = [];
@@ -173,6 +206,7 @@ describe('[12] la barra del catálogo cumple la regla 12 que el catálogo public
         w.scrollTo = () => {};
       },
     });
+    vivos.push(dom);
     if (fallos.length) throw new Error('el guion del catálogo lanzó: ' + fallos[0].slice(0, 160));
     return dom.window.document;
   };
@@ -210,5 +244,117 @@ describe('[12] la barra del catálogo cumple la regla 12 que el catálogo public
     const abiertas = [...lat.querySelectorAll('.nav-rama.abierta')]
       .filter((r) => !r.querySelector('.nav-nieto.activo'));
     expect(abiertas.length, 'al desplegar se quedan ramas abiertas que nadie pidió').toBe(0);
+  });
+
+  /* ── REGLA 9, POR EL LADO DEL CATÁLOGO ───────────────────────────────────
+     Una auditoría lo señaló antes de publicar: estas pruebas cubrían la 8, la
+     11 y la 12, y la v1.117.0 se vende por la 9. La mitad nueva del contrato
+     no tenía prueba por este lado, que es justo el lado que ha divergido
+     cuatro versiones seguidas. */
+
+  it('[9] el menú EXTENDIDO llega corto: un solo grupo abierto, y con `.fijo`', () => {
+    const d = catalogoVivo();
+    const lat = d.getElementById('lateral')!;
+    expect(lat.classList.contains('colapsado'), 'arranca plegado y no es lo que se mide').toBe(false);
+    const grupos = [...lat.querySelectorAll('.nav-grupo')];
+    expect(grupos.length, 'la barra no tiene grupos que comparar').toBeGreaterThan(2);
+    expect(
+      grupos.filter((g) => g.classList.contains('abierto')).length,
+      'el menú extendido llega con más de un grupo abierto: eso es el criterio derogado',
+    ).toBe(1);
+    expect(
+      grupos.filter((g) => g.classList.contains('fijo')).length,
+      'el acento no identifica a un solo grupo',
+    ).toBe(1);
+    // Y lo que se anuncia es lo que se ve, grupo a grupo.
+    for (const g of grupos) {
+      const ab = g.classList.contains('abierto');
+      expect(g.querySelector('.nav-grupo-tit')!.getAttribute('aria-expanded')).toBe(String(ab));
+      expect(g.querySelector('.nav-hijos')!.hasAttribute('hidden')).toBe(!ab);
+    }
+  });
+
+  it('[9] el cursor REVELA otro grupo sin desbancar al fijado', () => {
+    const d = catalogoVivo();
+    const lat = d.getElementById('lateral')!;
+    const grupos = [...lat.querySelectorAll('.nav-grupo')];
+    const fijado = grupos.find((g) => g.classList.contains('fijo'))!;
+    const otro = grupos.find((g) => !g.classList.contains('fijo'))!;
+    otro.dispatchEvent(new d.defaultView!.MouseEvent('mouseenter'));
+    expect(otro.classList.contains('abierto'), 'el cursor no reveló el grupo').toBe(true);
+    expect(fijado.classList.contains('abierto'), 'revelar otro cerró el fijado').toBe(true);
+    expect(
+      grupos.filter((g) => g.classList.contains('fijo')).length,
+      'revelar con el cursor movió el acento',
+    ).toBe(1);
+  });
+
+  it('[9] SOLTAR a mano cierra el grupo, con el cursor todavía encima', () => {
+    /* Aquí divergían: `MarcoApp` apaga el revelado al soltar y esta barra se
+       dejaba `data-cursor` puesto, así que el mismo gesto dejaba el grupo
+       cerrado en la entrega y abierto en el catálogo. */
+    const d = catalogoVivo();
+    const lat = d.getElementById('lateral')!;
+    const g = [...lat.querySelectorAll('.nav-grupo')].find((x) => !x.classList.contains('fijo'))!;
+    const tit = g.querySelector('.nav-grupo-tit') as HTMLElement;
+    g.dispatchEvent(new d.defaultView!.MouseEvent('mouseenter'));
+    tit.click();                                   // fija
+    expect(g.classList.contains('fijo')).toBe(true);
+    tit.click();                                   // suelta, sin mover el ratón
+    expect(g.classList.contains('fijo')).toBe(false);
+    expect(g.classList.contains('abierto'), 'soltar dejó el grupo abierto: el mando no hace nada').toBe(false);
+    expect(tit.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('[9] el RATÓN no cierra el panel donde está el FOCO — también en la barra', () => {
+    /* El componente se corrigió y ESTA BARRA NO: llevaba un solo señalizador,
+       puesto y quitado por el ratón Y por el foco, así que pasar el cursor por
+       encima cerraba el panel donde vivía el foco de alguien. El mismo gesto,
+       dos resultados, sobre el punto exacto que define esta versión. Lo midió
+       la tercera auditoría del 2026-09-15 ejecutando las dos hojas. */
+    const d = catalogoVivo();
+    const lat = d.getElementById('lateral')!;
+    const grupos = [...lat.querySelectorAll('.nav-grupo')];
+    const uno = grupos.find((g) => !g.classList.contains('fijo'))!;
+    const otro = grupos.find((g) => g !== uno && !g.classList.contains('fijo'))!;
+
+    // El foco entra en el primer grupo.
+    (uno.querySelector('.nav-grupo-tit') as HTMLElement).focus();
+    expect(uno.classList.contains('abierto'), 'enfocar no reveló el grupo').toBe(true);
+
+    // Y el ratón se pasea por otro. El foco no se ha movido.
+    otro.dispatchEvent(new d.defaultView!.MouseEvent('mouseenter'));
+    expect(uno.classList.contains('abierto'), 'el ratón cerró el panel donde está el foco').toBe(true);
+    expect(uno.querySelector('.nav-grupo-tit')!.getAttribute('aria-expanded'),
+      'aria-expanded miente sobre el grupo enfocado').toBe('true');
+    expect(uno.querySelector('.nav-hijos')!.hasAttribute('hidden')).toBe(false);
+    expect(otro.classList.contains('abierto'), 'el cursor no reveló el suyo').toBe(true);
+  });
+
+  it('[9] y al revés: que el foco salga no cierra el grupo que tiene el ratón', () => {
+    const d = catalogoVivo();
+    const lat = d.getElementById('lateral')!;
+    const g = [...lat.querySelectorAll('.nav-grupo')].find((x) => !x.classList.contains('fijo'))!;
+    const tit = g.querySelector('.nav-grupo-tit') as HTMLElement;
+    g.dispatchEvent(new d.defaultView!.MouseEvent('mouseenter'));
+    tit.focus();
+    expect(g.classList.contains('abierto')).toBe(true);
+    // El foco se va fuera del grupo; el ratón sigue encima.
+    (d.getElementById('plegar-cat') as HTMLElement).focus();
+    expect(g.classList.contains('abierto'), 'salir con el foco cerró lo que el ratón tenía abierto').toBe(true);
+  });
+
+  it('[9] la barra marca la página en curso con `aria-current`, no solo con color', () => {
+    /* El propio catálogo publica en su página de Paginación que «el color solo
+       no la marca», y su barra la marcaba solo con la clase. */
+    const d = catalogoVivo();
+    const lat = d.getElementById('lateral')!;
+    const activos = [...lat.querySelectorAll('.nav-hijo.activo, .nav-nieto.activo')];
+    expect(activos.length, 'ninguna opción marcada como activa').toBe(1);
+    expect(
+      lat.querySelectorAll('[aria-current="page"]').length,
+      'la opción en curso se pinta pero no se anuncia',
+    ).toBe(1);
+    expect(activos[0].getAttribute('aria-current')).toBe('page');
   });
 });
