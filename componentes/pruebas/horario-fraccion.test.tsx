@@ -25,12 +25,15 @@ function encaje(b: Record<string, unknown>) {
   const bloque = container.querySelector('.hor-b');
   if (!bloque) return null;
   const td = bloque.closest('td')!;
-  // R94 · los huecos declaran cuartos SOBRE el span (`hor-q{cuartos}-{celdas}`).
+  // R94 · los huecos declaran CUARTOS. Hasta la v1.119.0 el nombre llevaba además
+  // cuántas celdas abarcaba el bloque —`hor-q{cuartos}-{celdas}`—, y ese segundo
+  // número dejó de significar nada cuando el hueco pasó a medirse en longitud:
+  // un cuarto de hora es un cuarto de hora. Desde el R138 es `hor-h{cuartos}`.
   // Antes era `hor-fr-{n}` con flex-grow, y flex-grow reparte lo que SOBRA:
   // sobraba distinto según el contenido de cada celda, así que dos bloques de
   // la misma hora en la misma fila empezaban a alturas distintas.
   const cuartos = (el: Element | null) =>
-    el ? Number((el.className.match(/hor-q(\d+)-\d+/) ?? [])[1] ?? 0) : 0;
+    el ? Number((el.className.match(/hor-h(\d+)/) ?? [])[1] ?? 0) : 0;
   const span = Number(td.getAttribute('rowspan') ?? 1);
   const arr = cuartos(td.querySelector('.hor-hueco:first-child'));
   const aba = td.querySelectorAll('.hor-hueco').length > 1
@@ -82,7 +85,7 @@ describe('Horario — R89 · la celda deja de ser un interruptor', () => {
       bloques={[{ dia: 0, de: '13:30', a: '15:00', titulo: 'D' }]} />);
     // Dos cuartos de hueco sobre dos celdas → 25 % de la celda, sea cual sea
     // el contenido. Esa es toda la diferencia con flex-grow.
-    expect(container.querySelector('.hor-hueco')!.className).toContain('hor-q2-2');
+    expect(container.querySelector('.hor-hueco')!.className).toContain('hor-h2');
   });
 
   it('R89 · 25 minutos con paso 60 ya SÍ se dibujan: dos cuartos', () => {

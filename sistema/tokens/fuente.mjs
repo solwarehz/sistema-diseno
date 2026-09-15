@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.119.0";
+export const VERSION = "1.120.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,66 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.120.0', fecha: '2026-09-15',
+    que: 'R138 — una celda del horario lleva una PILA de bloques, no uno',
+    porque:
+      'Lo reporto Control Administrativos V2.0 con el horario de un profesor real: S3 de 09:00 a '
+      + '12:20 y S1 de 12:20 a 13:55 NO COMPARTEN UN MINUTO, y el segundo se descartaba con «se '
+      + 'solapa con otro bloque ya colocado». No se solapaban: COMPARTIAN FILA. Con franjas de dos '
+      + 'horas, S3 acaba dentro de la fila 12:00–14:00 y S1 empieza en esa misma fila; el bucle '
+      + 'reservaba FILAS ENTERAS —tapada[dia][fila] = true— asi que cualquiera que empezara ahi se '
+      + 'caia. Reproducido con el componente: un bloque pintado y el aviso literal que ellos citan. '
+      + 'UNA CORRECCION A SU DOCUMENTO, medida: dicen que pasa a 120, 60, 30 y 20 y que por eso no es '
+      + 'cuestion de resolucion. A paso 20 SI se pinta —ahi el borde de fila cae exacto en 12:20 y '
+      + 'dejan de compartirla—. La regla real es mas simple y peor: UN BLOQUE QUE ACABA A MEDIA FILA '
+      + 'SE QUEDA LA FILA ENTERA. Que no dependa de la resolucion es cierto en lo que importa: '
+      + 'cualquier hora que no caiga en un borde lo reproduce. '
+      + 'AHORA EL CHOQUE SE MIDE EN CUARTOS, que es donde de verdad ocurre, y los bloques que '
+      + 'comparten filas sin compartir minutos van EN LA MISMA CELDA, apilados con sus huecos. La '
+      + 'celda abarca la UNION de las filas de todos sus bloques. El descarte no desaparece: cambia '
+      + 'de criterio —antes por fila, que es geometria; ahora por tiempo, que es lo que de verdad no '
+      + 'cabe— y el aviso dice CON CUAL se solapa. '
+      + 'Y EL BLOQUE TAMBIEN SE MIDE EN CUARTOS. Llevaba «flex: 1 0 auto» —todo lo que sobre— y con '
+      + 'UN bloque por celda bastaba; con VARIOS, «lo que sobra» es ambiguo y dos bloques de '
+      + 'duraciones distintas se repartirian el sobrante a partes iguales. Es lo que el propio equipo '
+      + 'anticipo al mandarlo: «si dejan que una celda lleve dos bloques, el hueco en cuartos tendra '
+      + 'que contar todos los bloques de la pila, no uno». Tenian razon, y el R137 lo dejo MAS facil: '
+      + 'con porcentajes, repartir una pila de varios habria sido el mismo defecto multiplicado. '
+      + 'LAS CLASES CAMBIAN DE NOMBRE: hor-q{cuartos}-{celdas} pasa a hor-h{cuartos} para el hueco y '
+      + 'hor-d{cuartos} para el bloque. El segundo numero dejo de significar nada en la v1.119.0 —un '
+      + 'cuarto de hora es un cuarto de hora— y lo senalo una auditoria: eran 18 clases con TRES '
+      + 'valores distintos, byte a byte iguales entre si. '
+      + 'Y SE CIERRAN DOS COSAS QUE ESA MISMA AUDITORIA ENCONTRO EN EL R137: el hueco de ABAJO no '
+      + 'tenia ni una prueba —ponerlo a cero dejaba 903 en verde, y es la mitad simetrica del '
+      + 'defecto—, y la afirmacion R137 SOLO PROHIBIA: borrar todas las reglas del hueco, o declarar '
+      + '--alto-franja aparte de height, dejaba los 18 candados en verde con el sombreado entero '
+      + 'desaparecido. Ahora exige en positivo. '
+      + 'EL CATALOGO ENSENA EL CASO: una celda con dos bloques, que es el que lo trajo. '
+      + 'UNA AUDITORIA PARO LA PRIMERA VERSION, y tenia razon: pasado el tope de seis franjas '
+      + 'descartaba a todos menos el primero, asi que EL CASO QUE TRAJO EL R138 SEGUIA ROTO A '
+      + 'PASO 30 —el grupo abarca diez franjas— mientras cuatro superficies decian que estaba '
+      + 'cerrado, sin salvedad. Ahora no se descarta a nadie: la pieza que no cabe en el juego de '
+      + 'clases sale SIN clase de tamano y hereda flex: 1 0 auto, que es lo que «a celda entera» '
+      + 'siempre quiso decir. Se pierde la proporcion, no el bloque, y se avisa. Tambien emitia '
+      + 'hor-d40 con la hoja declarando hasta hor-d24: una clase que nadie atiende coloca el '
+      + 'bloque donde caiga. Y EL SORT sostenia todo el agrupador CON COBERTURA CERO: quitarlo '
+      + 'dejaba las 912 en verde y con la entrada invertida el bloque se pintaba TRES FRANJAS mas '
+      + 'abajo de su hora. Ya tiene prueba. La afirmacion R137 se reforzo otras tres veces: la '
+      + 'satisfacia la regla de densidad compacta —se podia quitar la variable de la que aplica '
+      + 'siempre—, y comprobaba presencia y no VALOR, asi que las 48 reglas a 0px o todas al mismo '
+      + 'cuarto pasaban en verde con el R137 de vuelta entero.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'LAS CLASES DEL HUECO CAMBIAN DE NOMBRE: hor-q{cuartos}-{celdas} ya no existe. Ahora son '
+      + 'hor-h{cuartos} en el hueco y hor-d{cuartos} en el bloque. Son geometria interna del '
+      + 'horario y no deberian estar en su hoja; si alguna lo esta, hay que cambiarla.',
+      'DOS BLOQUES QUE ANTES SE DESCARTABAN AHORA SE PINTAN. Si su producto contaba el numero de '
+      + 'bloques dibujados, o se apoyaba en el aviso «se solapa con otro bloque ya colocado» para '
+      + 'detectar horarios raros, ese aviso ya no sale cuando no comparten minutos — y cuando sale, '
+      + 'el texto cambia: dice «se solapa en el tiempo con «X»».',
+    ],
+  },
   {
     v: '1.119.0', fecha: '2026-09-15',
     que: 'R137 — el hueco del horario se medía contra lo que él mismo dimensionaba',

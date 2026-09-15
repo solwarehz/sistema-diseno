@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 15 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.119.0** — R137: el hueco del horario se medía
-contra lo que él mismo dimensionaba, y el bloque se salía de su celda
+**Versión del sistema:** MMI-DS **v1.120.0** — R138: una celda del horario lleva
+una pila de bloques, y el choque se mide en cuartos y no en filas
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -57,14 +57,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
 | Componentes de React | ✅ | **892 pruebas en 50 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · **980 reglas de 1495** · **701 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
+| La hoja que viaja | ✅ | `extraer.mjs` · **1010 reglas de 1525** · **731 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.119.0.zip` · **60 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.120.0.zip` · **60 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.119.0**, con el salto **desde la v1.19.0**, que es la instalada |
-| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los dieciocho pasos · **143 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.120.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los dieciocho pasos · **173 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -85,6 +85,118 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.46.0 | **R52** · todos los iconos de la entrega salían 2px más pequeños que en el catálogo |
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
+
+### Lo de hoy (v1.120.0), con detalle
+
+**R138 · Una celda del horario lleva una pila de bloques, no uno.** Lo reportó
+Control Administrativos V2.0 con el horario de un profesor real: **S3 de 09:00 a
+12:20 y S1 de 12:20 a 13:55 no comparten un minuto**, y el segundo se descartaba
+con *«se solapa con otro bloque ya colocado»*.
+
+**No se solapaban: compartían fila.** Con franjas de dos horas, S3 acaba dentro
+de la fila 12:00–14:00 y S1 empieza en esa misma fila. El bucle reservaba **filas
+enteras** —`tapada[dia][fila] = true`— así que cualquiera que empezara ahí se
+caía. Reproducido con el componente: **un bloque pintado** y el aviso literal.
+
+**Una corrección a su documento, medida.** Dicen que pasa a 120, 60, 30 y 20, y
+que por eso no es cuestión de resolución:
+
+| `paso` | S3 filas | S1 filas | Choque |
+|---|---|---|---|
+| 120 | 4,5,6 | 6 | **6** → descartado |
+| 60 | 9–12 | 12,13 | **12** → descartado |
+| 30 | 18–24 | 24–27 | **24** → descartado |
+| 20 | 27–36 | 37–41 | ninguno → **se pinta** |
+
+A paso 20 **sí** se pinta: ahí el borde de fila cae exacto en 12:20. Lo que
+tienen razón es en lo que importa —**cualquier hora que no caiga en un borde lo
+reproduce**—, y la regla real es peor que «depende de la resolución»: **un bloque
+que acaba a media fila se queda la fila entera**.
+
+**Ahora el choque se mide en cuartos**, que es donde de verdad ocurre, y los
+bloques que comparten filas sin compartir minutos van **en la misma celda**. La
+celda abarca la **unión** de las filas de todos sus bloques. El descarte no
+desaparece: **cambia de criterio** —antes por fila, que es geometría; ahora por
+tiempo, que es lo que de verdad no cabe— y el aviso dice **con cuál**.
+
+**Y el bloque también se mide en cuartos.** Llevaba `flex: 1 0 auto` —todo lo que
+sobre— y con un bloque por celda bastaba; con varios, «lo que sobra» es ambiguo y
+dos bloques de duraciones distintas se repartirían el sobrante a partes iguales.
+Es exactamente lo que el equipo anticipó al mandarlo:
+
+> *«Si dejan que una celda lleve dos bloques, el hueco en cuartos tendrá que
+> contar todos los bloques de la pila, no uno.»*
+
+Tenían razón, y **el R137 lo dejó más fácil, no más difícil**: con porcentajes,
+repartir una pila de varios habría sido el mismo defecto multiplicado.
+
+**Las clases cambian de nombre.** `hor-q{cuartos}-{celdas}` pasa a
+`hor-h{cuartos}` en el hueco, y el bloque gana `hor-d{cuartos}`. El segundo
+número dejó de significar nada en la v1.119.0 —un cuarto de hora es un cuarto de
+hora— y lo señaló la auditoría: eran 18 clases con **tres valores distintos**,
+byte a byte iguales entre sí.
+
+### Lo que encontró la auditoría del R138, y entró antes de publicar
+
+**El arreglo no estaba arreglado a paso 30.** El grupo abarca diez franjas, pasa
+el tope de seis, y la primera versión **descartaba a todos menos el primero** —
+así que el caso que trajo el R138 seguía roto mientras **cuatro superficies**
+decían que estaba cerrado, sin salvedad. Es exactamente la contradicción que
+este repositorio prohíbe dejar viva, y apuntaba al equipo que lo reportó.
+
+Ahora **pasado el tope no se descarta a nadie**: la pieza que no cabe en el juego
+de clases sale **sin clase de tamaño** y hereda `flex: 1 0 auto`, que es lo que
+«a celda entera» siempre quiso decir. Se pierde la proporción, **no el bloque**,
+y se avisa. Un bloque que desaparece no deja hueco visible y nadie lo echa en
+falta; uno mal proporcionado se ve.
+
+| `paso` | Antes del R138 | Primera versión | Ahora |
+|---|---|---|---|
+| 120 | S3 | S3, S1 | S3, S1 |
+| 60 | S3 | S3, S1 | S3, S1 |
+| 30 | S3 | **S3** ← seguía roto | **S3, S1** |
+| 20 | S3, S1 | S3, S1 | S3, S1 |
+
+**Y emitía clases que la hoja no atiende.** A paso 30 salía `hor-d40` y la hoja
+declara hasta `hor-d24`: una clase que nadie atiende coloca el bloque donde
+caiga. Ahora no se emite.
+
+**El `sort` sostenía todo el agrupador con cobertura cero.** Quitarlo dejaba las
+**912 en verde**, y con la entrada invertida el bloque se pintaba **tres franjas
+más abajo de su hora**, con la celda a `rowspan` 1 y catorce cuartos dentro de
+cuatro. Un producto que traiga los bloques de una consulta sin `ORDER BY` lo
+reproduce. Ya tiene prueba.
+
+**Y la afirmación `R137` se conformaba con tres cosas que no bastan:**
+
+- la satisfacía **la regla de densidad compacta**, así que se podía quitar la
+  variable de la regla que aplica **siempre** y quedaba en verde con el
+  sombreado desaparecido en la densidad normal;
+- comprobaba **presencia y no valor**: las 48 reglas a `0px`, o las 48 al mismo
+  cuarto, pasaban en verde con el R137 de vuelta entero.
+
+Las tres, cazadas ahora.
+
+**Cuatro cifras de este archivo** se habían quedado en la versión anterior, todas
+por el mismo delta de +30 reglas: 980→**1010** de 1495→**1525**, 701→**731**
+clases, y 143→**173** unidades compuestas. La tabla lleva escrito encima que cada
+cifra sale del comando que tiene al lado.
+
+**Y una contradicción viva en el contrato**: la regla 8bis seguía diciendo *«como
+el hueco es porcentual»* una versión después de que el R137 demostrara que eso
+**era el defecto**. La frase sobrevivió a su propio arreglo.
+
+### Y se cierran dos cosas que la auditoría del R137 había dejado abiertas
+
+- **El hueco de abajo no tenía ni una prueba.** Ponerlo a cero dejaba **903 en
+  verde**, y es la mitad simétrica del defecto: un bloque que acaba a media
+  franja se dibujaría hasta el fondo y parecería acabar en punto.
+- **La afirmación `R137` solo prohibía.** Borrar **todas** las reglas del hueco,
+  o declarar `--alto-franja` aparte de `height`, dejaba los 18 candados en verde
+  **con el sombreado fraccionado entero desaparecido** — en el segundo caso
+  porque el `calc` queda inválido y el atajo `flex` cae a `0 1 auto`. Ahora
+  **exige en positivo**: que las 48 clases tengan regla, y que la variable y la
+  altura las declare la **misma** regla.
 
 ### Lo de hoy (v1.119.0), con detalle
 
@@ -2475,7 +2587,7 @@ Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
 Pruebas                         892   en 50 archivos
-Reglas que viajan               980   de 1495 · 701 clases, 0 huérfanas
+Reglas que viajan               1010   de 1525 · 731 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el
                                       catalogo, que por diseño NO viajan).

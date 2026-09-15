@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.119.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.120.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.119.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.120.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -35,7 +35,7 @@
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.119.0;
+  --mmi-version: 1.120.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -1416,7 +1416,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    como cualquier otra regla, para que el catalogo y la entrega digan lo mismo:
    inyectarlo solo en la entrega dejaba una regla que el catalogo no tenia, y
    el candado de la promesa lo caza —con razon—. Los dos salen de VERSION. */
-:root { --mmi-componentes: 1.119.0; }
+:root { --mmi-componentes: 1.120.0; }
 
 .fc-zona { position: relative; }
 /* R129.2 · EL TOPE ERA MENOR QUE EL CONTENIDO. Con R129.1 puesto, lo que el
@@ -2872,24 +2872,62 @@ a.enlace.enl-nosub { text-decoration: none; }
    distinto. Y la L deja de importar: un cuarto de hora es un cuarto de hora
    mida lo que mida el bloque. Se siguen emitiendo las 18 clases porque son las
    que el componente escribe. */
-.hor-hueco.hor-q1-1 { flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q1-2 { flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q1-3 { flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q1-4 { flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q1-5 { flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q1-6 { flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q2-1 { flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q2-2 { flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q2-3 { flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q2-4 { flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q2-5 { flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q2-6 { flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q3-1 { flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
-.hor-hueco.hor-q3-2 { flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
-.hor-hueco.hor-q3-3 { flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
-.hor-hueco.hor-q3-4 { flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
-.hor-hueco.hor-q3-5 { flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
-.hor-hueco.hor-q3-6 { flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
+.hor-hueco.hor-h1 { flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
+.hor-hueco.hor-h2 { flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
+.hor-hueco.hor-h3 { flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
+.hor-hueco.hor-h4 { flex: 0 0 calc(var(--alto-franja) * 4 / 4); }
+.hor-hueco.hor-h5 { flex: 0 0 calc(var(--alto-franja) * 5 / 4); }
+.hor-hueco.hor-h6 { flex: 0 0 calc(var(--alto-franja) * 6 / 4); }
+.hor-hueco.hor-h7 { flex: 0 0 calc(var(--alto-franja) * 7 / 4); }
+.hor-hueco.hor-h8 { flex: 0 0 calc(var(--alto-franja) * 8 / 4); }
+.hor-hueco.hor-h9 { flex: 0 0 calc(var(--alto-franja) * 9 / 4); }
+.hor-hueco.hor-h10 { flex: 0 0 calc(var(--alto-franja) * 10 / 4); }
+.hor-hueco.hor-h11 { flex: 0 0 calc(var(--alto-franja) * 11 / 4); }
+.hor-hueco.hor-h12 { flex: 0 0 calc(var(--alto-franja) * 12 / 4); }
+.hor-hueco.hor-h13 { flex: 0 0 calc(var(--alto-franja) * 13 / 4); }
+.hor-hueco.hor-h14 { flex: 0 0 calc(var(--alto-franja) * 14 / 4); }
+.hor-hueco.hor-h15 { flex: 0 0 calc(var(--alto-franja) * 15 / 4); }
+.hor-hueco.hor-h16 { flex: 0 0 calc(var(--alto-franja) * 16 / 4); }
+.hor-hueco.hor-h17 { flex: 0 0 calc(var(--alto-franja) * 17 / 4); }
+.hor-hueco.hor-h18 { flex: 0 0 calc(var(--alto-franja) * 18 / 4); }
+.hor-hueco.hor-h19 { flex: 0 0 calc(var(--alto-franja) * 19 / 4); }
+.hor-hueco.hor-h20 { flex: 0 0 calc(var(--alto-franja) * 20 / 4); }
+.hor-hueco.hor-h21 { flex: 0 0 calc(var(--alto-franja) * 21 / 4); }
+.hor-hueco.hor-h22 { flex: 0 0 calc(var(--alto-franja) * 22 / 4); }
+.hor-hueco.hor-h23 { flex: 0 0 calc(var(--alto-franja) * 23 / 4); }
+.hor-hueco.hor-h24 { flex: 0 0 calc(var(--alto-franja) * 24 / 4); }
+
+/* Y EL BLOQUE TAMBIEN SE MIDE EN CUARTOS. Llevaba «flex: 1 0 auto» —todo lo
+   que sobre»— y con UN bloque por celda eso bastaba. Con VARIOS (R138) «lo que
+   sobra» es ambiguo: dos bloques de duraciones distintas se repartirian el
+   sobrante a partes iguales y el de una hora se veria igual que el de tres.
+   Ahora cada uno parte de SU duracion. Sigue sin encoger —shrink 0, el texto
+   manda— y sigue creciendo si la fila crece, que es lo que impide el desborde
+   del R137. */
+.hor-pila > .hor-b.hor-d1 { flex: 1 0 calc(var(--alto-franja) * 1 / 4); }
+.hor-pila > .hor-b.hor-d2 { flex: 1 0 calc(var(--alto-franja) * 2 / 4); }
+.hor-pila > .hor-b.hor-d3 { flex: 1 0 calc(var(--alto-franja) * 3 / 4); }
+.hor-pila > .hor-b.hor-d4 { flex: 1 0 calc(var(--alto-franja) * 4 / 4); }
+.hor-pila > .hor-b.hor-d5 { flex: 1 0 calc(var(--alto-franja) * 5 / 4); }
+.hor-pila > .hor-b.hor-d6 { flex: 1 0 calc(var(--alto-franja) * 6 / 4); }
+.hor-pila > .hor-b.hor-d7 { flex: 1 0 calc(var(--alto-franja) * 7 / 4); }
+.hor-pila > .hor-b.hor-d8 { flex: 1 0 calc(var(--alto-franja) * 8 / 4); }
+.hor-pila > .hor-b.hor-d9 { flex: 1 0 calc(var(--alto-franja) * 9 / 4); }
+.hor-pila > .hor-b.hor-d10 { flex: 1 0 calc(var(--alto-franja) * 10 / 4); }
+.hor-pila > .hor-b.hor-d11 { flex: 1 0 calc(var(--alto-franja) * 11 / 4); }
+.hor-pila > .hor-b.hor-d12 { flex: 1 0 calc(var(--alto-franja) * 12 / 4); }
+.hor-pila > .hor-b.hor-d13 { flex: 1 0 calc(var(--alto-franja) * 13 / 4); }
+.hor-pila > .hor-b.hor-d14 { flex: 1 0 calc(var(--alto-franja) * 14 / 4); }
+.hor-pila > .hor-b.hor-d15 { flex: 1 0 calc(var(--alto-franja) * 15 / 4); }
+.hor-pila > .hor-b.hor-d16 { flex: 1 0 calc(var(--alto-franja) * 16 / 4); }
+.hor-pila > .hor-b.hor-d17 { flex: 1 0 calc(var(--alto-franja) * 17 / 4); }
+.hor-pila > .hor-b.hor-d18 { flex: 1 0 calc(var(--alto-franja) * 18 / 4); }
+.hor-pila > .hor-b.hor-d19 { flex: 1 0 calc(var(--alto-franja) * 19 / 4); }
+.hor-pila > .hor-b.hor-d20 { flex: 1 0 calc(var(--alto-franja) * 20 / 4); }
+.hor-pila > .hor-b.hor-d21 { flex: 1 0 calc(var(--alto-franja) * 21 / 4); }
+.hor-pila > .hor-b.hor-d22 { flex: 1 0 calc(var(--alto-franja) * 22 / 4); }
+.hor-pila > .hor-b.hor-d23 { flex: 1 0 calc(var(--alto-franja) * 23 / 4); }
+.hor-pila > .hor-b.hor-d24 { flex: 1 0 calc(var(--alto-franja) * 24 / 4); }
 
 .hor-b b { display: block; font-weight: 600; font-size: 13px; }
 .hor-b span { display: block; font-size: 12px; }
@@ -4940,7 +4978,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.119.0</option></select></label>
+          <select class="campo cg-in"><option>v1.120.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -5028,8 +5066,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.119.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.119.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.120.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.120.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -5588,7 +5626,7 @@ demostraciones de al lado. Y la hoja no es una copia: se inyecta desde
 vieja.</div>
 
 <script type="text/plain" id="tokens-entregados">/* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.119.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.120.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -5616,7 +5654,7 @@ vieja.</div>
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.119.0;
+  --mmi-version: 1.120.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -6229,7 +6267,7 @@ vieja.</div>
 </script>
 <script type="text/plain" id="hoja-entregada">
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.119.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.120.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -6317,7 +6355,7 @@ vieja.</div>
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.119.0; }
+:root{ --mmi-componentes: 1.120.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -6857,7 +6895,7 @@ button.fc-campo{ display: flex; align-items: center; justify-content: flex-start
 input[type='date'].campo, .fc-campo{ max-width: 172px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   HORARIO — 53 reglas · clases .hor-*
+   HORARIO — 83 reglas · clases .hor-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 [data-densidad='compacta'] .hor-c{ --alto-franja: 28px; height: var(--alto-franja); }
@@ -6887,24 +6925,54 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .hor-pila{ display: flex; flex-direction: column; height: 100%; }
 .hor-hueco{ flex-basis: 0; flex-shrink: 0; }
 .hor-pila > .hor-b{ flex: 1 0 auto; height: auto; }
-.hor-hueco.hor-q1-1{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q1-2{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q1-3{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q1-4{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q1-5{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q1-6{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q2-1{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q2-2{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q2-3{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q2-4{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q2-5{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q2-6{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q3-1{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
-.hor-hueco.hor-q3-2{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
-.hor-hueco.hor-q3-3{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
-.hor-hueco.hor-q3-4{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
-.hor-hueco.hor-q3-5{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
-.hor-hueco.hor-q3-6{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
+.hor-hueco.hor-h1{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
+.hor-hueco.hor-h2{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
+.hor-hueco.hor-h3{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
+.hor-hueco.hor-h4{ flex: 0 0 calc(var(--alto-franja) * 4 / 4); }
+.hor-hueco.hor-h5{ flex: 0 0 calc(var(--alto-franja) * 5 / 4); }
+.hor-hueco.hor-h6{ flex: 0 0 calc(var(--alto-franja) * 6 / 4); }
+.hor-hueco.hor-h7{ flex: 0 0 calc(var(--alto-franja) * 7 / 4); }
+.hor-hueco.hor-h8{ flex: 0 0 calc(var(--alto-franja) * 8 / 4); }
+.hor-hueco.hor-h9{ flex: 0 0 calc(var(--alto-franja) * 9 / 4); }
+.hor-hueco.hor-h10{ flex: 0 0 calc(var(--alto-franja) * 10 / 4); }
+.hor-hueco.hor-h11{ flex: 0 0 calc(var(--alto-franja) * 11 / 4); }
+.hor-hueco.hor-h12{ flex: 0 0 calc(var(--alto-franja) * 12 / 4); }
+.hor-hueco.hor-h13{ flex: 0 0 calc(var(--alto-franja) * 13 / 4); }
+.hor-hueco.hor-h14{ flex: 0 0 calc(var(--alto-franja) * 14 / 4); }
+.hor-hueco.hor-h15{ flex: 0 0 calc(var(--alto-franja) * 15 / 4); }
+.hor-hueco.hor-h16{ flex: 0 0 calc(var(--alto-franja) * 16 / 4); }
+.hor-hueco.hor-h17{ flex: 0 0 calc(var(--alto-franja) * 17 / 4); }
+.hor-hueco.hor-h18{ flex: 0 0 calc(var(--alto-franja) * 18 / 4); }
+.hor-hueco.hor-h19{ flex: 0 0 calc(var(--alto-franja) * 19 / 4); }
+.hor-hueco.hor-h20{ flex: 0 0 calc(var(--alto-franja) * 20 / 4); }
+.hor-hueco.hor-h21{ flex: 0 0 calc(var(--alto-franja) * 21 / 4); }
+.hor-hueco.hor-h22{ flex: 0 0 calc(var(--alto-franja) * 22 / 4); }
+.hor-hueco.hor-h23{ flex: 0 0 calc(var(--alto-franja) * 23 / 4); }
+.hor-hueco.hor-h24{ flex: 0 0 calc(var(--alto-franja) * 24 / 4); }
+.hor-pila > .hor-b.hor-d1{ flex: 1 0 calc(var(--alto-franja) * 1 / 4); }
+.hor-pila > .hor-b.hor-d2{ flex: 1 0 calc(var(--alto-franja) * 2 / 4); }
+.hor-pila > .hor-b.hor-d3{ flex: 1 0 calc(var(--alto-franja) * 3 / 4); }
+.hor-pila > .hor-b.hor-d4{ flex: 1 0 calc(var(--alto-franja) * 4 / 4); }
+.hor-pila > .hor-b.hor-d5{ flex: 1 0 calc(var(--alto-franja) * 5 / 4); }
+.hor-pila > .hor-b.hor-d6{ flex: 1 0 calc(var(--alto-franja) * 6 / 4); }
+.hor-pila > .hor-b.hor-d7{ flex: 1 0 calc(var(--alto-franja) * 7 / 4); }
+.hor-pila > .hor-b.hor-d8{ flex: 1 0 calc(var(--alto-franja) * 8 / 4); }
+.hor-pila > .hor-b.hor-d9{ flex: 1 0 calc(var(--alto-franja) * 9 / 4); }
+.hor-pila > .hor-b.hor-d10{ flex: 1 0 calc(var(--alto-franja) * 10 / 4); }
+.hor-pila > .hor-b.hor-d11{ flex: 1 0 calc(var(--alto-franja) * 11 / 4); }
+.hor-pila > .hor-b.hor-d12{ flex: 1 0 calc(var(--alto-franja) * 12 / 4); }
+.hor-pila > .hor-b.hor-d13{ flex: 1 0 calc(var(--alto-franja) * 13 / 4); }
+.hor-pila > .hor-b.hor-d14{ flex: 1 0 calc(var(--alto-franja) * 14 / 4); }
+.hor-pila > .hor-b.hor-d15{ flex: 1 0 calc(var(--alto-franja) * 15 / 4); }
+.hor-pila > .hor-b.hor-d16{ flex: 1 0 calc(var(--alto-franja) * 16 / 4); }
+.hor-pila > .hor-b.hor-d17{ flex: 1 0 calc(var(--alto-franja) * 17 / 4); }
+.hor-pila > .hor-b.hor-d18{ flex: 1 0 calc(var(--alto-franja) * 18 / 4); }
+.hor-pila > .hor-b.hor-d19{ flex: 1 0 calc(var(--alto-franja) * 19 / 4); }
+.hor-pila > .hor-b.hor-d20{ flex: 1 0 calc(var(--alto-franja) * 20 / 4); }
+.hor-pila > .hor-b.hor-d21{ flex: 1 0 calc(var(--alto-franja) * 21 / 4); }
+.hor-pila > .hor-b.hor-d22{ flex: 1 0 calc(var(--alto-franja) * 22 / 4); }
+.hor-pila > .hor-b.hor-d23{ flex: 1 0 calc(var(--alto-franja) * 23 / 4); }
+.hor-pila > .hor-b.hor-d24{ flex: 1 0 calc(var(--alto-franja) * 24 / 4); }
 .hor-b b{ display: block; font-weight: 600; font-size: 13px; }
 .hor-b span{ display: block; font-size: 12px; }
 .hor-rango{ font-variant-numeric: tabular-nums; }
@@ -12147,18 +12215,18 @@ más la de las 14:00 entera. La rejilla se queda en <strong>24 filas</strong> au
       <tbody>
         <tr><th class="hor-eje hor-eje-v" scope="row">07:00</th>
           <td class="hor-c" rowspan="2"><div class="hor-pila">
-            <i class="hor-hueco hor-q3-2" aria-hidden="true"></i>
-            <span class="hor-b hor-identidad-1" title="Lunes, 07:45 – 09:00"><b>Turno mañana</b><span>Sede Centro</span><span class="hor-rango">07:45 – 09:00</span></span>
+            <i class="hor-hueco hor-h3" aria-hidden="true"></i>
+            <span class="hor-b hor-identidad-1 hor-d5" title="Lunes, 07:45 – 09:00"><b>Turno mañana</b><span>Sede Centro</span><span class="hor-rango">07:45 – 09:00</span></span>
           </div></td>
           <td class="hor-c hor-vacia"></td></tr>
         <tr><td class="hor-c hor-vacia"></td></tr>
         <tr><th class="hor-eje hor-eje-v" scope="row">13:00</th>
           <td class="hor-c" rowspan="2"><div class="hor-pila">
-            <i class="hor-hueco hor-q2-2" aria-hidden="true"></i>
-            <span class="hor-b hor-identidad-2" title="Lunes, 13:30 – 15:00"><b>Turno tarde</b><span>Sede Norte</span><span class="hor-rango">13:30 – 15:00</span></span>
+            <i class="hor-hueco hor-h2" aria-hidden="true"></i>
+            <span class="hor-b hor-identidad-2 hor-d6" title="Lunes, 13:30 – 15:00"><b>Turno tarde</b><span>Sede Norte</span><span class="hor-rango">13:30 – 15:00</span></span>
           </div></td>
           <td class="hor-c"><div class="hor-pila">
-            <span class="hor-b hor-neutro" title="Martes, 13:00 – 14:00"><b>Refuerzo</b><span>Sede Centro</span><span class="hor-rango">13:00 – 14:00</span></span>
+            <span class="hor-b hor-neutro hor-d4" title="Martes, 13:00 – 14:00"><b>Refuerzo</b><span>Sede Centro</span><span class="hor-rango">13:00 – 14:00</span></span>
           </div></td></tr>
         <tr><td class="hor-c hor-vacia"></td></tr>
         <!-- EL CASO DEL R137, que no estaba en ninguna pagina: UNA sola celda
@@ -12168,14 +12236,38 @@ más la de las 14:00 entera. La rejilla se queda en <strong>24 filas</strong> au
              necesitaba y lo empujaba sobre la fila siguiente. -->
         <tr><th class="hor-eje hor-eje-v" scope="row">16:00</th>
           <td class="hor-c"><div class="hor-pila">
-            <i class="hor-hueco hor-q1-1" aria-hidden="true"></i>
-            <span class="hor-b hor-identidad-1" title="Lunes, 16:15 – 17:00"><b>Tutor&iacute;a</b><span>Sede Centro</span><span class="hor-rango">16:15 – 17:00</span></span>
+            <i class="hor-hueco hor-h1" aria-hidden="true"></i>
+            <span class="hor-b hor-identidad-1 hor-d3" title="Lunes, 16:15 – 17:00"><b>Tutor&iacute;a</b><span>Sede Centro</span><span class="hor-rango">16:15 – 17:00</span></span>
           </div></td>
           <td class="hor-c hor-vacia"></td></tr>
       </tbody>
     </table>
   </div>
 </div>
+<h3 class="sub-seccion">R138 &middot; dos bloques en una celda</h3>
+<p class="seccion-sub">El caso que lo trajo: <strong>09:00&ndash;12:20 y 12:20&ndash;13:55</strong>, que <strong>no comparten un
+minuto</strong>. Con franjas de dos horas, el primero acaba dentro de la fila de las 12:00 y el segundo empieza
+en esa misma fila. Hasta la v1.119.0 el segundo se descartaba con &laquo;se solapa con otro bloque ya
+colocado&raquo;: <strong>no se solapaban, compart&iacute;an fila</strong>. Ahora el choque se mide en cuartos y los dos
+caben en la misma celda.</p>
+<div class="bloque">
+  <div class="hor-env" tabindex="0">
+    <table class="hor">
+      <thead><tr><th class="hor-esq" scope="col">Hora</th><th scope="col">Mi&eacute;rcoles</th></tr></thead>
+      <tbody>
+        <tr><th class="hor-eje hor-eje-v" scope="row">08:00</th>
+          <td class="hor-c" rowspan="3"><div class="hor-pila">
+            <i class="hor-hueco hor-h2" aria-hidden="true"></i>
+            <span class="hor-b hor-identidad-2 hor-d7" title="Mi&eacute;rcoles, 09:00 &ndash; 12:20"><b>S3</b><span>Sede Norte</span><span class="hor-rango">09:00 &ndash; 12:20</span></span>
+            <span class="hor-b hor-identidad-1 hor-d3" title="Mi&eacute;rcoles, 12:20 &ndash; 13:55"><b>S1</b><span>Sede Centro</span><span class="hor-rango">12:20 &ndash; 13:55</span></span>
+          </div></td></tr>
+        <tr><th class="hor-eje hor-eje-v" scope="row">10:00</th></tr>
+        <tr><th class="hor-eje hor-eje-v" scope="row">12:00</th></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
 <table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>Se cuenta en <strong>cuartos de franja</strong>. Es la resolución que se pidió —25&nbsp;%, 50&nbsp;%, 75&nbsp;%—, no una rejilla de precisión.</td></tr>
@@ -12216,14 +12308,14 @@ usar <code>error</code> como adorno <strong>gasta el rojo</strong>.</p>
       <thead><tr><th class="hor-esq"></th><th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th></tr></thead>
       <tbody>
         <tr><th class="hor-eje hor-eje-v" scope="row">08:00</th>
-          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-1" title="Lun, 08:00 – 09:30"><b>Matemática</b><span>Sede Centro · A-201</span><span class="hor-rango">08:00 – 09:30</span></span></div></td>
-          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-2" title="Mar, 08:00 – 09:30"><b>Comunicación</b><span>Sede Norte · B-104</span><span class="hor-rango">08:00 – 09:30</span></span></div></td>
+          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-1 hor-d3" title="Lun, 08:00 – 09:30"><b>Matemática</b><span>Sede Centro · A-201</span><span class="hor-rango">08:00 – 09:30</span></span><i class="hor-hueco hor-h1" aria-hidden="true"></i></div></td>
+          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-2 hor-d3" title="Mar, 08:00 – 09:30"><b>Comunicación</b><span>Sede Norte · B-104</span><span class="hor-rango">08:00 – 09:30</span></span><i class="hor-hueco hor-h1" aria-hidden="true"></i></div></td>
           <td class="hor-c hor-vacia"></td>
-          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-3" title="Jue, 08:00 – 08:45"><b>Tutoría</b><span>Sede Sur · C-12</span><span class="hor-rango">08:00 – 08:45</span></span></div></td></tr>
+          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-3 hor-d2" title="Jue, 08:00 – 08:45"><b>Tutoría</b><span>Sede Sur · C-12</span><span class="hor-rango">08:00 – 08:45</span></span><i class="hor-hueco hor-h2" aria-hidden="true"></i></div></td></tr>
         <tr><th class="hor-eje hor-eje-v" scope="row">10:00</th>
-          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-4" title="Lun, 10:00 – 11:30"><b>Ciencias</b><span>Sede Este · Lab 1</span><span class="hor-rango">10:00 – 11:30</span></span></div></td>
+          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-4 hor-d3" title="Lun, 10:00 – 11:30"><b>Ciencias</b><span>Sede Este · Lab 1</span><span class="hor-rango">10:00 – 11:30</span></span><i class="hor-hueco hor-h1" aria-hidden="true"></i></div></td>
           <td class="hor-c hor-vacia"></td>
-          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-error" title="Mié, 10:00 – 11:30"><b>Sin docente</b><span>Sede Centro · A-201</span><span class="hor-rango">10:00 – 11:30</span></span></div></td>
+          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-error hor-d3" title="Mié, 10:00 – 11:30"><b>Sin docente</b><span>Sede Centro · A-201</span><span class="hor-rango">10:00 – 11:30</span></span><i class="hor-hueco hor-h1" aria-hidden="true"></i></div></td>
           <td class="hor-c hor-vacia"></td></tr>
       </tbody>
     </table>
@@ -18897,6 +18989,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.120.0 <span class="cam-fecha">2026-09-15</span></h3>
+<p class="pag-intro"><strong>R138 — una celda del horario lleva una PILA de bloques, no uno.</strong> Lo reporto Control Administrativos V2.0 con el horario de un profesor real: S3 de 09:00 a 12:20 y S1 de 12:20 a 13:55 NO COMPARTEN UN MINUTO, y el segundo se descartaba con «se solapa con otro bloque ya colocado». No se solapaban: COMPARTIAN FILA. Con franjas de dos horas, S3 acaba dentro de la fila 12:00–14:00 y S1 empieza en esa misma fila; el bucle reservaba FILAS ENTERAS —tapada[dia][fila] = true— asi que cualquiera que empezara ahi se caia. Reproducido con el componente: un bloque pintado y el aviso literal que ellos citan. UNA CORRECCION A SU DOCUMENTO, medida: dicen que pasa a 120, 60, 30 y 20 y que por eso no es cuestion de resolucion. A paso 20 SI se pinta —ahi el borde de fila cae exacto en 12:20 y dejan de compartirla—. La regla real es mas simple y peor: UN BLOQUE QUE ACABA A MEDIA FILA SE QUEDA LA FILA ENTERA. Que no dependa de la resolucion es cierto en lo que importa: cualquier hora que no caiga en un borde lo reproduce. AHORA EL CHOQUE SE MIDE EN CUARTOS, que es donde de verdad ocurre, y los bloques que comparten filas sin compartir minutos van EN LA MISMA CELDA, apilados con sus huecos. La celda abarca la UNION de las filas de todos sus bloques. El descarte no desaparece: cambia de criterio —antes por fila, que es geometria; ahora por tiempo, que es lo que de verdad no cabe— y el aviso dice CON CUAL se solapa. Y EL BLOQUE TAMBIEN SE MIDE EN CUARTOS. Llevaba «flex: 1 0 auto» —todo lo que sobre— y con UN bloque por celda bastaba; con VARIOS, «lo que sobra» es ambiguo y dos bloques de duraciones distintas se repartirian el sobrante a partes iguales. Es lo que el propio equipo anticipo al mandarlo: «si dejan que una celda lleve dos bloques, el hueco en cuartos tendra que contar todos los bloques de la pila, no uno». Tenian razon, y el R137 lo dejo MAS facil: con porcentajes, repartir una pila de varios habria sido el mismo defecto multiplicado. LAS CLASES CAMBIAN DE NOMBRE: hor-q{cuartos}-{celdas} pasa a hor-h{cuartos} para el hueco y hor-d{cuartos} para el bloque. El segundo numero dejo de significar nada en la v1.119.0 —un cuarto de hora es un cuarto de hora— y lo senalo una auditoria: eran 18 clases con TRES valores distintos, byte a byte iguales entre si. Y SE CIERRAN DOS COSAS QUE ESA MISMA AUDITORIA ENCONTRO EN EL R137: el hueco de ABAJO no tenia ni una prueba —ponerlo a cero dejaba 903 en verde, y es la mitad simetrica del defecto—, y la afirmacion R137 SOLO PROHIBIA: borrar todas las reglas del hueco, o declarar --alto-franja aparte de height, dejaba los 18 candados en verde con el sombreado entero desaparecido. Ahora exige en positivo. EL CATALOGO ENSENA EL CASO: una celda con dos bloques, que es el que lo trajo. UNA AUDITORIA PARO LA PRIMERA VERSION, y tenia razon: pasado el tope de seis franjas descartaba a todos menos el primero, asi que EL CASO QUE TRAJO EL R138 SEGUIA ROTO A PASO 30 —el grupo abarca diez franjas— mientras cuatro superficies decian que estaba cerrado, sin salvedad. Ahora no se descarta a nadie: la pieza que no cabe en el juego de clases sale SIN clase de tamano y hereda flex: 1 0 auto, que es lo que «a celda entera» siempre quiso decir. Se pierde la proporcion, no el bloque, y se avisa. Tambien emitia hor-d40 con la hoja declarando hasta hor-d24: una clase que nadie atiende coloca el bloque donde caiga. Y EL SORT sostenia todo el agrupador CON COBERTURA CERO: quitarlo dejaba las 912 en verde y con la entrada invertida el bloque se pintaba TRES FRANJAS mas abajo de su hora. Ya tiene prueba. La afirmacion R137 se reforzo otras tres veces: la satisfacia la regla de densidad compacta —se podia quitar la variable de la que aplica siempre—, y comprobaba presencia y no VALOR, asi que las 48 reglas a 0px o todas al mismo cuarto pasaban en verde con el R137 de vuelta entero.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>LAS CLASES DEL HUECO CAMBIAN DE NOMBRE: hor-q{cuartos}-{celdas} ya no existe. Ahora son hor-h{cuartos} en el hueco y hor-d{cuartos} en el bloque. Son geometria interna del horario y no deberian estar en su hoja; si alguna lo esta, hay que cambiarla.</td></tr><tr><td>DOS BLOQUES QUE ANTES SE DESCARTABAN AHORA SE PINTAN. Si su producto contaba el numero de bloques dibujados, o se apoyaba en el aviso «se solapa con otro bloque ya colocado» para detectar horarios raros, ese aviso ya no sale cuando no comparten minutos — y cuando sale, el texto cambia: dice «se solapa en el tiempo con «X»».</td></tr></tbody></table>
 
 
 <h3 class="sub-seccion">v1.119.0 <span class="cam-fecha">2026-09-15</span></h3>

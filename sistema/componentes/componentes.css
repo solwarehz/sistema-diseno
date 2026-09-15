@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.119.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.120.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -87,7 +87,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.119.0; }
+:root{ --mmi-componentes: 1.120.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -627,7 +627,7 @@ button.fc-campo{ display: flex; align-items: center; justify-content: flex-start
 input[type='date'].campo, .fc-campo{ max-width: 172px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   HORARIO — 53 reglas · clases .hor-*
+   HORARIO — 83 reglas · clases .hor-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 [data-densidad='compacta'] .hor-c{ --alto-franja: 28px; height: var(--alto-franja); }
@@ -657,24 +657,54 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .hor-pila{ display: flex; flex-direction: column; height: 100%; }
 .hor-hueco{ flex-basis: 0; flex-shrink: 0; }
 .hor-pila > .hor-b{ flex: 1 0 auto; height: auto; }
-.hor-hueco.hor-q1-1{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q1-2{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q1-3{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q1-4{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q1-5{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q1-6{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
-.hor-hueco.hor-q2-1{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q2-2{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q2-3{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q2-4{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q2-5{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q2-6{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
-.hor-hueco.hor-q3-1{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
-.hor-hueco.hor-q3-2{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
-.hor-hueco.hor-q3-3{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
-.hor-hueco.hor-q3-4{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
-.hor-hueco.hor-q3-5{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
-.hor-hueco.hor-q3-6{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
+.hor-hueco.hor-h1{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
+.hor-hueco.hor-h2{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
+.hor-hueco.hor-h3{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
+.hor-hueco.hor-h4{ flex: 0 0 calc(var(--alto-franja) * 4 / 4); }
+.hor-hueco.hor-h5{ flex: 0 0 calc(var(--alto-franja) * 5 / 4); }
+.hor-hueco.hor-h6{ flex: 0 0 calc(var(--alto-franja) * 6 / 4); }
+.hor-hueco.hor-h7{ flex: 0 0 calc(var(--alto-franja) * 7 / 4); }
+.hor-hueco.hor-h8{ flex: 0 0 calc(var(--alto-franja) * 8 / 4); }
+.hor-hueco.hor-h9{ flex: 0 0 calc(var(--alto-franja) * 9 / 4); }
+.hor-hueco.hor-h10{ flex: 0 0 calc(var(--alto-franja) * 10 / 4); }
+.hor-hueco.hor-h11{ flex: 0 0 calc(var(--alto-franja) * 11 / 4); }
+.hor-hueco.hor-h12{ flex: 0 0 calc(var(--alto-franja) * 12 / 4); }
+.hor-hueco.hor-h13{ flex: 0 0 calc(var(--alto-franja) * 13 / 4); }
+.hor-hueco.hor-h14{ flex: 0 0 calc(var(--alto-franja) * 14 / 4); }
+.hor-hueco.hor-h15{ flex: 0 0 calc(var(--alto-franja) * 15 / 4); }
+.hor-hueco.hor-h16{ flex: 0 0 calc(var(--alto-franja) * 16 / 4); }
+.hor-hueco.hor-h17{ flex: 0 0 calc(var(--alto-franja) * 17 / 4); }
+.hor-hueco.hor-h18{ flex: 0 0 calc(var(--alto-franja) * 18 / 4); }
+.hor-hueco.hor-h19{ flex: 0 0 calc(var(--alto-franja) * 19 / 4); }
+.hor-hueco.hor-h20{ flex: 0 0 calc(var(--alto-franja) * 20 / 4); }
+.hor-hueco.hor-h21{ flex: 0 0 calc(var(--alto-franja) * 21 / 4); }
+.hor-hueco.hor-h22{ flex: 0 0 calc(var(--alto-franja) * 22 / 4); }
+.hor-hueco.hor-h23{ flex: 0 0 calc(var(--alto-franja) * 23 / 4); }
+.hor-hueco.hor-h24{ flex: 0 0 calc(var(--alto-franja) * 24 / 4); }
+.hor-pila > .hor-b.hor-d1{ flex: 1 0 calc(var(--alto-franja) * 1 / 4); }
+.hor-pila > .hor-b.hor-d2{ flex: 1 0 calc(var(--alto-franja) * 2 / 4); }
+.hor-pila > .hor-b.hor-d3{ flex: 1 0 calc(var(--alto-franja) * 3 / 4); }
+.hor-pila > .hor-b.hor-d4{ flex: 1 0 calc(var(--alto-franja) * 4 / 4); }
+.hor-pila > .hor-b.hor-d5{ flex: 1 0 calc(var(--alto-franja) * 5 / 4); }
+.hor-pila > .hor-b.hor-d6{ flex: 1 0 calc(var(--alto-franja) * 6 / 4); }
+.hor-pila > .hor-b.hor-d7{ flex: 1 0 calc(var(--alto-franja) * 7 / 4); }
+.hor-pila > .hor-b.hor-d8{ flex: 1 0 calc(var(--alto-franja) * 8 / 4); }
+.hor-pila > .hor-b.hor-d9{ flex: 1 0 calc(var(--alto-franja) * 9 / 4); }
+.hor-pila > .hor-b.hor-d10{ flex: 1 0 calc(var(--alto-franja) * 10 / 4); }
+.hor-pila > .hor-b.hor-d11{ flex: 1 0 calc(var(--alto-franja) * 11 / 4); }
+.hor-pila > .hor-b.hor-d12{ flex: 1 0 calc(var(--alto-franja) * 12 / 4); }
+.hor-pila > .hor-b.hor-d13{ flex: 1 0 calc(var(--alto-franja) * 13 / 4); }
+.hor-pila > .hor-b.hor-d14{ flex: 1 0 calc(var(--alto-franja) * 14 / 4); }
+.hor-pila > .hor-b.hor-d15{ flex: 1 0 calc(var(--alto-franja) * 15 / 4); }
+.hor-pila > .hor-b.hor-d16{ flex: 1 0 calc(var(--alto-franja) * 16 / 4); }
+.hor-pila > .hor-b.hor-d17{ flex: 1 0 calc(var(--alto-franja) * 17 / 4); }
+.hor-pila > .hor-b.hor-d18{ flex: 1 0 calc(var(--alto-franja) * 18 / 4); }
+.hor-pila > .hor-b.hor-d19{ flex: 1 0 calc(var(--alto-franja) * 19 / 4); }
+.hor-pila > .hor-b.hor-d20{ flex: 1 0 calc(var(--alto-franja) * 20 / 4); }
+.hor-pila > .hor-b.hor-d21{ flex: 1 0 calc(var(--alto-franja) * 21 / 4); }
+.hor-pila > .hor-b.hor-d22{ flex: 1 0 calc(var(--alto-franja) * 22 / 4); }
+.hor-pila > .hor-b.hor-d23{ flex: 1 0 calc(var(--alto-franja) * 23 / 4); }
+.hor-pila > .hor-b.hor-d24{ flex: 1 0 calc(var(--alto-franja) * 24 / 4); }
 .hor-b b{ display: block; font-weight: 600; font-size: 13px; }
 .hor-b span{ display: block; font-size: 12px; }
 .hor-rango{ font-variant-numeric: tabular-nums; }

@@ -79,17 +79,16 @@ describe('[8] R137 · el hueco fraccionado', () => {
     );
     const hueco = container.querySelector('.hor-hueco');
     expect(hueco, 'sin hueco, el bloque empieza en punto y el horario miente').not.toBeNull();
-    const clase = [...hueco!.classList].find((c) => c.startsWith('hor-q'));
-    expect(clase, 'el hueco no dice cuántos cuartos es').toMatch(/^hor-q[1-3]-[1-6]$/);
+    const clase = [...hueco!.classList].find((c) => /^hor-h\d+$/.test(c));
+    expect(clase, 'el hueco no dice cuántos cuartos es').toMatch(/^hor-h\d+$/);
     /* `q1` es UN cuarto de hora, que es donde cae 12:20. El número de detrás es
        cuántas celdas abarca el bloque, y con `paso` 60 sobre 12:00–14:00 son
        dos. En el producto que lo reportó las filas van de dos horas y es
-       `hor-q1-1` — el caso que se salía. Lo que la afirmación R137 mira es el
-       PRIMER número: los cuartos. */
-    expect(clase!.startsWith('hor-q1-'), '12:20 no cae en el primer cuarto').toBe(true);
+       igual. Desde el R138 el nombre dice solo eso: `hor-h1`, un cuarto. */
+    expect(clase, '12:20 no cae en el primer cuarto').toBe('hor-h1');
   });
 
-  it('el caso del R137: una sola celda con fracción — `hor-q1-1`', () => {
+  it('el caso del R137: una sola celda con fracción — `hor-h1`', () => {
     /* Filas de dos horas, que es como lo tiene el producto que lo reportó: el
        bloque de 12:20 a 13:55 cabe en UNA celda y lleva un cuarto de hueco.
        Con el hueco en porcentaje, ése era el que se salía 11 px. */
@@ -98,7 +97,7 @@ describe('[8] R137 · el hueco fraccionado', () => {
         bloques={[{ dia: 0, de: '12:20', a: '13:55', titulo: 'S1' }]} />
     );
     const hueco = container.querySelector('.hor-hueco')!;
-    expect([...hueco.classList]).toContain('hor-q1-1');
+    expect([...hueco.classList]).toContain('hor-h1');
     expect(container.querySelector('.hor-c')!.getAttribute('rowspan') ?? '1').toBe('1');
   });
 
@@ -138,5 +137,149 @@ describe('[8] R137 · el hueco fraccionado', () => {
         bloques={[{ dia: 0, de: '12:20', a: '13:55', titulo: 'S1' }]} />
     );
     expect(container.querySelector('.hor-rango')!.textContent).toMatch(/12:20\s*–\s*13:55/);
+  });
+});
+
+/* ── R138 · DOS BLOQUES QUE COMPARTEN FILA Y NO COMPARTEN MINUTO ────────────
+   Lo reportó Control Administrativos V2.0 con el horario de un profesor real:
+   S3 de 09:00 a 12:20 y S1 de 12:20 a 13:55 **no comparten un minuto**, y el
+   segundo se descartaba con «se solapa con otro bloque ya colocado». No se
+   solapaban: **compartían fila**. Con franjas de dos horas el primero acaba
+   dentro de la fila de las 12:00 y el segundo empieza ahí. */
+describe('[4b] R138 · una celda lleva una pila de bloques', () => {
+  const DIA = { dias: ['Mié'], inicio: '08:00', fin: '14:00', paso: 120 };
+  const S3 = { dia: 0, de: '09:00', a: '12:20', titulo: 'S3' };
+  const S1 = { dia: 0, de: '12:20', a: '13:55', titulo: 'S1' };
+
+  const cuartos = (pila: Element) => [...pila.children]
+    .map((e) => [...e.classList].find((c) => /^hor-[hd]\d+$/.test(c)) ?? '?');
+
+  it('el caso del profesor: los DOS se pintan', () => {
+    const { container } = render(<Horario titulo="H" {...DIA} bloques={[S3, S1]} />);
+    const rotulos = [...container.querySelectorAll('.hor-b b')].map((b) => b.textContent);
+    expect(rotulos, 'se descartó uno de los dos, que es el defecto').toEqual(['S3', 'S1']);
+  });
+
+  it('y van en la MISMA celda, apilados, con sus cuartos', () => {
+    const { container } = render(<Horario titulo="H" {...DIA} bloques={[S3, S1]} />);
+    expect(container.querySelectorAll('.hor-pila')).toHaveLength(1);
+    expect(cuartos(container.querySelector('.hor-pila')!)).toEqual(['hor-h2', 'hor-d7', 'hor-d3']);
+  });
+
+  it('la celda abarca la UNIÓN de sus filas, no las de uno', () => {
+    /* S3 ocupa tres franjas y S1 la última. Si el `rowSpan` fuera el de uno
+       solo, la pila se saldría de su celda o taparía filas que no le tocan. */
+    const { container } = render(<Horario titulo="H" {...DIA} bloques={[S3, S1]} />);
+    expect(container.querySelector('.hor-c:not(.hor-vacia)')!.getAttribute('rowspan')).toBe('3');
+  });
+
+  it('y si el SEGUNDO se alarga más, la celda crece con él', () => {
+    /* Que la celda llegue hasta donde llega el ÚLTIMO bloque de la pila. Lo que
+       esta prueba NO puede vigilar es el `Math.max` del agrupador: dentro de un
+       grupo los bloques van ordenados y no se solapan, así que `qA` crece
+       estrictamente y el último siempre tiene el `ff` mayor — quitarlo deja
+       todo en verde porque es **inalcanzable**, no porque falte prueba. Lo midió
+       una auditoría, y se dice aquí en vez de fingir que lo sujeta. */
+    const { container } = render(
+      <Horario titulo="H" {...DIA} fin="16:00" bloques={[S3, { dia: 0, de: '12:20', a: '15:00', titulo: 'S1' }]} />
+    );
+    expect(container.querySelector('.hor-c:not(.hor-vacia)')!.getAttribute('rowspan'),
+      'la celda no abarca hasta donde llega el segundo bloque').toBe('4');
+    expect(cuartos(container.querySelector('.hor-pila')!),
+      'las piezas no suman la celda entera').toEqual(['hor-h2', 'hor-d7', 'hor-d5', 'hor-h2']);
+  });
+
+  it('[4b] el ORDEN de entrada no cambia nada: llegan como llegan de la consulta', () => {
+    /* El agrupador da por hecho que van en orden —`f0 = grupo[0].f`, `cursor =
+       base`— y lo consigue ordenando. Quitar ese `sort` dejaba las 912 EN
+       VERDE, y con la entrada invertida el bloque se pintaba TRES FRANJAS más
+       abajo de su hora, con la celda a rowspan 1 y catorce cuartos dentro de
+       cuatro. Un producto que traiga los bloques de una consulta sin `ORDER BY`
+       lo reproduce. Lo cazó una auditoría. */
+    const alDerecho = render(<Horario titulo="H" {...DIA} bloques={[S3, S1]} />);
+    const alReves = render(<Horario titulo="H" {...DIA} bloques={[S1, S3]} />);
+    const retrato = (c: HTMLElement) => {
+      const td = c.querySelector('.hor-c:not(.hor-vacia)')!;
+      return {
+        rowspan: td.getAttribute('rowspan'),
+        piezas: cuartos(c.querySelector('.hor-pila')!),
+        rotulos: [...c.querySelectorAll('.hor-b b')].map((b) => b.textContent),
+      };
+    };
+    expect(retrato(alReves.container), 'el orden de entrada cambió el dibujo')
+      .toEqual(retrato(alDerecho.container));
+  });
+
+  it('[4b] pasado el TOPE no se descarta a nadie: se pierde la proporción, y se avisa', () => {
+    /* La primera versión de este arreglo dejaba fuera a todos menos el primero,
+       y con eso el caso que trajo el R138 SEGUÍA ROTO a paso 30 —el grupo
+       abarca diez franjas— mientras el contrato decía que estaba arreglado. Un
+       bloque que desaparece no deja hueco visible; uno mal proporcionado se ve. */
+    const avisos: string[] = [];
+    const { container } = render(
+      <Horario titulo="H" dias={['Mié']} inicio="00:00" fin="24:00" paso={30}
+        onAjuste={(a) => avisos.push(...a.map((x) => x.motivo))}
+        bloques={[S3, S1]} />
+    );
+    expect([...container.querySelectorAll('.hor-b b')].map((b) => b.textContent),
+      'volvió a descartar el segundo bloque').toEqual(['S3', 'S1']);
+    expect(avisos, 'se perdió la proporción y no se dijo').toContain('span-largo');
+  });
+
+  it('[4b] y una pieza que pasa el tope NO emite una clase que la hoja no atiende', () => {
+    /* `hor-d40` no existe en la hoja: emitirla es colocar el bloque donde caiga.
+       Sin clase hereda `flex: 1 0 auto`, que es lo que «a celda entera» siempre
+       quiso decir. */
+    const { container } = render(
+      <Horario titulo="H" dias={['Mié']} inicio="00:00" fin="24:00" paso={30}
+        bloques={[S3, S1]} />
+    );
+    const conClaseImposible = [...container.querySelectorAll('.hor-b, .hor-hueco')]
+      .flatMap((e) => [...e.classList])
+      .filter((c) => /^hor-[hd](\d+)$/.test(c))
+      .filter((c) => Number(c.replace(/^hor-[hd]/, '')) > 24);
+    expect(conClaseImposible, 'emite clases de tamaño que la hoja no declara').toEqual([]);
+  });
+
+  it('sin aviso: no había nada que avisar', () => {
+    const avisos: string[] = [];
+    render(<Horario titulo="H" {...DIA} bloques={[S3, S1]}
+      onAjuste={(a) => avisos.push(...a.map((x) => x.detalle))} />);
+    expect(avisos, 'sigue avisando de un solape que no existe').toEqual([]);
+  });
+
+  it('pero dos que SÍ comparten un minuto siguen descartándose, y se dice cuál', () => {
+    /* El descarte no desaparece: cambia de criterio. Antes era por fila —que es
+       geometría— y ahora por tiempo, que es lo que de verdad no cabe. */
+    const avisos: string[] = [];
+    const { container } = render(
+      <Horario titulo="H" {...DIA}
+        bloques={[S3, { dia: 0, de: '11:00', a: '13:00', titulo: 'B' }]}
+        onAjuste={(a) => avisos.push(...a.map((x) => x.detalle))} />
+    );
+    expect(container.querySelectorAll('.hor-b')).toHaveLength(1);
+    expect(avisos.join(' '), 'el aviso no dice con cuál se solapa').toContain('«S3»');
+    expect(avisos.join(' ')).toContain('se solapa en el tiempo');
+  });
+
+  it('[8] el hueco de ABAJO existe, y no tenía prueba', () => {
+    /* Lo cazó una auditoría: poner `aba = 0` dejaba 903 pruebas en verde. Es la
+       mitad simétrica del R137 — un bloque que acaba a media franja se dibujaría
+       hasta el fondo de la celda y parecería acabar en punto. */
+    const { container } = render(
+      <Horario titulo="H" dias={['Lun']} inicio="08:00" fin="10:00" paso={120}
+        bloques={[{ dia: 0, de: '08:00', a: '09:00', titulo: 'Medio' }]} />
+    );
+    const piezas = cuartos(container.querySelector('.hor-pila')!);
+    expect(piezas, 'el bloque acaba a media franja y no se reserva el hueco de abajo')
+      .toEqual(['hor-d2', 'hor-h2']);
+  });
+
+  it('[8] y arriba y abajo a la vez, cuando el bloque va por el medio', () => {
+    const { container } = render(
+      <Horario titulo="H" dias={['Lun']} inicio="08:00" fin="10:00" paso={120}
+        bloques={[{ dia: 0, de: '08:30', a: '09:30', titulo: 'Centro' }]} />
+    );
+    expect(cuartos(container.querySelector('.hor-pila')!)).toEqual(['hor-h1', 'hor-d2', 'hor-h1']);
   });
 });

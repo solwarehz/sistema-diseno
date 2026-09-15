@@ -344,6 +344,69 @@ const AFIRMACIONES = [
           }
         }
       }
+      /* Y AHORA EN POSITIVO, que es lo que le faltaba. Una auditoria lo midio:
+         BORRAR LAS 48 REGLAS del hueco y de la duracion dejaba los 18 candados
+         y las 903 pruebas EN VERDE. La afirmacion solo prohibia una forma, y
+         una prohibicion no dice nada cuando no hay nada que prohibir: el
+         componente seguia emitiendo las clases y ninguna regla las atendia, asi
+         que el sombreado fraccionado entero desaparecia en silencio.
+
+         La otra que se escapaba: `--alto-franja` declarada aparte de `height`.
+         Si alguien deja `height: 32px` y se lleva la variable, el `calc` queda
+         invalido, el atajo `flex` cae a su valor inicial `0 1 auto` y el hueco
+         se encoge a CERO sobre un <i> vacio. Mismo final, y sin una linea roja.
+         Por eso se exige que la MISMA regla declare las dos. */
+      const TOPE = 24;
+      const declaradas = new Set();
+      let conVariable = false;
+      for (const r of reglas) {
+        for (const sel of r.sel.split(',')) {
+          const m = /\.hor-(h|d)(\d+)\b/.exec(sel);
+          if (m && (r.decl.has('flex') || r.decl.has('flex-basis'))) declaradas.add(m[1] + m[2]);
+        }
+        /* LA REGLA BASE, no una cualquiera que lleve `.hor-c` dentro. La de la
+           densidad compacta —`[data-densidad='compacta'] .hor-c`— satisfacía
+           sola esta comprobación, así que se podía quitar la variable de la
+           regla que aplica SIEMPRE y el candado seguía en verde con el
+           sombreado desaparecido en la densidad normal. Lo midió una auditoría. */
+        if (r.sel.trim() === '.hor-c' && r.decl.has('--alto-franja') && r.decl.has('height')) {
+          conVariable = true;
+        }
+      }
+      const faltan = [];
+      for (let c = 1; c <= TOPE; c++) {
+        if (!declaradas.has('h' + c)) faltan.push(`.hor-h${c}`);
+        if (!declaradas.has('d' + c)) faltan.push(`.hor-d${c}`);
+      }
+      if (faltan.length) {
+        fallos.push(`SIN REGLA: ${faltan.slice(0, 6).join(', ')}`
+          + (faltan.length > 6 ? ` y ${faltan.length - 6} mas` : '')
+          + ` — el componente emite esas clases y la hoja no las atiende. El bloque se`
+          + ` coloca donde caiga y el horario miente sobre su hora, sin un solo fallo.`);
+      }
+      /* Y EL VALOR, no solo que la regla exista. Poner las 48 a `0px`, o las 48
+         al MISMO cuarto, dejaba el candado en verde con el R137 de vuelta
+         entero: una comprobación de presencia no dice nada del reparto. Se
+         exige que cada clase reciba SU número de cuartos. */
+      for (const r of reglas) {
+        for (const sel of r.sel.split(',')) {
+          const m = /\.hor-(h|d)(\d+)\b/.exec(sel);
+          if (!m) continue;
+          const decl = String(r.decl.get('flex') ?? r.decl.get('flex-basis') ?? '');
+          if (!decl) continue;
+          const esperado = new RegExp(`var\\(--alto-franja\\)\\s*\\*\\s*${m[2]}\\s*/\\s*4`);
+          if (!esperado.test(decl)) {
+            fallos.push(`.hor-${m[1]}${m[2]} declara «${decl.trim()}» y le tocan `
+              + `${m[2]} cuartos de --alto-franja. Un tamaño que no es el suyo coloca el `
+              + `bloque donde no va, y el horario miente sobre su hora sin un solo fallo.`);
+          }
+        }
+      }
+      if (!conVariable) {
+        fallos.push(`NINGUNA regla de .hor-c declara --alto-franja Y height a la vez.`
+          + ` Separadas, un height sin la variable deja el calc invalido: el atajo flex`
+          + ` cae a 0 1 auto y el hueco se encoge a CERO. Van juntas o no van.`);
+      }
       return fallos;
     },
   },

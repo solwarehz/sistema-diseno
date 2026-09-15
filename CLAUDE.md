@@ -19,12 +19,11 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.119.0** — **R137: el hueco del horario se medía contra lo
-que él mismo dimensionaba.** El alto de la pila lo decide su contenido y el
-hueco era un porcentaje de ese mismo alto, así que se comía su fracción de lo
-que el bloque necesitaba y el bloque se salía por abajo justo esa fracción.
-Circular, y reproducido en el navegador del equipo que lo reportó. Ahora es una
-longitud: cuartos de `--alto-franja`.
+**Estado actual: v1.120.0** — **R138: una celda del horario lleva una pila de
+bloques, no uno.** Dos clases que no comparten un minuto se descartaban por
+compartir **fila**: el bucle reservaba filas enteras, así que un bloque que
+acaba a media fila se quedaba la fila entera. Ahora el choque se mide en
+cuartos, que es donde ocurre, y la celda abarca la unión de sus bloques.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

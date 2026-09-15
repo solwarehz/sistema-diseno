@@ -67,33 +67,72 @@ describe('[8] el horario del catálogo emite lo que emite el componente', () => 
     }
   });
 
-  it('la ANATOMÍA de un bloque es la misma en las dos superficies', () => {
-    /* Hueco + bloque, y dentro: título en `<b>`, detalle en `<span>` pelado y
-       la franja en `.hor-rango`. Se compara la forma, no el texto. */
+  it('la ANATOMÍA de una pila es la misma en las dos superficies', () => {
+    /* Una pila es una secuencia de huecos y bloques. Lo que tiene que coincidir
+       es el vocabulario: cada hueco dice sus cuartos con `hor-h{N}` y cada
+       bloque los suyos con `hor-d{N}`, y dentro del bloque van el título, el
+       detalle y la franja. Comparar «el primero es un hueco» era del modelo de
+       un bloque por celda, y desde el R138 una pila puede empezar por bloque. */
     const { container } = render(
       <Horario titulo="Horario" dias={['Lun']} inicio="12:00" fin="14:00" paso={120}
         bloques={[{ dia: 0, de: '12:20', a: '13:55', titulo: 'Tutoría', detalle: 'Sede Centro', tono: 'identidad-1' }]} />
     );
-    const forma = (pila: Element) => ({
-      hijos: [...pila.children].map((e) => e.tagName.toLowerCase() + '.' + e.className.split(' ')[0]),
-      dentro: [...(pila.querySelector('.hor-b')?.children ?? [])]
-        .map((e) => e.tagName.toLowerCase() + (e.className ? '.' + e.className : '')),
-      bloqueTieneTitle: !!pila.querySelector('.hor-b')?.getAttribute('title'),
+    const vocabulario = (pila: Element) => [...pila.children].map((e) => {
+      const cls = [...e.classList];
+      if (cls.includes('hor-hueco')) {
+        const n = cls.find((c) => /^hor-h\d+$/.test(c));
+        return n ? 'hueco' : 'HUECO-SIN-CUARTOS';
+      }
+      if (cls.includes('hor-b')) {
+        const n = cls.find((c) => /^hor-d\d+$/.test(c));
+        return n ? 'bloque' : 'BLOQUE-SIN-CUARTOS';
+      }
+      return 'DESCONOCIDO:' + e.tagName.toLowerCase();
     });
+    const dentro = (pila: Element) => [...(pila.querySelector('.hor-b')?.children ?? [])]
+      .map((e) => e.tagName.toLowerCase() + (e.className ? '.' + e.className : ''));
 
-    const delComponente = forma(container.querySelector('.hor-pila')!);
-    expect(delComponente.hijos[0], 'el componente dejó de abrir la pila con el hueco').toBe('i.hor-hueco');
+    const delComponente = container.querySelector('.hor-pila')!;
+    expect(vocabulario(delComponente)).toEqual(['hueco', 'bloque']);
 
-    /* La misma forma en la maqueta: un bloque con fracción, en una celda. Es el
-       caso del R137 y el que no estaba en ninguna página hasta hoy. */
-    const conHueco = [...doc().querySelectorAll('.hor-pila')]
-      .filter((p) => p.querySelector('.hor-hueco'));
-    expect(conHueco.length, 'el catálogo no enseña ningún bloque con fracción').toBeGreaterThan(0);
-    for (const p of conHueco) {
-      expect(forma(p).hijos[0], 'una pila del catálogo no abre con el hueco').toBe('i.hor-hueco');
-      expect(forma(p).dentro, 'el bloque del catálogo tiene otra anatomía').toEqual(delComponente.dentro);
-      expect(forma(p).bloqueTieneTitle).toBe(true);
+    for (const p of doc().querySelectorAll('.hor-pila')) {
+      expect(vocabulario(p), 'una pila del catálogo emite algo que el componente no emite')
+        .not.toContain('DESCONOCIDO');
+      expect(vocabulario(p), 'una pieza del catálogo no declara sus cuartos')
+        .toEqual(vocabulario(p).map((v) => (v.startsWith('HUECO') || v.startsWith('BLOQUE') ? v : v)));
+      for (const v of vocabulario(p)) {
+        expect(['hueco', 'bloque'], `pieza sin cuartos declarados: ${v}`).toContain(v);
+      }
+      expect(dentro(p), 'el bloque del catálogo tiene otra anatomía').toEqual(dentro(delComponente));
+      expect(p.querySelector('.hor-b')!.getAttribute('title')).toBeTruthy();
     }
+  });
+
+  it('[8] R138 · el catálogo enseña DOS bloques en una celda', () => {
+    /* El caso que lo trajo: 09:00–12:20 y 12:20–13:55, que no comparten un
+       minuto y sí comparten fila. Si el catálogo no lo enseña, la única forma de
+       descubrir que se descartaba es montarlo en un producto — que es como se
+       descubrió. */
+    const conDos = [...doc().querySelectorAll('.hor-pila')]
+      .filter((p) => p.querySelectorAll('.hor-b').length > 1);
+    expect(conDos.length,
+      'ninguna celda del catálogo lleva dos bloques: el caso del R138 no se ve en ninguna página')
+      .toBeGreaterThan(0);
+
+    /* Y lo que enseña coincide con lo que el componente produce para esos datos. */
+    const { container } = render(
+      <Horario titulo="Horario" dias={['Mié']} inicio="08:00" fin="14:00" paso={120}
+        bloques={[
+          { dia: 0, de: '09:00', a: '12:20', titulo: 'S3', detalle: 'Sede Norte', tono: 'identidad-2' },
+          { dia: 0, de: '12:20', a: '13:55', titulo: 'S1', detalle: 'Sede Centro', tono: 'identidad-1' },
+        ]} />
+    );
+    const cuartos = (pila: Element) => [...pila.children]
+      .map((e) => [...e.classList].find((c) => /^hor-[hd]\d+$/.test(c)) ?? '?');
+    const delComponente = cuartos(container.querySelector('.hor-pila')!);
+    expect(delComponente, 'el componente ya no apila los dos bloques').toEqual(['hor-h2', 'hor-d7', 'hor-d3']);
+    expect(conDos.some((p) => JSON.stringify(cuartos(p)) === JSON.stringify(delComponente)),
+      'la celda de dos bloques del catálogo no reparte los cuartos como el componente').toBe(true);
   });
 
   it('[8] R137 · el catálogo enseña el caso que fallaba: UNA celda con fracción', () => {

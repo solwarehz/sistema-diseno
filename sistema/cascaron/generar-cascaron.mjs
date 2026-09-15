@@ -7286,18 +7286,18 @@ más la de las 14:00 entera. La rejilla se queda en <strong>24 filas</strong> au
       <tbody>
         <tr><th class="hor-eje hor-eje-v" scope="row">07:00</th>
           <td class="hor-c" rowspan="2"><div class="hor-pila">
-            <i class="hor-hueco hor-q3-2" aria-hidden="true"></i>
-            <span class="hor-b hor-identidad-1" title="Lunes, 07:45 – 09:00"><b>Turno mañana</b><span>Sede Centro</span><span class="hor-rango">07:45 – 09:00</span></span>
+            <i class="hor-hueco hor-h3" aria-hidden="true"></i>
+            <span class="hor-b hor-identidad-1 hor-d5" title="Lunes, 07:45 – 09:00"><b>Turno mañana</b><span>Sede Centro</span><span class="hor-rango">07:45 – 09:00</span></span>
           </div></td>
           <td class="hor-c hor-vacia"></td></tr>
         <tr><td class="hor-c hor-vacia"></td></tr>
         <tr><th class="hor-eje hor-eje-v" scope="row">13:00</th>
           <td class="hor-c" rowspan="2"><div class="hor-pila">
-            <i class="hor-hueco hor-q2-2" aria-hidden="true"></i>
-            <span class="hor-b hor-identidad-2" title="Lunes, 13:30 – 15:00"><b>Turno tarde</b><span>Sede Norte</span><span class="hor-rango">13:30 – 15:00</span></span>
+            <i class="hor-hueco hor-h2" aria-hidden="true"></i>
+            <span class="hor-b hor-identidad-2 hor-d6" title="Lunes, 13:30 – 15:00"><b>Turno tarde</b><span>Sede Norte</span><span class="hor-rango">13:30 – 15:00</span></span>
           </div></td>
           <td class="hor-c"><div class="hor-pila">
-            <span class="hor-b hor-neutro" title="Martes, 13:00 – 14:00"><b>Refuerzo</b><span>Sede Centro</span><span class="hor-rango">13:00 – 14:00</span></span>
+            <span class="hor-b hor-neutro hor-d4" title="Martes, 13:00 – 14:00"><b>Refuerzo</b><span>Sede Centro</span><span class="hor-rango">13:00 – 14:00</span></span>
           </div></td></tr>
         <tr><td class="hor-c hor-vacia"></td></tr>
         <!-- EL CASO DEL R137, que no estaba en ninguna pagina: UNA sola celda
@@ -7307,14 +7307,38 @@ más la de las 14:00 entera. La rejilla se queda en <strong>24 filas</strong> au
              necesitaba y lo empujaba sobre la fila siguiente. -->
         <tr><th class="hor-eje hor-eje-v" scope="row">16:00</th>
           <td class="hor-c"><div class="hor-pila">
-            <i class="hor-hueco hor-q1-1" aria-hidden="true"></i>
-            <span class="hor-b hor-identidad-1" title="Lunes, 16:15 – 17:00"><b>Tutor&iacute;a</b><span>Sede Centro</span><span class="hor-rango">16:15 – 17:00</span></span>
+            <i class="hor-hueco hor-h1" aria-hidden="true"></i>
+            <span class="hor-b hor-identidad-1 hor-d3" title="Lunes, 16:15 – 17:00"><b>Tutor&iacute;a</b><span>Sede Centro</span><span class="hor-rango">16:15 – 17:00</span></span>
           </div></td>
           <td class="hor-c hor-vacia"></td></tr>
       </tbody>
     </table>
   </div>
 </div>
+<h3 class="sub-seccion">R138 &middot; dos bloques en una celda</h3>
+<p class="seccion-sub">El caso que lo trajo: <strong>09:00&ndash;12:20 y 12:20&ndash;13:55</strong>, que <strong>no comparten un
+minuto</strong>. Con franjas de dos horas, el primero acaba dentro de la fila de las 12:00 y el segundo empieza
+en esa misma fila. Hasta la v1.119.0 el segundo se descartaba con &laquo;se solapa con otro bloque ya
+colocado&raquo;: <strong>no se solapaban, compart&iacute;an fila</strong>. Ahora el choque se mide en cuartos y los dos
+caben en la misma celda.</p>
+<div class="bloque">
+  <div class="hor-env" tabindex="0">
+    <table class="hor">
+      <thead><tr><th class="hor-esq" scope="col">Hora</th><th scope="col">Mi&eacute;rcoles</th></tr></thead>
+      <tbody>
+        <tr><th class="hor-eje hor-eje-v" scope="row">08:00</th>
+          <td class="hor-c" rowspan="3"><div class="hor-pila">
+            <i class="hor-hueco hor-h2" aria-hidden="true"></i>
+            <span class="hor-b hor-identidad-2 hor-d7" title="Mi&eacute;rcoles, 09:00 &ndash; 12:20"><b>S3</b><span>Sede Norte</span><span class="hor-rango">09:00 &ndash; 12:20</span></span>
+            <span class="hor-b hor-identidad-1 hor-d3" title="Mi&eacute;rcoles, 12:20 &ndash; 13:55"><b>S1</b><span>Sede Centro</span><span class="hor-rango">12:20 &ndash; 13:55</span></span>
+          </div></td></tr>
+        <tr><th class="hor-eje hor-eje-v" scope="row">10:00</th></tr>
+        <tr><th class="hor-eje hor-eje-v" scope="row">12:00</th></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
 <table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>Se cuenta en <strong>cuartos de franja</strong>. Es la resolución que se pidió —25&nbsp;%, 50&nbsp;%, 75&nbsp;%—, no una rejilla de precisión.</td></tr>
@@ -7355,14 +7379,14 @@ usar <code>error</code> como adorno <strong>gasta el rojo</strong>.</p>
       <thead><tr><th class="hor-esq"></th><th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th></tr></thead>
       <tbody>
         <tr><th class="hor-eje hor-eje-v" scope="row">08:00</th>
-          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-1" title="Lun, 08:00 – 09:30"><b>Matemática</b><span>Sede Centro · A-201</span><span class="hor-rango">08:00 – 09:30</span></span></div></td>
-          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-2" title="Mar, 08:00 – 09:30"><b>Comunicación</b><span>Sede Norte · B-104</span><span class="hor-rango">08:00 – 09:30</span></span></div></td>
+          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-1 hor-d3" title="Lun, 08:00 – 09:30"><b>Matemática</b><span>Sede Centro · A-201</span><span class="hor-rango">08:00 – 09:30</span></span><i class="hor-hueco hor-h1" aria-hidden="true"></i></div></td>
+          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-2 hor-d3" title="Mar, 08:00 – 09:30"><b>Comunicación</b><span>Sede Norte · B-104</span><span class="hor-rango">08:00 – 09:30</span></span><i class="hor-hueco hor-h1" aria-hidden="true"></i></div></td>
           <td class="hor-c hor-vacia"></td>
-          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-3" title="Jue, 08:00 – 08:45"><b>Tutoría</b><span>Sede Sur · C-12</span><span class="hor-rango">08:00 – 08:45</span></span></div></td></tr>
+          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-3 hor-d2" title="Jue, 08:00 – 08:45"><b>Tutoría</b><span>Sede Sur · C-12</span><span class="hor-rango">08:00 – 08:45</span></span><i class="hor-hueco hor-h2" aria-hidden="true"></i></div></td></tr>
         <tr><th class="hor-eje hor-eje-v" scope="row">10:00</th>
-          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-4" title="Lun, 10:00 – 11:30"><b>Ciencias</b><span>Sede Este · Lab 1</span><span class="hor-rango">10:00 – 11:30</span></span></div></td>
+          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-4 hor-d3" title="Lun, 10:00 – 11:30"><b>Ciencias</b><span>Sede Este · Lab 1</span><span class="hor-rango">10:00 – 11:30</span></span><i class="hor-hueco hor-h1" aria-hidden="true"></i></div></td>
           <td class="hor-c hor-vacia"></td>
-          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-error" title="Mié, 10:00 – 11:30"><b>Sin docente</b><span>Sede Centro · A-201</span><span class="hor-rango">10:00 – 11:30</span></span></div></td>
+          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-error hor-d3" title="Mié, 10:00 – 11:30"><b>Sin docente</b><span>Sede Centro · A-201</span><span class="hor-rango">10:00 – 11:30</span></span><i class="hor-hueco hor-h1" aria-hidden="true"></i></div></td>
           <td class="hor-c hor-vacia"></td></tr>
       </tbody>
     </table>
@@ -10943,10 +10967,22 @@ a.enlace.enl-nosub { text-decoration: none; }
    distinto. Y la L deja de importar: un cuarto de hora es un cuarto de hora
    mida lo que mida el bloque. Se siguen emitiendo las 18 clases porque son las
    que el componente escribe. */
-${[1, 2, 3].flatMap((q) => Array.from({ length: 6 }, (_, i) => {
-  const L = i + 1;
-  return `.hor-hueco.hor-q${q}-${L} { flex: 0 0 calc(var(--alto-franja) * ${q} / 4); }`;
-})).join('\n')}
+${Array.from({ length: 24 }, (_, i) => {
+  const c = i + 1;
+  return `.hor-hueco.hor-h${c} { flex: 0 0 calc(var(--alto-franja) * ${c} / 4); }`;
+}).join('\n')}
+
+/* Y EL BLOQUE TAMBIEN SE MIDE EN CUARTOS. Llevaba «flex: 1 0 auto» —todo lo
+   que sobre»— y con UN bloque por celda eso bastaba. Con VARIOS (R138) «lo que
+   sobra» es ambiguo: dos bloques de duraciones distintas se repartirian el
+   sobrante a partes iguales y el de una hora se veria igual que el de tres.
+   Ahora cada uno parte de SU duracion. Sigue sin encoger —shrink 0, el texto
+   manda— y sigue creciendo si la fila crece, que es lo que impide el desborde
+   del R137. */
+${Array.from({ length: 24 }, (_, i) => {
+  const c = i + 1;
+  return `.hor-pila > .hor-b.hor-d${c} { flex: 1 0 calc(var(--alto-franja) * ${c} / 4); }`;
+}).join('\n')}
 
 .hor-b b { display: block; font-weight: 600; font-size: 13px; }
 .hor-b span { display: block; font-size: 12px; }
