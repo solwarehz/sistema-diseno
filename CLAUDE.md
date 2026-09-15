@@ -19,13 +19,12 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.118.0** — **una fila de controles es una fila.** Lo reportó
-el equipo consumidor midiendo una barra de filtros: fecha, selector y botón
-entregaban los bordes escalonados porque los tres medían distinto. La causa no
-era un valor mal puesto: era que **nadie lo ponía** — la altura salía de lo que
-cada control heredara de interlineado. Ahora se declara, y nace el candado
-**quince**, `verificar-altura`, que hace una pregunta que ninguno hacía: no
-sobre un componente, sino **entre** componentes.
+**Estado actual: v1.119.0** — **R137: el hueco del horario se medía contra lo
+que él mismo dimensionaba.** El alto de la pila lo decide su contenido y el
+hueco era un porcentaje de ese mismo alto, así que se comía su fracción de lo
+que el bloque necesitaba y el bloque se salía por abajo justo esa fracción.
+Circular, y reproducido en el navegador del equipo que lo reportó. Ahora es una
+longitud: cuartos de `--alto-franja`.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

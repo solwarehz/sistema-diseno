@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 15 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.118.0** — una fila de controles es una
-fila: la altura de los controles deja de ser un accidente del interlineado
+**Versión del sistema:** MMI-DS **v1.119.0** — R137: el hueco del horario se medía
+contra lo que él mismo dimensionaba, y el bloque se salía de su celda
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -60,10 +60,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · **980 reglas de 1495** · **701 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.118.0.zip` · **60 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.119.0.zip` · **60 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.118.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.119.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los dieciocho pasos · **143 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -85,6 +85,87 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.46.0 | **R52** · todos los iconos de la entrega salían 2px más pequeños que en el catálogo |
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
+
+### Lo de hoy (v1.119.0), con detalle
+
+**R137 · El hueco del horario se medía contra lo que él mismo dimensionaba.** Lo
+reportó Control Administrativos V2.0 con el diagnóstico hecho, y era exacto. Se
+reprodujo **en su navegador**, sobre el horario de un trabajador real:
+
+| Bloque | `rowSpan` | Hueco | Contenido | Se sale |
+|---|---|---|---|---|
+| 12:20 – 13:55 | 1 | **11,38** (25 % de 45,5) | 45,5 | **11,04 px** |
+| 10:35 – 13:55 | 2 | 9,69 | 67,81 | 0 |
+
+**La causa es circular.** El alto de `.hor-pila` lo decide su contenido —el
+bloque lleva `flex: 1 0 auto` y **no puede encoger**— y el hueco era un
+**porcentaje de ese mismo alto**. Así que el hueco se come su fracción de lo que
+el bloque necesitaba, y el bloque se sale por abajo **exactamente esa fracción**.
+
+Tienen razón en las dos cosas que dicen: **estirar la fila no sirve** —el hueco
+crece con ella— y **no existe altura que cumpla las dos condiciones**. Y en que
+un horario que empieza a las 12:20 es de lo más normal.
+
+**Por qué nadie lo había visto:** con `rowSpan` 2 el bloque cabe. Y el catálogo
+enseñaba **tres bloques con fracción, los tres de `rowSpan` 2**. El único caso
+que falla —una celda con fracción y dos líneas de texto— no estaba en ninguna
+página. Ya está.
+
+**Y el porcentaje no era un descuido.** Era el arreglo del R94 (v1.69.0), que
+venía a quitar una desviación que cambiaba con el contenido. No llegaba a
+conseguirlo: con porcentaje, **dos bloques que empiezan los dos «y cuarto» se
+desplazan distinto si sus filas miden distinto** — la misma enfermedad que decía
+haber curado. El comentario del código decía además `flex: 1 1 auto` mientras la
+regla dice `1 0 auto`: describía un bloque que puede encoger, que habría
+recortado el texto en vez de desbordar. Ni una cosa ni la otra cabe.
+
+**Ahora el hueco es una longitud**: tantos cuartos de `--alto-franja`, que es la
+altura de una franja y hasta hoy era un `32` literal en un sitio y un `28`
+literal en otro. Deja de depender del contenido, y **el largo del bloque deja de
+importar**: un cuarto de hora es un cuarto de hora.
+
+**Verificado en el navegador del equipo**, inyectando la hoja nueva sobre su
+propia pantalla: los dos bloques pasan a desbordar **cero** y los dos quedan
+dentro de su celda. La hoja de ensayo se retiró y su página quedó como estaba.
+
+### Y al ir a garantizar la promesa, el horario tenía dos divergencias más
+
+El responsable lo pidió con esas palabras —*«garantiza la entrega y la
+promesa»*— y la respuesta correcta no era mirarlo una vez: era ver **qué lo
+sujeta**. Resultado: de los cinco archivos de prueba que ejecutan el catálogo y
+lo comparan con los componentes, **ninguno era el del horario**. Lo único que lo
+cubría era `verificar-promesa`, y ése resuelve las dos hojas **sobre el mismo
+marcado**: por construcción no puede ver que el marcado del catálogo sea otro.
+Es el hueco exacto que hizo nacer `verificar-elemento`.
+
+Al mirarlo aparecieron dos:
+
+1. **Nueve de diez bloques sin `title`.** El componente lo emite siempre
+   —«Lunes, 07:45 – 09:00»— y la maqueta no lo llevaba. Es **R135(c) otra vez**:
+   el catálogo incumpliendo la regla del globito que él mismo publica.
+2. **Cinco bloques fuera de `.hor-pila`.** El componente la emite **siempre**, y
+   sin ella el bloque recibe `height: 100%` en vez de
+   `flex: 1 0 auto; height: auto`. El catálogo demostraba **una caja que el
+   componente no produce jamás** — y justo en el componente cuyo defecto de
+   altura acabábamos de arreglar.
+
+Las dos corregidas, y **nace `horario-catalogo.test.tsx`**: cinco pruebas que
+comparan la anatomía de un bloque en las dos superficies, y que se vieron en
+rojo reponiendo cada divergencia. Ya no depende de que alguien vaya a mirar.
+
+### El candado que ninguno de los otros podía ser
+
+Nace la afirmación **`R137`** en `verificar-cascada`. Ninguno lo veía, y no por
+descuido:
+
+- aquí **no falta ninguna regla ni sobra** — un porcentaje es una declaración
+  perfectamente válida;
+- **las dos hojas dicen lo mismo**, así que el de la promesa y el del empate
+  aciertan los dos;
+- **el elemento emitido es el correcto**, así que el del elemento también.
+
+Lo que estaba mal es **contra qué se mide**, y eso solo se ve sabiendo qué
+dimensiona a qué.
 
 ### Lo de hoy (v1.118.0), con detalle
 

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.118.0";
+export const VERSION = "1.119.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,54 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.119.0', fecha: '2026-09-15',
+    que: 'R137 — el hueco del horario se medía contra lo que él mismo dimensionaba',
+    porque:
+      'Lo reporto Control Administrativos V2.0 y lo reprodujimos en su navegador, en el horario de '
+      + 'un trabajador real: un bloque de 12:20 a 13:55 SE SALE 11,04 px de su celda por abajo y pisa '
+      + 'la fila siguiente, asi que PARECE acabar mas tarde que otro que acaba a la misma hora. '
+      + 'LA CAUSA ES CIRCULAR, y el diagnostico que mandaron era exacto: el alto de la pila lo decide '
+      + 'su CONTENIDO —el bloque lleva flex: 1 0 auto y no puede encoger— y el hueco era un '
+      + 'PORCENTAJE de ese mismo alto. Asi que el hueco se come su fraccion de lo que el bloque '
+      + 'necesitaba y el bloque se sale por abajo exactamente esa fraccion: contenido 45,5 px, hueco '
+      + '11,38 que es el 25% de 45,5. Tienen razon en que estirar la fila no sirve —el hueco crece '
+      + 'con ella— y en que no hay altura que cumpla las dos condiciones. El de 10:35 a 13:55, con '
+      + 'rowSpan 2, cabia y no se salia: POR ESO NADIE LO HABIA VISTO. '
+      + 'Y el porcentaje no era un descuido: era el arreglo del R94 (v1.69.0), que venia a quitar una '
+      + 'desviacion que cambiaba con el contenido. No llegaba a conseguirlo — con porcentaje, dos '
+      + 'bloques que empiezan los dos «y cuarto» se desplazan distinto si sus filas miden distinto, '
+      + 'que es la misma enfermedad que decia haber curado. El comentario del codigo decia ademas '
+      + '«flex: 1 1 auto» mientras la regla dice «1 0 auto». '
+      + 'AHORA EL HUECO ES UNA LONGITUD: tantos cuartos de --alto-franja, que es la altura de una '
+      + 'franja y hasta hoy era un 32 literal aqui y un 28 literal alla. Deja de depender del '
+      + 'contenido, y el largo del bloque deja de importar: un cuarto de hora es un cuarto de hora. '
+      + 'VERIFICADO EN EL NAVEGADOR sobre su propia pantalla, inyectando la hoja nueva: los dos '
+      + 'bloques pasan a desbordar CERO y los dos quedan dentro de su celda. '
+      + 'NACE la afirmacion R137 en verificar-cascada, que ningun otro candado podia hacer: aqui no '
+      + 'falta ninguna regla ni sobra —un porcentaje es una declaracion valida—, las dos hojas dicen '
+      + 'lo mismo y el elemento emitido es el correcto. Lo que estaba mal es CONTRA QUE se mide. '
+      + 'Y EL CATALOGO NO ENSENABA EL CASO: sus tres bloques con fraccion son todos rowSpan 2, que '
+      + 'son justo los que caben. Ahora hay uno de UNA celda con fraccion y dos lineas de texto, que '
+      + 'es el unico que se salia. '
+      + 'Y AL IR A GARANTIZAR LA PROMESA —lo pidio el responsable con esas palabras— aparecio que '
+      + 'de los cinco archivos que ejecutan el catalogo y lo comparan con los componentes, NINGUNO '
+      + 'era el del horario: lo unico que lo cubria era verificar-promesa, que resuelve las dos '
+      + 'hojas SOBRE EL MISMO MARCADO y por construccion no puede ver que el marcado del catalogo '
+      + 'sea otro. Al mirarlo salieron dos divergencias: NUEVE DE DIEZ BLOQUES SIN title —que el '
+      + 'componente emite siempre, R135c otra vez— y CINCO BLOQUES FUERA DE .hor-pila, que el '
+      + 'componente emite SIEMPRE y sin la cual el bloque recibe height:100% en vez de '
+      + 'flex:1 0 auto: una caja que el componente no produce jamas, en el componente cuyo defecto '
+      + 'de altura acabamos de arreglar. Nace horario-catalogo.test.tsx.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'EL HUECO DEL HORARIO YA NO ESCALA CON LA FILA. Si un bloque de ustedes tenia el texto muy '
+      + 'largo, su fila crecia y el hueco crecia con ella; ahora el hueco es fijo —un cuarto de '
+      + 'franja— y el bloque empieza donde toca. Es el arreglo, pero cambia lo que se ve.',
+      'Si su hoja fijaba .hor-c a otra altura con una regla propia, pongale tambien --alto-franja: '
+      + 'el hueco sale de esa variable, no del alto real de la celda.',
+    ],
+  },
   {
     v: '1.118.0', fecha: '2026-09-15',
     que: 'UNA FILA DE CONTROLES ES UNA FILA (R136) — y el AVISO dura 2s y se va desvaneciendose',

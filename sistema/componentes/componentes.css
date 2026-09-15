@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.118.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.119.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -87,7 +87,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.118.0; }
+:root{ --mmi-componentes: 1.119.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -630,7 +630,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
    HORARIO — 53 reglas · clases .hor-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-[data-densidad='compacta'] .hor-c{ height: 28px; }
+[data-densidad='compacta'] .hor-c{ --alto-franja: 28px; height: var(--alto-franja); }
 .hor-barra{ display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-bottom: 12px; }
 .hor-grupo{ display: flex; align-items: center; gap: 8px; }
 .hor-grupo-et{ font-size: 12px; color: var(--texto-secundario); }
@@ -649,31 +649,32 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   vertical-align: top; }
 .hor-eje-v{ text-align: right; }
 .hor-eje-h{ text-align: left; }
-.hor-c{ vertical-align: top; padding: 0; min-width: 108px; height: 32px; }
+.hor-c{ vertical-align: top; padding: 0; min-width: 108px;
+  --alto-franja: 32px; height: var(--alto-franja); }
 .hor-vacia{ background: var(--fondo-tarjeta); }
 .hor-b{ display: block; height: 100%; padding: 4px 8px; border-left: 3px solid;
   border-radius: 3px; }
 .hor-pila{ display: flex; flex-direction: column; height: 100%; }
 .hor-hueco{ flex-basis: 0; flex-shrink: 0; }
 .hor-pila > .hor-b{ flex: 1 0 auto; height: auto; }
-.hor-hueco.hor-q1-1{ flex: 0 0 25%; }
-.hor-hueco.hor-q1-2{ flex: 0 0 12.5%; }
-.hor-hueco.hor-q1-3{ flex: 0 0 8.3333%; }
-.hor-hueco.hor-q1-4{ flex: 0 0 6.25%; }
-.hor-hueco.hor-q1-5{ flex: 0 0 5%; }
-.hor-hueco.hor-q1-6{ flex: 0 0 4.1667%; }
-.hor-hueco.hor-q2-1{ flex: 0 0 50%; }
-.hor-hueco.hor-q2-2{ flex: 0 0 25%; }
-.hor-hueco.hor-q2-3{ flex: 0 0 16.6667%; }
-.hor-hueco.hor-q2-4{ flex: 0 0 12.5%; }
-.hor-hueco.hor-q2-5{ flex: 0 0 10%; }
-.hor-hueco.hor-q2-6{ flex: 0 0 8.3333%; }
-.hor-hueco.hor-q3-1{ flex: 0 0 75%; }
-.hor-hueco.hor-q3-2{ flex: 0 0 37.5%; }
-.hor-hueco.hor-q3-3{ flex: 0 0 25%; }
-.hor-hueco.hor-q3-4{ flex: 0 0 18.75%; }
-.hor-hueco.hor-q3-5{ flex: 0 0 15%; }
-.hor-hueco.hor-q3-6{ flex: 0 0 12.5%; }
+.hor-hueco.hor-q1-1{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
+.hor-hueco.hor-q1-2{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
+.hor-hueco.hor-q1-3{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
+.hor-hueco.hor-q1-4{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
+.hor-hueco.hor-q1-5{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
+.hor-hueco.hor-q1-6{ flex: 0 0 calc(var(--alto-franja) * 1 / 4); }
+.hor-hueco.hor-q2-1{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
+.hor-hueco.hor-q2-2{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
+.hor-hueco.hor-q2-3{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
+.hor-hueco.hor-q2-4{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
+.hor-hueco.hor-q2-5{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
+.hor-hueco.hor-q2-6{ flex: 0 0 calc(var(--alto-franja) * 2 / 4); }
+.hor-hueco.hor-q3-1{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
+.hor-hueco.hor-q3-2{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
+.hor-hueco.hor-q3-3{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
+.hor-hueco.hor-q3-4{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
+.hor-hueco.hor-q3-5{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
+.hor-hueco.hor-q3-6{ flex: 0 0 calc(var(--alto-franja) * 3 / 4); }
 .hor-b b{ display: block; font-weight: 600; font-size: 13px; }
 .hor-b span{ display: block; font-size: 12px; }
 .hor-rango{ font-variant-numeric: tabular-nums; }

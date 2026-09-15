@@ -306,6 +306,48 @@ const marco = (extra = []) => [
 
 const AFIRMACIONES = [
   {
+    id: 'R137',
+    que: 'el hueco del horario se mide en LONGITUD, no en porcentaje de lo que él mismo dimensiona',
+    /**
+     * LA CIRCULARIDAD. El alto de `.hor-pila` lo decide su contenido —el bloque
+     * lleva `flex: 1 0 auto` y no puede encoger—, así que un hueco expresado
+     * como PORCENTAJE de esa misma pila se come su fracción de lo que el bloque
+     * necesitaba, y el bloque se sale por abajo exactamente esa fracción.
+     *
+     * Medido en el producto de Control Administrativos el 2026-09-15, en el
+     * horario de un trabajador real: bloque de 12:20 a 13:55, contenido 45,5px,
+     * hueco 11,38 —el 25% de 45,5— y 11,04px pisando la fila siguiente. El de
+     * 10:35 a 13:55, con rowSpan 2, cabía y no se salía: por eso el primero
+     * PARECÍA acabar más tarde que el segundo cuando los dos acaban igual.
+     *
+     * Estirar la fila no sirve: el hueco crece con ella. No hay altura que
+     * cumpla las dos condiciones.
+     *
+     * Ningún otro candado lo ve, y no por descuido: aquí no falta ninguna regla
+     * ni sobra —el porcentaje es una declaración perfectamente válida—, las dos
+     * hojas dicen lo mismo, y el elemento emitido es el correcto. Lo que está
+     * mal es CONTRA QUÉ se mide, y eso solo se ve sabiendo qué dimensiona a qué.
+     *
+     * @param {Regla[]} reglas
+     */
+    revisar(reglas) {
+      const fallos = [];
+      for (const r of reglas) {
+        if (!/\.hor-hueco/.test(r.sel)) continue;
+        for (const prop of ['flex', 'flex-basis', 'height', 'min-height']) {
+          const v = r.decl.get(prop);
+          if (v && /%/.test(String(v))) {
+            fallos.push(`${r.sel} → ${prop}: ${v} — porcentaje del contenedor que el propio `
+              + `bloque dimensiona. El hueco se lleva esa fracción de lo que el bloque `
+              + `necesitaba y el bloque se sale por abajo justo esa fracción (R137). `
+              + `Va en LONGITUD: tantos cuartos de var(--alto-franja).`);
+          }
+        }
+      }
+      return fallos;
+    },
+  },
+  {
     id: 'R25',
     que: 'el boton de plegar ensena UN icono, nunca dos ni ninguno',
     /** @param {Regla[]} reglas */

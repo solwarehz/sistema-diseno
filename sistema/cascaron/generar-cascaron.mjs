@@ -7287,19 +7287,30 @@ más la de las 14:00 entera. La rejilla se queda en <strong>24 filas</strong> au
         <tr><th class="hor-eje hor-eje-v" scope="row">07:00</th>
           <td class="hor-c" rowspan="2"><div class="hor-pila">
             <i class="hor-hueco hor-q3-2" aria-hidden="true"></i>
-            <span class="hor-b hor-identidad-1"><b>Turno mañana</b><span>Sede Centro</span><span class="hor-rango">07:45 – 09:00</span></span>
+            <span class="hor-b hor-identidad-1" title="Lunes, 07:45 – 09:00"><b>Turno mañana</b><span>Sede Centro</span><span class="hor-rango">07:45 – 09:00</span></span>
           </div></td>
           <td class="hor-c hor-vacia"></td></tr>
         <tr><td class="hor-c hor-vacia"></td></tr>
         <tr><th class="hor-eje hor-eje-v" scope="row">13:00</th>
           <td class="hor-c" rowspan="2"><div class="hor-pila">
             <i class="hor-hueco hor-q2-2" aria-hidden="true"></i>
-            <span class="hor-b hor-identidad-2"><b>Turno tarde</b><span>Sede Norte</span><span class="hor-rango">13:30 – 15:00</span></span>
+            <span class="hor-b hor-identidad-2" title="Lunes, 13:30 – 15:00"><b>Turno tarde</b><span>Sede Norte</span><span class="hor-rango">13:30 – 15:00</span></span>
           </div></td>
           <td class="hor-c"><div class="hor-pila">
-            <span class="hor-b hor-neutro"><b>Refuerzo</b><span>Sede Centro</span><span class="hor-rango">13:00 – 14:00</span></span>
+            <span class="hor-b hor-neutro" title="Martes, 13:00 – 14:00"><b>Refuerzo</b><span>Sede Centro</span><span class="hor-rango">13:00 – 14:00</span></span>
           </div></td></tr>
         <tr><td class="hor-c hor-vacia"></td></tr>
+        <!-- EL CASO DEL R137, que no estaba en ninguna pagina: UNA sola celda
+             con fraccion y dos lineas de texto dentro. Es el unico que se
+             salia, porque con rowspan 2 el bloque cabia y nadie lo veia. Con el
+             hueco en porcentaje, este se comia 11px de lo que el bloque
+             necesitaba y lo empujaba sobre la fila siguiente. -->
+        <tr><th class="hor-eje hor-eje-v" scope="row">16:00</th>
+          <td class="hor-c"><div class="hor-pila">
+            <i class="hor-hueco hor-q1-1" aria-hidden="true"></i>
+            <span class="hor-b hor-identidad-1" title="Lunes, 16:15 – 17:00"><b>Tutor&iacute;a</b><span>Sede Centro</span><span class="hor-rango">16:15 – 17:00</span></span>
+          </div></td>
+          <td class="hor-c hor-vacia"></td></tr>
       </tbody>
     </table>
   </div>
@@ -7311,7 +7322,7 @@ más la de las 14:00 entera. La rejilla se queda en <strong>24 filas</strong> au
     <tr><td class="num">3</td><td>Se reparte con una <strong>pila flexible</strong> —hueco, bloque, hueco— y proporciones. No hay una sola medida en píxeles, y el bloque <strong>sigue en el flujo</strong>: si el texto no cabe, la fila crece, como antes. Sacarlo con <code>position: absolute</code> habría dejado la fila sin nada que la empuje.</td></tr>
     <tr><td class="num">4</td><td><strong>La tabla no cambia.</strong> Los <code>th scope</code> y los <code>rowSpan</code>/<code>colSpan</code> se quedan exactamente igual: es lo que hace accesible este componente y era la condición del pedido.</td></tr>
     <tr><td class="num">5</td><td>El tope es <strong>seis franjas de span</strong>. Por encima se pinta a celda entera <strong>y se avisa</strong> — un límite que no se dice es un descarte silencioso, que es justo lo que este pedido venía a quitar.</td></tr>
-    <tr><td class="num">6</td><td><strong>La proporción es aproximada, y se dice con el número.</strong> Medido: donde tocaría un 37,5&nbsp;% sale un <strong>35,5&nbsp;%</strong>. El bloque <strong>nunca se comprime por debajo de su texto</strong>, así que cuando el contenido pesa, el reparto cede. Es la decisión correcta —cortar el título para cuadrar un sombreado sería cambiar un dato por un adorno— y por eso el rótulo lleva la hora exacta.</td></tr>
+    <tr><td class="num">6</td><td><strong>El hueco se mide en LONGITUD, no en porcentaje</strong> — tantos cuartos de <code>--alto-franja</code>. En porcentaje era <strong>circular</strong>: el alto de la pila lo decide su contenido y el hueco era un porcentaje de ese mismo alto, as&iacute; que se com&iacute;a su fracci&oacute;n de lo que el bloque necesitaba y el bloque se sal&iacute;a por abajo justo esa fracci&oacute;n. Lo midi&oacute; Control Administrativos V2.0 (R137) en un horario real: bloque de 12:20 a 13:55, hueco <strong>11,38&nbsp;px</strong> y <strong>11,04&nbsp;px pisando la fila siguiente</strong>. El bloque <strong>nunca se comprime por debajo de su texto</strong>: si el contenido pesa, la fila crece. Es la decisi&oacute;n correcta &mdash;cortar el t&iacute;tulo para cuadrar un sombreado ser&iacute;a cambiar un dato por un adorno&mdash; y por eso el r&oacute;tulo lleva la hora exacta.</td></tr>
   </tbody>
 </table>
 
@@ -7344,14 +7355,14 @@ usar <code>error</code> como adorno <strong>gasta el rojo</strong>.</p>
       <thead><tr><th class="hor-esq"></th><th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th></tr></thead>
       <tbody>
         <tr><th class="hor-eje hor-eje-v" scope="row">08:00</th>
-          <td class="hor-c"><span class="hor-b hor-identidad-1"><b>Matemática</b><span>Sede Centro · A-201</span><span class="hor-rango">08:00 – 09:30</span></span></td>
-          <td class="hor-c"><span class="hor-b hor-identidad-2"><b>Comunicación</b><span>Sede Norte · B-104</span><span class="hor-rango">08:00 – 09:30</span></span></td>
+          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-1" title="Lun, 08:00 – 09:30"><b>Matemática</b><span>Sede Centro · A-201</span><span class="hor-rango">08:00 – 09:30</span></span></div></td>
+          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-2" title="Mar, 08:00 – 09:30"><b>Comunicación</b><span>Sede Norte · B-104</span><span class="hor-rango">08:00 – 09:30</span></span></div></td>
           <td class="hor-c hor-vacia"></td>
-          <td class="hor-c"><span class="hor-b hor-identidad-3"><b>Tutoría</b><span>Sede Sur · C-12</span><span class="hor-rango">08:00 – 08:45</span></span></td></tr>
+          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-3" title="Jue, 08:00 – 08:45"><b>Tutoría</b><span>Sede Sur · C-12</span><span class="hor-rango">08:00 – 08:45</span></span></div></td></tr>
         <tr><th class="hor-eje hor-eje-v" scope="row">10:00</th>
-          <td class="hor-c"><span class="hor-b hor-identidad-4"><b>Ciencias</b><span>Sede Este · Lab 1</span><span class="hor-rango">10:00 – 11:30</span></span></td>
+          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-identidad-4" title="Lun, 10:00 – 11:30"><b>Ciencias</b><span>Sede Este · Lab 1</span><span class="hor-rango">10:00 – 11:30</span></span></div></td>
           <td class="hor-c hor-vacia"></td>
-          <td class="hor-c"><span class="hor-b hor-error"><b>Sin docente</b><span>Sede Centro · A-201</span><span class="hor-rango">10:00 – 11:30</span></span></td>
+          <td class="hor-c"><div class="hor-pila"><span class="hor-b hor-error" title="Mié, 10:00 – 11:30"><b>Sin docente</b><span>Sede Centro · A-201</span><span class="hor-rango">10:00 – 11:30</span></span></div></td>
           <td class="hor-c hor-vacia"></td></tr>
       </tbody>
     </table>
@@ -10087,7 +10098,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    como preferencia sino como fallo. Los dos valores son los del preset —
    fila-comoda 34px, fila-compacta 28px—, ya definidos desde v1.0.0. */
 [data-densidad='compacta'] .tb td { height: 28px; }
-[data-densidad='compacta'] .hor-c { height: 28px; }
+[data-densidad='compacta'] .hor-c { --alto-franja: 28px; height: var(--alto-franja); }
 /* EN TÁCTIL LA DENSIDAD COMPACTA NO SE APLICA. Una fila de 28px no es un blanco
    que se acierte con el dedo: SC 2.5.8 pide 24px como mínimo absoluto y la
    práctica pide 44. Sin esta regla pasaba lo mismo pero POR ACCIDENTE —el
@@ -10858,7 +10869,11 @@ a.enlace.enl-nosub { text-decoration: none; }
   vertical-align: top; }
 .hor-eje-v { text-align: right; }
 .hor-eje-h { text-align: left; }
-.hor-c { vertical-align: top; padding: 0; min-width: 108px; height: 32px; }
+/* LA ALTURA DE UNA HORA, con nombre. Era un 32 literal aqui y otro 28 literal
+   en la densidad compacta, y el hueco fraccionado se calculaba en PORCENTAJE
+   porque no tenia este numero al que agarrarse. */
+.hor-c { vertical-align: top; padding: 0; min-width: 108px;
+  --alto-franja: 32px; height: var(--alto-franja); }
 .hor-vacia { background: var(--fondo-tarjeta); }
 /* El filete de la izquierda es estructural, igual que en el chip: el color solo
    no distingue nada -SC 1.4.1-. */
@@ -10901,14 +10916,36 @@ a.enlace.enl-nosub { text-decoration: none; }
    Ya estaba medida la desviacion —37,5 % que salia 35,5 %— y se declaro como
    aproximacion aceptable; lo que no se vio es que NO ES UNIFORME, y una
    desviacion que cambia con el contenido no es aproximar: es desalinear.
-   Ahora el hueco es flex-basis en PORCENTAJE del contenedor, que es la celda
-   —o las L celdas del rowSpan—, y todas las celdas de una fila miden lo mismo.
-   El bloque se lleva el resto con flex: 1 1 auto, asi que si su texto no cabe la
-   fila crece, y al crecer el porcentaje se recalcula sobre la misma altura para
-   todas. El reparto deja de depender del contenido. */
+   Se arreglo con un flex-basis en PORCENTAJE del contenedor, y ESO ERA
+   CIRCULAR — R137, de Control Administrativos, medido en su producto y
+   reproducido en el navegador el 2026-09-15:
+
+     el alto de la pila lo decide su CONTENIDO (el bloque no puede encoger:
+     flex: 1 0 auto) ... y el hueco es un PORCENTAJE de ese mismo alto.
+
+   Asi que el hueco se come su fraccion de lo que el bloque necesitaba, y el
+   bloque se sale por abajo EXACTAMENTE esa fraccion. Medido en el horario de un
+   trabajador real: bloque de 12:20 a 13:55, contenido 45,5px, hueco 11,38 —el
+   25% de 45,5— y 11,04px saliendose de la celda, pisando la fila siguiente. El
+   de 10:35 a 13:55, con rowSpan 2, cabe y no se sale: por eso el primero PARECE
+   acabar mas tarde que el segundo cuando los dos acaban a la misma hora.
+   Estirar la fila no sirve: el hueco crece con ella. No hay altura que cumpla
+   las dos condiciones, y un bloque que empieza a las 12:20 es de lo mas normal.
+
+   Y el comentario que habia aqui decia «flex: 1 1 auto» mientras la regla dice
+   «1 0 auto»: describia un bloque que puede encoger, que habria recortado el
+   texto en vez de desbordar. Ni una cosa ni la otra cabe.
+
+   AHORA EL HUECO ES UNA LONGITUD: tantos cuartos de la altura de UNA HORA, que
+   es un numero conocido. Deja de depender del contenido, que es lo que aquel
+   arreglo perseguia y no llegaba a conseguir — con porcentaje, dos bloques que
+   empiezan los dos a y cuarto se desplazaban distinto si sus filas median
+   distinto. Y la L deja de importar: un cuarto de hora es un cuarto de hora
+   mida lo que mida el bloque. Se siguen emitiendo las 18 clases porque son las
+   que el componente escribe. */
 ${[1, 2, 3].flatMap((q) => Array.from({ length: 6 }, (_, i) => {
   const L = i + 1;
-  return `.hor-hueco.hor-q${q}-${L} { flex: 0 0 ${(q * 25 / L).toFixed(4).replace(/\.?0+$/, '')}%; }`;
+  return `.hor-hueco.hor-q${q}-${L} { flex: 0 0 calc(var(--alto-franja) * ${q} / 4); }`;
 })).join('\n')}
 
 .hor-b b { display: block; font-weight: 600; font-size: 13px; }
