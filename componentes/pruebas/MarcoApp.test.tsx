@@ -12,6 +12,8 @@
 import { render, screen, within, fireEvent, act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { MarcoApp, type GrupoNav } from '../src/MarcoApp';
 
 const NAV: GrupoNav[] = [
@@ -478,6 +480,128 @@ describe('[8] el carril plegado no es una fila de iconos mudos', () => {
     const rama = container.querySelector('.nav-rama')!;
     expect(rama.classList.contains('abierta'), 'la rama arranca abierta').toBe(false);
     expect(rama.querySelector('.nav-nietos')!.hasAttribute('hidden')).toBe(true);
+  });
+});
+
+describe('R135 · el tercer nivel, y el riel plegado', () => {
+  /**
+   * SE LEE LA HOJA QUE VIAJA, no la cascada resuelta por jsdom.
+   *
+   * jsdom resuelve por orden de archivo e **ignora la especificidad** —está
+   * medido—, así que preguntarle por `getComputedStyle` da falsos positivos.
+   * Aquí se mira lo que la hoja **declara** para los dos niveles; la versión
+   * resuelta la comprueba `NIVELES-QUE-SE-COMPONEN-IGUAL` en `verificar-cascada`,
+   * con el resolvedor del repositorio y a once anchos.
+   */
+  const HOJA = readFileSync(
+    resolve(process.cwd(), '..', 'sistema', 'componentes', 'componentes.css'), 'utf8',
+  );
+  /** Las declaraciones del bloque cuyo selector es exactamente ése. */
+  const bloque = (selector: string) => {
+    const i = HOJA.indexOf(`\n${selector}{`);
+    expect(i, `la hoja no declara ${selector}`).toBeGreaterThan(-1);
+    return HOJA.slice(i, HOJA.indexOf('}', i));
+  };
+
+  it('[11] el tercer nivel se compone como el segundo: nada de iconos apilados', () => {
+    /* `.nav-nieto` era `display: block` mientras `.nav-hijo` es `flex`, así que
+       cualquier icono en ese nivel caía ENCIMA del rótulo y la fila medía el
+       doble. Control Administrativos lo midió montando un menú de tres niveles
+       y tuvo que quitar el icono para que no se partiera. */
+    const hijo = bloque('.nav-hijo');
+    const nieto = bloque('.nav-nieto');
+    expect(hijo).toContain('display: flex');
+    expect(nieto, 'el tercer nivel no coloca en línea: el icono cae sobre el rótulo').toContain('display: flex');
+    expect(nieto, 'sin `align-items` el icono no centra con el texto').toContain('align-items: center');
+  });
+
+  it('[11] pero el sangrado y el cuerpo SIGUEN siendo suyos', () => {
+    // Lo que se iguala es la composición, no la jerarquía: 56px y 12px hacen su
+    // trabajo y el equipo pidió expresamente no tocarlos.
+    const nieto = bloque('.nav-nieto');
+    expect(nieto).toContain('padding: 4px 8px 4px 56px');
+    expect(nieto).toContain('font-size: 12px');
+  });
+
+  it('[12] plegado, las ramas del panel flotante llegan ABIERTAS', () => {
+    /* Dentro del panel, una rama cerrada no se abre al pasar por encima —solo
+       el grupo lo hace—, así que el tercer nivel quedaba detrás de un clic
+       dentro de un panel que solo vive mientras el puntero esté encima. Lo
+       midió Control Administrativos V2.0 recorriéndolo con el ratón. */
+    const { container } = montar({ navegacion: TRES_NIVELES, plegado: true });
+    /* El panel solo se pinta con el grupo abierto: plegado, eso es el cursor.
+       Y se comprueba que de verdad lo abrió, porque sin esto las aserciones de
+       abajo salían igual sin pasar el cursor: la prueba se llamaba «del panel
+       flotante» y del panel no medía nada. */
+    fireEvent.mouseEnter(container.querySelector('.nav-grupo')!);
+    expect(container.querySelector('.nav-grupo')!.classList.contains('abierto'),
+      'el cursor no abrió el panel: lo de abajo no está midiendo el panel').toBe(true);
+    expect(container.querySelector('.nav-hijos')!.hasAttribute('hidden')).toBe(false);
+    const rama = container.querySelector('.nav-rama')!;
+    expect(rama.classList.contains('abierta'), 'la rama llega cerrada en el panel flotante').toBe(true);
+    expect(rama.querySelector('.nav-nietos')!.hasAttribute('hidden')).toBe(false);
+    expect(rama.querySelector('.nav-rama-tit')!.getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('[12] pero EXTENDIDO siguen cerradas: doce ítems seguidos no se leen', () => {
+    // La regla 6 no cambia. Aquí el menú entero es una columna larga.
+    const { container } = montar({ navegacion: TRES_NIVELES });
+    expect(container.querySelector('.nav-rama')!.classList.contains('abierta')).toBe(false);
+  });
+
+  it('[12] y el mando sigue vivo: plegado se pueden cerrar a mano', async () => {
+    const u = userEvent.setup();
+    const { container } = montar({ navegacion: TRES_NIVELES, plegado: true });
+    fireEvent.mouseEnter(container.querySelector('.nav-grupo')!);
+    await u.click(container.querySelector('.nav-rama-tit') as HTMLElement);
+    expect(container.querySelector('.nav-rama')!.classList.contains('abierta')).toBe(false);
+  });
+
+  it('[12] cerrar una rama a mano AGUANTA una navegación: el efecto no la reabre', async () => {
+    /* Las dependencias del efecto son SOLO `plegado`. Con `navegacion` o
+       `activa` dentro, navegar por el panel reabriría lo que se acaba de
+       cerrar — y `navegacion` suele ser un array literal nuevo en cada render
+       del producto, así que se dispararía SIEMPRE. La razón está escrita en el
+       componente y no la protegía nada: una auditoría metió las dos
+       dependencias y las 57 pruebas siguieron en verde. */
+    const u = userEvent.setup();
+    const props = { titulo: 'C', hrefInicio: '/', usuario: USUARIO, plegado: true };
+    const { container, rerender } = render(
+      <MarcoApp {...props} navegacion={TRES_NIVELES} activa="sedes"><p>x</p></MarcoApp>,
+    );
+    fireEvent.mouseEnter(container.querySelector('.nav-grupo')!);
+    await u.click(container.querySelector('.nav-rama-tit') as HTMLElement);
+    expect(container.querySelector('.nav-rama')!.classList.contains('abierta')).toBe(false);
+
+    // Navegar: cambia `activa`. La rama cerrada a mano tiene que seguir cerrada.
+    rerender(<MarcoApp {...props} navegacion={TRES_NIVELES} activa="cargos"><p>x</p></MarcoApp>);
+    expect(container.querySelector('.nav-rama')!.classList.contains('abierta'),
+      'cambiar `activa` reabrió la rama que se acababa de cerrar').toBe(false);
+
+    // Y un `navegacion` NUEVO con el mismo contenido —lo que hace un literal
+    // en línea— tampoco puede reabrirla.
+    rerender(
+      <MarcoApp {...props} navegacion={JSON.parse(JSON.stringify(TRES_NIVELES))} activa="cargos">
+        <p>x</p>
+      </MarcoApp>,
+    );
+    expect(container.querySelector('.nav-rama')!.classList.contains('abierta'),
+      'un `navegacion` nuevo en cada render reabre lo que el usuario cierre').toBe(false);
+  });
+
+  it('[12] al plegar sobre la marcha, las ramas se abren', () => {
+    const { container, rerender } = render(
+      <MarcoApp titulo="C" hrefInicio="/" navegacion={TRES_NIVELES} usuario={USUARIO} plegado={false}>
+        <p>x</p>
+      </MarcoApp>,
+    );
+    expect(container.querySelector('.nav-rama')!.classList.contains('abierta')).toBe(false);
+    rerender(
+      <MarcoApp titulo="C" hrefInicio="/" navegacion={TRES_NIVELES} usuario={USUARIO} plegado>
+        <p>x</p>
+      </MarcoApp>,
+    );
+    expect(container.querySelector('.nav-rama')!.classList.contains('abierta'), 'plegar no abrió las ramas').toBe(true);
   });
 });
 

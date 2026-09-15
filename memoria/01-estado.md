@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 14 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.114.0** — el menú lateral plegado era una
-fila de iconos mudos, y el catálogo prometía un hover que la entrega no tenía
+**Versión del sistema:** MMI-DS **v1.115.0** — R135: el tercer nivel del menú no
+podía llevar icono, y con el riel plegado no se llegaba a él
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ fila de iconos mudos, y el catálogo prometía un hover que la entrega no tenía
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **diecisiete pasos de
-verificación** —los que corre `publicar.mjs`—, **831 pruebas en 49 archivos**,
+verificación** —los que corre `publicar.mjs`—, **844 pruebas en 50 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -56,14 +56,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **831 pruebas en 49 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · **975 reglas de 1490** · **701 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
+| Componentes de React | ✅ | **844 pruebas en 50 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · **977 reglas de 1492** · **701 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.114.0.zip` · **60 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.115.0.zip` · **60 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.114.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.115.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los diecisiete pasos · **142 unidades compuestas** · **8 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -86,7 +86,46 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.114.0), con detalle
+### Lo de hoy (v1.115.0), con detalle
+
+**R135, de Control Administrativos V2.0, sobre la v1.114.0 ya instalada.** Tres
+cosas medidas, y una de ellas la tenían desde el 11/09 sin mandar.
+
+**(a) El icono caía encima del rótulo.** `.nav-nieto` era `display: block`
+mientras `.nav-hijo` es `flex`, así que cualquier icono en el **tercer** nivel se
+apilaba sobre el texto y la fila medía el doble. Lo descubrieron montando
+*Marcaciones › Configuración* y **tuvieron que quitar el icono**: un menú con
+icono en los niveles 1 y 2 y sin él en el 3, sin que ninguna regla del sistema
+dijera que así debía ser. El sangrado de 56 px y el cuerpo de 12 px **no se
+tocan**: lo pidieron expresamente y hacen su trabajo.
+
+**(b) Con el riel plegado no se llegaba al tercer nivel.** Dentro del panel
+flotante, una rama cerrada **no se abre al pasar por encima** —solo el grupo lo
+hace—, así que quedaba detrás de un clic **dentro de un panel que solo vive
+mientras el puntero esté encima**. Pidieron una decisión explícita entre tres y
+se toma la segunda: **el panel llega desplegado**. Un resumen con secciones
+plegadas no resume, y anidar un segundo «abrir al pasar» dentro de un panel que
+se cierra al salir es una trampa de temporización, no una función. Extendido no
+cambia nada: la regla 6 sigue.
+
+**(c) Los globitos que el resumen promete no estaban en el catálogo**, y éste va
+al revés de lo habitual: su producto los tenía y el catálogo no. 16 de 86.
+
+**Y el catálogo no enseñaba el tercer nivel del marco en ninguna parte**, por eso
+(a) solo se descubría montándolo.
+
+**La auditoría tumbó la primera versión de este arreglo, otra vez**, y encontró
+cinco cosas que no protegía nada — entre ellas **la razón de ser del efecto**:
+las dependencias son solo `plegado`, y con `navegacion` dentro —un array literal
+en cada render del producto— se reabriría todo lo que el usuario cierre. Estaba
+escrito en el componente y **las 57 pruebas seguían en verde** al romperlo.
+También: el tercer nivel de la maqueta estaba en el marcado y en `display:none`,
+y el recorte con puntos suspensivos se perdía dentro del panel flotante.
+
+Nace `marco-catalogo.test.tsx`: el menú del catálogo contra el que emite el
+componente, **atributo a atributo**. Es lo que ningún candado mira.
+
+### Lo de la v1.114.0, con detalle
 
 **El menú plegado era una fila de iconos mudos, y el catálogo prometía un hover
 que la entrega no tenía.** Lo pidió el responsable con una frase que es el método
@@ -1884,12 +1923,12 @@ sin comparar.
 No los repitas de memoria: **regenéralos**.
 
 ```
-Versión                      1.114.0
+Versión                      1.115.0
 Tokens semánticos                56   + 5 de marca
 Pares de contraste              186   (146 bloqueantes · 40 informativos,
                                       0 fallos)
-Pruebas                         831   en 49 archivos
-Reglas que viajan               975   de 1490 · 701 clases, 0 huérfanas
+Pruebas                         844   en 50 archivos
+Reglas que viajan               977   de 1492 · 701 clases, 0 huérfanas
                                       — el barrido mira tambien interno/
 Reglas con `sel-` en las hojas   26   contra 26 (mas 6 de `sel-demo-*` en el
                                       catalogo, que por diseño NO viajan).

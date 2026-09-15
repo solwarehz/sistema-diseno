@@ -289,7 +289,15 @@ const MENU = [
   ['administracion', 'Administración'],
   ['tesoreria', 'Tesorería', ['Pagos', 'Deudas']],
   ['academico', 'Académico'],
-  ['configuracion', 'Configuración'],
+  /* CON RAMA DE TERCER NIVEL, Y CON ICONO EN LOS TRES. El catalogo no enseñaba
+     el tercer nivel del marco en ninguna parte, asi que la fila apilada de
+     R135a solo se descubria montandolo. Los iconos del tercer nivel tambien se
+     demuestran: el sistema los admite —`OpcionNav.icono`, R17— y quien no los
+     quiera, no los pasa. */
+  ['configuracion', 'Configuración', [
+    ['General', 'configuracion'],
+    ['Catálogos', 'libro', ['Sedes', 'Cargos']],
+  ]],
 ];
 
 /* ───────────────────────────────────────────────────────────────────────────
@@ -333,7 +341,7 @@ function comprobarTramos(grupos) {
    cuando no hay hijos, y `<div.nav-grupo>` con `<button.nav-item.nav-grupo-tit>`
    + `.nav-hijos` > `.nav-hijos-in` > `.nav-flot-tit` + `<a.nav-hijo>` cuando los
    hay. El `title` lo lleva cada uno, que es lo que rotula el carril plegado. */
-const itemsMenu = (activo = 'panel', abierto = 'matricula', marca = 'a') =>
+const itemsMenu = (activo = 'panel', abierto = 'matricula', marca = 'a', plegado = false) =>
   MENU.map(([k, txt, hijos]) => {
     if (!hijos) {
       return `
@@ -353,7 +361,29 @@ const itemsMenu = (activo = 'panel', abierto = 'matricula', marca = 'a') =>
         <div class="nav-hijos" id="mq-${marca}-${k}"${ab ? '' : ' hidden'}>
           <div class="nav-hijos-in">
             <span class="nav-flot-tit">${txt}</span>
-            ${hijos.map((h) => `<a class="nav-hijo" href="#" title="${h}"><span class="nav-txt">${h}</span></a>`).join('')}
+            ${hijos.map((h) => {
+              if (typeof h === 'string') return `<a class="nav-hijo" href="#" title="${h}"><span class="nav-txt">${h}</span></a>`;
+              const [ht, hic, nietos] = h;
+              if (!nietos) {
+                return `<a class="nav-hijo" href="#" title="${ht}"><span class="nav-ic" aria-hidden="true">${ICONOS[hic]}</span><span class="nav-txt">${ht}</span></a>`;
+              }
+              /* LA RAMA LLEGA ABIERTA SOLO PLEGADA — regla 12: dentro del
+                 panel flotante se enseña todo, porque ahi el rotulo no se ve.
+                 Extendida llega cerrada, que es lo que emite el componente. */
+              const ra = plegado;
+              return `<div class="nav-rama${ra ? ' abierta' : ''}">
+                <button class="nav-hijo nav-rama-tit" aria-expanded="${ra}" aria-controls="mq-${marca}-${k}-r" title="${ht}">
+                  <span class="nav-ic" aria-hidden="true">${ICONOS[hic]}</span>
+                  <span class="nav-txt">${ht}</span>
+                  <span class="nav-chev" aria-hidden="true">${ICONOS.chevron}</span>
+                </button>
+                <div class="nav-nietos" id="mq-${marca}-${k}-r"${ra ? '' : ' hidden'}>
+                  <div class="nav-nietos-in">
+                    ${nietos.map((x) => `<a class="nav-nieto" href="#" title="${x}"><span class="nav-ic" aria-hidden="true">${ICONOS.libro}</span><span class="nav-txt">${x}</span></a>`).join('')}
+                  </div>
+                </div>
+              </div>`;
+            }).join('')}
           </div>
         </div>
       </div>`;
@@ -386,7 +416,15 @@ const lateral = (colapsado) => `
       ${escudo(30)}
       <div class="lat-id"><span class="lat-colegio">COLEGIO</span><span class="lat-nombre">ALBERT EINSTEIN</span></div>
     </div>
-    <nav class="lat-nav" aria-label="Navegación principal">${itemsMenu('panel', 'matricula', colapsado ? 'b' : 'a')}</nav>
+    <!-- LA PLEGADA ABRE «Configuración», que es la que lleva rama de TERCER
+         NIVEL: plegada, un grupo abierto ES el panel flotante, y ahi es donde
+         hay que poder ver la rama. La extendida abre «Matricula», que no tiene
+         rama — porque extendida el componente emite las ramas CERRADAS (regla
+         6) y la maqueta no puede prometer lo contrario. El tercer nivel estaba
+         en el marcado y en display:none: se veia en el HTML y no en la
+         pantalla, que es el mismo defecto que esta version vino a cerrar un
+         nivel mas arriba. -->
+    <nav class="lat-nav" aria-label="Navegación principal">${itemsMenu('panel', colapsado ? 'configuracion' : 'matricula', colapsado ? 'b' : 'a', colapsado)}</nav>
     <div class="lat-usuario">
       <span class="avatar avatar-m avatar-2">JI</span>
       <div class="lat-user-txt">
@@ -8482,7 +8520,12 @@ const PUNTO = { listo: '', decidir: '', pendiente: '<span class="pt pt-pend" tit
 const menuCatalogo = CATALOGO.map(
   (g, n) => `
   <div class="nav-grupo" data-grupo="${n}">
-    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="${n}">
+    <!-- R135c · EL CATALOGO CUMPLE LA REGLA QUE EXIGE. Los titulos de grupo y
+         de rama de ESTA barra no llevaban rotulo para el raton: 16 de 86
+         elementos sin el, justo donde la entrega deberia demostrarlo. Lo midio
+         Control Administrativos V2.0, y va al reves de lo habitual: su producto
+         los tenia y el catalogo no. -->
+    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="${n}" title="${g.grupo}">
       <span class="nav-ic">${ICONOS[g.icono]}</span>
       <span class="nav-txt">${g.grupo}</span>
       <span class="nav-chev">${ICONOS.chevron}</span>
@@ -8495,7 +8538,7 @@ const menuCatalogo = CATALOGO.map(
           ? g.ramas
               .map(
                 (r, k) => `<div class="nav-rama" data-rama="${n}-${k}">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="${n}-${k}">
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="${n}-${k}" title="${r.t}">
                     <span class="nav-txt">${r.t}</span>
                     <span class="nav-chev">${ICONOS.chevron}</span>
                   </button>
@@ -8789,9 +8832,28 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .nav-rama.abierta .nav-nietos { grid-template-rows: 1fr; }
 .nav-nietos-in { overflow: hidden; visibility: hidden; transition: visibility 0s var(--dur-media); }
 .nav-rama.abierta .nav-nietos-in { visibility: visible; transition: visibility 0s; }
-.nav-nieto { display: block; padding: 4px 8px 4px 56px; border-radius: 6px;
+/* R135a · EL TERCER NIVEL SE COMPONE COMO EL SEGUNDO. Era display:block
+   mientras .nav-hijo es flex, asi que CUALQUIER icono en este nivel caia encima
+   del rotulo y la fila media el doble. Lo midio Control Administrativos V2.0
+   montando Marcaciones > Configuracion, y tuvo que quitar el icono para que la
+   fila no se partiera: un menu con icono en los niveles 1 y 2 y sin el en el 3,
+   sin que ninguna regla del sistema dijera que asi debia ser.
+   El sangrado de 56px y el cuerpo de 12px se quedan: hacen su trabajo y no se
+   tocan. El recorte con puntos suspensivos pasa al rotulo, que es quien
+   desborda ahora que la fila es flex. */
+.nav-nieto { display: flex; align-items: center; gap: 8px;
+  padding: 4px 8px 4px 56px; border-radius: 6px;
   text-decoration: none; color: var(--marco-texto); font-size: 12px;
-  opacity: .78; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  opacity: .78; white-space: nowrap; overflow: hidden; }
+.nav-nieto .nav-txt { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+/* Y DENTRO DEL PANEL FLOTANTE TAMBIEN. La regla que devuelve el texto al panel
+   —.lat.colapsado .nav-hijos .nav-txt, especificidad 30— le ganaba a la de
+   arriba —20— y dejaba el rotulo en overflow visible: el nombre largo se
+   cortaba EN SECO, sin puntos suspensivos. En la v1.114.0 recortaba el ancla;
+   al pasar la fila a flex el recorte se mudo al rotulo y esta regla se lo
+   comia. Los puntos dicen que hay mas; un corte limpio miente. */
+.lat.colapsado .nav-hijos .nav-nieto .nav-txt {
+  overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .nav-nieto:hover { background: var(--marco-item-activo); opacity: 1; }
 .nav-nieto.activo { background: var(--marco-item-activo); opacity: 1;
   color: var(--marco-acento); font-weight: 500;

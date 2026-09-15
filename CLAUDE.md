@@ -19,13 +19,13 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.114.0** — el menú lateral plegado era **una fila de iconos
-mudos**, y el catálogo prometía un hover que la entrega no tenía. Lo cazó el
-responsable **pasando el ratón**, y enseña lo mismo que la versión anterior por
-otro lado: lo que no se ejerce como lo ejerce una persona, no se comprueba. Dos
-cegueras cruzadas lo dejaron pasar: `verificar-promesa` **descarta los estados**
-—salta cinco pseudoclases— y **ningún candado compara atributos** de marcado, y
-`title` es un atributo.
+**Estado actual: v1.115.0** — R135: el **tercer nivel** del menú no podía llevar
+icono —`.nav-nieto` era `display: block` donde `.nav-hijo` es `flex`— y con el
+riel plegado no se llegaba a él. Lo midió el equipo consumidor montándolo, que
+es la lección de la semana: **lo que el catálogo no demuestra, lo descubre quien
+lo monta**. Nace `marco-catalogo.test.tsx`, que compara el menú del catálogo con
+el que emite el componente **atributo a atributo** — lo que ningún candado mira,
+porque ninguno lee atributos.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

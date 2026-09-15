@@ -208,13 +208,51 @@ export function MarcoApp({
   // arrancan CERRADAS —«doce ítems seguidos no se leen»— salvo la que
   // contiene a la opción activa: llegar a una pantalla y no ver dónde estás
   // en el menú es peor que un clic de más.
-  const [ramas, setRamas] = useState<Set<string>>(() => {
+  const ramasConLaActiva = (nav: GrupoNav[], cual: string | undefined) => {
     const conActiva = new Set<string>();
-    for (const g of navegacion)
+    for (const g of nav)
       for (const h of g.hijos ?? [])
-        if (h.hijos?.some((n) => n.clave === activa)) conActiva.add(h.clave);
+        if (h.hijos?.some((n) => n.clave === cual)) conActiva.add(h.clave);
     return conActiva;
-  });
+  };
+  const [ramas, setRamas] = useState<Set<string>>(() => ramasConLaActiva(navegacion, activa));
+
+  /**
+   * R135b · PLEGADO, LAS RAMAS DEL PANEL FLOTANTE LLEGAN ABIERTAS.
+   *
+   * Lo pidió Control Administrativos V2.0 tras recorrerlo con el ratón: dentro
+   * del panel, una rama cerrada **no se abría al pasar por encima** —solo el
+   * grupo lo hace—, así que el tercer nivel quedaba detrás de un clic dentro de
+   * un panel que **solo vive mientras el puntero esté encima**. Un gesto
+   * delicado, y además distinto del que rige en todo el resto del panel.
+   *
+   * De las tres salidas que plantearon, ésta: **el panel llega desplegado**. El
+   * motivo es el mismo por el que el panel existe —ahí el rótulo no se ve, así
+   * que se enseña todo— y uno más: anidar un segundo «abrir al pasar» dentro de
+   * un panel que se cierra al salir es una trampa de temporización, no una
+   * función. Un resumen con secciones plegadas no resume.
+   *
+   * Y no contradice a R42a: aquella dice que arrancan cerradas porque **doce
+   * ítems seguidos no se leen**, y eso vale para el riel extendido, donde el
+   * menú entero es una columna larga. Dentro del panel de UN grupo la lista es
+   * corta y acotada. El mando sigue funcionando: se pueden cerrar a mano.
+   *
+   * Las dependencias son SOLO `plegado`: con `navegacion` o `activa` dentro,
+   * navegar por el panel volvería a abrir lo que se acabara de cerrar.
+   */
+  const navAhora = useRef(navegacion);
+  navAhora.current = navegacion;
+  const activaAhora = useRef(activa);
+  activaAhora.current = activa;
+  useEffect(() => {
+    setRamas(() => {
+      if (!plegado) return ramasConLaActiva(navAhora.current, activaAhora.current);
+      const todas = new Set<string>();
+      for (const g of navAhora.current)
+        for (const h of g.hijos ?? []) if (h.hijos?.length) todas.add(h.clave);
+      return todas;
+    });
+  }, [plegado]);
   const alternarRama = (clave: string) =>
     setRamas((previas) => {
       const s = new Set(previas);
@@ -452,7 +490,7 @@ export function MarcoApp({
                               title={h.texto}
                               onClick={() => alternarRama(h.clave)}
                             >
-                              {h.icono && <span className="nav-ic">{h.icono}</span>}
+                              {h.icono && <span className="nav-ic" aria-hidden="true">{h.icono}</span>}
                               <span className="nav-txt">{h.texto}</span>
                               <span className="nav-chev" aria-hidden="true"><Icono nombre="chevron" /></span>
                             </button>
@@ -473,7 +511,7 @@ export function MarcoApp({
                                     title={nieto.texto}
                                     onClick={(e) => navegar(e, nieto.clave, nieto.href)}
                                   >
-                                    {nieto.icono && <span className="nav-ic">{nieto.icono}</span>}
+                                    {nieto.icono && <span className="nav-ic" aria-hidden="true">{nieto.icono}</span>}
                                     <span className="nav-txt">{nieto.texto}</span>
                                   </a>
                                 ))}
@@ -491,7 +529,7 @@ export function MarcoApp({
                           title={h.texto}
                           onClick={(e) => navegar(e, h.clave, h.href)}
                         >
-                          {h.icono && <span className="nav-ic">{h.icono}</span>}
+                          {h.icono && <span className="nav-ic" aria-hidden="true">{h.icono}</span>}
                           <span className="nav-txt">{h.texto}</span>
                         </a>
                       );

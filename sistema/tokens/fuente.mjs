@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.114.0";
+export const VERSION = "1.115.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,59 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.115.0', fecha: '2026-09-14',
+    que: 'R135 del equipo: el tercer nivel del menu no podia llevar icono, y con el riel plegado no se llegaba a el',
+    porque:
+      'Tres cosas medidas por Control Administrativos V2.0 sobre la v1.114.0 ya instalada, y '
+      + 'una de ellas la tenian desde el 11/09 sin mandar. '
+      + '(a) EL ICONO CAIA ENCIMA DEL ROTULO. `.nav-nieto` era `display: block` mientras '
+      + '`.nav-hijo` es `flex`, asi que cualquier icono en el TERCER nivel se apilaba sobre el '
+      + 'texto y la fila media el doble. Lo descubrieron montando «Marcaciones > '
+      + 'Configuracion» y TUVIERON QUE QUITAR EL ICONO: un menu con icono en los niveles 1 y 2 '
+      + 'y sin el en el 3, sin que ninguna regla del sistema dijera que asi debia ser. Es el '
+      + 'desvio promesa/entrega de siempre — la hoja admitia un tercer nivel que no podia '
+      + 'llevar icono como los otros dos, y nada avisaba. Ahora es `flex` con '
+      + '`align-items: center`; el sangrado de 56px y el cuerpo de 12px NO se tocan, que es '
+      + 'lo que pidieron. El recorte con puntos suspensivos pasa al rotulo, que es quien '
+      + 'desborda cuando la fila es flex. '
+      + '(b) CON EL RIEL PLEGADO NO SE LLEGABA AL TERCER NIVEL. Dentro del panel flotante, una '
+      + 'rama cerrada NO se abre al pasar por encima —solo el grupo lo hace—, asi que quedaba '
+      + 'detras de un clic DENTRO DE UN PANEL QUE SOLO VIVE MIENTRAS EL PUNTERO ESTE ENCIMA. '
+      + 'Pidieron una decision explicita entre tres, y se toma la segunda: EL PANEL LLEGA '
+      + 'DESPLEGADO. El motivo es el mismo por el que el panel existe —ahi el rotulo no se ve, '
+      + 'asi que se enseña todo— y uno mas: anidar un segundo «abrir al pasar» dentro de un '
+      + 'panel que se cierra al salir es una TRAMPA DE TEMPORIZACION, no una funcion. Un '
+      + 'resumen con secciones plegadas no resume. No contradice a R42a: aquella las cierra '
+      + 'porque doce items seguidos no se leen, y eso vale para el riel EXTENDIDO, donde el '
+      + 'menu es una columna larga; dentro del panel de UN grupo la lista es corta. El mando '
+      + 'sigue vivo: se pueden cerrar a mano. '
+      + '(c) LOS GLOBITOS QUE EL RESUMEN PROMETE NO ESTABAN EN EL CATALOGO, y este va al reves '
+      + 'de lo habitual: su producto los tenia y el catalogo no. 16 de 86 elementos de la '
+      + 'barra del catalogo sin rotulo para el raton, justo donde la entrega deberia '
+      + 'demostrarlo. Ya los llevan los 86. '
+      + 'Y EL CATALOGO NO ENSEÑABA EL TERCER NIVEL DEL MARCO EN NINGUNA PARTE, asi que (a) '
+      + 'solo se descubria montandolo. La maqueta lo pinta ahora, con rama, nietos e ICONO EN '
+      + 'LOS TRES NIVELES — que responde de paso a la divergencia que anunciaron: el sistema '
+      + 'admite icono en los hijos (R17) y quien no lo quiera, no lo pasa. '
+      + 'DOS REGLAS DE CONTRATO NUEVAS —11 y 12— y un candado nuevo, '
+      + '`NIVELES-QUE-SE-COMPONEN-IGUAL` en `verificar-cascada`: la (a) es de la HOJA, y '
+      + 'ninguna prueba de jsdom la ve con fiabilidad porque jsdom resuelve por orden de '
+      + 'archivo e IGNORA LA ESPECIFICIDAD. Las dos vistas en rojo. '
+      + 'Y LA AUDITORIA TUMBO LA PRIMERA VERSION DE ESTE ARREGLO, otra vez. Encontro '
+      + 'CINCO cosas que no protegia nada, y la peor era LA RAZON DE SER DEL EFECTO: sus '
+      + 'dependencias son solo `plegado`, y con `navegacion` dentro —un array literal en '
+      + 'cada render del producto— se reabriria todo lo que el usuario cierre. Estaba '
+      + 'escrito en el componente y al romperlo LAS 57 PRUEBAS SEGUIAN EN VERDE. Ademas: '
+      + 'el tercer nivel de la maqueta estaba en el marcado y en display:none —se veia en '
+      + 'el HTML y no en la pantalla, el mismo defecto un nivel mas abajo—; el recorte con '
+      + 'puntos suspensivos se perdia DENTRO del panel flotante, porque la regla que '
+      + 'devuelve el texto al panel gana a la del nieto y lo dejaba cortando en seco; y el '
+      + '`aria-hidden` del icono estaba en la maqueta y NO en el componente, en los '
+      + 'niveles 2 y 3, contra lo que su propio comentario dice.',
+    tokens: { alta: [], baja: [] },
+    rompe: false,
+  },
   {
     v: '1.114.0', fecha: '2026-09-14',
     que: 'MARCO DE APLICACION: el menu plegado era una fila de iconos MUDOS, y el catalogo prometia un hover que la entrega no tenia',

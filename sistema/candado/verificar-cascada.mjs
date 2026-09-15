@@ -465,6 +465,79 @@ const AFIRMACIONES = [
     },
   },
   {
+    id: 'NIVELES-QUE-SE-COMPONEN-IGUAL',
+    que: 'el tercer nivel del menu coloca icono y rotulo como el segundo, no apilados',
+    /**
+     * EL ICONO QUE CAE ENCIMA DEL ROTULO. `.nav-hijo` es `flex` y `.nav-nieto`
+     * era `display: block`, asi que cualquier icono en el tercer nivel se
+     * apilaba sobre el texto y la fila media el doble.
+     *
+     * Lo midio Control Administrativos V2.0 (R135a) montando
+     * «Marcaciones > Configuracion», y tuvo que QUITAR EL ICONO para que la
+     * fila no se partiera: un menu con icono en los niveles 1 y 2 y sin el en
+     * el 3, sin que ninguna regla del sistema dijera que asi debia ser.
+     *
+     * Es el desvio promesa/entrega de siempre: la hoja admitia un tercer nivel
+     * que NO PODIA llevar icono como los otros dos, y nada avisaba. Ninguna
+     * prueba puede verlo —jsdom no aplica la hoja—, asi que se comprueba
+     * resolviendo la cascada de la hoja QUE VIAJA.
+     *
+     * No se compara todo: el sangrado y el cuerpo SI son distintos a proposito
+     * —56px contra 40px, 12px contra 13px— y hacen su trabajo. Lo que tiene que
+     * coincidir es la COMPOSICION.
+     */
+    revisar(reglas) {
+      const fallos = [];
+      /* LA CADENA DE VERDAD, la que emite el componente, y no `.lat > .nav-nieto`
+         a secas: el nieto vive dentro del panel de la rama, dentro del panel del
+         grupo. Con la cadena corta el candado acertaba POR CASUALIDAD de
+         especificidad, y no habria visto la regla del panel flotante. */
+      const hasta = (ultimo) => [
+        elem('div', ['lat']), elem('nav', ['lat-nav']), elem('div', ['nav-grupo', 'abierto']),
+        elem('div', ['nav-hijos']), elem('div', ['nav-hijos-in']), ultimo,
+      ];
+      const hijo = hasta(elem('a', ['nav-hijo']));
+      const nieto = [
+        ...hasta(elem('div', ['nav-rama', 'abierta'])),
+        elem('div', ['nav-nietos']), elem('div', ['nav-nietos-in']), elem('a', ['nav-nieto']),
+      ];
+      // `gap` tambien: sin el, icono y rotulo salen PEGADOS.
+      for (const prop of ['display', 'align-items', 'gap']) {
+        const a = resolver(reglas, hijo, prop, 1280);
+        const b = resolver(reglas, nieto, prop, 1280);
+        const va = a ? a.valor.trim() : '(sin declarar)';
+        const vb = b ? b.valor.trim() : '(sin declarar)';
+        if (va !== vb) {
+          fallos.push(`  .nav-hijo declara ${prop}:${va} y .nav-nieto ${prop}:${vb} —`);
+          fallos.push('  con eso, un icono en el tercer nivel cae ENCIMA del rotulo o pegado a el.');
+          fallos.push('  El sangrado y el cuerpo si pueden diferir; la composicion, no.');
+        }
+      }
+      /* EL ROTULO RECORTA CON PUNTOS, Y TAMBIEN DENTRO DEL PANEL FLOTANTE. Al
+         pasar la fila a flex el recorte se mudo del ancla al rotulo, y la regla
+         que devuelve el texto al panel —mas especifica— lo dejaba en overflow
+         visible: el nombre largo se cortaba EN SECO. Los puntos dicen que hay
+         mas; un corte limpio miente. */
+      for (const [donde, cadena] of [['extendido', false], ['plegado', true]]) {
+        const raiz = cadena ? ['lat', 'colapsado'] : ['lat'];
+        const txt = [
+          elem('div', raiz), elem('nav', ['lat-nav']), elem('div', ['nav-grupo', 'abierto']),
+          elem('div', ['nav-hijos']), elem('div', ['nav-hijos-in']),
+          elem('div', ['nav-rama', 'abierta']), elem('div', ['nav-nietos']),
+          elem('div', ['nav-nietos-in']), elem('a', ['nav-nieto']), elem('span', ['nav-txt']),
+        ];
+        const ov = resolver(reglas, txt, 'overflow', 1280);
+        const te = resolver(reglas, txt, 'text-overflow', 1280);
+        if (!ov || ov.valor.trim() !== 'hidden' || !te || te.valor.trim() !== 'ellipsis') {
+          fallos.push(`  ${donde}: el rotulo del tercer nivel no recorta con puntos —`);
+          fallos.push(`  overflow:${ov ? ov.valor.trim() : '(sin declarar)'} · text-overflow:${te ? te.valor.trim() : '(sin declarar)'}.`);
+          fallos.push('  Un nombre largo se corta en seco, y un corte limpio miente.');
+        }
+      }
+      return fallos;
+    },
+  },
+  {
     id: 'CARRIL-CON-NOMBRE',
     que: 'el menu plegado esconde el rotulo a la vista, pero NO lo borra del arbol',
     /**

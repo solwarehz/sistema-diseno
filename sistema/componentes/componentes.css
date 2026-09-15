@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.114.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.115.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -76,7 +76,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.114.0; }
+:root{ --mmi-componentes: 1.115.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -1132,7 +1132,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .esqueleto.corto{ width: 62%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MARCO DE APLICACIÓN — 187 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
+   MARCO DE APLICACIÓN — 189 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 :where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
@@ -1182,9 +1182,13 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .nav-rama.abierta .nav-nietos{ grid-template-rows: 1fr; }
 .nav-nietos-in{ overflow: hidden; visibility: hidden; transition: visibility 0s var(--dur-media); }
 .nav-rama.abierta .nav-nietos-in{ visibility: visible; transition: visibility 0s; }
-.nav-nieto{ display: block; padding: 4px 8px 4px 56px; border-radius: 6px;
+.nav-nieto{ display: flex; align-items: center; gap: 8px;
+  padding: 4px 8px 4px 56px; border-radius: 6px;
   text-decoration: none; color: var(--marco-texto); font-size: 12px;
-  opacity: .78; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  opacity: .78; white-space: nowrap; overflow: hidden; }
+.nav-nieto .nav-txt{ min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.lat.colapsado .nav-hijos .nav-nieto .nav-txt{
+  overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .nav-nieto:hover{ background: var(--marco-item-activo); opacity: 1; }
 .nav-nieto.activo{ background: var(--marco-item-activo); opacity: 1;
   color: var(--marco-acento); font-weight: 500;

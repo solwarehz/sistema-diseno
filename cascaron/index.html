@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.114.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.115.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.114.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.115.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -35,7 +35,7 @@
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.114.0;
+  --mmi-version: 1.115.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -887,9 +887,28 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .nav-rama.abierta .nav-nietos { grid-template-rows: 1fr; }
 .nav-nietos-in { overflow: hidden; visibility: hidden; transition: visibility 0s var(--dur-media); }
 .nav-rama.abierta .nav-nietos-in { visibility: visible; transition: visibility 0s; }
-.nav-nieto { display: block; padding: 4px 8px 4px 56px; border-radius: 6px;
+/* R135a · EL TERCER NIVEL SE COMPONE COMO EL SEGUNDO. Era display:block
+   mientras .nav-hijo es flex, asi que CUALQUIER icono en este nivel caia encima
+   del rotulo y la fila media el doble. Lo midio Control Administrativos V2.0
+   montando Marcaciones > Configuracion, y tuvo que quitar el icono para que la
+   fila no se partiera: un menu con icono en los niveles 1 y 2 y sin el en el 3,
+   sin que ninguna regla del sistema dijera que asi debia ser.
+   El sangrado de 56px y el cuerpo de 12px se quedan: hacen su trabajo y no se
+   tocan. El recorte con puntos suspensivos pasa al rotulo, que es quien
+   desborda ahora que la fila es flex. */
+.nav-nieto { display: flex; align-items: center; gap: 8px;
+  padding: 4px 8px 4px 56px; border-radius: 6px;
   text-decoration: none; color: var(--marco-texto); font-size: 12px;
-  opacity: .78; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  opacity: .78; white-space: nowrap; overflow: hidden; }
+.nav-nieto .nav-txt { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+/* Y DENTRO DEL PANEL FLOTANTE TAMBIEN. La regla que devuelve el texto al panel
+   —.lat.colapsado .nav-hijos .nav-txt, especificidad 30— le ganaba a la de
+   arriba —20— y dejaba el rotulo en overflow visible: el nombre largo se
+   cortaba EN SECO, sin puntos suspensivos. En la v1.114.0 recortaba el ancla;
+   al pasar la fila a flex el recorte se mudo al rotulo y esta regla se lo
+   comia. Los puntos dicen que hay mas; un corte limpio miente. */
+.lat.colapsado .nav-hijos .nav-nieto .nav-txt {
+  overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .nav-nieto:hover { background: var(--marco-item-activo); opacity: 1; }
 .nav-nieto.activo { background: var(--marco-item-activo); opacity: 1;
   color: var(--marco-acento); font-weight: 500;
@@ -1359,7 +1378,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    como cualquier otra regla, para que el catalogo y la entrega digan lo mismo:
    inyectarlo solo en la entrega dejaba una regla que el catalogo no tenia, y
    el candado de la promesa lo caza —con razon—. Los dos salen de VERSION. */
-:root { --mmi-componentes: 1.114.0; }
+:root { --mmi-componentes: 1.115.0; }
 
 .fc-zona { position: relative; }
 /* R129.2 · EL TOPE ERA MENOR QUE EL CONTENIDO. Con R129.1 puesto, lo que el
@@ -4405,7 +4424,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     </div>
     <nav class="lat-nav">
   <div class="nav-grupo" data-grupo="0">
-    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="0">
+    <!-- R135c · EL CATALOGO CUMPLE LA REGLA QUE EXIGE. Los titulos de grupo y
+         de rama de ESTA barra no llevaban rotulo para el raton: 16 de 86
+         elementos sin el, justo donde la entrega deberia demostrarlo. Lo midio
+         Control Administrativos V2.0, y va al reves de lo habitual: su producto
+         los tenia y el catalogo no. -->
+    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="0" title="Inicio">
       <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
       <span class="nav-txt">Inicio</span>
       <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
@@ -4420,7 +4444,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     </div>
   </div>
   <div class="nav-grupo" data-grupo="1">
-    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="1">
+    <!-- R135c · EL CATALOGO CUMPLE LA REGLA QUE EXIGE. Los titulos de grupo y
+         de rama de ESTA barra no llevaban rotulo para el raton: 16 de 86
+         elementos sin el, justo donde la entrega deberia demostrarlo. Lo midio
+         Control Administrativos V2.0, y va al reves de lo habitual: su producto
+         los tenia y el catalogo no. -->
+    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="1" title="Fundamentos">
       <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
       <span class="nav-txt">Fundamentos</span>
       <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
@@ -4437,7 +4466,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     </div>
   </div>
   <div class="nav-grupo" data-grupo="2">
-    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="2">
+    <!-- R135c · EL CATALOGO CUMPLE LA REGLA QUE EXIGE. Los titulos de grupo y
+         de rama de ESTA barra no llevaban rotulo para el raton: 16 de 86
+         elementos sin el, justo donde la entrega deberia demostrarlo. Lo midio
+         Control Administrativos V2.0, y va al reves de lo habitual: su producto
+         los tenia y el catalogo no. -->
+    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="2" title="Elementos">
       <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
       <span class="nav-txt">Elementos</span>
       <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
@@ -4446,7 +4480,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       <div class="nav-hijos-in">
       <span class="nav-flot-tit">Elementos</span>
       <div class="nav-rama" data-rama="2-0">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-0">
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-0" title="Acciones">
                     <span class="nav-txt">Acciones</span>
                     <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
@@ -4456,7 +4490,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                           <span class="nav-txt">Enlace</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="2-1">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-1">
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-1" title="Formulario">
                     <span class="nav-txt">Formulario</span>
                     <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
@@ -4475,7 +4509,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                           <span class="nav-txt">Segmentado</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="2-2">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-2">
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-2" title="Datos">
                     <span class="nav-txt">Datos</span>
                     <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
@@ -4489,7 +4523,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                           <span class="nav-txt">Tabla de datos</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="2-3">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-3">
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-3" title="Respuesta">
                     <span class="nav-txt">Respuesta</span>
                     <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
@@ -4503,7 +4537,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                           <span class="nav-txt">Nota permanente</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="2-4">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-4">
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="2-4" title="Marco y navegación">
                     <span class="nav-txt">Marco y navegación</span>
                     <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
@@ -4520,7 +4554,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     </div>
   </div>
   <div class="nav-grupo" data-grupo="3">
-    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="3">
+    <!-- R135c · EL CATALOGO CUMPLE LA REGLA QUE EXIGE. Los titulos de grupo y
+         de rama de ESTA barra no llevaban rotulo para el raton: 16 de 86
+         elementos sin el, justo donde la entrega deberia demostrarlo. Lo midio
+         Control Administrativos V2.0, y va al reves de lo habitual: su producto
+         los tenia y el catalogo no. -->
+    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="3" title="Composición">
       <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/></svg></span>
       <span class="nav-txt">Composición</span>
       <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
@@ -4535,7 +4574,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     </div>
   </div>
   <div class="nav-grupo" data-grupo="4">
-    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="4">
+    <!-- R135c · EL CATALOGO CUMPLE LA REGLA QUE EXIGE. Los titulos de grupo y
+         de rama de ESTA barra no llevaban rotulo para el raton: 16 de 86
+         elementos sin el, justo donde la entrega deberia demostrarlo. Lo midio
+         Control Administrativos V2.0, y va al reves de lo habitual: su producto
+         los tenia y el catalogo no. -->
+    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="4" title="Pasarela de pagos">
       <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg></span>
       <span class="nav-txt">Pasarela de pagos</span>
       <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
@@ -4553,7 +4597,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     </div>
   </div>
   <div class="nav-grupo" data-grupo="5">
-    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="5">
+    <!-- R135c · EL CATALOGO CUMPLE LA REGLA QUE EXIGE. Los titulos de grupo y
+         de rama de ESTA barra no llevaban rotulo para el raton: 16 de 86
+         elementos sin el, justo donde la entrega deberia demostrarlo. Lo midio
+         Control Administrativos V2.0, y va al reves de lo habitual: su producto
+         los tenia y el catalogo no. -->
+    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="5" title="Boleta electrónica">
       <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg></span>
       <span class="nav-txt">Boleta electrónica</span>
       <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
@@ -4574,7 +4623,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     </div>
   </div>
   <div class="nav-grupo" data-grupo="6">
-    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="6">
+    <!-- R135c · EL CATALOGO CUMPLE LA REGLA QUE EXIGE. Los titulos de grupo y
+         de rama de ESTA barra no llevaban rotulo para el raton: 16 de 86
+         elementos sin el, justo donde la entrega deberia demostrarlo. Lo midio
+         Control Administrativos V2.0, y va al reves de lo habitual: su producto
+         los tenia y el catalogo no. -->
+    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="6" title="Redes sociales">
       <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="2" y="13" width="4" height="6" rx="1.5"/><rect x="18" y="13" width="4" height="6" rx="1.5"/></svg></span>
       <span class="nav-txt">Redes sociales</span>
       <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
@@ -4588,7 +4642,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     </div>
   </div>
   <div class="nav-grupo" data-grupo="7">
-    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="7">
+    <!-- R135c · EL CATALOGO CUMPLE LA REGLA QUE EXIGE. Los titulos de grupo y
+         de rama de ESTA barra no llevaban rotulo para el raton: 16 de 86
+         elementos sin el, justo donde la entrega deberia demostrarlo. Lo midio
+         Control Administrativos V2.0, y va al reves de lo habitual: su producto
+         los tenia y el catalogo no. -->
+    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="7" title="Manual de uso">
       <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="2" y="13" width="4" height="6" rx="1.5"/><rect x="18" y="13" width="4" height="6" rx="1.5"/></svg></span>
       <span class="nav-txt">Manual de uso</span>
       <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
@@ -4597,7 +4656,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
       <div class="nav-hijos-in">
       <span class="nav-flot-tit">Manual de uso</span>
       <div class="nav-rama" data-rama="7-0">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="7-0">
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="7-0" title="Cómo se aplica">
                     <span class="nav-txt">Cómo se aplica</span>
                     <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
@@ -4611,7 +4670,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                           <span class="nav-txt">Composición</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="7-1">
-                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="7-1">
+                  <button class="nav-hijo nav-rama-tit" aria-expanded="false" data-abrir-rama="7-1" title="Cómo se escribe">
                     <span class="nav-txt">Cómo se escribe</span>
                     <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
                   </button>
@@ -4633,7 +4692,12 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
     </div>
   </div>
   <div class="nav-grupo" data-grupo="8">
-    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="8">
+    <!-- R135c · EL CATALOGO CUMPLE LA REGLA QUE EXIGE. Los titulos de grupo y
+         de rama de ESTA barra no llevaban rotulo para el raton: 16 de 86
+         elementos sin el, justo donde la entrega deberia demostrarlo. Lo midio
+         Control Administrativos V2.0, y va al reves de lo habitual: su producto
+         los tenia y el catalogo no. -->
+    <button class="nav-item nav-grupo-tit" aria-expanded="true" data-desplegar="8" title="Referencia">
       <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg></span>
       <span class="nav-txt">Referencia</span>
       <span class="nav-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
@@ -4668,7 +4732,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.114.0</option></select></label>
+          <select class="campo cg-in"><option>v1.115.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -4756,8 +4820,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.114.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.114.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.115.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.115.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -5316,7 +5380,7 @@ demostraciones de al lado. Y la hoja no es una copia: se inyecta desde
 vieja.</div>
 
 <script type="text/plain" id="tokens-entregados">/* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.114.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.115.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -5344,7 +5408,7 @@ vieja.</div>
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.114.0;
+  --mmi-version: 1.115.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -5957,7 +6021,7 @@ vieja.</div>
 </script>
 <script type="text/plain" id="hoja-entregada">
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.114.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.115.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -6034,7 +6098,7 @@ vieja.</div>
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.114.0; }
+:root{ --mmi-componentes: 1.115.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -7090,7 +7154,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .esqueleto.corto{ width: 62%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MARCO DE APLICACIÓN — 187 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
+   MARCO DE APLICACIÓN — 189 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 :where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
@@ -7140,9 +7204,13 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .nav-rama.abierta .nav-nietos{ grid-template-rows: 1fr; }
 .nav-nietos-in{ overflow: hidden; visibility: hidden; transition: visibility 0s var(--dur-media); }
 .nav-rama.abierta .nav-nietos-in{ visibility: visible; transition: visibility 0s; }
-.nav-nieto{ display: block; padding: 4px 8px 4px 56px; border-radius: 6px;
+.nav-nieto{ display: flex; align-items: center; gap: 8px;
+  padding: 4px 8px 4px 56px; border-radius: 6px;
   text-decoration: none; color: var(--marco-texto); font-size: 12px;
-  opacity: .78; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  opacity: .78; white-space: nowrap; overflow: hidden; }
+.nav-nieto .nav-txt{ min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.lat.colapsado .nav-hijos .nav-nieto .nav-txt{
+  overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .nav-nieto:hover{ background: var(--marco-item-activo); opacity: 1; }
 .nav-nieto.activo{ background: var(--marco-item-activo); opacity: 1;
   color: var(--marco-acento); font-weight: 500;
@@ -14640,6 +14708,14 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
   </div>
       <div class="lat-id"><span class="lat-colegio">COLEGIO</span><span class="lat-nombre">ALBERT EINSTEIN</span></div>
     </div>
+    <!-- LA PLEGADA ABRE «Configuración», que es la que lleva rama de TERCER
+         NIVEL: plegada, un grupo abierto ES el panel flotante, y ahi es donde
+         hay que poder ver la rama. La extendida abre «Matricula», que no tiene
+         rama — porque extendida el componente emite las ramas CERRADAS (regla
+         6) y la maqueta no puede prometer lo contrario. El tercer nivel estaba
+         en el marcado y en display:none: se veia en el HTML y no en la
+         pantalla, que es el mismo defecto que esta version vino a cerrar un
+         nivel mas arriba. -->
     <nav class="lat-nav" aria-label="Navegación principal">
       <a class="nav-item activo" href="#" title="Dashboard">
         <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
@@ -14709,10 +14785,30 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
         <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg></span>
         <span class="nav-txt">Académico</span>
       </a>
-      <a class="nav-item" href="#" title="Configuración">
-        <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/></svg></span>
-        <span class="nav-txt">Configuración</span>
-      </a></nav>
+      <div class="nav-grupo">
+        <button class="nav-item nav-grupo-tit" aria-expanded="false" aria-controls="mq-a-configuracion" title="Configuración">
+          <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/></svg></span>
+          <span class="nav-txt">Configuración</span>
+          <span class="nav-chev" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+        </button>
+        <div class="nav-hijos" id="mq-a-configuracion" hidden>
+          <div class="nav-hijos-in">
+            <span class="nav-flot-tit">Configuración</span>
+            <a class="nav-hijo" href="#" title="General"><span class="nav-ic" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/></svg></span><span class="nav-txt">General</span></a><div class="nav-rama">
+                <button class="nav-hijo nav-rama-tit" aria-expanded="false" aria-controls="mq-a-configuracion-r" title="Catálogos">
+                  <span class="nav-ic" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></span>
+                  <span class="nav-txt">Catálogos</span>
+                  <span class="nav-chev" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+                </button>
+                <div class="nav-nietos" id="mq-a-configuracion-r" hidden>
+                  <div class="nav-nietos-in">
+                    <a class="nav-nieto" href="#" title="Sedes"><span class="nav-ic" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></span><span class="nav-txt">Sedes</span></a><a class="nav-nieto" href="#" title="Cargos"><span class="nav-ic" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></span><span class="nav-txt">Cargos</span></a>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div></nav>
     <div class="lat-usuario">
       <span class="avatar avatar-m avatar-2">JI</span>
       <div class="lat-user-txt">
@@ -14831,18 +14927,26 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
   </div>
       <div class="lat-id"><span class="lat-colegio">COLEGIO</span><span class="lat-nombre">ALBERT EINSTEIN</span></div>
     </div>
+    <!-- LA PLEGADA ABRE «Configuración», que es la que lleva rama de TERCER
+         NIVEL: plegada, un grupo abierto ES el panel flotante, y ahi es donde
+         hay que poder ver la rama. La extendida abre «Matricula», que no tiene
+         rama — porque extendida el componente emite las ramas CERRADAS (regla
+         6) y la maqueta no puede prometer lo contrario. El tercer nivel estaba
+         en el marcado y en display:none: se veia en el HTML y no en la
+         pantalla, que es el mismo defecto que esta version vino a cerrar un
+         nivel mas arriba. -->
     <nav class="lat-nav" aria-label="Navegación principal">
       <a class="nav-item activo" href="#" title="Dashboard">
         <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
         <span class="nav-txt">Dashboard</span>
       </a>
-      <div class="nav-grupo abierto">
-        <button class="nav-item nav-grupo-tit" aria-expanded="true" aria-controls="mq-b-matricula" title="Matrícula">
+      <div class="nav-grupo">
+        <button class="nav-item nav-grupo-tit" aria-expanded="false" aria-controls="mq-b-matricula" title="Matrícula">
           <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/></svg></span>
           <span class="nav-txt">Matrícula</span>
           <span class="nav-chev" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
         </button>
-        <div class="nav-hijos" id="mq-b-matricula">
+        <div class="nav-hijos" id="mq-b-matricula" hidden>
           <div class="nav-hijos-in">
             <span class="nav-flot-tit">Matrícula</span>
             <a class="nav-hijo" href="#" title="Fichas"><span class="nav-txt">Fichas</span></a><a class="nav-hijo" href="#" title="Traslados"><span class="nav-txt">Traslados</span></a><a class="nav-hijo" href="#" title="Vacantes"><span class="nav-txt">Vacantes</span></a>
@@ -14900,10 +15004,30 @@ El botón de plegar funciona, y el sol de la barra conmuta el tema.</p>
         <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg></span>
         <span class="nav-txt">Académico</span>
       </a>
-      <a class="nav-item" href="#" title="Configuración">
-        <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/></svg></span>
-        <span class="nav-txt">Configuración</span>
-      </a></nav>
+      <div class="nav-grupo abierto">
+        <button class="nav-item nav-grupo-tit" aria-expanded="true" aria-controls="mq-b-configuracion" title="Configuración">
+          <span class="nav-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/></svg></span>
+          <span class="nav-txt">Configuración</span>
+          <span class="nav-chev" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+        </button>
+        <div class="nav-hijos" id="mq-b-configuracion">
+          <div class="nav-hijos-in">
+            <span class="nav-flot-tit">Configuración</span>
+            <a class="nav-hijo" href="#" title="General"><span class="nav-ic" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"/></svg></span><span class="nav-txt">General</span></a><div class="nav-rama abierta">
+                <button class="nav-hijo nav-rama-tit" aria-expanded="true" aria-controls="mq-b-configuracion-r" title="Catálogos">
+                  <span class="nav-ic" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></span>
+                  <span class="nav-txt">Catálogos</span>
+                  <span class="nav-chev" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+                </button>
+                <div class="nav-nietos" id="mq-b-configuracion-r">
+                  <div class="nav-nietos-in">
+                    <a class="nav-nieto" href="#" title="Sedes"><span class="nav-ic" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></span><span class="nav-txt">Sedes</span></a><a class="nav-nieto" href="#" title="Cargos"><span class="nav-ic" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></span><span class="nav-txt">Cargos</span></a>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div></nav>
     <div class="lat-usuario">
       <span class="avatar avatar-m avatar-2">JI</span>
       <div class="lat-user-txt">
@@ -18482,6 +18606,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.115.0 <span class="cam-fecha">2026-09-14</span></h3>
+<p class="pag-intro"><strong>R135 del equipo: el tercer nivel del menu no podia llevar icono, y con el riel plegado no se llegaba a el.</strong> Tres cosas medidas por Control Administrativos V2.0 sobre la v1.114.0 ya instalada, y una de ellas la tenian desde el 11/09 sin mandar. (a) EL ICONO CAIA ENCIMA DEL ROTULO. `.nav-nieto` era `display: block` mientras `.nav-hijo` es `flex`, asi que cualquier icono en el TERCER nivel se apilaba sobre el texto y la fila media el doble. Lo descubrieron montando «Marcaciones &gt; Configuracion» y TUVIERON QUE QUITAR EL ICONO: un menu con icono en los niveles 1 y 2 y sin el en el 3, sin que ninguna regla del sistema dijera que asi debia ser. Es el desvio promesa/entrega de siempre — la hoja admitia un tercer nivel que no podia llevar icono como los otros dos, y nada avisaba. Ahora es `flex` con `align-items: center`; el sangrado de 56px y el cuerpo de 12px NO se tocan, que es lo que pidieron. El recorte con puntos suspensivos pasa al rotulo, que es quien desborda cuando la fila es flex. (b) CON EL RIEL PLEGADO NO SE LLEGABA AL TERCER NIVEL. Dentro del panel flotante, una rama cerrada NO se abre al pasar por encima —solo el grupo lo hace—, asi que quedaba detras de un clic DENTRO DE UN PANEL QUE SOLO VIVE MIENTRAS EL PUNTERO ESTE ENCIMA. Pidieron una decision explicita entre tres, y se toma la segunda: EL PANEL LLEGA DESPLEGADO. El motivo es el mismo por el que el panel existe —ahi el rotulo no se ve, asi que se enseña todo— y uno mas: anidar un segundo «abrir al pasar» dentro de un panel que se cierra al salir es una TRAMPA DE TEMPORIZACION, no una funcion. Un resumen con secciones plegadas no resume. No contradice a R42a: aquella las cierra porque doce items seguidos no se leen, y eso vale para el riel EXTENDIDO, donde el menu es una columna larga; dentro del panel de UN grupo la lista es corta. El mando sigue vivo: se pueden cerrar a mano. (c) LOS GLOBITOS QUE EL RESUMEN PROMETE NO ESTABAN EN EL CATALOGO, y este va al reves de lo habitual: su producto los tenia y el catalogo no. 16 de 86 elementos de la barra del catalogo sin rotulo para el raton, justo donde la entrega deberia demostrarlo. Ya los llevan los 86. Y EL CATALOGO NO ENSEÑABA EL TERCER NIVEL DEL MARCO EN NINGUNA PARTE, asi que (a) solo se descubria montandolo. La maqueta lo pinta ahora, con rama, nietos e ICONO EN LOS TRES NIVELES — que responde de paso a la divergencia que anunciaron: el sistema admite icono en los hijos (R17) y quien no lo quiera, no lo pasa. DOS REGLAS DE CONTRATO NUEVAS —11 y 12— y un candado nuevo, `NIVELES-QUE-SE-COMPONEN-IGUAL` en `verificar-cascada`: la (a) es de la HOJA, y ninguna prueba de jsdom la ve con fiabilidad porque jsdom resuelve por orden de archivo e IGNORA LA ESPECIFICIDAD. Las dos vistas en rojo. Y LA AUDITORIA TUMBO LA PRIMERA VERSION DE ESTE ARREGLO, otra vez. Encontro CINCO cosas que no protegia nada, y la peor era LA RAZON DE SER DEL EFECTO: sus dependencias son solo `plegado`, y con `navegacion` dentro —un array literal en cada render del producto— se reabriria todo lo que el usuario cierre. Estaba escrito en el componente y al romperlo LAS 57 PRUEBAS SEGUIAN EN VERDE. Ademas: el tercer nivel de la maqueta estaba en el marcado y en display:none —se veia en el HTML y no en la pantalla, el mismo defecto un nivel mas abajo—; el recorte con puntos suspensivos se perdia DENTRO del panel flotante, porque la regla que devuelve el texto al panel gana a la del nieto y lo dejaba cortando en seco; y el `aria-hidden` del icono estaba en la maqueta y NO en el componente, en los niveles 2 y 3, contra lo que su propio comentario dice.</p>
+
 
 
 <h3 class="sub-seccion">v1.114.0 <span class="cam-fecha">2026-09-14</span></h3>
