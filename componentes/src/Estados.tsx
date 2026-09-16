@@ -8,7 +8,7 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Boton } from './Boton';
 import { EnZonaAvisos } from './ZonaAvisos';
-import { Icono } from './Icono';
+import { Icono, type NombreIcono } from './Icono';
 
 /* ── Estados de pantalla ─────────────────────────────────────────────────── */
 
@@ -56,6 +56,23 @@ export type EstadoPantallaProps = {
   referencia?: string;
 };
 
+/**
+ * QUÉ GLIFO LLEVA CADA ESTADO. Del juego del sistema, no inventado aquí: el
+ * catálogo dibujaba cinco SVG sueltos y dos de ellos —la lupa y el candado— ya
+ * eran, trazo por trazo, los que `Icono` entrega. Redibujar un icono que ya
+ * existe es garantizar que algún día se separen.
+ */
+const ICONO_DE: Record<TipoEstado, NombreIcono> = {
+  cargando: 'lupa',                 // no se usa: cargando pinta esqueleto
+  'nunca-consultado': 'calendario', // aún no has pedido nada: elige un periodo
+  'sin-resultados': 'lupa',
+  'primera-vez': 'suma',
+  error: 'alerta',
+  'sin-permiso': 'candado',
+  'acceso-suspendido': 'candado',
+  'fallo-dibujado': 'roto',
+};
+
 export function EstadoPantalla({ tipo, titulo, linea, accion, referencia }: EstadoPantallaProps) {
   // Cargando se anuncia como ocupado; el resto es una región de estado.
   const vivo = tipo === 'cargando' ? 'polite' : 'polite';
@@ -71,6 +88,20 @@ export function EstadoPantalla({ tipo, titulo, linea, accion, referencia }: Esta
         </>
       ) : (
         <>
+          {/* EL ICONO, que la hoja lleva versiones entregando sin que ningún
+              producto pudiera activarlo. `.ep-ico`, `.ep-ico .ic`,
+              `.ep-ico-error` y `.ep-ico-sin-permiso` viajan en el paquete —y
+              los dos últimos son la ÚNICA señal cromática que distingue un
+              error de un vacío corriente— mientras el componente no emitía
+              ninguno: los siete estados salían tipográficamente idénticos en
+              todos los productos. El catálogo lo dibujaba en sus dieciocho
+              demostraciones. Lo cazó un barrido de las dos superficies el
+              2026-09-15. El glifo sale del juego del sistema, no de un SVG
+              suelto: así `verificar-iconos` puede comprobar que las dos
+              superficies dibujan el mismo. */}
+          <div className={`ep-ico ep-ico-${tipo}`}>
+            <Icono nombre={ICONO_DE[tipo]} tam="estado" />
+          </div>
           <p className="ep-titulo">{titulo}</p>
           {linea && <p className="ep-linea">{linea}</p>}
           {referencia && <p className="ep-linea">Referencia: {referencia}</p>}

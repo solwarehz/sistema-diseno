@@ -19,11 +19,12 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.120.0** — **R138: una celda del horario lleva una pila de
-bloques, no uno.** Dos clases que no comparten un minuto se descartaban por
-compartir **fila**: el bucle reservaba filas enteras, así que un bloque que
-acaba a media fila se quedaba la fila entera. Ahora el choque se mide en
-cuartos, que es donde ocurre, y la celda abarca la unión de sus bloques.
+**Estado actual: v1.121.0** — **nace el candado del atributo**, el paso 19. Se
+pidió «garantizar la entrega y la promesa» y la respuesta honesta era que no
+estaba garantizado: de 35 componentes, 6 tenían una prueba que los comparara con
+el catálogo, y los seis la tenían **porque primero se reportó un defecto ahí**.
+Ahora hay uno que pregunta por todos: qué atributos emite siempre cada clase, y
+que el catálogo los pinte. Nació con once divergencias y las once están pagadas.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
@@ -213,7 +214,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
 - **`main` sí se actualiza en este proyecto** —y solo en este—, pero **únicamente
   cuando está verificado y sin errores**. La condición no es una formalidad: es
   lo que hace que la regla sea segura, porque `main` es de donde instala el área
-  de sistemas. Antes de subir, los **dieciocho** pasos **en verde** y las pruebas
+  de sistemas. Antes de subir, los **diecinueve** pasos **en verde** y las pruebas
   pasando. **Son exactamente los de `sistema/paquete/publicar.mjs`, y en su mismo orden**, y esta lista
   decía «dieciséis» y **le faltaba `generar-cascaron.mjs`** hasta la v1.107.0: el
   catálogo se quedaba sin regenerar y los candados que lo leen medían la versión
@@ -234,6 +235,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
   node sistema/candado/verificar-entrega.mjs  # lo publicado está EN el paquete
   node sistema/candado/verificar-promesa.mjs  # se VE igual que en el catálogo
   node sistema/candado/verificar-elemento.mjs # se emite el MISMO elemento
+  node sistema/candado/verificar-atributo.mjs # y con los MISMOS atributos
   node sistema/candado/verificar-empate.mjs   # el ORDEN no decide distinto en cada hoja
   node sistema/candado/verificar-forma.mjs    # lo publicado no cambia de FORMA sin decirlo
   node sistema/candado/verificar-omision.mjs  # el catálogo enseña lo que se ENTREGA por omisión

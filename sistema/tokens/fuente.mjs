@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.120.0";
+export const VERSION = "1.121.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,51 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.121.0', fecha: '2026-09-16',
+    que: 'EL CANDADO DEL ATRIBUTO — y dos cosas que la entrega llevaba versiones sin dar',
+    porque:
+      'Lo pidio el responsable con dos palabras: «garantiza la entrega y la promesa». La respuesta '
+      + 'honesta era que NO ESTABA GARANTIZADO: de 35 componentes publicados, solo 6 tenian una '
+      + 'prueba que comparara el catalogo con el componente, y los seis la tenian porque PRIMERO SE '
+      + 'REPORTO UN DEFECTO AHI. En esta misma sesion se cerraron siete divergencias de esa familia, '
+      + 'una cada vez que alguien fue a mirar. Eso no es una garantia: es suerte dirigida. '
+      + 'NACE verificar-atributo, el paso 19. Para cada clase que los componentes emiten deduce del '
+      + 'JSX que atributos lleva SIEMPRE, y comprueba que el catalogo los pinte. No renderiza React '
+      + '—un candado es un script suelto—: lee el JSX con un escaner que cuenta llaves y comillas. '
+      + 'Tarda 0,1 s. Nacio con ONCE divergencias, todas verificadas a mano, cero falsos positivos, y '
+      + 'las once se pagaron en este mismo commit: la paginacion paso de <span> a <button '
+      + 'type="button">, las cabeceras de tabla recuperaron su scope, el chevron del selector se '
+      + 'oculto al lector, los atajos del rango dejaron de ser submit, los estados de pantalla se '
+      + 'anuncian, y el calendario recupero cuatro decisiones que el componente declara y el catalogo '
+      + 'no repetia. Su lista de deuda queda VACIA, y falla tambien si alguien paga una y no poda su '
+      + 'linea. La precision fue lo que costo: empezo con 26 avisos y 15 ERAN RUIDO; cada una de sus '
+      + 'cinco reglas nacio de un falso positivo medido. '
+      + 'Y UN BARRIDO DE LOS 35 COMPONENTES encontro dos cosas peores, donde LA ENTREGA ERA PEOR QUE '
+      + 'LA PROMESA: LA PAGINACION NO DIBUJABA EL CHEVRON —el comentario del propio componente decia '
+      + '«el texto acompana al chevron» y no habia chevron, mientras la hoja viajaba con '
+      + '.pgn-flecha .ic que ningun producto podia activar y la variante «Movil» del catalogo era '
+      + 'IMPOSIBLE—, y LOS ESTADOS DE PANTALLA SALIAN SIN ICONO: ep-ico aparecia 18 veces en el '
+      + 'catalogo y CERO en los componentes, con cuatro reglas muertas en la hoja, dos de ellas la '
+      + 'unica senal cromatica que distingue un error de un vacio. Los siete estados salian '
+      + 'tipograficamente identicos en todos los productos. '
+      + 'Para eso entran DOS ICONOS que el catalogo ya dibujaba a mano en SVG sueltos: `calendario` y '
+      + '`suma`. Ahora son 62 en las dos superficies, mismo trazo. `suma` y no `mas` porque `mas` ya '
+      + 'existe y son TRES PUNTOS —«mas opciones»—, no un signo de sumar: dos nombres que se leen '
+      + 'igual y dibujan cosas distintas es como se acaba pintando el icono equivocado. '
+      + 'Y el marcado de la paginacion en el catalogo estaba CRUZADO —<span>Siguiente</button>...'
+      + '</span>— con el icono fuera del boton.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'LA PAGINACION DIBUJA AHORA SU CHEVRON. Si su hoja apretaba el ancho de «Anterior»/«Siguiente» '
+      + 'contando con que fueran solo texto, ahora llevan un icono de 14px delante y detras. Es lo que '
+      + 'el catalogo ensena desde siempre y lo que la hoja ya traia preparado.',
+      'LOS ESTADOS DE PANTALLA LLEVAN ICONO. Los siete crecen por arriba lo que mide el glifo (32px '
+      + 'mas su rejilla). Si tenian capturas de referencia de un estado vacio, cambian.',
+      'EL JUEGO DE ICONOS PASA DE 60 A 62: entran `calendario` y `suma`. Si alguien contaba los '
+      + 'nombres de NOMBRES_ICONO, la cifra cambia.',
+    ],
+  },
   {
     v: '1.120.0', fecha: '2026-09-15',
     que: 'R138 — una celda del horario lleva una PILA de bloques, no uno',

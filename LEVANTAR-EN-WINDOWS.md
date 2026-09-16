@@ -29,7 +29,7 @@ docker run --rm -d --name mmi-cascaron -p 127.0.0.1:8080:80 `
 <http://127.0.0.1:8080> · solo en loopback y montado de solo lectura.
 Para pararlo: `docker rm -f mmi-cascaron`.
 
-## Los candados — DIECIOCHO comandos, EN ESTE ORDEN
+## Los candados — DIECINUEVE comandos, EN ESTE ORDEN
 
 El orden no es de adorno: `generar-cascaron` tiene que ir **antes** de los
 candados que leen el catalogo, y `extraer` antes de los que leen la hoja que
@@ -49,6 +49,7 @@ docker compose exec ds node sistema/candado/verificar-contrato.mjs
 docker compose exec ds node sistema/candado/verificar-entrega.mjs
 docker compose exec ds node sistema/candado/verificar-promesa.mjs
 docker compose exec ds node sistema/candado/verificar-elemento.mjs
+docker compose exec ds node sistema/candado/verificar-atributo.mjs
 docker compose exec ds node sistema/candado/verificar-empate.mjs
 docker compose exec ds node sistema/candado/verificar-forma.mjs
 docker compose exec ds node sistema/candado/verificar-omision.mjs

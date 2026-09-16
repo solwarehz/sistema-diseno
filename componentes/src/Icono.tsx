@@ -46,6 +46,18 @@ const TRAZOS_REACT = {
   camara: <><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z" /><circle cx="12" cy="13" r="3" /></>,
   campana: <><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8" /><path d="M13.7 21a2 2 0 0 1-3.4 0" /></>,
   candado: <><rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></>,
+  /* DOS QUE EL CATÁLOGO YA DIBUJABA A MANO. `EstadoPantalla` los necesita —el
+     estado «nunca consultado» pide un periodo y el de «primera vez» invita a
+     crear— y no estaban en el juego, así que el catálogo los llevaba como SVG
+     sueltos en su propio archivo. Se traen con el MISMO trazo, para que las dos
+     superficies dibujen lo mismo y `verificar-iconos` pueda comprobarlo.
+     `calendario` lo reutiliza además el campo de fecha, que hoy lo pinta como
+     imagen de fondo en la hoja. */
+  calendario: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></>,
+  /* `suma` y no `mas`: `mas` ya existe en este juego y son TRES PUNTOS —«más
+     opciones»—, no un signo de sumar. Dos nombres que se leen igual y dibujan
+     cosas distintas es como se acaba pintando el icono equivocado. */
+  suma: <><path d="M12 5v14M5 12h14" /></>,
   capas: <><path d="m12 2 9 5-9 5-9-5 9-5Z" /><path d="m3 12 9 5 9-5" /><path d="m3 17 9 5 9-5" /></>,
   cerrar: <><path d="M6 6l12 12M18 6 6 18" /></>,
   chevron: <><path d="m6 9 6 6 6-6" /></>,

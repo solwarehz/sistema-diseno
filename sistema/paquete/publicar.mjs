@@ -119,6 +119,7 @@ const CANDADOS = [
   'sistema/candado/verificar-entrega.mjs',
   'sistema/candado/verificar-promesa.mjs',
   'sistema/candado/verificar-elemento.mjs',
+  'sistema/candado/verificar-atributo.mjs',
   'sistema/candado/verificar-empate.mjs',
   'sistema/candado/verificar-forma.mjs',
   'sistema/candado/verificar-omision.mjs',

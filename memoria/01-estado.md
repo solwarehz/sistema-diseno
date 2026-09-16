@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 15 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.120.0** — R138: una celda del horario lleva
-una pila de bloques, y el choque se mide en cuartos y no en filas
+**Versión del sistema:** MMI-DS **v1.121.0** — nace el candado del atributo, y
+dos cosas que la entrega llevaba versiones sin dar
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -60,10 +60,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · **1010 reglas de 1525** · **731 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.120.0.zip` · **60 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.121.0.zip` · **60 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.120.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.121.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los dieciocho pasos · **173 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -85,6 +85,68 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.46.0 | **R52** · todos los iconos de la entrega salían 2px más pequeños que en el catálogo |
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
+
+### Lo de hoy (v1.121.0), con detalle
+
+**«Garantiza la entrega y la promesa».** Lo pidió el responsable dos veces, y la
+respuesta honesta era que **no estaba garantizado**:
+
+| | |
+|---|---|
+| Componentes publicados | **35** |
+| Con una prueba que compare catálogo y componente | **6** |
+| Y los seis la tienen porque **primero se reportó un defecto ahí** | |
+
+En esta sesión se cerraron **siete** divergencias de esa familia —el `title` del
+marco, el señalizador de la barra, los tiempos del aviso, su ✕, su «Deshacer», y
+en el horario el `title` y la `.hor-pila`—, **una cada vez que alguien miró**.
+Eso no es una garantía: es suerte dirigida.
+
+### El candado del atributo, paso 19
+
+Para cada clase que los componentes emiten, deduce del **JSX** qué atributos
+lleva **siempre**, y comprueba que el catálogo los pinte. No renderiza React —un
+candado es un script suelto—: lee el JSX con un escáner que cuenta llaves y
+comillas, porque `onClick={() => a > b}` mete un `>` dentro de la etiqueta.
+Tarda **0,1 s**.
+
+**La precisión fue lo que costó.** Empezó con 26 avisos y **15 eran ruido**. Sus
+cinco reglas nacieron cada una de un falso positivo medido: solo valores
+literales; el spread contamina la clase entera; nada que sea instancia (`id`,
+`href`, `aria-controls`…); `title`/`alt`/`aria-label` por **presencia** y no por
+valor —un catálogo que enseña «Densidad de las tablas» donde el componente dice
+«Modo de color» está haciendo su trabajo—; y **todo o nada**, que suprime diez
+ausencias parciales y es un falso negativo **declarado**.
+
+**Nació con once divergencias, todas verificadas a mano, y las once se pagaron en
+el mismo commit.** Su lista de deuda queda vacía, y falla también si alguien paga
+una y no poda su línea.
+
+Siete de las once estaban en el montón de **133 clases que `verificar-elemento`
+se salta** porque el guion del catálogo las nombra. Con ellas dentro, ese candado
+sale en verde.
+
+### Y un barrido de los 35 encontró dos peores: la entrega era peor que la promesa
+
+- **La paginación no dibujaba el chevron.** El comentario del propio componente
+  decía *«el texto acompaña al chevron»* y **no había chevron**, mientras la hoja
+  viajaba con `.pgn-flecha .ic{ width:14px }` que ningún producto podía activar.
+  La variante «Móvil» que el catálogo enseña —flecha sola, sin texto— era
+  **imposible** de montar.
+- **Los estados de pantalla salían sin icono.** `ep-ico` aparecía **18 veces** en
+  el catálogo y **cero** en los componentes, con cuatro reglas muertas en la
+  hoja — dos de ellas, `.ep-ico-error` y `.ep-ico-sin-permiso`, la **única señal
+  cromática** que distingue un error de un vacío corriente. Los siete estados
+  salían tipográficamente idénticos en todos los productos.
+
+Para eso entran **dos iconos que el catálogo ya dibujaba a mano** en SVG sueltos:
+`calendario` y `suma`. Ahora son **62 en las dos superficies, mismo trazo**.
+`suma` y no `mas` porque `mas` ya existe y son **tres puntos** —«más opciones»—,
+no un signo de sumar: dos nombres que se leen igual y dibujan cosas distintas es
+como se acaba pintando el icono equivocado.
+
+Y el marcado de la paginación en el catálogo estaba **cruzado** —
+`<span>Siguiente</button>…</span>`— con el icono **fuera** del botón.
 
 ### Lo de hoy (v1.120.0), con detalle
 

@@ -498,7 +498,7 @@ const maquetaSistema = `
 
       <div class="s-paginacion">
         <span>1–5 de 1 240</span>
-        <div class="tb-pag"><span class="pgn-btn activa">1</span><span class="pgn-btn">2</span><span class="pgn-btn">3</span><span class="pgn-btn pgn-flecha"><span>Siguiente</span>${ICO_CHEV_DER}</span></div>
+        <div class="tb-pag"><button type="button" class="pgn-btn activa">1</button><button type="button" class="pgn-btn">2</button><button type="button" class="pgn-btn">3</button><button type="button" class="pgn-btn pgn-flecha"><span>Siguiente</span>${ICO_CHEV_DER}</button></div>
       </div>
     </div>
   </div>
@@ -2280,7 +2280,7 @@ reportó Control Administrativos V2.0.</div>
           <input class="campo sel-in" role="combobox" aria-expanded="false"
                  aria-autocomplete="list" aria-controls="sel-lista" aria-labelledby="sel-et"
                  placeholder="Escribe para buscar" autocomplete="off">
-          <span class="sel-chev">${ICONOS.chevron}</span>
+          <span aria-hidden="true" class="sel-chev">${ICONOS.chevron}</span>
         </div>
         <ul class="sel-lista" id="sel-lista" role="listbox" aria-labelledby="sel-et" hidden></ul>
       </div>
@@ -2314,14 +2314,14 @@ el código y no se pintaba en ninguna demo.</div>
   <div class="enl-comp">
     <div class="enl-caja bien">
       <label class="cg"><span class="cg-et">Por omisión — sin lupa</span>
-        <div class="sel-caja"><span class="sel-chev">${ICONOS.chevron}</span>
+        <div class="sel-caja"><span aria-hidden="true" class="sel-chev">${ICONOS.chevron}</span>
           <input class="campo sel-in" placeholder="Escribe para buscar" readonly></div></label>
       <span class="bien-et">Lo que recibe quien no pide nada. El texto empieza donde el de
       cualquier otro campo, así que la columna del formulario no se rompe.</span>
     </div>
     <div class="enl-caja">
       <label class="cg"><span class="cg-et"><code>conLupa</code> — el buscador de una tabla</span>
-        <div class="sel-caja sel-con-lupa"><span class="sel-lupa">${ICO_LUPA}</span><span class="sel-chev">${ICONOS.chevron}</span>
+        <div class="sel-caja sel-con-lupa"><span class="sel-lupa">${ICO_LUPA}</span><span aria-hidden="true" class="sel-chev">${ICONOS.chevron}</span>
           <input class="campo sel-in" placeholder="Buscar en la tabla" readonly></div></label>
       <span class="cg-ayuda">Se pide donde <strong>de verdad se busca</strong> y no se elige: el
       buscador de una tabla, una caja de búsqueda global. Sangra el texto 32&nbsp;px.</span>
@@ -2333,16 +2333,16 @@ el código y no se pintaba en ninguna demo.</div>
 <div class="bloque">
   <div class="campos-rejilla">
     <label class="cg"><span class="cg-et">Reposo</span>
-      <div class="sel-caja"><span class="sel-chev">${ICONOS.chevron}</span>
+      <div class="sel-caja"><span aria-hidden="true" class="sel-chev">${ICONOS.chevron}</span>
         <input class="campo sel-in" placeholder="Escribe para buscar" readonly></div></label>
     <label class="cg"><span class="cg-et">Con foco</span>
-      <div class="sel-caja"><span class="sel-chev">${ICONOS.chevron}</span>
+      <div class="sel-caja"><span aria-hidden="true" class="sel-chev">${ICONOS.chevron}</span>
         <input class="campo sel-in foco-demo" placeholder="Escribe para buscar" readonly></div></label>
     <label class="cg"><span class="cg-et">Con selección</span>
-      <div class="sel-caja"><span class="sel-chev">${ICONOS.chevron}</span>
+      <div class="sel-caja"><span aria-hidden="true" class="sel-chev">${ICONOS.chevron}</span>
         <input class="campo sel-in" value="Pérez Salazar, Ana" readonly></div></label>
     <label class="cg"><span class="cg-et">Con error</span>
-      <div class="sel-caja"><span class="sel-chev">${ICONOS.chevron}</span>
+      <div class="sel-caja"><span aria-hidden="true" class="sel-chev">${ICONOS.chevron}</span>
         <input class="campo sel-in cg-mal" placeholder="Escribe para buscar" readonly></div>
       <span class="cg-error">${ICO_ERROR}Elige un apoderado.</span></label>
   </div>
@@ -2401,7 +2401,7 @@ lista solo existe abierta.</p>
       <div class="sel sel-demo-abierto">
         <div class="sel-caja abierta">
           <input class="campo sel-in" value="quisp" aria-busy="true" readonly>
-          <span class="sel-chev">${ICONOS.chevron}</span>
+          <span aria-hidden="true" class="sel-chev">${ICONOS.chevron}</span>
         </div>
         <ul class="sel-lista" role="listbox" aria-labelledby="sel-srv-et">
           <li class="sel-cargando">
@@ -2420,7 +2420,7 @@ lista solo existe abierta.</p>
       <div class="sel sel-demo-abierto">
         <div class="sel-caja abierta">
           <input class="campo sel-in" value="quisp" readonly>
-          <span class="sel-chev">${ICONOS.chevron}</span>
+          <span aria-hidden="true" class="sel-chev">${ICONOS.chevron}</span>
         </div>
         <ul class="sel-lista" role="listbox" aria-labelledby="sel-srv-ok-et">
           <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Quispe Huamán, César</span></li>
@@ -2439,7 +2439,7 @@ lista solo existe abierta.</p>
       <div class="sel sel-demo-abierto">
         <div class="sel-caja abierta">
           <input class="campo sel-in" value="quisp" readonly>
-          <span class="sel-chev">${ICONOS.chevron}</span>
+          <span aria-hidden="true" class="sel-chev">${ICONOS.chevron}</span>
         </div>
         <ul class="sel-lista" role="listbox" aria-labelledby="sel-mal-et">
           <li class="sel-op sel-fallo marcado" role="option">
@@ -3088,12 +3088,12 @@ Se cambia en el menú de usuario, junto al tema.</p>
   <div class="tb-envoltura">
     <table class="tb tb-desp">
       <thead><tr>
-        <th class="tb-th tb-th-chev"></th>
-        <th class="tb-th tb-th-indice"><span class="tb-th-txt tb-num">N.º</span></th>
-        <th class="tb-th"><span class="tb-th-txt">Cargo</span></th>
-        <th class="tb-th"><span class="tb-th-txt">Personal</span></th>
-        <th class="tb-th"><span class="tb-th-txt">Asistieron</span></th>
-        <th class="tb-th tb-num"><span class="tb-th-txt">Pendientes</span></th>
+        <th scope="col" class="tb-th tb-th-chev"></th>
+        <th scope="col" class="tb-th tb-th-indice"><span class="tb-th-txt tb-num">N.º</span></th>
+        <th scope="col" class="tb-th"><span class="tb-th-txt">Cargo</span></th>
+        <th scope="col" class="tb-th"><span class="tb-th-txt">Personal</span></th>
+        <th scope="col" class="tb-th"><span class="tb-th-txt">Asistieron</span></th>
+        <th scope="col" class="tb-th tb-num"><span class="tb-th-txt">Pendientes</span></th>
       </tr></thead>
       <tbody>
       ${CARGOS.map((cargo, n) => {
@@ -3250,22 +3250,22 @@ cualquier otro listado: no tiene paginación propia.</p>
   <div class="pg-variantes">
     <div class="pg-var">
       <div class="tb-pag">
-        <span class="pgn-btn pgn-flecha" aria-disabled="true">${ICO_CHEV_IZQ}<span>Anterior</span></span>
-        <span class="pgn-btn activa">1</span><span class="pgn-btn">2</span><span class="pgn-btn">3</span>
-        <span class="pgn-elip">…</span><span class="pgn-btn">124</span>
-        <span class="pgn-btn pgn-flecha"><span>Siguiente</span>${ICO_CHEV_DER}</span>
+        <button type="button" class="pgn-btn pgn-flecha" aria-disabled="true">${ICO_CHEV_IZQ}<span>Anterior</span></button>
+        <button type="button" class="pgn-btn activa">1</button><button type="button" class="pgn-btn">2</button><button type="button" class="pgn-btn">3</button>
+        <span class="pgn-elip">…</span><button type="button" class="pgn-btn">124</button>
+        <button type="button" class="pgn-btn pgn-flecha"><span>Siguiente</span>${ICO_CHEV_DER}</button>
       </div>
       <span class="mf-et"><b>Completa</b><br>Escritorio, con muchas páginas</span>
     </div>
     <div class="pg-var">
       <div class="tb-pag">
-        <span class="pgn-btn activa">1</span><span class="pgn-btn">2</span><span class="pgn-btn">3</span>
+        <button type="button" class="pgn-btn activa">1</button><button type="button" class="pgn-btn">2</button><button type="button" class="pgn-btn">3</button>
       </div>
       <span class="mf-et"><b>Corta</b><br>Tres páginas o menos: sin flechas ni elisión</span>
     </div>
     <div class="pg-var">
       <div class="tb-pag">
-        <span class="pgn-btn pgn-flecha">${ICO_CHEV_IZQ}<span>Anterior</span></span><span class="pg-pos">3 de 124</span><span class="pgn-btn pgn-flecha"><span>Siguiente</span>${ICO_CHEV_DER}</span>
+        <button type="button" class="pgn-btn pgn-flecha">${ICO_CHEV_IZQ}<span>Anterior</span></button><span class="pg-pos">3 de 124</span><button type="button" class="pgn-btn pgn-flecha"><span>Siguiente</span>${ICO_CHEV_DER}</button>
       </div>
       <span class="mf-et"><b>Móvil</b><br>Sin números: no caben y el dedo falla</span>
     </div>
@@ -3285,7 +3285,7 @@ cualquier otro listado: no tiene paginación propia.</p>
     </div>
     <div class="enl-caja mal">
       <div class="pg-demo-mini"><span class="tb-rango">1–6 de 6</span>
-        <div class="tb-pag"><span class="pgn-btn pgn-flecha" aria-disabled="true">${ICO_CHEV_IZQ}<span>Anterior</span></span><span class="pgn-btn activa">1</span><span class="pgn-btn pgn-flecha" aria-disabled="true"><span>Siguiente</span>${ICO_CHEV_DER}</span></div></div>
+        <div class="tb-pag"><button type="button" class="pgn-btn pgn-flecha" aria-disabled="true">${ICO_CHEV_IZQ}<span>Anterior</span></button><button type="button" class="pgn-btn activa">1</button><button type="button" class="pgn-btn pgn-flecha" aria-disabled="true"><span>Siguiente</span>${ICO_CHEV_DER}</button></div></div>
       <span class="mal-et">Controles que no llevan a ninguna parte</span>
     </div>
   </div>
@@ -3347,11 +3347,11 @@ ${verCodigo(
 
 // ── Elemento: Estados de pantalla ───────────────────────────────────────────
 
-const ICO_BUSCAR_VACIO = ic('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>');
-const ICO_PRIMERA = ic('<path d="M12 5v14M5 12h14"/>');
-const ICO_AVERIA = ic('<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/>');
-const ICO_CANDADO = ic('<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>');
-const ICO_PERIODO = ic('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>');
+const ICO_BUSCAR_VACIO = icono('lupa', TAMANOS.estado);
+const ICO_PRIMERA = icono('suma', TAMANOS.estado);
+const ICO_AVERIA = icono('alerta', TAMANOS.estado);
+const ICO_CANDADO = icono('candado', TAMANOS.estado);
+const ICO_PERIODO = icono('calendario', TAMANOS.estado);
 
 const ESTADOS_PANTALLA = [
   {
@@ -3360,7 +3360,7 @@ const ESTADOS_PANTALLA = [
     titulo: null,
   },
   {
-    k: 'inicial', t: 'Nunca consultado', ico: ICO_PERIODO,
+    k: 'nunca-consultado', t: 'Nunca consultado', ico: ICO_PERIODO,
     cuando: 'Aún no se ha pedido nada',
     titulo: 'Elige un periodo para ver la asistencia',
     linea: 'Los datos se cargan al seleccionar mes y sede.',
@@ -3410,7 +3410,7 @@ const ESTADOS_PANTALLA = [
 
 const cajaEstado = (e) =>
   e.k === 'cargando'
-    ? `<div class="ep ep-cargando">
+    ? `<div role="status" class="ep ep-cargando">
         <div class="esqueleto" style="width:38%"></div>
         <div class="esqueleto" style="width:64%"></div>
         <div class="esqueleto" style="width:52%"></div>
@@ -3527,7 +3527,7 @@ pantalla que <strong>ofrece un botón que vuelve a fallar</strong>.</p>
     </div>
     <div class="ep-ambito">
       <div class="tb-envoltura">
-        <table class="tb"><thead><tr><th class="tb-th"><span class="tb-th-txt">Trabajador</span></th><th class="tb-th"><span class="tb-th-txt">Estado</span></th></tr></thead>
+        <table class="tb"><thead><tr><th scope="col" class="tb-th"><span class="tb-th-txt">Trabajador</span></th><th scope="col" class="tb-th"><span class="tb-th-txt">Estado</span></th></tr></thead>
         <tbody><tr><td colspan="2" class="tb-vacio"><strong>Sin resultados para «zapata».</strong><br>Prueba con menos letras.</td></tr></tbody></table>
       </div>
       <span class="mf-et"><b>Dentro de una tabla</b><br>El encabezado se queda: dice qué columnas habría</span>
@@ -4012,7 +4012,7 @@ también. <strong>Si algo se rompe por estrechez, se rompe aquí primero.</stron
 <div class="bloque">
  <div class="demo-fila-estrecha">
   <div class="fc-zona" id="fc-zona">
-    <div class="fc-campos">
+    <div role="group" class="fc-campos">
       <div class="cg">
         <span class="cg-et" id="fc-ini-et">Desde</span>
         <button type="button" class="campo fc-campo" id="fc-ini"
@@ -4031,29 +4031,29 @@ también. <strong>Si algo se rompe por estrechez, se rompe aquí primero.</stron
       <button class="btn btn-neutro" id="fc-limpiar">Limpiar</button>
     </div>
 
-    <div class="fc-cal" id="fc-cal" role="dialog" aria-label="Elegir rango de fechas" hidden>
-      <div class="fc-cal-cab">
-        <button class="pgn-btn" id="fc-prev" aria-label="Mes anterior">${ICO_CHEV_IZQ}</button>
-        <span class="fc-meses" id="fc-titulo"></span>
-        <button class="pgn-btn" id="fc-next" aria-label="Mes siguiente">${ICO_CHEV_DER}</button>
+    <div aria-modal="false" class="fc-cal" id="fc-cal" role="dialog" aria-label="Elegir rango de fechas" hidden>
+      <div aria-modal="false" class="fc-cal-cab">
+        <button type="button" class="pgn-btn" id="fc-prev" aria-label="Mes anterior">${ICO_CHEV_IZQ}</button>
+        <span aria-live="polite" class="fc-meses" id="fc-titulo"></span>
+        <button type="button" class="pgn-btn" id="fc-next" aria-label="Mes siguiente">${ICO_CHEV_DER}</button>
       </div>
-      <div class="fc-cal-marco">
-        <div class="fc-cal-cuerpo" id="fc-cuerpo"></div>
+      <div aria-modal="false" class="fc-cal-marco">
+        <div aria-modal="false" class="fc-cal-cuerpo" id="fc-cuerpo"></div>
         <div class="fc-atajos">
           <span class="fc-atajos-tit">Periodos</span>
-          <button class="fc-atajo" data-fc="mes">Este mes</button>
-          <button class="fc-atajo" data-fc="mes-pasado">Mes pasado</button>
-          <button class="fc-atajo" data-fc="bimestre">Últimos 2 meses</button>
-          <button class="fc-atajo" data-fc="anio">Este año</button>
+          <button type="button" class="fc-atajo" data-fc="mes">Este mes</button>
+          <button type="button" class="fc-atajo" data-fc="mes-pasado">Mes pasado</button>
+          <button type="button" class="fc-atajo" data-fc="bimestre">Últimos 2 meses</button>
+          <button type="button" class="fc-atajo" data-fc="anio">Este año</button>
         </div>
       </div>
-      <div class="fc-cal-pie"><span id="fc-pista">Elige la fecha de inicio.</span></div>
+      <div aria-modal="false" class="fc-cal-pie"><span id="fc-pista">Elige la fecha de inicio.</span></div>
     </div>
   </div>
 
   <button class="btn btn-1" type="button">Buscar</button>
  </div>
-  <p class="fc-resumen" id="fc-resumen">Sin rango elegido.</p>
+  <p role="status" class="fc-resumen" id="fc-resumen">Sin rango elegido.</p>
 </div>
 <table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Detalle</th><th>Por qué</th></tr></thead>
@@ -8333,7 +8333,7 @@ const casos = [
    '<div class="campo-grupo"><label class="campo-etiqueta">Apoderado</label>' +
    '<div class="sel"><div class="sel-caja abierta">' +
    '<input class="campo sel-in" value="quisp" readonly>' +
-   '<span class="sel-chev">' + ICONOS.chevron + '</span></div>' +
+   '<span aria-hidden="true" class="sel-chev">' + ICONOS.chevron + '</span></div>' +
    '<ul class="sel-lista" role="listbox" style="position:static">' +
    '<li class="sel-op" role="option"><span class="sel-op-txt">Quispe Huamán, César</span></li>' +
    '<li class="sel-op marcado" role="option"><span class="sel-op-txt">Quispe Mamani, Lucía' +
@@ -8368,17 +8368,17 @@ const casos = [
       '<span class="fc-guion">' + ICONOS.chevronDer + '</span>' +
       '<div class="cg"><span class="cg-et">Hasta</span>' +
       '<button class="campo fc-campo"><span>12/03/2026</span></button></div></div>' +
-      '<div class="fc-cal" role="dialog" style="position:static;max-width:640px">' +
-       '<div class="fc-cal-cab"><button class="btn btn-3 btn-mini">&lsaquo;</button>' +
-       '<span class="fc-meses">marzo &ndash; abril de 2026</span>' +
+      '<div aria-modal="false" class="fc-cal" role="dialog" style="position:static;max-width:640px">' +
+       '<div aria-modal="false" class="fc-cal-cab"><button class="btn btn-3 btn-mini">&lsaquo;</button>' +
+       '<span aria-live="polite" class="fc-meses">marzo &ndash; abril de 2026</span>' +
        '<button class="btn btn-3 btn-mini">&rsaquo;</button></div>' +
-       '<div class="fc-cal-marco"><div class="fc-cal-cuerpo">' +
+       '<div aria-modal="false" class="fc-cal-marco"><div aria-modal="false" class="fc-cal-cuerpo">' +
        mes('marzo de 2026', 31, 6, 5, 12) + mes('abril de 2026', 30, 2, 0, 0) +
        '</div><div class="fc-atajos"><span class="fc-atajos-tit">Periodos</span>' +
-       '<button class="fc-atajo">Este mes</button><button class="fc-atajo">Mes pasado</button>' +
-       '<button class="fc-atajo">&Uacute;ltimos 2 meses</button><button class="fc-atajo">Este a&ntilde;o</button>' +
-       '</div></div><div class="fc-cal-pie">Elige la fecha de inicio.</div></div>' +
-       '<p class="fc-resumen">Del jueves 5 al jueves 12 de marzo de 2026.</p></div>';
+       '<button type="button" class="fc-atajo">Este mes</button><button type="button" class="fc-atajo">Mes pasado</button>' +
+       '<button type="button" class="fc-atajo">&Uacute;ltimos 2 meses</button><button type="button" class="fc-atajo">Este a&ntilde;o</button>' +
+       '</div></div><div aria-modal="false" class="fc-cal-pie">Elige la fecha de inicio.</div></div>' +
+       '<p role="status" class="fc-resumen">Del jueves 5 al jueves 12 de marzo de 2026.</p></div>';
    })()],
 
   /* AreaTexto no estaba, y es el componente al que el equipo mira cuando
@@ -12816,29 +12816,29 @@ ${COMPRESOR_PDF}
       // aplicación real sería el ancho.
       if (document.documentElement.getAttribute('data-vista') === 'movil') {
         caja.innerHTML =
-          '<button class="pgn-btn pgn-flecha" data-pgn="' + (pagina - 1) +
+          '<button type="button" class="pgn-btn pgn-flecha" data-pgn="' + (pagina - 1) +
           '" aria-label="Página anterior"' + (pagina === 1 ? ' disabled' : '') + '>' +
           CHEV_IZQ + '<span>Anterior</span></button>' +
           '<span class="pg-pos" aria-current="page">' + pagina + ' de ' + n + '</span>' +
-          '<button class="pgn-btn pgn-flecha" data-pgn="' + (pagina + 1) +
+          '<button type="button" class="pgn-btn pgn-flecha" data-pgn="' + (pagina + 1) +
           '" aria-label="Página siguiente"' + (pagina === n ? ' disabled' : '') + '>' +
           '<span>Siguiente</span>' + CHEV_DER + '</button>';
         return;
       }
 
-      var b = ['<button class="pgn-btn pgn-flecha" data-pgn="' + (pagina - 1) +
+      var b = ['<button type="button" class="pgn-btn pgn-flecha" data-pgn="' + (pagina - 1) +
         '" aria-label="Página anterior"' + (pagina === 1 ? ' disabled' : '') + '>' +
         CHEV_IZQ + '<span>Anterior</span></button>'];
       for (var p = 1; p <= n; p++) {
         if (p === 1 || p === n || Math.abs(p - pagina) <= 1) {
-          b.push('<button class="pgn-btn' + (p === pagina ? ' activa' : '') +
+          b.push('<button type="button" class="pgn-btn' + (p === pagina ? ' activa' : '') +
             '" data-pgn="' + p + '" aria-label="Página ' + p + '"' +
             (p === pagina ? ' aria-current="page"' : '') + '>' + p + '</button>');
         } else if (Math.abs(p - pagina) === 2) {
           b.push('<span class="pgn-elip" aria-hidden="true">…</span>');
         }
       }
-      b.push('<button class="pgn-btn pgn-flecha" data-pgn="' + (pagina + 1) +
+      b.push('<button type="button" class="pgn-btn pgn-flecha" data-pgn="' + (pagina + 1) +
         '" aria-label="Página siguiente"' + (pagina === n ? ' disabled' : '') + '>' +
         '<span>Siguiente</span>' + CHEV_DER + '</button>');
       caja.innerHTML = b.join('');
@@ -13221,15 +13221,15 @@ ${COMPRESOR_PDF}
       cab.innerHTML = visibles().map(function (c) {
         // La columna de índice no ordena: es un localizador, no un dato.
         if (c.tipo === 'indice') {
-          return '<th class="tb-th tb-th-indice"><span class="tb-th-txt tb-num">' + c.t + '</span></th>';
+          return '<th scope="col" class="tb-th tb-th-indice"><span class="tb-th-txt tb-num">' + c.t + '</span></th>';
         }
         var act = cfg.orden === c.k;
         var aria = act ? (cfg.dir === 1 ? 'ascending' : 'descending') : 'none';
-        return '<th class="tb-th' + (c.tipo === 'numero' ? ' tb-num' : '') + '" aria-sort="' + aria + '">' +
+        return '<th scope="col" class="tb-th' + (c.tipo === 'numero' ? ' tb-num' : '') + '" aria-sort="' + aria + '">' +
           '<button class="tb-orden' + (act ? ' activo' : '') + '" data-col="' + c.k + '">' +
           '<span>' + c.t + '</span>' +
           '<span class="tb-flecha">' + (act ? (cfg.dir === 1 ? '↑' : '↓') : '') + '</span></button></th>';
-      }).join('') + '<th class="tb-th"></th>';
+      }).join('') + '<th scope="col" class="tb-th"></th>';
 
       // Fila de filtros: lista donde hay pocos valores, texto donde no.
       var filaF = document.getElementById('tb-filtros');

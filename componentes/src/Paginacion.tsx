@@ -11,6 +11,7 @@
  */
 
 import { Selector } from './Campo';
+import { Icono } from './Icono';
 
 export type PaginacionProps = {
   pagina: number;
@@ -62,7 +63,15 @@ export function Paginacion({
         disabled={pagina === 1}
         onClick={() => onPagina(anterior)}
       >
-        {/* El texto acompaña al chevron: un chevron solo no dice a dónde va. */}
+        {/* EL CHEVRON, QUE ESTE COMENTARIO LLEVABA VERSIONES PROMETIENDO.
+            Decía «el texto acompaña al chevron» y **no había chevron**: el
+            componente entregaba «Anterior» en texto pelado mientras el catálogo
+            lo dibujaba en sus dos demostraciones y la hoja viajaba con
+            `.pgn-flecha .ic{ width:14px; height:14px }`, una regla que ningún
+            producto podía activar. La variante «Móvil» que el catálogo enseña
+            —flecha sola, sin texto— era directamente imposible. Lo cazó un
+            barrido de las dos superficies el 2026-09-15. */}
+        <Icono nombre="chevronIzq" tam="etiqueta" />
         Anterior
       </button>
 
@@ -102,6 +111,7 @@ export function Paginacion({
         onClick={() => onPagina(siguiente)}
       >
         Siguiente
+        <Icono nombre="chevronDer" tam="etiqueta" />
       </button>
 
       {/* Se IMPORTA Selector. Antes era un <select className="campo"> a mano

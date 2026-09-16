@@ -117,7 +117,7 @@ describe('Icono', () => {
     expect(container.querySelector('svg')).toHaveAttribute('width', '32');
   });
 
-  it('están los 60, los mismos que el catálogo', () => {
+  it('están los 62, los mismos que el catálogo', () => {
     // 42 desde la v1.37.0: subir (R35) y la pareja ojo/ojoTachado (contraseña).
     // 45 desde la v1.40.0, los tres de la carga de PDF: `documento` (la hoja en
     // blanco de cada archivo puesto), `papelera` (el tachito, en la línea del
@@ -135,8 +135,17 @@ describe('Icono', () => {
     // comprobación: esta prueba cuenta los del PRODUCTO y nadie miraba los del
     // catálogo. Ahora lo garantiza `verificar-iconos.mjs`, que además compara
     // el trazo — el número puede cuadrar con dos dibujos distintos.
-    expect(NOMBRES_ICONO).toHaveLength(60);
+    //
+    // 62 desde la v1.121.0: `calendario` y `suma`, que el catálogo YA DIBUJABA
+    // a mano en SVG sueltos porque `EstadoPantalla` los necesitaba y no estaban
+    // aquí. Los siete estados de pantalla salían SIN ICONO en todos los
+    // productos —con cuatro reglas de la hoja que nadie podía activar, dos de
+    // ellas la única señal cromática que distingue un error de un vacío— y el
+    // catálogo los enseñaba en sus dieciocho demostraciones. `suma` y no `mas`
+    // porque `mas` ya existe y son tres puntos, no un signo de sumar.
+    expect(NOMBRES_ICONO).toHaveLength(62);
     for (const n of ['candado', 'lupa', 'cerrar', 'visto', 'alerta', 'informacion', 'subir', 'documento', 'papelera', 'pdf',
+      'calendario', 'suma',
       'facebook', 'instagram', 'youtube', 'tiktok', 'whatsapp', 'x', 'linkedin',
       'negrita', 'cursiva', 'lista', 'deshacer', 'rehacer', 'guardar', 'lapiz']) {
       expect(NOMBRES_ICONO).toContain(n);

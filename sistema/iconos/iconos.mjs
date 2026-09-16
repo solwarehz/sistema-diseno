@@ -101,6 +101,16 @@ export const TRAZOS = {
   // en NO dibujarlos: un trazo hecho a mano se separa del conjunto a la primera
   // revisión, y entonces hay dos iconos distintos para la misma idea.
   candado: '<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+  /* DOS QUE EL CATALOGO YA DIBUJABA A MANO, en SVG sueltos dentro de su propio
+     archivo. `EstadoPantalla` los necesita y no estaban en el juego, asi que
+     los siete estados de pantalla salian SIN ICONO en todos los productos
+     mientras el catalogo los ensenaba en sus dieciocho demostraciones. Se
+     traen con el MISMO trazo, para que las dos superficies dibujen lo mismo. */
+  calendario: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  /* `suma` y no `mas`: `mas` ya existe aqui y son TRES PUNTOS —«mas opciones»—,
+     no un signo de sumar. Dos nombres que se leen igual y dibujan cosas
+     distintas es como se acaba pintando el icono equivocado. */
+  suma: '<path d="M12 5v14M5 12h14"/>',
   lupa: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
   cerrar: '<path d="M6 6l12 12M18 6 6 18"/>',
   visto: '<path d="m5 12 5 5L20 7"/>',
