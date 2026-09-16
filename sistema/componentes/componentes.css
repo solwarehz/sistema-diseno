@@ -545,7 +545,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   FECHA Y RANGO — 43 reglas · clases .fc-*
+   FECHA Y RANGO — 45 reglas · clases .fc-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .fc-campos{ display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
@@ -607,6 +607,8 @@ button.fc-campo{ display: flex; align-items: center; justify-content: flex-start
   cursor: pointer; background: transparent; border: 0; color: var(--texto-principal);
   border-radius: 6px; }
 .fc-d:hover{ background: var(--fondo-fila-hover); }
+.fc-d[aria-disabled='true']{ color: var(--accion-texto-desh); cursor: not-allowed; }
+.fc-d[aria-disabled='true']:hover{ background: transparent; }
 .fc-vacio{ cursor: default; }
 .fc-vacio:hover{ background: transparent; }
 .fc-dentro{ background: var(--fondo-fila-hover); border-radius: 0; }

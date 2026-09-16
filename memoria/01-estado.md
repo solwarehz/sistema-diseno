@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-**Última actualización:** 15 de septiembre de 2026
+**Última actualización:** 16 de septiembre de 2026
 **Versión del sistema:** MMI-DS **v1.122.0** — R139 y R140: `RangoFecha` se
 comporta por fin como un campo del sistema
 
@@ -17,8 +17,8 @@ comporta por fin como un campo del sistema
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
-publicados (`verificar-entrega`), la hoja que viaja, **dieciocho pasos de
-verificación** —los que corre `publicar.mjs`—, **892 pruebas en 50 archivos**,
+publicados (`verificar-entrega`), la hoja que viaja, **diecinueve pasos de
+verificación** —los que corre `publicar.mjs`—, **940 pruebas en 51 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -56,7 +56,7 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **892 pruebas en 50 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **940 pruebas en 51 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **1010 reglas de 1525** · **731 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
@@ -64,7 +64,7 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
 | Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.122.0**, con el salto **desde la v1.19.0**, que es la instalada |
-| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los dieciocho pasos · **173 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
+| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los diecinueve pasos · **173 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -1095,7 +1095,7 @@ las tres, con su corpus, y lo único que las tres sostienen: **bloquea el hilo
 segundos**.
 
 Y una que es del sistema entero, no del editor: **ESLint no se corre en ninguno
-de los dieciocho pasos.** Solo corre `probar-candado.mjs`, que prueba los
+de los diecinueve pasos.** Solo corre `probar-candado.mjs`, que prueba los
 patrones contra casos sintéticos. Al correrlo sobre el repositorio salen **dos
 errores que viajan hoy en el paquete**: `Estados.tsx` usa el atributo `style` en
 línea en dos sitios, que es justo lo que §2.5.6 prohíbe. **Queda declarado y sin

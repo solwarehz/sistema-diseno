@@ -207,6 +207,115 @@ describe('[17] R139 · el rango MANDA, no siembra', () => {
     expect(disparadores(container)[0]).toHaveTextContent('09/03/2026');
   });
 
+  it('[18] CONTROLADO Y APLICANDO: dos clics fijan el rango y la capa cierra', () => {
+    /* El defecto que casi se publica. `pedirRango` devolvía `!controlado` —«no
+       hay props»— en vez de «se aplicó», así que un producto que guarda el
+       valor y lo devuelve, que es EL PATRÓN QUE ESTA VERSIÓN ENSEÑA, se
+       encontraba con que el calendario no encadenaba y no cerraba: el segundo
+       clic reescribía el inicio y **no había forma de fijar un rango**. Las 19
+       comprobaciones y las 934 pruebas estaban en verde. Lo cazó una auditoría
+       adversaria, y las reglas 5 y 15 del contrato quedaban derogadas para el
+       modo correcto sin que nada lo dijera. */
+    function Envoltura() {
+      const [r, setR] = useState<{ desde: string | null; hasta: string | null }>(
+        { desde: null, hasta: null });
+      return <RangoFecha titulo="Rango de fechas" hoy={HOY} desde={r.desde} hasta={r.hasta} onCambio={setR} />;
+    }
+    const { container } = render(<Envoltura />);
+    const disp = () => [...container.querySelectorAll('.fc-campo')] as HTMLElement[];
+    const dia = (n: string) =>
+      [...container.querySelectorAll('.fc-d')].find((b) => b.textContent === n) as HTMLElement;
+
+    fireEvent.click(disp()[0]);
+    fireEvent.click(dia('10'));
+    expect(disp()[0], 'el inicio no se fijó').toHaveTextContent('10/03/2026');
+    // El segundo clic tiene que fijar el FINAL, no reescribir el inicio.
+    fireEvent.click(dia('20'));
+    expect(disp()[0], 'el segundo clic reescribió el inicio').toHaveTextContent('10/03/2026');
+    expect(disp()[1], 'el segundo clic no fijó el final').toHaveTextContent('20/03/2026');
+    expect(container.querySelector('[role="dialog"]'),
+      'fijado el rango, la capa tenía que cerrarse').toBeNull();
+  });
+
+  it('[18] y un ATAJO aplicado mueve la ventana y cierra', () => {
+    function Envoltura() {
+      const [r, setR] = useState<{ desde: string | null; hasta: string | null }>(
+        { desde: null, hasta: null });
+      return <RangoFecha titulo="Rango de fechas" hoy={HOY} desde={r.desde} hasta={r.hasta} onCambio={setR} />;
+    }
+    const { container } = render(<Envoltura />);
+    fireEvent.click(container.querySelectorAll('.fc-campo')[0]);
+    fireEvent.click(screen.getByRole('button', { name: 'Este año' }));
+    expect(container.querySelector('[role="dialog"]'), 'el atajo no cerró').toBeNull();
+    expect(container.querySelectorAll('.fc-campo')[0]).toHaveTextContent('01/01/2026');
+  });
+
+  it('[19] un ATAJO que pasa del tope NO entra, y se dice cuál', () => {
+    /* El tope vivía solo en `elegir()`, así que el camino más rápido de la
+       interfaz —pulsar «Este año» con un tope de siete días— lo saltaba entero
+       y metía un rango que el calendario no habría dejado construir a mano. */
+    const alCambiar = vi.fn();
+    const { container } = render(
+      <RangoFecha titulo="Rango de fechas" hoy={HOY} maxDias={7} desde={null} hasta={null}
+        onCambio={alCambiar} />
+    );
+    fireEvent.click(container.querySelectorAll('.fc-campo')[0]);
+    fireEvent.click(screen.getByRole('button', { name: 'Este año' }));
+    expect(alCambiar, 'el atajo saltó el tope').not.toHaveBeenCalled();
+    expect(container.querySelector('.cg-error')!.textContent, 'no dice qué periodo ni por qué')
+      .toContain('«Este año»');
+  });
+
+  it('[19] la previsualización se RECORTA al techo', () => {
+    /* El contrato dice que el tramo que se ve es el que se elegiría. Con el
+       tope puesto dejaba de serlo, y quitar el recorte dejaba las 31 en verde:
+       era la mutación superviviente que encontró la auditoría. */
+    const { container } = render(
+      <RangoFecha titulo="Rango de fechas" hoy={HOY} maxDias={7} desde="2026-03-01" hasta={null}
+        onCambio={() => {}} />
+    );
+    fireEvent.click(container.querySelectorAll('.fc-campo')[1]);
+    const d20 = [...container.querySelectorAll('.fc-d')].find((b) => b.textContent === '20')!;
+    fireEvent.mouseEnter(d20);
+    const previo = container.querySelector('.fc-previo')!;
+    expect(previo.textContent, 'pinta un tramo que no se puede elegir').toBe('7');
+  });
+
+  it('[21] apagar con la capa ABIERTA la cierra', () => {
+    /* `deshabilitado` solo se miraba al abrir: un calendario ya abierto se
+       quedaba abierto y seguía emitiendo cambios. Un control apagado que cambia
+       valores es peor que el rodeo con CSS que el R140 vino a corregir. */
+    const alCambiar = vi.fn();
+    function Envoltura({ off }: { off: boolean }) {
+      return <RangoFecha titulo="Rango de fechas" hoy={HOY} deshabilitado={off} onCambio={alCambiar} />;
+    }
+    const { container, rerender } = render(<Envoltura off={false} />);
+    fireEvent.click(container.querySelectorAll('.fc-campo')[0]);
+    expect(container.querySelector('[role="dialog"]')).not.toBeNull();
+    rerender(<Envoltura off />);
+    expect(container.querySelector('[role="dialog"]'), 'apagado y la capa seguía abierta').toBeNull();
+  });
+
+  it('[19] `maxDias` que no es un tope se IGNORA, no apaga medio calendario', () => {
+    /* `maxDias={0}` es falsy y desactivaba el tope en silencio; un negativo
+       apagaba 55 de 61 días —el propio inicio incluido— con un nombre accesible
+       que decía «fuera del máximo de -3 días». */
+    for (const malo of [0, -3, 2.5 as number]) {
+      const { container, unmount } = render(
+        <RangoFecha titulo="Rango de fechas" hoy={HOY} maxDias={malo} desde="2026-03-01"
+          hasta={null} onCambio={() => {}} />
+      );
+      fireEvent.click(container.querySelectorAll('.fc-campo')[1]);
+      const apagados = container.querySelectorAll('.fc-d[aria-disabled]').length;
+      if (malo === 2.5) {
+        expect(apagados, 'un tope fraccionario debería truncarse, no ignorarse').toBeGreaterThan(0);
+      } else {
+        expect(apagados, `maxDias=${malo} apagó días`).toBe(0);
+      }
+      unmount();
+    }
+  });
+
   it('[17] `desde={null}` MANDA: el control no se pierde al vaciar', () => {
     /* Con `desdeProp ?? desdeDentro` el `null` del producto caería al estado
        interno y el control se perdería justo al vaciar, que es cuando más se

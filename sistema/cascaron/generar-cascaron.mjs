@@ -4109,6 +4109,34 @@ en curso, este control <strong>no tiene</strong> esa variante &mdash; y se dice 
     <p role="status" class="fc-resumen">Sin rango elegido.</p>
   </div>
 </div>
+<p class="seccion-sub">Y con <strong>tope de d&iacute;as</strong>. Elegido el 1 con
+<code>maxDias={7}</code>, del 8 en adelante no se puede elegir: van <code>aria-disabled</code> y
+<strong>no <code>disabled</code></strong>, porque apagado de verdad el d&iacute;a sale del recorrido
+del teclado y quien navega con tabulador se queda sin saber por qu&eacute; no responde. El tope
+<strong>nunca bloquea el gesto que lo arregla</strong>: eligiendo el inicio no hay techo.</p>
+<div class="bloque">
+  <div class="fc-cal" role="dialog" aria-label="Elegir rango de fechas" aria-modal="false"
+       style="position:static;box-shadow:none">
+    <div class="fc-mes">
+      <div class="fc-dias" role="grid" aria-label="marzo de 2026">
+        <div class="fc-sem" role="row">
+          ${['L','M','X','J','V','S','D'].map((d) => `<span class="fc-dia-et" role="columnheader">${d}</span>`).join('')}
+        </div>
+        <div class="fc-fila" role="row">
+          ${Array.from({ length: 6 }, () => '<span class="fc-d fc-vacio"></span>').join('')}
+          ${[1].map((n) => `<span role="gridcell" aria-selected="true"><button type="button" class="fc-d fc-ini" tabindex="0" aria-label="domingo ${n} de marzo de 2026, extremo del rango">${n}</button></span>`).join('')}
+        </div>
+        <div class="fc-fila" role="row">
+          ${[2, 3, 4, 5, 6, 7].map((n) => `<span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-label="${n} de marzo de 2026">${n}</button></span>`).join('')}
+          ${[8].map((n) => `<span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-disabled="true" aria-label="domingo ${n} de marzo de 2026, fuera del m&aacute;ximo de 7 d&iacute;as">${n}</button></span>`).join('')}
+        </div>
+        <div class="fc-fila" role="row">
+          ${[9, 10, 11, 12, 13, 14, 15].map((n) => `<span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-disabled="true" aria-label="${n} de marzo de 2026, fuera del m&aacute;ximo de 7 d&iacute;as">${n}</button></span>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Detalle</th><th>Por qué</th></tr></thead>
   <tbody>
@@ -9683,6 +9711,15 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 /* El hover es el del sistema, fondo-fila-hover, el mismo que la fila de tabla
    bajo el cursor. Antes usaba fondo-encabezado, un gris que no es un hover. */
 .fc-d:hover { background: var(--fondo-fila-hover); }
+/* EL DIA FUERA DEL TOPE SE VE APAGADO. Sin esto, maxDias impedia de forma
+   INVISIBLE: el dia se pintaba igual que uno elegible y ademas SEGUIA
+   ILUMINANDOSE al pasar el raton, asi que quien mira pulsaba y no pasaba nada
+   —justo el fallo que la regla 19 dice evitar al preferir aria-disabled sobre
+   disabled, cometido por el otro lado: el lector de pantalla se enteraba y el
+   que mira no—. Lo cazo una auditoria antes de publicar. El resto de controles
+   del sistema que emiten aria-disabled si lo estilan. */
+.fc-d[aria-disabled='true'] { color: var(--accion-texto-desh); cursor: not-allowed; }
+.fc-d[aria-disabled='true']:hover { background: transparent; }
 /* Los días del mes vecino: visibles y pulsables pero atenuados. Es
    texto-secundario y NO texto-pista porque son fechas reales que se pueden
    elegir, y el uso declarado de texto-pista dice «nunca contenido real».

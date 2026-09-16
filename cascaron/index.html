@@ -1518,6 +1518,15 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 /* El hover es el del sistema, fondo-fila-hover, el mismo que la fila de tabla
    bajo el cursor. Antes usaba fondo-encabezado, un gris que no es un hover. */
 .fc-d:hover { background: var(--fondo-fila-hover); }
+/* EL DIA FUERA DEL TOPE SE VE APAGADO. Sin esto, maxDias impedia de forma
+   INVISIBLE: el dia se pintaba igual que uno elegible y ademas SEGUIA
+   ILUMINANDOSE al pasar el raton, asi que quien mira pulsaba y no pasaba nada
+   —justo el fallo que la regla 19 dice evitar al preferir aria-disabled sobre
+   disabled, cometido por el otro lado: el lector de pantalla se enteraba y el
+   que mira no—. Lo cazo una auditoria antes de publicar. El resto de controles
+   del sistema que emiten aria-disabled si lo estilan. */
+.fc-d[aria-disabled='true'] { color: var(--accion-texto-desh); cursor: not-allowed; }
+.fc-d[aria-disabled='true']:hover { background: transparent; }
 /* Los días del mes vecino: visibles y pulsables pero atenuados. Es
    texto-secundario y NO texto-pista porque son fechas reales que se pueden
    elegir, y el uso declarado de texto-pista dice «nunca contenido real».
@@ -6813,7 +6822,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   FECHA Y RANGO — 43 reglas · clases .fc-*
+   FECHA Y RANGO — 45 reglas · clases .fc-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .fc-campos{ display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
@@ -6875,6 +6884,8 @@ button.fc-campo{ display: flex; align-items: center; justify-content: flex-start
   cursor: pointer; background: transparent; border: 0; color: var(--texto-principal);
   border-radius: 6px; }
 .fc-d:hover{ background: var(--fondo-fila-hover); }
+.fc-d[aria-disabled='true']{ color: var(--accion-texto-desh); cursor: not-allowed; }
+.fc-d[aria-disabled='true']:hover{ background: transparent; }
 .fc-vacio{ cursor: default; }
 .fc-vacio:hover{ background: transparent; }
 .fc-dentro{ background: var(--fondo-fila-hover); border-radius: 0; }
@@ -12125,6 +12136,34 @@ en curso, este control <strong>no tiene</strong> esa variante &mdash; y se dice 
       </div>
     </div>
     <p role="status" class="fc-resumen">Sin rango elegido.</p>
+  </div>
+</div>
+<p class="seccion-sub">Y con <strong>tope de d&iacute;as</strong>. Elegido el 1 con
+<code>maxDias={7}</code>, del 8 en adelante no se puede elegir: van <code>aria-disabled</code> y
+<strong>no <code>disabled</code></strong>, porque apagado de verdad el d&iacute;a sale del recorrido
+del teclado y quien navega con tabulador se queda sin saber por qu&eacute; no responde. El tope
+<strong>nunca bloquea el gesto que lo arregla</strong>: eligiendo el inicio no hay techo.</p>
+<div class="bloque">
+  <div class="fc-cal" role="dialog" aria-label="Elegir rango de fechas" aria-modal="false"
+       style="position:static;box-shadow:none">
+    <div class="fc-mes">
+      <div class="fc-dias" role="grid" aria-label="marzo de 2026">
+        <div class="fc-sem" role="row">
+          <span class="fc-dia-et" role="columnheader">L</span><span class="fc-dia-et" role="columnheader">M</span><span class="fc-dia-et" role="columnheader">X</span><span class="fc-dia-et" role="columnheader">J</span><span class="fc-dia-et" role="columnheader">V</span><span class="fc-dia-et" role="columnheader">S</span><span class="fc-dia-et" role="columnheader">D</span>
+        </div>
+        <div class="fc-fila" role="row">
+          <span class="fc-d fc-vacio"></span><span class="fc-d fc-vacio"></span><span class="fc-d fc-vacio"></span><span class="fc-d fc-vacio"></span><span class="fc-d fc-vacio"></span><span class="fc-d fc-vacio"></span>
+          <span role="gridcell" aria-selected="true"><button type="button" class="fc-d fc-ini" tabindex="0" aria-label="domingo 1 de marzo de 2026, extremo del rango">1</button></span>
+        </div>
+        <div class="fc-fila" role="row">
+          <span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-label="2 de marzo de 2026">2</button></span><span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-label="3 de marzo de 2026">3</button></span><span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-label="4 de marzo de 2026">4</button></span><span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-label="5 de marzo de 2026">5</button></span><span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-label="6 de marzo de 2026">6</button></span><span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-label="7 de marzo de 2026">7</button></span>
+          <span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-disabled="true" aria-label="domingo 8 de marzo de 2026, fuera del m&aacute;ximo de 7 d&iacute;as">8</button></span>
+        </div>
+        <div class="fc-fila" role="row">
+          <span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-disabled="true" aria-label="9 de marzo de 2026, fuera del m&aacute;ximo de 7 d&iacute;as">9</button></span><span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-disabled="true" aria-label="10 de marzo de 2026, fuera del m&aacute;ximo de 7 d&iacute;as">10</button></span><span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-disabled="true" aria-label="11 de marzo de 2026, fuera del m&aacute;ximo de 7 d&iacute;as">11</button></span><span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-disabled="true" aria-label="12 de marzo de 2026, fuera del m&aacute;ximo de 7 d&iacute;as">12</button></span><span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-disabled="true" aria-label="13 de marzo de 2026, fuera del m&aacute;ximo de 7 d&iacute;as">13</button></span><span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-disabled="true" aria-label="14 de marzo de 2026, fuera del m&aacute;ximo de 7 d&iacute;as">14</button></span><span role="gridcell" aria-selected="false"><button type="button" class="fc-d" tabindex="-1" aria-disabled="true" aria-label="15 de marzo de 2026, fuera del m&aacute;ximo de 7 d&iacute;as">15</button></span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 <table class="tabla-simple" style="margin-top:16px">
@@ -19053,7 +19092,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
 
 <h3 class="sub-seccion">v1.122.0 <span class="cam-fecha">2026-09-16</span></h3>
 <p class="pag-intro"><strong>R139 y R140 — RangoFecha se comporta por fin como un campo del sistema.</strong> Tres huecos anotados del MISMO componente por Control Administrativos V2.0, y los tres son el mismo: RangoFecha era el unico campo del sistema que no se comportaba como un campo. R139 · NO ESTABA CONTROLADO. `useState(desdeProp)` leia la prop UNA VEZ: `desde` y `hasta` eran el valor inicial, no una atadura, asi que devolverle por onCambio un rango corregido NO LO MOVIA. En sus palabras: «esto pasa de avisar a impedir y las lineas se borran» — quien rechaza una seleccion no tenia forma de devolver el valor anterior y solo podia avisar DESPUES de que alguien ya eligio mal. El caso real: su reporte semanal existe por el tope de 48 h, que es SEMANAL; sobre nueve dias esa columna no significa nada. Ahora mandan, con el patron de plegado/onPlegar del marco: sin pasarlas el componente se gobierna solo. Y EL CALENDARIO SIGUE AL RANGO QUE QUEDA, no al que se pide —encadenar, mover la ventana y CERRAR LA CAPA cuelgan de que el cambio se aplique—: sin eso, controlado y con el producto rechazando, el calendario se cerraba y el valor volvia atras. ENTRA maxDias, que IMPIDE en vez de avisar. Es un numero cualquiera y SIN PASARLO NO HAY TOPE: lo pidio asi el responsable, «si la consulta es maximo 30 dias debe funcionar igual, si es libre sin limite debe funcionar igual». Eligiendo el final, los dias de mas van aria-disabled —y NO disabled: apagado de verdad sale del roving tabindex y quien navega con teclado se queda sin saber por que un dia no responde—. Un rango que LLEGA ya pasado se pinta y se dice, no se recorta: el componente no reescribe un valor que le dieron. Y el tope NUNCA bloquea el gesto que lo arregla. R140 · ENTRAN error Y deshabilitado. El equipo los rodeaba envolviendo el componente en un Campo y apagandolo con pointer-events y opacidad, y ELLOS MISMOS marcaron el problema: APAGAR CON CSS NO SACA EL CONTROL DEL TABULADOR. Quien navega con teclado llegaba a un calendario visualmente apagado, lo abria y elegia una fecha que la pantalla rechaza. Ahora es `disabled` nativo. El error es DEL PAR: marca los dos disparadores y sale una vez, con su icono. Usa `cg-mal`, que es la clase que verificar-altura ya media para este componente y que VIAJABA EN LA HOJA SIN QUE NINGUN COMPONENTE LA EMITIERA —invisible a verificar-promesa-muerta, que solo mira unidades de dos clases o mas—: emitirla PAGA esa deuda en vez de anadir otra. Y EL CATALOGO PUBLICABA UNA API QUE NO EXISTE: su bloque de «copia esto» decia RangoFechas en plural, con etiquetaInicio, etiquetaFin, valor y permitirAbierto. NO COMPILABA, y ningun candado lo miraba porque todos comparan marcado y clases, no el texto del bloque de codigo. Lo irónico es lo util: llevaba versiones prometiendo un `valor` CONTROLADO. R139 no anade API nueva, CIERRA LA QUE ESTA PAGINA YA HABIA PUBLICADO. Y el catalogo no ensenaba NI UN RangoFecha en error ni apagado; ahora ensena los dos.</p>
-<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td><code>desde</code> Y <code>hasta</code> PASAN DE SEMBRAR A MANDAR. Un producto que hoy las pasa y NO guarda lo que llega por <code>onCambio</code> se encontrara el calendario CONGELADO: se pulsa un dia y no pasa nada. La migracion es de una linea —guardar y devolver— y es exactamente lo que el bloque de codigo del catalogo llevaba versiones prometiendo. QUIEN NO LAS PASA NO TIENE QUE TOCAR NADA: sigue gobernandose solo. En desarrollo sale un console.error si se pasan SIN <code>onCambio</code>, que es el uso viejo detectable con certeza; al que las pasa y las ignora no hay forma de detectarlo, y por eso va escrito aqui.</td></tr><tr><td>EL CALENDARIO YA NO SE CIERRA AL ELEGIR si el producto no aplica el cambio. Sin controlar, nada cambia: pedir es aplicar.</td></tr><tr><td>LOS DOS DISPARADORES ADMITEN AHORA <code>cg-mal</code> y <code>disabled</code>. Si su hoja apretaba <code>.fc-campo</code> dando por hecho que nunca estarian en error, aparece un renglon de error bajo los campos que antes no existia.</td></tr><tr><td>EL CALENDARIO PUEDE EMITIR DIAS <code>aria-disabled</code> cuando se pasa <code>maxDias</code>. Quien recorriera <code>.fc-d</code> a mano dando por hecho que todos son pulsables tiene un estado mas.</td></tr></tbody></table>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td><code>desde</code> Y <code>hasta</code> PASAN DE SEMBRAR A MANDAR. Un producto que hoy las pasa y NO guarda lo que llega por <code>onCambio</code> se encontrara el calendario CONGELADO: se pulsa un dia y no pasa nada. La migracion es de una linea —guardar y devolver— y es exactamente lo que el bloque de codigo del catalogo llevaba versiones prometiendo. QUIEN NO LAS PASA NO TIENE QUE TOCAR NADA: sigue gobernandose solo. En desarrollo sale un console.error si se pasan SIN <code>onCambio</code>, que es el uso viejo detectable con certeza; al que las pasa y las ignora no hay forma de detectarlo, y por eso va escrito aqui.</td></tr><tr><td>EL CALENDARIO SIGUE AL RANGO QUE QUEDA. Encadenar al segundo extremo, mover la ventana y CERRAR LA CAPA ocurren cuando el valor VUELVE con lo que se pidio. Si su producto aplica el cambio y lo devuelve, todo se comporta como siempre. Si NO lo aplica, el calendario se queda abierto con lo que habia — que es lo correcto: cerrar escondiendo un rechazo deja la pantalla sin hacer nada y sin decir por que. Y si aplica OTRA cosa —recorta el rango, lo ajusta— tampoco cierra, para que se vea lo que el producto decidio. Sin controlar, nada cambia: pedir es aplicar.</td></tr><tr><td>LOS DOS DISPARADORES ADMITEN AHORA <code>cg-mal</code> y <code>disabled</code>. Si su hoja apretaba <code>.fc-campo</code> dando por hecho que nunca estarian en error, aparece un renglon de error bajo los campos que antes no existia.</td></tr><tr><td>EL CALENDARIO PUEDE EMITIR DIAS <code>aria-disabled</code> cuando se pasa <code>maxDias</code>. Quien recorriera <code>.fc-d</code> a mano dando por hecho que todos son pulsables tiene un estado mas.</td></tr></tbody></table>
 
 
 <h3 class="sub-seccion">v1.121.0 <span class="cam-fecha">2026-09-16</span></h3>

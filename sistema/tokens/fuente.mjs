@@ -117,8 +117,13 @@ export const CAMBIOS = [
       + 'NADA: sigue gobernandose solo. En desarrollo sale un console.error si se pasan SIN '
       + '`onCambio`, que es el uso viejo detectable con certeza; al que las pasa y las ignora no hay '
       + 'forma de detectarlo, y por eso va escrito aqui.',
-      'EL CALENDARIO YA NO SE CIERRA AL ELEGIR si el producto no aplica el cambio. Sin controlar, '
-      + 'nada cambia: pedir es aplicar.',
+      'EL CALENDARIO SIGUE AL RANGO QUE QUEDA. Encadenar al segundo extremo, mover la ventana y '
+      + 'CERRAR LA CAPA ocurren cuando el valor VUELVE con lo que se pidio. Si su producto aplica '
+      + 'el cambio y lo devuelve, todo se comporta como siempre. Si NO lo aplica, el calendario se '
+      + 'queda abierto con lo que habia — que es lo correcto: cerrar escondiendo un rechazo deja la '
+      + 'pantalla sin hacer nada y sin decir por que. Y si aplica OTRA cosa —recorta el rango, lo '
+      + 'ajusta— tampoco cierra, para que se vea lo que el producto decidio. Sin controlar, nada '
+      + 'cambia: pedir es aplicar.',
       'LOS DOS DISPARADORES ADMITEN AHORA `cg-mal` y `disabled`. Si su hoja apretaba `.fc-campo` '
       + 'dando por hecho que nunca estarian en error, aparece un renglon de error bajo los campos '
       + 'que antes no existia.',
