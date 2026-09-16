@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.121.0";
+export const VERSION = "1.122.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,62 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.122.0', fecha: '2026-09-16',
+    que: 'R139 y R140 — RangoFecha se comporta por fin como un campo del sistema',
+    porque:
+      'Tres huecos anotados del MISMO componente por Control Administrativos V2.0, y los tres son '
+      + 'el mismo: RangoFecha era el unico campo del sistema que no se comportaba como un campo. '
+      + 'R139 · NO ESTABA CONTROLADO. `useState(desdeProp)` leia la prop UNA VEZ: `desde` y `hasta` '
+      + 'eran el valor inicial, no una atadura, asi que devolverle por onCambio un rango corregido '
+      + 'NO LO MOVIA. En sus palabras: «esto pasa de avisar a impedir y las lineas se borran» — quien '
+      + 'rechaza una seleccion no tenia forma de devolver el valor anterior y solo podia avisar '
+      + 'DESPUES de que alguien ya eligio mal. El caso real: su reporte semanal existe por el tope de '
+      + '48 h, que es SEMANAL; sobre nueve dias esa columna no significa nada. '
+      + 'Ahora mandan, con el patron de plegado/onPlegar del marco: sin pasarlas el componente se '
+      + 'gobierna solo. Y EL CALENDARIO SIGUE AL RANGO QUE QUEDA, no al que se pide —encadenar, mover '
+      + 'la ventana y CERRAR LA CAPA cuelgan de que el cambio se aplique—: sin eso, controlado y con '
+      + 'el producto rechazando, el calendario se cerraba y el valor volvia atras. '
+      + 'ENTRA maxDias, que IMPIDE en vez de avisar. Es un numero cualquiera y SIN PASARLO NO HAY '
+      + 'TOPE: lo pidio asi el responsable, «si la consulta es maximo 30 dias debe funcionar igual, '
+      + 'si es libre sin limite debe funcionar igual». Eligiendo el final, los dias de mas van '
+      + 'aria-disabled —y NO disabled: apagado de verdad sale del roving tabindex y quien navega con '
+      + 'teclado se queda sin saber por que un dia no responde—. Un rango que LLEGA ya pasado se '
+      + 'pinta y se dice, no se recorta: el componente no reescribe un valor que le dieron. Y el tope '
+      + 'NUNCA bloquea el gesto que lo arregla. '
+      + 'R140 · ENTRAN error Y deshabilitado. El equipo los rodeaba envolviendo el componente en un '
+      + 'Campo y apagandolo con pointer-events y opacidad, y ELLOS MISMOS marcaron el problema: '
+      + 'APAGAR CON CSS NO SACA EL CONTROL DEL TABULADOR. Quien navega con teclado llegaba a un '
+      + 'calendario visualmente apagado, lo abria y elegia una fecha que la pantalla rechaza. Ahora '
+      + 'es `disabled` nativo. El error es DEL PAR: marca los dos disparadores y sale una vez, con su '
+      + 'icono. Usa `cg-mal`, que es la clase que verificar-altura ya media para este componente y '
+      + 'que VIAJABA EN LA HOJA SIN QUE NINGUN COMPONENTE LA EMITIERA —invisible a '
+      + 'verificar-promesa-muerta, que solo mira unidades de dos clases o mas—: emitirla PAGA esa '
+      + 'deuda en vez de anadir otra. '
+      + 'Y EL CATALOGO PUBLICABA UNA API QUE NO EXISTE: su bloque de «copia esto» decia RangoFechas '
+      + 'en plural, con etiquetaInicio, etiquetaFin, valor y permitirAbierto. NO COMPILABA, y ningun '
+      + 'candado lo miraba porque todos comparan marcado y clases, no el texto del bloque de codigo. '
+      + 'Lo irónico es lo util: llevaba versiones prometiendo un `valor` CONTROLADO. R139 no anade API '
+      + 'nueva, CIERRA LA QUE ESTA PAGINA YA HABIA PUBLICADO. Y el catalogo no ensenaba NI UN '
+      + 'RangoFecha en error ni apagado; ahora ensena los dos.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      '`desde` Y `hasta` PASAN DE SEMBRAR A MANDAR. Un producto que hoy las pasa y NO guarda lo que '
+      + 'llega por `onCambio` se encontrara el calendario CONGELADO: se pulsa un dia y no pasa nada. '
+      + 'La migracion es de una linea —guardar y devolver— y es exactamente lo que el bloque de '
+      + 'codigo del catalogo llevaba versiones prometiendo. QUIEN NO LAS PASA NO TIENE QUE TOCAR '
+      + 'NADA: sigue gobernandose solo. En desarrollo sale un console.error si se pasan SIN '
+      + '`onCambio`, que es el uso viejo detectable con certeza; al que las pasa y las ignora no hay '
+      + 'forma de detectarlo, y por eso va escrito aqui.',
+      'EL CALENDARIO YA NO SE CIERRA AL ELEGIR si el producto no aplica el cambio. Sin controlar, '
+      + 'nada cambia: pedir es aplicar.',
+      'LOS DOS DISPARADORES ADMITEN AHORA `cg-mal` y `disabled`. Si su hoja apretaba `.fc-campo` '
+      + 'dando por hecho que nunca estarian en error, aparece un renglon de error bajo los campos '
+      + 'que antes no existia.',
+      'EL CALENDARIO PUEDE EMITIR DIAS `aria-disabled` cuando se pasa `maxDias`. Quien recorriera '
+      + '`.fc-d` a mano dando por hecho que todos son pulsables tiene un estado mas.',
+    ],
+  },
   {
     v: '1.121.0', fecha: '2026-09-16',
     que: 'EL CANDADO DEL ATRIBUTO — y dos cosas que la entrega llevaba versiones sin dar',

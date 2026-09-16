@@ -5,9 +5,10 @@
  * Los cuatro críticos que traía el del catálogo están cubiertos aquí.
  */
 
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, within, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
+import { useState } from 'react';
 import { RangoFecha } from '../src/RangoFecha';
 
 // Fecha fija: un calendario que dependa del reloj da pruebas que fallan solas
@@ -164,5 +165,234 @@ describe('Rango de fechas · lo que se anuncia', () => {
     expect(titulo).toHaveTextContent('marzo – abril de 2026');
     await u.click(screen.getByRole('button', { name: 'Mes siguiente' }));
     expect(titulo).toHaveTextContent('abril – mayo de 2026');
+  });
+});
+
+/* ── R139 · `RangoFecha` se comporta como un campo ──────────────────────────
+   Tres huecos que el equipo consumidor llevaba anotados del mismo componente, y
+   los tres son el mismo: era el único campo del sistema que no se comportaba
+   como un campo. El que lo trajo a papel fue el del control — `useState(
+   desdeProp)` leía la prop UNA VEZ, así que un producto que rechaza una
+   selección no tenía forma de devolver el valor anterior. En sus palabras:
+   «esto pasa de avisar a impedir y las líneas se borran». */
+describe('[17] R139 · el rango MANDA, no siembra', () => {
+  const props = { titulo: 'Rango de fechas', hoy: HOY };
+  const dia = (c: HTMLElement, n: string) =>
+    [...c.querySelectorAll('.fc-d')].find((b) => b.textContent === n) as HTMLElement;
+  const disparadores = (c: HTMLElement) => [...c.querySelectorAll('.fc-campo')] as HTMLElement[];
+
+  it('[17] el producto RECHAZA el cambio y el valor no se mueve', () => {
+    /* El defecto del R139 en crudo: hoy el componente escribía en su propio
+       estado y seguía adelante, así que el rechazo del producto no llegaba a
+       ninguna parte. */
+    const { container } = render(
+      <RangoFecha {...props} desde="2026-03-02" hasta={null} onCambio={() => {}} />
+    );
+    fireEvent.click(disparadores(container)[0]);
+    fireEvent.click(dia(container, '9'));
+    expect(disparadores(container)[0], 'el componente se creyó dueño del valor')
+      .toHaveTextContent('02/03/2026');
+  });
+
+  it('[17] y el producto APLICA el cambio y el valor sí se mueve', () => {
+    /* La otra mitad: controlado no puede significar «no se puede cambiar». */
+    function Envoltura() {
+      const [r, setR] = useState<{ desde: string | null; hasta: string | null }>(
+        { desde: '2026-03-02', hasta: null });
+      return <RangoFecha {...props} desde={r.desde} hasta={r.hasta} onCambio={setR} />;
+    }
+    const { container } = render(<Envoltura />);
+    fireEvent.click(disparadores(container)[0]);
+    fireEvent.click(dia(container, '9'));
+    expect(disparadores(container)[0]).toHaveTextContent('09/03/2026');
+  });
+
+  it('[17] `desde={null}` MANDA: el control no se pierde al vaciar', () => {
+    /* Con `desdeProp ?? desdeDentro` el `null` del producto caería al estado
+       interno y el control se perdería justo al vaciar, que es cuando más se
+       nota. Es la familia del R103 del selector. */
+    const { container, rerender } = render(
+      <RangoFecha {...props} desde="2026-03-02" hasta={null} onCambio={() => {}} />
+    );
+    expect(disparadores(container)[0]).toHaveTextContent('02/03/2026');
+    rerender(<RangoFecha {...props} desde={null} hasta={null} onCambio={() => {}} />);
+    expect(disparadores(container)[0], 'vaciar desde fuera no llegó')
+      .toHaveTextContent('Elegir fecha');
+  });
+
+  it('[17] SIN props se sigue gobernando solo: no se parte a quien no las pasa', () => {
+    const { container } = render(<RangoFecha {...props} />);
+    fireEvent.click(disparadores(container)[0]);
+    fireEvent.click(dia(container, '9'));
+    expect(disparadores(container)[0]).toHaveTextContent('09/03/2026');
+  });
+
+  it('[18] rechazado el final, el calendario NO se cierra', () => {
+    /* Lo peor que podía pasar: cerrar y revertir. La pantalla no hace nada y
+       nadie sabe por qué. Es la regla 7 del marco —pedir no es aplicar— con
+       otro valor. */
+    const { container } = render(
+      <RangoFecha {...props} desde="2026-03-02" hasta={null} onCambio={() => {}} />
+    );
+    fireEvent.click(disparadores(container)[1]);
+    expect(container.querySelector('[role="dialog"]')).not.toBeNull();
+    fireEvent.click(dia(container, '9'));
+    expect(container.querySelector('[role="dialog"]'), 'se cerró tras un cambio que no se aplicó')
+      .not.toBeNull();
+  });
+
+  it('[18] rechazado un periodo, la ventana NO salta ni se cierra', () => {
+    const { container } = render(
+      <RangoFecha {...props} desde={null} hasta={null} onCambio={() => {}} />
+    );
+    fireEvent.click(disparadores(container)[0]);
+    const antes = container.querySelector('.fc-meses')!.textContent;
+    fireEvent.click(screen.getByRole('button', { name: 'Este año' }));
+    expect(container.querySelector('.fc-meses')!.textContent,
+      'movió la ventana por un cambio que no se aplicó').toBe(antes);
+    expect(container.querySelector('[role="dialog"]')).not.toBeNull();
+  });
+});
+
+describe('[19] R139 · `maxDias`, que impide en vez de avisar', () => {
+  const props = { titulo: 'Rango de fechas', hoy: HOY };
+  const dia = (c: HTMLElement, n: string) =>
+    [...c.querySelectorAll('.fc-d')].find((b) => b.textContent === n) as HTMLElement;
+  const disparadores = (c: HTMLElement) => [...c.querySelectorAll('.fc-campo')] as HTMLElement[];
+
+  it('[19] SIN `maxDias` no hay tope ninguno', () => {
+    /* «Si es libre sin límite de días debe funcionar igual», dicho por el
+       responsable. El tope es opcional y su ausencia no cambia nada. */
+    const { container } = render(<RangoFecha {...props} desde="2026-03-01" hasta={null} onCambio={() => {}} />);
+    fireEvent.click(disparadores(container)[1]);
+    expect(container.querySelectorAll('.fc-d[aria-disabled]')).toHaveLength(0);
+    expect(container.querySelector('.cg-error')).toBeNull();
+  });
+
+  it.each([7, 30])('[19] con `maxDias={%i}` el día de más no se elige', (tope) => {
+    /* Un número cualquiera: 7 en un sitio, 30 en otro, y el componente se
+       comporta igual. */
+    const { container } = render(
+      <RangoFecha {...props} maxDias={tope} desde="2026-03-01" hasta={null} onCambio={() => {}} />
+    );
+    fireEvent.click(disparadores(container)[1]);
+    const ultimo = dia(container, String(tope));
+    expect(ultimo.getAttribute('aria-disabled'), `el día ${tope} debería poder elegirse`).toBeNull();
+    const pasado = dia(container, String(tope + 1));
+    if (pasado) {
+      expect(pasado.getAttribute('aria-disabled'), `el día ${tope + 1} pasa del tope`).toBe('true');
+    }
+  });
+
+  it('[19] el día fuera de alcance CONSERVA el foco y dice por qué', () => {
+    /* `aria-disabled` y no `disabled`: apagado de verdad sale del roving
+       tabindex y las flechas dejan de recorrer la rejilla — quien navega con
+       teclado se queda sin saber por qué un día no responde. */
+    const { container } = render(
+      <RangoFecha {...props} maxDias={7} desde="2026-03-01" hasta={null} onCambio={() => {}} />
+    );
+    fireEvent.click(disparadores(container)[1]);
+    const d9 = dia(container, '9');
+    expect(d9.hasAttribute('disabled'), 'lo apagó de verdad y rompió el recorrido').toBe(false);
+    expect(d9.getAttribute('aria-disabled')).toBe('true');
+    expect(d9.getAttribute('aria-label')).toContain('fuera del máximo de 7 días');
+  });
+
+  it('[19] y pulsarlo no hace nada', () => {
+    const alCambiar = vi.fn();
+    const { container } = render(
+      <RangoFecha {...props} maxDias={7} desde="2026-03-01" hasta={null} onCambio={alCambiar} />
+    );
+    fireEvent.click(disparadores(container)[1]);
+    fireEvent.click(dia(container, '9'));
+    expect(alCambiar, 'eligió un día que el tope prohíbe').not.toHaveBeenCalled();
+  });
+
+  it('[19] un rango que LLEGA ya pasado se pinta y se dice, no se recorta', () => {
+    /* El componente no reescribe un valor que le dieron: recortarlo sería
+       cambiar el dato de alguien en silencio, y rechazarlo, negarse a pintar un
+       rango que ya está guardado en su base de datos. */
+    const { container } = render(
+      <RangoFecha {...props} maxDias={7} desde="2026-03-01" hasta="2026-03-14" onCambio={() => {}} />
+    );
+    expect(disparadores(container)[1], 'recortó el dato').toHaveTextContent('14/03/2026');
+    expect(container.querySelector('.cg-error')!.textContent, 'no dice cuántos días son')
+      .toContain('Has elegido 14');
+  });
+
+  it('[19] el tope NO bloquea el gesto que lo arregla', () => {
+    /* Un tope que se hace cumplir sobre los dos extremos deja el rango largo
+       inarreglable: la persona queda encerrada. Elegir un inicio nuevo no tiene
+       techo, y «Limpiar» sigue vivo. */
+    const alCambiar = vi.fn();
+    const { container } = render(
+      <RangoFecha {...props} maxDias={7} desde="2026-03-01" hasta="2026-03-14" onCambio={alCambiar} />
+    );
+    fireEvent.click(disparadores(container)[0]);
+    expect(container.querySelectorAll('.fc-d[aria-disabled]'),
+      'eligiendo el INICIO no puede haber techo').toHaveLength(0);
+    fireEvent.click(dia(container, '20'));
+    expect(alCambiar).toHaveBeenCalled();
+  });
+
+  it('[19] el error del PRODUCTO manda sobre el del tope', () => {
+    const { container } = render(
+      <RangoFecha {...props} maxDias={7} desde="2026-03-01" hasta="2026-03-14"
+        error="La sede no tiene marcaciones en ese periodo." onCambio={() => {}} />
+    );
+    expect(container.querySelector('.cg-error')!.textContent).toContain('La sede no tiene');
+    expect(container.querySelector('.cg-error')!.textContent).not.toContain('Has elegido');
+  });
+});
+
+describe('[20] y [21] R139 · el error y el apagado, como en cualquier campo', () => {
+  const props = { titulo: 'Rango de fechas', hoy: HOY };
+  const disparadores = (c: HTMLElement) => [...c.querySelectorAll('.fc-campo')] as HTMLElement[];
+
+  it('[20] el error marca los DOS disparadores y sale UNA vez', () => {
+    /* Lo que está mal no es un extremo: es el rango. Dentro de cada `.cg`
+       saldría dos veces diciendo lo mismo. */
+    const { container } = render(<RangoFecha {...props} error="Revisa el periodo." />);
+    expect(container.querySelectorAll('.fc-campo.cg-mal')).toHaveLength(2);
+    expect(container.querySelectorAll('.cg-error')).toHaveLength(1);
+    for (const d of disparadores(container)) {
+      expect(d.getAttribute('aria-invalid')).toBe('true');
+      expect(d.getAttribute('aria-describedby')).toBe(container.querySelector('.cg-error')!.id);
+    }
+  });
+
+  it('[20] el error lleva ICONO: un renglón rojo suelto se confunde con una ayuda', () => {
+    const { container } = render(<RangoFecha {...props} error="Revisa el periodo." />);
+    expect(container.querySelector('.cg-error .ic'), 'el color solo no dice que algo falla').not.toBeNull();
+  });
+
+  it('[20] el `.fc-resumen` NO entra en `aria-describedby`', () => {
+    /* Es `role="status"`, una región viva: metido ahí se lee dos veces. */
+    const { container } = render(<RangoFecha {...props} error="Revisa el periodo." />);
+    const descrito = disparadores(container)[0].getAttribute('aria-describedby')!;
+    expect(descrito.split(' ')).not.toContain(container.querySelector('.fc-resumen')!.id);
+  });
+
+  it('[21] `deshabilitado` apaga los dos disparadores, y la capa no se abre', () => {
+    /* Lo que de verdad lo impide es el `disabled` del marcado: un botón apagado
+       no dispara `onClick`. La guarda de `abrir()` es defensa y está declarada
+       como tal en el componente — quitarla deja estas 31 en verde, y no se
+       escribe una prueba que finja sujetarla. */
+    const { container } = render(<RangoFecha {...props} deshabilitado />);
+    for (const d of disparadores(container)) {
+      expect((d as HTMLButtonElement).disabled).toBe(true);
+    }
+    fireEvent.click(disparadores(container)[0]);
+    expect(container.querySelector('[role="dialog"]'), 'apagado y aun así abrió').toBeNull();
+  });
+
+  it('[21] y sale del tabulador: NO es solo lectura, y se declara', () => {
+    /* La transversal 0c distingue las dos cosas. Esta prueba fija la decisión
+       para que nadie la «arregle» a `aria-disabled` sin cambiar el contrato:
+       este control NO tiene variante de solo lectura. */
+    const { container } = render(<RangoFecha {...props} deshabilitado />);
+    for (const d of disparadores(container)) {
+      expect(d.hasAttribute('disabled'), 'con aria-disabled seguiría enviándose').toBe(true);
+    }
   });
 });

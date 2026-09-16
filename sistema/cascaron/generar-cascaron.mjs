@@ -4055,6 +4055,60 @@ también. <strong>Si algo se rompe por estrechez, se rompe aquí primero.</stron
  </div>
   <p role="status" class="fc-resumen" id="fc-resumen">Sin rango elegido.</p>
 </div>
+
+<h3 class="sub-seccion">R139 &middot; en error, apagado, y con tope de d&iacute;as</h3>
+<p class="seccion-sub">Tres estados que el componente entrega desde la v1.122.0 y que esta p&aacute;gina
+no ense&ntilde;aba en ninguna parte &mdash; mientras <code>verificar-altura</code> ya med&iacute;a la fila
+&laquo;Rango en error&raquo; contra marcado que nadie emit&iacute;a. El error es <strong>del par</strong>, no de un
+extremo: marca los dos disparadores y el mensaje sale una vez.</p>
+<div class="bloque">
+  <div class="fc-zona">
+    <div role="group" class="fc-campos">
+      <div class="cg">
+        <span class="cg-et" id="fce-ini-et">Desde</span>
+        <button type="button" class="campo fc-campo cg-mal" id="fce-ini" aria-invalid="true"
+                aria-describedby="fce-error" aria-haspopup="dialog" aria-expanded="false"
+                aria-controls="fce-cal" aria-labelledby="fce-ini-et fce-ini-v">
+          <span id="fce-ini-v">01/03/2026</span></button>
+      </div>
+      <span class="fc-guion" aria-hidden="true">${ICO_CHEV_DER}</span>
+      <div class="cg">
+        <span class="cg-et" id="fce-fin-et">Hasta</span>
+        <button type="button" class="campo fc-campo cg-mal" id="fce-fin" aria-invalid="true"
+                aria-describedby="fce-error" aria-haspopup="dialog" aria-expanded="false"
+                aria-controls="fce-cal" aria-labelledby="fce-fin-et fce-fin-v">
+          <span id="fce-fin-v">14/03/2026</span></button>
+      </div>
+      <button type="button" class="btn btn-neutro">Limpiar</button>
+    </div>
+    <span class="cg-error" id="fce-error">${icono('alerta')}El rango no puede pasar de 7 d&iacute;as. Has elegido 14.</span>
+    <p role="status" class="fc-resumen">Del domingo 1 al s&aacute;bado 14 de marzo de 2026.</p>
+  </div>
+</div>
+<p class="seccion-sub">Y apagado. <strong>No es solo lectura</strong>: sale del tabulador y no viaja con el
+formulario. Si lo que hace falta es que se vea, se lea y se env&iacute;e mientras una consulta est&aacute;
+en curso, este control <strong>no tiene</strong> esa variante &mdash; y se dice en vez de fingir que
+<code>deshabilitado</code> cubre los dos casos.</p>
+<div class="bloque">
+  <div class="fc-zona">
+    <div role="group" class="fc-campos">
+      <div class="cg">
+        <span class="cg-et" id="fcd-ini-et">Desde</span>
+        <button type="button" class="campo fc-campo" id="fcd-ini" disabled
+                aria-haspopup="dialog" aria-expanded="false"
+                aria-labelledby="fcd-ini-et fcd-ini-v"><span id="fcd-ini-v">Elegir fecha</span></button>
+      </div>
+      <span class="fc-guion" aria-hidden="true">${ICO_CHEV_DER}</span>
+      <div class="cg">
+        <span class="cg-et" id="fcd-fin-et">Hasta</span>
+        <button type="button" class="campo fc-campo" id="fcd-fin" disabled
+                aria-haspopup="dialog" aria-expanded="false"
+                aria-labelledby="fcd-fin-et fcd-fin-v"><span id="fcd-fin-v">Elegir fecha</span></button>
+      </div>
+    </div>
+    <p role="status" class="fc-resumen">Sin rango elegido.</p>
+  </div>
+</div>
 <table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Detalle</th><th>Por qué</th></tr></thead>
   <tbody>
@@ -4091,17 +4145,33 @@ también. <strong>Si algo se rompe por estrechez, se rompe aquí primero.</stron
 <h3 class="sub-seccion">Código</h3>
 ${verCodigo(
   'Uso del componente',
-  `import { CampoFecha, RangoFechas } from '@ae/sistema';
+  // ESTE BLOQUE NO COMPILABA. Decia \`RangoFechas\` en plural, con
+  // \`etiquetaInicio\`, \`etiquetaFin\`, \`valor\`, \`permitirAbierto\` y unos
+  // atajos de cadena: nada de eso existe ni ha existido nunca. Era un «copia
+  // esto» que no compila, y ningun candado lo miraba porque todos comparan
+  // marcado y clases, no el texto de verCodigo(). Lo encontro el diseno del
+  // R139 el 2026-09-16.
+  //
+  // Y lo irónico es lo util: el catalogo llevaba versiones prometiendo un
+  // \`valor\` CONTROLADO que el componente no daba. El R139 no anade API nueva
+  // — cierra la que esta pagina ya habia publicado.
+  `import { RangoFecha } from '@ae/sistema';
 
-<CampoFecha etiqueta="Fecha de ingreso" maximo="hoy" />
+// Sin \`desde\`/\`hasta\` se gobierna solo.
+<RangoFecha titulo="Rango de fechas" />
 
-<RangoFechas
-  etiquetaInicio="Desde"
-  etiquetaFin="Hasta"
-  valor={rango}
-  onCambio={setRango}
-  atajos={['mes', 'mes-pasado', 'anio']}
-  permitirAbierto            // «en curso», sin fecha de fin
+// Con ellas MANDAN: guarda lo que llegue y devuelvelo.
+const [r, setR] = useState({ desde: null, hasta: null });
+
+<RangoFecha
+  titulo="Rango de fechas"
+  desde={r.desde}
+  hasta={r.hasta}
+  onCambio={setR}
+  maxDias={7}                  // el calendario IMPIDE pasar de ahi
+  error={sinSede ? 'Seleccione sede' : undefined}
+  deshabilitado={sinSede}      // sale del tabulador, no solo se ve apagado
+  primerDia={1}                // lunes
 />`
 )}`;
 

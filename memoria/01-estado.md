@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 15 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.121.0** — nace el candado del atributo, y
-dos cosas que la entrega llevaba versiones sin dar
+**Versión del sistema:** MMI-DS **v1.122.0** — R139 y R140: `RangoFecha` se
+comporta por fin como un campo del sistema
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -60,10 +60,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · **1010 reglas de 1525** · **731 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.121.0.zip` · **60 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.122.0.zip` · **60 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.121.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.122.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los dieciocho pasos · **173 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -85,6 +85,84 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.46.0 | **R52** · todos los iconos de la entrega salían 2px más pequeños que en el catálogo |
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
+
+### Lo de hoy (v1.122.0), con detalle
+
+**R139 y R140 · `RangoFecha` se comporta por fin como un campo.** Tres huecos
+anotados del **mismo** componente por Control Administrativos V2.0, y los tres
+eran el mismo: era el único campo del sistema que no se comportaba como un
+campo.
+
+**No estaba controlado, y era peor de lo que su nota sugería.**
+`useState(desdeProp)` leía la prop **una vez**: `desde` y `hasta` no eran «poco
+controladas», eran **el valor inicial**. Devolverle por `onCambio` un rango
+corregido **no lo movía**, así que solo podían avisar *después* de que alguien
+ya eligió mal:
+
+> *«Esto pasa de avisar a impedir y las líneas se borran.»*
+
+El caso real lo explica: su reporte semanal existe por el tope de **48 h, que es
+semanal**. Sobre nueve días esa columna no significa nada.
+
+**Y el calendario sigue ahora al rango que QUEDA, no al que se pide** — es la
+regla 7 del marco con otro valor. Encadenar al segundo extremo, mover la ventana
+y **cerrar la capa** cuelgan de que el cambio se haya aplicado. Sin eso,
+controlado y con el producto rechazando, el calendario **se cerraba y el valor
+volvía atrás**: la pantalla no hace nada y nadie sabe por qué.
+
+### `maxDias` impide, y sin pasarlo no hay tope
+
+Es un número cualquiera. Lo fijó el responsable: *«si la consulta es máximo 30
+días debe funcionar igual, si es libre sin límite debe funcionar igual»*.
+
+Dos mitades que no son una concesión:
+
+- **Impide** mientras se elige el final: los días pasados del techo van
+  `aria-disabled` — **y no `disabled`**, porque apagado de verdad el día sale
+  del roving tabindex y quien navega con teclado se queda sin saber por qué no
+  responde.
+- **Avisa** cuando el rango **llega ya puesto**: se pinta y se dice, **no se
+  recorta**. El componente no reescribe un valor que le dieron — recortarlo
+  sería cambiar el dato de alguien en silencio; rechazarlo, negarse a pintar un
+  rango que ya está guardado en su base de datos. Es lo mismo que hace `maximo`
+  en el editor, que cuenta «N de más» y no trunca una letra.
+
+Y **el tope nunca bloquea el gesto que lo arregla**: eligiendo el inicio no hay
+techo, y «Limpiar» sigue vivo. Un tope aplicado a los dos extremos deja el rango
+largo inarreglable.
+
+### R140 · y el rodeo del equipo tenía un fallo que ellos mismos marcaron
+
+Envolvían `RangoFecha` en un `Campo` para tener error, y lo apagaban con
+`pointer-events: none` y opacidad. Lo escribieron en rojo y tienen razón:
+**apagar con CSS no saca el control del recorrido del teclado.** Quien navega
+con tabulador llegaba a un calendario visualmente apagado, lo abría y elegía una
+fecha que la pantalla rechaza.
+
+Una cosa más de ese rodeo, que no vieron: `Campo` emite `<label htmlFor={id}>`
+apuntando a un `id` que su hijo no tiene. No sale doble rótulo porque
+`RangoFecha` no pinta su título — pero **el vínculo estaba roto**.
+
+**El error es del PAR**, no de un extremo: marca los dos disparadores y sale una
+vez, con su icono. Y usa **`cg-mal`**, que resultó ser una deuda escondida: esa
+clase **viajaba en la hoja desde siempre sin que ningún componente la
+emitiera**, invisible a `verificar-promesa-muerta` porque solo mira unidades de
+**dos clases o más** (`enUnidad.length < 2 → continue`) y `.cg-mal` es suelta.
+Emitirla **paga** esa deuda en vez de añadir otra. Y no la elegí yo:
+`verificar-altura` ya medía la fila «Rango en error» con esa clase, contra
+marcado que nadie emitía.
+
+### Y el catálogo publicaba una API que no existe
+
+Su bloque de «copia esto» decía `RangoFechas` en plural, con `etiquetaInicio`,
+`etiquetaFin`, `valor` y `permitirAbierto`. **No compilaba**, y ningún candado lo
+miraba: todos comparan marcado y clases, no el texto del bloque de código.
+
+Lo irónico es lo útil: **llevaba versiones prometiendo un `valor` controlado**.
+R139 no añade API nueva — **cierra la que esa página ya había publicado**.
+
+Y el catálogo no enseñaba **ni un `RangoFecha` en error ni apagado**, mientras
+`verificar-altura` ya medía esa fila. Ahora enseña los dos.
 
 ### Lo de hoy (v1.121.0), con detalle
 

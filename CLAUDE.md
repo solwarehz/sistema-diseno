@@ -19,12 +19,12 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.121.0** — **nace el candado del atributo**, el paso 19. Se
-pidió «garantizar la entrega y la promesa» y la respuesta honesta era que no
-estaba garantizado: de 35 componentes, 6 tenían una prueba que los comparara con
-el catálogo, y los seis la tenían **porque primero se reportó un defecto ahí**.
-Ahora hay uno que pregunta por todos: qué atributos emite siempre cada clase, y
-que el catálogo los pinte. Nació con once divergencias y las once están pagadas.
+**Estado actual: v1.122.0** — **R139 y R140: `RangoFecha` se comporta por fin
+como un campo.** Tres huecos anotados del mismo componente y los tres eran el
+mismo: no estaba controlado —`useState(desdeProp)` leía la prop una vez—, no
+tenía `error` y no tenía forma de apagarse. Ahora el rango **manda**, `maxDias`
+**impide** en vez de avisar, y `deshabilitado` saca el control del tabulador,
+que es lo que el rodeo con CSS no hacía.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

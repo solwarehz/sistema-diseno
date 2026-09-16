@@ -17,6 +17,7 @@
 import { useEffect, useMemo, useRef, useState, useId } from 'react';
 import { usarDesplegable } from './interno/desplegable';
 import { Boton } from './Boton';
+import { Icono } from './Icono';
 
 export type RangoFechaProps = {
   /** Etiqueta del conjunto. Obligatoria: dos campos sin nombre común no se
@@ -41,6 +42,44 @@ export type RangoFechaProps = {
   /** Cuántos meses se ven a la vez. Dos por omisión, que es lo que el catálogo
    *  enseña y lo que hace falta para elegir un rango sin navegar a ciegas. */
   meses?: 1 | 2;
+
+  /**
+   * R139 · TOPE DE DÍAS DEL RANGO, contado **inclusivo**: del 1 al 7 son 7.
+   *
+   * **Sin pasarlo no hay tope**, y ese es el caso corriente. Es un número
+   * cualquiera —7 en un sitio, 30 en otro— y el componente se comporta igual:
+   * lo pidió el responsable así, «si la consulta es máximo 30 días debe
+   * funcionar igual, si es libre sin límite debe funcionar igual».
+   *
+   * El caso que lo trajo: el reporte semanal de asistencia existe por el tope
+   * de 48 h, que es **semanal**; sobre nueve días esa columna no significa
+   * nada. Antes solo podían avisar **después** de que alguien eligiera catorce.
+   *
+   * IMPIDE mientras se elige el final —los días de más no se pueden elegir— y
+   * AVISA cuando el rango **llega ya puesto** desde fuera: el componente no
+   * reescribe un valor que le dieron. Recortarlo sería cambiar el dato de
+   * alguien en silencio; rechazarlo, negarse a pintar un rango que ya está
+   * guardado. Es lo mismo que hace `maximo` en `EditorTexto`, que cuenta «N de
+   * más» y no trunca una letra.
+   */
+  maxDias?: number;
+
+  /**
+   * R139 · EL ERROR DEL PRODUCTO, como en todos los campos del sistema. Manda
+   * sobre el que genere `maxDias`, igual que en el contador del editor.
+   */
+  error?: string;
+
+  /**
+   * R139 · APAGADO. Los dos disparadores salen del tabulador y el calendario no
+   * se abre.
+   *
+   * **No es solo lectura** (regla transversal 0c): si lo que hace falta es que
+   * se vea, se lea, se enfoque y **viaje con el formulario** mientras una
+   * consulta está en curso, esto NO sirve — y este control **no tiene** esa
+   * variante. Se dice en vez de fingir que cubre los dos casos.
+   */
+  deshabilitado?: boolean;
 };
 
 /** Un periodo del panel. `rango` recibe «hoy» para poder probarlo sin reloj. */
@@ -118,17 +157,85 @@ const enPalabras = (d: Date) =>
 
 export function RangoFecha({
   titulo,
-  desde: desdeProp = null,
-  hasta: hastaProp = null,
+  /* SIN VALOR POR OMISIÓN, a propósito. Un `= null` haría que `desdeProp` nunca
+     fuera `undefined` y el componente se creería controlado SIEMPRE: pasaría a
+     ignorar sus propios clics en todo producto que no pase `onCambio`. */
+  desde: desdeProp,
+  hasta: hastaProp,
   onCambio,
   primerDia = 1,
   hoy = new Date(),
   atajos = ATAJOS_POR_OMISION,
   meses = 2,
+  maxDias,
+  error,
+  deshabilitado,
 }: RangoFechaProps) {
   const id = useId();
-  const [desde, setDesde] = useState<string | null>(desdeProp);
-  const [hasta, setHasta] = useState<string | null>(hastaProp);
+  /**
+   * R139 · EL RANGO MANDA, NO SIEMBRA.
+   *
+   * Aquí ponía `useState(desdeProp)`: las props se leían **una vez** y no se
+   * volvían a mirar. El producto no podía mover el rango después de montar, así
+   * que devolverle por `onCambio` un rango corregido **no lo movía**. Lo dijo
+   * Control Administrativos V2.0 en el R139 con su consecuencia: *«esto pasa de
+   * avisar a impedir y las líneas se borran»* — quien quiere rechazar una
+   * selección no tiene forma de devolver el valor anterior, así que solo puede
+   * avisar **después** de que alguien ya eligió mal.
+   *
+   * Mismo patrón que `plegado`/`onPlegar` del marco: sin props, el componente
+   * se gobierna solo; pasadas, mandan siempre. No se hacen obligatorias porque
+   * ya están publicadas como opcionales desde la v1.39.0 y eso sería un error
+   * de compilación en cada consumidor.
+   *
+   * SE DECIDE CON `!== undefined`, no con `??`. `desde={null}` es un rango
+   * vacío deliberado y tiene que mandar igual; con `??` ese `null` caería al
+   * estado interno y el control se perdería **justo al vaciar**, que es cuando
+   * más se nota. Es la familia del R103 del selector: el `null` que la firma
+   * promete y no viaja.
+   */
+  const controlado = desdeProp !== undefined || hastaProp !== undefined;
+  const [desdeDentro, setDesdeDentro] = useState<string | null>(desdeProp ?? null);
+  const [hastaDentro, setHastaDentro] = useState<string | null>(hastaProp ?? null);
+  const desde = controlado ? (desdeProp ?? null) : desdeDentro;
+  const hasta = controlado ? (hastaProp ?? null) : hastaDentro;
+
+  /**
+   * EL USO VIEJO SE DICE EN VOZ ALTA, que es lo único que se puede hacer por él.
+   *
+   * Hasta la v1.121.0 `desde`/`hasta` eran la semilla, y mucha pantalla las pasa
+   * **sin** `onCambio` porque no hacía falta: el componente se gobernaba solo.
+   * Ahora eso deja el calendario congelado —se pulsa un día y no pasa nada—, y
+   * es el único caso que se puede detectar con certeza.
+   *
+   * **Lo que NO se puede detectar** es a quien sí pasa `onCambio` y no guarda lo
+   * que llega. Ése solo lo caza su pantalla, y por eso va también en el aviso de
+   * ruptura del registro de cambios: un `console.error` no sustituye a decirlo.
+   */
+  if (process.env.NODE_ENV !== 'production'
+      && (desdeProp !== undefined || hastaProp !== undefined) && !onCambio) {
+    console.error(
+      'RangoFecha: `desde`/`hasta` MANDAN desde la v1.122.0, ya no son el valor ' +
+      'inicial. Pasadas sin `onCambio`, el calendario queda congelado: se pulsa ' +
+      'un día y no pasa nada, porque el componente pide el cambio y nadie lo ' +
+      'aplica. Guarda lo que llegue por `onCambio` y devuélvelo por `desde`/' +
+      '`hasta` —es una línea— o deja de pasarlas y se gobernará solo.',
+    );
+  }
+
+  /**
+   * PEDIR NO ES APLICAR. Devuelve si el cambio **quedó**, y de eso cuelga todo
+   * lo demás: encadenar al segundo extremo, mover la ventana y **cerrar la
+   * capa**. Es la regla 7 del marco con otro valor.
+   *
+   * Sin esto, controlado y con el producto rechazando, el calendario se cerraba
+   * y el valor volvía atrás: la pantalla no hacía nada y nadie sabía por qué.
+   */
+  function pedirRango(d: string | null, h: string | null): boolean {
+    if (!controlado) { setDesdeDentro(d); setHastaDentro(h); }
+    onCambio?.({ desde: d, hasta: h });
+    return !controlado;
+  }
   /**
    * R131 · SE USA EL DESPLEGABLE DEL SISTEMA, no una cuarta copia.
    *
@@ -184,6 +291,15 @@ export function RangoFecha({
   });
 
   function abrir(cual: 'desde' | 'hasta') {
+    /* DEFENSA, Y SE DICE QUE LO ES. Hoy `abrir` solo se llama desde los dos
+       disparadores, y un botón `disabled` no dispara `onClick`: esta línea es
+       **inalcanzable**, y quitarla deja las 31 pruebas en verde —lo midió una
+       mutación—. Se queda porque lo que hace que sea inalcanzable vive FUERA de
+       esta función, en el `disabled` del marcado, y el día que alguien llame a
+       `abrir` desde un atajo de teclado o desde una prop nueva, esto seguiría
+       siendo correcto. Lo que NO se hace es escribir una prueba que finja
+       sujetarla. */
+    if (deshabilitado) return;
     // NO se borra nada al abrir. El del catálogo hacía `ini = null; fin = null`
     // aquí, así que un simple Shift+Tab de vuelta destruía la selección sin
     // avisar. Abrir es abrir.
@@ -209,30 +325,62 @@ export function RangoFecha({
     else cerrarPorClicFuera();
   }
 
+  /* ── EL TOPE ─────────────────────────────────────────────────────────────
+     Sin `maxDias` nada de esto existe: `techo` es null, `fueraDeAlcance`
+     devuelve siempre false y `excede` siempre false. El componente se comporta
+     exactamente como antes, que es el caso corriente. */
+  const dDesde = desde ? deIso(desde) : null;
+  const dHasta = hasta ? deIso(hasta) : null;
+  /** Días del rango, contados INCLUSIVE: del 1 al 7 son 7, no 6. */
+  const diasEntre = (a: Date, b: Date) =>
+    Math.round((b.getTime() - a.getTime()) / 86400000) + 1;
+  /** El último día que se puede elegir como final. */
+  const techo = maxDias && dDesde ? sumarDias(dDesde, maxDias - 1) : null;
+  /**
+   * Un día queda fuera SOLO mientras se elige el FINAL. Eligiendo el inicio no
+   * hay techo: si no, un rango que ya se pasó no se podría arreglar moviendo su
+   * inicio, y la persona quedaría encerrada.
+   */
+  const fueraDeAlcance = (d: Date) => !!(techo && modo === 'hasta' && d > techo);
+  /** Un rango que LLEGA ya pasado no se recorta ni se rechaza: se pinta y se dice. */
+  const excede = !!(maxDias && dDesde && dHasta && diasEntre(dDesde, dHasta) > maxDias);
+  /* LA CLASE DEL ERROR ES `cg-mal`, NO `campo-mal`, y el porqué va aquí y no
+     dentro del array de clases: ahí dentro el extractor lee las palabras del
+     comentario como nombres de clase y las reporta como clases que nadie
+     define. Este archivo ya lo tenía escrito unas líneas más abajo y aun así
+     caí; lo cazó `verificar-entrega` al instante.
+
+     `cg-mal` porque es la clase que el candado de la altura ya mide para este
+     componente —eligió esa—, y porque viajaba en la hoja desde siempre SIN QUE
+     NINGÚN COMPONENTE LA EMITIERA: invisible al candado de la promesa muerta,
+     que solo mira unidades de dos clases o más. Emitirla PAGA esa deuda en vez
+     de añadir otra. */
+  const idError = `${id}-error`;
+  /* El error del producto MANDA; el del tope aparece solo si no hay otro. Es la
+     misma línea que `usarContador` del editor, no un criterio nuevo. */
+  const elError = error ?? (excede
+    ? `El rango no puede pasar de ${maxDias} ${maxDias === 1 ? 'día' : 'días'}. `
+      + `Has elegido ${diasEntre(dDesde!, dHasta!)}.`
+    : undefined);
+
   function elegir(d: Date) {
+    // Fuera de alcance no se elige, venga del ratón o del teclado.
+    if (fueraDeAlcance(d)) return;
     const s = iso(d);
     if (modo === 'desde') {
       const nuevoHasta = hasta && deIso(hasta) < d ? null : hasta;
-      setDesde(s);
-      setHasta(nuevoHasta);
-      onCambio?.({ desde: s, hasta: nuevoHasta });
-      // Encadena al segundo extremo sin cerrar: es lo que se espera al elegir
-      // un rango, y evita reabrir.
-      setModo('hasta');
-    } else {
-      // Elegir un «hasta» anterior al «desde» reinicia el rango en vez de
-      // producir un rango invertido, que no significa nada.
-      if (desde && d < deIso(desde)) {
-        setDesde(s);
-        setHasta(null);
-        onCambio?.({ desde: s, hasta: null });
-        setModo('hasta');
-        return;
-      }
-      setHasta(s);
-      onCambio?.({ desde, hasta: s });
-      cerrar();
+      // Encadena al segundo extremo sin cerrar —es lo que se espera al elegir
+      // un rango— PERO solo si el cambio quedó: ver `pedirRango`.
+      if (pedirRango(s, nuevoHasta)) setModo('hasta');
+      return;
     }
+    // Elegir un «hasta» anterior al «desde» reinicia el rango en vez de
+    // producir un rango invertido, que no significa nada.
+    if (desde && d < deIso(desde)) {
+      if (pedirRango(s, null)) setModo('hasta');
+      return;
+    }
+    if (pedirRango(desde, s)) cerrar();
   }
 
   function teclas(e: React.KeyboardEvent) {
@@ -301,13 +449,15 @@ export function RangoFecha({
     if (!dentro) setMesBase(inicioDeMes(foco));
   }, [foco, visibles]);
 
-  const dDesde = desde ? deIso(desde) : null;
-  const dHasta = hasta ? deIso(hasta) : null;
-
   /** R120 · con «desde» puesto y eligiendo «hasta», el rango que saldría si se
    *  pulsara donde está el ratón. Sin esto no se ve qué se está a punto de
    *  elegir hasta después de elegirlo. */
-  const previo = modo === 'hasta' && dDesde && !dHasta && sobre && sobre > dDesde ? sobre : null;
+  /* Y SE RECORTA AL TECHO. Sin esto, con `maxDias` puesto el cursor pintaba un
+     tramo más largo del que se puede elegir: el contrato dice que el tramo que
+     se ve es el que se elegiría, y con el tope dejaba de serlo. */
+  const sobreEnAlcance = sobre && techo && sobre > techo ? techo : sobre;
+  const previo = modo === 'hasta' && dDesde && !dHasta && sobreEnAlcance && sobreEnAlcance > dDesde
+    ? sobreEnAlcance : null;
   const finEfectivo = dHasta ?? previo;
 
   const dentroDelRango = (d: Date) =>
@@ -329,9 +479,7 @@ export function RangoFecha({
     const r = a.rango(hoy);
     const d = r.desde;
     const h = r.hasta;
-    setDesde(iso(d));
-    setHasta(iso(h));
-    onCambio?.({ desde: iso(d), hasta: iso(h) });
+    if (!pedirRango(iso(d), iso(h))) return;   // rechazado: nada se mueve
     setMesBase(inicioDeMes(meses === 1 ? h : sumarMeses(h, -1)));
     setFoco(d);
     cerrar();
@@ -398,8 +546,15 @@ export function RangoFecha({
           <button
             type="button"
             ref={modo === 'desde' ? disparador : undefined}
-            className={['campo', 'fc-campo', activoDesde ? 'fc-activo' : '']
+            className={['campo', 'fc-campo', activoDesde ? 'fc-activo' : '',
+              elError ? 'cg-mal' : '']
               .filter(Boolean).join(' ')}
+            disabled={deshabilitado}
+            aria-invalid={elError ? true : undefined}
+            /* El error describe a los DOS: es del par, no de un extremo. El
+               `.fc-resumen` NO entra aquí — es una región viva y se leería dos
+               veces. */
+            aria-describedby={elError ? idError : undefined}
             aria-haspopup="dialog"
             aria-expanded={abierto && modo === 'desde'}
             aria-labelledby={`${id}-e-desde ${id}-v-desde`}
@@ -423,8 +578,15 @@ export function RangoFecha({
           <button
             type="button"
             ref={modo === 'hasta' ? disparador : undefined}
-            className={['campo', 'fc-campo', activoHasta ? 'fc-activo' : '']
+            className={['campo', 'fc-campo', activoHasta ? 'fc-activo' : '',
+              elError ? 'cg-mal' : '']
               .filter(Boolean).join(' ')}
+            disabled={deshabilitado}
+            aria-invalid={elError ? true : undefined}
+            /* El error describe a los DOS: es del par, no de un extremo. El
+               `.fc-resumen` NO entra aquí — es una región viva y se leería dos
+               veces. */
+            aria-describedby={elError ? idError : undefined}
             aria-haspopup="dialog"
             aria-expanded={abierto && modo === 'hasta'}
             aria-labelledby={`${id}-e-hasta ${id}-v-hasta`}
@@ -489,6 +651,7 @@ export function RangoFecha({
                           const extremo = ini || fin;
                           const dentro = dentroDelRango(d);
                           const esPrevio = !!(previo && mismoDia(d, previo));
+                          const lejos = fueraDeAlcance(d);
                           return (
                             <span role="gridcell" key={iso(d)} aria-selected={extremo || dentro}>
                               <button
@@ -503,12 +666,19 @@ export function RangoFecha({
                                   esPrevio ? 'fc-previo' : '',
                                   dentro ? 'fc-dentro' : '',
                                 ].filter(Boolean).join(' ')}
+                                /* `aria-disabled` y NO `disabled`: un día apagado de
+                                   verdad sale del roving tabindex y las flechas dejan de
+                                   recorrer la rejilla — quien navega con teclado se queda
+                                   sin saber por qué un día no responde. Así conserva el
+                                   foco, dice por qué en su nombre, y no hace nada. */
+                                aria-disabled={lejos ? true : undefined}
                                 // «hoy» es aria-current="date". Los extremos son
                                 // aria-selected. El del catálogo los confundía.
                                 aria-current={mismoDia(d, hoy) ? 'date' : undefined}
                                 // El interior del rango se decía SOLO con color, que es
                                 // SC 1.4.1. Ahora va en el nombre accesible.
-                                aria-label={`${enPalabras(d)}${dentro ? ', dentro del rango' : ''}${extremo ? ', extremo del rango' : ''}`}
+                                aria-label={`${enPalabras(d)}${dentro ? ', dentro del rango' : ''}${extremo ? ', extremo del rango' : ''}`
+                                  + (lejos ? `, fuera del máximo de ${maxDias} días` : '')}
                                 onMouseEnter={() => setSobre(d)}
                                 onFocus={() => setSobre(d)}
                                 onClick={() => elegir(d)}
@@ -544,11 +714,25 @@ export function RangoFecha({
 
           <div className="fc-cal-pie">
             <Boton mini variante="destructiva"
-              onClick={() => { setDesde(null); setHasta(null); onCambio?.({ desde: null, hasta: null }); setModo('desde'); }}>
+              /* LIMPIAR NO TIENE TOPE, y es deliberado: es el gesto que arregla
+                 un rango que se pasó. Un tope que bloquea su propio remedio deja
+                 a la persona encerrada. */
+              onClick={() => { if (pedirRango(null, null)) setModo('desde'); }}>
               Limpiar
             </Boton>
           </div>
         </div>
+      )}
+
+      {/* EL ERROR VA UNA VEZ, y es del PAR. Dentro de cada `.cg` saldría dos
+          veces diciendo lo mismo, y lo que está mal no es un extremo: es el
+          rango. Lleva su icono porque un renglón rojo suelto se confunde con
+          una ayuda, y el color solo no dice que algo falla (SC 1.4.1). */}
+      {elError && (
+        <span id={idError} className="cg-error">
+          <Icono nombre="alerta" />
+          {elError}
+        </span>
       )}
 
       {/* Lo elegido, en palabras. Dos fechas ISO no se leen de un vistazo, y
