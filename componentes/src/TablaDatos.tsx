@@ -19,7 +19,7 @@
  * estilos, habría dos fuentes para lo mismo y divergirían.
  */
 
-import { useMemo, useState, useId } from 'react';
+import { useMemo, useState, useId, useRef } from 'react';
 import { Boton } from './Boton';
 import { Campo, Selector } from './Campo';
 import { Paginacion } from './Paginacion';
@@ -215,6 +215,8 @@ export function TablaDatos<T>({
     );
   }
   const id = useId();
+  /** Para que el aviso de deprecación salga una vez y no una por render. */
+  const yaAvisado = useRef(false);
   // R101 · El orden de arranque. Se calcula una vez —es «inicial»— y por eso
   // va como función: `useState(fn)` no lo recalcula en cada render.
   const [orden, setOrden] = useState<EstadoTabla['orden']>(() => {
@@ -260,11 +262,18 @@ export function TablaDatos<T>({
         'Son la misma prop con dos nombres: deje solo `columnasSiempreVisibles`.'
       );
     }
-    console.warn(
-      'TablaDatos: `columnasFijas` pasa a llamarse `columnasSiempreVisibles` desde la ' +
-      'v1.124.0. Nunca significó «fija al desplazar» — eso es `anclarColumnas`. ' +
-      'Sigue funcionando; el cambio es de una palabra.'
-    );
+    /* UNA VEZ POR MONTAJE, no una por render. Medido por una auditoría: tres
+       pulsaciones en el buscador daban cuatro avisos, así que un producto que
+       use el alias inunda la consola en proporción a lo que se use la tabla —y
+       un aviso que ensordece es un aviso que se filtra—. */
+    if (!yaAvisado.current) {
+      yaAvisado.current = true;
+      console.warn(
+        'TablaDatos: `columnasFijas` pasa a llamarse `columnasSiempreVisibles` desde la ' +
+        'v1.124.0. Nunca significó «fija al desplazar» — eso es `anclarColumnas`. ' +
+        'Sigue funcionando; el cambio es de una palabra.'
+      );
+    }
   }
   const columnasSiempreVisibles =
     siempreVisiblesFuera ?? columnasFijasFuera ?? (columnas[0] ? [columnas[0].clave] : []);

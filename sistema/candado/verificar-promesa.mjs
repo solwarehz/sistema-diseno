@@ -77,6 +77,18 @@ const CASOS = [
   ['Chip de éxito', [elem('span', ['chip', 'chip-exito'])]],
   ['Celda de la tabla', [elem('table', ['tb']), elem('tbody'), elem('tr'), elem('td', ['tb-indice', 'mono'])]],
   ['Cabecera de la tabla', [elem('table', ['tb']), elem('thead'), elem('tr'), elem('th', ['tb-th'])]],
+  /* R142 · LA CELDA ANCLADA, en sus cuatro caras. Van NOMBRADAS porque el
+     barrido no puede verlas: la unica demostracion del anclaje vive dentro del
+     paquete de los componentes vivos, y ese paquete se corta antes de leer nada
+     —lleva React dentro, y React lleva la cadena que rompe cualquier intento de
+     aislarlo con una expresion regular—. Sin estas cuatro lineas, TODO el
+     marcado del R142 quedaba fuera del alcance de este candado: se comprobo
+     dejando la hoja entregada divergiendo solo en `.tb-ancla` y los seis
+     candados de comparacion salieron en verde. Lo cazo una auditoria. */
+  ['Celda anclada', [elem('table', ['tb']), elem('tbody'), elem('tr'), elem('td', ['tb-ancla'])]],
+  ['Celda anclada en fila alterna', [elem('table', ['tb']), elem('tbody'), elem('tr', ['tb-alt']), elem('td', ['tb-ancla', 'tb-ancla-x', 'tb-ancla-fin'])]],
+  ['Cabecera anclada', [elem('table', ['tb']), elem('thead'), elem('tr'), elem('th', ['tb-th', 'tb-ancla'])]],
+  ['Filtro anclado', [elem('table', ['tb']), elem('thead'), elem('tr', ['tb-fila-filtros']), elem('td', ['tb-f-celda', 'tb-ancla'])]],
   ['Paginación', [elem('div', ['pgn']), elem('button', ['pgn-btn'])]],
   // R102 · la fila común de las tres cargas. Va nombrada además del barrido
   // porque es la superficie de esta versión: si un día se cae del marcado, el

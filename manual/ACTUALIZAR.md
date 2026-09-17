@@ -220,8 +220,9 @@ esa propiedad, el comportamiento es el de siempre.
 
 **La tabla tiene modo servidor.** `modo="servidor"` + `total`: la tabla deja de
 tocar los datos, solo emite el estado por `alCambiar` y pinta lo que le des. Y
-`columnasFijas` marca la columna que identifica cada fila para que el selector
-de columnas no pueda quitarla.
+`columnasSiempreVisibles` marca la columna que identifica cada fila para que el
+selector de columnas no pueda quitarla. **Se llamaba `columnasFijas` hasta la
+v1.124.0**; el nombre viejo sigue funcionando y avisa en desarrollo.
 
 ### Los archivos viajan como `.tsx` sin compilar
 

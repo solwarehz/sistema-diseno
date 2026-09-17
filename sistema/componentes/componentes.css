@@ -916,7 +916,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   font-family: 'IBM Plex Mono', monospace; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TABLA DE DATOS — 87 reglas · clases .tb-*
+   TABLA DE DATOS — 90 reglas · clases .tb-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tabla-simple, .tb-sub{ display: block; overflow-x: auto; }
@@ -966,7 +966,11 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .tb tbody tr:hover{ background: var(--fondo-fila-hover); box-shadow: inset 3px 0 0 var(--accion); }
 .tb-ancla{ position: sticky; left: 0; z-index: 1; background: var(--fondo-tarjeta); }
 .tb-ancla-x{ left: var(--tb-indice); }
-.tb-th.tb-ancla, .tb-f-celda.tb-ancla{ background: var(--fondo-encabezado); z-index: 2; }
+.tb-th-indice.tb-ancla, .tb-indice.tb-ancla{
+  min-width: var(--tb-indice); max-width: var(--tb-indice); overflow: hidden; }
+.tb-indice.tb-ancla{ padding-inline: 4px; }
+.tb-th.tb-ancla{ background: var(--fondo-encabezado); z-index: 2; }
+.tb-fila-filtros .tb-f-celda.tb-ancla{ background: var(--fondo-encabezado); z-index: 2; }
 .tb tbody tr.tb-alt .tb-ancla{ background: var(--fondo-fila-alt); }
 .tb tbody tr:hover .tb-ancla{ background: var(--fondo-fila-hover); }
 .tb tbody tr:hover .tb-ancla:not(.tb-ancla-x){ box-shadow: inset 3px 0 0 var(--accion); }

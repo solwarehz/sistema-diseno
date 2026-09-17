@@ -181,9 +181,18 @@ function TablaViva({ anclar }: { anclar: 0 | 1 }) {
 const donde = document.getElementById('marco-vivo');
 if (donde) createRoot(donde).render(<MarcoVivo />);
 
-/* Las dos caras de la prop: sin anclar —que es lo que se entrega por
-   omisión— y anclada. Sin la primera, `verificar-omision` tendría razón al
-   protestar: el catálogo enseñaría el modificador y no la base. */
+/*
+ * Las dos caras de la prop: sin anclar —que es lo que se entrega por omisión— y
+ * anclada. La primera está porque **quien mira tiene que poder comparar**, no
+ * porque la exija ningún candado: aquí decía que `verificar-omision` protestaría
+ * sin ella y ERA FALSO. Ese candado solo evalúa un par cuando encuentra las dos
+ * clases juntas en el marcado ESTÁTICO, y este paquete se corta antes de leer
+ * nada. Lo cazó una auditoría, y merecía cazarse: dos decisiones del mismo
+ * commit que se contradicen.
+ *
+ * Lo que sí sujeta el anclaje contra la hoja entregada son los cuatro casos
+ * nombrados en `verificar-promesa`, añadidos por eso mismo.
+ */
 const conAncla = document.getElementById('tabla-viva-anclada');
 if (conAncla) createRoot(conAncla).render(<TablaViva anclar={1} />);
 const sinAncla = document.getElementById('tabla-viva-suelta');

@@ -588,7 +588,7 @@ describe('[30] R142 · el anclaje y el renombrado', () => {
     expect(cab[0].classList.contains('tb-ancla')).toBe(true);
   });
 
-  it('[R101] `columnasFijas` sigue funcionando, y AVISA en desarrollo', () => {
+  it('[36] `columnasFijas` sigue funcionando, y AVISA en desarrollo', () => {
     /* La migración es de una palabra, y quien no la pase no toca nada. Pero
        romper en silencio a quien no lea `ACTUALIZAR.md` no es una opción. */
     const avisar = vi.spyOn(console, 'warn').mockImplementation(() => {});
@@ -600,7 +600,7 @@ describe('[30] R142 · el anclaje y el renombrado', () => {
     avisar.mockRestore();
   });
 
-  it('[R101] las dos a la vez y DISTINTAS fallan: dos verdades no son una migración', () => {
+  it('[36] las dos a la vez y DISTINTAS fallan: dos verdades no son una migración', () => {
     const avisar = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const gritar = vi.spyOn(console, 'error').mockImplementation(() => {});
     expect(() => pintar({ columnasFijas: ['nombre'], columnasSiempreVisibles: ['cargo'] }))
@@ -609,7 +609,7 @@ describe('[30] R142 · el anclaje y el renombrado', () => {
     gritar.mockRestore();
   });
 
-  it('[R101] y las dos a la vez DICIENDO LO MISMO no molestan', () => {
+  it('[36] y las dos a la vez DICIENDO LO MISMO no molestan', () => {
     const avisar = vi.spyOn(console, 'warn').mockImplementation(() => {});
     expect(() => pintar({ columnasFijas: ['nombre'], columnasSiempreVisibles: ['nombre'] }))
       .not.toThrow();

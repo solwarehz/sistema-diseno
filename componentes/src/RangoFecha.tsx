@@ -400,7 +400,15 @@ export function RangoFecha({
     // aquí, así que un simple Shift+Tab de vuelta destruía la selección sin
     // avisar. Abrir es abrir.
     setModo(cual);
-    const d = cual === 'hasta' && hasta ? deIso(hasta) : desde ? deIso(desde) : hoy;
+    /* LA VENTANA SE COLOCA DONDE SE PUEDE ELEGIR, no donde suele estar.
+       Con un final en agosto y `maxDias={7}`, abrir «Desde» dejaba la ventana en
+       marzo —`desde ? … : hoy`, sin mirar `hasta`— y los SESENTA Y UN dias
+       visibles salian apagados, sin una sola pista de donde mirar ni por que.
+       Lo cazo una auditoria. Ahora, eligiendo el inicio sin inicio puesto, la
+       ventana va al final que hay: ahi es donde estan los dias validos. */
+    const d = cual === 'hasta'
+      ? (hasta ? deIso(hasta) : desde ? deIso(desde) : hoy)
+      : (desde ? deIso(desde) : hasta ? deIso(hasta) : hoy);
     setFoco(d);
     // La ventana se coloca al abrir, no de rebote por el efecto: así el primer
     // dibujado ya trae el mes correcto y no hay salto visible.
@@ -527,6 +535,16 @@ export function RangoFecha({
     modo === 'hasta' ? !!(techo && d > techo) : !!(suelo && d < suelo);
   /** Un rango que LLEGA ya pasado no se recorta ni se rechaza: se pinta y se dice. */
   const excede = !!(tope && dDesde && dHasta && diasEntre(dDesde, dHasta) > tope);
+  /**
+   * UN RANGO INVERTIDO QUE LLEGA TAMBIEN SE DICE. Se pintaba sin una palabra
+   * —«Del viernes 20 de marzo al martes 10 de marzo»— y encima se colaba por el
+   * tope: `diasEntre` de un invertido da negativo, que nunca pasa de ningun
+   * maximo. Por el calendario no se puede construir —el segundo clic anterior
+   * al primero reinicia el rango— asi que solo llega de fuera, y por eso la
+   * salida es la misma que la de `excede`: se pinta y se dice, no se recorta ni
+   * se rechaza. Lo cazo una auditoria.
+   */
+  const invertido = !!(dDesde && dHasta && dHasta < dDesde);
   /* LA CLASE DEL ERROR ES `cg-mal`, NO `campo-mal`, y el porqué va aquí y no
      dentro del array de clases: ahí dentro el extractor lee las palabras del
      comentario como nombres de clase y las reporta como clases que nadie
@@ -541,7 +559,9 @@ export function RangoFecha({
   const idError = `${id}-error`;
   /* El error del producto MANDA; el del tope aparece solo si no hay otro. Es la
      misma línea que `usarContador` del editor, no un criterio nuevo. */
-  const elError = error ?? avisoTope ?? (excede
+  const elError = error ?? avisoTope ?? (invertido
+    ? 'El final es anterior al inicio. Revise el rango.'
+    : excede
     ? `El rango no puede pasar de ${tope} ${tope === 1 ? 'día' : 'días'}. `
       + `Has elegido ${diasEntre(dDesde!, dHasta!)}.`
     : undefined);
@@ -550,6 +570,12 @@ export function RangoFecha({
     // Fuera de alcance no se elige, venga del ratón o del teclado.
     if (fueraDeAlcance(d)) return;
     const s = iso(d);
+    /* EL AVISO DE UN PERIODO RECHAZADO NO SE QUEDA PEGADO. Solo se apagaba en
+       «Limpiar» y al aplicar otro periodo, asi que tras rechazar «Este año» el
+       error seguia en pantalla despues de elegir a mano un rango perfectamente
+       valido. Lo cazo una auditoria: un error que sobrevive a su causa deja de
+       significar nada. */
+    setAvisoTope(null);
     if (modo === 'desde') {
       const nuevoHasta = hasta && deIso(hasta) < d ? null : hasta;
       // Encadena al segundo extremo sin cerrar —es lo que se espera al elegir
@@ -635,21 +661,37 @@ export function RangoFecha({
   /** R120 · con «desde» puesto y eligiendo «hasta», el rango que saldría si se
    *  pulsara donde está el ratón. Sin esto no se ve qué se está a punto de
    *  elegir hasta después de elegirlo. */
-  /* Y SE RECORTA AL TECHO. Sin esto, con `maxDias` puesto el cursor pintaba un
-     tramo más largo del que se puede elegir: el contrato dice que el tramo que
-     se ve es el que se elegiría, y con el tope dejaba de serlo. */
-  const sobreEnAlcance = !sobre ? sobre
-    : modo === 'hasta' ? (techo && sobre > techo ? techo : sobre)
-    : (suelo && sobre < suelo ? suelo : sobre);
-  const previo = modo === 'hasta' && dDesde && !dHasta && sobreEnAlcance && sobreEnAlcance > dDesde
-    ? sobreEnAlcance : null;
-  const finEfectivo = dHasta ?? previo;
+  /*
+   * LO QUE SE VE ES LO QUE EL CLIC HARIA. Dos correcciones de una auditoria, y
+   * las dos son la misma promesa —la regla 7— cumplida donde no lo estaba:
+   *
+   * UNO · NO SE PREVISUALIZA UN DIA QUE NO SE PUEDE ELEGIR. Antes el tramo se
+   * RECORTABA al techo: con inicio el 1 y tope 7, sobrevolar el 20 pintaba
+   * 01→07 y pulsar el 20 no hacia NADA. Se veia un tramo y no se elegia
+   * ninguno, que es justo lo contrario de lo que la regla promete. Ahora un dia
+   * fuera de alcance no pinta nada: el dia ya sale apagado, y eso si dice la
+   * verdad.
+   *
+   * DOS · Y SE PREVISUALIZA TAMBIEN ELIGIENDO EL INICIO. No existia: con un
+   * final puesto, sobrevolar en modo «desde» no pintaba ni un dia. Se toleraba
+   * mientras «Hasta primero» era un camino raro; desde que el tope guarda los
+   * dos extremos es un camino de primera clase —es el que trajo este
+   * requerimiento— y esa mitad del gesto iba a ciegas.
+   */
+  const sobreElegible = sobre && !fueraDeAlcance(sobre) ? sobre : null;
+  /** El OTRO extremo, provisional, mientras el ratón está encima. */
+  const previo = !sobreElegible ? null
+    : modo === 'hasta'
+      ? (dDesde && !dHasta && sobreElegible > dDesde ? sobreElegible : null)
+      : (dHasta && !dDesde && sobreElegible < dHasta ? sobreElegible : null);
+  const finEfectivo = dHasta ?? (modo === 'hasta' ? previo : null);
+  const inicioEfectivo = dDesde ?? (modo === 'desde' ? previo : null);
 
   const dentroDelRango = (d: Date) =>
-    !!(dDesde && finEfectivo && d > dDesde && d < finEfectivo);
+    !!(inicioEfectivo && finEfectivo && d > inicioEfectivo && d < finEfectivo);
   // Ini y fin por separado: cada extremo redondea SU lado (.fc-ini / .fc-fin).
   // Fundidos en una sola clase, el rango pierde dónde empieza y dónde acaba.
-  const esIni = (d: Date) => !!(dDesde && mismoDia(d, dDesde));
+  const esIni = (d: Date) => !!(inicioEfectivo && mismoDia(d, inicioEfectivo));
   const esFin = (d: Date) => !!(finEfectivo && mismoDia(d, finEfectivo));
 
   const tituloMes = (m: Date) => `${MESES[m.getMonth()]} de ${m.getFullYear()}`;
@@ -877,7 +919,17 @@ export function RangoFecha({
                                 // El interior del rango se decía SOLO con color, que es
                                 // SC 1.4.1. Ahora va en el nombre accesible.
                                 aria-label={`${enPalabras(d)}${dentro ? ', dentro del rango' : ''}${extremo ? ', extremo del rango' : ''}`
-                                  + (lejos ? `, fuera del máximo de ${tope} días` : '')}
+                                  /* DICE QUIEN PONE EL LIMITE, y en singular cuando toca.
+                                     Decia «fuera del máximo de 1 días», y sobre el día
+                                     que es el inicio actual decía «extremo del rango,
+                                     fuera del máximo» — quien navega con lector oía «fuera
+                                     del máximo» sobre el día que él mismo acababa de
+                                     poner, sin que nada dijera que lo que fija el límite
+                                     es el OTRO extremo. Las dos las cazó una auditoría. */
+                                  + (lejos
+                                    ? `, fuera del máximo de ${tope} ${tope === 1 ? 'día' : 'días'}`
+                                      + (modo === 'desde' ? ' desde el final elegido' : ' desde el inicio elegido')
+                                    : '')}
                                 onMouseEnter={() => setSobre(d)}
                                 onFocus={() => setSobre(d)}
                                 onClick={() => elegir(d)}

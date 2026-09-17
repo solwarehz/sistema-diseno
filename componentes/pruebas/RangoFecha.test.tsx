@@ -282,19 +282,88 @@ describe('[17] R139 · el rango MANDA, no siembra', () => {
       .toContain('«Este año»');
   });
 
-  it('[19] la previsualización se RECORTA al techo', () => {
-    /* El contrato dice que el tramo que se ve es el que se elegiría. Con el
-       tope puesto dejaba de serlo, y quitar el recorte dejaba las 31 en verde:
-       era la mutación superviviente que encontró la auditoría. */
+  it('[19] la previsualización NO pinta un día que no se puede elegir', () => {
+    /* ESTA PRUEBA EXIGÍA EL RECORTE, Y EL RECORTE ERA UNA MENTIRA. Con inicio
+       el 1 y tope 7, sobrevolar el 20 pintaba el tramo 01→07 — y pulsar el 20
+       no hacía NADA. Se veía un tramo y no se elegía ninguno, que es lo
+       contrario de lo que el contrato promete: el tramo que se ve es el que se
+       elegiría. Lo cazó una auditoría adversaria.
+       Ahora un día fuera de alcance no pinta nada. El día ya sale apagado, y
+       eso sí dice la verdad. */
+    const alCambiar = vi.fn();
     const { container } = render(
       <RangoFecha titulo="Rango de fechas" hoy={HOY} maxDias={7} desde="2026-03-01" hasta={null}
-        onCambio={() => {}} />
+        onCambio={alCambiar} />
     );
     fireEvent.click(container.querySelectorAll('.fc-campo')[1]);
-    const d20 = [...container.querySelectorAll('.fc-d')].find((b) => b.textContent === '20')!;
+    const dias = [...container.querySelectorAll('.fc-d')];
+    const d20 = dias.find((b) => b.textContent === '20')!;
     fireEvent.mouseEnter(d20);
-    const previo = container.querySelector('.fc-previo')!;
-    expect(previo.textContent, 'pinta un tramo que no se puede elegir').toBe('7');
+    expect(container.querySelector('.fc-previo'), 'pinta un tramo que no se puede elegir').toBeNull();
+    fireEvent.click(d20);
+    expect(alCambiar, 'y encima no se puede elegir: lo pintado era falso').not.toHaveBeenCalled();
+    // Y el que SÍ cabe se previsualiza, para que la prueba no pase por vacío.
+    fireEvent.mouseEnter(dias.find((b) => b.textContent === '5')!);
+    expect(container.querySelector('.fc-previo')!.textContent).toBe('5');
+  });
+
+  it('[19] y eligiendo el INICIO también se previsualiza — antes no había nada', () => {
+    /* Con un final puesto, sobrevolar en modo «desde» no pintaba ni un día. Se
+       toleraba mientras «Hasta primero» era un camino raro; desde que el tope
+       guarda los dos extremos es un camino de primera clase. */
+    const { container } = render(
+      <RangoFecha titulo="Rango de fechas" hoy={HOY} maxDias={7} desde={null} hasta="2026-03-14"
+        onCambio={() => {}} />
+    );
+    fireEvent.click(container.querySelectorAll('.fc-campo')[0]);
+    const dias = [...container.querySelectorAll('.fc-d')];
+    fireEvent.mouseEnter(dias.find((b) => b.textContent === '10')!);
+    expect(container.querySelector('.fc-previo')!.textContent, 'sin pista de qué saldría').toBe('10');
+    // Del 11 al 13 quedan DENTRO del tramo que saldría.
+    expect([...container.querySelectorAll('.fc-dentro')].map((b) => b.textContent))
+      .toEqual(['11', '12', '13']);
+  });
+
+  it('[19] un periodo rechazado deja de avisar en cuanto se elige un rango válido', () => {
+    /* `avisoTope` solo se apagaba en «Limpiar»: tras rechazar «Este año», el
+       error seguía en pantalla después de elegir a mano un rango de tres días.
+       Un error que sobrevive a su causa deja de significar nada. */
+    /* Con tope, los periodos que no caben ya no se pintan, así que para llegar
+       a la guarda hace falta uno que crezca entre el filtro y el clic — el
+       mismo tramposo de la prueba de arriba. */
+    const estado = { crecido: false };
+    const tramposo = {
+      texto: 'Este año',
+      rango: () => (estado.crecido
+        ? { desde: new Date(2026, 0, 1), hasta: new Date(2026, 11, 31) }
+        : { desde: new Date(2026, 2, 10), hasta: new Date(2026, 2, 15) }),
+    };
+    const { container } = render(
+      <RangoFecha titulo="Rango de fechas" hoy={HOY} maxDias={7} desde={null} hasta={null}
+        atajos={[tramposo]} onCambio={() => {}} />
+    );
+    fireEvent.click(container.querySelectorAll('.fc-campo')[0]);
+    estado.crecido = true;
+    fireEvent.click(screen.getByRole('button', { name: 'Este año' }));
+    expect(container.querySelector('.cg-error')).not.toBeNull();
+    fireEvent.click([...container.querySelectorAll('.fc-d')].find((b) => b.textContent === '10')!);
+    expect(container.querySelector('.cg-error'), 'el aviso se quedó pegado').toBeNull();
+  });
+
+  it('[19] con un final lejano, abrir «Desde» lleva la ventana DONDE SE PUEDE ELEGIR', () => {
+    /* `abrir()` colocaba la ventana en `desde ?? hoy`, sin mirar `hasta`: con
+       un final en agosto y tope 7, los SESENTA Y UN días visibles salían
+       apagados y nada decía dónde mirar. */
+    const { container } = render(
+      <RangoFecha titulo="Rango de fechas" hoy={HOY} maxDias={7} desde={null} hasta="2026-08-30"
+        onCambio={() => {}} />
+    );
+    fireEvent.click(container.querySelectorAll('.fc-campo')[0]);
+    const dias = [...container.querySelectorAll('.fc-d')];
+    const apagados = dias.filter((b) => b.getAttribute('aria-disabled') === 'true');
+    expect(apagados.length, 'todo apagado y sin pista').toBeLessThan(dias.length);
+    expect(container.querySelector('.fc-cal-tit, .fc-mes-tit, [role="grid"]')?.getAttribute('aria-label')
+      ?? container.textContent).toMatch(/agosto/);
   });
 
   it('[21] apagar con la capa ABIERTA la cierra', () => {
@@ -362,6 +431,37 @@ describe('[17] R139 · el rango MANDA, no siembra', () => {
     expect(dia20.getAttribute('aria-disabled'), 'apagado por delante: eso sí encierra').toBeNull();
     fireEvent.click(dia20);
     expect(alCambiar).toHaveBeenCalledWith({ desde: '2026-03-20', hasta: null });
+  });
+
+  it('[19] un rango INVERTIDO que llega se pinta Y SE DICE', () => {
+    /* Se pintaba sin una palabra —«Del viernes 20 de marzo al martes 10 de
+       marzo»— y encima se colaba por el tope: `diasEntre` de un invertido da
+       negativo, que nunca pasa de ningún máximo. Por el calendario no se puede
+       construir; solo llega de fuera. */
+    const { container } = render(
+      <RangoFecha titulo="Rango de fechas" hoy={HOY} maxDias={7}
+        desde="2026-03-20" hasta="2026-03-10" onCambio={() => {}} />
+    );
+    expect(container.querySelector('.cg-error')!.textContent)
+      .toContain('El final es anterior al inicio');
+    // Y no se recorta ni se rechaza: los dos disparadores siguen diciendo lo que llegó.
+    expect(container.querySelectorAll('.fc-campo')[0]).toHaveTextContent('20/03/2026');
+    expect(container.querySelectorAll('.fc-campo')[1]).toHaveTextContent('10/03/2026');
+  });
+
+  it('[19] «Limpiar» es la salida de verdad, y nadie la pulsaba en 1029 pruebas', () => {
+    /* El contrato la llama «la tercera salida» y el componente «el gesto que
+       arregla un rango que se pasó». Funcionaba, y nada se habría enterado si
+       dejara de hacerlo. Lo cazó una auditoría. */
+    const alCambiar = vi.fn();
+    const { container } = render(
+      <RangoFecha titulo="Rango de fechas" hoy={HOY} maxDias={7}
+        desde="2026-03-01" hasta="2026-03-30" onCambio={alCambiar} />
+    );
+    fireEvent.click(container.querySelectorAll('.fc-campo')[0]);
+    fireEvent.click(screen.getByRole('button', { name: /Limpiar/ }));
+    expect(alCambiar, 'el gesto que arregla el rango no hace nada')
+      .toHaveBeenCalledWith({ desde: null, hasta: null });
   });
 
   it('[19] sin final puesto, elegir el inicio no tiene suelo ninguno', () => {

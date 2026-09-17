@@ -3258,7 +3258,7 @@ comportamiento de siempre y <strong>no cambia para nadie que no pida el anclaje<
   <tbody>
     <tr><td class="num">1</td><td><strong>Con <code>numerada</code>, la N.º se ancla con ella.</strong> Una N.º que se va por la izquierda mientras el nombre se queda deja la fila <em>peor</em> identificada que sin anclar nada.</td></tr>
     <tr><td class="num">2</td><td><strong>La celda anclada lleva fondo propio, y con él el rayado y el hover.</strong> Una celda pegajosa transparente deja ver pasar el texto por debajo; y como el rayado pinta la fila, sin reglas propias la columna anclada saldría lisa sobre una tabla rayada. El filete del hover <strong>se muda</strong> a la celda anclada: en su sitio de siempre queda tapado en cuanto se desplaza.</td></tr>
-    <tr><td class="num">3</td><td><strong>El separador es sombra, no borde.</strong> Con <code>border-collapse: collapse</code> los bordes los pinta la tabla, no la celda, así que un borde no viajaría con ella. Y <code>border-collapse</code> no se toca: pasar a <code>separate</code> duplicaría filetes y cambiaría la altura de fila, a cambio de nada.</td></tr>
+    <tr><td class="num">3</td><td><strong>El separador es un <code>::after</code>, no un borde.</strong> Con <code>border-collapse: collapse</code> los bordes los pinta la tabla, no la celda, así que un borde no viajaría con ella. Y <code>border-collapse</code> no se toca: pasar a <code>separate</code> duplicaría filetes y cambiaría la altura de fila, a cambio de nada.</td></tr>
     <tr><td class="num">4</td><td><strong>En el teléfono tiene techo:</strong> <code>44vw</code> con puntos suspensivos. Sin él, un nombre largo con <code>nowrap</code> ocupa más que la pantalla y no queda nada que desplazar — el anclaje habría empeorado el caso que vino a arreglar.</td></tr>
     <tr><td class="num">5</td><td><strong>Un <code>transform</code>, <code>filter</code>, <code>perspective</code>, <code>backdrop-filter</code> o <code>contain</code> en cualquier antepasado lo desactiva</strong>, sin error y sin consola: ese antepasado pasa a ser el bloque contenedor. Si su tabla vive dentro de una tarjeta animada, el anclaje no funcionará y no es un fallo del sistema.</td></tr>
   </tbody>
@@ -3333,7 +3333,8 @@ ${verCodigo(
     { clave: 'tarde',  titulo: 'Min. tarde', valor: (f) => f.tarde, numerica: true },
   ]}
   porPagina={10}                  // 10 · 25 · 50 · 0 para todas
-  columnasFijas={['nombre']}      // las que NO se pueden ocultar desde «Columnas»
+  columnasSiempreVisibles={['nombre']}   // las que NO se pueden ocultar desde «Columnas»
+  anclarColumnas={1}              // la primera —y la N.o con ella— se queda quieta al desplazar
   acciones={<Boton mini onClick={exportar}>CSV</Boton>}
 />`
 )}`;
@@ -10501,9 +10502,36 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    ─────────────────────────────────────────────────────────────────────────── */
 .tb-ancla { position: sticky; left: 0; z-index: 1; background: var(--fondo-tarjeta); }
 .tb-ancla-x { left: var(--tb-indice); }
+/* LA RENDIJA DE 7 px, MEDIDA EN CHROME SOBRE EL CATALOGO. Con 26 columnas la
+   tabla es mas ancha que su contenedor, y ahi width en una celda de tabla ES
+   UNA SUGERENCIA: la N.o salia a 45,24 px mientras el nombre se anclaba en
+   left: 52px. Quedaban SIETE PIXELES por los que se veia pasar el contenido
+   al desplazar — el defecto que el comentario de --tb-indice anticipaba, y que
+   ningun candado podia ver porque todos miran declaraciones, no cajas.
+   min-width si entra en el reparto de la tabla: medido, th y td pasan a 52,00
+   y el hueco cae a 0. Solo aplica anclada, asi que ninguna tabla sin
+   anclarColumnas cambia de ancho. */
+.tb-th-indice.tb-ancla, .tb-indice.tb-ancla {
+  min-width: var(--tb-indice); max-width: var(--tb-indice); overflow: hidden; }
+/* Y EL TOPE POR ARRIBA NO ES SIMETRIA: es el otro sintoma del mismo defecto, y
+   peor. Medido en Chrome: con la N.o de cuatro cifras la celda crecia a 55,21 y
+   el nombre se montaba ENCIMA 3,21 px; con cinco, 63 y once. Se pierde el
+   nombre Y el numero, que es peor que la rendija.
+   El relleno baja a 4 px SOLO anclada, y con eso caben hasta 99.999 filas sin
+   recortar nada — medido una a una—. A partir del millon de filas el numero se
+   corta en vez de montarse encima, que es la salida menos mala y queda dicha.
+   Un candado no podia ver ninguno de los dos: todos miran declaraciones, no
+   cajas. Esto salio mirandolo. */
+.tb-indice.tb-ancla { padding-inline: 4px; }
 /* La cabecera y la fila de filtros llevan SU fondo, no el de la tarjeta: si no,
    la columna anclada rompe la banda del encabezado justo donde empieza. */
-.tb-th.tb-ancla, .tb-f-celda.tb-ancla { background: var(--fondo-encabezado); z-index: 2; }
+/* LA DEL FILTRO GANA POR ESPECIFICIDAD, no por orden. .tb-f-celda.tb-ancla
+   empataba (0,2,0) con .tb-fila-filtros .tb-f-celda, que va DESPUES: su
+   background no ganaba nunca. Hoy los dos valores coinciden, asi que no se
+   veia — y esa es exactamente la declaracion muerta del R87, repetida veinte
+   lineas mas abajo de donde esta escrita esa leccion. Lo cazo una auditoria. */
+.tb-th.tb-ancla { background: var(--fondo-encabezado); z-index: 2; }
+.tb-fila-filtros .tb-f-celda.tb-ancla { background: var(--fondo-encabezado); z-index: 2; }
 .tb tbody tr.tb-alt .tb-ancla { background: var(--fondo-fila-alt); }
 /* DESPUES del rayado, a proposito: los dos son (0,3,2) y decide el orden. */
 .tb tbody tr:hover .tb-ancla { background: var(--fondo-fila-hover); }
