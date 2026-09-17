@@ -108,7 +108,7 @@ export const CAMBIOS = [
       + 'Y LOS VEINTE PASOS SALIAN EN VERDE por una razon que vale para todo el sistema: `casa()` '
       + 'descartaba TODO selector con un `+` o un `~` —«hermanos: no se soportan»— sin mirar si '
       + 'estaba dentro de un parentesis. El sistema estreno su primer `nth-child(n+…)` y lo metio '
-      + 'justo en el punto ciego de CINCO candados, porque verificar-promesa, -empate, -altura y '
+      + 'justo en el punto ciego de CUATRO candados, porque verificar-promesa, -altura y '
       + '-tono importan ese motor. Ahora se enmascaran los parentesis antes de buscar el combinador, '
       + 'y lo que de verdad se salta SE CUENTA Y SE IMPRIME: un limite declarado en un comentario '
       + 'que nadie imprime es un limite que nadie conoce. '
@@ -120,7 +120,25 @@ export const CAMBIOS = [
       + 'del nombre accesible, que con `aria-labelledby` presente deja de anunciarse (SC 2.5.3). '
       + 'Y UNA CIFRA QUE SOLO VIVIA EN UN MENSAJE DE COMMIT: el 14,33:1 del nombre tras quitar la '
       + 'opacidad no estaba en ningun archivo del repositorio. Ahora esta en la regla 11, con su par '
-      + 'y su superficie.',
+      + 'y su superficie. '
+      + 'Y UNA SEGUNDA AUDITORIA SOBRE ESTA MISMA VERSION, porque encontro CUATRO DEFECTOS DE DATOS '
+      + 'que habrian llegado a su base de datos. `privilegiosEfectivos` leia el mapa CRUDO para '
+      + 'decidir el base, y el propio base puede caerse despues —por `cerrado` o por un `depende` '
+      + 'sin resolver—: el modulo no se vaciaba y VIAJABA SIN SU BASE. El dependiente de un cerrado '
+      + 'sobrevivia sin su dependencia, porque `faltaDepende` tampoco miraba lo ya limpiado: quitar '
+      + 'una cosa puede tumbar a la siguiente, y eso es un PUNTO FIJO, no una pasada. `deshabilitado` '
+      + 'apagaba SOLO el interruptor de su fila, y los cuatro caminos indirectos —la clave '
+      + 'compartida, la cadena de `depende`, el arrastre del base y los NIVELES— lo ignoraban: el '
+      + 'panel concedia por debajo lo que habia marcado como no concedible. Y el arrastre se escribia '
+      + 'sobre un privilegio que el modulo NO DECLARA, porque `find(...)?.cerrado` sobre algo '
+      + 'inexistente da undefined: el panel INVENTABA el permiso, y encima no lo anunciaba porque '
+      + 'R149 si exigia que existiera — decia una cosa y hacia otra. '
+      + 'Ademas, el arreglo de `casa()` habia cambiado «no se» por UNA RESPUESTA EQUIVOCADA: '
+      + '`:nth-child` se borraba del selector en vez de evaluarse, asi que el motor afirmaba que los '
+      + 'dos primeros chips tambien desaparecen en movil, lo contrario del contrato del R145. Ahora '
+      + 'las pseudoclases que cuentan hermanos se descartan Y SE DICEN. Cuatro mutaciones sobrevivian '
+      + 'a la bateria —el segundo argumento de onCambio entre ellas— y las cuatro tienen ya su '
+      + 'prueba.',
     tokens: { alta: [], baja: [] },
     rompe: [
       '`privilegiosEfectivos` EXIGE SU TERCER PARAMETRO. Quien la llamaba con dos argumentos tiene '
@@ -133,10 +151,17 @@ export const CAMBIOS = [
       'LA ETIQUETA DE UN PRIVILEGIO PUEDE LLEVAR AHORA «· enciende tambien «X»». Cambia el NOMBRE '
       + 'ACCESIBLE del interruptor, asi que una prueba que busque por igualdad exacta —`{ name: '
       + '"Editar" }`— deja de encontrarlo. Solo aparece cuando el arrastre va a ocurrir de verdad.',
-      'AL SUBIR EL AVISO BAJO LA FILA DEL BASE, la ultima fila de un modulo sin grupos PASA A SER '
-      + '`:last-child` y pierde su linea inferior por `.pp-priv:last-child{border-bottom:0}`. Cambia '
-      + 'el dibujo de todos los modulos sin base, se pidiera o no. Lo cazo una auditoria revisando '
-      + 'esta misma lista.',
+      'AL SUBIR EL AVISO BAJO LA FILA DEL BASE, la ultima fila de un modulo sin grupos DEJA DE SER '
+      + '`:last-child` —el aviso pasa a serlo— asi que `.pp-priv:last-child{border-bottom:0}` ya no '
+      + 'la alcanza y GANA una linea inferior que antes no tenia. Cambia el dibujo de todos los '
+      + 'modulos sin base, se pidiera o no. Esta lista lo decia AL REVES —«pierde su linea»— y lo '
+      + 'cazo una auditoria midiendolo.',
+      'EL NOMBRE ACCESIBLE DE LA FILA BLOQUEADA POR `depende` CAMBIA: pasa de «Carga masiva» a '
+      + '«Carga masiva necesita otro permiso», porque el chip visible tenia que entrar en el nombre '
+      + '(SC 2.5.3). Una prueba de accesibilidad o e2e que la busque por nombre EXACTO deja de '
+      + 'encontrarla.',
+      'BAJO 560 px LAS FILAS DE UN MODULO SIN BASE SE DESPLAZAN 6 px a la izquierda, para que el '
+      + 'carril no quede a ras del borde de la tarjeta. El texto no se mueve.',
       'BAJO 900 px LA CABECERA ENSENA DOS CHIPS Y UN «+N». En la v1.125.0 no ensenaba el «+N» en '
       + 'ningun ancho —estaba muerto por especificidad— asi que si midieron esa version, midieron un '
       + 'defecto.',

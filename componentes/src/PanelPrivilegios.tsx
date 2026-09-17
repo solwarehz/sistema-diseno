@@ -336,7 +336,6 @@ export function privilegiosEfectivos(
   const salida: ValorPrivilegios = {};
   for (const m of modulos) {
     const del = valor[m.id] ?? {};
-    if (base && del[base] !== true) { salida[m.id] = {}; continue; }
     // R110 · Lo mismo que hace el base, y por lo mismo. Apagar aquel del que
     // uno depende NO borra lo guardado —eso es R98, y sigue en pie—, pero sí le
     // quita el efecto. Sin esta línea el backend recibiría `carga-masiva: true`
@@ -349,15 +348,57 @@ export function privilegiosEfectivos(
     // Es el mismo argumento del 403, al revés. `resumirPrivilegios` ya lo
     // filtraba (:222) y esta función no, aunque se documenta como «lo que de
     // verdad se aplica».
-    const quitados = todos(m)
-      .filter((p) => p.cerrado || (p.depende && faltaDepende(m, valor, p.id)))
-      .map((p) => p.id);
-    const limpio = { ...del };
-    for (const id of quitados) {
+    /*
+     * SE QUITA HASTA QUE NO QUEDA NADA QUE QUITAR, y luego se mira el base.
+     *
+     * DOS DEFECTOS DE DATOS, los dos cazados por una auditoria adversaria antes
+     * de publicar, y los dos del mismo origen: mirar el mapa CRUDO en vez del
+     * ya limpiado.
+     *
+     * UNO · la guarda del base leia `del[base]`, pero el propio base puede
+     * caerse despues —por `cerrado`, o por un `depende` sin resolver—. El
+     * modulo no se vaciaba y VIAJABA SIN SU BASE: con `ver` cerrado y un mapa
+     * viejo `{ver:true, editar:true}`, esta funcion devolvia `{editar:true}`.
+     * Es el 403 de R111 al reves: se manda al backend justo lo que el panel
+     * dice que no se puede conceder.
+     *
+     * DOS · `faltaDepende` consultaba `valor`, no lo limpiado, asi que el
+     * dependiente de un CERRADO sobrevivia sin su dependencia: `carga` viajaba
+     * sin `crear`. Quitar una cosa puede tumbar a la siguiente, y eso es un
+     * PUNTO FIJO, no una pasada.
+     *
+     * Se itera sobre el mapa que se va limpiando hasta que deja de encogerse.
+     * El tope es el numero de privilegios: cada vuelta quita al menos uno o
+     * para.
+     */
+    const limpio: Record<string, boolean | string> = { ...del };
+    const quitar = (id: string) => {
       delete limpio[id];
       // Los niveles de un privilegio sin efecto tampoco lo tienen.
       for (const k of Object.keys(limpio)) if (k.startsWith(`${id}:`)) delete limpio[k];
+    };
+    const parcial: ValorPrivilegios = { [m.id]: limpio };
+    let cambio = true;
+    while (cambio) {
+      cambio = false;
+      for (const p of todos(m)) {
+        if (limpio[p.id] === undefined) continue;
+        if (p.cerrado || (p.depende && faltaDepende(m, parcial, p.id))) { quitar(p.id); cambio = true; }
+      }
     }
+    /* Y LOS NIVELES DE LO QUE NO ESTA CONCEDIDO TAMPOCO SE APLICAN. Se limpiaban
+       solo los de lo QUITADO, asi que `{editar:false, 'editar:doc':'b'}` viajaba
+       entero: una configuracion de campo para un permiso que no se tiene. Es el
+       mismo argumento que el resto de esta funcion —lo efectivo es lo que de
+       verdad rige— y el mapa completo sigue guardandolo, que es R98. */
+    for (const p of todos(m)) {
+      if (limpio[p.id] !== true) {
+        for (const k of Object.keys(limpio)) if (k.startsWith(`${p.id}:`)) delete limpio[k];
+      }
+    }
+    // Y AHORA el base, sobre lo que ha quedado. Si el base no sobrevivio, el
+    // modulo entero deja de aplicarse: eso es lo que `base` significa.
+    if (base && limpio[base] !== true) { salida[m.id] = {}; continue; }
     salida[m.id] = limpio;
   }
   return salida;
@@ -387,7 +428,13 @@ export function PanelPrivilegios({
     const clave = todos(m).find((p) => p.id === priv)?.clave;
     if (clave) {
       todos(m).forEach((p) => {
-        if (p.clave === clave && !p.cerrado) delModulo[p.id] = activo;
+        /* R148 · Y NO SI ESTA DESHABILITADO. Esta linea miraba solo `cerrado`,
+           asi que pulsar el compañero libre encendia el que quien mira NO puede
+           repartir — y con una regla anti-escalada eso tumba el PUT entero. Es
+           el defecto que R148 vino a cerrar, colandose por la puerta de al
+           lado. Comparten clave: son el MISMO permiso, y si una mitad no es
+           mia, el permiso no es mio. Lo cazo una auditoria. */
+        if (p.clave === clave && !p.cerrado && !p.deshabilitado) delModulo[p.id] = activo;
       });
     }
     // R98 · EL BASE GOBIERNA, PERO NO BORRA.
@@ -407,8 +454,18 @@ export function PanelPrivilegios({
     // quien tenga que mandarlo al backend.
     if (base) {
       if (priv !== base && activo && !delModulo[base]) {
-        const puedeBase = !todos(m).find((p) => p.id === base)?.cerrado;
-        if (puedeBase) delModulo[base] = true;
+        /* R149 · EL BASE TIENE QUE EXISTIR EN EL MODULO. Aqui se hacia
+           `find(...)?.cerrado`, y sobre un privilegio INEXISTENTE eso da
+           `undefined`: el panel INVENTABA el permiso y lo mandaba al backend.
+           Un modulo que no declara `ver` —«lo que no aplica no se pasa», dice
+           este mismo componente— recibia `ver: true` al pulsar cualquier otra
+           cosa, y encima R149 no lo anunciaba porque su calculo si exigia que
+           existiera. Lo cazo una auditoria: el panel decia una cosa y hacia
+           otra.
+           R148 · Y tampoco si el base esta deshabilitado: encenderlo de rebote
+           es concederlo. */
+        const elBase = todos(m).find((p) => p.id === base);
+        if (elBase && !elBase.cerrado && !elBase.deshabilitado) delModulo[base] = true;
       }
     }
 
@@ -433,7 +490,9 @@ export function PanelPrivilegios({
           // conceder a mano, tampoco de rebote. La cadena se para ahí, y el
           // privilegio de abajo se quedará bloqueado diciendo qué falta.
           const p = todos(m).find((x) => x.id === dep);
-          if (!p || p.cerrado) break;
+          /* R148 · `deshabilitado` corta la cadena igual que `cerrado`: encender
+         de rebote lo que quien mira no puede repartir es concederlo. */
+      if (!p || p.cerrado || p.deshabilitado) break;
           delModulo[dep] = true;
         }
       }
@@ -479,8 +538,12 @@ export function PanelPrivilegios({
        está encendido, la frase sobraría y el ruido acabaría con que nadie la
        lea. Y solo si el base se puede encender: si está cerrado, no arrastra. */
     const elBase = base ? todos(m).find((x) => x.id === base) : undefined;
+    /* NI SOBRE UNA FILA QUE NO SE PUEDE PULSAR: prometer un arrastre en un
+       control apagado es ruido, y el ruido acaba con que nadie lea la frase
+       donde si importa. */
     const arrastraElBase = Boolean(
-      base && p.id !== base && !dado && elBase && !elBase.cerrado
+      base && p.id !== base && !dado && elBase && !elBase.cerrado && !elBase.deshabilitado
+      && !p.deshabilitado && !soloLectura
       && !concedido(valor, m.id, base),
     );
     const nombreBase = elBase?.nombre ?? base;
@@ -614,7 +677,12 @@ export function PanelPrivilegios({
                 contexto={typeof m.nombre === 'string' ? m.nombre : undefined}
                 opciones={n.opciones}
                 valor={String(valor[m.id]?.[claveNivel(p.id, n.id)] ?? n.opciones[0]?.valor ?? '')}
-                deshabilitado={soloLectura}
+                /* R148 · Y los NIVELES de una fila deshabilitada tampoco se
+                   tocan. Esta linea miraba solo `soloLectura`, asi que la
+                   configuracion de un privilegio declarado intocable se podia
+                   cambiar igual — «es soloLectura pero por fila» decia la regla
+                   15, y no lo era—. Lo cazo una auditoria. */
+                deshabilitado={soloLectura || p.deshabilitado === true}
                 cerrado={n.cerrado}
                 onCambio={(v) => cambiarNivel(m, p.id, n.id, v)}
               />

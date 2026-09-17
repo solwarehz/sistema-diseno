@@ -25,8 +25,10 @@ v1.125.0 antes de publicarla**: el «+N» del móvil no se veía **en ningún an
 porque `:nth-child(n+3)` cuenta como clase y le ganaba a la regla que lo enseña.
 Los veinte pasos salían en verde por una razón que vale para todo el sistema —
 `casa()` descartaba **todo** selector con un `+`, paréntesis incluidos, así que
-el primer `nth-child(n+…)` del repositorio cayó en el punto ciego de **cinco**
-candados. Ya no, y lo que de verdad no sabe mirar **lo imprime**.
+el primer `nth-child(n+…)` del repositorio cayó en el punto ciego de **cuatro**
+candados. Ya no — y al arreglarlo apareció algo peor, que una segunda auditoría
+cazó: el motor pasó a **responder mal** donde antes callaba. Ahora dice «no sé»,
+y **lo imprime**.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

@@ -18,7 +18,7 @@ BLOQUEABAN la adopción, y un entregable que salió muerto en la versión anteri
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **veinte pasos de
-verificación** —los que corre `publicar.mjs`—, **1060 pruebas en 54 archivos**,
+verificación** —los que corre `publicar.mjs`—, **1071 pruebas en 54 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -56,7 +56,7 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **1060 pruebas en 54 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **1071 pruebas en 54 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **1023 reglas de 1542** · **733 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
@@ -119,8 +119,10 @@ Y los veinte pasos salían en verde por una razón que vale para todo el sistema
 > soportan»— sin mirar si estaba dentro de un paréntesis.
 
 El sistema estrenó su primer `nth-child(n+…)` y lo metió justo en el punto ciego
-de **cinco** candados, porque `verificar-promesa`, `-empate`, `-altura` y `-tono`
-importan ese motor. Ahora se enmascaran los paréntesis antes de buscar el
+de **cuatro** candados, porque `verificar-promesa`, `-altura` y `-tono` importan
+ese motor. *(El registro dijo «cinco» e incluía `verificar-empate`, que solo
+importa `parsear` y `especificidad` y nunca llamó a `casa()`. Lo corrigió una
+auditoría.)* Ahora se enmascaran los paréntesis antes de buscar el
 combinador, y **lo que de verdad se salta se cuenta y se imprime**: un límite
 declarado en un comentario que nadie imprime es un límite que nadie conoce.
 

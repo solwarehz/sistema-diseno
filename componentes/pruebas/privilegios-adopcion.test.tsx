@@ -12,14 +12,15 @@
  * conserva la respuesta y no solo el número, y que el único bloqueado
  * **transitorio** se alcanza con teclado.
  */
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 // El motor de cascada del repositorio, en .mjs sin tipos propios.
-import { parsear, resolver, elem } from '../../sistema/candado/verificar-cascada.mjs';
-import { PanelPrivilegios, type ModuloPrivilegios, type ValorPrivilegios } from '../src/PanelPrivilegios';
+import { especificidad } from '../../sistema/candado/verificar-cascada.mjs';
+import { PanelPrivilegios, privilegiosEfectivos,
+  type ModuloPrivilegios, type ValorPrivilegios } from '../src/PanelPrivilegios';
 
 const HOJA = join(__dirname, '..', '..', 'sistema', 'componentes', 'componentes.css');
 const css = readFileSync(HOJA, 'utf8');
@@ -128,6 +129,17 @@ describe('[11] R144 · sin base se marca con un carril, no apagando', () => {
     expect(container.querySelectorAll('.pp-aviso'), 'o falta el aviso o sale dos veces').toHaveLength(1);
   });
 
+  it('[11] y a 560 px el carril NO se pega al borde de la tarjeta', () => {
+    /* Con el relleno del cuerpo en 12 px y el margen negativo también en 12, el
+       filete quedaba a 0,00 del borde —medido en Chrome— y se leía como un
+       borde grueso de la tarjeta, no como una marca por fila. La corrección no
+       tenía ni prueba ni candado: sobrevivía a que alguien la borrara. */
+    const movil = css.match(/@media \(max-width: 560px\)\s*\{[\s\S]*?\n\}/)?.[0] ?? '';
+    expect(movil, 'falta el bloque de 560 px').not.toBe('');
+    expect(movil, 'el carril vuelve a pegarse al borde')
+      .toMatch(/\.pp-sin-base \.pp-priv:not\(\.pp-priv-base\)\s*\{[^}]*margin-left:\s*-6px/);
+  });
+
   it('[11] con el base concedido no hay ni carril ni aviso', () => {
     const { container } = render(<Panel inicial={{ personal: { ver: true } }} />);
     expect(container.querySelector('.pp-sin-base')).toBeNull();
@@ -160,13 +172,20 @@ describe('[13] R145 · en el teléfono la cabecera conserva QUÉ, no solo CUÁNT
        pregunta que había que hacer. */
     const fuera = css.replace(/@media[^{]*\{[\s\S]*?\n\}/g, '');
     expect(fuera).toMatch(/\.pp-tags \.pp-tags-mas\s*\{[^}]*display:\s*none/);
-    const reglas = parsear(css);
-    const cadena = (clases: string[]) => [elem('span', ['pp-tags']), elem('span', clases)];
-    const gana = (clases: string[], ancho: number) =>
-      resolver(reglas, cadena(clases), 'display', ancho)?.valor?.trim() ?? null;
-    // El «+N» se ve en móvil y NO en escritorio.
-    expect(gana(['chip', 'pp-tags-mas'], 390), 'el «+N» no se ve en el teléfono').toBe('inline-block');
-    expect(gana(['chip', 'pp-tags-mas'], 1280), 'el «+N» se cuela en escritorio').toBe('none');
+    /* SE COMPRUEBA LA ESPECIFICIDAD, que es el invariante de verdad, y NO
+       resolviendo la cascada: el motor del repositorio no sabe contar hermanos
+       —lo dice él mismo— y hacerle esa pregunta devolvía una respuesta
+       equivocada, que es peor que no saber. Lo cazó la segunda auditoría.
+       La regla que OCULTA no puede alcanzar al «+N»; si un día alguien le quita
+       el `:not`, esta cuenta lo dice. */
+    const oculta = (css.match(/\.pp-tags \.chip:nth-child\(n\+3\)[^{]*\{[^}]*\}/) ?? [''])[0];
+    expect(oculta, 'la regla que oculta no está').not.toBe('');
+    expect(oculta, 'sin el :not, la regla que oculta se come el «+N»').toContain(':not(.pp-tags-mas)');
+    // Y la cuenta, con el mismo medidor que usa el sistema.
+    const selOculta = oculta.slice(0, oculta.indexOf('{')).trim();
+    const selEnsena = '.pp-tags .pp-tags-mas';
+    expect(especificidad(selOculta), 'la regla que oculta bajó de peso')
+      .toBeGreaterThan(especificidad(selEnsena));
   });
 
   it('[13] y el tercer chip se oculta en móvil sin llevarse el «+N» por delante', () => {
@@ -292,5 +311,181 @@ describe('[15] R148 · apagado por fila, sin esconder el dato', () => {
     const otro = [...container.querySelectorAll('[role="switch"]')]
       .find((s2) => (s2.closest('.pp-priv')?.textContent ?? '').startsWith('Crear'))!;
     expect(otro.getAttribute('aria-disabled')).toBeNull();
+  });
+});
+
+/**
+ * LO QUE UNA SEGUNDA AUDITORÍA ENCONTRÓ, y que las pruebas de arriba no
+ * sujetaban. Cuatro mutaciones sobrevivían y cuatro defectos de datos viajaban
+ * al backend. Cada `it` de aquí nació de una de ellas.
+ */
+describe('[17] R150 · lo efectivo no puede mentir, y el panel es quien lo calcula', () => {
+  it('[17] un módulo cuyo BASE se cae por `cerrado` sale VACÍO, no medio concedido', () => {
+    /* La guarda del base leía el mapa CRUDO, y el propio base puede caerse
+       después en el barrido. Con `ver` cerrado y un mapa viejo, esta función
+       devolvía `{editar:true}`: se manda al backend justo lo que el panel dice
+       que no se puede conceder — el 403 del R111, al revés. */
+    const mods: ModuloPrivilegios[] = [
+      { id: 'trab', nombre: 'T', privilegios: [
+        { id: 'ver', nombre: 'Ver', cerrado: 'Ya no se reparte.' },
+        { id: 'editar', nombre: 'Editar' },
+      ] },
+    ];
+    expect(privilegiosEfectivos(mods, { trab: { ver: true, editar: true } }, 'ver').trab)
+      .toEqual({});
+  });
+
+  it('[17] y si el base se cae por un `depende` sin resolver, igual', () => {
+    const mods: ModuloPrivilegios[] = [
+      { id: 'trab', nombre: 'T', privilegios: [
+        { id: 'ver', nombre: 'Ver', depende: 'inexistente' },
+        { id: 'editar', nombre: 'Editar' },
+      ] },
+    ];
+    expect(privilegiosEfectivos(mods, { trab: { ver: true, editar: true } }, 'ver').trab)
+      .toEqual({});
+  });
+
+  it('[17] el dependiente de un CERRADO no sobrevive: se limpia hasta el punto fijo', () => {
+    /* `faltaDepende` consultaba `valor`, no lo ya limpiado, así que `carga`
+       viajaba sin `crear`. Quitar una cosa puede tumbar a la siguiente. */
+    const mods: ModuloPrivilegios[] = [
+      { id: 'trab', nombre: 'T', privilegios: [
+        { id: 'ver', nombre: 'Ver' },
+        { id: 'crear', nombre: 'Crear', cerrado: 'Es del Jefe.' },
+        { id: 'carga', nombre: 'Carga', depende: 'crear' },
+      ] },
+    ];
+    expect(privilegiosEfectivos(mods, { trab: { ver: true, crear: true, carga: true } }, 'ver').trab)
+      .toEqual({ ver: true });
+  });
+
+  it('[17] `onCambio` entrega lo efectivo DE VERDAD, no el mapa otra vez', () => {
+    /* Sustituir el segundo argumento por el mapa crudo dejaba las 67 pruebas en
+       verde: la única que lo miraba usaba un caso donde los dos coinciden. Éste
+       los separa a propósito. */
+    const mods: ModuloPrivilegios[] = [
+      { id: 'trab', nombre: 'T', privilegios: [
+        { id: 'ver', nombre: 'Ver' },
+        { id: 'editar', nombre: 'Editar' },
+        { id: 'viejo', nombre: 'Viejo', cerrado: 'Ya no se reparte.' },
+      ] },
+    ];
+    const onCambio = vi.fn();
+    const { container } = render(
+      <PanelPrivilegios modulos={mods} valor={{ trab: { viejo: true } }} onCambio={onCambio}
+        abiertos={['trab']} />
+    );
+    const sw = [...container.querySelectorAll('[role="switch"]')]
+      .find((s2) => (s2.closest('.pp-priv')?.textContent ?? '').startsWith('Editar'))!;
+    fireEvent.click(sw);
+    const [completo, efectivo] = onCambio.mock.calls[0];
+    expect(completo.trab.viejo, 'el mapa completo NO borra: es R98').toBe(true);
+    expect(efectivo.trab.viejo, 'lo efectivo entrega un permiso cerrado').toBeUndefined();
+    expect(efectivo.trab).toEqual({ ver: true, editar: true });
+  });
+});
+
+describe('[15] R148 · `deshabilitado` cierra también las puertas de al lado', () => {
+  const con = (privilegios: ModuloPrivilegios['privilegios']) => {
+    const mods: ModuloPrivilegios[] = [{ id: 'x', nombre: 'X', privilegios }];
+    const onCambio = vi.fn();
+    const r = render(<PanelPrivilegios modulos={mods} valor={{}} onCambio={onCambio} abiertos={['x']} />);
+    return { ...r, onCambio };
+  };
+  const pulsar = (container: HTMLElement, nombre: string) => {
+    const sw = [...container.querySelectorAll('[role="switch"]')]
+      .find((s2) => (s2.closest('.pp-priv')?.textContent ?? '').startsWith(nombre))!;
+    fireEvent.click(sw);
+  };
+
+  it('[15] por `clave`: pulsar el compañero libre NO enciende el deshabilitado', () => {
+    /* Comparten clave: son el MISMO permiso, y si una mitad no es mía, el
+       permiso no es mío. La línea miraba solo `cerrado`. */
+    const { container, onCambio } = con([
+      { id: 'ver', nombre: 'Ver' },
+      { id: 'editar', nombre: 'Editar', clave: 'escritura', deshabilitado: true },
+      { id: 'crear', nombre: 'Crear', clave: 'escritura' },
+    ]);
+    pulsar(container, 'Crear');
+    expect(onCambio.mock.calls[0][0].x.editar, 'se concedió lo no concedible').toBeUndefined();
+    expect(onCambio.mock.calls[0][0].x.crear).toBe(true);
+  });
+
+  it('[15] por el ARRASTRE del base: si el base está deshabilitado, no se enciende', () => {
+    const { container, onCambio } = con([
+      { id: 'ver', nombre: 'Ver', deshabilitado: true },
+      { id: 'editar', nombre: 'Editar' },
+    ]);
+    pulsar(container, 'Editar');
+    expect(onCambio.mock.calls[0][0].x.ver, 'el base se concedió de rebote').toBeUndefined();
+  });
+
+  it('[15] por la cadena de `depende`: se corta como con `cerrado`', () => {
+    const { container, onCambio } = con([
+      { id: 'ver', nombre: 'Ver' },
+      { id: 'crear', nombre: 'Crear', deshabilitado: true },
+      { id: 'carga', nombre: 'Carga', depende: 'crear' },
+    ]);
+    pulsar(container, 'Ver');
+    expect(onCambio.mock.calls[0][0].x.crear, 'la cadena encendió lo no concedible').toBeUndefined();
+  });
+
+  it('[15] y los NIVELES de una fila deshabilitada tampoco se tocan', () => {
+    /* «Es soloLectura pero por fila», decía la regla 15, y el `Segmentado`
+       miraba solo `soloLectura`. */
+    const mods: ModuloPrivilegios[] = [{ id: 'x', nombre: 'X', privilegios: [
+      { id: 'ver', nombre: 'Ver', deshabilitado: true, niveles: [
+        { id: 'doc', nombre: 'Documento', opciones: [
+          { valor: 'completo', texto: 'Completo' }, { valor: 'parcial', texto: 'Parcial' }] },
+      ] },
+    ] }];
+    const { container } = render(
+      <PanelPrivilegios modulos={mods} valor={{ x: { ver: true } }} onCambio={() => {}} abiertos={['x']} />
+    );
+    const radios = [...container.querySelectorAll('.pp-niveles input[type="radio"]')] as HTMLInputElement[];
+    expect(radios.length).toBeGreaterThan(0);
+    for (const r of radios) {
+      expect(r.disabled || r.getAttribute('aria-disabled') === 'true',
+        'el nivel de una fila intocable se puede cambiar').toBe(true);
+    }
+  });
+});
+
+describe('[16] R149 · el panel no inventa permisos, y dice lo que va a pasar', () => {
+  it('[16] si el módulo NO declara el base, NO se escribe de rebote', () => {
+    /* `find(...)?.cerrado` sobre un privilegio inexistente da `undefined`, así
+       que `puedeBase` salía `true` y el panel INVENTABA el permiso: un módulo
+       sin `ver` recibía `ver: true` al pulsar cualquier cosa. Y encima R149 no
+       lo anunciaba, porque su cálculo sí exigía que existiera: el panel decía
+       una cosa y hacía otra. */
+    const mods: ModuloPrivilegios[] = [
+      { id: 'x', nombre: 'X', privilegios: [{ id: 'editar', nombre: 'Editar' }] },
+    ];
+    const onCambio = vi.fn();
+    const { container } = render(
+      <PanelPrivilegios modulos={mods} valor={{}} onCambio={onCambio} abiertos={['x']} />
+    );
+    fireEvent.click(container.querySelector('[role="switch"]')!);
+    expect(onCambio.mock.calls[0][0].x.ver, 'inventó un permiso que el módulo no tiene').toBeUndefined();
+    expect(onCambio.mock.calls[0][0].x.editar).toBe(true);
+  });
+
+  it('[16] y con el base CERRADO ni se dice ni se enciende', () => {
+    const mods: ModuloPrivilegios[] = [
+      { id: 'x', nombre: 'X', privilegios: [
+        { id: 'ver', nombre: 'Ver', cerrado: 'Ya no se reparte.' },
+        { id: 'editar', nombre: 'Editar' },
+      ] },
+    ];
+    const onCambio = vi.fn();
+    const { container } = render(
+      <PanelPrivilegios modulos={mods} valor={{}} onCambio={onCambio} abiertos={['x']} />
+    );
+    expect(container.textContent, 'promete un arrastre que no ocurre').not.toContain('enciende también');
+    const sw = [...container.querySelectorAll('[role="switch"]')]
+      .find((s2) => (s2.closest('.pp-priv')?.textContent ?? '').startsWith('Editar'))!;
+    fireEvent.click(sw);
+    expect(onCambio.mock.calls[0][0].x.ver).toBeUndefined();
   });
 });

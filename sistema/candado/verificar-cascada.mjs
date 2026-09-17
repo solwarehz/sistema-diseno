@@ -177,8 +177,26 @@ function casaCompuesto(comp, el) {
  * ¿El selector describe al ÚLTIMO elemento de la cadena? Se recorre de derecha
  * a izquierda, que es como lo hace el navegador y como sale bien el descendiente.
  */
-/** Cuántos selectores se han descartado por llevar un combinador de hermanos. */
+/** Los selectores que este motor NO SABE resolver, con su motivo. */
+const SALTADOS = new Map();
+/** Compatibilidad: el conjunto de los que se saltan por hermanos. */
 const SALTADOS_HERMANOS = new Set();
+
+/**
+ * PSEUDOCLASES QUE DEPENDEN DE LOS HERMANOS, Y QUE ESTE MOTOR NO PUEDE MIRAR.
+ *
+ * `resolver` trabaja sobre una CADENA DE ANTEPASADOS, no sobre un árbol: no
+ * tiene hermanos que contar. Hasta aquí, `casaCompuesto` las BORRABA del
+ * selector y seguía, así que `.chip:nth-child(n+3)` casaba con CUALQUIER chip.
+ * Una auditoría lo midió: tras arreglar el descarte por el `+`, el motor pasó a
+ * afirmar que los dos primeros chips del panel también desaparecen bajo 900 px
+ * —lo contrario del contrato del R145—.
+ *
+ * **Cambiar «no sé» por una respuesta equivocada es peor que no saber.** Se
+ * descartan y se dicen, como los hermanos.
+ */
+const PSEUDO_DE_HERMANOS =
+  /:(nth-child|nth-last-child|nth-of-type|nth-last-of-type|first-of-type|last-of-type|only-of-type|has)\b/;
 
 function casa(sel, cadena) {
   /* EL `+` DE `:nth-child(n+3)` NO ES UN COMBINADOR, y tratarlo como tal costó
@@ -196,7 +214,12 @@ function casa(sel, cadena) {
      declarado en un comentario que nadie imprime es un limite que nadie
      conoce. */
   const sinParentesis = sel.replace(/\([^()]*\)/g, '()');
-  if (/[+~]/.test(sinParentesis)) { SALTADOS_HERMANOS.add(sel); return null; }
+  if (/[+~]/.test(sinParentesis)) {
+    SALTADOS_HERMANOS.add(sel); SALTADOS.set(sel, 'combinador de hermanos'); return null;
+  }
+  if (PSEUDO_DE_HERMANOS.test(sel)) {
+    SALTADOS.set(sel, 'pseudoclase que cuenta hermanos'); return null;
+  }
   // Los ESPACIOS DE DENTRO DE UN PARÉNTESIS no separan compuestos.
   // `.cat-cuerpo :where(a, button, input)` son DOS partes, no seis, y
   // partiéndolo a lo bruto salía casando con cualquier botón del mundo — el
@@ -1155,10 +1178,13 @@ const AFIRMACIONES = [
 // El motor se exporta para que OTRO candado pueda resolver la cascada sin
 // copiarlo. verificar-promesa.mjs compara DOS hojas con este mismo
 // resolvedor: si tuviera el suyo, las dos podrian discrepar y nadie lo veria.
-export { parsear, resolver, elem, casa, especificidad, mediaCasa, SALTADOS_HERMANOS };
+export { parsear, resolver, elem, casa, especificidad, mediaCasa, SALTADOS, SALTADOS_HERMANOS };
 
 // El informe solo corre si se invoca el archivo directamente.
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+/* `process.argv[1]` es undefined cuando OTRO archivo importa este —una prueba,
+   por ejemplo— y `pathToFileURL(undefined)` lanza. El informe solo corre si se
+   invoca directamente; importarlo tiene que ser gratis. */
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const reglas = parsear(readFileSync(HOJA, 'utf8'));
 
   console.log(`\n  Candado de la cascada — MMI-DS v${VERSION}\n`);
@@ -1184,11 +1210,13 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     console.error('  la cascada de la hoja que viaja contra el marcado que se emite.\n');
     process.exit(1);
   }
-  if (SALTADOS_HERMANOS.size) {
-  console.log(`\n  LIMITE DECLARADO · ${SALTADOS_HERMANOS.size} selector(es) con combinador de`);
-  console.log('  hermanos, que este motor no resuelve. Se dicen porque un limite que');
-  console.log('  nadie imprime es un limite que nadie conoce:\n');
-  for (const x of [...SALTADOS_HERMANOS].sort()) console.log(`    ${x}`);
+  if (SALTADOS.size) {
+  console.log(`\n  LIMITE DECLARADO · ${SALTADOS.size} selector(es) que este motor NO SABE`);
+  console.log('  resolver: trabaja sobre una cadena de antepasados, no sobre un arbol,');
+  console.log('  asi que no tiene hermanos que contar. Se DICEN porque un limite que');
+  console.log('  nadie imprime es un limite que nadie conoce — y porque cambiar «no se»');
+  console.log('  por una respuesta equivocada es peor que no saber:\n');
+  for (const [x, porque] of [...SALTADOS].sort()) console.log(`    ${x}\n        ${porque}`);
 }
 console.log('\n  Sin fallos. Lo que se emite recibe lo que debe, a los once anchos.\n');
 
