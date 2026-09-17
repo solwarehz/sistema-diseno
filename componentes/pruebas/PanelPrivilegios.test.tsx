@@ -6,7 +6,7 @@
  * manda— es la que evita que se guarde «editar sin ver» y que cada backend
  * decida por su cuenta qué significa eso.
  */
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, it, expect, vi } from 'vitest';
@@ -65,15 +65,70 @@ describe('Panel de privilegios — R97', () => {
     await userEvent.click(screen.getByRole('switch', { name: 'Ver' }));
     const tras = onCambio.mock.calls[0][0];
     expect(tras.trab.ver).toBe(false);
-    expect(privilegiosEfectivos(MODULOS, tras).trab).toEqual({});
+    expect(privilegiosEfectivos(MODULOS, tras, 'ver').trab).toEqual({});
   });
 
   it('R97 · encender otro enciende el base solo', async () => {
     const onCambio = vi.fn();
     render(<PanelPrivilegios modulos={MODULOS} onCambio={onCambio}
       valor={{ trab: { ver: false, editar: false } }} abiertos={['trab']} />);
-    await userEvent.click(screen.getByRole('switch', { name: 'Editar' }));
+    /* R149 · el nombre accesible LLEVA AHORA el aviso del arrastre —«Editar ·
+       enciende también «Ver»»— porque el efecto dejó de ser invisible. Se busca
+       por expresión regular, no por igualdad: lo que esta prueba sostiene es el
+       encendido, no el literal de la etiqueta. */
+    await userEvent.click(screen.getByRole('switch', { name: /^Editar/ }));
     expect(onCambio.mock.calls[0][0].trab).toMatchObject({ ver: true, editar: true });
+  });
+
+  it('R149 · y lo DICE antes de pulsar: el base deja de ser un efecto invisible', () => {
+    /* Encender cualquier privilegio encendía también el base, y eso no se decía
+       en ninguna parte. El daño que lo vuelve bloqueante no es «conceder de
+       más»: con un PUT de juego completo y una regla anti-escalada, un `ver`
+       añadido de rebote que el repartidor no posee hace que el servidor rechace
+       EL GUARDADO ENTERO. Un efecto invisible convertía una acción legítima en
+       un error. */
+    const { container } = render(<PanelPrivilegios modulos={MODULOS} onCambio={() => {}}
+      valor={{ trab: { ver: false, editar: false } }} abiertos={['trab']} />);
+    const trab = container.querySelector('#'.concat(CSS.escape(
+      container.querySelector('.pp-mod-cab')!.getAttribute('aria-controls')!))) as HTMLElement;
+    expect(trab.textContent, 'no lo dice antes de pulsar').toContain('enciende también «Ver»');
+    // Y va en la etiqueta del que arrastra, no suelto por ahí.
+    const fila = [...trab.querySelectorAll('.pp-priv')]
+      .find((f) => (f.textContent ?? '').startsWith('Editar'))!;
+    expect(fila.querySelector('.pp-junto')!.textContent).toContain('enciende también');
+  });
+
+  it('R149 · y NO lo dice cuando no va a pasar: con el base ya concedido, ni una palabra', () => {
+    /* Una frase que aparece siempre deja de leerse. Solo se dice cuando el
+       arrastre de verdad ocurriría. */
+    const { container } = render(<PanelPrivilegios modulos={MODULOS} onCambio={() => {}}
+      valor={{ trab: { ver: true, editar: false } }} abiertos={['trab']} />);
+    /* Se mira SOLO el módulo abierto: los otros dos siguen sin su base, y ahí
+       la frase es correcta —`textContent` incluye lo que está `hidden`—. */
+    const trab = container.querySelector('#'.concat(CSS.escape(
+      container.querySelector('.pp-mod-cab')!.getAttribute('aria-controls')!))) as HTMLElement;
+    expect(trab.textContent).not.toContain('enciende también');
+  });
+
+  it('R149 · ni con `base={null}`, que es no tener base', () => {
+    const { container } = render(<PanelPrivilegios modulos={MODULOS} onCambio={() => {}} base={null}
+      valor={{ trab: { ver: false, editar: false } }} abiertos={['trab']} />);
+    expect(container.textContent, 'sin base no hay nada que arrastrar').not.toContain('enciende también');
+  });
+
+  it('R150 · `onCambio` entrega TAMBIÉN lo efectivo, calculado con el base del panel', () => {
+    /* Calcularlo fuera obliga a repetir el `base`, y un `base` repetido es un
+       `base` que un día no coincide: con `base={null}` en el panel y
+       `privilegiosEfectivos(modulos, valor)` sin tercer argumento se vaciaban
+       todos los módulos sin `ver`, EN SILENCIO. */
+    const onCambio = vi.fn();
+    render(<PanelPrivilegios modulos={MODULOS} onCambio={onCambio} base={null}
+      valor={{ trab: { ver: false, editar: false } }} abiertos={['trab']} />);
+    fireEvent.click(screen.getByRole('switch', { name: /^Editar/ }));
+    const [completo, efectivo] = onCambio.mock.calls[0];
+    expect(completo.trab).toMatchObject({ editar: true });
+    // Con `base={null}` lo efectivo NO vacía el módulo. Ésa era la trampa.
+    expect(efectivo.trab, 'el efectivo del panel discrepa del panel').toMatchObject({ editar: true });
   });
 
   it('R97 · con base={null} los privilegios son independientes', async () => {
@@ -189,7 +244,7 @@ describe('Panel de privilegios — R97', () => {
       trab: { ver: false, editar: true, [claveNivel('ver', 'documento')]: 'parcial' },
       marc: { ver: true },
     };
-    expect(privilegiosEfectivos(MODULOS, guardado)).toMatchObject({ trab: {}, marc: { ver: true } });
+    expect(privilegiosEfectivos(MODULOS, guardado, 'ver')).toMatchObject({ trab: {}, marc: { ver: true } });
   });
 
   it('R98 · con base={null} lo efectivo es lo guardado', () => {
@@ -199,7 +254,7 @@ describe('Panel de privilegios — R97', () => {
 
   it('R98 · el resumen no cuenta lo que no se aplica', () => {
     // Sin «ver», el módulo no concede nada aunque su mapa diga que sí.
-    const efectivo = privilegiosEfectivos(MODULOS, { trab: { ver: false, editar: true } });
+    const efectivo = privilegiosEfectivos(MODULOS, { trab: { ver: false, editar: true } }, 'ver');
     expect(resumirPrivilegios(MODULOS, efectivo)).toEqual([]);
   });
 

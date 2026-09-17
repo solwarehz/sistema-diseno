@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.125.0";
+export const VERSION = "1.126.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,80 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.126.0', fecha: '2026-09-17',
+    que: 'R148, R149 y R150 — las tres que BLOQUEABAN la adopcion del panel, y lo que una auditoria encontro muerto en la 1.125.0',
+    porque:
+      'LAS TRES SE RESUMEN EN UNA FRASE SUYA: «con ellas abiertas, adoptar el panel significa repartir '
+      + 'permisos que nadie concedio y borrar permisos que nadie retiro». Y las tres salieron de LEER, '
+      + 'no de una pantalla rota. '
+      + 'R148 · NO SE PODIA ENSENAR UN PRIVILEGIO CONCEDIDO QUE TU NO PUEDES REPARTIR. Lo unico por '
+      + 'fila era `cerrado`, y `cerrado` SUSTITUYE EL INTERRUPTOR POR UN CHIP: el on/off desaparece. '
+      + 'Un cargo con `personal.editar` concedido se veia como si no lo tuviera solo porque quien '
+      + 'mira no puede repartirlo — la pantalla mentia sobre lo unico que existe para responder—, y '
+      + 'ademas el «4 de 6» contaba de menos. Entra `deshabilitado` en `Privilegio`: es `soloLectura` '
+      + 'por fila, SIGUE CONTANDO, y se apaga con `aria-disabled` y no con `disabled`, asi que se '
+      + 'alcanza con teclado y su estado se lee. '
+      + 'R149 · EL `base` CONCEDIA DE REBOTE Y NADIE LO DECIA. Su servidor no exige `leer` para nada, '
+      + 'asi que el panel escribiria `personal.leer` cuando alguien solo toco «Editar». Y el dano no '
+      + 'es «conceder de mas»: su PUT es de juego COMPLETO y tienen una regla anti-escalada, asi que '
+      + 'un `ver` de rebote que el repartidor no posee hace que el servidor RECHACE EL GUARDADO '
+      + 'ENTERO con 403 — se pierde tambien el interruptor que la persona si queria cambiar. Un '
+      + 'efecto invisible convertia una accion legitima en un error. De sus dos salidas se toma la '
+      + 'primera: se DICE en la etiqueta, que es lo que `clave` ya hacia con su «va con X y Y». El '
+      + 'patron existia y a esto no se le habia aplicado. '
+      + 'R150 · `privilegiosEfectivos` BORRABA EN SILENCIO Y SU `base` NO SEGUIA AL DEL PANEL. El '
+      + 'tercer parametro era `= ver` e independiente del componente: montar el panel con '
+      + '`base={null}` y llamarla sin tercer argumento VACIABA TODOS LOS MODULOS SIN `ver`, con las '
+      + 'dos llamadas validas y sin que tipos ni contrato avisaran. Ahora `onCambio` entrega DOS '
+      + 'cosas —el mapa y lo efectivo, calculado con el base que el panel tiene— y el parametro '
+      + 'pierde su valor por omision: la combinacion pasa a ser un ERROR DE COMPILACION. Rompe en '
+      + 'voz alta, que es lo contrario de como rompia antes. Y se dice lo que faltaba: LO EFECTIVO '
+      + 'PUEDE SER UN BORRADO — un modulo sin su base sale como {} y con un PUT de juego completo '
+      + 'eso borra sus filas—. '
+      + 'Y LO QUE UNA AUDITORIA ADVERSARIA ENCONTRO EN LA v1.125.0 ANTES DE PUBLICARLA, que es la '
+      + 'parte que mas ensena. EL ENTREGABLE DEL R145 ESTABA MUERTO: `:nth-child(n+3)` cuenta como '
+      + 'CLASE, asi que la regla que oculta (0,3,0) le ganaba a la que ensena (0,2,0) y el «+N» —que '
+      + 'siempre cae en posicion tercera o mas— NO SE VEIA EN NINGUN ANCHO. Medido en los siete. '
+      + 'Y LOS VEINTE PASOS SALIAN EN VERDE por una razon que vale para todo el sistema: `casa()` '
+      + 'descartaba TODO selector con un `+` o un `~` —«hermanos: no se soportan»— sin mirar si '
+      + 'estaba dentro de un parentesis. El sistema estreno su primer `nth-child(n+…)` y lo metio '
+      + 'justo en el punto ciego de CINCO candados, porque verificar-promesa, -empate, -altura y '
+      + '-tono importan ese motor. Ahora se enmascaran los parentesis antes de buscar el combinador, '
+      + 'y lo que de verdad se salta SE CUENTA Y SE IMPRIME: un limite declarado en un comentario '
+      + 'que nadie imprime es un limite que nadie conoce. '
+      + 'Y DOS REGRESIONES DEL R144: al subir el aviso bajo la fila del base se colgo de que esa fila '
+      + 'EXISTA, asi que un modulo que no declara el privilegio base se quedaba entero acarrilado en '
+      + 'naranja SIN UNA LINEA que dijera por que; y un `base` declarado dentro de un GRUPO recibia '
+      + 'el carril sobre si mismo, porque ahi `esBase` iba fijo en false. Mas el carril pegado a ras '
+      + 'del borde de la tarjeta bajo 560px —medido a 0,00— y el chip «necesita otro permiso» fuera '
+      + 'del nombre accesible, que con `aria-labelledby` presente deja de anunciarse (SC 2.5.3). '
+      + 'Y UNA CIFRA QUE SOLO VIVIA EN UN MENSAJE DE COMMIT: el 14,33:1 del nombre tras quitar la '
+      + 'opacidad no estaba en ningun archivo del repositorio. Ahora esta en la regla 11, con su par '
+      + 'y su superficie.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      '`privilegiosEfectivos` EXIGE SU TERCER PARAMETRO. Quien la llamaba con dos argumentos tiene '
+      + 'ahora un error de compilacion. Es deliberado: el valor por omision `ver` era independiente '
+      + 'del `base` del panel, y con `base={null}` la llamada corta VACIABA todos los modulos sin '
+      + '`ver` EN SILENCIO. La migracion es escribir el mismo `base` que se le pasa al panel — o '
+      + 'mejor, dejar de llamarla y usar el segundo argumento de `onCambio`.',
+      '`onCambio` RECIBE UN SEGUNDO ARGUMENTO: lo efectivo. Quien declare un solo parametro no '
+      + 'tiene que tocar nada.',
+      'LA ETIQUETA DE UN PRIVILEGIO PUEDE LLEVAR AHORA «· enciende tambien «X»». Cambia el NOMBRE '
+      + 'ACCESIBLE del interruptor, asi que una prueba que busque por igualdad exacta —`{ name: '
+      + '"Editar" }`— deja de encontrarlo. Solo aparece cuando el arrastre va a ocurrir de verdad.',
+      'AL SUBIR EL AVISO BAJO LA FILA DEL BASE, la ultima fila de un modulo sin grupos PASA A SER '
+      + '`:last-child` y pierde su linea inferior por `.pp-priv:last-child{border-bottom:0}`. Cambia '
+      + 'el dibujo de todos los modulos sin base, se pidiera o no. Lo cazo una auditoria revisando '
+      + 'esta misma lista.',
+      'BAJO 900 px LA CABECERA ENSENA DOS CHIPS Y UN «+N». En la v1.125.0 no ensenaba el «+N» en '
+      + 'ningun ancho —estaba muerto por especificidad— asi que si midieron esa version, midieron un '
+      + 'defecto.',
+      'LA FILA BLOQUEADA POR `depende` ANUNCIA AHORA TAMBIEN SU CHIP: el nombre accesible pasa de '
+      + '«Carga masiva» a «Carga masiva necesita otro permiso».',
+    ],
+  },
   {
     v: '1.125.0', fecha: '2026-09-17',
     que: 'R144 a R147 — las cuatro que Control Administrativos encontro al ir a ADOPTAR el panel de privilegios',

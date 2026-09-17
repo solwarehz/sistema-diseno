@@ -8125,7 +8125,12 @@ reconstruyendo.</p>
           </div>
           <p class="pp-aviso">${icono('alerta', 16)}<span>Sin este permiso, el resto del módulo no se aplica.</span></p>
           <div class="pp-priv">
-            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Editar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar</span></span></label>
+            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Editar · enciende también «Ver»"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar<span class="pp-junto"> · enciende también «Ver»</span></span></span></label>
+          </div>
+          <!-- R148 · concedido y NO repartible por quien mira: el estado se ve,
+               el control no se toca. aria-disabled y no disabled. -->
+          <div class="pp-priv">
+            <label class="sw-fila sw-desh"><button type="button" role="switch" class="sw" aria-checked="true" aria-disabled="true" aria-label="Descargar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Descargar</span><span class="sw-ayuda">No puede repartir este permiso.</span></span></label>
           </div>
         </div>
       </section>
@@ -11019,7 +11024,13 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
   .pp-tags { grid-area: tags; justify-content: flex-start; max-width: none; }
   /* Dos y el resumen. Con seis privilegios, seis chips envuelven en tres lineas
      y vuelven a partir el titulo en tres — que es lo que este bloque evitaba. */
-  .pp-tags .chip:nth-child(n+3) { display: none; }
+  /* :not(.pp-tags-mas) NO ES ADORNO: sin el, esta regla (0,3,0) —:nth-child
+     CUENTA COMO CLASE— le gana a la de abajo (0,2,0) y el «+N», que siempre cae
+     en posicion tercera o mas, no se veia EN NINGUN ANCHO. El entregable del
+     R145 estaba muerto en la hoja y los veinte pasos salian en verde, porque el
+     motor de la cascada descartaba todo selector con un + — incluido el de
+     nth-child—. Lo cazo una auditoria midiendo en un navegador. */
+  .pp-tags .chip:nth-child(n+3):not(.pp-tags-mas) { display: none; }
   .pp-tags .pp-tags-mas { display: inline-block; }
   .pp-mod-cuerpo { padding-left: 20px; }
 }
@@ -11029,6 +11040,11 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
   .pp-niveles { margin-left: 0; }
   .pp-mod-cab { padding: 12px; gap: 8px; }
   .pp-mod-cuerpo { padding: 4px 12px 12px; }
+  /* R144 · EL CARRIL NO SE PEGA AL BORDE DE LA TARJETA. Con el relleno en 12px
+     y el margen negativo tambien en 12, el filete quedaba a 0,00 del borde
+     —medido en Chrome— y se leia como un borde grueso de la tarjeta, no como
+     una marca por fila. Se recorta el margen a la mitad: 6px de aire. */
+  .pp-sin-base .pp-priv:not(.pp-priv-base) { margin-left: -6px; padding-left: 3px; }
   /* El pie deja de ir a la derecha: en una columna, un boton pegado al borde
      derecho se alcanza peor con el pulgar que uno a lo ancho. */
   .pp-pie { flex-direction: column; align-items: stretch; gap: 8px; }

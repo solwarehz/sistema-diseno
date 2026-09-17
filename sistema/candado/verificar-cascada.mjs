@@ -177,8 +177,26 @@ function casaCompuesto(comp, el) {
  * ¿El selector describe al ÚLTIMO elemento de la cadena? Se recorre de derecha
  * a izquierda, que es como lo hace el navegador y como sale bien el descendiente.
  */
+/** Cuántos selectores se han descartado por llevar un combinador de hermanos. */
+const SALTADOS_HERMANOS = new Set();
+
 function casa(sel, cadena) {
-  if (/[+~]/.test(sel)) return null;              // hermanos: no se soportan
+  /* EL `+` DE `:nth-child(n+3)` NO ES UN COMBINADOR, y tratarlo como tal costó
+     el R145 entero. Esta guarda descartaba el selector COMPLETO en cuanto veía
+     un `+` o un `~` en cualquier sitio — paréntesis incluidos—, así que
+     `.pp-tags .chip:nth-child(n+3){display:none}` era invisible para este motor
+     y, con él, para `verificar-promesa`, `verificar-empate`, `verificar-altura`
+     y `verificar-tono`, que importan `casa` y `resolver` de aquí.
+     Resultado: el sistema estreno su primer `nth-child(n+…)` y lo metio justo
+     en el punto ciego de CINCO candados. El «+N» del panel de privilegios no se
+     veia en NINGUN ancho y los veinte pasos salian en verde. Lo cazo una
+     auditoria adversaria midiendo en un navegador.
+     Ahora se enmascara lo que va entre parentesis ANTES de buscar el
+     combinador, y lo que de verdad se salta se CUENTA y se dice: un limite
+     declarado en un comentario que nadie imprime es un limite que nadie
+     conoce. */
+  const sinParentesis = sel.replace(/\([^()]*\)/g, '()');
+  if (/[+~]/.test(sinParentesis)) { SALTADOS_HERMANOS.add(sel); return null; }
   // Los ESPACIOS DE DENTRO DE UN PARÉNTESIS no separan compuestos.
   // `.cat-cuerpo :where(a, button, input)` son DOS partes, no seis, y
   // partiéndolo a lo bruto salía casando con cualquier botón del mundo — el
@@ -1137,7 +1155,7 @@ const AFIRMACIONES = [
 // El motor se exporta para que OTRO candado pueda resolver la cascada sin
 // copiarlo. verificar-promesa.mjs compara DOS hojas con este mismo
 // resolvedor: si tuviera el suyo, las dos podrian discrepar y nadie lo veria.
-export { parsear, resolver, elem, casa, especificidad, mediaCasa };
+export { parsear, resolver, elem, casa, especificidad, mediaCasa, SALTADOS_HERMANOS };
 
 // El informe solo corre si se invoca el archivo directamente.
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
@@ -1166,6 +1184,12 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     console.error('  la cascada de la hoja que viaja contra el marcado que se emite.\n');
     process.exit(1);
   }
-  console.log('\n  Sin fallos. Lo que se emite recibe lo que debe, a los once anchos.\n');
+  if (SALTADOS_HERMANOS.size) {
+  console.log(`\n  LIMITE DECLARADO · ${SALTADOS_HERMANOS.size} selector(es) con combinador de`);
+  console.log('  hermanos, que este motor no resuelve. Se dicen porque un limite que');
+  console.log('  nadie imprime es un limite que nadie conoce:\n');
+  for (const x of [...SALTADOS_HERMANOS].sort()) console.log(`    ${x}`);
+}
+console.log('\n  Sin fallos. Lo que se emite recibe lo que debe, a los once anchos.\n');
 
 }

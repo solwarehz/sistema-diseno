@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.125.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.126.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -87,7 +87,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.125.0; }
+:root{ --mmi-componentes: 1.126.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -1670,7 +1670,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   .pp-mod-nom{ grid-area: nombre; }
   .pp-conteo{ grid-area: conteo; }
   .pp-tags{ grid-area: tags; justify-content: flex-start; max-width: none; }
-  .pp-tags .chip:nth-child(n+3){ display: none; }
+  .pp-tags .chip:nth-child(n+3):not(.pp-tags-mas){ display: none; }
   .pp-tags .pp-tags-mas{ display: inline-block; }
   .pp-mod-cuerpo{ padding-left: 20px; }
 }
@@ -1678,6 +1678,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   .pp-niveles{ margin-left: 0; }
   .pp-mod-cab{ padding: 12px; gap: 8px; }
   .pp-mod-cuerpo{ padding: 4px 12px 12px; }
+  .pp-sin-base .pp-priv:not(.pp-priv-base){ margin-left: -6px; padding-left: 3px; }
   .pp-pie{ flex-direction: column; align-items: stretch; gap: 8px; }
   .pp-pie-txt{ text-align: center; }
 }

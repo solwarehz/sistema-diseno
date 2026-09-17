@@ -133,6 +133,31 @@ export type Privilegio = {
    * lee como un fallo del sistema.
    */
   cerrado?: string | NoRepartible;
+  /**
+   * R148 · **Apagado, pero SIN dejar de decir cómo está.** Lo pidió Control
+   * Administrativos V2.0 con el caso que lo explica: su servidor manda, junto a
+   * la matriz, qué permisos puede conceder **quien está mirando**. Que el cargo
+   * tenga «Editar» y que tú no puedas tocarlo son **dos hechos distintos y los
+   * dos importan**.
+   *
+   * Lo único que había por privilegio era `cerrado`, y `cerrado` **sustituye el
+   * interruptor por un chip**: el on/off desaparece. Un cargo con el permiso
+   * concedido se veía como si no lo tuviera, y la pantalla mentía sobre lo
+   * único que existe para responder.
+   *
+   * Es `soloLectura`, pero por fila. Y **sigue contando** en el «4 de 6» y en
+   * los chips de la cabecera, porque el permiso está concedido: lo que no se
+   * puede es cambiarlo.
+   *
+   * SE APAGA CON `aria-disabled`, NO CON `disabled` —lo resuelve `Interruptor`,
+   * que ya lo hacía— así que **se alcanza con teclado y su estado se lee**. Un
+   * apagado que además esconde el dato es el defecto, no el remedio.
+   *
+   * EL PORQUÉ VA EN `ayuda`. No se inventa un campo de motivo: el que hay sirve,
+   * y un motivo obligatorio para algo que a veces no lo tiene acaba en frases
+   * de relleno.
+   */
+  deshabilitado?: boolean;
 };
 
 /** Un bloque con título dentro del módulo. Para lo que no es una acción. */
@@ -160,7 +185,24 @@ export const claveNivel = (privilegio: string, nivel: string) => `${privilegio}:
 export type PanelPrivilegiosProps = {
   modulos: ModuloPrivilegios[];
   valor: ValorPrivilegios;
-  onCambio: (valor: ValorPrivilegios) => void;
+  /**
+   * R150 · Recibe **dos** cosas: el mapa completo y **lo efectivo**.
+   *
+   * Lo natural es **guardar el primero** —para no perder lo configurado— y
+   * **mandar el segundo** al backend. Se entregan juntos porque calcularlo
+   * fuera obliga a repetir el `base`, y un `base` repetido es un `base` que un
+   * día no coincide: con `base={null}` en el panel y
+   * `privilegiosEfectivos(modulos, valor)` sin tercer argumento se vaciaban
+   * todos los módulos sin `ver`, en silencio. Aquí no puede discrepar: lo
+   * calcula el panel con el suyo.
+   *
+   * El segundo argumento es nuevo en la v1.126.0 y **no rompe a nadie**: quien
+   * declare un solo parámetro lo ignora.
+   *
+   * ⚠️ Y lea lo que dice `privilegiosEfectivos` sobre el borrado: un módulo sin
+   * su `base` sale como `{}`, y con un PUT de juego completo eso **borra**.
+   */
+  onCambio: (valor: ValorPrivilegios, efectivo: ValorPrivilegios) => void;
   /**
    * El privilegio del que dependen los demás dentro de cada módulo. `'ver'` por
    * omisión. `null` lo desactiva, para dominios donde los permisos son
@@ -260,8 +302,36 @@ export function resumirPrivilegios(modulos: ModuloPrivilegios[], valor: ValorPri
  * el primero es lo correcto —no se pierde el trabajo—; mandar el primero al
  * backend sería conceder lo que no se concedió.
  */
+/**
+ * R150 · **EL `base` ES OBLIGATORIO, SIN VALOR POR OMISIÓN.** Feo, y a propósito.
+ *
+ * Este tercer parámetro era `= 'ver'` y era **independiente del `base` del
+ * componente**. Un producto que montara el panel con `base={null}` —el modo que
+ * esta misma documentación ofrece— y llamara `privilegiosEfectivos(modulos,
+ * valor)` sin tercer argumento **vaciaba todos los módulos sin `ver`**. Las dos
+ * llamadas eran válidas, ni los tipos ni el contrato avisaban, y la combinación
+ * **destruía datos**. Lo encontró Control Administrativos V2.0 leyendo, antes de
+ * adoptar el panel.
+ *
+ * Quitar el valor por omisión convierte esa combinación en **un error de
+ * compilación**, que es la única forma de equivocarse que este componente puede
+ * permitirse. Es un cambio que rompe a quien llamaba con dos argumentos: rompe
+ * en voz alta, que es lo contrario de como rompía antes.
+ *
+ * Y LO MEJOR ES NO LLAMARLA: el panel entrega lo efectivo como **segundo
+ * argumento de `onCambio`**, calculado con el `base` que de verdad tiene. Así no
+ * hay dos fuentes que puedan discrepar.
+ *
+ * ⚠️ **LO EFECTIVO PUEDE SER UN BORRADO.** Un módulo sin su `base` devuelve
+ * `{}`. Si su backend recibe **juegos completos** —un PUT de todo o nada—, ese
+ * `{}` no significa «esto no se aplica»: significa **borrar las filas de ese
+ * módulo**. Un cargo con `memorandums.emitir` pero sin `marcaciones.leer` lo
+ * pierde al siguiente guardado sin que nadie lo haya retirado. No es un defecto
+ * de esta función —lo efectivo es lo efectivo— pero es la clase de cosa que se
+ * descubre con los permisos ya perdidos, así que va dicho aquí y en el contrato.
+ */
 export function privilegiosEfectivos(
-  modulos: ModuloPrivilegios[], valor: ValorPrivilegios, base: string | null = 'ver',
+  modulos: ModuloPrivilegios[], valor: ValorPrivilegios, base: string | null,
 ): ValorPrivilegios {
   const salida: ValorPrivilegios = {};
   for (const m of modulos) {
@@ -369,8 +439,9 @@ export function PanelPrivilegios({
       }
     }
 
-    onCambio({ ...valor, [m.id]: delModulo });
-  }, [valor, onCambio, base]);
+    const nuevo = { ...valor, [m.id]: delModulo };
+    onCambio(nuevo, privilegiosEfectivos(modulos, nuevo, base));
+  }, [valor, onCambio, base, modulos]);
 
   const modificados = useMemo(() => {
     if (!preset) return new Set<string>();
@@ -380,7 +451,8 @@ export function PanelPrivilegios({
   }, [modulos, valor, preset]);
 
   const cambiarNivel = (m: ModuloPrivilegios, priv: string, nivel: string, v: string) => {
-    onCambio({ ...valor, [m.id]: { ...(valor[m.id] ?? {}), [claveNivel(priv, nivel)]: v } });
+    const nuevo = { ...valor, [m.id]: { ...(valor[m.id] ?? {}), [claveNivel(priv, nivel)]: v } };
+    onCambio(nuevo, privilegiosEfectivos(modulos, nuevo, base));
   };
 
   const fila = (m: ModuloPrivilegios, p: Privilegio, esBase: boolean) => {
@@ -402,6 +474,16 @@ export function PanelPrivilegios({
     const conQuien = p.clave
       ? todos(m).filter((x) => x.clave === p.clave && x.id !== p.id).map((x) => x.nombre)
       : [];
+    /* R149 · ¿encender ESTE encendería además el base? Solo se dice cuando de
+       verdad va a pasar: si el base ya está concedido, o éste es el base, o ya
+       está encendido, la frase sobraría y el ruido acabaría con que nadie la
+       lea. Y solo si el base se puede encender: si está cerrado, no arrastra. */
+    const elBase = base ? todos(m).find((x) => x.id === base) : undefined;
+    const arrastraElBase = Boolean(
+      base && p.id !== base && !dado && elBase && !elBase.cerrado
+      && !concedido(valor, m.id, base),
+    );
+    const nombreBase = elBase?.nombre ?? base;
     return (
       <div className={[
         'pp-priv',
@@ -466,13 +548,19 @@ export function PanelPrivilegios({
             aria-checked={false}
             aria-disabled
             tabIndex={0}
-            aria-labelledby={`${idPanel}-${m.id}-${p.id}-nom`}
+            /* EL CHIP ENTRA EN EL NOMBRE. Con `aria-labelledby` presente, el
+               contenido del control deja de componerlo, y «necesita otro
+               permiso» —la etiqueta VISIBLE, y la unica que distingue este
+               bloqueo de los otros tres de un vistazo— no se anunciaba. Es la
+               expectativa de SC 2.5.3: lo que se ve tiene que estar en lo que
+               se oye. Lo cazo una auditoria. */
+            aria-labelledby={`${idPanel}-${m.id}-${p.id}-nom ${idPanel}-${m.id}-${p.id}-eti`}
             aria-describedby={`${idPanel}-${m.id}-${p.id}-mot`}
           >
             <span className="pp-cerrado-ic"><Icono nombre="capas" /></span>
             <span className="pp-cerrado-txt">
               <span className="pp-cerrado-nom" id={`${idPanel}-${m.id}-${p.id}-nom`}>{p.nombre}</span>
-              <span className="pp-cerrado-eti">
+              <span className="pp-cerrado-eti" id={`${idPanel}-${m.id}-${p.id}-eti`}>
                 <Chip tono="aviso">necesita otro permiso</Chip>
               </span>
               <span className="pp-cerrado-motivo" id={`${idPanel}-${m.id}-${p.id}-mot`}>{motivoFalta}</span>
@@ -481,18 +569,36 @@ export function PanelPrivilegios({
         ) : (
         <Interruptor
           etiqueta={
-            conQuien.length ? (
+            conQuien.length || arrastraElBase ? (
               <>
                 {p.nombre}
-                <span className="pp-junto"> · va con {conQuien.map((n, i) => (
-                  <span key={i}>{i > 0 ? ' y ' : ''}{n}</span>
-                ))}</span>
+                {conQuien.length > 0 && (
+                  <span className="pp-junto"> · va con {conQuien.map((n, i) => (
+                    <span key={i}>{i > 0 ? ' y ' : ''}{n}</span>
+                  ))}</span>
+                )}
+                {/* R149 · EL BASE DEJA DE SER UN EFECTO INVISIBLE.
+                    Encender cualquier privilegio encendía también el base del
+                    módulo, y eso no se decía en ninguna parte. Lo reportó
+                    Control Administrativos V2.0, y su daño no es «conceder de
+                    más»: su PUT es de juego completo y tienen una regla
+                    anti-escalada, así que un `ver` añadido de rebote que el
+                    repartidor no posee hace que el servidor RECHACE EL GUARDADO
+                    ENTERO con 403 — se pierde también el interruptor que la
+                    persona sí quería cambiar. Un efecto invisible convertía una
+                    acción legítima en un error.
+                    Se dice ANTES de pulsar, que es exactamente lo que `clave`
+                    ya hacía con su «va con X y Y»: el patrón existía y a esto
+                    no se le había aplicado. */}
+                {arrastraElBase && (
+                  <span className="pp-junto"> · enciende también «{nombreBase}»</span>
+                )}
               </>
             ) : p.nombre
           }
           ayuda={p.ayuda}
           activo={dado}
-          deshabilitado={soloLectura}
+          deshabilitado={soloLectura || p.deshabilitado === true}
           onCambio={(a) => cambiar(m, p.id, a)}
         />
         )}
@@ -537,6 +643,12 @@ export function PanelPrivilegios({
           // que un cargo pareciera incompleto por reglas que no dependen de él.
           const posibles = lista.filter((p) => !p.cerrado).length;
           const sinBase = Boolean(base) && !concedido(valor, m.id, base as string);
+          const avisoSinBase = (
+            <p className="pp-aviso">
+              <Icono nombre="alerta" tam="control" />
+              <span>Sin este permiso, el resto del módulo no se aplica.</span>
+            </p>
+          );
           return (
             <section
               className={`pp-mod${abiertoM ? ' pp-abierto' : ''}${sinBase ? ' pp-sin-base' : ''}`}
@@ -586,21 +698,34 @@ export function PanelPrivilegios({
                 {m.privilegios.map((p) => (
                   <Fragment key={p.id}>
                     {fila(m, p, p.id === base)}
-                    {sinBase && p.id === base && (
-                      <p className="pp-aviso">
-                        <Icono nombre="alerta" tam="control" />
-                        <span>Sin este permiso, el resto del módulo no se aplica.</span>
-                      </p>
-                    )}
+                    {sinBase && p.id === base && avisoSinBase}
                   </Fragment>
                 ))}
 
                 {(m.grupos ?? []).map((g) => (
                   <div className="pp-grupo" key={g.titulo}>
                     <p className="pp-grupo-tit">{g.titulo}</p>
-                    {g.privilegios.map((p) => fila(m, p, false))}
+                    {/* `p.id === base` TAMBIEN AQUI. Iba `false` fijo, asi que un
+                        `base` declarado dentro de un grupo recibia el carril de
+                        «esto no se aplica» sobre SI MISMO. Lo cazo una
+                        auditoria; `todos(m)` ya miraba los grupos para todo lo
+                        demas, y esta linea se habia quedado atras. */}
+                    {g.privilegios.map((p) => (
+                      <Fragment key={p.id}>
+                        {fila(m, p, p.id === base)}
+                        {sinBase && p.id === base && avisoSinBase}
+                      </Fragment>
+                    ))}
                   </div>
                 ))}
+                {/* R144 · Y SI EL BASE NO ESTA EN NINGUNA LISTA, el aviso sale
+                    igual, al final. Al subirlo bajo la fila del base se colgo de
+                    que esa fila exista, y un modulo que NO declara el privilegio
+                    base —«lo que no aplica no se pasa», dice esta misma
+                    documentacion— se quedaba ENTERO acarrilado en naranja SIN
+                    UNA LINEA que dijera por que. Era una regresion contra la
+                    v1.124.0, donde el aviso colgaba solo de `sinBase`. */}
+                {sinBase && !todos(m).some((p) => p.id === base) && avisoSinBase}
               </div>
             </section>
           );

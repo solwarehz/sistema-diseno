@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.125.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.126.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.125.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.126.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -35,7 +35,7 @@
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.125.0;
+  --mmi-version: 1.126.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -1447,7 +1447,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    como cualquier otra regla, para que el catalogo y la entrega digan lo mismo:
    inyectarlo solo en la entrega dejaba una regla que el catalogo no tenia, y
    el candado de la promesa lo caza —con razon—. Los dos salen de VERSION. */
-:root { --mmi-componentes: 1.125.0; }
+:root { --mmi-componentes: 1.126.0; }
 
 .fc-zona { position: relative; }
 /* R129.2 · EL TOPE ERA MENOR QUE EL CONTENIDO. Con R129.1 puesto, lo que el
@@ -2653,7 +2653,13 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
   .pp-tags { grid-area: tags; justify-content: flex-start; max-width: none; }
   /* Dos y el resumen. Con seis privilegios, seis chips envuelven en tres lineas
      y vuelven a partir el titulo en tres — que es lo que este bloque evitaba. */
-  .pp-tags .chip:nth-child(n+3) { display: none; }
+  /* :not(.pp-tags-mas) NO ES ADORNO: sin el, esta regla (0,3,0) —:nth-child
+     CUENTA COMO CLASE— le gana a la de abajo (0,2,0) y el «+N», que siempre cae
+     en posicion tercera o mas, no se veia EN NINGUN ANCHO. El entregable del
+     R145 estaba muerto en la hoja y los veinte pasos salian en verde, porque el
+     motor de la cascada descartaba todo selector con un + — incluido el de
+     nth-child—. Lo cazo una auditoria midiendo en un navegador. */
+  .pp-tags .chip:nth-child(n+3):not(.pp-tags-mas) { display: none; }
   .pp-tags .pp-tags-mas { display: inline-block; }
   .pp-mod-cuerpo { padding-left: 20px; }
 }
@@ -2663,6 +2669,11 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
   .pp-niveles { margin-left: 0; }
   .pp-mod-cab { padding: 12px; gap: 8px; }
   .pp-mod-cuerpo { padding: 4px 12px 12px; }
+  /* R144 · EL CARRIL NO SE PEGA AL BORDE DE LA TARJETA. Con el relleno en 12px
+     y el margen negativo tambien en 12, el filete quedaba a 0,00 del borde
+     —medido en Chrome— y se leia como un borde grueso de la tarjeta, no como
+     una marca por fila. Se recorta el margen a la mitad: 6px de aire. */
+  .pp-sin-base .pp-priv:not(.pp-priv-base) { margin-left: -6px; padding-left: 3px; }
   /* El pie deja de ir a la derecha: en una columna, un boton pegado al borde
      derecho se alcanza peor con el pulgar que uno a lo ancho. */
   .pp-pie { flex-direction: column; align-items: stretch; gap: 8px; }
@@ -5190,7 +5201,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.125.0</option></select></label>
+          <select class="campo cg-in"><option>v1.126.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -5278,8 +5289,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.125.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.125.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.126.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.126.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -5838,7 +5849,7 @@ demostraciones de al lado. Y la hoja no es una copia: se inyecta desde
 vieja.</div>
 
 <script type="text/plain" id="tokens-entregados">/* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.125.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.126.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -5866,7 +5877,7 @@ vieja.</div>
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.125.0;
+  --mmi-version: 1.126.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -6479,7 +6490,7 @@ vieja.</div>
 </script>
 <script type="text/plain" id="hoja-entregada">
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.125.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.126.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -6567,7 +6578,7 @@ vieja.</div>
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.125.0; }
+:root{ --mmi-componentes: 1.126.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -8150,7 +8161,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   .pp-mod-nom{ grid-area: nombre; }
   .pp-conteo{ grid-area: conteo; }
   .pp-tags{ grid-area: tags; justify-content: flex-start; max-width: none; }
-  .pp-tags .chip:nth-child(n+3){ display: none; }
+  .pp-tags .chip:nth-child(n+3):not(.pp-tags-mas){ display: none; }
   .pp-tags .pp-tags-mas{ display: inline-block; }
   .pp-mod-cuerpo{ padding-left: 20px; }
 }
@@ -8158,6 +8169,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   .pp-niveles{ margin-left: 0; }
   .pp-mod-cab{ padding: 12px; gap: 8px; }
   .pp-mod-cuerpo{ padding: 4px 12px 12px; }
+  .pp-sin-base .pp-priv:not(.pp-priv-base){ margin-left: -6px; padding-left: 3px; }
   .pp-pie{ flex-direction: column; align-items: stretch; gap: 8px; }
   .pp-pie-txt{ text-align: center; }
 }
@@ -15214,7 +15226,12 @@ reconstruyendo.</p>
           </div>
           <p class="pp-aviso"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg><span>Sin este permiso, el resto del módulo no se aplica.</span></p>
           <div class="pp-priv">
-            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Editar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar</span></span></label>
+            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Editar · enciende también «Ver»"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar<span class="pp-junto"> · enciende también «Ver»</span></span></span></label>
+          </div>
+          <!-- R148 · concedido y NO repartible por quien mira: el estado se ve,
+               el control no se toca. aria-disabled y no disabled. -->
+          <div class="pp-priv">
+            <label class="sw-fila sw-desh"><button type="button" role="switch" class="sw" aria-checked="true" aria-disabled="true" aria-label="Descargar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Descargar</span><span class="sw-ayuda">No puede repartir este permiso.</span></span></label>
           </div>
         </div>
       </section>
@@ -19505,6 +19522,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.126.0 <span class="cam-fecha">2026-09-17</span></h3>
+<p class="pag-intro"><strong>R148, R149 y R150 — las tres que BLOQUEABAN la adopcion del panel, y lo que una auditoria encontro muerto en la 1.125.0.</strong> LAS TRES SE RESUMEN EN UNA FRASE SUYA: «con ellas abiertas, adoptar el panel significa repartir permisos que nadie concedio y borrar permisos que nadie retiro». Y las tres salieron de LEER, no de una pantalla rota. R148 · NO SE PODIA ENSENAR UN PRIVILEGIO CONCEDIDO QUE TU NO PUEDES REPARTIR. Lo unico por fila era `cerrado`, y `cerrado` SUSTITUYE EL INTERRUPTOR POR UN CHIP: el on/off desaparece. Un cargo con `personal.editar` concedido se veia como si no lo tuviera solo porque quien mira no puede repartirlo — la pantalla mentia sobre lo unico que existe para responder—, y ademas el «4 de 6» contaba de menos. Entra `deshabilitado` en `Privilegio`: es `soloLectura` por fila, SIGUE CONTANDO, y se apaga con `aria-disabled` y no con `disabled`, asi que se alcanza con teclado y su estado se lee. R149 · EL `base` CONCEDIA DE REBOTE Y NADIE LO DECIA. Su servidor no exige `leer` para nada, asi que el panel escribiria `personal.leer` cuando alguien solo toco «Editar». Y el dano no es «conceder de mas»: su PUT es de juego COMPLETO y tienen una regla anti-escalada, asi que un `ver` de rebote que el repartidor no posee hace que el servidor RECHACE EL GUARDADO ENTERO con 403 — se pierde tambien el interruptor que la persona si queria cambiar. Un efecto invisible convertia una accion legitima en un error. De sus dos salidas se toma la primera: se DICE en la etiqueta, que es lo que `clave` ya hacia con su «va con X y Y». El patron existia y a esto no se le habia aplicado. R150 · `privilegiosEfectivos` BORRABA EN SILENCIO Y SU `base` NO SEGUIA AL DEL PANEL. El tercer parametro era `= ver` e independiente del componente: montar el panel con `base={null}` y llamarla sin tercer argumento VACIABA TODOS LOS MODULOS SIN `ver`, con las dos llamadas validas y sin que tipos ni contrato avisaran. Ahora `onCambio` entrega DOS cosas —el mapa y lo efectivo, calculado con el base que el panel tiene— y el parametro pierde su valor por omision: la combinacion pasa a ser un ERROR DE COMPILACION. Rompe en voz alta, que es lo contrario de como rompia antes. Y se dice lo que faltaba: LO EFECTIVO PUEDE SER UN BORRADO — un modulo sin su base sale como {} y con un PUT de juego completo eso borra sus filas—. Y LO QUE UNA AUDITORIA ADVERSARIA ENCONTRO EN LA v1.125.0 ANTES DE PUBLICARLA, que es la parte que mas ensena. EL ENTREGABLE DEL R145 ESTABA MUERTO: `:nth-child(n+3)` cuenta como CLASE, asi que la regla que oculta (0,3,0) le ganaba a la que ensena (0,2,0) y el «+N» —que siempre cae en posicion tercera o mas— NO SE VEIA EN NINGUN ANCHO. Medido en los siete. Y LOS VEINTE PASOS SALIAN EN VERDE por una razon que vale para todo el sistema: `casa()` descartaba TODO selector con un `+` o un `~` —«hermanos: no se soportan»— sin mirar si estaba dentro de un parentesis. El sistema estreno su primer `nth-child(n+…)` y lo metio justo en el punto ciego de CINCO candados, porque verificar-promesa, -empate, -altura y -tono importan ese motor. Ahora se enmascaran los parentesis antes de buscar el combinador, y lo que de verdad se salta SE CUENTA Y SE IMPRIME: un limite declarado en un comentario que nadie imprime es un limite que nadie conoce. Y DOS REGRESIONES DEL R144: al subir el aviso bajo la fila del base se colgo de que esa fila EXISTA, asi que un modulo que no declara el privilegio base se quedaba entero acarrilado en naranja SIN UNA LINEA que dijera por que; y un `base` declarado dentro de un GRUPO recibia el carril sobre si mismo, porque ahi `esBase` iba fijo en false. Mas el carril pegado a ras del borde de la tarjeta bajo 560px —medido a 0,00— y el chip «necesita otro permiso» fuera del nombre accesible, que con `aria-labelledby` presente deja de anunciarse (SC 2.5.3). Y UNA CIFRA QUE SOLO VIVIA EN UN MENSAJE DE COMMIT: el 14,33:1 del nombre tras quitar la opacidad no estaba en ningun archivo del repositorio. Ahora esta en la regla 11, con su par y su superficie.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td><code>privilegiosEfectivos</code> EXIGE SU TERCER PARAMETRO. Quien la llamaba con dos argumentos tiene ahora un error de compilacion. Es deliberado: el valor por omision <code>ver</code> era independiente del <code>base</code> del panel, y con <code>base={null}</code> la llamada corta VACIABA todos los modulos sin <code>ver</code> EN SILENCIO. La migracion es escribir el mismo <code>base</code> que se le pasa al panel — o mejor, dejar de llamarla y usar el segundo argumento de <code>onCambio</code>.</td></tr><tr><td><code>onCambio</code> RECIBE UN SEGUNDO ARGUMENTO: lo efectivo. Quien declare un solo parametro no tiene que tocar nada.</td></tr><tr><td>LA ETIQUETA DE UN PRIVILEGIO PUEDE LLEVAR AHORA «· enciende tambien «X»». Cambia el NOMBRE ACCESIBLE del interruptor, asi que una prueba que busque por igualdad exacta —<code>{ name: "Editar" }</code>— deja de encontrarlo. Solo aparece cuando el arrastre va a ocurrir de verdad.</td></tr><tr><td>AL SUBIR EL AVISO BAJO LA FILA DEL BASE, la ultima fila de un modulo sin grupos PASA A SER <code>:last-child</code> y pierde su linea inferior por <code>.pp-priv:last-child{border-bottom:0}</code>. Cambia el dibujo de todos los modulos sin base, se pidiera o no. Lo cazo una auditoria revisando esta misma lista.</td></tr><tr><td>BAJO 900 px LA CABECERA ENSENA DOS CHIPS Y UN «+N». En la v1.125.0 no ensenaba el «+N» en ningun ancho —estaba muerto por especificidad— asi que si midieron esa version, midieron un defecto.</td></tr><tr><td>LA FILA BLOQUEADA POR <code>depende</code> ANUNCIA AHORA TAMBIEN SU CHIP: el nombre accesible pasa de «Carga masiva» a «Carga masiva necesita otro permiso».</td></tr></tbody></table>
 
 
 <h3 class="sub-seccion">v1.125.0 <span class="cam-fecha">2026-09-17</span></h3>

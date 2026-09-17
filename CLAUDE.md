@@ -19,13 +19,14 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.125.0** — **R144 a R147**, y lo que hay que leer de ellos
-no es la lista: es que **el panel de privilegios llevaba dos meses entregado y
-sin adoptar**, y que **dos de las cuatro las llevaba declaradas abiertas este
-mismo repositorio desde la v1.91.0** sin que nadie volviera. Declarar no es
-arreglar. La más grave —`.pp-sin-base` al 50 % de opacidad con los interruptores
-aún pulsables, el nombre a 2,07:1— no era un caso raro: es **el estado inicial de
-la pantalla**.
+**Estado actual: v1.126.0** — **R148 a R150**, las tres que bloqueaban la
+adopción del panel de privilegios, y **lo que una auditoría encontró muerto en la
+v1.125.0 antes de publicarla**: el «+N» del móvil no se veía **en ningún ancho**
+porque `:nth-child(n+3)` cuenta como clase y le ganaba a la regla que lo enseña.
+Los veinte pasos salían en verde por una razón que vale para todo el sistema —
+`casa()` descartaba **todo** selector con un `+`, paréntesis incluidos, así que
+el primer `nth-child(n+…)` del repositorio cayó en el punto ciego de **cinco**
+candados. Ya no, y lo que de verdad no sabe mirar **lo imprime**.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
