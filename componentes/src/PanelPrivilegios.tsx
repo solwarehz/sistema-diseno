@@ -20,7 +20,7 @@
  * (`base`) o desactivar (`base={null}`) cuando el dominio no funcione así.
  */
 
-import { useCallback, useMemo, useState } from 'react';
+import { Fragment, useCallback, useId, useMemo, useState } from 'react';
 import { Interruptor } from './Interruptor';
 import { Segmentado, type OpcionSegmento } from './Segmentado';
 import { Chip } from './Chip';
@@ -298,6 +298,11 @@ export function PanelPrivilegios({
   abiertos, onAbiertos, soloLectura = false, children, className = '',
 }: PanelPrivilegiosProps) {
   const [propios, setPropios] = useState<string[]>([]);
+  /* R146 · Para nombrar y describir la fila bloqueada por `depende`. Se llama
+     `idPanel` y no `id` a propósito: `alternar(id)` ya usa ese nombre para otra
+     cosa, y una variable sombreada dentro de un componente de 700 líneas es
+     una trampa esperando. */
+  const idPanel = useId();
   const visibles = abiertos ?? propios;
   const alternar = (id: string) => {
     const nuevo = visibles.includes(id) ? visibles.filter((x) => x !== id) : [...visibles, id];
@@ -438,14 +443,39 @@ export function PanelPrivilegios({
              icono. No se reutiliza ninguno de los tres de R99 a propósito:
              aquéllos explican por qué algo NO SE PUEDE repartir, y esto es un
              estado que se resuelve encendiendo el interruptor de arriba. */
-          <div className="pp-cerrado">
+          /* R146 · ESTE SÍ SE ALCANZA CON TECLADO, y los otros tres no.
+             La v1.91.0 dejó escrito que los cuatro bloqueados salían del orden
+             de tabulación y que era «defendible en tres, DISCUTIBLE EN EL
+             CUARTO». Control Administrativos V2.0 trajo el dato que lo decide:
+             éste es el único TRANSITORIO. `carga-masiva` está bloqueado hasta
+             que se enciende `crear`, y se desbloquea SIN RECARGAR — así que
+             quien reparte con teclado veía aparecer en el recorrido una fila
+             que un segundo antes no podía alcanzar, sin nada que lo anunciara,
+             y no tenía forma de llegar a ella para enterarse de qué le falta.
+             Los otros tres —cerrado, ajeno, pendiente— son estables y son
+             texto: quedarse fuera del recorrido es correcto ahí.
+
+             `aria-disabled` y NO `disabled`, que es la misma decisión que el
+             calendario tomó en el R139: apagado de verdad sale del recorrido, y
+             volveríamos al defecto. Se anuncia como interruptor sin marcar y
+             deshabilitado, y su motivo va en `aria-describedby` — porque el
+             motivo es lo único que hace falta para desbloquearlo. */
+          <div
+            className="pp-cerrado"
+            role="switch"
+            aria-checked={false}
+            aria-disabled
+            tabIndex={0}
+            aria-labelledby={`${idPanel}-${m.id}-${p.id}-nom`}
+            aria-describedby={`${idPanel}-${m.id}-${p.id}-mot`}
+          >
             <span className="pp-cerrado-ic"><Icono nombre="capas" /></span>
             <span className="pp-cerrado-txt">
-              <span className="pp-cerrado-nom">{p.nombre}</span>
+              <span className="pp-cerrado-nom" id={`${idPanel}-${m.id}-${p.id}-nom`}>{p.nombre}</span>
               <span className="pp-cerrado-eti">
                 <Chip tono="aviso">necesita otro permiso</Chip>
               </span>
-              <span className="pp-cerrado-motivo">{motivoFalta}</span>
+              <span className="pp-cerrado-motivo" id={`${idPanel}-${m.id}-${p.id}-mot`}>{motivoFalta}</span>
             </span>
           </div>
         ) : (
@@ -531,19 +561,39 @@ export function PanelPrivilegios({
                   {dados.length
                     ? dados.map((p) => <Chip key={p.id} tono="info">{p.nombre}</Chip>)
                     : <Chip tono="pendiente">sin permisos</Chip>}
+                  {/* R145 · El resumen del móvil. Se emite SIEMPRE y la hoja lo
+                      enseña solo bajo 900 px: un componente no puede preguntar
+                      cuánto mide la pantalla sin medir, y medir para decidir
+                      marcado es lo que hace que el servidor y el navegador
+                      pinten cosas distintas. Aquí decide la hoja, que es quien
+                      sabe. */}
+                  {dados.length > 2 && (
+                    <Chip tono="info" className="pp-tags-mas">+{dados.length - 2}</Chip>
+                  )}
                 </span>
                 <span className="pp-conteo">{dados.length} de {posibles}</span>
               </button>
 
               <div className="pp-mod-cuerpo" id={`pp-${m.id}`} hidden={!abiertoM}>
-                {m.privilegios.map((p) => fila(m, p, p.id === base))}
-
-                {sinBase && (
-                  <p className="pp-aviso">
-                    <Icono nombre="alerta" tam="control" />
-                    <span>Sin este permiso, el resto del módulo no se aplica.</span>
-                  </p>
-                )}
+                {/* R144 · EL AVISO VA JUSTO DEBAJO DEL BASE, no al final.
+                    Estaba después de las seis filas que describe, así que se
+                    leían seis permisos antes de enterarse de que ninguno se
+                    aplica. Ahora cae pegado al interruptor que lo resuelve y
+                    encabeza el carril que marca las filas afectadas.
+                    Se conserva el ORDEN de la lista: se intercala en su sitio
+                    en vez de reordenar, porque cuál va primero lo decide quien
+                    declara los privilegios, no nosotros. */}
+                {m.privilegios.map((p) => (
+                  <Fragment key={p.id}>
+                    {fila(m, p, p.id === base)}
+                    {sinBase && p.id === base && (
+                      <p className="pp-aviso">
+                        <Icono nombre="alerta" tam="control" />
+                        <span>Sin este permiso, el resto del módulo no se aplica.</span>
+                      </p>
+                    )}
+                  </Fragment>
+                ))}
 
                 {(m.grupos ?? []).map((g) => (
                   <div className="pp-grupo" key={g.titulo}>

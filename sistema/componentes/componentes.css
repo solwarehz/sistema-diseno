@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.124.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.125.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -87,7 +87,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.124.0; }
+:root{ --mmi-componentes: 1.125.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -1602,7 +1602,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pb-todos{ justify-content: center; border-top: 1px solid var(--borde); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   PANEL DE PRIVILEGIOS — 40 reglas · clases .pp-*
+   PANEL DE PRIVILEGIOS — 42 reglas · clases .pp-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .pp{ display: flex; flex-direction: column; gap: 16px; }
@@ -1622,6 +1622,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pp-mod-nom{ font-size: 15px; font-weight: 500; min-width: 0; }
 .pp-marca{ margin-left: 8px; }
 .pp-tags{ display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; max-width: 46ch; }
+.pp-tags .pp-tags-mas{ display: none; }
 .pp-conteo{ font-size: 12px; color: var(--texto-secundario);
   font-variant-numeric: tabular-nums; white-space: nowrap; }
 .pp-mod-cuerpo{ padding: 4px 14px 12px 46px; border-top: 1px solid var(--borde); }
@@ -1629,7 +1630,9 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pp-priv{ padding: 8px 0; border-bottom: 1px solid var(--borde); }
 .pp-priv:last-child{ border-bottom: 0; }
 .pp-priv-base{ border-bottom-color: var(--borde-fuerte); }
-.pp-sin-base .pp-priv:not(.pp-priv-base){ opacity: .5; }
+.pp-sin-base .pp-priv:not(.pp-priv-base){
+  border-left: 3px solid var(--aviso-acento);
+  padding-left: 9px; margin-left: -12px; }
 .pp-aviso{ display: flex; align-items: center; gap: 8px; margin: 12px 0 0;
   padding: 8px 12px; border-radius: 6px; font-size: 13px;
   background: var(--aviso-fondo); color: var(--aviso-texto);
@@ -1638,6 +1641,8 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pp-grupo-tit{ margin: 8px 0 4px; font-size: 12px; font-weight: 600;
   letter-spacing: .05em; text-transform: uppercase; color: var(--texto-secundario); }
 .pp-cerrado{ display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: start; }
+.pp-cerrado:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px;
+  border-radius: 4px; }
 .pp-cerrado-ic{ display: grid; place-items: center; width: 40px; height: 24px; }
 .pp-cerrado-txt{ display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .pp-cerrado-nom{ font-size: 15px; color: var(--texto-secundario); }
@@ -1658,8 +1663,15 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   .pp-chev{ transition: none; }
 }
 @media (max-width: 900px) {
-  .pp-mod-cab{ grid-template-columns: 20px 1fr auto; }
-  .pp-tags{ display: none; }
+  .pp-mod-cab{
+    grid-template-columns: 20px 1fr auto;
+    grid-template-areas: 'chev nombre conteo' '. tags tags'; }
+  .pp-chev{ grid-area: chev; }
+  .pp-mod-nom{ grid-area: nombre; }
+  .pp-conteo{ grid-area: conteo; }
+  .pp-tags{ grid-area: tags; justify-content: flex-start; max-width: none; }
+  .pp-tags .chip:nth-child(n+3){ display: none; }
+  .pp-tags .pp-tags-mas{ display: inline-block; }
   .pp-mod-cuerpo{ padding-left: 20px; }
 }
 @media (max-width: 560px) {

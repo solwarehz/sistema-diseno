@@ -8070,6 +8070,7 @@ reconstruyendo.</p>
           <span class="pp-tags">
             <span class="chip chip-info">Ver</span><span class="chip chip-info">Editar</span>
             <span class="chip chip-info">Crear</span><span class="chip chip-info">Descargar</span>
+            <span class="chip chip-info pp-tags-mas">+2</span>
           </span>
           <span class="pp-conteo">4 de 4</span>
         </button>
@@ -8122,10 +8123,10 @@ reconstruyendo.</p>
           <div class="pp-priv pp-priv-base">
             <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Ver"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Ver</span></span></label>
           </div>
+          <p class="pp-aviso">${icono('alerta', 16)}<span>Sin este permiso, el resto del módulo no se aplica.</span></p>
           <div class="pp-priv">
             <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Editar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar</span></span></label>
           </div>
-          <p class="pp-aviso">${icono('alerta', 16)}<span>Sin este permiso, el resto del módulo no se aplica.</span></p>
         </div>
       </section>
 
@@ -8194,12 +8195,13 @@ pueda, dice que <strong>todavía no</strong> — y se resuelve encendiendo el de
             </div>
           </div>
           <div class="pp-priv pp-no-depende">
-            <div class="pp-cerrado">
+            <div class="pp-cerrado" role="switch" aria-checked="false" aria-disabled="true"
+                 tabindex="0" aria-labelledby="pp-dem-cm-nom" aria-describedby="pp-dem-cm-mot">
               <span class="pp-cerrado-ic">${icono('capas', 18)}</span>
               <span class="pp-cerrado-txt">
-                <span class="pp-cerrado-nom">Carga masiva</span>
+                <span class="pp-cerrado-nom" id="pp-dem-cm-nom">Carga masiva</span>
                 <span class="pp-cerrado-eti"><span class="chip chip-aviso">necesita otro permiso</span></span>
-                <span class="pp-cerrado-motivo">Antes hay que conceder «Crear trabajador».</span>
+                <span class="pp-cerrado-motivo" id="pp-dem-cm-mot">Antes hay que conceder «Crear trabajador».</span>
               </span>
             </div>
           </div>
@@ -10818,6 +10820,12 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .pp-mod-nom { font-size: 15px; font-weight: 500; min-width: 0; }
 .pp-marca { margin-left: 8px; }
 .pp-tags { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; max-width: 46ch; }
+/* R145 · El resumen «+N» lo emite el componente SIEMPRE y solo se ve en el
+   telefono: asi la cabecera no necesita saber cuanto mide la pantalla, que es
+   lo unico que un componente no puede preguntar sin medir. Va con dos clases
+   —.pp-tags .pp-tags-mas— para ganarle por especificidad al display que
+   .chip declara, y no por orden: la leccion del R95, en el mismo archivo. */
+.pp-tags .pp-tags-mas { display: none; }
 .pp-conteo { font-size: 12px; color: var(--texto-secundario);
   font-variant-numeric: tabular-nums; white-space: nowrap; }
 
@@ -10831,10 +10839,29 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 /* El privilegio base cierra su bloque con filete fuerte: manda sobre los de
    abajo y la linea lo dice sin una palabra mas. */
 .pp-priv-base { border-bottom-color: var(--borde-fuerte); }
-/* Sin el base, el resto del modulo no se aplica: se atenua para que se vea que
-   estan ahi pero no rigen. No se ocultan — desaparecer un permiso concedido
-   haria pensar que se perdio. */
-.pp-sin-base .pp-priv:not(.pp-priv-base) { opacity: .5; }
+/* R144 · SIN EL BASE, EL RESTO DEL MODULO NO SE APLICA — Y ESO SE DICE SIN
+   APAGAR NADA.
+
+   Aqui habia opacity: .5, y estaba MAL. Lo declaraba el propio sistema desde
+   la v1.91.0 y nadie lo habia cerrado: el nombre caia a 2,07:1 y el icono a
+   2,03:1 CON LOS INTERRUPTORES AUN PULSABLES, asi que la excepcion de WCAG para
+   controles inactivos no aplicaba. Lo reclamo Control Administrativos V2.0 con
+   el dato que lo convierte en urgente: «sin base» NO ES UN CASO RARO, es el
+   ESTADO INICIAL de la pantalla — repartir privilegios a un cargo empieza, por
+   definicion, con los diez modulos sin su «ver» concedido. Abrir la pantalla de
+   un cargo nuevo era abrirla ENTERA a 2,07:1.
+
+   La senal era correcta y el canal no. Ahora el canal es un CARRIL, no un
+   apagado: mismo acento que el aviso que hay justo encima, tres pixeles, y NI
+   UNA sola relacion de contraste tocada. El nombre, el icono y el interruptor
+   siguen donde estaban.
+
+   No se ocultan — desaparecer un permiso concedido haria pensar que se perdio—
+   y no se bloquean: encender algo antes de conceder el base es legitimo, y
+   bloquearlo le quitaria a quien reparte el orden en que quiere trabajar. */
+.pp-sin-base .pp-priv:not(.pp-priv-base) {
+  border-left: 3px solid var(--aviso-acento);
+  padding-left: 9px; margin-left: -12px; }
 
 .pp-aviso { display: flex; align-items: center; gap: 8px; margin: 12px 0 0;
   padding: 8px 12px; border-radius: 6px; font-size: 13px;
@@ -10856,6 +10883,12 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    pinta apagado: apagado es «ahora no, vuelve luego», que es justo lo que aqui
    no se quiere decir. */
 .pp-cerrado { display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: start; }
+/* R146 · El bloqueado por depende ENTRA en el recorrido del teclado, asi que
+   tiene que verse cuando lo recibe. Sin este anillo, quien navega con tabulador
+   llegaria a una fila que no da ninguna senal de tenerlo — que es peor que no
+   alcanzarla. */
+.pp-cerrado:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px;
+  border-radius: 4px; }
 .pp-cerrado-ic { display: grid; place-items: center; width: 40px; height: 24px; }
 .pp-cerrado-txt { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .pp-cerrado-nom { font-size: 15px; color: var(--texto-secundario); }
@@ -10963,11 +10996,31 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    su motivo principal para cambiar. Aqui no hay tabla, asi que no hay nada que
    desplazar — pero si tres cosas que apretar.
    El sangrado cae a 20px: con 46 no queda ancho para el nombre del privilegio.
-   Los chips de la cabecera se van: el conteo «4 de 6» dice lo mismo en una
-   linea y no parte el titulo del modulo en tres. */
+
+   R145 · Y AQUI LOS CHIPS SE IBAN, QUE ERA PERDER LA RESPUESTA Y QUEDARSE CON
+   EL NUMERO. «El conteo dice lo mismo en una linea» decia este comentario, y es
+   FALSO: «4 de 6» dice CUANTOS, no CUALES. Lo reclamo Control Administrativos
+   V2.0, y el argumento es el que convierte el defecto en grave: el acordeon
+   plegado ES la vista de repaso — se mira la lista cerrada para ver de un
+   vistazo que tiene el cargo—, asi que en el telefono habia que abrir los diez
+   modulos uno por uno para responder «que puede hacer este cargo». Justo el
+   trabajo que el plegado venia a ahorrar. Y de las dos cosas de la cabecera, se
+   conservaba la que no lleva informacion.
+   Ahora bajan a una SEGUNDA LINEA bajo el nombre, con los dos primeros y un
+   «+N» que el componente emite siempre y que solo se ve aqui. La cabecera
+   crece una linea; eso es lo que costaba la respuesta. */
 @media (max-width: 900px) {
-  .pp-mod-cab { grid-template-columns: 20px 1fr auto; }
-  .pp-tags { display: none; }
+  .pp-mod-cab {
+    grid-template-columns: 20px 1fr auto;
+    grid-template-areas: 'chev nombre conteo' '. tags tags'; }
+  .pp-chev { grid-area: chev; }
+  .pp-mod-nom { grid-area: nombre; }
+  .pp-conteo { grid-area: conteo; }
+  .pp-tags { grid-area: tags; justify-content: flex-start; max-width: none; }
+  /* Dos y el resumen. Con seis privilegios, seis chips envuelven en tres lineas
+     y vuelven a partir el titulo en tres — que es lo que este bloque evitaba. */
+  .pp-tags .chip:nth-child(n+3) { display: none; }
+  .pp-tags .pp-tags-mas { display: inline-block; }
   .pp-mod-cuerpo { padding-left: 20px; }
 }
 @media (max-width: 560px) {

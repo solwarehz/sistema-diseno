@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.124.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.125.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.124.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.125.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -35,7 +35,7 @@
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.124.0;
+  --mmi-version: 1.125.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -1447,7 +1447,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    como cualquier otra regla, para que el catalogo y la entrega digan lo mismo:
    inyectarlo solo en la entrega dejaba una regla que el catalogo no tenia, y
    el candado de la promesa lo caza —con razon—. Los dos salen de VERSION. */
-:root { --mmi-componentes: 1.124.0; }
+:root { --mmi-componentes: 1.125.0; }
 
 .fc-zona { position: relative; }
 /* R129.2 · EL TOPE ERA MENOR QUE EL CONTENIDO. Con R129.1 puesto, lo que el
@@ -2454,6 +2454,12 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .pp-mod-nom { font-size: 15px; font-weight: 500; min-width: 0; }
 .pp-marca { margin-left: 8px; }
 .pp-tags { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; max-width: 46ch; }
+/* R145 · El resumen «+N» lo emite el componente SIEMPRE y solo se ve en el
+   telefono: asi la cabecera no necesita saber cuanto mide la pantalla, que es
+   lo unico que un componente no puede preguntar sin medir. Va con dos clases
+   —.pp-tags .pp-tags-mas— para ganarle por especificidad al display que
+   .chip declara, y no por orden: la leccion del R95, en el mismo archivo. */
+.pp-tags .pp-tags-mas { display: none; }
 .pp-conteo { font-size: 12px; color: var(--texto-secundario);
   font-variant-numeric: tabular-nums; white-space: nowrap; }
 
@@ -2467,10 +2473,29 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 /* El privilegio base cierra su bloque con filete fuerte: manda sobre los de
    abajo y la linea lo dice sin una palabra mas. */
 .pp-priv-base { border-bottom-color: var(--borde-fuerte); }
-/* Sin el base, el resto del modulo no se aplica: se atenua para que se vea que
-   estan ahi pero no rigen. No se ocultan — desaparecer un permiso concedido
-   haria pensar que se perdio. */
-.pp-sin-base .pp-priv:not(.pp-priv-base) { opacity: .5; }
+/* R144 · SIN EL BASE, EL RESTO DEL MODULO NO SE APLICA — Y ESO SE DICE SIN
+   APAGAR NADA.
+
+   Aqui habia opacity: .5, y estaba MAL. Lo declaraba el propio sistema desde
+   la v1.91.0 y nadie lo habia cerrado: el nombre caia a 2,07:1 y el icono a
+   2,03:1 CON LOS INTERRUPTORES AUN PULSABLES, asi que la excepcion de WCAG para
+   controles inactivos no aplicaba. Lo reclamo Control Administrativos V2.0 con
+   el dato que lo convierte en urgente: «sin base» NO ES UN CASO RARO, es el
+   ESTADO INICIAL de la pantalla — repartir privilegios a un cargo empieza, por
+   definicion, con los diez modulos sin su «ver» concedido. Abrir la pantalla de
+   un cargo nuevo era abrirla ENTERA a 2,07:1.
+
+   La senal era correcta y el canal no. Ahora el canal es un CARRIL, no un
+   apagado: mismo acento que el aviso que hay justo encima, tres pixeles, y NI
+   UNA sola relacion de contraste tocada. El nombre, el icono y el interruptor
+   siguen donde estaban.
+
+   No se ocultan — desaparecer un permiso concedido haria pensar que se perdio—
+   y no se bloquean: encender algo antes de conceder el base es legitimo, y
+   bloquearlo le quitaria a quien reparte el orden en que quiere trabajar. */
+.pp-sin-base .pp-priv:not(.pp-priv-base) {
+  border-left: 3px solid var(--aviso-acento);
+  padding-left: 9px; margin-left: -12px; }
 
 .pp-aviso { display: flex; align-items: center; gap: 8px; margin: 12px 0 0;
   padding: 8px 12px; border-radius: 6px; font-size: 13px;
@@ -2492,6 +2517,12 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    pinta apagado: apagado es «ahora no, vuelve luego», que es justo lo que aqui
    no se quiere decir. */
 .pp-cerrado { display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: start; }
+/* R146 · El bloqueado por depende ENTRA en el recorrido del teclado, asi que
+   tiene que verse cuando lo recibe. Sin este anillo, quien navega con tabulador
+   llegaria a una fila que no da ninguna senal de tenerlo — que es peor que no
+   alcanzarla. */
+.pp-cerrado:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px;
+  border-radius: 4px; }
 .pp-cerrado-ic { display: grid; place-items: center; width: 40px; height: 24px; }
 .pp-cerrado-txt { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .pp-cerrado-nom { font-size: 15px; color: var(--texto-secundario); }
@@ -2599,11 +2630,31 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    su motivo principal para cambiar. Aqui no hay tabla, asi que no hay nada que
    desplazar — pero si tres cosas que apretar.
    El sangrado cae a 20px: con 46 no queda ancho para el nombre del privilegio.
-   Los chips de la cabecera se van: el conteo «4 de 6» dice lo mismo en una
-   linea y no parte el titulo del modulo en tres. */
+
+   R145 · Y AQUI LOS CHIPS SE IBAN, QUE ERA PERDER LA RESPUESTA Y QUEDARSE CON
+   EL NUMERO. «El conteo dice lo mismo en una linea» decia este comentario, y es
+   FALSO: «4 de 6» dice CUANTOS, no CUALES. Lo reclamo Control Administrativos
+   V2.0, y el argumento es el que convierte el defecto en grave: el acordeon
+   plegado ES la vista de repaso — se mira la lista cerrada para ver de un
+   vistazo que tiene el cargo—, asi que en el telefono habia que abrir los diez
+   modulos uno por uno para responder «que puede hacer este cargo». Justo el
+   trabajo que el plegado venia a ahorrar. Y de las dos cosas de la cabecera, se
+   conservaba la que no lleva informacion.
+   Ahora bajan a una SEGUNDA LINEA bajo el nombre, con los dos primeros y un
+   «+N» que el componente emite siempre y que solo se ve aqui. La cabecera
+   crece una linea; eso es lo que costaba la respuesta. */
 @media (max-width: 900px) {
-  .pp-mod-cab { grid-template-columns: 20px 1fr auto; }
-  .pp-tags { display: none; }
+  .pp-mod-cab {
+    grid-template-columns: 20px 1fr auto;
+    grid-template-areas: 'chev nombre conteo' '. tags tags'; }
+  .pp-chev { grid-area: chev; }
+  .pp-mod-nom { grid-area: nombre; }
+  .pp-conteo { grid-area: conteo; }
+  .pp-tags { grid-area: tags; justify-content: flex-start; max-width: none; }
+  /* Dos y el resumen. Con seis privilegios, seis chips envuelven en tres lineas
+     y vuelven a partir el titulo en tres — que es lo que este bloque evitaba. */
+  .pp-tags .chip:nth-child(n+3) { display: none; }
+  .pp-tags .pp-tags-mas { display: inline-block; }
   .pp-mod-cuerpo { padding-left: 20px; }
 }
 @media (max-width: 560px) {
@@ -5139,7 +5190,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.124.0</option></select></label>
+          <select class="campo cg-in"><option>v1.125.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -5227,8 +5278,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.124.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.124.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.125.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.125.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -5787,7 +5838,7 @@ demostraciones de al lado. Y la hoja no es una copia: se inyecta desde
 vieja.</div>
 
 <script type="text/plain" id="tokens-entregados">/* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.124.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.125.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -5815,7 +5866,7 @@ vieja.</div>
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.124.0;
+  --mmi-version: 1.125.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -6428,7 +6479,7 @@ vieja.</div>
 </script>
 <script type="text/plain" id="hoja-entregada">
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.124.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.125.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -6516,7 +6567,7 @@ vieja.</div>
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.124.0; }
+:root{ --mmi-componentes: 1.125.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -8031,7 +8082,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pb-todos{ justify-content: center; border-top: 1px solid var(--borde); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   PANEL DE PRIVILEGIOS — 40 reglas · clases .pp-*
+   PANEL DE PRIVILEGIOS — 42 reglas · clases .pp-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .pp{ display: flex; flex-direction: column; gap: 16px; }
@@ -8051,6 +8102,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pp-mod-nom{ font-size: 15px; font-weight: 500; min-width: 0; }
 .pp-marca{ margin-left: 8px; }
 .pp-tags{ display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; max-width: 46ch; }
+.pp-tags .pp-tags-mas{ display: none; }
 .pp-conteo{ font-size: 12px; color: var(--texto-secundario);
   font-variant-numeric: tabular-nums; white-space: nowrap; }
 .pp-mod-cuerpo{ padding: 4px 14px 12px 46px; border-top: 1px solid var(--borde); }
@@ -8058,7 +8110,9 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pp-priv{ padding: 8px 0; border-bottom: 1px solid var(--borde); }
 .pp-priv:last-child{ border-bottom: 0; }
 .pp-priv-base{ border-bottom-color: var(--borde-fuerte); }
-.pp-sin-base .pp-priv:not(.pp-priv-base){ opacity: .5; }
+.pp-sin-base .pp-priv:not(.pp-priv-base){
+  border-left: 3px solid var(--aviso-acento);
+  padding-left: 9px; margin-left: -12px; }
 .pp-aviso{ display: flex; align-items: center; gap: 8px; margin: 12px 0 0;
   padding: 8px 12px; border-radius: 6px; font-size: 13px;
   background: var(--aviso-fondo); color: var(--aviso-texto);
@@ -8067,6 +8121,8 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pp-grupo-tit{ margin: 8px 0 4px; font-size: 12px; font-weight: 600;
   letter-spacing: .05em; text-transform: uppercase; color: var(--texto-secundario); }
 .pp-cerrado{ display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: start; }
+.pp-cerrado:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px;
+  border-radius: 4px; }
 .pp-cerrado-ic{ display: grid; place-items: center; width: 40px; height: 24px; }
 .pp-cerrado-txt{ display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .pp-cerrado-nom{ font-size: 15px; color: var(--texto-secundario); }
@@ -8087,8 +8143,15 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   .pp-chev{ transition: none; }
 }
 @media (max-width: 900px) {
-  .pp-mod-cab{ grid-template-columns: 20px 1fr auto; }
-  .pp-tags{ display: none; }
+  .pp-mod-cab{
+    grid-template-columns: 20px 1fr auto;
+    grid-template-areas: 'chev nombre conteo' '. tags tags'; }
+  .pp-chev{ grid-area: chev; }
+  .pp-mod-nom{ grid-area: nombre; }
+  .pp-conteo{ grid-area: conteo; }
+  .pp-tags{ grid-area: tags; justify-content: flex-start; max-width: none; }
+  .pp-tags .chip:nth-child(n+3){ display: none; }
+  .pp-tags .pp-tags-mas{ display: inline-block; }
   .pp-mod-cuerpo{ padding-left: 20px; }
 }
 @media (max-width: 560px) {
@@ -15096,6 +15159,7 @@ reconstruyendo.</p>
           <span class="pp-tags">
             <span class="chip chip-info">Ver</span><span class="chip chip-info">Editar</span>
             <span class="chip chip-info">Crear</span><span class="chip chip-info">Descargar</span>
+            <span class="chip chip-info pp-tags-mas">+2</span>
           </span>
           <span class="pp-conteo">4 de 4</span>
         </button>
@@ -15148,10 +15212,10 @@ reconstruyendo.</p>
           <div class="pp-priv pp-priv-base">
             <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Ver"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Ver</span></span></label>
           </div>
+          <p class="pp-aviso"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg><span>Sin este permiso, el resto del módulo no se aplica.</span></p>
           <div class="pp-priv">
             <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Editar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar</span></span></label>
           </div>
-          <p class="pp-aviso"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg><span>Sin este permiso, el resto del módulo no se aplica.</span></p>
         </div>
       </section>
 
@@ -15220,12 +15284,13 @@ pueda, dice que <strong>todavía no</strong> — y se resuelve encendiendo el de
             </div>
           </div>
           <div class="pp-priv pp-no-depende">
-            <div class="pp-cerrado">
+            <div class="pp-cerrado" role="switch" aria-checked="false" aria-disabled="true"
+                 tabindex="0" aria-labelledby="pp-dem-cm-nom" aria-describedby="pp-dem-cm-mot">
               <span class="pp-cerrado-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg></span>
               <span class="pp-cerrado-txt">
-                <span class="pp-cerrado-nom">Carga masiva</span>
+                <span class="pp-cerrado-nom" id="pp-dem-cm-nom">Carga masiva</span>
                 <span class="pp-cerrado-eti"><span class="chip chip-aviso">necesita otro permiso</span></span>
-                <span class="pp-cerrado-motivo">Antes hay que conceder «Crear trabajador».</span>
+                <span class="pp-cerrado-motivo" id="pp-dem-cm-mot">Antes hay que conceder «Crear trabajador».</span>
               </span>
             </div>
           </div>
@@ -19440,6 +19505,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 
 <div class="aviso"><strong>En ocho versiones no se ha retirado ni renombrado ningún token.</strong>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
+
+
+<h3 class="sub-seccion">v1.125.0 <span class="cam-fecha">2026-09-17</span></h3>
+<p class="pag-intro"><strong>R144 a R147 — las cuatro que Control Administrativos encontro al ir a ADOPTAR el panel de privilegios.</strong> CUATRO DE LAS CUATRO SALIERON DE LEER EL CONTRATO, no de una pantalla rota. El panel nacio por peticion suya —R97, v1.72.0— y llego a su forma actual en la v1.91.0; NUNCA LO ADOPTARON. Su pantalla sigue siendo una tabla a medida de 27x7 con seis apanos, y cinco de los seis son cosas que el panel ya resuelve. Eso es lo que hay que leer de este requerimiento: un componente entregado y no adoptado durante dos meses es un componente que no se entrego del todo. Y DOS DE LAS CUATRO LAS LLEVABA DECLARADAS ABIERTAS EL PROPIO SISTEMA desde la v1.91.0, sin que nadie las cerrara. Declarar no es arreglar; declarar y no volver es una deuda que envejece sola. R144 · `.pp-sin-base` APAGABA A MEDIAS: opacidad al 50 % con el nombre a 2,07:1 y el icono a 2,03:1 Y LOS INTERRUPTORES AUN PULSABLES, asi que la excepcion de WCAG para controles inactivos no aplicaba. Las dos cifras son NUESTRAS, de la entrada de la v1.91.0. Lo que convierte la deuda en urgente es el dato que traen ellos: «sin base» NO ES UN CASO RARO, ES EL ESTADO INICIAL DE LA PANTALLA — repartir privilegios a un cargo empieza, por definicion, con los diez modulos sin su «ver» concedido, asi que abrir un cargo nuevo era abrirlo ENTERO a 2,07:1. La senal era correcta y el canal no: ahora es un CARRIL de 3px en aviso-acento, el mismo del aviso que hay encima, y ninguna relacion de contraste se toca. De las tres salidas que ofrecian, NO se toma la de bloquear las filas: encender algo antes de conceder el base es legitimo y bloquearlo le quitaria a quien reparte el orden en que quiere trabajar. Y el aviso pasa a ir JUSTO DEBAJO DEL BASE: estaba despues de las seis filas que describe, asi que se leian seis permisos antes de enterarse de que ninguno se aplica. Se intercala conservando el orden de la lista. R145 · BAJO 900 px SE IBA LA RESPUESTA Y SOBREVIVIA EL NUMERO. El comentario que lo justificaba —«el conteo 4 de 6 dice lo mismo en una linea»— era FALSO: dice CUANTOS, no CUALES. Y el argumento que lo vuelve grave es suyo: el acordeon plegado ES la vista de repaso, asi que en el telefono habia que abrir los diez modulos uno por uno para responder «que puede hacer este cargo» — justo el trabajo que el plegado venia a ahorrar. De las dos cosas de la cabecera se conservaba la que no lleva informacion. Ahora bajan a una SEGUNDA LINEA con los dos primeros y un «+N». El resumen lo emite el componente SIEMPRE y lo ensena solo la hoja: un componente no puede preguntar cuanto mide la pantalla sin medir, y medir para decidir marcado es lo que hace que el servidor y el navegador pinten cosas distintas. R146 · LOS CUATRO BLOQUEADOS SALIAN DEL ORDEN DE TABULACION, y la v1.91.0 ya lo dejo escrito como «defendible en tres, DISCUTIBLE EN EL CUARTO». Ellos traen el dato que decide el cuarto: el bloqueado por `depende` es el unico TRANSITORIO — se desbloquea SIN RECARGAR en cuanto se enciende el otro—, asi que quien reparte con teclado veia aparecer en el recorrido una fila que un segundo antes no podia alcanzar, sin nada que lo anunciara, y no tenia forma de llegar a ella para saber que le falta. Se emite como `role=switch` con `aria-disabled` Y NO `disabled` —la misma decision del calendario en el R139: apagado de verdad vuelve a salir del recorrido—, con su nombre, su motivo y su anillo de foco. Los otros tres son estables y son texto: quedarse fuera es correcto ahi. R147 · ACTUALIZAR.md DECIA LO CONTRARIO QUE EL CODIGO sobre `depende` y `base`. La correccion se registro en la v1.91.0 y la guia conservo el texto viejo dos meses. Iban a programar la cascada contra la frase equivocada, y el error habria sido SILENCIOSO: «a veces el ver se enciende y a veces no». Y DOS QUE MIRARON Y NO PIDIERON, que se anotan porque son ciertas: `modificados` compara solo booleanos —cambiar un nivel no marca el modulo—, y no hay prop de «cargando» ni estado vacio. Las dos quedan declaradas; la segunda se resuelve fuera con EstadoPantalla, que es donde va.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>LAS FILAS SIN BASE DEJAN DE ESTAR AL 50 % DE OPACIDAD y pasan a llevar un filete de 3px a la izquierda. Si su hoja contaba con la opacidad para distinguirlas —o la pisaba para recuperar contraste—, esa regla ya no hace falta. El sangrado del bloque cambia 3px por el filete; el ancho util no cambia.</td></tr><tr><td>EL AVISO DE «sin este permiso» YA NO ES EL ULTIMO HIJO DE <code>.pp-mod-cuerpo</code>: va justo despues de la fila del base. Quien lo posicionara con <code>:last-child</code> o con un margen propio tiene que mirarlo.</td></tr><tr><td>LA CABECERA DEL MODULO CRECE UNA LINEA BAJO 900 px: los chips bajan a una segunda fila en vez de ocultarse. Si median la altura de <code>.pp-mod-cab</code> en movil, ha cambiado.</td></tr><tr><td><code>.pp-tags</code> EMITE UN CHIP MAS, <code>.pp-tags-mas</code>, cuando hay mas de dos concedidos. Es invisible en escritorio. Quien recorriera los chips de la cabecera para contar concedidos ahora cuenta uno de mas: filtre por <code>:not(.pp-tags-mas)</code>.</td></tr><tr><td>LA FILA BLOQUEADA POR <code>depende</code> ENTRA EN EL ORDEN DE TABULACION y se anuncia como interruptor deshabilitado. Quien contara paradas de tabulador en esa pantalla tiene una mas por cada dependencia sin resolver. Los otros tres bloqueados no cambian.</td></tr></tbody></table>
 
 
 <h3 class="sub-seccion">v1.124.0 <span class="cam-fecha">2026-09-16</span></h3>

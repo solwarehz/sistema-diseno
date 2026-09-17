@@ -38,13 +38,31 @@ function Panel({ modulos = PERSONAL, inicial = {} }: {
 
 const leido = () => JSON.parse(screen.getByTestId('valor').textContent || '{}') as ValorPrivilegios;
 
+/**
+ * R146 · «NO SE PUEDE ENCENDER» DEJA DE SIGNIFICAR «NO HAY INTERRUPTOR».
+ *
+ * Estas pruebas comprobaban que el bloqueado por `depende` no existiera como
+ * `role="switch"`, y eso era una consecuencia de cómo estaba hecho, no la
+ * promesa: la promesa es que **se ve y no se puede encender**. Desde la
+ * v1.125.0 sí es un `switch` —`aria-disabled`, alcanzable con teclado y con su
+ * motivo leído— porque es el único bloqueado TRANSITORIO y quien navega con
+ * teclado tiene que poder llegar a él para saber qué le falta.
+ *
+ * Así que lo que se pregunta ahora es lo que siempre importó: ¿se puede
+ * ENCENDER? Un `switch` con `aria-disabled` cuenta como que no.
+ */
+const pulsable = (nombre: RegExp) => {
+  const sw = screen.queryByRole('switch', { name: nombre });
+  return sw !== null && sw.getAttribute('aria-disabled') !== 'true';
+};
+
 describe('R110 · bloqueo mientras falta aquel del que depende', () => {
   it('se VE pero no se puede encender, y dice cuál falta por su nombre', () => {
     render(<Panel />);
     // Está en pantalla: no se oculta, que era medio requerimiento.
     expect(screen.getByText('Carga masiva')).toBeInTheDocument();
     // Y no hay interruptor que pulsar.
-    expect(screen.queryByRole('switch', { name: /Carga masiva/ })).toBeNull();
+    expect(pulsable(/Carga masiva/), 'se puede encender estando bloqueado').toBe(false);
     expect(screen.getByText(/Antes hay que conceder «Crear trabajador»/)).toBeInTheDocument();
   });
 
@@ -64,7 +82,7 @@ describe('R110 · bloqueo mientras falta aquel del que depende', () => {
       { id: 'leer', nombre: 'Ver' },
       { id: 'raro', nombre: 'Raro', depende: 'no-existe' },
     ] }]} />);
-    expect(screen.queryByRole('switch', { name: /Raro/ })).toBeNull();
+    expect(pulsable(/Raro/), 'se puede encender estando bloqueado').toBe(false);
     // Y nombra el id que falta, para que la errata se pueda diagnosticar.
     expect(screen.getByText(/no-existe/)).toBeInTheDocument();
   });
@@ -82,19 +100,19 @@ describe('R110 · la cadena se recorre de arriba abajo, y eso cambia el base', (
    */
   it('con todo apagado, el ÚNICO interruptor que se puede pulsar es el primero', () => {
     render(<Panel />);
-    expect(screen.getByRole('switch', { name: /Ver trabajadores/ })).toBeInTheDocument();
-    expect(screen.queryByRole('switch', { name: /Crear trabajador/ })).toBeNull();
-    expect(screen.queryByRole('switch', { name: /Carga masiva/ })).toBeNull();
+    expect(pulsable(/Ver trabajadores/)).toBe(true);
+    expect(pulsable(/Crear trabajador/), 'se puede encender estando bloqueado').toBe(false);
+    expect(pulsable(/Carga masiva/), 'se puede encender estando bloqueado').toBe(false);
   });
 
   it('encender `leer` desbloquea `crear`, y encender `crear` desbloquea la carga masiva', async () => {
     render(<Panel />);
     await userEvent.click(screen.getByRole('switch', { name: /Ver trabajadores/ }));
-    expect(screen.getByRole('switch', { name: /Crear trabajador/ })).toBeInTheDocument();
-    expect(screen.queryByRole('switch', { name: /Carga masiva/ })).toBeNull();
+    expect(pulsable(/Crear trabajador/)).toBe(true);
+    expect(pulsable(/Carga masiva/), 'se puede encender estando bloqueado').toBe(false);
 
     await userEvent.click(screen.getByRole('switch', { name: /Crear trabajador/ }));
-    expect(screen.getByRole('switch', { name: /Carga masiva/ })).toBeInTheDocument();
+    expect(pulsable(/Carga masiva/)).toBe(true);
     expect(leido().personal).toMatchObject({ leer: true, crear: true });
   });
 
@@ -126,7 +144,7 @@ describe('R110 · la cadena se recorre de arriba abajo, y eso cambia el base', (
     ] }]} inicial={{ personal: { leer: true } }} />);
     // `crear` está cerrado y apagado, así que la carga masiva sigue bloqueada
     // y no hay forma de encenderla por la puerta de atrás.
-    expect(screen.queryByRole('switch', { name: /Carga masiva/ })).toBeNull();
+    expect(pulsable(/Carga masiva/), 'se puede encender estando bloqueado').toBe(false);
   });
 
   it('un ciclo no cuelga el navegador', async () => {
@@ -145,7 +163,7 @@ describe('R110 · apagar gobierna, pero no borra — igual que el base en R98', 
     render(<Panel inicial={{ personal: { leer: true, crear: true, 'carga-masiva': true } }} />);
     await userEvent.click(screen.getByRole('switch', { name: /Crear trabajador/ }));
     // Bloqueada en pantalla…
-    expect(screen.queryByRole('switch', { name: /Carga masiva/ })).toBeNull();
+    expect(pulsable(/Carga masiva/), 'se puede encender estando bloqueado').toBe(false);
     // …pero lo guardado NO se destruye: volver a encender `crear` lo recupera.
     expect(leido().personal['carga-masiva']).toBe(true);
   });

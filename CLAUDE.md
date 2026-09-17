@@ -19,16 +19,13 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.124.0** — **R142: la columna anclada**, y dos cosas que
-salieron al montarla. Con `anclarColumnas={1}` la primera columna se queda quieta
-al desplazar; `columnasFijas` pasa a `columnasSiempreVisibles`, porque el nombre
-decía lo que hace la prop nueva. **El catálogo monta ya `TablaDatos` de verdad**,
-y ahí apareció que el paquete de los componentes vivos llevaba **desde la
-v1.117.0** cegando a `verificar-elemento` —React trae dentro la cadena
-`"<script><\/script>"`, y el candado daba por «no comparable» cada clase que el
-paquete nombrara: comparaba 148, ahora compara 199—. Y **`maxDias` guardaba un
-solo extremo**: eligiendo primero «Hasta» salían treinta días con un tope de
-siete.
+**Estado actual: v1.125.0** — **R144 a R147**, y lo que hay que leer de ellos
+no es la lista: es que **el panel de privilegios llevaba dos meses entregado y
+sin adoptar**, y que **dos de las cuatro las llevaba declaradas abiertas este
+mismo repositorio desde la v1.91.0** sin que nadie volviera. Declarar no es
+arreglar. La más grave —`.pp-sin-base` al 50 % de opacidad con los interruptores
+aún pulsables, el nombre a 2,07:1— no era un caso raro: es **el estado inicial de
+la pantalla**.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

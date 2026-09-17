@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.124.0";
+export const VERSION = "1.125.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,77 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.125.0', fecha: '2026-09-17',
+    que: 'R144 a R147 — las cuatro que Control Administrativos encontro al ir a ADOPTAR el panel de privilegios',
+    porque:
+      'CUATRO DE LAS CUATRO SALIERON DE LEER EL CONTRATO, no de una pantalla rota. El panel nacio '
+      + 'por peticion suya —R97, v1.72.0— y llego a su forma actual en la v1.91.0; NUNCA LO '
+      + 'ADOPTARON. Su pantalla sigue siendo una tabla a medida de 27x7 con seis apanos, y cinco de '
+      + 'los seis son cosas que el panel ya resuelve. Eso es lo que hay que leer de este '
+      + 'requerimiento: un componente entregado y no adoptado durante dos meses es un componente '
+      + 'que no se entrego del todo. '
+      + 'Y DOS DE LAS CUATRO LAS LLEVABA DECLARADAS ABIERTAS EL PROPIO SISTEMA desde la v1.91.0, sin '
+      + 'que nadie las cerrara. Declarar no es arreglar; declarar y no volver es una deuda que '
+      + 'envejece sola. '
+      + 'R144 · `.pp-sin-base` APAGABA A MEDIAS: opacidad al 50 % con el nombre a 2,07:1 y el icono '
+      + 'a 2,03:1 Y LOS INTERRUPTORES AUN PULSABLES, asi que la excepcion de WCAG para controles '
+      + 'inactivos no aplicaba. Las dos cifras son NUESTRAS, de la entrada de la v1.91.0. Lo que '
+      + 'convierte la deuda en urgente es el dato que traen ellos: «sin base» NO ES UN CASO RARO, ES '
+      + 'EL ESTADO INICIAL DE LA PANTALLA — repartir privilegios a un cargo empieza, por definicion, '
+      + 'con los diez modulos sin su «ver» concedido, asi que abrir un cargo nuevo era abrirlo '
+      + 'ENTERO a 2,07:1. La senal era correcta y el canal no: ahora es un CARRIL de 3px en '
+      + 'aviso-acento, el mismo del aviso que hay encima, y ninguna relacion de contraste se toca. '
+      + 'De las tres salidas que ofrecian, NO se toma la de bloquear las filas: encender algo antes '
+      + 'de conceder el base es legitimo y bloquearlo le quitaria a quien reparte el orden en que '
+      + 'quiere trabajar. Y el aviso pasa a ir JUSTO DEBAJO DEL BASE: estaba despues de las seis '
+      + 'filas que describe, asi que se leian seis permisos antes de enterarse de que ninguno se '
+      + 'aplica. Se intercala conservando el orden de la lista. '
+      + 'R145 · BAJO 900 px SE IBA LA RESPUESTA Y SOBREVIVIA EL NUMERO. El comentario que lo '
+      + 'justificaba —«el conteo 4 de 6 dice lo mismo en una linea»— era FALSO: dice CUANTOS, no '
+      + 'CUALES. Y el argumento que lo vuelve grave es suyo: el acordeon plegado ES la vista de '
+      + 'repaso, asi que en el telefono habia que abrir los diez modulos uno por uno para responder '
+      + '«que puede hacer este cargo» — justo el trabajo que el plegado venia a ahorrar. De las dos '
+      + 'cosas de la cabecera se conservaba la que no lleva informacion. Ahora bajan a una SEGUNDA '
+      + 'LINEA con los dos primeros y un «+N». El resumen lo emite el componente SIEMPRE y lo ensena '
+      + 'solo la hoja: un componente no puede preguntar cuanto mide la pantalla sin medir, y medir '
+      + 'para decidir marcado es lo que hace que el servidor y el navegador pinten cosas distintas. '
+      + 'R146 · LOS CUATRO BLOQUEADOS SALIAN DEL ORDEN DE TABULACION, y la v1.91.0 ya lo dejo '
+      + 'escrito como «defendible en tres, DISCUTIBLE EN EL CUARTO». Ellos traen el dato que decide '
+      + 'el cuarto: el bloqueado por `depende` es el unico TRANSITORIO — se desbloquea SIN RECARGAR '
+      + 'en cuanto se enciende el otro—, asi que quien reparte con teclado veia aparecer en el '
+      + 'recorrido una fila que un segundo antes no podia alcanzar, sin nada que lo anunciara, y no '
+      + 'tenia forma de llegar a ella para saber que le falta. Se emite como `role=switch` con '
+      + '`aria-disabled` Y NO `disabled` —la misma decision del calendario en el R139: apagado de '
+      + 'verdad vuelve a salir del recorrido—, con su nombre, su motivo y su anillo de foco. Los '
+      + 'otros tres son estables y son texto: quedarse fuera es correcto ahi. '
+      + 'R147 · ACTUALIZAR.md DECIA LO CONTRARIO QUE EL CODIGO sobre `depende` y `base`. La '
+      + 'correccion se registro en la v1.91.0 y la guia conservo el texto viejo dos meses. Iban a '
+      + 'programar la cascada contra la frase equivocada, y el error habria sido SILENCIOSO: «a '
+      + 'veces el ver se enciende y a veces no». '
+      + 'Y DOS QUE MIRARON Y NO PIDIERON, que se anotan porque son ciertas: `modificados` compara '
+      + 'solo booleanos —cambiar un nivel no marca el modulo—, y no hay prop de «cargando» ni estado '
+      + 'vacio. Las dos quedan declaradas; la segunda se resuelve fuera con EstadoPantalla, que es '
+      + 'donde va.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'LAS FILAS SIN BASE DEJAN DE ESTAR AL 50 % DE OPACIDAD y pasan a llevar un filete de 3px a la '
+      + 'izquierda. Si su hoja contaba con la opacidad para distinguirlas —o la pisaba para '
+      + 'recuperar contraste—, esa regla ya no hace falta. El sangrado del bloque cambia 3px por el '
+      + 'filete; el ancho util no cambia.',
+      'EL AVISO DE «sin este permiso» YA NO ES EL ULTIMO HIJO DE `.pp-mod-cuerpo`: va justo despues '
+      + 'de la fila del base. Quien lo posicionara con `:last-child` o con un margen propio tiene '
+      + 'que mirarlo.',
+      'LA CABECERA DEL MODULO CRECE UNA LINEA BAJO 900 px: los chips bajan a una segunda fila en vez '
+      + 'de ocultarse. Si median la altura de `.pp-mod-cab` en movil, ha cambiado.',
+      '`.pp-tags` EMITE UN CHIP MAS, `.pp-tags-mas`, cuando hay mas de dos concedidos. Es invisible '
+      + 'en escritorio. Quien recorriera los chips de la cabecera para contar concedidos ahora '
+      + 'cuenta uno de mas: filtre por `:not(.pp-tags-mas)`.',
+      'LA FILA BLOQUEADA POR `depende` ENTRA EN EL ORDEN DE TABULACION y se anuncia como '
+      + 'interruptor deshabilitado. Quien contara paradas de tabulador en esa pantalla tiene una '
+      + 'mas por cada dependencia sin resolver. Los otros tres bloqueados no cambian.',
+    ],
+  },
   {
     v: '1.124.0', fecha: '2026-09-16',
     que: 'R142 — la columna anclada, el nombre que enganaba, y el tope que guardaba un solo extremo',

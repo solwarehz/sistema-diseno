@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 16 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.124.0** — R142: la columna anclada, el
-nombre que engañaba, y el tope que guardaba un solo extremo
+**Versión del sistema:** MMI-DS **v1.125.0** — R144 a R147: las cuatro que
+salieron al ir a ADOPTAR el panel de privilegios
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ nombre que engañaba, y el tope que guardaba un solo extremo
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **veinte pasos de
-verificación** —los que corre `publicar.mjs`—, **1036 pruebas en 53 archivos**,
+verificación** —los que corre `publicar.mjs`—, **1049 pruebas en 54 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -56,14 +56,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **1036 pruebas en 53 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · **1021 reglas de 1540** · **732 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
+| Componentes de React | ✅ | **1049 pruebas en 54 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · **1023 reglas de 1542** · **733 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.124.0.zip` · **60 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.125.0.zip` · **60 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.124.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.125.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los veinte pasos · **177 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -86,7 +86,82 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.124.0), con detalle
+### Lo de hoy (v1.125.0), con detalle
+
+**Las cuatro salieron de LEER EL CONTRATO, no de una pantalla rota.** El panel
+nació por petición de Control Administrativos —R97, v1.72.0— y llegó a su forma
+actual en la v1.91.0. **Nunca lo adoptaron:** su pantalla sigue siendo una tabla
+a medida de 27×7 con seis apaños, y **cinco de los seis son cosas que el panel ya
+resuelve**.
+
+> Un componente entregado y no adoptado durante dos meses es un componente que no
+> se entregó del todo.
+
+Y hay una segunda lección, más incómoda: **dos de las cuatro las llevaba
+declaradas abiertas este mismo repositorio desde la v1.91.0**, con sus cifras,
+sin que nadie volviera a ellas. **Declarar no es arreglar.** Declarar y no volver
+es una deuda que envejece sola — y aquí la encontró el consumidor, que es
+exactamente a quien la declaración pretendía proteger.
+
+### R144 · el apagado a medias, que era el estado inicial
+
+`opacity: .5` con el nombre a **2,07:1**, el icono a **2,03:1** y **los
+interruptores aún pulsables**: la excepción de WCAG para controles inactivos no
+aplicaba. Las dos cifras son nuestras, de la entrada de la v1.91.0.
+
+Lo que lo vuelve urgente es el dato que traen ellos: **«sin base» no es un caso
+raro, es el punto de partida del trabajo.** Repartir privilegios a un cargo
+empieza, por definición, con los diez módulos sin su «ver», así que abrir un
+cargo nuevo era abrirlo **entero** a 2,07:1.
+
+**La señal era correcta y el canal no.** Ahora es un carril de 3 px en
+`aviso-acento` —el mismo del aviso que hay encima— y **ninguna relación de
+contraste se toca**. De las tres salidas que ofrecían **no se toma la de bloquear
+las filas**: encender algo antes de conceder el base es legítimo, y bloquearlo le
+quitaría a quien reparte el orden en que quiere trabajar.
+
+Y el aviso sube a ir **justo debajo del base**. Estaba después de las seis filas
+que describe: se leían seis permisos antes de enterarse de que ninguno se aplica.
+
+### R145 · en el teléfono sobrevivía el número y se iba la respuesta
+
+El comentario que lo justificaba —«el conteo 4 de 6 dice lo mismo en una línea»—
+**era falso**: dice **cuántos**, no **cuáles**. Y el argumento que lo vuelve grave
+es suyo: el acordeón plegado **es** la vista de repaso, así que en el teléfono
+había que abrir los diez módulos uno por uno para responder «¿qué puede hacer
+este cargo?» — justo el trabajo que el plegado venía a ahorrar. De las dos cosas
+de la cabecera, se conservaba **la que no lleva información**.
+
+Ahora bajan a una segunda línea con los dos primeros y un «+N». **El resumen lo
+emite el componente siempre y lo enseña solo la hoja**: un componente no puede
+preguntar cuánto mide la pantalla sin medir, y medir para decidir marcado es lo
+que hace que el servidor y el navegador pinten cosas distintas.
+
+### R146 · el cuarto bloqueado, que era el discutible
+
+La v1.91.0 dejó escrito que los cuatro salían del orden de tabulación y que era
+«defendible en tres, **discutible en el cuarto**». Ellos traen el dato que decide:
+el bloqueado por `depende` es el **único transitorio** — se desbloquea sin
+recargar en cuanto se enciende el otro—, así que quien reparte con teclado veía
+aparecer en el recorrido una fila que un segundo antes no podía alcanzar, sin
+nada que lo anunciara, y no tenía forma de llegar a ella para saber qué le falta.
+
+`role="switch"` con **`aria-disabled` y no `disabled`**, que es la misma decisión
+que el calendario tomó en el R139: apagado de verdad vuelve a salir del recorrido,
+y volveríamos al defecto.
+
+### R147 · la guía decía lo contrario que el código
+
+`ACTUALIZAR.md` afirmaba que un privilegio con `depende` **deja** de encender el
+`base` de rebote. El componente lleva escrito desde la v1.91.0 que **sí lo
+enciende**, y que la primera redacción de esa documentación **se midió que era
+falsa**. La corrección se registró en `fuente.mjs` y la guía conservó el texto
+viejo **dos meses**.
+
+Iban a programar la cascada contra la frase equivocada, y el error habría sido
+silencioso: «a veces el ver se enciende y a veces no».
+
+### Lo de la v1.124.0, con detalle
 
 **R142 · una fila desplazada no dice de quién es.** Lo pidió Control
 Administrativos V2.0 con 31, 22 y 76 columnas sobre la mesa, y el responsable lo
