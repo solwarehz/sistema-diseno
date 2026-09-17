@@ -499,14 +499,32 @@ export function RangoFecha({
       return false;
     }
   });
-  /** El último día que se puede elegir como final. */
+  /** El último día que se puede elegir como final, con el inicio ya puesto. */
   const techo = tope && dDesde ? sumarDias(dDesde, tope - 1) : null;
   /**
-   * Un día queda fuera SOLO mientras se elige el FINAL. Eligiendo el inicio no
-   * hay techo: si no, un rango que ya se pasó no se podría arreglar moviendo su
-   * inicio, y la persona quedaría encerrada.
+   * R139 (continuación) · Y EL PRIMERO QUE SE PUEDE ELEGIR COMO INICIO, con el
+   * final ya puesto.
+   *
+   * **EL TOPE GUARDABA UN SOLO EXTREMO Y ERA UN AGUJERO.** La primera versión
+   * decía «un día queda fuera SOLO mientras se elige el FINAL», y el argumento
+   * —que si no, un rango que ya se pasó no se podría arreglar moviendo su
+   * inicio— era correcto en su caso y falso como regla. Lo reprodujo el
+   * responsable: con `maxDias={7}`, eligiendo primero «Hasta» y después
+   * «Desde» salían **treinta días** y el calendario no apagaba **ni un solo
+   * día**. Por ahí se colaba cualquier periodo, y el producto tuvo que volver a
+   * poner su red —error en el campo y «Consultar» apagado— para tapar lo que el
+   * componente prometía impedir.
+   *
+   * El argumento del encierro sigue en pie y por eso el suelo se calcula
+   * **contra el final que hay**, no contra nada más: los días **posteriores** a
+   * `hasta` siguen eligiéndose —reinician el rango, que es cómo se mueve un
+   * periodo hacia delante— y «Limpiar» sigue vivo. Lo único que se apaga es lo
+   * que produciría un rango más largo que el tope, que es literalmente lo que
+   * `maxDias` promete.
    */
-  const fueraDeAlcance = (d: Date) => !!(techo && modo === 'hasta' && d > techo);
+  const suelo = tope && dHasta ? sumarDias(dHasta, -(tope - 1)) : null;
+  const fueraDeAlcance = (d: Date) =>
+    modo === 'hasta' ? !!(techo && d > techo) : !!(suelo && d < suelo);
   /** Un rango que LLEGA ya pasado no se recorta ni se rechaza: se pinta y se dice. */
   const excede = !!(tope && dDesde && dHasta && diasEntre(dDesde, dHasta) > tope);
   /* LA CLASE DEL ERROR ES `cg-mal`, NO `campo-mal`, y el porqué va aquí y no
@@ -620,7 +638,9 @@ export function RangoFecha({
   /* Y SE RECORTA AL TECHO. Sin esto, con `maxDias` puesto el cursor pintaba un
      tramo más largo del que se puede elegir: el contrato dice que el tramo que
      se ve es el que se elegiría, y con el tope dejaba de serlo. */
-  const sobreEnAlcance = sobre && techo && sobre > techo ? techo : sobre;
+  const sobreEnAlcance = !sobre ? sobre
+    : modo === 'hasta' ? (techo && sobre > techo ? techo : sobre)
+    : (suelo && sobre < suelo ? suelo : sobre);
   const previo = modo === 'hasta' && dDesde && !dHasta && sobreEnAlcance && sobreEnAlcance > dDesde
     ? sobreEnAlcance : null;
   const finEfectivo = dHasta ?? previo;

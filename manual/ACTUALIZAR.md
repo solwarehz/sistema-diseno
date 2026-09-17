@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.123.0
+# Actualizar al sistema de diseño v1.124.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.123.0"
+npm install "github:solwarehz/sistema-diseno#v1.124.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -37,7 +37,7 @@ está en marcha tiene el código viejo en memoria, y su caché de compilación n
 se entera de que cambió algo dentro de `node_modules`.
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.123.0"
+npm install "github:solwarehz/sistema-diseno#v1.124.0"
 # y ENTONCES, sin excepción:
 docker compose restart <su-servicio>     # o el reinicio que usen
 # si aun así ven lo de antes, tiren la caché de compilación —y reinicien OTRA
@@ -101,12 +101,12 @@ familia entera de ese defecto.
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.123.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.124.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.123.0 --repo solwarehz/sistema-diseno
+gh release download v1.124.0 --repo solwarehz/sistema-diseno
 ```
 
 Son **60 archivos**: tokens, hoja de estilos, los **43 módulos de componente**
@@ -419,6 +419,7 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.93.0 | **`RedesSociales` pinta los iconos con el rojo del escudo por omisión.** `marca-rojo` queda **autorizado solo para eso** — sigue prohibido como texto y como superficie. Si los ponen sobre un fondo que no sea la tarjeta o la página, usen `color="heredado"`: los 4,88:1 y 4,69:1 están medidos contra esos dos y **sobre el encabezado no ha medido nadie**. No rompe nada |
 | 1.94.0 | **`CabeceraPantalla` gana `accionSecundaria`.** Se pinta a la izquierda de `accion`, con 8px de separación, y en estrecho las dos se reparten el ancho. **Les afecta aunque no la usen:** `.pant-accion` no tenía ni `display` ni `gap`, así que si metieron dos botones ahí a mano, salían pegados y ahora se separan. Y la documentación del componente decía «una sola acción»: era un error de redacción, la regla es **una sola principal** |
 | 1.95.0 | **`SelectorBusqueda` entrega por fin lo que el catálogo enseña, en nueve puntos.** Se ven cuatro: el chevron **ahora gira** al abrir la lista, el visto ✓ de la opción elegida pasa **a la derecha** (estaba a la izquierda, 298,4 px de diferencia), la ayuda de la opción recibe su tipografía —13 px, secundario— y deja de salir del mismo cuerpo que el nombre, y la fila de «sin resultados» **dice qué se buscó** en vez de «No hay coincidencias». Se teclean cuatro: **↑ abre la lista**, las flechas **ciclan**, **Inicio y Fin** funcionan, y **Tab elige lo marcado** — antes tabular con una coincidencia marcada dejaba el campo **vacío**. **Nada rompe:** ninguna clase pública cambia de nombre y `textoVacio` sigue admitiendo una cadena. **Y les afecta aunque no usen el selector:** `Paginacion` no emitía `activa`, así que **la página en curso no se pintaba en ninguna pantalla** — ahora sí |
+| 1.124.0 | **R142 · la columna anclada.** Con **`anclarColumnas={1}`** la primera columna visible —y la N.º con ella— **se queda quieta al desplazar en horizontal**. Con 31, 22 o 76 columnas, una fila desplazada no dice de quién es. **Por omisión 0: sin pedirlo no cambia ni una clase ni un píxel.** **Y `columnasFijas` pasa a llamarse `columnasSiempreVisibles`** — nunca significó «fija al desplazar», que es lo que hace `anclarColumnas`; el alias sigue funcionando y avisa en desarrollo, así que **quien no lo pase no toca nada**. **Lo que puede tocarles:** si su hoja aprieta `.tb td` o `.tb-th` con `position` o `z-index` propios, gana la suya y el anclaje no funciona; la celda anclada lleva **fondo en la celda**, no en la fila; y un `transform`, `filter` o `contain` en cualquier antepasado **lo desactiva en silencio**. `.tb-col-op*` deja de viajar: era mobiliario del catálogo. **Y `maxDias` guarda ahora LOS DOS EXTREMOS** — eligiendo primero «Hasta» y después «Desde» salían treinta días con un tope de siete, y el calendario no apagaba ni un solo día |
 | 1.123.0 | **R143 · el chip de identidad deja de ser gris.** Los cuatro `identidad-N` y `pendiente` pintaban **el mismo relleno** —`fondo-encabezado`—, así que de los diez tonos que `Chip` publica solo había **seis** distinguibles: medido, **0,0** de distancia perceptual entre ellos. Ahora cada identidad pinta su color con texto blanco, **el mismo par que el avatar**, y **sin ningún color nuevo**. **Lo que puede tocarles:** el chip de identidad **pesa más** que uno de estado; si los mezclan en la misma columna, ya no pesan igual. El del **horario no cambia** — allí el color sigue en el filete a 6 px. Y nace **`verificar-tono`**, el paso **20**: ningún par de tonos puede caer por debajo del umbral de percepción, en ninguna hoja ni modo. **Añadido al R139 · con `maxDias`, los periodos que no caben no se pintan** — los cuatro de omisión van de un mes a un año, así que con un tope corto el panel «Periodos» desaparece entero; para recuperarlo, `atajos={atajosDeDias(1, 3, 7)}`, exportada y contando inclusive. **R141 · a 640 px y por debajo el filtro de fechas se apila y ocupa el ancho**, y se va la flecha de unión |
 | 1.122.0 | **R139 y R140 · `RangoFecha` se comporta por fin como un campo.** **`desde`/`hasta` pasan de sembrar a MANDAR** — eran el valor inicial, así que devolverles un rango corregido no lo movía y solo podían avisar *después*. Entra **`maxDias`**, que **impide en vez de avisar**: los días de más van `aria-disabled` mientras se elige el final. Es un número cualquiera y **sin pasarlo no hay tope**. Un rango que **llega** ya pasado **se pinta y se dice, no se recorta**. Y entran **`error`** y **`deshabilitado`**, que les permiten retirar el envoltorio de `Campo` y las dos líneas de CSS — y cierran el fallo que ustedes mismos marcaron: **apagar con CSS no saca el control del tabulador**. **Lo que puede tocarles:** si pasan `desde`/`hasta` y **no** guardan lo que llega por `onCambio`, el calendario queda **congelado**; la migración es de una línea. Quien no las pasa no toca nada. En desarrollo sale un aviso por consola si se pasan sin `onCambio`. Y el bloque «copia esto» de la página del calendario **no compilaba** —decía `RangoFechas`, `etiquetaInicio`, `permitirAbierto`—: corregido, y la página enseña ya el error, el apagado y el tope |
 | 1.121.0 | **Dos cosas que la entrega llevaba versiones sin dar.** **La paginación ya dibuja su chevron** —el comentario del propio componente lo prometía, la hoja traía `.pgn-flecha .ic` preparada, y no había chevron; la variante «Móvil» que el catálogo enseña era imposible—. Y **los estados de pantalla llevan icono**: `ep-ico` salía 18 veces en el catálogo y **cero** en los componentes, con cuatro reglas muertas en la hoja, dos de ellas la única señal cromática que distingue un error de un vacío. **Lo que puede tocarles:** «Anterior» y «Siguiente» crecen lo que mide el icono, los siete estados crecen por arriba lo que mide el glifo, y el juego de iconos pasa de **60 a 62** (`calendario` y `suma`, que el catálogo ya dibujaba a mano). Y por debajo, nace **`verificar-atributo`**, el paso **19**: comprueba que lo que un componente emite siempre, el catálogo lo enseñe. Nació con once divergencias —entre ellas cabeceras de tabla sin `scope` y atajos del calendario que eran `submit` dentro de un formulario— y las once están pagadas |

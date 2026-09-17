@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.123.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.124.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -87,7 +87,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.123.0; }
+:root{ --mmi-componentes: 1.124.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -916,7 +916,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   font-family: 'IBM Plex Mono', monospace; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TABLA DE DATOS — 83 reglas · clases .tb-*
+   TABLA DE DATOS — 87 reglas · clases .tb-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tabla-simple, .tb-sub{ display: block; overflow-x: auto; }
@@ -937,19 +937,13 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   min-width: 210px; padding: 4px; background: var(--fondo-tarjeta);
   border: 1px solid var(--borde-campo); border-radius: 6px;
   box-shadow: var(--sombra-capa); }
-.tb-col-op{ display: flex; align-items: center; gap: 8px; padding: 8px 8px;
-  border-radius: 6px; font-size: 13px; cursor: pointer; }
-.tb-col-op:hover{ background: var(--fondo-encabezado); }
-.tb-col-op.fija{ cursor: not-allowed; color: var(--texto-secundario); }
-.tb-col-op em{ margin-left: auto; font-style: normal; font-size: 12px;
-  color: var(--texto-pista); text-transform: uppercase; letter-spacing: .06em; }
-.tb-col-op input{ accent-color: var(--accion); width: 15px; height: 15px; }
 .tb-col-reset{ width: 100%; margin-top: 4px; padding: 8px; font: inherit; font-size: 12px;
   cursor: pointer; background: transparent; border: 0; border-top: 1px solid var(--borde);
   color: var(--enlace); }
 .tb-bloque{ min-width: 0; }
 .tb-envoltura{ overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
-.tb{ width: 100%; border-collapse: collapse; font-size: 15px; background: var(--fondo-tarjeta); }
+.tb{ width: 100%; border-collapse: collapse; font-size: 15px; background: var(--fondo-tarjeta);
+  --tb-indice: 52px; }
 .tb-th{ background: var(--fondo-encabezado); text-align: left; padding: 0;
   white-space: nowrap; border-bottom: 1px solid var(--borde); }
 .tb-orden{ display: flex; align-items: center; gap: 4px; width: 100%; padding: 8px 12px;
@@ -963,13 +957,28 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   white-space: nowrap; }
 [data-densidad='compacta'] .tb td{ height: 28px; }
 .tb-num{ text-align: right; }
-.tb-th-indice{ width: 52px; }
+.tb-th-indice{ width: var(--tb-indice); }
 .tb-th-indice .tb-th-txt{ display: block; padding: 8px 12px; font-weight: 500; }
 .tb-indice{ text-align: right; color: var(--texto-secundario);
-  font-size: 13px; width: 52px; }
+  font-size: 13px; width: var(--tb-indice); }
 .tb-acc{ text-align: right; white-space: nowrap; }
 .tb tbody tr.tb-alt{ background: var(--fondo-fila-alt); }
 .tb tbody tr:hover{ background: var(--fondo-fila-hover); box-shadow: inset 3px 0 0 var(--accion); }
+.tb-ancla{ position: sticky; left: 0; z-index: 1; background: var(--fondo-tarjeta); }
+.tb-ancla-x{ left: var(--tb-indice); }
+.tb-th.tb-ancla, .tb-f-celda.tb-ancla{ background: var(--fondo-encabezado); z-index: 2; }
+.tb tbody tr.tb-alt .tb-ancla{ background: var(--fondo-fila-alt); }
+.tb tbody tr:hover .tb-ancla{ background: var(--fondo-fila-hover); }
+.tb tbody tr:hover .tb-ancla:not(.tb-ancla-x){ box-shadow: inset 3px 0 0 var(--accion); }
+.tb-ancla-fin::after{ content: ''; position: absolute; top: 0; bottom: 0; right: 0;
+  width: 1px; background: var(--borde); }
+@media (max-width: 640px) {
+  .tb-ancla{ max-width: 44vw; overflow: hidden; text-overflow: ellipsis; }
+}
+@media print {
+  .tb-ancla{ position: static; }
+  .tb-ancla-fin::after{ display: none; }
+}
 .tb-vacio{ text-align: center; padding: 32px 16px !important; height: auto !important;
   font-size: 13px; color: var(--texto-secundario); line-height: 1.6; }
 .tb td.tb-vacio{ white-space: normal; }

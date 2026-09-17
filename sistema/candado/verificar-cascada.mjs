@@ -930,6 +930,66 @@ const AFIRMACIONES = [
     },
   },
   {
+    id: 'R142',
+    que: 'la columna anclada se queda quieta, con fondo, y con techo solo en el telefono',
+    /**
+     * R142 de Control Administrativos V2.0. Lo que esta afirmacion vigila no es
+     * que las reglas existan —eso lo mira `tabla-ancla.test.ts`— sino que
+     * GANEN sobre la celda que el componente emite de verdad, a los anchos que
+     * importan. Son dos preguntas distintas: el `box-sizing` que no viajaba
+     * pasaba la primera.
+     *
+     * Y se mide EN EL CORTE. Es la leccion del R141, que se sondeaba a 400 y a
+     * 1280 y dejaba mover el corte de 640 a 401 con el candado en verde.
+     *
+     * @param {Regla[]} reglas
+     */
+    revisar(reglas) {
+      const fallos = [];
+      const celda = [elem('table', ['tb']), elem('tbody'), elem('tr'), elem('td', ['tb-ancla'])];
+      const segunda = [elem('table', ['tb']), elem('tbody'), elem('tr'), elem('td', ['tb-ancla', 'tb-ancla-x'])];
+      const cabecera = [elem('table', ['tb']), elem('thead'), elem('tr'), elem('th', ['tb-th', 'tb-ancla'])];
+      const v = (cadena, prop, ancho) => {
+        const d = resolver(reglas, cadena, prop, ancho);
+        return d ? String(d.valor).trim() : null;
+      };
+      for (const ancho of [1280, 641, 640, 390]) {
+        if (v(celda, 'position', ancho) !== 'sticky') {
+          fallos.push(`a ${ancho}px la celda anclada recibe position «${v(celda, 'position', ancho)}»: `
+            + 'sin sticky no se queda quieta y el anclaje no existe.');
+        }
+        const fondo = v(celda, 'background', ancho);
+        if (!fondo || /transparent/.test(fondo)) {
+          fallos.push(`a ${ancho}px la celda anclada recibe background «${fondo}»: una celda `
+            + 'pegajosa transparente deja ver pasar el texto de las otras columnas por debajo.');
+        }
+        if (v(segunda, 'left', ancho) !== 'var(--tb-indice)') {
+          fallos.push(`a ${ancho}px la segunda anclada recibe left «${v(segunda, 'left', ancho)}» `
+            + 'y deberia salir de --tb-indice: un numero suelto abre una rendija.');
+        }
+        if (v(cabecera, 'background', ancho) !== 'var(--fondo-encabezado)') {
+          fallos.push(`a ${ancho}px la cabecera anclada recibe «${v(cabecera, 'background', ancho)}» `
+            + 'y rompe la banda del encabezado justo donde empieza.');
+        }
+      }
+      /* EL TECHO ES DEL TELEFONO, y solo de el. */
+      for (const ancho of [640, 390]) {
+        if (v(celda, 'max-width', ancho) !== '44vw') {
+          fallos.push(`a ${ancho}px la celda anclada recibe max-width «${v(celda, 'max-width', ancho)}»: `
+            + 'sin techo, un nombre largo con nowrap ocupa mas que la pantalla y no queda nada '
+            + 'que desplazar — el anclaje habria empeorado el caso que vino a arreglar.');
+        }
+      }
+      for (const ancho of [641, 1280]) {
+        if (v(celda, 'max-width', ancho) !== null) {
+          fallos.push(`a ${ancho}px la celda anclada esta topada en «${v(celda, 'max-width', ancho)}» `
+            + 'y en escritorio no debe estarlo: el corte es 640.');
+        }
+      }
+      return fallos;
+    },
+  },
+  {
     id: 'ANCHO-LIBRE',
     que: 'una tabla puede DECLARAR que no lleva ancho minimo, y se le respeta',
     /**

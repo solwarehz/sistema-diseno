@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.123.0";
+export const VERSION = "1.124.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,86 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.124.0', fecha: '2026-09-16',
+    que: 'R142 — la columna anclada, el nombre que enganaba, y el tope que guardaba un solo extremo',
+    porque:
+      'R142 · UNA FILA DESPLAZADA NO DICE DE QUIEN ES. Lo pidio Control Administrativos V2.0 con 31, '
+      + '22 y 76 columnas sobre la mesa, y el responsable lo resumio: «es lo que haria el movil '
+      + 'comodo en vez de solo usable». Con `anclarColumnas={1}` la primera columna VISIBLE se queda '
+      + 'quieta al desplazar en horizontal y el resto pasa por debajo. No hizo falta contenedor '
+      + 'nuevo: `.tb-envoltura` es el deslizador desde el R49, asi que media solucion llevaba dos '
+      + 'anos puesta. '
+      + 'EL TRABAJO DE VERDAD ES EL FONDO: una celda pegajosa transparente deja ver pasar el texto '
+      + 'de las otras columnas, y como el rayado y el hover pintan el <tr>, sin reglas propias la '
+      + 'columna anclada saldria LISA sobre una tabla rayada. Las dos reglas empatan en '
+      + 'especificidad (0,3,2) y decide el ORDEN — es el defecto de `.tb-f` contra `.campo` que '
+      + 'pario verificar-empate—. El separador es `::after` y no un borde, porque con '
+      + '`border-collapse: collapse` los bordes los pinta LA TABLA y no viajarian con la celda; y '
+      + '`border-collapse` NO se toca. El filete del hover SE MUDA a la primera anclada: en el borde '
+      + 'izquierdo de la fila queda tapado en cuanto alguien desplaza. '
+      + 'EL TIPO ES `0 | 1` Y NO `number`, a proposito: anclar la columna N necesita MEDIR lo que '
+      + 'miden las N-1 de su izquierda, y el atributo `style` en linea esta prohibido por el candado. '
+      + 'Prometer `number` hoy seria publicar una API que no existe, que es el defecto que la '
+      + 'v1.122.0 acaba de cerrar en otro componente. '
+      + 'Y EN EL TELEFONO TIENE TECHO —44vw con puntos suspensivos—: sin el, un nombre largo con '
+      + '`nowrap` ocupa mas que la pantalla y no queda NADA que desplazar. El anclaje habria '
+      + 'empeorado justo el caso que vino a arreglar. '
+      + 'EL NOMBRE: `columnasFijas` PASA A `columnasSiempreVisibles`. Lo marcaron ellos y tenian '
+      + 'razon — «fija» invita a suponer «fija al desplazar», que es lo que hace `anclarColumnas`, y '
+      + 'con las dos props juntas la confusion no se queda igual, se DUPLICA. El alias sigue vivo y '
+      + 'avisa; las dos con valores distintos fallan a proposito. '
+      + 'EL CATALOGO MONTA LA TABLA DE VERDAD. El anclaje reparte TRES clases entre celdas segun '
+      + '`numerada` y segun cual sea la ultima anclada: escrito a mano diverge a la primera, y la '
+      + 'demo de carton YA divergia —pinta `.tb-orden` donde el componente emite `.tb-th-btn`—. '
+      + 'Y AL MONTARLA SALIO UN DEFECTO QUE LLEVABA DESDE LA v1.117.0: el paquete de los componentes '
+      + 'vivos es un <script>, React lleva dentro la cadena "<script><\\/script>", y con eso el '
+      + 'candado del ELEMENTO daba por «pintada por el guion» —o sea, no comparable— cada clase que '
+      + 'el paquete nombrara. Comparaba 148; ahora compara 199. Un candado que se apaga solo segun '
+      + 'crece lo que vigila es peor que ninguno, porque el verde se lee igual. Se corta por '
+      + 'posicion, no con una expresion regular. Lo delato la deuda de `.ms-ayuda`, que aparecio '
+      + 'como «ya no diverge» cuando sigue divergiendo igual. '
+      + 'Y `.tb-col-op` DEJA DE VIAJAR: tres reglas de mobiliario del catalogo entregandose como '
+      + 'sistema, que ningun componente podia activar —el menu de columnas lo pinta '
+      + 'SeleccionMultiple— y que se salvaban porque NINGUNA de las dos clases de `.tb-col-op.fija` '
+      + 'se emitia. '
+      + 'R139 (continuacion) · EL TOPE GUARDABA UN SOLO EXTREMO. Lo reprodujo el responsable: con '
+      + '`maxDias={7}`, eligiendo primero «Hasta» y despues «Desde» salian TREINTA DIAS y el '
+      + 'calendario no apagaba NI UN SOLO DIA. El tope miraba `modo === hasta`, asi que guardaba el '
+      + 'final y dejaba el principio abierto; su producto tuvo que volver a poner la red que habia '
+      + 'quitado para tapar lo que el componente prometia impedir. El argumento con el que nacio la '
+      + 'asimetria —que un rango ya pasado no se podria arreglar moviendo su inicio— sigue en pie, y '
+      + 'por eso el suelo se calcula CONTRA EL FINAL QUE HAY: los dias posteriores a `hasta` se '
+      + 'eligen igual y reinician el rango. La prueba que decia «eligiendo el inicio no puede haber '
+      + 'techo» ERA el defecto escrito como garantia: se ha rehecho para sostener lo que hay que '
+      + 'sostener, que siempre quede salida, y no una forma concreta de conseguirlo.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      '`columnasFijas` PASA A LLAMARSE `columnasSiempreVisibles`. NUNCA significo «fija al '
+      + 'desplazar» — eso es `anclarColumnas`. La vieja sigue funcionando y avisa en desarrollo; '
+      + 'QUIEN NO LA PASE NO TOCA NADA. Pasar las dos con valores DISTINTOS falla a proposito: dos '
+      + 'verdades no son una migracion a medias.',
+      'SIN `anclarColumnas` NO CAMBIA NI UNA CLASE NI UN PIXEL. Con el, `.tb td` y `.tb-th` admiten '
+      + 'ahora `position: sticky` y `z-index`: si su hoja aprieta esas dos con `position` o '
+      + '`z-index` propios, GANA LA SUYA y el anclaje no funciona. No es detectable desde aqui, por '
+      + 'eso va escrito.',
+      'LA COLUMNA ANCLADA LLEVA FONDO EN LA CELDA, no en la fila. Si su hoja pintaba el <tr> con '
+      + 'reglas propias contando con que la celda fuera transparente, la anclada dejara de tenirse '
+      + 'con ellas.',
+      'EL ANCLAJE SE APAGA SOLO, EN SILENCIO, si hay `transform`, `filter`, `perspective`, '
+      + '`backdrop-filter` o `contain` en cualquier antepasado entre la celda y `.tb-envoltura`: ese '
+      + 'antepasado pasa a ser el bloque contenedor. No hay error y no hay consola. Si su tabla vive '
+      + 'dentro de una tarjeta animada, esto les afecta.',
+      '`--tb-indice` REEMPLAZA LOS DOS `52px` de `.tb-th-indice` y `.tb-indice`. Quien pisara ese '
+      + 'ancho a mano ahora lo pisa UNA vez, en la variable.',
+      '`.tb-col-op`, `.tb-col-op:hover` y `.tb-col-op.fija` DEJAN DE VIAJAR. Eran mobiliario del '
+      + 'catalogo: el menu de columnas del componente lo pinta SeleccionMultiple, con sus propias '
+      + 'clases. Si algun producto las habia copiado a mano, ahora tiene que traerselas.',
+      'CON `maxDias`, ELEGIR EL INICIO YA TIENE SUELO cuando hay final puesto. Antes no apagaba '
+      + 'ningun dia por ese lado — que es el agujero por el que se colaba un mes entero—. Los dias '
+      + 'POSTERIORES al final se siguen eligiendo y reinician el rango, y «Limpiar» sigue vivo.',
+    ],
+  },
   {
     v: '1.123.0', fecha: '2026-09-16',
     que: 'R143, R141 y el anadido al R139 — el chip pinta el color que ya tenia, y nace el candado que lo vio',

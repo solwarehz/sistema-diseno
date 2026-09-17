@@ -12,7 +12,7 @@
  * Es un CASCARÓN: estructura y color. Las maquetas NO son los componentes
  * reales — y eso ha costado cuatro versiones seguidas persiguiendo copias.
  *
- * DESDE LA v1.117.0 EL MARCO SE MONTA DE VERDAD. `marco-vivo.tsx` se empaqueta
+ * DESDE LA v1.117.0 EL MARCO SE MONTA DE VERDAD. `vivo.tsx` se empaqueta
  * con esbuild dentro del contenedor y se incrusta aquí: en la página de
  * maquetas, debajo de las de cartón, está `MarcoApp` montado y vivo. Lo pidió
  * el responsable —«en el cascarón usa tus componentes, así podré detectar algún
@@ -3233,6 +3233,37 @@ Se cambia en el menú de usuario, junto al tema.</p>
   </tbody>
 </table>
 
+<h3 class="sub-seccion">R142 · La columna anclada — <strong>y esto no es una maqueta</strong></h3>
+<div class="aviso">
+  Lo de arriba es <strong>cartón</strong>: marcado escrito a mano con su propio guión, y que por eso
+  puede divergir — y <strong>ha divergido</strong>: pinta <code>.tb-orden</code> donde el componente
+  emite <code>.tb-th-btn</code>, y lleva versiones anotado como deuda.
+  <br><br>
+  Lo de abajo es <code>TablaDatos</code> <strong>montado y vivo</strong>, con la hoja que viaja.
+  <strong>Si las dos no se comportan igual, manda la de abajo.</strong> El anclaje reparte
+  <strong>tres clases distintas</strong> entre celdas según <code>numerada</code> y según cuál sea
+  la última anclada: escrito a mano diverge a la primera.
+</div>
+<p class="seccion-sub"><strong>Con <code>anclarColumnas={1}</code>.</strong> Son 26 columnas:
+desplace en horizontal y el <strong>Trabajador</strong> —y su N.º— se quedan quietos mientras el
+resto pasa por debajo. El separador dice dónde acaba el bloque anclado.</p>
+<div class="bloque tb-bloque" id="tabla-viva-anclada"></div>
+
+<p class="seccion-sub"><strong>Y sin anclar, que es lo que se entrega por omisión.</strong> La misma
+tabla con <code>anclarColumnas={0}</code>: al desplazar se va todo, nombre incluido. Es el
+comportamiento de siempre y <strong>no cambia para nadie que no pida el anclaje</strong>.</p>
+<div class="bloque tb-bloque" id="tabla-viva-suelta"></div>
+
+<table class="tabla-simple" style="margin-top:16px">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Con <code>numerada</code>, la N.º se ancla con ella.</strong> Una N.º que se va por la izquierda mientras el nombre se queda deja la fila <em>peor</em> identificada que sin anclar nada.</td></tr>
+    <tr><td class="num">2</td><td><strong>La celda anclada lleva fondo propio, y con él el rayado y el hover.</strong> Una celda pegajosa transparente deja ver pasar el texto por debajo; y como el rayado pinta la fila, sin reglas propias la columna anclada saldría lisa sobre una tabla rayada. El filete del hover <strong>se muda</strong> a la celda anclada: en su sitio de siempre queda tapado en cuanto se desplaza.</td></tr>
+    <tr><td class="num">3</td><td><strong>El separador es sombra, no borde.</strong> Con <code>border-collapse: collapse</code> los bordes los pinta la tabla, no la celda, así que un borde no viajaría con ella. Y <code>border-collapse</code> no se toca: pasar a <code>separate</code> duplicaría filetes y cambiaría la altura de fila, a cambio de nada.</td></tr>
+    <tr><td class="num">4</td><td><strong>En el teléfono tiene techo:</strong> <code>44vw</code> con puntos suspensivos. Sin él, un nombre largo con <code>nowrap</code> ocupa más que la pantalla y no queda nada que desplazar — el anclaje habría empeorado el caso que vino a arreglar.</td></tr>
+    <tr><td class="num">5</td><td><strong>Un <code>transform</code>, <code>filter</code>, <code>perspective</code>, <code>backdrop-filter</code> o <code>contain</code> en cualquier antepasado lo desactiva</strong>, sin error y sin consola: ese antepasado pasa a ser el bloque contenedor. Si su tabla vive dentro de una tarjeta animada, el anclaje no funcionará y no es un fallo del sistema.</td></tr>
+  </tbody>
+</table>
+
 <h3 class="sub-seccion">Comportamiento</h3>
 <table class="tabla-simple">
   <thead><tr><th>Regla</th><th>Por qué</th></tr></thead>
@@ -4207,8 +4238,14 @@ en curso, este control <strong>no tiene</strong> esa variante &mdash; y se dice 
 <p class="seccion-sub">Y con <strong>tope de d&iacute;as</strong>. Elegido el 1 con
 <code>maxDias={7}</code>, del 8 en adelante no se puede elegir: van <code>aria-disabled</code> y
 <strong>no <code>disabled</code></strong>, porque apagado de verdad el d&iacute;a sale del recorrido
-del teclado y quien navega con tabulador se queda sin saber por qu&eacute; no responde. El tope
-<strong>nunca bloquea el gesto que lo arregla</strong>: eligiendo el inicio no hay techo.</p>
+del teclado y quien navega con tabulador se queda sin saber por qu&eacute; no responde.</p>
+<p class="seccion-sub"><strong>Y guarda los dos extremos.</strong> Hasta la v1.124.0 solo miraba el
+final: eligiendo primero «Hasta» y despu&eacute;s «Desde» sal&iacute;an <strong>treinta d&iacute;as
+con <code>maxDias={7}</code></strong> y el calendario no apagaba <strong>ni un solo d&iacute;a</strong>.
+El tope <strong>nunca bloquea el gesto que lo arregla</strong>, y por eso el suelo se calcula contra
+el final que hay: con inicio 01/03, final 14/03 y tope 7, <strong>del 8 al 14 se arregla</strong> y
+<strong>del 15 en adelante se reinicia</strong> el rango — que es c&oacute;mo se mueve un periodo
+hacia delante—. «Limpiar» es la tercera salida.</p>
 <div class="bloque">
   <div class="fc-cal" role="dialog" aria-label="Elegir rango de fechas" aria-modal="false"
        style="position:static;box-shadow:none">
@@ -7000,15 +7037,15 @@ function empaquetarMarcoVivo() {
      «command not found» y el consejo que imprimia, «levanta el contenedor»,
      era precisamente el que no servia. Se pregunta donde estamos. */
   const dentro = existsSync('/.dockerenv');
-  const orden = `cd /trabajo/componentes && npx esbuild ../sistema/cascaron/marco-vivo.tsx`
+  const orden = `cd /trabajo/componentes && npx esbuild ../sistema/cascaron/vivo.tsx`
     + ` --bundle --format=iife --jsx=automatic --minify`
     + ` --alias:react=/trabajo/componentes/node_modules/react`
     + ` --alias:react-dom=/trabajo/componentes/node_modules/react-dom`
-    + ` --define:process.env.NODE_ENV='"production"' --outfile=/tmp/marco-vivo.js`
+    + ` --define:process.env.NODE_ENV='"production"' --outfile=/tmp/vivo.js`
     /* A un archivo y luego `cat`, no a `/dev/stdout`: cuando la salida estandar
        es una tuberia —que es como la abre `execFileSync`— esbuild no puede
        abrirla como archivo y responde «no such device or address». */
-    + ` && cat /tmp/marco-vivo.js`;
+    + ` && cat /tmp/vivo.js`;
   const [mandato, args] = dentro
     ? ['sh', ['-c', orden]]
     : ['docker-compose', ['exec', '-T', 'ds', 'sh', '-c', orden]];
@@ -7016,7 +7053,7 @@ function empaquetarMarcoVivo() {
     /* El paquete sale por la salida estandar y los diagnosticos de esbuild por
        la de errores, heredada: asi el motivo REAL de un fallo se ve. Antes iba
        un `>/dev/null 2>&1` que se lo tragaba, y un error de tipos en
-       `marco-vivo.tsx` se anunciaba como «levanta el contenedor». */
+       `vivo.tsx` se anunciaba como «levanta el contenedor». */
     return execFileSync(mandato, args,
       { cwd: RAIZ, maxBuffer: 64 * 1024 * 1024, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] });
   } catch (e) {
@@ -10343,13 +10380,22 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
   min-width: 210px; padding: 4px; background: var(--fondo-tarjeta);
   border: 1px solid var(--borde-campo); border-radius: 6px;
   box-shadow: var(--sombra-capa); }
-.tb-col-op { display: flex; align-items: center; gap: 8px; padding: 8px 8px;
+/* R142 · SE LLAMABA .tb-col-op Y VIAJABA EN LA HOJA DE TODOS LOS PRODUCTOS
+   sin que ningun componente pudiera activarla: el menu de columnas del
+   componente lo pinta SeleccionMultiple, con sus propias clases. Era mobiliario
+   del catalogo entregandose como sistema —tres reglas, y una de ellas
+   .tb-col-op.fija, que es el unico sitio donde esa palabra sobrevivia—.
+   Lo saco a la luz el R142 y no lo vio nadie antes por un detalle del candado:
+   la unidad .tb-col-op.fija se saltaba por «sin base viva» mientras NINGUNA
+   de las dos se emitiera. Con -demo- en el nombre, el extractor la corta y
+   deja de viajar. */
+.tb-demo-col-op { display: flex; align-items: center; gap: 8px; padding: 8px 8px;
   border-radius: 6px; font-size: 13px; cursor: pointer; }
-.tb-col-op:hover { background: var(--fondo-encabezado); }
-.tb-col-op.fija { cursor: not-allowed; color: var(--texto-secundario); }
-.tb-col-op em { margin-left: auto; font-style: normal; font-size: 12px;
+.tb-demo-col-op:hover { background: var(--fondo-encabezado); }
+.tb-demo-col-op.fija { cursor: not-allowed; color: var(--texto-secundario); }
+.tb-demo-col-op em { margin-left: auto; font-style: normal; font-size: 12px;
   color: var(--texto-pista); text-transform: uppercase; letter-spacing: .06em; }
-.tb-col-op input { accent-color: var(--accion); width: 15px; height: 15px; }
+.tb-demo-col-op input { accent-color: var(--accion); width: 15px; height: 15px; }
 .tb-col-reset { width: 100%; margin-top: 4px; padding: 8px; font: inherit; font-size: 12px;
   cursor: pointer; background: transparent; border: 0; border-top: 1px solid var(--borde);
   color: var(--enlace); }
@@ -10363,7 +10409,13 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    contenido ancho empuja al padre y la barra horizontal sale en la PAGINA. */
 .tb-bloque { min-width: 0; }
 .tb-envoltura { overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
-.tb { width: 100%; border-collapse: collapse; font-size: 15px; background: var(--fondo-tarjeta); }
+/* R142 · EL ANCHO DE LA N.o SE ESCRIBE UNA VEZ. Estaba en .tb-th-indice y otra
+   vez en .tb-indice, identico, y el anclaje necesitaba un TERCERO: el
+   desplazamiento de la columna de al lado. Tres numeros que tienen que ser el
+   mismo dejan de serlo, y aqui el sintoma seria una rendija de 1-3px por la que
+   se ve pasar el texto de las otras columnas. Misma leccion que --alto-franja. */
+.tb { width: 100%; border-collapse: collapse; font-size: 15px; background: var(--fondo-tarjeta);
+  --tb-indice: 52px; }
 .tb-th { background: var(--fondo-encabezado); text-align: left; padding: 0;
   white-space: nowrap; border-bottom: 1px solid var(--borde); }
 .tb-orden { display: flex; align-items: center; gap: 4px; width: 100%; padding: 8px 12px;
@@ -10403,16 +10455,75 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .tb-num { text-align: right; }
 /* Columna de posición: estrecha, en secundario y sin botón de orden. Es un
    localizador para decir "mira la fila 7", no un dato que se compare. */
-.tb-th-indice { width: 52px; }
+.tb-th-indice { width: var(--tb-indice); }
 .tb-th-indice .tb-th-txt { display: block; padding: 8px 12px; font-weight: 500; }
 .tb-indice { text-align: right; color: var(--texto-secundario);
-  font-size: 13px; width: 52px; }
+  font-size: 13px; width: var(--tb-indice); }
 .tb-acc { text-align: right; white-space: nowrap; }
 /* Cebra: una fila blanca y la siguiente en fondo-fila-alt. */
 .tb tbody tr.tb-alt { background: var(--fondo-fila-alt); }
 /* El resaltado lleva FILETE, no solo fondo: medido, sobre la fila alterna el
    fondo solo cambia 1,04:1 y la mitad de las filas no responderían. */
 .tb tbody tr:hover { background: var(--fondo-fila-hover); box-shadow: inset 3px 0 0 var(--accion); }
+/* ───────────────────────────────────────────────────────────────────────────
+   R142 · LA COLUMNA ANCLADA — que una fila desplazada siga diciendo de quien es
+
+   Lo pidio Control Administrativos V2.0 con 31, 22 y 76 columnas sobre la mesa:
+   al desplazar en horizontal se pierde el nombre y la fila deja de significar
+   nada. En sus palabras, «es lo que haria el movil comodo en vez de solo
+   usable».
+
+   No hace falta contenedor nuevo: .tb-envoltura es overflow-x: auto desde
+   el R49 y envuelve SOLO la tabla, asi que position: sticky ya tiene contra
+   que resolverse. Media solucion llevaba dos anos puesta.
+
+   EL TRABAJO DE VERDAD ES EL FONDO. Una celda pegajosa se pinta por encima de
+   lo que pasa por debajo, pero si es transparente se ve el texto de las otras
+   columnas atravesarla. Y aqui el rayado y el hover pintan el <tr>, no la
+   celda: sin reglas propias la columna anclada saldria LISA sobre una tabla
+   rayada. Por eso las tres de abajo, y por eso el orden entre ellas importa —
+   empatan en especificidad (0,3,2) y gana la ultima, asi que el hover va
+   despues del rayado o pasar el raton por una fila par no la tine. Es el
+   defecto de .tb-f contra .campo que pario verificar-empate.
+
+   EL SEPARADOR ES ::after Y NO UN BORDE. .tb es border-collapse: collapse,
+   y ahi los bordes los pinta LA TABLA, no la celda: un borde puesto en la celda
+   anclada no viajaria con ella al desplazar. Y border-collapse NO se toca:
+   pasar a separate duplicaria filetes donde td{border-top} se encuentra con
+   th{border-bottom} y cambiaria la altura de fila que la regla 28 protege con
+   numeros medidos, a cambio de nada — hoy .tb no declara NI UN borde vertical
+   en celdas, asi que no hay borde que perder.
+
+   Y EL FILETE DEL HOVER SE MUDA. .tb tbody tr:hover lo pone en el borde
+   izquierdo de LA FILA, que es lo primero que se va por la izquierda al
+   desplazar. Se lo lleva la primera celda anclada — la que no lleva
+   tb-ancla-x.
+   ─────────────────────────────────────────────────────────────────────────── */
+.tb-ancla { position: sticky; left: 0; z-index: 1; background: var(--fondo-tarjeta); }
+.tb-ancla-x { left: var(--tb-indice); }
+/* La cabecera y la fila de filtros llevan SU fondo, no el de la tarjeta: si no,
+   la columna anclada rompe la banda del encabezado justo donde empieza. */
+.tb-th.tb-ancla, .tb-f-celda.tb-ancla { background: var(--fondo-encabezado); z-index: 2; }
+.tb tbody tr.tb-alt .tb-ancla { background: var(--fondo-fila-alt); }
+/* DESPUES del rayado, a proposito: los dos son (0,3,2) y decide el orden. */
+.tb tbody tr:hover .tb-ancla { background: var(--fondo-fila-hover); }
+.tb tbody tr:hover .tb-ancla:not(.tb-ancla-x) { box-shadow: inset 3px 0 0 var(--accion); }
+.tb-ancla-fin::after { content: ''; position: absolute; top: 0; bottom: 0; right: 0;
+  width: 1px; background: var(--borde); }
+/* EN EL TELEFONO LA COLUMNA ANCLADA TIENE TECHO. A 390px, con nowrap y un
+   nombre como «SIFUENTES DE PINEDA, Julia Trinidad», la anclada ocupa mas que
+   la pantalla y no queda NADA que desplazar: el anclaje habria empeorado justo
+   el caso que vino a arreglar. Recortar no es partir — la altura de fila que
+   protege la regla 28 sigue intacta—, y el patron ya estaba en .nav-txt. */
+@media (max-width: 640px) {
+  .tb-ancla { max-width: 44vw; overflow: hidden; text-overflow: ellipsis; }
+}
+/* Pegado al papel no significa nada, y la sombra gasta tinta. */
+@media print {
+  .tb-ancla { position: static; }
+  .tb-ancla-fin::after { display: none; }
+}
+
 /* EL VACÍO NO ES UN DATO: es una frase, y vuelve a partir. Ya renunciaba a la
    altura de fila (height: auto), así que renuncia también al nowrap — si no,
    «Prueba con menos filtros, o quítalos todos» sale en una línea y obliga a
@@ -13602,7 +13713,7 @@ ${COMPRESOR_PDF}
     function pintarPanel() {
       panel.innerHTML = COLS.map(function (c) {
         var vis = cfg.ocultas.indexOf(c.k) === -1;
-        return '<label class="tb-col-op' + (c.fija ? ' fija' : '') + '">' +
+        return '<label class="tb-demo-col-op' + (c.fija ? ' fija' : '') + '">' +
           '<input type="checkbox" data-col="' + c.k + '"' + (vis ? ' checked' : '') + (c.fija ? ' disabled' : '') + '>' +
           '<span>' + c.t + '</span>' + (c.fija ? '<em>fija</em>' : '') + '</label>';
       }).join('') + '<button class="tb-col-reset">Restablecer</button>';
@@ -15499,7 +15610,7 @@ ${COMPRESOR_PDF}
 <!-- EL COMPONENTE DE VERDAD. Va al final: monta sobre el contenedor
      marco-vivo, que ya existe cuando este guion corre. Empaquetado con esbuild
      dentro del contenedor; si falla, el generador para. -->
-<script>${MARCO_VIVO_JS}</script>
+<script data-vivo>${MARCO_VIVO_JS}</script>
 </body>
 </html>
 `;

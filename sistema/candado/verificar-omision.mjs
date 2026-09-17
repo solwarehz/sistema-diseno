@@ -48,7 +48,17 @@ const AQUI = dirname(fileURLToPath(import.meta.url));
 const RAIZ = join(AQUI, '..', '..');
 
 const css = readFileSync(join(RAIZ, 'sistema/componentes/componentes.css'), 'utf8');
-const html = readFileSync(join(RAIZ, 'cascaron/index.html'), 'utf8');
+
+/* R142 · EL PAQUETE DE LOS COMPONENTES VIVOS SE CORTA ANTES DE LEER NADA.
+   Va el ULTIMO del documento, marcado `data-vivo`, y no se puede aislar con una
+   expresion regular: dentro lleva React, y React lleva la cadena
+   "<script><\/script>" — asi que un `<script...>...</script>` no voraz abre un
+   bloque NUEVO a mitad del paquete y el resto se cuenta como guion del
+   catalogo. Eso fue exactamente lo que paso al montar `TablaDatos`: la deuda de
+   `.ms-ayuda` aparecio como «ya no diverge» cuando sigue divergiendo igual.
+   Un candado que se apaga solo segun crece lo que vigila es peor que ninguno,
+   porque el verde se lee igual. */
+const html = readFileSync(join(RAIZ, 'cascaron/index.html'), 'utf8').split('<script data-vivo>')[0];
 
 /**
  * PARES QUE NO SE PUEDEN SEPARAR, con su razón.

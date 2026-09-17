@@ -32,6 +32,13 @@ const css = html.split('<style>')[1].split('</style>')[0];
 
 const TOKENS = new Set([...Object.keys(semanticos), ...Object.keys(marca)]);
 
+/** Las variables que LA PROPIA HOJA declara: medidas locales, no tokens que
+ *  falten. Se leen de las declaraciones, así que una que nadie declare sigue
+ *  saliendo como fallo — que es lo único que esto protege. */
+const LOCALES = new Set(
+  [...css.matchAll(/(^|[;{\s])--([a-z0-9-]+)\s*:/g)].map((m) => m[2])
+);
+
 // §3.4 escala del sistema y §3.3 escala de landing
 const ESCALA = new Set([56, 34, 28, 24, 20, 19, 16, 15, 13, 12]);
 // §3.2 — cuatro pesos y ninguno más
@@ -87,7 +94,15 @@ for (const { sel, decl } of bloques) {
       // :root que las sombras. Esta comprobación mira COLOR: una variable de
       // medida que no esté aquí se reporta como «token inexistente», que es un
       // diagnóstico falso — y el candado que sí la vigila es verificar-altura.
-      if (!TOKENS.has(t) && !/^(sombra|canto|dur|curva|permanencia|alto)(-|$)/.test(t)) anota(hallazgos.color, sel, `token inexistente --${t}`);
+      // R142 · Y UNA VARIABLE QUE LA PROPIA HOJA DECLARA no es un token que
+      // falte: es una medida local. `--tb-indice` nació para que el ancho de la
+      // columna N.º se escriba UNA vez —lo usan tres reglas, y la tercera es el
+      // desplazamiento de la columna anclada— y aquí salía como «token
+      // inexistente», que es justo el diagnóstico falso que el párrafo de
+      // arriba dice que no hay que dar. Se mira si alguien la DECLARA; lo que
+      // nadie declara sigue siendo un fallo, que es lo que esto protege.
+      if (!TOKENS.has(t) && !LOCALES.has(t)
+          && !/^(sombra|canto|dur|curva|permanencia|alto)(-|$)/.test(t)) anota(hallazgos.color, sel, `token inexistente --${t}`);
     }
   }
 

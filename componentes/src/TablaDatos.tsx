@@ -87,9 +87,47 @@ export type TablaDatosProps<T> = {
    * R101 · **Si no se declara, es la primera.** Antes el valor por omisión era
    * «ninguna», y eso dejaba ocultar TODAS las columnas y quedarse con una tabla
    * de filas en blanco. La primera columna es, casi siempre, la que dice de
-   * quién es la fila. Para renunciar a ello hay que decirlo: `columnasFijas={[]}`.
+   * quién es la fila. Para renunciar a ello hay que decirlo:
+   * `columnasSiempreVisibles={[]}`.
+   *
+   * R142 · SE LLAMABA `columnasFijas`, y el nombre era falso. Lo reportó
+   * Control Administrativos V2.0: «fija» invita a suponer «fija al desplazar»,
+   * que es lo que de verdad hace `anclarColumnas` — y con las dos props juntas
+   * la confusión no se queda igual, se DUPLICA. `columnasSiempreVisibles` vive
+   * además en la misma familia que `ocultas`/`onOcultas`, que es donde
+   * conceptualmente estaba desde el principio.
+   */
+  columnasSiempreVisibles?: string[];
+  /**
+   * @deprecated Desde la v1.124.0 se llama `columnasSiempreVisibles`. **Nunca**
+   * significó «fija al desplazar» — eso es `anclarColumnas`. Sigue funcionando,
+   * avisa en desarrollo, y **quien no la pase no tiene que tocar nada**.
    */
   columnasFijas?: string[];
+  /**
+   * R142 · Cuántas de las primeras columnas quedan **ANCLADAS al desplazar en
+   * horizontal**: se quedan quietas mientras el resto de la tabla pasa por
+   * debajo. Lo pidió Control Administrativos V2.0 con 31, 22 y 76 columnas
+   * sobre la mesa: una fila desplazada **no dice de quién es**.
+   *
+   * Por omisión **0**. Anclar repinta todas las tablas de todos los productos
+   * —los fondos se mudan de la fila a la celda— y eso se pide, no se impone.
+   *
+   * EL TIPO ES `0 | 1` Y NO `number`, y es la parte honesta de esta prop.
+   * Anclar la columna N necesita saber cuánto miden las N-1 de su izquierda, y
+   * aquí los anchos los decide el contenido: `.tb td` es `white-space: nowrap`
+   * y no hay `table-layout: fixed`. Para la primera, el desplazamiento es 0 —o
+   * el ancho declarado de la columna N.º—, y eso es aritmética que la hoja sabe
+   * escribir. Para la segunda hay que **medir en tiempo de ejecución**, y el
+   * atributo `style` en línea está prohibido por el candado (§2.5.6). El día
+   * que eso se resuelva, esto pasa a `0 | 1 | 2` sin romper a nadie. Prometer
+   * `number` hoy sería publicar una API que no existe — que es el defecto que
+   * la v1.122.0 acaba de cerrar en otro componente.
+   *
+   * Con `numerada`, la columna N.º se ancla **junto con ella**: una N.º que se
+   * va por la izquierda mientras el nombre se queda deja la fila peor que antes.
+   */
+  anclarColumnas?: 0 | 1;
   /**
    * R101 · El orden con el que arranca la tabla.
    *
@@ -159,7 +197,9 @@ export function TablaDatos<T>({
   alCambiar,
   modo = 'navegador',
   total,
+  columnasSiempreVisibles: siempreVisiblesFuera,
   columnasFijas: columnasFijasFuera,
+  anclarColumnas = 0,
   ordenInicial,
   ocultas: ocultasFuera,
   onOcultas,
@@ -204,13 +244,72 @@ export function TablaDatos<T>({
   };
   const [columnasAbierto, setColumnasAbierto] = useState(false);
 
-  // Una columna FIJA no se puede quitar. No es un tope —cuántos datos quiere
-  // ver cada persona es decisión suya— es un mínimo: una tabla sin la columna
-  // que identifica cada fila no identifica nada.
+  // Una columna SIEMPRE VISIBLE no se puede quitar. No es un tope —cuántos
+  // datos quiere ver cada persona es decisión suya— es un mínimo: una tabla sin
+  // la columna que identifica cada fila no identifica nada.
   // R101 · Sin declarar, la primera columna. `[]` es renunciar a ello DICIÉNDOLO.
-  const columnasFijas = columnasFijasFuera ?? (columnas[0] ? [columnas[0].clave] : []);
-  const esFija = (clave: string) => columnasFijas.includes(clave);
-  const visiblesCols = columnas.filter((c) => !ocultas.has(c.clave) || esFija(c.clave));
+  //
+  // R142 · EL ALIAS VIEJO SIGUE VIVO, y las dos juntas con valores distintos
+  // FALLAN A PROPÓSITO: dos verdades no son una migración a medias, son un
+  // defecto que se descubre cuando alguien oculta una columna en producción.
+  if (process.env.NODE_ENV !== 'production' && columnasFijasFuera !== undefined) {
+    if (siempreVisiblesFuera !== undefined
+        && [...siempreVisiblesFuera].sort().join('|') !== [...columnasFijasFuera].sort().join('|')) {
+      throw new Error(
+        'TablaDatos: `columnasFijas` y `columnasSiempreVisibles` dicen cosas distintas. ' +
+        'Son la misma prop con dos nombres: deje solo `columnasSiempreVisibles`.'
+      );
+    }
+    console.warn(
+      'TablaDatos: `columnasFijas` pasa a llamarse `columnasSiempreVisibles` desde la ' +
+      'v1.124.0. Nunca significó «fija al desplazar» — eso es `anclarColumnas`. ' +
+      'Sigue funcionando; el cambio es de una palabra.'
+    );
+  }
+  const columnasSiempreVisibles =
+    siempreVisiblesFuera ?? columnasFijasFuera ?? (columnas[0] ? [columnas[0].clave] : []);
+  const esSiempreVisible = (clave: string) => columnasSiempreVisibles.includes(clave);
+  const visiblesCols = columnas.filter((c) => !ocultas.has(c.clave) || esSiempreVisible(c.clave));
+
+  /**
+   * R142 · QUÉ CELDAS SE ANCLAN, y la clase que le toca a cada una.
+   *
+   *   `tb-ancla`      se queda quieta al desplazar, y lleva fondo propio
+   *   `tb-ancla-x`    además, desplazada el ancho de la columna N.º
+   *   `tb-ancla-fin`  es la ÚLTIMA anclada: dibuja el separador
+   *
+   * Sin `tb-ancla-fin` en una sola celda, el separador saldría también entre la
+   * N.º y el nombre, que no es donde el bloque acaba. Y la primera anclada —la
+   * que NO lleva `tb-ancla-x`— es la que se lleva el filete del hover: en su
+   * sitio de siempre, el borde izquierdo de la fila, queda tapado en cuanto
+   * alguien desplaza.
+   */
+  const anclada = anclarColumnas === 1;
+  const claveAnclada = anclada ? visiblesCols[0]?.clave : undefined;
+  /** ¿Es ESTA la columna anclada? */
+  const esLaAnclada = (clave: string) => anclada && clave === claveAnclada;
+  /** La N.º solo es la ÚLTIMA anclada si no queda ninguna columna detrás. */
+  const indiceEsFin = anclada && claveAnclada === undefined;
+
+  /*
+   * LAS CLASES SE ESCRIBEN COMO LITERALES DENTRO DEL ARRAY, y no salen de una
+   * función que las componga. No es estilo: los candados de este repositorio
+   * —promesa muerta, empate, atributo— leen el JSX ESTÁTICAMENTE, buscando
+   * `className={[...]}` con literales dentro. Una función que devuelva la
+   * cadena ya montada deja a todos ciegos, y el primer síntoma es un candado
+   * que sale VERDE porque no ve nada. Se probó y pasó: el de la promesa muerta
+   * dio por muerta una regla que sí se emitía.
+   */
+  /*
+   * SE LLAMA CON UN ARRAY, y eso no es estética: `className={[...]}` es
+   * EXACTAMENTE la forma que los candados estáticos de este repositorio buscan
+   * —promesa muerta, empate, atributo—. Una lista de argumentos sueltos los
+   * deja ciegos, y el primer síntoma es un candado que sale VERDE porque no ve
+   * nada. Se probó y pasó: el de la promesa muerta dio por muerta una regla que
+   * sí se emitía.
+   */
+  const clase = (xs: (string | false | undefined)[]) =>
+    xs.filter(Boolean).join(' ') || undefined;
 
 
   const hayFiltro = Object.values(filtros).some((v) => v !== SIN_FILTRO);
@@ -419,8 +518,8 @@ export function TablaDatos<T>({
           opciones={columnas.map((c) => ({
             valor: c.clave,
             texto: c.titulo,
-            ayuda: esFija(c.clave) ? 'Identifica la fila: no se puede quitar' : undefined,
-            deshabilitada: esFija(c.clave),
+            ayuda: esSiempreVisible(c.clave) ? 'Identifica la fila: no se puede quitar' : undefined,
+            deshabilitada: esSiempreVisible(c.clave),
           }))}
           valores={visiblesCols.map((c) => c.clave)}
           // R101 · Las fijas se reponen SIEMPRE, ADEMÁS de ir deshabilitadas.
@@ -429,7 +528,7 @@ export function TablaDatos<T>({
           // que miente— y esta línea protege el dato, porque un `disabled` se
           // quita desde el inspector. Antes solo estaba lo segundo.
           onCambio={(elegidas) =>
-            setOcultas(new Set(columnas.filter((c) => !elegidas.includes(c.clave) && !esFija(c.clave)).map((c) => c.clave)))
+            setOcultas(new Set(columnas.filter((c) => !elegidas.includes(c.clave) && !esSiempreVisible(c.clave)).map((c) => c.clave)))
           }
         />
       </div>
@@ -498,7 +597,8 @@ export function TablaDatos<T>({
                 sigue siendo la 34 en la página 4. No ordena ni filtra: no es
                 un dato, es un dedo puesto en la fila. */}
             {numerada && (
-              <th scope="col" className="tb-th tb-th-indice">
+              <th scope="col" className={clase([
+                'tb-th', 'tb-th-indice', anclada && 'tb-ancla', indiceEsFin && 'tb-ancla-fin'])}>
                 <span className="tb-th-txt tb-num">N.º</span>
               </th>
             )}
@@ -509,7 +609,11 @@ export function TablaDatos<T>({
                 <th
                   key={col.clave}
                   scope="col"
-                  className="tb-th"
+                  className={clase([
+                    'tb-th',
+                    esLaAnclada(col.clave) && 'tb-ancla',
+                    esLaAnclada(col.clave) && numerada && 'tb-ancla-x',
+                    esLaAnclada(col.clave) && 'tb-ancla-fin'])}
                   /* R11 · aria-sort en el <th>, y el disparador es un <button>
                      de verdad dentro. Un <th> con onClick no se anuncia ni se
                      alcanza con teclado. */
@@ -534,7 +638,10 @@ export function TablaDatos<T>({
               filtro vive sobre la columna que filtra o hay que recordar cuál
               era cuál. */}
           <tr id={`${id}-filtros`} className="tb-fila-filtros" hidden={!filtrosVisibles}>
-            {numerada && <td className="tb-f-celda" />}
+            {numerada && (
+              <td className={clase([
+                'tb-f-celda', anclada && 'tb-ancla', indiceEsFin && 'tb-ancla-fin'])} />
+            )}
             {/* `td` y no `th`: una celda de filtro NO es un encabezado de
                 columna. Con `th` cada columna se anunciaba DOS VECES —«Horas» y
                 «Filtrar por Horas»— y quien navega por encabezados tenía que
@@ -544,7 +651,11 @@ export function TablaDatos<T>({
                 Y la clase es la que el catálogo estiliza; el componente no la
                 ponía, así que la fila salía sin fondo ni relleno. */}
             {visiblesCols.map((col) => (
-              <td key={col.clave} className="tb-f-celda">
+              <td key={col.clave} className={clase([
+                'tb-f-celda',
+                esLaAnclada(col.clave) && 'tb-ancla',
+                esLaAnclada(col.clave) && numerada && 'tb-ancla-x',
+                esLaAnclada(col.clave) && 'tb-ancla-fin'])}>
                 {col.filtrable !== false && (
                   // R33 · dominio cerrado: se ELIGE, no se adivina el literal.
                   // Se compone con Selector, que ya existe; texto libre para
@@ -575,9 +686,18 @@ export function TablaDatos<T>({
         <tbody>
           {visibles.map((fila, i) => (
             <tr key={claveFila(fila)} className={i % 2 === 1 ? 'tb-alt' : undefined}>
-              {numerada && <td className="tb-indice mono">{(paginaSegura - 1) * tam + i + 1}</td>}
+              {numerada && (
+                <td className={clase([
+                  'tb-indice', 'mono', anclada && 'tb-ancla', indiceEsFin && 'tb-ancla-fin'])}>
+                  {(paginaSegura - 1) * tam + i + 1}
+                </td>
+              )}
               {visiblesCols.map((col) => (
-                <td key={col.clave} className={col.numerica ? 'tb-num' : undefined}>
+                <td key={col.clave} className={clase([
+                  col.numerica && 'tb-num',
+                  esLaAnclada(col.clave) && 'tb-ancla',
+                  esLaAnclada(col.clave) && numerada && 'tb-ancla-x',
+                  esLaAnclada(col.clave) && 'tb-ancla-fin'])}>
                   {col.pintar ? col.pintar(fila) : col.valor(fila)}
                 </td>
               ))}

@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 16 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.123.0** — R143: el chip de identidad pinta
-el color que ya tenía, y nace el candado que lo vio
+**Versión del sistema:** MMI-DS **v1.124.0** — R142: la columna anclada, el
+nombre que engañaba, y el tope que guardaba un solo extremo
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ el color que ya tenía, y nace el candado que lo vio
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **veinte pasos de
-verificación** —los que corre `publicar.mjs`—, **1003 pruebas en 52 archivos**,
+verificación** —los que corre `publicar.mjs`—, **1029 pruebas en 53 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -56,14 +56,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **1003 pruebas en 52 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · **1014 reglas de 1528** · **731 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
+| Componentes de React | ✅ | **1029 pruebas en 53 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · **1018 reglas de 1537** · **732 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.123.0.zip` · **60 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.124.0.zip` · **60 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.123.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.124.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los veinte pasos · **173 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -86,7 +86,69 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.123.0), con detalle
+### Lo de hoy (v1.124.0), con detalle
+
+**R142 · una fila desplazada no dice de quién es.** Lo pidió Control
+Administrativos V2.0 con 31, 22 y 76 columnas sobre la mesa, y el responsable lo
+resumió: *«es lo que haría el móvil cómodo en vez de solo usable»*. Con
+`anclarColumnas={1}` la primera columna visible —y la N.º con ella— se queda
+quieta al desplazar en horizontal.
+
+**No hizo falta contenedor nuevo:** `.tb-envoltura` es el deslizador desde el
+R49, así que media solución llevaba dos años puesta. **El trabajo de verdad es el
+fondo**: una celda pegajosa transparente deja ver pasar el texto de las otras
+columnas, y como el rayado y el hover pintan el `<tr>`, sin reglas propias la
+columna anclada saldría lisa sobre una tabla rayada. Las dos reglas **empatan en
+especificidad (0,3,2)** y decide el orden — el defecto de `.tb-f` contra `.campo`
+que parió `verificar-empate`.
+
+El tipo es **`0 | 1` y no `number`**, a propósito: anclar la columna N necesita
+**medir** lo que miden las N-1 de su izquierda, y el atributo `style` en línea
+está prohibido por el candado. Prometer `number` hoy sería publicar una API que
+no existe, que es el defecto que la v1.122.0 acaba de cerrar en otro componente.
+
+### Y el catálogo monta la tabla de verdad — con lo que eso destapó
+
+El anclaje reparte **tres clases** entre celdas según `numerada` y según cuál sea
+la última anclada: escrito a mano diverge a la primera, y la demo de cartón **ya
+divergía**.
+
+Al montarla salió un defecto que llevaba **desde la v1.117.0**: el paquete de los
+componentes vivos es un `<script>`, React lleva dentro la cadena
+`"<script><\/script>"`, y con eso el candado del **elemento** daba por «pintada
+por el guion» —o sea, **no comparable**— cada clase que el paquete nombrara.
+Comparaba **148**; ahora compara **199**.
+
+> Un candado que se apaga solo según crece lo que vigila es peor que ninguno,
+> porque el verde se lee igual.
+
+Lo delató la deuda de `.ms-ayuda`, que apareció como «ya no diverge» cuando sigue
+divergiendo igual. Se corta **por posición**, no con una expresión regular.
+
+Y `.tb-col-op` **deja de viajar**: tres reglas de mobiliario del catálogo
+entregándose como sistema, que ningún componente podía activar —el menú de
+columnas lo pinta `SeleccionMultiple`— y que se salvaban porque **ninguna de las
+dos clases** de `.tb-col-op.fija` se emitía.
+
+### R139 (continuación) · el tope guardaba un solo extremo
+
+Lo reprodujo el responsable: con `maxDias={7}`, eligiendo primero «Hasta» y
+después «Desde» salían **treinta días** y el calendario **no apagaba ni un solo
+día**. El tope miraba `modo === 'hasta'`, así que guardaba el final y dejaba el
+principio abierto; su producto tuvo que **volver a poner la red que había
+quitado** para tapar lo que el componente prometía impedir.
+
+El argumento con el que nació la asimetría —que un rango ya pasado no se podría
+arreglar moviendo su inicio— sigue en pie, y por eso el suelo se calcula **contra
+el final que hay**: los días posteriores a `hasta` se eligen igual y reinician el
+rango.
+
+Y hay una lección de método: **la prueba que decía «eligiendo el inicio no puede
+haber techo» ERA el defecto, escrito como garantía.** Se ha rehecho para sostener
+lo que hay que sostener —que siempre quede salida— y no una forma concreta de
+conseguirlo.
+
+### Lo de la v1.123.0, con detalle
 
 **R143 · cinco de los diez tonos de `Chip` eran uno solo.** Control
 Administrativos V2.0 lo midió en el navegador: su registro diario clasifica cada

@@ -9,7 +9,7 @@
 
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { TablaDatos, type Columna } from '../src/TablaDatos';
 
 type Persona = { id: string; nombre: string; cargo: string; horas: number };
@@ -250,7 +250,7 @@ describe('R18 (pedido R31) · columnas visibles controladas', () => {
   it('al cambiar, onOcultas emite la lista para persistirla', async () => {
     const u = userEvent.setup();
     const onOcultas = vi.fn();
-    pintar({ ocultas: [], onOcultas, columnasFijas: ['nombre'] });
+    pintar({ ocultas: [], onOcultas, columnasSiempreVisibles: ['nombre'] });
     await u.click(screen.getByRole('button', { name: 'Columnas' }));
     await u.click(screen.getByRole('checkbox', { name: /Horas/ }));
     expect(onOcultas).toHaveBeenCalledWith(['horas']);
@@ -507,5 +507,112 @@ describe('R28 (pedido R52) · los iconos de la barra son los del catálogo', () 
     const { container } = pintar();
     const lupa = container.querySelector('.tb-buscar svg')!;
     expect(lupa.getAttribute('width')).toBe('18');
+  });
+});
+
+/**
+ * R142 · LA COLUMNA ANCLADA, Y EL NOMBRE QUE ENGAÑABA.
+ *
+ * Lo pidió Control Administrativos V2.0 con 31, 22 y 76 columnas sobre la mesa:
+ * una fila desplazada **no dice de quién es**. Y de paso marcaron el nombre:
+ * `columnasFijas` significaba «no se puede ocultar», que no es lo que nadie
+ * entiende por «fija» cuando al lado hay una prop de anclaje.
+ */
+describe('[30] R142 · el anclaje y el renombrado', () => {
+  const anclas = (c: HTMLElement) => [...c.querySelectorAll('.tb-ancla')];
+  const clases = (e: Element) => [...e.classList].sort().join(' ');
+
+  it('[30] SIN pedirlo no hay ni una clase de anclaje: no cambia nada para nadie', () => {
+    /* Anclar repinta todas las tablas de todos los productos —los fondos se
+       mudan de la fila a la celda—, y eso se pide, no se impone. */
+    const { container } = pintar();
+    expect(anclas(container)).toHaveLength(0);
+    expect(container.querySelectorAll('.tb-ancla-x, .tb-ancla-fin')).toHaveLength(0);
+  });
+
+  it('[31] con `numerada`, se anclan la N.º Y la primera, y solo la segunda lleva `tb-ancla-x`', () => {
+    /* Una N.º que se va por la izquierda mientras el nombre se queda deja la
+       fila PEOR identificada que sin anclar nada. Y si el nombre se anclara a
+       `left: 0` se montaría encima de la N.º. */
+    const { container } = pintar({ anclarColumnas: 1 });
+    const cab = [...container.querySelectorAll('thead tr:first-child th')];
+    expect(clases(cab[0])).toBe('tb-ancla tb-th tb-th-indice');
+    expect(clases(cab[1])).toBe('tb-ancla tb-ancla-fin tb-ancla-x tb-th');
+    // Y las de más allá, sin nada.
+    expect(cab[2].classList.contains('tb-ancla')).toBe(false);
+  });
+
+  it('[31] sin `numerada`, la primera se ancla a la izquierda del todo', () => {
+    const { container } = pintar({ anclarColumnas: 1, numerada: false });
+    const primera = container.querySelector('thead tr:first-child th')!;
+    expect(clases(primera)).toBe('tb-ancla tb-ancla-fin tb-th');
+    expect(primera.classList.contains('tb-ancla-x'), 'rendija de 52px').toBe(false);
+  });
+
+  it('[33] `tb-ancla-fin` está en UNA sola celda por fila: la última anclada', () => {
+    /* Dos separadores, o uno entre la N.º y el nombre, dicen que el bloque
+       acaba donde no acaba. */
+    const { container } = pintar({ anclarColumnas: 1 });
+    for (const fila of container.querySelectorAll('tbody tr')) {
+      expect(fila.querySelectorAll('.tb-ancla-fin'), fila.textContent ?? '').toHaveLength(1);
+    }
+  });
+
+  it('[30] la celda de FILTRO de la columna anclada se ancla también', () => {
+    /* Si no, la fila de filtros se desplaza y el filtro deja de estar sobre su
+       columna — que es la regla 1, la primera que se escribió de esta tabla. */
+    const { container } = pintar({ anclarColumnas: 1 });
+    const filtros = [...container.querySelectorAll('.tb-fila-filtros .tb-f-celda')];
+    expect(filtros[0].classList.contains('tb-ancla')).toBe(true);
+    expect(filtros[1].classList.contains('tb-ancla')).toBe(true);
+    expect(filtros[2].classList.contains('tb-ancla')).toBe(false);
+  });
+
+  it('[30] y la celda del VACÍO no se ancla: abarca la tabla entera', () => {
+    /* Una celda con `colSpan` que además se pega deja el mensaje clavado a la
+       izquierda mientras el resto se desplaza. */
+    const { container } = pintar({ anclarColumnas: 1, filas: [] });
+    const vacio = container.querySelector('.tb-vacio')!;
+    expect(vacio.classList.contains('tb-ancla')).toBe(false);
+  });
+
+  it('[30] ocultando la primera, el anclaje SE MUDA a la que pasa a serlo', () => {
+    /* El anclaje va sobre la primera columna VISIBLE. Si se quedara en una
+       columna que ya no se pinta, no anclaría nada. */
+    const { container } = pintar({
+      anclarColumnas: 1, numerada: false,
+      columnasSiempreVisibles: [], ocultas: ['nombre'],
+    });
+    const cab = [...container.querySelectorAll('thead tr:first-child th')];
+    expect(cab[0].textContent).toContain('Cargo');
+    expect(cab[0].classList.contains('tb-ancla')).toBe(true);
+  });
+
+  it('[R101] `columnasFijas` sigue funcionando, y AVISA en desarrollo', () => {
+    /* La migración es de una palabra, y quien no la pase no toca nada. Pero
+       romper en silencio a quien no lea `ACTUALIZAR.md` no es una opción. */
+    const avisar = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const { container } = pintar({ columnasFijas: ['nombre'], ocultas: ['nombre'] });
+    // Sigue mandando: la columna no se puede quitar y se repone.
+    expect(container.querySelector('thead th:nth-child(2)')!.textContent).toContain('Apellidos');
+    expect(avisar).toHaveBeenCalled();
+    expect(String(avisar.mock.calls[0][0])).toContain('columnasSiempreVisibles');
+    avisar.mockRestore();
+  });
+
+  it('[R101] las dos a la vez y DISTINTAS fallan: dos verdades no son una migración', () => {
+    const avisar = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const gritar = vi.spyOn(console, 'error').mockImplementation(() => {});
+    expect(() => pintar({ columnasFijas: ['nombre'], columnasSiempreVisibles: ['cargo'] }))
+      .toThrow(/dicen cosas distintas/);
+    avisar.mockRestore();
+    gritar.mockRestore();
+  });
+
+  it('[R101] y las dos a la vez DICIENDO LO MISMO no molestan', () => {
+    const avisar = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    expect(() => pintar({ columnasFijas: ['nombre'], columnasSiempreVisibles: ['nombre'] }))
+      .not.toThrow();
+    avisar.mockRestore();
   });
 });

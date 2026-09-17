@@ -19,14 +19,16 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.123.0** — **R141 y R143.** El chip de identidad **pinta el
-color que tenía y no pintaba**: los cuatro salían en `fondo-encabezado`, el mismo
-relleno que `chip-pend`, así que **cinco de los diez tonos publicados eran uno
-solo** —0,0 de distancia perceptual, con los diecinueve candados en verde—. Y
-nace el **candado del tono**, que es la lección: los demás comparan el sistema
-consigo mismo, y aquí los dos lados coincidían perfectamente en estar mal.
-**También se puede estar mal de forma consistente.** El R141 levanta en móvil el
-tope de 172 px del filtro de fechas.
+**Estado actual: v1.124.0** — **R142: la columna anclada**, y dos cosas que
+salieron al montarla. Con `anclarColumnas={1}` la primera columna se queda quieta
+al desplazar; `columnasFijas` pasa a `columnasSiempreVisibles`, porque el nombre
+decía lo que hace la prop nueva. **El catálogo monta ya `TablaDatos` de verdad**,
+y ahí apareció que el paquete de los componentes vivos llevaba **desde la
+v1.117.0** cegando a `verificar-elemento` —React trae dentro la cadena
+`"<script><\/script>"`, y el candado daba por «no comparable» cada clase que el
+paquete nombrara: comparaba 148, ahora compara 199—. Y **`maxDias` guardaba un
+solo extremo**: eligiendo primero «Hasta» salían treinta días con un tope de
+siete.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

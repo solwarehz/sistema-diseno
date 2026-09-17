@@ -312,6 +312,67 @@ describe('[17] R139 · el rango MANDA, no siembra', () => {
     expect(container.querySelector('[role="dialog"]'), 'apagado y la capa seguía abierta').toBeNull();
   });
 
+  /* R139 (continuación) · EL TOPE GUARDABA UN SOLO EXTREMO.
+     Lo reprodujo el responsable: con `maxDias={7}`, eligiendo primero «Hasta»
+     y después «Desde» salían TREINTA días y el calendario no apagaba ni un
+     solo día. El tope miraba `modo === 'hasta'`, así que guardaba el final del
+     rango y dejaba el principio abierto. Por ahí se colaba cualquier periodo,
+     y el producto tuvo que volver a poner su red para tapar lo que el
+     componente prometía impedir. */
+  it('[19] eligiendo el INICIO con el final puesto, el tope también guarda', () => {
+    const { container } = render(
+      <RangoFecha titulo="Rango de fechas" hoy={HOY} maxDias={7} desde={null} hasta="2026-03-30"
+        onCambio={() => {}} />
+    );
+    fireEvent.click(container.querySelectorAll('.fc-campo')[0]);
+    const apagados = [...container.querySelectorAll('.fc-d[aria-disabled="true"]')]
+      .map((b) => b.textContent);
+    expect(apagados.length, 'ni un solo día apagado: por ahí se cuela el mes entero').toBeGreaterThan(0);
+    // El suelo es 24/03: siete días contando el 30 inclusive.
+    expect(apagados).toContain('23');
+    expect(apagados).not.toContain('24');
+    expect(apagados).not.toContain('30');
+  });
+
+  it('[19] y elegir un día de más como inicio NO HACE NADA, ni con ratón ni con teclado', () => {
+    const alCambiar = vi.fn();
+    const { container } = render(
+      <RangoFecha titulo="Rango de fechas" hoy={HOY} maxDias={7} desde={null} hasta="2026-03-30"
+        onCambio={alCambiar} />
+    );
+    fireEvent.click(container.querySelectorAll('.fc-campo')[0]);
+    const dia1 = [...container.querySelectorAll('.fc-d')].find((b) => b.textContent === '1')!;
+    fireEvent.click(dia1);
+    expect(alCambiar, 'el 1 de marzo con final el 30 son treinta días').not.toHaveBeenCalled();
+  });
+
+  it('[19] el tope NO encierra: por delante del final se sigue eligiendo, y reinicia', () => {
+    /* El argumento con el que nació la asimetría —que un rango pasado no se
+       podría arreglar moviendo su inicio— sigue en pie, y por eso el suelo se
+       calcula CONTRA EL FINAL QUE HAY: los días posteriores a `hasta` se
+       eligen igual y reinician el rango, que es cómo se mueve un periodo hacia
+       delante. */
+    const alCambiar = vi.fn();
+    const { container } = render(
+      <RangoFecha titulo="Rango de fechas" hoy={HOY} maxDias={7} desde={null} hasta="2026-03-10"
+        onCambio={alCambiar} />
+    );
+    fireEvent.click(container.querySelectorAll('.fc-campo')[0]);
+    const dia20 = [...container.querySelectorAll('.fc-d')].find((b) => b.textContent === '20')!;
+    expect(dia20.getAttribute('aria-disabled'), 'apagado por delante: eso sí encierra').toBeNull();
+    fireEvent.click(dia20);
+    expect(alCambiar).toHaveBeenCalledWith({ desde: '2026-03-20', hasta: null });
+  });
+
+  it('[19] sin final puesto, elegir el inicio no tiene suelo ninguno', () => {
+    const { container } = render(
+      <RangoFecha titulo="Rango de fechas" hoy={HOY} maxDias={7} desde={null} hasta={null}
+        onCambio={() => {}} />
+    );
+    fireEvent.click(container.querySelectorAll('.fc-campo')[0]);
+    expect(container.querySelectorAll('.fc-d[aria-disabled="true"]')).toHaveLength(0);
+  });
+
   it('[19] `maxDias` que no es un tope se IGNORA, no apaga medio calendario', () => {
     /* `maxDias={0}` es falsy y desactivaba el tope en silencio; un negativo
        apagaba 55 de 61 días —el propio inicio incluido— con un nombre accesible
@@ -445,19 +506,35 @@ describe('[19] R139 · `maxDias`, que impide en vez de avisar', () => {
       .toContain('Has elegido 14');
   });
 
-  it('[19] el tope NO bloquea el gesto que lo arregla', () => {
-    /* Un tope que se hace cumplir sobre los dos extremos deja el rango largo
-       inarreglable: la persona queda encerrada. Elegir un inicio nuevo no tiene
-       techo, y «Limpiar» sigue vivo. */
+  it('[19] el tope NO encierra: siempre queda un gesto que arregla el rango largo', () => {
+    /* ESTA PRUEBA DECÍA LO CONTRARIO Y ERA EL DEFECTO. Exigía que eligiendo el
+       inicio NO hubiera ni un día apagado, y de ahí salía el agujero que
+       reprodujo el responsable: con el final puesto, el principio quedaba
+       abierto y se colaba un mes entero.
+       Lo que hay que sostener no es «cero días apagados» —eso es una forma, no
+       una garantía— sino que SIEMPRE quede salida. Con desde=01/03,
+       hasta=14/03 y tope 7, el suelo cae en el 08: del 8 al 14 arregla el
+       rango, y del 15 en adelante lo reinicia. Dos salidas, y «Limpiar» es la
+       tercera. */
     const alCambiar = vi.fn();
     const { container } = render(
       <RangoFecha {...props} maxDias={7} desde="2026-03-01" hasta="2026-03-14" onCambio={alCambiar} />
     );
     fireEvent.click(disparadores(container)[0]);
-    expect(container.querySelectorAll('.fc-d[aria-disabled]'),
-      'eligiendo el INICIO no puede haber techo').toHaveLength(0);
+    // El 8 arregla: del 8 al 14 son siete.
+    expect(dia(container, '8').getAttribute('aria-disabled')).toBeNull();
+    // Y el 20 reinicia, que es como se mueve un periodo hacia delante.
+    expect(dia(container, '20').getAttribute('aria-disabled')).toBeNull();
     fireEvent.click(dia(container, '20'));
     expect(alCambiar).toHaveBeenCalled();
+  });
+
+  it('[19] y el 7, que daría catorce días, SÍ está apagado', () => {
+    const { container } = render(
+      <RangoFecha {...props} maxDias={7} desde="2026-03-01" hasta="2026-03-14" onCambio={() => {}} />
+    );
+    fireEvent.click(disparadores(container)[0]);
+    expect(dia(container, '7').getAttribute('aria-disabled')).toBe('true');
   });
 
   it('[19] el error del PRODUCTO manda sobre el del tope', () => {

@@ -84,8 +84,8 @@ describe('TablaDatos — R101 · orden inicial y columna fija', () => {
     expect(screen.getByRole('checkbox', { name: /Sede/ })).not.toBeDisabled();
   });
 
-  it('R101 · `columnasFijas={[]}` es renunciar DICIÉNDOLO', async () => {
-    render(<TablaDatos {...base} columnasFijas={[]} />);
+  it('R101 · `columnasSiempreVisibles={[]}` es renunciar DICIÉNDOLO', async () => {
+    render(<TablaDatos {...base} columnasSiempreVisibles={[]} />);
     await userEvent.click(screen.getByRole('button', { name: /Columnas/ }));
     expect(screen.getByRole('checkbox', { name: /Trabajador/ })).not.toBeDisabled();
   });

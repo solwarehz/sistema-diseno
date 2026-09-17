@@ -76,7 +76,17 @@ const CATALOGO = join(RAIZ, 'cascaron', 'index.html');
  *
  * Esa página existe para ENSEÑAR lo que se entrega, no para tapar lo que
  * diverge. */
+/* R142 · EL PAQUETE DE LOS COMPONENTES VIVOS SE CORTA ANTES DE LEER NADA.
+   Va el ULTIMO del documento, marcado `data-vivo`, y no se puede aislar con una
+   expresion regular: dentro lleva React, y React lleva la cadena
+   "<script><\/script>" — asi que un `<script...>...</script>` no voraz abre un
+   bloque NUEVO a mitad del paquete y el resto se cuenta como guion del
+   catalogo. Eso fue exactamente lo que paso al montar `TablaDatos`: la deuda de
+   `.ms-ayuda` aparecio como «ya no diverge» cuando sigue divergiendo igual.
+   Un candado que se apaga solo segun crece lo que vigila es peor que ninguno,
+   porque el verde se lee igual. */
 const html = readFileSync(CATALOGO, 'utf8')
+  .split('<script data-vivo>')[0]
   .replace(/<template[^>]*>[\s\S]*?<\/template>/g, '');
 
 /**
@@ -95,8 +105,20 @@ const html = readFileSync(CATALOGO, 'utf8')
  * —la página «La entrega real» lleva ahí los 98 KB de `componentes.css` para
  * pintar los componentes con la hoja entregada—, y contarlos como guion hacía
  * que TODA clase apareciera «pintada por el guion»: el candado pasaba a
- * comparar CERO clases y salía dando lecciones sobre deuda que ya no existía. */
-const guionCatalogo = [...html.matchAll(/<script\b(?![^>]*text\/plain)[^>]*>([\s\S]*?)<\/script>/g)]
+ * comparar CERO clases y salía dando lecciones sobre deuda que ya no existía.
+ *
+ * R142 · Y EL PAQUETE DE LOS COMPONENTES VIVOS TAMPOCO ES GUION DEL CATÁLOGO.
+ * Va marcado `data-vivo` y queda fuera, por una razón que es justo la contraria
+ * de la de arriba: ahí dentro están LOS COMPONENTES, cuyas etiquetas este
+ * candado ya lee del TSX. Contarlo hacía que cada clase que el paquete nombra
+ * —y nombra casi todas— cayera en «no comparable», así que el candado dejaba de
+ * mirar según el catálogo montaba más cosas. Se vio al montar `TablaDatos`: la
+ * deuda de `.ms-ayuda` apareció como «ya no diverge» cuando sigue divergiendo
+ * igual, solo que el paquete se la había tapado.
+ *
+ * **Un candado que se apaga solo según crece lo que vigila es peor que
+ * ninguno**, porque el verde se lee igual. */
+const guionCatalogo = [...html.matchAll(/<script\b(?![^>]*(?:text\/plain|data-vivo))[^>]*>([\s\S]*?)<\/script>/g)]
   .map((m) => m[1]).join('\n');
 const laPintaElGuion = (clase) =>
   new RegExp('["\'`][^"\'`]*\\b' + clase.replace(/[-]/g, '\\-') + '\\b').test(guionCatalogo);
