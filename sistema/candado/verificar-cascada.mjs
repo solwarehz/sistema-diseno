@@ -845,6 +845,63 @@ const AFIRMACIONES = [
     },
   },
   {
+    id: 'R141',
+    que: 'en el telefono el rango de fechas ocupa el ancho — y el tope se levanta en EL CONTROL',
+    /**
+     * R141 de Control Administrativos V2.0, medido por ellos en el navegador.
+     * Es EL MISMO FALLO QUE EL R40 en otro componente: un `max-width` sin
+     * condicion. En escritorio los 172 px son justo lo que se quiere; por
+     * debajo de 640 los dos campos se envuelven a 172 cada uno, con la flecha
+     * colgando al lado del primero y media pantalla vacia a la derecha.
+     *
+     * Y el detalle que cuesta encontrar, que ellos midieron y esta afirmacion
+     * existe para que no se vuelva a perder: **ENSANCHAR EL CONTENEDOR NO
+     * BASTA**. A 400 px, con el `.cg` levantado a 368, el `button.fc-campo` de
+     * dentro seguia en 172. El tope esta en el CONTROL.
+     *
+     * Se comprueba a los dos lados de la banda: a 1280 los 172 siguen —quitar
+     * el tope en escritorio seria otro defecto— y a 400 no queda ninguno.
+     *
+     * @param {Regla[]} reglas
+     */
+    revisar(reglas) {
+      const fallos = [];
+      const campoEnGrupo = [elem('div', ['fc-campos']), elem('div', ['cg']), elem('button', ['campo', 'fc-campo'])];
+      const fechaSuelta = [elem('input', ['campo'], { type: 'date' })];
+      const grupo = [elem('div', ['fc-campos'])];
+      const guion = [elem('div', ['fc-campos']), elem('span', ['fc-guion'])];
+      const v = (cadena, prop, ancho) => {
+        const d = resolver(reglas, cadena, prop, ancho);
+        return d ? String(d.valor).trim() : null;
+      };
+      /* ESCRITORIO: el tope sigue puesto. */
+      for (const [nombre, cadena] of [['el disparador del rango', campoEnGrupo], ['el campo de fecha suelto', fechaSuelta]]) {
+        if (v(cadena, 'max-width', 1280) !== '172px') {
+          fallos.push(`a 1280px ${nombre} deberia seguir topado en 172px y recibe `
+            + `«${v(cadena, 'max-width', 1280)}». En escritorio el tope es lo correcto.`);
+        }
+      }
+      /* TELEFONO: ni tope ni flecha, y apilado. */
+      for (const [nombre, cadena] of [['el disparador del rango', campoEnGrupo], ['el campo de fecha suelto', fechaSuelta]]) {
+        const t = v(cadena, 'max-width', 400);
+        if (t !== 'none') {
+          fallos.push(`a 400px ${nombre} sigue topado en «${t}»: el tope esta en EL CONTROL, `
+            + `no en el contenedor — ensanchar el .cg no basta, y es lo que hizo falta medir `
+            + `dos veces para verlo (R40 y R141).`);
+        }
+      }
+      if (v(grupo, 'flex-direction', 400) !== 'column') {
+        fallos.push('a 400px los dos campos no se apilan: se envuelven a 172px cada uno y '
+          + 'dejan media pantalla vacia a la derecha.');
+      }
+      if (v(guion, 'display', 400) !== 'none') {
+        fallos.push('a 400px la flecha del medio sigue a la vista: apunta a la derecha y une '
+          + 'dos cosas que apiladas ya estan una debajo de otra.');
+      }
+      return fallos;
+    },
+  },
+  {
     id: 'ANCHO-LIBRE',
     que: 'una tabla puede DECLARAR que no lleva ancho minimo, y se le respeta',
     /**

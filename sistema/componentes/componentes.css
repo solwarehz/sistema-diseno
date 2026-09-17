@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.122.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.123.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -87,7 +87,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.122.0; }
+:root{ --mmi-componentes: 1.123.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -166,9 +166,13 @@ a.enlace.enl-nosub{ text-decoration: none; }
 .enlace:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px; border-radius: 3px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CAMPO DE TEXTO — 35 reglas · clases .campo-*, .cg-*, .msj-*
+   CAMPO DE TEXTO — 36 reglas · clases .campo-*, .cg-*, .msj-*
    ─────────────────────────────────────────────────────────────────────────── */
 
+@media (max-width: 640px) {
+  .fc-campos .cg .fc-campo,
+  input[type='date'].campo:not(.fc-campo){ max-width: none; width: 100%; }
+}
 input.campo.sel-in{ width: 100%; padding-right: 32px; }
 .cg-et-oculta{ visibility: hidden; }
 .cg-req{ color: var(--error-texto); margin-left: 4px; font-weight: 600; }
@@ -545,11 +549,18 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   FECHA Y RANGO — 45 reglas · clases .fc-*
+   FECHA Y RANGO — 46 reglas · clases .fc-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .fc-campos{ display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 .fc-campos .cg{ width: 172px; flex: none; }
+@media (max-width: 640px) {
+  .fc-campos{ flex-direction: column; align-items: stretch; }
+  .fc-campos .cg{ width: 100%; flex: 1 1 auto; }
+  .fc-campos .cg .fc-campo,
+  input[type='date'].campo:not(.fc-campo){ max-width: none; width: 100%; }
+  .fc-campos .fc-guion{ display: none; }
+}
 .fc-guion{ color: var(--texto-pista); padding-bottom: 8px; display: grid; place-items: center; }
 .fc-guion .ic{ width: 16px; height: 16px; }
 button.fc-campo{ display: flex; align-items: center; justify-content: flex-start;
@@ -734,13 +745,13 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   border-color: var(--borde-fuerte); }
 .chip.chip-inact{ background: var(--borde); color: var(--texto-principal);
   border-color: var(--borde-fuerte); }
-.chip.chip-identidad-1{ background: var(--fondo-encabezado); color: var(--texto-principal);
+.chip.chip-identidad-1{ background: var(--identidad-1); color: var(--identidad-texto);
   border-left-color: var(--identidad-1); }
-.chip.chip-identidad-2{ background: var(--fondo-encabezado); color: var(--texto-principal);
+.chip.chip-identidad-2{ background: var(--identidad-2); color: var(--identidad-texto);
   border-left-color: var(--identidad-2); }
-.chip.chip-identidad-3{ background: var(--fondo-encabezado); color: var(--texto-principal);
+.chip.chip-identidad-3{ background: var(--identidad-3); color: var(--identidad-texto);
   border-left-color: var(--identidad-3); }
-.chip.chip-identidad-4{ background: var(--fondo-encabezado); color: var(--texto-principal);
+.chip.chip-identidad-4{ background: var(--identidad-4); color: var(--identidad-texto);
   border-left-color: var(--identidad-4); }
 .chip-sup{ display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 8px; }
 .chip-sup-caja{ border: 1px solid var(--borde); border-radius: 6px; padding: 12px;

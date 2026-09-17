@@ -37,6 +37,11 @@ export type RangoFechaProps = {
    * Se puede sustituir —un colegio piensa en bimestres, no en trimestres
    * naturales— y se puede quitar con `atajos={[]}`. Lo que no se puede es
    * tenerlo a medias: o hay panel o no lo hay.
+   *
+   * Con `maxDias`, **los que no caben en el tope no se pintan**. Los cuatro de
+   * omisión van de un mes a un año, así que con un tope corto el panel se queda
+   * vacío y desaparece: ahí es donde se pasa la lista propia, y `atajosDeDias`
+   * la construye en una línea.
    */
   atajos?: AtajoRango[];
   /** Cuántos meses se ven a la vez. Dos por omisión, que es lo que el catálogo
@@ -103,6 +108,26 @@ export const ATAJOS_POR_OMISION: AtajoRango[] = [
   { texto: 'Este año', rango: (h) => ({
       desde: new Date(h.getFullYear(), 0, 1), hasta: new Date(h.getFullYear(), 11, 31) }) },
 ];
+
+/**
+ * LOS PERIODOS DE UN SISTEMA CON TOPE, en una línea.
+ *
+ * `ATAJOS_POR_OMISION` piensa en meses porque nació sin tope. Quien pone
+ * `maxDias` se queda sin panel —los cuatro son imposibles— y tiene que escribir
+ * su propia lista con su propia aritmética de fechas. Eso es exactamente lo que
+ * la política de creación llama RECONSTRUIR: cada producto resolviendo otra vez
+ * lo mismo, y cada uno con su descuido.
+ *
+ *   <RangoFecha maxDias={7} atajos={atajosDeDias(1, 3, 7)} />
+ *
+ * Cuenta INCLUSIVE, igual que `maxDias`: `atajosDeDias(7)` da siete días con
+ * hoy dentro, no ocho. `atajosDeDias(1)` es «Hoy».
+ */
+export const atajosDeDias = (...dias: number[]): AtajoRango[] =>
+  dias.map((n) => ({
+    texto: n === 1 ? 'Hoy' : `Últimos ${n} días`,
+    rango: (h: Date) => ({ desde: new Date(h.getFullYear(), h.getMonth(), h.getDate() - (n - 1)), hasta: h }),
+  }));
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
   'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
@@ -395,6 +420,30 @@ export function RangoFecha({
   /** Días del rango, contados INCLUSIVE: del 1 al 7 son 7, no 6. */
   const diasEntre = (a: Date, b: Date) =>
     Math.round((b.getTime() - a.getTime()) / 86400000) + 1;
+
+  /**
+   * R139 (añadido) · UN PERIODO QUE NO CABE EN EL TOPE NO SE PINTA.
+   *
+   * Los cuatro periodos por omisión van de un mes a un año. Con `maxDias={7}`,
+   * los cuatro son IMPOSIBLES: el panel enseñaba cuatro botones que solo sabían
+   * dar un aviso. Lo reportó el responsable después de quitarlos a mano en su
+   * producto — que es la prueba de que sobraban: si hay que quitarlos fuera, es
+   * que el componente no los tenía que haber puesto.
+   *
+   * Se ESCONDEN y no se apagan, y la diferencia importa. Un día del calendario
+   * va `aria-disabled` porque su disponibilidad depende del inicio elegido y
+   * cambia en cuanto se elige otro: apagarlo hay que explicarlo. Un periodo, en
+   * cambio, mide siempre lo mismo contra el mismo tope — «Este mes» nunca va a
+   * caber en siete días—, así que no es un control apagado: es un control que
+   * en esta pantalla no existe. Lo que no puede pasar nunca no se anuncia.
+   *
+   * `atajos={[]}` seguía siendo la forma de quitar el panel entero, y lo sigue
+   * siendo. Esto es otra cosa: el panel se queda con los que sirven.
+   */
+  const atajosQueCaben = tope === null ? atajos : atajos.filter((a) => {
+    const r = a.rango(hoy);
+    return diasEntre(r.desde, r.hasta) <= tope;
+  });
   /** El último día que se puede elegir como final. */
   const techo = tope && dDesde ? sumarDias(dDesde, tope - 1) : null;
   /**
@@ -543,7 +592,11 @@ export function RangoFecha({
     /* EL TOPE TAMBIÉN AQUÍ. Vivía solo en `elegir()`, así que el camino más
        rápido de la interfaz —pulsar «Este año» con un tope de siete días— lo
        saltaba entero y dejaba dentro un rango que el calendario no habría
-       dejado construir a mano. Lo cazó una auditoría. */
+       dejado construir a mano. Lo cazó una auditoría.
+       Desde el añadido al R139 los que no caben ya NO SE PINTAN, así que por la
+       interfaz esto no se alcanza. Se queda porque `rango` es código ajeno: uno
+       que devuelva algo distinto en el filtro y en el clic —que lee un reloj,
+       por ejemplo— metería por aquí un rango que el calendario prohíbe. */
     if (tope && diasEntre(d, h) > tope) {
       setAvisoTope(`«${a.texto}» son ${diasEntre(d, h)} días y el máximo es ${tope}.`);
       return;
@@ -766,10 +819,10 @@ export function RangoFecha({
               ))}
             </div>
 
-            {atajos.length > 0 && (
+            {atajosQueCaben.length > 0 && (
               <div className="fc-atajos">
                 <span className="fc-atajos-tit" id={`${id}-per`}>Periodos</span>
-                {atajos.map((a) => (
+                {atajosQueCaben.map((a) => (
                   <button
                     type="button"
                     key={a.texto}

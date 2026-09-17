@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 16 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.122.0** — R139 y R140: `RangoFecha` se
-comporta por fin como un campo del sistema
+**Versión del sistema:** MMI-DS **v1.123.0** — R143: el chip de identidad pinta
+el color que ya tenía, y nace el candado que lo vio
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -17,8 +17,8 @@ comporta por fin como un campo del sistema
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
-publicados (`verificar-entrega`), la hoja que viaja, **diecinueve pasos de
-verificación** —los que corre `publicar.mjs`—, **940 pruebas en 51 archivos**,
+publicados (`verificar-entrega`), la hoja que viaja, **veinte pasos de
+verificación** —los que corre `publicar.mjs`—, **949 pruebas en 51 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -57,14 +57,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
 | Componentes de React | ✅ | **940 pruebas en 51 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · **1010 reglas de 1525** · **731 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
+| La hoja que viaja | ✅ | `extraer.mjs` · **1014 reglas de 1528** · **731 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.122.0.zip` · **60 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.123.0.zip` · **60 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.122.0**, con el salto **desde la v1.19.0**, que es la instalada |
-| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los diecinueve pasos · **173 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.123.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los veinte pasos · **173 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -86,7 +86,87 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.122.0), con detalle
+### Lo de hoy (v1.123.0), con detalle
+
+**R143 · cinco de los diez tonos de `Chip` eran uno solo.** Control
+Administrativos V2.0 lo midió en el navegador: su registro diario clasifica cada
+fila con cinco estados a la vez y solo encontraban **cuatro** tonos que se
+distinguieran. Tenían razón, y era peor de lo que contaban: los cuatro
+`chip-identidad-N` **y** `chip-pend` pintaban el mismo relleno
+—`fondo-encabezado`—, a **0,0** de distancia perceptual.
+
+El origen está escrito en la propia hoja. El arreglo del **R95** pintó el
+*filete* de cada identidad y dejó el relleno común; y la decisión de «no macizo»
+es la **regla 3 del contrato, que es del HORARIO**: allí una rejilla entera de
+cajas decorativas ahoga a un bloque de error. En una columna de estado hay **un
+chip por fila**. Se copió sin volver a pensarla, y así se quedó desde la v1.63.0.
+
+**No entra ningún color nuevo.** `identidad-1..4` con `identidad-texto` es el par
+que el avatar, el punto de leyenda y la portada de la landing ya usaban,
+verificado a **6,05 · 7,42 · 6,47 y 7,53:1**. El chip era el único sitio donde la
+identidad estaba y no se pintaba. Lo preguntó el responsable con estas palabras:
+*«¿se puede usar un color ya definido?, ¿para qué crear otro color?»*. El peor
+par del componente pasa de **0,0 a 3,5**.
+
+### El candado del tono, paso 20 — y lo que de verdad enseña
+
+Los diecinueve anteriores comparan el sistema **consigo mismo**: que las dos
+hojas digan lo mismo, que el catálogo enseñe lo que se entrega, que el orden no
+decida distinto. Los cuatro chips de identidad **pasaban todos**, porque los dos
+lados coincidían perfectamente en pintarlos iguales.
+
+> Una divergencia no es la única forma de estar mal. **También se puede estar mal
+> de forma consistente.**
+
+El de contraste tampoco podía verlo: mide **texto sobre fondo**, y los cuatro lo
+pasaban a 12,03:1 *precisamente por ser el mismo*. La razón de contraste de WCAG
+no responde a la otra pregunta —«¿se distinguen estos dos rellenos entre sí?»—:
+dos colores de la misma claridad y distinto tono dan 1,00:1 y esa vara no sabe
+decir si uno es gris y el otro magenta.
+
+Se mide en **CIEDE2000**, cuyo umbral de percepción está publicado en **2,3**. Y
+tres decisiones que lo hacen durar:
+
+- **Los tonos se leen del propio componente** —el mapa `CLASE` de `Chip.tsx`—,
+  así que uno nuevo entra vigilado el día que nace.
+- Se resuelve la cascada en **las dos hojas** y se mide en **los dos modos**.
+- **Vuelve a calcular todas las cifras que el catálogo publica.** La página del
+  chip publica la distancia de cada tono a su vecino más cercano; ninguna está
+  escrita a mano. Una cifra publicada que nadie recalcula envejece sola, que es
+  lo que le pasó a «34 pruebas» y a «los 17 candados».
+
+Visto en rojo con tres mutaciones: devolver un chip al gris, mentir sobre el
+token de un relleno, y añadir un tono que el catálogo no publica.
+
+### Añadido al R139 · un periodo que no cabe en el tope no se pinta
+
+Los cuatro periodos por omisión van de un mes a un año, así que con
+`maxDias={7}` los cuatro eran **botones que solo sabían dar un aviso**. Lo
+reportó el responsable **después de quitarlos a mano** en su producto, que es la
+prueba de que sobraban: si hay que quitarlos fuera, es que el componente no los
+tenía que haber puesto. Y en sus palabras, *«cualquiera que use maxDias se va a
+encontrar con lo mismo»*.
+
+**Se esconden, no se apagan**, y es al revés que los días: un día va
+`aria-disabled` porque su disponibilidad **cambia** con el inicio elegido y eso
+hay que explicarlo; un periodo mide siempre lo mismo contra el mismo tope, así
+que no es un control apagado sino uno que en esta pantalla **no existe**. Si no
+queda ninguno, se va también el rótulo «Periodos».
+
+Entra **`atajosDeDias`**, exportada, para que cada producto con tope no reescriba
+la misma aritmética de fechas — que es lo que §4bis llama reconstruir. Y la
+guarda de `aplicarAtajo` se queda como **defensa** del `rango` ajeno, declarada
+como tal y con una prueba que la alcanza de verdad.
+
+### R141 · el tope de 172 px se levanta en móvil
+
+A 400 px los campos del filtro de fechas se apilan, el control se estira al ancho
+y la flecha de unión desaparece. Se levanta **el tope del control** y no solo el
+del contenedor —que era el arreglo a medias— y el campo de fecha suelto entra por
+`:not(.fc-campo)`. Resuelto a cuatro anchos, con tres mutaciones en rojo; la
+última necesitó mutar **las dos** apariciones de la regla.
+
+### Lo de la v1.122.0, con detalle
 
 **R139 y R140 · `RangoFecha` se comporta por fin como un campo.** Tres huecos
 anotados del **mismo** componente por Control Administrativos V2.0, y los tres

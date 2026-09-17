@@ -9,7 +9,7 @@ import { render, screen, within, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { useState } from 'react';
-import { RangoFecha } from '../src/RangoFecha';
+import { RangoFecha, ATAJOS_POR_OMISION, atajosDeDias } from '../src/RangoFecha';
 
 // Fecha fija: un calendario que dependa del reloj da pruebas que fallan solas
 // un martes cualquiera.
@@ -253,13 +253,29 @@ describe('[17] R139 · el rango MANDA, no siembra', () => {
   it('[19] un ATAJO que pasa del tope NO entra, y se dice cuál', () => {
     /* El tope vivía solo en `elegir()`, así que el camino más rápido de la
        interfaz —pulsar «Este año» con un tope de siete días— lo saltaba entero
-       y metía un rango que el calendario no habría dejado construir a mano. */
+       y metía un rango que el calendario no habría dejado construir a mano.
+       Desde el añadido al R139 los que no caben no se pintan, así que por la
+       interfaz esto ya no se alcanza: la guarda defiende del `rango` AJENO que
+       no devuelve siempre lo mismo. Se prueba con uno así —el primer cálculo
+       cabe, el del clic no— porque una guarda que ninguna prueba puede alcanzar
+       es una guarda que nadie sabe si sigue ahí. */
     const alCambiar = vi.fn();
+    const estado = { crecido: false };
+    const tramposo = {
+      texto: 'Este año',
+      rango: () => (estado.crecido
+        ? { desde: new Date(2026, 0, 1), hasta: new Date(2026, 11, 31) }
+        : { desde: new Date(2026, 2, 10), hasta: new Date(2026, 2, 15) }),
+    };
     const { container } = render(
       <RangoFecha titulo="Rango de fechas" hoy={HOY} maxDias={7} desde={null} hasta={null}
-        onCambio={alCambiar} />
+        atajos={[tramposo]} onCambio={alCambiar} />
     );
     fireEvent.click(container.querySelectorAll('.fc-campo')[0]);
+    // Seis días: el filtro lo deja pasar y el botón está ahí.
+    expect(screen.getByRole('button', { name: 'Este año' })).toBeTruthy();
+    // Y ahora crece SIN que nada vuelva a pintarse. Es el único hueco que queda.
+    estado.crecido = true;
     fireEvent.click(screen.getByRole('button', { name: 'Este año' }));
     expect(alCambiar, 'el atajo saltó el tope').not.toHaveBeenCalled();
     expect(container.querySelector('.cg-error')!.textContent, 'no dice qué periodo ni por qué')
@@ -503,5 +519,71 @@ describe('[20] y [21] R139 · el error y el apagado, como en cualquier campo', (
     for (const d of disparadores(container)) {
       expect(d.hasAttribute('disabled'), 'con aria-disabled seguiría enviándose').toBe(true);
     }
+  });
+});
+
+/**
+ * AÑADIDO AL R139 · los periodos que no caben en el tope.
+ *
+ * Lo reportó el responsable después de quitarlos a mano en su producto: con
+ * `maxDias={7}`, los cuatro periodos por omisión —de un mes a un año— eran
+ * cuatro botones que solo sabían dar un aviso. «Cualquiera que use maxDias se
+ * va a encontrar con lo mismo.»
+ */
+describe('[22] añadido al R139 · un periodo que no cabe en el tope no se pinta', () => {
+  const props = { titulo: 'Rango de fechas', hoy: HOY };
+  const disparadores = (c: HTMLElement) => [...c.querySelectorAll('.fc-campo')] as HTMLElement[];
+  const periodos = (c: HTMLElement) => [...c.querySelectorAll('.fc-atajo')].map((b) => b.textContent);
+
+  it('[22] SIN tope siguen estando los cuatro, intactos', () => {
+    const { container } = render(<RangoFecha {...props} />);
+    fireEvent.click(disparadores(container)[0]);
+    expect(periodos(container)).toEqual(ATAJOS_POR_OMISION.map((a) => a.texto));
+  });
+
+  it('[22] con `maxDias={7}` no queda ninguno de los cuatro, y el panel desaparece', () => {
+    /* Los cuatro van de un mes a un año: ninguno cabe en siete días. Y si no
+       queda ninguno, lo que se va es el rótulo «Periodos» también — una sección
+       con título y sin contenido es peor que no tenerla. */
+    const { container } = render(<RangoFecha {...props} maxDias={7} />);
+    fireEvent.click(disparadores(container)[0]);
+    expect(periodos(container)).toEqual([]);
+    expect(container.querySelector('.fc-atajos')).toBeNull();
+  });
+
+  it('[22] con un tope holgado se pintan los que caben y solo esos', () => {
+    /* 31 días deja pasar «Este mes» —marzo tiene 31— y «Mes pasado» —febrero,
+       28—, y deja fuera los dos meses y el año. El tope no es todo o nada. */
+    const { container } = render(<RangoFecha {...props} maxDias={31} />);
+    fireEvent.click(disparadores(container)[0]);
+    expect(periodos(container)).toEqual(['Este mes', 'Mes pasado']);
+  });
+
+  it('[22] `atajosDeDias` construye los que sí caben, y cuenta inclusive', () => {
+    const { container } = render(
+      <RangoFecha {...props} maxDias={7} atajos={atajosDeDias(1, 3, 7)} />
+    );
+    fireEvent.click(disparadores(container)[0]);
+    expect(periodos(container)).toEqual(['Hoy', 'Últimos 3 días', 'Últimos 7 días']);
+  });
+
+  it('[22] y uno de ocho días NO se pinta con tope de siete: el límite es el límite', () => {
+    /* La frontera es donde se cuelan los errores de uno. `atajosDeDias(8)` son
+       ocho días contados inclusive y el tope son siete: fuera. */
+    const { container } = render(
+      <RangoFecha {...props} maxDias={7} atajos={atajosDeDias(7, 8)} />
+    );
+    fireEvent.click(disparadores(container)[0]);
+    expect(periodos(container)).toEqual(['Últimos 7 días']);
+  });
+
+  it('[22] el que se pinta se aplica de verdad, y deja el rango dentro del tope', () => {
+    const alCambiar = vi.fn();
+    const { container } = render(
+      <RangoFecha {...props} maxDias={7} atajos={atajosDeDias(7)} onCambio={alCambiar} />
+    );
+    fireEvent.click(disparadores(container)[0]);
+    fireEvent.click(container.querySelector('.fc-atajo') as HTMLElement);
+    expect(alCambiar).toHaveBeenCalledWith({ desde: '2026-03-09', hasta: '2026-03-15' });
   });
 });

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.122.0";
+export const VERSION = "1.123.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,65 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.123.0', fecha: '2026-09-16',
+    que: 'R143, R141 y el anadido al R139 — el chip pinta el color que ya tenia, y nace el candado que lo vio',
+    porque:
+      'R143 · CINCO DE LOS DIEZ TONOS DE CHIP ERAN UNO SOLO. Control Administrativos V2.0 lo midio '
+      + 'en el navegador: su registro diario clasifica cada fila con cinco estados a la vez y solo '
+      + 'encontraban cuatro tonos que se distinguieran. Tenian razon, y era peor de lo que contaban: '
+      + 'los cuatro `chip-identidad-N` y `chip-pend` pintaban EL MISMO relleno —`fondo-encabezado`—, '
+      + 'a CERO de distancia perceptual. El arreglo del R95 habia pintado el FILETE de cada '
+      + 'identidad y dejado el relleno comun, y la decision de «no macizo» es de la regla 3, que es '
+      + 'DEL HORARIO: alli una rejilla entera de cajas decorativas ahoga a un bloque de error; en '
+      + 'una columna de estado hay UN chip por fila. Se copio sin volver a pensarla. '
+      + 'NO ENTRA NINGUN COLOR NUEVO: `identidad-1..4` con `identidad-texto` es el par que el avatar, '
+      + 'el punto de leyenda y la portada de la landing ya usaban, verificado a 6,05 · 7,42 · 6,47 y '
+      + '7,53:1. El chip era el unico sitio donde la identidad estaba y no se pintaba. Lo pregunto el '
+      + 'responsable con estas palabras: «se puede usar un color ya definido?, para que crear otro '
+      + 'color». El peor par pasa de 0,0 a 3,5. '
+      + 'Y NACE EL CANDADO DEL TONO, que es la leccion de verdad. Los diecinueve anteriores comparan '
+      + 'el sistema CONSIGO MISMO —que las dos hojas digan lo mismo, que el catalogo ensene lo que se '
+      + 'entrega, que el orden no decida distinto— y los cuatro chips pasaban TODOS, porque los dos '
+      + 'lados coincidian perfectamente en pintarlos iguales. Una divergencia no es la unica forma de '
+      + 'estar mal: TAMBIEN SE PUEDE ESTAR MAL DE FORMA CONSISTENTE. El de contraste tampoco podia '
+      + 'verlo: mide TEXTO SOBRE FONDO y los cuatro lo pasaban a 12,03:1 precisamente por ser el '
+      + 'mismo. Se mide en CIEDE2000, cuyo umbral de percepcion esta publicado en 2,3; los tonos se '
+      + 'leen DEL PROPIO COMPONENTE para que uno nuevo entre vigilado el dia que nace, y el candado '
+      + 'vuelve a calcular sobre el HTML entregado TODAS las cifras que el catalogo publica — una '
+      + 'cifra publicada que nadie recalcula envejece sola, que es lo que le paso a «34 pruebas» y a '
+      + '«los 17 candados». Visto en rojo con tres mutaciones. '
+      + 'ANADIDO AL R139 · UN PERIODO QUE NO CABE EN EL TOPE NO SE PINTA. Los cuatro de omision van '
+      + 'de un mes a un ano, asi que con `maxDias={7}` los cuatro eran botones que solo sabian dar un '
+      + 'aviso. Lo reporto el responsable DESPUES DE QUITARLOS A MANO en su producto, que es la '
+      + 'prueba de que sobraban: si hay que quitarlos fuera, es que el componente no los tenia que '
+      + 'haber puesto. Y en sus palabras, «cualquiera que use maxDias se va a encontrar con lo '
+      + 'mismo». Se ESCONDEN y no se apagan, al reves que los dias: un dia va `aria-disabled` porque '
+      + 'su disponibilidad CAMBIA con el inicio elegido y eso hay que explicarlo; un periodo mide '
+      + 'siempre lo mismo contra el mismo tope. Si no queda ninguno se va tambien el rotulo. Entra '
+      + '`atajosDeDias`, exportada, para que cada producto con tope no reescriba la misma aritmetica '
+      + 'de fechas — que es lo que la politica de creacion llama reconstruir. '
+      + 'R141 · EL TOPE DE 172 px SE LEVANTA EN MOVIL. A 400 px los campos del filtro de fechas se '
+      + 'apilan, el control se estira al ancho y la flecha de union desaparece. Se levanta EL TOPE '
+      + 'DEL CONTROL y no solo el del contenedor, que era el arreglo a medias, y el campo de fecha '
+      + 'suelto entra por `:not(.fc-campo)`. Resuelto a cuatro anchos y con tres mutaciones en rojo.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'EL CHIP DE IDENTIDAD DEJA DE SER GRIS. Pasa de `fondo-encabezado` con `texto-principal` a '
+      + '`identidad-N` con `identidad-texto`: fondo macizo y texto blanco. La CAJA NO CAMBIA DE '
+      + 'TAMANO —el filete se queda del mismo color y las medidas son las de siempre—, pero pesa mas '
+      + 'en la pantalla que un chip de estado, y ese es el precio de que se distinga. Si su producto '
+      + 'los mezcla en la misma columna con `exito`/`aviso`/`error`/`info` esperando que pesen igual, '
+      + 'ahora no pesan igual. El del HORARIO no cambia: alli el color sigue en el filete, a 6 px.',
+      'CON `maxDias`, LOS PERIODOS QUE NO CABEN DESAPARECEN DEL PANEL. Quien pase `maxDias` y no '
+      + 'toque `atajos` se queda SIN panel de periodos, porque los cuatro de omision son imposibles '
+      + 'bajo cualquier tope corto. Es lo que ya estaban haciendo a mano. Para recuperarlo: '
+      + '`atajos={atajosDeDias(1, 3, 7)}`. Sin `maxDias` no cambia absolutamente nada.',
+      'A 640 px Y POR DEBAJO, EL FILTRO DE FECHAS SE APILA Y OCUPA EL ANCHO. Si su hoja apretaba '
+      + '`.fc-campos` o `.fc-campo` con anchos propios para movil, ahora compite con una regla del '
+      + 'sistema que antes no existia.',
+    ],
+  },
   {
     v: '1.122.0', fecha: '2026-09-16',
     que: 'R139 y R140 — RangoFecha se comporta por fin como un campo del sistema',

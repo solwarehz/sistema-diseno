@@ -110,6 +110,7 @@ const CANDADOS = [
   'sistema/cascaron/generar-cascaron.mjs',
   'sistema/componentes/extraer.mjs',
   'sistema/candado/verificar-contraste.mjs',
+  'sistema/candado/verificar-tono.mjs',
   'sistema/candado/verificar-color.mjs',
   'sistema/candado/auditar-cascaron.mjs',
   'sistema/candado/probar-candado.mjs',

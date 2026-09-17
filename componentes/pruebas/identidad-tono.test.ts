@@ -6,9 +6,18 @@
  * usar `error` como decorativo gasta el rojo.
  *
  * Lo que esta prueba fija no es que las clases existan —eso es fácil— sino la
- * FORMA que se decidió mirándolo: el color va en el filete y a 6 px, no en el
- * fondo. Se probó el fondo macizo, cumple el contraste, y aun así se descartó
- * porque cuatro cajas decorativas pesaban más que un bloque de error.
+ * FORMA que se decidió mirándolo, Y DÓNDE VALE ESA DECISIÓN.
+ *
+ * En el HORARIO el color va en el filete y a 6 px, no en el fondo. Se probó el
+ * fondo macizo, cumple el contraste, y aun así se descartó porque cuatro cajas
+ * decorativas pesaban más que un bloque de error dentro de una rejilla entera.
+ *
+ * En el CHIP se copió esa decisión sin volver a pensarla, y ahí estaba el
+ * defecto que cerró el R143: los cuatro tonos pintaban `fondo-encabezado`, el
+ * mismo relleno que `chip-pend`, así que cinco de los diez tonos publicados
+ * eran uno solo. Una columna de estado tiene UN chip por fila: no hay rejilla
+ * que ahogar, y lo que se pierde por no pintar es la única razón de que el tono
+ * exista.
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -48,10 +57,54 @@ describe('Identidad — R88 · agrupa, no informa', () => {
       const regla = css.match(new RegExp(`\\.chip\\.chip-identidad-${n}\\{[^}]*\\}`))?.[0] ?? '';
       expect(regla, `falta .chip.chip-identidad-${n}`).not.toBe('');
       expect(regla).toMatch(new RegExp(`border-left-color:\\s*var\\(--identidad-${n}\\)`));
-      expect(regla).not.toMatch(/background:\s*var\(--identidad-/);
     }
     // Y con una sola clase no puede quedar ninguna, que era la forma vencida.
     expect(css).not.toMatch(/(^|\n)\.chip-identidad-\d\{/);
+  });
+
+  /* R143 · EL CHIP SÍ VA MACIZO, Y EL HORARIO NO. Hasta la v1.123.0 esta misma
+     prueba exigía lo contrario —`not.toMatch(background: var(--identidad-`)— y
+     ahí estaba el defecto: la decisión de la regla 3 es del HORARIO, donde
+     cuatro cajas decorativas pesan más que un bloque de error en una rejilla
+     entera; se copió al chip sin volver a pensarla y dejó los cuatro tonos
+     pintando `fondo-encabezado`, el MISMO relleno que `chip-pend`.
+     Cinco de los diez tonos publicados eran uno. Lo midió Control
+     Administrativos V2.0 en el navegador y llevaban razón.
+     En una columna de estado hay UN chip por fila: no hay rejilla que ahogar. */
+  it('R143 · el chip de identidad pinta su color, con el texto que le corresponde', () => {
+    for (const n of [1, 2, 3, 4]) {
+      const regla = css.match(new RegExp(`\\.chip\\.chip-identidad-${n}\\{[^}]*\\}`))?.[0] ?? '';
+      expect(regla).toMatch(new RegExp(`background:\\s*var\\(--identidad-${n}\\)`));
+      expect(regla).toMatch(/color:\s*var\(--identidad-texto\)/);
+    }
+  });
+
+  /* Y el horario NO cambia: la regla 3 sigue siendo suya. Sin esta prueba,
+     «macizo» se leería como una decisión del sistema y no del componente. */
+  it('R143 · el bloque del horario sigue SIN fondo de identidad', () => {
+    const reglas = css.match(/\.hor-b\.hor-identidad-\d[^{]*\{[^}]*\}/g) ?? [];
+    for (const regla of reglas) expect(regla).not.toMatch(/background[^;}]*var\(--identidad-/);
+  });
+
+  /* LO QUE DE VERDAD SE PROMETE no es «cada uno tiene su regla»: es que los diez
+     tonos se distingan. Se comprueba por el TOKEN, que es lo que la hoja
+     declara; la distancia perceptual la mide `verificar-tono`, que es el sitio
+     donde vive la fórmula. Dos tonos con el mismo token son el mismo tono. */
+  it('R143 · ningún par de tonos del chip comparte relleno', () => {
+    /* El selector puede llevar compañía —`.chip.chip-exito, .msj.msj-exito`—,
+       así que se admite lo que venga entre el tono y la llave. Sin eso solo se
+       leían seis de los diez y la prueba pasaba mirando a medias. */
+    const tonos = [...css.matchAll(/\.chip\.(chip-[a-z0-9-]+)[^{]*\{([^}]*)\}/g)]
+      .map((m) => [m[1], /background:\s*var\(--([a-z0-9-]+)\)/.exec(m[2])?.[1]] as const)
+      .filter(([, token]) => token);
+    expect(new Set(tonos.map(([t]) => t)).size).toBeGreaterThanOrEqual(10);
+    /* El extractor emite los cuatro semánticos DOS veces —lo cuenta el
+       comentario del R95 en la hoja—, así que se agrupa por conjunto: lo que
+       se busca es un token con dos tonos DISTINTOS, no una regla repetida. */
+    const porToken = new Map<string, Set<string>>();
+    for (const [tono, token] of tonos) porToken.set(token!, (porToken.get(token!) ?? new Set()).add(tono));
+    const repetidos = [...porToken.entries()].filter(([, ts]) => ts.size > 1);
+    expect(repetidos.map(([t, ts]) => `${t}: ${[...ts].join(', ')}`)).toEqual([]);
   });
 
   /* Los semánticos se salvaban por accidente —el extractor emite `.chip-exito`

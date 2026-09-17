@@ -19,12 +19,14 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.122.0** — **R139 y R140: `RangoFecha` se comporta por fin
-como un campo.** Tres huecos anotados del mismo componente y los tres eran el
-mismo: no estaba controlado —`useState(desdeProp)` leía la prop una vez—, no
-tenía `error` y no tenía forma de apagarse. Ahora el rango **manda**, `maxDias`
-**impide** en vez de avisar, y `deshabilitado` saca el control del tabulador,
-que es lo que el rodeo con CSS no hacía.
+**Estado actual: v1.123.0** — **R141 y R143.** El chip de identidad **pinta el
+color que tenía y no pintaba**: los cuatro salían en `fondo-encabezado`, el mismo
+relleno que `chip-pend`, así que **cinco de los diez tonos publicados eran uno
+solo** —0,0 de distancia perceptual, con los diecinueve candados en verde—. Y
+nace el **candado del tono**, que es la lección: los demás comparan el sistema
+consigo mismo, y aquí los dos lados coincidían perfectamente en estar mal.
+**También se puede estar mal de forma consistente.** El R141 levanta en móvil el
+tope de 172 px del filtro de fechas.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
@@ -214,7 +216,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
 - **`main` sí se actualiza en este proyecto** —y solo en este—, pero **únicamente
   cuando está verificado y sin errores**. La condición no es una formalidad: es
   lo que hace que la regla sea segura, porque `main` es de donde instala el área
-  de sistemas. Antes de subir, los **diecinueve** pasos **en verde** y las pruebas
+  de sistemas. Antes de subir, los **veinte** pasos **en verde** y las pruebas
   pasando. **Son exactamente los de `sistema/paquete/publicar.mjs`, y en su mismo orden**, y esta lista
   decía «dieciséis» y **le faltaba `generar-cascaron.mjs`** hasta la v1.107.0: el
   catálogo se quedaba sin regenerar y los candados que lo leen medían la versión
@@ -226,6 +228,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
   node sistema/cascaron/generar-cascaron.mjs  # el catálogo, ANTES de lo que lo lee
   node sistema/componentes/extraer.mjs        # incluye el candado de huérfanas Y los @keyframes
   node sistema/candado/verificar-contraste.mjs
+  node sistema/candado/verificar-tono.mjs     # y que dos tonos DISTINTOS se vean distintos
   node sistema/candado/verificar-color.mjs
   node sistema/candado/auditar-cascaron.mjs
   node sistema/candado/probar-candado.mjs

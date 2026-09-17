@@ -27,6 +27,7 @@ import { fileURLToPath } from 'node:url';
 import { VERSION, primitivas, categoricas, autorizados, restringidos, semanticos, correcciones, CAMBIOS } from '../tokens/fuente.mjs';
 import { empaquetar, NOMBRE_ZIP } from '../paquete/empaquetar.mjs';
 import { ICONOS, ic, icono, TAMANOS } from '../iconos/iconos.mjs';
+import { de2000, JND } from '../tokens/distancia.mjs';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 const RAIZ = join(AQUI, '..', '..');
@@ -2541,6 +2542,51 @@ const ESTADOS_CHIP = [
 
 const chip = (clase, texto) => `<span class="chip chip-${clase}">${texto}</span>`;
 
+/**
+ * R143 · LOS DIEZ RELLENOS, PARA PODER MEDIRLOS.
+ *
+ * El catálogo llevaba desde el R88 diciendo que «una paleta larga de colores
+ * decorativos acaba con dos que nadie distingue» y publicando cinco tonos que
+ * pintaban EXACTAMENTE el mismo relleno. Decirlo no era comprobarlo.
+ *
+ * Los números de la tabla de abajo no se escriben: se calculan aquí con la
+ * misma fórmula que usa `verificar-tono`, y ese candado los vuelve a medir
+ * sobre el HTML publicado. Si un día la hoja cambia un relleno y esta lista no,
+ * el candado sale en rojo — que es la única forma de que una cifra publicada no
+ * envejezca sola.
+ */
+const RELLENO_CHIP = [
+  ['chip-exito', 'exito-fondo', 'Activo'],
+  ['chip-aviso', 'aviso-fondo', 'Parcial'],
+  ['chip-error', 'error-fondo', 'Deuda'],
+  ['chip-info', 'info-fondo', 'En trámite'],
+  ['chip-pend', 'fondo-encabezado', 'Pendiente'],
+  ['chip-inact', 'borde', 'Inactivo'],
+  ['chip-identidad-1', 'identidad-1', 'Sede Centro'],
+  ['chip-identidad-2', 'identidad-2', 'Sede Norte'],
+  ['chip-identidad-3', 'identidad-3', 'Sede Sur'],
+  ['chip-identidad-4', 'identidad-4', 'Sede Este'],
+];
+
+/** El tono más cercano a éste, y a cuánto, en un modo. */
+const vecinoMasCercano = (tono, token, modo) =>
+  RELLENO_CHIP.filter(([t]) => t !== tono)
+    .map(([t, k]) => [t, de2000(semanticos[token][modo], semanticos[k][modo])])
+    .sort((a, b) => a[1] - b[1])[0];
+
+const filaDistancia = ([tono, token, rotulo]) => {
+  const [vc, dc] = vecinoMasCercano(tono, token, 'claro');
+  const [vo, do_] = vecinoMasCercano(tono, token, 'oscuro');
+  const dato = (v, d) => `.${v} <b>${d.toFixed(1).replace('.', ',')}</b>`;
+  return `<tr data-tono="${tono}" data-claro-vecino="${vc}" data-claro-de="${dc.toFixed(2)}"
+    data-oscuro-vecino="${vo}" data-oscuro-de="${do_.toFixed(2)}">
+    <td><span class="chip ${tono}">${rotulo}</span></td>
+    <td class="mono">${token}</td>
+    <td class="num mono">${dato(vc, dc)}</td>
+    <td class="num mono">${dato(vo, do_)}</td>
+  </tr>`;
+};
+
 const pagChip = `
 <p class="pag-intro">Una etiqueta que dice <strong>en qué estado está una fila</strong>. No se
 pulsa, no se cierra y no navega: solo informa. Si hace alguna de esas tres cosas, no es un
@@ -2568,7 +2614,8 @@ chip de estado.</p>
 <h3 class="sub-seccion">Y cuatro que no significan nada</h3>
 <p class="seccion-sub">Los seis de arriba <strong>dicen algo</strong>. Estos cuatro son los del avatar y
 <strong>no dicen nada</strong>: sirven para <strong>agrupar</strong> —una sede, un turno, un responsable— y
-nunca para informar.</p>
+nunca para informar. Cuando hacen falta <strong>cinco categorías a la vez</strong> y la escala de estado
+solo da cuatro, la quinta sale de aquí: <strong>son categorías, no grados</strong>.</p>
 <div class="bloque">
   <p class="pag-intro" style="margin-top:0">Como leyenda de una rejilla, que es para lo que nacieron:</p>
   <div class="chip-sup-fila" style="align-items:center;gap:12px">
@@ -2577,7 +2624,8 @@ nunca para informar.</p>
     <span><span class="chip chip-punto chip-identidad-3"></span> Sede Sur</span>
     <span><span class="chip chip-punto chip-identidad-4"></span> Sede Este</span>
   </div>
-  <p class="pag-intro">Y como ficha con texto, cuando hace falta nombrar el grupo:</p>
+  <p class="pag-intro">Y como ficha con texto, cuando hace falta nombrar el grupo. Va
+  <strong>a color pleno</strong> —el mismo par que el avatar—, no en gris con un filete de color:</p>
   <div class="chip-sup-fila">
     <span class="chip chip-identidad-1">Sede Centro</span>
     <span class="chip chip-identidad-2">Sede Norte</span>
@@ -2592,6 +2640,31 @@ nunca para informar.</p>
     <tr><td class="num">3</td><td><strong>No se ordena ni se criba por ellos.</strong> No son un valor: son ayuda de reconocimiento.</td></tr>
   </tbody>
 </table>
+
+<h3 class="sub-seccion">Diez nombres son diez tonos — y hasta la v1.123.0 no lo eran</h3>
+<p class="seccion-sub">Lo midió Control Administrativos V2.0 en el navegador y tenían razón:
+<strong>cinco de los diez tonos pintaban el mismo relleno</strong>. Los cuatro de identidad y
+«Pendiente» salían todos en <code>fondo-encabezado</code>, y solo cambiaba un filete de 3 px.</p>
+<div class="aviso">
+  La razón de contraste de WCAG <strong>no responde a esta pregunta</strong>. Mide texto sobre fondo;
+  dos rellenos de la misma claridad y distinto tono dan <strong>1,00:1</strong> y esa vara no sabe
+  decir si uno es gris y el otro magenta.
+  <br><br>
+  Esto se mide en <strong>CIEDE2000</strong>, cuyo umbral de percepción está publicado en
+  <strong>${JND.toFixed(1).replace('.', ',')}</strong>: por debajo, dos colores puestos uno al lado del
+  otro <strong>no se distinguen</strong>. Los cinco de arriba estaban a <strong>0,0</strong>.
+</div>
+<div class="bloque">
+  <table class="tabla-simple">
+    <thead><tr><th>Tono</th><th>Relleno</th><th class="num">Más cercano en claro</th><th class="num">Más cercano en oscuro</th></tr></thead>
+    <tbody>
+      ${RELLENO_CHIP.map(filaDistancia).join('')}
+    </tbody>
+  </table>
+</div>
+<p class="pag-intro">Ninguna cifra de esta tabla está escrita a mano: se calculan al generar la
+página y <strong><code>verificar-tono</code> las vuelve a medir sobre este mismo HTML</strong>. Una
+cifra publicada que nadie recalcula envejece sola.</p>
 
 <h3 class="sub-seccion">El filete no es adorno: es lo que dibuja el chip</h3>
 <div class="aviso">
@@ -4137,6 +4210,38 @@ del teclado y quien navega con tabulador se queda sin saber por qu&eacute; no re
     </div>
   </div>
 </div>
+<p class="seccion-sub">Y el <strong>panel de periodos se queda con los que caben</strong>. Los
+cuatro de omisi&oacute;n van de un mes a un a&ntilde;o, as&iacute; que con
+<code>maxDias={7}</code> <strong>no queda ninguno</strong> y el panel entero desaparece —
+r&oacute;tulo incluido—. Se esconden y no se apagan: un d&iacute;a va <code>aria-disabled</code>
+porque su disponibilidad <strong>cambia</strong> con el inicio elegido y eso hay que explicarlo; un
+periodo mide siempre lo mismo contra el mismo tope, as&iacute; que no es un control apagado sino uno
+que en esta pantalla <strong>no existe</strong>.</p>
+<div class="bloque">
+  <div class="enl-comp">
+    <div class="enl-caja mal">
+      <div class="fc-atajos">
+        <span class="fc-atajos-tit">Periodos</span>
+        <button type="button" class="fc-atajo">Este mes</button>
+        <button type="button" class="fc-atajo">Mes pasado</button>
+        <button type="button" class="fc-atajo">&Uacute;ltimos 2 meses</button>
+        <button type="button" class="fc-atajo">Este a&ntilde;o</button>
+      </div>
+      <span class="mal-et">Hasta la v1.123.0, con <code>maxDias={7}</code>: cuatro botones que
+      solo sab&iacute;an dar un aviso. Hubo que quitarlos a mano en el producto</span>
+    </div>
+    <div class="enl-caja bien">
+      <div class="fc-atajos">
+        <span class="fc-atajos-tit">Periodos</span>
+        <button type="button" class="fc-atajo">Hoy</button>
+        <button type="button" class="fc-atajo">&Uacute;ltimos 3 d&iacute;as</button>
+        <button type="button" class="fc-atajo">&Uacute;ltimos 7 d&iacute;as</button>
+      </div>
+      <span class="bien-et">Con <code>atajos={atajosDeDias(1, 3, 7)}</code>: los que caben, y la
+      aritm&eacute;tica de fechas no la escribe cada producto otra vez</span>
+    </div>
+  </div>
+</div>
 <table class="tabla-simple" style="margin-top:16px">
   <thead><tr><th>Detalle</th><th>Por qué</th></tr></thead>
   <tbody>
@@ -4153,7 +4258,7 @@ del teclado y quien navega con tabulador se queda sin saber por qu&eacute; no re
   <tbody>
     <tr><td class="num">1</td><td><strong>«Hasta» no puede ser anterior a «Desde».</strong> Si se elige una fecha menor, se ajusta «Desde» en vez de rechazar: quien lo hizo probablemente quería mover el periodo entero.</td></tr>
     <tr><td class="num">2</td><td>Siempre <strong>se muestra cuántos días</strong> abarca. «Del 1 al 31 de marzo» no dice si son 30 o 31.</td></tr>
-    <tr><td class="num">3</td><td><strong>Atajos para lo que se pide siempre:</strong> este mes, mes pasado, este año. Ahorra dos calendarios cada vez.</td></tr>
+    <tr><td class="num">3</td><td><strong>Atajos para lo que se pide siempre:</strong> este mes, mes pasado, este año. Ahorra dos calendarios cada vez. Con <code>maxDias</code>, <strong>los que no caben no se pintan</strong>: un atajo imposible no es un atajo.</td></tr>
     <tr><td class="num">4</td><td>Un rango sin fin es válido si el periodo sigue abierto. Se dice: «Desde el 01/03/2026, en curso».</td></tr>
   </tbody>
 </table>
@@ -4183,7 +4288,7 @@ ${verCodigo(
   // Y lo irónico es lo util: el catalogo llevaba versiones prometiendo un
   // \`valor\` CONTROLADO que el componente no daba. El R139 no anade API nueva
   // — cierra la que esta pagina ya habia publicado.
-  `import { RangoFecha } from '@ae/sistema';
+  `import { RangoFecha, atajosDeDias } from '@ae/sistema';
 
 // Sin \`desde\`/\`hasta\` se gobierna solo.
 <RangoFecha titulo="Rango de fechas" />
@@ -4197,6 +4302,7 @@ const [r, setR] = useState({ desde: null, hasta: null });
   hasta={r.hasta}
   onCambio={setR}
   maxDias={7}                  // el calendario IMPIDE pasar de ahi
+  atajos={atajosDeDias(1, 3, 7)}   // con tope, los de meses no caben y no se pintan
   error={sinSede ? 'Seleccione sede' : undefined}
   deshabilitado={sinSede}      // sale del tabulador, no solo se ve apagado
   primerDia={1}                // lunes
@@ -9553,6 +9659,37 @@ code { font-family: 'IBM Plex Mono', monospace; }
 /* Fecha */
 .fc-campos { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 .fc-campos .cg { width: 172px; flex: none; }
+
+/* ── R141 · EL TOPE DE 172 px SE LEVANTA EN EL TELEFONO ───────────────────
+   Lo reporto Control Administrativos V2.0 midiendo en el navegador, y es EL
+   MISMO FALLO QUE EL R40 en otro componente: un max-width sin condicion. En
+   escritorio los 172 px son justo lo que se quiere; por debajo de 640 los dos
+   campos se envuelven a 172 cada uno, con la flecha del medio colgando al lado
+   del primero y MEDIA PANTALLA VACIA a la derecha.
+
+   Y el detalle que cuesta encontrar, que ellos midieron: ENSANCHAR EL
+   CONTENEDOR NO BASTA. A 400 px de ventana, el .cg levantado daba 368 px y el
+   button.fc-campo de dentro seguia en 172. EL TOPE ESTA EN EL CONTROL, no en
+   el contenedor, asi que hay que levantar los dos — y de paso el del campo de
+   fecha suelto, que es la misma linea y por el que arrastraban un !important
+   desde el R40.
+
+   La flecha se retira: apunta a la derecha y une dos cosas que apiladas ya
+   estan una debajo de otra. 640 px no es una banda nueva: el sistema ya la usa
+   en otras cuatro reglas. */
+@media (max-width: 640px) {
+  .fc-campos { flex-direction: column; align-items: stretch; }
+  .fc-campos .cg { width: 100%; flex: 1 1 auto; }
+  /* CON ESPECIFICIDAD SUFICIENTE, no confiando en el orden. La regla base es
+     input[type=date].campo, .fc-campo —(0,2,1)— y el extractor REAGRUPA la
+     hoja por componente, asi que un empate lo decide quien quede el ultimo y
+     eso cambia entre el catalogo y lo que viaja. Es el defecto que caza
+     verificar-empate, y aqui se evita de entrada. El :not(.fc-campo) ademas
+     dice lo que es: el campo de fecha SUELTO, el del R40. */
+  .fc-campos .cg .fc-campo,
+  input[type='date'].campo:not(.fc-campo) { max-width: none; width: 100%; }
+  .fc-campos .fc-guion { display: none; }
+}
 .fc-guion { color: var(--texto-pista); padding-bottom: 8px; display: grid; place-items: center; }
 .fc-guion .ic { width: 16px; height: 16px; }
 /* Cada campo lleva su icono de calendario. Como son de solo lectura, el icono
@@ -10697,14 +10834,30 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    regla, es tener suerte.
    Se arregla con ESPECIFICIDAD y no con orden —dos clases ganan siempre a una—
    y declarando el lado que de verdad se pinta. Es la leccion de R87 aplicada a
-   nuestro propio codigo. */
-.chip.chip-identidad-1 { background: var(--fondo-encabezado); color: var(--texto-principal);
+   nuestro propio codigo.
+
+   R143 · Y AUN ASI LOS CUATRO SE VEIAN IGUAL. El arreglo del R95 pinto el
+   FILETE de cada identidad y dejo el relleno en fondo-encabezado, que es el
+   mismo para los cuatro. Medido en dE2000 sobre la hoja que viaja: los cuatro
+   identidad-N y el chip pendiente daban CERO entre si —cinco de los diez tonos
+   publicados pintaban el MISMO fondo—. Un componente cuyo unico trabajo es
+   distinguir no puede tener cinco tonos que no se distinguen.
+   Lo reporto Control Administrativos V2.0 midiendo en el navegador: necesitan
+   cinco categorias a la vez en la misma fila y solo encontraban cuatro.
+   El arreglo NO ANADE NINGUN COLOR: identidad-1..4 con identidad-texto es el
+   par que el avatar, el punto de leyenda y la portada de la landing ya usaban
+   —verificado a 6,05 · 7,42 · 6,47 y 7,53:1—. El chip era el unico sitio donde
+   la identidad estaba y no se pintaba. El filete se queda del mismo color: la
+   caja no cambia de tamano, solo deja de ser gris.
+   El peor par pasa de 0,0 a 3,5 de dE2000, y de ahi sale el suelo que vigila
+   verificar-tono. */
+.chip.chip-identidad-1 { background: var(--identidad-1); color: var(--identidad-texto);
   border-left-color: var(--identidad-1); }
-.chip.chip-identidad-2 { background: var(--fondo-encabezado); color: var(--texto-principal);
+.chip.chip-identidad-2 { background: var(--identidad-2); color: var(--identidad-texto);
   border-left-color: var(--identidad-2); }
-.chip.chip-identidad-3 { background: var(--fondo-encabezado); color: var(--texto-principal);
+.chip.chip-identidad-3 { background: var(--identidad-3); color: var(--identidad-texto);
   border-left-color: var(--identidad-3); }
-.chip.chip-identidad-4 { background: var(--fondo-encabezado); color: var(--texto-principal);
+.chip.chip-identidad-4 { background: var(--identidad-4); color: var(--identidad-texto);
   border-left-color: var(--identidad-4); }
 /* Solo para el ejemplo de lo que NO se debe hacer. */
 .tp-opaca { opacity: .5; }
