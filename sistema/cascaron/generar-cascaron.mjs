@@ -2666,15 +2666,26 @@ solo da cuatro, la quinta sale de aquí: <strong>son categorías, no grados</str
 página y <strong><code>verificar-tono</code> las vuelve a medir sobre este mismo HTML</strong>. Una
 cifra publicada que nadie recalcula envejece sola.</p>
 
-<h3 class="sub-seccion">El filete no es adorno: es lo que dibuja el chip</h3>
+<h3 class="sub-seccion">El filete no es adorno: es lo que dibuja el chip de estado</h3>
 <div class="aviso">
-  Sobre las cuatro superficies donde vive un chip, el relleno da entre
-  <strong>1,00 y 1,19:1</strong> contra el fondo. Sobre el encabezado de tabla mide exactamente
-  <strong>1,00:1</strong> — luminancia idéntica. El filete de acento da entre
-  <strong>4,18 y 4,84:1</strong> en todos los casos.
+  Esto vale para los <strong>tonos de estado</strong>, que son de relleno tenue. Sobre las cuatro
+  superficies donde vive un chip, ese relleno da entre <strong>1,00 y 1,19:1</strong> contra el
+  fondo. Sobre el encabezado de tabla mide exactamente <strong>1,00:1</strong> — luminancia
+  idéntica. El filete de acento da entre <strong>4,18 y 4,84:1</strong> en todos los casos.
   <br><br>
   Sin filete, el chip no es un chip: es texto de color flotando en la fila. Por eso
   <strong>el filete no se quita nunca</strong>, ni siquiera «para que se vea más limpio».
+  <br><br>
+  <strong>Los cuatro de identidad no lo necesitan para eso</strong>, y por eso van macizos: su
+  relleno da entre <strong>5,27 y 7,53:1</strong> contra esas mismas superficies. El filete sigue
+  ahí, del mismo color, para que la caja mida exactamente lo que medía.
+  <br><br>
+  <strong>En oscuro es al revés y se declara:</strong> los colores de identidad valen lo mismo en
+  los dos modos —no tienen rampa, es la decisión de la paleta—, así que contra las superficies
+  oscuras el chip macizo cae a <strong>1,88 – 2,78:1</strong>. Lo que lo identifica ahí es su
+  texto, que sigue a <strong>6,05 – 7,53:1</strong>; el borde contra la tarjeta es débil. Era
+  igual de débil antes —el filete ya iba de ese color— y no empeora: lo que cambia es que ahora
+  ese borde rodea todo el chip en vez de tres píxeles.
 </div>
 <div class="bloque">
   <div class="chip-sup">
