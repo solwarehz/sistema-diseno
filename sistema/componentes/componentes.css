@@ -759,7 +759,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .chip-sup-et code{ font-size: 12px; color: var(--texto-secundario); }
 .chip-sup-fila{ display: flex; gap: 4px; flex-wrap: wrap; }
 .chip-sup-nota{ font-size: 12px; color: var(--texto-pista); }
-.chip-sin-filete{ border-left-color: transparent !important; }
+.chip-sin-filete{ border-left-color: transparent !important; border-left-width: 0 !important; }
 .chip.chip-punto{ width: 14px; height: 14px; border-radius: 50%; padding: 0;
   border-left-width: 0; display: inline-block; flex: none; }
 .chip-punto.chip-exito{ background: var(--exito-acento); }

@@ -859,8 +859,19 @@ const AFIRMACIONES = [
      * BASTA**. A 400 px, con el `.cg` levantado a 368, el `button.fc-campo` de
      * dentro seguia en 172. El tope esta en el CONTROL.
      *
-     * Se comprueba a los dos lados de la banda: a 1280 los 172 siguen —quitar
-     * el tope en escritorio seria otro defecto— y a 400 no queda ninguno.
+     * SE COMPRUEBA EN EL CORTE, no solo «en un movil». La primera version
+     * sondeaba 400 y 1280 nada mas, y con eso el corte se podia mover de 640 a
+     * 401 CON EL CANDADO EN VERDE: el defecto volvia entero entre 402 y 640 px
+     * —ahi caen los telefonos grandes de verdad, 430-448 px CSS— y nadie se
+     * enteraba. Lo cazo una auditoria barriendo el valor del @media. Ahora se
+     * mide en 640 —el corte que el requerimiento pide— y en 641, que es el
+     * primer pixel que TIENE que seguir topado.
+     *
+     * Y se mira `width` ademas de `max-width`: quitar el `width: 100%` de las
+     * dos copias dejaba el candado verde. En la practica el disparador
+     * sobrevive porque `.cg` es una columna flex y los hijos se estiran, pero
+     * el campo de fecha suelto SI depende de esa declaracion, y una
+     * declaracion sin vigilancia es una declaracion que alguien borra.
      *
      * @param {Regla[]} reglas
      */
@@ -881,22 +892,39 @@ const AFIRMACIONES = [
             + `«${v(cadena, 'max-width', 1280)}». En escritorio el tope es lo correcto.`);
         }
       }
-      /* TELEFONO: ni tope ni flecha, y apilado. */
+      /* EL PRIMER PIXEL DE ESCRITORIO. 641 es el que delata un corte movido:
+         con el @media en 401, 480 o 639 todo lo de abajo seguia en verde. */
       for (const [nombre, cadena] of [['el disparador del rango', campoEnGrupo], ['el campo de fecha suelto', fechaSuelta]]) {
-        const t = v(cadena, 'max-width', 400);
-        if (t !== 'none') {
-          fallos.push(`a 400px ${nombre} sigue topado en «${t}»: el tope esta en EL CONTROL, `
-            + `no en el contenedor — ensanchar el .cg no basta, y es lo que hizo falta medir `
-            + `dos veces para verlo (R40 y R141).`);
+        if (v(cadena, 'max-width', 641) !== '172px') {
+          fallos.push(`a 641px ${nombre} recibe «${v(cadena, 'max-width', 641)}» y deberia seguir `
+            + `topado en 172px: el corte es 640, y un corte movido hacia arriba se lleva por `
+            + `delante el escritorio estrecho.`);
         }
       }
-      if (v(grupo, 'flex-direction', 400) !== 'column') {
-        fallos.push('a 400px los dos campos no se apilan: se envuelven a 172px cada uno y '
-          + 'dejan media pantalla vacia a la derecha.');
-      }
-      if (v(guion, 'display', 400) !== 'none') {
-        fallos.push('a 400px la flecha del medio sigue a la vista: apunta a la derecha y une '
-          + 'dos cosas que apiladas ya estan una debajo de otra.');
+      /* TELEFONO: ni tope ni flecha, apilado y al ancho. EN EL CORTE y por debajo. */
+      for (const ancho of [640, 400]) {
+        for (const [nombre, cadena] of [['el disparador del rango', campoEnGrupo], ['el campo de fecha suelto', fechaSuelta]]) {
+          const t = v(cadena, 'max-width', ancho);
+          if (t !== 'none') {
+            fallos.push(`a ${ancho}px ${nombre} sigue topado en «${t}»: el tope esta en EL CONTROL, `
+              + `no en el contenedor — ensanchar el .cg no basta, y es lo que hizo falta medir `
+              + `dos veces para verlo (R40 y R141).`);
+          }
+          const w = v(cadena, 'width', ancho);
+          if (w !== '100%') {
+            fallos.push(`a ${ancho}px ${nombre} recibe width «${w}» y deberia ocupar el ancho. `
+              + `Quitar el tope no estira nada por si solo: un control en linea se queda con lo `
+              + `que mida su contenido.`);
+          }
+        }
+        if (v(grupo, 'flex-direction', ancho) !== 'column') {
+          fallos.push(`a ${ancho}px los dos campos no se apilan: se envuelven a 172px cada uno y `
+            + 'dejan media pantalla vacia a la derecha.');
+        }
+        if (v(guion, 'display', ancho) !== 'none') {
+          fallos.push(`a ${ancho}px la flecha del medio sigue a la vista: apunta a la derecha y une `
+            + 'dos cosas que apiladas ya estan una debajo de otra.');
+        }
       }
       return fallos;
     },

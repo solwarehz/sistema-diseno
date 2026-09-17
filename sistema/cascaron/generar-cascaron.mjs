@@ -2752,12 +2752,12 @@ completo se lee como algo pulsable, y este componente no se pulsa.</p>
 <table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td>Fondo y texto <strong>siempre en pareja</strong>. Nunca un color de estado suelto.</td></tr>
-    <tr><td class="num">2</td><td><strong>El filete no se quita.</strong> Es lo único que hace visible el chip: el relleno da 1,00:1 sobre el encabezado.</td></tr>
+    <tr><td class="num">2</td><td><strong>En los tonos de estado, el filete no se quita.</strong> Es lo único que hace visible el chip: ese relleno da <strong>1,00:1</strong> sobre el encabezado. <strong>Los cuatro de identidad van macizos</strong> y no lo necesitan para eso — su relleno da 5,27–7,53:1 y el filete va de su mismo color.</td></tr>
     <tr><td class="num">3</td><td>El texto lleva el significado. <strong>El color solo, nunca.</strong></td></tr>
     <tr><td class="num">4</td><td>No se pulsa, no se cierra, no navega. <strong>Sin ✕.</strong></td></tr>
     <tr><td class="num">5</td><td>Radio 3px. La cápsula parece un botón.</td></tr>
     <tr><td class="num">6</td><td>Una palabra, dos como mucho. Si necesita explicación, va en la celda de al lado.</td></tr>
-    <tr><td class="num">7</td><td>Cuatro estados y ninguno más. Un quinto color obliga a aprenderse una leyenda.</td></tr>
+    <tr><td class="num">7</td><td><strong>Cuatro estados y ninguno más</strong>, y son <strong>grados</strong>: bien, regular, mal, neutro. Un quinto grado obliga a aprenderse una leyenda. Lo que sí hay es una quinta <strong>categoría</strong>, que es otra cosa y sale de identidad — ver «Y cuatro que no significan nada».</td></tr>
   </tbody>
 </table>
 
@@ -3279,20 +3279,31 @@ Se cambia en el menú de usuario, junto al tema.</p>
 <h3 class="sub-seccion">Código</h3>
 ${verCodigo(
   'Uso del componente',
-  `import { TablaDatos } from '@ae/sistema';
+  // ESTE BLOQUE TAMPOCO COMPILABA, y es el del componente mas usado del
+  // sistema. Publicaba CINCO props que no existen —id, exportarCSV,
+  // accionFila, y `fija` y `tipo` dentro de la columna— y se dejaba las DOS
+  // obligatorias: `titulo` y `claveFila`. Ademas de `valor`, que es como una
+  // columna saca su dato y sin la cual no hay tabla.
+  // Lo encontro el diseno del R142 el 2026-09-16, y es el mismo defecto que la
+  // v1.122.0 cerro en RangoFecha: ningun candado mira el TEXTO del bloque de
+  // codigo, solo el marcado y las clases. Queda declarado.
+  `import { TablaDatos, Enlace } from '@ae/sistema';
 
 <TablaDatos
-  id="asistencia-personal"        // clave con la que se recuerda la configuración
+  titulo="Personal"               // obligatorio: nombra la tabla para el lector
   filas={personal}
+  claveFila={(f) => f.dni}        // obligatorio: identidad estable de la fila
   columnas={[
-    { clave: 'nombre', titulo: 'Trabajador', fija: true },
-    { clave: 'dni',    titulo: 'DNI',        tipo: 'mono' },
-    { clave: 'estado', titulo: 'Estado',     tipo: 'chip' },
-    { clave: 'tarde',  titulo: 'Min. tarde', tipo: 'numero' },
+    { clave: 'nombre', titulo: 'Trabajador', valor: (f) => f.nombre },
+    { clave: 'dni',    titulo: 'DNI',        valor: (f) => f.dni },
+    { clave: 'estado', titulo: 'Estado',     valor: (f) => f.estado,
+      opcionesFiltro: ['Activo', 'Cesado'],          // dominio cerrado: el filtro es un selector
+      pintar: (f) => <Chip tono={f.estado === 'Activo' ? 'exito' : 'inactivo'}>{f.estado}</Chip> },
+    { clave: 'tarde',  titulo: 'Min. tarde', valor: (f) => f.tarde, numerica: true },
   ]}
   porPagina={10}                  // 10 · 25 · 50 · 0 para todas
-  exportarCSV
-  accionFila={(f) => <Enlace href={\`/personal/\${f.dni}\`}>Editar</Enlace>}
+  columnasFijas={['nombre']}      // las que NO se pueden ocultar desde «Columnas»
+  acciones={<Boton mini onClick={exportar}>CSV</Boton>}
 />`
 )}`;
 
@@ -4123,8 +4134,8 @@ también. <strong>Si algo se rompe por estrechez, se rompe aquí primero.</stron
       </div>
       <div aria-modal="false" class="fc-cal-marco">
         <div aria-modal="false" class="fc-cal-cuerpo" id="fc-cuerpo"></div>
-        <div class="fc-atajos">
-          <span class="fc-atajos-tit">Periodos</span>
+        <div class="fc-atajos" role="group" aria-labelledby="fc-per-demo">
+          <span class="fc-atajos-tit" id="fc-per-demo">Periodos</span>
           <button type="button" class="fc-atajo" data-fc="mes">Este mes</button>
           <button type="button" class="fc-atajo" data-fc="mes-pasado">Mes pasado</button>
           <button type="button" class="fc-atajo" data-fc="bimestre">Últimos 2 meses</button>
@@ -4231,8 +4242,8 @@ que en esta pantalla <strong>no existe</strong>.</p>
 <div class="bloque">
   <div class="enl-comp">
     <div class="enl-caja mal">
-      <div class="fc-atajos">
-        <span class="fc-atajos-tit">Periodos</span>
+      <div class="fc-atajos" role="group" aria-labelledby="fc-per-antes">
+        <span class="fc-atajos-tit" id="fc-per-antes">Periodos</span>
         <button type="button" class="fc-atajo">Este mes</button>
         <button type="button" class="fc-atajo">Mes pasado</button>
         <button type="button" class="fc-atajo">&Uacute;ltimos 2 meses</button>
@@ -4242,8 +4253,8 @@ que en esta pantalla <strong>no existe</strong>.</p>
       solo sab&iacute;an dar un aviso. Hubo que quitarlos a mano en el producto</span>
     </div>
     <div class="enl-caja bien">
-      <div class="fc-atajos">
-        <span class="fc-atajos-tit">Periodos</span>
+      <div class="fc-atajos" role="group" aria-labelledby="fc-per-ahora">
+        <span class="fc-atajos-tit" id="fc-per-ahora">Periodos</span>
         <button type="button" class="fc-atajo">Hoy</button>
         <button type="button" class="fc-atajo">&Uacute;ltimos 3 d&iacute;as</button>
         <button type="button" class="fc-atajo">&Uacute;ltimos 7 d&iacute;as</button>
@@ -4305,7 +4316,11 @@ ${verCodigo(
 <RangoFecha titulo="Rango de fechas" />
 
 // Con ellas MANDAN: guarda lo que llegue y devuelvelo.
-const [r, setR] = useState({ desde: null, hasta: null });
+// El tipo del estado se ANOTA: sin el, useState infiere { desde: null }
+// y setR no encaja en onCambio. Este bloque no compilaba por eso.
+const [r, setR] = useState<{ desde: string | null; hasta: string | null }>({
+  desde: null, hasta: null,
+});
 
 <RangoFecha
   titulo="Rango de fechas"
@@ -8589,7 +8604,8 @@ const casos = [
        '<button class="btn btn-3 btn-mini">&rsaquo;</button></div>' +
        '<div aria-modal="false" class="fc-cal-marco"><div aria-modal="false" class="fc-cal-cuerpo">' +
        mes('marzo de 2026', 31, 6, 5, 12) + mes('abril de 2026', 30, 2, 0, 0) +
-       '</div><div class="fc-atajos"><span class="fc-atajos-tit">Periodos</span>' +
+       '</div><div class="fc-atajos" role="group" aria-labelledby="fc-per-vivo">' +
+        '<span class="fc-atajos-tit" id="fc-per-vivo">Periodos</span>' +
        '<button type="button" class="fc-atajo">Este mes</button><button type="button" class="fc-atajo">Mes pasado</button>' +
        '<button type="button" class="fc-atajo">&Uacute;ltimos 2 meses</button><button type="button" class="fc-atajo">Este a&ntilde;o</button>' +
        '</div></div><div aria-modal="false" class="fc-cal-pie">Elige la fecha de inicio.</div></div>' +
@@ -10983,7 +10999,11 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .chip-sup-et code { font-size: 12px; color: var(--texto-secundario); }
 .chip-sup-fila { display: flex; gap: 4px; flex-wrap: wrap; }
 .chip-sup-nota { font-size: 12px; color: var(--texto-pista); }
-.chip-sin-filete { border-left-color: transparent !important; }
+/* «SIN FILETE» ES SIN FILETE, no un mordisco. Con el color en transparente
+   bastaba mientras todos los chips eran de relleno tenue; sobre uno macizo
+   —los cuatro de identidad desde el R143— deja un hueco transparente de 3px
+   en el borde izquierdo. Lo cazo una auditoria. Se quita tambien el ancho. */
+.chip-sin-filete { border-left-color: transparent !important; border-left-width: 0 !important; }
 /* El punto suelto usa el ACENTO, no el relleno: con el relleno sería invisible
    y el ejemplo no se entendería. Este es el patrón real que se ve por ahí, un
    punto de color sin texto al lado. */

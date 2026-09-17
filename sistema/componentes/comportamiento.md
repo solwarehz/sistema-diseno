@@ -789,7 +789,7 @@ una persona o una clave de API.
 
 ## Color de identidad · Horario y Chip
 
-<!-- pruebas: identidad-tono.test.ts, Avatar.test.tsx -->
+<!-- pruebas: identidad-tono.test.ts, distancia.test.ts, Avatar.test.tsx -->
 
 Los cuatro colores decorativos que ya usaba el avatar, disponibles desde la
 v1.63.0 como `tono` en `Horario` y en `Chip`.

@@ -21,8 +21,16 @@
  * catalogo que publica la medida.
  *
  * Referencia: CIE 142-2001 / Sharma, Wu & Dalal (2005), «The CIEDE2000
- * Color-Difference Formula», con los datos de prueba de esa publicacion en
- * `probar-candado.mjs`.
+ * Color-Difference Formula: Implementation Notes, Supplementary Test Data and
+ * Mathematical Observations», Color Research & Application 30(1), 21-30.
+ *
+ * LOS DATOS DE PRUEBA DE ESA PUBLICACION ESTAN EN
+ * `componentes/pruebas/distancia.test.ts`, y se comprueban a 1e-4. Esta linea
+ * decia `probar-candado.mjs` y era FALSA: ese archivo prueba los ocho patrones
+ * de ESLint y nada mas, asi que la unica matematica de color del repositorio
+ * que no viene de WCAG no tenia ni una prueba mientras su cabecera afirmaba que
+ * si. Lo cazo una auditoria adversaria el 2026-09-16. Es exactamente lo que
+ * CLAUDE.md §9 llama fatal, cometido aqui mismo.
  */
 
 const canales = (hex) => {
@@ -37,12 +45,29 @@ const lineal = (c) => {
   return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
 };
 
-/** sRGB a CIE L*a*b*, con blanco de referencia D65. */
+/**
+ * sRGB a CIE L*a*b*, con blanco de referencia D65.
+ *
+ * EL BLANCO SALE DE LA PROPIA MATRIZ, sumando sus filas, y no de las constantes
+ * publicadas de D65. No es purismo: con las constantes —0,9504559 y 1,0890578—
+ * el blanco puro daba L*=100,000004 y un croma de 0,014 en vez de cero, porque
+ * la matriz sRGB redondeada no suma exactamente ese blanco. Es despreciable
+ * para una distancia, y aun asi esta mal: el blanco es el punto que define la
+ * escala, y una escala cuyo origen no cae en cero se defiende sola en cada
+ * discusion futura. Lo delato la prueba del anclaje.
+ */
+const M = [
+  [0.4124564, 0.3575761, 0.1804375],
+  [0.2126729, 0.7151522, 0.072175],
+  [0.0193339, 0.119192, 0.9503041],
+];
+const BLANCO = M.map((fila) => fila[0] + fila[1] + fila[2]);
+
 export function lab(hex) {
   const [r, g, b] = canales(hex).map(lineal);
-  const X = (0.4124564 * r + 0.3575761 * g + 0.1804375 * b) / 0.9504559;
-  const Y = 0.2126729 * r + 0.7151522 * g + 0.072175 * b;
-  const Z = (0.0193339 * r + 0.119192 * g + 0.9503041 * b) / 1.0890578;
+  const X = (M[0][0] * r + M[0][1] * g + M[0][2] * b) / BLANCO[0];
+  const Y = (M[1][0] * r + M[1][1] * g + M[1][2] * b) / BLANCO[1];
+  const Z = (M[2][0] * r + M[2][1] * g + M[2][2] * b) / BLANCO[2];
   const f = (t) => (t > 216 / 24389 ? Math.cbrt(t) : (841 / 108) * t + 4 / 29);
   const [fx, fy, fz] = [f(X), f(Y), f(Z)];
   return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)];
@@ -52,8 +77,19 @@ const grados = (rad) => ((rad * 180) / Math.PI + 360) % 360;
 
 /** Diferencia de color CIEDE2000 entre dos hexadecimales. 0 = identicos. */
 export function de2000(hexA, hexB) {
-  const [L1, a1, b1] = lab(hexA);
-  const [L2, a2, b2] = lab(hexB);
+  return de2000Lab(lab(hexA), lab(hexB));
+}
+
+/**
+ * Lo mismo, pero sobre L*a*b* directamente.
+ *
+ * Existe separado PARA PODER PROBARLO. Los datos de prueba publicados de
+ * CIEDE2000 son pares de L*a*b*, no hexadecimales — y con razon: la formula es
+ * de color, no de sRGB. Mezclar las dos cosas en una sola funcion era dejar la
+ * unica matematica de color del repositorio sin forma de comprobarse contra
+ * nada de fuera.
+ */
+export function de2000Lab([L1, a1, b1], [L2, a2, b2]) {
 
   const C1 = Math.hypot(a1, b1);
   const C2 = Math.hypot(a2, b2);

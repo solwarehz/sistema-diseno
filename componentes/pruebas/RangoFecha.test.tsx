@@ -577,6 +577,101 @@ describe('[22] añadido al R139 · un periodo que no cabe en el tope no se pinta
     expect(periodos(container)).toEqual(['Últimos 7 días']);
   });
 
+  /* EL FIXTURE A MEDIANOCHE ESCONDÍA UNA FAMILIA ENTERA DE DEFECTOS.
+     `HOY = new Date(2026, 2, 15)` es medianoche exacta, así que las cinco
+     pruebas de arriba no podían ver que `atajosDeDias` devolvía el `hoy`
+     recibido CON SU HORA: la fracción de día subía el redondeo a partir de las
+     12:00 y el periodo medía n+1. Medido por una auditoría: con `maxDias={7}`
+     y `atajosDeDias(1, 3, 7)`, «Últimos 7 días» DESAPARECÍA a mediodía. */
+  it.each([0, 9, 11, 12, 13, 18, 23])(
+    '[22] a las %i:00 se pintan los mismos tres periodos: se cuentan DÍAS, no horas',
+    (hora) => {
+      const conHora = new Date(2026, 2, 15, hora, 30);
+      const { container } = render(
+        <RangoFecha titulo="Rango de fechas" hoy={conHora} maxDias={7}
+          atajos={atajosDeDias(1, 3, 7)} />
+      );
+      fireEvent.click(disparadores(container)[0]);
+      expect(periodos(container)).toEqual(['Hoy', 'Últimos 3 días', 'Últimos 7 días']);
+    }
+  );
+
+  /* El arreglo está en DOS sitios a propósito —la medición y el origen— y por
+     eso la prueba de arriba sobrevive si se revierte uno solo. Estas dos fijan
+     cada mitad por separado, que es lo único que las hace protegerlas. */
+  it('[22] la MEDICIÓN cuenta días: un `rango` del producto que devuelva `hoy` con su hora cabe igual', () => {
+    const conHora = new Date(2026, 2, 15, 13, 30);
+    const suyo = {
+      texto: 'Su semana',
+      rango: (h: Date) => ({ desde: new Date(h.getFullYear(), h.getMonth(), h.getDate() - 6), hasta: h }),
+    };
+    const { container } = render(
+      <RangoFecha titulo="Rango de fechas" hoy={conHora} maxDias={7} atajos={[suyo]} />
+    );
+    fireEvent.click(disparadores(container)[0]);
+    expect(periodos(container)).toEqual(['Su semana']);
+  });
+
+  it('[22] y el ORIGEN sale a medianoche: `atajosDeDias` no arrastra la hora de `hoy`', () => {
+    const conHora = new Date(2026, 2, 15, 13, 30);
+    const r = atajosDeDias(7)[0].rango(conHora);
+    expect([r.hasta.getHours(), r.hasta.getMinutes(), r.hasta.getSeconds()]).toEqual([0, 0, 0]);
+    expect([r.desde.getHours(), r.desde.getMinutes()]).toEqual([0, 0]);
+    expect(r.hasta.getDate()).toBe(15);
+    expect(r.desde.getDate()).toBe(9);
+  });
+
+  it('[22] y el ejemplo de la documentación aguanta la tarde: maxDias={1} con «Hoy»', () => {
+    const { container } = render(
+      <RangoFecha titulo="Rango de fechas" hoy={new Date(2026, 2, 15, 13, 0)} maxDias={1}
+        atajos={atajosDeDias(1)} />
+    );
+    fireEvent.click(disparadores(container)[0]);
+    expect(periodos(container)).toEqual(['Hoy']);
+  });
+
+  it('[22] `atajosDeDias` sanea lo que recibe: 0, negativos y rotos no crean periodo', () => {
+    /* Un rango invertido mide cero o menos, así que cabía en CUALQUIER tope:
+       se pintaba y se aplicaba. `maxDias` ya tenía esta guarda; la función
+       hermana no. */
+    const gritar = vi.spyOn(console, 'error').mockImplementation(() => {});
+    expect(atajosDeDias(0, -2, NaN, Infinity, 3)).toHaveLength(1);
+    expect(atajosDeDias(3)[0].texto).toBe('Últimos 3 días');
+    expect(gritar).toHaveBeenCalledTimes(4);
+    gritar.mockRestore();
+  });
+
+  it('[22] un periodo cuyo `rango` LANZA se oculta, y no tumba el campo', () => {
+    /* El filtro ejecuta código del producto DENTRO del render. Sin red, uno
+       que lance reventaba el campo entero al montar —con el calendario cerrado
+       y sin que nadie hubiera pulsado nada—, cuando antes solo fallaba al
+       pulsarlo. */
+    const gritar = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const bomba = { texto: 'Bomba', rango: () => { throw new Error('boom'); } };
+    const { container } = render(
+      <RangoFecha titulo="Rango de fechas" hoy={HOY} maxDias={7}
+        atajos={[bomba, ...atajosDeDias(3)]} />
+    );
+    fireEvent.click(disparadores(container)[0]);
+    expect(periodos(container)).toEqual(['Últimos 3 días']);
+    expect(container.querySelector('[role="dialog"]'), 'el campo se cayó').not.toBeNull();
+    gritar.mockRestore();
+  });
+
+  it('[22] el panel de periodos tiene nombre accesible, y su rótulo deja de ser un id muerto', () => {
+    /* `${id}-per` llevaba desde que nació sin que nadie lo referenciara.
+       «Periodos» era texto huérfano para quien usa lector de pantalla. */
+    const { container } = render(<RangoFecha titulo="Rango de fechas" hoy={HOY} />);
+    fireEvent.click(disparadores(container)[0]);
+    const panel = container.querySelector('.fc-atajos') as HTMLElement;
+    expect(panel.getAttribute('role')).toBe('group');
+    const ref = panel.getAttribute('aria-labelledby')!;
+    expect(ref, 'sin aria-labelledby el rótulo no nombra nada').toBeTruthy();
+    const rotulo = container.querySelector(`#${CSS.escape(ref)}`);
+    expect(rotulo, 'apunta a un id que no existe').not.toBeNull();
+    expect(rotulo!.textContent).toBe('Periodos');
+  });
+
   it('[22] el que se pinta se aplica de verdad, y deja el rango dentro del tope', () => {
     const alCambiar = vi.fn();
     const { container } = render(

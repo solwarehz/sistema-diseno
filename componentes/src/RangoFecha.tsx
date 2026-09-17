@@ -122,12 +122,37 @@ export const ATAJOS_POR_OMISION: AtajoRango[] = [
  *
  * Cuenta INCLUSIVE, igual que `maxDias`: `atajosDeDias(7)` da siete días con
  * hoy dentro, no ocho. `atajosDeDias(1)` es «Hoy».
+ *
+ * LOS DOS EXTREMOS SALEN A MEDIANOCHE. Devolver el `hoy` recibido tal cual
+ * —con su hora— hacía que el periodo midiera un día de más a partir de las
+ * 12:00 y se escondiera solo. Está arreglado también en la medición, que es
+ * donde protege a los periodos de cualquiera; aquí se arregla en el origen,
+ * que es donde se ve.
+ *
+ * SANEA SU ARGUMENTO, como hace `maxDias`. `atajosDeDias(0)` daba «Últimos 0
+ * días» con el final ANTES del principio, y un rango invertido mide cero o
+ * menos, así que cabía en cualquier tope: se pintaba y se aplicaba.
  */
 export const atajosDeDias = (...dias: number[]): AtajoRango[] =>
-  dias.map((n) => ({
-    texto: n === 1 ? 'Hoy' : `Últimos ${n} días`,
-    rango: (h: Date) => ({ desde: new Date(h.getFullYear(), h.getMonth(), h.getDate() - (n - 1)), hasta: h }),
-  }));
+  dias
+    .filter((n) => {
+      const vale = Number.isFinite(n) && Math.floor(n) >= 1;
+      if (!vale && process.env.NODE_ENV !== 'production') {
+        console.error(
+          `atajosDeDias: ${n} no es un número de días. Tiene que ser un entero de 1 en ` +
+          'adelante. Se ignora: ese periodo no se crea.',
+        );
+      }
+      return vale;
+    })
+    .map((d) => Math.floor(d))
+    .map((n) => ({
+      texto: n === 1 ? 'Hoy' : `Últimos ${n} días`,
+      rango: (h: Date) => ({
+        desde: new Date(h.getFullYear(), h.getMonth(), h.getDate() - (n - 1)),
+        hasta: new Date(h.getFullYear(), h.getMonth(), h.getDate()),
+      }),
+    }));
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
   'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
@@ -417,9 +442,26 @@ export function RangoFecha({
 
   const dDesde = desde ? deIso(desde) : null;
   const dHasta = hasta ? deIso(hasta) : null;
-  /** Días del rango, contados INCLUSIVE: del 1 al 7 son 7, no 6. */
+  /**
+   * Días del rango, contados INCLUSIVE: del 1 al 7 son 7, no 6.
+   *
+   * SE CUENTAN DÍAS, NO HORAS, y por eso los dos extremos bajan a medianoche
+   * antes de restar. Sin eso, un `hasta` con hora —que es lo que devuelve
+   * cualquier `rango` que use el `hoy` que se le entrega, porque `hoy` es
+   * `new Date()`— sumaba su fracción de día, `Math.round` la subía A PARTIR DE
+   * LAS 12:00 y el periodo medía un día de más. Consecuencia real, medida por
+   * una auditoría: con `maxDias={7}` y `atajosDeDias(1, 3, 7)`, «Últimos 7
+   * días» **desaparecía del panel a mediodía** y volvía al día siguiente. Y
+   * `atajosDeDias(1)` con `maxDias={1}` —el ejemplo de la documentación— dejaba
+   * el panel vacío media jornada.
+   *
+   * Las pruebas no podían verlo: el reloj del banco es `new Date(2026, 2, 15)`,
+   * medianoche exacta. Un fixture a medianoche esconde por construcción toda
+   * una familia de defectos.
+   */
+  const aDia = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
   const diasEntre = (a: Date, b: Date) =>
-    Math.round((b.getTime() - a.getTime()) / 86400000) + 1;
+    Math.round((aDia(b).getTime() - aDia(a).getTime()) / 86400000) + 1;
 
   /**
    * R139 (añadido) · UN PERIODO QUE NO CABE EN EL TOPE NO SE PINTA.
@@ -441,8 +483,21 @@ export function RangoFecha({
    * siendo. Esto es otra cosa: el panel se queda con los que sirven.
    */
   const atajosQueCaben = tope === null ? atajos : atajos.filter((a) => {
-    const r = a.rango(hoy);
-    return diasEntre(r.desde, r.hasta) <= tope;
+    /* `rango` ES CÓDIGO DEL PRODUCTO y aquí se ejecuta DENTRO DEL RENDER. Sin
+       la red, uno que lance tumbaba el campo entero al montar —con el
+       calendario cerrado y sin que nadie hubiera pulsado nada—, cuando antes
+       del filtro solo fallaba al pulsarlo. Lo cazó una auditoría.
+       Un periodo que no se sabe medir NO SE PINTA: es lo mismo que se hace con
+       el que no cabe, y deja el resto del campo en pie. */
+    try {
+      const r = a.rango(hoy);
+      return diasEntre(r.desde, r.hasta) <= tope;
+    } catch (e) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.error(`RangoFecha: el periodo «${a.texto}» falló al calcular su rango. Se oculta.`, e);
+      }
+      return false;
+    }
   });
   /** El último día que se puede elegir como final. */
   const techo = tope && dDesde ? sumarDias(dDesde, tope - 1) : null;
@@ -820,7 +875,12 @@ export function RangoFecha({
             </div>
 
             {atajosQueCaben.length > 0 && (
-              <div className="fc-atajos">
+              /* EL ROTULO NOMBRA AL PANEL. `${id}-per` llevaba desde que nacio
+                 sin que nadie lo referenciara: un `id` muerto, y «Periodos»
+                 como texto huerfano para quien usa lector de pantalla. Lo
+                 cazo una auditoria, y `verificar-atributo` no podia verlo
+                 porque su regla 3 excluye `id` a proposito. */
+              <div className="fc-atajos" role="group" aria-labelledby={`${id}-per`}>
                 <span className="fc-atajos-tit" id={`${id}-per`}>Periodos</span>
                 {atajosQueCaben.map((a) => (
                   <button

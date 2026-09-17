@@ -18,7 +18,7 @@ el color que ya tenía, y nace el candado que lo vio
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **veinte pasos de
-verificación** —los que corre `publicar.mjs`—, **949 pruebas en 51 archivos**,
+verificación** —los que corre `publicar.mjs`—, **1003 pruebas en 52 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -56,7 +56,7 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **940 pruebas en 51 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **1003 pruebas en 52 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **1014 reglas de 1528** · **731 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
@@ -119,7 +119,8 @@ lados coincidían perfectamente en pintarlos iguales.
 > de forma consistente.**
 
 El de contraste tampoco podía verlo: mide **texto sobre fondo**, y los cuatro lo
-pasaban a 12,03:1 *precisamente por ser el mismo*. La razón de contraste de WCAG
+pasaban a 12,48:1 en claro y 12,19:1 en oscuro *precisamente por ser el mismo*. La
+razón de contraste de WCAG
 no responde a la otra pregunta —«¿se distinguen estos dos rellenos entre sí?»—:
 dos colores de la misma claridad y distinto tono dan 1,00:1 y esa vara no sabe
 decir si uno es gris y el otro magenta.
