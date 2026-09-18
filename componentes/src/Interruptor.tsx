@@ -100,6 +100,13 @@ export function Interruptor({
         className="sw"
         aria-checked={activo}
         aria-labelledby={`${id}-et`}
+        /* Y LA AYUDA SE ANUNCIA CON EL CONTROL. Se pintaba al lado y NINGUN
+           atributo la ataba al interruptor, asi que un lector leia «Editar,
+           interruptor, desactivado» y se dejaba el porque — que es justo lo
+           que R148 puso ahi: «no se puede enseñar un permiso apagado sin decir
+           por que». Lo cazo una auditoria al montar la matriz, donde el texto
+           no se ve y la falta se nota antes. */
+        aria-describedby={ayuda ? `${id}-ayuda` : undefined}
         // aria-disabled y no `disabled`: deshabilitado nativo sale del orden de
         // tabulación y su estado se vuelve indescubrible con teclado.
         aria-disabled={deshabilitado || undefined}
@@ -109,7 +116,7 @@ export function Interruptor({
       </button>
       <span className={etiquetaOculta ? 'sw-txt sr-solo' : 'sw-txt'}>
         <span className="sw-et" id={`${id}-et`}>{etiqueta}</span>
-        {ayuda && <span className="sw-ayuda">{ayuda}</span>}
+        {ayuda && <span className="sw-ayuda" id={`${id}-ayuda`}>{ayuda}</span>}
       </span>
     </label>
   );

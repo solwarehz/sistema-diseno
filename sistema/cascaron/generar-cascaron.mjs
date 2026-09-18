@@ -31,6 +31,28 @@ import { de2000, JND } from '../tokens/distancia.mjs';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 const RAIZ = join(AQUI, '..', '..');
+
+/* CUANTAS REGLAS TIENE UNA SECCION DEL CONTRATO. SE CUENTA, NO SE ESCRIBE.
+   El parrafo de abajo advertia que «una lista cerrada con numero en el titulo
+   es una lista que envejece» y a renglon seguido escribia «diecisiete» a mano:
+   con el R151 el contrato llego a veinticinco y el texto seguia diciendo
+   diecisiete. Lo cazo una auditoria. El defecto que un documento denuncia, no
+   puede cometerlo la linea siguiente. */
+function reglasDelContrato(seccion) {
+  const doc = readFileSync(join(RAIZ, 'sistema/componentes/comportamiento.md'), 'utf8');
+  const desde = doc.indexOf(`\n## ${seccion}\n`);
+  if (desde < 0) throw new Error(`comportamiento.md no tiene la seccion «${seccion}»`);
+  const sig = doc.indexOf('\n## ', desde + 1);
+  const trozo = doc.slice(desde, sig < 0 ? undefined : sig);
+  const nums = [...trozo.matchAll(/^\| \*\*(\d+)\*\* \|/gm)].map((m) => Number(m[1]));
+  if (!nums.length) throw new Error(`la seccion «${seccion}» no tiene reglas numeradas`);
+  return Math.max(...nums);
+}
+const LETRAS = ['cero', 'una', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho',
+  'nueve', 'diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciseis', 'diecisiete',
+  'dieciocho', 'diecinueve', 'veinte', 'veintiuna', 'veintidos', 'veintitres', 'veinticuatro',
+  'veinticinco', 'veintiseis', 'veintisiete', 'veintiocho', 'veintinueve', 'treinta'];
+const enLetra = (n) => LETRAS[n] ?? String(n);
 const SALIDA = join(RAIZ, 'cascaron');
 
 const tokensCss = readFileSync(join(RAIZ, 'sistema', 'tokens', 'tokens.css'), 'utf8');
@@ -8286,17 +8308,86 @@ La matriz responde además <strong>«¿a quién le he dado Crear?»</strong>, qu
 puede responder</strong>: hay que abrir los once acordeones y recorrerlos. No es comodidad — revisar
 periódicamente quién tiene qué es obligación legal, y se hace mirando una columna.</p>
 <div class="aviso">
-  <strong>Es el MISMO componente y la MISMA lógica</strong>, con
-  <code>presentacion="matriz"</code>: <code>base</code>, <code>depende</code>, <code>clave</code>,
-  <code>deshabilitado</code>, los cuatro motivos y lo efectivo se calculan en el mismo sitio. Partirlo
-  en dos componentes habría sido partir la lógica, y <strong>dos lógicas que tienen que coincidir
-  dejan de coincidir</strong>.
+  <strong>Es el MISMO componente</strong>, con <code>presentacion="matriz"</code>:
+  <code>base</code>, <code>depende</code>, <code>clave</code>, <code>deshabilitado</code>, los cuatro
+  motivos y lo efectivo se calculan en el mismo sitio. Partirlo en dos componentes habría sido partir
+  la lógica, y <strong>dos lógicas que tienen que coincidir dejan de coincidir</strong>.
+  <br><br>
+  <strong>Y «el mismo código» no basta.</strong> Esta caja decía «la MISMA lógica» y era cierta al pie
+  de la letra y falsa en su propósito: la primera matriz <strong>consumía cuatro de los seis campos
+  que el cálculo devuelve</strong> y tiraba el aviso de que encender arrastra el base (R149) y el de
+  que dos privilegios van juntos (R99), y no llevaba el porqué de un <code>deshabilitado</code>
+  (R148) a la celda. No eran dos lógicas: era una lógica y <strong>dos pantallas diciendo cosas
+  distintas sobre quién puede qué</strong> — justo lo que se quería evitar. Lo cazó una auditoría
+  adversaria antes de publicar, junto con algo peor: con <code>filas</code>, el <code>base</code> por
+  omisión <strong>vaciaba el módulo entero en silencio</strong>, y con un backend de juego completo
+  eso borra permisos que nadie retiró. Está en las reglas <strong>21, 23, 24 y 25</strong>.
   <br><br>
   Lo de abajo va <strong>montado y vivo</strong>: una celda se decide con la columna, la fila, el
   motivo, la dependencia y el apagado <strong>a la vez</strong>. Escrito a mano diverge a la primera —
   y la maqueta de la lista, que sí se escribió a mano, <strong>divergió en ocho sitios</strong>.
 </div>
 <div class="bloque" id="matriz-viva"></div>
+
+<h3 class="sub-seccion">Copia esto</h3>
+<p class="seccion-sub">Lo que se copia es <strong>la importación y las props</strong>, nunca el
+marcado interno. Este bloque compila tal cual.</p>
+<pre class="cod-pre"><code>import { PanelPrivilegios, privilegiosEfectivos } from '@mmi/sistema-diseno';
+import type { ColumnaPrivilegios, ModuloPrivilegios } from '@mmi/sistema-diseno';
+
+// Las columnas las declara EL PANEL, no los módulos: una matriz con columnas
+// distintas por fila no es una matriz, es una lista con más huecos.
+const COLUMNAS: ColumnaPrivilegios[] = [
+  { id: 'ver',       titulo: 'Ver' },
+  { id: 'editar',    titulo: 'Editar' },
+  { id: 'crear',     titulo: 'Crear' },
+  { id: 'descargar', titulo: 'Descargar', aparte: true },  // separada por una línea
+];
+
+const MODULOS: ModuloPrivilegios[] = [{
+  id: 'personal',
+  nombre: 'Personal',
+  // Las filas son los RECURSOS, y aquí es donde tienen nombre.
+  filas: [
+    { id: 'trab', nombre: 'Trabajadores' },
+    { id: 'cont', nombre: 'Contratos' },
+  ],
+  privilegios: [
+    { id: 'trab-ver',    nombre: 'Ver trabajadores',  columna: 'ver',    fila: 'trab' },
+    { id: 'trab-editar', nombre: 'Editar trabajador', columna: 'editar', fila: 'trab' },
+    { id: 'trab-crear',  nombre: 'Crear trabajador',  columna: 'crear',  fila: 'trab',
+      depende: 'trab-editar' },
+    { id: 'cont-ver',    nombre: 'Ver contratos',     columna: 'ver',    fila: 'cont' },
+    // El hueco que HABLA. Omitirlo sería un espacio en blanco entre cien
+    // casillas, y nadie se enteraría de que esa acción existe para otro recurso.
+    { id: 'cont-crear',  nombre: 'Crear contrato',    columna: 'crear',  fila: 'cont',
+      cerrado: { tipo: 'noAplica', motivo: 'Un contrato se crea desde la ficha.' } },
+    // Concedido y no repartible por quien mira: se ve el estado y se dice el porqué.
+    { id: 'cont-desc',   nombre: 'Descargar contratos', columna: 'descargar', fila: 'cont',
+      deshabilitado: true, ayuda: 'Solo lo concede Dirección.' },
+  ],
+}];
+
+// CON «filas», «base» NOMBRA LA COLUMNA BASE, y manda sobre SU fila: sin «ver
+// Contratos» no hay nada de Contratos, y eso no dice nada de Trabajadores.
+// Si su dominio no funciona con un privilegio que manda, pase base={null}.
+&lt;PanelPrivilegios
+  presentacion="matriz"
+  columnas={COLUMNAS}
+  modulos={MODULOS}
+  base="ver"
+  valor={valor}
+  onCambio={(completo, efectivo) =&gt; {
+    setValor(completo);   // lo que la pantalla muestra: NO borra nada
+    guardar(efectivo);    // lo que de verdad rige: sin base, sin depende, sin cerrados
+  }}
+/&gt;</code></pre>
+<p class="seccion-sub"><strong>En desarrollo el panel avisa por consola</strong> si un privilegio
+no cae en ninguna celda —sin <code>columna</code>, con una <code>columna</code> o una
+<code>fila</code> que no existen, o dos en la misma casilla—, si el <code>base</code> no lo encarna
+nadie, y si pasa algo que una matriz no puede dibujar (<code>niveles</code>, el título de un
+<code>grupo</code>, <code>abiertos</code>). Un permiso que desaparece de la pantalla de revisión
+<strong>sigue concedido</strong>, así que callarlo era la peor salida posible.</p>
 <table class="tabla-simple" style="margin-top:16px">
   <tbody>
     <tr><td class="num">1</td><td><strong>Las columnas las declara el panel, no los módulos.</strong> Una matriz con columnas distintas por fila no es una matriz: es una lista con más huecos. Que la rejilla sea igual en todas las filas es lo que permite leer hacia abajo.</td></tr>
@@ -8308,15 +8399,17 @@ periódicamente quién tiene qué es obligación legal, y se hace mirando una co
 </table>
 
 <h3 class="sub-seccion">Las decisiones que lleva dentro</h3>
-<p class="seccion-sub">Éstas son las ocho con las que nació. <strong>El contrato tiene diecisiete</strong>
-—las nueve restantes llegaron entre la v1.125.0 y la v1.126.0, del R144 al R150— y están en
-<code>comportamiento.md</code>, que es la fuente. Este título decía «las ocho» sin más, y una lista
-cerrada con número en el título es una lista que envejece.</p>
+<p class="seccion-sub">Éstas son las ocho con las que nació. <strong>El contrato tiene
+${enLetra(reglasDelContrato('Panel de privilegios'))}</strong> —las demás llegaron entre la
+v1.125.0 y la v1.128.0— y están en <code>comportamiento.md</code>, que es la fuente. Este título
+decía «las ocho» sin más, y una lista cerrada con número en el título es una lista que envejece.
+Y decía «diecisiete» con veinticinco escritas: <strong>ahora la cifra se cuenta del contrato</strong>,
+porque una cifra a mano dentro de un documento generado es la única parte que envejece sola.</p>
 <table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td><strong>Hay un privilegio que manda.</strong> Sin «ver», editar no significa nada: apagarlo apaga el módulo, y encender cualquier otro lo enciende solo. Se cambia con <code>base</code> o se desactiva con <code>base={null}</code> cuando el dominio no funcione así. Sin esto se puede guardar «editar sin ver», y cada producto lo resolvería a su manera.</td></tr>
     <tr><td class="num">2</td><td><strong>Lo cerrado dice por qué.</strong> Se pasa el motivo, no un booleano. Es el <code>cerrado</code> del Interruptor (R66), que nació para esto: un candado sin explicación se lee como un fallo del sistema.</td></tr>
-    <tr><td class="num">3</td><td><strong>Lo que no aplica no se pasa.</strong> No hay «no aplica» que pintar: si un módulo no tiene «descargar», ese privilegio no está en su lista. Una casilla vacía y un permiso denegado no son lo mismo.</td></tr>
+    <tr><td class="num">3</td><td><strong>Lo que no aplica no se pasa… salvo que quiera decirlo.</strong> En la lista, si un módulo no tiene «descargar», ese privilegio no está en su lista: una casilla vacía y un permiso denegado no son lo mismo. <strong>El R151 le puso la otra mitad</strong>: en una matriz, omitir es un hueco entre cien casillas y nadie se entera de que esa acción existe para otros recursos, así que se puede declarar <code>cerrado: { tipo: 'noAplica', motivo }</code> — con motivo obligatorio, porque un «no aplica» sin explicación es la casilla vacía otra vez.</td></tr>
     <tr><td class="num">4</td><td><strong>Lo concedido se ve sin abrir.</strong> Los chips y el «4 de 6» están en la cabecera: abrir es para <em>cambiar</em>, no para <em>enterarse</em>. Con diez módulos, obligar a abrirlos uno por uno es diez veces el mismo gesto.</td></tr>
     <tr><td class="num">5</td><td><strong>El preset se ve y se recupera.</strong> Pasando <code>preset</code>, cada módulo que difiera se marca y aparece cómo volver. Sin él nadie sabe qué tocó.</td></tr>
     <tr><td class="num">6</td><td><strong>Un privilegio puede declarar niveles por campo</strong> — cuánto se ve de un dato sensible. Van en <a href="#segmentado" data-ir="segmentado" class="enlace">Segmentado</a>, que nació para esto, y <strong>dentro del privilegio</strong>: sin «ver» concedido, elegir cuánto se ve no significa nada.</td></tr>
@@ -10971,6 +11064,13 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .pp-no-cerrado .pp-cerrado-ic { color: var(--texto-pista); }
 .pp-no-ajeno .pp-cerrado-ic { color: var(--info-acento); }
 .pp-no-pendiente .pp-cerrado-ic { color: var(--texto-secundario); }
+/* R151 · EL CUARTO MOTIVO TAMBIEN TIENE COLOR. Sin esta linea heredaba el color
+   de texto ambiente, asi que en la lista el icono de «no aplica» era el MAS
+   destacado de los cuatro — justo el que significa que ahi no hay nada que
+   conceder. Lo cazo una auditoria al entrar el R151. Va con el mas apagado de
+   la escala, que es lo que dice «esto no es una puerta cerrada, es que no hay
+   puerta». */
+.pp-no-noAplica .pp-cerrado-ic { color: var(--texto-pista); }
 /* R110 · El bloqueado por dependencia. Es el unico de los cuatro que se
    resuelve aqui mismo, encendiendo el interruptor de arriba, y por eso lleva
    el acento de aviso y no el gris de los que no tienen salida. */
@@ -11106,6 +11206,19 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .pm tbody tr:hover { background: var(--fondo-fila-hover); }
 /* Sin el base, la fila entera lleva el carril del R144: misma senal, mismo
    acento, y ninguna relacion de contraste tocada. */
+/* R151 · DE QUE MODULO ES CADA FILA. Con varios modulos, sus filas salian
+   seguidas y sin distinguir: una pantalla de revision que no dice de que es
+   cada recurso no se puede revisar. Es una fila de titulo que cruza la tabla
+   entera, y se ancla a la izquierda como el resto de la primera columna:
+   al deslizar es justo cuando hace falta saber donde esta uno. */
+/* La fila de titulo no entra en el rayado ni en el hover del cuerpo: no es un
+   recurso que se pueda repartir, y pintarla como si lo fuera invita a buscarle
+   interruptores. */
+.pm tbody tr.pm-mod, .pm tbody tr.pm-mod:hover { background: transparent; }
+.pm-mod-nom { position: sticky; left: 0; text-align: left; font-weight: 600;
+  font-size: 13px; color: var(--texto-secundario); background: var(--fondo-encabezado);
+  padding: 8px 12px; border-bottom: 1px solid var(--borde); }
+
 .pm-sin-base .pm-nom { box-shadow: inset 3px 0 0 var(--aviso-acento); }
 /* El interruptor se centra en su celda: su etiqueta existe pero no se ve. */
 .sw-fila.sw-solo { justify-content: center; gap: 0; }

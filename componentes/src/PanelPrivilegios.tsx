@@ -20,7 +20,7 @@
  * (`base`) o desactivar (`base={null}`) cuando el dominio no funcione así.
  */
 
-import { Fragment, useCallback, useId, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useId, useMemo, useState } from 'react';
 import { Interruptor } from './Interruptor';
 import { Segmentado, type OpcionSegmento } from './Segmentado';
 import { Chip } from './Chip';
@@ -387,6 +387,58 @@ export function resumirPrivilegios(modulos: ModuloPrivilegios[], valor: ValorPri
  * backend sería conceder lo que no se concedió.
  */
 /**
+ * R151 · QUÉ BASE GOBIERNA A ESTE PRIVILEGIO.
+ *
+ * LA REGLA 1 DABA POR HECHO QUE UN MÓDULO ES UN RECURSO, y hasta el R151 lo
+ * era: `base` se buscaba por `id` literal —`concedido(valor, m.id, base)`— y
+ * «ver» mandaba sobre el módulo entero.
+ *
+ * **Con `filas`, un módulo tiene varios recursos.** Los `id` de sus privilegios
+ * son únicos dentro del módulo (`trab-ver`, `cont-ver`), así que **nunca existe
+ * uno llamado `ver`**, que es el valor por omisión de `base`. El resultado
+ * medido era el peor posible y en silencio: `privilegiosEfectivos` devolvía
+ * `{}` para el módulo **pase lo que pase con los interruptores**, y con un
+ * backend de juego completo eso **borra permisos que nadie retiró** — el daño
+ * exacto que el R150 vino a cerrar, reabierto por la puerta de al lado.
+ *
+ * Lo cazó una auditoría adversaria antes de publicar. Las cuatro invocaciones
+ * de matriz que existían —tres pruebas y el catálogo— pasaban `base={null}`,
+ * así que **el camino por omisión no lo ejercía nadie**.
+ *
+ * Así que con `filas`, `base` nombra **la columna** base, y el que gobierna a
+ * cada privilegio es el de **su propia fila** en esa columna. Es lo que una
+ * pantalla de permisos significa: sin «ver Contratos» no hay nada de Contratos,
+ * y eso no dice nada sobre Trabajadores.
+ *
+ * Devuelve `null` cuando no hay base que aplicar. Quien necesite saber que el
+ * base **no resuelve** —declarado y sin privilegio que lo encarne— tiene
+ * `baseSinResolver`: callarlo es lo que produjo el borrado.
+ */
+export function baseDe(
+  m: ModuloPrivilegios, p: Privilegio, base: string | null,
+): string | null {
+  if (!base) return null;
+  if (!m.filas?.length) return base;
+  return todos(m).find((x) => x.fila === p.fila && x.columna === base)?.id ?? null;
+}
+
+/**
+ * R151 · ¿Hay `base` declarado que NINGÚN privilegio encarna? Con `filas`, por
+ * fila. Se usa para avisar en desarrollo, no para decidir nada.
+ */
+export function baseSinResolver(
+  m: ModuloPrivilegios, base: string | null,
+): string[] {
+  if (!base) return [];
+  if (!m.filas?.length) {
+    return todos(m).some((x) => x.id === base) ? [] : [m.id];
+  }
+  return m.filas
+    .filter((f) => !todos(m).some((x) => x.fila === f.id && x.columna === base))
+    .map((f) => f.id);
+}
+
+/**
  * R150 · **EL `base` ES OBLIGATORIO, SIN VALOR POR OMISIÓN.** Feo, y a propósito.
  *
  * Este tercer parámetro era `= 'ver'` y era **independiente del `base` del
@@ -480,9 +532,38 @@ export function privilegiosEfectivos(
         for (const k of Object.keys(limpio)) if (k.startsWith(`${p.id}:`)) delete limpio[k];
       }
     }
-    // Y AHORA el base, sobre lo que ha quedado. Si el base no sobrevivio, el
-    // modulo entero deja de aplicarse: eso es lo que `base` significa.
-    if (base && limpio[base] !== true) { salida[m.id] = {}; continue; }
+    /* Y AHORA EL BASE, SOBRE LO QUE HA QUEDADO.
+     *
+     * SIN `filas` es lo de siempre: si el base no sobrevivio, el modulo entero
+     * deja de aplicarse, que es lo que `base` significa.
+     *
+     * R151 · CON `filas`, EL BASE GOBIERNA SU RECURSO Y NO EL MODULO. Vaciar
+     * el modulo entero porque un recurso perdio su `ver` se llevaria por
+     * delante los otros recursos, que no tienen nada que ver. Y el base que se
+     * busca es el de LA FILA DE CADA PRIVILEGIO —`baseDe`—, no un id literal
+     * que con filas no existe. Antes de esto, un modulo con `filas` y el
+     * `base` por omision devolvia `{}` SIEMPRE.
+     *
+     * Va dentro del punto fijo y no despues: quitar un privilegio por no tener
+     * su base puede tumbar al que dependia de el. */
+    if (base) {
+      if (!m.filas?.length) {
+        if (limpio[base] !== true) { salida[m.id] = {}; continue; }
+      } else {
+        let masCambio = true;
+        while (masCambio) {
+          masCambio = false;
+          for (const p of todos(m)) {
+            if (limpio[p.id] === undefined) continue;
+            const b = baseDe(m, p, base);
+            // Sin base que lo encarne, ese recurso no se aplica: es lo mismo
+            // que decir que su `ver` no esta concedido.
+            if (b === p.id) continue;
+            if (b === null || limpio[b] !== true) { quitar(p.id); masCambio = true; }
+          }
+        }
+      }
+    }
     salida[m.id] = limpio;
   }
   return salida;
@@ -537,7 +618,13 @@ export function PanelPrivilegios({
     // Lo que NO se conserva es el efecto: sin el base, nada se aplica. Eso lo
     // dice el panel en pantalla, y `privilegiosEfectivos` lo resuelve para
     // quien tenga que mandarlo al backend.
-    if (base) {
+    /* R151 · `baseDe` y no `base`: con `filas`, encender «editar Contratos»
+       tiene que encender «ver CONTRATOS», no un `ver` de modulo que no existe.
+       Mirandolo por id literal, con filas no encendia nada. */
+    const elPulsado = todos(m).find((p) => p.id === priv);
+    const baseDelPulsado = elPulsado ? baseDe(m, elPulsado, base) : null;
+    if (baseDelPulsado) {
+      const base = baseDelPulsado;   // el de SU fila, para lo que sigue
       if (priv !== base && activo && !delModulo[base]) {
         /* R149 · EL BASE TIENE QUE EXISTIR EN EL MODULO. Aqui se hacia
            `find(...)?.cerrado`, y sobre un privilegio INEXISTENTE eso da
@@ -633,16 +720,20 @@ export function PanelPrivilegios({
     const conQuien = p.clave
       ? todos(m).filter((x) => x.clave === p.clave && x.id !== p.id).map((x) => x.nombre)
       : [];
-    const elBase = base ? todos(m).find((x) => x.id === base) : undefined;
+    /* R151 · EL BASE DE SU FILA, no el del modulo. Con `filas` un modulo tiene
+       varios recursos y «ver» manda sobre el suyo: ver `baseDe`. */
+    const idBase = baseDe(m, p, base);
+    const elBase = idBase ? todos(m).find((x) => x.id === idBase) : undefined;
     const arrastraElBase = Boolean(
-      base && p.id !== base && !dado && elBase && !elBase.cerrado && !elBase.deshabilitado
+      idBase && p.id !== idBase && !dado && elBase && !elBase.cerrado && !elBase.deshabilitado
       && !p.deshabilitado && !soloLectura
-      && !concedido(valor, m.id, base),
+      && !concedido(valor, m.id, idBase),
     );
     return {
-      dado, no, falta, motivoFalta, conQuien, arrastraElBase,
-      nombreBase: elBase?.nombre ?? base,
+      dado, no, falta, motivoFalta, conQuien, arrastraElBase, idBase,
+      nombreBase: elBase?.nombre ?? idBase,
       apagado: soloLectura || p.deshabilitado === true,
+      ayuda: p.ayuda,
     };
   };
 
@@ -861,69 +952,121 @@ export function PanelPrivilegios({
             </tr>
           </thead>
           <tbody>
-            {modulos.flatMap((m) => {
+            {modulos.flatMap((m, im) => {
               const lista = todos(m);
               const filas = m.filas ?? [{ id: m.id, nombre: m.nombre }];
-              const sinBase = Boolean(base) && !concedido(valor, m.id, base as string);
-              return filas.map((f) => (
-                <tr key={`${m.id}-${f.id}`} className={sinBase ? 'pm-fila pm-sin-base' : 'pm-fila'}>
-                  <th scope="row" className="pm-nom" id={`${idPanel}-fila-${m.id}-${f.id}`}>
-                    <span className="pm-nom-txt">{f.nombre}</span>
+              /* CON VARIOS MODULOS, DE QUE MODULO ES CADA FILA. Sin esto las
+                 filas de «Personal» y las de «Reportes» salian seguidas y sin
+                 distinguir: una pantalla de revision que no dice de que es cada
+                 recurso no se puede revisar. Lo cazo una auditoria. Con un solo
+                 modulo no hace falta y no se pinta. */
+              const cabecera = modulos.length > 1 ? (
+                <tr key={`${m.id}-cab`} className="pm-mod">
+                  <th scope="colgroup" colSpan={cols.length + 1} className="pm-mod-nom">
+                    {m.nombre}
                   </th>
-                  {cols.map((c) => {
-                    const p = lista.find((x) => x.columna === c.id
-                      && (m.filas ? x.fila === f.id : true));
-                    const clase = c.aparte ? 'pm-celda pm-celda-aparte' : 'pm-celda';
-                    /* SIN PRIVILEGIO NO HAY NADA QUE DECIR, y eso es distinto de
-                       decir que no aplica: la celda se queda vacía y se marca
-                       como tal para el lector. Quien quiera que el hueco HABLE
-                       declara el privilegio con `cerrado: { tipo: 'noAplica' }`,
-                       que es lo que trajo el R151. */
-                    if (!p) {
-                      return (
-                        <td key={c.id} className={`${clase} pm-vacia`}>
-                          <span className="sr-solo">Sin declarar</span>
-                        </td>
-                      );
-                    }
-                    const e = estado(m, p);
-                    const nombre = <><span className="sr-solo">{f.nombre} · </span>{c.titulo}</>;
-                    if (e.no) {
-                      return (
-                        <td key={c.id} className={`${clase} pm-no pm-no-${e.no.tipo}`}
-                            title={e.no.motivo}>
-                          <span className="pm-no-ic"><Icono nombre={iconoNo(e.no.tipo)} tam="control" /></span>
-                          <span className="sr-solo">
-                            {f.nombre} · {c.titulo}: {rotuloNo(e.no.tipo)}.{e.no.motivo ? ` ${e.no.motivo}` : ''}
-                          </span>
-                        </td>
-                      );
-                    }
-                    if (e.falta) {
-                      return (
-                        <td key={c.id} className={`${clase} pm-no pm-no-depende`}
-                            title={typeof e.motivoFalta === 'string' ? e.motivoFalta : undefined}>
-                          <span className="pm-no-ic"><Icono nombre="capas" tam="control" /></span>
-                          <span className="sr-solo">
-                            {f.nombre} · {c.titulo}: necesita otro permiso. {e.motivoFalta}
-                          </span>
-                        </td>
-                      );
-                    }
-                    return (
-                      <td key={c.id} className={clase}>
-                        <Interruptor
-                          etiqueta={nombre}
-                          etiquetaOculta
-                          activo={e.dado}
-                          deshabilitado={e.apagado}
-                          onCambio={(a) => cambiar(m, p.id, a)}
-                        />
-                      </td>
-                    );
-                  })}
                 </tr>
-              ));
+              ) : null;
+              const cuerpo = filas.map((f, iF) => {
+                const idFila = `${idPanel}-fila-${im}-${iF}`;
+                /* R151 · SIN BASE, POR FILA. Marcar el modulo entero decia que
+                   Trabajadores esta sin conceder porque a Contratos le falta su
+                   «ver». Son recursos distintos. */
+                const suBase = lista.find((x) => baseDe(m, x, base) && x.fila === f.id
+                  && x.id === baseDe(m, x, base));
+                const sinBase = Boolean(base) && Boolean(suBase) && !concedido(valor, m.id, suBase!.id);
+                return (
+                  <tr key={`${m.id}-${f.id}`} className={sinBase ? 'pm-fila pm-sin-base' : 'pm-fila'}>
+                    <th scope="row" className="pm-nom" id={idFila}>
+                      <span className="pm-nom-txt">{f.nombre}</span>
+                    </th>
+                    {cols.map((c) => {
+                      const p = lista.find((x) => x.columna === c.id
+                        && (m.filas ? x.fila === f.id : true));
+                      const clase = c.aparte ? 'pm-celda pm-celda-aparte' : 'pm-celda';
+                      /* Los `headers` atan cada celda a SUS DOS encabezados. Sin
+                         ellos, los `id` del `th` no los referenciaba nadie: eran
+                         atributos muertos, y un lector en una rejilla de
+                         doscientas celdas no sabe en que cruce esta. */
+                      const atada = `${idFila} ${idPanel}-col-${c.id}`;
+                      /* SIN PRIVILEGIO NO HAY NADA QUE DECIR, y eso es distinto
+                         de decir que no aplica: la celda se queda vacia y se
+                         marca como tal para el lector. Quien quiera que el hueco
+                         HABLE declara `cerrado: { tipo: 'noAplica' }`. */
+                      if (!p) {
+                        return (
+                          <td key={c.id} headers={atada} className={`${clase} pm-vacia`}>
+                            <span className="sr-solo">Sin declarar</span>
+                          </td>
+                        );
+                      }
+                      const e = estado(m, p);
+                      const nombre = <><span className="sr-solo">{f.nombre} · </span>{c.titulo}</>;
+                      if (e.no) {
+                        return (
+                          <td key={c.id} headers={atada} className={`${clase} pm-no pm-no-${e.no.tipo}`}
+                              title={e.no.motivo}>
+                            <span className="pm-no-ic"><Icono nombre={iconoNo(e.no.tipo)} tam="control" /></span>
+                            <span className="sr-solo">
+                              {f.nombre} · {c.titulo}: {rotuloNo(e.no.tipo)}.{e.no.motivo ? ` ${e.no.motivo}` : ''}
+                            </span>
+                          </td>
+                        );
+                      }
+                      if (e.falta) {
+                        /* R146 · ESTE SI ENTRA EN EL TABULADOR, y por lo mismo
+                           que en la lista: es el unico de los cuatro que es
+                           TRANSITORIO. Se desbloquea sin recargar, y quien
+                           reparte con teclado veria aparecer un control que un
+                           segundo antes no podia alcanzar. Era un `<td>` pelado
+                           y su `title` no lo alcanzaba nadie sin raton. */
+                        const dice = typeof e.motivoFalta === 'string' ? e.motivoFalta : undefined;
+                        return (
+                          <td key={c.id} headers={atada} className={`${clase} pm-no pm-no-depende`}
+                              title={dice}>
+                            <span className="pm-no-ic" role="switch" aria-checked={false}
+                                  aria-disabled tabIndex={0}
+                                  aria-label={`${f.nombre} · ${c.titulo}`}
+                                  aria-describedby={`${idFila}-${c.id}-falta`}>
+                              <Icono nombre="capas" tam="control" />
+                            </span>
+                            <span className="sr-solo" id={`${idFila}-${c.id}-falta`}>
+                              {f.nombre} · {c.titulo}: necesita otro permiso. {e.motivoFalta}
+                            </span>
+                          </td>
+                        );
+                      }
+                      /* LO QUE `estado()` CALCULA, LA MATRIZ LO PINTA.
+                         `conQuien` (R99), `arrastraElBase` (R149) y `ayuda`
+                         (R148) se calculaban y se TIRABAN: tres reglas ya
+                         escritas que la lista cumplia y la matriz no. En una
+                         celda no cabe una linea de texto, pero si cabe en el
+                         globito y en lo que lee el lector — que es donde el
+                         aviso tiene que estar ANTES de pulsar. */
+                      const avisos = [
+                        e.ayuda,
+                        e.conQuien.length ? `Va con ${e.conQuien.join(', ')}.` : '',
+                        e.arrastraElBase && typeof e.nombreBase === 'string'
+                          ? `Enciende también «${e.nombreBase}».` : '',
+                      ].filter((x): x is string => typeof x === 'string' && x !== '');
+                      return (
+                        <td key={c.id} headers={atada} className={clase}
+                            title={avisos.length ? avisos.join(' ') : undefined}>
+                          <Interruptor
+                            etiqueta={nombre}
+                            etiquetaOculta
+                            activo={e.dado}
+                            deshabilitado={e.apagado}
+                            ayuda={avisos.length ? avisos.join(' ') : undefined}
+                            onCambio={(a) => cambiar(m, p.id, a)}
+                          />
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              });
+              return cabecera ? [cabecera, ...cuerpo] : cuerpo;
             })}
           </tbody>
         </table>
@@ -931,12 +1074,90 @@ export function PanelPrivilegios({
     );
   };
 
-  if (process.env.NODE_ENV !== 'production' && presentacion === 'matriz' && !columnas?.length) {
-    console.error(
-      'PanelPrivilegios: `presentacion="matriz"` sin `columnas`. Una matriz sin ' +
-      'columnas no es una matriz: se dibuja la lista.'
-    );
-  }
+  /* ─────────────────────────────────────────────────────────────────────────
+     R151 · LO QUE NO SE DIBUJA, SE DICE. En desarrollo y una sola vez.
+
+     El componente GRITABA cuando faltaban `columnas` y CALLABA cuando se
+     evaporaba un permiso. Una auditoria adversaria encontro cinco formas de
+     perder un privilegio sin un solo aviso —sin `columna`, con una `columna`
+     que no existe, con una `fila` que no existe, dos en la misma celda, y
+     privilegios con `fila` en un modulo sin `filas`— y en dos de ellas el
+     permiso SEGUIA CONCEDIDO y viajando al backend: activo, y ausente de la
+     pantalla donde se revisa. Para una matriz que existe PARA la revision
+     periodica, esa es la peor salida posible.
+
+     Es de desarrollo y no de produccion a proposito: quien monta la pantalla lo
+     ve al montarla, y a quien la usa no se le interrumpe el trabajo.
+     ───────────────────────────────────────────────────────────────────────── */
+  const avisosDeMatriz = useMemo(() => {
+    if (process.env.NODE_ENV === 'production' || presentacion !== 'matriz') return [];
+    const dis: string[] = [];
+    if (!columnas?.length) {
+      dis.push('`presentacion="matriz"` sin `columnas`. Una matriz sin columnas no es '
+        + 'una matriz: se dibuja la lista.');
+      return dis;
+    }
+    const idsCol = new Set(columnas.map((c) => c.id));
+    for (const m of modulos) {
+      const lista = todos(m);
+      const idsFila = new Set((m.filas ?? []).map((f) => f.id));
+      const ocupadas = new Map<string, string>();
+      for (const p of lista) {
+        if (!p.columna) {
+          dis.push(`«${p.id}» (${m.id}) no declara \`columna\`: no se dibuja en la matriz.`);
+          continue;
+        }
+        if (!idsCol.has(p.columna)) {
+          dis.push(`«${p.id}» (${m.id}) cae en la columna «${p.columna}», que no esta `
+            + 'declarada en `columnas`: no se dibuja.');
+          continue;
+        }
+        if (m.filas?.length) {
+          if (!p.fila) {
+            dis.push(`«${p.id}» (${m.id}) no declara \`fila\` y su modulo tiene \`filas\`: `
+              + 'no se dibuja.');
+            continue;
+          }
+          if (!idsFila.has(p.fila)) {
+            dis.push(`«${p.id}» (${m.id}) cae en la fila «${p.fila}», que no esta declarada `
+              + 'en `filas`: no se dibuja.');
+            continue;
+          }
+        }
+        const celda = `${p.fila ?? m.id}|${p.columna}`;
+        const ya = ocupadas.get(celda);
+        if (ya) {
+          dis.push(`«${p.id}» y «${ya}» (${m.id}) caen en la MISMA celda: solo se dibuja `
+            + 'uno y el otro sigue concediendose sin verse.');
+        } else ocupadas.set(celda, p.id);
+        /* LO QUE NO CABE EN UNA CELDA TAMPOCO SE CALLA. Un `Segmentado` de
+           niveles no entra en un cruce, pero quien migre de lista a matriz
+           perderia configuracion que `privilegiosEfectivos` sigue guardando. */
+        if (p.niveles?.length) {
+          dis.push(`«${p.id}» (${m.id}) tiene \`niveles\`, que la matriz no puede repartir. `
+            + 'Se conservan en el valor y no hay forma de cambiarlos aqui.');
+        }
+      }
+      for (const f of baseSinResolver(m, base)) {
+        dis.push(`en «${m.id}», la fila «${f}» no tiene ningun privilegio en la columna base `
+          + `«${base}»: todo lo suyo sale de lo efectivo. Si su dominio no funciona con un `
+          + 'privilegio que manda, pase `base={null}`.');
+      }
+    }
+    if (modulos.some((m) => (m.grupos ?? []).some((g) => g.titulo))) {
+      dis.push('los `grupos` con titulo no se dibujan en la matriz: sus privilegios se '
+        + 'colocan por columna y fila, y el titulo del grupo no tiene donde ir.');
+    }
+    if (abiertos || onAbiertos) {
+      dis.push('`abiertos`/`onAbiertos` no hacen nada en la matriz: no hay modulos que '
+        + 'plegar, todas las filas se ven a la vez.');
+    }
+    return dis;
+  }, [presentacion, columnas, modulos, base, abiertos, onAbiertos]);
+
+  useEffect(() => {
+    for (const d of avisosDeMatriz) console.error(`PanelPrivilegios: ${d}`);
+  }, [avisosDeMatriz]);
 
   return (
     <div className={['pp', className].filter(Boolean).join(' ')}>

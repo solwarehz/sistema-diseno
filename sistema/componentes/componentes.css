@@ -1603,7 +1603,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pb-todos{ justify-content: center; border-top: 1px solid var(--borde); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   PANEL DE PRIVILEGIOS — 64 reglas · clases .pp-*, .pm-*
+   PANEL DE PRIVILEGIOS — 67 reglas · clases .pp-*, .pm-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .pp{ display: flex; flex-direction: column; gap: 16px; }
@@ -1652,6 +1652,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pp-no-cerrado .pp-cerrado-ic{ color: var(--texto-pista); }
 .pp-no-ajeno .pp-cerrado-ic{ color: var(--info-acento); }
 .pp-no-pendiente .pp-cerrado-ic{ color: var(--texto-secundario); }
+.pp-no-noAplica .pp-cerrado-ic{ color: var(--texto-pista); }
 .pp-no-depende .pp-cerrado-ic{ color: var(--aviso-acento); }
 .pp-junto{ font-size: 12px; color: var(--texto-secundario); font-weight: 400; }
 .pp-niveles{ display: flex; flex-direction: column; gap: 12px;
@@ -1679,6 +1680,10 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pm tbody tr:hover .pm-nom{ background: var(--fondo-fila-hover); }
 .pm tbody tr:nth-child(2n){ background: var(--fondo-fila-alt); }
 .pm tbody tr:hover{ background: var(--fondo-fila-hover); }
+.pm tbody tr.pm-mod, .pm tbody tr.pm-mod:hover{ background: transparent; }
+.pm-mod-nom{ position: sticky; left: 0; text-align: left; font-weight: 600;
+  font-size: 13px; color: var(--texto-secundario); background: var(--fondo-encabezado);
+  padding: 8px 12px; border-bottom: 1px solid var(--borde); }
 .pm-sin-base .pm-nom{ box-shadow: inset 3px 0 0 var(--aviso-acento); }
 .pm-no{ color: var(--texto-pista); }
 .pm-no-ic{ display: inline-grid; place-items: center; }

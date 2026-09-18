@@ -18,7 +18,7 @@ presenta como matriz, y es el mismo componente
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **veinte pasos de
-verificación** —los que corre `publicar.mjs`—, **1071 pruebas en 54 archivos**,
+verificación** —los que corre `publicar.mjs`—, **1117 pruebas en 55 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -56,15 +56,15 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **1071 pruebas en 54 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · **1046 reglas de 1565** · **752 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
+| Componentes de React | ✅ | **1117 pruebas en 55 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · **1049 reglas de 1568** · **755 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
-| Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
+| Iconografía | ✅ | **62 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
 | Entrega ZIP | ✅ | `sistema-diseno-v1.128.0.zip` · **60 archivos** · **1.465 KB** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
 | Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.128.0**, con el salto **desde la v1.19.0**, que es la instalada |
-| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los veinte pasos · **177 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
+| Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los veinte pasos · **178 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
 
@@ -137,10 +137,35 @@ Cuatro decisiones más, tomadas aquí:
   caja `width` es una sugerencia, y ahí se midió una rendija de 7 px en Chrome— y
   el hover **después** del rayado, que empatan en especificidad.
 
-**Cinco reglas de contrato —18 a 22— con trece pruebas y quince mutaciones vistas
-en rojo.** Cinco de la primera tanda no tuvieron efecto: el patrón no coincidía
-con el texto real del componente. **Una mutación que no muta no prueba nada**, y
-si no se comprueba se lee como una prueba superada.
+**Ocho reglas de contrato —18 a 25— con 46 pruebas.** Empezaron siendo cinco
+reglas y trece pruebas, con quince mutaciones vistas en rojo. **Las tres últimas
+reglas las escribieron dos auditorías adversarias**, y lo que encontraron vale
+más que lo que entregamos:
+
+1. **Con `filas` y el `base` por omisión, el módulo entero viajaba vacío.**
+   `base` se buscaba por `id` literal, y con varios recursos por módulo los `id`
+   son únicos —`trab-ver`, `cont-ver`—, así que **nunca existía uno llamado
+   `ver`**. `privilegiosEfectivos` devolvía `{}` pasara lo que pasara con los
+   interruptores, y con un backend de juego completo **eso borra permisos que
+   nadie retiró**: el daño exacto que el R150 cerró. Nadie lo veía porque **las
+   cuatro invocaciones de matriz que existían pasaban `base={null}`** — el
+   camino por omisión no lo ejercía nadie.
+2. **«Es el mismo código» era cierto al pie de la letra y falso en su
+   propósito.** La matriz consumía cuatro de los seis campos del cálculo y
+   tiraba `conQuien` (R99) y `arrastraElBase` (R149), y no llevaba `ayuda`
+   (R148) a la celda. Una lógica, **dos pantallas diciendo cosas distintas sobre
+   quién puede qué**. De paso salió que `Interruptor` nunca ató su `ayuda` al
+   control: en la lista también, desde que R148 la puso ahí.
+3. **Cinco formas de perder un privilegio sin un solo aviso**, y en dos de ellas
+   el permiso **seguía concedido** y viajando al backend.
+4. **«Quince mutaciones en rojo» no era cobertura.** Sobrevivían **23**, y la
+   peor dejaba la matriz **sin poder retirar un permiso**: ninguna de las trece
+   pruebas pulsaba un interruptor encendido.
+
+Y cinco de la primera tanda de mutaciones no tuvieron efecto: el patrón no
+coincidía con el texto real. **Una mutación que no muta no prueba nada**, y si no
+se comprueba se lee como una prueba superada. Esa es la versión pequeña de lo
+mismo: **una cifra de mutaciones rojas no mide lo que queda sin mirar.**
 
 ### Lo de la v1.127.0, con detalle
 
