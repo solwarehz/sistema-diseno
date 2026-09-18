@@ -19,15 +19,17 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.127.0** — **no añade nada al código.** Es lo que salió al
-preguntar en serio si **lo que se entrega es lo que se promete**, con los veinte
-pasos en verde todo el tiempo. El **LEEME del ZIP** —el primer documento que abre
-quien recibe la entrega— decía que los componentes de React «todavía no existen»,
-y lo decía desde la **v1.39.0** con 34 dentro; su §3 no importaba la hoja en
-ningún paso. El catálogo publicaba como **abiertos** dos defectos ya cerrados,
-con sus cifras. Y la maqueta del panel **enseñaba el defecto que el R148 cerró**.
-El código estaba bien: 227 elementos del marcado que los componentes emiten,
-101.696 propiedades, cero divergencias entre las dos hojas.
+**Estado actual: v1.128.0** — **R151: el panel de privilegios se presenta como
+matriz.** Control Administrativos V2.0 fue a adoptarlo y su pantalla de permisos
+es una **rejilla**: recursos en filas, acciones en columnas. Nunca nos lo
+pidieron, y lo dicen ellos: *«habéis hecho siete cosas sobre una premisa que no
+os aclaramos»*. Entra porque **no es de su proyecto** —filas por recurso y
+columnas por acción es el patrón estándar— y porque lo que la lista no puede
+hacer no es comodidad: solo la matriz responde «**quién** puede editar», que se
+lee hacia abajo. Es el **mismo componente** con `presentacion="matriz"`, no un
+hermano: un hermano serían dos verdades sobre quién puede qué. Nace `noAplica`,
+el cuarto motivo, con motivo obligatorio. Cinco reglas de contrato —18 a 22— y
+quince mutaciones vistas en rojo.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

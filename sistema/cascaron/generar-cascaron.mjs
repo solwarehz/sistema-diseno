@@ -8280,6 +8280,33 @@ Recalcularlo como <code>cerrado</code> en cada pintada funciona —por eso no se
 pero desdibuja los tres motivos. Se declara con <code>depende: 'crear'</code>, y encender arrastra
 la cadena entera hacia arriba.</p>
 
+<h3 class="sub-seccion">R151 · La misma pieza, en MATRIZ — <strong>y esto no es una maqueta</strong></h3>
+<p class="seccion-sub">La lista responde <strong>«¿qué puede hacer este cargo con Contratos?»</strong>.
+La matriz responde además <strong>«¿a quién le he dado Crear?»</strong>, que en lista <strong>no se
+puede responder</strong>: hay que abrir los once acordeones y recorrerlos. No es comodidad — revisar
+periódicamente quién tiene qué es obligación legal, y se hace mirando una columna.</p>
+<div class="aviso">
+  <strong>Es el MISMO componente y la MISMA lógica</strong>, con
+  <code>presentacion="matriz"</code>: <code>base</code>, <code>depende</code>, <code>clave</code>,
+  <code>deshabilitado</code>, los cuatro motivos y lo efectivo se calculan en el mismo sitio. Partirlo
+  en dos componentes habría sido partir la lógica, y <strong>dos lógicas que tienen que coincidir
+  dejan de coincidir</strong>.
+  <br><br>
+  Lo de abajo va <strong>montado y vivo</strong>: una celda se decide con la columna, la fila, el
+  motivo, la dependencia y el apagado <strong>a la vez</strong>. Escrito a mano diverge a la primera —
+  y la maqueta de la lista, que sí se escribió a mano, <strong>divergió en ocho sitios</strong>.
+</div>
+<div class="bloque" id="matriz-viva"></div>
+<table class="tabla-simple" style="margin-top:16px">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Las columnas las declara el panel, no los módulos.</strong> Una matriz con columnas distintas por fila no es una matriz: es una lista con más huecos. Que la rejilla sea igual en todas las filas es lo que permite leer hacia abajo.</td></tr>
+    <tr><td class="num">2</td><td><strong>El hueco habla.</strong> «Desactivar contrato» lleva <code>cerrado: {'{'} tipo: 'noAplica' {'}'}</code>: la acción <em>no existe</em> para ese recurso, y decirlo no es lo mismo que omitirlo. Omitiendo, quien reparte nunca se entera de que esa acción existe. Es el cuarto motivo de <code>NoRepartible</code>, y su texto es <strong>obligatorio</strong>.</td></tr>
+    <tr><td class="num">3</td><td><strong>Una celda sin privilegio declarado no dice nada</strong>, y se ve: un punto tenue. No es lo mismo que «no aplica» — es que nadie lo declaró.</td></tr>
+    <tr><td class="num">4</td><td><strong>Cada interruptor se llama por su cruce.</strong> Su etiqueta existe pero no se ve: un lector anuncia «Contratos · Editar», no doscientas veces «Editar». Una rejilla de controles sin nombre propio solo se puede usar mirándola.</td></tr>
+    <tr><td class="num">5</td><td><strong>La primera columna va anclada</strong>, que es el R142 otra vez: con siete columnas en un teléfono, una fila desplazada no dice de quién es. Se repite el <em>patrón</em>, no el código.</td></tr>
+  </tbody>
+</table>
+
 <h3 class="sub-seccion">Las decisiones que lleva dentro</h3>
 <p class="seccion-sub">Éstas son las ocho con las que nació. <strong>El contrato tiene diecisiete</strong>
 —las nueve restantes llegaron entre la v1.125.0 y la v1.126.0, del R144 al R150— y están en
@@ -11031,6 +11058,74 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .pp-niveles { display: flex; flex-direction: column; gap: 12px;
   margin: 12px 0 4px 52px; padding-left: 12px;
   border-left: 1px solid var(--borde); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   R151 · LA MATRIZ DE PRIVILEGIOS · clases .pm-*
+
+   Filas = recursos, columnas = acciones. Lo pidio Control Administrativos V2.0
+   al ir a adoptar el panel, y no es forma de su proyecto: es el patron estandar
+   de una pantalla de permisos. Lo que la lista NO puede hacer es leer hacia
+   ABAJO —«a quien le he dado Crear»— y esa lectura es la revision periodica que
+   les exige la norma.
+
+   LA PRIMERA COLUMNA VA ANCLADA, que es el R142 otra vez: con siete columnas en
+   un telefono, una fila desplazada no dice de quien es. Se repite el PATRON, no
+   el codigo: .tb-* es de la tabla de datos y esto es otro componente. Lo que
+   si se repite son sus dos lecciones caras — el fondo va en la CELDA porque una
+   celda pegajosa transparente deja ver pasar el texto, y el ancho de la columna
+   anclada se sujeta con min-width Y max-width porque en una tabla mas ancha que
+   su contenedor el width es una sugerencia.
+   ─────────────────────────────────────────────────────────────────────────── */
+.pm-envoltura { overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
+.pm { width: 100%; border-collapse: collapse; background: var(--fondo-tarjeta);
+  --pm-nom: 220px; }
+.pm-col { background: var(--fondo-encabezado); border-bottom: 1px solid var(--borde);
+  padding: 8px 12px; font-size: 13px; font-weight: 500; text-align: center;
+  white-space: nowrap; }
+/* El titulo, en su propio nodo: asi la columna puede recortarlo sin que el
+   relleno de la celda se vaya con el. */
+.pm-col-txt { display: inline-block; }
+.pm-esquina { background: var(--fondo-encabezado); border-bottom: 1px solid var(--borde);
+  position: sticky; left: 0; z-index: 2;
+  min-width: var(--pm-nom); max-width: var(--pm-nom); }
+/* El filete dice que lo de la derecha es OTRA clase de accion. Va en la celda y
+   no entre columnas: con border-collapse los bordes los pinta la tabla. */
+.pm-col-aparte, .pm-celda-aparte { border-left: 1px solid var(--borde-fuerte); }
+.pm-fila > * { border-top: 1px solid var(--borde); }
+.pm-nom { position: sticky; left: 0; z-index: 1; background: var(--fondo-tarjeta);
+  text-align: left; font-weight: 400; font-size: 13px; padding: 8px 12px;
+  min-width: var(--pm-nom); max-width: var(--pm-nom); overflow: hidden; }
+.pm-nom-txt { display: block; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; }
+.pm-celda { padding: 4px 12px; text-align: center; }
+/* La celda anclada lleva SU fondo en cada estado de fila, o se ve pasar el
+   texto por debajo. El hover va DESPUES: los dos empatan y decide el orden. */
+.pm tbody tr:nth-child(2n) .pm-nom { background: var(--fondo-fila-alt); }
+.pm tbody tr:hover .pm-nom { background: var(--fondo-fila-hover); }
+.pm tbody tr:nth-child(2n) { background: var(--fondo-fila-alt); }
+.pm tbody tr:hover { background: var(--fondo-fila-hover); }
+/* Sin el base, la fila entera lleva el carril del R144: misma senal, mismo
+   acento, y ninguna relacion de contraste tocada. */
+.pm-sin-base .pm-nom { box-shadow: inset 3px 0 0 var(--aviso-acento); }
+/* El interruptor se centra en su celda: su etiqueta existe pero no se ve. */
+.sw-fila.sw-solo { justify-content: center; gap: 0; }
+/* EL HUECO QUE HABLA. Un motivo va en title y en texto solo para lector: el
+   icono a secas seria color y forma sin palabra, que es SC 1.4.1. */
+.pm-no { color: var(--texto-pista); }
+.pm-no-ic { display: inline-grid; place-items: center; }
+.pm-no-ajeno .pm-no-ic { color: var(--info-acento); }
+.pm-no-depende .pm-no-ic { color: var(--aviso-acento); }
+/* Y LA CELDA SIN DECLARAR NO ES LO MISMO: no dice nada porque no hay nada que
+   decir. Se deja vacia y con su punto, para que la rejilla no se lea como si
+   faltara algo por cargar. */
+.pm-vacia::before { content: '·'; color: var(--borde-fuerte); }
+@media (max-width: 640px) {
+  /* El nombre encoge, pero no desaparece: es lo unico que identifica la fila. */
+  .pm { --pm-nom: 44vw; }
+}
+@media print {
+  .pm-esquina, .pm-nom { position: static; }
+}
 
 .pp-pie { display: flex; align-items: center; justify-content: flex-end; gap: 12px;
   padding-top: 4px; }

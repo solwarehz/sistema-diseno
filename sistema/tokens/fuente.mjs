@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.127.0";
+export const VERSION = "1.128.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,58 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.128.0', fecha: '2026-09-18',
+    que: 'R151 · el panel de privilegios se presenta como MATRIZ, y es el mismo componente',
+    porque:
+      'NUNCA NOS LO PIDIERON, Y ESA ES LA PARTE QUE IMPORTA. Control Administrativos V2.0 fue a '
+      + 'adoptar el panel y su pantalla de permisos es una REJILLA: recursos en filas, acciones en '
+      + 'columnas. Lo escribieron con una honestidad que conviene dejar citada — «habeis hecho siete '
+      + 'cosas sobre una premisa que no os aclaramos». La forma del componente era una decision de '
+      + 'producto que no estaba escrita en ninguna parte, y las diecisiete reglas anteriores se '
+      + 'construyeron encima de ella sin que nadie la pusiera por delante. '
+      + 'ENTRA PORQUE NO ES SUYO. Filas = recursos y columnas = acciones es el patron estandar de '
+      + 'una pantalla de permisos, y lo que la lista NO PUEDE HACER no es comodidad: la lista '
+      + 'responde «que puede hacer este cargo con Contratos» y solo la matriz responde «QUIEN PUEDE '
+      + 'EDITAR», que se lee hacia abajo y es la revision periodica que a ellos les exige la norma. '
+      + 'ES EL MISMO COMPONENTE, NO UN HERMANO. `presentacion="matriz"` con `columnas`, y no un '
+      + '`MatrizPrivilegios` al lado. Un hermano habria sido DOS VERDADES sobre quien puede que, y '
+      + 'la primera vez que las reglas 1-17 cambiaran solo cambiaria una. Para garantizarlo, el '
+      + 'estado de cada privilegio —dado, no repartible, falta un `depende`, arrastra el base, '
+      + 'apagado— se resolvia dentro de la funcion que dibuja la fila y se SACO a un sitio unico: lo '
+      + 'unico que cambia entre lista y matriz es donde se pinta. Ellos mismos pusieron el criterio: '
+      + '«lo que no queremos es reimplementar `depende` y los cuatro estados por nuestra cuenta otra '
+      + 'vez: eso es exactamente de lo que veniamos huyendo». '
+      + 'SE EMITE UNA `<table>` DE VERDAD, con `<th scope="col">` y `<th scope="row">`. Doscientos '
+      + 'interruptores en una rejilla de `<div>` son una pantalla que solo se puede usar mirandola. '
+      + 'Y CADA INTERRUPTOR SE LLAMA POR SU CRUCE: `Interruptor` gana `etiquetaOculta`, asi que el '
+      + 'lector dice «Contratos · Editar» en vez de anunciar doscientas veces «Editar». '
+      + 'NACE `noAplica`, EL CUARTO MOTIVO, con motivo obligatorio. Omitir el privilegio no es lo '
+      + 'mismo que decir que no aplica: omitiendo, quien reparte nunca se entera de que esa accion '
+      + 'existe para otros recursos, y pregunta por que le falta. La celda SIN privilegio declarado '
+      + 'se distingue de las cuatro y no dice nada. No se concede: `privilegiosEfectivos` lo limpia '
+      + 'como a los otros tres, porque contar una accion que no existe haria que un cargo pareciera '
+      + 'incompleto por algo que no depende de nadie. '
+      + 'LAS FILAS LAS NOMBRA EL MODULO —`filas`—, que su propuesta no cubria: repartian los '
+      + 'privilegios entre filas sin decir de donde salia el nombre de cada fila, y sin eso el '
+      + 'encabezado de fila no tiene casa. '
+      + 'LA PRIMERA COLUMNA SE ANCLA, que es el R142 otra vez y por eso se reusa el PATRON y no el '
+      + 'codigo: fondo propio —una celda pegajosa transparente deja ver pasar el texto de debajo—, '
+      + 'suelo Y TECHO —en una tabla mas ancha que su caja `width` es una sugerencia, y ahi se midio '
+      + 'una rendija de 7 px en Chrome—, y el hover DESPUES del rayado, que empatan en especificidad '
+      + 'y decide el orden. '
+      + 'Cinco reglas nuevas de contrato —18 a 22— con trece pruebas, cada una vista en rojo con su '
+      + 'mutacion: quince mutaciones, quince en rojo.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'EL TIPO `NoRepartible` GANA UN CUARTO MIEMBRO. Si su codigo hace un `switch` exhaustivo '
+      + 'sobre `cerrado.tipo` con una rama `never`, deja de compilar hasta que contemple '
+      + '`noAplica`. No afecta a quien solo pase los valores.',
+      'LAS CLASES `.pm-*` SON NUEVAS EN LA HOJA. Si su producto ya usaba ese prefijo por su '
+      + 'cuenta, ahora compite con reglas del sistema que antes no existian. Nada mas cambia: la '
+      + 'presentacion en lista es byte a byte la de la v1.127.0.',
+    ],
+  },
   {
     v: '1.127.0', fecha: '2026-09-18',
     que: 'Garantizar entrega contra promesa — y lo que el LEEME, la guia y el catalogo llevaban anos diciendo mal',

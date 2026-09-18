@@ -95,7 +95,10 @@ const ELEMENTOS = [
   { n: 'Panel de la barra',     p: ['pb'] },
   // R97 · Reparte permisos por modulo. Se COMPONE de Interruptor, Chip y Boton;
   // lo unico suyo es el andamiaje de la lista.
-  { n: 'Panel de privilegios',  p: ['pp'] },
+  // R151 · 'pm' es la MATRIZ del mismo componente. Va en su seccion y no en una
+  // aparte: es la misma pieza con otra forma, y separarlas haria pensar que son
+  // dos componentes — que es justo lo que se decidio que NO fueran.
+  { n: 'Panel de privilegios',  p: ['pp', 'pm'] },
   // R105 · Pasarela de pagos. VIAJA, y eso fue una correccion: nacio como
   // composicion «solo catalogo», y con eso la promesa NO se podia garantizar —
   // lo que no viaja, `verificar-promesa` no lo compara. Un producto montaba la

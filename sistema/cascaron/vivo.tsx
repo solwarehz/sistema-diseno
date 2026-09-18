@@ -24,6 +24,8 @@ import { createRoot } from 'react-dom/client';
 import { MarcoApp, type GrupoNav } from '../../componentes/src/MarcoApp';
 import { Icono } from '../../componentes/src/Icono';
 import { TablaDatos } from '../../componentes/src/TablaDatos';
+import { PanelPrivilegios, type ModuloPrivilegios, type ValorPrivilegios,
+  type ColumnaPrivilegios } from '../../componentes/src/PanelPrivilegios';
 import { Chip } from '../../componentes/src/Chip';
 
 /** La misma navegación que enseña la maqueta de al lado, para comparar. */
@@ -197,3 +199,77 @@ const conAncla = document.getElementById('tabla-viva-anclada');
 if (conAncla) createRoot(conAncla).render(<TablaViva anclar={1} />);
 const sinAncla = document.getElementById('tabla-viva-suelta');
 if (sinAncla) createRoot(sinAncla).render(<TablaViva anclar={0} />);
+
+/* ───────────────────────────────────────────────────────────────────────────
+   R151 · LA MATRIZ, MONTADA Y VIVA
+
+   Va viva y no de cartón por lo mismo que la tabla anclada: una celda de esta
+   rejilla se decide con `columna`, `fila`, los cuatro motivos, `depende`,
+   `clave` y `deshabilitado` a la vez. Eso escrito a mano diverge a la primera —y
+   la maqueta de la LISTA, que se escribió a mano, divergió en ocho sitios y lo
+   encontró una verificación, no un candado.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+const COLUMNAS: ColumnaPrivilegios[] = [
+  { id: 'ver', titulo: 'Ver' },
+  { id: 'editar', titulo: 'Editar' },
+  { id: 'crear', titulo: 'Crear' },
+  { id: 'desactivar', titulo: 'Desactivar' },
+  { id: 'descargar', titulo: 'Descargar', aparte: true },
+];
+
+const MODULOS_MATRIZ: ModuloPrivilegios[] = [
+  {
+    id: 'personal', nombre: 'Personal',
+    filas: [
+      { id: 'trabajadores', nombre: 'Trabajadores' },
+      { id: 'contratos', nombre: 'Contratos' },
+    ],
+    privilegios: [
+      { id: 'tr-ver', nombre: 'Ver trabajadores', columna: 'ver', fila: 'trabajadores' },
+      { id: 'tr-editar', nombre: 'Editar trabajador', columna: 'editar', fila: 'trabajadores' },
+      { id: 'tr-crear', nombre: 'Crear trabajador', columna: 'crear', fila: 'trabajadores' },
+      { id: 'tr-desactivar', nombre: 'Desactivar trabajador', columna: 'desactivar', fila: 'trabajadores',
+        depende: 'tr-editar' },
+      { id: 'tr-descargar', nombre: 'Descargar trabajadores', columna: 'descargar', fila: 'trabajadores' },
+      { id: 'co-ver', nombre: 'Ver contratos', columna: 'ver', fila: 'contratos' },
+      { id: 'co-editar', nombre: 'Editar contrato', columna: 'editar', fila: 'contratos' },
+      { id: 'co-crear', nombre: 'Crear contrato', columna: 'crear', fila: 'contratos',
+        cerrado: { tipo: 'ajeno', motivo: 'Crear contratos es del Jefe de personal.' } },
+      /* EL HUECO QUE HABLA: la acción no existe para este recurso, y decirlo no
+         es lo mismo que omitirlo. Es el argumento con el que llegó el R151. */
+      { id: 'co-desactivar', nombre: 'Desactivar contrato', columna: 'desactivar', fila: 'contratos',
+        cerrado: { tipo: 'noAplica', motivo: 'Un contrato no se apaga: se cierra con fecha.' } },
+      { id: 'co-descargar', nombre: 'Descargar contratos', columna: 'descargar', fila: 'contratos' },
+    ],
+  },
+  {
+    id: 'reportes', nombre: 'Reportes',
+    filas: [{ id: 'asistencia', nombre: 'Reporte de asistencia' }],
+    privilegios: [
+      { id: 're-ver', nombre: 'Ver reporte', columna: 'ver', fila: 'asistencia' },
+      { id: 're-descargar', nombre: 'Descargar reporte', columna: 'descargar', fila: 'asistencia',
+        deshabilitado: true },
+    ],
+  },
+];
+
+function MatrizViva() {
+  const [v, setV] = useState<ValorPrivilegios>({
+    personal: { 'tr-ver': true, 'tr-editar': true, 'co-ver': true },
+    reportes: { 're-ver': true, 're-descargar': true },
+  });
+  return (
+    <PanelPrivilegios
+      presentacion="matriz"
+      columnas={COLUMNAS}
+      modulos={MODULOS_MATRIZ}
+      base={null}
+      valor={v}
+      onCambio={(completo) => setV(completo)}
+    />
+  );
+}
+
+const enMatriz = document.getElementById('matriz-viva');
+if (enMatriz) createRoot(enMatriz).render(<MatrizViva />);

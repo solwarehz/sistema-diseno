@@ -51,10 +51,22 @@ export type InterruptorProps = {
    * Manda sobre `deshabilitado`: lo permanente gana a lo temporal.
    */
   cerrado?: string;
+  /**
+   * R151 · La etiqueta **existe pero no se ve**. Para una celda de matriz,
+   * donde lo que nombra al interruptor es el cruce de su fila y su columna y
+   * repetirlo en cada celda llenaría la rejilla de texto.
+   *
+   * **No es lo mismo que quitarla.** Sigue en el árbol y sigue siendo el
+   * `aria-labelledby` del control: un interruptor sin nombre accesible es un
+   * interruptor que un lector de pantalla anuncia como «botón, activado», y en
+   * una matriz de doscientos eso es doscientas veces lo mismo.
+   */
+  etiquetaOculta?: boolean;
 };
 
 export function Interruptor({
   etiqueta, ayuda, activo, onCambio, deshabilitado = false, cerrado,
+  etiquetaOculta = false,
 }: InterruptorProps) {
   const id = useId();
 
@@ -77,7 +89,11 @@ export function Interruptor({
   }
 
   return (
-    <label className={`sw-fila${deshabilitado ? ' sw-desh' : ''}`}>
+    <label className={[
+      'sw-fila',
+      deshabilitado && 'sw-desh',
+      etiquetaOculta && 'sw-solo',
+    ].filter(Boolean).join(' ')}>
       <button
         type="button"
         role="switch"
@@ -91,7 +107,7 @@ export function Interruptor({
       >
         <span className="sw-bolita" />
       </button>
-      <span className="sw-txt">
+      <span className={etiquetaOculta ? 'sw-txt sr-solo' : 'sw-txt'}>
         <span className="sw-et" id={`${id}-et`}>{etiqueta}</span>
         {ayuda && <span className="sw-ayuda">{ayuda}</span>}
       </span>

@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-**Última actualización:** 16 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.127.0** — garantizar entrega contra
-promesa: el código estaba bien y los documentos no
+**Última actualización:** 18 de septiembre de 2026
+**Versión del sistema:** MMI-DS **v1.128.0** — R151: el panel de privilegios se
+presenta como matriz, y es el mismo componente
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -57,13 +57,13 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
 | Componentes de React | ✅ | **1071 pruebas en 54 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · **1023 reglas de 1542** · **733 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
+| La hoja que viaja | ✅ | `extraer.mjs` · **1046 reglas de 1565** · **752 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.127.0.zip` · **60 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.128.0.zip` · **60 archivos** · **1.465 KB** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.127.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.128.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los veinte pasos · **177 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -86,7 +86,63 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.127.0), con detalle
+### Lo de hoy (v1.128.0), con detalle
+
+**R151 · el panel de privilegios se presenta como matriz.** Control
+Administrativos V2.0 fue a adoptarlo y su pantalla de permisos es una **rejilla**:
+recursos en filas, acciones en columnas. El panel solo sabía ser lista.
+
+> **Nunca nos lo pidieron, y la frase es suya:** *«habéis hecho siete cosas sobre
+> una premisa que no os aclaramos»*.
+
+Es la lección de la versión y no el código: **la forma del componente era una
+decisión de producto que no estaba escrita en ninguna parte**, y las diecisiete
+reglas anteriores se construyeron encima de ella. Un requerimiento no declarado
+no sale en ningún candado: los veinte pasos llevaban diecisiete versiones en
+verde sobre una lista que su pantalla no podía usar.
+
+**Entra porque no es suyo.** Filas por recurso y columnas por acción es el patrón
+estándar de una pantalla de permisos. Y lo que la lista no puede hacer no es
+comodidad: la lista responde «¿qué puede hacer este cargo con Contratos?» y solo
+la matriz responde «**¿quién** puede editar?», que se lee hacia abajo y es la
+revisión periódica que a ellos les exige la norma.
+
+**Es el mismo componente, no un hermano.** `presentacion="matriz"` con
+`columnas`, y no un `MatrizPrivilegios` al lado: un hermano habría sido **dos
+verdades sobre quién puede qué**, y la primera vez que las reglas 1-17 cambiaran
+solo cambiaría una. Para garantizarlo, el estado de cada privilegio —dado, no
+repartible, le falta un `depende`, arrastra el base, apagado— vivía dentro de la
+función que dibuja la fila y **se sacó a un sitio único**. Lo único que cambia
+entre lista y matriz es dónde se pinta. El criterio lo pusieron ellos: *«lo que
+no queremos es reimplementar `depende` y los cuatro estados por nuestra cuenta
+otra vez»*.
+
+Cuatro decisiones más, tomadas aquí:
+
+- **`noAplica`, el cuarto motivo, con motivo obligatorio.** Omitir el privilegio
+  no es lo mismo que decir que no aplica: omitiendo, quien reparte nunca se
+  entera de que esa acción existe para otros recursos y sí pregunta por qué le
+  falta. La celda **sin** privilegio declarado se distingue de las cuatro y no
+  dice nada. Y no se concede: `privilegiosEfectivos` lo limpia como a los otros
+  tres.
+- **Las filas las nombra el módulo** (`filas`). Su propuesta repartía los
+  privilegios entre filas sin decir de dónde salía el nombre de cada una.
+- **Se emite una `<table>` de verdad**, con `<th scope="col">` y
+  `<th scope="row">`, y **cada interruptor se llama por su cruce** —«Contratos ·
+  Editar»— con `etiquetaOculta`. Doscientos interruptores sin encabezados
+  asociados son una pantalla que solo se puede usar mirándola, y un lector que
+  anuncia doscientas veces «Editar» no informa de nada.
+- **La primera columna se ancla**, que es el R142 otra vez: se reusa el **patrón**
+  y no el código. Fondo propio, suelo **y techo** —en una tabla más ancha que su
+  caja `width` es una sugerencia, y ahí se midió una rendija de 7 px en Chrome— y
+  el hover **después** del rayado, que empatan en especificidad.
+
+**Cinco reglas de contrato —18 a 22— con trece pruebas y quince mutaciones vistas
+en rojo.** Cinco de la primera tanda no tuvieron efecto: el patrón no coincidía
+con el texto real del componente. **Una mutación que no muta no prueba nada**, y
+si no se comprueba se lee como una prueba superada.
+
+### Lo de la v1.127.0, con detalle
 
 **Esta versión no añade nada al código.** Es lo que salió al preguntar en serio
 si lo que se **entrega** es lo que se **promete**. Los veinte pasos estaban en

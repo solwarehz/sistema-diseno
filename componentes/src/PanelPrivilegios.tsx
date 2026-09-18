@@ -68,7 +68,46 @@ export type NivelPrivilegio = {
 export type NoRepartible =
   | { tipo: 'cerrado'; motivo: string }
   | { tipo: 'ajeno'; motivo: string }
-  | { tipo: 'pendiente'; motivo?: string };
+  | { tipo: 'pendiente'; motivo?: string }
+  /**
+   * R151 · **NO APLICA** — la acción no existe para este recurso, y eso es un
+   * dato, no una ausencia.
+   *
+   * Los otros tres dicen por qué algo **no se puede conceder**; éste dice que
+   * **no hay nada que conceder**. La regla 3 llevaba desde el R97 diciendo «lo
+   * que no aplica no se pasa», y en una lista es correcto: una fila entera para
+   * decir que algo no existe es ruido. **En una matriz no**, y lo explicó
+   * Control Administrativos V2.0 mejor de lo que lo teníamos escrito:
+   *
+   * > «Omitir no es lo mismo que decir que no aplica. Hoy el dueño ve que
+   * > "Contrato" no tiene "Desactivar" —hay un hueco en esa columna, y al pasar
+   * > el cursor dice por qué: un contrato no se apaga, se cierra con fecha—. Si
+   * > se omite, nunca se entera de que esa acción existe.»
+   *
+   * El motivo es **obligatorio**, y aquí más que en los otros: un hueco sin
+   * explicación se lee como un olvido del que montó la pantalla.
+   *
+   * No cuenta en el «4 de 6», igual que los otros tres: contar una acción que
+   * no existe haría que un cargo pareciera incompleto por algo que no depende
+   * de nadie.
+   */
+  | { tipo: 'noAplica'; motivo: string };
+
+/**
+ * R151 · UNA COLUMNA DE LA MATRIZ. Una acción: ver, editar, crear, descargar.
+ *
+ * Las columnas las declara el PANEL, no los módulos: una matriz con columnas
+ * distintas por fila no es una matriz, es una lista con más huecos. Que la
+ * rejilla sea la misma en todas las filas es lo que permite leer hacia abajo, y
+ * leer hacia abajo —«¿a quién le he dado Crear?»— es la mitad del valor de esta
+ * forma. La otra mitad, leer hacia el lado, ya la daba la lista.
+ */
+export type ColumnaPrivilegios = {
+  id: string;
+  titulo: React.ReactNode;
+  /** Se separa de la anterior con un filete: es otra clase de acción. */
+  aparte?: boolean;
+};
 
 export type Privilegio = {
   id: string;
@@ -158,6 +197,16 @@ export type Privilegio = {
    * de relleno.
    */
   deshabilitado?: boolean;
+  /**
+   * R151 · En qué **columna** cae, con `presentacion="matriz"`. El `id` de una
+   * de las columnas declaradas. Sin matriz se ignora.
+   */
+  columna?: string;
+  /**
+   * R151 · En qué **fila** cae. El `id` de una de las `filas` del módulo. Por
+   * omisión, el módulo entero es una fila.
+   */
+  fila?: string;
 };
 
 /** Un bloque con título dentro del módulo. Para lo que no es una acción. */
@@ -166,9 +215,23 @@ export type GrupoPrivilegios = { titulo: string; privilegios: Privilegio[] };
 export type ModuloPrivilegios = {
   id: string;
   nombre: React.ReactNode;
-  /** Solo los privilegios que ese módulo tiene. Lo que no aplica no se pasa. */
+  /**
+   * Solo los privilegios que ese módulo tiene. **En lista, lo que no aplica no
+   * se pasa**; en matriz se puede declarar con `cerrado: { tipo: 'noAplica' }`
+   * para que el hueco hable en vez de callar. Ver la regla 3.
+   */
   privilegios: Privilegio[];
   grupos?: GrupoPrivilegios[];
+  /**
+   * R151 · Las **filas** del módulo dentro de la matriz. Sin esto, el módulo es
+   * **una** fila y se llama como él.
+   *
+   * El nombre vive aquí y no en cada privilegio a propósito: repetirlo en los
+   * seis privilegios de una fila es repetir seis veces una decisión, y una
+   * decisión escrita seis veces se separa. Es la misma razón por la que las
+   * columnas las declara el panel.
+   */
+  filas?: { id: string; nombre: React.ReactNode }[];
 };
 
 /**
@@ -219,6 +282,27 @@ export type PanelPrivilegiosProps = {
   abiertos?: string[];
   onAbiertos?: (ids: string[]) => void;
   soloLectura?: boolean;
+  /**
+   * R151 · **Lista o matriz.** Por omisión, lista.
+   *
+   * La lista responde «¿qué puede hacer este cargo con Contratos?» y la matriz
+   * responde ADEMÁS «¿a quién le he dado Crear?», que en lista **no se puede
+   * responder**: hay que abrir los once acordeones y recorrerlos. Lo trajo
+   * Control Administrativos V2.0 con el dato que lo convierte en requisito y no
+   * en gusto: revisar periódicamente quién tiene qué es **obligación legal**
+   * —D.S. 016-2024-JUS art. 46.1.c— y hoy se hace mirando una columna.
+   *
+   * **Es la MISMA lógica**, no otro componente: `base`, `depende`, `clave`,
+   * `deshabilitado`, los cuatro motivos de `NoRepartible` y lo efectivo se
+   * calculan igual y en el mismo sitio. Lo único que cambia es dónde se dibuja
+   * cada interruptor. Partirlo en dos componentes habría sido partir la lógica,
+   * y dos lógicas que tienen que coincidir dejan de coincidir.
+   *
+   * Necesita `columnas`. Sin ellas no hay matriz que dibujar y se avisa.
+   */
+  presentacion?: 'lista' | 'matriz';
+  /** R151 · Las columnas de la matriz. Obligatorias con `presentacion="matriz"`. */
+  columnas?: ColumnaPrivilegios[];
   /** Encabezado libre: el selector de cargo, un buscador, lo que haga falta. */
   children?: React.ReactNode;
   className?: string;
@@ -407,6 +491,7 @@ export function privilegiosEfectivos(
 export function PanelPrivilegios({
   modulos, valor, onCambio, base = 'ver', preset, onVolverAlPreset,
   abiertos, onAbiertos, soloLectura = false, children, className = '',
+  presentacion = 'lista', columnas,
 }: PanelPrivilegiosProps) {
   const [propios, setPropios] = useState<string[]>([]);
   /* R146 · Para nombrar y describir la fila bloqueada por `depende`. Se llama
@@ -514,6 +599,53 @@ export function PanelPrivilegios({
     onCambio(nuevo, privilegiosEfectivos(modulos, nuevo, base));
   };
 
+  /**
+   * R151 · EL ESTADO DE UN PRIVILEGIO, EN UN SOLO SITIO.
+   *
+   * Esto vivía dentro de `fila()`, que dibuja la lista. Al entrar la matriz
+   * habría habido que repetirlo —o, peor, aproximarlo— y este repositorio ya
+   * sabe cómo acaba eso: dos cálculos que tienen que coincidir dejan de
+   * coincidir, y el segundo se descubre cuando alguien reparte mal un permiso.
+   *
+   * Así que la lógica se calcula aquí y **las dos presentaciones la consumen**.
+   * Lo único que cambia entre lista y matriz es dónde se pinta.
+   */
+  /** El icono y el rótulo de cada motivo. Uno solo, y lo usan las dos formas. */
+  const iconoNo = (t: NoRepartible['tipo']) =>
+    t === 'pendiente' ? 'informacion' : t === 'ajeno' ? 'usuarios' : t === 'noAplica' ? 'cerrar' : 'candado';
+  const tonoNo = (t: NoRepartible['tipo']) =>
+    t === 'pendiente' ? 'pendiente' as const : t === 'ajeno' ? 'info' as const : 'inactivo' as const;
+  const rotuloNo = (t: NoRepartible['tipo']) =>
+    t === 'cerrado' ? 'no se puede conceder'
+      : t === 'ajeno' ? 'no lo tiene usted'
+      : t === 'noAplica' ? 'no aplica aquí'
+      : 'todavía no existe';
+
+  const estado = (m: ModuloPrivilegios, p: Privilegio) => {
+    const dado = concedido(valor, m.id, p.id);
+    const no = comoNoRepartible(p.cerrado);
+    const falta = no ? undefined : faltaDepende(m, valor, p.id);
+    const nombreFalta = falta ? todos(m).find((x) => x.id === falta)?.nombre : undefined;
+    const motivoFalta = falta === undefined ? null
+      : typeof nombreFalta === 'string' || nombreFalta === undefined
+        ? `Antes hay que conceder «${nombreFalta ?? falta}».`
+        : <>Antes hay que conceder «{nombreFalta}».</>;
+    const conQuien = p.clave
+      ? todos(m).filter((x) => x.clave === p.clave && x.id !== p.id).map((x) => x.nombre)
+      : [];
+    const elBase = base ? todos(m).find((x) => x.id === base) : undefined;
+    const arrastraElBase = Boolean(
+      base && p.id !== base && !dado && elBase && !elBase.cerrado && !elBase.deshabilitado
+      && !p.deshabilitado && !soloLectura
+      && !concedido(valor, m.id, base),
+    );
+    return {
+      dado, no, falta, motivoFalta, conQuien, arrastraElBase,
+      nombreBase: elBase?.nombre ?? base,
+      apagado: soloLectura || p.deshabilitado === true,
+    };
+  };
+
   const fila = (m: ModuloPrivilegios, p: Privilegio, esBase: boolean) => {
     const dado = concedido(valor, m.id, p.id);
     const no = comoNoRepartible(p.cerrado);
@@ -568,16 +700,12 @@ export function PanelPrivilegios({
         {no ? (
           <div className="pp-cerrado">
             <span className="pp-cerrado-ic">
-              <Icono nombre={no.tipo === 'pendiente' ? 'informacion' : no.tipo === 'ajeno' ? 'usuarios' : 'candado'} />
+              <Icono nombre={iconoNo(no.tipo)} />
             </span>
             <span className="pp-cerrado-txt">
               <span className="pp-cerrado-nom">{p.nombre}</span>
               <span className="pp-cerrado-eti">
-                <Chip tono={no.tipo === 'pendiente' ? 'pendiente' : no.tipo === 'ajeno' ? 'info' : 'inactivo'}>
-                  {no.tipo === 'cerrado' ? 'no se puede conceder'
-                    : no.tipo === 'ajeno' ? 'no lo tiene usted'
-                    : 'todavía no existe'}
-                </Chip>
+                <Chip tono={tonoNo(no.tipo)}>{rotuloNo(no.tipo)}</Chip>
               </span>
               {no.motivo && <span className="pp-cerrado-motivo">{no.motivo}</span>}
             </span>
@@ -693,10 +821,128 @@ export function PanelPrivilegios({
     );
   };
 
+  /* ─────────────────────────────────────────────────────────────────────────
+     R151 · LA MATRIZ
+
+     Lo pidió Control Administrativos V2.0 al ir a adoptar el panel, y con una
+     honestidad que conviene citar: «nunca os lo pedimos… habéis hecho siete
+     cosas sobre una premisa que no os aclaramos». La forma es del producto y no
+     estaba escrita en ninguna parte.
+
+     Entra porque NO es de su proyecto: filas = recursos, columnas = acciones es
+     el patrón estándar de una pantalla de permisos, y lo que la lista no puede
+     hacer —leer hacia ABAJO, «¿a quién le he dado Crear?»— no es comodidad: es
+     la revisión periódica que les exige el D.S. 016-2024-JUS.
+
+     Es un `<table>` de verdad, con `<th scope="col">` y `<th scope="row">`: una
+     rejilla de doscientos interruptores sin encabezados asociados es una
+     pantalla que solo se puede usar mirándola.
+
+     Y LA PRIMERA COLUMNA VA ANCLADA, que es el R142 otra vez: con siete
+     columnas en un teléfono, una fila desplazada no dice de quién es. La
+     solución ya estaba escrita para `TablaDatos` y aquí se repite el patrón,
+     no el código: son dos hojas distintas porque son dos componentes distintos.
+     ───────────────────────────────────────────────────────────────────────── */
+  const matriz = () => {
+    const cols = columnas ?? [];
+    return (
+      <div className="pm-envoltura">
+        <table className="pm">
+          <thead>
+            <tr>
+              {/* La esquina no es un encabezado de nada: va vacía y se dice. */}
+              <th className="pm-esquina" scope="col"><span className="sr-solo">Opción</span></th>
+              {cols.map((c) => (
+                <th key={c.id} scope="col" id={`${idPanel}-col-${c.id}`}
+                    className={c.aparte ? 'pm-col pm-col-aparte' : 'pm-col'}>
+                  <span className="pm-col-txt">{c.titulo}</span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {modulos.flatMap((m) => {
+              const lista = todos(m);
+              const filas = m.filas ?? [{ id: m.id, nombre: m.nombre }];
+              const sinBase = Boolean(base) && !concedido(valor, m.id, base as string);
+              return filas.map((f) => (
+                <tr key={`${m.id}-${f.id}`} className={sinBase ? 'pm-fila pm-sin-base' : 'pm-fila'}>
+                  <th scope="row" className="pm-nom" id={`${idPanel}-fila-${m.id}-${f.id}`}>
+                    <span className="pm-nom-txt">{f.nombre}</span>
+                  </th>
+                  {cols.map((c) => {
+                    const p = lista.find((x) => x.columna === c.id
+                      && (m.filas ? x.fila === f.id : true));
+                    const clase = c.aparte ? 'pm-celda pm-celda-aparte' : 'pm-celda';
+                    /* SIN PRIVILEGIO NO HAY NADA QUE DECIR, y eso es distinto de
+                       decir que no aplica: la celda se queda vacía y se marca
+                       como tal para el lector. Quien quiera que el hueco HABLE
+                       declara el privilegio con `cerrado: { tipo: 'noAplica' }`,
+                       que es lo que trajo el R151. */
+                    if (!p) {
+                      return (
+                        <td key={c.id} className={`${clase} pm-vacia`}>
+                          <span className="sr-solo">Sin declarar</span>
+                        </td>
+                      );
+                    }
+                    const e = estado(m, p);
+                    const nombre = <><span className="sr-solo">{f.nombre} · </span>{c.titulo}</>;
+                    if (e.no) {
+                      return (
+                        <td key={c.id} className={`${clase} pm-no pm-no-${e.no.tipo}`}
+                            title={e.no.motivo}>
+                          <span className="pm-no-ic"><Icono nombre={iconoNo(e.no.tipo)} tam="control" /></span>
+                          <span className="sr-solo">
+                            {f.nombre} · {c.titulo}: {rotuloNo(e.no.tipo)}.{e.no.motivo ? ` ${e.no.motivo}` : ''}
+                          </span>
+                        </td>
+                      );
+                    }
+                    if (e.falta) {
+                      return (
+                        <td key={c.id} className={`${clase} pm-no pm-no-depende`}
+                            title={typeof e.motivoFalta === 'string' ? e.motivoFalta : undefined}>
+                          <span className="pm-no-ic"><Icono nombre="capas" tam="control" /></span>
+                          <span className="sr-solo">
+                            {f.nombre} · {c.titulo}: necesita otro permiso. {e.motivoFalta}
+                          </span>
+                        </td>
+                      );
+                    }
+                    return (
+                      <td key={c.id} className={clase}>
+                        <Interruptor
+                          etiqueta={nombre}
+                          etiquetaOculta
+                          activo={e.dado}
+                          deshabilitado={e.apagado}
+                          onCambio={(a) => cambiar(m, p.id, a)}
+                        />
+                      </td>
+                    );
+                  })}
+                </tr>
+              ));
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  if (process.env.NODE_ENV !== 'production' && presentacion === 'matriz' && !columnas?.length) {
+    console.error(
+      'PanelPrivilegios: `presentacion="matriz"` sin `columnas`. Una matriz sin ' +
+      'columnas no es una matriz: se dibuja la lista.'
+    );
+  }
+
   return (
     <div className={['pp', className].filter(Boolean).join(' ')}>
       {children && <div className="pp-cab">{children}</div>}
 
+      {presentacion === 'matriz' && columnas?.length ? matriz() : (
       <div className="pp-lista">
         {modulos.map((m) => {
           const lista = todos(m);
@@ -799,6 +1045,7 @@ export function PanelPrivilegios({
           );
         })}
       </div>
+      )}
 
       {preset && onVolverAlPreset && modificados.size > 0 && (
         <div className="pp-pie">

@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.127.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.128.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -87,7 +87,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.127.0; }
+:root{ --mmi-componentes: 1.128.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -447,7 +447,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .sel-op.sel-fallo strong{ color: var(--texto-principal); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   INTERRUPTOR — 19 reglas · clases .sw-*
+   INTERRUPTOR — 20 reglas · clases .sw-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .sw-fila{ display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
@@ -480,6 +480,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
   .sw, .sw-bolita{ transition: none; }
 }
 .sw-mini{ width: 40px; height: 24px; }
+.sw-fila.sw-solo{ justify-content: center; gap: 0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    SELECCIÓN MÚLTIPLE — 15 reglas · clases .ms-*
@@ -1602,7 +1603,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pb-todos{ justify-content: center; border-top: 1px solid var(--borde); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   PANEL DE PRIVILEGIOS — 42 reglas · clases .pp-*
+   PANEL DE PRIVILEGIOS — 64 reglas · clases .pp-*, .pm-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .pp{ display: flex; flex-direction: column; gap: 16px; }
@@ -1656,6 +1657,40 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pp-niveles{ display: flex; flex-direction: column; gap: 12px;
   margin: 12px 0 4px 52px; padding-left: 12px;
   border-left: 1px solid var(--borde); }
+.pm-envoltura{ overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
+.pm{ width: 100%; border-collapse: collapse; background: var(--fondo-tarjeta);
+  --pm-nom: 220px; }
+.pm-col{ background: var(--fondo-encabezado); border-bottom: 1px solid var(--borde);
+  padding: 8px 12px; font-size: 13px; font-weight: 500; text-align: center;
+  white-space: nowrap; }
+.pm-col-txt{ display: inline-block; }
+.pm-esquina{ background: var(--fondo-encabezado); border-bottom: 1px solid var(--borde);
+  position: sticky; left: 0; z-index: 2;
+  min-width: var(--pm-nom); max-width: var(--pm-nom); }
+.pm-col-aparte, .pm-celda-aparte{ border-left: 1px solid var(--borde-fuerte); }
+.pm-fila > *{ border-top: 1px solid var(--borde); }
+.pm-nom{ position: sticky; left: 0; z-index: 1; background: var(--fondo-tarjeta);
+  text-align: left; font-weight: 400; font-size: 13px; padding: 8px 12px;
+  min-width: var(--pm-nom); max-width: var(--pm-nom); overflow: hidden; }
+.pm-nom-txt{ display: block; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; }
+.pm-celda{ padding: 4px 12px; text-align: center; }
+.pm tbody tr:nth-child(2n) .pm-nom{ background: var(--fondo-fila-alt); }
+.pm tbody tr:hover .pm-nom{ background: var(--fondo-fila-hover); }
+.pm tbody tr:nth-child(2n){ background: var(--fondo-fila-alt); }
+.pm tbody tr:hover{ background: var(--fondo-fila-hover); }
+.pm-sin-base .pm-nom{ box-shadow: inset 3px 0 0 var(--aviso-acento); }
+.pm-no{ color: var(--texto-pista); }
+.pm-no-ic{ display: inline-grid; place-items: center; }
+.pm-no-ajeno .pm-no-ic{ color: var(--info-acento); }
+.pm-no-depende .pm-no-ic{ color: var(--aviso-acento); }
+.pm-vacia::before{ content: '·'; color: var(--borde-fuerte); }
+@media (max-width: 640px) {
+  .pm{ --pm-nom: 44vw; }
+}
+@media print {
+  .pm-esquina, .pm-nom{ position: static; }
+}
 .pp-pie{ display: flex; align-items: center; justify-content: flex-end; gap: 12px;
   padding-top: 4px; }
 .pp-pie-txt{ font-size: 13px; color: var(--texto-secundario); }

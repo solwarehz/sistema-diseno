@@ -54,6 +54,7 @@ export { CabeceraPantalla, type CabeceraPantallaProps } from './CabeceraPantalla
 export { PanelBarra, type ItemPanel, type PanelBarraProps } from './PanelBarra';
 export { PanelPrivilegios, resumirPrivilegios, privilegiosEfectivos, claveNivel, comoNoRepartible,
   type PanelPrivilegiosProps, type Privilegio, type NivelPrivilegio, type NoRepartible,
-  type GrupoPrivilegios, type ModuloPrivilegios, type ValorPrivilegios } from './PanelPrivilegios';
+  type GrupoPrivilegios, type ModuloPrivilegios, type ValorPrivilegios,
+  type ColumnaPrivilegios } from './PanelPrivilegios';
 export { RedesSociales, NOMBRE_RED,
   type RedesSocialesProps, type EnlaceRed, type NombreRed } from './RedesSociales';
