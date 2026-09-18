@@ -146,8 +146,17 @@ export const CAMBIOS = [
       + 'sobre `cerrado.tipo` con una rama `never`, deja de compilar hasta que contemple '
       + '`noAplica`. No afecta a quien solo pase los valores.',
       'LAS CLASES `.pm-*` SON NUEVAS EN LA HOJA. Si su producto ya usaba ese prefijo por su '
-      + 'cuenta, ahora compite con reglas del sistema que antes no existian. Nada mas cambia: la '
-      + 'presentacion en lista es byte a byte la de la v1.127.0.',
+      + 'cuenta, ahora compite con reglas del sistema que antes no existian.',
+      'Y LA LISTA TAMBIEN CAMBIA, aunque no usen la matriz. Aqui decia que la presentacion en '
+      + 'lista es «byte a byte la de la v1.127.0» y DEJO DE SER CIERTO al arreglar el R151; se '
+      + 'corrige antes de publicar. Son tres cosas, las tres a favor: `Interruptor` ata su `ayuda` '
+      + 'al control con `aria-describedby` —hasta ahora el texto se pintaba al lado y NINGUN '
+      + 'atributo lo unia al interruptor, asi que un lector decia «Editar, interruptor, '
+      + 'desactivado» y se dejaba el porque, desde que R148 lo puso ahi—, y por eso `.sw-ayuda` '
+      + 'gana un `id`: si su hoja la apuntaba por posicion, mirelo. `.pp-no-noAplica` estrena '
+      + 'color: sin el, el icono de «no aplica» era el MAS destacado de los cuatro. Y el aviso de '
+      + 'que encender arrastra el base (R149) vuelve a salir en modulos colocados por columnas, '
+      + 'donde el calculo viejo lo perdia.',
     ],
   },
   {
