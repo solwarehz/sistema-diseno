@@ -18,7 +18,7 @@ presenta como matriz, y es el mismo componente
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **veinte pasos de
-verificación** —los que corre `publicar.mjs`—, **1117 pruebas en 55 archivos**,
+verificación** —los que corre `publicar.mjs`—, **1125 pruebas en 55 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -56,7 +56,7 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **1117 pruebas en 55 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **1125 pruebas en 55 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **1049 reglas de 1568** · **755 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **62 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
@@ -137,7 +137,7 @@ Cuatro decisiones más, tomadas aquí:
   caja `width` es una sugerencia, y ahí se midió una rendija de 7 px en Chrome— y
   el hover **después** del rayado, que empatan en especificidad.
 
-**Ocho reglas de contrato —18 a 25— con 46 pruebas.** Empezaron siendo cinco
+**Ocho reglas de contrato —18 a 25— con 54 pruebas.** Empezaron siendo cinco
 reglas y trece pruebas, con quince mutaciones vistas en rojo. **Las tres últimas
 reglas las escribieron dos auditorías adversarias**, y lo que encontraron vale
 más que lo que entregamos:

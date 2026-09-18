@@ -44,9 +44,13 @@ function reglasDelContrato(seccion) {
   if (desde < 0) throw new Error(`comportamiento.md no tiene la seccion «${seccion}»`);
   const sig = doc.indexOf('\n## ', desde + 1);
   const trozo = doc.slice(desde, sig < 0 ? undefined : sig);
+  /* SE CUENTAN, no se toma el maximo: la tabla lleva reglas «2bis», «5ter» y
+     demas que no son numeros, y el dia que se borre una intermedia el maximo
+     dejaria de ser el conteo — que es justo el envejecimiento del que presume
+     el parrafo de al lado. Se cuentan las numeradas, que son las que se citan. */
   const nums = [...trozo.matchAll(/^\| \*\*(\d+)\*\* \|/gm)].map((m) => Number(m[1]));
   if (!nums.length) throw new Error(`la seccion «${seccion}» no tiene reglas numeradas`);
-  return Math.max(...nums);
+  return new Set(nums).size;
 }
 const LETRAS = ['cero', 'una', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho',
   'nueve', 'diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciseis', 'diecisiete',

@@ -418,8 +418,21 @@ export function baseDe(
   m: ModuloPrivilegios, p: Privilegio, base: string | null,
 ): string | null {
   if (!base) return null;
-  if (!m.filas?.length) return base;
-  return todos(m).find((x) => x.fila === p.fila && x.columna === base)?.id ?? null;
+  /* SE DECIDE POR LA FORMA DEL MODULO, NO POR SI DECLARA `filas`.
+   *
+   * Esto miraba `m.filas?.length`, y con eso el arreglo solo cerraba la mitad:
+   * una matriz SIN `filas` —un modulo de un solo recurso, que es lo que sale al
+   * omitirlas— volvia a la busqueda por id literal y SEGUIA devolviendo `{}`
+   * para el modulo entero. El mismo borrado silencioso, por la puerta de al
+   * lado, y lo cazo la tercera auditoria.
+   *
+   * Lo que de verdad cambia la semantica es que los privilegios se coloquen por
+   * COLUMNA: ahi «ver» deja de ser un id y pasa a ser la columna base. Un
+   * modulo sin columnas es la lista de siempre y no cambia nada. */
+  const porColumna = todos(m).some((x) => x.columna !== undefined);
+  if (!porColumna) return base;
+  const suFila = p.fila ?? null;
+  return todos(m).find((x) => x.columna === base && (x.fila ?? null) === suFila)?.id ?? null;
 }
 
 /**
@@ -430,12 +443,16 @@ export function baseSinResolver(
   m: ModuloPrivilegios, base: string | null,
 ): string[] {
   if (!base) return [];
-  if (!m.filas?.length) {
-    return todos(m).some((x) => x.id === base) ? [] : [m.id];
-  }
-  return m.filas
-    .filter((f) => !todos(m).some((x) => x.fila === f.id && x.columna === base))
-    .map((f) => f.id);
+  const porColumna = todos(m).some((x) => x.columna !== undefined);
+  if (!porColumna) return todos(m).some((x) => x.id === base) ? [] : [m.id];
+  /* Un grupo por cada fila que EXISTE de verdad en los privilegios, incluida la
+   * fila implicita de un modulo sin `filas`. Miraba `m.filas` y por eso decia
+   * «la fila X no tiene privilegio en la columna base» de un modulo que si lo
+   * tenia: el mensaje hablaba de columnas y la comprobacion miraba ids. Un
+   * aviso que se equivoca ensena a ignorar los avisos. */
+  const grupos = [...new Set(todos(m).map((x) => x.fila ?? m.id))];
+  return grupos.filter((g) => !todos(m).some(
+    (x) => (x.fila ?? m.id) === g && x.columna === base));
 }
 
 /**
@@ -547,7 +564,9 @@ export function privilegiosEfectivos(
      * Va dentro del punto fijo y no despues: quitar un privilegio por no tener
      * su base puede tumbar al que dependia de el. */
     if (base) {
-      if (!m.filas?.length) {
+      // La MISMA pregunta que hace `baseDe`, y por el mismo motivo: lo que
+      // cambia la semantica es que los privilegios se coloquen por columna.
+      if (!todos(m).some((x) => x.columna !== undefined)) {
         if (limpio[base] !== true) { salida[m.id] = {}; continue; }
       } else {
         let masCambio = true;
@@ -738,38 +757,25 @@ export function PanelPrivilegios({
   };
 
   const fila = (m: ModuloPrivilegios, p: Privilegio, esBase: boolean) => {
-    const dado = concedido(valor, m.id, p.id);
-    const no = comoNoRepartible(p.cerrado);
-    // R110 · `cerrado` manda: si un privilegio no se puede repartir nunca, da
-    // igual de qué dependa. Se mira la dependencia solo cuando no hay cerrado.
-    const falta = no ? undefined : faltaDepende(m, valor, p.id);
-    const nombreFalta = falta ? todos(m).find((x) => x.id === falta)?.nombre : undefined;
-    // Una sola frase en UN solo nodo de texto siempre que se pueda. Partirla en
-    // tres —«Antes hay que conceder «», el nombre, y «».»— la deja ilegible para
-    // un lector de pantalla, que la anuncia a trozos, y para cualquiera que la
-    // busque por su texto. Solo se compone con nodos si el nombre no es texto.
-    const motivoFalta = falta === undefined ? null
-      : typeof nombreFalta === 'string' || nombreFalta === undefined
-        ? `Antes hay que conceder «${nombreFalta ?? falta}».`
-        : <>Antes hay que conceder «{nombreFalta}».</>;
-    // Con quién va enlazado, para decirlo ANTES de pulsar.
-    const conQuien = p.clave
-      ? todos(m).filter((x) => x.clave === p.clave && x.id !== p.id).map((x) => x.nombre)
-      : [];
-    /* R149 · ¿encender ESTE encendería además el base? Solo se dice cuando de
-       verdad va a pasar: si el base ya está concedido, o éste es el base, o ya
-       está encendido, la frase sobraría y el ruido acabaría con que nadie la
-       lea. Y solo si el base se puede encender: si está cerrado, no arrastra. */
-    const elBase = base ? todos(m).find((x) => x.id === base) : undefined;
-    /* NI SOBRE UNA FILA QUE NO SE PUEDE PULSAR: prometer un arrastre en un
-       control apagado es ruido, y el ruido acaba con que nadie lea la frase
-       donde si importa. */
-    const arrastraElBase = Boolean(
-      base && p.id !== base && !dado && elBase && !elBase.cerrado && !elBase.deshabilitado
-      && !p.deshabilitado && !soloLectura
-      && !concedido(valor, m.id, base),
-    );
-    const nombreBase = elBase?.nombre ?? base;
+    /* R151 (arreglo) · ESTO CONSUME `estado()`, NO LO REPITE.
+     *
+     * Aqui vivia una SEGUNDA COPIA COMPLETA del calculo —dado, no, falta,
+     * motivoFalta, conQuien, arrastraElBase, nombreBase—, y el R151 escribio
+     * `estado()` «para que la logica no se bifurque» sin enchufar esta mitad.
+     * La afirmacion «el estado se resuelve en un sitio» era falsa el dia que se
+     * escribio, y se cobro su precio en la misma version: al pasar `cambiar()`
+     * a `baseDe`, la LISTA empezo a encender el base de rebote SIN DECIRLO
+     * —porque el aviso lo calculaba esta copia, con el `base` literal de
+     * antes—. Una regresion contra la regla 16, que es Obligatorio y cuyo daño
+     * escrito es un 403 que tumba el guardado entero.
+     *
+     * Lo cazo la tercera auditoria adversaria. Dos calculos que TIENEN que
+     * coincidir dejan de coincidir: es lo que este repositorio lleva diciendo
+     * desde el R25, cometido aqui mismo mientras se escribia la regla que lo
+     * prohibe.
+     */
+    const e = estado(m, p);
+    const { dado, no, falta, motivoFalta, conQuien, arrastraElBase, nombreBase } = e;
     return (
       <div className={[
         'pp-priv',
@@ -954,7 +960,12 @@ export function PanelPrivilegios({
           <tbody>
             {modulos.flatMap((m, im) => {
               const lista = todos(m);
-              const filas = m.filas ?? [{ id: m.id, nombre: m.nombre }];
+              /* `m.filas ?? […]` dejaba pasar `filas: []` —un array vacio no es
+                 nullish— y el modulo entero desaparecia de la tabla SIN UN SOLO
+                 AVISO, con sus permisos intactos en el valor: el peor caso que
+                 la regla 24 dice cerrar, vivo. Sale de un `filter` que un dia no
+                 devuelve nada. `?.length` en todas partes, y se avisa. */
+              const filas = m.filas?.length ? m.filas : [{ id: m.id, nombre: m.nombre }];
               /* CON VARIOS MODULOS, DE QUE MODULO ES CADA FILA. Sin esto las
                  filas de «Personal» y las de «Reportes» salian seguidas y sin
                  distinguir: una pantalla de revision que no dice de que es cada
@@ -972,9 +983,15 @@ export function PanelPrivilegios({
                 /* R151 · SIN BASE, POR FILA. Marcar el modulo entero decia que
                    Trabajadores esta sin conceder porque a Contratos le falta su
                    «ver». Son recursos distintos. */
-                const suBase = lista.find((x) => baseDe(m, x, base) && x.fila === f.id
-                  && x.id === baseDe(m, x, base));
-                const sinBase = Boolean(base) && Boolean(suBase) && !concedido(valor, m.id, suBase!.id);
+                /* El base de ESTA fila, preguntandoselo a `baseDe` en vez de
+                   repetir su criterio aqui: con `x.fila === f.id` el carril
+                   NUNCA salia en una matriz sin `filas` —la fila implicita
+                   tiene `f.id === m.id` y los privilegios tienen `fila`
+                   indefinida—, justo el modulo donde lo efectivo SI viaja
+                   vacio. La pantalla no daba ninguna senal. */
+                const unoDeLaFila = lista.find((x) => (x.fila ?? m.id) === f.id);
+                const idBaseFila = unoDeLaFila ? baseDe(m, unoDeLaFila, base) : null;
+                const sinBase = Boolean(idBaseFila) && !concedido(valor, m.id, idBaseFila as string);
                 return (
                   <tr key={`${m.id}-${f.id}`} className={sinBase ? 'pm-fila pm-sin-base' : 'pm-fila'}>
                     <th scope="row" className="pm-nom" id={idFila}>
@@ -1026,7 +1043,7 @@ export function PanelPrivilegios({
                               title={dice}>
                             <span className="pm-no-ic" role="switch" aria-checked={false}
                                   aria-disabled tabIndex={0}
-                                  aria-label={`${f.nombre} · ${c.titulo}`}
+                                  aria-labelledby={`${idFila} ${idPanel}-col-${c.id}`}
                                   aria-describedby={`${idFila}-${c.id}-falta`}>
                               <Icono nombre="capas" tam="control" />
                             </span>
@@ -1043,21 +1060,46 @@ export function PanelPrivilegios({
                          celda no cabe una linea de texto, pero si cabe en el
                          globito y en lo que lee el lector — que es donde el
                          aviso tiene que estar ANTES de pulsar. */
-                      const avisos = [
-                        e.ayuda,
-                        e.conQuien.length ? `Va con ${e.conQuien.join(', ')}.` : '',
-                        e.arrastraElBase && typeof e.nombreBase === 'string'
-                          ? `Enciende también «${e.nombreBase}».` : '',
-                      ].filter((x): x is string => typeof x === 'string' && x !== '');
+                      /* LOS NOMBRES SON `ReactNode`, ASI QUE NO SE METEN EN UNA
+                         PLANTILLA DE TEXTO. `Va con ${conQuien.join()}` sobre un
+                         nombre en JSX imprimia «Va con [object Object].» en el
+                         globito, y el arrastre del base se DESCARTABA EN SILENCIO
+                         cuando su nombre no era texto: el aviso de R149
+                         desaparecia justo en los paneles que dan formato a sus
+                         nombres. Se compone con nodos cuando hace falta. */
+                      const enTexto = (n: React.ReactNode): string | null =>
+                        typeof n === 'string' ? n : typeof n === 'number' ? String(n) : null;
+                      const nombres = e.conQuien.map(enTexto);
+                      const avisos: React.ReactNode[] = [];
+                      if (e.ayuda !== undefined && e.ayuda !== null && e.ayuda !== '') {
+                        avisos.push(e.ayuda);
+                      }
+                      if (e.conQuien.length) {
+                        avisos.push(nombres.every((n) => n !== null)
+                          ? `Va con ${nombres.join(', ')}.`
+                          : <>Va con {e.conQuien.map((n, i) => (
+                              <Fragment key={i}>{i > 0 && ', '}{n}</Fragment>))}.</>);
+                      }
+                      if (e.arrastraElBase) {
+                        const nb = enTexto(e.nombreBase);
+                        avisos.push(nb !== null
+                          ? `Enciende también «${nb}».`
+                          : <>Enciende también «{e.nombreBase}».</>);
+                      }
+                      const soloTexto = avisos.every((a) => typeof a === 'string');
                       return (
                         <td key={c.id} headers={atada} className={clase}
-                            title={avisos.length ? avisos.join(' ') : undefined}>
+                            title={avisos.length && soloTexto ? avisos.join(' ') : undefined}>
                           <Interruptor
                             etiqueta={nombre}
                             etiquetaOculta
                             activo={e.dado}
                             deshabilitado={e.apagado}
-                            ayuda={avisos.length ? avisos.join(' ') : undefined}
+                            ayuda={avisos.length
+                              ? (soloTexto ? avisos.join(' ')
+                                : <>{avisos.map((a, i) => (
+                                    <Fragment key={i}>{i > 0 && ' '}{a}</Fragment>))}</>)
+                              : undefined}
                             onCambio={(a) => cambiar(m, p.id, a)}
                           />
                         </td>
@@ -1112,6 +1154,14 @@ export function PanelPrivilegios({
             + 'declarada en `columnas`: no se dibuja.');
           continue;
         }
+        if (!m.filas?.length && p.fila) {
+          /* LA QUINTA FORMA, que la regla 24 enumeraba y el codigo no cubria:
+             el modulo no declara `filas` pero sus privilegios si, asi que todos
+             caen en la fila implicita y solo se dibuja el primero de cada
+             columna. El resto sigue concedido y sin pantalla donde verlo. */
+          dis.push(`«${p.id}» (${m.id}) declara \`fila\` pero su modulo no declara \`filas\`: `
+            + 'todos caen en la misma fila y solo se dibuja uno por columna.');
+        }
         if (m.filas?.length) {
           if (!p.fila) {
             dis.push(`«${p.id}» (${m.id}) no declara \`fila\` y su modulo tiene \`filas\`: `
@@ -1124,7 +1174,9 @@ export function PanelPrivilegios({
             continue;
           }
         }
-        const celda = `${p.fila ?? m.id}|${p.columna}`;
+        // La fila que de verdad se usa al dibujar: sin `filas` declaradas, todos
+        // van a la implicita, asi que dos con `fila` distinta SI chocan.
+        const celda = `${m.filas?.length ? p.fila : m.id}|${p.columna}`;
         const ya = ocupadas.get(celda);
         if (ya) {
           dis.push(`«${p.id}» y «${ya}» (${m.id}) caen en la MISMA celda: solo se dibuja `
@@ -1137,6 +1189,10 @@ export function PanelPrivilegios({
           dis.push(`«${p.id}» (${m.id}) tiene \`niveles\`, que la matriz no puede repartir. `
             + 'Se conservan en el valor y no hay forma de cambiarlos aqui.');
         }
+      }
+      if (m.filas && !m.filas.length) {
+        dis.push(`«${m.id}» declara \`filas: []\`: el modulo no dibuja ninguna fila y sus `
+          + 'permisos siguen concedidos sin pantalla donde revisarlos.');
       }
       for (const f of baseSinResolver(m, base)) {
         dis.push(`en «${m.id}», la fila «${f}» no tiene ningun privilegio en la columna base `
@@ -1155,9 +1211,16 @@ export function PanelPrivilegios({
     return dis;
   }, [presentacion, columnas, modulos, base, abiertos, onAbiertos]);
 
+  /* «UNA SOLA VEZ» LO DECIA EL COMENTARIO Y NO ERA VERDAD: el memo depende de
+     `columnas` y `modulos`, y con literales en linea —el caso normal, y el del
+     catalogo— la identidad cambia en cada pintada, asi que un padre que se
+     repinte con cada tecla llenaba la consola. Se ata al CONTENIDO del aviso:
+     el mismo diagnostico no se repite, y uno nuevo si sale. */
+  const dichos = avisosDeMatriz.join('\n');
   useEffect(() => {
-    for (const d of avisosDeMatriz) console.error(`PanelPrivilegios: ${d}`);
-  }, [avisosDeMatriz]);
+    if (!dichos) return;
+    for (const d of dichos.split('\n')) console.error(`PanelPrivilegios: ${d}`);
+  }, [dichos]);
 
   return (
     <div className={['pp', className].filter(Boolean).join(' ')}>
@@ -1177,7 +1240,11 @@ export function PanelPrivilegios({
           // Lo que no se puede repartir no cuenta en el «4 de 6»: contarlo haría
           // que un cargo pareciera incompleto por reglas que no dependen de él.
           const posibles = lista.filter((p) => !p.cerrado).length;
-          const sinBase = Boolean(base) && !concedido(valor, m.id, base as string);
+          /* Tambien por `baseDe`: con un modulo colocado por columnas, `base`
+             no es un id y este `concedido(..., base)` decia que falta el base
+             CON TODO CONCEDIDO — la pantalla contradiciendo al backend. */
+          const idBaseMod = lista.length ? baseDe(m, lista[0], base) : null;
+          const sinBase = Boolean(idBaseMod) && !concedido(valor, m.id, idBaseMod as string);
           const avisoSinBase = (
             <p className="pp-aviso">
               <Icono nombre="alerta" tam="control" />

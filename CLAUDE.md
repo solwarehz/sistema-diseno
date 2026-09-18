@@ -35,7 +35,7 @@ matriz consumía cuatro de los seis campos del cálculo y tiraba los avisos de R
 y R149—; con `filas`, el `base` por omisión **vaciaba el módulo entero en
 silencio**, que con un backend de juego completo borra permisos que nadie
 retiró; y **«quince mutaciones en rojo» no era cobertura**: sobrevivían 23, y una
-dejaba la matriz sin poder retirar un permiso. Ocho reglas —18 a 25— y 46
+dejaba la matriz sin poder retirar un permiso. Ocho reglas —18 a 25— y 54
 pruebas.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.

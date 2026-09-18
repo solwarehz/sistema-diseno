@@ -590,3 +590,128 @@ describe('[26] R151 · la hoja de la matriz, medida entera', () => {
     }
   });
 });
+
+describe('[27] R151 · lo que encontró la TERCERA auditoría, sobre el arreglo', () => {
+  /* Un arreglo a medias es peor que el defecto: ahora hay una regla escrita que
+     dice que está resuelto. Estas cinco son las que faltaban. */
+
+  const SIN_FILAS: ModuloPrivilegios[] = [{ id: 'cont', nombre: 'Contratos',
+    privilegios: [
+      { id: 'cont-ver', nombre: 'Ver', columna: 'ver' },
+      { id: 'cont-ed', nombre: 'Editar', columna: 'editar' },
+    ] }];
+  const DOS_COL: ColumnaPrivilegios[] = [
+    { id: 'ver', titulo: 'Ver' }, { id: 'editar', titulo: 'Editar' }];
+
+  it('[23] una matriz SIN `filas` tampoco se vacía: el arreglo cubría la mitad', () => {
+    /* `baseDe` miraba `m.filas?.length`, así que un módulo de un solo recurso
+       —lo que sale al omitir `filas`— volvía a la búsqueda por id literal y
+       seguía devolviendo `{}` para el módulo entero. El mismo borrado
+       silencioso por la puerta de al lado. Lo que cambia la semántica es que
+       los privilegios se coloquen por COLUMNA, no que haya `filas`. */
+    expect(privilegiosEfectivos(SIN_FILAS, { cont: { 'cont-ver': true, 'cont-ed': true } }, 'ver'))
+      .toEqual({ cont: { 'cont-ver': true, 'cont-ed': true } });
+    expect(baseDe(SIN_FILAS[0], SIN_FILAS[0].privilegios[1], 'ver')).toBe('cont-ver');
+  });
+
+  it('[23] y ahí SÍ se ve el carril de «sin base», que antes no salía nunca', () => {
+    const { container } = render(<PanelPrivilegios presentacion="matriz" columnas={DOS_COL}
+      modulos={SIN_FILAS} base="ver" valor={{}} onCambio={() => {}} />);
+    expect(container.querySelectorAll('tbody tr.pm-sin-base'),
+      'lo efectivo viaja vacío y la pantalla no da ninguna señal').toHaveLength(1);
+  });
+
+  it('[16] la LISTA no arrastra el base a escondidas — la regresión del arreglo', () => {
+    /* `cambiar()` pasó a `baseDe` y `fila()` se quedó con el `base` literal,
+       porque `fila()` NO consumía `estado()`: era una segunda copia completa
+       del cálculo. Así que la lista empezó a encender el base de rebote SIN
+       decirlo, que es exactamente lo que la regla 16 prohíbe. */
+    const M: ModuloPrivilegios[] = [{ id: 'm', nombre: 'M',
+      filas: [{ id: 'trab', nombre: 'Trab' }],
+      privilegios: [
+        { id: 't-ver', nombre: 'Ver', columna: 'ver', fila: 'trab' },
+        { id: 't-ed', nombre: 'Editar', columna: 'editar', fila: 'trab' },
+      ] }];
+    const onCambio = vi.fn();
+    const { container } = render(<PanelPrivilegios modulos={M} base="ver" valor={{}}
+      onCambio={onCambio} abiertos={['m']} />);
+    const avisos = container.querySelectorAll('.pp-junto').length;
+    fireEvent.click([...container.querySelectorAll('[role="switch"]')][1]);
+    const [completo] = onCambio.mock.calls[0];
+    if (completo.m['t-ver'] === true) {
+      expect(avisos, 'enciende el base de rebote y no lo dice en ninguna parte')
+        .toBeGreaterThan(0);
+    }
+  });
+
+  it('[24] `filas: []` no hace desaparecer el módulo en silencio', () => {
+    const gritar = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const { container } = render(<PanelPrivilegios presentacion="matriz" columnas={DOS_COL}
+      modulos={[{ id: 'm', nombre: 'M', filas: [],
+        privilegios: [{ id: 'ver', nombre: 'Ver', columna: 'ver' }] }]}
+      base={null} valor={{ m: { ver: true } }} onCambio={() => {}} />);
+    expect(container.querySelectorAll('tbody tr.pm-fila').length,
+      'el módulo entero desapareció de la tabla').toBeGreaterThan(0);
+    expect(gritar.mock.calls.flat().join(' ')).toContain('filas: []');
+    gritar.mockRestore();
+  });
+
+  it('[24] la QUINTA forma: `fila` en un módulo sin `filas`', () => {
+    /* La regla enumeraba cinco y el código cubría cuatro. Los dos caen en la
+       fila implícita, se dibuja uno, y el otro sigue concedido. */
+    const gritar = vi.spyOn(console, 'error').mockImplementation(() => {});
+    render(<PanelPrivilegios presentacion="matriz" columnas={DOS_COL}
+      modulos={[{ id: 'm', nombre: 'M', privilegios: [
+        { id: 'a', nombre: 'A', columna: 'ver', fila: 'trab' },
+        { id: 'b', nombre: 'B', columna: 'ver', fila: 'cont' }] }]}
+      base={null} valor={{}} onCambio={() => {}} />);
+    const dicho = gritar.mock.calls.flat().join(' ');
+    /* `/fila|celda/` lo tapaba el aviso de «MISMA celda», que también salta
+       aquí. Se exige el diagnóstico PROPIO: el que dice qué hacer. Un aviso
+       genérico manda a buscar el problema donde no está. */
+    expect(dicho, 'no se dice que el módulo no declara `filas`')
+      .toContain('pero su modulo no declara');
+    expect(dicho).toContain('«a»');
+    gritar.mockRestore();
+  });
+
+  it('[24] y `baseSinResolver` no acusa a una fila que SÍ tiene su columna base', () => {
+    /* Decía «la fila X no tiene privilegio en la columna base» de un módulo que
+       sí lo tenía: hablaba de columnas y comprobaba ids. Un aviso que se
+       equivoca enseña a ignorar los avisos. */
+    expect(baseSinResolver(SIN_FILAS[0], 'ver')).toEqual([]);
+    expect(baseSinResolver(SIN_FILAS[0], 'leer')).toEqual(['cont']);
+  });
+
+  it('[21] un nombre que no es texto NO sale como «[object Object]»', () => {
+    const M: ModuloPrivilegios[] = [{ id: 'm', nombre: 'M',
+      filas: [{ id: 'f', nombre: <b>F</b> }],
+      privilegios: [
+        { id: 'a', nombre: <b>A</b>, columna: 'ver', fila: 'f', clave: 'k' },
+        { id: 'b', nombre: <b>B</b>, columna: 'editar', fila: 'f', clave: 'k' },
+      ] }];
+    const { container } = render(<PanelPrivilegios presentacion="matriz" columnas={DOS_COL}
+      modulos={M} base={null} valor={{}} onCambio={() => {}} />);
+    expect(container.innerHTML, 'un nombre en JSX se imprime como objeto')
+      .not.toContain('[object Object]');
+    expect(container.textContent).toContain('Va con');
+  });
+
+  it('[24] el mismo aviso no se repite en cada pintada', () => {
+    const gritar = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const { rerender } = render(<PanelPrivilegios presentacion="matriz"
+      columnas={[{ id: 'ver', titulo: 'Ver' }]}
+      modulos={[{ id: 'm', nombre: 'M', privilegios: [{ id: 'x', nombre: 'X' }] }]}
+      base={null} valor={{}} onCambio={() => {}} />);
+    const primera = gritar.mock.calls.length;
+    for (let i = 0; i < 3; i++) {
+      rerender(<PanelPrivilegios presentacion="matriz"
+        columnas={[{ id: 'ver', titulo: 'Ver' }]}
+        modulos={[{ id: 'm', nombre: 'M', privilegios: [{ id: 'x', nombre: 'X' }] }]}
+        base={null} valor={{}} onCambio={() => {}} />);
+    }
+    expect(gritar.mock.calls.length, 'la consola se llena con el mismo aviso')
+      .toBe(primera);
+    gritar.mockRestore();
+  });
+});
