@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 16 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.126.0** — R148 a R150: las tres que
-BLOQUEABAN la adopción, y un entregable que salió muerto en la versión anterior
+**Versión del sistema:** MMI-DS **v1.127.0** — garantizar entrega contra
+promesa: el código estaba bien y los documentos no
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -60,10 +60,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · **1023 reglas de 1542** · **733 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **60 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.126.0.zip` · **60 archivos** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.127.0.zip` · **60 archivos** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.126.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.127.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — el **último** de los veinte pasos · **177 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -86,7 +86,47 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.126.0), con detalle
+### Lo de hoy (v1.127.0), con detalle
+
+**Esta versión no añade nada al código.** Es lo que salió al preguntar en serio
+si lo que se **entrega** es lo que se **promete**. Los veinte pasos estaban en
+verde todo el tiempo.
+
+> **El LEEME del ZIP decía que los componentes de React «todavía no existen».**
+
+Es el **primer documento** que abre quien recibe la entrega, y lo decía desde la
+**v1.39.0**: ochenta y siete versiones afirmando que lo más grande del paquete no
+está. Dentro van 34 componentes, su hoja y su contrato. Y arrastraba cuatro cosas
+más: el inventario no los listaba, el §3 **no importaba la hoja en ningún paso**
+—quien lo siguiera al pie de la letra montaba los componentes sin estilo—, la
+Ruta A dejaba los componentes congelados en la versión vieja, y las cifras eran
+de hace ochenta versiones. **Ahora se cuentan**: una cifra a mano dentro de un
+documento generado es la única parte que envejece.
+
+`ACTUALIZAR.md` **se contradecía consigo mismo** en la misma sección —«las dos
+vías NO entregan lo mismo» cuatro párrafos antes de «las dos vías entregan lo
+mismo»—, y daba 79 archivos y «quince candados dentro de dieciocho pasos» cuando
+son 82 y diecisiete dentro de veinte, **con un `CLAUDE.md` en el mismo paquete
+diciendo veinte**.
+
+Y **el catálogo publicaba como abiertos dos defectos ya cerrados**, con sus
+cifras: R146 y R144. Los dos llevaban meses ahí escritos como «queda abierto» —y
+fue leyendo esa página como el equipo los encontró—. Más la maqueta del panel,
+que **enseñaba el defecto que el R148 cerró**: un privilegio concedido y
+deshabilitado contado como «sin permisos».
+
+### Lo que sí salió limpio, y por qué importa decirlo
+
+Se resolvieron las dos hojas sobre **el marcado que los componentes emiten** —no
+el del catálogo, que es lo que `verificar-promesa` ya hace—: el panel en sus ocho
+estados, la tabla anclada, el rango con tope y los diez chips.
+
+**227 elementos · 101.696 propiedades a cuatro anchos · cero divergencias.**
+
+Y la instalación por las dos vías coincide **byte a byte** con la etiqueta. El
+código estaba bien. Lo que mentía era lo que se lee.
+
+### Lo de la v1.126.0, con detalle
 
 **Las tres que bloqueaban**, y las tres se resumen en una frase suya: *«con ellas
 abiertas, adoptar el panel significa repartir permisos que nadie concedió y
@@ -107,6 +147,12 @@ borrar permisos que nadie retiró»*.
   omisión: la combinación es **un error de compilación**.
 
 ### Y lo que una auditoría encontró MUERTO en la v1.125.0, antes de publicarla
+
+**La v1.125.0 no existe como versión instalable.** Se commiteó, la auditoría la
+paró, y se corrigió antes de etiquetar: las etiquetas van de la **v1.124.0** a la
+**v1.126.0**. Conviene que quede escrito, porque el primer informe que salió al
+equipo afirmaba que «existe y está etiquetada» — **y nadie lo había comprobado**.
+Lo encontró el paso de garantizar entrega contra promesa.
 
 **El entregable del R145 no funcionaba.** `:nth-child(n+3)` **cuenta como
 clase**, así que la regla que oculta (0,3,0) le ganaba a la que enseña (0,2,0) y

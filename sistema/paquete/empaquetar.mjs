@@ -250,7 +250,11 @@ export function empaquetar({ silencioso = false, inventario } = {}) {
     entradas.push({ nombre: `${CARPETA}/${destino}`, datos, fecha: statSync(ruta).mtime });
   }
 
-  const leeme = Buffer.from(LEEME(inventario), 'utf8');
+  /* LA CIFRA SE CUENTA, NO SE ESCRIBE. El LEEME decia «12 archivos, 35,4 kB»
+     desde una version en la que eso era cierto, y ochenta y siete despues
+     seguia diciendolo. Una cifra a mano dentro de un documento generado es la
+     unica parte del documento que envejece. */
+  const leeme = Buffer.from(LEEME(inventario, entradas.length + 1), 'utf8');
   entradas.unshift({ nombre: `${CARPETA}/LEEME.md`, datos: leeme, fecha: new Date() });
 
   const zip = construirZip(entradas);
@@ -310,7 +314,7 @@ export function empaquetar({ silencioso = false, inventario } = {}) {
 
 // ── El LEEME que abre quien recibe la entrega ───────────────────────────────
 
-function LEEME(inventario) {
+function LEEME(inventario, archivosZip) {
   const bloqueantes = pares.filter((p) => typeof p[2] === 'number').length;
   const nEscalas = Object.keys(primitivas).length;
   const nPaginas = inventario.reduce((n, g) => n + g.items.length, 0);
@@ -382,7 +386,12 @@ No necesita instalar nada: es cálculo puro con el \`node\` que ya tengas.
 | \`sistema/tokens/tailwind-preset.ts\` | Preset de Tailwind 3.4. **Generado** |
 | \`sistema/candado/verificar-contraste.mjs\` | Recalcula todos los pares y falla si alguno no cumple |
 | \`sistema/candado/candado.eslint.config.mjs\` | Reglas de lint que bloquean el build |
+| \`componentes/\` | **Los componentes de React**, en \`.tsx\` sin compilar |
+| \`componentes/index.ts\` | Lo que se importa: un solo sitio |
+| \`sistema/componentes/componentes.css\` | **La hoja que viaja.** Sin ella los componentes salen sin estilo |
+| \`sistema/componentes/comportamiento.md\` | **El contrato**: qué hace cada uno y por qué |
 | \`manual/MANUAL-APLICACIONES-WEB.md\` | Manual de uso |
+| \`manual/ACTUALIZAR.md\` | Qué cambia en cada versión y qué puede romperte |
 | \`catalogo/index.html\` | El catálogo navegable. Ábrelo en el navegador |
 
 En el catálogo, la opción «Descargar el sistema» del menú de usuario **no
@@ -395,6 +404,14 @@ funciona dentro de esta entrega**: apunta al ZIP que ya tienes en las manos.
 Las rutas dependen de por dónde llegó el sistema. Si vino en este ZIP, se copia
 dentro del proyecto y se importa por ruta relativa. Si vino por npm, se importa
 por el nombre del paquete: \`sistema-diseno-ae\`.
+
+**0 · La hoja de los componentes.** Sin ella los componentes salen **sin
+estilo**, y este paso faltaba en esta lista: quien la siguiera al pie de la letra
+montaba el sistema a medias.
+
+\`\`\`ts
+import 'sistema-diseno-ae/componentes.css';   // o la ruta relativa, si vino en ZIP
+\`\`\`
 
 **1 · Los colores.** Importa \`tokens.css\` una sola vez, en el layout raíz:
 
@@ -469,12 +486,19 @@ resolver conflictos.
 ### Ruta A · ZIP versionado — funciona hoy
 
 Se descarga el ZIP nuevo desde el catálogo, menú de usuario → **Descargar el
-sistema**, y se reemplazan enteras estas dos carpetas:
+sistema**, y se reemplazan enteras estas carpetas:
 
 \`\`\`
 sistema/tokens/
 sistema/candado/
+sistema/componentes/     ← la hoja y el contrato
+componentes/             ← los componentes de React
 \`\`\`
+
+Aquí ponía **solo las dos primeras**, y con eso los componentes y su hoja se
+quedaban congelados en la versión vieja — que es justamente lo que cambia en casi
+todas las versiones. Lo encontró la verificación de entrega contra promesa del
+2026-09-18.
 
 **Después de reemplazar, siempre:**
 
@@ -506,10 +530,10 @@ consume:
    credenciales; lo habitual es una clave SSH en la cuenta de quien instala, o
    un token de acceso.
 
-Verificado hasta donde se puede sin instalar: \`npm pack --dry-run\` resuelve el
-paquete —12 archivos, 35,4 kB— y el manifiesto se lee bien. **La instalación
-completa no está probada de punta a punta**, porque en esta máquina no se
-instala nada.
+**Las dos vías se prueban de verdad en cada versión**, descargando e instalando:
+en este ZIP llegan **${archivosZip} archivos**, este LEEME incluido. Aquí decía «12
+archivos, 35,4 kB» y «la instalación completa no está probada de punta a punta»,
+y las dos frases llevaban versiones sin ser ciertas.
 
 ### Qué mirar en cada actualización
 
@@ -518,8 +542,11 @@ versión: qué cambió, por qué, qué tokens entraron y **qué puede romperte**
 
 Dos cosas que conviene saber de entrada:
 
-- **En ocho versiones no se ha retirado ni renombrado ningún token.** Solo altas.
-  Una versión nueva no te quita nada de lo que ya usas.
+- **Ningún token se ha retirado ni renombrado nunca.** Solo altas. Una versión
+  nueva no te quita nada de lo que ya usas. *(Decía «en ocho versiones» y se
+  quedó ahí en la v1.8.0.)*
+- **Lo que sí cambia es la API de los componentes**, y cada cambio va declarado
+  en «qué puede romperte» de su versión. Léalo antes de subir.
 - Lo que sí se rompió fueron **dos cosas en la v1.2.0** —la forma del objeto
   \`marca\` y la ruta de \`tokens-light.css\`—, y están declaradas ahí. Salieron como
   versión menor y deberían haber sido mayor.
@@ -531,8 +558,11 @@ no en producción**. Eso es intencionado.
 
 ## 6 · Lo que esta entrega NO trae
 
-- **Componentes de React.** Todavía no existen. El catálogo muestra el
-  comportamiento y el marcado de referencia; la implementación está pendiente.
+> **Aquí decía «Componentes de React. Todavía no existen».** Era falso desde la
+> v1.39.0 y siguió escrito **ochenta y siete versiones**: esta entrega lleva 34
+> componentes, su hoja y su contrato. Lo encontró la verificación de entrega
+> contra promesa del 2026-09-18. Es el primer documento que abre quien recibe el
+> paquete, y decía que lo más grande que hay dentro no está.
 - **Los activos de marca** (escudo y lockup) van embebidos dentro del catálogo,
   pero **no como archivos sueltos**: son propiedad del cliente y se piden aparte.
 - **El isotipo simplificado.** Bajo 56px el escudo es ilegible y no existe

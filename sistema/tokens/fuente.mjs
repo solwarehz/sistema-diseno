@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.126.0";
+export const VERSION = "1.127.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,70 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.127.0', fecha: '2026-09-18',
+    que: 'Garantizar entrega contra promesa — y lo que el LEEME, la guia y el catalogo llevaban anos diciendo mal',
+    porque:
+      'ESTA VERSION NO ANADE NADA. Es lo que salio al preguntar en serio si lo que se ENTREGA es lo '
+      + 'que se PROMETE, y la respuesta fue que en el codigo si y en los documentos no. Los veinte '
+      + 'pasos estaban en verde todo el tiempo. '
+      + 'EL LEEME DEL ZIP DECIA QUE LOS COMPONENTES DE REACT «TODAVIA NO EXISTEN». Es el PRIMER '
+      + 'documento que abre quien recibe la entrega, y lo decia desde la v1.39.0: ochenta y siete '
+      + 'versiones afirmando que lo mas grande del paquete no esta. Dentro van 34 componentes, su '
+      + 'hoja y su contrato. Y arrastraba cuatro cosas mas: el inventario del §2 no listaba '
+      + '`componentes/`, `componentes.css` ni `comportamiento.md`; el §3 «Como se implementa» no '
+      + 'importaba la hoja EN NINGUN PASO —quien lo siguiera al pie de la letra montaba los '
+      + 'componentes sin estilo—; la Ruta A del §5 mandaba reemplazar solo `tokens/` y `candado/`, '
+      + 'dejando los componentes congelados en la version vieja, que es justo lo que cambia casi '
+      + 'siempre; y decia «12 archivos, 35,4 kB» y «la instalacion completa no esta probada de punta '
+      + 'a punta», las dos falsas. La cifra AHORA SE CUENTA: una cifra a mano dentro de un documento '
+      + 'generado es la unica parte que envejece. '
+      + 'ACTUALIZAR.md SE CONTRADECIA CONSIGO MISMO en la misma seccion: «Las dos vias NO entregan lo '
+      + 'mismo» cuatro parrafos antes de «Las dos vias entregan lo mismo». Era el texto viejo que la '
+      + 'correccion del 2026-09-11 no borro. Mas «79 archivos» cuando son 82, y «quince candados '
+      + 'dentro de dieciocho pasos» cuando son diecisiete dentro de veinte — y el CLAUDE.md del '
+      + 'MISMO paquete decia veinte: dos documentos de una version dando numeros distintos. '
+      + 'Y DOS REQUISITOS DE COMPILACION SIN DOCUMENTAR, medidos con tsc sobre el paquete instalado: '
+      + 'sin `@types/node` salen NUEVE errores —los avisos de desarrollo leen `process.env`— y sin '
+      + '`DOM.Iterable` otros tres. Next los trae por omision, asi que nadie los habia visto; un '
+      + 'proyecto Vite si choca. '
+      + 'EL CATALOGO PUBLICABA COMO ABIERTOS DOS DEFECTOS YA CERRADOS, con sus cifras: que los cuatro '
+      + 'bloqueados salen del tabulador (R146 lo resolvio) y que `.pp-sin-base` baja al 50 % de '
+      + 'opacidad dejando el nombre a 2,07:1 (R144 lo quito). Los dos llevaban meses ahi escritos '
+      + 'como «queda abierto» — y fue leyendo esa pagina como el equipo los encontro. '
+      + 'Y LA MAQUETA DEL PANEL ENSENABA EL DEFECTO QUE R148 CERRO: un privilegio concedido y '
+      + 'deshabilitado contado como «sin permisos» y «0 de 3», que es literalmente lo que la regla 15 '
+      + 'prohibe. Mas un conteo que contaba lo cerrado, una cabecera sin `pp-tags` —con lo que la '
+      + 'rejilla de cuatro columnas se descuadra—, chips que no correspondian a ninguna fila, el '
+      + 'nombre accesible de la fila bloqueada con un solo id cuando el componente emite dos, un '
+      + 'privilegio cerrado dibujado con el arbol del Interruptor en vez del suyo, los niveles '
+      + 'colgando del cuerpo en vez de su privilegio, y `sg-tit`, una clase QUE NO EXISTE. '
+      + 'LA TABLA DE REGLAS DEL PANEL ESTABA PARTIDA: un `---` suelto entre la 14 y la 15 cerraba la '
+      + 'tabla en Markdown, asi que las tres reglas de la v1.126.0 se leian como texto con tuberias. '
+      + '`verificar-contrato` no lo ve porque cuenta con una expresion regular. '
+      + 'Y LA v1.125.0 NO EXISTE: se commiteo, una auditoria la paro y se corrigio antes de '
+      + 'etiquetar. El informe que salio al equipo afirmaba que «existe y esta etiquetada» SIN '
+      + 'HABERLO COMPROBADO, y la guia le dedicaba una fila como si fuera instalable. Corregido en '
+      + 'los cuatro sitios. '
+      + 'LO QUE SI SALIO LIMPIO, y conviene decirlo: se resolvieron las dos hojas sobre el MARCADO '
+      + 'QUE LOS COMPONENTES EMITEN —no el del catalogo, que es lo que `verificar-promesa` ya hace— '
+      + 'en el panel, la tabla anclada, el rango con tope y los diez chips: 227 elementos, 101.696 '
+      + 'propiedades a cuatro anchos, CERO divergencias. Y la instalacion por las dos vias coincide '
+      + 'byte a byte con la etiqueta.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'NADA DEL CODIGO CAMBIA. Esta version toca documentos y la maqueta del catalogo; los '
+      + 'componentes, la hoja y los tokens salen identicos a los de la v1.126.0.',
+      'EL LEEME DEL ZIP Y `ACTUALIZAR.md` DICEN AHORA COSAS DISTINTAS de las que decian, y varias '
+      + 'son correcciones de afirmaciones falsas. Si su equipo se guio por el §3 del LEEME y no '
+      + 'importa `componentes.css`, los componentes le estan saliendo SIN ESTILO: ese paso faltaba.',
+      'SI ACTUALIZAN COPIANDO CARPETAS (Ruta A del LEEME), ahora son CUATRO y no dos: hay que '
+      + 'reemplazar tambien `sistema/componentes/` y `componentes/`. Con dos, los componentes se '
+      + 'quedaban en la version vieja.',
+      'SU `tsconfig` NECESITA `@types/node` y `DOM.Iterable`. Si compila con Next ya los tiene; si '
+      + 'no, son doce errores de tipos que hasta ahora no estaban documentados.',
+    ],
+  },
   {
     v: '1.126.0', fecha: '2026-09-17',
     que: 'R148, R149 y R150 — las tres que BLOQUEABAN la adopcion del panel, y lo que una auditoria encontro muerto en la 1.125.0',
@@ -162,9 +226,10 @@ export const CAMBIOS = [
       + 'encontrarla.',
       'BAJO 560 px LAS FILAS DE UN MODULO SIN BASE SE DESPLAZAN 6 px a la izquierda, para que el '
       + 'carril no quede a ras del borde de la tarjeta. El texto no se mueve.',
-      'BAJO 900 px LA CABECERA ENSENA DOS CHIPS Y UN «+N». En la v1.125.0 no ensenaba el «+N» en '
-      + 'ningun ancho —estaba muerto por especificidad— asi que si midieron esa version, midieron un '
-      + 'defecto.',
+      'BAJO 900 px LA CABECERA ENSENA DOS CHIPS Y UN «+N», y la cabecera crece una linea. La '
+      + 'v1.125.0 NO SE LLEGO A PUBLICAR —se commiteo con el «+N» muerto por especificidad y una '
+      + 'auditoria lo caza antes de etiquetar—, asi que nadie pudo instalarla: lo del R144 al R147 '
+      + 'entra con esta.',
       'LA FILA BLOQUEADA POR `depende` ANUNCIA AHORA TAMBIEN SU CHIP: el nombre accesible pasa de '
       + '«Carga masiva» a «Carga masiva necesita otro permiso».',
     ],

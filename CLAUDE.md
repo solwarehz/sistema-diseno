@@ -19,16 +19,15 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.126.0** — **R148 a R150**, las tres que bloqueaban la
-adopción del panel de privilegios, y **lo que una auditoría encontró muerto en la
-v1.125.0 antes de publicarla**: el «+N» del móvil no se veía **en ningún ancho**
-porque `:nth-child(n+3)` cuenta como clase y le ganaba a la regla que lo enseña.
-Los veinte pasos salían en verde por una razón que vale para todo el sistema —
-`casa()` descartaba **todo** selector con un `+`, paréntesis incluidos, así que
-el primer `nth-child(n+…)` del repositorio cayó en el punto ciego de **cuatro**
-candados. Ya no — y al arreglarlo apareció algo peor, que una segunda auditoría
-cazó: el motor pasó a **responder mal** donde antes callaba. Ahora dice «no sé»,
-y **lo imprime**.
+**Estado actual: v1.127.0** — **no añade nada al código.** Es lo que salió al
+preguntar en serio si **lo que se entrega es lo que se promete**, con los veinte
+pasos en verde todo el tiempo. El **LEEME del ZIP** —el primer documento que abre
+quien recibe la entrega— decía que los componentes de React «todavía no existen»,
+y lo decía desde la **v1.39.0** con 34 dentro; su §3 no importaba la hoja en
+ningún paso. El catálogo publicaba como **abiertos** dos defectos ya cerrados,
+con sus cifras. Y la maqueta del panel **enseñaba el defecto que el R148 cerró**.
+El código estaba bien: 227 elementos del marcado que los componentes emiten,
+101.696 propiedades, cero divergencias entre las dos hojas.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

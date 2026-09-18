@@ -8057,8 +8057,9 @@ puesto, los de una persona suelta o los de una clave de API.</p>
 
 <h3 class="sub-seccion">Se compone, no se dibuja</h3>
 <p class="seccion-sub">El interruptor, el chip y el botón de dentro son los del sistema. Lo único propio es el
-andamiaje de la lista — <strong>catorce reglas</strong>, y si fueran muchas más sería señal de estar
-reconstruyendo.</p>
+andamiaje de la lista, y si fueran muchas más sería señal de estar reconstruyendo. <em>Aquí ponía
+«catorce reglas» a mano y se quedó ahí: la cuenta de verdad la lleva la propia hoja, en su cabecera de
+sección.</em></p>
 <div class="bloque">
   <div class="pp">
     <div class="pp-lista">
@@ -8067,32 +8068,52 @@ reconstruyendo.</p>
         <button class="pp-mod-cab" type="button" aria-expanded="true">
           <span class="pp-chev">${icono('chevron', 18)}</span>
           <span class="pp-mod-nom">Trabajadores</span>
+          <!-- Los chips y el conteo SALEN DEL CUERPO: Ver, Editar y el del grupo.
+               «Dar de alta» es cerrado y no cuenta (regla 2ter). Aqui habia cuatro
+               chips y «4 de 4», que no corresponden a ninguna de estas filas. -->
           <span class="pp-tags">
             <span class="chip chip-info">Ver</span><span class="chip chip-info">Editar</span>
-            <span class="chip chip-info">Crear</span><span class="chip chip-info">Descargar</span>
-            <span class="chip chip-info pp-tags-mas">+2</span>
+            <span class="chip chip-info">Ver documento, dirección y correo</span>
+            <span class="chip chip-info pp-tags-mas">+1</span>
           </span>
-          <span class="pp-conteo">4 de 4</span>
+          <span class="pp-conteo">3 de 3</span>
         </button>
         <div class="pp-mod-cuerpo">
           <div class="pp-priv pp-priv-base">
             <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="true" aria-label="Ver"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Ver</span></span></label>
-          </div>
-          <div class="pp-priv">
-            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="true" aria-label="Editar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar</span></span></label>
-          </div>
-          <div class="pp-priv">
-            <span class="sw-fila sw-cerrado"><span class="sw-candado">${icono('candado', 18)}</span><span class="sw-txt"><span class="sw-et">Dar de alta</span><span class="sw-motivo">Dar de alta a una persona es del Jefe de personal.</span></span></span>
-          </div>
+          <!-- B11 · LOS NIVELES VAN DENTRO DEL .pp-priv de su privilegio, que es
+               lo que emite el componente y lo que dice la regla 5ter. Aqui
+               colgaban del cuerpo, detras de la fila cerrada, asi que se leian
+               como si fueran de «Dar de alta» — y recibian otro relleno y otro
+               border-bottom. -->
           <div class="pp-niveles">
             <fieldset class="sg">
               <legend class="sg-et">Documento</legend>
               <div class="sg-barra">
-                <label class="sg-op"><input class="sg-in" type="radio" name="doc" checked><span class="sg-tit">Completo</span><span class="sg-ej">71602303</span></label>
-                <label class="sg-op"><input class="sg-in" type="radio" name="doc"><span class="sg-tit">Parcial</span><span class="sg-ej">*****303</span></label>
-                <label class="sg-op"><input class="sg-in" type="radio" name="doc"><span class="sg-tit">Oculto</span></label>
+                <label class="sg-op"><input class="sg-in" type="radio" name="doc" checked><span class="sg-txt">Completo</span><span class="sg-ej">71602303</span></label>
+                <label class="sg-op"><input class="sg-in" type="radio" name="doc"><span class="sg-txt">Parcial</span><span class="sg-ej">*****303</span></label>
+                <label class="sg-op"><input class="sg-in" type="radio" name="doc"><span class="sg-txt">Oculto</span></label>
               </div>
             </fieldset>
+          </div>
+          </div>
+          <div class="pp-priv">
+            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="true" aria-label="Editar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar</span></span></label>
+          </div>
+          <!-- R99 · UN PRIVILEGIO CERRADO NO ES UN INTERRUPTOR CERRADO. Aqui se
+               dibujaba con sw-fila sw-cerrado, que es otro arbol: el componente
+               emite div.pp-priv.pp-no-cerrado > div.pp-cerrado con su icono, su
+               chip y su motivo. Dos marcados distintos para el mismo estado, en
+               la primera demo de la pagina. -->
+          <div class="pp-priv pp-no-cerrado">
+            <div class="pp-cerrado">
+              <span class="pp-cerrado-ic">${icono('candado', 18)}</span>
+              <span class="pp-cerrado-txt">
+                <span class="pp-cerrado-nom">Dar de alta</span>
+                <span class="pp-cerrado-eti"><span class="chip chip-inact">no se puede conceder</span></span>
+                <span class="pp-cerrado-motivo">Dar de alta a una persona es del Jefe de personal.</span>
+              </span>
+            </div>
           </div>
           <div class="pp-grupo">
             <p class="pp-grupo-tit">Dentro del módulo</p>
@@ -8116,8 +8137,11 @@ reconstruyendo.</p>
         <button class="pp-mod-cab" type="button" aria-expanded="true">
           <span class="pp-chev">${icono('chevron', 18)}</span>
           <span class="pp-mod-nom">Horarios</span>
-          <span class="pp-tags"><span class="chip chip-pend">sin permisos</span></span>
-          <span class="pp-conteo">0 de 3</span>
+          <!-- R148 · «Descargar» esta CONCEDIDO y deshabilitado: cuenta en los
+               chips y en el conteo. Aqui ponia «sin permisos» y «0 de 3», que es
+               el defecto que R148 cerro, ensenado en la pagina que lo explica. -->
+          <span class="pp-tags"><span class="chip chip-info">Descargar</span></span>
+          <span class="pp-conteo">1 de 3</span>
         </button>
         <div class="pp-mod-cuerpo">
           <div class="pp-priv pp-priv-base">
@@ -8166,7 +8190,11 @@ pueda, dice que <strong>todavía no</strong> — y se resuelve encendiendo el de
         <button class="pp-mod-cab" type="button" aria-expanded="true">
           <span class="pp-chev">${icono('chevron', 18)}</span>
           <span class="pp-mod-nom">Personal</span>
-          <span class="pp-conteo">0 de 4</span>
+          <!-- pp-tags va SIEMPRE: el componente la emite aunque este vacia, y
+               sin ella la rejilla de cuatro columnas de .pp-mod-cab se descuadra.
+               Y el conteo NO cuenta lo cerrado: tres de las cuatro filas lo son. -->
+          <span class="pp-tags"><span class="chip chip-pend">sin permisos</span></span>
+          <span class="pp-conteo">0 de 1</span>
         </button>
         <div class="pp-mod-cuerpo">
           <div class="pp-priv pp-no-cerrado">
@@ -8201,11 +8229,12 @@ pueda, dice que <strong>todavía no</strong> — y se resuelve encendiendo el de
           </div>
           <div class="pp-priv pp-no-depende">
             <div class="pp-cerrado" role="switch" aria-checked="false" aria-disabled="true"
-                 tabindex="0" aria-labelledby="pp-dem-cm-nom" aria-describedby="pp-dem-cm-mot">
+                 tabindex="0" aria-labelledby="pp-dem-cm-nom pp-dem-cm-eti"
+                 aria-describedby="pp-dem-cm-mot">
               <span class="pp-cerrado-ic">${icono('capas', 18)}</span>
               <span class="pp-cerrado-txt">
                 <span class="pp-cerrado-nom" id="pp-dem-cm-nom">Carga masiva</span>
-                <span class="pp-cerrado-eti"><span class="chip chip-aviso">necesita otro permiso</span></span>
+                <span class="pp-cerrado-eti" id="pp-dem-cm-eti"><span class="chip chip-aviso">necesita otro permiso</span></span>
                 <span class="pp-cerrado-motivo" id="pp-dem-cm-mot">Antes hay que conceder «Crear trabajador».</span>
               </span>
             </div>
@@ -8215,28 +8244,35 @@ pueda, dice que <strong>todavía no</strong> — y se resuelve encendiendo el de
     </div>
   </div>
 </div>
-<div class="msj msj-aviso">
-  <span class="msj-ico">${icono('alerta')}</span>
-  <span class="msj-txt"><strong>R111 · Declarado y NO resuelto: los cuatro salen del orden de tabulación.</strong>
-  Una fila bloqueada deja de ser <code>role="switch"</code> y pasa a ser texto, así que
-  <strong>quien recorra el panel con el tabulador no se entera de que existe</strong> — con el ratón y
-  con lector de pantalla en modo lectura, sí. Para los tres primeros es defendible: son permanentes y
-  no hay control que ofrecer. <strong>Para el cuarto lo es menos</strong>, porque es el único que se
-  resuelve en esta misma pantalla, y porque <code>Interruptor</code> tiene escrita la regla contraria:
-  «deshabilitado nativo sale del orden de tabulación y su estado se vuelve indescubrible con teclado».
-  Cambiarlo afecta a los cuatro y a cómo se ven, así que <strong>es una decisión de diseño, no un
-  arreglo</strong>: se deja escrita en vez de tomarla por la puerta de atrás.</span>
+<div class="msj msj-exito">
+  <span class="msj-ico">${icono('visto', 16)}</span>
+  <span class="msj-txt"><strong>R146 · La decisión está tomada: el cuarto SÍ se alcanza con teclado.</strong>
+  Aquí ponía «declarado y no resuelto», y lo siguió poniendo <strong>dos meses</strong>. Lo desatascó
+  Control Administrativos V2.0 trayendo el dato que faltaba: el bloqueado por <code>depende</code> es el
+  <strong>único transitorio</strong> —se desbloquea sin recargar en cuanto se enciende el otro—, así que
+  quien reparte con teclado veía aparecer en el recorrido una fila que un segundo antes no podía
+  alcanzar, y no tenía forma de llegar a ella para saber qué le falta. Va como
+  <code>role="switch"</code> con <strong><code>aria-disabled</code> y no <code>disabled</code></strong>,
+  con su nombre, su chip, su motivo y su anillo de foco. Los otros tres —<em>cerrado</em>,
+  <em>ajeno</em>, <em>pendiente</em>— son estables y son texto: quedarse fuera del recorrido es
+  correcto ahí.</span>
 </div>
-<div class="msj msj-aviso">
-  <span class="msj-ico">${icono('alerta')}</span>
-  <span class="msj-txt"><strong>Y otro, más viejo y peor.</strong> Con el módulo sin su privilegio
-  base, <code>.pp-sin-base</code> baja las filas al <strong>50 % de opacidad</strong> — y ahí el
-  nombre del privilegio cae a <strong>2,07:1 en claro</strong> y el icono a <strong>2,03:1</strong>,
-  cuando la norma pide 4,5 y 3. <strong>La excepción de WCAG para controles inactivos no aplica</strong>:
-  se comprobó que esos interruptores <strong>siguen siendo pulsables</strong>. Viene de R97 y no lo ve
-  ningún candado, porque la opacidad se aplica al elemento padre y el par medido es el del color
-  declarado. Queda abierto.</span>
+<div class="msj msj-exito">
+  <span class="msj-ico">${icono('visto', 16)}</span>
+  <span class="msj-txt"><strong>R144 · Y la opacidad se fue.</strong> Aquí ponía que
+  <code>.pp-sin-base</code> baja las filas al 50 % dejando el nombre a <strong>2,07:1</strong> con los
+  interruptores <strong>aún pulsables</strong>, y que quedaba abierto. Lo estuvo desde la v1.72.0.
+  Lo reclamó el equipo con el dato que lo vuelve urgente: <strong>«sin base» no es un caso raro, es el
+  estado INICIAL de la pantalla</strong> — repartir a un cargo nuevo empieza con los diez módulos sin su
+  «ver»—. Ahora es un <strong>carril de 3 px</strong> en <code>aviso-acento</code>, el mismo del aviso,
+  y <strong>ninguna relación de contraste se toca</strong>: medido en Chrome, el nombre pasa de
+  <strong>2,07:1 a 14,33:1</strong> y el filete da <strong>4,81:1</strong> contra la tarjeta. No se
+  bloquean las filas: encender algo antes de conceder el base es legítimo.</span>
 </div>
+<div class="aviso"><strong>Las dos de arriba llevaban meses escritas aquí como «queda abierto», con sus
+cifras.</strong> Las encontró el equipo que iba a adoptar el componente, leyendo esta misma página.
+Declarar no es arreglar — y una deuda declarada que nadie vuelve a mirar envejece sola hasta que la
+descubre quien la sufre.</div>
 <p class="seccion-sub"><strong>Por qué el cuarto no reutiliza ninguno de los tres.</strong> Lo pidió
 Control Administrativos y el argumento es suyo: <code>NoRepartible</code> describe por qué algo
 <em>no se puede</em> repartir, no un estado que cambia con lo que el usuario acaba de pulsar.
@@ -8244,7 +8280,11 @@ Recalcularlo como <code>cerrado</code> en cada pintada funciona —por eso no se
 pero desdibuja los tres motivos. Se declara con <code>depende: 'crear'</code>, y encender arrastra
 la cadena entera hacia arriba.</p>
 
-<h3 class="sub-seccion">Las ocho decisiones que lleva dentro</h3>
+<h3 class="sub-seccion">Las decisiones que lleva dentro</h3>
+<p class="seccion-sub">Éstas son las ocho con las que nació. <strong>El contrato tiene diecisiete</strong>
+—las nueve restantes llegaron entre la v1.125.0 y la v1.126.0, del R144 al R150— y están en
+<code>comportamiento.md</code>, que es la fuente. Este título decía «las ocho» sin más, y una lista
+cerrada con número en el título es una lista que envejece.</p>
 <table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td><strong>Hay un privilegio que manda.</strong> Sin «ver», editar no significa nada: apagarlo apaga el módulo, y encender cualquier otro lo enciende solo. Se cambia con <code>base</code> o se desactiva con <code>base={null}</code> cuando el dominio no funcione así. Sin esto se puede guardar «editar sin ver», y cada producto lo resolvería a su manera.</td></tr>
@@ -8262,7 +8302,7 @@ la cadena entera hacia arriba.</p>
 <table class="tabla-simple">
   <tbody>
     <tr><td class="num">1</td><td><strong>No ordena por estado.</strong> Subir los concedidos al principio haría que la fila saltara bajo el dedo justo después de tocarla, y borraría el orden ver → editar → crear → desactivar, que es una escalera de riesgo. El orden lo pone quien pasa los datos.</td></tr>
-    <tr><td class="num">2</td><td><strong>No guarda.</strong> Es controlado: recibe <code>valor</code> y emite <code>onCambio</code>. Cuándo se persiste es del producto.</td></tr>
+    <tr><td class="num">2</td><td><strong>No guarda.</strong> Es controlado: recibe <code>valor</code> y emite <code>onCambio</code>, que desde la v1.126.0 entrega <strong>dos</strong> cosas — el mapa completo y <strong>lo efectivo</strong>. Lo natural es guardar el primero y mandar el segundo. Cuándo se persiste es del producto.</td></tr>
     <tr><td class="num">3</td><td><strong>No sabe de cargos.</strong> El selector de arriba lo pone el producto por <code>children</code>. El día que esto sirva para permisos de una clave de API, no habrá que tocarlo.</td></tr>
   </tbody>
 </table>

@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.126.0
+# Actualizar al sistema de diseño v1.127.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.126.0"
+npm install "github:solwarehz/sistema-diseno#v1.127.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -37,7 +37,7 @@ está en marcha tiene el código viejo en memoria, y su caché de compilación n
 se entera de que cambió algo dentro de `node_modules`.
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.126.0"
+npm install "github:solwarehz/sistema-diseno#v1.127.0"
 # y ENTONCES, sin excepción:
 docker compose restart <su-servicio>     # o el reinicio que usen
 # si aun así ven lo de antes, tiren la caché de compilación —y reinicien OTRA
@@ -101,12 +101,12 @@ familia entera de ese defecto.
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.126.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.127.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.126.0 --repo solwarehz/sistema-diseno
+gh release download v1.127.0 --repo solwarehz/sistema-diseno
 ```
 
 Son **60 archivos**: tokens, hoja de estilos, los **43 módulos de componente**
@@ -123,23 +123,25 @@ midió el 2026-09-11 y hasta entonces este apartado daba a entender que sí:
 
 | | `npm install` | ZIP |
 |---|---|---|
-| Archivos | **79** | **60** |
+| Archivos | **82** | **60** |
 | **El catálogo** | **no** | **sí** (`catalogo/index.html`) |
-| **Los candados** | **los 15**, y 2 de los 3 generadores | **4** (contraste, color, lint y su configuración) |
+| **Los candados** | **los 17**, y 2 de los 3 generadores | **4** (contraste, color, lint y su configuración) |
 | `package.json` | sí | **no** — por eso el comando de comprobación del §1 no sirve aquí |
 | Componentes, tokens, hoja y contrato | sí | sí, **byte a byte lo mismo** |
 
-Decía «los 17» y son **quince candados dentro de dieciocho pasos**: los otros
-tres son generadores, y de ésos **`generar-cascaron.mjs` no viaja por ninguna de
-las dos vías**. Tiene consecuencia y conviene decirla: varios candados sí viajan
+Son **diecisiete candados dentro de veinte pasos**: los otros tres son
+generadores, y de ésos **`generar-cascaron.mjs` no viaja por ninguna de las dos
+vías**. *(Esta línea decía «quince dentro de dieciocho» y se quedó en la
+v1.120.0 — el mismo paquete lleva un `CLAUDE.md` que dice veinte, así que dos
+documentos de la misma versión daban números distintos.)* Tiene consecuencia y conviene decirla: varios candados sí viajan
 —`verificar-promesa`, `verificar-elemento`, `verificar-empate`— y **leen
 `cascaron/index.html`**, que tampoco viaja. Correrlos fuera de este repositorio
 no mide nada.
 
 Lo que se **usa** está en las dos. Lo que cambia es lo que se usa para
-**verificar**: quien instala por npm puede correr los **quince** candados
-contra su propio proyecto; quien baja el ZIP tiene el catálogo para mirar.
-Decía «los diecisiete» ocho líneas después de corregir exactamente eso.
+**verificar**: quien instala por npm puede correr los **diecisiete** candados
+contra su propio proyecto —con el límite de arriba— y quien baja el ZIP tiene el
+catálogo para mirar.
 
 **Solo la última versión conserva su ZIP.** Al publicar una nueva, el adjunto de
 la anterior se borra. La etiqueta y la publicación se quedan, así que
@@ -147,8 +149,12 @@ la anterior se borra. La etiqueta y la publicación se quedan, así que
 descarga directa de las viejas. Si necesitas el ZIP de una anterior, pídelo: se
 reconstruye desde su etiqueta.
 
-**Las dos vías entregan lo mismo.** La diferencia es que npm te deja actualizar
-cambiando un número, y el ZIP no: si bajas el ZIP, la próxima actualización es
+**Lo que se USA es lo mismo en las dos** —componentes, tokens, hoja y contrato,
+byte a byte—; lo que cambia es lo que se usa para verificar, que es la tabla de
+arriba. *(Aquí ponía «las dos vías entregan lo mismo», a cuatro párrafos de la
+frase que dice lo contrario. Era el texto viejo que la corrección del 2026-09-11
+no llegó a borrar, y lo cazó la verificación del 2026-09-18.)* La diferencia
+práctica es que npm te deja actualizar cambiando un número, y el ZIP no: si bajas el ZIP, la próxima actualización es
 otra descarga y otra copia a mano. Por eso npm es la vía recomendada, y el ZIP
 está para cuando no se puede instalar desde un repositorio privado.
 
@@ -222,7 +228,7 @@ esa propiedad, el comportamiento es el de siempre.
 tocar los datos, solo emite el estado por `alCambiar` y pinta lo que le des. Y
 `columnasSiempreVisibles` marca la columna que identifica cada fila para que el
 selector de columnas no pueda quitarla. **Se llamaba `columnasFijas` hasta la
-v1.126.0**; el nombre viejo sigue funcionando y avisa en desarrollo.
+v1.127.0**; el nombre viejo sigue funcionando y avisa en desarrollo.
 
 ### Los archivos viajan como `.tsx` sin compilar
 
@@ -254,6 +260,24 @@ este paquete:
 ```js
 { test: /\.tsx?$/, include: [/src/, /node_modules\/sistema-diseno-ae/], use: 'ts-loader' }
 ```
+
+**Y dos cosas que el `tsconfig` tiene que traer**, medidas una a una con `tsc`
+sobre el paquete instalado el 2026-09-18. **No estaban documentadas**, y no lo
+habían notado porque Next las trae por omisión; un proyecto Vite o con
+configuración propia sí choca:
+
+| Falta | Qué pasa |
+|---|---|
+| `@types/node` | **9 errores `TS2580: Cannot find name 'process'`** en `Boton.tsx`, `MarcaMenu.tsx`, `RangoFecha.tsx`, `SelectorBusqueda.tsx` y `TablaDatos.tsx` — los avisos de desarrollo del sistema leen `process.env.NODE_ENV` |
+| `"DOM.Iterable"` en `lib` | **3 errores `TS2488`** en `CargaPdf.tsx` e `interno/sanear.ts` |
+
+```jsonc
+// tsconfig.json
+{ "compilerOptions": { "lib": ["ES2022", "DOM", "DOM.Iterable"], "types": ["node"] } }
+```
+
+Es el mismo género que lo de arriba: el paquete entrega `.tsx` sin compilar, así
+que **su compilación es la del proyecto** y lo que él necesita hay que decirlo.
 
 Si tu proyecto no compila TypeScript, usa `componentes.css` con el marcado de
 `comportamiento.md`.
@@ -414,14 +438,15 @@ son piezas nuevas, y una pieza nueva no rompe nada.
 | 1.87.0 | **Nace un módulo entero: «Boleta electrónica»**, sobre Nubefact. Siete páginas —emitir, notas de crédito y débito, anulación, cotización, guía de remisión e impresión— y **una familia de clases nueva que SÍ viaja**, `cpe-*` (29 reglas): las **líneas del documento**, el **estado ante SUNAT** y la **representación impresa**. Con ella entra la **primera regla ` print`** del sistema: al imprimir un comprobante, la aplicación desaparece. Nada de lo anterior cambia |
 | 1.88.0 | **Un fallo de contraste corregido, y les afecta si copiaron marcado a mano.** `.psl-sdk-et` usaba un token de identidad como color de texto: **1,91:1 en modo oscuro**, cuando SC 1.4.3 pide 4,5. Pasa a `texto-secundario`, que sí está medido. Lo encontró una auditoría, **no un fallo visible** — y el candado de contraste no podía verlo porque solo mide los pares declarados. Si usan los componentes, no hay nada que hacer |
 | 1.89.0 | **Una página nueva en el catálogo y nada más: «Boleta electrónica → EFACT».** El segundo proveedor evaluado. **No cambia ni una regla de CSS ni un componente** — se compone entera con lo que ya existía, así que no hay nada que hacer al actualizar. Se lee si alguien tiene que decidir proveedor: EFACT vende **tres productos distintos**, y del que se parece a Nubefact **no hay especificación pública** |
-| 1.90.0 | **Dos props nuevas y una clase que desaparece.** `CargaPdf` gana `accept` y `validar`: deja de imponer PDF, y **el `File` que entrega conserva su `type`** en vez de reetiquetarlo. `PanelPrivilegios` gana `depende`, para cadenas que el `base` no sabe expresar. **Lo que puede romperles:** las filas bloqueadas ya no llevan `.pp-no` —ninguna regla la definía, así que no cambia el aspecto, pero era un gancho de CSS posible—, y un privilegio con `depende` **sigue encendiendo el `base` de rebote** — esta línea decía lo contrario y **era falsa**: se midió al escribir la v1.91.0 y el componente lo lleva escrito desde entonces, pero esta guía conservó el texto viejo **hasta la v1.126.0**. Lo cazó Control Administrativos V2.0 al ir a programar la cascada contra ella (R147), y el error habría sido silencioso: se habría notado como «a veces el ver se enciende y a veces no» |
+| 1.90.0 | **Dos props nuevas y una clase que desaparece.** `CargaPdf` gana `accept` y `validar`: deja de imponer PDF, y **el `File` que entrega conserva su `type`** en vez de reetiquetarlo. `PanelPrivilegios` gana `depende`, para cadenas que el `base` no sabe expresar. **Lo que puede romperles:** las filas bloqueadas ya no llevan `.pp-no` —ninguna regla la definía, así que no cambia el aspecto, pero era un gancho de CSS posible—, y un privilegio con `depende` **sigue encendiendo el `base` de rebote** — esta línea decía lo contrario y **era falsa**: se midió al escribir la v1.91.0 y el componente lo lleva escrito desde entonces, pero esta guía conservó el texto viejo **hasta la v1.127.0**. Lo cazó Control Administrativos V2.0 al ir a programar la cascada contra ella (R147), y el error habría sido silencioso: se habría notado como «a veces el ver se enciende y a veces no» |
 | 1.91.0 | **Correcciones de una auditoría, y una les afecta si copiaron marcado.** Nueve iconos del catálogo se publicaban como `<svg>` **vacíos** —cuatro nuevos y cinco desde R97—; ya se dibujan. `CargaPdf` gana `nombreTipo` e `icono`, y **`textoBoton` ahora sí vale en `presentacion="en-linea"`**, donde se ignoraba. `privilegiosEfectivos()` **deja de devolver lo marcado `cerrado`**. Y el texto del progreso pasa a decir «el archivo» en vez de «el PDF» salvo que pasen `nombreTipo` |
 | 1.92.0 | **Componente nuevo: `RedesSociales`.** Siete redes, tres formas, tres tamaños, con nombre y con cuenta. **No añade ningún color**: los iconos heredan `currentColor`, así que los de marca **no** están —eso sería una autorización, no un arreglo—. **No rompe nada de lo anterior** |
 | 1.93.0 | **`RedesSociales` pinta los iconos con el rojo del escudo por omisión.** `marca-rojo` queda **autorizado solo para eso** — sigue prohibido como texto y como superficie. Si los ponen sobre un fondo que no sea la tarjeta o la página, usen `color="heredado"`: los 4,88:1 y 4,69:1 están medidos contra esos dos y **sobre el encabezado no ha medido nadie**. No rompe nada |
 | 1.94.0 | **`CabeceraPantalla` gana `accionSecundaria`.** Se pinta a la izquierda de `accion`, con 8px de separación, y en estrecho las dos se reparten el ancho. **Les afecta aunque no la usen:** `.pant-accion` no tenía ni `display` ni `gap`, así que si metieron dos botones ahí a mano, salían pegados y ahora se separan. Y la documentación del componente decía «una sola acción»: era un error de redacción, la regla es **una sola principal** |
 | 1.95.0 | **`SelectorBusqueda` entrega por fin lo que el catálogo enseña, en nueve puntos.** Se ven cuatro: el chevron **ahora gira** al abrir la lista, el visto ✓ de la opción elegida pasa **a la derecha** (estaba a la izquierda, 298,4 px de diferencia), la ayuda de la opción recibe su tipografía —13 px, secundario— y deja de salir del mismo cuerpo que el nombre, y la fila de «sin resultados» **dice qué se buscó** en vez de «No hay coincidencias». Se teclean cuatro: **↑ abre la lista**, las flechas **ciclan**, **Inicio y Fin** funcionan, y **Tab elige lo marcado** — antes tabular con una coincidencia marcada dejaba el campo **vacío**. **Nada rompe:** ninguna clase pública cambia de nombre y `textoVacio` sigue admitiendo una cadena. **Y les afecta aunque no usen el selector:** `Paginacion` no emitía `activa`, así que **la página en curso no se pintaba en ninguna pantalla** — ahora sí |
-| 1.126.0 | **R148–R150 · las tres que bloqueaban la adopción del panel.** **`deshabilitado` por privilegio**: apaga el control **sin esconder el estado** y **sigue contando** en el «4 de 6» — antes lo único por fila era `cerrado`, que sustituye el interruptor por un chip, así que un permiso concedido se veía como si no lo tuviera. **El `base` se anuncia antes de pulsar** («· enciende también «Ver»»): encender de rebote lo que su servidor no exige les tumbaba el PUT entero con 403. Y **`privilegiosEfectivos` exige su tercer parámetro**, sin valor por omisión: con `base={null}` en el panel y la llamada corta, **vaciaba todos los módulos sin `ver` en silencio**. Ahora **`onCambio` entrega también lo efectivo**, calculado con el `base` que el panel tiene, así que no puede discrepar. ⚠️ **Lo efectivo puede ser un BORRADO**: un módulo sin su base sale como `{}`, y con un PUT de juego completo eso borra sus filas. **Lo que puede tocarles:** llamar a `privilegiosEfectivos` con dos argumentos es ahora **error de compilación**; el nombre accesible de un interruptor puede llevar el aviso del arrastre; y la última fila de un módulo sin base pierde su línea inferior. **Y si midieron la v1.125.0: el «+N» del móvil no se veía en ningún ancho** — estaba muerto por especificidad y lo cazó una auditoría antes de publicarla |
-| 1.125.0 | **R144–R147 · las cuatro de `PanelPrivilegios`, encontradas al ir a adoptarlo.** **Las filas sin `base` dejan de estar al 50 % de opacidad** —el nombre caía a 2,07:1 con los interruptores **aún pulsables**, y no es un caso raro: es el estado **inicial** de la pantalla— y pasan a llevar un filete de 3 px; el aviso sube a ir **justo debajo del base**, no al final. **En el teléfono la cabecera conserva qué, no solo cuántos**: los chips bajan a una segunda línea con los dos primeros y un «+N», en vez de ocultarse. **La fila bloqueada por `depende` entra en el orden de tabulación** —es la única transitoria— como `role="switch"` con `aria-disabled`; las otras tres no cambian. Y **se corrige la línea de la v1.90.0 de esta misma guía**, que decía lo contrario que el código sobre `depende` y `base`. **Lo que puede tocarles:** el aviso ya no es el último hijo de `.pp-mod-cuerpo`; `.pp-tags` emite un chip más, invisible en escritorio, así que quien cuente chips debe filtrar `:not(.pp-tags-mas)`; y hay una parada de tabulador más por cada dependencia sin resolver |
+| 1.127.0 | **Garantizar entrega contra promesa.** **No añade nada al código**: es lo que salió al preguntar en serio si lo que se entrega es lo que se promete. **El LEEME del ZIP decía que los componentes de React «todavía no existen»** —lo decía desde la v1.39.0, con 34 dentro—, su §3 **no importaba `componentes.css` en ningún paso** (quien lo siguiera montaba los componentes sin estilo) y su Ruta A mandaba reemplazar dos carpetas cuando son cuatro. Esta guía **se contradecía consigo misma** en la misma sección, y daba 79 archivos y «quince candados dentro de dieciocho pasos» cuando son **82** y **diecisiete dentro de veinte**. **Y se documentan dos requisitos de compilación que faltaban**: sin `@types/node` son nueve errores de tipos, sin `DOM.Iterable` otros tres. En el catálogo, **dos defectos ya cerrados seguían publicados como abiertos** (R144 y R146) y la maqueta del panel **enseñaba el defecto que R148 cerró**. **Lo que puede tocarles:** si se guiaron por el §3 del LEEME, les faltaba importar la hoja; y si actualizan copiando carpetas, ahora son cuatro |
+| 1.126.0 | **R148–R150 · las tres que bloqueaban la adopción del panel.** **`deshabilitado` por privilegio**: apaga el control **sin esconder el estado** y **sigue contando** en el «4 de 6» — antes lo único por fila era `cerrado`, que sustituye el interruptor por un chip, así que un permiso concedido se veía como si no lo tuviera. **El `base` se anuncia antes de pulsar** («· enciende también «Ver»»): encender de rebote lo que su servidor no exige les tumbaba el PUT entero con 403. Y **`privilegiosEfectivos` exige su tercer parámetro**, sin valor por omisión: con `base={null}` en el panel y la llamada corta, **vaciaba todos los módulos sin `ver` en silencio**. Ahora **`onCambio` entrega también lo efectivo**, calculado con el `base` que el panel tiene, así que no puede discrepar. ⚠️ **Lo efectivo puede ser un BORRADO**: un módulo sin su base sale como `{}`, y con un PUT de juego completo eso borra sus filas. **Lo que puede tocarles:** llamar a `privilegiosEfectivos` con dos argumentos es ahora **error de compilación**; el nombre accesible de un interruptor puede llevar el aviso del arrastre; y la última fila de un módulo sin base pierde su línea inferior. **La v1.125.0 no llegó a publicarse**: se commiteó con el «+N» muerto por especificidad —no se veía en ningún ancho—, una auditoría lo cazó y se corrigió antes de etiquetar. Lo del R144 al R147 entra aquí |
+| 1.125.0 | **NUNCA PUBLICADA** — se corrigió y salió dentro de la v1.127.0. **R144–R147 · las cuatro de `PanelPrivilegios`, encontradas al ir a adoptarlo.** **Las filas sin `base` dejan de estar al 50 % de opacidad** —el nombre caía a 2,07:1 con los interruptores **aún pulsables**, y no es un caso raro: es el estado **inicial** de la pantalla— y pasan a llevar un filete de 3 px; el aviso sube a ir **justo debajo del base**, no al final. **En el teléfono la cabecera conserva qué, no solo cuántos**: los chips bajan a una segunda línea con los dos primeros y un «+N», en vez de ocultarse. **La fila bloqueada por `depende` entra en el orden de tabulación** —es la única transitoria— como `role="switch"` con `aria-disabled`; las otras tres no cambian. Y **se corrige la línea de la v1.90.0 de esta misma guía**, que decía lo contrario que el código sobre `depende` y `base`. **Lo que puede tocarles:** el aviso ya no es el último hijo de `.pp-mod-cuerpo`; `.pp-tags` emite un chip más, invisible en escritorio, así que quien cuente chips debe filtrar `:not(.pp-tags-mas)`; y hay una parada de tabulador más por cada dependencia sin resolver |
 | 1.124.0 | **R142 · la columna anclada.** Con **`anclarColumnas={1}`** la primera columna visible —y la N.º con ella— **se queda quieta al desplazar en horizontal**. Con 31, 22 o 76 columnas, una fila desplazada no dice de quién es. **Por omisión 0: sin pedirlo no cambia ni una clase ni un píxel.** **Y `columnasFijas` pasa a llamarse `columnasSiempreVisibles`** — nunca significó «fija al desplazar», que es lo que hace `anclarColumnas`; el alias sigue funcionando y avisa en desarrollo, así que **quien no lo pase no toca nada**. **Lo que puede tocarles:** si su hoja aprieta `.tb td` o `.tb-th` con `position` o `z-index` propios, gana la suya y el anclaje no funciona; la celda anclada lleva **fondo en la celda**, no en la fila; y un `transform`, `filter` o `contain` en cualquier antepasado **lo desactiva en silencio**. `.tb-col-op*` deja de viajar: era mobiliario del catálogo. **Y `maxDias` guarda ahora LOS DOS EXTREMOS** — eligiendo primero «Hasta» y después «Desde» salían treinta días con un tope de siete, y el calendario no apagaba ni un solo día |
 | 1.123.0 | **R143 · el chip de identidad deja de ser gris.** Los cuatro `identidad-N` y `pendiente` pintaban **el mismo relleno** —`fondo-encabezado`—, así que de los diez tonos que `Chip` publica solo había **seis** distinguibles: medido, **0,0** de distancia perceptual entre ellos. Ahora cada identidad pinta su color con texto blanco, **el mismo par que el avatar**, y **sin ningún color nuevo**. **Lo que puede tocarles:** el chip de identidad **pesa más** que uno de estado; si los mezclan en la misma columna, ya no pesan igual. El del **horario no cambia** — allí el color sigue en el filete a 6 px. Y nace **`verificar-tono`**, el paso **20**: ningún par de tonos puede caer por debajo del umbral de percepción, en ninguna hoja ni modo. **Añadido al R139 · con `maxDias`, los periodos que no caben no se pintan** — los cuatro de omisión van de un mes a un año, así que con un tope corto el panel «Periodos» desaparece entero; para recuperarlo, `atajos={atajosDeDias(1, 3, 7)}`, exportada y contando inclusive. **R141 · a 640 px y por debajo el filtro de fechas se apila y ocupa el ancho**, y se va la flecha de unión |
 | 1.122.0 | **R139 y R140 · `RangoFecha` se comporta por fin como un campo.** **`desde`/`hasta` pasan de sembrar a MANDAR** — eran el valor inicial, así que devolverles un rango corregido no lo movía y solo podían avisar *después*. Entra **`maxDias`**, que **impide en vez de avisar**: los días de más van `aria-disabled` mientras se elige el final. Es un número cualquiera y **sin pasarlo no hay tope**. Un rango que **llega** ya pasado **se pinta y se dice, no se recorta**. Y entran **`error`** y **`deshabilitado`**, que les permiten retirar el envoltorio de `Campo` y las dos líneas de CSS — y cierran el fallo que ustedes mismos marcaron: **apagar con CSS no saca el control del tabulador**. **Lo que puede tocarles:** si pasan `desde`/`hasta` y **no** guardan lo que llega por `onCambio`, el calendario queda **congelado**; la migración es de una línea. Quien no las pasa no toca nada. En desarrollo sale un aviso por consola si se pasan sin `onCambio`. Y el bloque «copia esto» de la página del calendario **no compilaba** —decía `RangoFechas`, `etiquetaInicio`, `permitirAbierto`—: corregido, y la página enseña ya el error, el apagado y el tope |
