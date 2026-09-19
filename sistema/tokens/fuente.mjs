@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.129.0";
+export const VERSION = "1.130.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,88 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.130.0', fecha: '2026-09-18',
+    que: 'R152 · una llave que abre dos puertas: `claveGlobal` cruza modulos',
+    porque:
+      'LO PIDIO CONTROL ADMINISTRATIVOS V2.0 Y EL ARGUMENTO ES DE SEGURIDAD, NO DE COMODIDAD: '
+      + '«dar de alta enciende Contrato → Puesto → Cargo → PrivilegioCargo: quien puede hacerlo '
+      + 'puede sentar a alguien en un cargo de RRHH y concederle sus facultades. Ese daño es '
+      + 'identico se pulse el boton donde se pulse, y UN ACTO IRREVERSIBLE MERECE UNA SOLA LLAVE. '
+      + 'Con dos, quitar una da la sensacion de haber cerrado sin haber cerrado». '
+      + 'ENTRA PORQUE NO ES SUYO: la misma accion peligrosa alcanzable desde dos pantallas es el '
+      + 'patron de cualquier sistema de permisos que crezca. Y porque la salida que les quedaba '
+      + '—sincronizar las dos entradas en su `onCambio`— es REIMPLEMENTAR `clave` POR FUERA, que es '
+      + 'de lo que venian huyendo desde el R151, con el aviso «va con» compuesto aparte: dos sitios '
+      + 'explicando lo mismo y uno de los dos envejeciendo. '
+      + 'ENTRA `claveGlobal` Y NO SE AMPLIA `clave`, que era la otra salida que ofrecian y la de '
+      + 'menos conceptos. Las claves son cadenas cortas y genericas —`editar`, `alta`— y hacerlas '
+      + 'cruzar por omision FUNDIRIA EN UN PERMISO DOS QUE SOLO COINCIDEN DE NOMBRE, en silencio, '
+      + 'en productos que ya usan `clave` dentro de un modulo: es el daño del R152 al reves, una '
+      + 'llave para dos puertas que no tenian por que compartirla. El ambito va en el nombre y se '
+      + 'elige a proposito. Las dos se pueden usar a la vez. '
+      + 'EL AVISO NOMBRA EL MODULO DEL COMPAÑERO. «va con Dar alta (Contrato)» no dice lo mismo que '
+      + '«va con Dar alta»: quien reparte tiene que ver que esta abriendo tambien otra puerta, y lo '
+      + 'pidieron con esas palabras — «sin eso, el aviso diria la verdad a medias, que en una '
+      + 'pantalla de permisos es peor que no decir nada». '
+      + 'EL GEMELO DE OTRO MODULO ARRASTRA EL BASE DE SU MODULO —si no, viaja encendido en pantalla '
+      + 'y vacio en lo efectivo, que es el defecto que el R151 cerro dentro de un modulo y que aqui '
+      + 'reaparecia entre modulos— y no se enciende de rebote si esta `cerrado` o `deshabilitado`, '
+      + 'que es R148 entre modulos: si una mitad de la llave no es suya, el permiso no es suyo. '
+      + 'Y SU PREGUNTA SE RESPONDE EN CODIGO, NO EN PROSA. Preguntaron que debe devolver '
+      + '`privilegiosEfectivos` para una llave compartida cuyo modulo A sobrevive y cuyo B se '
+      + 'vacia, y pidieron que lo decidieramos nosotros «porque si lo decidimos nosotros '
+      + 'acertaremos hoy y divergeremos en la proxima version». La decision: `privilegiosEfectivos` '
+      + 'NO CAMBIA —«el modulo B no aplica nada» es una verdad sobre B, y falsearla para acertar '
+      + 'sobre la llave seria mentir sobre B— y entra `clavesEfectivas()`, que responde la otra '
+      + 'pregunta: UNA LLAVE ESTA CONCEDIDA SI SOBREVIVE EN AL MENOS UN MODULO donde esta '
+      + 'declarada. Porque es UNA llave: si en alguna puerta abre de verdad, esta dada. Exigir que '
+      + 'sobreviva en todos convertiria un modulo sin su `base` en un REVOCADOR SILENCIOSO de '
+      + 'permisos concedidos en otra pantalla, que es el borrado que el R150 cerro. '
+      + 'Y una `claveGlobal` repetida DENTRO de un mismo modulo se avisa en desarrollo: ahi lo que '
+      + 'describe el caso es `clave`, y el nombre mentiria sobre el alcance el dia que alguien use '
+      + 'ese mismo nombre en otro modulo. '
+      + 'Y UNA AUDITORIA ADVERSARIA SOBRE EL PROPIO R152 ENCONTRO SEIS DEFECTOS, cinco de ellos por '
+      + 'la MISMA causa: el modulo pulsado se trataba de una forma y los demas de otra. '
+      + 'UNO · EL GEMELO DE OTRO MODULO NO ARRASTRABA SU CADENA `depende`, asi que quedaba guardado '
+      + 'en `true` e INVISIBLE y entraba en vigor el dia que alguien concediera su dependencia: un '
+      + 'permiso colandose sin que nadie lo pulse. DOS · CON `filas`, el gemelo de otra fila no '
+      + 'subia el base de SU fila —el registro de «tocados» filtraba por `clave` y no por la llave '
+      + 'global—, asi que se veia encendido en la rejilla y no viajaba. TRES · «EL MISMO PERMISO» NO '
+      + 'ERA TRANSITIVO: con `clave` uniendo A-B dentro de un modulo y `claveGlobal` uniendo B-C '
+      + 'entre modulos, pulsar A encendia B y dejaba C APAGADO mientras la etiqueta anunciaba que '
+      + 'iban juntos — el defecto del R152 reaparecido dentro del mecanismo que vino a cerrarlo. '
+      + 'CUATRO · EL AVISO NOMBRABA A COMPAÑEROS QUE NO SE IBAN A MOVER, porque no filtraba '
+      + '`cerrado`/`deshabilitado` como si hace `cambiar()`: prometia abrir una puerta de OTRA '
+      + 'pantalla que no se abria. CINCO · Y EL BASE QUE SE ENCIENDE EN EL OTRO MODULO NO SE DECIA '
+      + 'EN NINGUNA PARTE, que es la regla 16 —Obligatorio— incumplida cruzando modulos. Ahora hay '
+      + 'UN SOLO CAMINO: se anota QUE se acaba de encender en cada modulo y sobre eso —y solo sobre '
+      + 'eso— se sube el base y se arrastra la cadena, de el pulsado igual que de cualquier otro. '
+      + 'Y UN SEXTO QUE SE REPORTO COMO DEFECTO Y NO LO ERA, que conviene contar igual: que subir el '
+      + 'base del otro modulo DESPIERTE lo que ese modulo tuviera guardado y dormido. Se midio el '
+      + 'mismo escenario DENTRO de un solo modulo y hace exactamente lo mismo, desde el R97: '
+      + 'conceder el base concede el modulo, y R98 conserva lo repartido sin aplicarlo. Es la '
+      + 'semantica del base, coherente en todo el componente. Lo que si faltaba era DECIRLO, y entre '
+      + 'modulos importa mas que dentro de uno porque quien reparte esta mirando otra pantalla. '
+      + 'EN EL CATALOGO, el ejemplo canonico que los productos copian ponia DOS privilegios en la '
+      + 'MISMA CELDA —el anti-patron que la regla 24 existe para cazar, en el bloque que se enseña '
+      + 'como modelo—, su comentario afirmaba que la llave cruzaba a un modulo que no existia en el '
+      + 'ejemplo, y el encabezado «Copia esto» salia DUPLICADO. Ademas el R152 no se veia funcionar '
+      + 'en ninguna parte: ahora la matriz viva del catalogo lleva una llave compartida de verdad '
+      + 'entre «Personal» y «Reportes». '
+      + 'Cuatro reglas de contrato —29 a 32— con veintitres pruebas. Dos mutaciones sobrevivieron a la '
+      + 'primera bateria y las dos eran huecos reales: `clave` podia contagiarse de modulo por '
+      + 'llevar al lado una global, y el aviso se comprobaba sobre el MONTON de avisos junto, asi '
+      + 'que bastaba con que UNO nombrara su modulo. Una tercera resulto equivalente —mutaba una '
+      + 'rama de un ternario cuya otra rama hacia lo mismo— y se dice, porque una superviviente que '
+      + 'no es un hueco tambien hay que saber distinguirla.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'NADA. `claveGlobal` es una prop nueva y opcional: quien no la pase no ve un solo cambio. '
+      + '`clave` sigue significando exactamente lo que significaba —unir DENTRO de un modulo— y '
+      + 'eso fue lo que decidio que entrara una prop nueva en vez de ampliar la que habia.',
+    ],
+  },
   {
     v: '1.129.0', fecha: '2026-09-18',
     que: 'Garantizar entrega y promesa del R151 — y tres candados que salian verdes delante del defecto',

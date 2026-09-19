@@ -126,6 +126,36 @@ export type Privilegio = {
    */
   clave?: string;
   /**
+   * R152 · La misma llave, en MÓDULOS DISTINTOS.
+   *
+   * `clave` une privilegios **dentro de un módulo**, que es donde el estado los
+   * guarda juntos. Esto los une **entre módulos**: encender uno enciende a
+   * todos los que comparten `claveGlobal`, estén donde estén, y el aviso nombra
+   * el módulo del compañero — porque quien reparte necesita saber que está
+   * abriendo también otra puerta.
+   *
+   * Lo pidió Control Administrativos y el argumento es de seguridad, no de
+   * comodidad: *«dar de alta enciende Contrato → Puesto → Cargo →
+   * PrivilegioCargo… ese daño es idéntico se pulse el botón donde se pulse, y
+   * un acto irreversible merece una sola llave. Con dos, quitar una da la
+   * sensación de haber cerrado sin haber cerrado»*.
+   *
+   * POR QUÉ NO SE AMPLIÓ `clave` SIN MÁS, que era la otra salida que ofrecían y
+   * la que tiene menos conceptos. Porque las claves son cadenas cortas y
+   * genéricas —`'editar'`, `'alta'`— y hacerlas cruzar por omisión fundiría en
+   * **un** permiso dos que solo coinciden de nombre, en silencio, en productos
+   * que ya usan `clave` dentro de un módulo. Eso es el daño del R152 al revés:
+   * en vez de dos llaves para una puerta, una llave para dos puertas que no
+   * tenían por qué compartirla. El ámbito va en el nombre y se elige a
+   * propósito.
+   *
+   * Se pueden usar las dos: `clave` para el grupo local y `claveGlobal` para el
+   * permiso compartido. Y si un módulo declara la misma `claveGlobal` en dos
+   * privilegios suyos, el panel avisa en desarrollo: ahí lo que hace falta es
+   * `clave`, que es lo que describe ese caso.
+   */
+  claveGlobal?: string;
+  /**
    * R110 · De qué OTRO privilegio del mismo módulo depende éste. Su `id`.
    *
    * Dos efectos, y son los dos que hasta ahora había que recomponer fuera:
@@ -449,6 +479,66 @@ export function baseDe(
 }
 
 /**
+ * R152 · LOS QUE SON EL MISMO PERMISO QUE ÉSTE, estén en el módulo que estén.
+ *
+ * Devuelve pares `[módulo, privilegio]` **sin incluirse a sí mismo**. Une por
+ * `clave` dentro del módulo —R99— y por `claveGlobal` entre todos los módulos.
+ * Una sola función, porque «quiénes van juntos» se pregunta en cuatro sitios
+ * —al encender, al apagar, al subir el base y al escribir el aviso— y tener
+ * cuatro respuestas es como se empieza a divergir.
+ *
+ * **ES TRANSITIVO, y no lo era.** Si A y B son el mismo permiso, y B y C son el
+ * mismo permiso, entonces A y C lo son: no hay lectura sensata en la que dos
+ * cosas iguales a una tercera sean distintas entre sí. La primera versión sólo
+ * devolvía los compañeros **directos**, y con `clave: 'k'` uniendo A-B dentro de
+ * un módulo y `claveGlobal: 'g'` uniendo B-C entre módulos, pulsar A encendía B
+ * y **dejaba C apagado** — mientras la etiqueta de A anunciaba que iban juntos.
+ * Eso es literalmente el defecto que el R152 vino a cerrar —«la pantalla enseña
+ * como dos cosas lo que el servidor guarda como una»— reaparecido dentro del
+ * mecanismo que lo cerraba. Lo cazó una auditoría adversaria.
+ *
+ * Se recorre en anchura hasta que no se descubre a nadie nuevo. El tope es el
+ * número de privilegios del panel: cada vuelta añade al menos uno o para.
+ */
+export function mismosPermisos(
+  modulos: ModuloPrivilegios[], m: ModuloPrivilegios, p: Privilegio,
+): { modulo: ModuloPrivilegios; privilegio: Privilegio }[] {
+  const clavePar = (idModulo: string, idPriv: string) => `${idModulo}\u0000${idPriv}`;
+  const vistos = new Set<string>([clavePar(m.id, p.id)]);
+  const salida: { modulo: ModuloPrivilegios; privilegio: Privilegio }[] = [];
+  const cola: { modulo: ModuloPrivilegios; privilegio: Privilegio }[] = [{ modulo: m, privilegio: p }];
+
+  while (cola.length) {
+    const { modulo: mod, privilegio: actual } = cola.shift() as
+      { modulo: ModuloPrivilegios; privilegio: Privilegio };
+    const vecinos: { modulo: ModuloPrivilegios; privilegio: Privilegio }[] = [];
+    // `clave` une DENTRO de su módulo, que es donde el estado los guarda juntos.
+    if (actual.clave !== undefined) {
+      for (const x of todos(mod)) {
+        if (x.id !== actual.id && x.clave === actual.clave) vecinos.push({ modulo: mod, privilegio: x });
+      }
+    }
+    // `claveGlobal` cruza TODOS los módulos.
+    if (actual.claveGlobal !== undefined) {
+      for (const otro of modulos) {
+        for (const x of todos(otro)) {
+          if (otro.id === mod.id && x.id === actual.id) continue;
+          if (x.claveGlobal === actual.claveGlobal) vecinos.push({ modulo: otro, privilegio: x });
+        }
+      }
+    }
+    for (const v of vecinos) {
+      const k = clavePar(v.modulo.id, v.privilegio.id);
+      if (vistos.has(k)) continue;
+      vistos.add(k);
+      salida.push(v);
+      cola.push(v);
+    }
+  }
+  return salida;
+}
+
+/**
  * R151 · ¿Hay `base` declarado que NINGÚN privilegio encarna? Con `filas`, por
  * fila. Se usa para avisar en desarrollo, no para decidir nada.
  */
@@ -467,6 +557,52 @@ export function baseSinResolver(
   const grupos = [...new Set(todos(m).map((x) => x.fila ?? m.id))];
   return grupos.filter((g) => !todos(m).some(
     (x) => (x.fila ?? m.id) === g && x.columna === base));
+}
+
+/**
+ * R152 · QUÉ LLAVES COMPARTIDAS QUEDAN CONCEDIDAS, en todo el panel.
+ *
+ * **Ésta es la respuesta a la pregunta que hicieron**, y va en código y no en
+ * prosa a propósito: *«¿qué debería devolver `privilegiosEfectivos` para una
+ * clave compartida cuyo módulo A sobrevive y cuyo módulo B se vacía?»*. Con un
+ * PUT de juego completo, «sale en A y no en B» y «no sale» son cosas distintas,
+ * y la segunda borra.
+ *
+ * LA DECISIÓN, y su porqué:
+ *
+ * `privilegiosEfectivos` **no cambia**. Sigue limpiando módulo a módulo, y una
+ * llave compartida saldrá en los módulos donde se aplique y faltará en los que
+ * no. Eso es correcto y no se toca: «el módulo B no aplica nada» es una verdad
+ * sobre B, y falsearla —dejando colgada una entrada de un módulo vaciado— sería
+ * mentir sobre B para acertar sobre la llave.
+ *
+ * Pero aplanar eso a «¿está concedida la llave?» exige una regla, y si cada
+ * producto la deduce por su cuenta, acertarán hoy y divergirán en la próxima
+ * versión — lo dijeron ellos mismos. Así que la regla está aquí:
+ *
+ * > **Una llave compartida está concedida si sobrevive en AL MENOS UN módulo
+ * > donde está declarada.**
+ *
+ * Porque es **una** llave: si en alguna puerta abre de verdad, está dada. La
+ * alternativa —exigir que sobreviva en todos— convertiría un módulo sin su
+ * `base` en un revocador silencioso de permisos concedidos en otra pantalla, y
+ * eso es exactamente el borrado que el R150 cerró.
+ *
+ * Devuelve el conjunto de `claveGlobal` concedidas. Quien aplane usa esto y no
+ * tiene que deducir nada.
+ */
+export function clavesEfectivas(
+  modulos: ModuloPrivilegios[], valor: ValorPrivilegios, base: string | null,
+): Set<string> {
+  const efectivo = privilegiosEfectivos(modulos, valor, base);
+  const dadas = new Set<string>();
+  for (const m of modulos) {
+    for (const p of todos(m)) {
+      if (p.claveGlobal === undefined) continue;
+      if (efectivo[m.id]?.[p.id] === true) dadas.add(p.claveGlobal);
+    }
+  }
+  return dadas;
 }
 
 /**
@@ -642,95 +778,101 @@ export function PanelPrivilegios({
   };
 
   const cambiar = useCallback((m: ModuloPrivilegios, priv: string, activo: boolean) => {
-    const delModulo = { ...(valor[m.id] ?? {}), [priv]: activo };
-    // R99 · Los que comparten clave son el MISMO permiso: van juntos. Si no,
-    // el panel enseñaría dos interruptores que el backend guarda como uno, y
-    // al recargar uno de los dos habría cambiado solo.
-    const clave = todos(m).find((p) => p.id === priv)?.clave;
-    if (clave) {
-      todos(m).forEach((p) => {
-        /* R148 · Y NO SI ESTA DESHABILITADO. Esta linea miraba solo `cerrado`,
-           asi que pulsar el compañero libre encendia el que quien mira NO puede
-           repartir — y con una regla anti-escalada eso tumba el PUT entero. Es
-           el defecto que R148 vino a cerrar, colandose por la puerta de al
-           lado. Comparten clave: son el MISMO permiso, y si una mitad no es
-           mia, el permiso no es mio. Lo cazo una auditoria. */
-        if (p.clave === clave && !p.cerrado && !p.deshabilitado) delModulo[p.id] = activo;
-      });
-    }
-    // R98 · EL BASE GOBIERNA, PERO NO BORRA.
-    //
-    // Hasta la v1.72.0, apagar el base ponía a `false` todo el módulo. Con
-    // niveles por campo eso destruye configuración que costó definir —y en un
-    // panel que guarda en cada pulsación, sin botón de Guardar, se pierde en el
-    // acto y sin vuelta atrás—.
-    //
-    // Ahora se conserva. Es la misma decisión que ya tomó la tabla con sus
-    // filtros: «al plegar la fila, los valores se conservan; plegar es dejar de
-    // ver el control, no dejar de filtrar». Aquí, apagar «ver» es dejar de
-    // conceder el módulo, no olvidar cómo estaba repartido.
-    //
-    // Lo que NO se conserva es el efecto: sin el base, nada se aplica. Eso lo
-    // dice el panel en pantalla, y `privilegiosEfectivos` lo resuelve para
-    // quien tenga que mandarlo al backend.
-    /* R151 · `baseDe` y no `base`: con `filas`, encender «editar Contratos»
-       tiene que encender «ver CONTRATOS», no un `ver` de modulo que no existe.
-       Mirandolo por id literal, con filas no encendia nada.
+    /* ───────────────────────────────────────────────────────────────────────
+       TODOS LOS MODULOS SE TRATAN IGUAL, incluido el pulsado.
 
-       Y SUBE EL BASE DE CADA FILA QUE SE HAYA TOCADO, no solo la del pulsado.
-       Con `clave` repartida entre dos filas, encender una encendia las dos
-       —son el MISMO permiso, regla 2bis— pero solo subia el base de la fila
-       del pulsado, asi que el compañero se veia ENCENDIDO y NO VIAJABA en lo
-       efectivo: apagados juntos, encendidos por separado, y en la pantalla que
-       existe para revisar. Lo cazo una auditoria. */
-    if (activo) {
-      const tocados = todos(m).filter(
-        (x) => delModulo[x.id] === true
-          && (x.id === priv || (clave !== undefined && x.clave === clave)),
-      );
-      const suyos = new Set(
-        tocados.map((x) => baseDe(m, x, base)).filter((b): b is string => b !== null),
-      );
-      for (const suBase of suyos) {
-        if (delModulo[suBase]) continue;
-        /* R149 · El base tiene que EXISTIR —`baseDe` ya lo garantiza— y poder
-           encenderse: si esta cerrado o deshabilitado, encenderlo de rebote es
-           concederlo, y eso tumba el PUT entero con una regla anti-escalada. */
-        const elBase = todos(m).find((x) => x.id === suBase);
-        if (elBase && !elBase.cerrado && !elBase.deshabilitado) delModulo[suBase] = true;
+       La primera version del R152 trataba el modulo pulsado de una forma y los
+       demas de otra, y esa asimetria costo tres defectos que encontro una
+       auditoria adversaria:
+
+       · El mapa del otro modulo se sembraba con TODO lo que ya tenia guardado y
+         luego se le subia el base recorriendolo entero, asi que un clic en
+         «Contrato» CONCEDIA un «Editar» de «Historia» que llevaba dormido
+         —guardado en `true` y sin efecto por faltarle su base, que es R98—.
+         Se midio: lo efectivo pasaba de `historia:{}` a `historia:{editar:true,
+         h-alta:true, ver:true}`. Un permiso que nadie toco ni se anuncio.
+       · El gemelo de otro modulo no arrastraba su cadena `depende`, asi que
+         quedaba guardado en `true` e invisible, y entraba en vigor solo el dia
+         que alguien concediera su dependencia — un permiso que se cuela sin que
+         nadie lo pulse.
+       · Y con `filas`, el gemelo de otra fila no subia el base de SU fila,
+         porque el registro de «tocados» filtraba por `clave` y no por la llave
+         global.
+
+       Ahora hay un solo camino: se anota QUE se acaba de encender en cada
+       modulo, y sobre eso —y solo sobre eso— se sube el base y se arrastra la
+       cadena, exactamente igual da que sea el modulo pulsado o cualquier otro.
+       ─────────────────────────────────────────────────────────────────────── */
+    const mapas = new Map<string, Record<string, boolean | string>>();
+    const encendidos = new Map<string, Set<string>>();
+    const deModulo = (id: string) => {
+      if (!mapas.has(id)) mapas.set(id, { ...(valor[id] ?? {}) });
+      return mapas.get(id) as Record<string, boolean | string>;
+    };
+    const anotar = (mod: ModuloPrivilegios, id: string, v: boolean) => {
+      deModulo(mod.id)[id] = v;
+      if (!v) return;
+      if (!encendidos.has(mod.id)) encendidos.set(mod.id, new Set());
+      (encendidos.get(mod.id) as Set<string>).add(id);
+    };
+
+    anotar(m, priv, activo);
+
+    /* R99 y R152 · LOS QUE SON EL MISMO PERMISO VAN JUNTOS, esten en el modulo
+       que esten. Si no, el panel enseñaria dos interruptores que el backend
+       guarda como uno, y al recargar uno de los dos habria cambiado solo. */
+    const elPulsado = todos(m).find((p) => p.id === priv);
+    if (elPulsado) {
+      for (const { modulo, privilegio: x } of mismosPermisos(modulos, m, elPulsado)) {
+        /* R148 · Y NO SI ESTA CERRADO O DESHABILITADO. Comparten llave: son el
+           MISMO permiso, y si una mitad no es mia, el permiso no es mio —
+           encenderla tumbaria el PUT entero con una regla anti-escalada. */
+        if (x.cerrado || x.deshabilitado) continue;
+        anotar(modulo, x.id, activo);
       }
     }
 
-    // R110 · ENCENDER ENCIENDE LA CADENA. Es la mitad que `cerrado` no podía
-    // cubrir: recalcular un bloqueo se puede hacer fuera, pero el encendido en
-    // cascada lo habría escrito cada producto por su cuenta y cada uno habría
-    // acertado distinto.
-    //
-    // Se recorre desde TODO lo que acaba de encenderse —el privilegio pulsado y
-    // los que comparten su clave—, porque un compañero de clave puede tener su
-    // propia dependencia.
-    //
-    // APAGAR NO ARRASTRA. Apagar «crear» no apaga la carga masiva: la deja
-    // visible y bloqueada, con lo configurado intacto. Es la misma decisión que
-    // R98 tomó para el base —gobierna, pero no borra— y `privilegiosEfectivos`
-    // se encarga de que tampoco surta efecto mientras tanto.
+    // R98 · EL BASE GOBIERNA, PERO NO BORRA. Apagar el base conserva lo
+    // repartido y le quita el efecto; `privilegiosEfectivos` lo resuelve para
+    // quien tenga que mandarlo al backend.
     if (activo) {
-      const encendidos = Object.keys(delModulo).filter((k) => delModulo[k] === true);
-      for (const id of encendidos) {
-        for (const dep of cadenaDepende(m, id)) {
-          // Uno cerrado no se enciende por la puerta de atrás: si no se puede
-          // conceder a mano, tampoco de rebote. La cadena se para ahí, y el
-          // privilegio de abajo se quedará bloqueado diciendo qué falta.
-          const p = todos(m).find((x) => x.id === dep);
-          /* R148 · `deshabilitado` corta la cadena igual que `cerrado`: encender
-         de rebote lo que quien mira no puede repartir es concederlo. */
-      if (!p || p.cerrado || p.deshabilitado) break;
-          delModulo[dep] = true;
+      for (const [idModulo, ids] of encendidos) {
+        const mod = modulos.find((x) => x.id === idModulo);
+        if (!mod) continue;
+        const mapa = deModulo(idModulo);
+
+        /* R110 · ENCENDER ENCIENDE LA CADENA, en cada modulo tocado. Se recorre
+           desde TODO lo que acaba de encenderse ahi. APAGAR NO ARRASTRA: apagar
+           «crear» deja la carga masiva visible y bloqueada, con lo configurado
+           intacto — misma decision que R98 para el base. */
+        for (const id of [...ids]) {
+          for (const dep of cadenaDepende(mod, id)) {
+            // Uno cerrado no se enciende por la puerta de atras: si no se puede
+            // conceder a mano, tampoco de rebote. La cadena se para ahi.
+            const p = todos(mod).find((x) => x.id === dep);
+            if (!p || p.cerrado || p.deshabilitado) break;
+            anotar(mod, dep, true);
+          }
+        }
+
+        /* Y EL BASE DE CADA UNO, que con `filas` es el de SU fila. Solo de lo
+           RECIEN encendido: recorrer el mapa entero despertaba permisos
+           dormidos del otro modulo. */
+        for (const id of [...(encendidos.get(idModulo) as Set<string>)]) {
+          const elPriv = todos(mod).find((x) => x.id === id);
+          const suBase = elPriv ? baseDe(mod, elPriv, base) : null;
+          if (!suBase || suBase === id || mapa[suBase] === true) continue;
+          /* R149 · El base tiene que EXISTIR —`baseDe` lo garantiza— y poder
+             encenderse: si esta cerrado o deshabilitado, encenderlo de rebote
+             es concederlo. */
+          const elBase = todos(mod).find((x) => x.id === suBase);
+          if (elBase && !elBase.cerrado && !elBase.deshabilitado) anotar(mod, suBase, true);
         }
       }
     }
 
-    const nuevo = { ...valor, [m.id]: delModulo };
+    const nuevo = { ...valor };
+    for (const [id, mapa] of mapas) nuevo[id] = mapa;
     onCambio(nuevo, privilegiosEfectivos(modulos, nuevo, base));
   }, [valor, onCambio, base, modulos]);
 
@@ -777,9 +919,24 @@ export function PanelPrivilegios({
       : typeof nombreFalta === 'string' || nombreFalta === undefined
         ? `Antes hay que conceder «${nombreFalta ?? falta}».`
         : <>Antes hay que conceder «{nombreFalta}».</>;
-    const conQuien = p.clave
-      ? todos(m).filter((x) => x.clave === p.clave && x.id !== p.id).map((x) => x.nombre)
-      : [];
+    /* R152 · Y LOS DE OTROS MODULOS SE NOMBRAN CON SU MODULO. «va con Dar
+       alta» no dice lo mismo que «va con Dar alta (Contrato)»: quien reparte
+       tiene que ver que esta abriendo tambien otra puerta, y ahi el aviso a
+       medias es peor que no decir nada. Lo pidieron con esas palabras. */
+    /* SOLO LOS QUE SE VAN A MOVER DE VERDAD. `cambiar()` salta los `cerrado` y
+       los `deshabilitado` —R148: si una mitad de la llave no es mia, el permiso
+       no es mio— y este aviso no los saltaba, asi que prometia arrastrar a un
+       compañero que no se movia. Cruzando modulos es peor que en local: promete
+       abrir una puerta de OTRA pantalla que no se va a abrir. Lo cazo una
+       auditoria. */
+    const juntos = mismosPermisos(modulos, m, p)
+      .filter(({ privilegio: x }) => !x.cerrado && !x.deshabilitado);
+    const conNombreDeModulo = (x: Privilegio, modulo: ModuloPrivilegios) =>
+      modulo.id === m.id ? x.nombre
+        : (typeof x.nombre === 'string' && typeof modulo.nombre === 'string'
+          ? `${x.nombre} (${modulo.nombre})`
+          : <>{x.nombre} ({modulo.nombre})</>);
+    const conQuien = juntos.map(({ modulo, privilegio: x }) => conNombreDeModulo(x, modulo));
     /* R151 · EL BASE DE SU FILA, no el del modulo. Con `filas` un modulo tiene
        varios recursos y «ver» manda sobre el suyo: ver `baseDe`. */
     const idBase = baseDe(m, p, base);
@@ -789,8 +946,24 @@ export function PanelPrivilegios({
       && !p.deshabilitado && !soloLectura
       && !concedido(valor, m.id, idBase),
     );
+    /* R152 · Y EL BASE DE LOS OTROS MODULOS QUE SE VAN A ENCENDER. La regla 16
+       existe para que el arrastre del base no sea un efecto invisible, y
+       cruzando modulos lo era: pulsar aqui encendia el «ver» de la otra
+       pantalla y no se decia en ninguna parte. El daño escrito en R149 —un 403
+       anti-escalada que tumba el guardado entero— aplica igual entre modulos.
+       Lo cazo una auditoria. */
+    const basesDeOtros = !dado && !p.deshabilitado && !soloLectura
+      ? juntos.flatMap(({ modulo, privilegio: x }) => {
+        if (modulo.id === m.id) return [];
+        const b = baseDe(modulo, x, base);
+        if (!b || b === x.id || concedido(valor, modulo.id, b)) return [];
+        const elSuyo = todos(modulo).find((y) => y.id === b);
+        if (!elSuyo || elSuyo.cerrado || elSuyo.deshabilitado) return [];
+        return [conNombreDeModulo(elSuyo, modulo)];
+      })
+      : [];
     return {
-      dado, no, falta, motivoFalta, conQuien, arrastraElBase, idBase,
+      dado, no, falta, motivoFalta, conQuien, arrastraElBase, idBase, basesDeOtros,
       nombreBase: elBase?.nombre ?? idBase,
       apagado: soloLectura || p.deshabilitado === true,
       ayuda: p.ayuda,
@@ -816,7 +989,8 @@ export function PanelPrivilegios({
      * prohibe.
      */
     const e = estado(m, p);
-    const { dado, no, falta, motivoFalta, conQuien, arrastraElBase, nombreBase } = e;
+    const { dado, no, falta, motivoFalta, conQuien, arrastraElBase, nombreBase,
+      basesDeOtros } = e;
     return (
       <div className={[
         'pp-priv',
@@ -921,6 +1095,12 @@ export function PanelPrivilegios({
                     no se le había aplicado. */}
                 {arrastraElBase && (
                   <span className="pp-junto"> · enciende también «{nombreBase}»</span>
+                )}
+                {/* R152 · Y el de los OTROS modulos, que tambien se enciende. */}
+                {basesDeOtros.length > 0 && (
+                  <span className="pp-junto"> · y «{basesDeOtros.map((n, i) => (
+                    <Fragment key={i}>{i > 0 ? '», «' : ''}{n}</Fragment>
+                  ))}»</span>
                 )}
               </>
             ) : p.nombre
@@ -1161,6 +1341,12 @@ export function PanelPrivilegios({
                           ? `Enciende también «${nb}».`
                           : <>Enciende también «{e.nombreBase}».</>);
                       }
+                      for (const n of e.basesDeOtros) {
+                        const t = enTexto(n);
+                        avisos.push(t !== null
+                          ? `Enciende también «${t}».`
+                          : <>Enciende también «{n}».</>);
+                      }
                       const soloTexto = avisos.every((a) => typeof a === 'string');
                       return (
                         <td key={c.id} headers={atada} className={clase}
@@ -1214,6 +1400,23 @@ export function PanelPrivilegios({
        EXISTIA y no se consultaba donde hacia falta: un modulo colocado por
        columnas y pintado como LISTA se vaciaba entero sin una sola senal.
        `privilegiosEfectivos` no depende de la presentacion; el aviso tampoco. */
+    /* R152 · UNA `claveGlobal` REPETIDA DENTRO DEL MISMO MODULO casi siempre
+       quiere decir `clave`. Funciona —son el mismo permiso igual— pero el
+       nombre miente sobre el alcance, y el dia que alguien añada ese mismo
+       nombre en otro modulo se llevara por delante dos permisos que creia
+       locales. Se dice, no se corrige: puede ser deliberado. */
+    for (const m of modulos) {
+      const vistas = new Map<string, string>();
+      for (const p of todos(m)) {
+        if (p.claveGlobal === undefined) continue;
+        const ya = vistas.get(p.claveGlobal);
+        if (ya) {
+          dis.push(`«${p.id}» y «${ya}» comparten \`claveGlobal: "${p.claveGlobal}"\` dentro `
+            + `del mismo modulo «${m.id}». Para unir dentro de un modulo es \`clave\`; `
+            + '`claveGlobal` cruza TODOS los modulos y eso alcanza a los que se añadan luego.');
+        } else vistas.set(p.claveGlobal, p.id);
+      }
+    }
     for (const m of modulos) {
       for (const f of baseSinResolver(m, base)) {
         dis.push(`en «${m.id}»${f === m.id ? '' : `, la fila «${f}»`} no hay ningun privilegio `

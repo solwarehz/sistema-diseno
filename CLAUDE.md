@@ -19,26 +19,22 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.129.0** — **garantizar entrega y promesa del R151**, y tres
-candados que salían verdes delante del defecto. Se auditó la v1.128.0 **ya
-publicada**, con los veinte pasos en verde:
+**Estado actual: v1.130.0** — **R152: una llave que abre dos puertas.**
+`clave` une privilegios dentro de un módulo; **`claveGlobal` los une entre
+todos**, y el aviso «va con» nombra el módulo del compañero. El argumento de
+quien lo pidió es de seguridad: *«un acto irreversible merece una sola llave.
+Con dos, quitar una da la sensación de haber cerrado sin haber cerrado»*.
 
-- **Toda la matriz estaba fuera del candado que compara las dos hojas.** Se
-  rompió `position: sticky` sólo en la hoja entregada y los **ocho** candados de
-  comparación salieron verdes. El catálogo no pinta ni un `pm-*` estático —la
-  matriz sólo existe viva—, y nadie nombró sus casos. El R142 sí lo hizo; la
-  regla 22 dice «es el patrón del R142» y repitió el anclaje sin repetir eso.
-- **`verificar-contrato` no ve una prueba apagada**: `describe.skip` dejaba 14
-  fuera y todo seguía verde.
-- **ESLint llevaba cinco versiones en rojo y no era ninguno de los veinte
-  pasos.** Ahora es el **veintiuno**. Y su guion salía verde cuando ESLint ni
-  podía ejecutarse.
+**No se amplió `clave`**, que era la otra salida y la de menos conceptos: las
+claves son cadenas cortas y genéricas —`editar`, `alta`— y hacerlas cruzar por
+omisión fundiría en **un** permiso dos que sólo coinciden de nombre, en
+silencio. El ámbito va en el nombre.
 
-En el componente, cuatro formas de mover permisos sin que nadie lo viera —una
-regresión propia en `baseDe`, **dos puntos fijos que no se realimentaban** (con
-el comentario correcto escrito encima del código equivocado), claves huérfanas
-que viajaban concedidas y una `clave` entre filas que encendía sin viajar—. Tres
-reglas nuevas, 26 a 28.
+Y su pregunta —qué devuelve lo efectivo cuando un módulo de la llave se vacía—
+**se responde en código**: `privilegiosEfectivos` no cambia, y entra
+`clavesEfectivas()`. **Una llave está concedida si sobrevive en al menos un
+módulo**; exigirlo en todos haría de un módulo sin `base` un revocador
+silencioso de permisos dados en otra pantalla.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

@@ -8365,11 +8365,47 @@ periódicamente quién tiene qué es obligación legal, y se hace mirando una co
 </div>
 <div class="bloque" id="matriz-viva"></div>
 
+<h3 class="sub-seccion">R152 · Una llave que abre dos puertas</h3>
+<p class="seccion-sub">Cuando <strong>el mismo permiso</strong> se ofrece desde dos pantallas
+distintas —dos opciones del menú, dos módulos—, <code>clave</code> no llega: une dentro de un
+módulo, que es donde el estado los guarda juntos. Para eso está <code>claveGlobal</code>, que
+cruza <strong>todos</strong> los módulos.</p>
+<div class="aviso">
+  <strong>El argumento es de seguridad, no de comodidad</strong>, y es de quien lo pidió:
+  «dar de alta enciende Contrato → Puesto → Cargo → PrivilegioCargo… ese daño es idéntico se
+  pulse el botón donde se pulse, y <strong>un acto irreversible merece una sola llave</strong>.
+  Con dos, quitar una da la sensación de haber cerrado sin haber cerrado».
+  <br><br>
+  <strong>Por qué no se amplió <code>clave</code> sin más</strong>, que era la otra salida y la
+  de menos conceptos: las claves son cadenas cortas y genéricas —<code>editar</code>,
+  <code>alta</code>— y hacerlas cruzar por omisión fundiría en <strong>un</strong> permiso dos
+  que solo coinciden de nombre, en silencio, en productos que ya la usan. Es el daño del R152 al
+  revés. El ámbito va en el nombre y se elige a propósito.
+</div>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Encender uno enciende a todos.</strong> Y apagar, igual: es <em>una</em> llave.</td></tr>
+    <tr><td class="num">2</td><td><strong>El aviso nombra el módulo del compañero.</strong> «va con Dar alta <em>(Contrato)</em>» no dice lo mismo que «va con Dar alta»: quien reparte tiene que ver que está abriendo también otra puerta.</td></tr>
+    <tr><td class="num">3</td><td><strong>El gemelo arrastra el base de SU módulo.</strong> Si no, viajaría encendido en pantalla y vacío en lo efectivo.</td></tr>
+    <tr><td class="num">4</td><td><strong>No enciende de rebote lo que no se puede repartir</strong> (<code>cerrado</code>, <code>deshabilitado</code>). Si una mitad de la llave no es suya, el permiso no es suyo.</td></tr>
+    <tr><td class="num">5</td><td><strong>Está concedida si sobrevive en al menos un módulo</strong>, y eso lo responde <code>clavesEfectivas()</code>. Ver abajo.</td></tr>
+  </tbody>
+</table>
+<p class="seccion-sub"><strong>La pregunta que hicieron, respondida en código y no en prosa:</strong>
+«¿qué devuelve <code>privilegiosEfectivos</code> para una llave compartida cuyo módulo A sobrevive
+y cuyo módulo B se vacía?». <strong><code>privilegiosEfectivos</code> no cambia</strong>: sigue
+limpiando módulo a módulo, porque «el módulo B no aplica nada» es una verdad sobre B y falsearla
+para acertar sobre la llave sería mentir sobre B. Para aplanar a «¿está dada la llave?» use
+<code>clavesEfectivas()</code>: <strong>una llave está concedida si sobrevive en al menos un
+módulo donde está declarada</strong>. Exigir que sobreviva en todos convertiría un módulo sin su
+<code>base</code> en un <strong>revocador silencioso</strong> de permisos concedidos en otra
+pantalla.</p>
+
 <h3 class="sub-seccion">Copia esto</h3>
 <p class="seccion-sub">Lo que se copia es <strong>la importación y las props</strong>, nunca el
 marcado interno. Este bloque compila tal cual.</p>
-<pre class="cod-pre"><code>import { PanelPrivilegios, privilegiosEfectivos } from '@mmi/sistema-diseno';
-import type { ColumnaPrivilegios, ModuloPrivilegios } from '@mmi/sistema-diseno';
+<pre class="cod-pre"><code>import { PanelPrivilegios, privilegiosEfectivos, clavesEfectivas } from '@ae/sistema';
+import type { ColumnaPrivilegios, ModuloPrivilegios } from '@ae/sistema';
 
 // Las columnas las declara EL PANEL, no los módulos: una matriz con columnas
 // distintas por fila no es una matriz, es una lista con más huecos.
@@ -8377,6 +8413,7 @@ const COLUMNAS: ColumnaPrivilegios[] = [
   { id: 'ver',       titulo: 'Ver' },
   { id: 'editar',    titulo: 'Editar' },
   { id: 'crear',     titulo: 'Crear' },
+  { id: 'alta',      titulo: 'Dar de alta' },
   { id: 'descargar', titulo: 'Descargar', aparte: true },  // separada por una línea
 ];
 
@@ -8394,6 +8431,8 @@ const MODULOS: ModuloPrivilegios[] = [{
     { id: 'trab-crear',  nombre: 'Crear trabajador',  columna: 'crear',  fila: 'trab',
       depende: 'trab-editar' },
     { id: 'cont-ver',    nombre: 'Ver contratos',     columna: 'ver',    fila: 'cont' },
+    { id: 'cont-alta',   nombre: 'Dar de alta',       columna: 'alta',   fila: 'cont',
+      claveGlobal: 'alta-contrato' },
     // El hueco que HABLA. Omitirlo sería un espacio en blanco entre cien
     // casillas, y nadie se enteraría de que esa acción existe para otro recurso.
     { id: 'cont-crear',  nombre: 'Crear contrato',    columna: 'crear',  fila: 'cont',
@@ -8401,6 +8440,19 @@ const MODULOS: ModuloPrivilegios[] = [{
     // Concedido y no repartible por quien mira: se ve el estado y se dice el porqué.
     { id: 'cont-desc',   nombre: 'Descargar contratos', columna: 'descargar', fila: 'cont',
       deshabilitado: true, ayuda: 'Solo lo concede Dirección.' },
+  ],
+}, {
+  // R152 · OTRA PANTALLA, Y LA MISMA LLAVE. «Dar de alta» es el MISMO permiso
+  // aqui y en Contrato: encender uno enciende el otro, y el aviso lo dice
+  // nombrando el modulo. Para unir DENTRO de un modulo es «clave»; esto cruza
+  // todos los modulos, incluidos los que se añadan despues.
+  id: 'historia',
+  nombre: 'Historia de contratos',
+  filas: [{ id: 'hist', nombre: 'Historial' }],
+  privilegios: [
+    { id: 'hist-ver',  nombre: 'Ver historial',  columna: 'ver',   fila: 'hist' },
+    { id: 'hist-alta', nombre: 'Dar de alta',    columna: 'alta',  fila: 'hist',
+      claveGlobal: 'alta-contrato' },
   ],
 }];
 
@@ -8417,7 +8469,11 @@ const MODULOS: ModuloPrivilegios[] = [{
     setValor(completo);   // lo que la pantalla muestra: NO borra nada
     guardar(efectivo);    // lo que de verdad rige: sin base, sin depende, sin cerrados
   }}
-/&gt;</code></pre>
+/&gt;
+
+// R152 · Y para aplanar a «que llaves estan dadas», sin deducirlo:
+//   una llave compartida esta concedida si sobrevive en AL MENOS UN modulo.
+const llaves = clavesEfectivas(MODULOS, valor, 'ver');   // Set&lt;string&gt;</code></pre>
 <p class="seccion-sub"><strong>En desarrollo el panel avisa por consola</strong> si un privilegio
 no cae en ninguna celda —sin <code>columna</code>, con una <code>columna</code> o una
 <code>fila</code> que no existen, o dos en la misma casilla—, si el <code>base</code> no lo encarna

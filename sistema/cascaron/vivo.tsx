@@ -215,6 +215,7 @@ const COLUMNAS: ColumnaPrivilegios[] = [
   { id: 'editar', titulo: 'Editar' },
   { id: 'crear', titulo: 'Crear' },
   { id: 'desactivar', titulo: 'Desactivar' },
+  { id: 'reporte', titulo: 'Crear reporte' },
   { id: 'descargar', titulo: 'Descargar', aparte: true },
 ];
 
@@ -241,6 +242,12 @@ const MODULOS_MATRIZ: ModuloPrivilegios[] = [
       { id: 'co-desactivar', nombre: 'Desactivar contrato', columna: 'desactivar', fila: 'contratos',
         cerrado: { tipo: 'noAplica', motivo: 'Un contrato no se apaga: se cierra con fecha.' } },
       { id: 'co-descargar', nombre: 'Descargar contratos', columna: 'descargar', fila: 'contratos' },
+      /* R152 · LA MISMA LLAVE QUE «Reportes». «Crear reporte» es UN permiso
+         ofrecido desde dos pantallas: encender uno enciende el otro, y el aviso
+         nombra el módulo del compañero. Para unir DENTRO de un módulo está
+         «clave»; esto cruza todos. */
+      { id: 'co-reporte', nombre: 'Crear reporte', columna: 'reporte', fila: 'contratos',
+        claveGlobal: 'crear-reporte' },
     ],
   },
   {
@@ -250,6 +257,11 @@ const MODULOS_MATRIZ: ModuloPrivilegios[] = [
       { id: 're-ver', nombre: 'Ver reporte', columna: 'ver', fila: 'asistencia' },
       { id: 're-descargar', nombre: 'Descargar reporte', columna: 'descargar', fila: 'asistencia',
         deshabilitado: true },
+      /* R152 · LA MISMA LLAVE QUE «Personal». Encender este enciende el de allí
+         y al revés: es un solo permiso ofrecido desde dos pantallas. El aviso
+         nombra el módulo del compañero — sin eso diría la verdad a medias. */
+      { id: 're-crear', nombre: 'Crear reporte', columna: 'reporte', fila: 'asistencia',
+        claveGlobal: 'crear-reporte' },
     ],
   },
 ];

@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 18 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.129.0** — garantizar entrega y promesa del
-R151: tres candados salían verdes delante del defecto
+**Versión del sistema:** MMI-DS **v1.130.0** — R152: una llave que abre dos
+puertas, y la pregunta que hicieron respondida en código
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -18,7 +18,7 @@ R151: tres candados salían verdes delante del defecto
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **veinte pasos de
-verificación** —los que corre `publicar.mjs`—, **1142 pruebas en 55 archivos**,
+verificación** —los que corre `publicar.mjs`—, **1165 pruebas en 56 archivos**,
 todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
@@ -56,14 +56,14 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **1142 pruebas en 55 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **1165 pruebas en 56 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **1049 reglas de 1568** · **755 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **62 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.129.0.zip` · **60 archivos** · **1.465 KB** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.130.0.zip` · **60 archivos** · **1.465 KB** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.129.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.130.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — el **penúltimo** de los veintiún pasos · **178 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -86,7 +86,44 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.129.0), con detalle
+### Lo de hoy (v1.130.0), con detalle
+
+**R152 · una llave que abre dos puertas.** El mismo permiso ofrecido desde dos
+pantallas distintas eran **dos entradas del mapa**: encender una no encendía la
+otra, y al aplanar para un PUT de juego completo ganaba la última que se leyera.
+
+> El argumento de quien lo pidió no es de comodidad: *«un acto irreversible
+> merece una sola llave. Con dos, quitar una da la sensación de haber cerrado
+> sin haber cerrado»*.
+
+**Entra porque no es suyo:** la misma acción peligrosa alcanzable desde dos
+pantallas es el patrón de cualquier sistema de permisos que crezca. Y porque su
+alternativa —sincronizar las dos entradas en su `onCambio`— es **reimplementar
+`clave` por fuera**, que es de lo que venían huyendo desde el R151.
+
+**Entra `claveGlobal` y NO se amplía `clave`**, que era la otra salida que
+ofrecían y la de menos conceptos. Las claves son cadenas cortas y genéricas
+—`editar`, `alta`— y hacerlas cruzar por omisión fundiría en **un** permiso dos
+que sólo coinciden de nombre, en silencio, en productos que ya la usan: el daño
+del R152 al revés. El ámbito va en el nombre y se elige a propósito.
+
+**Su pregunta, respondida en código y no en prosa.** Preguntaron qué debe
+devolver lo efectivo cuando un módulo de la llave se vacía, y pidieron que lo
+decidiéramos nosotros *«porque si lo decidimos nosotros acertaremos hoy y
+divergeremos en la próxima versión»*. `privilegiosEfectivos` **no cambia** —«el
+módulo B no aplica nada» es una verdad sobre B— y entra `clavesEfectivas()`:
+**una llave está concedida si sobrevive en al menos un módulo**. Exigirlo en
+todos haría de un módulo sin su `base` un **revocador silencioso** de permisos
+concedidos en otra pantalla.
+
+**Dos mutaciones sobrevivieron a la primera batería y las dos eran huecos
+reales:** `clave` podía contagiarse de módulo por llevar al lado una global, y
+el aviso se comprobaba sobre el **montón** de avisos junto, así que bastaba con
+que uno nombrara su módulo. Una tercera resultó **equivalente** —mutaba una rama
+de un ternario cuya otra rama hacía lo mismo—, y se dice: una superviviente que
+no es un hueco también hay que saber distinguirla.
+
+### Lo de la v1.129.0, con detalle
 
 **No se añade nada nuevo al R151: se comprueba si es verdad lo que dijimos.**
 Tres auditorías adversarias sobre la v1.129.0 anterior —**ya publicada**, con los
