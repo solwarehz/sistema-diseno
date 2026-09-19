@@ -232,7 +232,23 @@ if (pruebas.ok && cuantas) {
 // esto, lo publicado no sería lo commiteado.
 const sucioTras = intenta('git', ['status', '--porcelain']);
 if (sucioTras) {
-  problemas.push('los candados regeneraron algo: el árbol quedó sucio. Commitea y vuelve a intentarlo');
+  /* Y SE DICE QUÉ ES CADA COSA, porque el diagnóstico mandaba a buscar donde no
+     era: decía «los candados regeneraron algo» ante un archivo NUEVO sin
+     rastrear —un informe recién escrito—, y quien lo lea se pone a mirar
+     generadores que no han tocado nada. Un aviso que se equivoca de causa
+     cuesta más que no tenerlo. */
+  const lineas = sucioTras.split('\n').filter(Boolean);
+  const nuevos = lineas.filter((l) => l.startsWith('??')).map((l) => l.slice(3));
+  const tocados = lineas.filter((l) => !l.startsWith('??')).map((l) => l.slice(3));
+  if (tocados.length) {
+    problemas.push('los candados regeneraron algo: '
+      + `${tocados.join(', ')}. Commitea y vuelve a intentarlo`);
+  }
+  if (nuevos.length) {
+    problemas.push(`hay archivo(s) sin rastrear: ${nuevos.join(', ')}. `
+      + 'No los tocaron los candados — añádelos o ignóralos, pero el árbol tiene '
+      + 'que estar limpio para que lo publicado sea exactamente lo commiteado');
+  }
 }
 
 if (problemas.length) {
