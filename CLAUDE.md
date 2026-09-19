@@ -19,22 +19,19 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.130.0** — **R152: una llave que abre dos puertas.**
-`clave` une privilegios dentro de un módulo; **`claveGlobal` los une entre
-todos**, y el aviso «va con» nombra el módulo del compañero. El argumento de
-quien lo pidió es de seguridad: *«un acto irreversible merece una sola llave.
-Con dos, quitar una da la sensación de haber cerrado sin haber cerrado»*.
+**Estado actual: v1.131.0** — **móvil primero pasa a política del sistema**
+(§4bis), y la matriz de privilegios **cae a lista bajo 640 px de contenedor**.
 
-**No se amplió `clave`**, que era la otra salida y la de menos conceptos: las
-claves son cadenas cortas y genéricas —`editar`, `alta`— y hacerlas cruzar por
-omisión fundiría en **un** permiso dos que sólo coinciden de nombre, en
-silencio. El ámbito va en el nombre.
+Hizo falta escribirla porque el sistema la estaba incumpliendo sin darse cuenta:
+el responsive de la matriz quedó fuera del R151 porque el equipo lo dejó como
+*deseable*, se declaró abierto dos veces y **nunca se midió**. Al medirlo, a
+360 px la tabla ocupaba **687 px**, seguía siendo tabla, y el nombre de fila
+recortado **no estaba en ninguna parte** — ni a la vista, ni en un globito, ni
+para un lector. Ese último detalle lo vio el equipo y nosotros no.
 
-Y su pregunta —qué devuelve lo efectivo cuando un módulo de la llave se vacía—
-**se responde en código**: `privilegiosEfectivos` no cambia, y entra
-`clavesEfectivas()`. **Una llave está concedida si sobrevive en al menos un
-módulo**; exigirlo en todos haría de un módulo sin `base` un revocador
-silencioso de permisos dados en otra pantalla.
+Se mide **el contenedor y no la ventana**, se parte de lo estrecho, y **no hay
+prop para desactivarlo**: una política del sistema no es un requisito de
+producto que se pueda no pedir.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
@@ -131,7 +128,40 @@ la versión en que entra. **Sin «R» inventada.**
 
 ---
 
-## 4bis · Dos reglas que el usuario fijó expresamente
+## 4bis · Tres reglas que el usuario fijó expresamente
+
+**MÓVIL PRIMERO. No es una preferencia: es política de diseño y se cumple.**
+La fijó el responsable el 2026-09-19, y entra aquí porque el sistema la estaba
+incumpliendo sin darse cuenta.
+
+Qué significa, en concreto y sin margen:
+
+- **Lo estrecho es el caso por omisión, no la excepción.** Un componente se
+  diseña para la pantalla pequeña y **gana** cosas cuando hay sitio; no se
+  diseña ancho y se le recorta. Cuando el componente decide su forma en tiempo
+  de ejecución, **el estado inicial es el de móvil** y la forma ancha aparece al
+  comprobar que cabe — no al revés.
+- **Nada obliga a deslizar en horizontal para leer lo que la pantalla tiene que
+  decir.** Si a un ancho de teléfono hay que arrastrar para ver una columna,
+  eso es un defecto del componente, no del teléfono.
+- **Ningún texto queda cortado sin forma de leerlo entero.** El recorte con
+  puntos suspensivos es presentación; si el nombre completo no está en `title`
+  ni al alcance de un lector, la información **no está**.
+- **Se verifica midiendo, no mirando.** A 360 px como mínimo, y en navegador.
+
+Lo que la hizo falta escribir: el R151 trajo la matriz de privilegios y su
+responsive quedó **fuera de alcance por petición del equipo** —lo pusieron como
+deseable, no como requisito—. Se declaró abierto dos veces y nunca se midió. Al
+medirlo: a 360 px la tabla ocupa **687 px** y sigue siendo tabla, con el nombre
+de fila recortado **y sin `title`**. Tres versiones diciendo «pendiente de
+medir» sobre algo que, medido, no servía en un teléfono.
+
+> Que el equipo no lo pida **no lo saca de la política**. Un requisito de
+> producto puede faltar; una política del sistema, no.
+
+---
+
+## 4bis-2 · Dos reglas más que el usuario fijó expresamente
 
 **Ningún color autorizado más sin autorización.** Los «colores autorizados» son
 el panel de escalas: los únicos que pueden vivir en el sistema. Ampliarlo **no

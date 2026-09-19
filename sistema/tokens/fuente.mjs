@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.130.0";
+export const VERSION = "1.131.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,63 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.131.0', fecha: '2026-09-19',
+    que: 'R153 · la matriz cae a lista en movil, y MOVIL PRIMERO pasa a politica del sistema',
+    porque:
+      'LO FIJO EL RESPONSABLE COMO POLITICA, NO COMO PREFERENCIA, y entra en CLAUDE.md §4bis y en '
+      + 'la POLITICA-DE-CREACION §5 con lo que significa en concreto: lo estrecho es el caso por '
+      + 'omision y no la excepcion; nada se lee deslizando en horizontal; ningun texto queda '
+      + 'cortado sin forma de leerlo entero; y SE VERIFICA MIDIENDO, a 360 px como minimo y en '
+      + 'navegador. Lo que no la cumpla no entra en la entrega, igual que las cuatro reglas de la '
+      + 'politica de creacion. '
+      + 'HIZO FALTA ESCRIBIRLA PORQUE EL SISTEMA LA ESTABA INCUMPLIENDO SIN DARSE CUENTA. El R151 '
+      + 'trajo la matriz y su responsive quedo fuera de alcance porque el equipo que la pidio lo '
+      + 'dejo como DESEABLE y no como requisito —«caer al acordeon bajo cierto ancho nos parece la '
+      + 'respuesta correcta», escrito por ellos—. Se declaro abierto dos veces, nunca se midio, y '
+      + 'al medirlo: a 360 px la tabla ocupaba 687 px y seguia siendo tabla, con el nombre de fila '
+      + 'recortado a 44vw Y SIN `title`. El nombre completo no estaba EN NINGUNA PARTE: ni a la '
+      + 'vista, ni en un globito, ni para un lector. Tres versiones diciendo «pendiente de medir» '
+      + 'sobre algo que, medido, no servia en un telefono. Que el equipo no lo pidiera no lo saca '
+      + 'de la politica: un requisito de producto puede faltar, una politica del sistema no. '
+      + 'LA MATRIZ CAE A LISTA BAJO 640 px DE CONTENEDOR. Se mide EL CONTENEDOR y no la ventana: '
+      + 'una matriz puede vivir en un panel estrecho dentro de una pantalla ancha, y lo que decide '
+      + 'si cabe es el sitio que tiene — asi lo midio tambien el equipo, «estrechando el contenedor '
+      + 'a 380 px». El corte son los mismos 640 px que la hoja ya usa para apilar el filtro de '
+      + 'fechas: un umbral en el sistema, no uno por componente. Y NO HAY PROP PARA DESACTIVARLO, '
+      + 'porque no es un requisito de producto. '
+      + 'SE PARTE DE LO ESTRECHO. El estado del que arranca el componente es «no cabe» y la matriz '
+      + 'entra al COMPROBAR que cabe; empezar ancho y encoger al medir es escritorio primero con un '
+      + 'parche, y se ve en el primer pintado. La correccion se aplica en un efecto de DISEÑO para '
+      + 'no enseñar el paso intermedio. '
+      + 'Y SE MIDE A MANO ADEMAS DE OBSERVAR, que salio de intentar verificarlo en el navegador: '
+      + '`ResizeObserver` entrega sus avisos dentro del ciclo de pintado, y se comprobo con uno '
+      + 'NATIVO puesto a mano que hay situaciones en que ese ciclo NO CORRE —cero disparos en 600 '
+      + 'ms sobre un elemento visible—. Con solo el observador, el panel se habria quedado en LISTA '
+      + 'PARA SIEMPRE en una pantalla ancha. `getBoundingClientRect()` no depende de ese ciclo. '
+      + 'Un ancho de CERO no es un ancho estrecho: es «aqui no hay maquetado» —render en servidor, '
+      + 'entorno sin layout— y ahi se respeta lo que el producto pidio en vez de inventar una '
+      + 'medida y cambiarle la pantalla por ella. '
+      + 'EL NOMBRE DE FILA RECORTADO GANA `title`. Lo vio el equipo en su pantalla y nosotros no: '
+      + '«Fijar sobre que sedes alcanza u…» sin forma de leerlo entero. El recorte es presentacion; '
+      + 'la informacion no se recorta. '
+      + 'Regla 33 del contrato, con ocho pruebas. Dos mutaciones sobrevivieron y las dos eran '
+      + 'huecos de la PRUEBA, no del codigo: el observador simulado entregaba su disparador en el '
+      + 'constructor en vez de en `observe()` —una sonda que funciona sin estar conectada no prueba '
+      + 'la conexion— y faltaba el caso de observador presente SIN maquetado. '
+      + 'LO QUE NO SE PUDO VERIFICAR, y la propia politica lo exige: la medicion EN NAVEGADOR a '
+      + '360 px. La pestaña de la sesion no ejecuta el ciclo de pintado —es lo mismo que dejaba las '
+      + 'capturas en blanco—, asi que la caida a lista esta verificada en pruebas con anchos reales '
+      + 'simulados y NO en navegador. Queda declarado.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'LA MATRIZ YA NO SE PINTA SIEMPRE. Con `presentacion="matriz"`, por debajo de 640 px de '
+      + 'ANCHO DE CONTENEDOR el panel pinta la LISTA. Si su producto daba por hecho que habria un '
+      + '`table.pm` en cualquier ancho —para medirlo, para estilarlo o para recorrerlo en una '
+      + 'prueba—, por debajo de ese corte encontrara `.pp-lista`. No hay forma de desactivarlo: es '
+      + 'politica del sistema, no una opcion.',
+    ],
+  },
   {
     v: '1.130.0', fecha: '2026-09-18',
     que: 'R152 · una llave que abre dos puertas: `claveGlobal` cruza modulos',

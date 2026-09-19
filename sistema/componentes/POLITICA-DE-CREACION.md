@@ -116,6 +116,36 @@ regla 1.
 
 ---
 
+## 5 · Móvil primero, y se mide
+
+**Política del responsable, 2026-09-19. Vinculante: lo que no la cumpla no entra
+en la entrega**, igual que las cuatro reglas de arriba.
+
+El componente se diseña para la pantalla estrecha y **gana** superficie cuando
+hay sitio. Tres consecuencias que no se negocian:
+
+1. **Cuando la forma se decide en ejecución, se parte de la forma de móvil.** Si
+   el componente mira su ancho para elegir entre dos presentaciones, el estado
+   inicial es la estrecha y la ancha entra al comprobar que cabe. Empezar ancho
+   y encoger es «escritorio primero con un parche», y se nota en el primer
+   pintado.
+2. **Nada se lee deslizando en horizontal.** Si a 360 px hay que arrastrar para
+   leer algo que el componente tiene que decir, el componente está mal.
+3. **Ningún texto recortado sin forma de leerlo entero.** Los puntos suspensivos
+   son presentación, no información: el nombre completo va en `title` y al
+   alcance de un lector.
+
+**Se verifica midiendo en un navegador, a 360 px como mínimo.** «Se ve bien» no
+es una medida — este repositorio ya tiene escrito que *mirar no es medir*.
+
+De dónde sale: la matriz de privilegios del R151 quedó sin responsive porque el
+equipo que la pidió lo dejó como deseable. Se declaró abierto dos veces sin
+medirse; al medirlo, a 360 px ocupaba 687 px de ancho y el nombre de fila salía
+cortado **sin `title`**. La política existe para que la próxima vez no dependa de
+que alguien lo pida.
+
+---
+
 ## Definición de terminado
 
 Un componente nuevo está hecho cuando:

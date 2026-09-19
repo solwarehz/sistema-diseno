@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 18 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.130.0** — R152: una llave que abre dos
-puertas, y la pregunta que hicieron respondida en código
+**Versión del sistema:** MMI-DS **v1.131.0** — móvil primero pasa a política, y
+la matriz cae a lista cuando no cabe
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -60,10 +60,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · **1049 reglas de 1568** · **755 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **62 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.130.0.zip` · **60 archivos** · **1.465 KB** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.131.0.zip` · **60 archivos** · **1.465 KB** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.130.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.131.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — el **penúltimo** de los veintiún pasos · **178 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -86,7 +86,45 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.130.0), con detalle
+### Lo de hoy (v1.131.0), con detalle
+
+**Móvil primero deja de ser una intención y pasa a ser política**, fijada por el
+responsable el 19-09. Está en `CLAUDE.md` §4bis y en la política de creación §5,
+con lo que significa en concreto: lo estrecho es el caso por omisión, nada se lee
+deslizando en horizontal, ningún texto cortado sin forma de leerlo entero, y **se
+verifica midiendo a 360 px en navegador**.
+
+> Hizo falta escribirla porque **el sistema la estaba incumpliendo sin darse
+> cuenta**.
+
+El responsive de la matriz quedó fuera del R151 porque el equipo que la pidió lo
+dejó como *deseable* —«caer al acordeón bajo cierto ancho nos parece la respuesta
+correcta», escrito por ellos—. Se declaró abierto dos veces y **nunca se midió**.
+Al medirlo: a 360 px la tabla ocupaba **687 px** y seguía siendo tabla, con el
+nombre de fila recortado a 44vw **y sin `title`** — el nombre completo no estaba
+en ninguna parte. Tres versiones diciendo «pendiente de medir» sobre algo que,
+medido, no servía en un teléfono.
+
+**Que el equipo no lo pidiera no lo saca de la política.** Un requisito de
+producto puede faltar; una política del sistema, no.
+
+**Lo implementado:** bajo 640 px de **contenedor** —no de ventana: una matriz
+puede vivir en un panel estrecho dentro de una pantalla ancha— el panel pinta la
+lista, agrupada y plegable. Se parte de lo estrecho y la matriz entra al
+comprobar que cabe. **No hay prop para desactivarlo.**
+
+**Y se mide a mano además de observar**, que salió de intentar verificarlo en el
+navegador: `ResizeObserver` entrega sus avisos dentro del ciclo de pintado, y se
+comprobó con uno **nativo** que hay situaciones en que ese ciclo no corre —cero
+disparos en 600 ms sobre un elemento visible—. Con sólo el observador, el panel
+se habría quedado en **lista para siempre** en una pantalla ancha.
+
+**Lo que no se pudo verificar, y la propia política lo exige:** la medición **en
+navegador** a 360 px. La pestaña de la sesión no ejecuta el ciclo de pintado —es
+lo mismo que dejaba las capturas en blanco—, así que la caída a lista está
+verificada en pruebas con anchos simulados y **no en navegador**.
+
+### Lo de la v1.130.0, con detalle
 
 **R152 · una llave que abre dos puertas.** El mismo permiso ofrecido desde dos
 pantallas distintas eran **dos entradas del mapa**: encender una no encendía la

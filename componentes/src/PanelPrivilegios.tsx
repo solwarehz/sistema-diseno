@@ -20,7 +20,8 @@
  * (`base`) o desactivar (`base={null}`) cuando el dominio no funcione así.
  */
 
-import { Fragment, useCallback, useEffect, useId, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef,
+  useState } from 'react';
 import { Interruptor } from './Interruptor';
 import { Segmentado, type OpcionSegmento } from './Segmentado';
 import { Chip } from './Chip';
@@ -771,6 +772,78 @@ export function PanelPrivilegios({
      cosa, y una variable sombreada dentro de un componente de 700 líneas es
      una trampa esperando. */
   const idPanel = useId();
+
+  /* ───────────────────────────────────────────────────────────────────────────
+     MÓVIL PRIMERO: LA MATRIZ CAE A LISTA CUANDO NO CABE.
+
+     Política del responsable (CLAUDE.md §4bis, 2026-09-19) y es vinculante. No
+     vino con el R151 porque el equipo que pidió la matriz dejó el responsive
+     como deseable y no como requisito — y eso no la saca de la política: un
+     requisito de producto puede faltar, una política del sistema no.
+
+     Se midió antes de escribir esto, que es lo que la política exige: a 360 px
+     la tabla ocupaba **687 px** y seguía siendo tabla, con el nombre de fila
+     recortado a 44vw y SIN `title`. El nombre completo no estaba en ninguna
+     parte: ni a la vista, ni en un globito, ni para un lector.
+
+     SE MIDE EL CONTENEDOR, NO LA VENTANA. Una matriz puede vivir dentro de un
+     panel estrecho en una pantalla ancha, y lo que decide si cabe es el sitio
+     que tiene, no el que tiene la pantalla. Fue así como lo midió el equipo
+     —«estrechando el contenedor a 380 px»— y es la medida honesta.
+
+     Y SE PARTE DE LA LISTA, no de la matriz. Empezar ancho y encoger al medir
+     es «escritorio primero con un parche»: se ve en el primer pintado y es justo
+     lo que la política prohíbe. Sin forma de medir —render en servidor, o un
+     entorno de pruebas sin `ResizeObserver`— se respeta lo que se pidió, porque
+     ahí no hay un ancho que consultar y fingir uno sería inventarlo.
+     ─────────────────────────────────────────────────────────────────────────── */
+  const caja = useRef<HTMLDivElement>(null);
+  const sePuedeMedir = typeof ResizeObserver !== 'undefined';
+  const [anchoCaja, setAnchoCaja] = useState<number | null>(null);
+  /* SE MIDE A MANO AL MONTAR, ADEMAS DE OBSERVAR.
+     `ResizeObserver` entrega sus avisos DENTRO del ciclo de pintado, y hay
+     situaciones en que ese ciclo no corre: una pestaña que el navegador no esta
+     pintando, por ejemplo. Se comprobo con uno NATIVO puesto a mano —cero
+     disparos en 600 ms sobre un elemento visible— y con solo el observador el
+     panel se habria quedado en lista PARA SIEMPRE en una pantalla ancha.
+     `getBoundingClientRect()` no depende de ese ciclo: da la medida ya. El
+     observador se queda para lo que de verdad hace bien, que es enterarse de
+     los cambios posteriores.
+     Y va en efecto de DISEÑO —antes de que el navegador pinte— para que la
+     correccion no se vea como un parpadeo. Movil primero se cumple igual: el
+     estado del que se parte es el estrecho; lo que se evita es enseñar el paso
+     intermedio. */
+  const enEfecto = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+  enEfecto(() => {
+    const el = caja.current;
+    if (!el) return undefined;
+    const medir = (w: number) => setAnchoCaja((antes) => (antes === w ? antes : w));
+    medir(el.getBoundingClientRect().width);
+    if (!sePuedeMedir) return undefined;
+    const ro = new ResizeObserver(([entrada]) => medir(entrada.contentRect.width));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [sePuedeMedir]);
+  /* 640 px es el mismo corte que ya usa la hoja para apilar los campos del
+     filtro de fechas (R141): un solo umbral en el sistema, no uno por
+     componente.
+
+     SIN PROP, Y ESA ES LA DECISION. El R153 ofrecia `listaBajo={640}` con
+     `false` para desactivarlo, y admitia las dos salidas —«nos vale igual si lo
+     decidis sin prop, siempre que sea el comportamiento por omision y este
+     documentado»—. Va sin prop porque movil primero es POLITICA DEL SISTEMA
+     (CLAUDE.md §4bis) y no un requisito de producto: una prop para apagarlo
+     seria una prop para incumplirla, y la primera pantalla con prisa la usaria.
+     El umbral tampoco se configura: dos productos con cortes distintos son dos
+     ideas distintas de lo que es un telefono. */
+  /* UN ANCHO DE CERO NO ES UN ANCHO ESTRECHO: es «aqui no hay maquetado» —un
+     render en servidor, un entorno de pruebas sin layout—. Ahi no hay nada que
+     consultar, y se respeta lo que el producto pidio en vez de inventar una
+     medida y cambiarle la pantalla por ella. */
+  const hayMedida = anchoCaja !== null && anchoCaja > 0;
+  const sinPoderMedir = !sePuedeMedir && !hayMedida;
+  const cabeLaMatriz = hayMedida ? anchoCaja >= 640 : sinPoderMedir || anchoCaja === 0;
+
   const visibles = abiertos ?? propios;
   const alternar = (id: string) => {
     const nuevo = visibles.includes(id) ? visibles.filter((x) => x !== id) : [...visibles, id];
@@ -1220,7 +1293,17 @@ export function PanelPrivilegios({
                 return (
                   <tr key={`${m.id}-${f.id}`} className={sinBase ? 'pm-fila pm-sin-base' : 'pm-fila'}>
                     <th scope="row" className="pm-nom" id={idFila}>
-                      <span className="pm-nom-txt">{f.nombre}</span>
+                      {/* CON `title` SIEMPRE. El nombre se recorta con puntos
+                          suspensivos —presentacion— y sin esto el nombre
+                          completo NO ESTABA EN NINGUNA PARTE: ni a la vista, ni
+                          en un globito, ni para quien navega con teclado. Lo
+                          midio el equipo en su pantalla: «Fijar sobre que sedes
+                          alcanza u…» sin forma de leerlo entero. El recorte es
+                          presentacion; la informacion no se recorta. */}
+                      <span className="pm-nom-txt"
+                            title={typeof f.nombre === 'string' ? f.nombre : undefined}>
+                        {f.nombre}
+                      </span>
                       {/* R144 · Y SE DICE CON PALABRAS, no solo con el filete.
                           La lista lleva «Sin este permiso, el resto del modulo
                           no se aplica» desde el R144; la matriz solo tenia un
@@ -1525,10 +1608,10 @@ export function PanelPrivilegios({
   }, [dichos]);
 
   return (
-    <div className={['pp', className].filter(Boolean).join(' ')}>
+    <div ref={caja} className={['pp', className].filter(Boolean).join(' ')}>
       {children && <div className="pp-cab">{children}</div>}
 
-      {presentacion === 'matriz' && columnas?.length ? matriz() : (
+      {presentacion === 'matriz' && columnas?.length && cabeLaMatriz ? matriz() : (
       <div className="pp-lista">
         {modulos.map((m) => {
           const lista = todos(m);
