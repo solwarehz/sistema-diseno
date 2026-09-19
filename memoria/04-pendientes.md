@@ -69,10 +69,15 @@ El §8.3 pedía además «un patrón general para pantallas que no son tabla». 
 el elemento **Estados de pantalla**, que define seis y las tres parejas que se
 confunden.
 
-### P-07 · Iconografía (§8.1)
+### ~~P-07 · Iconografía (§8.1)~~ — CERRADO
 
-Decidido Lucide, trazo 1.5px a 18px (ver D-07). Falta implementarlo y **retirar los
-emoji**, que es el tercer defecto real del §1.3.
+Decidido Lucide, trazo 1.5px a 18px (ver D-07). **Hecho:** hay **62 trazos** en
+`sistema/iconos/iconos.mjs`, React de verdad, y `verificar-iconos` comprueba que
+el catálogo y el producto dibujen el mismo. Los emoji están retirados.
+
+Seguía escrito como pendiente con el trabajo terminado — lo cazó una auditoría.
+**Un pendiente que ya no lo es se lee como si lo fuera**, y manda a rehacer algo
+hecho.
 
 ### P-08 · Densidad conmutable (§8.2)
 
@@ -221,10 +226,11 @@ desaparece el rótulo y el icono es lo único que identifica la opción, así qu
 candado que **sustituya** al icono deja la opción sin identidad. Ese es el
 problema de diseño, y por eso no entró a la carrera.
 
-**R58 · La columna identificadora se va con el desplazamiento horizontal.**
-`position: sticky` sobre la celda, con **fondo propio** —si no, lo que pasa por
-debajo se transparenta—, y **por propiedad explícita**: la columna que identifica
-cambia según la tabla, así que no puede ser por omisión.
+**~~R58~~ · La columna identificadora se va con el desplazamiento horizontal.**
+**CERRADO en la v1.124.0** como `anclarColumnas` (R142): `position: sticky` sobre
+la celda, con fondo propio, suelo y techo, y por propiedad explícita. El patrón
+se repitió en la matriz de privilegios con el R151 — y allí hubo que aprender
+otra vez que anclar no basta si el candado no lo mira.
 
 **R59 · El encabezado tampoco se queda fijo al desplazar en vertical.** Se suma
 a R58: sin nombre a la izquierda y sin títulos arriba, la celda no tiene ni fila
@@ -272,7 +278,7 @@ filas de su tabla. **El mismo error nos pasó a nosotros al reproducirlo** —en
 sentido contrario, leyendo el chevron rotado siempre— hasta cargar cada estado
 desde cero.
 
-**Lo que sí queda como pendiente nuestro:** ninguno de los dieciséis candados
+**Lo que sí queda como pendiente nuestro:** ninguno de los diecisiete candados
 mide un valor **calculado en un navegador**. Todos comparan hojas, marcado,
 elementos y orden, todo estático. La rotación del chevron no la comprueba nada:
 R115 la midió a mano y nadie ha vuelto a mirarla automáticamente. **Segundo

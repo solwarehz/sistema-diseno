@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.128.0
+# Actualizar al sistema de diseño v1.129.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.128.0"
+npm install "github:solwarehz/sistema-diseno#v1.129.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -37,7 +37,7 @@ está en marcha tiene el código viejo en memoria, y su caché de compilación n
 se entera de que cambió algo dentro de `node_modules`.
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.128.0"
+npm install "github:solwarehz/sistema-diseno#v1.129.0"
 # y ENTONCES, sin excepción:
 docker compose restart <su-servicio>     # o el reinicio que usen
 # si aun así ven lo de antes, tiren la caché de compilación —y reinicien OTRA
@@ -101,22 +101,31 @@ familia entera de ese defecto.
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.128.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.129.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.128.0 --repo solwarehz/sistema-diseno
+gh release download v1.129.0 --repo solwarehz/sistema-diseno
 ```
 
 Son **60 archivos**: tokens, hoja de estilos, los **43 módulos de componente**
 —34 en la raíz, `index.ts`, y ocho de `interno/`—, el contrato de
 comportamiento, y **el catálogo**, que se abre sin conexión.
 
-Los 43 módulos entregan **35 componentes con página en el catálogo** y **127
+Los 43 módulos entregan **35 componentes con página en el catálogo** y **131
 exportaciones** en total: algunos módulos exportan más de un componente, y los
-de `interno/` no tienen página porque no se usan sueltos. Las tres cifras las
-cuenta `verificar-entrega`, no están escritas a mano.
+de `interno/` no tienen página porque no se usan sueltos.
+
+Las tres cifras **las imprime `verificar-entrega`, y aquí están copiadas a
+mano**. Esta línea decía que no lo estaban, y decía 127 con 131 entregadas: una
+cifra a mano dentro de un documento que presume de no tenerlas es peor que la
+cifra sola, porque desactiva la comprobación de quien lo lee. Si no cuadran,
+manda el candado:
+
+```bash
+node sistema/candado/verificar-entrega.mjs
+```
 
 **Las dos vías NO entregan lo mismo, y conviene saberlo antes de elegir.** Se
 midió el 2026-09-11 y hasta entonces este apartado daba a entender que sí:
@@ -158,9 +167,20 @@ práctica es que npm te deja actualizar cambiando un número, y el ZIP no: si ba
 otra descarga y otra copia a mano. Por eso npm es la vía recomendada, y el ZIP
 está para cuando no se puede instalar desde un repositorio privado.
 
-> **Aviso sobre versiones anteriores.** Las etiquetas entre la **v1.39.0** y la
-> **v1.50.0** no existen: se dejaron de crear durante doce versiones y el aviso
-> saltó al comprobarlo. Lo que hay es **v1.38.0 y anteriores**, y de la **v1.49.0 en adelante**.
+> **Aviso sobre versiones anteriores.** Hay **dos huecos** de etiquetas, los dos
+> comprobados hoy contra el remoto:
+>
+> - **De la v1.39.0 a la v1.50.0** no existe ninguna. Lo que hay es la
+>   **v1.38.0** y, saltando el hueco, la **v1.51.0 en adelante**. Esta misma
+>   frase decía «de la v1.49.0 en adelante» y mandaba a dos etiquetas que **no
+>   existen** — se contradecía con su propia línea anterior, y la mitad falsa
+>   era la accionable.
+> - **La v1.125.0 nunca se etiquetó**: se corrigió y salió dentro de la
+>   **v1.126.0**.
+>
+> Y la etiqueta más antigua del repositorio es la **v1.10.5**, no «v1.38.0 y
+> anteriores»: por debajo de ésa no hay nada que instalar.
+>
 > Si necesitas una intermedia, pídela y se etiqueta — el commit está, es la
 > etiqueta lo que falta.
 
@@ -170,7 +190,7 @@ está para cuando no se puede instalar desde un repositorio privado.
 
 Hasta la v1.9.0 la entrega llevaba **el estilo** y tú ponías el comportamiento.
 Esa es la razón de las 3.983 líneas que costó la tabla. **Desde la v1.50.0
-viajan los TREINTA componentes de React**, con el comportamiento dentro — y desde
+viajan los **34 componentes de React**, con el comportamiento dentro — y desde
 esa misma versión el paquete no se arma con una lista escrita a mano, así que
 lo publicado y lo entregado no pueden volver a separarse.
 

@@ -13,16 +13,19 @@ node sistema/candado/verificar-contraste.mjs
 node sistema/candado/verificar-cascada.mjs
 ```
 
-Debe salir **178 pares, 138 bloqueantes, 0 fallos** y el candado de la cascada
+Debe salir **186 pares, 146 bloqueantes, 0 fallos** y el candado de la cascada
 sin fallos a los once anchos. Si algo falla, **para y avisa**: alguien cambió un
 color sin regenerar el contrato, o una regla de la hoja que viaja dejó de ganar.
 No trabajes encima.
 
 Esto **no necesita instalar nada**: es cálculo puro con el `node` que ya haya.
 
-Los ocho candados completos, que son los que hay que pasar antes de subir a
-`main`, están listados en [`01-estado.md`](01-estado.md) y en
-[`../CLAUDE.md`](../CLAUDE.md) §8.
+Los candados completos —**diecisiete**, dentro de **veintiún pasos**— son los
+que hay que pasar antes de subir a `main`, y están listados en
+[`01-estado.md`](01-estado.md) y en [`../CLAUDE.md`](../CLAUDE.md) §8. Aquí decía
+«los ocho», que es la cifra de hace cien versiones: **una lista de candados
+incompleta es un candado abierto**, y este archivo es el primero que lee un clon
+nuevo.
 
 ---
 
@@ -55,17 +58,18 @@ muestra un marcador de posición explícito.
 Se instala **dentro del contenedor**, en un volumen con nombre. Nunca `npm install`
 en la máquina del usuario.
 
-**Docker requiere autorización expresa, cada vez.** No está cubierto por el permiso
-general de trabajar en la carpeta.
+**Docker está autorizado de forma permanente para este proyecto** desde el
+2026-08-10, por el responsable: se levantan y se apagan los contenedores del
+proyecto sin pedir permiso cada vez. Aquí decía lo contrario —«autorización
+expresa, cada vez»— y un agente nuevo se habría parado a pedir algo ya concedido.
+El límite sigue siendo el ambiente del proyecto: nada fuera de él.
 
 ---
 
-## 3 · Dos activos que no existen en ninguna parte
+## 3 · Un activo que no existe en ninguna parte
 
-No los busques: **nunca se han creado**. Son trabajo de diseñador.
-
-**El escudo suelto ya existe** — `imagenes/AE.png`, 1063×1291 con alfa. Cierra
-el hueco que MMI-DS §10 daba por perdido.
+El título decía «dos» y el cuerpo desmentía al título en la línea siguiente.
+Es **uno**, y es trabajo de diseñador.
 
 **El isotipo simplificado** (§8.6). Bajo 56px, «COLEGIO» y «HUARAZ» son ilegibles
 dentro del escudo. Para el marco a 40px y el favicon a 16px **no hay activo

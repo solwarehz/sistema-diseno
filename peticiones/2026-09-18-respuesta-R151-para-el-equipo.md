@@ -23,8 +23,14 @@ catálogo, ni en las diecisiete reglas que construimos encima de ella. Ustedes n
 podían aclarar algo que nosotros no habíamos declarado.
 
 Y es la lección que nos llevamos, más que el código: **un requerimiento no
-declarado no sale en ningún candado.** Los veinte pasos llevaban diecisiete
-versiones en verde sobre un componente que su pantalla no podía usar.
+declarado no sale en ningún candado.** Las **diecisiete reglas** de contrato del
+panel —a lo largo de **cincuenta y seis versiones**— se escribieron encima de esa
+premisa, con todos los pasos en verde, sobre un componente que su pantalla no
+podía usar.
+
+*(Aquí decía «diecisiete versiones», confundiendo reglas con versiones. Es una
+cifra que no medimos, que es justo lo que nuestras propias normas prohíben, y la
+corregimos al releer.)*
 
 ---
 
@@ -202,7 +208,7 @@ Lo escribimos en la primera versión de este informe y era cierto. También era
 engañoso: sobrevivían **23 mutaciones**, y la peor dejaba la matriz **sin poder
 retirar un permiso** — ninguna de las trece pruebas pulsaba un interruptor
 encendido. Un panel que concede y no retira pasaba el contrato entero. Se pasó de
-13 pruebas a 54.
+13 pruebas a 71.
 
 ---
 

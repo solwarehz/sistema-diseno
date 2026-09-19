@@ -1,7 +1,7 @@
 # Auditoría de cobertura
 
 > **Actualizado al 9 de agosto de 2026 · v1.19.0.** Donde abajo se lea «15
-> elementos construidos», hoy son **23 componentes publicados** —los lista
+> elementos construidos», hoy son **35 componentes publicados** —los lista
 > [`01-estado.md`](01-estado.md)—. Esta auditoría sigue valiendo para lo que
 > mejor hace: señalar **lo que falta**, no contar lo que hay.
 
@@ -19,7 +19,7 @@ las pantallas de este proyecto.
 
 | | Estado |
 |---|---|
-| Color | ✅ 48 tokens, 136 pares verificados en dos modos |
+| Color | ✅ 56 semánticos + 5 de marca, 186 pares verificados en dos modos (146 bloqueantes) |
 | Tipografía | ✅ dos escalas, cuatro pesos |
 | Espaciado | ✅ rejilla de 4 |
 | Iconos | ✅ Lucide, trazo 1,5px |
@@ -86,7 +86,7 @@ duplicada.**
 **C-10 · Insignia.** El contador del icono de avisos. Existe en el marco, sin
 documentar.
 
-**C-11 · Migas de navegación.** Se usan en las 35 páginas del catálogo y **no están
+**C-11 · Migas de navegación.** Se usan en las 70 páginas del catálogo y **no están
 documentadas como elemento**.
 
 ### Bajo
@@ -110,10 +110,12 @@ cascada · moneda en soles · fechas peruanas · estados de trámite.
 
 ---
 
-## Tres cosas que se usan y no están documentadas
+## ~~Tres cosas que se usan y no están documentadas~~ — CERRADO
 
-Son deuda: existen en el cascarón pero **no tienen página**, así que nadie sabe
-que existen ni cómo consumirlas.
+**Las tres tienen página hoy.** `verificar-entrega` lo comprueba en cada
+publicación: **35 componentes publicados, todos con página en el catálogo**, y
+falla si alguno se queda sin ella. Se deja el texto porque explica qué eran, pero
+**ya no es deuda**: seguía aquí como abierta y lo cazó una auditoría.
 
 1. **Marco de aplicación** — la lateral plegable con panel flotante, la barra
    superior y el menú de usuario. Es el componente más grande del sistema.

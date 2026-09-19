@@ -76,6 +76,33 @@ const TODO = ARCHIVOS.map(leer).join('\n');
 const titulos = (texto) =>
   texto.split('\n').filter((l) => /\b(it|test|describe)\s*\(/.test(l)).join('\n');
 
+/* UNA PRUEBA APAGADA NO RESPALDA NADA, y este candado no podia verlo.
+ *
+ * Se demostro: `describe(` → `describe.skip(` sobre las dos suites de la regla
+ * 23 —el defecto que esta version llama el mas caro— dejaba CATORCE pruebas
+ * fuera, y tanto este candado como la bateria salian en verde. El patron casa
+ * `describe` y `.skip` no lo rompe, y los titulos de dentro siguen llevando el
+ * numero de la regla, asi que la regla seguia «respaldada».
+ *
+ * Y `.only` es peor: deja fuera TODAS las demas del archivo sin tocar ninguna
+ * linea que se note al leer el diff. Lo cazo una auditoria adversaria. */
+const APAGADAS = /\b(it|test|describe)\s*\.\s*(skip|only|todo|fails)\s*\(/;
+const apagadas = [];
+for (const ruta of ARCHIVOS) {
+  leer(ruta).split('\n').forEach((l, i) => {
+    if (APAGADAS.test(l)) apagadas.push(`${ruta.split('/').pop()}:${i + 1}  ${l.trim().slice(0, 72)}`);
+  });
+}
+if (apagadas.length) {
+  console.error(`\n  ${apagadas.length} prueba(s) APAGADA(S) en el contrato:\n`);
+  for (const a of apagadas) console.error(`    ${a}`);
+  console.error('\n  Una prueba con `.skip`/`.only` no respalda su regla, y este candado'
+    + '\n  la contaba igual: los titulos siguen ahi con su numero. Quitalo, o'
+    + '\n  quita la regla — lo que no vale es una regla obligatoria respaldada'
+    + '\n  por una prueba que no se ejecuta.\n');
+  process.exit(1);
+}
+
 const reglas = [];
 let seccion = '(principio)';
 let archivos = null;

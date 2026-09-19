@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.128.0";
+export const VERSION = "1.129.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,84 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.129.0', fecha: '2026-09-18',
+    que: 'Garantizar entrega y promesa del R151 — y tres candados que salian verdes delante del defecto',
+    porque:
+      'TRES AUDITORIAS ADVERSARIAS SOBRE LA v1.128.0 YA PUBLICADA, con los veinte pasos en verde y '
+      + 'las 1125 pruebas pasando —hoy son 1142—. Lo que encontraron es lo que vale, porque ninguna lo '
+      + 'mirando el codigo: lo encontraron mirando lo que NADIE miraba. '
+      + 'UNO · TODA LA MATRIZ ESTABA FUERA DEL CANDADO QUE COMPARA LAS DOS HOJAS. Se rompio '
+      + '`position: sticky` SOLO en la hoja entregada —la regla 22, la columna anclada— y los OCHO '
+      + 'candados de comparacion salieron EN VERDE, y las 54 pruebas tambien. El catalogo no pinta '
+      + 'ni un `pm-*` estatico —la matriz solo existe montada y viva— asi que el barrido no tiene '
+      + 'nada que comparar, y nadie nombro sus casos a mano. El R142 SI los nombro, y su propio '
+      + 'comentario lo explica; la regla 22 dice «es el patron del R142» y se repitio el patron del '
+      + 'anclaje sin repetir lo unico que hacia falta para que se vigilara. Entran nueve casos. '
+      + 'DOS · `verificar-contrato` NO VE UNA PRUEBA APAGADA. Con `describe.skip` sobre las dos '
+      + 'suites de la regla 23 —el defecto mas caro de la version anterior— se quedaban CATORCE '
+      + 'pruebas fuera y tanto el candado como la bateria salian en verde: el patron casa `describe` '
+      + 'y los titulos de dentro siguen llevando el numero de la regla. Ahora `.skip`/`.only` '
+      + 'bloquean. '
+      + 'TRES · ESLINT LLEVABA CINCO VERSIONES EN ROJO Y NO ERA NINGUNO DE LOS VEINTE PASOS. '
+      + 'CLAUDE.md §6 dice que el candado prohibe ocho cosas «con fallo de build» y no habia tal '
+      + 'fallo: al correrlo salieron DIECIOCHO infracciones, dieciseis desde la v1.123.0. La causa '
+      + 'es que `pruebas/**` en flat config casa solo el de la raiz, no `componentes/pruebas/`. Y su '
+      + 'propio guion SALIA EN VERDE CUANDO ESLINT NO PODIA EJECUTARSE —contaba cero y daba por '
+      + 'bueno—, que es el defecto que este repositorio persigue dentro del candado que comprueba el '
+      + 'candado. Ahora ESLint es el paso veintiuno. '
+      + 'Y EN EL COMPONENTE, CUATRO FORMAS DE MOVER PERMISOS QUE NADIE VEIA. Una es REGRESION '
+      + 'PROPIA: `baseDe` preguntaba «hay privilegios con columna?» en vez de «existe una columna '
+      + 'que se llame como el base?», asi que un modulo de ids `ver`/`editar` con columnas '
+      + '`consultar`/`modificar` se VACIABA ENTERO —tambien en lista, donde antes del R151 '
+      + 'funcionaba—. Otra la encontro una prueba escrita para otra cosa: LOS DOS PUNTOS FIJOS '
+      + 'ESTABAN SEPARADOS Y NO SE REALIMENTABAN, y el comentario del segundo decia con estas '
+      + 'palabras «va dentro del punto fijo y no despues» estando despues; con el base de un recurso '
+      + 'cerrado, lo que dependia de un privilegio caido SOBREVIVIA. Las otras dos: una clave '
+      + 'guardada que ya no es un privilegio declarado viajaba CONCEDIDA —sin interruptor, sin chip '
+      + 'y sin contar, y se dispara justo al migrar de lista a matriz, que renombra los ids—, y una '
+      + '`clave` repartida entre filas encendia al compañero en pantalla sin que viajara. '
+      + 'Y LO QUE LA MATRIZ NO DECIA: una fila que no concede nada lo confiaba todo a un filete de '
+      + 'color —SC 1.4.1— mientras la lista lleva su frase desde el R144; y con varios modulos, dos '
+      + 'sedes con una fila «Contratos» daban cuatro interruptores con DOS PARES DE NOMBRES '
+      + 'ACCESIBLES IDENTICOS, porque `headers` sustituye a la asociacion por `scope` y el modulo no '
+      + 'entraba. La regla 25 se cumplia mirando la pantalla y no sin verla. '
+      + 'CIFRAS QUE MENTIAN, todas verificadas con su comando: el catalogo decia «las 39 paginas» '
+      + 'con SETENTA —desfasado desde la v1.14.0, ciento catorce versiones—, «los otros cuarenta y '
+      + 'cinco» iconos con 55, y el alto del marco «hoy 54px» con 64 entregados y la lateral «58» '
+      + 'con 56: las dos propuestas YA se habian aplicado y el catalogo seguia pidiendolas, con un '
+      + 'titular que hablaba de «tres medidas» cuando queda una. AHORA SE MIDEN DE LA HOJA QUE '
+      + 'VIAJA. `ACTUALIZAR.md` mandaba a DOS ETIQUETAS QUE NO EXISTEN —`v1.49.0` y `v1.50.0`, '
+      + 'cuando el salto es de la v1.38.0 a la v1.51.0— contradiciendo a su propia linea anterior, '
+      + 'daba «127 exportaciones» con 131 en una frase que presumia de que esas cifras «no estan '
+      + 'escritas a mano», y decia «los TREINTA componentes» con 34. El LEEME del ZIP contaba 34 a '
+      + 'mano ocho lineas debajo del aviso que explica como se descubrio que ese mismo §6 llevaba '
+      + 'ochenta y siete versiones mintiendo: ahora se cuenta. Y `memoria/03-al-clonar.md`, EL '
+      + 'PRIMER ARCHIVO QUE LEE UN CLON NUEVO, mandaba parar sobre un repositorio sano: «178 pares, '
+      + '138 bloqueantes» con 186/146, «los ocho candados» con diecisiete, y «Docker requiere '
+      + 'autorizacion expresa» con la autorizacion permanente desde el 2026-08-10. '
+      + 'Tres reglas nuevas —26, 27 y 28— y 71 pruebas en el archivo de la matriz. Y los `describe` '
+      + 'DEJAN DE LLEVAR NUMERO DE REGLA: el candado del contrato los contaba como respaldo, asi que '
+      + 'las tres reglas nuevas salian «probadas» por el numero de un bloque. El numero va en cada '
+      + 'prueba, que es donde se puede decir la verdad sobre que regla sostiene.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'LO QUE YA NO ES UN PRIVILEGIO DECLARADO DEJA DE APLICARSE. `privilegiosEfectivos` '
+      + 'descartaba solo lo que conocia y copiaba el resto tal cual, asi que una clave de un '
+      + 'permiso retirado hace versiones seguia viajando CONCEDIDA. Ahora no. Si su backend '
+      + 'dependia de recibir claves que el panel ya no declara, las dejara de recibir — el mapa '
+      + 'COMPLETO las sigue conservando, que es R98: lo que cambia es el segundo argumento de '
+      + '`onCambio`.',
+      'CON UN MODULO COLOCADO POR COLUMNAS, EL `base` SE RESUELVE POR COLUMNA. Si declara '
+      + '`columna` en sus privilegios Y una de esas columnas se llama como su `base`, manda el '
+      + 'privilegio de esa columna en cada fila, no el que tenga ese `id`. Antes se resolvia '
+      + 'siempre por id. Si tiene un privilegio cuyo `id` coincide con el nombre de una columna y '
+      + 'esperaba que mandara el, ahora manda el de la columna.',
+      'LA CELDA DE LA MATRIZ EMITE MAS `headers` CUANDO HAY VARIOS MODULOS, y el encabezado de '
+      + 'fila lleva una linea de texto para el lector cuando esa fila no concede nada. Si su '
+      + 'producto leia `.pm-nom` esperando SOLO el nombre, use `.pm-nom-txt`.',
+    ],
+  },
   {
     v: '1.128.0', fecha: '2026-09-18',
     que: 'R151 · el panel de privilegios se presenta como MATRIZ, y es el mismo componente',

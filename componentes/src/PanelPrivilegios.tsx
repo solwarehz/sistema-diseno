@@ -429,10 +429,23 @@ export function baseDe(
    * Lo que de verdad cambia la semantica es que los privilegios se coloquen por
    * COLUMNA: ahi «ver» deja de ser un id y pasa a ser la columna base. Un
    * modulo sin columnas es la lista de siempre y no cambia nada. */
-  const porColumna = todos(m).some((x) => x.columna !== undefined);
-  if (!porColumna) return base;
-  const suFila = p.fila ?? null;
-  return todos(m).find((x) => x.columna === base && (x.fila ?? null) === suFila)?.id ?? null;
+  /* LA PREGUNTA ES SI EXISTE UNA COLUMNA QUE SE LLAME COMO EL BASE, no si hay
+   * privilegios colocados por columna. Preguntar lo segundo era una REGRESION:
+   * un modulo con ids `ver`/`editar` y columnas `consultar`/`modificar` dejaba
+   * de encontrar su base —ninguna columna se llama `ver`— y se VACIABA ENTERO,
+   * tambien presentado como LISTA, donde antes del R151 funcionaba. Basta con
+   * declarar `columna` una vez para pintar las dos presentaciones, que es justo
+   * lo que las reglas 18 y 21 invitan a hacer. Lo cazo una auditoria.
+   *
+   * Con columna: manda el de SU fila. Sin ella: el id de siempre. Y si el base
+   * no existe de ninguna de las dos formas, no hay base que aplicar —`null`—,
+   * que es lo que el modulo sin su base ha significado desde el R97; quien
+   * necesite saberlo tiene `baseSinResolver`, y el panel lo grita. */
+  if (todos(m).some((x) => x.columna === base)) {
+    const suFila = p.fila ?? null;
+    return todos(m).find((x) => x.columna === base && (x.fila ?? null) === suFila)?.id ?? null;
+  }
+  return todos(m).some((x) => x.id === base) ? base : null;
 }
 
 /**
@@ -443,8 +456,9 @@ export function baseSinResolver(
   m: ModuloPrivilegios, base: string | null,
 ): string[] {
   if (!base) return [];
-  const porColumna = todos(m).some((x) => x.columna !== undefined);
-  if (!porColumna) return todos(m).some((x) => x.id === base) ? [] : [m.id];
+  if (!todos(m).some((x) => x.columna === base)) {
+    return todos(m).some((x) => x.id === base) ? [] : [m.id];
+  }
   /* Un grupo por cada fila que EXISTE de verdad en los privilegios, incluida la
    * fila implicita de un modulo sin `filas`. Miraba `m.filas` y por eso decia
    * «la fila X no tiene privilegio en la columna base» de un modulo que si lo
@@ -524,63 +538,85 @@ export function privilegiosEfectivos(
      * El tope es el numero de privilegios: cada vuelta quita al menos uno o
      * para.
      */
-    const limpio: Record<string, boolean | string> = { ...del };
+    /* LO QUE YA NO ES UN PRIVILEGIO DECLARADO NO SE APLICA.
+     *
+     * Esto copiaba el mapa guardado TAL CUAL y solo recorria `todos(m)` para
+     * limpiar, asi que una clave que ya no corresponde a ningun privilegio
+     * —`borrar`, retirado del catalogo hace tres versiones— VIAJABA CONCEDIDA:
+     * sin interruptor, sin chip, sin contar en el «4 de 6», y aplicandose. No
+     * se puede ver ni revocar desde la pantalla que existe para revisarlo.
+     *
+     * El R151 lo pone en el camino de toda adopcion: migrar de lista a matriz
+     * renombra los ids —`ver` pasa a `trab-ver`— y el mapa viejo se queda lleno
+     * de claves huerfanas. Se midio: cuatro permisos al backend, dos en
+     * pantalla.
+     *
+     * El mapa COMPLETO las conserva —eso es R98, y sigue en pie: apagar no
+     * borra—; lo que no sobrevive es el EFECTO, que es lo que esta funcion
+     * significa. Lo cazo una auditoria adversaria. */
+    const declarados = new Set(todos(m).map((x) => x.id));
+    const limpio: Record<string, boolean | string> = {};
+    for (const [k, v] of Object.entries(del)) {
+      // Una clave de nivel es `privilegio:nivel`: vale si su privilegio existe.
+      if (declarados.has(k.includes(':') ? k.slice(0, k.indexOf(':')) : k)) limpio[k] = v;
+    }
     const quitar = (id: string) => {
       delete limpio[id];
       // Los niveles de un privilegio sin efecto tampoco lo tienen.
       for (const k of Object.keys(limpio)) if (k.startsWith(`${id}:`)) delete limpio[k];
     };
     const parcial: ValorPrivilegios = { [m.id]: limpio };
+    /* UN SOLO PUNTO FIJO PARA LAS TRES RAZONES.
+     *
+     * Habia dos bucles separados —`cerrado`/`depende` primero, el base
+     * despues— y NO SE REALIMENTABAN. El comentario del segundo decia, con
+     * estas palabras, «va dentro del punto fijo y no despues: quitar un
+     * privilegio por no tener su base puede tumbar al que dependia de el»… y
+     * estaba despues. El comentario describia lo correcto y el codigo hacia lo
+     * otro.
+     *
+     * Se midio: con `f-ver` cerrado, `f-ed` cae por perder su base —segundo
+     * bucle— y `g-ver`, que DEPENDE de `f-ed`, sobrevivia porque su turno ya
+     * habia pasado. Dos permisos viajaban al backend sin su dependencia: el 403
+     * del R110, por la puerta de al lado. Lo encontro una prueba escrita para
+     * otra cosa.
+     *
+     * Las tres razones se preguntan en la misma vuelta y se repite hasta que
+     * deja de encoger. El tope sigue siendo el numero de privilegios: cada
+     * vuelta quita al menos uno o para. */
     let cambio = true;
     while (cambio) {
       cambio = false;
       for (const p of todos(m)) {
         if (limpio[p.id] === undefined) continue;
-        if (p.cerrado || (p.depende && faltaDepende(m, parcial, p.id))) { quitar(p.id); cambio = true; }
+        if (p.cerrado || (p.depende && faltaDepende(m, parcial, p.id))) {
+          quitar(p.id); cambio = true; continue;
+        }
+        if (!base) continue;
+        /* EL BASE, SIEMPRE POR `baseDe`. Habia dos formas de responder «quien
+           manda sobre este privilegio» —id literal y por fila— y tener dos es
+           la misma bifurcacion que este componente lleva cuatro auditorias
+           cerrando. Con un modulo plano, `baseDe` devuelve el id de siempre
+           para todos, asi que quitarlos uno a uno equivale a vaciar el modulo:
+           el comportamiento historico del R97 sale de la regla general en vez
+           de ser un caso aparte.
+           Y EL BASE SE MIRA A SI MISMO: sin eso, un base guardado como `false`
+           sobrevivia —`{ver:false}` en vez de `{}`— y con el, el modulo dejaba
+           de estar vacio. Lo cazo la prueba del R97. */
+        const b = baseDe(m, p, base);
+        if (b === null || limpio[b] !== true) { quitar(p.id); cambio = true; }
       }
     }
     /* Y LOS NIVELES DE LO QUE NO ESTA CONCEDIDO TAMPOCO SE APLICAN. Se limpiaban
        solo los de lo QUITADO, asi que `{editar:false, 'editar:doc':'b'}` viajaba
        entero: una configuracion de campo para un permiso que no se tiene. Es el
        mismo argumento que el resto de esta funcion —lo efectivo es lo que de
-       verdad rige— y el mapa completo sigue guardandolo, que es R98. */
+       verdad rige— y el mapa completo sigue guardandolo, que es R98.
+       VA AL FINAL, cuando ya no queda nada que quitar: antes se ejecutaba entre
+       los dos puntos fijos y no veia lo que el segundo tiraba. */
     for (const p of todos(m)) {
       if (limpio[p.id] !== true) {
         for (const k of Object.keys(limpio)) if (k.startsWith(`${p.id}:`)) delete limpio[k];
-      }
-    }
-    /* Y AHORA EL BASE, SOBRE LO QUE HA QUEDADO.
-     *
-     * SIN `filas` es lo de siempre: si el base no sobrevivio, el modulo entero
-     * deja de aplicarse, que es lo que `base` significa.
-     *
-     * R151 · CON `filas`, EL BASE GOBIERNA SU RECURSO Y NO EL MODULO. Vaciar
-     * el modulo entero porque un recurso perdio su `ver` se llevaria por
-     * delante los otros recursos, que no tienen nada que ver. Y el base que se
-     * busca es el de LA FILA DE CADA PRIVILEGIO —`baseDe`—, no un id literal
-     * que con filas no existe. Antes de esto, un modulo con `filas` y el
-     * `base` por omision devolvia `{}` SIEMPRE.
-     *
-     * Va dentro del punto fijo y no despues: quitar un privilegio por no tener
-     * su base puede tumbar al que dependia de el. */
-    if (base) {
-      // La MISMA pregunta que hace `baseDe`, y por el mismo motivo: lo que
-      // cambia la semantica es que los privilegios se coloquen por columna.
-      if (!todos(m).some((x) => x.columna !== undefined)) {
-        if (limpio[base] !== true) { salida[m.id] = {}; continue; }
-      } else {
-        let masCambio = true;
-        while (masCambio) {
-          masCambio = false;
-          for (const p of todos(m)) {
-            if (limpio[p.id] === undefined) continue;
-            const b = baseDe(m, p, base);
-            // Sin base que lo encarne, ese recurso no se aplica: es lo mismo
-            // que decir que su `ver` no esta concedido.
-            if (b === p.id) continue;
-            if (b === null || limpio[b] !== true) { quitar(p.id); masCambio = true; }
-          }
-        }
       }
     }
     salida[m.id] = limpio;
@@ -639,24 +675,29 @@ export function PanelPrivilegios({
     // quien tenga que mandarlo al backend.
     /* R151 · `baseDe` y no `base`: con `filas`, encender «editar Contratos»
        tiene que encender «ver CONTRATOS», no un `ver` de modulo que no existe.
-       Mirandolo por id literal, con filas no encendia nada. */
-    const elPulsado = todos(m).find((p) => p.id === priv);
-    const baseDelPulsado = elPulsado ? baseDe(m, elPulsado, base) : null;
-    if (baseDelPulsado) {
-      const base = baseDelPulsado;   // el de SU fila, para lo que sigue
-      if (priv !== base && activo && !delModulo[base]) {
-        /* R149 · EL BASE TIENE QUE EXISTIR EN EL MODULO. Aqui se hacia
-           `find(...)?.cerrado`, y sobre un privilegio INEXISTENTE eso da
-           `undefined`: el panel INVENTABA el permiso y lo mandaba al backend.
-           Un modulo que no declara `ver` —«lo que no aplica no se pasa», dice
-           este mismo componente— recibia `ver: true` al pulsar cualquier otra
-           cosa, y encima R149 no lo anunciaba porque su calculo si exigia que
-           existiera. Lo cazo una auditoria: el panel decia una cosa y hacia
-           otra.
-           R148 · Y tampoco si el base esta deshabilitado: encenderlo de rebote
-           es concederlo. */
-        const elBase = todos(m).find((p) => p.id === base);
-        if (elBase && !elBase.cerrado && !elBase.deshabilitado) delModulo[base] = true;
+       Mirandolo por id literal, con filas no encendia nada.
+
+       Y SUBE EL BASE DE CADA FILA QUE SE HAYA TOCADO, no solo la del pulsado.
+       Con `clave` repartida entre dos filas, encender una encendia las dos
+       —son el MISMO permiso, regla 2bis— pero solo subia el base de la fila
+       del pulsado, asi que el compañero se veia ENCENDIDO y NO VIAJABA en lo
+       efectivo: apagados juntos, encendidos por separado, y en la pantalla que
+       existe para revisar. Lo cazo una auditoria. */
+    if (activo) {
+      const tocados = todos(m).filter(
+        (x) => delModulo[x.id] === true
+          && (x.id === priv || (clave !== undefined && x.clave === clave)),
+      );
+      const suyos = new Set(
+        tocados.map((x) => baseDe(m, x, base)).filter((b): b is string => b !== null),
+      );
+      for (const suBase of suyos) {
+        if (delModulo[suBase]) continue;
+        /* R149 · El base tiene que EXISTIR —`baseDe` ya lo garantiza— y poder
+           encenderse: si esta cerrado o deshabilitado, encenderlo de rebote es
+           concederlo, y eso tumba el PUT entero con una regla anti-escalada. */
+        const elBase = todos(m).find((x) => x.id === suBase);
+        if (elBase && !elBase.cerrado && !elBase.deshabilitado) delModulo[suBase] = true;
       }
     }
 
@@ -973,7 +1014,8 @@ export function PanelPrivilegios({
                  modulo no hace falta y no se pinta. */
               const cabecera = modulos.length > 1 ? (
                 <tr key={`${m.id}-cab`} className="pm-mod">
-                  <th scope="colgroup" colSpan={cols.length + 1} className="pm-mod-nom">
+                  <th scope="colgroup" colSpan={cols.length + 1} className="pm-mod-nom"
+                      id={`${idPanel}-mod-${im}`}>
                     {m.nombre}
                   </th>
                 </tr>
@@ -991,21 +1033,54 @@ export function PanelPrivilegios({
                    vacio. La pantalla no daba ninguna senal. */
                 const unoDeLaFila = lista.find((x) => (x.fila ?? m.id) === f.id);
                 const idBaseFila = unoDeLaFila ? baseDe(m, unoDeLaFila, base) : null;
-                const sinBase = Boolean(idBaseFila) && !concedido(valor, m.id, idBaseFila as string);
+                const sinBase = Boolean(base) && Boolean(unoDeLaFila)
+                  && (idBaseFila === null || !concedido(valor, m.id, idBaseFila));
+                const nombreDelBase = idBaseFila
+                  ? lista.find((x) => x.id === idBaseFila)?.nombre : undefined;
                 return (
                   <tr key={`${m.id}-${f.id}`} className={sinBase ? 'pm-fila pm-sin-base' : 'pm-fila'}>
                     <th scope="row" className="pm-nom" id={idFila}>
                       <span className="pm-nom-txt">{f.nombre}</span>
+                      {/* R144 · Y SE DICE CON PALABRAS, no solo con el filete.
+                          La lista lleva «Sin este permiso, el resto del modulo
+                          no se aplica» desde el R144; la matriz solo tenia un
+                          filete de color, que ademas quedaba como UNICO
+                          portador de la informacion —SC 1.4.1—. Va dentro del
+                          encabezado de fila, que es lo que el lector anuncia
+                          antes de cada celda, y por tanto ANTES de pulsar. */}
+                      {sinBase && (
+                        <span className="sr-solo">
+                          {' '}— sin «{typeof nombreDelBase === 'string' ? nombreDelBase : 'el permiso base'}»,
+                          nada de esta fila se aplica.
+                        </span>
+                      )}
                     </th>
                     {cols.map((c) => {
+                      /* `m.filas?.length`, el MISMO criterio que usa la linea
+                         que arma `filas` 33 lineas mas arriba. Con `m.filas` a
+                         secas, `filas: []` dibujaba una fila entera de «Sin
+                         declarar» con los permisos vivos detras — y el aviso
+                         escrito para ese caso decia «no dibuja ninguna fila»,
+                         que era mentira. Dos nociones de lo mismo a 33 lineas
+                         de distancia es como se paga. */
                       const p = lista.find((x) => x.columna === c.id
-                        && (m.filas ? x.fila === f.id : true));
+                        && (m.filas?.length ? x.fila === f.id : true));
                       const clase = c.aparte ? 'pm-celda pm-celda-aparte' : 'pm-celda';
                       /* Los `headers` atan cada celda a SUS DOS encabezados. Sin
                          ellos, los `id` del `th` no los referenciaba nadie: eran
                          atributos muertos, y un lector en una rejilla de
                          doscientas celdas no sabe en que cruce esta. */
-                      const atada = `${idFila} ${idPanel}-col-${c.id}`;
+                      /* Y EL MODULO ENTRA EN `headers` CUANDO HAY VARIOS. Como
+                         `headers` SUSTITUYE a la asociacion por `scope`, el
+                         nombre del modulo no llegaba al lector: dos sedes con
+                         una fila «Contratos» cada una daban cuatro interruptores
+                         con DOS PARES de nombres accesibles identicos. La regla
+                         25 se cumplia mirando la pantalla y no sin verla, que
+                         es justo lo que dice cubrir. */
+                      const atada = [
+                        modulos.length > 1 ? `${idPanel}-mod-${im}` : '',
+                        idFila, `${idPanel}-col-${c.id}`,
+                      ].filter(Boolean).join(' ');
                       /* SIN PRIVILEGIO NO HAY NADA QUE DECIR, y eso es distinto
                          de decir que no aplica: la celda se queda vacia y se
                          marca como tal para el lector. Quien quiera que el hueco
@@ -1132,14 +1207,42 @@ export function PanelPrivilegios({
      ve al montarla, y a quien la usa no se le interrumpe el trabajo.
      ───────────────────────────────────────────────────────────────────────── */
   const avisosDeMatriz = useMemo(() => {
-    if (process.env.NODE_ENV === 'production' || presentacion !== 'matriz') return [];
+    if (process.env.NODE_ENV === 'production') return [];
     const dis: string[] = [];
+    /* EL BASE QUE NO RESUELVE SE AVISA EN LAS DOS PRESENTACIONES. Esto salia
+       por aqui cuando la presentacion no era matriz, asi que el diagnostico
+       EXISTIA y no se consultaba donde hacia falta: un modulo colocado por
+       columnas y pintado como LISTA se vaciaba entero sin una sola senal.
+       `privilegiosEfectivos` no depende de la presentacion; el aviso tampoco. */
+    for (const m of modulos) {
+      for (const f of baseSinResolver(m, base)) {
+        dis.push(`en «${m.id}»${f === m.id ? '' : `, la fila «${f}»`} no hay ningun privilegio `
+          + `que encarne el base «${base}» —ni por id ni por columna—, asi que todo lo suyo sale `
+          + 'de lo efectivo. Si su dominio no funciona con un privilegio que manda, pase '
+          + '`base={null}`.');
+      }
+    }
+    if (presentacion !== 'matriz') return dis;
     if (!columnas?.length) {
       dis.push('`presentacion="matriz"` sin `columnas`. Una matriz sin columnas no es '
         + 'una matriz: se dibuja la lista.');
       return dis;
     }
     const idsCol = new Set(columnas.map((c) => c.id));
+    /* IDS DE COLUMNA REPETIDOS O CON ESPACIOS. Dos columnas con el mismo `id`
+       producen dos `th` con el mismo `id` de DOM, y `headers` —que se separa
+       por espacios— queda apuntando a algo ambiguo o partido en dos. */
+    const vistas = new Set<string>();
+    for (const c of columnas) {
+      if (vistas.has(c.id)) {
+        dis.push(`la columna «${c.id}» esta declarada dos veces: los encabezados comparten `
+          + '`id` y `headers` deja de identificar la celda.');
+      } else vistas.add(c.id);
+      if (/\s/.test(c.id)) {
+        dis.push(`el id de columna «${c.id}» lleva un espacio: \`headers\` se separa por `
+          + 'espacios y lo leeria como dos encabezados.');
+      }
+    }
     for (const m of modulos) {
       const lista = todos(m);
       const idsFila = new Set((m.filas ?? []).map((f) => f.id));
@@ -1191,13 +1294,9 @@ export function PanelPrivilegios({
         }
       }
       if (m.filas && !m.filas.length) {
-        dis.push(`«${m.id}» declara \`filas: []\`: el modulo no dibuja ninguna fila y sus `
-          + 'permisos siguen concedidos sin pantalla donde revisarlos.');
-      }
-      for (const f of baseSinResolver(m, base)) {
-        dis.push(`en «${m.id}», la fila «${f}» no tiene ningun privilegio en la columna base `
-          + `«${base}»: todo lo suyo sale de lo efectivo. Si su dominio no funciona con un `
-          + 'privilegio que manda, pase `base={null}`.');
+        dis.push(`«${m.id}» declara \`filas: []\`: se trata como si no declarara filas y todo `
+          + 'cae en una sola, la del modulo. Si esperaba una fila por recurso, la lista llego '
+          + 'vacia.');
       }
     }
     if (modulos.some((m) => (m.grupos ?? []).some((g) => g.titulo))) {
@@ -1243,8 +1342,14 @@ export function PanelPrivilegios({
           /* Tambien por `baseDe`: con un modulo colocado por columnas, `base`
              no es un id y este `concedido(..., base)` decia que falta el base
              CON TODO CONCEDIDO — la pantalla contradiciendo al backend. */
+          /* UN BASE DECLARADO QUE NO RESUELVE TAMBIEN ES «SIN BASE» — y es lo
+             MAS importante que se puede decir, porque `privilegiosEfectivos`
+             vacia el modulo entero. Al pasar a `baseDe` esto quedo en `false`
+             y el carril dejo de salir: la regla 12 exige que salga igual
+             cuando el modulo no declara su base. Lo caz o su propia prueba. */
           const idBaseMod = lista.length ? baseDe(m, lista[0], base) : null;
-          const sinBase = Boolean(idBaseMod) && !concedido(valor, m.id, idBaseMod as string);
+          const sinBase = Boolean(base)
+            && (idBaseMod === null || !concedido(valor, m.id, idBaseMod));
           const avisoSinBase = (
             <p className="pp-aviso">
               <Icono nombre="alerta" tam="control" />

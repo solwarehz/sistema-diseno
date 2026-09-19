@@ -52,6 +52,33 @@ function reglasDelContrato(seccion) {
   if (!nums.length) throw new Error(`la seccion «${seccion}» no tiene reglas numeradas`);
   return new Set(nums).size;
 }
+/* LAS MEDIDAS SE MIDEN DE LA HOJA QUE VIAJA, no se recuerdan.
+   La tabla de abajo decia «Alto del marco · hoy 54px» con 64px entregados, y
+   «Lateral plegada · hoy 58px» con 56 — las dos propuestas YA se aplicaron, y
+   el catalogo seguia pidiendolas. Peor: su titular decia «tres medidas no son
+   multiplo de 4» cuando 56 y 64 si lo son, asi que la unica que queda es una.
+   Lo cazo una auditoria. Una cifra a mano dentro de un documento generado es la
+   unica parte que envejece sola, y esta llevaba versiones envejeciendo. */
+function medidaDeLaHoja(selector, prop) {
+  const css = readFileSync(join(RAIZ, 'sistema/componentes/componentes.css'), 'utf8');
+  const re = new RegExp(selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    + '\\s*\\{[^}]*?' + prop + ':\\s*([0-9]+)px', 's');
+  const m = re.exec(css);
+  if (!m) throw new Error(`no se encuentra ${prop} de ${selector} en la hoja entregada`);
+  return Number(m[1]);
+}
+const MEDIDAS = [
+  ['Fila cómoda', medidaDeLaHoja('.tb td', 'height'), 32,
+   'Dos píxeles menos por fila. En 25 filas visibles, gana media fila más de pantalla'],
+  ['Alto de la barra superior', medidaDeLaHoja('.top', 'height'), 56,
+   'Coincide con el botón flotante de móvil, que ya es 56'],
+  ['Lateral plegada', medidaDeLaHoja('.lat.colapsado', 'width'), 56,
+   'Icono de 18px centrado en 56 deja 19px a cada lado'],
+  ['Fila compacta', medidaDeLaHoja("[data-densidad='compacta'] .tb td", 'height'), 28,
+   'Ya encaja. Sin cambio'],
+];
+const fueraDeEscala = MEDIDAS.filter(([, hoy]) => hoy % 4 !== 0);
+
 const LETRAS = ['cero', 'una', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho',
   'nueve', 'diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciseis', 'diecisiete',
   'dieciocho', 'diecinueve', 'veinte', 'veintiuna', 'veintidos', 'veintitres', 'veinticuatro',
@@ -947,14 +974,19 @@ const espaciado = `
 </div>
 
 <h3 class="sub-seccion">Valores fuera de rejilla</h3>
-<p class="seccion-sub">Tres medidas heredadas no son múltiplo de 4.</p>
+<p class="seccion-sub">${fueraDeEscala.length === 0
+  ? 'Todas las medidas heredadas son ya múltiplo de 4.'
+  : `${enLetra(fueraDeEscala.length)} medida${fueraDeEscala.length === 1 ? '' : 's'} heredada${fueraDeEscala.length === 1 ? '' : 's'} `
+    + `no ${fueraDeEscala.length === 1 ? 'es' : 'son'} múltiplo de 4.`}
+<strong>Las cifras de «hoy» se leen de la hoja que viaja</strong>, no de esta página: decían
+54px y 58px con 64 y 56 entregados, porque las dos propuestas ya se habían aplicado y nadie
+volvió a mirar.</p>
 <table class="tabla-simple">
   <thead><tr><th>Valor</th><th class="num">Hoy</th><th class="num">Propuesto</th><th>Consecuencia</th></tr></thead>
   <tbody>
-    <tr><td>Fila cómoda</td><td class="num">34px</td><td class="num"><strong>32px</strong></td><td class="motivo">Dos píxeles menos por fila. En 25 filas visibles, gana media fila más de pantalla</td></tr>
-    <tr><td>Alto del marco</td><td class="num">54px</td><td class="num"><strong>56px</strong></td><td class="motivo">Coincide con el botón flotante de móvil, que ya es 56</td></tr>
-    <tr><td>Lateral plegada</td><td class="num">58px</td><td class="num"><strong>56px</strong></td><td class="motivo">Icono de 18px centrado en 56 deja 19px a cada lado</td></tr>
-    <tr><td>Fila compacta</td><td class="num">28px</td><td class="num">28px</td><td class="motivo">Ya encaja. Sin cambio</td></tr>
+    ${MEDIDAS.map(([nom, hoy, prop, porque]) => `<tr><td>${nom}</td><td class="num">${hoy}px</td>`
+      + `<td class="num">${hoy === prop ? `${prop}px` : `<strong>${prop}px</strong>`}</td>`
+      + `<td class="motivo">${hoy === prop ? 'Ya encaja. Sin cambio' : porque}</td></tr>`).join('\n    ')}
   </tbody>
 </table>`;
 
@@ -7721,7 +7753,7 @@ usar <code>error</code> como adorno <strong>gasta el rojo</strong>.</p>
 
 const pagCabecera = `
 <p class="pag-intro">Migas, titulo, accion y descripcion. El bloque con el que abre
-<strong>toda</strong> pantalla, y con el que abren las 39 paginas de este catalogo.</p>
+<strong>toda</strong> pantalla, y con el que abren las {{N_PAGINAS}} paginas de este catalogo.</p>
 
 <h3 class="sub-seccion">Por que es componente y no una convencion</h3>
 <p class="seccion-sub">El titulo de pantalla es el <code>&lt;h1&gt;</code> del documento, y
@@ -9172,7 +9204,7 @@ const paginasCatalogo = CATALOGO.flatMap((g) =>
   )
 ).join('');
 
-const html = `<!doctype html>
+let html = `<!doctype html>
 <html lang="es" data-tema="claro">
 <head>
 <meta charset="utf-8">
@@ -9600,7 +9632,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
     margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 }
 /* ───────────────────────────────────────────────────────────────────────────
-   CABECERA DE PANTALLA. Estaba en las 39 paginas del catalogo y NO viajaba:
+   CABECERA DE PANTALLA. Estaba en todas las paginas del catalogo y NO viajaba:
    cada proyecto la montaba a mano y cada pantalla salia un poco distinta —una
    con linea, otra sin; una a 16px, otra a 24—. La deriva no se ve pantalla a
    pantalla, solo al ponerlas juntas, que es cuando ya cuesta arreglarla.
@@ -15965,6 +15997,16 @@ ${COMPRESOR_PDF}
 `;
 
 mkdirSync(SALIDA, { recursive: true });
+/* LA CUENTA DE PAGINAS SE RESUELVE SOBRE EL DOCUMENTO YA ARMADO, que es la
+   unica fuente que no puede discrepar de si misma. La cifra estaba escrita a
+   mano —«las 39 paginas»— y llevaba CIENTO CATORCE versiones desfasada con 70
+   dentro, en una pagina cuyo argumento es que todas la usan: infravaloraba su
+   propio caso un 44 %. No se puede contar antes porque el indice del catalogo
+   se define mas abajo que el texto que lo cita. */
+const nPaginas = (html.match(/<section class="pagina"/g) ?? []).length;
+html = html.replaceAll('{{N_PAGINAS}}', String(nPaginas));
+if (html.includes('{{N_')) throw new Error('queda un marcador sin resolver en el catalogo');
+
 writeFileSync(join(SALIDA, 'index.html'), html);
 
 /* ───────────────────────────────────────────────────────────────────────────

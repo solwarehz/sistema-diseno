@@ -56,12 +56,15 @@ function Matriz({ inicial = {} as ValorPrivilegios, ...extra }) {
 }
 
 const celda = (c: HTMLElement, fila: string, col: number) => {
+  /* Por `.pm-nom-txt` y no por `.pm-nom`: el encabezado de fila lleva tambien
+     el aviso de «sin base» para el lector, asi que su `textContent` ya no es
+     solo el nombre. */
   const tr = [...c.querySelectorAll('tbody tr')]
-    .find((r) => (r.querySelector('.pm-nom')?.textContent ?? '') === fila)!;
-  return tr.children[col + 1] as HTMLElement;   // +1: la primera es el nombre
+    .find((r) => (r.querySelector('.pm-nom-txt')?.textContent ?? '') === fila)!;
+  return tr.children[col + 1] as HTMLElement;   // +1: la primera es la del nombre
 };
 
-describe('[18] R151 · la matriz es una tabla de verdad', () => {
+describe('R151 · la matriz es una tabla de verdad', () => {
   it('[18] con `<th scope="col">` y `<th scope="row">`, no celdas sueltas', () => {
     /* Una rejilla de doscientos interruptores sin encabezados asociados es una
        pantalla que solo se puede usar mirándola. */
@@ -98,7 +101,7 @@ describe('[18] R151 · la matriz es una tabla de verdad', () => {
   });
 });
 
-describe('[20] R151 · el hueco habla, y la celda sin declarar no', () => {
+describe('R151 · el hueco habla, y la celda sin declarar no', () => {
   it('[20] `noAplica` dice QUÉ pasa y POR QUÉ, en `title` y para el lector', () => {
     /* Omitir no es lo mismo que decir que no aplica: omitiendo, quien reparte
        nunca se entera de que esa acción existe. */
@@ -126,7 +129,7 @@ describe('[20] R151 · el hueco habla, y la celda sin declarar no', () => {
   });
 });
 
-describe('[21] R151 · es la MISMA lógica, no otra', () => {
+describe('R151 · es la MISMA lógica, no otra', () => {
   it('[21] `depende` bloquea igual que en la lista, y con su motivo', () => {
     const { container } = render(<Matriz />);
     const c = celda(container, 'Trabajadores', 2);
@@ -164,7 +167,7 @@ describe('[21] R151 · es la MISMA lógica, no otra', () => {
   });
 });
 
-describe('[22] R151 · la primera columna se ancla, que es el R142 otra vez', () => {
+describe('R151 · la primera columna se ancla, que es el R142 otra vez', () => {
   it('[22] el nombre de fila y la esquina se quedan quietos', () => {
     const regla = (sel: string) => {
       const re = new RegExp('(?:^|[}\\n;])\\s*' + sel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*\\{[^}]*\\}', 'g');
@@ -196,7 +199,7 @@ describe('[22] R151 · la primera columna se ancla, que es el R142 otra vez', ()
   });
 });
 
-describe('[21bis] R151 · lo que las trece primeras dejaban pasar', () => {
+describe('R151 · lo que las trece primeras dejaban pasar', () => {
   /* Las encontró una auditoría adversaria: veintitrés mutaciones sobrevivían a
      las trece pruebas de arriba. Quince rojas no son cobertura, y la peor de
      las supervivientes lo dice todo. */
@@ -293,7 +296,7 @@ describe('[21bis] R151 · lo que las trece primeras dejaban pasar', () => {
   });
 });
 
-describe('[23] R151 · el base gobierna SU recurso, no el módulo', () => {
+describe('R151 · el base gobierna SU recurso, no el módulo', () => {
   /* EL DEFECTO MÁS CARO DE ESTA VERSIÓN, y lo encontró una auditoría antes de
      publicar. `base` se buscaba por id literal; con `filas` los ids son únicos
      por módulo, así que NUNCA existía uno llamado `ver` —el valor por omisión—
@@ -359,22 +362,25 @@ describe('[23] R151 · el base gobierna SU recurso, no el módulo', () => {
         valor={{ personal: { 't-ver': true } }} onCambio={() => {}} />
     );
     const marcadas = [...container.querySelectorAll('tbody tr.pm-sin-base')]
-      .map((t) => t.querySelector('.pm-nom')!.textContent);
+      .map((t) => t.querySelector('.pm-nom-txt')!.textContent);
     expect(marcadas).toEqual(['Contratos']);
   });
 
   it('[23] un base que no encarna nadie SE DICE, en vez de vaciar en silencio', () => {
-    expect(baseSinResolver(MODS2[0], 'leer')).toEqual(['trab', 'cont']);
+    /* «leer» no es ni un id ni una columna del modulo, asi que el que no lo
+       tiene es EL MODULO, no cada fila: decirlo por fila mandaba a mirar filas
+       cuando el problema esta arriba. */
+    expect(baseSinResolver(MODS2[0], 'leer')).toEqual(['personal']);
     expect(baseSinResolver(MODS2[0], 'ver')).toEqual([]);
     const gritar = vi.spyOn(console, 'error').mockImplementation(() => {});
     render(<PanelPrivilegios presentacion="matriz" columnas={COLS2} modulos={MODS2}
       base="leer" valor={{}} onCambio={() => {}} />);
-    expect(gritar.mock.calls.flat().join(' ')).toContain('columna base');
+    expect(gritar.mock.calls.flat().join(' ')).toContain('encarne el base');
     gritar.mockRestore();
   });
 });
 
-describe('[24] R151 · nada desaparece sin decirlo', () => {
+describe('R151 · nada desaparece sin decirlo', () => {
   const C: ColumnaPrivilegios[] = [{ id: 'ver', titulo: 'Ver' }];
   const con = (privilegios: any[], filas?: any[]) => {
     const gritar = vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -428,7 +434,7 @@ describe('[24] R151 · nada desaparece sin decirlo', () => {
   });
 });
 
-describe('[25] R151 · lo que `estado()` calcula, la matriz lo pinta', () => {
+describe('R151 · lo que `estado()` calcula, la matriz lo pinta', () => {
   /* R99, R148 y R149 estaban escritas, la lista las cumplía y la matriz no:
      `conQuien` y `arrastraElBase` se calculaban y se tiraban, y `ayuda` no
      llegaba a la celda. No eran dos lógicas: era una lógica y dos pantallas
@@ -518,10 +524,12 @@ describe('[25] R151 · lo que `estado()` calcula, la matriz lo pinta', () => {
     expect(cabs, 'dos módulos y sus filas salen mezcladas sin decir de cuál son')
       .toEqual(['Personal', 'Reportes']);
     expect(container.querySelector('.pm-mod-nom')!.getAttribute('colspan')).toBe('3');
+    expect(container.querySelector('.pm-mod-nom')!.getAttribute('scope'),
+      'la cabecera de módulo no dice a qué manda').toBe('colgroup');
   });
 });
 
-describe('[26] R151 · la hoja de la matriz, medida entera', () => {
+describe('R151 · la hoja de la matriz, medida entera', () => {
   /* La regla 22 se comprobaba a fondo en `.pm-nom` y a medias en `.pm-esquina`:
      una auditoría quitó el fondo de la esquina, su suelo y su techo, y las
      pruebas siguieron verdes. La esquina está igual de pegada que el nombre —es
@@ -579,19 +587,48 @@ describe('[26] R151 · la hoja de la matriz, medida entera', () => {
     expect(css, 'la fila sin su base no se distingue').toMatch(/\.pm-sin-base\s+\.pm-nom/);
   });
 
-  it('[20] los cuatro motivos tienen color propio TAMBIÉN en la lista', () => {
-    /* `.pp-no-noAplica` no existía: el cuarto motivo heredaba el color de texto
-       ambiente, así que en la lista el icono de «no aplica» era el MÁS
-       destacado de los cuatro — justo el que significa que ahí no hay nada que
-       conceder. Lo cazó una auditoría. */
-    for (const t of ['cerrado', 'ajeno', 'pendiente', 'noAplica']) {
-      expect(css, `.pp-no-${t} no tiene color propio`)
-        .toMatch(new RegExp(`\\.pp-no-${t}\\b`));
-    }
+  it('[20] los cuatro motivos se distinguen por ICONO y RÓTULO, no por color', () => {
+    /* Esta prueba se llamaba «color propio» y solo comprobaba que el SELECTOR
+       `.pp-no-<t>` existiera: una auditoría puso los cuatro motivos del mismo
+       color y las 54 pruebas pasaron. Dos cosas estaban mal, y la peor era la
+       promesa: la regla 2 promete «icono, etiqueta y motivo propios», y eso es
+       lo que hay que medir — por VALOR, no por presencia del selector.
+
+       Y se deja dicho lo que sí pasa con el color: `cerrado` y `noAplica`
+       comparten `--texto-pista`, a propósito. Los dos dicen «aquí no hay nada
+       que conceder, no insista»; lo que los separa —un candado o una equis, y
+       su rótulo— no es el color. Ampliar la paleta autorizada no es decisión
+       del sistema, así que se distinguen por donde se pueden distinguir. */
+    const tipos = ['cerrado', 'ajeno', 'pendiente', 'noAplica'] as const;
+    const { container } = render(
+      <PanelPrivilegios base={null} valor={{}} onCambio={() => {}} abiertos={['m']}
+        modulos={[{ id: 'm', nombre: 'M', privilegios: tipos.map((t) => ({
+          id: t, nombre: t, cerrado: { tipo: t, motivo: 'porque sí' } })) }] as any} />
+    );
+    const filas = tipos.map((t) => container.querySelector(`.pp-no-${t}`)!);
+    expect(filas.every(Boolean), 'algún motivo no se dibuja').toBe(true);
+    const iconos = filas.map((f) => f.querySelector('.pp-cerrado-ic')!.innerHTML);
+    const rotulos = filas.map((f) => f.querySelector('.pp-cerrado-eti')!.textContent);
+    expect(new Set(iconos).size, 'dos motivos dibujan el MISMO icono').toBe(4);
+    expect(new Set(rotulos).size, 'dos motivos dicen lo MISMO').toBe(4);
+  });
+
+  it('[20] y el que sí tiene color semántico no lo pierde', () => {
+    /* `ajeno` es azul porque manda a hablar con alguien, y `depende` ámbar
+       porque se resuelve solo: ésos sí llevan información en el color, y
+       confundirlos con el gris de «no insista» cambiaría lo que dicen. */
+    const color = (sel: string) => {
+      const m = new RegExp(sel.replace('.', '\\.') + '\\s+\\.pp-cerrado-ic\\{([^}]*)\\}').exec(css);
+      return /color:\s*var\((--[a-z-]+)\)/.exec(m?.[1] ?? '')?.[1] ?? '';
+    };
+    expect(color('.pp-no-ajeno'), 'ajeno perdió su color propio').toBe('--info-acento');
+    expect(color('.pp-no-depende')).toBe('--aviso-acento');
+    expect(color('.pp-no-ajeno')).not.toBe(color('.pp-no-cerrado'));
+    expect(color('.pp-no-depende')).not.toBe(color('.pp-no-noAplica'));
   });
 });
 
-describe('[27] R151 · lo que encontró la TERCERA auditoría, sobre el arreglo', () => {
+describe('R151 · lo que encontró la TERCERA auditoría, sobre el arreglo', () => {
   /* Un arreglo a medias es peor que el defecto: ahora hay una regla escrita que
      dice que está resuelto. Estas cinco son las que faltaban. */
 
@@ -713,5 +750,231 @@ describe('[27] R151 · lo que encontró la TERCERA auditoría, sobre el arreglo'
     expect(gritar.mock.calls.length, 'la consola se llena con el mismo aviso')
       .toBe(primera);
     gritar.mockRestore();
+  });
+});
+
+describe('R151 · lo que encontró la CUARTA auditoría', () => {
+  const C2: ColumnaPrivilegios[] = [
+    { id: 'consultar', titulo: 'Consultar' }, { id: 'modificar', titulo: 'Modificar' }];
+
+  it('[26] un módulo con `columna` presentado como LISTA no se vacía', () => {
+    /* REGRESIÓN del arreglo anterior. `baseDe` preguntaba «¿hay privilegios con
+       columna?» en vez de «¿existe una columna que se llame como el base?», así
+       que ids `ver`/`editar` con columnas `consultar`/`modificar` perdían su
+       base y el módulo entero viajaba `{}`. También en lista, donde antes del
+       R151 funcionaba — y basta declarar `columna` una vez para pintar las dos
+       presentaciones, que es lo que las reglas 18 y 21 invitan a hacer. */
+    const M: ModuloPrivilegios[] = [{ id: 'memos', nombre: 'Memos', privilegios: [
+      { id: 'ver', nombre: 'Ver', columna: 'consultar' },
+      { id: 'editar', nombre: 'Editar', columna: 'modificar' }] }];
+    expect(privilegiosEfectivos(M, { memos: { ver: true, editar: true } }, 'ver'))
+      .toEqual({ memos: { ver: true, editar: true } });
+    expect(baseDe(M[0], M[0].privilegios[1], 'ver')).toBe('ver');
+  });
+
+  it('[26] el base sin conceder vacía el módulo, y eso INCLUYE al base', () => {
+    /* Al unificar las dos ramas, `b === p.id → continue` dejaba sobrevivir un
+       `{ver:false}`: el módulo ya no estaba vacío. Lo cazó la prueba del R97,
+       que es de hace cincuenta versiones. */
+    const M: ModuloPrivilegios[] = [{ id: 'm', nombre: 'M', privilegios: [
+      { id: 'ver', nombre: 'Ver' }, { id: 'ed', nombre: 'Editar' }] }];
+    expect(privilegiosEfectivos(M, { m: { ver: false, ed: true } }, 'ver')).toEqual({ m: {} });
+  });
+
+  it('[26] un base declarado que NO resuelve deja el módulo SIN EFECTO', () => {
+    /* La guarda `b === null` se podía girar en cualquier dirección y nada
+       protestaba — y es la línea que produce el vaciado silencioso. */
+    const M: ModuloPrivilegios[] = [{ id: 'x', nombre: 'X', privilegios: [
+      { id: 'otra', nombre: 'Otra' }] }];
+    expect(privilegiosEfectivos(M, { x: { otra: true } }, 'ver'), 'sin base, no se aplica nada')
+      .toEqual({ x: {} });
+  });
+
+  it('[12] un base declarado que NO resuelve también marca el módulo', () => {
+    /* Es lo más importante que se puede decir: `privilegiosEfectivos` lo vacía
+       entero. Al pasar a `baseDe` quedó en `false` y el carril dejó de salir. */
+    const { container } = render(
+      <PanelPrivilegios modulos={[{ id: 'x', nombre: 'X', privilegios: [
+        { id: 'otra', nombre: 'Otra' }] }]} base="ver" valor={{}} onCambio={() => {}}
+        abiertos={['x']} />
+    );
+    expect(container.querySelector('.pp-sin-base'), 'no se marca').not.toBeNull();
+    expect(container.querySelectorAll('.pp-aviso').length, 'carril sin leyenda')
+      .toBeGreaterThan(0);
+  });
+
+  it('[11] y NO se marca cuando el base de columna sí está concedido', () => {
+    /* Con `sinBase` por id literal, un módulo colocado por columnas salía
+       marcado CON TODO CONCEDIDO: la pantalla contradiciendo al backend. */
+    const M: ModuloPrivilegios[] = [{ id: 'm', nombre: 'M',
+      filas: [{ id: 'f', nombre: 'F' }],
+      privilegios: [
+        { id: 'f-ver', nombre: 'Ver', columna: 'consultar', fila: 'f' },
+        { id: 'f-ed', nombre: 'Editar', columna: 'modificar', fila: 'f' }] }];
+    const { container } = render(<PanelPrivilegios modulos={M} base="consultar"
+      valor={{ m: { 'f-ver': true, 'f-ed': true } }} onCambio={() => {}} abiertos={['m']} />);
+    expect(container.querySelector('.pp-sin-base'),
+      'dice que falta el base con todo concedido').toBeNull();
+  });
+
+  it('[24] y se avisa en LISTA, no solo en matriz', () => {
+    /* El diagnóstico existía y salía por un `return` antes de consultarse donde
+       hacía falta: un módulo colocado por columnas y pintado como lista se
+       vaciaba sin una sola señal. */
+    const gritar = vi.spyOn(console, 'error').mockImplementation(() => {});
+    render(<PanelPrivilegios modulos={[{ id: 'x', nombre: 'X', privilegios: [
+      { id: 'a', nombre: 'A', columna: 'consultar' }] }]} base="ver" valor={{}}
+      onCambio={() => {}} abiertos={['x']} />);
+    expect(gritar.mock.calls.flat().join(' ')).toContain('encarne el base');
+    gritar.mockRestore();
+  });
+
+  it('[27] una clave guardada que ya NO es un privilegio no se aplica', () => {
+    /* Viajaba concedida: sin interruptor, sin chip, sin contar en el «4 de 6»,
+       y aplicándose. Se dispara justo al migrar de lista a matriz, que renombra
+       los ids. El mapa COMPLETO la conserva —eso es R98—; el efecto no. */
+    const M: ModuloPrivilegios[] = [{ id: 'p', nombre: 'P', privilegios: [
+      { id: 'ver', nombre: 'Ver' }] }];
+    expect(privilegiosEfectivos(M, { p: { ver: true, borrar: true, 'borrar:doc': 'todo' } }, 'ver'))
+      .toEqual({ p: { ver: true } });
+  });
+
+  it('[27] una `clave` repartida entre filas sube el base de LAS DOS', () => {
+    /* Encender arrastraba al compañero de otra fila pero solo subía el base de
+       la fila del pulsado: el compañero se veía ENCENDIDO y no viajaba. */
+    const M: ModuloPrivilegios[] = [{ id: 'm', nombre: 'M',
+      filas: [{ id: 'a', nombre: 'A' }, { id: 'b', nombre: 'B' }],
+      privilegios: [
+        { id: 'a-ver', nombre: 'Ver A', columna: 'consultar', fila: 'a' },
+        { id: 'b-ver', nombre: 'Ver B', columna: 'consultar', fila: 'b' },
+        { id: 'a-ed', nombre: 'Ed A', columna: 'modificar', fila: 'a', clave: 'k' },
+        { id: 'b-ed', nombre: 'Ed B', columna: 'modificar', fila: 'b', clave: 'k' },
+      ] }];
+    const onCambio = vi.fn();
+    const { container } = render(<PanelPrivilegios presentacion="matriz" columnas={C2}
+      modulos={M} base="consultar" valor={{}} onCambio={onCambio} />);
+    fireEvent.click(celda(container, 'A', 1).querySelector('[role="switch"]')!);
+    const [, efectivo] = onCambio.mock.calls[0];
+    expect(efectivo.m['a-ed'], 'el pulsado no viaja').toBe(true);
+    expect(efectivo.m['b-ed'], 'el compañero se ve encendido y NO viaja').toBe(true);
+  });
+
+  it('[28] en la matriz, la fila sin base lo dice con PALABRAS', () => {
+    /* El filete de color era el único portador de «esta fila no concede nada»
+       —SC 1.4.1—, mientras la lista lleva su frase desde el R144. */
+    const M: ModuloPrivilegios[] = [{ id: 'm', nombre: 'M',
+      filas: [{ id: 'a', nombre: 'A' }],
+      privilegios: [
+        { id: 'a-ver', nombre: 'Ver A', columna: 'consultar', fila: 'a' },
+        { id: 'a-ed', nombre: 'Editar A', columna: 'modificar', fila: 'a' }] }];
+    const { container } = render(<PanelPrivilegios presentacion="matriz" columnas={C2}
+      modulos={M} base="consultar" valor={{}} onCambio={() => {}} />);
+    const th = container.querySelector('tr.pm-sin-base .pm-nom')!;
+    expect(th.textContent, 'la fila no dice por qué no concede nada')
+      .toContain('nada de esta fila se aplica');
+  });
+
+  it('[28] con varios módulos, el nombre del módulo llega al lector', () => {
+    /* `headers` SUSTITUYE la asociación por `scope`, así que dos sedes con una
+       fila «Contratos» cada una daban cuatro interruptores con dos pares de
+       nombres accesibles idénticos: la regla 25 se cumplía mirando y no sin
+       ver, que es justo lo que dice cubrir. */
+    const dos: ModuloPrivilegios[] = [
+      { id: 'lima', nombre: 'Sede Lima', filas: [{ id: 'c', nombre: 'Contratos' }],
+        privilegios: [{ id: 'l-c', nombre: 'Ver', columna: 'consultar', fila: 'c' }] },
+      { id: 'hz', nombre: 'Sede Huaraz', filas: [{ id: 'c', nombre: 'Contratos' }],
+        privilegios: [{ id: 'h-c', nombre: 'Ver', columna: 'consultar', fila: 'c' }] },
+    ];
+    const { container } = render(<PanelPrivilegios presentacion="matriz" columnas={C2}
+      modulos={dos} base={null} valor={{}} onCambio={() => {}} />);
+    const celdas = [...container.querySelectorAll('td.pm-celda')]
+      .filter((c) => c.querySelector('[role="switch"]'));
+    const nombres = celdas.map((c) => c.getAttribute('headers')!.split(' ')
+      .map((id) => container.querySelector(`#${CSS.escape(id)}`)?.textContent ?? '')
+      .join(' · '));
+    expect(new Set(nombres).size, 'dos celdas de módulos distintos se llaman igual')
+      .toBe(celdas.length);
+    expect(nombres[0]).toContain('Sede Lima');
+  });
+
+  it('[24] dos columnas con el mismo `id` se dicen', () => {
+    const gritar = vi.spyOn(console, 'error').mockImplementation(() => {});
+    render(<PanelPrivilegios presentacion="matriz"
+      columnas={[{ id: 'ver', titulo: 'Ver' }, { id: 'ver', titulo: 'Ver otra vez' }]}
+      modulos={[{ id: 'm', nombre: 'M', privilegios: [
+        { id: 'a', nombre: 'A', columna: 'ver' }] }]}
+      base={null} valor={{}} onCambio={() => {}} />);
+    expect(gritar.mock.calls.flat().join(' ')).toContain('declarada dos veces');
+    gritar.mockRestore();
+  });
+
+  it('[27] los dos PUNTOS FIJOS son UNO, y una pasada no basta', () => {
+    /* `while` → `if` en cualquiera de los dos bucles pasaba las 132 pruebas.
+       Son el código que tres auditorías tuvieron que arreglar. Cadena de tres:
+       quitar el primero tumba al segundo, y el segundo al tercero. */
+    /* LA CADENA VA AL REVÉS DEL RECORRIDO A PROPÓSITO. Declarada `a→b→c→d`,
+       una sola pasada ya la limpia entera —el bucle los visita en ese orden—,
+       así que `while`→`if` sobrevivía. Declarada al revés, cada vuelta solo
+       puede quitar uno: eso es lo que distingue un punto fijo de una pasada. */
+    const M: ModuloPrivilegios[] = [{ id: 'm', nombre: 'M', privilegios: [
+      { id: 'ver', nombre: 'Ver' },
+      { id: 'd', nombre: 'D', depende: 'c' },
+      { id: 'c', nombre: 'C', depende: 'b' },
+      { id: 'b', nombre: 'B', depende: 'a' },
+      { id: 'a', nombre: 'A', cerrado: 'nunca' },
+    ] }];
+    expect(privilegiosEfectivos(M, { m: { ver: true, a: true, b: true, c: true, d: true } }, 'ver'))
+      .toEqual({ m: { ver: true } });
+  });
+
+  it('[27] y el base encadena CON el `depende`, en la misma vuelta', () => {
+    /* Igual: el que se cae va DESPUÉS del que depende de él, así una pasada
+       no alcanza. Con `f-ver` declarado primero, el orden ya lo resolvía. */
+    const M: ModuloPrivilegios[] = [{ id: 'm', nombre: 'M',
+      filas: [{ id: 'f', nombre: 'F' }, { id: 'g', nombre: 'G' }],
+      privilegios: [
+        { id: 'g-ed', nombre: 'Ed G', columna: 'modificar', fila: 'g' },
+        { id: 'g-ver', nombre: 'Ver G', columna: 'consultar', fila: 'g', depende: 'f-ed' },
+        { id: 'f-ed', nombre: 'Ed F', columna: 'modificar', fila: 'f' },
+        { id: 'f-ver', nombre: 'Ver F', columna: 'consultar', fila: 'f', cerrado: 'nunca' },
+      ] }];
+    // «ver» se cae por `cerrado`; al caerse, «editar» pierde su base y también.
+    /* `f-ver` cae por `cerrado`; sin él, `f-ed` pierde su base; sin `f-ed`,
+       `g-ver` pierde su `depende`; y sin `g-ver`, `g-ed` pierde el suyo. */
+    expect(privilegiosEfectivos(M, { m: {
+      'f-ver': true, 'f-ed': true, 'g-ver': true, 'g-ed': true } }, 'consultar'))
+      .toEqual({ m: {} });
+  });
+
+  it('[27] los niveles de lo NO concedido no viajan', () => {
+    const M: ModuloPrivilegios[] = [{ id: 'm', nombre: 'M', privilegios: [
+      { id: 'ver', nombre: 'Ver' },
+      { id: 'editar', nombre: 'Editar', niveles: [{ id: 'doc', nombre: 'Doc',
+        opciones: [{ valor: 'a', texto: 'A' }, { valor: 'b', texto: 'B' }] }] }] }];
+    expect(privilegiosEfectivos(M, { m: { ver: true, editar: false, 'editar:doc': 'b' } }, 'ver'))
+      .toEqual({ m: { ver: true, editar: false } });
+  });
+
+  it('[16] no se promete un arrastre que `cambiar` se niega a hacer', () => {
+    /* Sin `!elBase.deshabilitado`, la etiqueta prometía encender un base que
+       R148 impide encender: el aviso y el hecho, en desacuerdo. */
+    const M: ModuloPrivilegios[] = [{ id: 'm', nombre: 'M', privilegios: [
+      { id: 'ver', nombre: 'Ver', deshabilitado: true },
+      { id: 'ed', nombre: 'Editar' }] }];
+    const { container } = render(<PanelPrivilegios modulos={M} base="ver" valor={{}}
+      onCambio={() => {}} abiertos={['m']} />);
+    expect(container.querySelector('.pp-junto'),
+      'promete encender un base que R148 impide encender').toBeNull();
+  });
+
+  it('[19] el control de la celda bloqueada tiene NOMBRE accesible', () => {
+    const { container } = render(<Matriz />);
+    const ctrl = celda(container, 'Trabajadores', 2).querySelector('[role="switch"]')!;
+    const id = ctrl.getAttribute('aria-labelledby');
+    expect(id, 'el interruptor bloqueado se quedó sin nombre').not.toBeNull();
+    const texto = id!.split(' ')
+      .map((x) => container.querySelector(`#${CSS.escape(x)}`)?.textContent ?? '').join(' ');
+    expect(texto).toContain('Trabajadores');
+    expect(texto).toContain('Crear');
   });
 });

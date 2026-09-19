@@ -6,7 +6,7 @@
 > lo que el registro dice que se hizo entonces.
 >
 > **El estado real está en [`01-estado.md`](01-estado.md)** (v1.19.0: 56 tokens
-> semánticos, 178 pares, 23 componentes, ocho candados).
+> semánticos, 178 pares, 23 componentes, ocho candados — **cifras de entonces**; hoy son 56 semánticos, 186 pares, 35 componentes y diecisiete candados).
 
 Una fase se cierra cuando **tú la apruebas viéndola**, no cuando yo digo que está
 lista. Nada avanza a la siguiente sin eso.

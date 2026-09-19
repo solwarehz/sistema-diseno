@@ -318,6 +318,13 @@ function LEEME(inventario, archivosZip) {
   const bloqueantes = pares.filter((p) => typeof p[2] === 'number').length;
   const nEscalas = Object.keys(primitivas).length;
   const nPaginas = inventario.reduce((n, g) => n + g.items.length, 0);
+  /* SE CUENTAN LOS COMPONENTES QUE DE VERDAD VIAJAN. Decia «34» a mano, ocho
+     lineas debajo del aviso que cuenta como se descubrio que el §6 llevaba
+     ochenta y siete versiones mintiendo. Una cifra a mano dentro de un
+     documento generado es la unica parte que envejece sola — y esta ya se
+     habia quedado corta. */
+  const nComponentes = readdirSync(join(RAIZ, 'componentes/src'))
+    .filter((f) => f.endsWith('.tsx')).length;
 
   // El inventario se ESCRIBE desde el índice del catálogo, nunca a mano: una
   // lista copiada envejece en cuanto se añade un elemento, y quien recibe la
@@ -454,7 +461,7 @@ proyecto. Bloquea, con fallo de build:
 | \`outline-none\` | Con teclado te pierdes |
 | Primitivas en componentes | Existen para que los semánticos elijan |
 | \`marca-amarillo\`, \`marca-celeste\` | 1,2:1 y 2,6:1 — no admiten texto |
-| \`font-thin/light/extrabold/black\` | Cuatro pesos y ninguno más |
+| \`font-thin/extralight/light/extrabold/black\` | Cuatro pesos y ninguno más. Son **cinco** las bloqueadas, \`font-extralight\` incluida: la lista decía cuatro y el candado bloquea cinco |
 | Atributo \`style\` en línea | Evade preset y candado |
 
 **4 · Integración continua.** Añade el verificador de contraste al pipeline. Sale
@@ -559,8 +566,9 @@ no en producción**. Eso es intencionado.
 ## 6 · Lo que esta entrega NO trae
 
 > **Aquí decía «Componentes de React. Todavía no existen».** Era falso desde la
-> v1.39.0 y siguió escrito **ochenta y siete versiones**: esta entrega lleva 34
-> componentes, su hoja y su contrato. Lo encontró la verificación de entrega
+> v1.39.0 y siguió escrito **ochenta y siete versiones**: esta entrega lleva
+> ${nComponentes} componentes, su hoja y su contrato — **la cifra se cuenta**,
+> porque escrita a mano ya se quedó corta una vez. Lo encontró la verificación de entrega
 > contra promesa del 2026-09-18. Es el primer documento que abre quien recibe el
 > paquete, y decía que lo más grande que hay dentro no está.
 - **Los activos de marca** (escudo y lockup) van embebidos dentro del catálogo,

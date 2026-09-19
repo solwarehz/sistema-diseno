@@ -355,7 +355,7 @@ entrega sugería. Tenían razón, y el problema de fondo no era que faltara text
 sino **quién lo escribía**.
 
 Ahora el LEEME lleva una sección «Qué cubre este sistema» construida desde el
-**mismo índice que alimenta el menú del catálogo**: 35 páginas, 15 elementos, 12
+**mismo índice que alimenta el menú del catálogo** — hoy 70 páginas; aquí decía 35, que es la cifra del día que se escribió. La cuenta viva la da `grep -c '<section class="pagina"' cascaron/index.html`. 15 elementos, 12
 secciones de manual, y las cifras de tokens y contraste leídas de `fuente.mjs`.
 Si el catálogo crece, crece el LEEME. Una lista copiada a mano habría envejecido
 en el primer elemento nuevo, y quien recibe la entrega no tiene forma de saber

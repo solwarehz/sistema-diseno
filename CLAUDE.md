@@ -19,24 +19,26 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.128.0** — **R151: el panel de privilegios se presenta como
-matriz.** Control Administrativos V2.0 fue a adoptarlo y su pantalla de permisos
-es una **rejilla**: recursos en filas, acciones en columnas. Nunca nos lo
-pidieron, y lo dicen ellos: *«habéis hecho siete cosas sobre una premisa que no
-os aclaramos»*. Entra porque **no es de su proyecto** —filas por recurso y
-columnas por acción es el patrón estándar— y porque lo que la lista no puede
-hacer no es comodidad: solo la matriz responde «**quién** puede editar», que se
-lee hacia abajo. Es el **mismo componente** con `presentacion="matriz"`, no un
-hermano: un hermano serían dos verdades sobre quién puede qué. Nace `noAplica`,
-el cuarto motivo, con motivo obligatorio.
-**Y la lección la pusieron dos auditorías adversarias antes de publicar:** «es el
-mismo código» era cierto al pie de la letra y **falso en su propósito** —la
-matriz consumía cuatro de los seis campos del cálculo y tiraba los avisos de R99
-y R149—; con `filas`, el `base` por omisión **vaciaba el módulo entero en
-silencio**, que con un backend de juego completo borra permisos que nadie
-retiró; y **«quince mutaciones en rojo» no era cobertura**: sobrevivían 23, y una
-dejaba la matriz sin poder retirar un permiso. Ocho reglas —18 a 25— y 54
-pruebas.
+**Estado actual: v1.129.0** — **garantizar entrega y promesa del R151**, y tres
+candados que salían verdes delante del defecto. Se auditó la v1.128.0 **ya
+publicada**, con los veinte pasos en verde:
+
+- **Toda la matriz estaba fuera del candado que compara las dos hojas.** Se
+  rompió `position: sticky` sólo en la hoja entregada y los **ocho** candados de
+  comparación salieron verdes. El catálogo no pinta ni un `pm-*` estático —la
+  matriz sólo existe viva—, y nadie nombró sus casos. El R142 sí lo hizo; la
+  regla 22 dice «es el patrón del R142» y repitió el anclaje sin repetir eso.
+- **`verificar-contrato` no ve una prueba apagada**: `describe.skip` dejaba 14
+  fuera y todo seguía verde.
+- **ESLint llevaba cinco versiones en rojo y no era ninguno de los veinte
+  pasos.** Ahora es el **veintiuno**. Y su guion salía verde cuando ESLint ni
+  podía ejecutarse.
+
+En el componente, cuatro formas de mover permisos sin que nadie lo viera —una
+regresión propia en `baseDe`, **dos puntos fijos que no se realimentaban** (con
+el comentario correcto escrito encima del código equivocado), claves huérfanas
+que viajaban concedidas y una `clave` entre filas que encendía sin viajar—. Tres
+reglas nuevas, 26 a 28.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
@@ -226,7 +228,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
 - **`main` sí se actualiza en este proyecto** —y solo en este—, pero **únicamente
   cuando está verificado y sin errores**. La condición no es una formalidad: es
   lo que hace que la regla sea segura, porque `main` es de donde instala el área
-  de sistemas. Antes de subir, los **veinte** pasos **en verde** y las pruebas
+  de sistemas. Antes de subir, los **veintiún** pasos **en verde** y las pruebas
   pasando. **Son exactamente los de `sistema/paquete/publicar.mjs`, y en su mismo orden**, y esta lista
   decía «dieciséis» y **le faltaba `generar-cascaron.mjs`** hasta la v1.107.0: el
   catálogo se quedaba sin regenerar y los candados que lo leen medían la versión
@@ -254,7 +256,17 @@ No las «mejores» por iniciativa propia. Están razonadas:
   node sistema/candado/verificar-omision.mjs  # el catálogo enseña lo que se ENTREGA por omisión
   node sistema/candado/verificar-iconos.mjs   # el catálogo y el producto dibujan el MISMO icono
   node sistema/candado/verificar-promesa-muerta.mjs # lo que VIAJA lo puede activar alguien
+  # y el veintiuno, DENTRO del contenedor, porque node_modules no vive aquí:
+  docker-compose exec -T ds sh -c 'cd /trabajo && sh sistema/candado/probar-con-eslint.sh'
   ```
+
+  **El de ESLint es el más joven y nació de una ausencia.** §6 dice que el
+  candado prohíbe ocho cosas «con fallo de build», y no había tal fallo: ESLint
+  no se corría en ningún paso. Al correrlo salieron **dieciocho infracciones**,
+  dieciséis de ellas desde la v1.123.0 — cinco versiones publicadas. Y su propio
+  guion **salía en verde cuando ESLint no podía ejecutarse**: contaba cero y daba
+  por bueno, que es el defecto que este archivo persigue, dentro del candado que
+  comprueba el candado.
 
   Los dos últimos faltaban de esta lista y **la memoria los contaba entre los
   ocho**: el 2026-08-10 pasaron un día entero sin correrse por eso, y al

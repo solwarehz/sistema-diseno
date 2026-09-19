@@ -145,6 +145,32 @@ if (enRojo.length) {
   problemas.push(`en rojo: ${enRojo.join(', ')} — córrelos y mira qué dicen antes de publicar`);
 }
 
+/* Y ESLINT, QUE LLEVABA CINCO VERSIONES EN ROJO SIN QUE NADIE MIRARA.
+ *
+ * `CLAUDE.md` §6 dice que el candado de ESLint prohíbe ocho cosas «con fallo de
+ * build». No había tal fallo: ESLint no era ninguno de los veinte pasos, así
+ * que la regla estaba escrita y nadie la ejecutaba. Al correrlo salieron 18
+ * infracciones, 16 de ellas desde la v1.123.0 — cinco versiones publicadas. Lo
+ * cazó una auditoría adversaria.
+ *
+ * Va DENTRO del contenedor por lo mismo que las pruebas: `node_modules` vive en
+ * un volumen con nombre y §3 prohíbe instalar en la máquina. Y el guion que se
+ * llama aquí comprueba primero que ESLint se haya EJECUTADO de verdad: contaba
+ * cero cuando no podía correr, y salía en verde sin mirar un archivo. */
+process.stdout.write('  eslint… ');
+let lintOk = false;
+try {
+  execFileSync('docker-compose',
+    ['exec', '-T', 'ds', 'sh', '-c', 'cd /trabajo && sh sistema/candado/probar-con-eslint.sh'],
+    { cwd: RAIZ, stdio: 'ignore' });
+  lintOk = true;
+} catch { lintOk = false; }
+console.log(lintOk ? 'limpio' : 'EN ROJO');
+if (!lintOk) {
+  problemas.push('eslint en rojo — córrelo y mira qué dice: '
+    + "docker-compose exec -T ds sh -c 'cd /trabajo && sh sistema/candado/probar-con-eslint.sh'");
+}
+
 /* LAS PRUEBAS TAMBIÉN, y no «acordándose». `CLAUDE.md` §8 exige los diecisiete
  * pasos en verde **y las pruebas pasando**, y lo segundo era el único requisito
  * de esta lista que dependía de que alguien se acordara — que es exactamente lo

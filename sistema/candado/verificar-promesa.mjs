@@ -89,6 +89,49 @@ const CASOS = [
   ['Celda anclada en fila alterna', [elem('table', ['tb']), elem('tbody'), elem('tr', ['tb-alt']), elem('td', ['tb-ancla', 'tb-ancla-x', 'tb-ancla-fin'])]],
   ['Cabecera anclada', [elem('table', ['tb']), elem('thead'), elem('tr'), elem('th', ['tb-th', 'tb-ancla'])]],
   ['Filtro anclado', [elem('table', ['tb']), elem('thead'), elem('tr', ['tb-fila-filtros']), elem('td', ['tb-f-celda', 'tb-ancla'])]],
+  /* R151 · LA MATRIZ DE PRIVILEGIOS, por el MISMO motivo y con la misma
+     leccion sin aprender. La regla 22 dice «es el patron del R142» y se repitio
+     el patron del anclaje SIN repetir lo unico que el R142 tuvo que hacer para
+     que este candado lo viera: nombrar sus casos. El catalogo no pinta NI UN
+     `pm-*` estatico —la matriz solo existe montada y viva—, asi que el barrido
+     no encuentra nada que comparar.
+     Se comprobo: dejando `position: sticky` roto SOLO en la hoja entregada, los
+     OCHO candados de comparacion salieron en verde y las 54 pruebas tambien.
+     Una rotura de la regla 22 viajaba a todos los productos, invisible. Lo cazo
+     una auditoria adversaria. */
+  ['Matriz de privilegios', [elem('div', ['pm-envoltura']), elem('table', ['pm'])]],
+  ['Nombre de fila anclado', [
+    elem('div', ['pm-envoltura']), elem('table', ['pm']), elem('tbody'),
+    elem('tr', ['pm-fila']), elem('th', ['pm-nom']),
+  ]],
+  ['Nombre de fila en fila sin base', [
+    elem('div', ['pm-envoltura']), elem('table', ['pm']), elem('tbody'),
+    elem('tr', ['pm-fila', 'pm-sin-base']), elem('th', ['pm-nom']),
+  ]],
+  ['Esquina de la matriz', [
+    elem('div', ['pm-envoltura']), elem('table', ['pm']), elem('thead'),
+    elem('tr'), elem('th', ['pm-esquina']),
+  ]],
+  ['Columna apartada', [
+    elem('div', ['pm-envoltura']), elem('table', ['pm']), elem('thead'),
+    elem('tr'), elem('th', ['pm-col', 'pm-col-aparte']),
+  ]],
+  ['Celda de la matriz', [
+    elem('div', ['pm-envoltura']), elem('table', ['pm']), elem('tbody'),
+    elem('tr', ['pm-fila']), elem('td', ['pm-celda']),
+  ]],
+  ['Celda no repartible', [
+    elem('div', ['pm-envoltura']), elem('table', ['pm']), elem('tbody'),
+    elem('tr', ['pm-fila']), elem('td', ['pm-celda', 'pm-no', 'pm-no-noAplica']),
+  ]],
+  ['Celda sin declarar', [
+    elem('div', ['pm-envoltura']), elem('table', ['pm']), elem('tbody'),
+    elem('tr', ['pm-fila']), elem('td', ['pm-celda', 'pm-vacia']),
+  ]],
+  ['Cabecera de módulo en la matriz', [
+    elem('div', ['pm-envoltura']), elem('table', ['pm']), elem('tbody'),
+    elem('tr', ['pm-mod']), elem('th', ['pm-mod-nom']),
+  ]],
   ['Paginación', [elem('div', ['pgn']), elem('button', ['pgn-btn'])]],
   // R102 · la fila común de las tres cargas. Va nombrada además del barrido
   // porque es la superficie de esta versión: si un día se cae del marcado, el

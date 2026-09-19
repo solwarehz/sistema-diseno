@@ -22,7 +22,25 @@ echo "  1 · el repositorio, que solo puede tener la DEUDA DECLARADA"
 # llevaba versiones sin correrse por eso. Ahora tolera exactamente esas dos y
 # falla con cualquier otra — que es lo que se quería comprobar.
 DEUDA=2
-N=$(npx eslint . 2>&1 | grep -cE 'no-restricted-syntax' || true)
+# PRIMERO: ¿SE EJECUTA SIQUIERA? Sin esto, fuera del contenedor `npx eslint`
+# muere por falta de node_modules, `grep -c` cuenta CERO y el paso salia EN
+# VERDE sin haber mirado un solo archivo. Es el defecto que este repositorio
+# persigue —un candado que pasa mirando nada— dentro del candado que comprueba
+# el candado. Lo cazo una auditoria: en el host decia 0 y dentro del contenedor
+# habia 18.
+SALIDA_LINT=$(npx eslint . 2>&1) || true
+if ! printf '%s' "$SALIDA_LINT" | grep -qE 'problem|no-restricted-syntax|^\s*$'; then
+  echo "      ✗ ESLint no llego a ejecutarse:"
+  printf '%s\n' "$SALIDA_LINT" | head -5
+  echo "      (corre esto DENTRO del contenedor: docker-compose exec -T ds sh -c 'cd /trabajo && sh sistema/candado/probar-con-eslint.sh')"
+  exit 1
+fi
+if ! printf '%s' "$SALIDA_LINT" | grep -q 'problem' && [ -n "$SALIDA_LINT" ]; then
+  echo "      ✗ ESLint devolvio algo que no parece su informe:"
+  printf '%s\n' "$SALIDA_LINT" | head -5
+  exit 1
+fi
+N=$(printf '%s' "$SALIDA_LINT" | grep -cE 'no-restricted-syntax' || true)
 if [ "$N" -le "$DEUDA" ]; then
   echo "      ✓ $N infracción(es), la deuda declarada"
 else
