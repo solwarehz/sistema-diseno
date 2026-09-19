@@ -208,7 +208,16 @@ process.stdout.write('  pruebas… ');
 const correrPruebas = () => {
   try {
     const salida = execFileSync('docker-compose',
-      ['exec', '-T', 'ds', 'sh', '-c', 'ulimit -c 0; cd componentes && npx vitest run 2>&1'],
+            /* `--no-file-parallelism` NO es una preferencia de velocidad: es lo que
+         hace este paso DETERMINISTA. Corriendo en paralelo, esta maquina se
+         queda sin memoria y mata workers — paso tres veces el 2026-09-19, una
+         de ellas AQUI: el publicador reporto «las pruebas no pasan» y al
+         correrlas a continuacion salieron 1173 en verde con codigo 0. Un
+         publicador que rechaza una entrega buena de forma intermitente es peor
+         que uno lento: enseña a reintentar hasta que salga, y eso es lo
+         contrario de una comprobacion. */
+      ['exec', '-T', 'ds', 'sh', '-c',
+        'ulimit -c 0; cd componentes && npx vitest run --no-file-parallelism 2>&1'],
       { cwd: RAIZ, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
     return { ok: true, salida };
   } catch (e) {
