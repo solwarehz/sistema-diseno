@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.131.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.132.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -87,7 +87,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.131.0; }
+:root{ --mmi-componentes: 1.132.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -917,7 +917,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   font-family: 'IBM Plex Mono', monospace; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TABLA DE DATOS — 90 reglas · clases .tb-*
+   TABLA DE DATOS — 93 reglas · clases .tb-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tabla-simple, .tb-sub{ display: block; overflow-x: auto; }
@@ -966,6 +966,10 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .tb tbody tr.tb-alt{ background: var(--fondo-fila-alt); }
 .tb tbody tr:hover{ background: var(--fondo-fila-hover); box-shadow: inset 3px 0 0 var(--accion); }
 .tb-ancla{ position: sticky; left: 0; z-index: 1; background: var(--fondo-tarjeta); }
+.tb-totales{ background: var(--fondo-encabezado); }
+.tb-totales td{ border-top: 2px solid var(--borde); background: var(--fondo-encabezado);
+  font-weight: 600; }
+.tb-totales .tb-ancla{ background: var(--fondo-encabezado); }
 .tb-ancla-x{ left: var(--tb-indice); }
 .tb-th-indice.tb-ancla, .tb-indice.tb-ancla{
   min-width: var(--tb-indice); max-width: var(--tb-indice); overflow: hidden; }

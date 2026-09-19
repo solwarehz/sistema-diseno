@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 18 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.131.0** — móvil primero pasa a política, y
-la matriz cae a lista cuando no cabe
+**Versión del sistema:** MMI-DS **v1.132.0** — la fila de totales es de la
+tabla, y nace el candado que compila lo que el catálogo invita a copiar
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -60,10 +60,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · **1049 reglas de 1568** · **755 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **62 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.131.0.zip` · **60 archivos** · **1.465 KB** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.132.0.zip` · **60 archivos** · **1.465 KB** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.131.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.132.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — el **penúltimo** de los veintiún pasos · **178 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -86,7 +86,56 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.131.0), con detalle
+### Lo de hoy (v1.132.0), con detalle
+
+**R156 · la fila de totales es DE la tabla.** Va en `tfoot`, y esa decisión hace
+el resto sola: no la toca el orden, ni el filtro, ni la paginación **no porque se
+le haga una excepción, sino porque no está donde se aplican**, y un lector la
+anuncia como resumen sin que nadie se lo explique.
+
+> La frase con la que el dueño cortó la solución provisional vale como regla:
+> *«colocarlo dentro de la tabla pero no como una fila de la tabla es romper el
+> componente tabla»*.
+
+No es de una pantalla: historial de contratos, los tres reportes de asistencia y
+pagos la usan igual — **es lo que permite ver que las filas cuadran sin
+repasarlas una a una**. La aporta la pantalla, porque un «1 a 6 m 12 d» no es la
+suma de una columna sino una cuenta de calendario.
+
+**Y nace `verificar-copia`, el candado que faltaba.** `CLAUDE.md` §7 regla 3 dice
+que lo único que se copia de un componente compartido es «la importación y las
+props», y **esa superficie no la miraba nadie**: los diecisiete comparan CSS,
+elementos, atributos, cascada e iconos, y ninguno pasa un compilador. Se declaró
+abierto **tres versiones seguidas**.
+
+Al escribirlo salió el daño acumulado: los **dieciocho** bloques importaban de
+`@ae/sistema`, **un paquete que no existe**, y **diecisiete de dieciocho** no
+compilan. El import ya está arreglado —era lo que hacía que ninguno resolviera— y
+el resto entra como deuda declarada que **obliga a podar**.
+
+Y algo que ninguna auditoría pudo ver, porque chocaba con lo mismo: **`tsc` no
+emite ni un error de tipos si algún archivo no parsea**, así que dos bloques mal
+envueltos tapaban los errores de los otros dieciséis. El candado salía casi verde
+escondiendo justo lo que venía a mirar. Ahora compila uno a uno.
+
+**La política de móvil primero estaba mal escrita**, y eso es peor que no
+tenerla. Mandaba `title` como rescate de un texto recortado, y
+`memoria/06-cobertura.md` (C-08) lleva versiones diciendo que *«no se ve en móvil
+ni con teclado»*. Prescribía para el teléfono un remedio registrado como
+inservible en el teléfono. Ahora dice el orden: **primero no recortar**; si hay
+que recortar, el texto **alcanzable sin puntero**.
+
+**Y 360 px entra en `verificar-promesa`, lo primero de la lista.** Empezaba en
+390: el ancho que la política exige era el único que no miraba ningún candado, y
+la lista iba de ancho a estrecho — escritorio primero hasta en el verificador.
+
+**Se restaura una regla obligatoria que se había borrado sin querer** hace dos
+versiones: al reescribir la regla 21 del panel, el reemplazo cogió la primera
+coincidencia del archivo, que era la **regla 21 de `TablaDatos`**. Se perdió sin
+que nada protestara, porque `verificar-contrato` sólo mira que el número tenga
+una prueba detrás y el número seguía ahí.
+
+### Lo de la v1.131.0, con detalle
 
 **Móvil primero deja de ser una intención y pasa a ser política**, fijada por el
 responsable el 19-09. Está en `CLAUDE.md` §4bis y en la política de creación §5,

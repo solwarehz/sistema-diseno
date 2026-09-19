@@ -253,7 +253,12 @@ const CASOS = [
 ];
 
 /** Los anchos donde se compara. Una regla puede viajar y su @media no. */
-const ANCHOS = [1440, 1024, 900, 700, 390];
+/* 360 PRIMERO, Y NO ES COSMETICA. El ancho minimo de la politica de movil
+   primero es 360 y esta lista empezaba en 390: **el ancho que la politica exige
+   era el unico que no miraba ningun candado del sistema**. Lo cazo una
+   auditoria. Y va PRIMERO porque la lista iba de ancho a estrecho — escritorio
+   primero hasta en el verificador. */
+const ANCHOS = [360, 390, 700, 900, 1024, 1440];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // LOS CASOS QUE NADIE ELIGE

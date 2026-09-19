@@ -52,7 +52,7 @@ export { Dialogo, type DialogoProps } from './Dialogo';
 export { Icono, NOMBRES_ICONO, type NombreIcono, type TamanoIcono, type IconoProps, TAMANOS_ICONO } from './Icono';
 export { CabeceraPantalla, type CabeceraPantallaProps } from './CabeceraPantalla';
 export { PanelBarra, type ItemPanel, type PanelBarraProps } from './PanelBarra';
-export { PanelPrivilegios, resumirPrivilegios, privilegiosEfectivos, claveNivel, comoNoRepartible, baseDe, baseSinResolver, mismosPermisos, clavesEfectivas,
+export { PanelPrivilegios, resumirPrivilegios, privilegiosEfectivos, claveNivel, comoNoRepartible, baseDe, baseSinResolver, mismosPermisos, clavesEfectivas, textoDe,
   type PanelPrivilegiosProps, type Privilegio, type NivelPrivilegio, type NoRepartible,
   type GrupoPrivilegios, type ModuloPrivilegios, type ValorPrivilegios,
   type ColumnaPrivilegios } from './PanelPrivilegios';

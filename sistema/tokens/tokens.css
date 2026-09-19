@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.131.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.132.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -27,7 +27,7 @@
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.131.0;
+  --mmi-version: 1.132.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;

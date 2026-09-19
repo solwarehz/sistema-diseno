@@ -129,6 +129,32 @@ export type TablaDatosProps<T> = {
    */
   anclarColumnas?: 0 | 1;
   /**
+   * R156 · **Fila de totales, al pie.** La clave es la de la columna; lo que no
+   * se declare se pinta vacío.
+   *
+   * **No entra en el orden, ni en los filtros, ni en la paginación**: resume
+   * TODAS las filas, no la página que se está viendo. Con tres páginas de diez,
+   * la fila es la misma en las tres.
+   *
+   * **La aporta la pantalla, no la calcula el componente.** Quien sabe qué
+   * suma es quien tiene los datos: un «1 a 6 m 12 d» de tiempo laborado no es
+   * la suma de una columna, es una cuenta de calendario. El componente la pinta
+   * alineada con sus columnas y se aparta.
+   *
+   * POR QUÉ ES UNA FILA Y NO UN BLOQUE DEBAJO. Lo pidió Control Administrativos
+   * tras cortarlo el dueño con una frase que vale como regla: *«colocarlo
+   * dentro de la tabla pero no como una fila de la tabla es romper el
+   * componente tabla»*. Dentro del cuadro y sin alinear con las columnas
+   * **parece** de la tabla sin serlo; fuera del cuadro no rompe nada pero queda
+   * suelto del dato que resume. Va en `<tfoot>`, que es donde el HTML dice que
+   * va un resumen de tabla, y por eso un lector lo anuncia como lo que es.
+   *
+   * Si una columna congelada (`anclarColumnas`) coincide con una celda de
+   * totales, esa celda **se congela con ella**: si no, el total se despegaría
+   * de su columna justo al desplazar, que es cuando hace falta.
+   */
+  totales?: Partial<Record<string, React.ReactNode>>;
+  /**
    * R101 · El orden con el que arranca la tabla.
    *
    * Si no se declara, en modo navegador arranca ordenada **por la primera
@@ -200,6 +226,7 @@ export function TablaDatos<T>({
   columnasSiempreVisibles: siempreVisiblesFuera,
   columnasFijas: columnasFijasFuera,
   anclarColumnas = 0,
+  totales,
   ordenInicial,
   ocultas: ocultasFuera,
   onOcultas,
@@ -742,6 +769,31 @@ export function TablaDatos<T>({
             </tr>
           )}
         </tbody>
+        {/* R156 · LOS TOTALES VAN EN `tfoot`, que es donde el HTML dice que va
+            el resumen de una tabla: así un lector lo anuncia como resumen y no
+            como una fila más, y no hay que explicarle a nadie que esa fila es
+            distinta. Fuera del `tbody` no la toca el orden, ni el filtro, ni la
+            paginación — no porque se le haga una excepción, sino porque no está
+            donde se aplican. */}
+        {totales && visiblesCols.some((c) => totales[c.clave] !== undefined) && (
+          <tfoot className="tb-totales">
+            <tr>
+              {numerada && (
+                <td className={clase([
+                  'tb-indice', anclada && 'tb-ancla', indiceEsFin && 'tb-ancla-fin'])} />
+              )}
+              {visiblesCols.map((col) => (
+                <td key={col.clave} className={clase([
+                  col.numerica && 'tb-num',
+                  esLaAnclada(col.clave) && 'tb-ancla',
+                  esLaAnclada(col.clave) && numerada && 'tb-ancla-x',
+                  esLaAnclada(col.clave) && 'tb-ancla-fin'])}>
+                  {totales[col.clave]}
+                </td>
+              ))}
+            </tr>
+          </tfoot>
+        )}
       </table>
       </div>
 

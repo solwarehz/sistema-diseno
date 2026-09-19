@@ -1176,7 +1176,7 @@ estados</strong>: comparalos de ancho. Sin <code>textoOcupado</code> el giro se 
 <h3 class="sub-seccion">Código</h3>
 ${verCodigo(
   'Uso del componente',
-  `import { Boton } from '@ae/sistema';
+  `import { Boton } from 'sistema-diseno-ae/componentes';
 
 <Boton variante="principal">Guardar</Boton>
 <Boton variante="secundaria">Columnas</Boton>
@@ -1302,7 +1302,7 @@ contextual, el lector de pantalla y si «abrir en pestaña nueva» funciona.</p>
 <h3 class="sub-seccion">Código</h3>
 ${verCodigo(
   'Uso del componente',
-  `import { Enlace } from '@ae/sistema';
+  `import { Enlace } from 'sistema-diseno-ae/componentes';
 
 <Enlace href="/estudiantes/71234567">Ver detalle</Enlace>
 <Enlace href="/calendario" enTexto>calendario académico</Enlace>
@@ -1443,7 +1443,7 @@ Para un dato que la persona debe <em>ver</em> pero no cambiar, va <strong>solo l
 <h3 class="sub-seccion">Código</h3>
 ${verCodigo(
   'Uso del componente',
-  `import { CampoTexto } from '@ae/sistema';
+  `import { CampoTexto } from 'sistema-diseno-ae/componentes';
 
 <CampoTexto
   etiqueta="Documento de identidad"
@@ -2563,7 +2563,7 @@ está en ninguna lista.</div>
 <h3 class="sub-seccion">Código</h3>
 ${verCodigo(
   'Uso del componente',
-  `import { Selector } from '@ae/sistema';
+  `import { Selector } from 'sistema-diseno-ae/componentes';
 
 // 3 a 8 opciones
 <Selector etiqueta="Nivel" opciones={niveles} />
@@ -2822,7 +2822,7 @@ completo se lee como algo pulsable, y este componente no se pulsa.</p>
 <h3 class="sub-seccion">Código</h3>
 ${verCodigo(
   'Uso del componente',
-  `import { Chip } from '@ae/sistema';
+  `import { Chip } from 'sistema-diseno-ae/componentes';
 
 <Chip estado="exito">Activo</Chip>
 <Chip estado="aviso">Parcial</Chip>
@@ -3034,7 +3034,7 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 <h3 class="sub-seccion">Código</h3>
 ${verCodigo(
   'Tarjeta de persona',
-  `import { TarjetaPersona } from '@ae/sistema';
+  `import { TarjetaPersona } from 'sistema-diseno-ae/componentes';
 
 <TarjetaPersona
   nombre="Álvarez Ponce, Rosa"
@@ -3047,7 +3047,7 @@ ${verCodigo(
 <div style="height:10px"></div>
 ${verCodigo(
   'Tarjeta normal',
-  `import { Tarjeta } from '@ae/sistema';
+  `import { Tarjeta } from 'sistema-diseno-ae/componentes';
 
 <Tarjeta titulo="Resumen del mes">
   <p>Contenido</p>
@@ -3376,7 +3376,7 @@ ${verCodigo(
   // Lo encontro el diseno del R142 el 2026-09-16, y es el mismo defecto que la
   // v1.122.0 cerro en RangoFecha: ningun candado mira el TEXTO del bloque de
   // codigo, solo el marcado y las clases. Queda declarado.
-  `import { TablaDatos, Enlace } from '@ae/sistema';
+  `import { TablaDatos, Enlace } from 'sistema-diseno-ae/componentes';
 
 <TablaDatos
   titulo="Personal"               // obligatorio: nombra la tabla para el lector
@@ -3504,7 +3504,7 @@ cualquier otro listado: no tiene paginación propia.</p>
 <h3 class="sub-seccion">Código</h3>
 ${verCodigo(
   'Uso del componente',
-  `import { Paginacion } from '@ae/sistema';
+  `import { Paginacion } from 'sistema-diseno-ae/componentes';
 
 <Paginacion
   total={1240}
@@ -3752,7 +3752,7 @@ antes que la causa técnica.</p>
 <h3 class="sub-seccion">Código</h3>
 ${verCodigo(
   'Uso del componente',
-  `import { EstadoPantalla } from '@ae/sistema';
+  `import { EstadoPantalla } from 'sistema-diseno-ae/componentes';
 
 // El componente elige el estado; la pantalla no lo decide a mano
 <EstadoPantalla
@@ -3875,7 +3875,7 @@ engaña: la persona lo mueve, se va, y el cambio no se aplicó.</p>
 <h3 class="sub-seccion">Código</h3>
 ${verCodigo(
   'Uso del componente',
-  `import { Interruptor } from '@ae/sistema';
+  `import { Interruptor } from 'sistema-diseno-ae/componentes';
 
 <Interruptor
   etiqueta="Notificar tardanzas por correo"
@@ -3976,7 +3976,7 @@ de las de abajo.</p>
 <h3 class="sub-seccion">Código</h3>
 ${verCodigo(
   'Uso del componente',
-  `import { SeleccionMultiple, GrupoOpcion } from '@ae/sistema';
+  `import { SeleccionMultiple, GrupoOpcion } from 'sistema-diseno-ae/componentes';
 
 <SeleccionMultiple
   leyenda="Aspectos observados en la visita de aula"
@@ -4133,7 +4133,7 @@ mismo</strong>. Eso casi nunca cierra el campo entero: cierra <strong>un nivel</
 <h3 class="sub-seccion">Código</h3>
 ${verCodigo(
   'Uso del componente',
-  `import { Segmentado } from '@ae/sistema';
+  `import { Segmentado } from 'sistema-diseno-ae/componentes';
 
 <Segmentado
   etiqueta="Documento"
@@ -4406,7 +4406,7 @@ ${verCodigo(
   // Y lo irónico es lo util: el catalogo llevaba versiones prometiendo un
   // \`valor\` CONTROLADO que el componente no daba. El R139 no anade API nueva
   // — cierra la que esta pagina ya habia publicado.
-  `import { RangoFecha, atajosDeDias } from '@ae/sistema';
+  `import { RangoFecha, atajosDeDias } from 'sistema-diseno-ae/componentes';
 
 // Sin \`desde\`/\`hasta\` se gobierna solo.
 <RangoFecha titulo="Rango de fechas" />
@@ -4515,7 +4515,7 @@ no aportan nada sobre una barra.</p>
 <h3 class="sub-seccion">Código</h3>
 ${verCodigo(
   'Uso del componente',
-  `import { Progreso, ProgresoPasos } from '@ae/sistema';
+  `import { Progreso, ProgresoPasos } from 'sistema-diseno-ae/componentes';
 
 <Progreso
   etiqueta="Importando trabajadores"
@@ -4653,7 +4653,7 @@ dato</strong>; el detalle vive en la pantalla, no en algo que se va en cuatro se
 <h3 class="sub-seccion">Código</h3>
 ${verCodigo(
   'Uso del componente',
-  `import { avisar } from '@ae/sistema';
+  `import { avisar } from 'sistema-diseno-ae/componentes';
 
 avisar.exito('Se guardó la asistencia de marzo');
 avisar.info('Se exportaron 38 filas a CSV');
@@ -4778,7 +4778,7 @@ se pliega y el contenido vuelve a subir.</p>
 <h3 class="sub-seccion">Código</h3>
 ${verCodigo(
   'Uso del componente',
-  `import { useConfirmar } from '@ae/sistema';
+  `import { useConfirmar } from 'sistema-diseno-ae/componentes';
 
 const confirmar = useConfirmar();
 
@@ -8404,8 +8404,8 @@ pantalla.</p>
 <h3 class="sub-seccion">Copia esto</h3>
 <p class="seccion-sub">Lo que se copia es <strong>la importación y las props</strong>, nunca el
 marcado interno. Este bloque compila tal cual.</p>
-<pre class="cod-pre"><code>import { PanelPrivilegios, privilegiosEfectivos, clavesEfectivas } from '@ae/sistema';
-import type { ColumnaPrivilegios, ModuloPrivilegios } from '@ae/sistema';
+<pre class="cod-pre"><code>import { PanelPrivilegios, privilegiosEfectivos, clavesEfectivas } from 'sistema-diseno-ae/componentes';
+import type { ColumnaPrivilegios, ModuloPrivilegios } from 'sistema-diseno-ae/componentes';
 
 // Las columnas las declara EL PANEL, no los módulos: una matriz con columnas
 // distintas por fila no es una matriz, es una lista con más huecos.
@@ -10760,6 +10760,20 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    tb-ancla-x.
    ─────────────────────────────────────────────────────────────────────────── */
 .tb-ancla { position: sticky; left: 0; z-index: 1; background: var(--fondo-tarjeta); }
+
+/* R156 · LA FILA DE TOTALES. Va en «tfoot», asi que ni el orden ni el filtro ni
+   la paginacion la tocan — no por una excepcion, sino porque no esta donde se
+   aplican. Se separa con un filete y se asienta con el fondo del encabezado:
+   tiene que leerse como CIERRE de la tabla y no como una fila mas de datos.
+   Lo pidio Control Administrativos tras cortarlo el dueño: «colocarlo dentro de
+   la tabla pero no como una fila de la tabla es romper el componente tabla». */
+.tb-totales { background: var(--fondo-encabezado); }
+.tb-totales td { border-top: 2px solid var(--borde); background: var(--fondo-encabezado);
+  font-weight: 600; }
+/* Y SU CELDA ANCLADA SE CONGELA CON LA COLUMNA, con el fondo del pie y no el de
+   la tarjeta: si heredara el de .tb-ancla se veria una celda blanca en mitad
+   de una fila gris justo al desplazar, que es cuando se mira. */
+.tb-totales .tb-ancla { background: var(--fondo-encabezado); }
 .tb-ancla-x { left: var(--tb-indice); }
 /* LA RENDIJA DE 7 px, MEDIDA EN CHROME SOBRE EL CATALOGO. Con 26 columnas la
    tabla es mas ancha que su contenedor, y ahi width en una celda de tabla ES

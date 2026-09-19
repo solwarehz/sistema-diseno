@@ -131,9 +131,17 @@ hay sitio. Tres consecuencias que no se negocian:
    pintado.
 2. **Nada se lee deslizando en horizontal.** Si a 360 px hay que arrastrar para
    leer algo que el componente tiene que decir, el componente está mal.
-3. **Ningún texto recortado sin forma de leerlo entero.** Los puntos suspensivos
-   son presentación, no información: el nombre completo va en `title` y al
-   alcance de un lector.
+3. **Ningún texto recortado sin forma de leerlo entero, y `title` NO basta en un
+   teléfono.** Los puntos suspensivos son presentación, no información.
+   **Primero: no recortar** — envolver en dos líneas, apilar, o dar una
+   presentación estrecha. Si hay que recortar, el texto entero tiene que estar
+   **alcanzable sin puntero**: al tocar, en una fila de detalle, o en el propio
+   contenido. `title` es el suelo para ratón y lector; en una pantalla táctil no
+   hay puntero que pasar por encima.
+   Esta regla decía «va en `title`» y una auditoría la cazó: mandaba como
+   rescate lo que `memoria/06-cobertura.md` (C-08) ya tenía escrito que **no
+   funciona en móvil ni con teclado**. La política prescribía para el teléfono
+   un remedio registrado como inservible en el teléfono.
 
 **Se verifica midiendo en un navegador, a 360 px como mínimo.** «Se ve bien» no
 es una medida — este repositorio ya tiene escrito que *mirar no es medir*.

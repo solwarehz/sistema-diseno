@@ -19,19 +19,27 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.131.0** — **móvil primero pasa a política del sistema**
-(§4bis), y la matriz de privilegios **cae a lista bajo 640 px de contenedor**.
+**Estado actual: v1.132.0** — **R156: la fila de totales es DE la tabla**, y
+nace el candado que compila lo que el catálogo invita a copiar.
 
-Hizo falta escribirla porque el sistema la estaba incumpliendo sin darse cuenta:
-el responsive de la matriz quedó fuera del R151 porque el equipo lo dejó como
-*deseable*, se declaró abierto dos veces y **nunca se midió**. Al medirlo, a
-360 px la tabla ocupaba **687 px**, seguía siendo tabla, y el nombre de fila
-recortado **no estaba en ninguna parte** — ni a la vista, ni en un globito, ni
-para un lector. Ese último detalle lo vio el equipo y nosotros no.
+La fila va en `tfoot`, y esa decisión hace el resto sola: no la toca el orden, ni
+el filtro, ni la paginación **no por una excepción, sino porque no está donde se
+aplican**. Lo pidió el equipo tras cortarlo el dueño con una frase que vale como
+regla: *«colocarlo dentro de la tabla pero no como una fila de la tabla es romper
+el componente tabla»*.
 
-Se mide **el contenedor y no la ventana**, se parte de lo estrecho, y **no hay
-prop para desactivarlo**: una política del sistema no es un requisito de
-producto que se pueda no pedir.
+**Y nace `verificar-copia`**, que compila los bloques de «copia esto». §7 regla 3
+dice que lo único que se copia es «la importación y las props», y esa superficie
+**no la miraba nadie** — se declaró abierta tres versiones. Al escribirlo: los
+dieciocho bloques importaban de un paquete **que no existe**, y diecisiete no
+compilan. El import ya está arreglado; el resto entra como deuda declarada que
+obliga a podar.
+
+**La política de móvil primero estaba mal escrita**, que es peor que no tenerla:
+mandaba `title` como rescate, y este repositorio ya tenía escrito que *«no se ve
+en móvil ni con teclado»*. Ahora dice el orden: primero no recortar; si hay que
+recortar, alcanzable **sin puntero**. Y 360 px entra en `verificar-promesa` — el
+ancho que la política exige era el único que no miraba ningún candado.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
@@ -144,9 +152,19 @@ Qué significa, en concreto y sin margen:
 - **Nada obliga a deslizar en horizontal para leer lo que la pantalla tiene que
   decir.** Si a un ancho de teléfono hay que arrastrar para ver una columna,
   eso es un defecto del componente, no del teléfono.
-- **Ningún texto queda cortado sin forma de leerlo entero.** El recorte con
-  puntos suspensivos es presentación; si el nombre completo no está en `title`
-  ni al alcance de un lector, la información **no está**.
+- **Ningún texto queda cortado sin forma de leerlo entero — y `title` NO basta
+  en un teléfono.** El recorte con puntos suspensivos es presentación; si el
+  texto completo no se puede recuperar, la información **no está**.
+  **Esta regla se escribió mal la primera vez** y lo cazó una auditoría: decía
+  «si no está en `title`… no está», mandando como rescate justo lo que este
+  repositorio ya tenía registrado como inservible ahí —`memoria/06-cobertura.md`,
+  ficha C-08: *«Hoy solo hay `title`, que no se ve en móvil ni con teclado»*—.
+  En una pantalla táctil no hay puntero que pasar por encima.
+  Así que el orden es éste: **primero, no recortar** —envolver en dos líneas,
+  apilar, dar una presentación estrecha—; si hay que recortar, el texto entero
+  tiene que estar **alcanzable sin puntero**: al tocar, en una fila de detalle o
+  en el propio contenido. `title` es el suelo para ratón y lector, **no el
+  techo**, y por sí solo no cumple esta política.
 - **Se verifica midiendo, no mirando.** A 360 px como mínimo, y en navegador.
 
 Lo que la hizo falta escribir: el R151 trajo la matriz de privilegios y su
@@ -254,7 +272,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
 - **`main` sí se actualiza en este proyecto** —y solo en este—, pero **únicamente
   cuando está verificado y sin errores**. La condición no es una formalidad: es
   lo que hace que la regla sea segura, porque `main` es de donde instala el área
-  de sistemas. Antes de subir, los **veintiún** pasos **en verde** y las pruebas
+  de sistemas. Antes de subir, los **veintidós** pasos **en verde** y las pruebas
   pasando. **Son exactamente los de `sistema/paquete/publicar.mjs`, y en su mismo orden**, y esta lista
   decía «dieciséis» y **le faltaba `generar-cascaron.mjs`** hasta la v1.107.0: el
   catálogo se quedaba sin regenerar y los candados que lo leen medían la versión
@@ -282,6 +300,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
   node sistema/candado/verificar-omision.mjs  # el catálogo enseña lo que se ENTREGA por omisión
   node sistema/candado/verificar-iconos.mjs   # el catálogo y el producto dibujan el MISMO icono
   node sistema/candado/verificar-promesa-muerta.mjs # lo que VIAJA lo puede activar alguien
+  node sistema/candado/verificar-copia.mjs    # lo que se INVITA A COPIAR compila
   # y el veintiuno, DENTRO del contenedor, porque node_modules no vive aquí:
   docker-compose exec -T ds sh -c 'cd /trabajo && sh sistema/candado/probar-con-eslint.sh'
   ```

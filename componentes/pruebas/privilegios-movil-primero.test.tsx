@@ -12,7 +12,7 @@
  */
 import { render, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { PanelPrivilegios, type ColumnaPrivilegios,
+import { PanelPrivilegios, privilegiosEfectivos, type ColumnaPrivilegios,
   type ModuloPrivilegios } from '../src/PanelPrivilegios';
 
 const COLS: ColumnaPrivilegios[] = [
@@ -150,5 +150,119 @@ describe('[33] Móvil primero · la matriz cae a lista cuando no cabe', () => {
     expect(largo.getAttribute('title'),
       'el nombre cortado no se puede leer entero de ninguna forma')
       .toBe('Fijar sobre qué sedes alcanza un cargo del área');
+  });
+});
+
+describe('R153 · lo que encontró la auditoría sobre la caída a lista', () => {
+  const CONFILAS: ModuloPrivilegios[] = [{ id: 'personal', nombre: 'Personal',
+    filas: [{ id: 'trab', nombre: 'Trabajadores' }, { id: 'cont', nombre: 'Contratos' }],
+    privilegios: [
+      { id: 't-ver', nombre: 'Ver trabajadores', columna: 'ver', fila: 'trab' },
+      { id: 't-ed', nombre: 'Editar trabajador', columna: 'editar', fila: 'trab' },
+      { id: 'c-ver', nombre: 'Ver contratos', columna: 'ver', fila: 'cont' },
+      { id: 'c-ed', nombre: 'Editar contrato', columna: 'editar', fila: 'cont' },
+    ] }];
+  /* A «Contratos» le falta su «ver», a «Trabajadores» no. */
+  const MEDIAS = { personal: { 't-ver': true, 'c-ed': true } };
+
+  it('[23] en la LISTA, el carril marca la fila que le falta — y el aviso va bajo SU base', () => {
+    /* Se calculaba del PRIMER privilegio del módulo, así que con `filas` el
+       carril salía o no según cuál estuviera declarada primero. Medido: la
+       lista no marcaba NADA y enseñaba «Editar contrato» encendido con ese
+       permiso FUERA de lo efectivo — el borrado silencioso del R150, reabierto
+       por la caída a lista. */
+    conAncho(360);
+    const { container } = render(<PanelPrivilegios modulos={CONFILAS} base="ver"
+      valor={MEDIAS} onCambio={() => {}} abiertos={['personal']} />);
+    expect(container.querySelector('.pp-sin-base'), 'no se marca nada').not.toBeNull();
+    const avisos = container.querySelectorAll('.pp-aviso');
+    expect(avisos, 'el aviso falta, o sale repetido').toHaveLength(1);
+    /* Y va DEBAJO del base que falta, no al final: regla 12. */
+    const hijos = [...container.querySelectorAll('.pp-mod-cuerpo > *')];
+    const iAviso = hijos.findIndex((x) => x.classList.contains('pp-aviso'));
+    expect(hijos[iAviso - 1].textContent, 'el aviso no cuelga del base que falta')
+      .toContain('Ver contratos');
+  });
+
+  it('[4] y el conteo NO contradice a lo efectivo', () => {
+    /* Decía «2 de 4» con un solo privilegio efectivo. Lo que se ve sin abrir
+       —que es lo que la regla 4 promete— era falso. */
+    conAncho(360);
+    const { container } = render(<PanelPrivilegios modulos={CONFILAS} base="ver"
+      valor={MEDIAS} onCambio={() => {}} abiertos={['personal']} />);
+    const efectivos = Object.values(privilegiosEfectivos(CONFILAS, MEDIAS, 'ver').personal)
+      .filter((v) => v === true).length;
+    expect(container.querySelector('.pp-conteo')!.textContent)
+      .toBe(`${efectivos} de 4`);
+  });
+
+  it('[12] el base de cada fila se marca como base, no sólo el del módulo', () => {
+    conAncho(360);
+    const { container } = render(<PanelPrivilegios modulos={CONFILAS} base="ver"
+      valor={MEDIAS} onCambio={() => {}} abiertos={['personal']} />);
+    expect(container.querySelectorAll('.pp-priv-base'),
+      'con dos filas hay dos bases, uno por recurso').toHaveLength(2);
+  });
+
+  it('[28] con varios módulos, el interruptor se LLAMA distinto', () => {
+    /* `headers` asocia la celda para recorrer la tabla, pero no entra en el
+       nombre accesible del botón: dos sedes con una fila «Contratos» daban dos
+       interruptores llamados exactamente igual. La regla 28 daba esto por
+       cerrado y sólo lo había arreglado en `headers`. */
+    conAncho(1200);
+    const dos: ModuloPrivilegios[] = [
+      { id: 'n', nombre: 'Sede Norte', filas: [{ id: 'c', nombre: 'Contratos' }],
+        privilegios: [{ id: 'n-e', nombre: 'Editar', columna: 'editar', fila: 'c' }] },
+      { id: 's', nombre: 'Sede Sur', filas: [{ id: 'c', nombre: 'Contratos' }],
+        privilegios: [{ id: 's-e', nombre: 'Editar', columna: 'editar', fila: 'c' }] },
+    ];
+    const { container } = render(<PanelPrivilegios presentacion="matriz" columnas={COLS}
+      modulos={dos} base={null} valor={{}} onCambio={() => {}} />);
+    const nombres = [...container.querySelectorAll('[role="switch"]')].map((sw) => {
+      const id = sw.getAttribute('aria-labelledby')!;
+      return id.split(' ').map((x) => container.querySelector(`#${CSS.escape(x)}`)?.textContent
+        ?? '').join(' ');
+    });
+    expect(new Set(nombres).size, 'dos interruptores de módulos distintos se llaman igual')
+      .toBe(nombres.length);
+    expect(nombres[0]).toContain('Sede Norte');
+  });
+
+  it('[33] el `title` del nombre de fila vale también con nombre con formato', () => {
+    /* `typeof n === "string"` dejaba fuera el caso más normal: el nombre con
+       formato. Volvía a salir `null` y el nombre recortado dejaba de poder
+       leerse — el defecto del R153 por la puerta de al lado. */
+    conAncho(1200);
+    const conFormato: ModuloPrivilegios[] = [{ id: 'm', nombre: 'M',
+      filas: [{ id: 'f', nombre: <b>Fijar sobre qué sedes alcanza un cargo</b> }],
+      privilegios: [{ id: 'p', nombre: 'Ver', columna: 'ver', fila: 'f' }] }];
+    const { container } = render(<PanelPrivilegios presentacion="matriz" columnas={COLS}
+      modulos={conFormato} base={null} valor={{}} onCambio={() => {}} />);
+    expect(container.querySelector('.pm-nom-txt')!.getAttribute('title'))
+      .toBe('Fijar sobre qué sedes alcanza un cargo');
+  });
+
+  it('[24] el aviso de `abiertos` NO sale cuando se pinta la lista', () => {
+    /* Salía también bajo 640 px, donde `abiertos` SÍ manda: el diagnóstico
+       mentía justo en el ancho en el que importa, e invitaba a quitar una prop
+       que allí hace falta. */
+    const gritar = vi.spyOn(console, 'error').mockImplementation(() => {});
+    conAncho(360);
+    render(<PanelPrivilegios presentacion="matriz" columnas={COLS} modulos={CONFILAS}
+      base={null} valor={{}} onCambio={() => {}} abiertos={['personal']}
+      onAbiertos={() => {}} />);
+    expect(gritar.mock.calls.flat().join(' ')).not.toContain('no hacen nada');
+    gritar.mockRestore();
+  });
+
+  it('[24] y `abiertos` sin `onAbiertos` se dice: deja el panel sin poder abrirse', () => {
+    /* Manda lo de fuera y el mando de dentro escribe donde ya nadie lee. En la
+       lista de un teléfono, eso son los permisos inalcanzables. */
+    const gritar = vi.spyOn(console, 'error').mockImplementation(() => {});
+    conAncho(360);
+    render(<PanelPrivilegios modulos={CONFILAS} base={null} valor={{}}
+      onCambio={() => {}} abiertos={[]} />);
+    expect(gritar.mock.calls.flat().join(' ')).toContain('no se puede abrir ni cerrar');
+    gritar.mockRestore();
   });
 });

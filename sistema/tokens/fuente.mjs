@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.131.0";
+export const VERSION = "1.132.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,64 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.132.0', fecha: '2026-09-19',
+    que: 'R156 · la fila de totales es DE la tabla · el candado que compila lo que el catalogo invita a copiar · y la politica de movil primero, corregida',
+    porque:
+      'R156 · LA FILA DE TOTALES VA EN `tfoot`, Y ESA DECISION HACE EL RESTO SOLO. No la toca el '
+      + 'orden, ni el filtro, ni la paginacion —no por una excepcion, sino porque no esta donde se '
+      + 'aplican— y un lector la anuncia como RESUMEN sin que nadie se lo explique. Lo pidio Control '
+      + 'Administrativos tras cortarlo el dueño con una frase que vale como regla del sistema: '
+      + '«colocarlo dentro de la tabla pero no como una fila de la tabla es romper el componente '
+      + 'tabla». Y no es de una pantalla: el historial de contratos, los tres reportes de asistencia '
+      + 'y pagos la usan igual — es lo que permite VER QUE LAS FILAS CUADRAN SIN REPASARLAS UNA A '
+      + 'UNA. La aporta la pantalla y no la calcula el componente: un «1 a 6 m 12 d» de tiempo '
+      + 'laborado no es la suma de una columna, es una cuenta de calendario. Dos decisiones que no '
+      + 'se pidieron: una columna sin total se pinta VACIA en vez de descuadrar la fila, y un '
+      + '`totales` que no toca ninguna columna visible no pinta NADA —un pie vacio es un cuadro mas '
+      + 'y una fila que no dice nada—. Se alinea tambien con la columna de indice o se desplaza '
+      + 'medio cuadro, y con `anclarColumnas` su celda se congela CON la columna y con el fondo del '
+      + 'pie: heredar el de `.tb-ancla` pintaria una celda blanca en mitad de una fila gris justo al '
+      + 'desplazar. '
+      + 'Y NACE EL CANDADO QUE FALTABA: `verificar-copia`, que COMPILA lo que el catalogo invita a '
+      + 'copiar. CLAUDE.md §7 regla 3 dice que lo unico que se copia de un componente compartido es '
+      + '«la importacion y las props», y esa superficie NO LA MIRABA NADIE: los diecisiete comparan '
+      + 'CSS resuelto, elementos, atributos, orden de cascada e iconos, y ninguno pasa un compilador. '
+      + 'Se declaro abierto TRES VERSIONES SEGUIDAS. Al escribirlo salio el daño acumulado: los '
+      + 'DIECIOCHO bloques importaban de `@ae/sistema`, un paquete QUE NO EXISTE —el real es '
+      + '`sistema-diseno-ae`— y que no estaba documentado en ninguna parte; y DIECISIETE de dieciocho '
+      + 'no compilan contra lo que se entrega. Se arregla el import —que era lo que hacia que NINGUNO '
+      + 'resolviera— y el resto entra como DEUDA DECLARADA con su motivo, que obliga a podar: '
+      + 'arreglar uno es quitar su linea, y si se arregla y no se poda el candado tambien falla. '
+      + 'Escribiendolo se descubrio algo que ninguna auditoria pudo ver: `tsc` NO EMITE NI UN ERROR '
+      + 'DE TIPOS si algun archivo no parsea, asi que dos bloques mal envueltos TAPABAN los errores '
+      + 'semanticos de los otros dieciseis — el candado salia casi verde escondiendo justo lo que '
+      + 'venia a mirar. Ahora compila uno a uno. Visto en rojo por sus dos lados. '
+      + 'Y LA POLITICA DE MOVIL PRIMERO ESTABA MAL ESCRITA, lo cual es peor que no tenerla. Decia que '
+      + 'un texto recortado cumple «si esta en `title`», y `memoria/06-cobertura.md` (C-08) lleva '
+      + 'escrito desde hace versiones que «hoy solo hay title, QUE NO SE VE EN MOVIL NI CON TECLADO». '
+      + 'La politica prescribia para el telefono un remedio que este repositorio ya tenia registrado '
+      + 'como inservible en el telefono. Ahora dice el orden: PRIMERO NO RECORTAR —envolver, apilar, '
+      + 'presentacion estrecha— y si hay que recortar, el texto entero ALCANZABLE SIN PUNTERO; '
+      + '`title` es el suelo para raton y lector, no el techo. '
+      + 'Y 360 px ENTRA EN `verificar-promesa`, LO PRIMERO: la lista de anchos empezaba en 390, asi '
+      + 'que EL ANCHO QUE LA POLITICA EXIGE ERA EL UNICO QUE NO MIRABA NINGUN CANDADO. Iba de ancho a '
+      + 'estrecho: escritorio primero hasta en el verificador. '
+      + 'Y SE RESTAURA UNA REGLA OBLIGATORIA QUE YO MISMO BORRE hace dos versiones. Al reescribir la '
+      + 'regla 21 del panel, el reemplazo cogio LA PRIMERA COINCIDENCIA DEL ARCHIVO — que era la '
+      + 'regla 21 de TablaDatos, «la tabla vacia dice por que y da la salida». Se perdio sin que nada '
+      + 'protestara, porque `verificar-contrato` solo mira que el numero tenga una prueba detras y el '
+      + 'numero seguia ahi. Recuperada de la v1.127.0.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'NADA DEL R156: `totales` es una prop nueva y opcional. Sin ella la tabla se ve exactamente '
+      + 'como hoy — no se emite ningun `tfoot`.',
+      'LOS BLOQUES DE «COPIA ESTO» DEL CATALOGO CAMBIAN DE IMPORT: importaban de `@ae/sistema`, que '
+      + 'no existe, y ahora de `sistema-diseno-ae/componentes`, que es el nombre real. Si alguien '
+      + 'copio uno tal cual y le añadio un alias en su `tsconfig` para que resolviera, ese alias '
+      + 'sobra.',
+    ],
+  },
   {
     v: '1.131.0', fecha: '2026-09-19',
     que: 'R153 · la matriz cae a lista en movil, y MOVIL PRIMERO pasa a politica del sistema',

@@ -126,6 +126,14 @@ const CANDADOS = [
   'sistema/candado/verificar-omision.mjs',
   'sistema/candado/verificar-iconos.mjs',
   'sistema/candado/verificar-promesa-muerta.mjs',
+  /* R153+ · Lo que el catalogo INVITA A COPIAR, compilado contra lo que se
+     entrega. `CLAUDE.md` §7 regla 3 dice que lo unico que se copia de un
+     componente compartido es «la importacion y las props», y esa superficie no
+     la miraba NADIE: los diecisiete comparan CSS, elementos, atributos, orden
+     de cascada e iconos, y ninguno pasa un compilador. Se declaro abierto tres
+     versiones seguidas; al escribirlo, DIECISIETE de dieciocho bloques no
+     compilaban — y los dieciocho importaban de un paquete que no existe. */
+  'sistema/candado/verificar-copia.mjs',
 ];
 
 /** Por CÓDIGO DE SALIDA, no por si imprimió algo: `intenta` devuelve '' cuando

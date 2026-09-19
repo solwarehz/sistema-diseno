@@ -20,8 +20,8 @@
  * (`base`) o desactivar (`base={null}`) cuando el dominio no funcione así.
  */
 
-import { Fragment, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef,
-  useState } from 'react';
+import { Fragment, isValidElement, useCallback, useEffect, useId, useLayoutEffect, useMemo,
+  useRef, useState } from 'react';
 import { Interruptor } from './Interruptor';
 import { Segmentado, type OpcionSegmento } from './Segmentado';
 import { Chip } from './Chip';
@@ -477,6 +477,35 @@ export function baseDe(
     return todos(m).find((x) => x.columna === base && (x.fila ?? null) === suFila)?.id ?? null;
   }
   return todos(m).some((x) => x.id === base) ? base : null;
+}
+
+/**
+ * EL TEXTO DE UN NOMBRE, cuando se puede sacar.
+ *
+ * Los nombres del panel son `React.ReactNode`: valen `'Contratos'`, `42` y
+ * `<b>Contratos</b>`. Para un `title` —o para cualquier sitio que sólo admita
+ * texto— hace falta la cadena, y **mirar sólo `typeof n === 'string'` deja
+ * fuera el caso más normal**: el nombre con formato.
+ *
+ * Eso se cobró el `title` del nombre de fila que el R153 acababa de poner: con
+ * `<b>Fijar sobre qué sedes…</b>` volvía a salir `null`, y el nombre recortado
+ * dejaba de poder leerse entero — el defecto exacto que el R153 cerró, por la
+ * puerta de al lado. Lo cazó una auditoría.
+ *
+ * Devuelve `undefined` cuando no hay texto que sacar: un nodo con contenido
+ * calculado, por ejemplo. Ahí no se inventa nada.
+ */
+export function textoDe(n: React.ReactNode): string | undefined {
+  if (typeof n === 'string') return n;
+  if (typeof n === 'number') return String(n);
+  if (Array.isArray(n)) {
+    const partes = n.map(textoDe);
+    return partes.every((x) => x !== undefined) ? partes.join('') : undefined;
+  }
+  if (isValidElement(n)) {
+    return textoDe((n.props as { children?: React.ReactNode }).children);
+  }
+  return undefined;
 }
 
 /**
@@ -1300,8 +1329,7 @@ export function PanelPrivilegios({
                           midio el equipo en su pantalla: «Fijar sobre que sedes
                           alcanza u…» sin forma de leerlo entero. El recorte es
                           presentacion; la informacion no se recorta. */}
-                      <span className="pm-nom-txt"
-                            title={typeof f.nombre === 'string' ? f.nombre : undefined}>
+                      <span className="pm-nom-txt" title={textoDe(f.nombre)}>
                         {f.nombre}
                       </span>
                       {/* R144 · Y SE DICE CON PALABRAS, no solo con el filete.
@@ -1356,13 +1384,23 @@ export function PanelPrivilegios({
                         );
                       }
                       const e = estado(m, p);
-                      const nombre = <><span className="sr-solo">{f.nombre} · </span>{c.titulo}</>;
+                      /* Y EL MODULO EN EL NOMBRE, cuando hay varios. `headers`
+                         asocia la CELDA para recorrer la tabla, pero NO entra en
+                         el nombre accesible del boton —ese sale de su
+                         `aria-labelledby`—, asi que dos sedes con una fila
+                         «Contratos» cada una daban dos interruptores llamados
+                         exactamente igual. La regla 28 daba esto por cerrado y
+                         solo lo habia arreglado en `headers`. */
+                      const conModulo = modulos.length > 1
+                        ? <><span className="sr-solo">{m.nombre} · </span></> : null;
+                      const nombre = <>{conModulo}<span className="sr-solo">{f.nombre} · </span>{c.titulo}</>;
                       if (e.no) {
                         return (
                           <td key={c.id} headers={atada} className={`${clase} pm-no pm-no-${e.no.tipo}`}
                               title={e.no.motivo}>
                             <span className="pm-no-ic"><Icono nombre={iconoNo(e.no.tipo)} tam="control" /></span>
                             <span className="sr-solo">
+                              {modulos.length > 1 ? <>{m.nombre} · </> : null}
                               {f.nombre} · {c.titulo}: {rotuloNo(e.no.tipo)}.{e.no.motivo ? ` ${e.no.motivo}` : ''}
                             </span>
                           </td>
@@ -1381,7 +1419,7 @@ export function PanelPrivilegios({
                               title={dice}>
                             <span className="pm-no-ic" role="switch" aria-checked={false}
                                   aria-disabled tabIndex={0}
-                                  aria-labelledby={`${idFila} ${idPanel}-col-${c.id}`}
+                                  aria-labelledby={atada}
                                   aria-describedby={`${idFila}-${c.id}-falta`}>
                               <Icono nombre="capas" tam="control" />
                             </span>
@@ -1405,8 +1443,9 @@ export function PanelPrivilegios({
                          cuando su nombre no era texto: el aviso de R149
                          desaparecia justo en los paneles que dan formato a sus
                          nombres. Se compone con nodos cuando hace falta. */
-                      const enTexto = (n: React.ReactNode): string | null =>
-                        typeof n === 'string' ? n : typeof n === 'number' ? String(n) : null;
+                      // La MISMA que el `title`: dos criterios de «esto es
+                      // texto» acaban discrepando.
+                      const enTexto = (n: React.ReactNode): string | null => textoDe(n) ?? null;
                       const nombres = e.conQuien.map(enTexto);
                       const avisos: React.ReactNode[] = [];
                       if (e.ayuda !== undefined && e.ayuda !== null && e.ayuda !== '') {
@@ -1508,6 +1547,16 @@ export function PanelPrivilegios({
           + '`base={null}`.');
       }
     }
+    /* `abiertos` SIN `onAbiertos` deja el panel cerrado para siempre: manda lo
+       de fuera, y el mando de dentro escribe donde ya nadie lee. Va ANTES del
+       corte por presentacion porque no es un problema de la matriz: es de
+       cualquiera que pliegue, y en la lista de un telefono son los permisos
+       inalcanzables. */
+    if (abiertos && !onAbiertos) {
+      dis.push('`abiertos` sin `onAbiertos`: el panel no se puede abrir ni cerrar. Si lo '
+        + 'controla desde fuera, pase tambien `onAbiertos`; si no, quite `abiertos` y deje '
+        + 'que el panel se gobierne solo.');
+    }
     if (presentacion !== 'matriz') return dis;
     if (!columnas?.length) {
       dis.push('`presentacion="matriz"` sin `columnas`. Una matriz sin columnas no es '
@@ -1589,9 +1638,15 @@ export function PanelPrivilegios({
       dis.push('los `grupos` con titulo no se dibujan en la matriz: sus privilegios se '
         + 'colocan por columna y fila, y el titulo del grupo no tiene donde ir.');
     }
-    if (abiertos || onAbiertos) {
-      dis.push('`abiertos`/`onAbiertos` no hacen nada en la matriz: no hay modulos que '
-        + 'plegar, todas las filas se ven a la vez.');
+    /* Solo cuando la matriz SE ESTA PINTANDO. Salia tambien bajo 640 px, donde
+       se pinta la lista y `abiertos` SI manda — el diagnostico mentia justo en
+       el ancho en el que importa, e invitaba a quitar una prop que alli hace
+       falta. Lo cazo una auditoria: se disparaba en las ocho pruebas de la
+       caida a lista. */
+    if (cabeLaMatriz && (abiertos || onAbiertos)) {
+      dis.push('`abiertos`/`onAbiertos` no hacen nada MIENTRAS SE PINTA LA MATRIZ: no hay '
+        + 'modulos que plegar. Por debajo de 640 px se pinta la lista y ahi si mandan, '
+        + 'asi que no los quite.');
     }
     return dis;
   }, [presentacion, columnas, modulos, base, abiertos, onAbiertos]);
@@ -1620,8 +1675,15 @@ export function PanelPrivilegios({
           // aunque lo guardado diga `true`: es justo lo que `privilegiosEfectivos`
           // le quita al backend, y un «4 de 6» que cuenta un permiso sin efecto
           // dice que se repartió algo que no se repartió.
-          const dados = lista.filter((p) => !p.cerrado
-            && concedido(valor, m.id, p.id) && !faltaDepende(m, valor, p.id));
+          /* EL CONTEO SALE DE `privilegiosEfectivos`, no de una copia de su
+             criterio. Aqui se repetia a mano —concedido, no cerrado, sin
+             `depende` pendiente— y se dejaba fuera el base: con `filas`, la
+             cabecera decia «2 de 4» con UN solo privilegio efectivo, porque a
+             una de las filas le faltaba su «ver». Dos formas de responder «que
+             esta concedido» acaban discrepando, y esta discrepancia se ve en la
+             cabecera SIN ABRIR, que es lo que la regla 4 promete. */
+          const efectivoDelModulo = privilegiosEfectivos([m], valor, base)[m.id] ?? {};
+          const dados = lista.filter((p) => efectivoDelModulo[p.id] === true);
           // Lo que no se puede repartir no cuenta en el «4 de 6»: contarlo haría
           // que un cargo pareciera incompleto por reglas que no dependen de él.
           const posibles = lista.filter((p) => !p.cerrado).length;
@@ -1633,9 +1695,24 @@ export function PanelPrivilegios({
              vacia el modulo entero. Al pasar a `baseDe` esto quedo en `false`
              y el carril dejo de salir: la regla 12 exige que salga igual
              cuando el modulo no declara su base. Lo caz o su propia prueba. */
-          const idBaseMod = lista.length ? baseDe(m, lista[0], base) : null;
-          const sinBase = Boolean(base)
-            && (idBaseMod === null || !concedido(valor, m.id, idBaseMod));
+          /* «SIN BASE» SE CALCULA POR FILA, no del primer privilegio del
+             modulo. Miraba `lista[0]`, asi que con `filas` el carril y el aviso
+             salian —o no— segun la fila que estuviera declarada primero: se
+             midio un modulo con «Contratos» sin su «ver» donde la lista no
+             marcaba NADA y ensenaba «Editar contrato» encendido, con ese
+             permiso fuera de lo efectivo. Es el borrado silencioso del R150
+             reabierto por la caida a lista de la regla 33, y la regla 23 dice
+             justo lo contrario: «marca la fila que le falta y no todas».
+             Se marca el modulo si a ALGUNA fila le falta su base —para que la
+             cabecera cerrada lo diga— y el aviso se pone debajo de CADA base
+             sin conceder, que es la regla 12. */
+          const basesSinConceder = new Set(
+            lista.map((p) => baseDe(m, p, base))
+              .filter((b): b is string => b !== null && !concedido(valor, m.id, b)),
+          );
+          const baseSinEncarnar = Boolean(base)
+            && lista.some((p) => baseDe(m, p, base) === null);
+          const sinBase = baseSinEncarnar || basesSinConceder.size > 0;
           const avisoSinBase = (
             <p className="pp-aviso">
               <Icono nombre="alerta" tam="control" />
@@ -1690,8 +1767,8 @@ export function PanelPrivilegios({
                     declara los privilegios, no nosotros. */}
                 {m.privilegios.map((p) => (
                   <Fragment key={p.id}>
-                    {fila(m, p, p.id === base)}
-                    {sinBase && p.id === base && avisoSinBase}
+                    {fila(m, p, baseDe(m, p, base) === p.id)}
+                    {basesSinConceder.has(p.id) && avisoSinBase}
                   </Fragment>
                 ))}
 
@@ -1705,8 +1782,8 @@ export function PanelPrivilegios({
                         demas, y esta linea se habia quedado atras. */}
                     {g.privilegios.map((p) => (
                       <Fragment key={p.id}>
-                        {fila(m, p, p.id === base)}
-                        {sinBase && p.id === base && avisoSinBase}
+                        {fila(m, p, baseDe(m, p, base) === p.id)}
+                        {basesSinConceder.has(p.id) && avisoSinBase}
                       </Fragment>
                     ))}
                   </div>
@@ -1718,7 +1795,11 @@ export function PanelPrivilegios({
                     documentacion— se quedaba ENTERO acarrilado en naranja SIN
                     UNA LINEA que dijera por que. Era una regresion contra la
                     v1.124.0, donde el aviso colgaba solo de `sinBase`. */}
-                {sinBase && !todos(m).some((p) => p.id === base) && avisoSinBase}
+                {/* Por `baseSinEncarnar` y no por «no hay un id igual a
+                    `base`»: con un modulo colocado por COLUMNAS ningun id se
+                    llama `ver`, asi que la condicion vieja daba cierto siempre
+                    y el aviso salia DOS veces — una aqui y otra bajo su fila. */}
+                {baseSinEncarnar && avisoSinBase}
               </div>
             </section>
           );

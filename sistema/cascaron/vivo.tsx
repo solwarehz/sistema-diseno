@@ -176,6 +176,14 @@ function TablaViva({ anclar }: { anclar: 0 | 1 }) {
       porPagina={10}
       sustantivo="trabajadores"
       columnasSiempreVisibles={['nombre']}
+      /* R156 · LA FILA DE TOTALES, y es la que cierra un reporte de asistencia:
+         lo que permite ver que las filas cuadran sin repasarlas una a una.
+         Ordena por cualquier columna y no se mueve; pasa de pagina y es la
+         misma, porque resume TODAS las filas y no la que se esta viendo. */
+      totales={{
+        nombre: 'Total del mes',
+        estado: <b>28 activos, 2 de baja</b>,
+      }}
     />
   );
 }
