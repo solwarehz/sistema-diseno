@@ -223,7 +223,14 @@ const correrPruebas = () => {
          correrlas a continuacion salieron 1173 en verde con codigo 0. Un
          publicador que rechaza una entrega buena de forma intermitente es peor
          que uno lento: enseña a reintentar hasta que salga, y eso es lo
-         contrario de una comprobacion. */
+         contrario de una comprobacion.
+         Y NO SE ARREGLA CON `--pool=forks --singleFork`. Se probo el
+         2026-09-22 contra un worker que seguia muriendo: con un solo proceso
+         los archivos comparten el `document` de jsdom y se contaminan entre
+         ellos — 20 pruebas en rojo que en el pool normal estan en verde,
+         RangoFecha y EditorTexto las primeras. El aislamiento por archivo no
+         es un lujo del corredor: es lo que hace que una prueba signifique
+         algo. */
       ['exec', '-T', 'ds', 'sh', '-c',
         'ulimit -c 0; cd componentes && npx vitest run --no-file-parallelism 2>&1'],
       { cwd: RAIZ, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
@@ -236,13 +243,30 @@ const pruebas = correrPruebas();
 // Sin los códigos de color: vitest los emite aunque no haya terminal.
 const resumen = pruebas.salida.replace(/\x1b\[[0-9;]*m/g, '');
 const cuantas = (resumen.match(/Tests\s+(\d+) passed/) ?? [])[1];
-if (pruebas.ok && cuantas) {
+/* Y EL CÓDIGO DE SALIDA TAMPOCO BASTA. El 2026-09-22 un worker murió por
+ * memoria a mitad del barrido: vitest imprimió «Test Files 58 passed (59)»,
+ * «Tests 1198 passed (1213)» y «Unhandled Error: Worker exited unexpectedly»,
+ * y salió con CÓDIGO 0. El publicador habría dicho «1198 en verde» con un
+ * archivo entero —quince pruebas— SIN CORRER. Es el mismo defecto que este
+ * repositorio ya conoce con otro disfraz: una comprobación que mide lo que
+ * pasó y no lo que FALTABA por pasar.
+ *
+ * Los paréntesis son el total que vitest se propuso correr. Si el número de
+ * archivos en verde no es ese total, no hay entrega: da igual que ninguno haya
+ * fallado — lo que no corrió no protege nada. */
+const archivos = resumen.match(/Test Files\s+(\d+) passed(?:\s+\((\d+)\))?/);
+const corrieron = archivos ? Number(archivos[1]) : 0;
+const previstos = archivos?.[2] ? Number(archivos[2]) : corrieron;
+const faltan = previstos - corrieron;
+if (pruebas.ok && cuantas && faltan === 0) {
   console.log(`${cuantas} en verde`);
 } else {
   console.log('NO');
   problemas.push(!pruebas.salida
     ? 'no pude correr las pruebas: ¿está levantado el contenedor? `docker-compose up -d`'
-    : `las pruebas no pasan (vitest salió con error). Corre: docker-compose exec -T ds sh -c "cd componentes && npx vitest run"`);
+    : faltan > 0
+      ? `${faltan} de ${previstos} archivos de prueba NO llegaron a correr (un worker murió; salida en verde de los que sí). Vuelve a correrlas: docker-compose exec -T ds sh -c "ulimit -c 0; cd componentes && npx vitest run --no-file-parallelism"`
+      : `las pruebas no pasan (vitest salió con error). Corre: docker-compose exec -T ds sh -c "cd componentes && npx vitest run"`);
 }
 
 // Regenerar puede haber tocado archivos. Si el árbol quedó sucio DESPUÉS de
@@ -255,8 +279,13 @@ if (sucioTras) {
      generadores que no han tocado nada. Un aviso que se equivoca de causa
      cuesta más que no tenerlo. */
   const lineas = sucioTras.split('\n').filter(Boolean);
-  const nuevos = lineas.filter((l) => l.startsWith('??')).map((l) => l.slice(3));
-  const tocados = lineas.filter((l) => !l.startsWith('??')).map((l) => l.slice(3));
+  /* Se quita el ESTADO, no tres caracteres. `intenta()` recorta la salida, asi
+     que la PRIMERA linea llega sin su espacio inicial y un corte fijo se comia
+     una letra: decia «ascaron/index.html». Un diagnostico que escribe mal el
+     nombre del archivo manda a buscar un archivo que no existe. */
+  const soloRuta = (l) => l.replace(/^\s*\S{1,2}\s+/, '');
+  const nuevos = lineas.filter((l) => l.trimStart().startsWith('??')).map(soloRuta);
+  const tocados = lineas.filter((l) => !l.trimStart().startsWith('??')).map(soloRuta);
   if (tocados.length) {
     problemas.push('los candados regeneraron algo: '
       + `${tocados.join(', ')}. Commitea y vuelve a intentarlo`);

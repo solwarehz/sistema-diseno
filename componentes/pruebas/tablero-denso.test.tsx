@@ -99,22 +99,70 @@ describe('R157 · tamaño fluido y relieve', () => {
 });
 
 describe('R157 · la cuadrícula densa', () => {
-  it('[1] son SEIS columnas en un teléfono, no una', () => {
-    /* La cuadrícula normal reparte en columnas de 230 px: a 375 px da UNA. No
-       es que se adapte mal, es otro caso. */
-    expect(regla('.tn-densa'), 'la rejilla densa no existe').toMatch(/repeat\(6,/);
-    expect(regla('.tn-cuadricula'), 'la normal dejó de ser la normal')
-      .toMatch(/minmax\(230px/);
+  it('[1] el suelo lo fija LO QUE HAY QUE LEER, no el número de columnas', () => {
+    /* Iban seis columnas fijas y se vio en el propio cascarón: en un contenedor
+       de 260 px daban celdas de 21 px, donde «Rosa» no cabe — y un nombre que
+       no cabe o se recorta o se parte, y las dos cosas las prohíbe la política
+       de móvil primero. Se fija el SUELO; el número de columnas es la
+       consecuencia. */
+    const r = regla('.tn-densa');
+    expect(r, 'la rejilla densa no existe').toMatch(/repeat\(auto-fill,\s*minmax\(84px/);
+    const gap = Number(/gap:\s*(\d+)px/.exec(r)?.[1]);
+    /* La cuenta que sostiene el «seis»: 375 px menos el aire de la superficie,
+       repartido en celdas de 48 con su hueco. */
+    /* Una celda de tablero lleva nombre, apellido y hora: tres líneas. El suelo
+       es lo que mide un apellido corriente a 11 px, y el número de columnas es
+       la consecuencia. «Las veo muy apretadas que no se leen los datos» fue lo
+       que corrigió las seis columnas fijas. */
+    const util = 375 - 24;
+    const columnas = Math.floor((util + gap) / (84 + gap));
+    expect(columnas, 'en un teléfono no cabe ni una fila legible').toBeGreaterThanOrEqual(3);
+    expect((util - gap * (columnas - 1)) / columnas,
+      'la celda baja del suelo: los datos dejan de leerse').toBeGreaterThanOrEqual(84);
   });
 
-  it('[1] sube sola cuando hay sitio, y no estira las piezas', () => {
-    /* Una rejilla densa no mejora estirando: mejora enseñando más. */
-    const anchos = [...css.matchAll(/@media \(min-width: (\d+)px\)[^{]*\{\s*\.tn-densa\s*\{[^}]*repeat\((\d+),/g)]
-      .map((m) => [Number(m[1]), Number(m[2])]);
-    expect(anchos.length, 'la rejilla densa no crece con el ancho').toBeGreaterThan(0);
-    const columnas = anchos.map(([, c]) => c);
-    expect([...columnas].sort((a, b) => a - b), 'las columnas no crecen con el ancho')
-      .toEqual(columnas);
+  it('[1] y en un contenedor estrecho BAJA de columnas en vez de apretar', () => {
+    /* Apretar hasta lo ilegible es lo que hacía antes. Bajar a cuatro deja la
+       celda por encima del suelo, que es donde el nombre cabe. */
+    const gap = Number(/gap:\s*(\d+)px/.exec(regla('.tn-densa'))?.[1]);
+    const columnas = Math.floor((260 + gap) / (84 + gap));
+    expect(columnas, 'en 260 px sigue apretando').toBeLessThan(4);
+    expect((260 - gap * (columnas - 1)) / columnas,
+      'la celda baja del suelo de 84 px').toBeGreaterThanOrEqual(84);
+  });
+
+  it('[1] la rejilla NO hereda la sangría de la lista', () => {
+    /* Se pone sobre una «ul» —es una lista de personas— y el navegador le mete
+       40 px de «padding-inline-start» y un puntito por fila. Se midió en el
+       cascarón a 333 px: la rejilla salía de 234 px con la sangría dentro y
+       daba DOS columnas de 93 px donde caben tres de 113. No se ve como un
+       fallo, se ve como un tablero apretado y descentrado, que es exactamente
+       lo que reportó el responsable. */
+    const r = regla('.tn-densa');
+    expect(r, 'la rejilla hereda los 40 px de sangría de la «ul»').toMatch(/padding:\s*0/);
+    expect(r, 'la rejilla hereda el margen vertical de la «ul»').toMatch(/margin:\s*0/);
+    expect(r, 'cada persona sale con su puntito de lista').toMatch(/list-style:\s*none/);
+  });
+
+  it('[1] la celda enseña las TRES líneas, y ninguna se recorta', () => {
+    /* Nombre, apellido y hora. Si una se recorta, la rejilla deja de servir
+       para lo que se pidió: ver de un vistazo quién marcó. */
+    for (const c of ['.tbl-nom', '.tbl-ape', '.tbl-hora']) {
+      expect(regla(c), `falta la línea ${c}`).not.toBe('');
+      expect(regla(c), `${c} se recorta`).not.toMatch(/text-overflow:\s*ellipsis/);
+    }
+    /* Y el apellido no compite con el nombre: en treinta personas, leer treinta
+       apellidos en negro es no leer ninguno. */
+    expect(regla('.tbl-ape')).toMatch(/color:\s*var\(--texto-secundario\)/);
+  });
+
+  it('[1] el nombre NO se recorta ni se parte por cualquier sitio', () => {
+    /* `ellipsis` deja el texto sin forma de leerse —y en un teléfono no hay
+       puntero que descubra un globito—; `anywhere` partía «Rosa» en «Ros/a». */
+    const r = regla('.tbl-nom');
+    expect(r, 'el nombre se recorta').not.toMatch(/text-overflow:\s*ellipsis/);
+    expect(r, 'el nombre no puede envolver').not.toMatch(/white-space:\s*nowrap/);
+    expect(r).toMatch(/overflow-wrap:\s*break-word/);
   });
 
   it('[1] y un nombre largo no descuadra la rejilla entera', () => {

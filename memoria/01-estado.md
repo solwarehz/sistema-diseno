@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-**Última actualización:** 18 de septiembre de 2026
+**Última actualización:** 22 de septiembre de 2026
 **Versión del sistema:** MMI-DS **v1.133.0** — las piezas de un tablero denso, y
 deslizar deja de ser siempre un defecto
 
@@ -17,9 +17,9 @@ deslizar deja de ser siempre un defecto
 ## Dónde estamos, en una frase
 
 El sistema es un **paquete que un producto instala y consume** —35 componentes
-publicados (`verificar-entrega`), la hoja que viaja, **veinte pasos de
-verificación** —los que corre `publicar.mjs`—, **1165 pruebas en 56 archivos**,
-todas en verde—.
+publicados (`verificar-entrega`), la hoja que viaja, **veintiún pasos de
+verificación** —los que corre `publicar.mjs`, más ESLint y las pruebas: veintidós
+en total—, **1213 pruebas en 59 archivos**, todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
 eran defectos reales del sistema, no de su pantalla.** R129: el calendario no
@@ -56,7 +56,7 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **1165 pruebas en 56 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **1213 pruebas en 59 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **1049 reglas de 1568** · **755 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **62 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |

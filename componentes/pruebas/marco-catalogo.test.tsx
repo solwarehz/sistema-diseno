@@ -11,7 +11,7 @@
  * Lo que se mira aquí es lo que ellos no miran.
  */
 import { render } from '@testing-library/react';
-import { describe, it, expect, beforeAll, afterEach } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { JSDOM, VirtualConsole } from 'jsdom';
@@ -24,7 +24,17 @@ beforeAll(() => {
   HTML = readFileSync(resolve(process.cwd(), '..', 'cascaron', 'index.html'), 'utf8');
 });
 
-const doc = () => new JSDOM(HTML, { virtualConsole: new VirtualConsole() }).window.document;
+/* UNA SOLA VEZ, Y CERRADO AL TERMINAR. Esto decia `new JSDOM(HTML, …)` en cada
+   llamada y se llama siete veces: siete arboles de 2,8 MB vivos a la vez, que
+   es el mismo agotamiento de memoria que ya esta documentado veinte lineas mas
+   abajo para `catalogoVivo()` —y que alli se arreglo cerrando las ventanas—.
+   Aqui no se cerro ninguna, y el 2026-09-22 el archivo reventaba el monton:
+   «FATAL ERROR: Ineffective mark-compacts near heap limit», 58 archivos en
+   verde de 59 y QUINCE PRUEBAS SIN CORRER. Estas siete no ejecutan guiones y
+   solo LEEN el marcado, asi que comparten un arbol sin pisarse. */
+let CATALOGO: InstanceType<typeof JSDOM> | null = null;
+const doc = () => (CATALOGO ??= new JSDOM(HTML, { virtualConsole: new VirtualConsole() })).window.document;
+afterAll(() => { CATALOGO?.window.close(); CATALOGO = null; });
 
 /** Toda la navegación del catálogo, esté donde esté. */
 const navegacionDelCatalogo = (d: Document) => [

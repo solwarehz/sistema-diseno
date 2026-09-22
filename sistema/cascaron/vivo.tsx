@@ -297,23 +297,49 @@ function MatrizViva() {
    como se ve si conviven: la rejilla, el anillo, el relieve, la burbuja con
    tono, la superficie tonal y el carril con su cuenta de paradas. */
 const GENTE = [
-  ['Rosa', 'QUISPE MAMANI, Rosa', '07:02', 'exito'],
-  ['Luis', 'HUAMAN SOTO, Luis', '07:04', 'exito'],
-  ['Ana', 'CCAHUANA LIMA, Ana', '07:09', 'exito'],
-  ['Jose', 'PINEDA ROJAS, Jose', '07:11', 'exito'],
-  ['Elva', 'TORRES BAUTISTA, Elva', '07:14', 'exito'],
-  ['Mateo', 'ALVAREZ NINA, Mateo', '07:15', 'exito'],
-  ['Sara', 'VILCA APAZA, Sara', '—', 'error'],
-  ['Pedro', 'MAMANI CRUZ, Pedro', '—', 'error'],
+  ['Rosa', 'Quispe', 'QUISPE MAMANI, Rosa', '06:48', 'exito'],
+  ['Luis', 'Huamán', 'HUAMAN SOTO, Luis', '06:51', 'exito'],
+  ['Ana', 'Ccahuana', 'CCAHUANA LIMA, Ana', '06:53', 'exito'],
+  ['José', 'Pineda', 'PINEDA ROJAS, Jose', '06:55', 'exito'],
+  ['Elva', 'Torres', 'TORRES BAUTISTA, Elva', '06:57', 'exito'],
+  ['Mateo', 'Álvarez', 'ALVAREZ NINA, Mateo', '06:58', 'exito'],
+  ['Nayeli', 'Shuan', 'SHUAN COLONIA, Nayeli', '07:00', 'exito'],
+  ['Diego', 'Maguiña', 'MAGUIÑA ROSALES, Diego', '07:01', 'exito'],
+  ['Karla', 'Jamanca', 'JAMANCA TARAZONA, Karla', '07:02', 'exito'],
+  ['Aarón', 'Cochachin', 'COCHACHIN LEON, Aaron', '07:03', 'exito'],
+  ['Milagros', 'Yauri', 'YAURI PALACIOS, Milagros', '07:04', 'exito'],
+  ['Renzo', 'Obregón', 'OBREGON VIDAL, Renzo', '07:05', 'exito'],
+  ['Fiorella', 'Antúnez', 'ANTUNEZ MEJIA, Fiorella', '07:06', 'exito'],
+  ['Braulio', 'Norabuena', 'NORABUENA SALAS, Braulio', '07:07', 'exito'],
+  ['Zoila', 'Chávez', 'CHAVEZ HUERTA, Zoila', '07:08', 'exito'],
+  ['Iván', 'Loli', 'LOLI DEPAZ, Ivan', '07:09', 'exito'],
+  ['Yuliana', 'Ramírez', 'RAMIREZ CADILLO, Yuliana', '07:12', 'exito'],
+  ['Efraín', 'Sánchez', 'SANCHEZ MILLA, Efrain', '07:15', 'exito'],
+  ['Sara', 'Vilca', 'VILCA APAZA, Sara', '—', 'error'],
+  ['Pedro', 'Mamani', 'MAMANI CRUZ, Pedro', '—', 'error'],
+  ['Betsabé', 'Giraldo', 'GIRALDO ROMERO, Betsabe', '—', 'error'],
+  ['Wilmer', 'Rurush', 'RURUSH CASTRO, Wilmer', '—', 'error'],
+  ['Kiara', 'Espinoza', 'ESPINOZA VEGA, Kiara', '—', 'error'],
+  ['Nicolás', 'Trejo', 'TREJO ALVARADO, Nicolas', '—', 'error'],
 ] as const;
+
+/* Minutos de tardanza sobre la hora de entrada (07:10). Leia solo los minutos
+   —«hora.slice(3)»— y eso da «+38» para quien llego a las 06:48: el reloj no se
+   parte por el dos puntos. Se comparan minutos absolutos. */
+const ENTRADA = 7 * 60 + 10;
+function tarde(hora: string): number {
+  if (hora === '—') return 0;
+  const [h, m] = hora.split(':').map(Number);
+  return Math.max(0, h * 60 + m - ENTRADA);
+}
 
 function TableroVivo() {
   const [grupo, setGrupo] = useState<'exito' | 'error'>('exito');
-  const dentro = GENTE.filter((g) => g[3] === 'exito');
-  const fuera = GENTE.filter((g) => g[3] === 'error');
+  const dentro = GENTE.filter((g) => g[4] === 'exito');
+  const fuera = GENTE.filter((g) => g[4] === 'error');
   const lista = grupo === 'exito' ? dentro : fuera;
   return (
-    <div>
+    <div className="muestra-tablero">
       {/* EL TEXTO QUE SOSTIENE EL COLOR: el recuento va aqui, con palabras, y
           el anillo de cada avatar solo lo REFUERZA. */}
       <Segmentado
@@ -325,18 +351,17 @@ function TableroVivo() {
         valor={grupo}
         onCambio={(v) => setGrupo(v as 'exito' | 'error')}
       />
-      <div className={`sup sup-${grupo}`} style={undefined}>
-        <ul className="tn-densa" style={undefined}>
-          {lista.map(([corto, nombre, hora, tono]) => (
+      <div className={`sup sup-${grupo}`}>
+        <ul className="tn-densa">
+          {lista.map(([corto, apellido, nombre, hora, tono]) => (
             <li key={nombre} className="tbl-persona">
               <span className="tbl-foto">
                 <Avatar id={nombre} nombre={nombre} tamano="fluido"
                         estado={tono} elevacion="relieve" />
-                {hora !== '—' && Number(hora.slice(3)) > 10 && (
-                  <span className="badge">+{Number(hora.slice(3)) - 10}</span>
-                )}
+                {tarde(hora) > 0 && <span className="badge">+{tarde(hora)}</span>}
               </span>
               <span className="tbl-nom">{corto}</span>
+              <span className="tbl-ape">{apellido}</span>
               <span className="tbl-hora">{hora}</span>
             </li>
           ))}

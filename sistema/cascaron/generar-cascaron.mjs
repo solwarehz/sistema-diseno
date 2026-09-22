@@ -7405,11 +7405,12 @@ const pagAvatar = `
 vistazo</strong> en una lista larga, no para informar de nada.</p>
 
 <h3 class="sub-seccion">R157 · Las piezas de un tablero denso</h3>
+<div class="bloque" id="tablero-vivo"></div>
+
 <p class="seccion-sub">Lo trajo un tablero que <strong>no se consulta, se vigila</strong>: se deja
 abierto en un teléfono a las 7 de la mañana. Entraron porque <strong>ninguna es de esa
 pantalla</strong> — una cuadrícula densa sirve a cualquier selector de iconos, un anillo de estado a
 «en línea» o «pagado», una burbuja con tono a cualquier contador.</p>
-<div class="bloque" id="tablero-vivo"></div>
 <div class="aviso">
   <strong>El anillo usa los tonos del sistema, no los del dominio.</strong> Se pidió como
   <code>'presente' | 'ausente'</code> y entra como <code>'exito' | 'aviso' | 'error' | 'info'</code>:
@@ -9765,6 +9766,16 @@ code { font-family: 'IBM Plex Mono', monospace; }
 
 .bloque { background: var(--fondo-tarjeta); border: 1px solid var(--borde);
   border-radius: 6px; padding: 20px; margin-bottom: 8px; }
+/* R157 · EL TABLERO SE ENSEÑA A TODO EL ANCHO. Es cromo del catalogo —el
+   prefijo «muestra» no viaja en el paquete— y nacio como un marco de 375 px
+   porque sin el la demo mentia: con el suelo en 48 px, el bloque ancho del
+   catalogo daba celdas de 25,8 px y el avatar salia diminuto. El suelo de 84 px
+   quito esa razon, y el marco paso a mentir al reves: un tablero encajonado en
+   375 px en medio de una pantalla de 1.200 no es «tal como se entrega». Ahora
+   ocupa lo que le den y reparte las celdas por todo el ancho, que es lo que
+   hace el componente en un producto. */
+.muestra-tablero { width: 100%; }
+
 .muestra-fila { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
 .mf { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
 .mf-et { font-size: 12px; color: var(--texto-secundario); line-height: 1.45; }
@@ -11619,12 +11630,25 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    debajo, en corto. Aqui no hay nada que un raton descubra y un dedo no.
    ───────────────────────────────────────────────────────────────────────────── */
 .tbl-persona { display: flex; flex-direction: column; align-items: center;
-  gap: 2px; min-width: 0; text-align: center; }
+  gap: 3px; min-width: 0; text-align: center; }
 /* La foto es lo que lleva la burbuja: por eso es ella la que se hace relativa, y
    no la celda — anclada a la celda, la burbuja bailaria con el largo del nombre. */
 .tbl-foto { position: relative; display: block; width: 100%; line-height: 0; }
+/* EL NOMBRE NO SE RECORTA: ENVUELVE. Llevaba «ellipsis» y se vio en el propio
+   cascaron —«Ro…» en una celda estrecha—, que es un incumplimiento de la
+   politica de movil primero §5.3 en la pieza recien creada para cumplirla: el
+   recorte deja el texto sin forma de leerse, y en un telefono no hay puntero
+   que descubra un globito.
+   Envolver no descuadra la rejilla porque todas las celdas crecen igual, y
+   «anywhere» es lo que impide que un nombre sin espacios ensanche su columna. */
+/* Las tres lineas de la celda: nombre, apellido y hora. Ninguna se recorta.
+   El apellido va en gris para que el ojo salte primero al nombre — en una
+   rejilla de treinta personas, leer treinta apellidos en negro es no leer
+   ninguno. */
 .tbl-nom { font-size: 11px; color: var(--texto-principal); max-width: 100%;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  overflow-wrap: break-word; line-height: 1.25; font-weight: 500; }
+.tbl-ape { font-size: 11px; color: var(--texto-secundario); max-width: 100%;
+  overflow-wrap: break-word; line-height: 1.25; }
 .tbl-hora { font-size: 11px; color: var(--texto-secundario);
   font-variant-numeric: tabular-nums; }
 
@@ -11661,11 +11685,28 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .car-punto-aqui { background: var(--accion); }
 @media (prefers-reduced-motion: reduce) { .car { scroll-behavior: auto; } }
 
-.tn-densa { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+/* EL SUELO LO FIJA LO QUE HAY QUE LEER, no el numero de columnas.
+   Iban seis columnas fijas y se vio en el propio cascaron que a 260 px daban
+   celdas de 21 px: ahi no cabe ni un nombre, y un nombre que no cabe o se
+   recorta o se parte — las dos cosas las prohibe la politica de movil primero.
+   Se bajo a un suelo de 48 px y seguia sin llegar: una celda de tablero lleva
+   NOMBRE, APELLIDO Y HORA, que son tres lineas de texto, y con 48 px se leen a
+   medias. El responsable lo corto mirando la pantalla: «las veo muy apretadas
+   que no se leen los datos».
+   Asi que el suelo son 84 px —lo que mide un apellido corriente a 11 px— y el
+   numero de columnas es la CONSECUENCIA: cuatro en un telefono, y las que
+   quepan segun crece la pantalla, repartiendo SIEMPRE todo el ancho. Un tablero
+   que no se lee no es denso: es ilegible. */
+/* Y LA REJILLA SE PONE SOBRE UNA «ul», que trae 40 px de sangria propia del
+   navegador y un puntito por fila. Sin este reset la rejilla empieza 40 px a la
+   derecha: en un telefono de 333 px eso es UNA COLUMNA MENOS —se midio: dos
+   columnas de 93 px donde caben tres—, y el desajuste no se ve como un fallo,
+   se ve como un tablero apretado. El responsable lo reporto asi: «en toda la
+   pantalla respetando el margen se deben repartir las cards». */
+.tn-densa { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 8px; margin: 0; padding: 0; list-style: none; }
 .tn-densa > * { min-width: 0; }
-@media (min-width: 480px) { .tn-densa { grid-template-columns: repeat(8, 1fr); } }
-@media (min-width: 768px) { .tn-densa { grid-template-columns: repeat(10, 1fr); gap: 12px; } }
-@media (min-width: 1024px) { .tn-densa { grid-template-columns: repeat(12, 1fr); } }
+@media (min-width: 768px) { .tn-densa { gap: 12px; } }
 /* R56 · La pulsable es un <button>, y un boton NO hereda tipografia.
    Sin font/text-align/padding/margin el navegador impone su fuente
    (~13,3px Arial), centra el texto y anade relleno propio. Aqui no se veia
