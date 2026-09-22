@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Última actualización:** 18 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.132.0** — la fila de totales es de la
-tabla, y nace el candado que compila lo que el catálogo invita a copiar
+**Versión del sistema:** MMI-DS **v1.133.0** — las piezas de un tablero denso, y
+deslizar deja de ser siempre un defecto
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -60,10 +60,10 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | La hoja que viaja | ✅ | `extraer.mjs` · **1049 reglas de 1568** · **755 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **62 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
-| Entrega ZIP | ✅ | `sistema-diseno-v1.132.0.zip` · **60 archivos** · **1.465 KB** · se publica con `npm run publicar` |
+| Entrega ZIP | ✅ | `sistema-diseno-v1.133.0.zip` · **60 archivos** · **1.465 KB** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
 | Manual de aplicaciones | ✅ | **v1.3.0 sobre MMI-DS v1.58.0** · §5.5 manda a los componentes en vez de describir su anatomía |
-| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.132.0**, con el salto **desde la v1.19.0**, que es la instalada |
+| Guía de actualización | ✅ | `ACTUALIZAR.md` en **v1.133.0**, con el salto **desde la v1.19.0**, que es la instalada |
 | Promesa muerta | ✅ | `verificar-promesa-muerta` — el **penúltimo** de los veintiún pasos · **178 unidades compuestas** · **7 de deuda declarada**, 0 nuevas |
 | Desplegado del selector | ✅ | `selector-desplegado-catalogo.test.tsx` — el catálogo EJECUTÁNDOSE contra el componente · 7 comparaciones · visto en rojo con el catálogo roto |
 | Compresor de PDF propio | ✅ | Sin dependencias · **y desde hoy con su `.d.mts`** |
@@ -86,7 +86,42 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | v1.47.0 | **R53** · el campo y el selector no se veían como los del catálogo: dos nombres, dos bloques de reglas |
 | **v1.48.0** | **R54** · el selector en solo lectura mientras se consulta · **R55** · la foto de la persona con una sola prop |
 
-### Lo de hoy (v1.132.0), con detalle
+### Lo de hoy (v1.133.0), con detalle
+
+**R157 · siete piezas para un tablero denso**, pedidas por una pantalla que **no
+se consulta, se vigila**: se deja abierta en un teléfono a las 7 de la mañana.
+
+> **Ninguna de las siete es de esa pantalla**, y ésa es la única razón por la que
+> entraron.
+
+Una cuadrícula densa sirve a cualquier selector de iconos; un anillo de estado, a
+«en línea» o «pagado»; una burbuja con tono, a cualquier contador; una superficie
+tonal, a cualquier bloque que pertenezca entero a un estado.
+
+**Dos cosas no entraron como las pidieron, y el motivo es el mismo las dos
+veces:** el vocabulario. El anillo se pidió como `'presente' | 'ausente'` y entra
+con los tonos del sistema —un tipo que dijera `presente` obligaría al siguiente
+producto a llamar «presente» a una factura cobrada—. Y las seis columnas no son
+un número elegido: son las que salen de la celda más estrecha en la que un avatar
+sigue siendo reconocible dentro de 375 px.
+
+**La forma del avatar no se tocó.** Se planteó el cuadrado redondeado y se
+descartó **en los dos lados a la vez**: en una rejilla densa la forma es lo que
+distingue una persona de una entidad. Lo que daba la sensación de «icono de app»
+era el **relieve**, y eso sí entró — como **escala**, porque si cada pantalla
+inventa su sombra, la misma rejilla acaba con tres profundidades.
+
+**Y lo que cambia el sistema:** deslizar deja de ser siempre un defecto. La
+política decía «nada se lee deslizando en horizontal»; ahora distingue
+**desbordamiento** —el contenido no cupo— de **paginación por gesto** —cada
+parada es una vista entera—, con tres condiciones que hay que ganarse. Sin las
+tres, es desbordamiento con otro nombre.
+
+**Dos candados salieron en rojo durante el trabajo y los dos tenían razón:** una
+sombra partida en dos líneas le parecía al candado de color un `rgba()` suelto, y
+un `animation: 2s` escrito a mano no pasaba por ningún token de duración.
+
+### Lo de la v1.132.0, con detalle
 
 **R156 · la fila de totales es DE la tabla.** Va en `tfoot`, y esa decisión hace
 el resto sola: no la toca el orden, ni el filtro, ni la paginación **no porque se

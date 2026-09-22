@@ -19,27 +19,26 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.132.0** — **R156: la fila de totales es DE la tabla**, y
-nace el candado que compila lo que el catálogo invita a copiar.
+**Estado actual: v1.133.0** — **R157: las piezas de un tablero denso**, y
+**deslizar deja de ser siempre un defecto**.
 
-La fila va en `tfoot`, y esa decisión hace el resto sola: no la toca el orden, ni
-el filtro, ni la paginación **no por una excepción, sino porque no está donde se
-aplican**. Lo pidió el equipo tras cortarlo el dueño con una frase que vale como
-regla: *«colocarlo dentro de la tabla pero no como una fila de la tabla es romper
-el componente tabla»*.
+Siete piezas para una pantalla que *no se consulta, se vigila*, y ninguna es de
+esa pantalla — ésa es la única razón por la que entraron: cuadrícula densa,
+anillo de estado en el avatar, tamaño fluido, relieve como **escala**, la burbuja
+fuera del marco y con tono, superficie tonal y carril con anclaje.
 
-**Y nace `verificar-copia`**, que compila los bloques de «copia esto». §7 regla 3
-dice que lo único que se copia es «la importación y las props», y esa superficie
-**no la miraba nadie** — se declaró abierta tres versiones. Al escribirlo: los
-dieciocho bloques importaban de un paquete **que no existe**, y diecisiete no
-compilan. El import ya está arreglado; el resto entra como deuda declarada que
-obliga a podar.
+**Lo que cambia el sistema y no sólo lo amplía:** la política de móvil primero
+decía «nada se lee deslizando en horizontal», y un tablero que se pasa como las
+páginas de iconos de un teléfono la ponía en duda. No se esquiva: se distingue.
+**Desbordamiento** es «el contenido no cupo y se sale»; **paginación por gesto**
+es «cada parada es una vista entera y no se pierde nada por no deslizar más» — y
+para que valga lo segundo hacen falta **tres** condiciones: alcanzable con
+teclado, que diga dónde estás y cuántas paradas hay, y que **nada quede sólo
+ahí**. Sin las tres, es desbordamiento con otro nombre.
 
-**La política de móvil primero estaba mal escrita**, que es peor que no tenerla:
-mandaba `title` como rescate, y este repositorio ya tenía escrito que *«no se ve
-en móvil ni con teclado»*. Ahora dice el orden: primero no recortar; si hay que
-recortar, alcanzable **sin puntero**. Y 360 px entra en `verificar-promesa` — el
-ancho que la política exige era el único que no miraba ningún candado.
+Y el manual gana **el tablero como tipo de pantalla**: puede no llevar `h1` ni
+migas —cada línea de cabecera es una fila de datos que deja de verse— pero no
+puede quedarse sin nombre accesible ni fiar al color lo que se vigila.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 
@@ -152,6 +151,11 @@ Qué significa, en concreto y sin margen:
 - **Nada obliga a deslizar en horizontal para leer lo que la pantalla tiene que
   decir.** Si a un ancho de teléfono hay que arrastrar para ver una columna,
   eso es un defecto del componente, no del teléfono.
+  **Deslizar sí puede ser la forma** —un tablero que se pasa como las páginas de
+  iconos de un teléfono—, y entonces hacen falta las tres condiciones de la
+  política de creación §5: alcanzable con teclado, que diga dónde estás y
+  cuántas paradas hay, y que **nada quede sólo ahí**. Sin las tres, es
+  desbordamiento con otro nombre.
 - **Ningún texto queda cortado sin forma de leerlo entero — y `title` NO basta
   en un teléfono.** El recorte con puntos suspensivos es presentación; si el
   texto completo no se puede recuperar, la información **no está**.

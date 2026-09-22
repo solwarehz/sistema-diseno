@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.132.0";
+export const VERSION = "1.133.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,74 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.133.0', fecha: '2026-09-22',
+    que: 'R157 · las piezas de un tablero denso, y deslizar deja de ser siempre un defecto',
+    porque:
+      'LO PIDIO EL GRUPO «TABLEROS» PARA UNA PANTALLA QUE NO SE CONSULTA, SE VIGILA: se deja abierta '
+      + 'en un telefono a las 7 de la mañana y dice quien marco y quien no. Entraron SIETE piezas y '
+      + 'ninguna es de esa pantalla, que es la unica razon por la que entraron: una cuadricula densa '
+      + 'sirve a cualquier selector de iconos o paleta; un anillo de estado, a «en linea» o «pagado»; '
+      + 'una burbuja con tono, a cualquier contador; una superficie tonal, a cualquier bloque que '
+      + 'pertenezca entero a un estado. '
+      + 'LA CUADRICULA DENSA ES OTRO CASO, no la de siempre adaptada: la normal reparte en columnas '
+      + 'de 230 px porque sus tarjetas SE LEEN, y a 375 px da una sola. SEIS COLUMNAS NO ES UN NUMERO '
+      + 'ELEGIDO: es lo que sale de la celda mas estrecha en la que un avatar sigue siendo '
+      + 'reconocible dentro de 375 px. Y sube sola hasta doce, porque una rejilla densa no mejora '
+      + 'estirando las piezas — mejora enseñando mas. '
+      + 'EL ANILLO DE ESTADO USA LOS TONOS DEL SISTEMA Y NO LOS DEL DOMINIO. Se pidio como '
+      + '`presente`/`ausente` y entra como exito/aviso/error/info: el anillo no sabe de asistencia, y '
+      + 'el mismo verde sirve para «esta dentro», «en linea», «pagado» y «activo». Un tipo que dijera '
+      + '`presente` obligaria al siguiente producto a llamar «presente» a una factura cobrada. Va por '
+      + 'fuera con sombra y no con borde, que comeria del tamaño de la foto. '
+      + 'Y LA FORMA NO SE TOCA: sigue circular. Se planteo el cuadrado redondeado —«asi como los '
+      + 'iconos de las aplicaciones»— y se descarto en los dos lados a la vez: en una rejilla densa '
+      + 'la forma es lo que distingue una persona de una entidad, y cambiarla ahi la habria roto en '
+      + 'todo el sistema. Lo que daba la sensacion de icono de aplicacion era el RELIEVE. '
+      + 'EL RELIEVE ENTRA COMO ESCALA, no como sombra: `--sombra-relieve` son TRES sombras actuando '
+      + 'como una —contacto, difusa y luz interior—, y es un token y no tres valores en cada producto '
+      + 'porque si cada pantalla inventa la suya, la misma rejilla acaba con tres profundidades. El '
+      + 'auditor del cascaron dejo escrito «Elevacion — el sistema no define sombras» como pendiente: '
+      + 'ya no lo esta. '
+      + 'LA BURBUJA SALE DEL MARCO Y GANA TONO. Vivia dentro de la seccion del marco de aplicacion, '
+      + 'atada al icono de notificaciones y fija a rojo — y es la pieza que hace falta sobre cualquier '
+      + 'cosa que cuente algo. UN NUMERO NO ES MALO POR SER NUMERO: lo dice su tono. '
+      + 'Y ENTRA LA SUPERFICIE TONAL, que era el hueco de verdad: el sistema publicaba el tono para '
+      + 'el Chip y para el filete de TarjetaPersona, pero NO HABIA FORMA DE TEÑIR UN CONTENEDOR. '
+      + 'Lleva borde ademas del fondo, porque sobre una pantalla en oscuro un fondo tenue se pierde. '
+      + 'DESLIZAR DEJA DE SER SIEMPRE UN DEFECTO, y esta es la parte que cambia el sistema y no solo '
+      + 'lo amplia. La politica de movil primero decia «nada se lee deslizando en horizontal», y el '
+      + 'R157 traia un tablero que se pasa como las paginas de iconos de un telefono. No se esquiva '
+      + 'la politica: se distingue. DESBORDAMIENTO es «el contenido no cupo y se sale»; PAGINACION '
+      + 'POR GESTO es «cada parada es una vista entera y no se pierde nada por no deslizar mas». Y '
+      + 'para que valga lo segundo, TRES condiciones: se alcanza con teclado, dice donde estas y '
+      + 'cuantas paradas hay, y nada queda SOLO ahi. Sin las tres, es desbordamiento con otro nombre. '
+      + '«EN VIVO» NO ES UN Chip, y lo preguntaron dudando. Un Chip dice el estado de un DATO; esto '
+      + 'dice el estado de LA CONEXION — no habla de lo que se mira, habla de si lo que se mira sigue '
+      + 'siendo cierto. Usa el acento de accion y no un tono de estado, que en un tablero estan '
+      + 'ocupados por lo que se vigila. Y LA HORA ES LA PIEZA: un punto latiendo solo dice «creo que '
+      + 'estoy conectado»; con la hora del ultimo dato, si son las 7:15 y el dato es de las 6:40, el '
+      + 'tablero esta colgado aunque el punto siga latiendo. '
+      + 'Y ENTRA UNA PIEZA QUE NO PIDIERON: la celda de tablero. La descartaron de pasada —«lo que '
+      + 'hace falta es vertical y diminuto, icono arriba, nombre y hora debajo»— y sin ella se '
+      + 'publicaba el contenedor y no lo que va dentro, que es como se publican los huecos. '
+      + 'DOS PREGUNTAS DE NORMA, respondidas. La del color sin texto: su razonamiento se sostiene '
+      + '—el color REFUERZA una distincion dicha con texto en el segmentado, en la hora y en la '
+      + 'superficie— pero se les corrige un argumento: «nunca se ven los dos grupos a la vez» es el '
+      + 'debil de los cuatro, porque depende de que la pantalla siga teniendo un segmentado mañana. '
+      + 'Y LA EXCEPCION DE CABECERA SE CONFIRMA Y SE ESCRIBE en el manual: un tablero puede no llevar '
+      + 'h1 ni migas —cada linea de cabecera es una fila de datos que deja de verse— pero NO puede '
+      + 'quedarse sin nombre accesible ni fiar al color lo que se vigila. '
+      + 'Dos candados salieron en rojo durante el trabajo y los dos tenian razon: una sombra partida '
+      + 'en dos lineas le parecia al candado de color un `rgba()` suelto, y un `animation: 2s` '
+      + 'escrito a mano no pasaba por ningun token de duracion. Entra `--dur-latido`.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'NADA. Las siete piezas son clases y props NUEVAS: `Avatar` sin `estado` ni `elevacion` se '
+      + 'comporta exactamente igual que antes, y las clases nuevas no tocan ninguna existente. La '
+      + 'burbuja conserva su rojo por omision.',
+    ],
+  },
   {
     v: '1.132.0', fecha: '2026-09-19',
     que: 'R156 · la fila de totales es DE la tabla · el candado que compila lo que el catalogo invita a copiar · y la politica de movil primero, corregida',

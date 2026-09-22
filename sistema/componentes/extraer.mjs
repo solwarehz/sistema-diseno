@@ -119,6 +119,10 @@ const ELEMENTOS = [
   { n: 'Comprobante electronico', p: ['cpe'] },
   { n: 'Redes sociales', p: ['rs'] },
   { n: 'Diálogo',               p: ['dialogo'] },
+  { n: 'Superficie tonal',    p: ['sup'] },
+  { n: 'Carril con anclaje',  p: ['car'] },
+  { n: 'En vivo',             p: ['vivo'] },
+  { n: 'Celda de tablero',    p: ['tbl'] },
   { n: 'Utilidades',            p: ['sr', 'mono'] },
 ];
 

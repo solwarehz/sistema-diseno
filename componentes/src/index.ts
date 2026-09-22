@@ -34,7 +34,7 @@ export { Chip, type TonoChip, type ChipProps } from './Chip';
 export { Enlace, type EnlaceProps } from './Enlace';
 export { Campo, Selector, type CampoProps, type SelectorProps } from './Campo';
 export { CampoContrasena, type CampoContrasenaProps } from './CampoContrasena';
-export { Avatar, colorIdentidad, iniciales, type TamanoAvatar, type AvatarProps } from './Avatar';
+export { Avatar, colorIdentidad, iniciales, type TamanoAvatar, type EstadoAvatar, type AvatarProps } from './Avatar';
 export { Paginacion, type PaginacionProps } from './Paginacion';
 export { Interruptor, SeleccionMultiple, type Opcion, type InterruptorProps, type SeleccionMultipleProps } from './Interruptor';
 export { Segmentado, type OpcionSegmento, type SegmentadoProps } from './Segmentado';

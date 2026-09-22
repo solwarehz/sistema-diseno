@@ -143,6 +143,34 @@ escudo usa un rojo y el lockup usa **otro**. El sistema adopta el del escudo.
 **Nada por encima de 28px en el sistema.** La densidad manda: quien lleva seis
 horas en la pantalla no necesita titulares, necesita ver más filas.
 
+#### El tablero: una pantalla que no lleva título
+
+**Confirmado el 22/09/2026 a petición del R157, y queda escrito aquí para que no
+se repita a mano en cada pantalla.**
+
+Hay un tipo de pantalla que **no se consulta, se vigila**: se deja abierta en un
+teléfono y se mira de lejos. Un tablero de asistencia a las 7 de la mañana, un
+panel de incidencias, una pizarra de turnos.
+
+Esa pantalla **puede no llevar `h1` ni migas**, y no es una excepción caprichosa:
+
+- **Cada línea de cabecera es una fila de datos que deja de verse.** Es la misma
+  regla de densidad de arriba, llevada a su caso extremo.
+- **El sitio ya lo dice el menú**, que queda marcado en la opción abierta. La
+  cabecera repetiría lo que el marco ya afirma.
+- `MarcoApp` lo admite sin forzar nada: `titulo` es opcional.
+
+**Lo que no se puede quitar**, porque no es cromo:
+
+- **El nombre de la pantalla sigue existiendo para quien no la ve.** Sin `h1`,
+  el marco tiene que dar el nombre accesible —el `aria-label` de la región— o la
+  pantalla queda sin identificar para un lector.
+- **Lo que se vigila tiene que decirse con texto**, no sólo con color: un
+  recuento, un rótulo, una hora. El color refuerza; nunca sostiene.
+
+Si la pantalla se consulta —se entra, se busca algo y se sale—, **no es un
+tablero** y lleva su título como todas.
+
 ### 3.2 En la landing
 
 | Estás escribiendo | Clase | Tamaño |

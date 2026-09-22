@@ -23,6 +23,8 @@ import { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MarcoApp, type GrupoNav } from '../../componentes/src/MarcoApp';
 import { Icono } from '../../componentes/src/Icono';
+import { Avatar } from '../../componentes/src/Avatar';
+import { Segmentado } from '../../componentes/src/Segmentado';
 import { TablaDatos } from '../../componentes/src/TablaDatos';
 import { PanelPrivilegios, type ModuloPrivilegios, type ValorPrivilegios,
   type ColumnaPrivilegios } from '../../componentes/src/PanelPrivilegios';
@@ -290,6 +292,63 @@ function MatrizViva() {
     />
   );
 }
+
+/* R157 · EL TABLERO DENSO, montado y vivo. Las seis piezas a la vez, que es
+   como se ve si conviven: la rejilla, el anillo, el relieve, la burbuja con
+   tono, la superficie tonal y el carril con su cuenta de paradas. */
+const GENTE = [
+  ['Rosa', 'QUISPE MAMANI, Rosa', '07:02', 'exito'],
+  ['Luis', 'HUAMAN SOTO, Luis', '07:04', 'exito'],
+  ['Ana', 'CCAHUANA LIMA, Ana', '07:09', 'exito'],
+  ['Jose', 'PINEDA ROJAS, Jose', '07:11', 'exito'],
+  ['Elva', 'TORRES BAUTISTA, Elva', '07:14', 'exito'],
+  ['Mateo', 'ALVAREZ NINA, Mateo', '07:15', 'exito'],
+  ['Sara', 'VILCA APAZA, Sara', '—', 'error'],
+  ['Pedro', 'MAMANI CRUZ, Pedro', '—', 'error'],
+] as const;
+
+function TableroVivo() {
+  const [grupo, setGrupo] = useState<'exito' | 'error'>('exito');
+  const dentro = GENTE.filter((g) => g[3] === 'exito');
+  const fuera = GENTE.filter((g) => g[3] === 'error');
+  const lista = grupo === 'exito' ? dentro : fuera;
+  return (
+    <div>
+      {/* EL TEXTO QUE SOSTIENE EL COLOR: el recuento va aqui, con palabras, y
+          el anillo de cada avatar solo lo REFUERZA. */}
+      <Segmentado
+        etiqueta="Grupo"
+        opciones={[
+          { valor: 'exito', texto: `Asistió ${dentro.length}` },
+          { valor: 'error', texto: `No asistió ${fuera.length}` },
+        ]}
+        valor={grupo}
+        onCambio={(v) => setGrupo(v as 'exito' | 'error')}
+      />
+      <div className={`sup sup-${grupo}`} style={undefined}>
+        <ul className="tn-densa" style={undefined}>
+          {lista.map(([corto, nombre, hora, tono]) => (
+            <li key={nombre} className="tbl-persona">
+              <span className="tbl-foto">
+                <Avatar id={nombre} nombre={nombre} tamano="fluido"
+                        estado={tono} elevacion="relieve" />
+                {hora !== '—' && Number(hora.slice(3)) > 10 && (
+                  <span className="badge">+{Number(hora.slice(3)) - 10}</span>
+                )}
+              </span>
+              <span className="tbl-nom">{corto}</span>
+              <span className="tbl-hora">{hora}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <p className="vivo"><span className="vivo-punto" /> En vivo · último dato 07:15</p>
+    </div>
+  );
+}
+
+const enTablero = document.getElementById('tablero-vivo');
+if (enTablero) createRoot(enTablero).render(<TableroVivo />);
 
 const enMatriz = document.getElementById('matriz-viva');
 if (enMatriz) createRoot(enMatriz).render(<MatrizViva />);

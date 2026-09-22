@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.132.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.133.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -29,6 +29,19 @@
 /* Dependencias del paquete que no pertenecen a ningun elemento */
 *, *::before, *::after{ box-sizing: border-box; }
 :root{ --sombra-capa: 0 8px 24px rgba(0,0,0,.16); --sombra-aviso: 0 8px 24px rgba(0,0,0,.18);
+  /* R157 · RELIEVE DE PIEZA PEQUEÑA. Son TRES sombras que actuan como una, y
+     por eso es un token y no tres valores sueltos en cada producto: una de
+     contacto corta y pegada, otra larga y difusa que despega la pieza del
+     fondo, y una luz interior arriba que simula el brillo de un boton fisico.
+     Lo trajo Tableros —«las fotos con sombra, que parezca 3D»— y entra como
+     ESCALA porque si cada pantalla inventa la suya, la misma rejilla acaba con
+     tres profundidades distintas. */
+  /* R157 · El latido de «en vivo» tarda lo que tarda una respiracion: mas
+     rapido parece una alarma, mas lento no se ve latir. Va como token porque
+     toda duracion del sistema sale de uno — lo exige el auditor del cascaron, y
+     lo caz o aqui mismo con un 2s escrito a mano. */
+  --dur-latido: 2000ms;
+  --sombra-relieve: 0 1px 2px rgba(0,0,0,.18), 0 4px 10px rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.22);
   /* ── PROFUNDIDAD DEL MARCO ────────────────────────────────────────────────
      El marco y la barra se separan del contenido por ELEVACION, no por color.
 
@@ -87,7 +100,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.132.0; }
+:root{ --mmi-componentes: 1.133.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -782,7 +795,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .chip.chip-info, .msj.msj-info{ background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   AVATAR — 13 reglas · clases .avatar-*
+   AVATAR — 21 reglas · clases .avatar-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .avatar{ position: relative; border-radius: 50%; flex: none; overflow: hidden; display: grid;
@@ -792,6 +805,16 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .avatar-m{ width: 32px; height: 32px; font-size: 13px; }
 .avatar-l{ width: 40px; height: 40px; font-size: 16px; }
 .avatar-xl{ width: 48px; height: 48px; font-size: 19px; }
+.avatar-fluido{ width: 100%; max-width: 48px; height: auto; aspect-ratio: 1;
+  font-size: 15px; }
+.avatar-estado{ box-shadow: 0 0 0 2px var(--fondo-tarjeta), 0 0 0 4px var(--anillo); }
+.avatar-exito{ --anillo: var(--exito-acento); }
+.avatar-aviso{ --anillo: var(--aviso-acento); }
+.avatar-error{ --anillo: var(--error-acento); }
+.avatar-info{ --anillo: var(--info-acento); }
+.avatar-relieve{ box-shadow: var(--sombra-relieve); }
+.avatar-estado.avatar-relieve{ box-shadow: 0 0 0 2px var(--fondo-tarjeta),
+  0 0 0 4px var(--anillo), var(--sombra-relieve); }
 .avatar-1{ background: var(--identidad-1); }
 .avatar-2{ background: var(--identidad-2); }
 .avatar-3{ background: var(--identidad-3); }
@@ -840,11 +863,22 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .tna-editar{ position: absolute; top: 8px; right: 8px; z-index: 1; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TARJETA — 18 reglas · clases .tn-*
+   TARJETA — 23 reglas · clases .tn-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tn-cuadricula{ display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 12px; }
 .tn-cuadricula > *{ min-width: 0; }
+.tn-densa{ display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.tn-densa > *{ min-width: 0; }
+@media (min-width: 480px) {
+  .tn-densa{ grid-template-columns: repeat(8, 1fr); }
+}
+@media (min-width: 768px) {
+  .tn-densa{ grid-template-columns: repeat(10, 1fr); gap: 12px; }
+}
+@media (min-width: 1024px) {
+  .tn-densa{ grid-template-columns: repeat(12, 1fr); }
+}
 .tn{ background: var(--fondo-tarjeta); border: 1px solid var(--borde);
   border-radius: 6px; display: flex; flex-direction: column; text-decoration: none;
   color: var(--texto-principal);
@@ -1223,7 +1257,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .esqueleto.corto{ width: 62%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MARCO DE APLICACIÓN — 189 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
+   MARCO DE APLICACIÓN — 192 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 :where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
@@ -1484,6 +1518,9 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .badge{ position: absolute; top: 1px; right: 1px; min-width: 15px; height: 15px;
   border-radius: 6px; background: var(--error-acento); color: var(--texto-invertido);
   font-size: 12px; font-weight: 600; display: grid; place-items: center; padding: 0 4px; }
+.badge-exito{ background: var(--exito-acento); }
+.badge-aviso{ background: var(--aviso-acento); color: var(--texto-principal); }
+.badge-info{ background: var(--info-acento); }
 .top-avatar{ margin-left: 4px; border: 0; cursor: pointer; }
 .us{ position: relative; }
 .us-menu{ position: absolute; z-index: 60; right: 0; top: calc(100% + 8px);
@@ -1872,6 +1909,57 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   padding: 12px 20px 20px; border-top: 1px solid var(--borde); }
 
 /* ───────────────────────────────────────────────────────────────────────────
+   SUPERFICIE TONAL — 5 reglas · clases .sup-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.sup{ border-radius: 10px; padding: 12px; border: 1px solid var(--sup-borde);
+  background: var(--sup-fondo); }
+.sup-exito{ --sup-fondo: var(--exito-fondo); --sup-borde: var(--exito-acento); }
+.sup-aviso{ --sup-fondo: var(--aviso-fondo); --sup-borde: var(--aviso-acento); }
+.sup-error{ --sup-fondo: var(--error-fondo); --sup-borde: var(--error-acento); }
+.sup-info{ --sup-fondo: var(--info-fondo);  --sup-borde: var(--info-acento); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   CARRIL CON ANCLAJE — 7 reglas · clases .car-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.car{ display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+  gap: 12px; scroll-behavior: smooth; }
+.car > *{ flex: 0 0 100%; scroll-snap-align: start; min-width: 0; }
+.car:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px; }
+.car-cuenta{ display: flex; gap: 6px; justify-content: center; padding: 8px 0;
+  color: var(--texto-secundario); font-size: 12px; }
+.car-punto{ width: 6px; height: 6px; border-radius: 50%; background: var(--borde-campo); }
+.car-punto-aqui{ background: var(--accion); }
+@media (prefers-reduced-motion: reduce) {
+  .car{ scroll-behavior: auto; }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   EN VIVO — 3 reglas · clases .vivo-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.vivo{ display: inline-flex; align-items: center; gap: 6px;
+  color: var(--texto-secundario); font-size: 12px; }
+.vivo-punto{ width: 8px; height: 8px; border-radius: 50%; background: var(--accion);
+  animation: latido var(--dur-latido) ease-in-out infinite; flex: none; }
+@media (prefers-reduced-motion: reduce) {
+  .vivo-punto{ animation: none; }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   CELDA DE TABLERO — 4 reglas · clases .tbl-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.tbl-persona{ display: flex; flex-direction: column; align-items: center;
+  gap: 2px; min-width: 0; text-align: center; }
+.tbl-foto{ position: relative; display: block; width: 100%; line-height: 0; }
+.tbl-nom{ font-size: 11px; color: var(--texto-principal); max-width: 100%;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tbl-hora{ font-size: 11px; color: var(--texto-secundario);
+  font-variant-numeric: tabular-nums; }
+
+/* ───────────────────────────────────────────────────────────────────────────
    UTILIDADES — 8 reglas · clases .sr-*, .mono-*
    ─────────────────────────────────────────────────────────────────────────── */
 
@@ -1894,11 +1982,15 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .mono-lista.mono{ font-family: 'IBM Plex Mono', monospace; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   ANIMACIONES — 2 · las que estas reglas invocan, con sus variantes
+   ANIMACIONES — 3 · las que estas reglas invocan, con sus variantes
    Sin su @keyframes, `animation:` se ignora EN SILENCIO. Hasta la v1.107.0
    no viajaban: el giro del botón ocupado y la barra indeterminada estaban
    quietos en todos los productos.
    ─────────────────────────────────────────────────────────────────────────── */
 
 @keyframes btn-girar{ to { transform: rotate(360deg); } }
+@keyframes latido{
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .45; transform: scale(.82); }
+}
 @keyframes pr-va{ 0% { transform: translateX(-110%); } 100% { transform: translateX(320%); } }

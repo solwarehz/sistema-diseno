@@ -7404,6 +7404,33 @@ const pagAvatar = `
 <p class="pag-intro">El disco con las iniciales de una persona. Existe para <strong>reconocer de un
 vistazo</strong> en una lista larga, no para informar de nada.</p>
 
+<h3 class="sub-seccion">R157 · Las piezas de un tablero denso</h3>
+<p class="seccion-sub">Lo trajo un tablero que <strong>no se consulta, se vigila</strong>: se deja
+abierto en un teléfono a las 7 de la mañana. Entraron porque <strong>ninguna es de esa
+pantalla</strong> — una cuadrícula densa sirve a cualquier selector de iconos, un anillo de estado a
+«en línea» o «pagado», una burbuja con tono a cualquier contador.</p>
+<div class="bloque" id="tablero-vivo"></div>
+<div class="aviso">
+  <strong>El anillo usa los tonos del sistema, no los del dominio.</strong> Se pidió como
+  <code>'presente' | 'ausente'</code> y entra como <code>'exito' | 'aviso' | 'error' | 'info'</code>:
+  el anillo no sabe de asistencia, y el mismo verde sirve para «está dentro», «en línea», «pagado» y
+  «activo». Un tipo que dijera <code>presente</code> obligaría al siguiente producto a llamar
+  «presente» a una factura cobrada.
+  <br><br>
+  <strong>Y el color no va solo.</strong> El anillo refuerza una distinción que ya está dicha con
+  texto —el segmentado de arriba, con su recuento—, nunca la sostiene él. Es la misma regla que
+  <code>TarjetaPersona</code> lleva escrita: «el color solo no distingue nada».
+</div>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Seis columnas no es un número elegido</strong>: es lo que sale de la celda más estrecha en la que un avatar sigue siendo reconocible dentro de 375 px. Y sube sola a 8, 10 y 12 — una rejilla densa no mejora estirando las piezas, mejora enseñando más.</td></tr>
+    <tr><td class="num">2</td><td><strong>El relieve es una escala, no una sombra.</strong> <code>--sombra-relieve</code> son tres actuando como una: contacto, difusa y luz interior. Si cada pantalla inventa la suya, la misma rejilla acaba con tres profundidades.</td></tr>
+    <tr><td class="num">3</td><td><strong>La burbuja salió del marco.</strong> Vivía atada al icono de notificaciones y fija a rojo. Un número no es malo por ser número: lo dice su tono.</td></tr>
+    <tr><td class="num">4</td><td><strong>Deslizar puede ser la forma</strong>, y entonces no es desbordamiento — pero hay que ganárselo: alcanzable con teclado, que diga dónde estás y cuántas paradas hay, y que nada quede <em>sólo</em> ahí.</td></tr>
+    <tr><td class="num">5</td><td><strong>«En vivo» no es un <code>Chip</code>.</strong> Un chip dice el estado de un dato; esto dice si lo que se mira <em>sigue siendo cierto</em>. Y la hora es la pieza: un punto latiendo solo dice «creo que estoy conectado».</td></tr>
+  </tbody>
+</table>
+
 <h3 class="sub-seccion">El color no significa nada</h3>
 <p class="pag-intro">Es la decisión que sostiene todo lo demás. El avatar usa una paleta de
 <strong>identidad</strong>, no la de estado, y esto no es preferencia: si un avatar fuera rojo,
@@ -9276,6 +9303,19 @@ ${tokensCss}
    token de color -no se mide contraste sobre ella- pero sí un valor del
    sistema: tres sombras distintas se notan. */
 :root { --sombra-capa: 0 8px 24px rgba(0,0,0,.16); --sombra-aviso: 0 8px 24px rgba(0,0,0,.18);
+  /* R157 · RELIEVE DE PIEZA PEQUEÑA. Son TRES sombras que actuan como una, y
+     por eso es un token y no tres valores sueltos en cada producto: una de
+     contacto corta y pegada, otra larga y difusa que despega la pieza del
+     fondo, y una luz interior arriba que simula el brillo de un boton fisico.
+     Lo trajo Tableros —«las fotos con sombra, que parezca 3D»— y entra como
+     ESCALA porque si cada pantalla inventa la suya, la misma rejilla acaba con
+     tres profundidades distintas. */
+  /* R157 · El latido de «en vivo» tarda lo que tarda una respiracion: mas
+     rapido parece una alarma, mas lento no se ve latir. Va como token porque
+     toda duracion del sistema sale de uno — lo exige el auditor del cascaron, y
+     lo caz o aqui mismo con un 2s escrito a mano. */
+  --dur-latido: 2000ms;
+  --sombra-relieve: 0 1px 2px rgba(0,0,0,.18), 0 4px 10px rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.22);
   /* ── PROFUNDIDAD DEL MARCO ────────────────────────────────────────────────
      El marco y la barra se separan del contenido por ELEVACION, no por color.
 
@@ -11022,6 +11062,27 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .avatar-m  { width: 32px; height: 32px; font-size: 13px; }
 .avatar-l  { width: 40px; height: 40px; font-size: 16px; }
 .avatar-xl { width: 48px; height: 48px; font-size: 19px; }
+/* R157 · FLUIDO: manda la celda, con tope. En una rejilla de seis columnas a
+   375 px la celda son ~52 px y ninguno de los cuatro tamaños fijos encaja; el
+   tope es el del mayor de la escala, para que en una pantalla ancha no crezca
+   hasta ser un retrato. */
+.avatar-fluido { width: 100%; max-width: 48px; height: auto; aspect-ratio: 1;
+  font-size: 15px; }
+/* R157 · EL ANILLO DE ESTADO. Va por fuera con box-shadow y no con border: un
+   borde comeria del tamaño de la foto, y en 48 px eso se nota. El color
+   REFUERZA algo dicho con texto en otro sitio —nunca lo sostiene solo—, que es
+   la misma regla que lleva escrita TarjetaPersona. */
+.avatar-estado { box-shadow: 0 0 0 2px var(--fondo-tarjeta), 0 0 0 4px var(--anillo); }
+.avatar-exito { --anillo: var(--exito-acento); }
+.avatar-aviso { --anillo: var(--aviso-acento); }
+.avatar-error { --anillo: var(--error-acento); }
+.avatar-info  { --anillo: var(--info-acento); }
+.avatar-relieve { box-shadow: var(--sombra-relieve); }
+/* Y CON LAS DOS, conviven: el anillo delante y la elevacion detras. En reglas
+   separadas ganaria la ultima y el anillo desapareceria justo en la rejilla que
+   lo necesita. */
+.avatar-estado.avatar-relieve { box-shadow: 0 0 0 2px var(--fondo-tarjeta),
+  0 0 0 4px var(--anillo), var(--sombra-relieve); }
 .avatar-1 { background: var(--identidad-1); }
 .avatar-2 { background: var(--identidad-2); }
 .avatar-3 { background: var(--identidad-3); }
@@ -11465,6 +11526,146 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    y rompe el reparto. */
 .tn-cuadricula { display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 12px; }
 .tn-cuadricula > * { min-width: 0; }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   R157 · CUADRICULA DENSA — cuando lo que importa es CUANTOS caben.
+
+   La cuadricula normal reparte en columnas de 230 px minimo: es para tarjetas que
+   se leen. A 375 px da UNA columna, y eso no es que se adapte mal — es que es
+   otro caso.
+
+   Esta es para piezas diminutas que se BARREN de un vistazo: un tablero de
+   personas, una paleta, un selector de iconos. Lo trajo Tableros con el dato
+   delante: «6 columnas y 5 filas, sino no podre ver a todos», 30 personas en
+   un telefono sin desplazar.
+
+   SEIS COLUMNAS NO ES UN NUMERO ELEGIDO AQUI: es lo que sale de la celda mas
+   estrecha en la que un avatar sigue siendo reconocible —~48 px mas su hueco—
+   dentro de 375 px. Y sube sola hasta doce cuando hay sitio, porque la rejilla
+   densa no mejora estirando las piezas: mejora enseñando mas.
+
+   Lleva el mismo min-width: 0 que su hermana, que es lo que impide que un
+   nombre largo ensanche su columna y descuadre la rejilla entera.
+   ───────────────────────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────────────
+   R157 · SUPERFICIE TONAL — un contenedor que se tiñe con su estado.
+
+   El sistema publicaba el tono para el Chip y para el filete de
+   TarjetaPersona, pero no habia forma de teñir UN CONTENEDOR. Lo pidio
+   Tableros: «para adentro con su fondito caracteristico», de modo que no haga
+   falta leer la pestaña para saber en que grupo estas.
+
+   Y sirve mas alla de un tablero: un panel de errores de importacion, el
+   resumen de una validacion, el bloque de un pago rechazado. Cualquier sitio
+   donde el CONTINENTE entero pertenece a un estado, no una etiqueta suelta.
+
+   EL TONO NO VA SOLO. Esta superficie refuerza algo que ya tiene que estar
+   dicho con texto —un titulo, un recuento, un segmentado—: es la misma regla
+   que TarjetaPersona lleva escrita, «el color solo no distingue nada». Por eso
+   lleva un borde del acento ademas del fondo: sobre una pantalla en oscuro un
+   fondo tenue se pierde, y el borde sobrevive.
+   ───────────────────────────────────────────────────────────────────────────── */
+.sup { border-radius: 10px; padding: 12px; border: 1px solid var(--sup-borde);
+  background: var(--sup-fondo); }
+.sup-exito { --sup-fondo: var(--exito-fondo); --sup-borde: var(--exito-acento); }
+.sup-aviso { --sup-fondo: var(--aviso-fondo); --sup-borde: var(--aviso-acento); }
+.sup-error { --sup-fondo: var(--error-fondo); --sup-borde: var(--error-acento); }
+.sup-info  { --sup-fondo: var(--info-fondo);  --sup-borde: var(--info-acento); }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   R157 · EN VIVO — un punto que late y la hora del ultimo dato.
+
+   NO ES UN Chip, y lo pidieron dudando entre las dos cosas. Un Chip dice el
+   ESTADO DE UN DATO —«activo», «pendiente»—; esto dice el estado de LA CONEXION,
+   que es de otra naturaleza: no habla de lo que se mira, habla de si lo que se
+   mira sigue siendo cierto. Meterlo en Chip habria obligado ademas a gastar un
+   tono —y ellos avisaron de que verde y rojo ya estan ocupados por las
+   personas—, asi que usa el acento de accion y no un tono de estado.
+
+   LA HORA ES LA PIEZA, no el adorno. Un punto latiendo solo dice «creo que
+   estoy conectado»; con la hora del ultimo dato, quien mira decide por su
+   cuenta: si son las 7:15 y el ultimo dato es de las 6:40, el tablero esta
+   colgado aunque el punto siga latiendo. Por eso la hora NO es opcional en la
+   pieza: es lo unico que no puede mentir.
+
+   Y EL LATIDO SE APAGA con prefers-reduced-motion, donde queda el punto quieto
+   y la hora — que es justo la informacion, sin el efecto.
+   ───────────────────────────────────────────────────────────────────────────── */
+.vivo { display: inline-flex; align-items: center; gap: 6px;
+  color: var(--texto-secundario); font-size: 12px; }
+.vivo-punto { width: 8px; height: 8px; border-radius: 50%; background: var(--accion);
+  animation: latido var(--dur-latido) ease-in-out infinite; flex: none; }
+@keyframes latido {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .45; transform: scale(.82); }
+}
+@media (prefers-reduced-motion: reduce) { .vivo-punto { animation: none; } }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   R157 · CELDA DE TABLERO — vertical y diminuta.
+
+   «TarjetaPersona» es una FILA horizontal: avatar a la izquierda, texto a la
+   derecha, chip y dato. En una celda de ~52 px no cabe nada de eso. Lo dijo
+   Tableros al descartarla: «lo que hace falta es vertical y diminuto — icono
+   arriba, nombre y hora debajo».
+
+   No lo pidieron como pieza, y entra igual: sin ella, la celda la maqueta cada
+   producto y la rejilla densa se queda a medias — se publica el contenedor y no
+   lo que va dentro, que es como se publican los huecos.
+
+   EL NOMBRE SE RECORTA Y EL RECORTE NO ESCONDE NADA: la politica de movil
+   primero (§5.3) manda que el texto entero este alcanzable SIN PUNTERO, asi que
+   el nombre completo va en el «title» del avatar —que ya lo lleva— y ademas
+   debajo, en corto. Aqui no hay nada que un raton descubra y un dedo no.
+   ───────────────────────────────────────────────────────────────────────────── */
+.tbl-persona { display: flex; flex-direction: column; align-items: center;
+  gap: 2px; min-width: 0; text-align: center; }
+/* La foto es lo que lleva la burbuja: por eso es ella la que se hace relativa, y
+   no la celda — anclada a la celda, la burbuja bailaria con el largo del nombre. */
+.tbl-foto { position: relative; display: block; width: 100%; line-height: 0; }
+.tbl-nom { font-size: 11px; color: var(--texto-principal); max-width: 100%;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tbl-hora { font-size: 11px; color: var(--texto-secundario);
+  font-variant-numeric: tabular-nums; }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   R157 · CARRIL CON ANCLAJE — cuando deslizar ES la forma, no un desbordamiento.
+
+   Un tablero que se pasa como las paginas de iconos de un telefono: cada parada
+   es una PANTALLA COMPLETA y el anclaje evita quedarse a medio camino entre dos
+   personas.
+
+   La politica de movil primero dice que nada se lee deslizando en horizontal, y
+   esto no la incumple: la distingue. Desbordamiento es «el contenido no cupo y
+   se sale»; paginacion por gesto es «cada parada es una vista entera y no se
+   pierde nada por no deslizar mas». Para que valga lo segundo hacen falta las
+   TRES condiciones de la politica §5, y las tres estan aqui:
+     (a) se alcanza con teclado —quien lo use pone tabIndex={0} y role="region"
+         con nombre, como ya hace Horario—;
+     (b) dice donde estas y cuantas paradas hay —.car-cuenta—;
+     (c) nada queda SOLO ahi: lo que hay que poder leer sin deslizar, se lee.
+
+   EL ORDEN SE LEE POR FILAS, y por eso son bloques y no una rejilla que fluya:
+   con grid-auto-flow: column el segundo caeria DEBAJO del primero, no a su
+   lado. Lo aviso Tableros y es el detalle que obliga a partir la lista.
+   ───────────────────────────────────────────────────────────────────────────── */
+.car { display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+  gap: 12px; scroll-behavior: smooth; }
+.car > * { flex: 0 0 100%; scroll-snap-align: start; min-width: 0; }
+.car:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
+/* Donde estas y cuantas hay. Sin esto el gesto es a ciegas: se desliza sin
+   saber si queda algo detras, que es la mitad de lo que hace util un carril. */
+.car-cuenta { display: flex; gap: 6px; justify-content: center; padding: 8px 0;
+  color: var(--texto-secundario); font-size: 12px; }
+.car-punto { width: 6px; height: 6px; border-radius: 50%; background: var(--borde-campo); }
+.car-punto-aqui { background: var(--accion); }
+@media (prefers-reduced-motion: reduce) { .car { scroll-behavior: auto; } }
+
+.tn-densa { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.tn-densa > * { min-width: 0; }
+@media (min-width: 480px) { .tn-densa { grid-template-columns: repeat(8, 1fr); } }
+@media (min-width: 768px) { .tn-densa { grid-template-columns: repeat(10, 1fr); gap: 12px; } }
+@media (min-width: 1024px) { .tn-densa { grid-template-columns: repeat(12, 1fr); } }
 /* R56 · La pulsable es un <button>, y un boton NO hereda tipografia.
    Sin font/text-align/padding/margin el navegador impone su fuente
    (~13,3px Arial), centra el texto y anade relleno propio. Aqui no se veia
@@ -12916,9 +13117,31 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   border-radius: 6px; color: var(--texto-secundario); position: relative;
   display: grid; place-items: center; }
 .top-btn:hover { background: var(--fondo-encabezado); color: var(--texto-principal); }
+/* ─────────────────────────────────────────────────────────────────────────────
+   R157 · LA BURBUJA SALE DEL MARCO.
+
+   Estaba aqui dentro, en la seccion del MARCO DE APLICACION, pensada solo para
+   el icono de notificaciones — y es exactamente la pieza que hace falta sobre
+   cualquier cosa que cuente algo: un avatar con minutos de tardanza, una
+   pestaña con pendientes, un boton con mensajes sin leer. No habia forma
+   publicada de ponerla en otro sitio, asi que cada producto la habria
+   redibujado.
+
+   Y GANA TONO. Iba fija a rojo, porque una notificacion sin leer siempre lo
+   era. Tableros trajo el caso que lo rompe: la misma burbuja tiene que decir
+   «+9» de tardanza en rojo y «-30» de anticipo en verde. Un numero no es malo
+   por ser numero; lo dice su tono.
+
+   Quien la use tiene que dar al contenedor position: relative, que es lo que
+   el marco ya hacia. Y el numero NO puede ser el unico portador: si la burbuja
+   dice algo que no esta en el texto de al lado, no esta dicho.
+   ───────────────────────────────────────────────────────────────────────────── */
 .badge { position: absolute; top: 1px; right: 1px; min-width: 15px; height: 15px;
   border-radius: 6px; background: var(--error-acento); color: var(--texto-invertido);
   font-size: 12px; font-weight: 600; display: grid; place-items: center; padding: 0 4px; }
+.badge-exito { background: var(--exito-acento); }
+.badge-aviso { background: var(--aviso-acento); color: var(--texto-principal); }
+.badge-info  { background: var(--info-acento); }
 .top-avatar { margin-left: 4px; border: 0; cursor: pointer; }
 
 /* Menú de usuario */

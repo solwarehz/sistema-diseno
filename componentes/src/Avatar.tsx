@@ -11,7 +11,33 @@
 
 import { useEffect, useState } from 'react';
 
-export type TamanoAvatar = 's' | 'm' | 'l' | 'xl';
+/**
+ * R157 · `fluido` lo añade una rejilla densa: **manda la celda, no la escala.**
+ *
+ * Los cuatro tamaños fijos son la escala del sistema y siguen siendo lo normal.
+ * Pero en una cuadrícula de seis columnas en un teléfono, el avatar tiene que
+ * ocupar lo que le dejen —con un tope, para que en una pantalla ancha no crezca
+ * hasta ser un retrato—. Lo pidió Tableros con el dato delante: 6 columnas a
+ * 375 px son ~52 px de celda, y ninguno de los cuatro encaja ahí.
+ */
+export type TamanoAvatar = 's' | 'm' | 'l' | 'xl' | 'fluido';
+
+/**
+ * R157 · EL ANILLO DE ESTADO, y va con los TONOS DEL SISTEMA.
+ *
+ * Lo pidieron como `'presente' | 'ausente'`, que es el vocabulario de su
+ * pantalla. Entra con el del sistema —el mismo de `Chip`— porque el anillo no
+ * sabe de asistencia: el mismo verde sirve para «está dentro», «en línea»,
+ * «pagado» y «activo», y el mismo rojo para sus contrarios. Un tipo que dijera
+ * `presente` obligaría al siguiente producto a llamar «presente» a una factura
+ * cobrada.
+ *
+ * **El color no va solo.** El anillo REFUERZA una distinción que ya tiene que
+ * estar dicha con texto en otro sitio —un `Segmentado` con su recuento, un
+ * rótulo debajo—, nunca la sostiene él. Es la misma regla que `TarjetaPersona`
+ * lleva escrita: «el color solo no distingue nada».
+ */
+export type EstadoAvatar = 'exito' | 'aviso' | 'error' | 'info';
 
 export type AvatarProps = {
   /** Identificador estable de la persona. NO el nombre. */
@@ -21,6 +47,22 @@ export type AvatarProps = {
   /** URL de la foto. **Si falla la carga, se cae a las iniciales.** */
   foto?: string;
   tamano?: TamanoAvatar;
+  /**
+   * R157 · Anillo de estado alrededor del avatar. Ver `EstadoAvatar`: refuerza
+   * una distinción dicha con texto en otro sitio, no la sostiene él solo.
+   */
+  estado?: EstadoAvatar;
+  /**
+   * R157 · **Relieve.** `plana` por omisión. Con `relieve`, el avatar se
+   * despega del fondo con la elevación del sistema.
+   *
+   * Lo pidió Tableros —«las fotos con sombra, que parezca 3D»— y entra porque
+   * en una rejilla de fotos pequeñas el relieve es lo que separa una cuadrícula
+   * de personas de una hoja de cálculo. Sale de `--sombra-relieve`, que es la
+   * escala del sistema: si cada producto inventa su sombra, la misma pantalla
+   * acaba con tres profundidades distintas.
+   */
+  elevacion?: 'plana' | 'relieve';
   className?: string;
 };
 
@@ -48,15 +90,20 @@ export function iniciales(nombre: string): string {
   return (a + b).toUpperCase();
 }
 
-export function Avatar({ id, nombre, foto, tamano = 'm', className = '' }: AvatarProps) {
+export function Avatar({
+  id, nombre, foto, tamano = 'm', estado, elevacion = 'plana', className = '',
+}: AvatarProps) {
   const ini = iniciales(nombre);
   const [roto, setRoto] = useState(false);
   // Se rearma al cambiar de foto: si no, una persona con la imagen caída
   // dejaría rota la del siguiente que ocupe el mismo hueco de la lista.
   useEffect(() => { setRoto(false); }, [foto]);
-  const clases = ['avatar', `avatar-${tamano}`, `avatar-${colorIdentidad(id)}`, className]
-    .filter(Boolean)
-    .join(' ');
+  const clases = [
+    'avatar', `avatar-${tamano}`, `avatar-${colorIdentidad(id)}`,
+    estado && `avatar-estado avatar-${estado}`,
+    elevacion === 'relieve' && 'avatar-relieve',
+    className,
+  ].filter(Boolean).join(' ');
   return (
     // El avatar NO es un botón. Si abre algo, lo envuelve el control y el nombre
     // accesible lo pone ese control, no esto.

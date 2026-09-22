@@ -129,8 +129,23 @@ hay sitio. Tres consecuencias que no se negocian:
    inicial es la estrecha y la ancha entra al comprobar que cabe. Empezar ancho
    y encoger es «escritorio primero con un parche», y se nota en el primer
    pintado.
-2. **Nada se lee deslizando en horizontal.** Si a 360 px hay que arrastrar para
-   leer algo que el componente tiene que decir, el componente está mal.
+2. **Nada se lee deslizando en horizontal… por accidente.** Si a 360 px hay que
+   arrastrar para leer algo que el componente tiene que decir, el componente
+   está mal.
+   **Pero deslizar puede ser la forma, y entonces no es un defecto.** Lo trajo
+   el R157 —un tablero que se pasa como las páginas de iconos de un teléfono— y
+   obliga a distinguir dos cosas que se parecen en la pantalla y no se parecen
+   en nada:
+   - **Desbordamiento**: el contenido no cupo y se sale. Es un defecto.
+   - **Paginación por gesto**: cada parada es una vista completa, el gesto es la
+     manera de avanzar y **no se pierde nada** por no deslizar más.
+   Para que lo segundo valga, las **tres** condiciones, y son las que ya cumple
+   `Horario` a medias:
+   **(a)** se alcanza con teclado —`tabIndex={0}` y `role="region"` con nombre—;
+   **(b)** cada parada dice **dónde estás y cuántas hay**, o el gesto es a
+   ciegas; **(c)** nada queda **sólo** ahí: lo que hay que poder leer sin
+   deslizar, se lee sin deslizar.
+   Si falta una de las tres, vuelve a ser desbordamiento con otro nombre.
 3. **Ningún texto recortado sin forma de leerlo entero, y `title` NO basta en un
    teléfono.** Los puntos suspensivos son presentación, no información.
    **Primero: no recortar** — envolver en dos líneas, apilar, o dar una
