@@ -19,6 +19,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { Avatar } from '../src/Avatar';
+import { Segmentado } from '../src/Segmentado';
 
 const css = readFileSync(
   join(__dirname, '..', '..', 'sistema', 'componentes', 'componentes.css'), 'utf8');
@@ -342,6 +343,57 @@ describe('R157 · el carril con anclaje', () => {
       .map((m) => m[1]);
     expect(bloques.some((b) => /\.car\s*\{[^}]*scroll-behavior:\s*auto/.test(b)),
       'el desplazamiento suave no se apaga con reduced-motion').toBe(true);
+  });
+});
+
+describe('R157 · el tablero ocupa el alto que le den', () => {
+  it('[9] son DOS clases: una apila y otra marca cuál crece', () => {
+    /* Mezclarlas obligaría a que el que crece fuera siempre la superficie
+       tonal. Son dos cosas distintas y se componen. */
+    const marco = regla('.tbl-marco');
+    expect(marco, 'no hay marco de tablero').not.toBe('');
+    expect(marco, 'el marco no apila').toMatch(/flex-direction:\s*column/);
+    expect(marco, 'el marco no toma el alto de su padre').toMatch(/height:\s*100%/);
+    const crece = regla('.tbl-crece');
+    expect(crece, 'nada marca cuál de los tres se estira').not.toBe('');
+    expect(crece, 'el cuerpo no se estira').toMatch(/flex:\s*1/);
+    expect(crece, 'el cuerpo no se desplaza por dentro').toMatch(/overflow-y:\s*auto/);
+  });
+
+  it('[9] las dos llevan `min-height: 0`, que es lo que sujeta el pie', () => {
+    /* Sin él, un hijo de flex no baja de su tamaño de contenido: la rejilla
+       empuja el pie FUERA de la pantalla en vez de desplazarse por dentro. Es
+       el fallo clásico del flex vertical y no se ve hasta que hay datos. */
+    for (const c of ['.tbl-marco', '.tbl-crece']) {
+      expect(regla(c), `${c} sin \`min-height: 0\`: la rejilla empujará el pie fuera`)
+        .toMatch(/min-height:\s*0/);
+    }
+  });
+
+  it('[9] el sistema NO decide el alto de una pantalla ajena', () => {
+    /* Un `100vh` aquí dentro sería justo eso. El alto lo pone el padre. */
+    for (const c of ['.tbl-marco', '.tbl-crece']) {
+      expect(regla(c), `${c} impone un alto de ventana`).not.toMatch(/\d+vh/);
+    }
+  });
+});
+
+describe('R157 · el rótulo se esconde a la vista, no del lector', () => {
+  it('[10] con `etiquetaOculta`, el rótulo SIGUE en el marcado', () => {
+    const { container, rerender } = render(
+      <Segmentado etiqueta="Grupo" valor="a" onCambio={() => {}}
+        opciones={[{ valor: 'a', texto: 'Asistió 18' }, { valor: 'b', texto: 'No asistió 6' }]} />);
+    const visible = container.querySelector('legend');
+    expect(visible?.className, 'sin la prop, el rótulo se ve').toBe('sg-et');
+
+    rerender(
+      <Segmentado etiquetaOculta etiqueta="Grupo" valor="a" onCambio={() => {}}
+        opciones={[{ valor: 'a', texto: 'Asistió 18' }, { valor: 'b', texto: 'No asistió 6' }]} />);
+    const oculto = container.querySelector('legend');
+    expect(oculto, 'el rótulo DESAPARECIÓ: el grupo se queda sin nombre accesible')
+      .not.toBeNull();
+    expect(oculto?.textContent, 'el rótulo perdió su texto').toContain('Grupo');
+    expect(oculto?.className, 'el rótulo sigue visible').toBe('sr-solo');
   });
 });
 

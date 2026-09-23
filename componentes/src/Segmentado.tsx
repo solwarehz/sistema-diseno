@@ -90,11 +90,29 @@ export type SegmentadoProps = {
   deshabilitado?: boolean;
   /** R66 · El control entero cerrado por regla, con su motivo. */
   cerrado?: string;
+  /**
+   * Esconde el rótulo A LA VISTA, no del lector.
+   *
+   * El `legend` sigue ahí —es lo que nombra al grupo— y pasa a `sr-solo`. No se
+   * quita: un grupo de opciones sin nombre accesible deja al lector diciendo
+   * «Asistió 18, No asistió 6» sin decir de qué.
+   *
+   * Existe para las pantallas donde el rótulo ya está dicho por el sitio: un
+   * tablero que se vigila de lejos no puede gastar una línea en «Grupo» cuando
+   * las dos opciones ya dicen qué son. **Lo pidió el responsable para el tablero
+   * y entra porque no es de esa pantalla**: cualquier control dentro de una
+   * cabecera estrecha tiene el mismo problema.
+   */
+  etiquetaOculta?: boolean;
 };
 
 export function Segmentado({
   etiqueta, contexto, opciones, valor, onCambio, deshabilitado = false, cerrado,
+  etiquetaOculta = false,
 }: SegmentadoProps) {
+  // El rótulo no desaparece: cambia de clase. `sr-solo` lo saca del flujo
+  // visual y lo deja íntegro para el lector.
+  const claseEt = etiquetaOculta ? 'sr-solo' : 'sg-et';
   const id = useId();
 
   // Control entero cerrado. Mismo trato que el Interruptor en R66 y por el
@@ -103,7 +121,7 @@ export function Segmentado({
   if (cerrado) {
     return (
       <div className="sg sg-cerrado">
-        <span className="sg-et">
+        <span className={claseEt}>
           {contexto && <span className="sr-solo">{contexto} · </span>}
           {etiqueta}
         </span>
@@ -123,7 +141,7 @@ export function Segmentado({
     // `aria-pressed` a mano obliga a tabular opción por opción, que a diez
     // filas son treinta tabulaciones para llegar al final.
     <fieldset className={`sg${deshabilitado ? ' sg-desh' : ''}`}>
-      <legend className="sg-et">
+      <legend className={claseEt}>
         {contexto && <span className="sr-solo">{contexto} · </span>}
         {etiqueta}
       </legend>

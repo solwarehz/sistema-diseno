@@ -7503,7 +7503,7 @@ lector de pantalla. <strong>Y el mismo dato está en la tabla de abajo</strong>:
   <div class="cod-cab"><span class="cod-tit">El marcado, que es el contrato</span></div>
   <pre class="cod-pre"><code>import 'sistema-diseno-ae/tokens.css';        // SIEMPRE primero
 import 'sistema-diseno-ae/componentes.css';
-import { Avatar } from 'sistema-diseno-ae/componentes';
+import { Avatar, Segmentado } from 'sistema-diseno-ae/componentes';
 
 // El tipo es SUYO: el sistema no sabe de personas, sabe de celdas.
 type Persona = { id: string; nombre: string; apellido: string; hora: string };
@@ -7522,12 +7522,28 @@ export function CeldaDeTablero({ p }: { p: Persona }) {
   );
 }
 
-export function Tablero({ gente }: { gente: Persona[] }) {
+// «tbl-marco» ocupa el alto QUE LE DEN —del encabezado al fondo— y «tbl-crece»
+// marca cual de los tres hijos se estira y se desplaza por dentro. El alto lo
+// pone el PADRE: aqui dentro no hay ningun «100vh».
+export function Tablero({ gente, grupo, onGrupo }: {
+  gente: Persona[]; grupo: string; onGrupo: (v: string) =&gt; void;
+}) {
+  const dentro = gente.filter((p) =&gt; p.hora !== '—').length;
+  const fuera = gente.length - dentro;
   return (
-    &lt;&gt;
+    &lt;div className="tbl-marco"&gt;
+      {/* El rotulo se esconde A LA VISTA, no del lector: el «legend» sigue
+          nombrando al grupo. En un tablero, «Grupo» gasta una linea que son
+          personas que dejan de verse. */}
+      &lt;Segmentado etiquetaOculta etiqueta="Grupo" valor={grupo} onCambio={onGrupo}
+        opciones={[
+          { valor: 'dentro', texto: 'Asistio ' + dentro },
+          { valor: 'fuera', texto: 'No asistio ' + fuera },
+        ]} /&gt;
+
       {/* La rejilla va sobre una lista porque ES una lista. La clase le anula
           los 40 px de sangria que el navegador le pone a toda «ul». */}
-      &lt;div className="sup sup-exito"&gt;
+      &lt;div className="sup sup-exito tbl-crece"&gt;
         &lt;ul className="tn-densa"&gt;
           {gente.map((p) =&gt; &lt;CeldaDeTablero key={p.id} p={p} /&gt;)}
         &lt;/ul&gt;
@@ -7548,7 +7564,7 @@ export function Tablero({ gente }: { gente: Persona[] }) {
       {/* En vivo: el punto NO basta. Si son las 7:15 y el dato es de las 6:40,
           el tablero esta colgado aunque el punto siga latiendo. */}
       &lt;p className="vivo"&gt;&lt;span className="vivo-punto" /&gt; En vivo · ultimo dato 07:15&lt;/p&gt;
-    &lt;/&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
 </div>
@@ -9896,6 +9912,12 @@ code { font-family: 'IBM Plex Mono', monospace; }
    ocupa lo que le den y reparte las celdas por todo el ancho, que es lo que
    hace el componente en un producto. */
 .muestra-tablero { width: 100%; }
+/* El catalogo tiene que ENSEÑARLO ocupando, o la pieza no se demuestra: le da
+   un alto de pantalla al bloque para que «tbl-marco» tenga algo que llenar.
+   Es cromo del catalogo —prefijo «muestra»— porque el alto lo decide la
+   pantalla que lo monta, nunca el sistema. */
+#tablero-vivo.bloque { height: min(70vh, 620px); display: flex; }
+#tablero-vivo > .muestra-tablero { flex: 1 1 auto; min-height: 0; }
 /* Cromo del catalogo para enseñar las piezas sueltas. Prefijo «muestra»: no
    viaja. Existen porque durante la v1.133.0 estas piezas viajaban en la hoja de
    todos los productos y el catalogo no las enseñaba NI UNA VEZ — CSS que nadie
@@ -11765,6 +11787,30 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    ellas. Lo pidio el responsable mirando el tablero: «el nombre de cada
    trabajador y el avatar separalos, pero los datos del nombre, apellidos y hora
    juntalas mas». */
+/* ─────────────────────────────────────────────────────────────────────────────
+   R157 · EL TABLERO OCUPA EL ALTO QUE LE DEN, del encabezado al fondo.
+
+   Un tablero no se consulta: se vigila. Se deja abierto y se mira de lejos, asi
+   que cada pixel que no sea rejilla es una persona menos que se ve. Lo pidio el
+   responsable: «que ocupe el mayor espacio posible respetando los padding del
+   diseño».
+
+   Son DOS clases y no una porque hacen dos cosas distintas, y mezclarlas
+   obligaria a que la que crece fuera siempre la superficie tonal:
+     · «tbl-marco» apila encabezado, cuerpo y pie, y toma el alto de su padre.
+     · «tbl-crece» marca CUAL de los tres es el que se estira y se desplaza.
+   El «min-height: 0» de los dos no es adorno: sin el, un hijo de flex no baja
+   de su tamaño de contenido y la rejilla empuja el pie fuera de la pantalla en
+   vez de desplazarse por dentro. Es el fallo clasico de un flex vertical, y no
+   se ve hasta que hay datos de verdad.
+
+   EL PADRE MANDA: esto ocupa lo que le den. Si nadie le da alto, se comporta
+   como antes — crece con su contenido. Un «100vh» aqui dentro seria el sistema
+   decidiendo el alto de una pantalla ajena.
+   ───────────────────────────────────────────────────────────────────────────── */
+.tbl-marco { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 8px; }
+.tbl-crece { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+
 .tbl-persona { display: flex; flex-direction: column; align-items: center;
   gap: 0; min-width: 0; text-align: center; }
 /* La foto es lo que lleva la burbuja: por eso es ella la que se hace relativa, y

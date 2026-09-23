@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.135.0";
+export const VERSION = "1.136.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,39 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.136.0', fecha: '2026-09-22',
+    que: 'El tablero ocupa el alto que le den, y el rotulo se esconde A LA VISTA sin perderse',
+    porque:
+      'UN TABLERO NO SE CONSULTA, SE VIGILA, y de ahi sale todo lo de esta version: cada pixel que '
+      + 'no sea rejilla es una persona menos que se ve. Lo pidio el responsable: «que ocupe el mayor '
+      + 'espacio posible respetando los padding del diseño». '
+      + 'ENTRAN DOS CLASES Y NO UNA, y esa es la decision. `tbl-marco` apila encabezado, cuerpo y '
+      + 'pie y toma el alto de su padre; `tbl-crece` marca CUAL de los tres se estira y se desplaza '
+      + 'por dentro. Juntarlas obligaria a que el que crece fuera siempre la superficie tonal, y en '
+      + 'la siguiente pantalla el que crece sera otra cosa. '
+      + 'LAS DOS LLEVAN `min-height: 0` Y NO ES ADORNO: sin el, un hijo de flex no baja de su tamaño '
+      + 'de contenido, asi que la rejilla EMPUJA EL PIE FUERA DE LA PANTALLA en vez de desplazarse '
+      + 'por dentro. Es el fallo clasico del flex vertical y no se ve hasta que hay datos de verdad '
+      + '— con ocho personas de demo no aparece, con treinta si. Medido en el catalogo: el cuerpo se '
+      + 'desplaza y el pie se queda dentro del bloque. '
+      + 'Y EL ALTO LO PONE EL PADRE. Aqui dentro no hay ningun `100vh`, porque el sistema no decide '
+      + 'el alto de una pantalla ajena; sin alto del padre se comporta como antes y crece con su '
+      + 'contenido. La prueba que lo vigila salio en rojo al meterle un `100vh` a proposito. '
+      + 'Y EL ROTULO SE ESCONDE A LA VISTA, NUNCA DEL LECTOR. `Segmentado` gana `etiquetaOculta`: el '
+      + '`legend` SIGUE AHI y pasa a `sr-solo`. No se quita — un grupo de opciones sin nombre '
+      + 'accesible deja al lector diciendo «Asistio 18, No asistio 6» sin decir de que. En un tablero '
+      + '«Grupo» gasta una linea que son personas que dejan de verse, y las dos opciones ya dicen que '
+      + 'son. NO ES DEL TABLERO: cualquier control dentro de una cabecera estrecha tiene el mismo '
+      + 'problema, y por eso entra en el componente y no en la pantalla. '
+      + 'Cuatro reglas con prueba. La de «el sistema no impone el alto» se vio caer con un `100vh`, y '
+      + 'la del `min-height` con un valor distinto de cero.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'NADA. `tbl-marco` y `tbl-crece` son clases NUEVAS y `etiquetaOculta` es opcional: un '
+      + '`Segmentado` sin ella se comporta exactamente igual que antes.',
+    ],
+  },
   {
     v: '1.135.0', fecha: '2026-09-22',
     que: 'La celda de tablero se lee como UNA persona: la foto se separa, los datos se juntan, y la foto por fin se centra',

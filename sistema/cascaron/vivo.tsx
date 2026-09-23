@@ -345,11 +345,12 @@ function TableroVivo() {
   const fuera = GENTE.filter((g) => g[4] === 'error');
   const lista = grupo === 'exito' ? dentro : fuera;
   return (
-    <div className="muestra-tablero">
+    <div className="muestra-tablero tbl-marco">
       {/* EL TEXTO QUE SOSTIENE EL COLOR: el recuento va aqui, con palabras, y
           el anillo de cada avatar solo lo REFUERZA. */}
       <Segmentado
         etiqueta="Grupo"
+        etiquetaOculta
         opciones={[
           { valor: 'exito', texto: `Asistió ${dentro.length}` },
           { valor: 'error', texto: `No asistió ${fuera.length}` },
@@ -357,7 +358,7 @@ function TableroVivo() {
         valor={grupo}
         onCambio={(v) => setGrupo(v as 'exito' | 'error')}
       />
-      <div className={`sup sup-${grupo}`}>
+      <div className={`sup sup-${grupo} tbl-crece`}>
         <ul className="tn-densa">
           {lista.map(([corto, apellido, nombre, hora, tono]) => (
             <li key={nombre} className="tbl-persona">
