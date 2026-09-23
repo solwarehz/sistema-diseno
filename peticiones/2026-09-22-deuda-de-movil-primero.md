@@ -15,7 +15,7 @@ Medido con el catálogo dentro de un marco de **360 px** de ancho real.
 ## 1 · Quince recortes sin rescate de ninguna clase
 
 `sistema/componentes/componentes.css` contiene **15** `text-overflow: ellipsis` y
-**5** `-webkit-line-clamp`: **20 reglas en 10 componentes**. Dos de las cinco son
+**6** `-webkit-line-clamp`: **21 reglas en 10 componentes**. Dos de las cinco son
 `tbl-nom` y `tbl-ape`, que entraron en la v1.135.0 **con rescate** —el `sr-solo`
 de la celda—, así que no cuentan como deuda. De las 18 restantes, **15 no tienen
 ni `title`**, y las 3 que lo tienen no cumplen igual, porque la política dice que

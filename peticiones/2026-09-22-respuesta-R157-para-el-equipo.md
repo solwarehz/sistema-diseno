@@ -1,9 +1,9 @@
 # Respuesta a R157 — piezas de tablero · para Control Administrativos V2.0
 
-**22 de septiembre de 2026**, actualizado el **23** · MMI-DS **v1.141.0**
+**22 de septiembre de 2026**, actualizado el **23** · MMI-DS **v1.145.0**
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.141.0"
+npm install "github:solwarehz/sistema-diseno#v1.145.0"
 ```
 
 > **Instalen la v1.141.0.** La v1.133.0 publicó las siete piezas y
@@ -26,7 +26,7 @@ Lo que **no** entra tal como lo pidieron está en el §3, con el porqué.
 |---|---|---|
 | **R157.1** | Rejilla densa | Clase **`tn-densa`** |
 | **R157.2** | `Avatar` con estado | Prop **`estado`** — `exito \| aviso \| error \| info` |
-| **R157.3** | Burbuja libre y con color | **`badge-exito`**, **`badge-aviso`**, **`badge-info`**, publicada como pieza propia |
+| **R157.3** | Burbuja libre y con color | **`badge`** (la base, **roja** — la que pidieron para la tardanza) más **`badge-exito`**, **`badge-aviso`** y **`badge-info`**, publicada como pieza propia |
 | **R157.4** | Indicador «en vivo» | Clase **`vivo`** con su punto |
 | **R157.5** | Carril con anclaje | Clase **`car`** con `car-cuenta` y `car-punto` |
 | **R157.6** | Fondo por grupo | Clase **`sup`** con `sup-exito \| sup-aviso \| sup-error \| sup-info` |
@@ -45,7 +45,7 @@ Lo pidieron con los nombres de su dominio. Entra con los **tonos del sistema**:
 `exito`, `aviso`, `error`, `info`.
 
 El anillo no sabe de asistencia. El mismo verde sirve para «está dentro», «en
-línea», «pagado» y «aprobado», y si el sistema publica `presente` la siguiente
+línea», «pagado» y «activo», y si el sistema publica `presente` la siguiente
 pantalla que lo necesite para otra cosa tiene que elegir entre usar una palabra
 que miente o pedir un cuarto nombre. La traducción es de ustedes y es una línea:
 
@@ -140,31 +140,41 @@ La clase ahora anula `margin`, `padding` y `list-style`.
 
 ## 5 · Cómo se monta
 
-**Esta sección está reescrita el 23/09.** La versión anterior enseñaba el
-montaje con `tbl-crece` —que se desplaza en vertical— y **sin carril**. Eso era
-correcto en la v1.137.0 y dejó de serlo en la v1.139.0: copiándolo hoy montarían
-exactamente el tablero medio vacío con desplazamiento vertical que esa versión
-vino a arreglar. Lo cazó una auditoría antes de mandárselo.
+**Reescrita el 23/09 por segunda vez**, y conviene decir por qué: la primera
+versión enseñaba `tbl-crece` —que se desplaza en vertical— y la segunda ponía la
+referencia **en el carril**, que es lo que deja la cuenta clavada en la primera
+fila. Las dos fueron correctas en su día y las dos dejaron de serlo. Ésta es la
+composición de la v1.145.0, y es la misma que monta nuestro catálogo.
 
 ```tsx
+import { useRef, useState } from 'react';
 import {
   Avatar, Segmentado,
-  useCapacidadTablero, enPaginas,        // la capacidad la calcula el sistema
+  useCapacidadTablero, enPaginas, cuentaBurbuja,
 } from 'sistema-diseno-ae/componentes';
 import 'sistema-diseno-ae/tokens.css';        // SIEMPRE primero
 import 'sistema-diseno-ae/componentes.css';   // al revés, no hay ningún color
 
-function Tablero({ gente, grupo, onGrupo }: Props) {
-  // SE MIDE EL CARRIL, no la superficie de fuera: la superficie le quita su
-  // relleno y su borde —26 px—, y midiendo fuera la última fila sale cortada.
+// `gente`, `grupo`, `onGrupo` y `ultima` son de su pantalla, no del sistema.
+function Tablero({ gente, grupo, onGrupo, ultima }: Props) {
   const caja = useRef<HTMLDivElement>(null);
   const { porPagina } = useCapacidadTablero(caja);
   const paginas = enPaginas(gente, porPagina);
 
+  // En qué pantalla está. Se lee del propio desplazamiento porque aquí se pasa
+  // de página DESLIZANDO: un estado que sólo cambie al pulsar diría lo que el
+  // usuario no hizo.
+  const [actual, setActual] = useState(0);
+  const alDeslizar = (e: React.UIEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const i = Math.round(el.scrollLeft / (el.clientWidth || 1));
+    setActual((v) => (v === i ? v : i));
+  };
+
   return (
     // El alto lo pone el padre: <MarcoApp altoCompleto> (ver §5bis).
     <div className="tbl-marco">
-      {/* «etiquetaOculta» esconde el rótulo A LA VISTA, no del lector: el
+      {/* `etiquetaOculta` esconde el rótulo A LA VISTA, no del lector: el
           `legend` sigue nombrando al grupo. En un tablero esa línea son
           personas que dejan de verse. */}
       <Segmentado
@@ -177,10 +187,15 @@ function Tablero({ gente, grupo, onGrupo }: Props) {
           { valor: 'fuera',  texto: `No asistió ${fuera.length}` },
         ]} />
 
-      {/* «tbl-lleno» llena el alto y NO se desplaza en vertical. Lo que no
-          cabe va a la siguiente pantalla, no más abajo. */}
-      <div className={`sup sup-${grupo === 'dentro' ? 'exito' : 'error'} tbl-lleno`}>
-        <div className="car car-pagina" ref={caja} tabIndex={0} role="region"
+      {/* LA REFERENCIA VA AQUÍ, NO EN EL CARRIL. El carril es `height: 100%` y
+          su alto puede depender del contenido: entonces la cuenta se queda
+          clavada en la primera fila —tres tarjetas y el resto de la pantalla
+          vacío—. `tbl-lleno` lleva `overflow: hidden`, así que su tamaño nunca
+          lo decide lo que hay dentro. */}
+      <div className={`sup sup-${grupo === 'dentro' ? 'exito' : 'error'} tbl-lleno`}
+           ref={caja}>
+        <div className="car car-pagina" onScroll={alDeslizar}
+             tabIndex={0} role="region"
              aria-label={`Personas, ${paginas.length} pantallas`}>
           {paginas.map((pagina, i) => (
             <ul className="tn-densa tn-densa-llena" key={i}>
@@ -190,10 +205,13 @@ function Tablero({ gente, grupo, onGrupo }: Props) {
                     <Avatar id={p.id} nombre={p.nombre} tamano="fluido"
                             estado={grupo === 'dentro' ? 'exito' : 'error'}
                             elevacion="relieve" />
-                    {/* La burbuja necesita un ancestro POSICIONADO, y
-                        «tbl-foto» lo es. No vale meterla dentro del <Avatar>:
-                        «.avatar» lleva «overflow: hidden» y la recortaría. */}
-                    {p.tarde > 0 && <span className="badge badge-aviso">+{p.tarde}</span>}
+                    {/* `badge` a secas es la ROJA, que es la que pidieron para
+                        la tardanza. La burbuja necesita un ancestro POSICIONADO,
+                        y `tbl-foto` lo es: dentro del <Avatar> no vale, porque
+                        `.avatar` lleva `overflow: hidden` y la recortaría. */}
+                    {p.tarde > 0 && (
+                      <span className="badge">{cuentaBurbuja(p.tarde, '+')}</span>
+                    )}
                   </span>
                   {/* EL NOMBRE COMPLETO NO ES OPCIONAL: ver §5bis. */}
                   <span className="sr-solo">{p.nombre} {p.apellido} · {p.hora}</span>
@@ -208,7 +226,7 @@ function Tablero({ gente, grupo, onGrupo }: Props) {
       </div>
 
       {paginas.length > 1 && (
-        <p className="car-cuenta">
+        <p className="car-cuenta" aria-live="polite">
           {paginas.map((_, i) => (
             <span key={i} className={`car-punto${i === actual ? ' car-punto-aqui' : ''}`} />
           ))}
@@ -222,48 +240,67 @@ function Tablero({ gente, grupo, onGrupo }: Props) {
 }
 ```
 
+**El alto lo pone el padre.** Dentro no hay ningún `100vh`: el sistema no decide
+el alto de una pantalla ajena. Si el padre es a su vez un contenedor flex, el
+marco necesita además `flex: 1 1 auto; min-height: 0` de su lado.
+
 ---
 
 ## 5-alfa · Y esto contesta su R157.1, que llevaba sin respuesta
 
-Pidieron **«6 columnas y 5 filas, si no no podré ver a todos»** — treinta
-personas sin desplazar. El §2.2 explicaba por qué no fijamos seis columnas y
-**nunca les dijimos cuántas van a ver**. Aquí está:
+Pidieron **«6 columnas y 5 filas, sino no podré ver a todos»** — treinta personas
+sin desplazar. El §2.2 explicaba por qué no fijamos seis columnas y **nunca les
+dijimos cuántas van a ver**. Aquí está, recalculado con la función que se
+publica:
 
-**No lo fija el sistema ni lo fijan ustedes: lo calcula la pantalla.**
-`useCapacidadTablero` mide el área real y devuelve cuántas caben; `enPaginas`
-trocea. Medido en el catálogo:
+| Área disponible para la rejilla | Por pantalla | 30 personas |
+|---|---|---|
+| 293 × 477 (teléfono de 360) | **9** | 4 pantallas |
+| 323 × 621 (teléfono de 390) | **15** | 2 |
+| 701 × 277 (tablet apaisada) | **14** | 3 |
+| 957 × 531 (escritorio 1024) | **40** | **1** |
+| 1213 × 631 (escritorio 1280) | **60** | **1** |
 
-| Área disponible | Personas por pantalla |
-|---|---|
-| 293 × 477 (teléfono) | **12** |
-| 541 × 131 (una franja) | 5 |
-| 753 × 391 (tablet) | **18** — todas de una vez |
-| 1133 × 591 | **18** |
-
-En una tablet de verdad, con `altoCompleto`, **las treinta caben** sin deslizar:
-a 1024×700 la cuenta da 10 columnas × 4 filas = 40. Si no caben, no se aprietan
-hasta ser ilegibles ni se desplazan hacia abajo: **pasan a la siguiente
+**En escritorio caben las treinta de una vez**, y con holgura. En un teléfono no,
+y ahí el sistema no las aprieta hasta que dejen de leerse: **pasan a la siguiente
 pantalla**, y la cuenta de puntos dice cuántas hay.
+
+**Y no lo fija nadie: lo calcula la pantalla.** `useCapacidadTablero` mide el
+área real y devuelve cuántas caben; `enPaginas` trocea. Si el área cambia —gira
+el móvil, se pliega el lateral— se recalcula solo.
+
+**Dos cosas más de su R157.1 que no les contestamos**: `tn-densa` **sí** lleva
+`min-width: 0` en sus hijos, igual que `tn-cuadricula` —es lo que impide que un
+apellido largo ensanche su columna—; y **no hay techo de columnas**: las doce
+que pedían salen solas en cuanto hay sitio, y en 1280 salen doce exactas.
 
 ---
 
 ## 5bis · El nombre largo, y por qué el `sr-solo` no es opcional
 
-`tbl-nom` y `tbl-ape` **envuelven, con tope de dos líneas**. Medido a 11 px: de
-catorce apellidos de la zona, **trece entran en una sola línea** dentro del suelo
-de 84 px. El que se sale es el compuesto, «Villanueva-Bustamante», que mide **115,2 px de texto**, y
-**envuelve sin perder una letra**; la celda crece 13,8 px una sola vez.
+**En el tablero que llena el área** —el que monta el §5— la celda es así:
 
-El tope es lo que impide que un apellido estire su fila y descuadre la rejilla:
-con dos apellidos encadenados, con tres, o con uno corto, **la celda mide 115,2 px de ALTO
-como techo** —mismo número que el ancho de aquel apellido, por coincidencia—. Los puntos suspensivos aparecen sólo a partir de la tercera
-línea.
+- **El nombre va a una línea.** No es un recorte disfrazado: ese hueco recibe el
+  nombre **corto**, y el completo vive en el `sr-solo`.
+- **El apellido envuelve, con tope de dos líneas.** Medido a 11 px: de catorce
+  apellidos de la zona, **trece entran en una sola**. El que se sale es el
+  compuesto —«Villanueva-Bustamante», 115,2 px de texto— y **envuelve sin perder
+  una letra**.
+- **El suelo de fila son 114 px**, y es un **suelo, no un techo**: la fila se
+  estira para llenar el área. Cabe el peor caso que la celda puede producir —48
+  de foto + 10 de separación + una línea de nombre + dos de apellido + una de
+  hora = **113 px**.
 
-**Y cuando recortan, el nombre completo sigue en la celda**, en ese `sr-solo`.
-Nuestra política no prohíbe recortar: prohíbe recortar **sin forma de leer el
-resto**. Si lo quitan, se llevan el recorte sin el rescate — y además el lector
-de pantalla deletrea «Rosa Quispe 06:48» en vez de decir la persona.
+Ese suelo subió de 100 a 114 en la v1.142.0, y **cuesta densidad**: en un
+teléfono de 360 se pasa de 12 personas por pantalla a **9**. Se paga porque con
+100 la fila se quedaba corta y **los hijos se encogían en silencio**: un apellido
+de dos líneas se pintaba a 13 px donde pide 27,5 — una línea entera desaparecida,
+y nada lo denunciaba.
+
+**Y cuando algo se recorta, el nombre completo sigue en la celda**, en ese
+`sr-solo`. Nuestra política no prohíbe recortar: prohíbe recortar **sin forma de
+leer el resto**. Si lo quitan, se llevan el recorte sin el rescate — y además el
+lector de pantalla deletrea «Rosa Quispe 06:48» en vez de decir la persona.
 
 ---
 
@@ -284,15 +321,39 @@ los tonos de estado están ocupados por lo que se vigila.
 
 ---
 
+## 5quater · Y cuatro cosas más suyas que no habíamos contestado
+
+**«La forma NO se toca: sigue circular»** — **confirmado, y no se tocó.** Se
+planteó el cuadrado redondeado y se descartó: en una rejilla densa la forma es lo
+que distingue una persona de una entidad, y cambiarla ahí la habría roto en todo
+el sistema. Lo que daba sensación de icono de aplicación era el **relieve**.
+
+**«¿El sistema tiene ya una escala de sombras? No la hemos encontrado en los
+tokens»** — **no la encontraron porque no está donde buscaron**, y eso es cosa
+nuestra. `--sombra-relieve` vive en `componentes.css`, no en `tokens.css`, igual
+que `--sombra-marco` y `--sombra-barra`. Son tres sombras actuando como una:
+contacto, difusa y luz interior.
+
+**Su composición provisional de tres sombras + `inset`** era la idea correcta:
+la que entra hace exactamente eso. Lo único que cambió es que **es un token**,
+no tres valores en cada pantalla.
+
+**Y queda una cosa abierta, medida y sin resolver**: `--sombra-relieve` **no
+tiene variante oscura**. Nuestras otras dos sombras sí, con esta razón escrita:
+«sobre negro, una sombra al 18 % no existe». El relieve usa ese mismo 18 %. No
+lo hemos medido en oscuro y **no les decimos que funcione**.
+
+---
+
 ## 6 · Las dos confirmaciones que pidieron, y no les habíamos contestado
 
-**«queremos que diseño confirme la excepción»* de cabecera* —un tablero sin `h1`
+**«queremos que diseño confirme la excepción»** de cabecera —un tablero sin `h1`
 ni migas—. **Confirmada y escrita en el manual**: «El tablero: una pantalla que
 no lleva título». Cada línea de cabecera es una fila de datos que deja de verse.
 Pero **no puede quedarse sin nombre accesible** ni fiar al color lo que se
 vigila: eso no es negociable.
 
-**«Si el manual §5.4 cubre también a los tableros, díganlo»** — sí, y con una
+**«Y si el manual §5.4 […] cubre también a los tableros, díganlo»** — sí, y con una
 distinción nueva que trajo su requerimiento. **Y ya está escrita donde ustedes fueron a
 mirar**: el §5.4 del manual dice hoy «una excepción, y sólo una: la paginación
 por gesto», con las tres condiciones y citándoles a ustedes. Tardó tres

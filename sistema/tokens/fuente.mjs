@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.144.0";
+export const VERSION = "1.145.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -71,6 +71,41 @@ export const correcciones = [
  */
 export const CAMBIOS = [
   {
+    v: '1.145.0', fecha: '2026-09-23',
+    que: 'El contrato decia dos cosas que la hoja no entrega, y nace el candado que mira si lo que el contrato CITA es cierto',
+    porque:
+      'EL CONTRATO VIAJA EN EL PAQUETE: el consumidor lo lee para saber que le entregan. Dos '
+      + 'auditorias encontraron el mismo dia DOS CITAS SUYAS QUE LA HOJA NO CUMPLE, y ninguna la '
+      + 'veia un candado. '
+      + 'LA PRIMERA: la regla 13 titulaba «`.avatar img` encuadra a `50% 30%`» cuando la hoja '
+      + 'entregaba `50% 10%` — y el CUERPO de la propia regla decia 10 doce palabras mas abajo. La '
+      + 'v1.144.0 bajo el valor y no toco el titular. `verificar-contrato` no podia verlo: comprueba '
+      + 'que toda regla Obligatorio TENGA prueba, no que lo que dice sea cierto. Y la prueba de esa '
+      + 'regla se habia aflojado A PROPOSITO en el valor —para poder afinarlo sin falsos rojos—, que '
+      + 'es exactamente lo que dejo pasar el 30 %. '
+      + 'LA SEGUNDA LA ENCONTRO LA PROPIA SONDA con la que se media si el candado era viable: una '
+      + 'regla de RangoFecha afirmaba «declara su propio `line-height: 20px`: con sus 16 de relleno '
+      + 'son los 36 px de un campo», y NINGUNO DE LOS DOS NUMEROS EXISTE — la hoja dice 18 de '
+      + 'interlineado y 8 de relleno, y el alto lo cierra `min-height: var(--alto-control)`. Una '
+      + 'cuenta redonda escrita sin comprobarla, que es como se cuelan. '
+      + 'NACE `verificar-citas`: toda declaracion de CSS que el contrato cite entre comillas tiene '
+      + 'que existir en la hoja que se entrega. Se mira una LISTA CERRADA de propiedades —tamaño, '
+      + 'recorte y maquetacion, donde una cifra equivocada cambia lo que el consumidor construye— y '
+      + 'no «toda cadena con dos puntos», porque el contrato esta lleno de prosa que se le parece. '
+      + 'De 34 declaraciones citadas, 33 casan. La que no es la RETRACTACION de la segunda: el '
+      + 'contrato repite el valor falso para contar que lo era, y sustituirlo borraria la '
+      + 'correccion. Va en deuda declarada, por la misma regla que este repositorio ya tiene escrita '
+      + 'para los hexadecimales probados y rechazados. '
+      + 'Y SE SANEO `cuentaBurbuja`, que prometia tres caracteres y no los cumplia si alguien pasaba '
+      + 'su propio tope: con 2,5 daba «2.5+» y con un tope no finito el corte se desactivaba entero. '
+      + 'La prueba solo barria `n` y el prefijo. Ahora barre tambien el tope —diez valores, incluidos '
+      + 'NaN, negativos y decimales— y caza hasta el arreglo a medias: se acoto a 999 pensando que '
+      + 'sin prefijo cabia mas, y «999+» son CUATRO caracteres porque el signo del corte tambien '
+      + 'ocupa.',
+    tokens: { alta: [], baja: [] },
+    rompe: ['NADA de codigo. Un candado mas, dos frases del contrato corregidas y `cuentaBurbuja` acotada a dos cifras.'],
+  },
+  {
     v: '1.144.0', fecha: '2026-09-23',
     que: 'La foto deja de cortar la cabeza DE VERDAD, y la burbuja deja de comerse la cara que viene a anotar',
     porque:
@@ -90,7 +125,10 @@ export const CAMBIOS = [
       + 'lo dijo exacto: «el espacio que tiene es muy poco y los numeros son mas extensos». El '
       + 'numero llega ahora ACORTADO A TRES CARACTERES con `cuentaBurbuja`, que publica el sistema '
       + 'por lo de siempre —si cada pantalla elige su tope, el mismo tablero muestra 99+ en una y '
-      + '120 en la de al lado—, y la hoja pone un tope de 26 px como red por si llega largo igual. '
+      + '120 en la de al lado—. (Este asiento decia aqui que la hoja ponia «un tope de 26 px como '
+      + 'red», y se contradecia a si mismo doce lineas mas abajo: ese tope se puso y SE QUITO en la '
+      + 'misma version, porque un tope de ancho es un circulo fijo dentro del cual meter el numero, '
+      + 'que es lo contrario de lo que se pedia. No hay tope. Lo cazo una auditoria.) '
       + 'NO RECORTA EL DATO, LO RESUME: el valor exacto vive en el texto accesible de la celda, que '
       + 'el contrato ya exige. '
       + 'Y AL COLOCARLA SALIO LO QUE DE VERDAD LA HACIA ESTORBAR, que no era el tamaño: LA POSICION. '

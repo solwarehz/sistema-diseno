@@ -1,9 +1,9 @@
 # Respuesta a R158 — el marco y el alto del tablero · para Control Administrativos V2.0
 
-**23 de septiembre de 2026** · MMI-DS **v1.138.0**
+**23 de septiembre de 2026** · MMI-DS **v1.145.0**
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.141.0"
+npm install "github:solwarehz/sistema-diseno#v1.145.0"
 ```
 
 **Los dos puntos entran, y los dos eran del sistema.** El segundo era un defecto
@@ -37,7 +37,7 @@ Dos cosas que probablemente son lo que transcribieron, y las dos existen de
 verdad en la v1.136.0 que ustedes midieron:
 
 - `@media (max-width: 700px) { .top-plegar .ic-escritorio { display: none } .top-plegar .ic-movil { display: grid } }` — oculta **un icono**, no el botón: es el cambio de glifo de escritorio a móvil.
-- La tercera regla que citan como de 640 px —`.top-plegar { background: transparent … }`— **no está dentro de ese bloque**: el `@media` cierra antes y esa regla es la **base**. Por eso «se le vuelve a dar estilo sin devolverle `display`»: nunca se lo quitaron.
+- La tercera regla que citan como de 640 px —`.top-plegar { background: transparent … }`— **no está dentro de ese bloque**: el `@media` cierra antes y esa regla es la **base**. Por eso «se le vuelve a dar estilo […] sin devolverle `display`»: nunca se lo quitaron.
 
 Y eso último es justo el fondo del asunto que sí tenían razón en señalar.
 
@@ -145,8 +145,8 @@ es decisión de su responsable, no nuestra.
 
 ## 6 · Verificación
 
-- Los **23 pasos** del publicador en verde —son veintitrés desde esta versión: el
-  candado nuevo es el veintidós, más ESLint.
+- Los **23 pasos** del publicador en verde cuando esto entró —el candado nuevo
+  era el veintidós, más ESLint—. Hoy son **25**.
 - **1227 pruebas** en 59 archivos.
 - Las dos reglas nuevas del contrato —13 y 14 de «Marco de aplicación»— con
   prueba, y las dos **vistas caer** con su mutación: devolver el `wrap` y quitar

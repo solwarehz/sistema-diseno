@@ -1,10 +1,10 @@
 # Respuesta a R153 — la matriz en móvil · para Control Administrativos V2.0
 
-**22 de septiembre de 2026** · entró en MMI-DS **v1.131.0**, con dos
+**22 de septiembre de 2026** · entró en MMI-DS **v1.145.0**, con dos
 correcciones en la v1.132.0
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.141.0"
+npm install "github:solwarehz/sistema-diseno#v1.145.0"
 ```
 
 **Entra lo que pidieron primero, no la alternativa.** La matriz cae sola a lista
@@ -23,6 +23,11 @@ columnas deja de caber no depende del producto: depende de la matriz. Un valor
 que va a ser idéntico en todas partes no es una decisión del producto — es una
 decisión del sistema, y repartirla solo garantiza que algún día tres pantallas
 tengan tres umbrales.
+
+**El umbral son 640 px** —lo pidieron documentado y no se lo habíamos dicho— y
+**no hay forma de desactivarlo**: pidieron `listaBajo={false}` para apagarlo y
+tampoco entra, por lo mismo que no entra la prop. Móvil primero es política del
+sistema, y una forma de apagarla es una forma de incumplirla.
 
 **El componente mide su propia caja**, no la ventana. Es lo que hace que también
 funcione dentro de un panel estrecho en una pantalla ancha, que es donde una
@@ -51,7 +56,7 @@ lista servida a un escritorio sí sería un error visible.
 
 Su alternativa decía, con su énfasis original:
 
-> *«la alternativa mínima que nos desbloquea es mucho más barata: **un `title` en
+> *«**Y si eso no entra**, la alternativa mínima que nos desbloquea es mucho más barata: **un `title` en
 > el `th` de la fila con su nombre completo**, más `white-space: normal` bajo
 > 640 px para que el nombre envuelva en dos líneas en vez de cortarse. Resuelve
 > lo de leer; no resuelve lo de móvil primero.»*

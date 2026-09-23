@@ -136,6 +136,7 @@ const CANDADOS = [
   'sistema/candado/verificar-copia.mjs',
   'sistema/candado/verificar-muerta.mjs',
   'sistema/candado/verificar-ciegas.mjs',
+  'sistema/candado/verificar-citas.mjs',
 ];
 
 /** Por CÓDIGO DE SALIDA, no por si imprimió algo: `intenta` devuelve '' cuando

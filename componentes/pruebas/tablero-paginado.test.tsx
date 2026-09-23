@@ -390,11 +390,21 @@ describe('R160 · la burbuja no puede comerse la cara que viene a anotar', () =>
     expect(cuentaBurbuja(7, '+')).toBe('+7');
     expect(cuentaBurbuja(91, '+')).toBe('+91');
     expect(cuentaBurbuja(120, '+')).toBe('+99');
-    for (const n of [0, 1, 99, 100, 5000]) {
+    /* Y SE BARRE EL TOPE TAMBIEN, que es un parámetro PÚBLICO: la primera
+       versión de esta prueba sólo variaba `n` y `prefijo`, y con un tope propio
+       la promesa de tres caracteres se rompía — `cuentaBurbuja(5, '', 2.5)`
+       daba «2.5+», y con un tope no finito el corte se desactivaba entero.
+       Lo encontró una auditoría barriendo lo que la prueba no barría. */
+    const topes = [undefined, 9, 99, 999, 9999, 0, -1, 2.5, NaN, Infinity];
+    for (const n of [0, 1, 9, 99, 100, 5000, 1e6, Number.MAX_VALUE]) {
       for (const p of ['', '+'] as const) {
-        expect(cuentaBurbuja(n, p).length,
-          `«${cuentaBurbuja(n, p)}» pasa de tres caracteres y tapa la foto`)
-          .toBeLessThanOrEqual(3);
+        for (const t of topes) {
+          const salida = t === undefined ? cuentaBurbuja(n, p) : cuentaBurbuja(n, p, t);
+          expect(salida.length,
+            `«${salida}» (n=${n} prefijo=«${p}» tope=${t}) pasa de tres caracteres y tapa la foto`)
+            .toBeLessThanOrEqual(3);
+          expect(salida, `«${salida}» no es una cuenta`).toMatch(/^\+?\d{0,3}\+?$/);
+        }
       }
     }
   });

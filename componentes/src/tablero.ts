@@ -203,10 +203,21 @@ export function useCapacidadTablero(caja: RefObject<HTMLElement | null>): Capaci
  */
 export function cuentaBurbuja(n: number, prefijo: '' | '+' = '', tope = 99): string {
   if (!Number.isFinite(n)) return '';
+  /* EL TOPE TAMBIEN SE SANEA, y no es paranoia: es un parametro PUBLICO. Una
+     auditoria lo barrio y encontro que sin esto la promesa de «tres caracteres»
+     se rompe en cuanto alguien pasa un tope suyo — `cuentaBurbuja(5, '', 2.5)`
+     daba «2.5+», y con un tope no finito el corte se desactivaba entero y un
+     millon salia con sus siete cifras. Se acota a DOS CIFRAS en los dos casos,
+     y esa segunda parte la caza la propia prueba: se puso 999 pensando que sin
+     prefijo cabia mas, y «999+» son CUATRO caracteres — el signo del corte
+     tambien ocupa. Con «+99» y con «99+» son tres. */
+  const techo = Number.isFinite(tope)
+    ? Math.min(99, Math.max(1, Math.floor(tope)))
+    : 99;
   const v = Math.max(0, Math.floor(n));
   /* Con prefijo el tope va DENTRO —«+99»— y sin el va detras —«99+»—: las dos
      formas dicen «mas de 99» y las dos caben en tres caracteres. Poner los dos
      signos daria «+99+», que no lo dice mejor y no cabe. */
-  if (v > tope) return prefijo ? `${prefijo}${tope}` : `${tope}+`;
+  if (v > techo) return prefijo ? `${prefijo}${techo}` : `${techo}+`;
   return `${prefijo}${v}`;
 }
