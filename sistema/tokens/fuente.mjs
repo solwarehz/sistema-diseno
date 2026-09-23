@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.140.0";
+export const VERSION = "1.141.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,51 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.141.0', fecha: '2026-09-23',
+    que: 'El candado que faltaba: un defecto que vuelve TRES veces no es un descuido, es un candado que falta',
+    porque:
+      'TERCERA VEZ QUE SE ABRE EL MISMO AGUJERO, y esta vez se cierra con un candado en vez de a '
+      + 'mano. Una clase que VIAJA en el paquete y que el catalogo pinta SOLO desde el guion '
+      + '`data-vivo` no la compara NADIE: `verificar-empate`, `verificar-omision` y '
+      + '`verificar-elemento` CORTAN el documento en ese guion, y `verificar-promesa` lee una lista '
+      + 'CASOS escrita A MANO. Sale en la hoja de todos los productos sin que ningun candado haya '
+      + 'comprobado nunca que se entrega igual que se enseña. '
+      + 'Paso en la v1.133.0 —el carril entero, tres tonos de burbuja, dos de superficie—, se arreglo '
+      + 'a mano en la v1.134.0. Volvio a pasar en la v1.136.0 —`tbl-marco` y `tbl-crece`—, se arreglo '
+      + 'a mano en la v1.137.0. Y volvio en la v1.139.0 con `tbl-lleno`, `tn-densa-llena` y '
+      + '`car-pagina`. Las tres veces lo encontro una auditoria CON TODOS LOS CANDADOS EN VERDE. '
+      + 'Y EL DIA QUE NACIO ENCONTRO ALGO PEOR QUE LO QUE VENIA A BUSCAR: la CELDA del tablero '
+      + '—`tbl-persona`, `tbl-nom`, `tbl-ape`, `tbl-hora`— y la propia `tn-densa` llevaban ciegas '
+      + 'DESDE QUE NACIERON. El arreglo de la v1.134.0 añadio marcado estatico para la superficie, la '
+      + 'burbuja, el carril y el avatar, y se dejo justo lo que va DENTRO. Ocho versiones entregando '
+      + 'la pieza central del tablero sin que nadie comparara las dos hojas sobre ella. Comprobado '
+      + 'rompiendolo: sacar la celda de la hoja que viaja da 378 diferencias donde antes daba verde. '
+      + 'El candado se escribio estrecho a proposito —solo mira lo que el guion pinta, que es el '
+      + 'punto ciego exacto— en vez de barrer las 793 clases del paquete: una lista de excepciones de '
+      + 'doscientas lineas no se lee, se ignora, y eso ya esta escrito en este repositorio. '
+      + 'Y TRES AUDITORIAS EN PARALELO ENCONTRARON SIETE DEFECTOS MAS EN LA PIEZA RECIEN PUBLICADA, '
+      + 'todos en codigo escrito ese mismo dia. EL PEOR: `capacidadDeRejilla` elegia el hueco con el '
+      + 'ancho de la CAJA y la hoja lo sube con un `@media` que mide la VENTANA, asi que con ventana '
+      + 'ancha y caja estrecha la cuenta usaba 8 donde la hoja usa 12 y se pasaba de UNA COLUMNA. '
+      + 'Reproducido en navegador a 432x654: el carril se desplazaba 233 px en VERTICAL —lo que esta '
+      + 'version vino a eliminar—, siete celdas sobresalian y CUATRO quedaban enteras fuera. 112 '
+      + 'anchos de caja afectados, y entre ellos el 753 que el registro cita como medido. '
+      + '`enPaginas` PODIA PERDER A TODO EL MUNDO: `Math.max(1, NaN)` es NaN, `NaN < 1` es false, el '
+      + 'bucle se cortaba al primer paso y devolvia una pagina vacia con la lista entera '
+      + 'desaparecida Y SIN ERROR. El gancho NO TENIA NI UNA PRUEBA pese a que la regla 12 lo '
+      + 'promete, y se salia con `if (!el) return` sin volver a intentarlo nunca: quien montara el '
+      + 'carril de forma condicional se quedaba en 1x1 de por vida. LA PARADA EN CURSO estaba fijada '
+      + 'a la primera —«Pantalla 1 de 6» despues de deslizar hasta el final—, asi que de las tres '
+      + 'condiciones de la regla 7 la (b) entregaba la mitad. LA BURBUJA se anclaba al borde de la '
+      + 'CELDA y no al de la foto: hasta 12,7 px de aire, flotando. Y `.tbl-hora` no declaraba '
+      + 'interlineado, heredaba 1,45 y la celda medía 101,45 con el suelo en 100. '
+      + 'Queda UNO declarado y sin arreglar, con su medicion: un apellido de dos lineas se recorta '
+      + 'en silencio cuando su fila cae justo en el suelo. Las dos salidas cuestan densidad o '
+      + 'contradicen el tope de dos lineas, y esa no es una decision de implementacion.',
+    tokens: { alta: [], baja: [] },
+    rompe: ['NADA. Marcado nuevo en el catalogo, cuatro casos nuevos en un candado y un candado mas.'],
+  },
   {
     v: '1.140.0', fecha: '2026-09-23',
     que: 'R160 · el numero de la burbuja se lee, y la foto del avatar deja de cortar la cabeza',

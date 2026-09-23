@@ -3,7 +3,7 @@
 **22 de septiembre de 2026** · entró en MMI-DS **v1.132.0**
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.137.0"
+npm install "github:solwarehz/sistema-diseno#v1.141.0"
 ```
 
 **Entra, y entra donde ustedes dijeron.** La frase de su dueño vale como regla y

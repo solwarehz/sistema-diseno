@@ -135,6 +135,7 @@ const CANDADOS = [
      compilaban — y los dieciocho importaban de un paquete que no existe. */
   'sistema/candado/verificar-copia.mjs',
   'sistema/candado/verificar-muerta.mjs',
+  'sistema/candado/verificar-ciegas.mjs',
 ];
 
 /** Por CÓDIGO DE SALIDA, no por si imprimió algo: `intenta` devuelve '' cuando

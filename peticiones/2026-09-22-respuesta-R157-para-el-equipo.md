@@ -1,12 +1,12 @@
 # Respuesta a R157 — piezas de tablero · para Control Administrativos V2.0
 
-**22 de septiembre de 2026** · MMI-DS **v1.134.0**
+**22 de septiembre de 2026**, actualizado el **23** · MMI-DS **v1.141.0**
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.137.0"
+npm install "github:solwarehz/sistema-diseno#v1.141.0"
 ```
 
-> **Instalen la v1.134.0, no la v1.133.0.** La 133 publicó las siete piezas y
+> **Instalen la v1.141.0.** La v1.133.0 publicó las siete piezas y
 > **cuatro de ellas viajaban sin que nuestro catálogo las enseñara ni una vez**
 > —el carril entero, los tres tonos de burbuja y dos tonos de superficie—. Lo
 > encontró una auditoría nuestra, no ustedes, y el §7 cuenta qué falló.
@@ -140,57 +140,111 @@ La clase ahora anula `margin`, `padding` y `list-style`.
 
 ## 5 · Cómo se monta
 
+**Esta sección está reescrita el 23/09.** La versión anterior enseñaba el
+montaje con `tbl-crece` —que se desplaza en vertical— y **sin carril**. Eso era
+correcto en la v1.137.0 y dejó de serlo en la v1.139.0: copiándolo hoy montarían
+exactamente el tablero medio vacío con desplazamiento vertical que esa versión
+vino a arreglar. Lo cazó una auditoría antes de mandárselo.
+
 ```tsx
-import { Avatar, Segmentado } from 'sistema-diseno-ae/componentes';
+import {
+  Avatar, Segmentado,
+  useCapacidadTablero, enPaginas,        // la capacidad la calcula el sistema
+} from 'sistema-diseno-ae/componentes';
 import 'sistema-diseno-ae/tokens.css';        // SIEMPRE primero
 import 'sistema-diseno-ae/componentes.css';   // al revés, no hay ningún color
 
-// «tbl-marco» ocupa el alto QUE LE DEN —del encabezado al fondo— y «tbl-crece»
-// marca cuál de los tres hijos se estira y se desplaza por dentro.
-<div className="tbl-marco">
-  {/* «etiquetaOculta» esconde «Grupo» A LA VISTA, no del lector: el `legend`
-      sigue nombrando al grupo. En un tablero esa línea son personas que dejan
-      de verse. */}
-  <Segmentado
-    etiquetaOculta
-    etiqueta="Grupo"
-    valor={grupo}
-    onCambio={(v) => setGrupo(v as 'dentro' | 'fuera')}
-    opciones={[
-      { valor: 'dentro', texto: `Asistió ${dentro.length}` },
-      { valor: 'fuera',  texto: `No asistió ${fuera.length}` },
-    ]} />
+function Tablero({ gente, grupo, onGrupo }: Props) {
+  // SE MIDE EL CARRIL, no la superficie de fuera: la superficie le quita su
+  // relleno y su borde —26 px—, y midiendo fuera la última fila sale cortada.
+  const caja = useRef<HTMLDivElement>(null);
+  const { porPagina } = useCapacidadTablero(caja);
+  const paginas = enPaginas(gente, porPagina);
 
-  <div className={`sup sup-${grupo === 'dentro' ? 'exito' : 'error'} tbl-crece`}>
-    <ul className="tn-densa">
-      {lista.map((p) => (
-        <li key={p.id} className="tbl-persona">
-          <span className="tbl-foto">
-            <Avatar id={p.id} nombre={p.nombre} tamano="fluido"
-                    estado={grupo === 'dentro' ? 'exito' : 'error'}
-                    elevacion="relieve" />
-            {/* La burbuja necesita un ancestro POSICIONADO, y «tbl-foto» lo es.
-                No vale meterla dentro del <Avatar>: «.avatar» lleva
-                «overflow: hidden» y la recortaría. */}
-            {p.tarde > 0 && <span className="badge badge-aviso">+{p.tarde}</span>}
-          </span>
-          {/* EL NOMBRE COMPLETO NO ES OPCIONAL: ver §5bis. */}
-          <span className="sr-solo">{p.nombre} {p.apellido} · {p.hora}</span>
-          <span className="tbl-nom">{p.nombre}</span>
-          <span className="tbl-ape">{p.apellido}</span>
-          <span className="tbl-hora" aria-hidden="true">{p.hora}</span>
-        </li>
-      ))}
-    </ul>
-  </div>
+  return (
+    // El alto lo pone el padre: <MarcoApp altoCompleto> (ver §5bis).
+    <div className="tbl-marco">
+      {/* «etiquetaOculta» esconde el rótulo A LA VISTA, no del lector: el
+          `legend` sigue nombrando al grupo. En un tablero esa línea son
+          personas que dejan de verse. */}
+      <Segmentado
+        etiquetaOculta
+        etiqueta="Grupo"
+        valor={grupo}
+        onCambio={(v) => onGrupo(v as 'dentro' | 'fuera')}
+        opciones={[
+          { valor: 'dentro', texto: `Asistió ${dentro.length}` },
+          { valor: 'fuera',  texto: `No asistió ${fuera.length}` },
+        ]} />
 
-  <p className="vivo"><span className="vivo-punto" /> En vivo · último dato {ultima}</p>
-</div>
+      {/* «tbl-lleno» llena el alto y NO se desplaza en vertical. Lo que no
+          cabe va a la siguiente pantalla, no más abajo. */}
+      <div className={`sup sup-${grupo === 'dentro' ? 'exito' : 'error'} tbl-lleno`}>
+        <div className="car car-pagina" ref={caja} tabIndex={0} role="region"
+             aria-label={`Personas, ${paginas.length} pantallas`}>
+          {paginas.map((pagina, i) => (
+            <ul className="tn-densa tn-densa-llena" key={i}>
+              {pagina.map((p) => (
+                <li key={p.id} className="tbl-persona">
+                  <span className="tbl-foto">
+                    <Avatar id={p.id} nombre={p.nombre} tamano="fluido"
+                            estado={grupo === 'dentro' ? 'exito' : 'error'}
+                            elevacion="relieve" />
+                    {/* La burbuja necesita un ancestro POSICIONADO, y
+                        «tbl-foto» lo es. No vale meterla dentro del <Avatar>:
+                        «.avatar» lleva «overflow: hidden» y la recortaría. */}
+                    {p.tarde > 0 && <span className="badge badge-aviso">+{p.tarde}</span>}
+                  </span>
+                  {/* EL NOMBRE COMPLETO NO ES OPCIONAL: ver §5bis. */}
+                  <span className="sr-solo">{p.nombre} {p.apellido} · {p.hora}</span>
+                  <span className="tbl-nom">{p.nombre}</span>
+                  <span className="tbl-ape">{p.apellido}</span>
+                  <span className="tbl-hora" aria-hidden="true">{p.hora}</span>
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      </div>
+
+      {paginas.length > 1 && (
+        <p className="car-cuenta">
+          {paginas.map((_, i) => (
+            <span key={i} className={`car-punto${i === actual ? ' car-punto-aqui' : ''}`} />
+          ))}
+          <span className="sr-solo">Pantalla {actual + 1} de {paginas.length}</span>
+        </p>
+      )}
+
+      <p className="vivo"><span className="vivo-punto" /> En vivo · último dato {ultima}</p>
+    </div>
+  );
+}
 ```
 
-**El alto lo pone el padre.** Dentro no hay ningún `100vh`: el sistema no decide
-el alto de una pantalla ajena. Si el padre es a su vez un contenedor flex, el
-marco necesita además `flex: 1 1 auto; min-height: 0` de su lado.
+---
+
+## 5-alfa · Y esto contesta su R157.1, que llevaba sin respuesta
+
+Pidieron **«6 columnas y 5 filas, si no no podré ver a todos»** — treinta
+personas sin desplazar. El §2.2 explicaba por qué no fijamos seis columnas y
+**nunca les dijimos cuántas van a ver**. Aquí está:
+
+**No lo fija el sistema ni lo fijan ustedes: lo calcula la pantalla.**
+`useCapacidadTablero` mide el área real y devuelve cuántas caben; `enPaginas`
+trocea. Medido en el catálogo:
+
+| Área disponible | Personas por pantalla |
+|---|---|
+| 293 × 477 (teléfono) | **12** |
+| 541 × 131 (una franja) | 5 |
+| 753 × 391 (tablet) | **18** — todas de una vez |
+| 1133 × 591 | **18** |
+
+En una tablet de verdad, con `altoCompleto`, **las treinta caben** sin deslizar:
+a 1024×700 la cuenta da 10 columnas × 4 filas = 40. Si no caben, no se aprietan
+hasta ser ilegibles ni se desplazan hacia abajo: **pasan a la siguiente
+pantalla**, y la cuenta de puntos dice cuántas hay.
 
 ---
 
@@ -198,12 +252,12 @@ marco necesita además `flex: 1 1 auto; min-height: 0` de su lado.
 
 `tbl-nom` y `tbl-ape` **envuelven, con tope de dos líneas**. Medido a 11 px: de
 catorce apellidos de la zona, **trece entran en una sola línea** dentro del suelo
-de 84 px. El que se sale es el compuesto, «Villanueva-Bustamante» —115,2 px—, y
+de 84 px. El que se sale es el compuesto, «Villanueva-Bustamante», que mide **115,2 px de texto**, y
 **envuelve sin perder una letra**; la celda crece 13,8 px una sola vez.
 
 El tope es lo que impide que un apellido estire su fila y descuadre la rejilla:
-con dos apellidos encadenados, con tres, o con uno corto, **la celda mide 115,2
-px como techo**. Los puntos suspensivos aparecen sólo a partir de la tercera
+con dos apellidos encadenados, con tres, o con uno corto, **la celda mide 115,2 px de ALTO
+como techo** —mismo número que el ancho de aquel apellido, por coincidencia—. Los puntos suspensivos aparecen sólo a partir de la tercera
 línea.
 
 **Y cuando recortan, el nombre completo sigue en la celda**, en ese `sr-solo`.
@@ -239,10 +293,11 @@ Pero **no puede quedarse sin nombre accesible** ni fiar al color lo que se
 vigila: eso no es negociable.
 
 **«Si el manual §5.4 cubre también a los tableros, díganlo»** — sí, y con una
-distinción nueva que trajo su requerimiento. **Y les decimos dónde vive**, porque
-el §5.4 del manual sigue diciendo «no se hace scroll horizontal» sin excepción:
-la distinción está en `POLITICA-DE-CREACION.md` §5 y en la regla 7 de «Piezas de
-tablero». Que el manual no se enterara es cosa nuestra y está anotado.
+distinción nueva que trajo su requerimiento. **Y ya está escrita donde ustedes fueron a
+mirar**: el §5.4 del manual dice hoy «una excepción, y sólo una: la paginación
+por gesto», con las tres condiciones y citándoles a ustedes. Tardó tres
+versiones en llegar ahí —se escribió antes en la política y en el contrato— y
+eso fue cosa nuestra.
 
 - **Desbordamiento**: el contenido no cupo y se sale. Sigue siendo un defecto.
 - **Paginación por gesto**: cada parada es una vista entera. **Legítimo, con tres
@@ -309,8 +364,9 @@ hoja remitía ese contrato a `componentes.md`, **un archivo que no existe**.
 - Los **22 pasos** del publicador en verde, incluidas las pruebas y ESLint.
 - El tablero **montado y vivo** en el catálogo con 24 personas, **y además en
   estático** — que es lo único que los candados pueden leer.
-- Las **30** clases del R157 tienen marcado en el catálogo —las 28 de la
-  v1.134.0 más `tbl-marco` y `tbl-crece`—: comprobado contando, no suponiendo.
+- Las **33** clases de la familia tienen marcado en el catálogo —las 28 de la
+  v1.134.0, más `tbl-marco` y `tbl-crece`, más `tbl-lleno`, `tn-densa-llena` y
+  `car-pagina`—: comprobado contando, no suponiendo.
 - Las reglas viven en `sistema/componentes/comportamiento.md`, sección **«Piezas
   de tablero»**, con la tabla de marcado.
 

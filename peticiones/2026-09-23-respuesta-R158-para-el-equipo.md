@@ -3,7 +3,7 @@
 **23 de septiembre de 2026** · MMI-DS **v1.138.0**
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.138.0"
+npm install "github:solwarehz/sistema-diseno#v1.141.0"
 ```
 
 **Los dos puntos entran, y los dos eran del sistema.** El segundo era un defecto
@@ -27,11 +27,19 @@ envolvía **y seguía midiendo 64 px** — `top-acciones` acababa en 78 con la b
 terminando en 64: **catorce píxeles por fuera**. Eso es el desalineado que vio el
 responsable.
 
-**Su punto 2 no se sostiene, y conviene que lo sepan.** No existe ningún `@media`
-que le ponga `display: none` a `.top-plegar`. Lo que hay es `.app-marco
-.top-plegar`, que lo oculta **sólo** cuando la barra inferior sustituye al
-lateral — ahí el botón de plegar no tendría nada que plegar. Eso es coherente y
-no sobra.
+**Su punto 2 no se sostiene, y les decimos dónde mirar para comprobarlo.** No
+existe ningún `@media` que le ponga `display: none` a `.top-plegar`. Lo que hay
+es `.app-marco .top-plegar`, que lo oculta **sólo** cuando la barra inferior
+sustituye al lateral — ahí el botón no tendría nada que plegar. Eso es coherente
+y no sobra.
+
+Dos cosas que probablemente son lo que transcribieron, y las dos existen de
+verdad en la v1.136.0 que ustedes midieron:
+
+- `@media (max-width: 700px) { .top-plegar .ic-escritorio { display: none } .top-plegar .ic-movil { display: grid } }` — oculta **un icono**, no el botón: es el cambio de glifo de escritorio a móvil.
+- La tercera regla que citan como de 640 px —`.top-plegar { background: transparent … }`— **no está dentro de ese bloque**: el `@media` cierra antes y esa regla es la **base**. Por eso «se le vuelve a dar estilo sin devolverle `display`»: nunca se lo quitaron.
+
+Y eso último es justo el fondo del asunto que sí tenían razón en señalar.
 
 Pero lo que les hizo leerlo así **es real y es el fondo del asunto**: en esta
 hoja las reglas base van después de los `@media`, así que una declaración de
@@ -120,7 +128,7 @@ ahorraron trabajo: que el contrato de marcado se cumple entero **incluido lo que
 no se ve** —el `sr-solo`, el `aria-hidden`, el carril con su `role` y su
 `aria-label`— es justo lo que nadie suele comprobar.
 
-Y decir *«no lo hemos reproducido nosotros, nuestra ventana no baja de 1265 px»*
+Y decir *«no lo hemos reproducido nosotros: nuestra ventana de pruebas no baja de 1265 px»*
 en vez de darlo por hecho es lo que hizo que fuéramos a medirlo en vez de a
 creerlo. Al medirlo salió más de lo que ustedes veían.
 

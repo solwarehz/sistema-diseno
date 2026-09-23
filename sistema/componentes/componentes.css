@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.140.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.141.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -102,7 +102,7 @@
     --dur-onda: 0.01ms;
   }
 }
-:root{ --mmi-componentes: 1.140.0; }
+:root{ --mmi-componentes: 1.141.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -1943,7 +1943,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .tbl-persona{ display: flex; flex-direction: column; align-items: center;
   gap: 0; min-width: 0; text-align: center; }
 .tbl-foto{ position: relative; display: flex; justify-content: center;
-  width: 100%; line-height: 0; }
+  width: 100%; max-width: 48px; margin-inline: auto; line-height: 0; }
 .tbl-nom{ font-size: 11px; color: var(--texto-principal); max-width: 100%;
   overflow-wrap: break-word; line-height: 1.25; font-weight: 500; margin-top: 10px;
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
@@ -1952,7 +1952,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   overflow-wrap: break-word; line-height: 1.25;
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
   overflow: hidden; }
-.tbl-hora{ font-size: 11px; color: var(--texto-secundario);
+.tbl-hora{ font-size: 11px; color: var(--texto-secundario); line-height: 1.25;
   font-variant-numeric: tabular-nums; }
 .tbl-lleno{ flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; }
 .tbl-lleno > *{ flex: 1 1 auto; min-height: 0; min-width: 0; }

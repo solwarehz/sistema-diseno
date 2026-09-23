@@ -43,12 +43,28 @@ export type CapacidadTablero = {
  * medir todavía —ancho o alto en 0— también devuelve 1×1, que es lo que deja
  * pintar algo en el primer cuadro en vez de una pantalla vacía.
  */
-export function capacidadDeRejilla(ancho: number, alto: number): CapacidadTablero {
-  const hueco = ancho >= 768 ? HUECO_TABLERO_ANCHO : HUECO_TABLERO;
+export function capacidadDeRejilla(
+  ancho: number, alto: number, anchoVentana: number = ancho,
+): CapacidadTablero {
+  /* EL UMBRAL DEL HUECO MIDE LA VENTANA, NO LA CAJA, porque eso es lo que mide
+     el `@media (min-width: 768px)` de la hoja. Esto decía `ancho >= 768` —la
+     caja— y con una ventana ancha y una caja estrecha la hoja usaba `gap: 12` y
+     la cuenta `8`: la cuenta se pasaba de UNA COLUMNA y, con `overflow: hidden`,
+     esa columna se recortaba en silencio. Una auditoría lo barrió: 112 anchos de
+     caja afectados, y entre ellos el 753 que el propio registro cita como
+     medido. El tercer parámetro es opcional y por omisión vale el ancho de la
+     caja, para quien llame a la cuenta sin ventana —una prueba, el servidor—. */
+  const hueco = anchoVentana >= 768 ? HUECO_TABLERO_ANCHO : HUECO_TABLERO;
   /* `n·celda + (n−1)·hueco ≤ disponible` despejado. El `+ hueco` del numerador
      es el hueco que la última celda NO gasta. */
-  const cuantas = (disponible: number, celda: number) =>
-    Math.max(1, Math.floor((disponible + hueco) / (celda + hueco)));
+  const cuantas = (disponible: number, celda: number) => {
+    /* `Math.max(1, NaN)` es NaN, no 1: la garantía de «nunca menos de 1» se
+       rompía con una medida que no fuera un número, y `enPaginas` acababa
+       devolviendo UNA PÁGINA VACÍA con la lista entera desaparecida y sin
+       error. Lo encontró una auditoría barriendo el caso. */
+    const n = Math.floor((disponible + hueco) / (celda + hueco));
+    return Number.isFinite(n) ? Math.max(1, n) : 1;
+  };
   const columnas = cuantas(ancho, ANCHO_CELDA_TABLERO);
   const filas = cuantas(alto, ALTO_CELDA_TABLERO);
   return { columnas, filas, porPagina: columnas * filas };
@@ -62,11 +78,16 @@ export function capacidadDeRejilla(ancho: number, alto: number): CapacidadTabler
  * las dos cuentas se separan y un día dejan de coincidir.
  */
 export function enPaginas<T>(lista: readonly T[], porPagina: number): T[][] {
-  if (porPagina < 1) return lista.length ? [[...lista]] : [];
+  /* `NaN < 1` es FALSE, así que un NaN se colaba hasta el bucle, `i += NaN` lo
+     cortaba al primer paso y la lista entera desaparecía sin decir nada. Se
+     comprueba que es un número antes de comparar. */
+  if (!Number.isFinite(porPagina) || porPagina < 1) return [[...lista]];
   const paginas: T[][] = [];
   for (let i = 0; i < lista.length; i += porPagina) paginas.push(lista.slice(i, i + porPagina));
   /* Una lista vacía es UNA página vacía y no cero: el carril necesita una
-     parada que enseñar, y su cuenta de paradas no puede decir «0 de 0». */
+     parada que enseñar, y su cuenta no puede decir «0 de 0». Y eso vale también
+     por el camino de arriba: antes, con lista vacía y capacidad imposible,
+     devolvía CERO páginas y se contradecía con este mismo comentario. */
   return paginas.length ? paginas : [[]];
 }
 
@@ -89,11 +110,18 @@ export function useCapacidadTablero(caja: RefObject<HTMLElement | null>): Capaci
      es el mismo reparo que lleva `PanelPrivilegios`. */
   const enEfecto = typeof window === 'undefined' ? useEffect : useLayoutEffect;
   enEfecto(() => {
-    const el = caja.current;
-    if (!el) return;
+    /* NO SE SALE SI LA CAJA AUN NO EXISTE. Esto hacía `if (!el) return` y, con
+       las dependencias en `[caja]`, no volvía a intentarlo NUNCA: quien montara
+       el carril de forma condicional se quedaba en 1×1 para siempre. Ahora se
+       escucha igual y `medir` comprueba en cada llamada, así que en cuanto la
+       caja aparece la primera medida entra sola. */
     const medir = () => {
+      const el = caja.current;
+      if (!el) return;
       const r = el.getBoundingClientRect();
-      const nueva = capacidadDeRejilla(r.width, r.height);
+      /* La ventana va aparte de la caja: el `@media` de la hoja mide la
+         ventana, y la rejilla vive en la caja. */
+      const nueva = capacidadDeRejilla(r.width, r.height, window.innerWidth);
       /* Se compara antes de asignar: un `ResizeObserver` dispara por cualquier
          fracción de píxel, y sin esto cada uno sería un render de la rejilla
          entera aunque la capacidad no haya cambiado. */
@@ -113,7 +141,7 @@ export function useCapacidadTablero(caja: RefObject<HTMLElement | null>): Capaci
        por el que la cadena de alto usa `dvh`. */
     window.visualViewport?.addEventListener('resize', medir);
     const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(medir) : null;
-    ro?.observe(el);
+    if (caja.current) ro?.observe(caja.current);
     return () => {
       window.removeEventListener('resize', medir);
       window.visualViewport?.removeEventListener('resize', medir);

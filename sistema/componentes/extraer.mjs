@@ -125,6 +125,7 @@ const ELEMENTOS = [
   // «MARCO DE APLICACION». Una pieza que sirve a cualquier contador no puede
   // documentarse dentro del componente del que se la saco.
   { n: 'Burbuja de recuento', p: ['badge'] },
+
   { n: 'Celda de tablero',    p: ['tbl'] },
   { n: 'Superficie tonal',    p: ['sup'] },
   { n: 'Carril con anclaje',  p: ['car'] },

@@ -310,6 +310,22 @@ const CASOS = [
   ['Cuerpo que crece del tablero', [
     elem('div', ['tbl-marco']), elem('div', ['sup', 'sup-info', 'tbl-crece']),
   ]],
+  /* v1.141.0 · El tablero que LLENA. Entraron en la v1.139.0 sin pasar por
+     aqui — la tercera vez que esta lista se queda corta ante una pieza nueva—,
+     y esta vez lo caza un candado en vez de una auditoria. */
+  ['Cuerpo lleno del tablero', [elem('div', ['tbl-lleno'])]],
+  ['Carril a pagina completa', [elem('div', ['tbl-lleno']), elem('div', ['car', 'car-pagina'])]],
+  ['Pagina de la rejilla llena', [
+    elem('div', ['tbl-lleno']), elem('div', ['car', 'car-pagina']),
+    elem('ul', ['tn-densa', 'tn-densa-llena']),
+  ]],
+  /* Y LA CELDA, que llevaba ciega DESDE QUE NACIO: el arreglo de la v1.134.0
+     añadio la superficie, la burbuja y el carril, y se dejo justo lo que va
+     dentro. Nadie habia comparado nunca las dos hojas sobre ella. */
+  ['Celda de persona en la rejilla llena', [
+    elem('div', ['tbl-lleno']), elem('div', ['car', 'car-pagina']),
+    elem('ul', ['tn-densa', 'tn-densa-llena']), elem('li', ['tbl-persona']),
+  ]],
 ];
 
 /** Los anchos donde se compara. Una regla puede viajar y su @media no. */

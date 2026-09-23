@@ -349,6 +349,16 @@ function TableroVivo() {
   const caja = useRef<HTMLDivElement>(null);
   const { porPagina } = useCapacidadTablero(caja);
   const paginas = enPaginas(lista, porPagina);
+  /* En que parada esta. Se lee del desplazamiento del propio carril y no de un
+     boton, porque aqui se pasa de pagina DESLIZANDO: un estado que solo cambie
+     al pulsar diria lo que el usuario no hizo. */
+  const [actual, setActual] = useState(0);
+  const alDeslizar = (e: React.UIEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const ancho = el.clientWidth || 1;
+    const i = Math.round(el.scrollLeft / ancho);
+    setActual((v) => (v === i ? v : i));
+  };
   return (
     <div className="muestra-tablero tbl-marco">
       {/* EL TEXTO QUE SOSTIENE EL COLOR: el recuento va aqui, con palabras, y
@@ -373,7 +383,8 @@ function TableroVivo() {
             mismo que el carril, y la superficie le quita su relleno y su borde
             —26 px medidos—: midiendo fuera, la cuenta salia para una caja mas
             grande que la real y la ultima fila quedaba CORTADA. */}
-        <div className="car car-pagina" ref={caja} tabIndex={0} role="region"
+        <div className="car car-pagina" ref={caja} onScroll={alDeslizar}
+             tabIndex={0} role="region"
              aria-label={`Personas, ${paginas.length} ${paginas.length === 1 ? 'pantalla' : 'pantallas'}`}>
           {paginas.map((pagina, i) => (
             <ul className="tn-densa tn-densa-llena" key={i}>
@@ -398,12 +409,17 @@ function TableroVivo() {
           ))}
         </div>
       </div>
+      {/* LA PARADA EN CURSO SE SIGUE, no se da por hecha. Esto decia «i === 0» y
+          «Pantalla 1», asi que el carril decia SIEMPRE que estabas en la
+          primera por muchas que pasaras: de las tres condiciones de la regla 7,
+          la (b) entregaba solo la mitad —cuantas hay, nunca donde estas—. Lo
+          midio una auditoria deslizando hasta el final. */}
       {paginas.length > 1 && (
-        <p className="car-cuenta">
+        <p className="car-cuenta" aria-live="polite">
           {paginas.map((_, i) => (
-            <span key={i} className={`car-punto${i === 0 ? ' car-punto-aqui' : ''}`} />
+            <span key={i} className={`car-punto${i === actual ? ' car-punto-aqui' : ''}`} />
           ))}
-          <span className="sr-solo">Pantalla 1 de {paginas.length}</span>
+          <span className="sr-solo">Pantalla {actual + 1} de {paginas.length}</span>
         </p>
       )}
       <p className="vivo"><span className="vivo-punto" /> En vivo · último dato 07:15</p>

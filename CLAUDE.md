@@ -19,7 +19,7 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.140.0** — **el cierre del R157: lo que prometía y no
+**Estado actual: v1.141.0** — **el cierre del R157: lo que prometía y no
 entregaba**, encontrado por una auditoría con los veintiún pasos en verde.
 
 La v1.133.0 publicó siete piezas y **cuatro de ellas viajaban sin que el
@@ -292,7 +292,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
 - **`main` sí se actualiza en este proyecto** —y solo en este—, pero **únicamente
   cuando está verificado y sin errores**. La condición no es una formalidad: es
   lo que hace que la regla sea segura, porque `main` es de donde instala el área
-  de sistemas. Antes de subir, los **veintitrés** pasos **en verde** y las pruebas
+  de sistemas. Antes de subir, los **veinticuatro** pasos **en verde** y las pruebas
   pasando. **Son exactamente los de `sistema/paquete/publicar.mjs`, y en su mismo orden**, y esta lista
   decía «dieciséis» y **le faltaba `generar-cascaron.mjs`** hasta la v1.107.0: el
   catálogo se quedaba sin regenerar y los candados que lo leen medían la versión
@@ -322,6 +322,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
   node sistema/candado/verificar-promesa-muerta.mjs # lo que VIAJA lo puede activar alguien
   node sistema/candado/verificar-copia.mjs    # lo que se INVITA A COPIAR compila
   node sistema/candado/verificar-muerta.mjs   # una regla escrita que NO se aplica nunca
+  node sistema/candado/verificar-ciegas.mjs   # lo que solo pinta el guion NO lo compara nadie
   # y el veintiuno, DENTRO del contenedor, porque node_modules no vive aquí:
   docker-compose exec -T ds sh -c 'cd /trabajo && sh sistema/candado/probar-con-eslint.sh'
   ```

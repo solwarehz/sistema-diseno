@@ -4,7 +4,7 @@
 correcciones en la v1.132.0
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.137.0"
+npm install "github:solwarehz/sistema-diseno#v1.141.0"
 ```
 
 **Entra lo que pidieron primero, no la alternativa.** La matriz cae sola a lista
@@ -49,11 +49,12 @@ lista servida a un escritorio sí sería un error visible.
 
 ## 3 · Sobre su plan B: la mitad que proponían era la correcta
 
-Su alternativa decía, entera:
+Su alternativa decía, con su énfasis original:
 
-> *«un `title` en el `th` de la fila con su nombre completo, **más
-> `white-space: normal` bajo 640 px para que el nombre envuelva en dos líneas en
-> vez de cortarse**. Resuelve lo de leer; no resuelve lo de móvil primero.»*
+> *«la alternativa mínima que nos desbloquea es mucho más barata: **un `title` en
+> el `th` de la fila con su nombre completo**, más `white-space: normal` bajo
+> 640 px para que el nombre envuelva en dos líneas en vez de cortarse. Resuelve
+> lo de leer; no resuelve lo de móvil primero.»*
 
 **La segunda mitad —envolver en dos líneas— es exactamente el primer escalón de
 nuestra política**, y ustedes ya habían escrito el límite de su propia propuesta.

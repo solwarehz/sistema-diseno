@@ -7,11 +7,13 @@
  * paginación por gesto en desbordamiento con otro nombre — que es justo la
  * distinción que el R157 dejó escrita.
  */
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import { useRef } from 'react';
+import { render, act } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  capacidadDeRejilla, enPaginas,
+  capacidadDeRejilla, enPaginas, useCapacidadTablero,
   ANCHO_CELDA_TABLERO, ALTO_CELDA_TABLERO, HUECO_TABLERO, HUECO_TABLERO_ANCHO,
 } from '../src/tablero';
 
@@ -167,5 +169,175 @@ describe('R160 · dos defectos que se vieron en la misma pantalla', () => {
     expect(r, 'la foto se recorta por el centro y se come la cabeza')
       .toMatch(/object-position:\s*50%\s*30%/);
     expect(r, 'sin `cover` no hay recorte que encuadrar').toMatch(/object-fit:\s*cover/);
+  });
+});
+
+describe('R159 · lo que una auditoría encontró en esta misma pieza', () => {
+  it('[12] el umbral del hueco mide la VENTANA, no la caja', () => {
+    /* La hoja sube el hueco con `@media (min-width: 768px)`, que mide el
+       VIEWPORT. La cuenta lo decidía por el ancho de la CAJA, así que con una
+       ventana ancha y una caja estrecha la hoja usaba 12 y la cuenta 8: se
+       pasaba de una columna y, con `overflow: hidden`, esa columna se recortaba
+       en silencio. Una auditoría barrió 112 anchos afectados. */
+    const caja = 753;
+    // ventana estrecha: hueco de 8
+    const estrecha = capacidadDeRejilla(caja, 400, 500);
+    // ventana ancha con la MISMA caja: hueco de 12, así que caben menos
+    const ancha = capacidadDeRejilla(caja, 400, 1200);
+    expect(ancha.columnas, 'con hueco mayor tienen que caber MENOS columnas, no las mismas')
+      .toBeLessThan(estrecha.columnas);
+    // y la que dice la ventana ancha cabe de verdad con el hueco de la hoja
+    const n = ancha.columnas;
+    expect(n * ANCHO_CELDA_TABLERO + (n - 1) * HUECO_TABLERO_ANCHO,
+      'la cuenta se pasa: la última columna se recortaría').toBeLessThanOrEqual(caja);
+  });
+
+  it('[12] una medida que no es un número NO hace desaparecer a nadie', () => {
+    /* `Math.max(1, NaN)` es NaN, no 1. El NaN se colaba hasta `enPaginas`,
+       donde `NaN < 1` es FALSE, `i += NaN` cortaba el bucle al primer paso y la
+       lista entera desaparecía SIN ERROR: una página vacía y nadie dentro. */
+    for (const malo of [NaN, Infinity, -Infinity]) {
+      const c = capacidadDeRejilla(malo, malo, malo);
+      expect(Number.isFinite(c.porPagina), `con ${malo} la capacidad no es un número`).toBe(true);
+      expect(c.porPagina).toBeGreaterThanOrEqual(1);
+    }
+    const gente = [1, 2, 3, 4, 5];
+    for (const malo of [NaN, 0, -3, Infinity]) {
+      const pags = enPaginas(gente, malo);
+      expect(pags.flat(), `con porPagina=${malo} se pierde gente`).toEqual(gente);
+    }
+  });
+
+  it('[12] y una lista vacía es UNA página vacía también con capacidad imposible', () => {
+    /* Antes devolvía CERO páginas por ese camino, contradiciendo su propio
+       comentario. El carril necesita una parada que enseñar. */
+    for (const malo of [NaN, 0, -1, 5]) {
+      expect(enPaginas([], malo), `con porPagina=${malo} el carril se queda sin paradas`)
+        .toEqual([[]]);
+    }
+  });
+});
+
+describe('R159 · el gancho, que es la mitad publicada de la pieza', () => {
+  /* La regla 12 dice «se publica el gancho, no sólo la cuenta», y una auditoría
+     encontró que el gancho NO tenía ni una prueba: las tres escuchas, su
+     limpieza y el ahorro de renders eran una promesa. */
+  function Sonda({ alto = 400, ancho = 300, onRender }: {
+    alto?: number; ancho?: number; onRender?: () => void;
+  }) {
+    const caja = useRef<HTMLDivElement>(null);
+    const cap = useCapacidadTablero(caja);
+    onRender?.();
+    return (
+      <div ref={caja} data-cap={`${cap.columnas}x${cap.filas}`}
+           style={{ width: ancho, height: alto }} />
+    );
+  }
+
+  it('[12] mide al montar, sin esperar a que nada cambie', () => {
+    /* jsdom devuelve 0 en `getBoundingClientRect`, así que lo que se comprueba
+       aquí es el suelo: una caja sin medir da 1×1 y NUNCA 0. Un cero haría
+       dividir por cero a quien trocee la lista. */
+    const { container } = render(<Sonda />);
+    const cap = container.firstElementChild?.getAttribute('data-cap');
+    expect(cap, 'el gancho no midió al montar').toBeTruthy();
+    const [c, f] = cap!.split('x').map(Number);
+    expect(c).toBeGreaterThanOrEqual(1);
+    expect(f).toBeGreaterThanOrEqual(1);
+  });
+
+  it('[12] suelta SUS TRES escuchas al desmontar', () => {
+    /* Tres fuentes: observador de caja, `resize` de ventana y `visualViewport`.
+       Si alguna se queda viva, cada tablero que se monte y desmonte deja una
+       escucha midiendo una caja que ya no existe. */
+    const suma = vi.spyOn(window, 'addEventListener');
+    const resta = vi.spyOn(window, 'removeEventListener');
+    let desconectado = 0;
+    const RO = globalThis.ResizeObserver;
+    class Espia {
+      observe() {}
+      unobserve() {}
+      disconnect() { desconectado += 1; }
+    }
+    (globalThis as any).ResizeObserver = Espia;
+
+    const { unmount } = render(<Sonda />);
+    const puestas = suma.mock.calls.filter(([e]) => e === 'resize').length;
+    expect(puestas, 'el gancho no escucha el `resize` de la ventana').toBeGreaterThanOrEqual(1);
+    unmount();
+    const quitadas = resta.mock.calls.filter(([e]) => e === 'resize').length;
+    expect(quitadas, 'deja viva la escucha de `resize` al desmontar').toBe(puestas);
+    expect(desconectado, 'no desconecta el observador de caja').toBe(1);
+
+    (globalThis as any).ResizeObserver = RO;
+    suma.mockRestore(); resta.mockRestore();
+  });
+
+  it('[12] no re-renderiza cuando la capacidad NO cambia', () => {
+    /* Un `ResizeObserver` dispara por cualquier fracción de píxel; sin comparar
+       antes de asignar, cada uno sería un render de la rejilla entera. */
+    let renders = 0;
+    render(<Sonda onRender={() => { renders += 1; }} />);
+    const alMontar = renders;
+    act(() => {
+      for (let i = 0; i < 5; i += 1) window.dispatchEvent(new Event('resize'));
+    });
+    expect(renders, 'cada medida repetida provoca un render de la rejilla entera')
+      .toBe(alMontar);
+  });
+
+  it('[12] con la caja todavía sin montar NO se queda mudo para siempre', () => {
+    /* Hacía `if (!el) return` con dependencias `[caja]`, así que no volvía a
+       intentarlo nunca: quien montara el carril de forma condicional se quedaba
+       en 1×1 de por vida. Ahora escucha igual y comprueba en cada medida. */
+    function SinCaja() {
+      const caja = useRef<HTMLDivElement>(null);   // nunca se asigna
+      const cap = useCapacidadTablero(caja);
+      return <span data-cap={`${cap.columnas}x${cap.filas}`} />;
+    }
+    const suma = vi.spyOn(window, 'addEventListener');
+    const { container } = render(<SinCaja />);
+    expect(suma.mock.calls.filter(([e]) => e === 'resize').length,
+      'sin caja no se suscribe, y entonces no se entera cuando aparezca')
+      .toBeGreaterThanOrEqual(1);
+    expect(container.firstElementChild?.getAttribute('data-cap'),
+      'sin caja tiene que dar el suelo, no romperse').toBe('1x1');
+    expect(() => act(() => { window.dispatchEvent(new Event('resize')); }),
+      'medir sin caja revienta').not.toThrow();
+    suma.mockRestore();
+  });
+});
+
+describe('R159 · lo que una auditoría en navegador encontró', () => {
+  it('[13] la burbuja se ancla al AVATAR, no al borde de la celda', () => {
+    /* `.tbl-foto` era `width: 100%` de la celda, así que la burbuja —`right:
+       1px`— se pegaba al borde de la CELDA y no al de la foto. Medido en el
+       catálogo: hasta 12,7 px de aire entre el disco y el número, flotando en
+       el vacío. El tope es el mismo 48 del mayor de la escala. */
+    const foto = regla('.tbl-foto');
+    expect(foto, 'la foto se estira a toda la celda y la burbuja se va con ella')
+      .toMatch(/max-width:\s*48px/);
+    expect(foto, 'sin centrado propio, la foto acotada se pega a la izquierda')
+      .toMatch(/margin-inline:\s*auto/);
+    /* Y el tope tiene que ser el MISMO que el del avatar fluido, o la foto y su
+       caja dejan de medir lo mismo. */
+    const av = /max-width:\s*(\d+)px/.exec(regla('.avatar-fluido'))?.[1];
+    const fo = /max-width:\s*(\d+)px/.exec(foto)?.[1];
+    expect(fo, 'la caja de la foto y el avatar no miden lo mismo').toBe(av);
+  });
+
+  it('[11] la hora declara su interlineado, y por eso el suelo de 100 es cierto', () => {
+    /* No lo declaraba y heredaba 1,45: la celda medía 101,45 px con el suelo de
+       fila en 100, así que las tres líneas se encogían para caber. Medido en
+       navegador. Con 1,25 —el de sus dos hermanas— la cuenta que el código
+       documenta da 99,25 y el suelo es cierto. */
+    for (const c of ['.tbl-nom', '.tbl-ape', '.tbl-hora']) {
+      expect(regla(c), `${c} no declara interlineado y hereda lo que le echen`)
+        .toMatch(/line-height:\s*1\.25/);
+    }
+    /* Y la cuenta: foto + separación + tres líneas ≤ el suelo declarado. */
+    const linea = 11 * 1.25;
+    expect(48 + 10 + linea * 3, 'la celda no cabe en el suelo de fila que declara la hoja')
+      .toBeLessThanOrEqual(ALTO_CELDA_TABLERO);
   });
 });

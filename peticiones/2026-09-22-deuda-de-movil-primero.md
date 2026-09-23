@@ -47,7 +47,7 @@ Ordenado por daño medido:
 
 ## 2 · `MarcoApp` arranca ancho, y se ve
 
-`componentes/src/MarcoApp.tsx:151` → `useState(false)`, y el repliegue vive en un
+`componentes/src/MarcoApp.tsx` → `useState(false)` (era la línea 151 al escribir esto; la v1.138.0 movió el archivo y hoy es la 171), y el repliegue vive en un
 `useEffect` que React ejecuta **después de pintar**. El propio comentario dice
 «montado ya en angosto, arranca plegado», pero eso ocurre un cuadro más tarde.
 
@@ -84,9 +84,14 @@ productos y no es del R157. Entra como trabajo propio, con esta medición delant
   capa es una luz interior (`inset`), que un avatar **con foto** podría tapar
   —`.avatar img` va en `position:absolute; inset:0`—, y es justo la capa que
   sostendría el efecto en oscuro.
-- **Los pares de contraste de `.sup`** —texto sobre fondo tonal— no están en el
-  contrato de contraste. Medidos a mano: el peor da **4,67:1**, que pasa AA, pero
-  **nadie los vigila**.
+- ~~«Los pares de contraste de `.sup` no están en el contrato»~~ — **falso, y lo
+  escribimos aquí.** `paleta.lock.json` lleva los **16** pares, todos
+  bloqueantes con mínimo 4,5 y todos cumpliendo; el peor es `texto-secundario`
+  sobre `error-fondo` en claro, **4,66**. Lo cazó una auditoría el 23/09, y es
+  la **segunda** vez que hace falta: el arreglo del 22/09 murió en un fallo del
+  guion que lo aplicaba, antes de escribir el archivo. El informe de R157 sí
+  quedó corregido; éste no, y durante un día los dos documentos se
+  contradecían.
 
 ---
 
@@ -94,7 +99,7 @@ productos y no es del R157. Entra como trabajo propio, con esta medición delant
 
 Ninguno mira `manual/`, ninguno mira `peticiones/`, y **ninguno mide en un
 navegador**. La política dice «se verifica midiendo, no mirando» y no hay paso
-del publicador que mida nada: los 21 leen archivos. El candado que faltaría es el
+del publicador que mida nada: TODOS leen archivos. El candado que faltaría es el
 que abre la hoja entregada a 360 px y comprueba que ningún texto que el
 componente tiene que decir queda sin forma de leerse.
 

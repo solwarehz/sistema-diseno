@@ -7462,6 +7462,95 @@ contenedor posicionado — aquí, el envoltorio de la foto.</p>
 </div>
 
 <div class="bloque">
+<h4 class="sub-seccion">La celda y la rejilla, en marcado</h4>
+<p class="seccion-sub">Esto es lo que se copia. <strong>Y está aquí en estático, no sólo en la
+demo viva de arriba</strong>: los candados del empate, la omisión y el elemento cortan el documento
+en el guion que monta esa demo, así que lo que sólo viva ahí <em>no lo compara nadie</em>. Lo
+descubrió el candado de las clases ciegas, y la celda llevaba ciega desde que nació.</p>
+<div class="sup sup-exito">
+  <ul class="tn-densa">
+      <li class="tbl-persona">
+        <span class="tbl-foto"><span class="avatar avatar-fluido avatar-1 avatar-estado avatar-exito avatar-relieve">QR</span></span>
+        <span class="sr-solo">Rosa Quispe · 06:48</span>
+        <span class="tbl-nom">Rosa</span>
+        <span class="tbl-ape">Quispe</span>
+        <span class="tbl-hora" aria-hidden="true">06:48</span>
+      </li>
+      <li class="tbl-persona">
+        <span class="tbl-foto"><span class="avatar avatar-fluido avatar-2 avatar-estado avatar-exito avatar-relieve">HL</span></span>
+        <span class="sr-solo">Luis Huamán · 06:51</span>
+        <span class="tbl-nom">Luis</span>
+        <span class="tbl-ape">Huamán</span>
+        <span class="tbl-hora" aria-hidden="true">06:51</span>
+      </li>
+      <li class="tbl-persona">
+        <span class="tbl-foto"><span class="avatar avatar-fluido avatar-3 avatar-estado avatar-exito avatar-relieve">CA</span></span>
+        <span class="sr-solo">Ana Ccahuana · 06:53</span>
+        <span class="tbl-nom">Ana</span>
+        <span class="tbl-ape">Ccahuana</span>
+        <span class="tbl-hora" aria-hidden="true">06:53</span>
+      </li>
+      <li class="tbl-persona">
+        <span class="tbl-foto"><span class="avatar avatar-fluido avatar-4 avatar-estado avatar-exito avatar-relieve">PJ</span><span class="badge badge-aviso">+5</span></span>
+        <span class="sr-solo">José Pineda · 07:15</span>
+        <span class="tbl-nom">José</span>
+        <span class="tbl-ape">Pineda</span>
+        <span class="tbl-hora" aria-hidden="true">07:15</span>
+      </li>
+  </ul>
+</div>
+<p class="seccion-sub">Y la misma rejilla <strong>llenando un área fija</strong>: las filas se
+reparten, las celdas se estiran, y lo que no cabe pasa a la siguiente pantalla del carril — nunca
+más abajo.</p>
+<div class="muestra-alto">
+  <div class="tbl-lleno">
+    <div class="car car-pagina" tabindex="0" role="region" aria-label="Personas, 2 pantallas">
+      <ul class="tn-densa tn-densa-llena">
+      <li class="tbl-persona">
+        <span class="tbl-foto"><span class="avatar avatar-fluido avatar-1 avatar-estado avatar-exito avatar-relieve">TE</span></span>
+        <span class="sr-solo">Elva Torres · 06:57</span>
+        <span class="tbl-nom">Elva</span>
+        <span class="tbl-ape">Torres</span>
+        <span class="tbl-hora" aria-hidden="true">06:57</span>
+      </li>
+      <li class="tbl-persona">
+        <span class="tbl-foto"><span class="avatar avatar-fluido avatar-2 avatar-estado avatar-exito avatar-relieve">AM</span></span>
+        <span class="sr-solo">Mateo Álvarez · 06:58</span>
+        <span class="tbl-nom">Mateo</span>
+        <span class="tbl-ape">Álvarez</span>
+        <span class="tbl-hora" aria-hidden="true">06:58</span>
+      </li>
+      <li class="tbl-persona">
+        <span class="tbl-foto"><span class="avatar avatar-fluido avatar-3 avatar-estado avatar-exito avatar-relieve">SN</span></span>
+        <span class="sr-solo">Nayeli Shuan · 07:00</span>
+        <span class="tbl-nom">Nayeli</span>
+        <span class="tbl-ape">Shuan</span>
+        <span class="tbl-hora" aria-hidden="true">07:00</span>
+      </li>
+      </ul>
+      <ul class="tn-densa tn-densa-llena">
+      <li class="tbl-persona">
+        <span class="tbl-foto"><span class="avatar avatar-fluido avatar-4 avatar-estado avatar-error avatar-relieve">VS</span></span>
+        <span class="sr-solo">Sara Vilca · —</span>
+        <span class="tbl-nom">Sara</span>
+        <span class="tbl-ape">Vilca</span>
+        <span class="tbl-hora" aria-hidden="true">—</span>
+      </li>
+      <li class="tbl-persona">
+        <span class="tbl-foto"><span class="avatar avatar-fluido avatar-1 avatar-estado avatar-error avatar-relieve">MP</span></span>
+        <span class="sr-solo">Pedro Mamani · —</span>
+        <span class="tbl-nom">Pedro</span>
+        <span class="tbl-ape">Mamani</span>
+        <span class="tbl-hora" aria-hidden="true">—</span>
+      </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<p class="car-cuenta"><span class="car-punto car-punto-aqui"></span><span class="car-punto"></span><span class="sr-solo">Pantalla 1 de 2</span></p>
+</div>
+
+<div class="bloque">
 <h4 class="sub-seccion">El tablero ocupa el alto que le den</h4>
 <p class="seccion-sub">Dos clases, no una: <code>tbl-marco</code> apila encabezado, cuerpo y pie y
 toma el alto de <strong>su padre</strong>; <code>tbl-crece</code> marca <em>cuál</em> de los tres se
@@ -11865,8 +11954,14 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    60,3 a la derecha dentro de una celda de 108,3. Las tres lineas de texto
    salian centradas y la foto no, que es lo que se ve como «descuadrado» sin
    saber por que. Con flex, la caja se centra igual que el texto. */
+/* Y NO MAS ANCHA QUE EL AVATAR, que es lo que ancla la burbuja donde toca.
+   Era «width: 100%» de la celda, asi que la burbuja —«right: 1px»— se pegaba al
+   borde de la CELDA y no al de la foto: medido en el catalogo, hasta 12,7 px de
+   aire entre el disco y el numero, flotando en el vacio. El tope es el mismo 48
+   del mayor de la escala que usa «avatar-fluido»: si uno cambia, cambian los
+   dos. Y «margin-inline: auto» la centra, que es lo que antes hacia el flex. */
 .tbl-foto { position: relative; display: flex; justify-content: center;
-  width: 100%; line-height: 0; }
+  width: 100%; max-width: 48px; margin-inline: auto; line-height: 0; }
 /* EL NOMBRE NO SE RECORTA: ENVUELVE. Llevaba «ellipsis» y se vio en el propio
    cascaron —«Ro…» en una celda estrecha—, que es un incumplimiento de la
    politica de movil primero §5.3 en la pieza recien creada para cumplirla: el
@@ -11902,7 +11997,12 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
   overflow-wrap: break-word; line-height: 1.25;
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
   overflow: hidden; }
-.tbl-hora { font-size: 11px; color: var(--texto-secundario);
+/* CON SU INTERLINEADO, como sus dos hermanas. No lo declaraba y heredaba 1,45,
+   asi que la celda medía 101,45 px con el suelo de fila en 100: las tres lineas
+   se encogian para caber. Medido por una auditoria en navegador. Con 1,25 la
+   cuenta que el codigo documenta —48 + 10 + tres lineas de 13,75— da 99,25 y el
+   suelo de 100 es cierto. */
+.tbl-hora { font-size: 11px; color: var(--texto-secundario); line-height: 1.25;
   font-variant-numeric: tabular-nums; }
 
 /* ─────────────────────────────────────────────────────────────────────────────
