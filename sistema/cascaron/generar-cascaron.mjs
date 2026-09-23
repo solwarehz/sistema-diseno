@@ -12097,8 +12097,28 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 /* Las filas se reparten como las columnas: «auto-fill» las cuenta y «1fr» las
    estira. El suelo de 100 px es lo que mide una celda entera —foto de 48, sus
    10 de separacion y las tres lineas a 11 px—, medido, no estimado. */
-.tn-densa-llena { grid-template-rows: repeat(auto-fill, minmax(100px, 1fr));
+/* EL SUELO DE FILA CABE LO QUE LA CELDA PUEDE PRODUCIR, y esa es la unica
+   forma de que la cuenta no mienta. Estaba en 100 —lo que mide una celda con
+   las tres lineas a una linea— y una auditoria lo reprodujo en navegador: con
+   un apellido de dos lineas el contenido pide 113 px, la fila se queda en 100 y
+   los hijos de flex SE ENCOGEN. Medido: «tbl-ape» pintado a 13,02 px donde pide
+   27,5 — UNA LINEA ENTERA DESAPARECIDA, y «scrollHeight» no lo denuncia. Un
+   recorte que ni siquiera se ve como recorte.
+   114 = 48 de foto + 10 de separacion + una linea de nombre + DOS de apellido +
+   una de hora, a 13,75 cada una. Y el nombre va a UNA linea en este modo: no es
+   un recorte disfrazado, es que ese hueco recibe el nombre CORTO —el completo
+   vive en el «sr-solo» de la celda, que el contrato ya exige—. Asi el alto de
+   la celda es DETERMINISTA, que es lo que una rejilla de capacidad calculada
+   necesita: una celda que puede crecer un 27 % rompe la cuenta que el sistema
+   publica.
+   CUESTA DENSIDAD Y SE DICE: en un telefono de 360 se pasa de 12 personas por
+   pantalla a 9, y en un panel estrecho de 16 a 12. En los otros tres tamaños
+   medidos no cuesta nada. Se paga porque la alternativa es perder un apellido
+   sin avisar. */
+.tn-densa-llena .tbl-nom { -webkit-line-clamp: 1; }
+.tn-densa-llena { grid-template-rows: repeat(auto-fill, minmax(114px, 1fr));
   align-content: stretch; height: 100%; }
+
 /* En una celda estirada el contenido se centra: si no, queda pegado arriba y el
    hueco de abajo se lee como un fallo de maquetacion. */
 .tn-densa-llena > .tbl-persona { justify-content: center; }

@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.141.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.142.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -102,7 +102,7 @@
     --dur-onda: 0.01ms;
   }
 }
-:root{ --mmi-componentes: 1.141.0; }
+:root{ --mmi-componentes: 1.142.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -866,12 +866,13 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .tna-editar{ position: absolute; top: 8px; right: 8px; z-index: 1; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TARJETA — 23 reglas · clases .tn-*
+   TARJETA — 24 reglas · clases .tn-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tn-cuadricula{ display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 12px; }
 .tn-cuadricula > *{ min-width: 0; }
-.tn-densa-llena{ grid-template-rows: repeat(auto-fill, minmax(100px, 1fr));
+.tn-densa-llena .tbl-nom{ -webkit-line-clamp: 1; }
+.tn-densa-llena{ grid-template-rows: repeat(auto-fill, minmax(114px, 1fr));
   align-content: stretch; height: 100%; }
 .tn-densa-llena > .tbl-persona{ justify-content: center; }
 .tn-densa{ display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));

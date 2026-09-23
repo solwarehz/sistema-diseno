@@ -16,12 +16,22 @@ import { useEffect, useLayoutEffect, useState, type RefObject } from 'react';
 /** El suelo de la celda, y es el mismo que declara `.tn-densa` en la hoja. */
 export const ANCHO_CELDA_TABLERO = 84;
 /**
- * El alto de una celda entera, medido: foto de 48 px, sus 10 de separación y
- * las tres líneas de texto a 11 px con interlineado 1,25 — 48 + 10 + 41 ≈ 99.
- * Se redondea a 100, que es el mismo número que `.tn-densa-llena` usa de suelo
- * de fila. Si uno cambia, cambian los dos.
+ * El alto de una celda entera, y cabe **lo que la celda puede producir**.
+ *
+ * `48` de foto + `10` de separación + **una** línea de nombre + **dos** de
+ * apellido + una de hora, a 13,75 cada una (11 px × 1,25) = **113**, redondeado
+ * a 114. Es el mismo número que `.tn-densa-llena` usa de suelo de fila: si uno
+ * cambia, cambian los dos, y hay una prueba que lo comprueba.
+ *
+ * Estuvo en **100** —lo que mide la celda con todo a una línea— y eso era
+ * mentir: con un apellido de dos líneas el contenido pide 113, la fila se
+ * quedaba en 100 y los hijos de flex se encogían. Medido en navegador:
+ * `.tbl-ape` pintado a 13,02 px donde pide 27,5 — **una línea entera
+ * desaparecida**, y `scrollHeight` no lo denuncia.
+ *
+ * Una celda que puede crecer un 27 % rompe la cuenta que este archivo publica.
  */
-export const ALTO_CELDA_TABLERO = 100;
+export const ALTO_CELDA_TABLERO = 114;
 /** El hueco de `.tn-densa`. La hoja lo sube a 12 desde 768 px. */
 export const HUECO_TABLERO = 8;
 export const HUECO_TABLERO_ANCHO = 12;

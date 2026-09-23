@@ -326,7 +326,7 @@ describe('R159 · lo que una auditoría en navegador encontró', () => {
     expect(fo, 'la caja de la foto y el avatar no miden lo mismo').toBe(av);
   });
 
-  it('[11] la hora declara su interlineado, y por eso el suelo de 100 es cierto', () => {
+  it('[14] el suelo de fila cabe el PEOR caso que la celda puede producir', () => {
     /* No lo declaraba y heredaba 1,45: la celda medía 101,45 px con el suelo de
        fila en 100, así que las tres líneas se encogían para caber. Medido en
        navegador. Con 1,25 —el de sus dos hermanas— la cuenta que el código
@@ -335,9 +335,21 @@ describe('R159 · lo que una auditoría en navegador encontró', () => {
       expect(regla(c), `${c} no declara interlineado y hereda lo que le echen`)
         .toMatch(/line-height:\s*1\.25/);
     }
-    /* Y la cuenta: foto + separación + tres líneas ≤ el suelo declarado. */
+    /* Y LA CUENTA CON EL PEOR CASO QUE LA CELDA PUEDE PRODUCIR, que es lo que
+       hace que el suelo no mienta: foto + separación + UNA línea de nombre +
+       DOS de apellido + una de hora. Con el suelo en 100 esto daba 113 contra
+       100 y la fila encogía a los hijos de flex, perdiendo una línea entera sin
+       avisar — medido en navegador: 27,5 px pintados a 13,02. */
     const linea = 11 * 1.25;
-    expect(48 + 10 + linea * 3, 'la celda no cabe en el suelo de fila que declara la hoja')
-      .toBeLessThanOrEqual(ALTO_CELDA_TABLERO);
+    const peorCaso = 48 + 10 + linea * 1 + linea * 2 + linea * 1;
+    expect(peorCaso, 'el peor caso de la celda NO cabe en el suelo de fila: se '
+      + 'perderá una línea sin avisar').toBeLessThanOrEqual(ALTO_CELDA_TABLERO);
+
+    /* Y el nombre va a UNA línea en este modo, que es lo que hace el peor caso
+       DETERMINISTA. Si pudiera ir a dos, la celda llegaría a 126,75 y el suelo
+       volvería a mentir. */
+    const enLlena = css.slice(css.indexOf('.tn-densa-llena'));
+    expect(enLlena.slice(0, 600), 'el nombre puede crecer a dos líneas y entonces el '
+      + 'suelo se queda corto otra vez').toMatch(/\.tn-densa-llena \.tbl-nom\{[^}]*line-clamp:\s*1/);
   });
 });

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.141.0";
+export const VERSION = "1.142.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,35 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.142.0', fecha: '2026-09-23',
+    que: 'El ultimo defecto del tablero: el suelo de fila cabe por fin lo que la celda puede producir',
+    porque:
+      'QUEDABA UNO DECLARADO Y SIN ARREGLAR, y el responsable pidio arreglarlo todo. El suelo de '
+      + 'fila estaba en 100 px —lo que mide la celda con todo a una linea— y una auditoria en '
+      + 'navegador reprodujo lo que eso hace: con un apellido de dos lineas el contenido pide 113, '
+      + 'la fila se queda en 100 y los hijos de flex SE ENCOGEN. Medido: `.tbl-ape` pintado a 13,02 '
+      + 'px donde pide 27,5 — UNA LINEA ENTERA DESAPARECIDA, y `scrollHeight` NO LO DENUNCIA. Un '
+      + 'recorte que ni siquiera se ve como recorte, sin rescate alcanzable sin puntero. '
+      + 'EL SUELO SON 114: 48 de foto + 10 de separacion + UNA linea de nombre + DOS de apellido + '
+      + 'una de hora. Y EL NOMBRE VA A UNA SOLA LINEA en este modo, que es lo que hace el peor caso '
+      + 'determinista — sin eso la celda llega a 126,75 y el suelo vuelve a mentir. No es un recorte '
+      + 'disfrazado: ese hueco recibe el nombre CORTO, y el completo vive en el `sr-solo` que el '
+      + 'contrato ya exige. Una celda que puede crecer un 27 % rompe la cuenta que el sistema '
+      + 'publica, y una rejilla de capacidad calculada necesita un alto determinista. '
+      + 'CUESTA DENSIDAD Y SE DICE, con las cifras: en un telefono de 360 se pasa de 12 personas por '
+      + 'pantalla a 9, y en un panel estrecho de 16 a 12. En un telefono de 390, en una tablet '
+      + 'apaisada y en un escritorio no cuesta NADA. Se midieron tambien los 128 px que cubririan el '
+      + 'nombre a dos lineas y se descartaron: bajaban el escritorio de 40 personas a 30, un cuarto '
+      + 'de la pantalla, para cubrir un caso que el nombre CORTO no produce. '
+      + 'Con esto el tablero no tiene ningun defecto conocido abierto.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'Cambia la densidad del tablero que LLENA el area en pantallas estrechas: donde antes entraban '
+      + '12 personas ahora entran 9. No es una regresion: es lo que costaba no perder un apellido '
+      + 'sin avisar. `tn-densa` a secas no cambia.',
+    ],
+  },
   {
     v: '1.141.0', fecha: '2026-09-23',
     que: 'El candado que faltaba: un defecto que vuelve TRES veces no es un descuido, es un candado que falta',
