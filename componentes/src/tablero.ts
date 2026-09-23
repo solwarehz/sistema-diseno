@@ -36,6 +36,26 @@ export const ALTO_CELDA_TABLERO = 114;
 export const HUECO_TABLERO = 8;
 export const HUECO_TABLERO_ANCHO = 12;
 
+/**
+ * Lo que la burbuja sobresale por encima de la foto, y que hay que reservar en
+ * la primera fila o **se recorta**.
+ *
+ * La burbuja se apoya en el borde del disco a 45° y se empuja hacia fuera, así
+ * que su borde superior queda por encima de la caja de la foto: `7,03 − 0,75·D`
+ * con el disco de 48. Con el mayor que el propio sistema produce —`+99`, 22 px,
+ * porque `cuentaBurbuja` topa en tres caracteres— son **9,47 px**.
+ *
+ * Se descubrió midiendo: en una fila de 124,54 px la celda centra su contenido
+ * de 113 y deja 5,77 de holgura arriba, así que se recortaban **3,70 px** de la
+ * burbuja de la primera fila — y el carril no se puede desplazar hasta ella
+ * porque su `scrollHeight` es igual a su `clientHeight`. La auditoría midió
+ * 3,71. Es la misma cuenta.
+ *
+ * Se reserva **10** y no 9,47 porque un píxel de margen cuesta nada y evita
+ * discutir con el redondeo del navegador.
+ */
+export const RESERVA_BURBUJA = 10;
+
 export type CapacidadTablero = {
   /** Columnas que caben. Nunca menos de 1. */
   columnas: number;
@@ -76,7 +96,11 @@ export function capacidadDeRejilla(
     return Number.isFinite(n) ? Math.max(1, n) : 1;
   };
   const columnas = cuantas(ancho, ANCHO_CELDA_TABLERO);
-  const filas = cuantas(alto, ALTO_CELDA_TABLERO);
+  /* EL ALTO DISPONIBLE DESCUENTA LA RESERVA DE LA BURBUJA, porque la rejilla la
+     reserva con su relleno superior. Si la cuenta no la descontara, las dos se
+     separarían y volvería el recorte: la cuenta creería que cabe una fila más
+     de la que la rejilla puede pintar. */
+  const filas = cuantas(Math.max(0, alto - RESERVA_BURBUJA), ALTO_CELDA_TABLERO);
   return { columnas, filas, porPagina: columnas * filas };
 }
 
@@ -151,6 +175,25 @@ export function useCapacidadTablero(caja: RefObject<HTMLElement | null>): Capaci
         - parseFloat(cs.paddingTop || '0') - parseFloat(cs.paddingBottom || '0');
       /* La ventana va aparte de la caja: el `@media` de la hoja mide la
          ventana, y la rejilla vive en la caja. */
+      /* Y SI LA CADENA DE ALTO ESTA ROTA, SE DICE EN VOZ ALTA. Cuando el padre
+         no da alto, esta caja mide su propio contenido y la cuenta entra en un
+         lazo: capacidad de una fila → se pinta una fila → el contenido sigue
+         midiendo una fila. Es estable, silencioso, y en pantalla se ve como un
+         tablero de una sola fila con el resto en blanco.
+         El aviso salta cuando NO CABE NI UNA CELDA ENTERA: ahi no hay caja
+         pequeña que valga, hay cadena rota. Solo en desarrollo, como el resto
+         de avisos de este paquete. */
+      if (alto > 0 && alto < ALTO_CELDA_TABLERO
+          && process.env.NODE_ENV !== 'production') {
+        // eslint-disable-next-line no-console
+        console.error(
+          `useCapacidadTablero: la caja mide ${Math.round(alto)}px de alto y una celda `
+          + `necesita ${ALTO_CELDA_TABLERO}. Casi seguro la cadena de alto esta rota: `
+          + '`tbl-lleno` necesita que ALGUN antepasado tenga alto definido —`MarcoApp '
+          + 'altoCompleto` lo da—. Sin eso la caja mide su propio contenido y el tablero '
+          + 'se queda en una fila.',
+        );
+      }
       const nueva = capacidadDeRejilla(ancho, alto, window.innerWidth);
       /* Se compara antes de asignar: un `ResizeObserver` dispara por cualquier
          fracción de píxel, y sin esto cada uno sería un render de la rejilla

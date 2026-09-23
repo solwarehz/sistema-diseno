@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.145.0";
+export const VERSION = "1.147.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,96 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.147.0', fecha: '2026-09-23',
+    que: 'Cuatro defectos que solo se ven midiendo, y dos declarados: la auditoria de 28 tamaños',
+    porque:
+      'UNA AUDITORIA EN NAVEGADOR midio el tablero a 28 tamaños, llegando a cada uno DESDE ARRIBA Y '
+      + 'DESDE ABAJO, y se cazo a si misma antes que nada: su primera pasada dio valores no '
+      + 'convergidos —llego a reportar 455 px de area util dentro de una caja de 412— y la descarto '
+      + 'entera. Esa honestidad es la que hace utiles las otras cifras. '
+      + 'LA MISMA CAJA DABA DOS TABLEROS DISTINTOS. A 768x500, llegando desde una caja mayor salia '
+      + '7x3 en una pagina; llegando desde una menor, 7x2 en dos. Las dos estables. La causa es un '
+      + 'lazo mas fino que el del R161: LA TIRA DE PUNTOS VIVE DENTRO DE LA COLUMNA QUE SE MIDE, asi '
+      + 'que aparecer o no cambia el alto disponible → que decide la capacidad → que decide el '
+      + 'numero de paginas → que decide si la tira aparece. Dos puntos fijos, y se cae en uno u otro '
+      + 'segun de donde vengas. Los 54 px de diferencia eran exactamente esa tira. Ahora ocupa '
+      + 'SIEMPRE y se esconde con `visibility`, nunca con `display`. '
+      + 'EL INDICE DE PARADA SE DESFASABA POR EL HUECO DEL CARRIL. Se calculaba dividiendo '
+      + '`scrollLeft` por el ancho, y el carril tiene `gap: 12px`: cada parada empieza en '
+      + '`i*(ancho+hueco)`. El error se acumula — medido con 18 paradas, desde la SEXTA decia una de '
+      + 'mas, y en la ultima decia «Pantalla 20 de 18» SIN ENCENDER NINGUN PUNTO. Es la condicion '
+      + '(b) de la politica —«dice donde estas»— incumplida en las ultimas paradas. Ahora se busca '
+      + 'la parada mas cercana por su `offsetLeft`, que no se puede equivocar. '
+      + 'Y EL INDICE NO SE ACOTABA: al pasar de 18 paradas a 2, seguia diciendo «Pantalla 20 de 2» y '
+      + 'sin ningun punto, dentro de un `aria-live` que ademas lo anuncia. '
+      + 'LA BURBUJA DE LA PRIMERA FILA SE RECORTABA. Se apoya en el borde del disco y se empuja '
+      + 'hacia fuera, asi que su borde superior queda 9,47 px por encima de la foto con el mayor que '
+      + 'el sistema produce. En la primera fila eso cae FUERA del carril, y el carril no se puede '
+      + 'desplazar hasta ahi porque su `scrollHeight` es igual a su `clientHeight`: se cortaba en '
+      + 'plano. La auditoria midio 3,71 px a 412x915; la geometria da 3,70. Se reservan 10 px con el '
+      + 'relleno de la rejilla, Y LA CUENTA LOS DESCUENTA: si una reserva y la otra no, la cuenta '
+      + 'cree que cabe una fila mas de la que se puede pintar. '
+      + 'DOS QUEDAN DECLARADOS Y SIN ARREGLAR, con su medicion. El hueco muerto cuando hay menos '
+      + 'gente que capacidad —410,4 px, el 61 % de la rejilla a 1280x800— NO se arregla con '
+      + '`auto-fit`, que era lo obvio: colapsa las pistas vacias y reparte todo entre las usadas, '
+      + 'asi que dos filas sobre 800 px dan celdas de 400 con un avatar de 48 flotando en medio. Y '
+      + 'un nombre compuesto de TRES raices pierde una linea sin rescate alcanzable sin puntero: los '
+      + 'dos apellidos que el sistema probaba si caben, los de tres no. Las dos salidas cuestan '
+      + 'densidad o treinta paradas de tabulador, y eso no es una decision de implementacion. '
+      + 'Y LA RESERVA DE LA BURBUJA NO SE APLICABA, lo cazo el candado del empate el mismo dia que '
+      + 'se escribio: «.tn-densa-llena» iba ANTES de «.tn-densa» en el archivo, empatan en '
+      + 'especificidad, y la base pisaba su «padding-top». La regla estaba escrita y no hacia NADA '
+      + '— el defecto que este repositorio persigue desde el candado de la declaracion muerta, esta '
+      + 'vez entre dos clases distintas. Las variantes van ahora detras de su base.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'La tira de paradas ocupa ahora tambien con una sola pantalla: son ~28 px de alto que antes no '
+      + 'estaban, y a cambio la capacidad deja de depender de por donde vengas. Y la rejilla reserva '
+      + '10 px arriba, que la cuenta descuenta: donde antes cabian justo N filas puede caber N-1.',
+    ],
+  },
+  {
+    v: '1.146.0', fecha: '2026-09-23',
+    que: 'R161 · la pieza dependia de que su padre fuera flex, y se estaba validando en el unico sitio donde funciona',
+    porque:
+      'LO DIAGNOSTICO EL EQUIPO QUE LA USA, y el diagnostico era mejor que el nuestro. '
+      + '`tbl-lleno` y `tbl-crece` declaraban solo `flex: 1 1 auto`, que NO HACE NADA si el padre no '
+      + 'es un contenedor flex. Cuando la cadena se rompe, la caja mide su propio CONTENIDO y '
+      + '`useCapacidadTablero` entra en un LAZO CIRCULAR: capacidad de una fila → se pinta una fila '
+      + '→ el contenido sigue midiendo una fila. Estable, silencioso, y en pantalla un tablero de '
+      + 'UNA SOLA FILA con el resto en blanco. '
+      + 'REPRODUCIDO ANTES DE DARLO POR BUENO: en un padre de 420 px de alto SIN flex, la caja medía '
+      + '139,3 y daba 7x1 en tres paginas; poniendole `display: flex; flex-direction: column` al '
+      + 'padre, 416 y 7x3 en UNA. Ellos midieron 100 → 220,7 y 7x1 → 7x2 con otro contenedor: el '
+      + 'mismo mecanismo. '
+      + 'Y LO QUE DE VERDAD DUELE, que es lo que ellos escribieron: «su auditoria no puede encontrar '
+      + 'esto midiendo el catalogo, porque el defecto solo aparece cuando el padre del `tbl-crece` '
+      + 'no es flex». Tienen razon. En el catalogo el padre SIEMPRE es `tbl-marco`, que es flex, asi '
+      + 'que TODAS las mediciones de las ultimas siete versiones —doce tamaños, tres auditorias en '
+      + 'navegador— pasaron sin poder ver esto. LA PIEZA SE ESTABA VALIDANDO EN EL UNICO SITIO DONDE '
+      + 'FUNCIONA. '
+      + 'EL ARREGLO son dos declaraciones: `height: 100%`, que la salva cuando el padre no es flex '
+      + 'pero SI tiene alto; y la base de flex a CERO en vez de `auto`, para que en un padre flex '
+      + 'ese alto no entre en el reparto y encoja al encabezado y al pie. '
+      + 'CUANDO NINGUN ANTEPASADO DA ALTO NO HAY ARREGLO POSIBLE EN CSS —una caja no puede saber el '
+      + 'sitio disponible si nadie lo define—, asi que el gancho AVISA POR CONSOLA en desarrollo '
+      + 'cuando la caja no da ni para una celda: el defecto pasa de silencioso a ruidoso, que es lo '
+      + 'unico honesto que se puede hacer con lo que no tiene arreglo. '
+      + 'Y LA LECCION GENERAL ENTRA COMO REGLA: una pieza que depende de su padre SE DEMUESTRA EN UN '
+      + 'PADRE QUE NO COOPERA. El catalogo monta ahora el tablero DOS VECES —dentro de `tbl-marco`, '
+      + 'que es el montaje recomendado, y dentro de un contenedor liso sin flex, que es como lo '
+      + 'monta quien no leyo el contrato—. Demostrar una pieza solo donde funciona no es '
+      + 'demostrarla, y esto vale para todo el sistema, no para el tablero. '
+      + 'Su linea provisional, marcada y con fecha, es lo correcto: nadie tiene que dejar produccion '
+      + 'con el tablero de una fila esperando cuatro versiones. Con esta ya se puede quitar.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'NADA que rompa. `tbl-lleno` y `tbl-crece` pasan a funcionar donde antes no funcionaban; donde '
+      + 'ya funcionaban se comportan igual —comprobado en el catalogo, misma capacidad antes y '
+      + 'despues—. Quien tenga una linea provisional forzando flex en el padre la puede quitar.',
+    ],
+  },
   {
     v: '1.145.0', fecha: '2026-09-23',
     que: 'El contrato decia dos cosas que la hoja no entrega, y nace el candado que mira si lo que el contrato CITA es cierto',

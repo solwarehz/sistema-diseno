@@ -38,7 +38,7 @@ export { CampoContrasena, type CampoContrasenaProps } from './CampoContrasena';
    calcula cada producto, la misma pantalla acaba con tres respuestas. */
 export {
   capacidadDeRejilla, enPaginas, useCapacidadTablero, cuentaBurbuja,
-  ANCHO_CELDA_TABLERO, ALTO_CELDA_TABLERO, HUECO_TABLERO, HUECO_TABLERO_ANCHO,
+  ANCHO_CELDA_TABLERO, ALTO_CELDA_TABLERO, RESERVA_BURBUJA, HUECO_TABLERO, HUECO_TABLERO_ANCHO,
   type CapacidadTablero,
 } from './tablero';
 export { Avatar, colorIdentidad, iniciales, type TamanoAvatar, type EstadoAvatar, type AvatarProps } from './Avatar';

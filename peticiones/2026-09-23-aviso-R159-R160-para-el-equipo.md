@@ -1,9 +1,9 @@
-# Aviso de las v1.139.0 a v1.145.0 — para Control Administrativos V2.0
+# Aviso de las v1.139.0 a v1.147.0 — para Control Administrativos V2.0
 
-**23 de septiembre de 2026** · MMI-DS **v1.145.0**
+**23 de septiembre de 2026** · MMI-DS **v1.147.0**
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.145.0"
+npm install "github:solwarehz/sistema-diseno#v1.147.0"
 ```
 
 **Esto no responde a ningún requerimiento suyo: son seis versiones seguidas que

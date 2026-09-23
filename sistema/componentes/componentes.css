@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.145.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.147.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -102,7 +102,7 @@
     --dur-onda: 0.01ms;
   }
 }
-:root{ --mmi-componentes: 1.145.0; }
+:root{ --mmi-componentes: 1.147.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -871,16 +871,16 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 
 .tn-cuadricula{ display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 12px; }
 .tn-cuadricula > *{ min-width: 0; }
-.tn-densa-llena .tbl-nom{ -webkit-line-clamp: 1; }
-.tn-densa-llena{ grid-template-rows: repeat(auto-fill, minmax(114px, 1fr));
-  align-content: stretch; height: 100%; }
-.tn-densa-llena > .tbl-persona{ justify-content: center; }
 .tn-densa{ display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
   gap: 8px; margin: 0; padding: 0; list-style: none; }
 .tn-densa > *{ min-width: 0; }
 @media (min-width: 768px) {
   .tn-densa{ gap: 12px; }
 }
+.tn-densa-llena .tbl-nom{ -webkit-line-clamp: 1; }
+.tn-densa-llena{ grid-template-rows: repeat(auto-fill, minmax(114px, 1fr));
+  align-content: stretch; height: 100%; padding-top: 10px; }
+.tn-densa-llena > .tbl-persona{ justify-content: center; }
 .tn{ background: var(--fondo-tarjeta); border: 1px solid var(--borde);
   border-radius: 6px; display: flex; flex-direction: column; text-decoration: none;
   color: var(--texto-principal);
@@ -1963,7 +1963,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tbl-marco{ display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 8px; }
-.tbl-crece{ flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+.tbl-crece{ flex: 1 1 0; min-height: 0; height: 100%; overflow-y: auto; }
 .tbl-persona{ display: flex; flex-direction: column; align-items: center;
   gap: 0; min-width: 0; text-align: center; }
 .tbl-foto{ position: relative; display: flex; justify-content: center;
@@ -1978,7 +1978,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   overflow: hidden; }
 .tbl-hora{ font-size: 11px; color: var(--texto-secundario); line-height: 1.25;
   font-variant-numeric: tabular-nums; }
-.tbl-lleno{ flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; }
+.tbl-lleno{ flex: 1 1 0; min-height: 0; height: 100%; overflow: hidden; display: flex; }
 .tbl-lleno > *{ flex: 1 1 auto; min-height: 0; min-width: 0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
@@ -1993,7 +1993,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .sup-info{ --sup-fondo: var(--info-fondo);  --sup-borde: var(--info-acento); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CARRIL CON ANCLAJE — 9 reglas · clases .car-*
+   CARRIL CON ANCLAJE — 10 reglas · clases .car-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .car{ display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
@@ -2002,6 +2002,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .car:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px; }
 .car-cuenta{ display: flex; gap: 6px; justify-content: center; padding: 8px 0;
   color: var(--texto-secundario); font-size: 12px; }
+.car-cuenta-vacia{ visibility: hidden; }
 .car-punto{ width: 6px; height: 6px; border-radius: 50%; background: var(--borde-campo); }
 .car-punto-aqui{ background: var(--accion); width: 18px; border-radius: 3px; }
 @media (prefers-reduced-motion: reduce) {

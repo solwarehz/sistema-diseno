@@ -1,10 +1,10 @@
 # Respuesta a R153 — la matriz en móvil · para Control Administrativos V2.0
 
-**22 de septiembre de 2026** · entró en MMI-DS **v1.145.0**, con dos
+**22 de septiembre de 2026** · entró en MMI-DS **v1.147.0**, con dos
 correcciones en la v1.132.0
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.145.0"
+npm install "github:solwarehz/sistema-diseno#v1.147.0"
 ```
 
 **Entra lo que pidieron primero, no la alternativa.** La matriz cae sola a lista

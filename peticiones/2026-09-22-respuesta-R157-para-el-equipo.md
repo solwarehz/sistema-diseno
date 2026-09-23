@@ -1,9 +1,9 @@
 # Respuesta a R157 — piezas de tablero · para Control Administrativos V2.0
 
-**22 de septiembre de 2026**, actualizado el **23** · MMI-DS **v1.145.0**
+**22 de septiembre de 2026**, actualizado el **23** · MMI-DS **v1.147.0**
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.145.0"
+npm install "github:solwarehz/sistema-diseno#v1.147.0"
 ```
 
 > **Instalen la v1.141.0.** La v1.133.0 publicó las siete piezas y
@@ -144,7 +144,7 @@ La clase ahora anula `margin`, `padding` y `list-style`.
 versión enseñaba `tbl-crece` —que se desplaza en vertical— y la segunda ponía la
 referencia **en el carril**, que es lo que deja la cuenta clavada en la primera
 fila. Las dos fueron correctas en su día y las dos dejaron de serlo. Ésta es la
-composición de la v1.145.0, y es la misma que monta nuestro catálogo.
+composición de la v1.147.0, y es la misma que monta nuestro catálogo.
 
 ```tsx
 import { useRef, useState } from 'react';

@@ -353,10 +353,31 @@ function TableroVivo() {
      boton, porque aqui se pasa de pagina DESLIZANDO: un estado que solo cambie
      al pulsar diria lo que el usuario no hizo. */
   const [actual, setActual] = useState(0);
+  /* Y SE ACOTA AL NUMERO DE PANTALLAS QUE HAY AHORA. El estado solo lo escribia
+     el desplazamiento, y nada lo comparaba con cuantas paginas quedan: al
+     agrandar la caja de 18 paradas a 2, el carril seguia diciendo «Pantalla 20
+     de 2» y sin ningun punto encendido — dentro de un «aria-live», que ademas
+     lo anuncia. Se acota al leer, no al escribir, porque el numero de paginas
+     cambia sin que nadie deslice. */
+  const enPantalla = Math.min(actual, Math.max(0, paginas.length - 1));
   const alDeslizar = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
-    const ancho = el.clientWidth || 1;
-    const i = Math.round(el.scrollLeft / ancho);
+    /* SE BUSCA LA PARADA MAS CERCANA POR SU POSICION REAL, no se divide por el
+       ancho. Dividir ignora el hueco de 12 px del carril —cada parada empieza
+       en «i*(ancho+hueco)», no en «i*ancho»— y el error se acumula: medido con
+       18 paradas, a partir de la 6 decia una de mas, y en la ultima decia
+       «Pantalla 20 de 18» sin encender ningun punto. Falla desde la parada
+       «ancho/(2*hueco)», asi que en un carril corto salta enseguida.
+       Preguntar por «offsetLeft» no se puede equivocar: es donde esta cada
+       parada, huecos incluidos. */
+    const paradas = [...el.children] as HTMLElement[];
+    if (!paradas.length) return;
+    let i = 0;
+    let mejor = Infinity;
+    paradas.forEach((p, k) => {
+      const d = Math.abs(p.offsetLeft - el.offsetLeft - el.scrollLeft);
+      if (d < mejor) { mejor = d; i = k; }
+    });
     setActual((v) => (v === i ? v : i));
   };
   return (
@@ -414,14 +435,17 @@ function TableroVivo() {
           primera por muchas que pasaras: de las tres condiciones de la regla 7,
           la (b) entregaba solo la mitad —cuantas hay, nunca donde estas—. Lo
           midio una auditoria deslizando hasta el final. */}
-      {paginas.length > 1 && (
-        <p className="car-cuenta" aria-live="polite">
-          {paginas.map((_, i) => (
-            <span key={i} className={`car-punto${i === actual ? ' car-punto-aqui' : ''}`} />
-          ))}
-          <span className="sr-solo">Pantalla {actual + 1} de {paginas.length}</span>
-        </p>
-      )}
+      {/* LA TIRA SE PINTA SIEMPRE, aunque haya una sola pantalla. Si apareciera
+          y desapareciera, su alto entraria y saldria de la caja que se mide, y
+          la capacidad tendria DOS puntos fijos: la misma caja daba 7x3 o 7x2
+          segun si venias de una caja mayor o menor. Ocupando siempre, hay uno. */}
+      <p className={`car-cuenta${paginas.length > 1 ? '' : ' car-cuenta-vacia'}`}
+         aria-live="polite" aria-hidden={paginas.length > 1 ? undefined : true}>
+        {paginas.map((_, i) => (
+          <span key={i} className={`car-punto${i === enPantalla ? ' car-punto-aqui' : ''}`} />
+        ))}
+        <span className="sr-solo">Pantalla {enPantalla + 1} de {paginas.length}</span>
+      </p>
       <p className="vivo"><span className="vivo-punto" /> En vivo · último dato 07:15</p>
     </div>
   );

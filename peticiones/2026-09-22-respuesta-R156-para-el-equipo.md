@@ -1,9 +1,9 @@
 # Respuesta a R156 — la fila de totales · para Control Administrativos V2.0
 
-**22 de septiembre de 2026** · entró en MMI-DS **v1.145.0**
+**22 de septiembre de 2026** · entró en MMI-DS **v1.147.0**
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.145.0"
+npm install "github:solwarehz/sistema-diseno#v1.147.0"
 ```
 
 **Entra, y entra donde ustedes dijeron.** La frase de su dueño vale como regla y

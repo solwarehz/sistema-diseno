@@ -1,9 +1,9 @@
 # Respuesta a R158 — el marco y el alto del tablero · para Control Administrativos V2.0
 
-**23 de septiembre de 2026** · MMI-DS **v1.145.0**
+**23 de septiembre de 2026** · MMI-DS **v1.147.0**
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.145.0"
+npm install "github:solwarehz/sistema-diseno#v1.147.0"
 ```
 
 **Los dos puntos entran, y los dos eran del sistema.** El segundo era un defecto

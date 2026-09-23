@@ -14,7 +14,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   capacidadDeRejilla, enPaginas, useCapacidadTablero, cuentaBurbuja,
-  ANCHO_CELDA_TABLERO, ALTO_CELDA_TABLERO, HUECO_TABLERO, HUECO_TABLERO_ANCHO,
+  ANCHO_CELDA_TABLERO, ALTO_CELDA_TABLERO, HUECO_TABLERO, HUECO_TABLERO_ANCHO, RESERVA_BURBUJA,
 } from '../src/tablero';
 
 const css = readFileSync(
@@ -474,5 +474,112 @@ describe('R160 · la burbuja no puede comerse la cara que viene a anotar', () =>
       expect(sobra * (pos / 100), `en una foto ${nom} el encuadre corta la cabeza`)
         .toBeLessThanOrEqual(cabeza);
     }
+  });
+});
+
+describe('R161 · la pieza no puede depender de que su padre sea flex', () => {
+  it('[15] `tbl-lleno` y `tbl-crece` declaran un alto que NO depende del padre', () => {
+    /* Declaraban sólo `flex: 1 1 auto`, que no hace nada si el padre no es un
+       contenedor flex: la caja medía su propio CONTENIDO y la cuenta entraba en
+       un lazo —capacidad de una fila → se pinta una fila → el contenido sigue
+       midiendo una fila—. Reproducido en navegador: en un padre de 420 px sin
+       flex, la caja medía 139,3 y daba 7×1; con el padre en flex column, 416 y
+       7×3. Lo diagnosticó el equipo que la usa. */
+    for (const c of ['.tbl-lleno', '.tbl-crece']) {
+      const r = regla(c);
+      expect(r, `${c} sólo crece si su padre es flex: en cualquier otro sitio mide su contenido`)
+        .toMatch(/height:\s*100%/);
+      /* Y la base a CERO: con `auto`, ese `height: 100%` se convierte en el
+         tamaño de partida dentro de un padre flex y puede encoger al encabezado
+         y al pie. */
+      expect(r, `${c} usa el alto como base de flex y puede aplastar a sus hermanos`)
+        .toMatch(/flex:\s*1\s+1\s+0/);
+      expect(r, `${c} sin \`min-height: 0\` no baja y empuja al pie fuera`)
+        .toMatch(/min-height:\s*0/);
+    }
+  });
+
+  it('[16] el catálogo lo demuestra en un padre que NO coopera', () => {
+    /* La lección general del R161: demostrar una pieza sólo donde funciona no
+       es demostrarla. El catálogo la monta dentro de `tbl-marco` —el montaje
+       recomendado— y dentro de un contenedor liso. */
+    const cat = readFileSync(join(process.cwd(), '..', 'cascaron', 'index.html'), 'utf8');
+    const estatico = cat.split('<script data-vivo>')[0];
+    expect(estatico, 'el catálogo no monta el tablero en un padre sin flex: la pieza se '
+      + 'sigue validando en el único sitio donde funciona').toMatch(/class="muestra-liso"/);
+    const i = estatico.indexOf('class="muestra-liso"');
+    const trozo = estatico.slice(i, i + 900);
+    expect(trozo, 'el contenedor liso no lleva dentro el tablero').toMatch(/tbl-lleno/);
+    /* Y el contenedor tiene que ser LISO de verdad: si se le pone flex, deja de
+       demostrar nada. */
+    const cromo = cat.slice(cat.indexOf('.muestra-liso'));
+    expect(cromo.slice(0, 120), 'el contenedor de la demo hostil es flex: no demuestra nada')
+      .not.toMatch(/display:\s*flex/);
+  });
+});
+
+describe('R162 · lo que una auditoría en navegador midió a 28 tamaños', () => {
+  it('[11] la tira de paradas SIEMPRE ocupa: sin eso hay dos puntos fijos', () => {
+    /* La tira vive dentro de la columna que se mide, así que aparecer o no
+       cambia el alto disponible — y ese alto decide la capacidad, que decide el
+       número de páginas, que decide si la tira aparece. Medido: la MISMA caja
+       de 768×500 daba 7×3 en una página llegando desde una caja mayor, y 7×2 en
+       dos llegando desde una menor. Los 54 px de diferencia son esta tira. */
+    const demo = readFileSync(
+      join(process.cwd(), '..', 'sistema', 'cascaron', 'vivo.tsx'), 'utf8');
+    expect(demo, 'la tira se pinta condicionalmente: la medida vuelve a tener dos '
+      + 'puntos fijos').not.toMatch(/\{paginas\.length > 1 && \(\s*<p className="car-cuenta/);
+    expect(regla('.car-cuenta-vacia'), 'falta la forma de esconderla SIN que deje su hueco')
+      .toMatch(/visibility:\s*hidden/);
+    expect(regla('.car-cuenta-vacia'), 'si se esconde con `display` deja de ocupar y vuelve el defecto')
+      .not.toMatch(/display:\s*none/);
+  });
+
+  it('[11] el índice de parada no se calcula dividiendo por el ancho', () => {
+    /* El carril tiene `gap: 12px`: cada parada empieza en `i·(ancho+hueco)`, no
+       en `i·ancho`. Dividiendo, el error se acumula — medido con 18 paradas,
+       desde la 6 decía una de más y en la última «Pantalla 20 de 18» sin
+       encender ningún punto. */
+    const demo = readFileSync(
+      join(process.cwd(), '..', 'sistema', 'cascaron', 'vivo.tsx'), 'utf8');
+    const fn = demo.slice(demo.indexOf('const alDeslizar'), demo.indexOf('return (', demo.indexOf('const alDeslizar')));
+    expect(fn, 'divide por el ancho e ignora el hueco del carril')
+      .not.toMatch(/scrollLeft\s*\/\s*(el\.)?(clientWidth|ancho)/);
+    expect(fn, 'no busca la parada por su posición real').toMatch(/offsetLeft/);
+  });
+
+  it('[11] y el índice se acota al número de pantallas que hay', () => {
+    /* Nada lo comparaba con `paginas.length`: al pasar de 18 paradas a 2, el
+       carril seguía diciendo «Pantalla 20 de 2» y sin ningún punto encendido,
+       dentro de un `aria-live` que además lo anuncia. */
+    const demo = readFileSync(
+      join(process.cwd(), '..', 'sistema', 'cascaron', 'vivo.tsx'), 'utf8');
+    expect(demo, 'el índice de parada no se acota y puede pasarse del total')
+      .toMatch(/Math\.min\(actual,\s*Math\.max\(0,\s*paginas\.length\s*-\s*1\)\)/);
+  });
+
+  it('[11] la primera fila reserva lo que la burbuja sobresale', () => {
+    /* La burbuja se apoya en el borde del disco y su borde superior queda
+       `7,03 − 0,75·D` por encima de la foto: con el mayor que el sistema
+       produce —«+99», 22 px— son 9,47. En la primera fila eso cae fuera del
+       carril, que no se puede desplazar hasta ahí. Medido: 3,70 px recortados
+       en una fila de 124,54; la auditoría midió 3,71. */
+    const saliente = 0.75 * 22 - 7.03;
+    expect(RESERVA_BURBUJA, 'la reserva no cubre lo que la burbuja sobresale')
+      .toBeGreaterThanOrEqual(saliente);
+    expect(regla('.tn-densa-llena'), 'la rejilla no reserva sitio para la burbuja de la primera fila')
+      .toContain(`padding-top: ${RESERVA_BURBUJA}px`);
+    /* Y LAS DOS CUENTAS NO SE PUEDEN SEPARAR: si la hoja reserva y la cuenta no
+       descuenta, la cuenta cree que cabe una fila más de la que se puede pintar. */
+    const fila = ALTO_CELDA_TABLERO + HUECO_TABLERO;
+    // justo para UNA fila una vez descontada la reserva
+    expect(capacidadDeRejilla(400, ALTO_CELDA_TABLERO + RESERVA_BURBUJA, 400).filas,
+      'la cuenta no descuenta la reserva: creerá que cabe más de lo que se puede pintar').toBe(1);
+    // un píxel menos y ya no cabe ni una
+    expect(capacidadDeRejilla(400, ALTO_CELDA_TABLERO + RESERVA_BURBUJA - 1, 400).filas,
+      'la cuenta no baja de fila cuando la reserva se come el sitio').toBe(1);
+    // y justo para DOS
+    expect(capacidadDeRejilla(400, fila + ALTO_CELDA_TABLERO + RESERVA_BURBUJA, 400).filas,
+      'la cuenta no llega a dos filas cuando sí caben').toBe(2);
   });
 });

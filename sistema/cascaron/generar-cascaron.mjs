@@ -7551,6 +7551,68 @@ más abajo.</p>
 </div>
 
 <div class="bloque">
+<h4 class="sub-seccion">Y en un padre que NO coopera</h4>
+<p class="seccion-sub">Ésta es la demostración que faltaba. Arriba, el tablero vive dentro de
+<code>tbl-marco</code>, que es flex y le da el alto: <strong>ahí siempre funciona</strong>. Aquí
+vive dentro de un contenedor <strong>liso, sin flex</strong>, que es como lo monta un producto que
+no leyó el contrato. <strong>Si la pieza sólo funcionara en el primero, se vería aquí.</strong></p>
+<p class="seccion-sub">Lo diagnosticó el equipo que la usa: <em>«su auditoría no puede encontrar
+esto midiendo el catálogo, porque el defecto sólo aparece cuando el padre del
+<code>tbl-crece</code> no es flex»</em>. Tenían razón — la pieza se estaba validando en el único
+sitio donde funciona.</p>
+<div class="muestra-liso">
+  <div class="sup sup-exito tbl-lleno">
+    <div class="car car-pagina" tabindex="0" role="region" aria-label="Personas, 1 pantalla">
+      <ul class="tn-densa tn-densa-llena">
+        <li class="tbl-persona">
+          <span class="tbl-foto"><span class="avatar avatar-fluido avatar-1 avatar-estado avatar-exito avatar-relieve">QR</span></span>
+          <span class="sr-solo">Rosa Quispe · 06:48</span>
+          <span class="tbl-nom">Rosa</span>
+          <span class="tbl-ape">Quispe</span>
+          <span class="tbl-hora" aria-hidden="true">06:48</span>
+        </li>
+        <li class="tbl-persona">
+          <span class="tbl-foto"><span class="avatar avatar-fluido avatar-2 avatar-estado avatar-exito avatar-relieve">HL</span></span>
+          <span class="sr-solo">Luis Huamán · 06:51</span>
+          <span class="tbl-nom">Luis</span>
+          <span class="tbl-ape">Huamán</span>
+          <span class="tbl-hora" aria-hidden="true">06:51</span>
+        </li>
+        <li class="tbl-persona">
+          <span class="tbl-foto"><span class="avatar avatar-fluido avatar-3 avatar-estado avatar-exito avatar-relieve">CA</span></span>
+          <span class="sr-solo">Ana Ccahuana · 06:53</span>
+          <span class="tbl-nom">Ana</span>
+          <span class="tbl-ape">Ccahuana</span>
+          <span class="tbl-hora" aria-hidden="true">06:53</span>
+        </li>
+        <li class="tbl-persona">
+          <span class="tbl-foto"><span class="avatar avatar-fluido avatar-4 avatar-estado avatar-exito avatar-relieve">PJ</span></span>
+          <span class="sr-solo">José Pineda · 06:55</span>
+          <span class="tbl-nom">José</span>
+          <span class="tbl-ape">Pineda</span>
+          <span class="tbl-hora" aria-hidden="true">06:55</span>
+        </li>
+        <li class="tbl-persona">
+          <span class="tbl-foto"><span class="avatar avatar-fluido avatar-1 avatar-estado avatar-exito avatar-relieve">TE</span></span>
+          <span class="sr-solo">Elva Torres · 06:57</span>
+          <span class="tbl-nom">Elva</span>
+          <span class="tbl-ape">Torres</span>
+          <span class="tbl-hora" aria-hidden="true">06:57</span>
+        </li>
+        <li class="tbl-persona">
+          <span class="tbl-foto"><span class="avatar avatar-fluido avatar-2 avatar-estado avatar-exito avatar-relieve">AM</span></span>
+          <span class="sr-solo">Mateo Álvarez · 06:58</span>
+          <span class="tbl-nom">Mateo</span>
+          <span class="tbl-ape">Álvarez</span>
+          <span class="tbl-hora" aria-hidden="true">06:58</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="bloque">
 <h4 class="sub-seccion">El tablero ocupa el alto que le den</h4>
 <p class="seccion-sub">Dos clases, no una: <code>tbl-marco</code> apila encabezado, cuerpo y pie y
 toma el alto de <strong>su padre</strong>; <code>tbl-crece</code> marca <em>cuál</em> de los tres se
@@ -10051,6 +10113,10 @@ code { font-family: 'IBM Plex Mono', monospace; }
 .muestra-burbujas { display: flex; gap: 20px; flex-wrap: wrap; }
 .muestra-burbujas > .tbl-foto { width: auto; }
 .muestra-alto { height: 260px; display: flex; }
+/* EL PADRE QUE NO COOPERA: alto definido y NADA mas. Ni flex, ni nada que
+   ayude. Es como lo monta un producto que no leyo el contrato, y es donde el
+   R161 salio a la luz. */
+.muestra-liso { height: 300px; }
 .muestra-alto > .tbl-marco { flex: 1 1 auto; min-height: 0; }
 
 .muestra-fila { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
@@ -11947,7 +12013,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    decidiendo el alto de una pantalla ajena.
    ───────────────────────────────────────────────────────────────────────────── */
 .tbl-marco { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 8px; }
-.tbl-crece { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+.tbl-crece { flex: 1 1 0; min-height: 0; height: 100%; overflow-y: auto; }
 
 .tbl-persona { display: flex; flex-direction: column; align-items: center;
   gap: 0; min-width: 0; text-align: center; }
@@ -12045,6 +12111,18 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    saber si queda algo detras, que es la mitad de lo que hace util un carril. */
 .car-cuenta { display: flex; gap: 6px; justify-content: center; padding: 8px 0;
   color: var(--texto-secundario); font-size: 12px; }
+/* R162 · LA TIRA SIEMPRE OCUPA, AUNQUE NO HAYA NADA QUE CONTAR, y eso no es
+   cosmetica: es lo que hace la medida DETERMINISTA. La tira vive dentro de la
+   columna que se mide, asi que aparecer o no cambia el alto disponible — y ese
+   alto decide la capacidad, que decide el numero de paginas, que decide si la
+   tira aparece. HAY DOS PUNTOS FIJOS y se cae en uno u otro segun de donde
+   vengas: medido, la MISMA caja de 768x500 daba 7x3 en una pagina llegando
+   desde una caja mayor, y 7x2 en dos llegando desde una menor. Los 54 px de
+   diferencia son exactamente esta tira.
+   Ocupando siempre, el alto no depende de lo que se pinte y el punto fijo es
+   uno solo. Se esconde con «visibility» y no con «display», que es lo que deja
+   su hueco reservado, y se retira del arbol accesible porque no dice nada. */
+.car-cuenta-vacia { visibility: hidden; }
 .car-punto { width: 6px; height: 6px; border-radius: 50%; background: var(--borde-campo); }
 .car-punto-aqui { background: var(--accion); width: 18px; border-radius: 3px; }
 @media (prefers-reduced-motion: reduce) { .car { scroll-behavior: auto; } }
@@ -12097,7 +12175,23 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    eso se nota: se intenta pasar de pagina y la rejilla baja. Lo que no cabe en
    una pagina va a la siguiente, no mas abajo.
    ───────────────────────────────────────────────────────────────────────────── */
-.tbl-lleno { flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; }
+/* R161 · NO DEPENDE DE QUE SU PADRE SEA FLEX, y eso era un defecto serio.
+   Llevaba solo «flex: 1 1 auto», que NO HACE NADA si el padre no es un
+   contenedor flex — y entonces la caja mide su propio CONTENIDO y
+   «useCapacidadTablero» entra en el lazo circular: capacidad de una fila → se
+   pinta una fila → el contenido sigue midiendo una fila.
+   Lo diagnostico el equipo que la usa, y tenian razon en lo que mas duele:
+   ESTE DEFECTO NO SE PUEDE VER MIDIENDO EL CATALOGO, porque alli el padre SI es
+   flex —es «tbl-marco»— y por eso siempre salia bien. La pieza se estaba
+   validando en el unico sitio donde funciona.
+   Reproducido: en un padre de 420 px de alto SIN flex, la caja medía 139,3 y
+   daba 7x1; poniendole «display: flex; flex-direction: column» al padre, 416 y
+   7x3. Las mismas cifras que ellos midieron con otro contenedor.
+   «height: 100%» es lo que la salva cuando el padre no es flex pero SI tiene
+   alto. Y la base va a CERO y no a «auto» para que en un padre flex el alto no
+   entre en el reparto: con base «auto» el «100%» se convertiria en el tamaño de
+   partida y podria encoger a sus hermanos —el encabezado y el pie—. */
+.tbl-lleno { flex: 1 1 0; min-height: 0; height: 100%; overflow: hidden; display: flex; }
 .tbl-lleno > * { flex: 1 1 auto; min-height: 0; min-width: 0; }
 /* Las filas se reparten como las columnas: «auto-fill» las cuenta y «1fr» las
    estira. El suelo de 100 px es lo que mide una celda entera —foto de 48, sus
@@ -12120,13 +12214,6 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    pantalla a 9, y en un panel estrecho de 16 a 12. En los otros tres tamaños
    medidos no cuesta nada. Se paga porque la alternativa es perder un apellido
    sin avisar. */
-.tn-densa-llena .tbl-nom { -webkit-line-clamp: 1; }
-.tn-densa-llena { grid-template-rows: repeat(auto-fill, minmax(114px, 1fr));
-  align-content: stretch; height: 100%; }
-
-/* En una celda estirada el contenido se centra: si no, queda pegado arriba y el
-   hueco de abajo se lee como un fallo de maquetacion. */
-.tn-densa-llena > .tbl-persona { justify-content: center; }
 .car-pagina { height: 100%; }
 .car-pagina > * { height: 100%; }
 
@@ -12134,6 +12221,28 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
   gap: 8px; margin: 0; padding: 0; list-style: none; }
 .tn-densa > * { min-width: 0; }
 @media (min-width: 768px) { .tn-densa { gap: 12px; } }
+
+/* LAS VARIANTES VAN DESPUES DE SU BASE, y no es orden estetico: empatan en
+   especificidad, asi que la ultima gana. Puestas antes, «.tn-densa» pisaba el
+   «padding-top» de «.tn-densa-llena» y la reserva de la burbuja NO SE APLICABA
+   — la regla estaba escrita y no hacia nada. Lo cazo el candado del empate el
+   dia que se escribio la reserva. */
+.tn-densa-llena .tbl-nom { -webkit-line-clamp: 1; }
+/* Y RESERVA ARRIBA LO QUE LA BURBUJA SOBRESALE. Se apoya en el borde del disco
+   y se empuja hacia fuera, asi que su borde superior queda 9,47 px por encima
+   de la foto con el mayor que el sistema produce —«+99», 22 px—. En la PRIMERA
+   fila eso cae fuera del carril, y el carril no se puede desplazar hasta ahi
+   porque su «scrollHeight» es igual a su «clientHeight»: se recortaba en plano.
+   Medido: 3,70 px recortados en una fila de 124,54, y la auditoria midio 3,71.
+   Los 10 px salen de la misma constante que usa la cuenta —«RESERVA_BURBUJA»—,
+   y la cuenta los DESCUENTA del alto disponible: si no, las dos se separarian y
+   la cuenta creeria que cabe una fila mas de la que la rejilla puede pintar. */
+.tn-densa-llena { grid-template-rows: repeat(auto-fill, minmax(114px, 1fr));
+  align-content: stretch; height: 100%; padding-top: 10px; }
+
+/* En una celda estirada el contenido se centra: si no, queda pegado arriba y el
+   hueco de abajo se lee como un fallo de maquetacion. */
+.tn-densa-llena > .tbl-persona { justify-content: center; }
 /* R56 · La pulsable es un <button>, y un boton NO hereda tipografia.
    Sin font/text-align/padding/margin el navegador impone su fuente
    (~13,3px Arial), centra el texto y anade relleno propio. Aqui no se veia
