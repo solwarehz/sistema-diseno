@@ -13,7 +13,7 @@ import { render, act } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  capacidadDeRejilla, enPaginas, useCapacidadTablero,
+  capacidadDeRejilla, enPaginas, useCapacidadTablero, cuentaBurbuja,
   ANCHO_CELDA_TABLERO, ALTO_CELDA_TABLERO, HUECO_TABLERO, HUECO_TABLERO_ANCHO,
 } from '../src/tablero';
 
@@ -157,17 +157,17 @@ describe('R160 · dos defectos que se vieron en la misma pantalla', () => {
       .toMatch(/box-shadow:[^;]*var\(--fondo-tarjeta\)/);
   });
 
-  it('[13] la foto del avatar encuadra a la CARA, no al centro', () => {
-    /* `cover` recorta. Con el punto por omisión, una foto vertical de carnet
-       pierde la parte de arriba. Medido: el centro corta 5,4 px de cabeza en
-       un 3:4 y el 30 % corta 2,2; en una vertical de móvil, 15,2 contra 7,8.
-       No lo elimina —ninguna cifra sirve para todas las proporciones— y por eso
-       el contrato dice que el arreglo de raíz es recortar al subir. */
+  it('[13] la foto del avatar encuadra a la CARA, y con `cover`', () => {
+    /* Esta prueba fijaba el «30 %» como número mágico, así que bajarlo a 10
+       —que es lo que de verdad deja de cortar— la ponía en rojo por el motivo
+       equivocado. Lo que importa no es el número: es que el recorte de arriba
+       no se coma la cabeza, y eso lo comprueba la prueba de abajo rehaciendo la
+       cuenta. Aquí sólo queda lo que sí es fijo. */
     const i = css.indexOf('.avatar img');
     expect(i, 'la hoja no estiliza la foto del avatar').toBeGreaterThan(-1);
     const r = css.slice(i, css.indexOf('}', i));
-    expect(r, 'la foto se recorta por el centro y se come la cabeza')
-      .toMatch(/object-position:\s*50%\s*30%/);
+    expect(r, 'la foto no declara encuadre vertical y se recorta por el centro')
+      .toMatch(/object-position:\s*50%/);
     expect(r, 'sin `cover` no hay recorte que encuadrar').toMatch(/object-fit:\s*cover/);
   });
 });
@@ -375,5 +375,94 @@ describe('R159 · la caja que se mide no puede depender del contenido', () => {
     /* Y lo que hace a `tbl-lleno` inmune: su tamaño no lo decide su contenido. */
     expect(regla('.tbl-lleno'), 'sin `overflow: hidden` el contenido puede estirar la caja '
       + 'que se mide, y vuelve el punto fijo').toMatch(/overflow:\s*hidden/);
+  });
+});
+
+describe('R160 · la burbuja no puede comerse la cara que viene a anotar', () => {
+  it('[13] el texto llega acortado: tres caracteres como mucho', () => {
+    /* La burbuja CRECE con su contenido: con «+120» medía 32,4 px sobre un
+       avatar de 48 —el 67 %—. Lo vio el responsable en su teléfono: «el espacio
+       que tiene es muy poco y los números son más extensos». El sistema publica
+       el acortador para que no lo invente cada pantalla. */
+    expect(cuentaBurbuja(7)).toBe('7');
+    expect(cuentaBurbuja(99)).toBe('99');
+    expect(cuentaBurbuja(120)).toBe('99+');
+    expect(cuentaBurbuja(7, '+')).toBe('+7');
+    expect(cuentaBurbuja(91, '+')).toBe('+91');
+    expect(cuentaBurbuja(120, '+')).toBe('+99');
+    for (const n of [0, 1, 99, 100, 5000]) {
+      for (const p of ['', '+'] as const) {
+        expect(cuentaBurbuja(n, p).length,
+          `«${cuentaBurbuja(n, p)}» pasa de tres caracteres y tapa la foto`)
+          .toBeLessThanOrEqual(3);
+      }
+    }
+  });
+
+  it('[13] y un número que no lo es no pinta basura', () => {
+    for (const malo of [NaN, Infinity, -Infinity]) {
+      expect(cuentaBurbuja(malo), `con ${malo} la burbuja pinta basura`).toBe('');
+    }
+    expect(cuentaBurbuja(-5), 'un negativo no es una cuenta').toBe('0');
+  });
+
+  it('[13] el CIRCULO lo dibuja el texto, y no al revés', () => {
+    /* Llegó a llevar un `max-width` y era exactamente lo contrario: un círculo
+       fijo dentro del cual meter el número. El responsable lo cortó: «la
+       burbuja debe depender del contenido del texto y sobre ese contenido
+       dibujar el círculo». El ancho sale del contenido más su relleno, y
+       `aspect-ratio: 1` copia ese ancho al alto. */
+    const b = regla('.badge');
+    expect(b, 'un `max-width` convierte la burbuja en un círculo fijo con texto dentro')
+      .not.toMatch(/max-width:/);
+    /* El «(?<![a-z-])» no es adorno: sin él, `line-height: 1` casaba con
+       «height» y la prueba se cazaba a sí misma. */
+    expect(b, 'un ancho fijo hace lo mismo').not.toMatch(/(?<![a-z-])width:\s*\d/);
+    expect(b, 'un alto fijo impide que el círculo se dibuje sobre el texto')
+      .not.toMatch(/(?<![a-z-])height:\s*\d/);
+    expect(b, 'sin `aspect-ratio` el círculo no sigue al ancho del texto')
+      .toMatch(/aspect-ratio:\s*1/);
+    /* El suelo sí: una sola cifra sin él saldría como una pastilla diminuta. */
+    expect(b, 'falta el suelo para una sola cifra').toMatch(/min-width:/);
+  });
+
+  it('[13] y vive FUERA del disco, en la esquina', () => {
+    /* Estaba en la esquina de la CAJA, y el avatar es un círculo inscrito en
+       ella: el centro de la burbuja quedaba DENTRO del disco —14,1 px del
+       centro, contra 24 de radio— y se comía la foto. El 14,64 % es donde el
+       borde del círculo cruza la diagonal, y el `translate` pone ahí su centro.
+       En porcentaje, porque el avatar es fluido. */
+    const b = regla('.badge');
+    expect(b, 'la burbuja no se coloca en el borde del disco').toMatch(/top:\s*14\.64%/);
+    expect(b, 'sin el desplazamiento, su centro cae dentro del disco')
+      .toMatch(/transform:\s*translate\(75%,\s*-75%\)/);
+  });
+
+  it('[13] y la demo del catálogo USA el acortador, no el número crudo', () => {
+    const demo = readFileSync(
+      join(process.cwd(), '..', 'sistema', 'cascaron', 'vivo.tsx'), 'utf8');
+    const linea = demo.split('\n').find((l) => l.includes('className="badge"')) ?? '';
+    expect(linea, 'el catálogo enseña a pasar el número crudo: lo copiarán así')
+      .toContain('cuentaBurbuja');
+  });
+
+  it('[13] el encuadre de la foto NO corta la cabeza en ninguna proporción', () => {
+    /* Estuvo en 30 % y seguía cortando. Medido con la cabeza empezando al 5 %
+       del alto y una caja de 48: al 50 % corta 4,8 px en un 3:4, 8,4 en un 2:3
+       y 14,4 en una vertical de móvil; al 30 %, 1,6 · 3,6 · 6,9; al 10 %, nada.
+       Aquí se rehace esa cuenta para que el número de la hoja no se pueda subir
+       sin que esto caiga. */
+    const i = css.indexOf('.avatar img');
+    const r = css.slice(i, css.indexOf('}', i));
+    const pos = Number(/object-position:\s*50%\s*(\d+)%/.exec(r)?.[1]);
+    expect(Number.isFinite(pos), 'la foto no declara su encuadre vertical').toBe(true);
+    const caja = 48;
+    for (const [W, H, nom] of [[300, 400, '3:4'], [300, 450, '2:3'], [300, 533, 'vertical de móvil']] as const) {
+      const escala = Math.max(caja / W, caja / H);
+      const sobra = H * escala - caja;
+      const cabeza = H * 0.05 * escala;
+      expect(sobra * (pos / 100), `en una foto ${nom} el encuadre corta la cabeza`)
+        .toBeLessThanOrEqual(cabeza);
+    }
   });
 });

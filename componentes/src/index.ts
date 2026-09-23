@@ -37,7 +37,7 @@ export { CampoContrasena, type CampoContrasenaProps } from './CampoContrasena';
 /* R159 · La capacidad de una pagina de tablero la calcula el SISTEMA. Si la
    calcula cada producto, la misma pantalla acaba con tres respuestas. */
 export {
-  capacidadDeRejilla, enPaginas, useCapacidadTablero,
+  capacidadDeRejilla, enPaginas, useCapacidadTablero, cuentaBurbuja,
   ANCHO_CELDA_TABLERO, ALTO_CELDA_TABLERO, HUECO_TABLERO, HUECO_TABLERO_ANCHO,
   type CapacidadTablero,
 } from './tablero';

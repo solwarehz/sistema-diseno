@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.143.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.144.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -102,7 +102,7 @@
     --dur-onda: 0.01ms;
   }
 }
-:root{ --mmi-componentes: 1.143.0; }
+:root{ --mmi-componentes: 1.144.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -823,7 +823,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .avatar-4{ background: var(--identidad-4); }
 .avatar-vacio{ background: var(--fondo-encabezado); color: var(--texto-secundario); }
 .avatar img, .avatar-silueta{ position: absolute; inset: 0;
-  width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%;
+  width: 100%; height: 100%; object-fit: cover; object-position: 50% 10%;
   display: block; }
 .avatar-marco{ background: var(--marco-acento); color: var(--marco-fondo); }
 .avatar-caso{ display: flex; flex-direction: column; align-items: center; gap: 4px;
@@ -1916,9 +1916,21 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
    BURBUJA DE RECUENTO — 4 reglas · clases .badge-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-.badge{ position: absolute; top: 1px; right: 1px; min-width: 18px; aspect-ratio: 1;
+.badge{ position: absolute; top: 14.64%; right: 14.64%;
+  /* Y EL 75 % ES «QUE APENAS TOQUE». Con el 50 % su centro cae justo en el
+     borde del disco, y eso deja MEDIA burbuja dentro de la foto. Cada punto por
+     encima de 50 la empuja por la diagonal: con 75 el solape baja a ~0,15 de su
+     diametro —tres pixeles en una burbuja de 22—, que es tocar sin morder. Va
+     en porcentaje de SI MISMA, asi que el solape es el mismo proporcion sea
+     cual sea el numero que lleve dentro. */
+  transform: translate(75%, -75%);
+  min-width: 16px; aspect-ratio: 1;
   border-radius: 50%; background: var(--error-acento); color: var(--texto-invertido);
-  font-size: 11px; font-weight: 600; display: grid; place-items: center; padding: 0 3px;
+  /* Y MAS PEQUEÑA. A 11 px con relleno de 3, tres caracteres daban 26 px sobre
+     un avatar de 48 — la burbuja medía mas de la mitad de la cara. A 10 con
+     relleno de 2 baja a ~22, y el numero se sigue leyendo porque ahora esta
+     FUERA del disco en vez de encima de una fotografia. */
+  font-size: 10px; font-weight: 700; display: grid; place-items: center; padding: 0 2px;
   /* LINE-HEIGHT PROPIO, Y NO ES COSMETICA. «.tbl-foto» declara «line-height: 0»
      para matar el hueco de linea del avatar, y la burbuja lo HEREDABA: su caja
      de texto medía cero de alto, asi que «place-items: center» centraba una
@@ -1930,7 +1942,18 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   /* Y EL ANILLO LA SEPARA DE LA FOTO. Un circulo rojo sobre una fotografia con
      pelo oscuro detras se confunde con el borde; el anillo del color de la
      tarjeta le da el mismo despegue que ya lleva el anillo de estado. */
-  box-shadow: 0 0 0 2px var(--fondo-tarjeta); }
+  box-shadow: 0 0 0 2px var(--fondo-tarjeta);
+  /* EL CIRCULO LO DIBUJA EL TEXTO, Y NO AL REVES. Llego a llevar un
+     «max-width» y era justo lo contrario: un circulo fijo dentro del cual meter
+     el numero. Asi que no hay tope de ancho. El ancho sale del CONTENIDO mas su
+     relleno, y «aspect-ratio: 1» copia ese ancho al alto — el circulo se dibuja
+     ALREDEDOR del texto, y crece con el.
+     El «min-width» no contradice esto: es el suelo para que una sola cifra no
+     salga como una pastilla diminuta de 10 px, no un techo.
+     Y que pueda crecer ya no se come la cara, porque la burbuja vive FUERA del
+     disco: ese era el defecto de verdad, no el tamaño. «cuentaBurbuja» sigue
+     publicado para quien quiera acortar cifras absurdas, pero es una decision
+     del producto y no una atadura de la hoja. */ }
 .badge-exito{ background: var(--exito-acento); }
 .badge-aviso{ background: var(--aviso-acento); color: var(--texto-principal); }
 .badge-info{ background: var(--info-acento); }

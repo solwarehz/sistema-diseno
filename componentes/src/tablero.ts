@@ -180,3 +180,33 @@ export function useCapacidadTablero(caja: RefObject<HTMLElement | null>): Capaci
   }, [caja]);
   return cap;
 }
+
+/**
+ * El texto de una burbuja, **acortado para que quepa**.
+ *
+ * La burbuja crece con su contenido, y eso tiene un límite: con `+120` medía
+ * 32,4 px sobre un avatar de 48 —el 67 %— y se comía la cara que viene a
+ * anotar. Tres caracteres es lo que cabe sin tapar la foto.
+ *
+ * Va en el sistema y no en cada pantalla por lo de siempre: si cada producto
+ * elige su tope, el mismo tablero muestra `99+` en una pantalla y `120` en la
+ * de al lado.
+ *
+ * **No recorta el dato, lo resume**: el valor exacto va en el texto accesible
+ * de la celda, que el contrato ya exige.
+ *
+ *     cuentaBurbuja(7)          → '7'
+ *     cuentaBurbuja(91)         → '91'
+ *     cuentaBurbuja(120)        → '99+'
+ *     cuentaBurbuja(7,  '+')    → '+7'
+ *     cuentaBurbuja(120, '+')   → '+99'
+ */
+export function cuentaBurbuja(n: number, prefijo: '' | '+' = '', tope = 99): string {
+  if (!Number.isFinite(n)) return '';
+  const v = Math.max(0, Math.floor(n));
+  /* Con prefijo el tope va DENTRO —«+99»— y sin el va detras —«99+»—: las dos
+     formas dicen «mas de 99» y las dos caben en tres caracteres. Poner los dos
+     signos daria «+99+», que no lo dice mejor y no cabe. */
+  if (v > tope) return prefijo ? `${prefijo}${tope}` : `${tope}+`;
+  return `${prefijo}${v}`;
+}

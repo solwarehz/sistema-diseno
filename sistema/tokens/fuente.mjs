@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.143.0";
+export const VERSION = "1.144.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,51 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.144.0', fecha: '2026-09-23',
+    que: 'La foto deja de cortar la cabeza DE VERDAD, y la burbuja deja de comerse la cara que viene a anotar',
+    porque:
+      'LAS DOS SE ARREGLARON EN LA v1.140.0 Y LAS DOS SEGUIAN MAL, y el responsable las volvio a ver '
+      + 'en su telefono. Aqui se dijo entonces que el 30 % «lo reduce a la mitad y NO lo elimina»: '
+      + 'era cierto y no bastaba. Reducir a la mitad un defecto que se ve es seguir teniendo un '
+      + 'defecto que se ve. '
+      + 'EL ENCUADRE PASA AL 10 %. Medido con la cabeza empezando al 5 % del alto y una caja de 48: '
+      + 'al 50 % corta 4,8 px en un 3:4, 8,4 en un 2:3 y 14,4 en una vertical de movil; al 30 %, '
+      + '1,6 · 3,6 · 6,9; AL 10 % NO CORTA EN NINGUNA DE LAS TRES. Y bajar no tiene coste: en una '
+      + 'foto cuadrada o apaisada no hay recorte vertical que repartir, asi que este valor SOLO '
+      + 'ACTUA DONDE HAY UN PROBLEMA. La prueba dejo de fijar el numero —lo fijaba en 30 y por eso '
+      + 'bajarlo la ponia en rojo por el motivo equivocado— y ahora REHACE LA CUENTA: si alguien '
+      + 'sube el porcentaje hasta que corte, cae. '
+      + 'Y LA BURBUJA CRECE CON SU CONTENIDO, que es lo que no se habia visto. Con «+120» medía '
+      + '32,4 px sobre un avatar de 48 —el 67 %— y tapaba la cara que viene a anotar. El responsable '
+      + 'lo dijo exacto: «el espacio que tiene es muy poco y los numeros son mas extensos». El '
+      + 'numero llega ahora ACORTADO A TRES CARACTERES con `cuentaBurbuja`, que publica el sistema '
+      + 'por lo de siempre —si cada pantalla elige su tope, el mismo tablero muestra 99+ en una y '
+      + '120 en la de al lado—, y la hoja pone un tope de 26 px como red por si llega largo igual. '
+      + 'NO RECORTA EL DATO, LO RESUME: el valor exacto vive en el texto accesible de la celda, que '
+      + 'el contrato ya exige. '
+      + 'Y AL COLOCARLA SALIO LO QUE DE VERDAD LA HACIA ESTORBAR, que no era el tamaño: LA POSICION. '
+      + 'Estaba en «top: 1px; right: 1px», la esquina de la CAJA — y el avatar es un circulo '
+      + 'INSCRITO en esa caja, asi que el CENTRO de la burbuja caía DENTRO del disco: a 14,1 px del '
+      + 'centro contra 24 de radio. Por eso se comia la foto por mucho que se encogiera. Ahora va al '
+      + 'punto de 45 grados del borde —el 14,64 %, que es donde el circulo cruza la diagonal— y se '
+      + 'empuja un 25 % mas por esa misma diagonal: el solape queda en 0,15 de su diametro, '
+      + 'PROPORCIONAL, asi que toca sin morder lleve el numero que lleve. Medido: 2,3 px con «1», '
+      + '3,2 con «+26» y 4,1 con «+120», y nada se sale del contenedor. '
+      + 'Y SE QUITO EL TOPE DE ANCHO que se habia puesto un momento antes, porque era justo lo '
+      + 'contrario de lo que toca: un circulo fijo dentro del cual meter el numero. El responsable '
+      + 'lo dijo asi: «la burbuja debe depender del contenido del texto y sobre ese contenido '
+      + 'dibujar el circulo, y no al reves». El ancho sale del CONTENIDO y «aspect-ratio: 1» lo '
+      + 'copia al alto — el circulo se dibuja ALREDEDOR del texto. Medido: 16 px con «1», 22 con '
+      + '«+26», 28 con «+120». El «min-width» se queda porque es un SUELO para que una sola cifra no '
+      + 'salga diminuta, no un techo. Y que crezca ya no molesta, porque vive FUERA del disco.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'Cambia lo que se VE sin cambiar ninguna API: las fotos se encuadran mas arriba y las burbujas '
+      + 'con numeros de mas de dos cifras pasan a decir «+99» o «99+». Quien quiera el numero exacto '
+      + 'lo tiene en el texto accesible de la celda.',
+    ],
+  },
   {
     v: '1.143.0', fecha: '2026-09-23',
     que: 'El tablero medía la caja equivocada y se quedaba clavado en TRES tarjetas con la pantalla entera vacía debajo',

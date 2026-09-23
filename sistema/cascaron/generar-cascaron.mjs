@@ -11398,10 +11398,15 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    recorta, y con el punto por omision —el centro— una foto vertical de carnet
    pierde la parte de ARRIBA: se corta la cabeza y sobra pecho. Se vio en el
    tablero de un producto, en la primera fila, que es donde se mira primero.
-   El 30 % es donde cae la cara en un retrato de medio cuerpo; «top» a secas
-   corta la barbilla en las fotos que ya vienen ajustadas. */
+   ESTUVO EN 30 % Y SEGUIA CORTANDO: el responsable lo volvio a ver en su
+   telefono. Medido, con la cabeza empezando al 5 % del alto y una caja de 48:
+   al 50 % corta 4,8 px en un 3:4, 8,4 en un 2:3 y 14,4 en una vertical de
+   movil; al 30 %, 1,6 · 3,6 · 6,9; AL 10 % NO CORTA EN NINGUNA DE LAS TRES.
+   Y bajar no tiene coste: en una foto cuadrada o apaisada no hay recorte
+   vertical que repartir, asi que este valor no hace nada. Solo actua donde hay
+   un problema. */
 .avatar img, .avatar-silueta { position: absolute; inset: 0;
-  width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%;
+  width: 100%; height: 100%; object-fit: cover; object-position: 50% 10%;
   display: block; }
 .avatar-marco { background: var(--marco-acento); color: var(--marco-fondo); }
 .avatar-rejilla { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
@@ -13664,9 +13669,32 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    manda el numero y el alto lo COPIA, asi que «9», «+15» y «99+» siguen siendo
    circulos en vez de alargarse. Un tope fijo habria obligado a elegir entre
    recortar el numero o romper la forma. */
-.badge { position: absolute; top: 1px; right: 1px; min-width: 18px; aspect-ratio: 1;
+/* EN LA ESQUINA, TOCANDO EL CIRCULO Y NO METIDA DENTRO. Estaba en «top: 1px;
+   right: 1px», que es la esquina de la CAJA — y el avatar es un circulo
+   INSCRITO en esa caja, asi que la esquina de la caja cae fuera del circulo
+   pero el CENTRO de la burbuja quedaba dentro: para una burbuja de 26 px en una
+   caja de 48, su centro caía a 14,1 px del centro del disco, muy por debajo de
+   los 24 del radio. De ahi que se comiera la foto. El responsable lo corto asi:
+   «ubicalo en la esquina, que apenas toque la foto».
+   El 14,64 % es donde el borde del circulo cruza la diagonal —(1 − √2/2)/2— y
+   el «translate(50%, -50%)» pone el CENTRO de la burbuja justo ahi. Va en
+   porcentaje y no en pixeles porque el avatar es fluido: con cualquier tamaño,
+   la burbuja se queda en el mismo sitio del borde. */
+.badge { position: absolute; top: 14.64%; right: 14.64%;
+  /* Y EL 75 % ES «QUE APENAS TOQUE». Con el 50 % su centro cae justo en el
+     borde del disco, y eso deja MEDIA burbuja dentro de la foto. Cada punto por
+     encima de 50 la empuja por la diagonal: con 75 el solape baja a ~0,15 de su
+     diametro —tres pixeles en una burbuja de 22—, que es tocar sin morder. Va
+     en porcentaje de SI MISMA, asi que el solape es el mismo proporcion sea
+     cual sea el numero que lleve dentro. */
+  transform: translate(75%, -75%);
+  min-width: 16px; aspect-ratio: 1;
   border-radius: 50%; background: var(--error-acento); color: var(--texto-invertido);
-  font-size: 11px; font-weight: 600; display: grid; place-items: center; padding: 0 3px;
+  /* Y MAS PEQUEÑA. A 11 px con relleno de 3, tres caracteres daban 26 px sobre
+     un avatar de 48 — la burbuja medía mas de la mitad de la cara. A 10 con
+     relleno de 2 baja a ~22, y el numero se sigue leyendo porque ahora esta
+     FUERA del disco en vez de encima de una fotografia. */
+  font-size: 10px; font-weight: 700; display: grid; place-items: center; padding: 0 2px;
   /* LINE-HEIGHT PROPIO, Y NO ES COSMETICA. «.tbl-foto» declara «line-height: 0»
      para matar el hueco de linea del avatar, y la burbuja lo HEREDABA: su caja
      de texto medía cero de alto, asi que «place-items: center» centraba una
@@ -13678,7 +13706,18 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   /* Y EL ANILLO LA SEPARA DE LA FOTO. Un circulo rojo sobre una fotografia con
      pelo oscuro detras se confunde con el borde; el anillo del color de la
      tarjeta le da el mismo despegue que ya lleva el anillo de estado. */
-  box-shadow: 0 0 0 2px var(--fondo-tarjeta); }
+  box-shadow: 0 0 0 2px var(--fondo-tarjeta);
+  /* EL CIRCULO LO DIBUJA EL TEXTO, Y NO AL REVES. Llego a llevar un
+     «max-width» y era justo lo contrario: un circulo fijo dentro del cual meter
+     el numero. Asi que no hay tope de ancho. El ancho sale del CONTENIDO mas su
+     relleno, y «aspect-ratio: 1» copia ese ancho al alto — el circulo se dibuja
+     ALREDEDOR del texto, y crece con el.
+     El «min-width» no contradice esto: es el suelo para que una sola cifra no
+     salga como una pastilla diminuta de 10 px, no un techo.
+     Y que pueda crecer ya no se come la cara, porque la burbuja vive FUERA del
+     disco: ese era el defecto de verdad, no el tamaño. «cuentaBurbuja» sigue
+     publicado para quien quiera acortar cifras absurdas, pero es una decision
+     del producto y no una atadura de la hoja. */ }
 .badge-exito { background: var(--exito-acento); }
 .badge-aviso { background: var(--aviso-acento); color: var(--texto-principal); }
 .badge-info  { background: var(--info-acento); }

@@ -167,6 +167,7 @@ const PAGINA_DE = new Map([
      siguiente. Va con el avatar porque alli vive el tablero. */
   ['capacidadDeRejilla', 'Avatar'], ['enPaginas', 'Avatar'],
   ['useCapacidadTablero', 'Avatar'],
+  ['cuentaBurbuja', 'Avatar'],
 ]);
 
 const indice = join(RAIZ, 'componentes/src/index.ts');

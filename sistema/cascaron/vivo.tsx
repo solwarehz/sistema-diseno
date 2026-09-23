@@ -26,7 +26,7 @@ import { Icono } from '../../componentes/src/Icono';
 import { Avatar } from '../../componentes/src/Avatar';
 import { Segmentado } from '../../componentes/src/Segmentado';
 /* R159 · La capacidad la calcula el SISTEMA, no esta pantalla. */
-import { useCapacidadTablero, enPaginas } from '../../componentes/src/tablero';
+import { useCapacidadTablero, enPaginas, cuentaBurbuja } from '../../componentes/src/tablero';
 import { TablaDatos } from '../../componentes/src/TablaDatos';
 import { PanelPrivilegios, type ModuloPrivilegios, type ValorPrivilegios,
   type ColumnaPrivilegios } from '../../componentes/src/PanelPrivilegios';
@@ -393,7 +393,7 @@ function TableroVivo() {
                   <span className="tbl-foto">
                     <Avatar id={nombre} nombre={nombre} tamano="fluido"
                             estado={tono} elevacion="relieve" />
-                    {tarde(hora) > 0 && <span className="badge">+{tarde(hora)}</span>}
+                    {tarde(hora) > 0 && <span className="badge">{cuentaBurbuja(tarde(hora), '+')}</span>}
                   </span>
                   {/* EL NOMBRE COMPLETO NO SE PIERDE NUNCA. Las dos lineas de
                       arriba son lo que se LEE de un vistazo; esto es lo que
