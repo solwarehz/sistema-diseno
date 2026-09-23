@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.136.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.137.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.136.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.137.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -35,7 +35,7 @@
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.136.0;
+  --mmi-version: 1.137.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -1138,6 +1138,8 @@ code { font-family: 'IBM Plex Mono', monospace; }
 @media (min-width: 640px) { .muestra-tonos { grid-template-columns: repeat(2, 1fr); } }
 .muestra-burbujas { display: flex; gap: 20px; flex-wrap: wrap; }
 .muestra-burbujas > .tbl-foto { width: auto; }
+.muestra-alto { height: 260px; display: flex; }
+.muestra-alto > .tbl-marco { flex: 1 1 auto; min-height: 0; }
 
 .muestra-fila { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
 .mf { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
@@ -1484,7 +1486,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    como cualquier otra regla, para que el catalogo y la entrega digan lo mismo:
    inyectarlo solo en la entrega dejaba una regla que el catalogo no tenia, y
    el candado de la promesa lo caza —con razon—. Los dos salen de VERSION. */
-:root { --mmi-componentes: 1.136.0; }
+:root { --mmi-componentes: 1.137.0; }
 
 .fc-zona { position: relative; }
 /* R129.2 · EL TOPE ERA MENOR QUE EL CONTENIDO. Con R129.1 puesto, lo que el
@@ -5626,7 +5628,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.136.0</option></select></label>
+          <select class="campo cg-in"><option>v1.137.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -5714,8 +5716,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.136.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.136.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.137.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.137.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -6274,7 +6276,7 @@ demostraciones de al lado. Y la hoja no es una copia: se inyecta desde
 vieja.</div>
 
 <script type="text/plain" id="tokens-entregados">/* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.136.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.137.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -6302,7 +6304,7 @@ vieja.</div>
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.136.0;
+  --mmi-version: 1.137.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -6915,7 +6917,7 @@ vieja.</div>
 </script>
 <script type="text/plain" id="hoja-entregada">
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.136.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.137.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -7019,7 +7021,7 @@ vieja.</div>
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.136.0; }
+:root{ --mmi-componentes: 1.137.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -13685,6 +13687,27 @@ contenedor posicionado — aquí, el envoltorio de la foto.</p>
 </div>
 
 <div class="bloque">
+<h4 class="sub-seccion">El tablero ocupa el alto que le den</h4>
+<p class="seccion-sub">Dos clases, no una: <code>tbl-marco</code> apila encabezado, cuerpo y pie y
+toma el alto de <strong>su padre</strong>; <code>tbl-crece</code> marca <em>cuál</em> de los tres se
+estira y se desplaza por dentro. Las dos llevan <code>min-height: 0</code> — sin él, la rejilla
+empuja el pie fuera de la pantalla en vez de desplazarse.</p>
+<div class="muestra-alto">
+  <div class="tbl-marco">
+    <p class="vivo"><span class="vivo-punto"></span> Encabezado · no se mueve</p>
+    <div class="sup sup-info tbl-crece">
+      <p>Éste es el cuerpo, y es el único que se estira y se desplaza.</p>
+      <p>Si hay treinta personas, se desplazan aquí dentro.</p>
+      <p>Y el pie de abajo sigue viéndose.</p>
+      <p>Aquí dentro no hay ningún <code>100vh</code>: el alto lo pone el padre.</p>
+      <p>Sin <code>min-height: 0</code>, este bloque empujaría el pie fuera.</p>
+    </div>
+    <p class="vivo"><span class="vivo-punto"></span> Pie · tampoco se mueve</p>
+  </div>
+</div>
+</div>
+
+<div class="bloque">
 <h4 class="sub-seccion">Avatar · fluido, con anillo de estado y con relieve</h4>
 <p class="seccion-sub">El anillo va por fuera con sombra y no con borde: un borde comería del
 tamaño de la foto, y a 48 px eso se nota. <strong>Y refuerza</strong> una distinción dicha con
@@ -13736,11 +13759,19 @@ export function CeldaDeTablero({ p }: { p: Persona }) {
     &lt;li className="tbl-persona"&gt;
       &lt;span className="tbl-foto"&gt;
         &lt;Avatar id={p.id} nombre={p.nombre} tamano="fluido" estado="exito" elevacion="relieve" /&gt;
+        {/* La burbuja necesita un ancestro POSICIONADO, y «tbl-foto» lo es. No
+            vale meterla dentro del Avatar: «.avatar» tiene «overflow: hidden» y
+            la recortaria. */}
         &lt;span className="badge badge-aviso"&gt;+5&lt;/span&gt;
       &lt;/span&gt;
+      {/* EL NOMBRE COMPLETO NO ES OPCIONAL. «tbl-nom» y «tbl-ape» tienen tope de
+          DOS LINEAS, asi que un apellido encadenado se recorta — y recortar sin
+          forma de leer el resto es lo que la politica de movil primero prohibe.
+          Ademas evita que un lector deletree «Rosa Quispe 06:48». */}
+      &lt;span className="sr-solo"&gt;{p.nombre} {p.apellido} · {p.hora}&lt;/span&gt;
       &lt;span className="tbl-nom"&gt;{p.nombre}&lt;/span&gt;
       &lt;span className="tbl-ape"&gt;{p.apellido}&lt;/span&gt;
-      &lt;span className="tbl-hora"&gt;{p.hora}&lt;/span&gt;
+      &lt;span className="tbl-hora" aria-hidden="true"&gt;{p.hora}&lt;/span&gt;
     &lt;/li&gt;
   );
 }
@@ -20263,6 +20294,12 @@ competir por atención. Y lo que dice la parte de accesibilidad es unánime en d
 <p class="man-p">  fondo <code>accion</code> y texto <code>accion-texto</code>.</p>
 <h3 class="man-h3">5.4 En móvil, la tabla se convierte en tarjetas</h3>
 <p class="man-p">No se hace scroll horizontal. Cada tarjeta lleva: nombre, una línea de metadatos (DNI y grado), chip de estado, monto, divisor y «Ver detalle» como enlace.</p>
+<p class="man-p"><strong>Una excepción, y sólo una: la paginación por gesto.</strong> Lo preguntó el equipo de Tableros —<em>«si el §5.4 cubre también a los tableros, díganlo»</em>— y la respuesta obliga a distinguir dos cosas que se parecen en pantalla y no se parecen en nada:</p>
+<ul class="man-lista"><li><strong>Desbordamiento</strong>: el contenido no cupo y se sale. **Sigue siendo un</li></ul>
+<p class="man-p">  defecto**, y es lo que esta sección prohíbe.</p>
+<ul class="man-lista"><li><strong>Paginación por gesto</strong>: cada parada es una <strong>vista entera</strong> y no se pierde</li></ul>
+<p class="man-p">  nada por no deslizar más. Es legítima, y hay que ganársela con <strong>tres</strong>   condiciones: (a) se alcanza con teclado —<code>tabindex="0"</code> y <code>role="region"</code> con   nombre—; (b) dice <strong>dónde estás y cuántas paradas hay</strong>, y no sólo con color;   (c) <strong>nada queda sólo ahí</strong>. Sin las tres, es desbordamiento con otro nombre.</p>
+<p class="man-p">La pieza es <code>car</code>, con <code>car-cuenta</code> y <code>car-punto</code>. El detalle vive en la regla 7 de «Piezas de tablero» (<code>sistema/componentes/comportamiento.md</code>) y en <code>POLITICA-DE-CREACION.md</code> §5. <strong>Esta excepción tardó tres versiones en llegar aquí</strong>: se escribió en la política y en el contrato, y el manual —que es donde el equipo fue a mirar— siguió diciendo lo contrario. Lo cazó una auditoría.</p>
 <p class="man-p">Esa anatomía <strong>ya está construida</strong>: es <code>TarjetaPersona</code>. No se maqueta a mano.</p>
 <h3 class="man-h3">5.5 Tarjetas: cuál de las tres, y la cuadrícula</h3>
 <table class="tabla-simple tabla-manual"><thead><tr><th>Cuándo</th><th>Componente</th></tr></thead><tbody><tr><td>Una persona: avatar, cargo, estado con chip</td><td><code>TarjetaPersona</code></td></tr><tr><td><strong>Una tarjeta que lleva a una pantalla</strong>, con imagen arriba</td><td><code>TarjetaAccion</code></td></tr><tr><td>Cualquier otra cosa: contenido suelto, cabecera, acciones al pie</td><td><code>Tarjeta</code></td></tr></tbody></table>
@@ -20475,13 +20512,18 @@ repositorio; el porqué es lo único escrito a mano.</p>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
 
 
+<h3 class="sub-seccion">v1.137.0 <span class="cam-fecha">2026-09-22</span></h3>
+<p class="pag-intro"><strong>El agujero de la v1.133.0, reabierto y cerrado otra vez — y lo que se INVITA A COPIAR deja de contradecir al contrato.</strong> LA MISMA AUDITORIA, EL MISMO AGUJERO, DOS VERSIONES DESPUES. `tbl-marco` y `tbl-crece` entraron en la v1.136.0 pintandose SOLO desde el guion `data-vivo` — exactamente lo que la v1.134.0 arreglo para las otras clases del R157 y dejo escrito en `vivo.tsx`. Con los 18 candados en verde: los del empate, la omision y el elemento cortan el documento en ese guion, y la lista CASOS de `verificar-promesa` esta escrita A MANO, asi que una pieza nueva que no se añada ahi no se compara nunca. No habia divergencia entregada —se comprobaron las declaraciones a mano y son identicas— pero el agujero estaba abierto. Entra la demo ESTATICA y entran los dos casos. Y LO QUE EL CATALOGO INVITA A COPIAR CONTRADECIA AL CONTRATO QUE DICE COPIAR. El bloque se titula «El marcado, que es el contrato» y emitia la celda SIN el `sr-solo` y sin el `aria-hidden` que el contrato declara obligatorios: quien lo copiara se llevaba el recorte de dos lineas SIN el rescate, que es justo lo que la politica de movil primero prohibe. Ningun candado podia verlo: `verificar-copia` comprueba que COMPILE, y un `className` de mas o de menos no es un error de tipos. Ahora hay prueba, y se vio caer — la primera version no caia porque miraba el bloque entero, donde hay otro `sr-solo` del carril; se acoto a la celda. Es la SEGUNDA vez en dos versiones que una prueba de rescate pasa por mirar demasiado ancho. Y DOS CIFRAS PROPIAS MAS, FALSAS. El asiento de la v1.135.0 decia «2 px entre lineas y 6 de separacion: 8 contra 2» y lo entregado es `gap: 0` con `margin-top: 10px` — el mismo asiento se corregia treinta lineas mas abajo y conservaba las dos versiones. La regla 1 del contrato tenia la misma contradiccion dentro de la MISMA celda. Y EL MANUAL SE ENTERA POR FIN. El equipo pregunto por el §5.4 —«si cubre tambien a los tableros, diganlo»— y la distincion entre desbordamiento y paginacion por gesto se habia escrito en la politica y en el contrato, pero NO donde ellos fueron a mirar. Tres versiones diciendo lo contrario en el manual. Ninguna de estas cinco cosas la encontro un candado. Las encontro preguntar, con agentes, si la entrega era igual a la promesa.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>NADA. Marcado nuevo en el catalogo, dos casos nuevos en un candado y texto corregido.</td></tr></tbody></table>
+
+
 <h3 class="sub-seccion">v1.136.0 <span class="cam-fecha">2026-09-22</span></h3>
 <p class="pag-intro"><strong>El tablero ocupa el alto que le den, y el rotulo se esconde A LA VISTA sin perderse.</strong> UN TABLERO NO SE CONSULTA, SE VIGILA, y de ahi sale todo lo de esta version: cada pixel que no sea rejilla es una persona menos que se ve. Lo pidio el responsable: «que ocupe el mayor espacio posible respetando los padding del diseño». ENTRAN DOS CLASES Y NO UNA, y esa es la decision. `tbl-marco` apila encabezado, cuerpo y pie y toma el alto de su padre; `tbl-crece` marca CUAL de los tres se estira y se desplaza por dentro. Juntarlas obligaria a que el que crece fuera siempre la superficie tonal, y en la siguiente pantalla el que crece sera otra cosa. LAS DOS LLEVAN `min-height: 0` Y NO ES ADORNO: sin el, un hijo de flex no baja de su tamaño de contenido, asi que la rejilla EMPUJA EL PIE FUERA DE LA PANTALLA en vez de desplazarse por dentro. Es el fallo clasico del flex vertical y no se ve hasta que hay datos de verdad — con ocho personas de demo no aparece, con treinta si. Medido en el catalogo: el cuerpo se desplaza y el pie se queda dentro del bloque. Y EL ALTO LO PONE EL PADRE. Aqui dentro no hay ningun `100vh`, porque el sistema no decide el alto de una pantalla ajena; sin alto del padre se comporta como antes y crece con su contenido. La prueba que lo vigila salio en rojo al meterle un `100vh` a proposito. Y EL ROTULO SE ESCONDE A LA VISTA, NUNCA DEL LECTOR. `Segmentado` gana `etiquetaOculta`: el `legend` SIGUE AHI y pasa a `sr-solo`. No se quita — un grupo de opciones sin nombre accesible deja al lector diciendo «Asistio 18, No asistio 6» sin decir de que. En un tablero «Grupo» gasta una linea que son personas que dejan de verse, y las dos opciones ya dicen que son. NO ES DEL TABLERO: cualquier control dentro de una cabecera estrecha tiene el mismo problema, y por eso entra en el componente y no en la pantalla. Cuatro reglas con prueba. La de «el sistema no impone el alto» se vio caer con un `100vh`, y la del `min-height` con un valor distinto de cero.</p>
 <table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>NADA. <code>tbl-marco</code> y <code>tbl-crece</code> son clases NUEVAS y <code>etiquetaOculta</code> es opcional: un <code>Segmentado</code> sin ella se comporta exactamente igual que antes.</td></tr></tbody></table>
 
 
 <h3 class="sub-seccion">v1.135.0 <span class="cam-fecha">2026-09-22</span></h3>
-<p class="pag-intro"><strong>La celda de tablero se lee como UNA persona: la foto se separa, los datos se juntan, y la foto por fin se centra.</strong> LO PIDIO EL RESPONSABLE MIRANDO EL TABLERO: «el nombre de cada trabajador y el avatar separalos, pero los datos del nombre, apellidos y hora juntalas mas», y «coloca todos los datos centrados». Las dos frases son la misma idea: LA CELDA NO SON CUATRO COSAS, ES UNA PERSONA. Con el mismo hueco entre foto, nombre, apellido y hora —3 px para todo— el ojo lee cuatro elementos sueltos. Ahora las tres lineas de datos van a 2 px, casi pegadas, y la foto se separa 6 px mas: 8 contra 2 medidos en el catalogo. El ritmo desigual es lo que agrupa. Y AL IR A CENTRARLO SALIO UN DEFECTO QUE NADIE HABIA VISTO: la foto NO estaba centrada. `.tbl-foto` llevaba `display: block` y el avatar es `display: grid` —una caja de bloque—, asi que el `text-align: center` de la celda no lo alcanzaba. Medido: 0 px de margen a la izquierda y 60,3 a la derecha dentro de una celda de 108,3, con las TRES LINEAS DE TEXTO CENTRADAS Y LA FOTO NO. Es la clase de cosa que se ve como «descuadrado» sin saber por que, y llevaba ahi desde que la celda nacio. Con `flex` y `justify-content: center`, la caja se centra igual que el texto: 30,2 px a cada lado, medido. Y LA BURBUJA NO ERA UNA BURBUJA. `border-radius: 6px` sobre 15 px de alto y relleno lateral: con dos caracteres —«+5»— salia un rectangulo redondeado de 21x15. El responsable lo corto mirandolo: «las burbujas sobre el avatar no son burbujas, las veo media rectangulares». Ahora `aspect-ratio: 1` sin alto fijo — el ancho lo manda el numero y el alto lo COPIA, asi que «9», «+15» y «99+» siguen siendo circulos en vez de alargarse. Medido: 19,2 x 19,2. Y el ritmo se afino una vez mas: las tres lineas SIN hueco —su interlineado ya las respira— y la separacion en el `margin-top` del nombre, no en el hueco de la celda. El hueco separa a las cuatro por igual, y entonces la celda vuelve a leerse como cuatro cosas sueltas. Medido: 10 px de la foto al nombre, 0 entre las tres lineas. Y EL NOMBRE LARGO YA NO PUEDE ROMPER LA REJILLA. Se pidio recortarlo —«lo colocas pineda...»— y eso choca de frente con la politica de movil primero, que prohibe el recorte sin forma de leer el resto. Se midio antes de decidir: a 11 px, de catorce apellidos de la zona TRECE entran en una sola linea dentro del suelo de 84 px —«Huayllahuaman» mide 77,2—, y el unico que se sale es el compuesto, «Villanueva-Bustamante», 115,2. Asi que el caso normal no recorta nada. El raro ENVUELVE, que es lo que la politica manda hacer primero, CON TOPE DE DOS LINEAS — y el tope es lo que atiende la otra mitad de lo pedido, «que no rompa el diseño»: sin el, un apellido compuesto estira su fila y descuadra la rejilla entera. Medido con el peor caso real: dos apellidos encadenados envuelven sin recortarse y la celda crece 13,8 px; TRES si se recortan, y la celda se queda igual. 115,2 px es el techo en los tres casos. Y CUANDO RECORTA, EL NOMBRE COMPLETO SIGUE EN LA CELDA, en un `sr-solo` que ademas es lo que dice un lector en vez de deletrear «Rosa Quispe 06:48». La politica no prohibe recortar: prohibe recortar SIN FORMA DE LEER EL RESTO, y esa distincion es la que permite atender lo pedido sin incumplirla. Seis reglas con prueba, y las seis vistas caer con su mutacion. Una de ellas no caia a la primera: miraba `sr-solo` en el paquete COMPILADO, donde esa clase sale tambien de otros componentes, asi que pasaba con el rescate quitado. Se ato al archivo donde vive la celda y al contrato que lo exige.</p>
+<p class="pag-intro"><strong>La celda de tablero se lee como UNA persona: la foto se separa, los datos se juntan, y la foto por fin se centra.</strong> LO PIDIO EL RESPONSABLE MIRANDO EL TABLERO: «el nombre de cada trabajador y el avatar separalos, pero los datos del nombre, apellidos y hora juntalas mas», y «coloca todos los datos centrados». Las dos frases son la misma idea: LA CELDA NO SON CUATRO COSAS, ES UNA PERSONA. Con el mismo hueco entre foto, nombre, apellido y hora —3 px para todo— el ojo lee cuatro elementos sueltos. El ritmo desigual es lo que agrupa. Y AL IR A CENTRARLO SALIO UN DEFECTO QUE NADIE HABIA VISTO: la foto NO estaba centrada. `.tbl-foto` llevaba `display: block` y el avatar es `display: grid` —una caja de bloque—, asi que el `text-align: center` de la celda no lo alcanzaba. Medido: 0 px de margen a la izquierda y 60,3 a la derecha dentro de una celda de 108,3, con las TRES LINEAS DE TEXTO CENTRADAS Y LA FOTO NO. Es la clase de cosa que se ve como «descuadrado» sin saber por que, y llevaba ahi desde que la celda nacio. Con `flex` y `justify-content: center`, la caja se centra igual que el texto: 30,2 px a cada lado, medido. Y LA BURBUJA NO ERA UNA BURBUJA. `border-radius: 6px` sobre 15 px de alto y relleno lateral: con dos caracteres —«+5»— salia un rectangulo redondeado de 21x15. El responsable lo corto mirandolo: «las burbujas sobre el avatar no son burbujas, las veo media rectangulares». Ahora `aspect-ratio: 1` sin alto fijo — el ancho lo manda el numero y el alto lo COPIA, asi que «9», «+15» y «99+» siguen siendo circulos en vez de alargarse. Medido: 19,2 x 19,2. Y el ritmo se afino una vez mas: las tres lineas SIN hueco —su interlineado ya las respira— y la separacion en el `margin-top` del nombre, no en el hueco de la celda. El hueco separa a las cuatro por igual, y entonces la celda vuelve a leerse como cuatro cosas sueltas. Medido: 10 px de la foto al nombre, 0 entre las tres lineas. Y EL NOMBRE LARGO YA NO PUEDE ROMPER LA REJILLA. Se pidio recortarlo —«lo colocas pineda...»— y eso choca de frente con la politica de movil primero, que prohibe el recorte sin forma de leer el resto. Se midio antes de decidir: a 11 px, de catorce apellidos de la zona TRECE entran en una sola linea dentro del suelo de 84 px —«Huayllahuaman» mide 77,2—, y el unico que se sale es el compuesto, «Villanueva-Bustamante», 115,2. Asi que el caso normal no recorta nada. El raro ENVUELVE, que es lo que la politica manda hacer primero, CON TOPE DE DOS LINEAS — y el tope es lo que atiende la otra mitad de lo pedido, «que no rompa el diseño»: sin el, un apellido compuesto estira su fila y descuadra la rejilla entera. Medido con el peor caso real: dos apellidos encadenados envuelven sin recortarse y la celda crece 13,8 px; TRES si se recortan, y la celda se queda igual. 115,2 px es el techo en los tres casos. Y CUANDO RECORTA, EL NOMBRE COMPLETO SIGUE EN LA CELDA, en un `sr-solo` que ademas es lo que dice un lector en vez de deletrear «Rosa Quispe 06:48». La politica no prohibe recortar: prohibe recortar SIN FORMA DE LEER EL RESTO, y esa distincion es la que permite atender lo pedido sin incumplirla. Seis reglas con prueba, y las seis vistas caer con su mutacion. Una de ellas no caia a la primera: miraba `sr-solo` en el paquete COMPILADO, donde esa clase sale tambien de otros componentes, asi que pasaba con el rescate quitado. Se ato al archivo donde vive la celda y al contrato que lo exige.</p>
 <table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>NADA de API. Cambia el espaciado dentro de <code>.tbl-persona</code> y <code>.tbl-foto</code>: quien ya monte celdas de tablero vera la foto centrada —antes se iba a la izquierda— y los tres datos mas juntos. Las dos cosas son correcciones, no preferencias.</td></tr></tbody></table>
 
 

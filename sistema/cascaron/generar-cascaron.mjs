@@ -7462,6 +7462,27 @@ contenedor posicionado — aquí, el envoltorio de la foto.</p>
 </div>
 
 <div class="bloque">
+<h4 class="sub-seccion">El tablero ocupa el alto que le den</h4>
+<p class="seccion-sub">Dos clases, no una: <code>tbl-marco</code> apila encabezado, cuerpo y pie y
+toma el alto de <strong>su padre</strong>; <code>tbl-crece</code> marca <em>cuál</em> de los tres se
+estira y se desplaza por dentro. Las dos llevan <code>min-height: 0</code> — sin él, la rejilla
+empuja el pie fuera de la pantalla en vez de desplazarse.</p>
+<div class="muestra-alto">
+  <div class="tbl-marco">
+    <p class="vivo"><span class="vivo-punto"></span> Encabezado · no se mueve</p>
+    <div class="sup sup-info tbl-crece">
+      <p>Éste es el cuerpo, y es el único que se estira y se desplaza.</p>
+      <p>Si hay treinta personas, se desplazan aquí dentro.</p>
+      <p>Y el pie de abajo sigue viéndose.</p>
+      <p>Aquí dentro no hay ningún <code>100vh</code>: el alto lo pone el padre.</p>
+      <p>Sin <code>min-height: 0</code>, este bloque empujaría el pie fuera.</p>
+    </div>
+    <p class="vivo"><span class="vivo-punto"></span> Pie · tampoco se mueve</p>
+  </div>
+</div>
+</div>
+
+<div class="bloque">
 <h4 class="sub-seccion">Avatar · fluido, con anillo de estado y con relieve</h4>
 <p class="seccion-sub">El anillo va por fuera con sombra y no con borde: un borde comería del
 tamaño de la foto, y a 48 px eso se nota. <strong>Y refuerza</strong> una distinción dicha con
@@ -7513,11 +7534,19 @@ export function CeldaDeTablero({ p }: { p: Persona }) {
     &lt;li className="tbl-persona"&gt;
       &lt;span className="tbl-foto"&gt;
         &lt;Avatar id={p.id} nombre={p.nombre} tamano="fluido" estado="exito" elevacion="relieve" /&gt;
+        {/* La burbuja necesita un ancestro POSICIONADO, y «tbl-foto» lo es. No
+            vale meterla dentro del Avatar: «.avatar» tiene «overflow: hidden» y
+            la recortaria. */}
         &lt;span className="badge badge-aviso"&gt;+5&lt;/span&gt;
       &lt;/span&gt;
+      {/* EL NOMBRE COMPLETO NO ES OPCIONAL. «tbl-nom» y «tbl-ape» tienen tope de
+          DOS LINEAS, asi que un apellido encadenado se recorta — y recortar sin
+          forma de leer el resto es lo que la politica de movil primero prohibe.
+          Ademas evita que un lector deletree «Rosa Quispe 06:48». */}
+      &lt;span className="sr-solo"&gt;{p.nombre} {p.apellido} · {p.hora}&lt;/span&gt;
       &lt;span className="tbl-nom"&gt;{p.nombre}&lt;/span&gt;
       &lt;span className="tbl-ape"&gt;{p.apellido}&lt;/span&gt;
-      &lt;span className="tbl-hora"&gt;{p.hora}&lt;/span&gt;
+      &lt;span className="tbl-hora" aria-hidden="true"&gt;{p.hora}&lt;/span&gt;
     &lt;/li&gt;
   );
 }
@@ -9926,6 +9955,8 @@ code { font-family: 'IBM Plex Mono', monospace; }
 @media (min-width: 640px) { .muestra-tonos { grid-template-columns: repeat(2, 1fr); } }
 .muestra-burbujas { display: flex; gap: 20px; flex-wrap: wrap; }
 .muestra-burbujas > .tbl-foto { width: auto; }
+.muestra-alto { height: 260px; display: flex; }
+.muestra-alto > .tbl-marco { flex: 1 1 auto; min-height: 0; }
 
 .muestra-fila { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
 .mf { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.136.0";
+export const VERSION = "1.137.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -71,6 +71,40 @@ export const correcciones = [
  */
 export const CAMBIOS = [
   {
+    v: '1.137.0', fecha: '2026-09-22',
+    que: 'El agujero de la v1.133.0, reabierto y cerrado otra vez — y lo que se INVITA A COPIAR deja de contradecir al contrato',
+    porque:
+      'LA MISMA AUDITORIA, EL MISMO AGUJERO, DOS VERSIONES DESPUES. `tbl-marco` y `tbl-crece` '
+      + 'entraron en la v1.136.0 pintandose SOLO desde el guion `data-vivo` — exactamente lo que la '
+      + 'v1.134.0 arreglo para las otras clases del R157 y dejo escrito en `vivo.tsx`. Con los 18 '
+      + 'candados en verde: los del empate, la omision y el elemento cortan el documento en ese '
+      + 'guion, y la lista CASOS de `verificar-promesa` esta escrita A MANO, asi que una pieza nueva '
+      + 'que no se añada ahi no se compara nunca. No habia divergencia entregada —se comprobaron las '
+      + 'declaraciones a mano y son identicas— pero el agujero estaba abierto. Entra la demo '
+      + 'ESTATICA y entran los dos casos. '
+      + 'Y LO QUE EL CATALOGO INVITA A COPIAR CONTRADECIA AL CONTRATO QUE DICE COPIAR. El bloque se '
+      + 'titula «El marcado, que es el contrato» y emitia la celda SIN el `sr-solo` y sin el '
+      + '`aria-hidden` que el contrato declara obligatorios: quien lo copiara se llevaba el recorte '
+      + 'de dos lineas SIN el rescate, que es justo lo que la politica de movil primero prohibe. '
+      + 'Ningun candado podia verlo: `verificar-copia` comprueba que COMPILE, y un `className` de mas '
+      + 'o de menos no es un error de tipos. Ahora hay prueba, y se vio caer — la primera version no '
+      + 'caia porque miraba el bloque entero, donde hay otro `sr-solo` del carril; se acoto a la '
+      + 'celda. Es la SEGUNDA vez en dos versiones que una prueba de rescate pasa por mirar demasiado '
+      + 'ancho. '
+      + 'Y DOS CIFRAS PROPIAS MAS, FALSAS. El asiento de la v1.135.0 decia «2 px entre lineas y 6 de '
+      + 'separacion: 8 contra 2» y lo entregado es `gap: 0` con `margin-top: 10px` — el mismo asiento '
+      + 'se corregia treinta lineas mas abajo y conservaba las dos versiones. La regla 1 del contrato '
+      + 'tenia la misma contradiccion dentro de la MISMA celda. '
+      + 'Y EL MANUAL SE ENTERA POR FIN. El equipo pregunto por el §5.4 —«si cubre tambien a los '
+      + 'tableros, diganlo»— y la distincion entre desbordamiento y paginacion por gesto se habia '
+      + 'escrito en la politica y en el contrato, pero NO donde ellos fueron a mirar. Tres versiones '
+      + 'diciendo lo contrario en el manual. '
+      + 'Ninguna de estas cinco cosas la encontro un candado. Las encontro preguntar, con agentes, si '
+      + 'la entrega era igual a la promesa.',
+    tokens: { alta: [], baja: [] },
+    rompe: ['NADA. Marcado nuevo en el catalogo, dos casos nuevos en un candado y texto corregido.'],
+  },
+  {
     v: '1.136.0', fecha: '2026-09-22',
     que: 'El tablero ocupa el alto que le den, y el rotulo se esconde A LA VISTA sin perderse',
     porque:
@@ -111,8 +145,7 @@ export const CAMBIOS = [
       + 'separalos, pero los datos del nombre, apellidos y hora juntalas mas», y «coloca todos los '
       + 'datos centrados». Las dos frases son la misma idea: LA CELDA NO SON CUATRO COSAS, ES UNA '
       + 'PERSONA. Con el mismo hueco entre foto, nombre, apellido y hora —3 px para todo— el ojo lee '
-      + 'cuatro elementos sueltos. Ahora las tres lineas de datos van a 2 px, casi pegadas, y la foto '
-      + 'se separa 6 px mas: 8 contra 2 medidos en el catalogo. El ritmo desigual es lo que agrupa. '
+      + 'cuatro elementos sueltos. El ritmo desigual es lo que agrupa. '
       + 'Y AL IR A CENTRARLO SALIO UN DEFECTO QUE NADIE HABIA VISTO: la foto NO estaba centrada. '
       + '`.tbl-foto` llevaba `display: block` y el avatar es `display: grid` —una caja de bloque—, '
       + 'asi que el `text-align: center` de la celda no lo alcanzaba. Medido: 0 px de margen a la '

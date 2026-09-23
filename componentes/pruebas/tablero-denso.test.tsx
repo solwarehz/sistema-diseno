@@ -346,6 +346,42 @@ describe('R157 · el carril con anclaje', () => {
   });
 });
 
+describe('R157 · lo que el catálogo INVITA A COPIAR cumple el contrato', () => {
+  /* `verificar-copia` comprueba que el bloque COMPILE, y un `className` de más o
+     de menos no es un error de tipos. Una auditoría lo encontró enseñando una
+     celda SIN el `sr-solo` y sin el `aria-hidden` que el contrato declara
+     obligatorios: quien lo copiara se llevaba el recorte sin el rescate, que es
+     justo lo que la política de móvil primero prohíbe. Compilaba. */
+  const cat = readFileSync(join(process.cwd(), '..', 'cascaron', 'index.html'), 'utf8');
+  const bloque = (() => {
+    const todos = [...cat.matchAll(/<pre class="cod-pre"[^>]*>([\s\S]*?)<\/pre>/g)].map((m) => m[1]);
+    return todos.find((b) => b.includes('tbl-persona')) ?? '';
+  })();
+
+  it('[1] el bloque del tablero existe y enseña la celda', () => {
+    expect(bloque, 'el catálogo no invita a copiar ninguna celda de tablero').not.toBe('');
+  });
+
+  it('[1] y NO enseña una celda que incumpla el contrato', () => {
+    /* Se recorta A LA CELDA y no se mira el bloque entero: en el mismo bloque hay
+       un `sr-solo` del carril —«Parada 1 de 2»—, así que buscarlo suelto pasaba
+       con el rescate de la celda quitado. Se vio al mutarlo. */
+    const celda = /&lt;li className="tbl-persona"&gt;[\s\S]*?&lt;\/li&gt;/.exec(bloque)?.[0] ?? '';
+    expect(celda, 'no encuentro la celda dentro del bloque copiable').not.toBe('');
+    expect(celda, 'el ejemplo copia el recorte SIN el rescate: falta el `sr-solo`')
+      .toMatch(/sr-solo/);
+    expect(celda, 'el ejemplo deja que el lector deletree la hora dos veces: falta `aria-hidden`')
+      .toMatch(/aria-hidden/);
+  });
+
+  it('[9] y enseña el marco, que es lo que hace que ocupe el alto', () => {
+    const marco = [...cat.matchAll(/<pre class="cod-pre"[^>]*>([\s\S]*?)<\/pre>/g)]
+      .map((m) => m[1]).find((b) => b.includes('tbl-marco')) ?? '';
+    expect(marco, 'el catálogo no enseña cómo montar el marco').not.toBe('');
+    expect(marco, 'el ejemplo del marco no dice cuál de los hijos crece').toMatch(/tbl-crece/);
+  });
+});
+
 describe('R157 · el tablero ocupa el alto que le den', () => {
   it('[9] son DOS clases: una apila y otra marca cuál crece', () => {
     /* Mezclarlas obligaría a que el que crece fuera siempre la superficie

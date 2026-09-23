@@ -3,7 +3,7 @@
 **22 de septiembre de 2026** · MMI-DS **v1.134.0**
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.134.0"
+npm install "github:solwarehz/sistema-diseno#v1.137.0"
 ```
 
 > **Instalen la v1.134.0, no la v1.133.0.** La 133 publicó las siete piezas y
@@ -145,50 +145,104 @@ import { Avatar, Segmentado } from 'sistema-diseno-ae/componentes';
 import 'sistema-diseno-ae/tokens.css';        // SIEMPRE primero
 import 'sistema-diseno-ae/componentes.css';   // al revés, no hay ningún color
 
-<Segmentado etiqueta="Grupo" valor={grupo} onCambio={setGrupo}
-  opciones={[
-    { valor: 'dentro', texto: `Asistió ${dentro.length}` },
-    { valor: 'fuera',  texto: `No asistió ${fuera.length}` },
-  ]} />
+// «tbl-marco» ocupa el alto QUE LE DEN —del encabezado al fondo— y «tbl-crece»
+// marca cuál de los tres hijos se estira y se desplaza por dentro.
+<div className="tbl-marco">
+  {/* «etiquetaOculta» esconde «Grupo» A LA VISTA, no del lector: el `legend`
+      sigue nombrando al grupo. En un tablero esa línea son personas que dejan
+      de verse. */}
+  <Segmentado
+    etiquetaOculta
+    etiqueta="Grupo"
+    valor={grupo}
+    onCambio={(v) => setGrupo(v as 'dentro' | 'fuera')}
+    opciones={[
+      { valor: 'dentro', texto: `Asistió ${dentro.length}` },
+      { valor: 'fuera',  texto: `No asistió ${fuera.length}` },
+    ]} />
 
-<div className={`sup sup-${grupo === 'dentro' ? 'exito' : 'error'}`}>
-  <ul className="tn-densa">
-    {lista.map((p) => (
-      <li key={p.id} className="tbl-persona">
-        <span className="tbl-foto">
-          <Avatar id={p.id} nombre={p.nombre} tamano="fluido"
-                  estado={grupo === 'dentro' ? 'exito' : 'error'}
-                  elevacion="relieve" />
-          {p.tarde > 0 && <span className="badge">+{p.tarde}</span>}
-        </span>
-        <span className="tbl-nom">{p.nombre}</span>
-        <span className="tbl-ape">{p.apellido}</span>
-        <span className="tbl-hora">{p.hora}</span>
-      </li>
-    ))}
-  </ul>
+  <div className={`sup sup-${grupo === 'dentro' ? 'exito' : 'error'} tbl-crece`}>
+    <ul className="tn-densa">
+      {lista.map((p) => (
+        <li key={p.id} className="tbl-persona">
+          <span className="tbl-foto">
+            <Avatar id={p.id} nombre={p.nombre} tamano="fluido"
+                    estado={grupo === 'dentro' ? 'exito' : 'error'}
+                    elevacion="relieve" />
+            {/* La burbuja necesita un ancestro POSICIONADO, y «tbl-foto» lo es.
+                No vale meterla dentro del <Avatar>: «.avatar» lleva
+                «overflow: hidden» y la recortaría. */}
+            {p.tarde > 0 && <span className="badge badge-aviso">+{p.tarde}</span>}
+          </span>
+          {/* EL NOMBRE COMPLETO NO ES OPCIONAL: ver §5bis. */}
+          <span className="sr-solo">{p.nombre} {p.apellido} · {p.hora}</span>
+          <span className="tbl-nom">{p.nombre}</span>
+          <span className="tbl-ape">{p.apellido}</span>
+          <span className="tbl-hora" aria-hidden="true">{p.hora}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <p className="vivo"><span className="vivo-punto" /> En vivo · último dato {ultima}</p>
 </div>
-
-<p className="vivo"><span className="vivo-punto" /> En vivo · último dato {ultima}</p>
 ```
 
-`tbl-*` son las clases de la **celda** —foto, nombre, apellido, hora—, y ninguna
-de las tres líneas de texto se recorta: **envuelven**. En un teléfono no hay
-puntero que descubra un globito.
+**El alto lo pone el padre.** Dentro no hay ningún `100vh`: el sistema no decide
+el alto de una pantalla ajena. Si el padre es a su vez un contenedor flex, el
+marco necesita además `flex: 1 1 auto; min-height: 0` de su lado.
+
+---
+
+## 5bis · El nombre largo, y por qué el `sr-solo` no es opcional
+
+`tbl-nom` y `tbl-ape` **envuelven, con tope de dos líneas**. Medido a 11 px: de
+catorce apellidos de la zona, **trece entran en una sola línea** dentro del suelo
+de 84 px. El que se sale es el compuesto, «Villanueva-Bustamante» —115,2 px—, y
+**envuelve sin perder una letra**; la celda crece 13,8 px una sola vez.
+
+El tope es lo que impide que un apellido estire su fila y descuadre la rejilla:
+con dos apellidos encadenados, con tres, o con uno corto, **la celda mide 115,2
+px como techo**. Los puntos suspensivos aparecen sólo a partir de la tercera
+línea.
+
+**Y cuando recortan, el nombre completo sigue en la celda**, en ese `sr-solo`.
+Nuestra política no prohíbe recortar: prohíbe recortar **sin forma de leer el
+resto**. Si lo quitan, se llevan el recorte sin el rescate — y además el lector
+de pantalla deletrea «Rosa Quispe 06:48» en vez de decir la persona.
+
+---
+
+## 5ter · Tres cosas que preguntaron y no les habíamos contestado
+
+**El tope de `tamano="fluido"` son 48 px.** Pidieron el número («~46 px») y no se
+lo dimos. Es el mayor de la escala —`avatar-xl`— a propósito: un tope suelto
+dejaría que en una pantalla ancha el avatar creciera hasta ser un retrato.
+
+**La burbuja va sobre cualquier `Avatar`, con una condición**: necesita un
+ancestro **posicionado**. `.tbl-foto` lo es. No vale meterla dentro del
+`<Avatar>` — `.avatar` lleva `overflow: hidden` y la recortaría.
+
+**«En vivo» no usa `Chip` ni gasta un tono de estado.** Preguntaron con qué tono
+sería si fuera un `Chip`: usa `--accion`, el acento de acción. Un `Chip` dice el
+estado de un **dato**; esto dice el estado de la **conexión**, y en un tablero
+los tonos de estado están ocupados por lo que se vigila.
 
 ---
 
 ## 6 · Las dos confirmaciones que pidieron, y no les habíamos contestado
 
-**«Queremos que diseño confirme la excepción de cabecera»** —un tablero sin `h1`
+**«queremos que diseño confirme la excepción»* de cabecera* —un tablero sin `h1`
 ni migas—. **Confirmada y escrita en el manual**: «El tablero: una pantalla que
 no lleva título». Cada línea de cabecera es una fila de datos que deja de verse.
 Pero **no puede quedarse sin nombre accesible** ni fiar al color lo que se
 vigila: eso no es negociable.
 
 **«Si el manual §5.4 cubre también a los tableros, díganlo»** — sí, y con una
-distinción nueva que trajo su requerimiento. El manual decía «no se hace scroll
-horizontal», sin excepción. Ahora se distingue:
+distinción nueva que trajo su requerimiento. **Y les decimos dónde vive**, porque
+el §5.4 del manual sigue diciendo «no se hace scroll horizontal» sin excepción:
+la distinción está en `POLITICA-DE-CREACION.md` §5 y en la regla 7 de «Piezas de
+tablero». Que el manual no se enterara es cosa nuestra y está anotado.
 
 - **Desbordamiento**: el contenido no cupo y se sale. Sigue siendo un defecto.
 - **Paginación por gesto**: cada parada es una vista entera. **Legítimo, con tres
@@ -255,8 +309,8 @@ hoja remitía ese contrato a `componentes.md`, **un archivo que no existe**.
 - Los **22 pasos** del publicador en verde, incluidas las pruebas y ESLint.
 - El tablero **montado y vivo** en el catálogo con 24 personas, **y además en
   estático** — que es lo único que los candados pueden leer.
-- Las 28 clases del R157 tienen marcado en el catálogo: comprobado contando, no
-  suponiendo.
+- Las **30** clases del R157 tienen marcado en el catálogo —las 28 de la
+  v1.134.0 más `tbl-marco` y `tbl-crece`—: comprobado contando, no suponiendo.
 - Las reglas viven en `sistema/componentes/comportamiento.md`, sección **«Piezas
   de tablero»**, con la tabla de marcado.
 
@@ -269,6 +323,9 @@ hoja remitía ese contrato a `componentes.md`, **un archivo que no existe**.
   la tienen, con esta razón escrita: «sobre negro, una sombra al 18 % no
   existe». El relieve usa ese mismo 18 %. **No lo hemos medido en oscuro** y
   queda abierto por nuestra parte.
-- **Los pares de contraste que crea `.sup`** —texto sobre fondo tonal— no están
-  en nuestro contrato de contraste. Medidos a mano: el peor da **4,67:1**, que
-  pasa AA, pero **no está vigilado por el candado**. También abierto.
+- ~~«Los pares de contraste de `.sup` no están vigilados»~~ — **esto lo
+  escribimos y era falso.** Están: `paleta.lock.json` lleva los **16** pares
+  —`texto-principal` y `texto-secundario` sobre los cuatro fondos tonales, en
+  los dos modos—, todos **bloqueantes** con mínimo 4,5 y todos cumpliendo. El
+  peor es `texto-secundario` sobre `error-fondo` en claro: **4,66**. Lo cazó una
+  auditoría nuestra antes de mandarles esto.

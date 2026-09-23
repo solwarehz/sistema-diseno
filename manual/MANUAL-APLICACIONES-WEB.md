@@ -294,6 +294,24 @@ Es el 80 % de la superficie del sistema. Vale la pena hacerla bien.
 No se hace scroll horizontal. Cada tarjeta lleva: nombre, una línea de metadatos
 (DNI y grado), chip de estado, monto, divisor y «Ver detalle» como enlace.
 
+**Una excepción, y sólo una: la paginación por gesto.** Lo preguntó el equipo de
+Tableros —*«si el §5.4 cubre también a los tableros, díganlo»*— y la respuesta
+obliga a distinguir dos cosas que se parecen en pantalla y no se parecen en nada:
+
+- **Desbordamiento**: el contenido no cupo y se sale. **Sigue siendo un
+  defecto**, y es lo que esta sección prohíbe.
+- **Paginación por gesto**: cada parada es una **vista entera** y no se pierde
+  nada por no deslizar más. Es legítima, y hay que ganársela con **tres**
+  condiciones: (a) se alcanza con teclado —`tabindex="0"` y `role="region"` con
+  nombre—; (b) dice **dónde estás y cuántas paradas hay**, y no sólo con color;
+  (c) **nada queda sólo ahí**. Sin las tres, es desbordamiento con otro nombre.
+
+La pieza es `car`, con `car-cuenta` y `car-punto`. El detalle vive en la regla 7
+de «Piezas de tablero» (`sistema/componentes/comportamiento.md`) y en
+`POLITICA-DE-CREACION.md` §5. **Esta excepción tardó tres versiones en llegar
+aquí**: se escribió en la política y en el contrato, y el manual —que es donde el
+equipo fue a mirar— siguió diciendo lo contrario. Lo cazó una auditoría.
+
 Esa anatomía **ya está construida**: es `TarjetaPersona`. No se maqueta a mano.
 
 ### 5.5 Tarjetas: cuál de las tres, y la cuadrícula

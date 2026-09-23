@@ -301,6 +301,15 @@ const CASOS = [
   ['Punto de la parada en curso', [
     elem('p', ['car-cuenta']), elem('span', ['car-punto', 'car-punto-aqui']),
   ]],
+  /* v1.136.0 · Y LAS DOS DEL MARCO, que entraron sin pasar por aqui. Una
+     auditoria las encontro pintadas SOLO desde el guion `data-vivo` —el mismo
+     agujero que esta lista vino a cerrar dos versiones antes—, con los 18
+     candados en verde. Que la lista sea a mano es lo que la deja corta cada vez
+     que nace una pieza; mientras lo sea, añadirla es parte de crearla. */
+  ['Marco del tablero', [elem('div', ['tbl-marco'])]],
+  ['Cuerpo que crece del tablero', [
+    elem('div', ['tbl-marco']), elem('div', ['sup', 'sup-info', 'tbl-crece']),
+  ]],
 ];
 
 /** Los anchos donde se compara. Una regla puede viajar y su @media no. */

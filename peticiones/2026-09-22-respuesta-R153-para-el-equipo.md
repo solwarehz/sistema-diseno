@@ -4,7 +4,7 @@
 correcciones en la v1.132.0
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.133.0"
+npm install "github:solwarehz/sistema-diseno#v1.137.0"
 ```
 
 **Entra lo que pidieron primero, no la alternativa.** La matriz cae sola a lista
