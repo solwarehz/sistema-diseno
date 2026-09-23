@@ -345,7 +345,17 @@ for (const b of todos) {
     // R27: la politica de movimiento reducido es UNA regla resuelta una vez;
     // sin ella los tokens de duracion viajarian sin su apagado y cada producto
     // volveria a escribirlo. Va con las dependencias, no con un elemento.
-    if (b.sel.includes('prefers-reduced-motion') && /--dur-/.test(b.cuerpo)) {
+    /* OJO AL `:` — y no es un detalle. Esto decia `/--dur-/` a secas, asi que
+       se llevaba arriba cualquier regla que USARA un token de duracion, no solo
+       la que los REDEFINE. Se llevo `.av`, y como las dependencias se emiten al
+       PRINCIPIO del archivo, su `@media (prefers-reduced-motion)` acabo ANTES
+       de la regla base de `.av`: empate de especificidad, gana la ultima, y el
+       apagado de la animacion NO SE APLICABA EN NINGUN PRODUCTO. En el catalogo
+       si, porque alli el orden es el correcto. Lo encontro el candado de la
+       declaracion muerta el dia que nacio.
+       Un `--dur-x:` con dos puntos es una DECLARACION; `var(--dur-x)` es un
+       uso. Solo la primera pertenece a las dependencias. */
+    if (b.sel.includes('prefers-reduced-motion') && /--dur-[a-z-]+\s*:/.test(b.cuerpo)) {
       dependenciasSueltas.push(b.entero);
       continue;
     }

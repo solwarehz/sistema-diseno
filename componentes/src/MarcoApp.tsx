@@ -128,6 +128,25 @@ export type MarcoAppProps = {
    */
   plegado?: boolean;
   onPlegar?: (plegado: boolean) => void;
+  /**
+   * La aplicación ocupa el alto de la ventana y **el contenido se desplaza por
+   * dentro**, en vez de desplazarse la página entera.
+   *
+   * Es lo que le da a una pantalla una **cadena de alto**. Sin esto, `.app`
+   * sólo declara `min-height` y un `height: 100%` de dentro no resuelve — así
+   * que `tbl-marco` degrada a bloque normal y `tbl-crece` no desplaza nada.
+   *
+   * **No es estético.** Sin cuerpo que se desplace por dentro, el rótulo que
+   * sostiene el color de un tablero se va de pantalla al deslizar, y eso rompe
+   * la regla 2 de «Piezas de tablero» — la escribimos nosotros. Lo reportó el
+   * equipo que adoptó el tablero (R158.2): el sistema publicó la pieza y no el
+   * padre que la sostiene.
+   *
+   * **Va como opción y no por omisión** porque cambia el modelo de
+   * desplazamiento de toda la aplicación: imponerlo rompería cualquier pantalla
+   * larga que hoy funciona.
+   */
+  altoCompleto?: boolean;
   children: React.ReactNode;
 };
 
@@ -145,6 +164,7 @@ export function MarcoApp({
   vista = 'web',
   plegado: plegadoFuera,
   onPlegar,
+  altoCompleto = false,
   children,
 }: MarcoAppProps) {
   const id = useId();
@@ -483,7 +503,7 @@ export function MarcoApp({
     // bajo el pliegue. El catálogo emite las dos —`class="app app-cascaron"`— y
     // el componente solo emitía una: un olvido al portarlo, no una decisión.
     // Lo encontró Control Administrativos V2.0 montándolo.
-    <div className={['app', 'app-cascaron', enApp ? 'app-marco' : ''].filter(Boolean).join(' ')}>
+    <div className={['app', 'app-cascaron', enApp ? 'app-marco' : '', altoCompleto ? 'app-alto' : ''].filter(Boolean).join(' ')}>
       {/* En `app` NO se dibujan ni la lateral ni el velo ni el botón de plegar.
           Se podrían ocultar con CSS —y la hoja lo hace—, pero entonces la
           garantía depende de que la hoja cargue: sin ella quedaría un botón

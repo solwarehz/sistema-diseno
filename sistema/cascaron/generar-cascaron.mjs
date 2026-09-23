@@ -7552,8 +7552,16 @@ export function CeldaDeTablero({ p }: { p: Persona }) {
 }
 
 // «tbl-marco» ocupa el alto QUE LE DEN —del encabezado al fondo— y «tbl-crece»
-// marca cual de los tres hijos se estira y se desplaza por dentro. El alto lo
-// pone el PADRE: aqui dentro no hay ningun «100vh».
+// marca cual de los tres hijos se estira y se desplaza por dentro.
+//
+// EL ALTO LO PONE EL PADRE, y el padre lo da el marco: «altoCompleto» en
+// «MarcoApp». Sin el, «.app» solo declara «min-height», este «height: 100%» no
+// resuelve y el tablero degrada a bloque normal — el rotulo que sostiene el
+// color se va de pantalla al deslizar y se rompe la regla 2.
+//
+//   <MarcoApp altoCompleto …>
+//     <Tablero … />
+//   </MarcoApp>
 export function Tablero({ gente, grupo, onGrupo }: {
   gente: Persona[]; grupo: string; onGrupo: (v: string) =&gt; void;
 }) {
@@ -9665,8 +9673,6 @@ code { font-family: 'IBM Plex Mono', monospace; }
     background: var(--marco-fondo); opacity: .5; cursor: pointer; }
   .app.app-cascaron { position: relative; overflow-x: hidden; }
   /* Los filtros envuelven y encogen en vez de imponer 360px de mínimo. */
-  .top-filtros { flex-wrap: wrap; }
-  .top-filtros .campo { min-width: 0; }
   .top-filtros .cg { min-width: 0; flex: 1 1 120px; }
   /* El intercambio de los dos iconos del botón de plegar YA NO ESTÁ AQUÍ: vive
      pegado a sus reglas base, 500 líneas más abajo. Estar en dos sitios era el
@@ -13312,6 +13318,33 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
   overflow: hidden; text-overflow: ellipsis; }
 
 .app-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+/* ─────────────────────────────────────────────────────────────────────────────
+   R158.2 · LA CADENA DE ALTO, QUE FALTABA.
+
+   El sistema publico «tbl-marco» diciendo «el alto lo pone el padre» y NO
+   PUBLICO NINGUN PADRE QUE LO DIERA: «.app» solo declara «min-height», nunca un
+   alto definido, asi que un «height: 100%» dentro no resuelve y el marco
+   degrada a bloque normal. Lo reporto el equipo que lo adopto, y tenian razon
+   en lo que mas importa: la consecuencia no es estetica. Sin cuerpo que se
+   desplace por dentro, el rotulo que sostiene el color se va de pantalla al
+   deslizar — que es exactamente lo que la regla 2 de «Piezas de tablero»
+   prohibe, escrito por nosotros.
+
+   Llegaron a resolverlo con un gancho que media la barra y lo RETIRARON a
+   proposito: «es codigo del producto decidiendo maquetacion». Tienen razon otra
+   vez, y es el mismo argumento con el que el relieve salio a un token.
+
+   VA COMO OPCION Y NO POR OMISION porque cambia el modelo de desplazamiento de
+   toda la aplicacion: con esto, la pagina no se desplaza — se desplaza el
+   contenido. Imponerlo romperia cualquier pantalla larga que hoy funciona.
+
+   Y «dvh», no «vh»: en un telefono la barra del navegador aparece y desaparece,
+   y con «vh» el pie queda debajo. Lo pidieron asi y es correcto. El «vh» de la
+   linea de arriba es el respaldo para quien no entienda «dvh».
+   ───────────────────────────────────────────────────────────────────────────── */
+.app-alto { height: 100vh; height: 100dvh; min-height: 0; }
+.app-alto .app-main { min-height: 0; }
+.app-alto .app-contenido { min-height: 0; }
 /* LA ZONA DE CONTENIDO del marco. No existia como clase del sistema: el
    catalogo usaba .cat-cuerpo, que es suya y no viaja, asi que un proyecto que
    montara el marco se quedaba sin margenes ni ancho maximo y el texto le salia
@@ -13363,9 +13396,23 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 @media (max-width: 640px) {
   /* Tres selectores globales de 120px suman 360 y por sí solos impedían bajar
      de 320. Sueltan su ancho mínimo y la barra envuelve. */
-  .top { flex-wrap: wrap; height: auto; }
-  .top-filtros { flex-wrap: wrap; }
-  .top-filtros .campo { min-width: 0; }
+  /* R158.1 · LA BARRA ES UNA FILA, Y AQUI DECIA LO CONTRARIO.
+     Llevaba «flex-wrap: wrap; height: auto» y las dos declaraciones estaban
+     mal, cada una por su motivo:
+       · El «height: auto» NO SE APLICABA NUNCA. La regla base «.top{…height:
+         64px}» va mas abajo en este mismo archivo, empata en especificidad y
+         gana por orden. Una declaracion muerta que ademas tapaba el defecto:
+         la barra envolvia y seguia midiendo 64 px, asi que la segunda fila
+         quedaba FUERA. Medido en el producto a 333 px: «top-acciones» acababa
+         en 78 px con la barra terminando en 64 — catorce pixeles por fuera.
+       · Y el «wrap» sobraba. Medido en el mismo sitio: 26 + 12 de hueco + 264
+         = 302 px contra 301,3 de sitio. Envolvia por SIETE DECIMAS. Sin wrap,
+         los hijos encogen —«top-acciones» y «top-filtros» ya llevan «min-width:
+         0»— y caben.
+     Una barra de encabezado que crece a dos filas roba alto vertical en la
+     unica pantalla donde escasea, y este repositorio ya tiene un candado que lo
+     dice con todas las letras: una fila de controles es UNA fila. */
+  .top { flex-wrap: nowrap; }
 }
 
 /* Altura fija y COMPARTIDA con la banda de marca: así la línea divisoria del
@@ -13395,12 +13442,28 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .top-filtros { display: flex; gap: 8px; flex: 1; }
 .top-filtros .cg { gap: 4px; }
 .top-filtros .cg-et { font-size: 12px; color: var(--texto-secundario); }
+/* R158.1 · EL SUELO DE 120 px, CON SU EXCEPCION DELANTE Y NO DETRAS.
+   Los dos «@media» que lo bajan a 0 estaban escritos ARRIBA en este archivo, y
+   empatan en especificidad con esta linea: ganaba esta, asi que el campo NUNCA
+   encogia en un telefono. Es lo que empujaba el encabezado a una segunda fila.
+   Se declara el suelo aqui y las excepciones van despues. */
 .top-filtros .campo { font-size: 13px; padding: 4px 8px; min-width: 120px; }
+/* Y LOS FILTROS TAMPOCO ENVUELVEN. Medido en la pantalla del producto a
+   333 px: envolviendo, «top-acciones» pasaba de 32 a 51,3 px dentro de una
+   barra de 64 — cabia por poco y se veia apretado. Sin envolver y con el suelo
+   ya en 0, el selector encoge a 111,3 px y NO se corta. Una barra de
+   encabezado es una fila, y lo que hay dentro tambien. */
+@media (max-width: 700px) { .top-filtros { flex-wrap: nowrap; } .top-filtros .campo { min-width: 0; } }
 .top-filtros select.campo { padding-right: 28px; background-position: right 8px center; }
 /* Las acciones se van SIEMPRE a la derecha. En móvil los filtros salen de la
    barra y ya no hay nada que empuje: sin esto, los iconos se quedaban pegados
    a la hamburguesa. */
-.top-acciones { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+/* R158.1 · «min-width: 0» EN LA BASE, no dentro de una consulta de ancho. Un
+   hijo de flex no baja de su tamaño de contenido salvo que se le diga, y eso
+   vale a cualquier ancho: el ancho solo decide CUANDO se nota. Sin esto la
+   barra no cabe en una fila y envuelve — por siete decimas, medido a 333 px. */
+.top-acciones { display: flex; align-items: center; gap: 4px; margin-left: auto;
+  min-width: 0; }
 .top-btn { background: transparent; border: 0; cursor: pointer; padding: 8px;
   border-radius: 6px; color: var(--texto-secundario); position: relative;
   display: grid; place-items: center; }

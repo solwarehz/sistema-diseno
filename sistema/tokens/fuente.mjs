@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.137.0";
+export const VERSION = "1.138.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,57 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.138.0', fecha: '2026-09-23',
+    que: 'R158 · el encabezado vuelve a ser UNA fila, y el sistema publica por fin el padre que «tbl-marco» necesitaba',
+    porque:
+      'R158.1 · EL ENCABEZADO SE PARTIA EN DOS FILAS, y de las dos declaraciones que lo hacian, UNA '
+      + 'NO SE APLICABA NUNCA. `.top` llevaba `flex-wrap: wrap; height: auto` bajo 640 px; la regla '
+      + 'base `.top{…height: 64px}` va DESPUES en el archivo, empata en especificidad y gana por '
+      + 'orden. Asi que la barra envolvia y seguia midiendo 64 px: la segunda fila quedaba CATORCE '
+      + 'PIXELES FUERA. Y el `wrap` sobraba: medido en la pantalla del producto a 333 px, los hijos '
+      + 'ocupan 302 px contra 301,3 de sitio — ENVOLVIA POR SIETE DECIMAS. Sin envolver, y con '
+      + '`min-width: 0` donde toca —en la regla BASE de `.top-acciones`, no dentro de una consulta de '
+      + 'ancho: un hijo de flex no encoge salvo que se le diga, y eso vale a cualquier ancho—, la '
+      + 'barra cabe en una fila y el selector de sede queda en 111,3 px sin cortarse. Verificado '
+      + 'sobre la pantalla que lo reporto. '
+      + 'SU SEGUNDO PUNTO NO SE SOSTIENE Y SE LES DICE: no existe ningun `@media` que oculte '
+      + '`.top-plegar`. Lo que hay es `.app-marco .top-plegar`, que lo oculta solo cuando la barra '
+      + 'inferior sustituye al lateral, y eso es coherente. Lo que si es cierto es lo que les hizo '
+      + 'pensar eso — las reglas base van DESPUES de los `@media` en este archivo. '
+      + 'R158.2 · TENIAN RAZON, Y ERA UN DEFECTO NUESTRO. El sistema publico `tbl-marco` diciendo «el '
+      + 'alto lo pone el padre» y NO PUBLICO NINGUN PADRE QUE LO DIERA: `.app` solo declara '
+      + '`min-height`, asi que un `height: 100%` dentro no resuelve y el tablero degrada a bloque '
+      + 'normal. La consecuencia no es estetica: sin cuerpo que se desplace por dentro, el rotulo que '
+      + 'sostiene el color se va de pantalla al deslizar, y eso ROMPE LA REGLA 2 que escribimos '
+      + 'nosotros. Entra `MarcoApp altoCompleto` → `.app-alto{ height: 100dvh }` con `100vh` de '
+      + 'respaldo, y anulando el `min-height` de toda la cadena. `dvh` y no `vh` porque en un '
+      + 'telefono la barra del navegador aparece y desaparece. VA COMO OPCION Y NO POR OMISION: '
+      + 'cambia el modelo de desplazamiento de toda la aplicacion, e imponerlo romperia cualquier '
+      + 'pantalla larga que hoy funciona. '
+      + 'Y HICIERON BIEN RETIRANDO SU PARCHE. Tenian un gancho que medía la barra y funcionaba, y lo '
+      + 'quitaron porque «es codigo del producto decidiendo maquetacion». Es el mismo argumento con '
+      + 'el que el relieve salio a un token, y prefirieron la pantalla con el defecto DECLARADO a la '
+      + 'pantalla parcheada. Pidieron la pieza y no el valor. '
+      + 'Y BUSCANDO ESTO NACIO EL CANDADO VEINTIDOS, QUE CAZO TRES DEFECTOS QUE NADIE BUSCABA. '
+      + '`verificar-muerta` mira una cosa que ninguno miraba: una declaracion dentro de un `@media` '
+      + 'que una regla POSTERIOR con el mismo selector mata por orden. No es una regla que falte ni '
+      + 'una que sobre: es una que esta escrita, que se lee como intencion, y que no se aplica jamas '
+      + '— y ademas TAPA el defecto, porque quien lea la hoja concluye lo contrario de lo que pasa. '
+      + 'El dia que nacio saco tres: el `height: auto` del encabezado, los dos `min-width: 0` de '
+      + '`.top-filtros .campo` —por eso el campo no podia encoger— y, el peor, EL MOVIMIENTO '
+      + 'REDUCIDO DE `.av` ROTO EN TODOS LOS PRODUCTOS. El extractor izaba esa regla al principio del '
+      + 'archivo porque su condicion buscaba `--dur-` sin distinguir un USO de una DECLARACION, y '
+      + '`.av` usa `var(--dur-rapida)`. En el catalogo funcionaba; en el paquete, no. Un `--dur-x:` '
+      + 'con dos puntos es una declaracion; `var(--dur-x)` es un uso.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'NADA de API. `altoCompleto` es opcional y por omision la aplicacion se comporta igual que '
+      + 'antes. Lo que SI cambia de aspecto es el encabezado bajo 640 px: deja de partirse en dos '
+      + 'filas, que es el defecto reportado. Y en cualquier producto, el movimiento reducido de los '
+      + 'avisos pasa a funcionar de verdad — antes no se aplicaba.',
+    ],
+  },
   {
     v: '1.137.0', fecha: '2026-09-22',
     que: 'El agujero de la v1.133.0, reabierto y cerrado otra vez — y lo que se INVITA A COPIAR deja de contradecir al contrato',

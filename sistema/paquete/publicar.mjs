@@ -134,6 +134,7 @@ const CANDADOS = [
      versiones seguidas; al escribirlo, DIECISIETE de dieciocho bloques no
      compilaban — y los dieciocho importaban de un paquete que no existe. */
   'sistema/candado/verificar-copia.mjs',
+  'sistema/candado/verificar-muerta.mjs',
 ];
 
 /** Por CÓDIGO DE SALIDA, no por si imprimió algo: `intenta` devuelve '' cuando

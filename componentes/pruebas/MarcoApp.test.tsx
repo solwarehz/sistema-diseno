@@ -876,6 +876,55 @@ describe('R135 · el tercer nivel, y el riel plegado', () => {
     return HOJA.slice(i, HOJA.indexOf('}', i));
   };
 
+  it('[13] la barra de encabezado es UNA fila, y su `height` NO lo mata una regla posterior', () => {
+    /* R158.1 · Llevaba `flex-wrap: wrap; height: auto` bajo 640 px. El `height`
+       no se aplicaba NUNCA —la base `.top{…height:64px}` va después y gana por
+       orden—, así que la barra envolvía y seguía midiendo 64: la segunda fila
+       quedaba catorce píxeles FUERA. Medido en el producto a 333 px. */
+    /* SE BUSCA EL BLOQUE QUE HABLA DE `.top`, no el primer «640px» del archivo:
+       hay varios y los otros son de otros componentes. La primera versión de
+       esta prueba miraba el primero y comprobaba una regla del filtro de fechas
+       — verde sin mirar nada. */
+    const regla = [...HOJA.matchAll(/@media \(max-width: 640px\)\s*\{([\s\S]*?)\n\}/g)]
+      .map((m) => m[1]).find((b) => /\.top\{/.test(b)) ?? '';
+    expect(regla, 'no encuentro el bloque de la barra a 640 px').not.toBe('');
+    expect(regla, 'la barra vuelve a envolver: el encabezado se parte en dos filas')
+      .not.toMatch(/\.top\{[^}]*flex-wrap:\s*wrap/);
+    expect(regla, 'declara un `height` que la regla base de abajo mata por orden')
+      .not.toMatch(/\.top\{[^}]*height:\s*auto/);
+    /* Y lo que hace que quepan sin envolver: los hijos tienen que poder encoger.
+       Medido: 26 + 12 de hueco + 264 = 302 px contra 301,3 de sitio. Envolvía
+       por SIETE DÉCIMAS. */
+    expect(bloque('.top-acciones'), '`top-acciones` no encoge, así que la barra no cabe')
+      .toMatch(/min-width:\s*0/);
+  });
+
+  it('[14] `altoCompleto` publica la cadena de alto, en `dvh` y como OPCIÓN', () => {
+    /* R158.2 · El sistema entregó `tbl-marco` diciendo «el alto lo pone el
+       padre» y no publicó ningún padre que lo diera: `.app` sólo declara
+       `min-height`. Sin esto, `tbl-crece` no desplaza nada y el rótulo que
+       sostiene el color se va de pantalla — la regla 2 de «Piezas de tablero». */
+    const { container } = montar();
+    expect(container.querySelector('.app')?.className,
+      'sin pedirlo, la aplicación NO cambia su modelo de desplazamiento')
+      .not.toContain('app-alto');
+
+    const { container: c2 } = montar({ altoCompleto: true });
+    expect(c2.querySelector('.app')?.className,
+      '`altoCompleto` no emite la clase: la cadena de alto no llega')
+      .toContain('app-alto');
+
+    const alto = bloque('.app-alto');
+    expect(alto, 'la cadena de alto no usa `dvh`: en un teléfono el pie queda debajo')
+      .toMatch(/height:\s*100dvh/);
+    expect(alto, 'sin respaldo en `vh`, un navegador sin `dvh` se queda sin alto')
+      .toMatch(/height:\s*100vh/);
+    expect(alto, 'sin anular el `min-height`, la cadena se rompe en el primer hijo')
+      .toMatch(/min-height:\s*0/);
+    expect(bloque('.app-alto .app-contenido'),
+      'el contenido no baja de su tamaño: empujará el pie fuera').toMatch(/min-height:\s*0/);
+  });
+
   it('[11] el tercer nivel se compone como el segundo: nada de iconos apilados', () => {
     /* `.nav-nieto` era `display: block` mientras `.nav-hijo` es `flex`, así que
        cualquier icono en ese nivel caía ENCIMA del rótulo y la fila medía el
