@@ -73,29 +73,52 @@ const PAQUETE = JSON.parse(readFileSync(join(RAIZ, 'package.json'), 'utf8')).nam
  * `@ae/sistema`, un paquete que no existe. Ése era el defecto que hacía que
  * NINGÚN bloque resolviera, y se corrigió en la misma versión que este candado.
  * ───────────────────────────────────────────────────────────────────────────── */
+/* LA DEUDA VA POR FIRMA, NO POR POSICION. Iba indexada por el numero de orden
+   del bloque en el catalogo, y eso se rompio en cuanto se añadio un bloque en
+   medio: los indices posteriores corrieron uno, siete deudas pasaron a señalar
+   al bloque de al lado y un bloque con deuda declarada desde hace versiones
+   salio como «NUEVO roto». Peor que el falso rojo es el silencio contrario —una
+   deuda apuntando al bloque equivocado declara sana una rotura real—.
+   La firma es la LINEA DE IMPORTACION del bloque, que es lo que lo identifica:
+   si cambia, el bloque ya no es el mismo y que la deuda deje de casar es
+   exactamente lo correcto. */
 const DEUDA = new Map([
-  [0, 'Boton: usa `deshabilitado` (es el `disabled` de HTML) y un icono `<Ajustes/>` que no existe'],
-  [1, 'Enlace: usa `enTexto`/`enMarco`; la prop es `contexto: "prosa" | "interfaz"`'],
-  [2, 'importa `CampoTexto`, que no se exporta: el componente es `Campo`'],
-  [3, 'Selector: usa `buscar`/`sinResultados`, que son de `SelectorBusqueda`'],
-  [4, 'Interruptor: pasa `valor`; la prop es `activo`'],
-  [5, 'importa `GrupoOpcion`, que no se exporta; y `SeleccionMultiple` no tiene `leyenda`'],
-  [6, 'Chip: usa `estado` y `punto`; la prop es `tono`'],
-  [8, 'Tarjeta: usa `acciones` y `href`, que no existen'],
-  [9, 'TarjetaPersona: pasa `estado` como texto; espera `{ tono, texto }`'],
-  [10, 'ejemplo con JSX y código alternados que el envoltorio no sabe separar'],
-  [11, 'Paginacion: casi ninguna prop coincide con `PaginacionProps`'],
-  [12, 'EstadoPantalla: recibe otro contrato entero, y children que no acepta'],
-  [13, 'importa `ProgresoPasos`, que no existe; y `Progreso.valor` es 0-100, no un conteo'],
-  [14, 'importa `avisar`, que no existe: son `<Aviso tono>` y `<ZonaAvisos>`'],
-  [15, 'importa `useConfirmar`, que no existe: es el componente `<Confirmacion>`'],
-  [16, 'ejemplo con JSX y código alternados que el envoltorio no sabe separar'],
-  [7, 'ejemplo con JSX y código alternados que el envoltorio no sabe separar'],
+  ["import { Boton } from", 'Boton: usa `deshabilitado` (es el `disabled` de HTML) y un icono `<Ajustes/>` que no existe'],
+  ["import { Enlace } from", 'Enlace: usa `enTexto`/`enMarco`; la prop es `contexto: "prosa" | "interfaz"`'],
+  ["import { CampoTexto } from", 'importa `CampoTexto`, que no se exporta: el componente es `Campo`'],
+  ["import { Selector } from", 'Selector: usa `buscar`/`sinResultados`, que son de `SelectorBusqueda`'],
+  ["import { Interruptor } from", 'Interruptor: pasa `valor`; la prop es `activo`'],
+  ["import { SeleccionMultiple, GrupoOpcion } from", 'importa `GrupoOpcion`, que no se exporta; y `SeleccionMultiple` no tiene `leyenda`'],
+  ["import { Chip } from", 'Chip: usa `estado` y `punto`; la prop es `tono`'],
+  ["import { Tarjeta } from", 'Tarjeta: usa `acciones` y `href`, que no existen'],
+  ["import { TarjetaPersona } from", 'TarjetaPersona: pasa `estado` como texto; espera `{ tono, texto }`'],
+  ["import { TablaDatos, Enlace } from", 'ejemplo con JSX y código alternados que el envoltorio no sabe separar'],
+  ["import { Paginacion } from", 'Paginacion: casi ninguna prop coincide con `PaginacionProps`'],
+  ["import { EstadoPantalla } from", 'EstadoPantalla: recibe otro contrato entero, y children que no acepta'],
+  ["import { Progreso, ProgresoPasos } from", 'importa `ProgresoPasos`, que no existe; y `Progreso.valor` es 0-100, no un conteo'],
+  ["import { avisar } from", 'importa `avisar`, que no existe: son `<Aviso tono>` y `<ZonaAvisos>`'],
+  ["import { useConfirmar } from", 'importa `useConfirmar`, que no existe: es el componente `<Confirmacion>`'],
+  ["import { RangoFecha, atajosDeDias } from", 'ejemplo con JSX y código alternados que el envoltorio no sabe separar'],
 ]);
 
+/* La firma de un bloque: su primera linea de importacion, sin el modulo. Dos
+   bloques que importan lo mismo comparten deuda, y eso es correcto: son el
+   mismo ejemplo con otro texto alrededor. */
+const firmaDe = (cuerpo) => {
+  const m = /^\s*(import\s+\{[^}]*\}|import\s+[A-Za-z_$][\w$]*)\s+from/m.exec(cuerpo);
+  return m ? m[1].replace(/\s+/g, ' ').trim() + ' from' : null;
+};
+
+/* Nombres que el ejemplo toma de la pantalla que lo rodea: el estado y los
+   manejadores son del producto, no del sistema. Salen aqui para que `tsc` pueda
+   mirar las PROPS, que es lo que el catalogo promete.
+   `nivel` y `guardarYAplicar` entraron el 2026-09-22: estaban rompiendo el
+   bloque del Segmentado y nadie lo veia porque la deuda iba por posicion y su
+   entrada señalaba al bloque de al lado. */
 const DEL_CONTEXTO = ['valor', 'setValor', 'guardar', 'datos', 'filas', 'onCambio',
   'pagina', 'setPagina', 'abierto', 'setAbierto', 'cargando', 'error', 'buscar',
-  'seleccion', 'setSeleccion', 'enviar', 'archivo', 'setArchivo'];
+  'seleccion', 'setSeleccion', 'enviar', 'archivo', 'setArchivo',
+  'nivel', 'guardarYAplicar'];
 
 const desescapar = (t) => t
   .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
@@ -137,7 +160,14 @@ if (malImportados.length) {
   process.exit(1);
 }
 
-rmSync(DIR, { recursive: true, force: true });
+/* SE BORRA AL TERMINAR, y no solo al empezar. La cabecera de los archivos
+   generados dice «Se borra solo» desde el dia que nacio y era falso: solo se
+   borraban al ARRANCAR la siguiente corrida, asi que entre una y otra quedaban
+   diecinueve .tsx sueltos en `componentes/`. Acabaron VERSIONADOS —18 archivos
+   en el indice— y ensuciando el arbol en cada pasada, que es lo que hace que el
+   publicador se niegue. §9: «no quedan artefactos temporales sueltos». */
+const limpiar = () => rmSync(DIR, { recursive: true, force: true });
+limpiar();
 mkdirSync(DIR, { recursive: true });
 const contexto = DEL_CONTEXTO.map((n) => `declare const ${n}: any;`).join('\n');
 bloques.forEach((cuerpo, i) => {
@@ -213,12 +243,15 @@ for (let i = 0; i < bloques.length; i += 1) {
 console.log(`\n  ${bloques.length} bloques de «copia esto», compilados contra el paquete.`);
 console.log(`  Importan de: ${PAQUETE}\n`);
 
-const nuevos = fallos.filter((f) => !DEUDA.has(f.i));
-const arregladosSinPodar = [...DEUDA.keys()].filter((i) => !fallos.some((f) => f.i === i));
+const firmas = bloques.map(firmaDe);
+const nuevos = fallos.filter((f) => !DEUDA.has(firmas[f.i]));
+const arregladosSinPodar = [...DEUDA.keys()]
+  .filter((f) => firmas.includes(f))
+  .filter((f) => !fallos.some((x) => firmas[x.i] === f));
 
 if (arregladosSinPodar.length) {
   console.error(`  ${arregladosSinPodar.length} bloque(s) ARREGLADOS y todavía en la deuda:\n`);
-  for (const i of arregladosSinPodar) console.error(`    bloque ${i}: ${DEUDA.get(i)}`);
+  for (const f of arregladosSinPodar) console.error(`    ${f}: ${DEUDA.get(f)}`);
   console.error('\n  Quita su línea de DEUDA en este archivo. Una lista de excepciones');
   console.error('  que nadie poda vuelve a ser el inventario a mano de siempre.\n');
   process.exit(1);
@@ -234,8 +267,10 @@ if (nuevos.length) {
   console.error('\n  Lo que se copia es la importación y las props (CLAUDE.md §7 regla 3).');
   console.error('  Un ejemplo que no compila se copia, no funciona, y quien lo copió');
   console.error('  busca el fallo en SU código.\n');
+  limpiar();
   process.exit(1);
 }
 
+limpiar();
 console.log(`  Ningún bloque NUEVO roto. Deuda declarada: ${DEUDA.size} de ${bloques.length},`);
 console.log('  cada uno con su motivo. Arreglar uno es quitar su línea de este archivo.\n');

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.133.0";
+export const VERSION = "1.134.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -71,6 +71,63 @@ export const correcciones = [
  */
 export const CAMBIOS = [
   {
+    v: '1.134.0', fecha: '2026-09-22',
+    que: 'R157 (cierre): lo que el R157 PROMETIO y no entregaba — y cinco afirmaciones falsas nuestras',
+    porque:
+      'NO LO ENCONTRO UN CANDADO: lo encontro una auditoria con los VEINTIUN PASOS EN VERDE, pedida '
+      + 'por el responsable con tres palabras —«garantiza la entrega y la promesa»—. Es la cuarta vez '
+      + 'que este repositorio aprende lo mismo y la primera que lo aprende sin que nadie se queje '
+      + 'desde fuera. '
+      + 'EL CARRIL VIAJABA MUERTO. `.car`, `.car-cuenta`, `.car-punto` y `.car-punto-aqui` salian en '
+      + 'la hoja de TODOS los productos y no las emitia ningun componente, no las enseñaba el '
+      + 'catalogo y no las nombraba el contrato. La pieza con la que el R157 CAMBIO LA POLITICA DE '
+      + 'MOVIL PRIMERO no tenia ni un ejemplo que copiar. Y sus tres condiciones eran afirmaciones: '
+      + 'la (a) —alcanzable con teclado— la delegaba un comentario a «quien lo use», asi que el '
+      + 'sistema entregaba el anillo de foco de un elemento que nadie hacia enfocable; una regla '
+      + '`:focus-visible` sobre algo no enfocable NO SE DISPARA JAMAS. La (b) la sostenian seis '
+      + 'puntitos que solo se distinguen POR COLOR, contra la regla que este mismo sistema tiene '
+      + 'escrita. Ahora el catalogo lo monta entero —`tabindex`, `role=region` con nombre, la parada '
+      + 'en curso CAMBIA DE FORMA ademas de color, y la cuenta lleva su texto para lector— y el '
+      + 'marcado esta en el contrato, no en un comentario. '
+      + 'LO MISMO, MAS PEQUEÑO, CON OTRAS NUEVE CLASES: los tres tonos de burbuja y dos de los cuatro '
+      + 'tonos de superficie viajaban sin que el catalogo los pintara ni una vez. '
+      + 'Y LA CAUSA COMUN, que es lo que de verdad se arregla aqui: TODO el R157 se pintaba desde el '
+      + 'guion `data-vivo`, y los candados del empate, la omision y el elemento CORTAN el documento '
+      + 'en ese guion. Para ellos el tablero no existia. El de la promesa tampoco lo miraba: su lista '
+      + 'de casos esta escrita a mano y tenia 63 entradas, NI UNA del R157 — la tercera vez que esa '
+      + 'lista se queda corta delante de una pieza nueva. Entran 22 casos y la demo del catalogo pasa '
+      + 'a ser ESTATICA ademas de viva: las 28 clases del R157 ya tienen marcado que los candados '
+      + 'pueden leer. Comprobado rompiendolo: sacar la celda de tablero de la hoja que viaja da 138 '
+      + 'diferencias donde antes daba verde. '
+      + 'DOS PRUEBAS ESTABAN EN VERDE SOBRE MUTACIONES QUE ROMPEN SU REGLA. La del punto de «en vivo» '
+      + 'comprobaba una lista de DOS tonos prohibidos habiendo CUATRO: puesto en `--aviso-acento` '
+      + 'seguia verde. La del avatar fluido comprobaba que `max-width` EXISTIERA: puesta en 400 px '
+      + '—el retrato que la regla dice evitar— seguia verde. Una prueba que mira si la propiedad esta '
+      + 'no protege de lo que dice protegerse; ahora se comparan contra lo EXIGIDO: `--accion` y el '
+      + 'mayor de la escala. '
+      + 'Y CINCO AFIRMACIONES NUESTRAS ERAN FALSAS, las cinco escritas por el agente en la v1.133.0. '
+      + '«Celdas de 21 px en un contenedor de 260» —son 36,7; los 21 salen con OCHO columnas mas la '
+      + 'sangria—. «Dos columnas de 93 donde caben tres de 113» —mezclaba dos contenedores distintos: '
+      + 'la ganancia real son VEINTE PIXELES por celda en el mismo contenedor, no una columna—. «La '
+      + 'burbuja sale del marco» —seguia bajo «MARCO DE APLICACION» en la hoja entregada, porque '
+      + '`badge` seguia entre los prefijos del marco; ahora tiene seccion propia—. «El pendiente de '
+      + 'la elevacion ya no esta» —el auditor lo sigue imprimiendo, ahora por `.m-flotante`—. Y el '
+      + 'comentario de `vivo.tsx` decia que la demo monta «el carril con su cuenta de paradas», que '
+      + 'no monta. La regla de cero invencion no distingue entre inventar una cifra y mezclar dos '
+      + 'medidas. '
+      + 'Y EL CONTRATO DE MARCADO NO VIAJABA. Estas piezas no tienen componente —las compone la '
+      + 'pantalla—, asi que el marcado ES la interfaz, y no estaba en ningun archivo del paquete: '
+      + 'solo en una carta de `peticiones/`, que no entra ni en el ZIP ni en npm. Entra como tabla en '
+      + '`comportamiento.md`. Y la cabecera de la hoja remitia ese contrato a `componentes.md`, UN '
+      + 'ARCHIVO QUE NO EXISTE.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'NADA que un producto pueda notar. `.car-punto-aqui` gana forma ademas de color —se alarga a '
+      + '18 px— porque distinguir la parada en curso SOLO por color incumple la regla del propio '
+      + 'sistema. Quien ya lo pintara ve un punto alargado donde antes veia uno redondo.',
+    ],
+  },
+  {
     v: '1.133.0', fecha: '2026-09-22',
     que: 'R157 · las piezas de un tablero denso, y deslizar deja de ser siempre un defecto',
     porque:
@@ -82,18 +139,24 @@ export const CAMBIOS = [
       + 'pertenezca entero a un estado. '
       + 'LA CUADRICULA DENSA ES OTRO CASO, no la de siempre adaptada: la normal reparte en columnas '
       + 'de 230 px porque sus tarjetas SE LEEN, y a 375 px da una sola. Entro con SEIS COLUMNAS y '
-      + 'seis columnas era un numero fijo disfrazado de calculo: en un contenedor de 260 px daba '
-      + 'celdas de 21 px, donde «Rosa» no cabe — y un nombre que no cabe o se recorta o se parte, y '
-      + 'las dos las prohibe la politica de movil primero. LO QUE SE FIJA ES EL SUELO DE LA CELDA, '
-      + '84 px, y el numero de columnas es la CONSECUENCIA: las que quepan, repartiendo siempre todo '
-      + 'el ancho, y bajando de columnas antes que apretar. Una rejilla densa no mejora estirando las '
-      + 'piezas —mejora enseñando mas— pero una que no se lee no es densa: es ilegible. Lo corto el '
-      + 'responsable mirando la pantalla: «las veo muy apretadas que no se leen los datos». '
-      + 'Y LA REJILLA SE PONE SOBRE UNA «ul», que trae 40 px de sangria del navegador. Medido a '
-      + '333 px: la rejilla salia de 234 px en vez de 284 y daba DOS columnas de 93 px donde caben '
-      + 'tres de 113, descentrada. No se ve como un fallo — se ve como un tablero apretado, que es '
-      + 'peor, porque invita a arreglar lo que no esta roto. La clase anula margen, relleno y '
-      + 'vinetas. '
+      + 'seis columnas era un numero fijo disfrazado de calculo: con gap 8, un contenedor de 260 px '
+      + 'da celdas de 36,7 px —30 restandole los 40 de sangria de la «ul»—, y ahi un apellido a 11 px '
+      + 'no cabe. LO QUE SE FIJA ES EL SUELO DE LA CELDA, 84 px, y el numero de columnas es la '
+      + 'CONSECUENCIA: las que quepan, repartiendo siempre todo el ancho, y bajando de columnas antes '
+      + 'que apretar. Una rejilla densa no mejora estirando las piezas —mejora enseñando mas— pero '
+      + 'una que no se lee no es densa: es ilegible. Lo corto el responsable mirando la pantalla: '
+      + '«las veo muy apretadas que no se leen los datos». '
+      + 'Y LA REJILLA SE PONE SOBRE UNA «ul», que trae 40 px de sangria del navegador. Medido en el '
+      + 'catalogo a 333 px de ventana: con la sangria dentro, un contenedor de 234,7 px maquetaba en '
+      + '194,7 y daba DOS celdas de 93,3; con el reset, el MISMO contenedor da dos de 113,3 — '
+      + 'VEINTE PIXELES por celda, no una columna mas. No se ve como un fallo: se ve como un tablero '
+      + 'apretado, que es peor, porque invita a arreglar lo que no esta roto. La clase anula margen, '
+      + 'relleno y vinetas. '
+      + 'ESTAS DOS CIFRAS ENTRARON MAL Y LAS CORRIGIO UNA AUDITORIA EL MISMO DIA. Decian «celdas de '
+      + '21 px en un contenedor de 260» —eso sale con OCHO columnas mas la sangria, que es el corte '
+      + 'de 480 px— y «dos columnas de 93 donde caben tres de 113», que mezclaba dos medidas de '
+      + 'contenedores distintos. La regla de cero invencion no distingue entre inventar una cifra y '
+      + 'mezclar dos medidas: las dos hacen que el registro diga algo que no se midio. '
       + 'EL ANILLO DE ESTADO USA LOS TONOS DEL SISTEMA Y NO LOS DEL DOMINIO. Se pidio como '
       + '`presente`/`ausente` y entra como exito/aviso/error/info: el anillo no sabe de asistencia, y '
       + 'el mismo verde sirve para «esta dentro», «en linea», «pagado» y «activo». Un tipo que dijera '
@@ -106,8 +169,11 @@ export const CAMBIOS = [
       + 'EL RELIEVE ENTRA COMO ESCALA, no como sombra: `--sombra-relieve` son TRES sombras actuando '
       + 'como una —contacto, difusa y luz interior—, y es un token y no tres valores en cada producto '
       + 'porque si cada pantalla inventa la suya, la misma rejilla acaba con tres profundidades. El '
-      + 'auditor del cascaron dejo escrito «Elevacion — el sistema no define sombras» como pendiente: '
-      + 'ya no lo esta. '
+      + 'auditor del cascaron dejo escrito «Elevacion — el sistema no define sombras» como pendiente. '
+      + 'ESTA LINEA DIJO «ya no lo esta» Y ERA FALSA: el auditor lo sigue imprimiendo, ahora por '
+      + '`.m-flotante`, que escribe su sombra a mano en vez de usar la escala. El pendiente no se '
+      + 'cerro, se quedo con un ocupante menos. Lo corrigio una auditoria el mismo dia, corriendo el '
+      + 'auditor en vez de creerse el texto. '
       + 'LA BURBUJA SALE DEL MARCO Y GANA TONO. Vivia dentro de la seccion del marco de aplicacion, '
       + 'atada al icono de notificaciones y fija a rojo — y es la pieza que hace falta sobre cualquier '
       + 'cosa que cuente algo. UN NUMERO NO ES MALO POR SER NUMERO: lo dice su tono. '

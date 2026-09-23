@@ -87,7 +87,7 @@ const ELEMENTOS = [
   { n: 'Aviso temporal',        p: ['av'] },
   { n: 'Confirmación en línea', p: ['cf'] },
   { n: 'Estados de pantalla',   p: ['ep', 'esqueleto'] },
-  { n: 'Marco de aplicación',   p: ['lat', 'nav', 'top', 'us', 'app', 'm', 'fg', 'velo', 'badge'] },
+  { n: 'Marco de aplicación',   p: ['lat', 'nav', 'top', 'us', 'app', 'm', 'fg', 'velo'] },
   // No es un elemento: es una utilidad transversal. Va en la lista porque lo
   // que no este aqui NO VIAJA, y sin ella los textos de solo-lector se ven.
   { n: 'Migas de pan',          p: ['migas'] },
@@ -119,10 +119,16 @@ const ELEMENTOS = [
   { n: 'Comprobante electronico', p: ['cpe'] },
   { n: 'Redes sociales', p: ['rs'] },
   { n: 'Diálogo',               p: ['dialogo'] },
+  // R157 · La burbuja SALE del marco, y hasta la v1.134.0 esa frase era falsa:
+  // el changelog y el contrato decian «sale del marco» mientras `badge` seguia
+  // entre los prefijos de arriba, asi que en la hoja entregada aparecia bajo
+  // «MARCO DE APLICACION». Una pieza que sirve a cualquier contador no puede
+  // documentarse dentro del componente del que se la saco.
+  { n: 'Burbuja de recuento', p: ['badge'] },
+  { n: 'Celda de tablero',    p: ['tbl'] },
   { n: 'Superficie tonal',    p: ['sup'] },
   { n: 'Carril con anclaje',  p: ['car'] },
   { n: 'En vivo',             p: ['vivo'] },
-  { n: 'Celda de tablero',    p: ['tbl'] },
   { n: 'Utilidades',            p: ['sr', 'mono'] },
 ];
 
@@ -619,7 +625,10 @@ const salida = `/* ────────────────────�
 
      No  · el comportamiento. Ordenar, filtrar, plegar y el teclado siguen
            siendo del proyecto. El marcado que espera cada elemento está en
-           \`componentes.md\`, junto a esta hoja.
+           \`comportamiento.md\`, junto a esta hoja. Esta linea decia
+           \`componentes.md\` y ESE ARCHIVO NO EXISTE: remitia el contrato de
+           marcado —lo unico que tienen las piezas solo-CSS— a un nombre
+           inventado.
    ─────────────────────────────────────────────────────────────────────────── */
 
 ${dependenciasSueltas.length ? '/* Dependencias del paquete que no pertenecen a ningun elemento */\n' + dependenciasSueltas.join('\n') + '\n\n' : ''}${secciones.join('\n')}${bloqueAnimaciones ? '\n' + bloqueAnimaciones : ''}`;

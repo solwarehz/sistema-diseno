@@ -1,10 +1,15 @@
 # Respuesta a R157 — piezas de tablero · para Control Administrativos V2.0
 
-**22 de septiembre de 2026** · MMI-DS **v1.133.0**
+**22 de septiembre de 2026** · MMI-DS **v1.134.0**
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.133.0"
+npm install "github:solwarehz/sistema-diseno#v1.134.0"
 ```
+
+> **Instalen la v1.134.0, no la v1.133.0.** La 133 publicó las siete piezas y
+> **cuatro de ellas viajaban sin que nuestro catálogo las enseñara ni una vez**
+> —el carril entero, los tres tonos de burbuja y dos tonos de superficie—. Lo
+> encontró una auditoría nuestra, no ustedes, y el §7 cuenta qué falló.
 
 **Entran los siete puntos.** Ninguno es de su pantalla: un tablero denso de
 personas, un avatar con estado, una burbuja con tono, un indicador de conexión,
@@ -21,7 +26,7 @@ Lo que **no** entra tal como lo pidieron está en el §3, con el porqué.
 |---|---|---|
 | **R157.1** | Rejilla densa | Clase **`tn-densa`** |
 | **R157.2** | `Avatar` con estado | Prop **`estado`** — `exito \| aviso \| error \| info` |
-| **R157.3** | Burbuja libre y con color | **`badge-exito`**, **`badge-aviso`**, **`badge-info`**, fuera del marco |
+| **R157.3** | Burbuja libre y con color | **`badge-exito`**, **`badge-aviso`**, **`badge-info`**, publicada como pieza propia |
 | **R157.4** | Indicador «en vivo» | Clase **`vivo`** con su punto |
 | **R157.5** | Carril con anclaje | Clase **`car`** con `car-cuenta` y `car-punto` |
 | **R157.6** | Fondo por grupo | Clase **`sup`** con `sup-exito \| sup-aviso \| sup-error \| sup-info` |
@@ -52,15 +57,22 @@ const TONO = { presente: 'exito', ausente: 'error' } as const;
 ### 2.2 · La rejilla no lleva un número de columnas, lleva un suelo
 
 Pidieron **seis columnas en un teléfono**. Se escribió así y **se vio fallar en
-nuestro propio catálogo**: en un contenedor de 260 px, seis columnas dan celdas
-de 21 px, donde «Rosa» no cabe. Un nombre que no cabe o se recorta o se parte, y
-la política de móvil primero prohíbe las dos.
+nuestro propio catálogo**: con seis columnas y `gap: 8`, un contenedor de 260 px
+da celdas de **36,7 px** —30 restándole la sangría de la `ul`—, y ahí un apellido
+a 11 px no cabe. Un nombre que no cabe o se recorta o se parte, y la política de
+móvil primero prohíbe las dos.
 
-Así que lo fijo es **el suelo de la celda: 84 px** —lo que mide un apellido
-corriente a 11 px— y el número de columnas es la consecuencia: **las que quepan,
-repartiendo siempre todo el ancho**. En 375 px con margen de producto salen
-**tres o cuatro**; en una pantalla ancha, las que entren. Baja de columnas antes
-que apretar.
+Así que lo fijo es **el suelo de la celda: 84 px** y el número de columnas es la
+consecuencia: **las que quepan, repartiendo siempre todo el ancho**. Baja de
+columnas antes que apretar.
+
+**Cuántas salen, medido y no calculado.** A 360 px de ventana, con los rellenos
+reales de nuestro propio catálogo encadenados —página 16, bloque 20, superficie
+12— la rejilla recibe 261,3 px y da **dos columnas de 126,7**. Si el `.sup`
+cuelga directo del contenido de la aplicación, **tres de 95,3**. A sangre, sin
+relleno ninguno, cuatro. Dijimos «cuatro en un teléfono» sin encadenar los
+rellenos: **depende de dónde lo monten**, y por eso el suelo es lo que se fija y
+las columnas lo que sale.
 
 Esto cambió después de que el responsable mirara el tablero montado y dijera
 *«las veo muy apretadas que no se leen los datos»*. Es el mismo criterio que
@@ -107,22 +119,31 @@ dueño.
 ## 4 · Un defecto que encontramos mirando, y que les habría llegado
 
 `tn-densa` se pone sobre una `<ul>` —es una lista de personas—. El navegador le
-mete **40 px de sangría** propios de la lista. Medido en el catálogo a 333 px:
-la rejilla salía de 234 px en vez de 284 y daba **dos columnas de 93 px donde
-caben tres de 113**, descentrada hacia la derecha.
+mete **40 px de sangría** propios de la lista, y eso sale del ancho con el que la
+rejilla maqueta.
+
+Medido en el catálogo a 333 px de ventana, sobre un contenedor de **234,7 px**:
+con la sangría dentro, la rejilla repartía **194,7 px** y daba dos celdas de
+**93,3**; con el reset, el mismo contenedor da dos de **113,3**. **Veinte píxeles
+por celda.**
 
 No se ve como un fallo. Se ve como un tablero apretado.
 
-La clase ahora anula `margin`, `padding` y `list-style`. Si ya la habían probado
-con un `<ul>`, esto les cambia el resultado a mejor sin tocar nada de su lado.
+La clase ahora anula `margin`, `padding` y `list-style`.
+
+> Este párrafo decía «dos columnas de 93 donde caben tres de 113» y mezclaba dos
+> medidas de contenedores distintos. Lo cazó la misma auditoría. Lo decimos
+> porque una cifra mal dada en un informe se convierte en una decisión de diseño
+> en la pantalla de otro.
 
 ---
 
 ## 5 · Cómo se monta
 
 ```tsx
-import { Avatar, Segmentado } from 'sistema-diseno-ae';
-import 'sistema-diseno-ae/componentes.css';
+import { Avatar, Segmentado } from 'sistema-diseno-ae/componentes';
+import 'sistema-diseno-ae/tokens.css';        // SIEMPRE primero
+import 'sistema-diseno-ae/componentes.css';   // al revés, no hay ningún color
 
 <Segmentado etiqueta="Grupo" valor={grupo} onCambio={setGrupo}
   opciones={[
@@ -157,11 +178,97 @@ puntero que descubra un globito.
 
 ---
 
-## 6 · Verificación
+## 6 · Las dos confirmaciones que pidieron, y no les habíamos contestado
+
+**«Queremos que diseño confirme la excepción de cabecera»** —un tablero sin `h1`
+ni migas—. **Confirmada y escrita en el manual**: «El tablero: una pantalla que
+no lleva título». Cada línea de cabecera es una fila de datos que deja de verse.
+Pero **no puede quedarse sin nombre accesible** ni fiar al color lo que se
+vigila: eso no es negociable.
+
+**«Si el manual §5.4 cubre también a los tableros, díganlo»** — sí, y con una
+distinción nueva que trajo su requerimiento. El manual decía «no se hace scroll
+horizontal», sin excepción. Ahora se distingue:
+
+- **Desbordamiento**: el contenido no cupo y se sale. Sigue siendo un defecto.
+- **Paginación por gesto**: cada parada es una vista entera. **Legítimo, con tres
+  condiciones y sin ninguna de propina**:
+  1. **Alcanzable con teclado** — `tabindex="0"` y `role="region"` con nombre. Va
+     en el marcado que publicamos; no es del producto.
+  2. **Dice dónde estás y cuántas paradas hay.** Los puntos solos no lo dicen: se
+     distinguen únicamente por color. Por eso la parada en curso **cambia de
+     forma** además de color, y la cuenta lleva su texto para lector.
+  3. **Nada queda sólo ahí.** Lo que haya que poder leer sin deslizar, se lee sin
+     deslizar.
+
+Sin las tres, es desbordamiento con otro nombre.
+
+---
+
+## 7 · Lo que falló por nuestra parte, contado entero
+
+Ustedes no vieron nada de esto porque lo encontramos antes. Lo contamos porque
+es la clase de cosa que decide si se fían de lo que publicamos.
+
+**Cuatro piezas viajaban sin que el catálogo las enseñara.** El carril completo
+—`car`, `car-cuenta`, `car-punto`, `car-punto-aqui`—, los tres tonos de burbuja
+y dos tonos de superficie salían en la hoja de todos los productos y **no había
+ni un ejemplo que copiar**. La pieza con la que su requerimiento nos hizo cambiar
+la política de móvil primero era la que menos se podía usar.
+
+**Y sus tres condiciones eran afirmaciones, no construcciones.** La de teclado la
+delegaba un comentario a «quien lo use», así que entregábamos el anillo de foco
+de un elemento que nadie hacía enfocable —una regla `:focus-visible` sobre algo
+no enfocable no se dispara jamás—. La de «dónde estás» la sostenían seis puntos
+que sólo se distinguen por color, contra nuestra propia regla.
+
+**La causa común.** Todo el R157 se pintaba desde un guion, y tres de nuestros
+candados cortan el documento justo ahí: para ellos el tablero no existía. El que
+compara catálogo y paquete tampoco lo miraba — su lista de casos está escrita a
+mano, tenía 63 entradas y ninguna del R157. **Veintiún pasos en verde sobre una
+pieza que ninguno estaba mirando.**
+
+Arreglado: el catálogo lo monta también en estático, entran 22 casos, y el
+marcado entra en el contrato. Comprobado rompiéndolo: sacar la celda de tablero
+de la hoja que viaja da **138 diferencias** donde antes daba verde.
+
+**Dos pruebas estaban verdes sobre mutaciones que rompen su regla.** Una
+comprobaba una lista de dos tonos prohibidos habiendo cuatro; la otra, que
+`max-width` existiera —puesto en 400 px, el retrato que la regla dice evitar,
+seguía en verde—. Ahora se comparan contra lo exigido.
+
+**Y cinco afirmaciones nuestras eran falsas**: dos cifras que mezclaban medidas,
+«la burbuja sale del marco» con la burbuja aún dentro del marco en la hoja
+entregada, un pendiente dado por cerrado que nuestro auditor sigue imprimiendo, y
+un comentario que decía enseñar un carril que no monta.
+
+**El contrato de marcado no viajaba.** Estas piezas no tienen componente: las
+compone la pantalla, así que el marcado **es** la interfaz. No estaba en ningún
+archivo del paquete — sólo en el borrador de esta carta, que no entra ni en el
+ZIP ni en npm. Ahora es una tabla en `comportamiento.md`. Y la cabecera de la
+hoja remitía ese contrato a `componentes.md`, **un archivo que no existe**.
+
+---
+
+## 8 · Verificación
 
 - Los **22 pasos** del publicador en verde, incluidas las pruebas y ESLint.
-- El tablero **montado y vivo en el catálogo**, con 24 personas, no con un
-  dibujo: es el componente que se entrega, ejecutándose.
-- Las piezas nuevas llevan sus reglas en `sistema/componentes/comportamiento.md`,
-  sección **«Piezas de tablero»**, y cada regla `Obligatorio` tiene prueba —eso
-  lo comprueba un candado, no nuestra palabra.
+- El tablero **montado y vivo** en el catálogo con 24 personas, **y además en
+  estático** — que es lo único que los candados pueden leer.
+- Las 28 clases del R157 tienen marcado en el catálogo: comprobado contando, no
+  suponiendo.
+- Las reglas viven en `sistema/componentes/comportamiento.md`, sección **«Piezas
+  de tablero»**, con la tabla de marcado.
+
+## 9 · Lo que NO está verificado, y lo decimos
+
+- **La medición en navegador a 360 px de las piezas nuevas la hizo una auditoría
+  nuestra**, con el catálogo dentro de un marco de 360 px. Las cifras del §2.2
+  salen de ahí.
+- **`--sombra-relieve` no tiene variante oscura.** Nuestras otras dos sombras sí
+  la tienen, con esta razón escrita: «sobre negro, una sombra al 18 % no
+  existe». El relieve usa ese mismo 18 %. **No lo hemos medido en oscuro** y
+  queda abierto por nuestra parte.
+- **Los pares de contraste que crea `.sup`** —texto sobre fondo tonal— no están
+  en nuestro contrato de contraste. Medidos a mano: el peor da **4,67:1**, que
+  pasa AA, pero **no está vigilado por el candado**. También abierto.

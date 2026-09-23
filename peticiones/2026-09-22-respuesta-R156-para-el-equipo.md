@@ -30,12 +30,22 @@ totales?: Partial<Record<string, React.ReactNode>>;
 La clave es la **clave de la columna**. Se pinta un `<tfoot className="tb-totales">`.
 
 ```tsx
-<TablaDatos
+import { TablaDatos } from 'sistema-diseno-ae/componentes';
+import 'sistema-diseno-ae/tokens.css';        // SIEMPRE primero
+import 'sistema-diseno-ae/componentes.css';
+
+<TablaDatos<Contrato>
+  titulo="Contratos"
+  claveFila={(f) => f.id}
   columnas={COLUMNAS}
   filas={filas}
   totales={{ horas: '186:20', tardanzas: 12, laborado: '1 a 6 m 12 d' }}
 />
 ```
+
+`titulo` y `claveFila` no son del R156 —`TablaDatos` ya las exigía—, pero aquí
+iban sin ellas y el bloque **no compilaba**: `TS2741, Property 'claveFila' is
+missing`. Lo cazó una auditoría antes de mandarles esto.
 
 ---
 
@@ -78,15 +88,20 @@ las tres.
 
 ## 4 · Cómo se quita el bloque de abajo
 
-Ustedes lo dejaron anotado en su código, y es exacto: **es un cambio de tres
-líneas.** Se borra el bloque de totales que hoy va debajo de la tabla y se pasa
-`totales`. Nada más cambia: ni las columnas, ni el orden, ni la paginación.
+Ustedes lo dejaron previsto: *«El total vive en un bloque debajo de la tabla…
+En cuanto exista `totales`, se mete ahí y ese bloque desaparece»*. Eso es
+exactamente lo que hay que hacer. Nada más cambia: ni las columnas, ni el orden,
+ni la paginación.
+
+(Aquí decía «es un cambio de tres líneas». Era una cifra que nos inventamos
+sobre código que no hemos visto, y la quitamos.)
 
 ---
 
 ## 5 · Verificación
 
 - Reglas en `sistema/componentes/comportamiento.md` → **TablaDatos, regla 37**.
-- Pruebas en `componentes/pruebas/tabla-totales.test.tsx`, y cada una se vio en
-  rojo antes de darla por buena.
+- Pruebas en `componentes/pruebas/tabla-totales.test.tsx` — diez, todas
+  etiquetadas `[37]`, y verificadas por mutación: se rompió la regla a propósito
+  y se vieron en rojo antes de darlas por buenas.
 - Los 22 pasos del publicador en verde.

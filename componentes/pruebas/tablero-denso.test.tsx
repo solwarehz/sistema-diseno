@@ -68,7 +68,16 @@ describe('R157 · tamaño fluido y relieve', () => {
     expect(container.querySelector('.avatar-fluido')).not.toBeNull();
     const r = regla('.avatar-fluido');
     expect(r).toMatch(/width:\s*100%/);
-    expect(r, 'sin tope, el avatar crece sin límite').toMatch(/max-width:/);
+    /* Comprobaba sólo que `max-width` EXISTIERA: una auditoría lo puso en 400 px
+       —el retrato que la regla dice evitar— y las 23 siguieron en verde. El
+       contrato no dice «que tenga tope», dice que el tope es EL MAYOR DE LA
+       ESCALA, así que se compara contra `.avatar-xl`. */
+    const tope = /max-width:\s*(\d+)px/.exec(r)?.[1];
+    expect(tope, 'sin tope, el avatar crece sin límite').toBeTruthy();
+    const xl = /width:\s*(\d+)px/.exec(regla('.avatar-xl'))?.[1];
+    expect(xl, 'no encuentro el mayor de la escala').toBeTruthy();
+    expect(tope, `el tope tiene que ser el mayor de la escala (${xl}px), no un valor suelto: `
+      + 'en una pantalla ancha, cualquier cosa por encima es un retrato').toBe(xl);
     expect(r, 'sin proporción fija, el círculo se deforma').toMatch(/aspect-ratio:\s*1/);
   });
 
@@ -244,10 +253,15 @@ describe('R157 · el indicador de «en vivo»', () => {
   it('[8] NO gasta un tono de estado: usa el acento de acción', () => {
     /* Verde y rojo ya están ocupados por las personas, y esto no habla del dato
        sino de la conexión. */
+    /* La lista de exclusión eran DOS tonos y los tonos de estado son CUATRO: una
+       auditoría puso el punto en `--aviso-acento` —un tono de estado, justo lo
+       que esta regla prohíbe— y las 23 pruebas siguieron en verde. Una lista de
+       lo prohibido que no está completa no prohíbe nada; se comprueba contra lo
+       EXIGIDO, que es una sola cosa. */
     const c = /background:\s*var\((--[a-z-]+)\)/.exec(regla('.vivo-punto'))?.[1];
     expect(c, 'el punto de «en vivo» no tiene color').toBeTruthy();
-    expect(['--exito-acento', '--error-acento'], 'gasta un tono que las personas necesitan')
-      .not.toContain(c);
+    expect(c, 'el punto de «en vivo» tiene que usar el acento de ACCIÓN: cualquier tono de '
+      + 'estado está ocupado por lo que el tablero vigila').toBe('--accion');
   });
 
   it('[8] late, y el latido SE APAGA con reduced-motion', () => {

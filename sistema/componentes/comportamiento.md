@@ -546,7 +546,7 @@ piezas es de esa pantalla** — por eso entraron.
 
 | | Regla |
 |---|---|
-| **1** | **Obligatorio.** (R157, v1.133.0) **La cuadrícula densa es otro caso, no la de siempre adaptada.** `tn-cuadricula` reparte en columnas de 230 px porque sus tarjetas se **leen**; a 375 px da una sola. `tn-densa` es para piezas que se **barren de un vistazo** —un tablero de personas, una paleta, un selector de iconos—. **Lo que se fija es el suelo de la celda, 84 px, y el número de columnas es la consecuencia**: las que quepan, repartiendo siempre todo el ancho. Aquí decía «seis columnas en un teléfono» y era un número fijo: daba celdas de 21 px en un contenedor de 260 y el nombre no cabía. Una rejilla densa no mejora estirando las piezas —mejora enseñando más—, pero una que no se lee no es densa: es ilegible. Lleva `min-width: 0` en sus hijos, que impide que un nombre largo ensanche su columna y descuadre la rejilla entera, y **anula `margin`, `padding` y `list-style`**, porque se pone sobre una `ul` y los 40 px de sangría del navegador le quitan una columna entera sin que parezca un fallo. |
+| **1** | **Obligatorio.** (R157, v1.133.0) **La cuadrícula densa es otro caso, no la de siempre adaptada.** `tn-cuadricula` reparte en columnas de 230 px porque sus tarjetas se **leen**; a 375 px da una sola. `tn-densa` es para piezas que se **barren de un vistazo** —un tablero de personas, una paleta, un selector de iconos—. **Lo que se fija es el suelo de la celda, 84 px, y el número de columnas es la consecuencia**: las que quepan, repartiendo siempre todo el ancho, y bajando de columnas antes que apretar. Aquí decía «seis columnas en un teléfono» y era un número fijo disfrazado de cálculo: con seis columnas y `gap: 8`, un contenedor de 260 px da celdas de **36,7 px** —30 si se le restan los 40 de sangría de la `ul`—, y ahí un apellido a 11 px no cabe. (Esta línea afirmó «21 px» durante una versión: esa cifra sale con **ocho** columnas más la sangría, que es el corte de 480 px, no un teléfono. Se corrigió al medirla.) Lleva `min-width: 0` en sus hijos, que impide que un nombre largo ensanche su columna, y **anula `margin`, `padding` y `list-style`**, porque se pone sobre una `ul` y los 40 px de sangría del navegador se comen el ancho de la rejilla sin que parezca un fallo. |
 | **2** | **Obligatorio.** (R157, v1.133.0) **El anillo de estado del avatar usa los tonos del SISTEMA, no los del dominio.** Se pidió como `'presente' \| 'ausente'` y entra como `'exito' \| 'aviso' \| 'error' \| 'info'`: el anillo no sabe de asistencia, y el mismo verde sirve para «está dentro», «en línea», «pagado» y «activo». Un tipo que dijera `presente` obligaría al siguiente producto a llamar «presente» a una factura cobrada. Va **por fuera**, con sombra y no con borde —un borde comería del tamaño de la foto, y en 48 px eso se nota—, y **refuerza** una distinción dicha con texto en otro sitio: nunca la sostiene él solo. Y «en otro sitio» tiene que **seguir en pantalla**: si el rótulo que sostiene el color —un `Segmentado` con su recuento, una cabecera de grupo— se va al desplazar mientras la rejilla sigue visible, el color se queda solo y la regla se rompe sin que nada cambie en el código. |
 | **3** | **Obligatorio.** (R157, v1.133.0) **`tamano="fluido"`: manda la celda, con tope.** Los cuatro tamaños fijos siguen siendo lo normal; en una rejilla densa el avatar ocupa lo que le dejen, con el tope del mayor de la escala para que en una pantalla ancha no crezca hasta ser un retrato, y con proporción fija para que el círculo no se deforme. |
 | **4** | **Obligatorio.** (R157, v1.133.0) **El relieve sale de la escala, no de un valor suelto.** `elevacion="relieve"` usa `--sombra-relieve`, que son **tres sombras actuando como una** —contacto, difusa y luz interior—. Es un token y no tres valores en cada producto porque si cada pantalla inventa la suya, la misma rejilla acaba con tres profundidades distintas. **Anillo y relieve conviven**: en reglas separadas ganaría la última y el anillo desaparecería justo en la rejilla que lo necesita. |
@@ -554,6 +554,29 @@ piezas es de esa pantalla** — por eso entraron.
 | **6** | **Obligatorio.** (R157, v1.133.0) **La superficie tonal tiñe un CONTENEDOR.** El sistema publicaba el tono para el `Chip` y para el filete de `TarjetaPersona`, pero no había forma de teñir un bloque entero. Sirve a cualquier sitio donde el **continente** pertenece a un estado: un panel de errores de importación, el resumen de una validación, un pago rechazado. Lleva **borde además del fondo**, porque sobre una pantalla en oscuro un fondo tenue se pierde y el borde sobrevive. |
 | **7** | **Obligatorio.** (R157, v1.133.0) **Un carril con anclaje es paginación por gesto, y eso NO es desbordamiento — pero hay que ganárselo.** Cada parada es una **vista completa**: si la parada es media pantalla, el gesto deja a la gente a medio camino. Las tres condiciones de la política de móvil primero, y sin las tres vuelve a ser desbordamiento con otro nombre: **(a)** se alcanza con teclado; **(b)** dice **dónde estás y cuántas paradas hay**, o el gesto es a ciegas; **(c)** nada queda **sólo** ahí. El orden se lee **por filas**, así que son bloques y no una rejilla que fluya: con `grid-auto-flow: column` el segundo caería debajo del primero, no a su lado. |
 | **8** | **Obligatorio.** (R157, v1.133.0) **«En vivo» no es un `Chip`, y la hora no es un adorno.** Un `Chip` dice el estado de un **dato**; esto dice el estado de **la conexión** — no habla de lo que se mira, habla de si lo que se mira sigue siendo cierto. Usa el acento de acción y no un tono de estado, que en un tablero están ocupados por lo que se vigila. **La hora del último dato es la pieza**: un punto latiendo solo dice «creo que estoy conectado»; con la hora, quien mira decide — si son las 7:15 y el último dato es de las 6:40, el tablero está colgado aunque el punto siga latiendo. El latido se apaga con `prefers-reduced-motion` y queda la hora, que es la información sin el efecto. |
+
+### El marcado, que aquí ES el contrato
+
+Ninguna de estas piezas tiene componente: **las compone la pantalla**. Por eso el
+marcado no es un ejemplo, es la interfaz — y hasta la v1.134.0 **no estaba
+escrito en ningún archivo que el paquete entregue**. Lo tenía sólo una carta en
+`peticiones/`, que no entra ni en el ZIP ni en npm.
+
+| Pieza | Marcado mínimo |
+|---|---|
+| Celda de tablero | `<li class="tbl-persona">` › `<span class="tbl-foto">` (el avatar y, si hay, la burbuja) + `<span class="tbl-nom">` + `<span class="tbl-ape">` + `<span class="tbl-hora">` |
+| Rejilla densa | `<ul class="tn-densa">` con un `<li>` por pieza. Va sobre una lista porque **es** una lista; la clase le anula la sangría del navegador |
+| Superficie tonal | `<div class="sup sup-exito">` — y `sup-aviso`, `sup-error`, `sup-info` |
+| Burbuja | `<span class="badge">` dentro de un ancestro posicionado (`.tbl-foto` lo es). Con tono: `badge-exito`, `badge-aviso`, `badge-info` |
+| En vivo | `<p class="vivo"><span class="vivo-punto"></span> En vivo · último dato HH:MM</p>` — **la hora va dentro**, no es opcional |
+| Carril | `<div class="car" tabindex="0" role="region" aria-label="…, N paradas">` con un hijo por parada, y debajo `<p class="car-cuenta">` con un `.car-punto` por parada, `.car-punto-aqui` en la actual y un `<span class="sr-solo">Parada N de M</span>` |
+
+**El `tabindex` y el `role` del carril no son opcionales ni son del producto.**
+Van en esta tabla porque sin ellos la regla 7 es falsa: una regla
+`.car:focus-visible` sobre un elemento que nada hace enfocable no se dispara
+nunca, y el sistema estaría entregando el anillo de foco de un foco que no
+existe. Se entregó así una versión.
+
 
 ---
 

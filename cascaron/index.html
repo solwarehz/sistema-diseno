@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.133.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.134.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.133.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.134.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -35,7 +35,7 @@
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.133.0;
+  --mmi-version: 1.134.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -1124,6 +1124,14 @@ code { font-family: 'IBM Plex Mono', monospace; }
    ocupa lo que le den y reparte las celdas por todo el ancho, que es lo que
    hace el componente en un producto. */
 .muestra-tablero { width: 100%; }
+/* Cromo del catalogo para enseñar las piezas sueltas. Prefijo «muestra»: no
+   viaja. Existen porque durante la v1.133.0 estas piezas viajaban en la hoja de
+   todos los productos y el catalogo no las enseñaba NI UNA VEZ — CSS que nadie
+   podia copiar, que es la promesa muerta que este repositorio persigue. */
+.muestra-tonos { display: grid; gap: 12px; }
+@media (min-width: 640px) { .muestra-tonos { grid-template-columns: repeat(2, 1fr); } }
+.muestra-burbujas { display: flex; gap: 20px; flex-wrap: wrap; }
+.muestra-burbujas > .tbl-foto { width: auto; }
 
 .muestra-fila { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
 .mf { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
@@ -1470,7 +1478,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    como cualquier otra regla, para que el catalogo y la entrega digan lo mismo:
    inyectarlo solo en la entrega dejaba una regla que el catalogo no tenia, y
    el candado de la promesa lo caza —con razon—. Los dos salen de VERSION. */
-:root { --mmi-componentes: 1.133.0; }
+:root { --mmi-componentes: 1.134.0; }
 
 .fc-zona { position: relative; }
 /* R129.2 · EL TOPE ERA MENOR QUE EL CONTENIDO. Con R129.1 puesto, lo que el
@@ -3013,9 +3021,15 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    se sale»; paginacion por gesto es «cada parada es una vista entera y no se
    pierde nada por no deslizar mas». Para que valga lo segundo hacen falta las
    TRES condiciones de la politica §5, y las tres estan aqui:
-     (a) se alcanza con teclado —quien lo use pone tabIndex={0} y role="region"
-         con nombre, como ya hace Horario—;
-     (b) dice donde estas y cuantas paradas hay —.car-cuenta—;
+     (a) se alcanza con teclado: «tabindex=0» y «role=region» con nombre. NO se
+         delega — va en el marcado que el catalogo publica y que se copia. Esto
+         decia «quien lo use pone tabIndex={0}», y con eso el sistema entregaba
+         el anillo de foco de un elemento que nadie hacia enfocable: una regla
+         «:focus-visible» sobre algo no enfocable no se dispara jamas.
+     (b) dice donde estas y cuantas paradas hay. Los puntos SOLOS no lo dicen:
+         se distinguen unicamente por color, y este sistema tiene escrito que
+         el color solo no distingue nada. Por eso la parada en curso ademas
+         CAMBIA DE FORMA —se alarga— y la cuenta lleva su texto para lector.
      (c) nada queda SOLO ahi: lo que hay que poder leer sin deslizar, se lee.
 
    EL ORDEN SE LEE POR FILAS, y por eso son bloques y no una rejilla que fluya:
@@ -3031,12 +3045,13 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .car-cuenta { display: flex; gap: 6px; justify-content: center; padding: 8px 0;
   color: var(--texto-secundario); font-size: 12px; }
 .car-punto { width: 6px; height: 6px; border-radius: 50%; background: var(--borde-campo); }
-.car-punto-aqui { background: var(--accion); }
+.car-punto-aqui { background: var(--accion); width: 18px; border-radius: 3px; }
 @media (prefers-reduced-motion: reduce) { .car { scroll-behavior: auto; } }
 
 /* EL SUELO LO FIJA LO QUE HAY QUE LEER, no el numero de columnas.
    Iban seis columnas fijas y se vio en el propio cascaron que a 260 px daban
-   celdas de 21 px: ahi no cabe ni un nombre, y un nombre que no cabe o se
+   celdas de 36,7 px —30 con la sangria de la «ul» dentro—: ahi no cabe un
+   apellido a 11 px, y un nombre que no cabe o se
    recorta o se parte — las dos cosas las prohibe la politica de movil primero.
    Se bajo a un suelo de 48 px y seguia sin llegar: una celda de tablero lleva
    NOMBRE, APELLIDO Y HORA, que son tres lineas de texto, y con 48 px se leen a
@@ -5539,7 +5554,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.133.0</option></select></label>
+          <select class="campo cg-in"><option>v1.134.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -5627,8 +5642,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.133.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.133.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.134.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.134.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -6187,7 +6202,7 @@ demostraciones de al lado. Y la hoja no es una copia: se inyecta desde
 vieja.</div>
 
 <script type="text/plain" id="tokens-entregados">/* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.133.0
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.134.0
    WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
@@ -6215,7 +6230,7 @@ vieja.</div>
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.133.0;
+  --mmi-version: 1.134.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -6828,7 +6843,7 @@ vieja.</div>
 </script>
 <script type="text/plain" id="hoja-entregada">
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.133.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.134.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -6852,7 +6867,10 @@ vieja.</div>
 
      No  · el comportamiento. Ordenar, filtrar, plegar y el teclado siguen
            siendo del proyecto. El marcado que espera cada elemento está en
-           `componentes.md`, junto a esta hoja.
+           `comportamiento.md`, junto a esta hoja. Esta linea decia
+           `componentes.md` y ESE ARCHIVO NO EXISTE: remitia el contrato de
+           marcado —lo unico que tienen las piezas solo-CSS— a un nombre
+           inventado.
    ─────────────────────────────────────────────────────────────────────────── */
 
 /* Dependencias del paquete que no pertenecen a ningun elemento */
@@ -6929,7 +6947,7 @@ vieja.</div>
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.133.0; }
+:root{ --mmi-componentes: 1.134.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -8081,7 +8099,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .esqueleto.corto{ width: 62%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MARCO DE APLICACIÓN — 192 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
+   MARCO DE APLICACIÓN — 188 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 :where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
@@ -8339,12 +8357,6 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   border-radius: 6px; color: var(--texto-secundario); position: relative;
   display: grid; place-items: center; }
 .top-btn:hover{ background: var(--fondo-encabezado); color: var(--texto-principal); }
-.badge{ position: absolute; top: 1px; right: 1px; min-width: 15px; height: 15px;
-  border-radius: 6px; background: var(--error-acento); color: var(--texto-invertido);
-  font-size: 12px; font-weight: 600; display: grid; place-items: center; padding: 0 4px; }
-.badge-exito{ background: var(--exito-acento); }
-.badge-aviso{ background: var(--aviso-acento); color: var(--texto-principal); }
-.badge-info{ background: var(--info-acento); }
 .top-avatar{ margin-left: 4px; border: 0; cursor: pointer; }
 .us{ position: relative; }
 .us-menu{ position: absolute; z-index: 60; right: 0; top: calc(100% + 8px);
@@ -8733,6 +8745,31 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   padding: 12px 20px 20px; border-top: 1px solid var(--borde); }
 
 /* ───────────────────────────────────────────────────────────────────────────
+   BURBUJA DE RECUENTO — 4 reglas · clases .badge-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.badge{ position: absolute; top: 1px; right: 1px; min-width: 15px; height: 15px;
+  border-radius: 6px; background: var(--error-acento); color: var(--texto-invertido);
+  font-size: 12px; font-weight: 600; display: grid; place-items: center; padding: 0 4px; }
+.badge-exito{ background: var(--exito-acento); }
+.badge-aviso{ background: var(--aviso-acento); color: var(--texto-principal); }
+.badge-info{ background: var(--info-acento); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   CELDA DE TABLERO — 5 reglas · clases .tbl-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.tbl-persona{ display: flex; flex-direction: column; align-items: center;
+  gap: 3px; min-width: 0; text-align: center; }
+.tbl-foto{ position: relative; display: block; width: 100%; line-height: 0; }
+.tbl-nom{ font-size: 11px; color: var(--texto-principal); max-width: 100%;
+  overflow-wrap: break-word; line-height: 1.25; font-weight: 500; }
+.tbl-ape{ font-size: 11px; color: var(--texto-secundario); max-width: 100%;
+  overflow-wrap: break-word; line-height: 1.25; }
+.tbl-hora{ font-size: 11px; color: var(--texto-secundario);
+  font-variant-numeric: tabular-nums; }
+
+/* ───────────────────────────────────────────────────────────────────────────
    SUPERFICIE TONAL — 5 reglas · clases .sup-*
    ─────────────────────────────────────────────────────────────────────────── */
 
@@ -8754,7 +8791,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .car-cuenta{ display: flex; gap: 6px; justify-content: center; padding: 8px 0;
   color: var(--texto-secundario); font-size: 12px; }
 .car-punto{ width: 6px; height: 6px; border-radius: 50%; background: var(--borde-campo); }
-.car-punto-aqui{ background: var(--accion); }
+.car-punto-aqui{ background: var(--accion); width: 18px; border-radius: 3px; }
 @media (prefers-reduced-motion: reduce) {
   .car{ scroll-behavior: auto; }
 }
@@ -8770,20 +8807,6 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 @media (prefers-reduced-motion: reduce) {
   .vivo-punto{ animation: none; }
 }
-
-/* ───────────────────────────────────────────────────────────────────────────
-   CELDA DE TABLERO — 5 reglas · clases .tbl-*
-   ─────────────────────────────────────────────────────────────────────────── */
-
-.tbl-persona{ display: flex; flex-direction: column; align-items: center;
-  gap: 3px; min-width: 0; text-align: center; }
-.tbl-foto{ position: relative; display: block; width: 100%; line-height: 0; }
-.tbl-nom{ font-size: 11px; color: var(--texto-principal); max-width: 100%;
-  overflow-wrap: break-word; line-height: 1.25; font-weight: 500; }
-.tbl-ape{ font-size: 11px; color: var(--texto-secundario); max-width: 100%;
-  overflow-wrap: break-word; line-height: 1.25; }
-.tbl-hora{ font-size: 11px; color: var(--texto-secundario);
-  font-variant-numeric: tabular-nums; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    UTILIDADES — 8 reglas · clases .sr-*, .mono-*
@@ -13544,13 +13567,134 @@ pantalla</strong> — una cuadrícula densa sirve a cualquier selector de iconos
 </div>
 <table class="tabla-simple">
   <tbody>
-    <tr><td class="num">1</td><td><strong>Seis columnas no es un número elegido</strong>: es lo que sale de la celda más estrecha en la que un avatar sigue siendo reconocible dentro de 375 px. Y sube sola a 8, 10 y 12 — una rejilla densa no mejora estirando las piezas, mejora enseñando más.</td></tr>
+    <tr><td class="num">1</td><td><strong>Lo que se fija es el suelo de la celda: 84 px.</strong> El número de columnas es la <em>consecuencia</em> — las que quepan, repartiendo todo el ancho, y bajando de columnas antes que apretar. Entró con seis columnas fijas y se vio fallar aquí mismo: con seis y <code>gap: 8</code>, un contenedor de 260 px da celdas de 36,7 px, donde un apellido a 11 px no cabe. Una rejilla densa no mejora estirando las piezas —mejora enseñando más—, pero una que no se lee no es densa: es ilegible.</td></tr>
     <tr><td class="num">2</td><td><strong>El relieve es una escala, no una sombra.</strong> <code>--sombra-relieve</code> son tres actuando como una: contacto, difusa y luz interior. Si cada pantalla inventa la suya, la misma rejilla acaba con tres profundidades.</td></tr>
-    <tr><td class="num">3</td><td><strong>La burbuja salió del marco.</strong> Vivía atada al icono de notificaciones y fija a rojo. Un número no es malo por ser número: lo dice su tono.</td></tr>
+    <tr><td class="num">3</td><td><strong>La burbuja se publica como pieza propia</strong>, usable sobre cualquier contenedor posicionado. Vivía atada al icono de notificaciones y fija a rojo. Un número no es malo por ser número: lo dice su tono.</td></tr>
     <tr><td class="num">4</td><td><strong>Deslizar puede ser la forma</strong>, y entonces no es desbordamiento — pero hay que ganárselo: alcanzable con teclado, que diga dónde estás y cuántas paradas hay, y que nada quede <em>sólo</em> ahí.</td></tr>
     <tr><td class="num">5</td><td><strong>«En vivo» no es un <code>Chip</code>.</strong> Un chip dice el estado de un dato; esto dice si lo que se mira <em>sigue siendo cierto</em>. Y la hora es la pieza: un punto latiendo solo dice «creo que estoy conectado».</td></tr>
   </tbody>
 </table>
+
+<h3 class="sub-seccion">Las piezas, una a una — y su marcado</h3>
+<p class="seccion-sub">Son piezas <strong>solo CSS</strong>: no hay componente que las emita, las
+compone la pantalla. Por eso el marcado es el contrato, y va aquí entero.
+<strong>Esta sección nació de una auditoría</strong>: durante la v1.133.0 el carril, los tres tonos
+de burbuja y dos de los cuatro tonos de superficie viajaban en la hoja de todos los productos
+<em>sin que el catálogo los enseñara ni una vez</em>. CSS que nadie podía copiar.</p>
+
+<div class="bloque">
+<h4 class="sub-seccion">Superficie tonal · los cuatro tonos</h4>
+<div class="muestra-tonos">
+  <div class="sup sup-exito"><strong>Éxito</strong><br>El continente entero pertenece al estado.</div>
+  <div class="sup sup-aviso"><strong>Aviso</strong><br>Lleva borde además del fondo: en oscuro un fondo tenue se pierde.</div>
+  <div class="sup sup-error"><strong>Error</strong><br>Un panel de errores de importación, por ejemplo.</div>
+  <div class="sup sup-info"><strong>Información</strong><br>Y el tono no sustituye al texto: lo acompaña.</div>
+</div>
+</div>
+
+<div class="bloque">
+<h4 class="sub-seccion">Burbuja · cuatro tonos</h4>
+<p class="seccion-sub">Un número no es malo por ser número: lo dice su tono. Va sobre cualquier
+contenedor posicionado — aquí, el envoltorio de la foto.</p>
+<div class="muestra-burbujas">
+  <span class="tbl-foto"><span class="avatar avatar-l avatar-1">QR</span><span class="badge">3</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-l avatar-2">HL</span><span class="badge badge-exito">7</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-l avatar-3">CA</span><span class="badge badge-aviso">2</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-l avatar-4">PJ</span><span class="badge badge-info">9</span></span>
+</div>
+</div>
+
+<div class="bloque">
+<h4 class="sub-seccion">Avatar · fluido, con anillo de estado y con relieve</h4>
+<p class="seccion-sub">El anillo va por fuera con sombra y no con borde: un borde comería del
+tamaño de la foto, y a 48 px eso se nota. <strong>Y refuerza</strong> una distinción dicha con
+texto en otro sitio — nunca la sostiene él solo.</p>
+<div class="muestra-burbujas">
+  <span class="tbl-foto"><span class="avatar avatar-fluido avatar-1 avatar-estado avatar-exito avatar-relieve">QR</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-fluido avatar-2 avatar-estado avatar-aviso avatar-relieve">HL</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-fluido avatar-3 avatar-estado avatar-error avatar-relieve">CA</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-fluido avatar-4 avatar-estado avatar-info avatar-relieve">PJ</span></span>
+</div>
+<p class="seccion-sub"><strong>Y el anillo sin relieve</strong>, que es lo que se entrega por
+omisión: <code>elevacion</code> es <code>'plana'</code> si no se pide otra cosa.</p>
+<div class="muestra-burbujas">
+  <span class="tbl-foto"><span class="avatar avatar-l avatar-1 avatar-estado avatar-exito">QR</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-l avatar-2 avatar-estado avatar-aviso">HL</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-l avatar-3 avatar-estado avatar-error">CA</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-l avatar-4 avatar-estado avatar-info">PJ</span></span>
+</div>
+</div>
+
+<div class="bloque">
+<h4 class="sub-seccion">Carril con anclaje · las tres condiciones, montadas</h4>
+<p class="seccion-sub">Deslizar aquí <strong>no es desbordamiento</strong>: cada parada es una
+vista entera. Y no se da por bueno sin las tres condiciones — alcanzable con teclado, que diga
+dónde estás y cuántas hay, y que nada quede <em>sólo</em> ahí.</p>
+<div class="car" tabindex="0" role="region" aria-label="Turnos del día, 3 paradas">
+  <div class="sup sup-exito"><strong>Turno mañana</strong><br>18 marcaron · 6 no</div>
+  <div class="sup sup-info"><strong>Turno tarde</strong><br>14 marcaron · 3 no</div>
+  <div class="sup sup-aviso"><strong>Turno noche</strong><br>5 marcaron · 1 no</div>
+</div>
+<p class="car-cuenta"><span class="car-punto car-punto-aqui"></span><span class="car-punto"></span><span class="car-punto"></span><span class="sr-solo">Parada 1 de 3</span></p>
+<p class="seccion-sub">La parada en curso <strong>cambia de forma</strong>, no sólo de color —el
+color solo no distingue nada, y esa regla también vale aquí—, y la cuenta lleva su texto para
+lector de pantalla. <strong>Y el mismo dato está en la tabla de abajo</strong>: eso es la condición
+(c), nada queda sólo en el carril.</p>
+</div>
+
+<div class="cod">
+  <div class="cod-cab"><span class="cod-tit">El marcado, que es el contrato</span></div>
+  <pre class="cod-pre"><code>import 'sistema-diseno-ae/tokens.css';        // SIEMPRE primero
+import 'sistema-diseno-ae/componentes.css';
+import { Avatar } from 'sistema-diseno-ae/componentes';
+
+// El tipo es SUYO: el sistema no sabe de personas, sabe de celdas.
+type Persona = { id: string; nombre: string; apellido: string; hora: string };
+
+export function CeldaDeTablero({ p }: { p: Persona }) {
+  return (
+    &lt;li className="tbl-persona"&gt;
+      &lt;span className="tbl-foto"&gt;
+        &lt;Avatar id={p.id} nombre={p.nombre} tamano="fluido" estado="exito" elevacion="relieve" /&gt;
+        &lt;span className="badge badge-aviso"&gt;+5&lt;/span&gt;
+      &lt;/span&gt;
+      &lt;span className="tbl-nom"&gt;{p.nombre}&lt;/span&gt;
+      &lt;span className="tbl-ape"&gt;{p.apellido}&lt;/span&gt;
+      &lt;span className="tbl-hora"&gt;{p.hora}&lt;/span&gt;
+    &lt;/li&gt;
+  );
+}
+
+export function Tablero({ gente }: { gente: Persona[] }) {
+  return (
+    &lt;&gt;
+      {/* La rejilla va sobre una lista porque ES una lista. La clase le anula
+          los 40 px de sangria que el navegador le pone a toda «ul». */}
+      &lt;div className="sup sup-exito"&gt;
+        &lt;ul className="tn-densa"&gt;
+          {gente.map((p) =&gt; &lt;CeldaDeTablero key={p.id} p={p} /&gt;)}
+        &lt;/ul&gt;
+      &lt;/div&gt;
+
+      {/* Carril: las TRES condiciones o no es paginacion por gesto. El
+          «tabIndex» y el «role» NO son opcionales ni son del producto. */}
+      &lt;div className="car" tabIndex={0} role="region" aria-label="Turnos del dia, 2 paradas"&gt;
+        &lt;div className="sup sup-exito"&gt;Turno mañana&lt;/div&gt;
+        &lt;div className="sup sup-info"&gt;Turno tarde&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;p className="car-cuenta"&gt;
+        &lt;span className="car-punto car-punto-aqui" /&gt;
+        &lt;span className="car-punto" /&gt;
+        &lt;span className="sr-solo"&gt;Parada 1 de 2&lt;/span&gt;
+      &lt;/p&gt;
+
+      {/* En vivo: el punto NO basta. Si son las 7:15 y el dato es de las 6:40,
+          el tablero esta colgado aunque el punto siga latiendo. */}
+      &lt;p className="vivo"&gt;&lt;span className="vivo-punto" /&gt; En vivo · ultimo dato 07:15&lt;/p&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+</div>
 
 <h3 class="sub-seccion">El color no significa nada</h3>
 <p class="pag-intro">Es la decisión que sostiene todo lo demás. El avatar usa una paleta de
@@ -20235,8 +20379,13 @@ repositorio; el porqué es lo único escrito a mano.</p>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
 
 
+<h3 class="sub-seccion">v1.134.0 <span class="cam-fecha">2026-09-22</span></h3>
+<p class="pag-intro"><strong>R157 (cierre): lo que el R157 PROMETIO y no entregaba — y cinco afirmaciones falsas nuestras.</strong> NO LO ENCONTRO UN CANDADO: lo encontro una auditoria con los VEINTIUN PASOS EN VERDE, pedida por el responsable con tres palabras —«garantiza la entrega y la promesa»—. Es la cuarta vez que este repositorio aprende lo mismo y la primera que lo aprende sin que nadie se queje desde fuera. EL CARRIL VIAJABA MUERTO. `.car`, `.car-cuenta`, `.car-punto` y `.car-punto-aqui` salian en la hoja de TODOS los productos y no las emitia ningun componente, no las enseñaba el catalogo y no las nombraba el contrato. La pieza con la que el R157 CAMBIO LA POLITICA DE MOVIL PRIMERO no tenia ni un ejemplo que copiar. Y sus tres condiciones eran afirmaciones: la (a) —alcanzable con teclado— la delegaba un comentario a «quien lo use», asi que el sistema entregaba el anillo de foco de un elemento que nadie hacia enfocable; una regla `:focus-visible` sobre algo no enfocable NO SE DISPARA JAMAS. La (b) la sostenian seis puntitos que solo se distinguen POR COLOR, contra la regla que este mismo sistema tiene escrita. Ahora el catalogo lo monta entero —`tabindex`, `role=region` con nombre, la parada en curso CAMBIA DE FORMA ademas de color, y la cuenta lleva su texto para lector— y el marcado esta en el contrato, no en un comentario. LO MISMO, MAS PEQUEÑO, CON OTRAS NUEVE CLASES: los tres tonos de burbuja y dos de los cuatro tonos de superficie viajaban sin que el catalogo los pintara ni una vez. Y LA CAUSA COMUN, que es lo que de verdad se arregla aqui: TODO el R157 se pintaba desde el guion `data-vivo`, y los candados del empate, la omision y el elemento CORTAN el documento en ese guion. Para ellos el tablero no existia. El de la promesa tampoco lo miraba: su lista de casos esta escrita a mano y tenia 63 entradas, NI UNA del R157 — la tercera vez que esa lista se queda corta delante de una pieza nueva. Entran 22 casos y la demo del catalogo pasa a ser ESTATICA ademas de viva: las 28 clases del R157 ya tienen marcado que los candados pueden leer. Comprobado rompiendolo: sacar la celda de tablero de la hoja que viaja da 138 diferencias donde antes daba verde. DOS PRUEBAS ESTABAN EN VERDE SOBRE MUTACIONES QUE ROMPEN SU REGLA. La del punto de «en vivo» comprobaba una lista de DOS tonos prohibidos habiendo CUATRO: puesto en `--aviso-acento` seguia verde. La del avatar fluido comprobaba que `max-width` EXISTIERA: puesta en 400 px —el retrato que la regla dice evitar— seguia verde. Una prueba que mira si la propiedad esta no protege de lo que dice protegerse; ahora se comparan contra lo EXIGIDO: `--accion` y el mayor de la escala. Y CINCO AFIRMACIONES NUESTRAS ERAN FALSAS, las cinco escritas por el agente en la v1.133.0. «Celdas de 21 px en un contenedor de 260» —son 36,7; los 21 salen con OCHO columnas mas la sangria—. «Dos columnas de 93 donde caben tres de 113» —mezclaba dos contenedores distintos: la ganancia real son VEINTE PIXELES por celda en el mismo contenedor, no una columna—. «La burbuja sale del marco» —seguia bajo «MARCO DE APLICACION» en la hoja entregada, porque `badge` seguia entre los prefijos del marco; ahora tiene seccion propia—. «El pendiente de la elevacion ya no esta» —el auditor lo sigue imprimiendo, ahora por `.m-flotante`—. Y el comentario de `vivo.tsx` decia que la demo monta «el carril con su cuenta de paradas», que no monta. La regla de cero invencion no distingue entre inventar una cifra y mezclar dos medidas. Y EL CONTRATO DE MARCADO NO VIAJABA. Estas piezas no tienen componente —las compone la pantalla—, asi que el marcado ES la interfaz, y no estaba en ningun archivo del paquete: solo en una carta de `peticiones/`, que no entra ni en el ZIP ni en npm. Entra como tabla en `comportamiento.md`. Y la cabecera de la hoja remitia ese contrato a `componentes.md`, UN ARCHIVO QUE NO EXISTE.</p>
+<table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>NADA que un producto pueda notar. <code>.car-punto-aqui</code> gana forma ademas de color —se alarga a 18 px— porque distinguir la parada en curso SOLO por color incumple la regla del propio sistema. Quien ya lo pintara ve un punto alargado donde antes veia uno redondo.</td></tr></tbody></table>
+
+
 <h3 class="sub-seccion">v1.133.0 <span class="cam-fecha">2026-09-22</span></h3>
-<p class="pag-intro"><strong>R157 · las piezas de un tablero denso, y deslizar deja de ser siempre un defecto.</strong> LO PIDIO EL GRUPO «TABLEROS» PARA UNA PANTALLA QUE NO SE CONSULTA, SE VIGILA: se deja abierta en un telefono a las 7 de la mañana y dice quien marco y quien no. Entraron SIETE piezas y ninguna es de esa pantalla, que es la unica razon por la que entraron: una cuadricula densa sirve a cualquier selector de iconos o paleta; un anillo de estado, a «en linea» o «pagado»; una burbuja con tono, a cualquier contador; una superficie tonal, a cualquier bloque que pertenezca entero a un estado. LA CUADRICULA DENSA ES OTRO CASO, no la de siempre adaptada: la normal reparte en columnas de 230 px porque sus tarjetas SE LEEN, y a 375 px da una sola. Entro con SEIS COLUMNAS y seis columnas era un numero fijo disfrazado de calculo: en un contenedor de 260 px daba celdas de 21 px, donde «Rosa» no cabe — y un nombre que no cabe o se recorta o se parte, y las dos las prohibe la politica de movil primero. LO QUE SE FIJA ES EL SUELO DE LA CELDA, 84 px, y el numero de columnas es la CONSECUENCIA: las que quepan, repartiendo siempre todo el ancho, y bajando de columnas antes que apretar. Una rejilla densa no mejora estirando las piezas —mejora enseñando mas— pero una que no se lee no es densa: es ilegible. Lo corto el responsable mirando la pantalla: «las veo muy apretadas que no se leen los datos». Y LA REJILLA SE PONE SOBRE UNA «ul», que trae 40 px de sangria del navegador. Medido a 333 px: la rejilla salia de 234 px en vez de 284 y daba DOS columnas de 93 px donde caben tres de 113, descentrada. No se ve como un fallo — se ve como un tablero apretado, que es peor, porque invita a arreglar lo que no esta roto. La clase anula margen, relleno y vinetas. EL ANILLO DE ESTADO USA LOS TONOS DEL SISTEMA Y NO LOS DEL DOMINIO. Se pidio como `presente`/`ausente` y entra como exito/aviso/error/info: el anillo no sabe de asistencia, y el mismo verde sirve para «esta dentro», «en linea», «pagado» y «activo». Un tipo que dijera `presente` obligaria al siguiente producto a llamar «presente» a una factura cobrada. Va por fuera con sombra y no con borde, que comeria del tamaño de la foto. Y LA FORMA NO SE TOCA: sigue circular. Se planteo el cuadrado redondeado —«asi como los iconos de las aplicaciones»— y se descarto en los dos lados a la vez: en una rejilla densa la forma es lo que distingue una persona de una entidad, y cambiarla ahi la habria roto en todo el sistema. Lo que daba la sensacion de icono de aplicacion era el RELIEVE. EL RELIEVE ENTRA COMO ESCALA, no como sombra: `--sombra-relieve` son TRES sombras actuando como una —contacto, difusa y luz interior—, y es un token y no tres valores en cada producto porque si cada pantalla inventa la suya, la misma rejilla acaba con tres profundidades. El auditor del cascaron dejo escrito «Elevacion — el sistema no define sombras» como pendiente: ya no lo esta. LA BURBUJA SALE DEL MARCO Y GANA TONO. Vivia dentro de la seccion del marco de aplicacion, atada al icono de notificaciones y fija a rojo — y es la pieza que hace falta sobre cualquier cosa que cuente algo. UN NUMERO NO ES MALO POR SER NUMERO: lo dice su tono. Y ENTRA LA SUPERFICIE TONAL, que era el hueco de verdad: el sistema publicaba el tono para el Chip y para el filete de TarjetaPersona, pero NO HABIA FORMA DE TEÑIR UN CONTENEDOR. Lleva borde ademas del fondo, porque sobre una pantalla en oscuro un fondo tenue se pierde. DESLIZAR DEJA DE SER SIEMPRE UN DEFECTO, y esta es la parte que cambia el sistema y no solo lo amplia. La politica de movil primero decia «nada se lee deslizando en horizontal», y el R157 traia un tablero que se pasa como las paginas de iconos de un telefono. No se esquiva la politica: se distingue. DESBORDAMIENTO es «el contenido no cupo y se sale»; PAGINACION POR GESTO es «cada parada es una vista entera y no se pierde nada por no deslizar mas». Y para que valga lo segundo, TRES condiciones: se alcanza con teclado, dice donde estas y cuantas paradas hay, y nada queda SOLO ahi. Sin las tres, es desbordamiento con otro nombre. «EN VIVO» NO ES UN Chip, y lo preguntaron dudando. Un Chip dice el estado de un DATO; esto dice el estado de LA CONEXION — no habla de lo que se mira, habla de si lo que se mira sigue siendo cierto. Usa el acento de accion y no un tono de estado, que en un tablero estan ocupados por lo que se vigila. Y LA HORA ES LA PIEZA: un punto latiendo solo dice «creo que estoy conectado»; con la hora del ultimo dato, si son las 7:15 y el dato es de las 6:40, el tablero esta colgado aunque el punto siga latiendo. Y ENTRA UNA PIEZA QUE NO PIDIERON: la celda de tablero. La descartaron de pasada —«lo que hace falta es vertical y diminuto, icono arriba, nombre y hora debajo»— y sin ella se publicaba el contenedor y no lo que va dentro, que es como se publican los huecos. DOS PREGUNTAS DE NORMA, respondidas. La del color sin texto: su razonamiento se sostiene —el color REFUERZA una distincion dicha con texto en el segmentado, en la hora y en la superficie— pero se les corrige un argumento: «nunca se ven los dos grupos a la vez» es el debil de los cuatro, porque depende de que la pantalla siga teniendo un segmentado mañana. Y LA EXCEPCION DE CABECERA SE CONFIRMA Y SE ESCRIBE en el manual: un tablero puede no llevar h1 ni migas —cada linea de cabecera es una fila de datos que deja de verse— pero NO puede quedarse sin nombre accesible ni fiar al color lo que se vigila. Dos candados salieron en rojo durante el trabajo y los dos tenian razon: una sombra partida en dos lineas le parecia al candado de color un `rgba()` suelto, y un `animation: 2s` escrito a mano no pasaba por ningun token de duracion. Entra `--dur-latido`. Y EL PUBLICADOR DABA VERDE EN FALSO POR TERCERA VEZ, con un disfraz nuevo: un worker de vitest murio por memoria a mitad del barrido y vitest imprimio «Test Files 58 passed (59)», «Tests 1198 passed (1213)» y salio con CODIGO 0. El paso mira el codigo de salida —lo aprendido el 2026-09-11— y habria dicho «1198 en verde» con un archivo entero SIN CORRER. Ahora compara los archivos que corrieron con los que vitest se propuso correr: lo que no corrio no protege nada, y una comprobacion que mide lo que paso sin mirar lo que FALTABA es la misma ceguera de la lista de candados incompleta. Y al mirar QUE archivo faltaba salio la causa: `marco-catalogo.test.tsx` abria un JSDOM del catalogo entero —2,8 MB— en CADA una de sus siete llamadas y no cerraba ninguna. Es el mismo agotamiento que ya estaba documentado y arreglado en ese mismo archivo para las ventanas que SI ejecutan guiones; la mitad que solo lee el marcado se quedo fuera del arreglo. Con un unico arbol compartido, de 58 s a 18 s.</p>
+<p class="pag-intro"><strong>R157 · las piezas de un tablero denso, y deslizar deja de ser siempre un defecto.</strong> LO PIDIO EL GRUPO «TABLEROS» PARA UNA PANTALLA QUE NO SE CONSULTA, SE VIGILA: se deja abierta en un telefono a las 7 de la mañana y dice quien marco y quien no. Entraron SIETE piezas y ninguna es de esa pantalla, que es la unica razon por la que entraron: una cuadricula densa sirve a cualquier selector de iconos o paleta; un anillo de estado, a «en linea» o «pagado»; una burbuja con tono, a cualquier contador; una superficie tonal, a cualquier bloque que pertenezca entero a un estado. LA CUADRICULA DENSA ES OTRO CASO, no la de siempre adaptada: la normal reparte en columnas de 230 px porque sus tarjetas SE LEEN, y a 375 px da una sola. Entro con SEIS COLUMNAS y seis columnas era un numero fijo disfrazado de calculo: con gap 8, un contenedor de 260 px da celdas de 36,7 px —30 restandole los 40 de sangria de la «ul»—, y ahi un apellido a 11 px no cabe. LO QUE SE FIJA ES EL SUELO DE LA CELDA, 84 px, y el numero de columnas es la CONSECUENCIA: las que quepan, repartiendo siempre todo el ancho, y bajando de columnas antes que apretar. Una rejilla densa no mejora estirando las piezas —mejora enseñando mas— pero una que no se lee no es densa: es ilegible. Lo corto el responsable mirando la pantalla: «las veo muy apretadas que no se leen los datos». Y LA REJILLA SE PONE SOBRE UNA «ul», que trae 40 px de sangria del navegador. Medido en el catalogo a 333 px de ventana: con la sangria dentro, un contenedor de 234,7 px maquetaba en 194,7 y daba DOS celdas de 93,3; con el reset, el MISMO contenedor da dos de 113,3 — VEINTE PIXELES por celda, no una columna mas. No se ve como un fallo: se ve como un tablero apretado, que es peor, porque invita a arreglar lo que no esta roto. La clase anula margen, relleno y vinetas. ESTAS DOS CIFRAS ENTRARON MAL Y LAS CORRIGIO UNA AUDITORIA EL MISMO DIA. Decian «celdas de 21 px en un contenedor de 260» —eso sale con OCHO columnas mas la sangria, que es el corte de 480 px— y «dos columnas de 93 donde caben tres de 113», que mezclaba dos medidas de contenedores distintos. La regla de cero invencion no distingue entre inventar una cifra y mezclar dos medidas: las dos hacen que el registro diga algo que no se midio. EL ANILLO DE ESTADO USA LOS TONOS DEL SISTEMA Y NO LOS DEL DOMINIO. Se pidio como `presente`/`ausente` y entra como exito/aviso/error/info: el anillo no sabe de asistencia, y el mismo verde sirve para «esta dentro», «en linea», «pagado» y «activo». Un tipo que dijera `presente` obligaria al siguiente producto a llamar «presente» a una factura cobrada. Va por fuera con sombra y no con borde, que comeria del tamaño de la foto. Y LA FORMA NO SE TOCA: sigue circular. Se planteo el cuadrado redondeado —«asi como los iconos de las aplicaciones»— y se descarto en los dos lados a la vez: en una rejilla densa la forma es lo que distingue una persona de una entidad, y cambiarla ahi la habria roto en todo el sistema. Lo que daba la sensacion de icono de aplicacion era el RELIEVE. EL RELIEVE ENTRA COMO ESCALA, no como sombra: `--sombra-relieve` son TRES sombras actuando como una —contacto, difusa y luz interior—, y es un token y no tres valores en cada producto porque si cada pantalla inventa la suya, la misma rejilla acaba con tres profundidades. El auditor del cascaron dejo escrito «Elevacion — el sistema no define sombras» como pendiente. ESTA LINEA DIJO «ya no lo esta» Y ERA FALSA: el auditor lo sigue imprimiendo, ahora por `.m-flotante`, que escribe su sombra a mano en vez de usar la escala. El pendiente no se cerro, se quedo con un ocupante menos. Lo corrigio una auditoria el mismo dia, corriendo el auditor en vez de creerse el texto. LA BURBUJA SALE DEL MARCO Y GANA TONO. Vivia dentro de la seccion del marco de aplicacion, atada al icono de notificaciones y fija a rojo — y es la pieza que hace falta sobre cualquier cosa que cuente algo. UN NUMERO NO ES MALO POR SER NUMERO: lo dice su tono. Y ENTRA LA SUPERFICIE TONAL, que era el hueco de verdad: el sistema publicaba el tono para el Chip y para el filete de TarjetaPersona, pero NO HABIA FORMA DE TEÑIR UN CONTENEDOR. Lleva borde ademas del fondo, porque sobre una pantalla en oscuro un fondo tenue se pierde. DESLIZAR DEJA DE SER SIEMPRE UN DEFECTO, y esta es la parte que cambia el sistema y no solo lo amplia. La politica de movil primero decia «nada se lee deslizando en horizontal», y el R157 traia un tablero que se pasa como las paginas de iconos de un telefono. No se esquiva la politica: se distingue. DESBORDAMIENTO es «el contenido no cupo y se sale»; PAGINACION POR GESTO es «cada parada es una vista entera y no se pierde nada por no deslizar mas». Y para que valga lo segundo, TRES condiciones: se alcanza con teclado, dice donde estas y cuantas paradas hay, y nada queda SOLO ahi. Sin las tres, es desbordamiento con otro nombre. «EN VIVO» NO ES UN Chip, y lo preguntaron dudando. Un Chip dice el estado de un DATO; esto dice el estado de LA CONEXION — no habla de lo que se mira, habla de si lo que se mira sigue siendo cierto. Usa el acento de accion y no un tono de estado, que en un tablero estan ocupados por lo que se vigila. Y LA HORA ES LA PIEZA: un punto latiendo solo dice «creo que estoy conectado»; con la hora del ultimo dato, si son las 7:15 y el dato es de las 6:40, el tablero esta colgado aunque el punto siga latiendo. Y ENTRA UNA PIEZA QUE NO PIDIERON: la celda de tablero. La descartaron de pasada —«lo que hace falta es vertical y diminuto, icono arriba, nombre y hora debajo»— y sin ella se publicaba el contenedor y no lo que va dentro, que es como se publican los huecos. DOS PREGUNTAS DE NORMA, respondidas. La del color sin texto: su razonamiento se sostiene —el color REFUERZA una distincion dicha con texto en el segmentado, en la hora y en la superficie— pero se les corrige un argumento: «nunca se ven los dos grupos a la vez» es el debil de los cuatro, porque depende de que la pantalla siga teniendo un segmentado mañana. Y LA EXCEPCION DE CABECERA SE CONFIRMA Y SE ESCRIBE en el manual: un tablero puede no llevar h1 ni migas —cada linea de cabecera es una fila de datos que deja de verse— pero NO puede quedarse sin nombre accesible ni fiar al color lo que se vigila. Dos candados salieron en rojo durante el trabajo y los dos tenian razon: una sombra partida en dos lineas le parecia al candado de color un `rgba()` suelto, y un `animation: 2s` escrito a mano no pasaba por ningun token de duracion. Entra `--dur-latido`. Y EL PUBLICADOR DABA VERDE EN FALSO POR TERCERA VEZ, con un disfraz nuevo: un worker de vitest murio por memoria a mitad del barrido y vitest imprimio «Test Files 58 passed (59)», «Tests 1198 passed (1213)» y salio con CODIGO 0. El paso mira el codigo de salida —lo aprendido el 2026-09-11— y habria dicho «1198 en verde» con un archivo entero SIN CORRER. Ahora compara los archivos que corrieron con los que vitest se propuso correr: lo que no corrio no protege nada, y una comprobacion que mide lo que paso sin mirar lo que FALTABA es la misma ceguera de la lista de candados incompleta. Y al mirar QUE archivo faltaba salio la causa: `marco-catalogo.test.tsx` abria un JSDOM del catalogo entero —2,8 MB— en CADA una de sus siete llamadas y no cerraba ninguna. Es el mismo agotamiento que ya estaba documentado y arreglado en ese mismo archivo para las ventanas que SI ejecutan guiones; la mitad que solo lee el marcado se quedo fuera del arreglo. Con un unico arbol compartido, de 58 s a 18 s.</p>
 <table class="tabla-simple"><thead><tr><th>Puede romperte</th></tr></thead><tbody><tr><td>NADA. Las siete piezas son clases y props NUEVAS: <code>Avatar</code> sin <code>estado</code> ni <code>elevacion</code> se comporta exactamente igual que antes, y las clases nuevas no tocan ninguna existente. La burbuja conserva su rojo por omision.</td></tr></tbody></table>
 
 

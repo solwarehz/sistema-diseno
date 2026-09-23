@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.133.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.134.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -23,7 +23,10 @@
 
      No  · el comportamiento. Ordenar, filtrar, plegar y el teclado siguen
            siendo del proyecto. El marcado que espera cada elemento está en
-           `componentes.md`, junto a esta hoja.
+           `comportamiento.md`, junto a esta hoja. Esta linea decia
+           `componentes.md` y ESE ARCHIVO NO EXISTE: remitia el contrato de
+           marcado —lo unico que tienen las piezas solo-CSS— a un nombre
+           inventado.
    ─────────────────────────────────────────────────────────────────────────── */
 
 /* Dependencias del paquete que no pertenecen a ningun elemento */
@@ -100,7 +103,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.133.0; }
+:root{ --mmi-componentes: 1.134.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -1252,7 +1255,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .esqueleto.corto{ width: 62%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   MARCO DE APLICACIÓN — 192 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*, .badge-*
+   MARCO DE APLICACIÓN — 188 reglas · clases .lat-*, .nav-*, .top-*, .us-*, .app-*, .m-*, .fg-*, .velo-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 :where([data-marco], .marco, .lat) :where(a, button, input, select, textarea, [tabindex]):focus-visible,
@@ -1510,12 +1513,6 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   border-radius: 6px; color: var(--texto-secundario); position: relative;
   display: grid; place-items: center; }
 .top-btn:hover{ background: var(--fondo-encabezado); color: var(--texto-principal); }
-.badge{ position: absolute; top: 1px; right: 1px; min-width: 15px; height: 15px;
-  border-radius: 6px; background: var(--error-acento); color: var(--texto-invertido);
-  font-size: 12px; font-weight: 600; display: grid; place-items: center; padding: 0 4px; }
-.badge-exito{ background: var(--exito-acento); }
-.badge-aviso{ background: var(--aviso-acento); color: var(--texto-principal); }
-.badge-info{ background: var(--info-acento); }
 .top-avatar{ margin-left: 4px; border: 0; cursor: pointer; }
 .us{ position: relative; }
 .us-menu{ position: absolute; z-index: 60; right: 0; top: calc(100% + 8px);
@@ -1904,6 +1901,31 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   padding: 12px 20px 20px; border-top: 1px solid var(--borde); }
 
 /* ───────────────────────────────────────────────────────────────────────────
+   BURBUJA DE RECUENTO — 4 reglas · clases .badge-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.badge{ position: absolute; top: 1px; right: 1px; min-width: 15px; height: 15px;
+  border-radius: 6px; background: var(--error-acento); color: var(--texto-invertido);
+  font-size: 12px; font-weight: 600; display: grid; place-items: center; padding: 0 4px; }
+.badge-exito{ background: var(--exito-acento); }
+.badge-aviso{ background: var(--aviso-acento); color: var(--texto-principal); }
+.badge-info{ background: var(--info-acento); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   CELDA DE TABLERO — 5 reglas · clases .tbl-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.tbl-persona{ display: flex; flex-direction: column; align-items: center;
+  gap: 3px; min-width: 0; text-align: center; }
+.tbl-foto{ position: relative; display: block; width: 100%; line-height: 0; }
+.tbl-nom{ font-size: 11px; color: var(--texto-principal); max-width: 100%;
+  overflow-wrap: break-word; line-height: 1.25; font-weight: 500; }
+.tbl-ape{ font-size: 11px; color: var(--texto-secundario); max-width: 100%;
+  overflow-wrap: break-word; line-height: 1.25; }
+.tbl-hora{ font-size: 11px; color: var(--texto-secundario);
+  font-variant-numeric: tabular-nums; }
+
+/* ───────────────────────────────────────────────────────────────────────────
    SUPERFICIE TONAL — 5 reglas · clases .sup-*
    ─────────────────────────────────────────────────────────────────────────── */
 
@@ -1925,7 +1947,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .car-cuenta{ display: flex; gap: 6px; justify-content: center; padding: 8px 0;
   color: var(--texto-secundario); font-size: 12px; }
 .car-punto{ width: 6px; height: 6px; border-radius: 50%; background: var(--borde-campo); }
-.car-punto-aqui{ background: var(--accion); }
+.car-punto-aqui{ background: var(--accion); width: 18px; border-radius: 3px; }
 @media (prefers-reduced-motion: reduce) {
   .car{ scroll-behavior: auto; }
 }
@@ -1941,20 +1963,6 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 @media (prefers-reduced-motion: reduce) {
   .vivo-punto{ animation: none; }
 }
-
-/* ───────────────────────────────────────────────────────────────────────────
-   CELDA DE TABLERO — 5 reglas · clases .tbl-*
-   ─────────────────────────────────────────────────────────────────────────── */
-
-.tbl-persona{ display: flex; flex-direction: column; align-items: center;
-  gap: 3px; min-width: 0; text-align: center; }
-.tbl-foto{ position: relative; display: block; width: 100%; line-height: 0; }
-.tbl-nom{ font-size: 11px; color: var(--texto-principal); max-width: 100%;
-  overflow-wrap: break-word; line-height: 1.25; font-weight: 500; }
-.tbl-ape{ font-size: 11px; color: var(--texto-secundario); max-width: 100%;
-  overflow-wrap: break-word; line-height: 1.25; }
-.tbl-hora{ font-size: 11px; color: var(--texto-secundario);
-  font-variant-numeric: tabular-nums; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    UTILIDADES — 8 reglas · clases .sr-*, .mono-*

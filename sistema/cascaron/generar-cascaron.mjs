@@ -7424,13 +7424,134 @@ pantalla</strong> — una cuadrícula densa sirve a cualquier selector de iconos
 </div>
 <table class="tabla-simple">
   <tbody>
-    <tr><td class="num">1</td><td><strong>Seis columnas no es un número elegido</strong>: es lo que sale de la celda más estrecha en la que un avatar sigue siendo reconocible dentro de 375 px. Y sube sola a 8, 10 y 12 — una rejilla densa no mejora estirando las piezas, mejora enseñando más.</td></tr>
+    <tr><td class="num">1</td><td><strong>Lo que se fija es el suelo de la celda: 84 px.</strong> El número de columnas es la <em>consecuencia</em> — las que quepan, repartiendo todo el ancho, y bajando de columnas antes que apretar. Entró con seis columnas fijas y se vio fallar aquí mismo: con seis y <code>gap: 8</code>, un contenedor de 260 px da celdas de 36,7 px, donde un apellido a 11 px no cabe. Una rejilla densa no mejora estirando las piezas —mejora enseñando más—, pero una que no se lee no es densa: es ilegible.</td></tr>
     <tr><td class="num">2</td><td><strong>El relieve es una escala, no una sombra.</strong> <code>--sombra-relieve</code> son tres actuando como una: contacto, difusa y luz interior. Si cada pantalla inventa la suya, la misma rejilla acaba con tres profundidades.</td></tr>
-    <tr><td class="num">3</td><td><strong>La burbuja salió del marco.</strong> Vivía atada al icono de notificaciones y fija a rojo. Un número no es malo por ser número: lo dice su tono.</td></tr>
+    <tr><td class="num">3</td><td><strong>La burbuja se publica como pieza propia</strong>, usable sobre cualquier contenedor posicionado. Vivía atada al icono de notificaciones y fija a rojo. Un número no es malo por ser número: lo dice su tono.</td></tr>
     <tr><td class="num">4</td><td><strong>Deslizar puede ser la forma</strong>, y entonces no es desbordamiento — pero hay que ganárselo: alcanzable con teclado, que diga dónde estás y cuántas paradas hay, y que nada quede <em>sólo</em> ahí.</td></tr>
     <tr><td class="num">5</td><td><strong>«En vivo» no es un <code>Chip</code>.</strong> Un chip dice el estado de un dato; esto dice si lo que se mira <em>sigue siendo cierto</em>. Y la hora es la pieza: un punto latiendo solo dice «creo que estoy conectado».</td></tr>
   </tbody>
 </table>
+
+<h3 class="sub-seccion">Las piezas, una a una — y su marcado</h3>
+<p class="seccion-sub">Son piezas <strong>solo CSS</strong>: no hay componente que las emita, las
+compone la pantalla. Por eso el marcado es el contrato, y va aquí entero.
+<strong>Esta sección nació de una auditoría</strong>: durante la v1.133.0 el carril, los tres tonos
+de burbuja y dos de los cuatro tonos de superficie viajaban en la hoja de todos los productos
+<em>sin que el catálogo los enseñara ni una vez</em>. CSS que nadie podía copiar.</p>
+
+<div class="bloque">
+<h4 class="sub-seccion">Superficie tonal · los cuatro tonos</h4>
+<div class="muestra-tonos">
+  <div class="sup sup-exito"><strong>Éxito</strong><br>El continente entero pertenece al estado.</div>
+  <div class="sup sup-aviso"><strong>Aviso</strong><br>Lleva borde además del fondo: en oscuro un fondo tenue se pierde.</div>
+  <div class="sup sup-error"><strong>Error</strong><br>Un panel de errores de importación, por ejemplo.</div>
+  <div class="sup sup-info"><strong>Información</strong><br>Y el tono no sustituye al texto: lo acompaña.</div>
+</div>
+</div>
+
+<div class="bloque">
+<h4 class="sub-seccion">Burbuja · cuatro tonos</h4>
+<p class="seccion-sub">Un número no es malo por ser número: lo dice su tono. Va sobre cualquier
+contenedor posicionado — aquí, el envoltorio de la foto.</p>
+<div class="muestra-burbujas">
+  <span class="tbl-foto"><span class="avatar avatar-l avatar-1">QR</span><span class="badge">3</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-l avatar-2">HL</span><span class="badge badge-exito">7</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-l avatar-3">CA</span><span class="badge badge-aviso">2</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-l avatar-4">PJ</span><span class="badge badge-info">9</span></span>
+</div>
+</div>
+
+<div class="bloque">
+<h4 class="sub-seccion">Avatar · fluido, con anillo de estado y con relieve</h4>
+<p class="seccion-sub">El anillo va por fuera con sombra y no con borde: un borde comería del
+tamaño de la foto, y a 48 px eso se nota. <strong>Y refuerza</strong> una distinción dicha con
+texto en otro sitio — nunca la sostiene él solo.</p>
+<div class="muestra-burbujas">
+  <span class="tbl-foto"><span class="avatar avatar-fluido avatar-1 avatar-estado avatar-exito avatar-relieve">QR</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-fluido avatar-2 avatar-estado avatar-aviso avatar-relieve">HL</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-fluido avatar-3 avatar-estado avatar-error avatar-relieve">CA</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-fluido avatar-4 avatar-estado avatar-info avatar-relieve">PJ</span></span>
+</div>
+<p class="seccion-sub"><strong>Y el anillo sin relieve</strong>, que es lo que se entrega por
+omisión: <code>elevacion</code> es <code>'plana'</code> si no se pide otra cosa.</p>
+<div class="muestra-burbujas">
+  <span class="tbl-foto"><span class="avatar avatar-l avatar-1 avatar-estado avatar-exito">QR</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-l avatar-2 avatar-estado avatar-aviso">HL</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-l avatar-3 avatar-estado avatar-error">CA</span></span>
+  <span class="tbl-foto"><span class="avatar avatar-l avatar-4 avatar-estado avatar-info">PJ</span></span>
+</div>
+</div>
+
+<div class="bloque">
+<h4 class="sub-seccion">Carril con anclaje · las tres condiciones, montadas</h4>
+<p class="seccion-sub">Deslizar aquí <strong>no es desbordamiento</strong>: cada parada es una
+vista entera. Y no se da por bueno sin las tres condiciones — alcanzable con teclado, que diga
+dónde estás y cuántas hay, y que nada quede <em>sólo</em> ahí.</p>
+<div class="car" tabindex="0" role="region" aria-label="Turnos del día, 3 paradas">
+  <div class="sup sup-exito"><strong>Turno mañana</strong><br>18 marcaron · 6 no</div>
+  <div class="sup sup-info"><strong>Turno tarde</strong><br>14 marcaron · 3 no</div>
+  <div class="sup sup-aviso"><strong>Turno noche</strong><br>5 marcaron · 1 no</div>
+</div>
+<p class="car-cuenta"><span class="car-punto car-punto-aqui"></span><span class="car-punto"></span><span class="car-punto"></span><span class="sr-solo">Parada 1 de 3</span></p>
+<p class="seccion-sub">La parada en curso <strong>cambia de forma</strong>, no sólo de color —el
+color solo no distingue nada, y esa regla también vale aquí—, y la cuenta lleva su texto para
+lector de pantalla. <strong>Y el mismo dato está en la tabla de abajo</strong>: eso es la condición
+(c), nada queda sólo en el carril.</p>
+</div>
+
+<div class="cod">
+  <div class="cod-cab"><span class="cod-tit">El marcado, que es el contrato</span></div>
+  <pre class="cod-pre"><code>import 'sistema-diseno-ae/tokens.css';        // SIEMPRE primero
+import 'sistema-diseno-ae/componentes.css';
+import { Avatar } from 'sistema-diseno-ae/componentes';
+
+// El tipo es SUYO: el sistema no sabe de personas, sabe de celdas.
+type Persona = { id: string; nombre: string; apellido: string; hora: string };
+
+export function CeldaDeTablero({ p }: { p: Persona }) {
+  return (
+    &lt;li className="tbl-persona"&gt;
+      &lt;span className="tbl-foto"&gt;
+        &lt;Avatar id={p.id} nombre={p.nombre} tamano="fluido" estado="exito" elevacion="relieve" /&gt;
+        &lt;span className="badge badge-aviso"&gt;+5&lt;/span&gt;
+      &lt;/span&gt;
+      &lt;span className="tbl-nom"&gt;{p.nombre}&lt;/span&gt;
+      &lt;span className="tbl-ape"&gt;{p.apellido}&lt;/span&gt;
+      &lt;span className="tbl-hora"&gt;{p.hora}&lt;/span&gt;
+    &lt;/li&gt;
+  );
+}
+
+export function Tablero({ gente }: { gente: Persona[] }) {
+  return (
+    &lt;&gt;
+      {/* La rejilla va sobre una lista porque ES una lista. La clase le anula
+          los 40 px de sangria que el navegador le pone a toda «ul». */}
+      &lt;div className="sup sup-exito"&gt;
+        &lt;ul className="tn-densa"&gt;
+          {gente.map((p) =&gt; &lt;CeldaDeTablero key={p.id} p={p} /&gt;)}
+        &lt;/ul&gt;
+      &lt;/div&gt;
+
+      {/* Carril: las TRES condiciones o no es paginacion por gesto. El
+          «tabIndex» y el «role» NO son opcionales ni son del producto. */}
+      &lt;div className="car" tabIndex={0} role="region" aria-label="Turnos del dia, 2 paradas"&gt;
+        &lt;div className="sup sup-exito"&gt;Turno mañana&lt;/div&gt;
+        &lt;div className="sup sup-info"&gt;Turno tarde&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;p className="car-cuenta"&gt;
+        &lt;span className="car-punto car-punto-aqui" /&gt;
+        &lt;span className="car-punto" /&gt;
+        &lt;span className="sr-solo"&gt;Parada 1 de 2&lt;/span&gt;
+      &lt;/p&gt;
+
+      {/* En vivo: el punto NO basta. Si son las 7:15 y el dato es de las 6:40,
+          el tablero esta colgado aunque el punto siga latiendo. */}
+      &lt;p className="vivo"&gt;&lt;span className="vivo-punto" /&gt; En vivo · ultimo dato 07:15&lt;/p&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+</div>
 
 <h3 class="sub-seccion">El color no significa nada</h3>
 <p class="pag-intro">Es la decisión que sostiene todo lo demás. El avatar usa una paleta de
@@ -9775,6 +9896,14 @@ code { font-family: 'IBM Plex Mono', monospace; }
    ocupa lo que le den y reparte las celdas por todo el ancho, que es lo que
    hace el componente en un producto. */
 .muestra-tablero { width: 100%; }
+/* Cromo del catalogo para enseñar las piezas sueltas. Prefijo «muestra»: no
+   viaja. Existen porque durante la v1.133.0 estas piezas viajaban en la hoja de
+   todos los productos y el catalogo no las enseñaba NI UNA VEZ — CSS que nadie
+   podia copiar, que es la promesa muerta que este repositorio persigue. */
+.muestra-tonos { display: grid; gap: 12px; }
+@media (min-width: 640px) { .muestra-tonos { grid-template-columns: repeat(2, 1fr); } }
+.muestra-burbujas { display: flex; gap: 20px; flex-wrap: wrap; }
+.muestra-burbujas > .tbl-foto { width: auto; }
 
 .muestra-fila { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
 .mf { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
@@ -11664,9 +11793,15 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    se sale»; paginacion por gesto es «cada parada es una vista entera y no se
    pierde nada por no deslizar mas». Para que valga lo segundo hacen falta las
    TRES condiciones de la politica §5, y las tres estan aqui:
-     (a) se alcanza con teclado —quien lo use pone tabIndex={0} y role="region"
-         con nombre, como ya hace Horario—;
-     (b) dice donde estas y cuantas paradas hay —.car-cuenta—;
+     (a) se alcanza con teclado: «tabindex=0» y «role=region» con nombre. NO se
+         delega — va en el marcado que el catalogo publica y que se copia. Esto
+         decia «quien lo use pone tabIndex={0}», y con eso el sistema entregaba
+         el anillo de foco de un elemento que nadie hacia enfocable: una regla
+         «:focus-visible» sobre algo no enfocable no se dispara jamas.
+     (b) dice donde estas y cuantas paradas hay. Los puntos SOLOS no lo dicen:
+         se distinguen unicamente por color, y este sistema tiene escrito que
+         el color solo no distingue nada. Por eso la parada en curso ademas
+         CAMBIA DE FORMA —se alarga— y la cuenta lleva su texto para lector.
      (c) nada queda SOLO ahi: lo que hay que poder leer sin deslizar, se lee.
 
    EL ORDEN SE LEE POR FILAS, y por eso son bloques y no una rejilla que fluya:
@@ -11682,12 +11817,13 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .car-cuenta { display: flex; gap: 6px; justify-content: center; padding: 8px 0;
   color: var(--texto-secundario); font-size: 12px; }
 .car-punto { width: 6px; height: 6px; border-radius: 50%; background: var(--borde-campo); }
-.car-punto-aqui { background: var(--accion); }
+.car-punto-aqui { background: var(--accion); width: 18px; border-radius: 3px; }
 @media (prefers-reduced-motion: reduce) { .car { scroll-behavior: auto; } }
 
 /* EL SUELO LO FIJA LO QUE HAY QUE LEER, no el numero de columnas.
    Iban seis columnas fijas y se vio en el propio cascaron que a 260 px daban
-   celdas de 21 px: ahi no cabe ni un nombre, y un nombre que no cabe o se
+   celdas de 36,7 px —30 con la sangria de la «ul» dentro—: ahi no cabe un
+   apellido a 11 px, y un nombre que no cabe o se
    recorta o se parte — las dos cosas las prohibe la politica de movil primero.
    Se bajo a un suelo de 48 px y seguia sin llegar: una celda de tablero lleva
    NOMBRE, APELLIDO Y HORA, que son tres lineas de texto, y con 48 px se leen a

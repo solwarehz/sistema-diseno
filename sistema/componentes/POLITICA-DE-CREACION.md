@@ -161,6 +161,19 @@ hay sitio. Tres consecuencias que no se negocian:
 **Se verifica midiendo en un navegador, a 360 px como mínimo.** «Se ve bien» no
 es una medida — este repositorio ya tiene escrito que *mirar no es medir*.
 
+**Y una pieza sin componente no está entregada hasta que el catálogo la PINTA.**
+Lo aprendió el R157 y costó una versión: el carril con anclaje —la pieza que
+obligó a escribir la distinción entre desbordamiento y paginación por gesto—
+viajaba en la hoja de todos los productos **sin un solo ejemplo que copiar**, y
+sus tres condiciones eran frases en un comentario. Una condición que un
+comentario delega a «quien lo use» no es una condición: es un deseo. Si la pieza
+no tiene componente, **el marcado es la interfaz** y va en el contrato, no en una
+carta.
+
+**Y el catálogo tiene que pintarla en ESTÁTICO, no sólo desde un guion.** Tres
+candados cortan el documento antes del guion que monta las demos vivas: lo que
+sólo se pinte ahí queda fuera de su vista, y sale verde por no mirarse.
+
 De dónde sale: la matriz de privilegios del R151 quedó sin responsive porque el
 equipo que la pidió lo dejó como deseable. Se declaró abierto dos veces sin
 medirse; al medirlo, a 360 px ocupaba 687 px de ancho y el nombre de fila salía

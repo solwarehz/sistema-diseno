@@ -76,3 +76,6 @@ npm-debug.log*
 core
 *.core
 core.*
+
+# Artefactos del candado de la copia: se generan y se borran en cada corrida.
+componentes/copia-tmp/

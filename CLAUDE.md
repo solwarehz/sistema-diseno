@@ -19,8 +19,24 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.133.0** — **R157: las piezas de un tablero denso**, y
-**deslizar deja de ser siempre un defecto**.
+**Estado actual: v1.134.0** — **el cierre del R157: lo que prometía y no
+entregaba**, encontrado por una auditoría con los veintiún pasos en verde.
+
+La v1.133.0 publicó siete piezas y **cuatro de ellas viajaban sin que el
+catálogo las pintara ni una vez** — el carril entero, los tres tonos de burbuja,
+dos tonos de superficie—. La causa era común y es la que de verdad se arregla:
+**todo el R157 se pintaba desde el guion `data-vivo`, y tres candados cortan el
+documento justo ahí**; el de la promesa tampoco lo veía, porque su lista de
+casos está escrita a mano y tenía 63 entradas y ninguna del R157. El catálogo
+pasa a montarlo también en **estático**, entran 22 casos, y el marcado —que en
+piezas sin componente **es** la interfaz— entra en el contrato, que tampoco lo
+llevaba.
+
+Y **cinco afirmaciones del propio sistema eran falsas**: dos cifras que mezclaban
+medidas, «la burbuja sale del marco» con `badge` aún dentro del marco, un
+pendiente dado por cerrado que el auditor sigue imprimiendo, y un comentario que
+decía enseñar un carril que no monta. La regla de cero invención no distingue
+entre inventar una cifra y mezclar dos medidas.
 
 Siete piezas para una pantalla que *no se consulta, se vigila*, y ninguna es de
 esa pantalla — ésa es la única razón por la que entraron: cuadrícula densa,

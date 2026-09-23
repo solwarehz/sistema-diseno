@@ -293,9 +293,15 @@ function MatrizViva() {
   );
 }
 
-/* R157 · EL TABLERO DENSO, montado y vivo. Las seis piezas a la vez, que es
-   como se ve si conviven: la rejilla, el anillo, el relieve, la burbuja con
-   tono, la superficie tonal y el carril con su cuenta de paradas. */
+/* R157 · EL TABLERO DENSO, montado y vivo: la rejilla, el anillo, el relieve,
+   la burbuja, la superficie tonal y el indicador de «en vivo», a la vez, que es
+   como se ven si conviven.
+   Este comentario decia «y el carril con su cuenta de paradas» y era falso —
+   `TableroVivo` no monta ningun carril—. El carril y los tonos que aqui no se
+   usan van en la demo ESTATICA del catalogo, que ademas es la unica que los
+   candados pueden leer: los del empate, la omision y el elemento cortan el
+   documento en «script data-vivo», asi que nada de lo que monte este guion
+   existe para ellos. */
 const GENTE = [
   ['Rosa', 'Quispe', 'QUISPE MAMANI, Rosa', '06:48', 'exito'],
   ['Luis', 'Huamán', 'HUAMAN SOTO, Luis', '06:51', 'exito'],

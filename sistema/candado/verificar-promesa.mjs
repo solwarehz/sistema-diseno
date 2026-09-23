@@ -250,6 +250,57 @@ const CASOS = [
     elem('div', ['top']), elem('button', ['top-plegar']), elem('span', ['ic-movil']),
   ]],
   ['Velo del cajón', [elem('div', ['app', 'app-cascaron']), elem('div', ['velo'])]],
+
+  /* R157 · EL TABLERO DENSO. Esta lista tenía 63 entradas y NI UNA del R157:
+     las dos hojas nunca se compararon sobre las piezas de la versión que las
+     estrenó. No lo tapaba nadie más — los candados del empate, la omisión y el
+     elemento cortan el documento en «script data-vivo», y todo el tablero se
+     pintaba desde ese guion. Lo encontró una auditoría el 2026-09-22, con los
+     veintiún pasos en verde. Es la tercera vez que esta lista escrita a mano se
+     queda corta delante de una pieza nueva, y la lección es la de siempre: un
+     candado verde solo dice que lo que ESE candado mira está bien. */
+  ['Superficie tonal', [elem('div', ['sup', 'sup-exito'])]],
+  ['Superficie tonal de aviso', [elem('div', ['sup', 'sup-aviso'])]],
+  ['Superficie tonal de error', [elem('div', ['sup', 'sup-error'])]],
+  ['Superficie tonal informativa', [elem('div', ['sup', 'sup-info'])]],
+  ['Rejilla densa del tablero', [elem('div', ['sup', 'sup-exito']), elem('ul', ['tn-densa'])]],
+  ['Celda de persona', [
+    elem('div', ['sup', 'sup-exito']), elem('ul', ['tn-densa']), elem('li', ['tbl-persona']),
+  ]],
+  ['Foto de la celda', [
+    elem('div', ['sup', 'sup-exito']), elem('ul', ['tn-densa']), elem('li', ['tbl-persona']),
+    elem('span', ['tbl-foto']),
+  ]],
+  ['Avatar fluido con estado y relieve', [
+    elem('div', ['sup', 'sup-exito']), elem('ul', ['tn-densa']), elem('li', ['tbl-persona']),
+    elem('span', ['tbl-foto']),
+    elem('span', ['avatar', 'avatar-fluido', 'avatar-1', 'avatar-estado', 'avatar-exito', 'avatar-relieve']),
+  ]],
+  ['Nombre de la celda', [
+    elem('div', ['sup', 'sup-exito']), elem('ul', ['tn-densa']), elem('li', ['tbl-persona']),
+    elem('span', ['tbl-nom']),
+  ]],
+  ['Apellido de la celda', [
+    elem('div', ['sup', 'sup-exito']), elem('ul', ['tn-densa']), elem('li', ['tbl-persona']),
+    elem('span', ['tbl-ape']),
+  ]],
+  ['Hora de la celda', [
+    elem('div', ['sup', 'sup-exito']), elem('ul', ['tn-densa']), elem('li', ['tbl-persona']),
+    elem('span', ['tbl-hora']),
+  ]],
+  ['Burbuja sobre la foto', [elem('span', ['tbl-foto']), elem('span', ['badge'])]],
+  ['Burbuja con tono de éxito', [elem('span', ['tbl-foto']), elem('span', ['badge', 'badge-exito'])]],
+  ['Burbuja con tono de aviso', [elem('span', ['tbl-foto']), elem('span', ['badge', 'badge-aviso'])]],
+  ['Burbuja con tono informativo', [elem('span', ['tbl-foto']), elem('span', ['badge', 'badge-info'])]],
+  ['Indicador en vivo', [elem('p', ['vivo'])]],
+  ['Punto del indicador en vivo', [elem('p', ['vivo']), elem('span', ['vivo-punto'])]],
+  ['Carril con anclaje', [elem('div', ['car'])]],
+  ['Parada del carril', [elem('div', ['car']), elem('div', ['sup', 'sup-exito'])]],
+  ['Cuenta de paradas', [elem('p', ['car-cuenta'])]],
+  ['Punto de parada', [elem('p', ['car-cuenta']), elem('span', ['car-punto'])]],
+  ['Punto de la parada en curso', [
+    elem('p', ['car-cuenta']), elem('span', ['car-punto', 'car-punto-aqui']),
+  ]],
 ];
 
 /** Los anchos donde se compara. Una regla puede viajar y su @media no. */
