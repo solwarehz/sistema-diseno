@@ -115,6 +115,9 @@ export function enPaginas<T>(lista: readonly T[], porPagina: number): T[][] {
  * honesto mientras se mide.
  */
 export function useCapacidadTablero(caja: RefObject<HTMLElement | null>): CapacidadTablero {
+  /* LA CAJA QUE SE LE PASA TIENE QUE SER `tbl-lleno`, no el carril: el carril es
+     `height: 100%` y su alto puede depender del contenido, y entonces la cuenta
+     se queda clavada en la primera fila. Lo dice el contrato de marcado. */
   const [cap, setCap] = useState<CapacidadTablero>(() => capacidadDeRejilla(0, 0));
   /* En servidor no hay layout que medir y `useLayoutEffect` avisa por consola;
      es el mismo reparo que lleva `PanelPrivilegios`. */
@@ -128,10 +131,27 @@ export function useCapacidadTablero(caja: RefObject<HTMLElement | null>): Capaci
     const medir = () => {
       const el = caja.current;
       if (!el) return;
-      const r = el.getBoundingClientRect();
+      /* SE MIDE LA CAJA DE CONTENIDO, Y DE UN ELEMENTO QUE NO DEPENDA DEL
+         CONTENIDO. Esto media el carril con `getBoundingClientRect`, y el
+         carril es `height: 100%`: si su padre no tiene alto definido, ese 100 %
+         resuelve al alto del CONTENIDO — y entonces la cuenta entra en un punto
+         fijo en el sitio equivocado. Capacidad de una fila → se pintan tres
+         personas → el contenido sigue midiendo una fila → la capacidad sigue
+         siendo una. Se vio en un teléfono: TRES tarjetas arriba, el resto del
+         contenedor vacío y ocho puntos de página.
+         `tbl-lleno` no puede caer en eso: lleva `overflow: hidden`, así que su
+         tamaño nunca lo decide lo que hay dentro.
+         Y se resta el relleno a mano porque `clientWidth` lo INCLUYE, y la
+         rejilla vive dentro de él: con el relleno de 12 de la superficie tonal,
+         medir de más es lo que cortaba la última fila. */
+      const cs = getComputedStyle(el);
+      const ancho = el.clientWidth
+        - parseFloat(cs.paddingLeft || '0') - parseFloat(cs.paddingRight || '0');
+      const alto = el.clientHeight
+        - parseFloat(cs.paddingTop || '0') - parseFloat(cs.paddingBottom || '0');
       /* La ventana va aparte de la caja: el `@media` de la hoja mide la
          ventana, y la rejilla vive en la caja. */
-      const nueva = capacidadDeRejilla(r.width, r.height, window.innerWidth);
+      const nueva = capacidadDeRejilla(ancho, alto, window.innerWidth);
       /* Se compara antes de asignar: un `ResizeObserver` dispara por cualquier
          fracción de píxel, y sin esto cada uno sería un render de la rejilla
          entera aunque la capacidad no haya cambiado. */

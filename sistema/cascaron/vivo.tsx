@@ -378,12 +378,12 @@ function TableroVivo() {
           pantalla: si la calculara cada producto, la misma rejilla acabaria con
           tres respuestas distintas. Aqui solo se mide la caja que el sistema
           pide medir. */}
-      <div className={`sup sup-${grupo} tbl-lleno`}>
+      <div className={`sup sup-${grupo} tbl-lleno`} ref={caja}>
         {/* SE MIDE EL CARRIL, NO LA SUPERFICIE DE FUERA. Cada parada mide lo
             mismo que el carril, y la superficie le quita su relleno y su borde
             —26 px medidos—: midiendo fuera, la cuenta salia para una caja mas
             grande que la real y la ultima fila quedaba CORTADA. */}
-        <div className="car car-pagina" ref={caja} onScroll={alDeslizar}
+        <div className="car car-pagina" onScroll={alDeslizar}
              tabIndex={0} role="region"
              aria-label={`Personas, ${paginas.length} ${paginas.length === 1 ? 'pantalla' : 'pantallas'}`}>
           {paginas.map((pagina, i) => (

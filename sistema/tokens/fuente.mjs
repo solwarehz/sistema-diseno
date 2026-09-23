@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.142.0";
+export const VERSION = "1.143.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,35 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.143.0', fecha: '2026-09-23',
+    que: 'El tablero medía la caja equivocada y se quedaba clavado en TRES tarjetas con la pantalla entera vacía debajo',
+    porque:
+      'LO VIO EL RESPONSABLE EN SU TELEFONO: tres tarjetas arriba, el resto del contenedor en '
+      + 'blanco, y OCHO puntos de pagina debajo. La capacidad decia 3 —tres columnas por UNA fila— '
+      + 'en una caja de mas de mil pixeles de alto. '
+      + 'LA CAUSA ES UN PUNTO FIJO EN EL SITIO EQUIVOCADO, y es el tipo de defecto que se '
+      + 'autoconfirma: el gancho medía el CARRIL con `getBoundingClientRect`, y el carril es '
+      + '`height: 100%`. Cuando su padre no tiene alto definido, ese 100 % resuelve al alto del '
+      + 'CONTENIDO. Entonces: capacidad de una fila → se pintan tres personas → el contenido sigue '
+      + 'midiendo una fila → la capacidad sigue siendo una. Estable, y estable en el peor sitio. '
+      + 'SE MIDE `tbl-lleno`, QUE NO PUEDE CAER EN ESO porque lleva `overflow: hidden`: su tamaño '
+      + 'nunca lo decide lo que hay dentro. Y se mide su CAJA DE CONTENIDO —restando el relleno a '
+      + 'mano, porque `clientWidth` lo incluye y la rejilla vive dentro de el—, que es lo que en la '
+      + 'v1.139.0 obligo a mover la referencia al carril para no cortar la ultima fila. Las dos '
+      + 'cosas se arreglan a la vez y ninguna obliga a la otra. '
+      + 'MEDIDO DESPUES: 360x760 da 12+6 donde daba 3; 390x844 da 15+3; 768x500 da 14+4; y en una '
+      + 'caja de 252 de ancho, 2x2 por pantalla sin un hueco muerto. En ninguna hay desplazamiento '
+      + 'vertical ni celda cortada. '
+      + 'El contrato dice ahora DONDE va la referencia, y hay prueba que lo vigila: devolverla al '
+      + 'carril la pone en rojo.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'NADA de API, pero quien ya monte el tablero tiene que poner la referencia de '
+      + '`useCapacidadTablero` en el `tbl-lleno` y no en el carril. Si la tiene en el carril, esta '
+      + 'viendo el defecto: tres tarjetas y el resto vacio.',
+    ],
+  },
   {
     v: '1.142.0', fecha: '2026-09-23',
     que: 'El ultimo defecto del tablero: el suelo de fila cabe por fin lo que la celda puede producir',

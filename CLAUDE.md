@@ -19,7 +19,7 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.142.0** — **el cierre del R157: lo que prometía y no
+**Estado actual: v1.143.0** — **el cierre del R157: lo que prometía y no
 entregaba**, encontrado por una auditoría con los veintiún pasos en verde.
 
 La v1.133.0 publicó siete piezas y **cuatro de ellas viajaban sin que el

@@ -353,3 +353,27 @@ describe('R159 · lo que una auditoría en navegador encontró', () => {
       + 'suelo se queda corto otra vez').toMatch(/\.tn-densa-llena \.tbl-nom\{[^}]*line-clamp:\s*1/);
   });
 });
+
+describe('R159 · la caja que se mide no puede depender del contenido', () => {
+  it('[11] la referencia va en `tbl-lleno`, NO en el carril', () => {
+    /* El carril es `height: 100%`. Si su padre no tiene alto definido, ese
+       100 % resuelve al alto del CONTENIDO, y la cuenta entra en un punto fijo
+       en el sitio equivocado: capacidad de una fila → se pintan tres personas →
+       el contenido sigue midiendo una fila → la capacidad sigue siendo una. Se
+       vio en un teléfono: TRES tarjetas arriba, el resto del contenedor vacío y
+       ocho puntos de página.
+       `tbl-lleno` no puede caer en eso porque lleva `overflow: hidden`: su
+       tamaño nunca lo decide lo que hay dentro. */
+    const demo = readFileSync(
+      join(process.cwd(), '..', 'sistema', 'cascaron', 'vivo.tsx'), 'utf8');
+    const lineaLleno = demo.split('\n').find((l) => l.includes('tbl-lleno')) ?? '';
+    expect(lineaLleno, 'la demo no mide `tbl-lleno`: la cuenta se clavará en la primera fila')
+      .toContain('ref={caja}');
+    const lineaCarril = demo.split('\n').find((l) => l.includes('car car-pagina')) ?? '';
+    expect(lineaCarril, 'la referencia volvió al carril, que es lo que causaba el punto fijo')
+      .not.toContain('ref={caja}');
+    /* Y lo que hace a `tbl-lleno` inmune: su tamaño no lo decide su contenido. */
+    expect(regla('.tbl-lleno'), 'sin `overflow: hidden` el contenido puede estirar la caja '
+      + 'que se mide, y vuelve el punto fijo').toMatch(/overflow:\s*hidden/);
+  });
+});
