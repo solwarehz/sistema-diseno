@@ -132,3 +132,40 @@ describe('R159 · lo que la hoja tiene que garantizar', () => {
       .toMatch(/height:\s*100%/);
   });
 });
+
+describe('R160 · dos defectos que se vieron en la misma pantalla', () => {
+  it('[13] la burbuja declara su propio `line-height`, no lo hereda', () => {
+    /* `.tbl-foto` declara `line-height: 0` para matar el hueco de línea del
+       avatar, y la burbuja lo HEREDABA: su caja de texto medía cero de alto y
+       `place-items: center` centraba una línea vacía. Medido en el catálogo
+       antes del arreglo: `line-height: 0px` en el `.badge`. Con dos cifras se
+       veía; con una, casi no. */
+    const b = regla('.badge');
+    expect(b, 'la burbuja no declara su interlineado y hereda el 0 de `.tbl-foto`')
+      .toMatch(/line-height:\s*1\b/);
+    expect(regla('.tbl-foto'), 'si `.tbl-foto` deja de declarar 0, esta regla sobra')
+      .toMatch(/line-height:\s*0/);
+  });
+
+  it('[13] y se despega de la foto con su anillo', () => {
+    /* Un círculo rojo sobre una fotografía con el pelo oscuro detrás se
+       confunde con el borde. Es el mismo recurso que ya usa el anillo de
+       estado del avatar. */
+    expect(regla('.badge'), 'la burbuja no se despega del fondo que tenga detrás')
+      .toMatch(/box-shadow:[^;]*var\(--fondo-tarjeta\)/);
+  });
+
+  it('[13] la foto del avatar encuadra a la CARA, no al centro', () => {
+    /* `cover` recorta. Con el punto por omisión, una foto vertical de carnet
+       pierde la parte de arriba. Medido: el centro corta 5,4 px de cabeza en
+       un 3:4 y el 30 % corta 2,2; en una vertical de móvil, 15,2 contra 7,8.
+       No lo elimina —ninguna cifra sirve para todas las proporciones— y por eso
+       el contrato dice que el arreglo de raíz es recortar al subir. */
+    const i = css.indexOf('.avatar img');
+    expect(i, 'la hoja no estiliza la foto del avatar').toBeGreaterThan(-1);
+    const r = css.slice(i, css.indexOf('}', i));
+    expect(r, 'la foto se recorta por el centro y se come la cabeza')
+      .toMatch(/object-position:\s*50%\s*30%/);
+    expect(r, 'sin `cover` no hay recorte que encuadrar').toMatch(/object-fit:\s*cover/);
+  });
+});

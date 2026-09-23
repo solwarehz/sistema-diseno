@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.139.0";
+export const VERSION = "1.140.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,39 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.140.0', fecha: '2026-09-23',
+    que: 'R160 · el numero de la burbuja se lee, y la foto del avatar deja de cortar la cabeza',
+    porque:
+      'DOS DEFECTOS VISTOS EN LA MISMA PANTALLA POR EL RESPONSABLE, y los dos llevaban ahi desde '
+      + 'que la pieza nacio. '
+      + 'LA BURBUJA HEREDABA `line-height: 0`. Lo declara `.tbl-foto` para matar el hueco de linea '
+      + 'del avatar, y la burbuja se lo comia: su caja de texto medía CERO de alto, asi que '
+      + '`place-items: center` centraba una linea vacia y el numero quedaba descolocado dentro del '
+      + 'circulo. Medido antes del arreglo: `line-height: 0px` en el `.badge`. Con una cifra casi no '
+      + 'se nota; con dos —«+26», «+91»— si, y asi se reporto. Ahora lo declara ELLA, porque la '
+      + 'burbuja se pone sobre CUALQUIER contenedor posicionado y no puede depender de lo que ese '
+      + 'contenedor le herede. Y gana anillo del color de la tarjeta: un circulo rojo sobre una '
+      + 'fotografia con pelo oscuro detras se confunde con el borde, y es el mismo recurso que ya '
+      + 'usa el anillo de estado. '
+      + 'Y LA FOTO SE RECORTABA POR EL CENTRO, QUE ES DONDE NO ESTA LA CARA. `object-fit: cover` '
+      + 'recorta, y con el punto por omision una foto vertical de carnet pierde la parte de ARRIBA: '
+      + 'se corta la cabeza y sobra pecho. Se vio en la PRIMERA FILA de un tablero, que es donde se '
+      + 'mira primero. Pasa a `50% 30%`, que es donde cae la cara en un retrato de medio cuerpo. '
+      + 'MEDIDO, Y SE DICE ENTERO: lo reduce a la mitad y NO lo elimina. En un carnet 3:4 el centro '
+      + 'corta 5,4 px de cabeza y el 30 % corta 2,2; en una vertical de movil, 15,2 contra 7,8. '
+      + 'Ninguna cifra sirve para todas las proporciones —para no cortar nunca en un 3:4 haria falta '
+      + 'el 16 %, y en una vertical de movil el 9 %, y con eso una foto ya ajustada pierde la '
+      + 'barbilla—. EL ARREGLO DE RAIZ NO ES ESTE: es recortar AL SUBIR con `CargaImagen '
+      + 'formato="foto"`, que ya existe y recorta 1:1. Lo que llega sin pasar por ahi se encuadra lo '
+      + 'mejor que se puede, y eso es lo que hace esta regla.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'Cambia lo que se VE sin cambiar ninguna API: las burbujas centran bien su numero y llevan un '
+      + 'anillo claro alrededor, y las fotos de los avatares se encuadran mas arriba. Las dos son '
+      + 'correcciones de defectos reportados, no preferencias.',
+    ],
+  },
   {
     v: '1.139.0', fecha: '2026-09-23',
     que: 'R159 · el tablero llena el area PRIMERO, y solo despues se desliza — y la capacidad la calcula el sistema',

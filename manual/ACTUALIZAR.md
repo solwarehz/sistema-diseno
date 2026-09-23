@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.139.0
+# Actualizar al sistema de diseño v1.140.0
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.139.0"
+npm install "github:solwarehz/sistema-diseno#v1.140.0"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -37,7 +37,7 @@ está en marcha tiene el código viejo en memoria, y su caché de compilación n
 se entera de que cambió algo dentro de `node_modules`.
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.139.0"
+npm install "github:solwarehz/sistema-diseno#v1.140.0"
 # y ENTONCES, sin excepción:
 docker compose restart <su-servicio>     # o el reinicio que usen
 # si aun así ven lo de antes, tiren la caché de compilación —y reinicien OTRA
@@ -101,12 +101,12 @@ familia entera de ese defecto.
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.139.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.140.0>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.139.0 --repo solwarehz/sistema-diseno
+gh release download v1.140.0 --repo solwarehz/sistema-diseno
 ```
 
 Son **60 archivos**: tokens, hoja de estilos, los **43 módulos de componente**

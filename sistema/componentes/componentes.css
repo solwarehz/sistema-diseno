@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.139.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.140.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -102,7 +102,7 @@
     --dur-onda: 0.01ms;
   }
 }
-:root{ --mmi-componentes: 1.139.0; }
+:root{ --mmi-componentes: 1.140.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -823,7 +823,8 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .avatar-4{ background: var(--identidad-4); }
 .avatar-vacio{ background: var(--fondo-encabezado); color: var(--texto-secundario); }
 .avatar img, .avatar-silueta{ position: absolute; inset: 0;
-  width: 100%; height: 100%; object-fit: cover; display: block; }
+  width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%;
+  display: block; }
 .avatar-marco{ background: var(--marco-acento); color: var(--marco-fondo); }
 .avatar-caso{ display: flex; flex-direction: column; align-items: center; gap: 4px;
   font-size: 12px; color: var(--texto-secundario); }
@@ -1916,7 +1917,19 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 
 .badge{ position: absolute; top: 1px; right: 1px; min-width: 18px; aspect-ratio: 1;
   border-radius: 50%; background: var(--error-acento); color: var(--texto-invertido);
-  font-size: 11px; font-weight: 600; display: grid; place-items: center; padding: 0 3px; }
+  font-size: 11px; font-weight: 600; display: grid; place-items: center; padding: 0 3px;
+  /* LINE-HEIGHT PROPIO, Y NO ES COSMETICA. «.tbl-foto» declara «line-height: 0»
+     para matar el hueco de linea del avatar, y la burbuja lo HEREDABA: su caja
+     de texto medía cero de alto, asi que «place-items: center» centraba una
+     linea vacia y el numero quedaba descolocado dentro del circulo. Se vio en
+     una tablet con «+26» y «+91» — dos cifras, que es cuando mas se nota.
+     Se declara aqui porque la burbuja se pone SOBRE cualquier contenedor
+     posicionado, y no puede depender de que ese contenedor no le herede nada. */
+  line-height: 1;
+  /* Y EL ANILLO LA SEPARA DE LA FOTO. Un circulo rojo sobre una fotografia con
+     pelo oscuro detras se confunde con el borde; el anillo del color de la
+     tarjeta le da el mismo despegue que ya lleva el anillo de estado. */
+  box-shadow: 0 0 0 2px var(--fondo-tarjeta); }
 .badge-exito{ background: var(--exito-acento); }
 .badge-aviso{ background: var(--aviso-acento); color: var(--texto-principal); }
 .badge-info{ background: var(--info-acento); }
