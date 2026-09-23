@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.138.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.139.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -102,7 +102,7 @@
     --dur-onda: 0.01ms;
   }
 }
-:root{ --mmi-componentes: 1.138.0; }
+:root{ --mmi-componentes: 1.139.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -865,11 +865,14 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .tna-editar{ position: absolute; top: 8px; right: 8px; z-index: 1; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TARJETA — 21 reglas · clases .tn-*
+   TARJETA — 23 reglas · clases .tn-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tn-cuadricula{ display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 12px; }
 .tn-cuadricula > *{ min-width: 0; }
+.tn-densa-llena{ grid-template-rows: repeat(auto-fill, minmax(100px, 1fr));
+  align-content: stretch; height: 100%; }
+.tn-densa-llena > .tbl-persona{ justify-content: center; }
 .tn-densa{ display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
   gap: 8px; margin: 0; padding: 0; list-style: none; }
 .tn-densa > *{ min-width: 0; }
@@ -1919,7 +1922,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .badge-info{ background: var(--info-acento); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CELDA DE TABLERO — 7 reglas · clases .tbl-*
+   CELDA DE TABLERO — 9 reglas · clases .tbl-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tbl-marco{ display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 8px; }
@@ -1938,6 +1941,8 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   overflow: hidden; }
 .tbl-hora{ font-size: 11px; color: var(--texto-secundario);
   font-variant-numeric: tabular-nums; }
+.tbl-lleno{ flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; }
+.tbl-lleno > *{ flex: 1 1 auto; min-height: 0; min-width: 0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    SUPERFICIE TONAL — 5 reglas · clases .sup-*
@@ -1951,7 +1956,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .sup-info{ --sup-fondo: var(--info-fondo);  --sup-borde: var(--info-acento); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CARRIL CON ANCLAJE — 7 reglas · clases .car-*
+   CARRIL CON ANCLAJE — 9 reglas · clases .car-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .car{ display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
@@ -1965,6 +1970,8 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 @media (prefers-reduced-motion: reduce) {
   .car{ scroll-behavior: auto; }
 }
+.car-pagina{ height: 100%; }
+.car-pagina > *{ height: 100%; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    EN VIVO — 3 reglas · clases .vivo-*

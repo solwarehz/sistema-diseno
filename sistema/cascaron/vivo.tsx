@@ -19,12 +19,14 @@
  * catálogo que se quedara sin el componente vivo y no lo dijera sería
  * exactamente la mentira que esto viene a cerrar.
  */
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MarcoApp, type GrupoNav } from '../../componentes/src/MarcoApp';
 import { Icono } from '../../componentes/src/Icono';
 import { Avatar } from '../../componentes/src/Avatar';
 import { Segmentado } from '../../componentes/src/Segmentado';
+/* R159 · La capacidad la calcula el SISTEMA, no esta pantalla. */
+import { useCapacidadTablero, enPaginas } from '../../componentes/src/tablero';
 import { TablaDatos } from '../../componentes/src/TablaDatos';
 import { PanelPrivilegios, type ModuloPrivilegios, type ValorPrivilegios,
   type ColumnaPrivilegios } from '../../componentes/src/PanelPrivilegios';
@@ -344,6 +346,9 @@ function TableroVivo() {
   const dentro = GENTE.filter((g) => g[4] === 'exito');
   const fuera = GENTE.filter((g) => g[4] === 'error');
   const lista = grupo === 'exito' ? dentro : fuera;
+  const caja = useRef<HTMLDivElement>(null);
+  const { porPagina } = useCapacidadTablero(caja);
+  const paginas = enPaginas(lista, porPagina);
   return (
     <div className="muestra-tablero tbl-marco">
       {/* EL TEXTO QUE SOSTIENE EL COLOR: el recuento va aqui, con palabras, y
@@ -358,27 +363,49 @@ function TableroVivo() {
         valor={grupo}
         onCambio={(v) => setGrupo(v as 'exito' | 'error')}
       />
-      <div className={`sup sup-${grupo} tbl-crece`}>
-        <ul className="tn-densa">
-          {lista.map(([corto, apellido, nombre, hora, tono]) => (
-            <li key={nombre} className="tbl-persona">
-              <span className="tbl-foto">
-                <Avatar id={nombre} nombre={nombre} tamano="fluido"
-                        estado={tono} elevacion="relieve" />
-                {tarde(hora) > 0 && <span className="badge">+{tarde(hora)}</span>}
-              </span>
-              {/* EL NOMBRE COMPLETO NO SE PIERDE NUNCA. Las dos lineas de arriba
-                  son lo que se LEE de un vistazo; esto es lo que queda si una
-                  de las dos se recorta, y es lo que dice un lector de pantalla
-                  en vez de deletrear «Rosa Quispe 06:48». */}
-              <span className="sr-solo">{nombre} · {hora}</span>
-              <span className="tbl-nom">{corto}</span>
-              <span className="tbl-ape">{apellido}</span>
-              <span className="tbl-hora" aria-hidden="true">{hora}</span>
-            </li>
+      {/* R159 · SE LLENA EL AREA, Y LO QUE SOBRA VA A LA SIGUIENTE PAGINA.
+          La capacidad la calcula el SISTEMA —«useCapacidadTablero»— y no esta
+          pantalla: si la calculara cada producto, la misma rejilla acabaria con
+          tres respuestas distintas. Aqui solo se mide la caja que el sistema
+          pide medir. */}
+      <div className={`sup sup-${grupo} tbl-lleno`}>
+        {/* SE MIDE EL CARRIL, NO LA SUPERFICIE DE FUERA. Cada parada mide lo
+            mismo que el carril, y la superficie le quita su relleno y su borde
+            —26 px medidos—: midiendo fuera, la cuenta salia para una caja mas
+            grande que la real y la ultima fila quedaba CORTADA. */}
+        <div className="car car-pagina" ref={caja} tabIndex={0} role="region"
+             aria-label={`Personas, ${paginas.length} ${paginas.length === 1 ? 'pantalla' : 'pantallas'}`}>
+          {paginas.map((pagina, i) => (
+            <ul className="tn-densa tn-densa-llena" key={i}>
+              {pagina.map(([corto, apellido, nombre, hora, tono]) => (
+                <li key={nombre} className="tbl-persona">
+                  <span className="tbl-foto">
+                    <Avatar id={nombre} nombre={nombre} tamano="fluido"
+                            estado={tono} elevacion="relieve" />
+                    {tarde(hora) > 0 && <span className="badge">+{tarde(hora)}</span>}
+                  </span>
+                  {/* EL NOMBRE COMPLETO NO SE PIERDE NUNCA. Las dos lineas de
+                      arriba son lo que se LEE de un vistazo; esto es lo que
+                      queda si una se recorta, y es lo que dice un lector en vez
+                      de deletrear «Rosa Quispe 06:48». */}
+                  <span className="sr-solo">{nombre} · {hora}</span>
+                  <span className="tbl-nom">{corto}</span>
+                  <span className="tbl-ape">{apellido}</span>
+                  <span className="tbl-hora" aria-hidden="true">{hora}</span>
+                </li>
+              ))}
+            </ul>
           ))}
-        </ul>
+        </div>
       </div>
+      {paginas.length > 1 && (
+        <p className="car-cuenta">
+          {paginas.map((_, i) => (
+            <span key={i} className={`car-punto${i === 0 ? ' car-punto-aqui' : ''}`} />
+          ))}
+          <span className="sr-solo">Pantalla 1 de {paginas.length}</span>
+        </p>
+      )}
       <p className="vivo"><span className="vivo-punto" /> En vivo · último dato 07:15</p>
     </div>
   );

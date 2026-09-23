@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.138.0";
+export const VERSION = "1.139.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,54 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.139.0', fecha: '2026-09-23',
+    que: 'R159 · el tablero llena el area PRIMERO, y solo despues se desliza — y la capacidad la calcula el sistema',
+    porque:
+      'LO CORTO EL RESPONSABLE MIRANDO UNA TABLET: «si se ocupa todo el espacio y no queda mas, '
+      + 'recien se hace scroll horizontal». Y no es una preferencia: un tablero que deja media '
+      + 'pantalla en blanco y aun asi obliga a deslizar convierte la PAGINACION POR GESTO en '
+      + 'DESBORDAMIENTO CON OTRO NOMBRE — la distincion que el R157 establecio dos versiones antes y '
+      + 'que este defecto rompia en silencio. Se veia en la captura: tres filas de gente y medio '
+      + 'alto de blanco debajo, con el carril pidiendo que deslizaras. '
+      + 'ENTRAN TRES CLASES Y CADA UNA HACE UNA COSA: `tbl-lleno` —el cuerpo llena y NO se desplaza '
+      + 'en vertical—, `tn-densa-llena` —la rejilla reparte FILAS ademas de columnas, asi que las '
+      + 'celdas se estiran hasta llenar— y `car-pagina` —cada parada ocupa el alto completo—. '
+      + 'Y NO HAY DESPLAZAMIENTO VERTICAL A PROPOSITO. Lo pidio asi —«elimina el scroll vertical '
+      + 'para en-vivo»— y el motivo lo sostiene: con los dos gestos en la misma superficie, en un '
+      + 'telefono se intenta pasar de pagina y la rejilla baja. Lo que no cabe va a la SIGUIENTE '
+      + 'PANTALLA, no mas abajo. '
+      + 'Y LA CAPACIDAD LA CALCULA EL SISTEMA, que es la parte que hace que esto sea una pieza y no '
+      + 'un truco. `capacidadDeRejilla` y `useCapacidadTablero` se publican porque el sistema declara '
+      + 'el suelo de la celda y el hueco de la rejilla: si cada pantalla los mide por su cuenta, la '
+      + 'misma rejilla acaba con tres respuestas. Es el mismo argumento con el que el relieve salio a '
+      + 'un token, y lo pidio el equipo con esas palabras: LA PIEZA, NO EL VALOR. '
+      + 'SE PUBLICA EL GANCHO Y NO SOLO LA CUENTA. Publicar la mitad dejaba a cada producto '
+      + 'escribiendo su `ResizeObserver`, que es EXACTAMENTE el `useEffect` que ellos retiraron de su '
+      + 'pantalla por ser «codigo del producto decidiendo maquetacion». Mide con TRES fuentes '
+      + '—observador de caja, `resize` de ventana y `visualViewport`— porque ninguna sola las cubre: '
+      + 'el observador coge la caja sin que la ventana cambie, y el evento coge el giro del telefono '
+      + 'y sigue funcionando donde el observador no existe. Con la caja sin medir devuelve 1x1 y '
+      + 'NUNCA 0: un cero hace dividir por cero a quien trocee la lista. '
+      + 'NO SE USA `grid-auto-flow: column`, que habria sido UNA LINEA y resolvia el desbordamiento '
+      + 'solo: cambia el orden de lectura a columnas, el segundo cae DEBAJO del primero y no a su '
+      + 'lado, y en una lista ordenada por hora eso es ilegible. Lo aviso el equipo que la usa. El '
+      + 'orden se lee por filas, asi que las paginas son bloques de verdad y alguien tiene que '
+      + 'decidir cuantos caben — y ese alguien es el sistema. '
+      + 'Y SE MIDE EL CARRIL, NO LA SUPERFICIE DE FUERA. La primera version media la caja exterior y '
+      + 'la cuenta salia para 566x156 cuando la rejilla vivia en 541x131: la ultima fila quedaba '
+      + 'CORTADA. La superficie le quita su relleno y su borde —26 px medidos—, asi que se mide donde '
+      + 'la rejilla vive de verdad. '
+      + 'MEDIDO EN CUATRO AREAS: 541x131 da 4 paginas de 5+5+5+3; 293x477 —un telefono— da 2 de '
+      + '12+6; 753x391 y 1133x591 dan UNA sola de 18. En las cuatro, nada cortado y CERO '
+      + 'desplazamiento vertical.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'NADA. `tbl-lleno`, `tn-densa-llena` y `car-pagina` son clases NUEVAS, y `tn-densa` sola se '
+      + 'comporta igual que antes. Quien quiera el tablero que llena la pantalla compone las tres; '
+      + 'quien no, no toca nada.',
+    ],
+  },
   {
     v: '1.138.0', fecha: '2026-09-23',
     que: 'R158 · el encabezado vuelve a ser UNA fila, y el sistema publica por fin el padre que «tbl-marco» necesitaba',

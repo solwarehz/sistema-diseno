@@ -11956,6 +11956,48 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    columnas de 93 px donde caben tres—, y el desajuste no se ve como un fallo,
    se ve como un tablero apretado. El responsable lo reporto asi: «en toda la
    pantalla respetando el margen se deben repartir las cards». */
+/* ─────────────────────────────────────────────────────────────────────────────
+   R159 · EL TABLERO PAGINADO: primero se llena el area, y DESPUES se desliza.
+
+   Lo corto el responsable mirando el tablero en una tablet: «si se ocupa todo
+   el espacio y no queda mas, recien se hace scroll horizontal». Y es la regla
+   correcta, no una preferencia: un tablero que se vigila de lejos y deja media
+   pantalla en blanco obliga a deslizar para ver gente que HABRIA CABIDO. El
+   gesto deja de ser paginacion y vuelve a ser desbordamiento — la distincion
+   que el R157 dejo escrita.
+
+   TRES CLASES, y cada una hace una cosa:
+     · «tbl-lleno»       el cuerpo llena el alto y NO se desplaza en vertical.
+     · «tn-densa-llena»  la rejilla reparte FILAS ademas de columnas, asi que
+                         las celdas se estiran hasta ocupar el area entera.
+     · «car-pagina»      cada parada del carril ocupa el alto completo.
+
+   POR QUE NO VALE «grid-auto-flow: column». Seria una linea y resolveria el
+   desbordamiento horizontal solo, pero cambia el ORDEN DE LECTURA a columnas:
+   el segundo cae DEBAJO del primero, no a su lado. En una lista ordenada por
+   hora eso es ilegible, y lo aviso el equipo que la usa. El orden se lee por
+   filas, asi que las paginas son bloques de verdad y alguien tiene que decidir
+   cuantos caben en cada una — ver «capacidadDeRejilla», que lo calcula el
+   SISTEMA y no cada producto.
+
+   Y AQUI NO HAY DESPLAZAMIENTO VERTICAL, a proposito. Si cupiera, el gesto
+   vertical y el horizontal competirian en la misma superficie y en un telefono
+   eso se nota: se intenta pasar de pagina y la rejilla baja. Lo que no cabe en
+   una pagina va a la siguiente, no mas abajo.
+   ───────────────────────────────────────────────────────────────────────────── */
+.tbl-lleno { flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; }
+.tbl-lleno > * { flex: 1 1 auto; min-height: 0; min-width: 0; }
+/* Las filas se reparten como las columnas: «auto-fill» las cuenta y «1fr» las
+   estira. El suelo de 100 px es lo que mide una celda entera —foto de 48, sus
+   10 de separacion y las tres lineas a 11 px—, medido, no estimado. */
+.tn-densa-llena { grid-template-rows: repeat(auto-fill, minmax(100px, 1fr));
+  align-content: stretch; height: 100%; }
+/* En una celda estirada el contenido se centra: si no, queda pegado arriba y el
+   hueco de abajo se lee como un fallo de maquetacion. */
+.tn-densa-llena > .tbl-persona { justify-content: center; }
+.car-pagina { height: 100%; }
+.car-pagina > * { height: 100%; }
+
 .tn-densa { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
   gap: 8px; margin: 0; padding: 0; list-style: none; }
 .tn-densa > * { min-width: 0; }

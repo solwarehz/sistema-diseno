@@ -161,6 +161,12 @@ const PAGINA_DE = new Map([
   ['PanelBarra', 'Panel de la barra'],
   // Los tres del marco comparten pagina: se demuestran juntos o no se entienden.
   ['MarcoApp', 'Maquetas'], ['MenuUsuario', 'Maquetas'], ['MarcaMenu', 'Maquetas'],
+  /* R159 · La capacidad del tablero se demuestra DONDE SE USA y no en una
+     pagina propia: una cuenta suelta no se entiende, y lo que hay que ver es
+     que la rejilla llena el area y que lo que sobra pasa a la pagina
+     siguiente. Va con el avatar porque alli vive el tablero. */
+  ['capacidadDeRejilla', 'Avatar'], ['enPaginas', 'Avatar'],
+  ['useCapacidadTablero', 'Avatar'],
 ]);
 
 const indice = join(RAIZ, 'componentes/src/index.ts');

@@ -1,7 +1,7 @@
 # Estado del proyecto
 
 **Última actualización:** 22 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.138.0** — el cierre del R157: lo que
+**Versión del sistema:** MMI-DS **v1.139.0** — el cierre del R157: lo que
 prometía y no entregaba, encontrado por una auditoría con todo en verde
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
