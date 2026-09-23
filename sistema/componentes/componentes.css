@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.134.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.135.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -103,7 +103,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce){ .av { transform: none; transition: opacity var(--dur-rapida) var(--curva); } }
-:root{ --mmi-componentes: 1.134.0; }
+:root{ --mmi-componentes: 1.135.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -1904,9 +1904,9 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
    BURBUJA DE RECUENTO — 4 reglas · clases .badge-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-.badge{ position: absolute; top: 1px; right: 1px; min-width: 15px; height: 15px;
-  border-radius: 6px; background: var(--error-acento); color: var(--texto-invertido);
-  font-size: 12px; font-weight: 600; display: grid; place-items: center; padding: 0 4px; }
+.badge{ position: absolute; top: 1px; right: 1px; min-width: 18px; aspect-ratio: 1;
+  border-radius: 50%; background: var(--error-acento); color: var(--texto-invertido);
+  font-size: 11px; font-weight: 600; display: grid; place-items: center; padding: 0 3px; }
 .badge-exito{ background: var(--exito-acento); }
 .badge-aviso{ background: var(--aviso-acento); color: var(--texto-principal); }
 .badge-info{ background: var(--info-acento); }
@@ -1916,12 +1916,17 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tbl-persona{ display: flex; flex-direction: column; align-items: center;
-  gap: 3px; min-width: 0; text-align: center; }
-.tbl-foto{ position: relative; display: block; width: 100%; line-height: 0; }
+  gap: 0; min-width: 0; text-align: center; }
+.tbl-foto{ position: relative; display: flex; justify-content: center;
+  width: 100%; line-height: 0; }
 .tbl-nom{ font-size: 11px; color: var(--texto-principal); max-width: 100%;
-  overflow-wrap: break-word; line-height: 1.25; font-weight: 500; }
+  overflow-wrap: break-word; line-height: 1.25; font-weight: 500; margin-top: 10px;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  overflow: hidden; }
 .tbl-ape{ font-size: 11px; color: var(--texto-secundario); max-width: 100%;
-  overflow-wrap: break-word; line-height: 1.25; }
+  overflow-wrap: break-word; line-height: 1.25;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  overflow: hidden; }
 .tbl-hora{ font-size: 11px; color: var(--texto-secundario);
   font-variant-numeric: tabular-nums; }
 

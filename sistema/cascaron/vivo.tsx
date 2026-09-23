@@ -366,9 +366,14 @@ function TableroVivo() {
                         estado={tono} elevacion="relieve" />
                 {tarde(hora) > 0 && <span className="badge">+{tarde(hora)}</span>}
               </span>
+              {/* EL NOMBRE COMPLETO NO SE PIERDE NUNCA. Las dos lineas de arriba
+                  son lo que se LEE de un vistazo; esto es lo que queda si una
+                  de las dos se recorta, y es lo que dice un lector de pantalla
+                  en vez de deletrear «Rosa Quispe 06:48». */}
+              <span className="sr-solo">{nombre} · {hora}</span>
               <span className="tbl-nom">{corto}</span>
               <span className="tbl-ape">{apellido}</span>
-              <span className="tbl-hora">{hora}</span>
+              <span className="tbl-hora" aria-hidden="true">{hora}</span>
             </li>
           ))}
         </ul>

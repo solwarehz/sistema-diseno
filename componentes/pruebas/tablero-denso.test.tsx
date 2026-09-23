@@ -153,12 +153,108 @@ describe('R157 · la cuadrícula densa', () => {
     expect(r, 'cada persona sale con su puntito de lista').toMatch(/list-style:\s*none/);
   });
 
-  it('[1] la celda enseña las TRES líneas, y ninguna se recorta', () => {
-    /* Nombre, apellido y hora. Si una se recorta, la rejilla deja de servir
-       para lo que se pidió: ver de un vistazo quién marcó. */
+  it('[1] el ritmo NO es uniforme: la foto se separa y los datos se juntan', () => {
+    /* La foto es una cosa y el bloque de datos es otra. Con el mismo hueco entre
+       las cuatro, el ojo lee cuatro elementos sueltos en vez de una persona.
+       Medido en el catálogo tras el cambio: 8 px de la foto al nombre, 2 px
+       entre las tres líneas. Lo pidió el responsable mirando el tablero. */
+    const celda = regla('.tbl-persona');
+    const hueco = Number(/gap:\s*(\d+)(?:px)?/.exec(celda)?.[1]);
+    expect(Number.isFinite(hueco), 'la celda no declara su hueco').toBe(true);
+    expect(hueco, 'las tres líneas de datos tienen que ir SIN hueco: su interlineado '
+      + 'ya las respira, y un hueco las separa igual que separa la foto').toBe(0);
+    const separa = Number(/margin-top:\s*(\d+)px/.exec(regla('.tbl-nom'))?.[1]);
+    expect(separa, 'el bloque de datos no se despega de la foto').toBeTruthy();
+    expect(separa, 'la foto tiene que quedar MÁS lejos de los datos que las líneas '
+      + 'de datos entre sí, o la celda se lee como cuatro cosas sueltas')
+      .toBeGreaterThan(hueco + 4);
+  });
+
+  it('[1] y envolver tiene TOPE: dos líneas, o un apellido estira su fila', () => {
+    /* «Que no rompa el diseño» era la otra mitad de lo pedido. Sin tope, un
+       apellido compuesto estira su fila y descuadra la rejilla entera. Medido
+       en el catálogo con el peor caso real: «Villanueva-Bustamante» envuelve en
+       dos líneas SIN recortarse y la celda crece 13,8 px; tres apellidos
+       encadenados sí se recortan, y la celda se queda igual — 115,2 px, el
+       techo, en los tres casos. */
+    for (const c of ['.tbl-nom', '.tbl-ape']) {
+      const r = regla(c);
+      expect(r, `${c} no tiene tope de líneas: un nombre largo estira su fila`)
+        .toMatch(/-webkit-line-clamp:\s*2/);
+      expect(r, `${c} declara el tope sin la caja que lo aplica`)
+        .toMatch(/display:\s*-webkit-box/);
+      expect(r, `${c} recorta sin ocultar el desbordamiento`).toMatch(/overflow:\s*hidden/);
+    }
+  });
+
+  it('[1] y si se recorta, el nombre completo SIGUE en la celda', () => {
+    /* La política no prohíbe recortar: prohíbe recortar sin forma de leer el
+       resto, y `title` no basta en un teléfono. Por eso la celda lleva el nombre
+       completo en un `sr-solo` —que además es lo que dice un lector de pantalla
+       en vez de deletrear «Rosa Quispe 06:48»—. Si esto desaparece, el recorte
+       pasa a ser el defecto que la política nombra. */
+    /* Se mira DONDE VIVE la celda, no el paquete compilado: ahí `sr-solo` sale
+       también de otros componentes y la comprobación pasaba con el rescate
+       quitado — se vio al mutarlo. */
+    const demo = readFileSync(
+      join(process.cwd(), '..', 'sistema', 'cascaron', 'vivo.tsx'), 'utf8');
+    const celda = /<li[^>]*className="tbl-persona"[\s\S]*?<\/li>/.exec(demo)?.[0] ?? '';
+    expect(celda, 'no encuentro la celda en la demo').not.toBe('');
+    expect(celda, 'la celda no lleva el nombre completo: si el apellido se recorta, '
+      + 'no queda forma de leerlo').toMatch(/className="sr-solo"/);
+    /* Y el contrato tiene que EXIGIRLO, no solo la demo enseñarlo. */
+    const contrato = readFileSync(
+      join(process.cwd(), '..', 'sistema', 'componentes', 'comportamiento.md'), 'utf8');
+    const tabla = contrato.slice(contrato.indexOf('El marcado, que aquí ES el contrato'));
+    expect(tabla.slice(0, 2500), 'el contrato de marcado no exige el nombre completo')
+      .toMatch(/sr-solo/);
+    expect(regla('.sr-solo'), 'la clase que esconde el texto para el ojo no viaja')
+      .not.toBe('');
+  });
+
+  it('[5] la burbuja es REDONDA con cualquier número, no una pastilla', () => {
+    /* Llevaba `border-radius: 6px` sobre 15 px de alto y relleno lateral, así que
+       con dos caracteres —«+5»— salía un rectángulo redondeado de 21×15. Medido
+       tras el cambio: 19,2 × 19,2. Lo que lo sostiene con cualquier contenido es
+       `aspect-ratio: 1`: el ancho lo manda el número y el alto lo copia, así que
+       «9», «+15» y «99+» siguen siendo círculos en vez de alargarse. */
+    const b = regla('.badge');
+    expect(b, 'la burbuja no es redonda: con dos cifras sale una pastilla')
+      .toMatch(/border-radius:\s*(50%|999px|9999px)/);
+    expect(b, 'sin `aspect-ratio`, el número la alarga y deja de ser un círculo')
+      .toMatch(/aspect-ratio:\s*1/);
+    expect(b, 'con alto fijo, `aspect-ratio` no puede crecer con el número')
+      .not.toMatch(/height:\s*\d+px/);
+  });
+
+  it('[1] la foto se centra igual que el texto', () => {
+    /* El avatar es `display: grid` —una caja de bloque—, así que el
+       `text-align: center` de la celda NO lo alcanza. Llevaba `display: block`
+       y se midió en el catálogo: 0 px a la izquierda y 60,3 a la derecha en una
+       celda de 108,3. Las tres líneas centradas y la foto no. */
+    const foto = regla('.tbl-foto');
+    expect(foto, 'la foto no centra su contenido: el avatar se va a la izquierda')
+      .toMatch(/justify-content:\s*center/);
+    expect(foto, 'sin flex, `justify-content` no hace nada').toMatch(/display:\s*flex/);
+    expect(regla('.tbl-persona'), 'la celda no centra su texto')
+      .toMatch(/text-align:\s*center/);
+  });
+
+  it('[1] la celda enseña las TRES líneas, y ninguna se recorta EN UNA SOLA', () => {
+    /* Nombre, apellido y hora. Medido a 11 px: de catorce apellidos de la zona,
+       trece entran en una sola línea dentro del suelo de 84 px. El que se sale
+       es el compuesto —«Villanueva-Bustamante», 115,2 px— y ése ENVUELVE, que es
+       lo que la política de móvil primero manda hacer primero.
+       Lo que está prohibido es `text-overflow: ellipsis` en una línea: corta sin
+       envolver, y entonces no hay nada que leer. */
     for (const c of ['.tbl-nom', '.tbl-ape', '.tbl-hora']) {
       expect(regla(c), `falta la línea ${c}`).not.toBe('');
-      expect(regla(c), `${c} se recorta`).not.toMatch(/text-overflow:\s*ellipsis/);
+      expect(regla(c), `${c} corta en una línea en vez de envolver`)
+        .not.toMatch(/text-overflow:\s*ellipsis/);
+    }
+    for (const c of ['.tbl-nom', '.tbl-ape']) {
+      expect(regla(c), `${c} no envuelve: un apellido sin espacios ensancharía su columna`)
+        .toMatch(/overflow-wrap:\s*break-word/);
     }
     /* Y el apellido no compite con el nombre: en treinta personas, leer treinta
        apellidos en negro es no leer ninguno. */

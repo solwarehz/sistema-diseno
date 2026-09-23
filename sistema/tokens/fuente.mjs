@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.134.0";
+export const VERSION = "1.135.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,59 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.135.0', fecha: '2026-09-22',
+    que: 'La celda de tablero se lee como UNA persona: la foto se separa, los datos se juntan, y la foto por fin se centra',
+    porque:
+      'LO PIDIO EL RESPONSABLE MIRANDO EL TABLERO: «el nombre de cada trabajador y el avatar '
+      + 'separalos, pero los datos del nombre, apellidos y hora juntalas mas», y «coloca todos los '
+      + 'datos centrados». Las dos frases son la misma idea: LA CELDA NO SON CUATRO COSAS, ES UNA '
+      + 'PERSONA. Con el mismo hueco entre foto, nombre, apellido y hora —3 px para todo— el ojo lee '
+      + 'cuatro elementos sueltos. Ahora las tres lineas de datos van a 2 px, casi pegadas, y la foto '
+      + 'se separa 6 px mas: 8 contra 2 medidos en el catalogo. El ritmo desigual es lo que agrupa. '
+      + 'Y AL IR A CENTRARLO SALIO UN DEFECTO QUE NADIE HABIA VISTO: la foto NO estaba centrada. '
+      + '`.tbl-foto` llevaba `display: block` y el avatar es `display: grid` —una caja de bloque—, '
+      + 'asi que el `text-align: center` de la celda no lo alcanzaba. Medido: 0 px de margen a la '
+      + 'izquierda y 60,3 a la derecha dentro de una celda de 108,3, con las TRES LINEAS DE TEXTO '
+      + 'CENTRADAS Y LA FOTO NO. Es la clase de cosa que se ve como «descuadrado» sin saber por que, '
+      + 'y llevaba ahi desde que la celda nacio. Con `flex` y `justify-content: center`, la caja se '
+      + 'centra igual que el texto: 30,2 px a cada lado, medido. '
+      + 'Y LA BURBUJA NO ERA UNA BURBUJA. `border-radius: 6px` sobre 15 px de alto y relleno '
+      + 'lateral: con dos caracteres —«+5»— salia un rectangulo redondeado de 21x15. El responsable '
+      + 'lo corto mirandolo: «las burbujas sobre el avatar no son burbujas, las veo media '
+      + 'rectangulares». Ahora `aspect-ratio: 1` sin alto fijo — el ancho lo manda el numero y el '
+      + 'alto lo COPIA, asi que «9», «+15» y «99+» siguen siendo circulos en vez de alargarse. '
+      + 'Medido: 19,2 x 19,2. '
+      + 'Y el ritmo se afino una vez mas: las tres lineas SIN hueco —su interlineado ya las respira— '
+      + 'y la separacion en el `margin-top` del nombre, no en el hueco de la celda. El hueco separa '
+      + 'a las cuatro por igual, y entonces la celda vuelve a leerse como cuatro cosas sueltas. '
+      + 'Medido: 10 px de la foto al nombre, 0 entre las tres lineas. '
+      + 'Y EL NOMBRE LARGO YA NO PUEDE ROMPER LA REJILLA. Se pidio recortarlo —«lo colocas '
+      + 'pineda...»— y eso choca de frente con la politica de movil primero, que prohibe el recorte '
+      + 'sin forma de leer el resto. Se midio antes de decidir: a 11 px, de catorce apellidos de la '
+      + 'zona TRECE entran en una sola linea dentro del suelo de 84 px —«Huayllahuaman» mide 77,2—, '
+      + 'y el unico que se sale es el compuesto, «Villanueva-Bustamante», 115,2. Asi que el caso '
+      + 'normal no recorta nada. El raro ENVUELVE, que es lo que la politica manda hacer primero, '
+      + 'CON TOPE DE DOS LINEAS — y el tope es lo que atiende la otra mitad de lo pedido, «que no '
+      + 'rompa el diseño»: sin el, un apellido compuesto estira su fila y descuadra la rejilla '
+      + 'entera. Medido con el peor caso real: dos apellidos encadenados envuelven sin recortarse y '
+      + 'la celda crece 13,8 px; TRES si se recortan, y la celda se queda igual. 115,2 px es el '
+      + 'techo en los tres casos. '
+      + 'Y CUANDO RECORTA, EL NOMBRE COMPLETO SIGUE EN LA CELDA, en un `sr-solo` que ademas es lo que '
+      + 'dice un lector en vez de deletrear «Rosa Quispe 06:48». La politica no prohibe recortar: '
+      + 'prohibe recortar SIN FORMA DE LEER EL RESTO, y esa distincion es la que permite atender lo '
+      + 'pedido sin incumplirla. '
+      + 'Seis reglas con prueba, y las seis vistas caer con su mutacion. Una de ellas no caia a la '
+      + 'primera: miraba `sr-solo` en el paquete COMPILADO, donde esa clase sale tambien de otros '
+      + 'componentes, asi que pasaba con el rescate quitado. Se ato al archivo donde vive la celda y '
+      + 'al contrato que lo exige.',
+    tokens: { alta: [], baja: [] },
+    rompe: [
+      'NADA de API. Cambia el espaciado dentro de `.tbl-persona` y `.tbl-foto`: quien ya monte '
+      + 'celdas de tablero vera la foto centrada —antes se iba a la izquierda— y los tres datos mas '
+      + 'juntos. Las dos cosas son correcciones, no preferencias.',
+    ],
+  },
   {
     v: '1.134.0', fecha: '2026-09-22',
     que: 'R157 (cierre): lo que el R157 PROMETIO y no entregaba — y cinco afirmaciones falsas nuestras',

@@ -11758,11 +11758,25 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    el nombre completo va en el «title» del avatar —que ya lo lleva— y ademas
    debajo, en corto. Aqui no hay nada que un raton descubra y un dedo no.
    ───────────────────────────────────────────────────────────────────────────── */
+/* EL RITMO DE LA CELDA NO ES UNIFORME, y esa es la decision. La foto es una
+   cosa y el bloque de datos es otra: con el mismo hueco entre las cuatro, el
+   ojo lee cuatro elementos sueltos en vez de una persona. Asi que las tres
+   lineas de datos van APRETADAS —2 px, casi pegadas— y la foto se SEPARA de
+   ellas. Lo pidio el responsable mirando el tablero: «el nombre de cada
+   trabajador y el avatar separalos, pero los datos del nombre, apellidos y hora
+   juntalas mas». */
 .tbl-persona { display: flex; flex-direction: column; align-items: center;
-  gap: 3px; min-width: 0; text-align: center; }
+  gap: 0; min-width: 0; text-align: center; }
 /* La foto es lo que lleva la burbuja: por eso es ella la que se hace relativa, y
    no la celda — anclada a la celda, la burbuja bailaria con el largo del nombre. */
-.tbl-foto { position: relative; display: block; width: 100%; line-height: 0; }
+/* Y LA FOTO SE CENTRA DE VERDAD. Llevaba «display: block» y el avatar es
+   «display: grid» —una caja de bloque—, asi que el «text-align: center» de la
+   celda NO lo alcanzaba: medido en el catalogo, 0 px de margen a la izquierda y
+   60,3 a la derecha dentro de una celda de 108,3. Las tres lineas de texto
+   salian centradas y la foto no, que es lo que se ve como «descuadrado» sin
+   saber por que. Con flex, la caja se centra igual que el texto. */
+.tbl-foto { position: relative; display: flex; justify-content: center;
+  width: 100%; line-height: 0; }
 /* EL NOMBRE NO SE RECORTA: ENVUELVE. Llevaba «ellipsis» y se vio en el propio
    cascaron —«Ro…» en una celda estrecha—, que es un incumplimiento de la
    politica de movil primero §5.3 en la pieza recien creada para cumplirla: el
@@ -11774,10 +11788,30 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    El apellido va en gris para que el ojo salte primero al nombre — en una
    rejilla de treinta personas, leer treinta apellidos en negro es no leer
    ninguno. */
+/* LA SEPARACION VA AQUI, en el primer dato, y no como hueco de la celda: el
+   hueco los separa a los CUATRO por igual y entonces la celda se lee como
+   cuatro cosas sueltas. Las tres lineas de datos van sin hueco —solo su
+   interlineado, que ya las respira— y el bloque entero se despega de la foto. */
+/* DOS LINEAS COMO MUCHO, Y ESE ES EL TOPE QUE PROTEGE LA REJILLA.
+   Medido a 11 px: de catorce apellidos de la zona, TRECE entran en una sola
+   linea dentro del suelo de 84 px —«Huayllahuaman» mide 77,2—. El que se sale
+   es el compuesto: «Villanueva-Bustamante», 115,2.
+   Asi que el caso normal no se recorta nada, y el raro se resuelve ENVOLVIENDO,
+   que es lo que la politica de movil primero manda hacer PRIMERO. El tope de
+   dos lineas es lo que impide que un apellido compuesto estire su fila y
+   descuadre la rejilla: «que no rompa el diseño» era la otra mitad de lo pedido.
+   Los puntos suspensivos solo aparecen a partir de la TERCERA linea, y para
+   entonces el nombre completo sigue en la celda —en el «sr-solo»— y en el
+   titulo del avatar. La politica no prohibe recortar: prohibe recortar SIN
+   FORMA DE LEER EL RESTO. */
 .tbl-nom { font-size: 11px; color: var(--texto-principal); max-width: 100%;
-  overflow-wrap: break-word; line-height: 1.25; font-weight: 500; }
+  overflow-wrap: break-word; line-height: 1.25; font-weight: 500; margin-top: 10px;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  overflow: hidden; }
 .tbl-ape { font-size: 11px; color: var(--texto-secundario); max-width: 100%;
-  overflow-wrap: break-word; line-height: 1.25; }
+  overflow-wrap: break-word; line-height: 1.25;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  overflow: hidden; }
 .tbl-hora { font-size: 11px; color: var(--texto-secundario);
   font-variant-numeric: tabular-nums; }
 
@@ -13313,9 +13347,17 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    el marco ya hacia. Y el numero NO puede ser el unico portador: si la burbuja
    dice algo que no esta en el texto de al lado, no esta dicho.
    ───────────────────────────────────────────────────────────────────────────── */
-.badge { position: absolute; top: 1px; right: 1px; min-width: 15px; height: 15px;
-  border-radius: 6px; background: var(--error-acento); color: var(--texto-invertido);
-  font-size: 12px; font-weight: 600; display: grid; place-items: center; padding: 0 4px; }
+/* REDONDA, Y REDONDA DE VERDAD. Llevaba «border-radius: 6px» sobre 15 px de
+   alto y relleno lateral, asi que con dos caracteres —«+5»— salia un rectangulo
+   redondeado de 21x15. El responsable lo corto mirandolo: «las burbujas sobre
+   el avatar no son burbujas, las veo media rectangulares».
+   «aspect-ratio: 1» es lo que lo sostiene con cualquier contenido: el ancho lo
+   manda el numero y el alto lo COPIA, asi que «9», «+15» y «99+» siguen siendo
+   circulos en vez de alargarse. Un tope fijo habria obligado a elegir entre
+   recortar el numero o romper la forma. */
+.badge { position: absolute; top: 1px; right: 1px; min-width: 18px; aspect-ratio: 1;
+  border-radius: 50%; background: var(--error-acento); color: var(--texto-invertido);
+  font-size: 11px; font-weight: 600; display: grid; place-items: center; padding: 0 3px; }
 .badge-exito { background: var(--exito-acento); }
 .badge-aviso { background: var(--aviso-acento); color: var(--texto-principal); }
 .badge-info  { background: var(--info-acento); }
