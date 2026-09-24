@@ -7499,6 +7499,11 @@ descubrió el candado de las clases ciegas, y la celda llevaba ciega desde que n
       </li>
   </ul>
 </div>
+<p class="seccion-sub">Y <strong>cuando no hay nadie, se dice</strong>. Un vacío sin explicar se lee
+como «esto se rompió», y con el flujo en vivo el grupo llega a cero de verdad.</p>
+<div class="sup sup-exito">
+  <p class="tbl-vacio">Han marcado todos. No queda nadie por llegar.</p>
+</div>
 <p class="seccion-sub">Y la misma rejilla <strong>llenando un área fija</strong>: las filas se
 reparten, las celdas se estiran, y lo que no cabe pasa a la siguiente pantalla del carril — nunca
 más abajo.</p>
@@ -12096,6 +12101,10 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    uno solo. Se esconde con «visibility» y no con «display», que es lo que deja
    su hueco reservado, y se retira del arbol accesible porque no dice nada. */
 .car-cuenta-vacia { visibility: hidden; }
+/* El tablero sin nadie DICE que no hay nadie. Un vacio sin explicar se lee
+   como «esto se rompio», y el sistema ya tiene superficie y texto para esto. */
+.tbl-vacio { margin: 0; padding: 16px; text-align: center;
+  color: var(--texto-secundario); font-size: 13px; line-height: 1.5; }
 .car-punto { width: 6px; height: 6px; border-radius: 50%; background: var(--borde-campo); }
 .car-punto-aqui { background: var(--accion); width: 18px; border-radius: 3px; }
 @media (prefers-reduced-motion: reduce) { .car { scroll-behavior: auto; } }

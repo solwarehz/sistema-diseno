@@ -62,10 +62,29 @@ pruebas y una auditoría lo tumbó por **tres** sitios, los tres medidos:
 | **la caja se desmonta y vuelve** | se seguía midiendo el nodo viejo, ya desprendido, que mide cero | el vigilante se desconectaba en cuanto enganchaba una vez |
 | **el rescate por `resize`** | se perdió | `medir` pasó a leer sólo el nodo propio, y eso era una **regresión** contra la v1.147.0 |
 
-El primero les afecta directamente: **ustedes usan modo estricto.** Ahora el
-gancho se **reconcilia después de cada render** —una comparación de
-referencias, sin forzar maquetado cuando no hay nada que cambiar—, y el
-`MutationObserver` sobre el documento entero sobra y se ha ido.
+El primero les afecta directamente: **ustedes usan modo estricto.**
+
+**Y hubo un cuarto, que sólo vio una segunda auditoría.** Lo contamos entero
+porque es el más instructivo de todos. Arreglamos los tres de arriba haciendo
+que el gancho se **reconciliara después de cada render**, y escribimos —aquí
+mismo, en la primera versión de esta carta— que con eso la forma con
+`RefObject` «ya no tiene ese agujero». El razonamiento sonaba impecable y era
+**falso**: el efecto corre después de cada render **del componente que llama al
+gancho**, no del árbol. Si la caja la monta **otro** —un `Suspense`, un hijo
+`memo` que guarda el `cargando`— ese componente no vuelve a renderizar y **nadie
+reconcilia nada**.
+
+Medido: la caja existe, **cero observadores**, capacidad **1×1**. Es el síntoma
+exacto de su parte, en el caso exacto que su parte nombra — *«un cargador, una
+consulta, un `Suspense`»*. Y ninguna de nuestras pruebas lo veía, porque
+**todas** cambiaban el estado en el mismo componente del gancho: un fixture
+cómodo es un fixture que miente.
+
+Así que el `MutationObserver` **vuelve**, y esta vez bien: armado **mientras el
+gancho viva** —no una sola vez, que fue el segundo error— y sólo para la forma
+con `RefObject`. Hace falta mirar el documento porque **un `RefObject` no avisa
+cuando se llena**, y eso no se puede arreglar desde dentro. El `ref` de retorno
+no necesita nada de esto.
 
 Una cosa más, pequeña y con dientes: **lo que devuelve el gancho se memoriza.**
 Envolver la capacidad para añadirle el `ref` hacía que cambiara de identidad en
@@ -76,29 +95,37 @@ un `setState` dentro de uno de ellos, es un bucle.
 oferta: la firma es **aditiva**. `useCapacidadTablero(caja)` con su `RefObject`
 sigue funcionando y el objeto devuelto sigue trayendo `columnas`, `filas` y
 `porPagina`, así que un `destructuring` existente no se entera. Si no tocan
-nada, **dejan de estar rotos igual**: cuando al montar la caja no está, el
-gancho pone un `MutationObserver`, se engancha en cuanto aparece y se
-desconecta. Cámbienlo cuando les venga bien; la forma recomendada es la de
-arriba y es la que usa nuestro propio catálogo desde esta versión.
+nada, **dejan de estar rotos igual**: para esa forma —y sólo para ella— el
+gancho mantiene un `MutationObserver` sobre el documento **mientras vive**, y se
+engancha en cuanto la caja aparece. Cámbienlo cuando les venga bien; la forma
+recomendada es la de arriba y es la que usa nuestro propio catálogo desde esta
+versión.
 
 ---
 
-## 3 · El aviso que pedían al final, palabra por palabra
+## 3 · El aviso que pedían al final
 
 Lo pedían «más barato» y es el que hacía falta. Cuando se pasa un `RefObject` y
-al montar la caja todavía no está, en desarrollo sale:
+la caja aparece **después** del montaje sin que hubiera observador enganchado,
+en desarrollo sale, literal:
 
-> `useCapacidadTablero: la caja todavia no esta montada. Se vigilara hasta que
-> aparezca, pero el camino sin rodeos es el `ref` que devuelve el gancho:
-> `const { porPagina, ref } = useCapacidadTablero()` y
-> `<div className="… tbl-lleno" ref={ref}>`.`
+> `useCapacidadTablero: la caja aparecio DESPUES del montaje y no habia
+> observador enganchado; se ha enganchado ahora. Funciona, pero para llegar
+> hasta aqui hay que vigilar el documento entero. El camino sin rodeos es el
+> «ref» que devuelve el gancho: const { porPagina, ref } =
+> useCapacidadTablero() y <div className="… tbl-lleno" ref={ref}>, que React
+> llama con el nodo en la mano y no necesita que nadie lo vaya a buscar.`
 
 No sale nunca con el `ref` de retorno, porque ahí el caso no puede darse.
 
-Y el aviso viejo —el de la cadena de alto— sigue donde estaba, con una cosa que
-conviene que sepan: **sólo salta con alto mayor que cero**. Un alto de cero no
-es una caja pequeña, es una caja **sin maquetar** —`display: none`, render en
-servidor—, y avisar ahí sería ruido en cada pestaña oculta.
+**Y el aviso de la cadena de alto cambió en esta versión**, cosa que conviene
+que sepan porque puede empezar a salirles donde antes callaba: su umbral eran
+**114** —lo que mide la celda— y ahora son **124**, porque la rejilla reserva
+10 px por arriba para que la burbuja no se corte. En esos diez píxeles el
+defecto existía y el aviso no decía nada. Lo que no cambia: **un alto de cero
+sigue sin avisar**, porque no es una caja corta sino una caja **sin maquetar**
+—`display: none`, render en servidor—, y avisar ahí sería ruido en cada pestaña
+que nadie mira.
 
 ---
 
@@ -119,11 +146,13 @@ salido en verde con el defecto puesto** — que es justo cómo se nos escapó.
 Se espía el observador y se pregunta lo único que importa: *¿llegó a observar
 ese nodo?* — y, después de la auditoría, también *¿lo sigue observando?*, que es
 otra pregunta y es la que faltaba. Con el código de la v1.147.0 devuelto a su
-sitio caen **seis** pruebas; la primera redacción de este informe decía «dos» y
-era una cifra sin contar, corregida al medirla. Cada arreglo tiene además su
+sitio caen **once** pruebas de ese archivo. Este informe llegó a decir «dos» y
+después «seis»: las dos eran cifras sin contar, y las dos se corrigieron al
+medirlas. Lo decimos en vez de borrarlo porque es el mismo defecto que les
+estamos reportando, en pequeño. Cada arreglo tiene además su
 mutación: rompimos el código a propósito y vimos caer **la suya**, una por una.
 
-La suite entera: **1278 pruebas en 60 archivos, todas en verde**, más los
+La suite entera: **1282 pruebas en 60 archivos, todas en verde**, más los
 veintiún candados, ESLint y `tsc --noEmit` limpio.
 
 En el catálogo, el tablero vive dentro de una sección `display: none` hasta que
@@ -147,10 +176,20 @@ de la página.
 | 1280 | 913 × 327 | 9 × 2 | 913 × 275 | 9 × 2 |
 | 1440 | 989 × 387 | 10 × 3 | 989 × 275 | 10 × 2 |
 
-**Y lo que no pudimos verificar, lo decimos:** en nuestra pestaña de
-automatización `ResizeObserver` **no dispara nunca** —cero llamadas incluso con
-un `div` suelto al que le cambiamos el ancho— y los eventos de **`scroll`
-tampoco**. Así que «la caja cambia de tamaño → el observador reacciona» y
+**Cómo se tomaron, porque importa:** cada ancho es un **iframe** de ese tamaño
+—un iframe es un viewport de verdad para su contenido, con sus media queries y
+su `innerWidth`— cargado de cero, **no** la misma ventana redimensionada. Lo
+decimos porque redimensionar dispara el rescate por `resize`, que es justo el
+trampantojo que su parte denuncia: la medida saldría bien **por el gesto de
+medirla**.
+
+**Y lo que no pudimos verificar, lo decimos, con su razón:** en nuestra pestaña
+de automatización `document.hidden` es `true` y `requestAnimationFrame` **no
+corre** —cero llamadas en 500 ms—, así que el navegador **suspende la entrega
+de `ResizeObserver`**: cero disparos incluso con un `div` suelto pasando de 10 a
+300 px. Los eventos de `scroll` tampoco llegan. **No es un defecto del
+navegador ni del producto: es que la pestaña está oculta**, y lo escribimos
+porque sin la razón suena a lo primero. Así que «la caja cambia de tamaño → el observador reacciona» y
 «deslizas → la tira dice dónde estás» están probados en pruebas unitarias pero
 **no medidos en navegador**. Si en su pantalla ven que al aparecer la caja la
 capacidad no salta, díganlo y vamos directos ahí.
@@ -191,7 +230,18 @@ nosotros otra vez.
 700, un umbral elegido a ojo. Ahora envuelve siempre que haga falta: un umbral
 acierta en el ancho en que se miró y falla en el siguiente.
 
-**(d) Y el aviso de caja corta callaba en diez píxeles.** Su umbral eran **114**
+**(d) El índice de parada se desvió 301 px, y lo causó el arreglo (a).** Al
+hacer el carril bloque contenedor, el carril pasó a ser el `offsetParent` de sus
+paradas — y la cuenta del índice restaba además el sitio del carril, que antes
+compensaba y ahora es **sesgo puro**. Medido en nuestro catálogo: **301 px sobre
+un paso de 543**, más de media página, así que **en reposo en la página 1 la
+tira decía «Pantalla 2 de 4»** dentro de un `aria-live` que lo anuncia. La regla
+17(b) del contrato decía que buscar por `offsetLeft` «no se puede equivocar»;
+sí puede, y ya no lo dice. **Un arreglo puede abrir un defecto en otro sitio**,
+y éste lo destapó la auditoría mirando precisamente lo que el cambio había
+movido.
+
+**(e) Y el aviso de caja corta callaba en diez píxeles.** Su umbral eran **114**
 —lo que mide la celda— pero la rejilla reserva **10** por arriba para que la
 burbuja no se corte, así que una fila pide **124**. En esa franja el defecto
 existe y nadie lo dice. Lo encontró **el propio catálogo con el flujo en vivo

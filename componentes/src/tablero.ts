@@ -198,6 +198,10 @@ export type CapacidadConRef = CapacidadTablero & {
  * tres son el mismo error de fondo: **tratar el enganche como un suceso y no
  * como un estado que hay que mantener.**
  */
+/* A nivel de modulo, no dentro del componente: es constante por entorno, pero
+   escrito dentro parece una llamada condicional a un gancho y `eslint-plugin-react-hooks` —que corre casi todo consumidor— lo marca. */
+const enEfecto = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+
 export function useCapacidadTablero(
   caja?: RefObject<HTMLElement | null>,
 ): CapacidadConRef {
@@ -214,7 +218,10 @@ export function useCapacidadTablero(
      `sincronizar` no dependan de el y puedan ser estables. */
   const externa = useRef(caja);
   externa.current = caja;
-  const avisado = useRef(false);
+  /* DOS banderas y no una: compartirlas hacia que el primer aviso silenciara
+     al otro para siempre. Lo cazo la auditoria. */
+  const avisadoSinRO = useRef(false);
+  const avisadoTarde = useRef(false);
 
   const medir = useCallback(() => {
     /* EL RESCATE POR VENTANA, QUE NO SE PUEDE PERDER. Si nadie llamo todavia a
@@ -273,8 +280,8 @@ export function useCapacidadTablero(
     if (typeof ResizeObserver !== 'undefined') {
       ro.current = ro.current ?? new ResizeObserver(medir);
       ro.current.observe(el);
-    } else if (process.env.NODE_ENV !== 'production' && !avisado.current) {
-      avisado.current = true;
+    } else if (process.env.NODE_ENV !== 'production' && !avisadoSinRO.current) {
+      avisadoSinRO.current = true;
       // eslint-disable-next-line no-console
       console.warn(
         'useCapacidadTablero: aqui no hay `ResizeObserver`, asi que la capacidad '
@@ -292,7 +299,6 @@ export function useCapacidadTablero(
     sincronizar();
   }, [sincronizar]);
 
-  const enEfecto = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
   /* UNO · LOS OYENTES DE VENTANA, que viven mientras viva el gancho.
      El observador coge los cambios de la CAJA sin que la ventana cambie; el
@@ -315,32 +321,60 @@ export function useCapacidadTablero(
     };
   }, [medir]);
 
-  /* DOS · LA RECONCILIACION, DESPUES DE CADA RENDER Y SIN LISTA DE
-     DEPENDENCIAS. No es descuido: es la unica forma de que el enganche sea un
-     ESTADO que se mantiene y no un suceso que ocurrio una vez. Cubre los tres
-     casos que tumbaron al intento anterior —`StrictMode`, la caja que se
-     desmonta y vuelve, y la caja que aparece tarde— con una sola idea, y sin
-     vigilar el documento entero con un `MutationObserver`, que era caro y
-     ademas solo servia una vez.
-     El coste es una comparacion de referencias por render: `sincronizar` sale
-     por la primera linea cuando no hay nada que cambiar. */
+  /* DOS · LA RECONCILIACION. Despues de cada render y SIN lista de
+     dependencias: no es descuido, es lo que convierte el enganche en un ESTADO
+     que se mantiene en vez de un suceso que ocurrio una vez. Cuesta una
+     comparacion de referencias —`sincronizar` sale por su primera linea cuando
+     no hay nada que cambiar—, medido en cero llamadas a `getComputedStyle`
+     tras cincuenta renders ajenos. */
   enEfecto(() => {
-    const habiaNodo = observado.current !== null;
     sincronizar();
-    if (process.env.NODE_ENV !== 'production'
-        && externa.current && !nodo.current && observado.current && !habiaNodo
-        && !avisado.current) {
-      avisado.current = true;
-      // eslint-disable-next-line no-console
-      console.warn(
-        'useCapacidadTablero: la caja aparecio DESPUES del montaje y se ha '
-        + 'enganchado ahora. Funciona, pero el camino sin rodeos es el `ref` que '
-        + 'devuelve el gancho: `const { porPagina, ref } = useCapacidadTablero()` '
-        + 'y `<div className="… tbl-lleno" ref={ref}>`, que React llama con el '
-        + 'nodo en la mano y no necesita que nadie lo vaya a buscar.',
-      );
-    }
   });
+
+  /* TRES · Y EL VIGILANTE DEL DOCUMENTO, SOLO PARA LA FORMA CON `RefObject`.
+     Aqui estuvo el agujero que una segunda auditoria encontro despues de darlo
+     por cerrado, y merece contarse porque el razonamiento parecia impecable:
+     «el efecto corre despues de cada render, asi que se engancha en cuanto el
+     nodo aparece». Falso. Corre despues de cada render DEL COMPONENTE QUE LLAMA
+     AL GANCHO, no del arbol. Si la caja la monta otro —un `Suspense`, un hijo
+     `memo` que guarda el «cargando»—, ese componente NO vuelve a renderizar y
+     nadie reconcilia nada. Medido: la caja existe, cero observadores, capacidad
+     1x1 — el sintoma exacto del parte, en el caso exacto que el parte nombra.
+
+     Un `RefObject` no avisa cuando se llena; es su naturaleza y no se puede
+     arreglar desde dentro. Asi que para ESA forma hace falta mirar el
+     documento. Va armado mientras el gancho viva —no una sola vez, que fue el
+     otro error— y su retrollamada es una comparacion de referencias: se
+     reconcilia solo cuando lo que hay que observar dejo de ser lo observado.
+     Eso cubre tambien el reverso: la caja que otro DESMONTA, que antes dejaba
+     al observador mirando un nodo desprendido.
+
+     El camino recomendado —el `ref` de retrollamada— no necesita nada de esto,
+     porque lo llama React con el nodo en la mano. Por eso este efecto no se
+     arma cuando no se paso `RefObject`. */
+  enEfecto(() => {
+    if (!caja || typeof MutationObserver === 'undefined') return undefined;
+    const vigilante = new MutationObserver(() => {
+      if ((caja.current ?? null) === observado.current) return;
+      sincronizar();
+      if (process.env.NODE_ENV !== 'production' && observado.current
+          && !avisadoTarde.current) {
+        avisadoTarde.current = true;
+        // eslint-disable-next-line no-console
+        console.warn(
+          'useCapacidadTablero: la caja aparecio DESPUES del montaje y no habia '
+          + 'observador enganchado; se ha enganchado ahora. Funciona, pero para '
+          + 'llegar hasta aqui hay que vigilar el documento entero. El camino sin '
+          + 'rodeos es el `ref` que devuelve el gancho: '
+          + '`const { porPagina, ref } = useCapacidadTablero()` y '
+          + '`<div className="… tbl-lleno" ref={ref}>`, que React llama con el '
+          + 'nodo en la mano y no necesita que nadie lo vaya a buscar.',
+        );
+      }
+    });
+    vigilante.observe(document.documentElement, { childList: true, subtree: true });
+    return () => vigilante.disconnect();
+  }, [caja, sincronizar]);
 
   /* El objeto se memoriza: devolver uno nuevo en cada render hace correr los
      efectos del consumidor que dependan de la capacidad, y con un `setState`

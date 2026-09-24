@@ -319,7 +319,7 @@ No las «mejores» por iniciativa propia. Están razonadas:
   node sistema/candado/verificar-muerta.mjs   # una regla escrita que NO se aplica nunca
   node sistema/candado/verificar-ciegas.mjs   # lo que solo pinta el guion NO lo compara nadie
   node sistema/candado/verificar-citas.mjs    # lo que el contrato CITA, la hoja lo entrega
-  # y el veintiuno, DENTRO del contenedor, porque node_modules no vive aquí:
+  # y el VEINTICINCO, DENTRO del contenedor, porque node_modules no vive aquí:
   docker-compose exec -T ds sh -c 'cd /trabajo && sh sistema/candado/probar-con-eslint.sh'
   ```
 

@@ -8,7 +8,8 @@
  * distinción que el R157 dejó escrita.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { useRef, useState, StrictMode } from 'react';
+import { useRef, useState, StrictMode, memo } from 'react';
+import type * as React from 'react';
 import { render, act } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -762,6 +763,70 @@ describe('R162 · el nodo que llega tarde', () => {
     }
   });
 
+  it('[19] la caja que monta OTRO componente tambien se engancha', async () => {
+    /* ESTE ES EL QUE SE ESCAPÓ DOS VECES, y el razonamiento que lo escondió
+       sonaba impecable: «el efecto corre después de cada render, así que se
+       engancha en cuanto el nodo aparece». Falso. Corre después de cada render
+       DEL COMPONENTE QUE LLAMA AL GANCHO, no del árbol. Si la caja la monta
+       otro —un `Suspense`, un hijo `memo` que guarda el «cargando»—, ese
+       componente no vuelve a renderizar y nadie reconcilia nada: la caja
+       existe, cero observadores, capacidad 1×1. Es el síntoma exacto del parte
+       en el caso exacto que el parte nombra —«un cargador, una consulta, un
+       `Suspense`»—.
+
+       Y las pruebas no lo veían porque TODAS cambiaban el estado en el mismo
+       componente del gancho. Un fixture cómodo es un fixture que miente. */
+    const Hijo = memo(function Hijo({ caja }: { caja: React.RefObject<HTMLDivElement> }) {
+      const [listo, setListo] = useState(false);
+      abrir = () => setListo(true);
+      return listo
+        ? <div ref={caja} data-caja style={{ width: 300, height: 500 }} />
+        : <span>cargando…</span>;
+    });
+    let abrir: () => void = () => {};
+    function Duena() {
+      const caja = useRef<HTMLDivElement>(null);
+      useCapacidadTablero(caja);
+      return <Hijo caja={caja} />;
+    }
+    const { container } = render(<Duena />);
+    expect(container.querySelector('[data-caja]')).toBeNull();
+    /* El hijo se abre solo. La dueña del gancho NO vuelve a renderizar. */
+    await act(async () => { abrir(); await Promise.resolve(); });
+    const nodo = container.querySelector('[data-caja]');
+    expect(nodo, 'la caja no llegó a montarse').not.toBeNull();
+    expect([...vivos], 'la caja la montó otro componente y nadie la observa: es el R162 '
+      + 'otra vez, en el caso que el propio parte nombra').toContain(nodo);
+  });
+
+  it('[19] y si OTRO la desmonta, se suelta el nodo desprendido', async () => {
+    /* El reverso del anterior y la misma causa: un nodo fuera del documento
+       mide cero, así que seguir observándolo es medir cero para siempre. */
+    let abrir: () => void = () => {};
+    let cerrar: () => void = () => {};
+    const Hijo = memo(function Hijo({ caja }: { caja: React.RefObject<HTMLDivElement> }) {
+      const [listo, setListo] = useState(true);
+      abrir = () => setListo(true);
+      cerrar = () => setListo(false);
+      return listo
+        ? <div ref={caja} data-caja style={{ width: 300, height: 500 }} />
+        : <span>cargando…</span>;
+    });
+    function Duena() {
+      const caja = useRef<HTMLDivElement>(null);
+      useCapacidadTablero(caja);
+      return <Hijo caja={caja} />;
+    }
+    const { container } = render(<Duena />);
+    const primero = container.querySelector('[data-caja]');
+    await act(async () => { cerrar(); await Promise.resolve(); });
+    expect([...vivos], 'se sigue observando un nodo que ya no está en el documento')
+      .not.toContain(primero);
+    await act(async () => { abrir(); await Promise.resolve(); });
+    expect([...vivos], 'al volver, nadie observa el nodo nuevo')
+      .toContain(container.querySelector('[data-caja]'));
+  });
+
   it('[19] lo que devuelve NO cambia de identidad si la capacidad no cambia', () => {
     /* Antes se devolvía el objeto del `useState`, que el gancho se esfuerza en
        no cambiar salvo que cambie la capacidad. Al envolverlo para añadir el
@@ -901,5 +966,48 @@ describe('el aviso de caja corta · el margen en que callaba', () => {
       conAlto(0);
       expect(grito, 'avisa con la caja sin maquetar').not.toHaveBeenCalled();
     } finally { grito.mockRestore(); }
+  });
+});
+
+describe('R17b · el índice de parada y el sistema de coordenadas', () => {
+  /* La regla 17(b) del contrato decía que buscar la parada por `offsetLeft`
+     «no se puede equivocar». Sí puede, y se equivocó: `p.offsetLeft` es
+     relativo al `offsetParent` de la parada, y QUIÉN ES ese `offsetParent`
+     depende de si el carril está posicionado. Al hacerlo bloque contenedor
+     —cambio que entró para que `.sr-solo` no se escapara del recorte— el
+     carril pasó a SER el `offsetParent`, y la resta de `el.offsetLeft` que
+     antes compensaba se convirtió en sesgo puro.
+
+     Medido en el catálogo: sesgo de 301 px sobre un paso de 543 —más de media
+     página—, así que EN REPOSO EN LA PÁGINA 1 la tira decía «Pantalla 2 de 4»,
+     dentro de un `aria-live` que además lo anuncia.
+
+     No se puede probar midiendo: jsdom no maqueta y ahí todo `offsetLeft` es
+     cero. Así que se atan las DOS mitades del invariante, que juntas lo
+     determinan: el carril es bloque contenedor, y la cuenta resta sólo el
+     desplazamiento. Es una prueba de texto y se dice: protege del cambio, no
+     del error de cálculo. */
+  const hoja = readFileSync(
+    join(process.cwd(), '..', 'sistema', 'componentes', 'componentes.css'), 'utf8');
+  const demo = readFileSync(
+    join(process.cwd(), '..', 'sistema', 'cascaron', 'vivo.tsx'), 'utf8');
+
+  it('[17] el carril está posicionado, así que ES el `offsetParent` de sus paradas', () => {
+    const i = hoja.indexOf('.car{');
+    expect(i, 'no existe `.car` en la hoja que viaja').toBeGreaterThan(-1);
+    expect(hoja.slice(i, i + 260), 'el carril dejó de estar posicionado: sus paradas pasan a '
+      + 'medir contra OTRO antepasado y la cuenta del índice cambia de significado sin que '
+      + 'nadie toque la cuenta').toMatch(/position:\s*relative/);
+  });
+
+  it('[17] y la cuenta resta el desplazamiento, no el sitio del carril', () => {
+    const i = demo.indexOf('paradas.forEach(');
+    expect(i, 'no se encuentra la cuenta del índice').toBeGreaterThan(-1);
+    const cuenta = demo.slice(i, i + 200);
+    expect(cuenta, 'la cuenta vuelve a restar `el.offsetLeft`: eso mezcla dos sistemas de '
+      + 'coordenadas y mete un sesgo igual a lo que el carril diste de su antepasado '
+      + 'posicionado —medido, 301 px sobre un paso de 543—')
+      .not.toContain('el.offsetLeft');
+    expect(cuenta, 'la cuenta ya no resta el desplazamiento').toContain('el.scrollLeft');
   });
 });

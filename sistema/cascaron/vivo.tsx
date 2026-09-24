@@ -371,22 +371,27 @@ function useFlujoSimulado(inicial: readonly Persona[], cada = 2200) {
   useEffect(() => {
     if (!andando) return undefined;
     const id = window.setInterval(() => {
+      /* EL RELOJ AVANZA AQUI, FUERA DEL ACTUALIZADOR. Estuvo dentro, y un
+         actualizador de estado tiene que ser PURO: React lo doble-invoca en
+         modo estricto, asi que el reloj corria al doble —medido, siete avances
+         en cuatro tics—. El catalogo no monta en modo estricto y por eso no se
+         veia; el equipo que consume si lo usa, y es justo el patron contra el
+         que el propio sistema predica. */
+      /* Y al completarse el turno el reloj vuelve al principio con la lista. */
+      if (!gente.some((g) => g[4] === 'error')) reloj.current = 7 * 60 + 15;
+      reloj.current += 1 + Math.floor(Math.random() * 3);
+      const h = reloj.current;
+      const horaDelTic = `${String(Math.floor(h / 60)).padStart(2, '0')}:${String(h % 60).padStart(2, '0')}`;
+      setUltimo(horaDelTic);
       setGente((antes) => {
         const fuera = antes.filter((g) => g[4] === 'error');
         /* CUANDO YA NO QUEDA NADIE FUERA, EL TURNO EMPIEZA DE NUEVO. No es
            adorno: al volver a la lista inicial el grupo «asistio» ENCOGE de 24
            a 18, y ahi es donde el carril podria quedarse apuntando a una
            parada que ya no existe. Una demo que solo crece no enseña eso. */
-        if (!fuera.length) {
-          reloj.current = 7 * 60 + 15;
-          setUltimo('07:15');
-          return inicial;
-        }
+        if (!fuera.length) return inicial;
         const quien = fuera[Math.floor(Math.random() * fuera.length)];
-        reloj.current += 1 + Math.floor(Math.random() * 3);
-        const h = reloj.current;
-        const hora = `${String(Math.floor(h / 60)).padStart(2, '0')}:${String(h % 60).padStart(2, '0')}`;
-        setUltimo(hora);
+        const hora = horaDelTic;
         /* SE DEVUELVE UNA LISTA NUEVA CON LA MISMA IDENTIDAD POR PERSONA. La
            clave de cada celda es el nombre completo, no el indice: si fuera el
            indice, al cambiar alguien de grupo React reutilizaria el nodo y la
@@ -444,7 +449,7 @@ function TableroVivo() {
     if (actual <= tope) return;
     setActual(tope);
     const parada = el.children[tope] as HTMLElement | undefined;
-    if (parada) el.scrollTo({ left: parada.offsetLeft - el.offsetLeft });
+    if (parada) el.scrollTo({ left: parada.offsetLeft });
   }, [paginas.length, actual]);
   const alDeslizar = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
@@ -460,8 +465,20 @@ function TableroVivo() {
     if (!paradas.length) return;
     let i = 0;
     let mejor = Infinity;
+    /* Y SE RESTA SOLO EL DESPLAZAMIENTO. Estuvo restando tambien
+       «el.offsetLeft», y eso mezcla dos sistemas de coordenadas: desde que el
+       carril es bloque contenedor —que entro para que «.sr-solo» no se escape
+       del recorte— EL CARRIL ES EL «offsetParent» de sus paradas, asi que
+       «p.offsetLeft» ya es relativo a el. Medido en el catalogo: 49 px de
+       sesgo, y el punto encendido y el «aria-live» saltaban a la siguiente
+       pantalla al 32 % de la actual. En reposo lo tapaba el anclaje —49 de 247—
+       pero el sesgo es «car.offsetLeft», asi que en un producto que monte el
+       carril bajo otro antepasado posicionado puede pasar de media pagina y
+       entonces el indice EN REPOSO es siempre el equivocado.
+       Un arreglo puede abrir otro defecto en otro sitio: esto lo destapo la
+       auditoria mirando lo que el cambio de ayer habia movido. */
     paradas.forEach((p, k) => {
-      const d = Math.abs(p.offsetLeft - el.offsetLeft - el.scrollLeft);
+      const d = Math.abs(p.offsetLeft - el.scrollLeft);
       if (d < mejor) { mejor = d; i = k; }
     });
     setActual((v) => (v === i ? v : i));
@@ -490,6 +507,17 @@ function TableroVivo() {
             mismo que el carril, y la superficie le quita su relleno y su borde
             —26 px medidos—: midiendo fuera, la cuenta salia para una caja mas
             grande que la real y la ultima fila quedaba CORTADA. */}
+        {/* Y CUANDO NO HAY NADIE, SE DICE. Con el flujo en marcha el grupo
+            «no asistio» llega a cero, y entonces se pintaba un tablero vacio y
+            ya — teniendo el sistema sus superficies tonales y su texto para
+            esto. Un vacio sin explicar se lee como «esto se rompio». */}
+        {lista.length === 0 && (
+          <p className="tbl-vacio">
+            {grupo === 'error'
+              ? 'Han marcado todos. No queda nadie por llegar.'
+              : 'Todavia no ha marcado nadie.'}
+          </p>
+        )}
         <div className="car car-pagina" onScroll={alDeslizar} ref={carril}
              tabIndex={0} role="region"
              aria-label={`Personas, ${paginas.length} ${paginas.length === 1 ? 'pantalla' : 'pantallas'}`}>

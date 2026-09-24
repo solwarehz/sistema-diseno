@@ -1960,7 +1960,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .badge-info{ background: var(--info-acento); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   CELDA DE TABLERO — 9 reglas · clases .tbl-*
+   CELDA DE TABLERO — 10 reglas · clases .tbl-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .tbl-marco{ display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 8px; }
@@ -1979,6 +1979,8 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   overflow: hidden; }
 .tbl-hora{ font-size: 11px; color: var(--texto-secundario); line-height: 1.25;
   font-variant-numeric: tabular-nums; }
+.tbl-vacio{ margin: 0; padding: 16px; text-align: center;
+  color: var(--texto-secundario); font-size: 13px; line-height: 1.5; }
 .tbl-lleno{ flex: 1 1 0; min-height: 0; height: 100%; overflow: hidden; display: flex; }
 .tbl-lleno > *{ flex: 1 1 auto; min-height: 0; min-width: 0; }
 

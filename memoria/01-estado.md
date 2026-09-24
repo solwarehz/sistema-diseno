@@ -19,7 +19,7 @@ deja de depender de que la caja ya exista; la v1.147.0 lo arregló a medias
 El sistema es un **paquete que un producto instala y consume** —36 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **veintiún pasos de
 verificación** —los que corre `publicar.mjs`, más ESLint y las pruebas: veintidós
-en total—, **1278 pruebas en 60 archivos**, todas en verde—.
+en total—, **1282 pruebas en 60 archivos**, todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
 eran defectos reales del sistema, no de su pantalla.** R129: el calendario no
@@ -56,7 +56,7 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **1278 pruebas en 60 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **1282 pruebas en 60 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **1049 reglas de 1568** · **755 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **62 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
@@ -269,7 +269,7 @@ en verde: el patrón casa `describe` y los títulos de dentro conservan el núme
 
 **3 · ESLint llevaba cinco versiones en rojo y no era ninguno de los veinte
 pasos.** Dieciocho infracciones, dieciséis desde la v1.123.0. Y su propio guion
-**salía verde cuando ESLint no podía ejecutarse**. Ahora es el paso veintiuno.
+**salía verde cuando ESLint no podía ejecutarse**. Ahora es el paso veinticinco: 24 guiones de node mas el suyo —3 generadores + 21 candados + ESLint—.
 
 **Y cuatro formas de mover permisos sin que nadie lo viera.** Una es regresión
 propia: `baseDe` preguntaba «¿hay privilegios con columna?» y debía preguntar

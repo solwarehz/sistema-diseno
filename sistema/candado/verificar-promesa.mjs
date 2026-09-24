@@ -264,6 +264,7 @@ const CASOS = [
   ['Superficie tonal de error', [elem('div', ['sup', 'sup-error'])]],
   ['Superficie tonal informativa', [elem('div', ['sup', 'sup-info'])]],
   ['Rejilla densa del tablero', [elem('div', ['sup', 'sup-exito']), elem('ul', ['tn-densa'])]],
+  ['Tablero sin nadie', [elem('div', ['sup', 'sup-exito']), elem('p', ['tbl-vacio'])]],
   ['Celda de persona', [
     elem('div', ['sup', 'sup-exito']), elem('ul', ['tn-densa']), elem('li', ['tbl-persona']),
   ]],
