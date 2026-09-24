@@ -3148,7 +3148,7 @@ configuración y descarga CSV.</p>
 
   <div class="tb-activos" id="tb-activos" hidden></div>
 
-  <div class="tb-envoltura">
+  <div class="tb-envoltura" tabindex="0" role="region" aria-label="Tabla, contenido desplazable">
     <table class="tb" id="tb-tabla">
       <thead><tr id="tb-cab"></tr><tr id="tb-filtros" class="tb-fila-filtros" hidden></tr></thead>
       <tbody id="tb-cuerpo"></tbody>
@@ -3193,7 +3193,7 @@ Es un buen valor por omisión: por debajo, las columnas se apelmazan y se lee pe
 la columna. Esa es una decisión de quien monta la pantalla, así que se puede renunciar al suelo — <strong>diciéndolo</strong>,
 con <code>tabla-libre</code>, y no sacando la tabla fuera de la envoltura para que no lo herede.</p>
 <div class="bloque">
-  <div class="tb-envoltura">
+  <div class="tb-envoltura" tabindex="0" role="region" aria-label="Tabla, contenido desplazable">
     <table class="tabla-simple tabla-libre">
       <thead><tr><th>Grupo</th><th>Ver</th><th>Editar</th><th>Crear</th></tr></thead>
       <tbody>
@@ -3227,7 +3227,7 @@ Se cambia en el menú de usuario, junto al tema.</p>
 <h3 class="sub-seccion">Filas desplegables — agrupar subelementos</h3>
 <p class="seccion-sub">El símbolo se llama <strong>chevron</strong>; cuando su trabajo es abrir y cerrar contenido se le llama <em>disclosure</em>. Gira al desplegar y el contenido entra con transición de altura.</p>
 <div class="bloque">
-  <div class="tb-envoltura">
+  <div class="tb-envoltura" tabindex="0" role="region" aria-label="Tabla, contenido desplazable">
     <table class="tb tb-desp">
       <thead><tr>
         <th scope="col" class="tb-th tb-th-chev"></th>
@@ -3711,7 +3711,7 @@ pantalla que <strong>ofrece un botón que vuelve a fallar</strong>.</p>
       <span class="mf-et"><b>Dentro de una tarjeta</b><br>Si falla un panel, el resto de la pantalla sigue</span>
     </div>
     <div class="ep-ambito">
-      <div class="tb-envoltura">
+      <div class="tb-envoltura" tabindex="0" role="region" aria-label="Tabla, contenido desplazable">
         <table class="tb"><thead><tr><th scope="col" class="tb-th"><span class="tb-th-txt">Trabajador</span></th><th scope="col" class="tb-th"><span class="tb-th-txt">Estado</span></th></tr></thead>
         <tbody><tr><td colspan="2" class="tb-vacio"><strong>Sin resultados para «zapata».</strong><br>Prueba con menos letras.</td></tr></tbody></table>
       </div>
@@ -9165,7 +9165,7 @@ const casos = [
    '<span class="chip chip-neutro">Sin asignar</span></div>'],
 
   ['Tabla de datos', 'Cabecera, filas alternas y el pie con su rango.',
-   '<div class="tb-bloque"><div class="tb-envoltura"><table class="tb">' +
+   '<div class="tb-bloque"><div class="tb-envoltura" tabindex="0" role="region" aria-label="Tabla, contenido desplazable"><table class="tb">' +
    '<thead><tr><th>Trabajador</th><th>Documento</th><th>Sede</th></tr></thead>' +
    '<tbody><tr><td>LEÓN TUYA, Mayori Elizabeth</td><td>72455296</td><td>Sede 1</td></tr>' +
    '<tr><td>MANRIQUE PARIAMACHI, Tony</td><td>74493588</td><td>Sede 1</td></tr>' +
@@ -10666,7 +10666,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    cerrarla tocando fuera. */
 [data-vista='movil'] .velo { position: absolute; inset: 0; z-index: 55;
   background: var(--marco-fondo); opacity: .5; }
-[data-vista='movil'] .app-main { min-height: 0; height: 100%; overflow-y: auto; }
+[data-vista='movil'] .app-main { min-height: 0; height: 100%; overflow-y: auto;  position: relative; }
 [data-vista='movil'] .top { position: sticky; top: 0; }
 /* Los filtros globales no caben en fila: se deslizan. */
 /* Un icono por vista: en móvil la hamburguesa es lo que la gente reconoce como
@@ -10951,7 +10951,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 [data-vista='movil'] .muestra-fila > *,
 [data-vista='movil'] .op-fila > *,
 [data-vista='movil'] .fila-demo > * { max-width: 100%; }
-[data-vista='movil'] .codigo, [data-vista='movil'] .cod-pre { max-width: 100%; }
+[data-vista='movil'] .codigo, [data-vista='movil'] .cod-pre { max-width: 100%;  position: relative; }
 
 /* Estados de pantalla */
 .ep-rejilla { display: grid; grid-template-columns: repeat(auto-fit,minmax(232px,1fr)); gap: 12px; }
@@ -11041,6 +11041,10 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    contenido ancho empuja al padre y la barra horizontal sale en la PAGINA. */
 .tb-bloque { min-width: 0; }
 .tb-envoltura { overflow-x: auto; position: relative; border: 1px solid var(--borde); border-radius: 6px; }
+/* Y SU FOCO SE VE. Es una parada del tabulador —lo exige el contrato para que
+   el desplazamiento se alcance sin raton— y una parada que no se ve es el
+   defecto real de §1.3: con teclado te pierdes. */
+.tb-envoltura:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
 /* R142 · EL ANCHO DE LA N.o SE ESCRIBE UNA VEZ. Estaba en .tb-th-indice y otra
    vez en .tb-indice, identico, y el anclaje necesitaba un TERCERO: el
    desplazamiento de la columna de al lado. Tres numeros que tienen que ser el
@@ -12706,7 +12710,7 @@ ${Array.from({ length: 24 }, (_, i) => {
 .cod-tit { flex: 1; font-size: 12px; color: var(--texto-secundario); }
 .cod-pre { margin: 0; padding: 16px; font-family: 'IBM Plex Mono', monospace;
   font-size: 13px; line-height: 1.65; overflow-x: auto;
-  border-top: 1px solid var(--borde); }
+  border-top: 1px solid var(--borde);  position: relative; }
 .copiar { font: inherit; font-size: 12px; font-weight: 500; cursor: pointer;
   padding: 4px 12px; border-radius: 6px; border: 1px solid var(--borde-campo);
   background: var(--fondo-tarjeta); color: var(--texto-principal); }

@@ -152,14 +152,13 @@ medirlas. Lo decimos en vez de borrarlo porque es el mismo defecto que les
 estamos reportando, en pequeño. Cada arreglo tiene además su
 mutación: rompimos el código a propósito y vimos caer **la suya**, una por una.
 
-La suite entera: **1282 pruebas en 60 archivos, todas en verde**, más los
+La suite entera: **1285 pruebas en 60 archivos, todas en verde**, más los
 veintiún candados, ESLint y `tsc --noEmit` limpio.
 
 En el catálogo, el tablero vive dentro de una sección `display: none` hasta que
-se navega a ella —el mismo montaje tardío que ustedes describen—. Medido con la
-sección ya visible, en los dos montajes que usan el gancho:
+se navega a ella — el mismo montaje tardío que ustedes describen.
 
-Y se midió en **ocho anchuras**, en los **dos** montajes, con los datos
+Se midió en **ocho anchuras**, en los **dos** montajes, con los datos
 moviéndose debajo. En las ocho: la primera página pinta **exactamente** la
 capacidad, las paradas son **exactamente** `techo(total/capacidad)`, **cero**
 desplazamiento vertical dentro del tablero y **cero** desplazamiento horizontal
@@ -196,10 +195,10 @@ capacidad no salta, díganlo y vamos directos ahí.
 
 ---
 
-## 5 bis · Tres defectos que salieron al medir TODAS las pantallas, y no eran del R162
+## 5 bis · Cinco defectos que salieron al medir TODAS las pantallas, y no eran del R162
 
-No los buscábamos. Salieron de medir el catálogo a ocho anchos, y los tres
-afectan a lo que ustedes instalan:
+No los buscábamos. Salieron de medir el catálogo a ocho anchos y de poner los
+datos a moverse, y todos afectan a lo que ustedes instalan:
 
 **(a) `.sr-solo` se escapaba de los contenedores que desplazan.** Es
 `position: absolute` con desplazamientos `auto`, y su padre es estático: su

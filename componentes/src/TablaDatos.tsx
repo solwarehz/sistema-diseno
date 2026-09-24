@@ -624,8 +624,23 @@ export function TablaDatos<T>({
       </div>
 
       {/* Lo ÚNICO que desliza. La cabecera va dentro a propósito: las columnas
-          y sus datos tienen que moverse juntos o dejan de estar alineados. */}
-      <div className="tb-envoltura">
+          y sus datos tienen que moverse juntos o dejan de estar alineados.
+
+          Y ES ALCANZABLE CON TECLADO. El contrato lo exige desde siempre —«con
+          `tabindex="0"` para que el desplazamiento también se alcance con
+          teclado»— y aquí iba un `div` a secas: a ancho estrecho la tabla se
+          desplazaba y quien no usa ratón no podía moverla. SC 2.1.1. Lo destapó
+          una prueba nueva de la regla transversal 4, escrita porque el candado
+          del contrato daba esa regla por probada casando su número con una
+          prueba de «Filtros» que no tenía nada que ver.
+          Lleva `role="region"` y nombre: un marco enfocable sin nombre es una
+          parada del tabulador que no dice qué es. */}
+      <div
+        className="tb-envoltura"
+        tabIndex={0}
+        role="region"
+        aria-label={`${titulo}, contenido desplazable`}
+      >
       <table className="tb" aria-label={titulo}>
         <thead>
           <tr>

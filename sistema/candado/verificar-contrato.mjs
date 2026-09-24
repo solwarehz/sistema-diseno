@@ -150,6 +150,32 @@ for (const linea of md.split('\n')) {
  */
 const requisitos = (texto) => [...texto.matchAll(/\(R(\d+[a-z]*)[,)]/g)].map((m) => m[1]);
 
+/* Las que se sostienen SOLO por el comodín del número de fila. Se declara la
+   lista para que una nueva falle y para que arreglar una obligue a podarla. */
+const COMODIN = [];
+const DEUDA_COMODIN = [
+  /* ── CON PRUEBA DE VERDAD, solo que atada por el numero y no por la fila ──
+     Estas once SI tienen su prueba en el archivo de su seccion —`it('R1 · «Filtros»
+     despliega una fila DENTRO del thead…')` respalda de verdad a la fila 1 de
+     «Filtros»—. Lo que falta no es la prueba: es la etiqueta `[N]`, que es la
+     unica forma inequivoca. Se van pasando a `[N]` segun se toquen. */
+  'Filtros · 1', 'Filtros · 2', 'Filtros · 3', 'Filtros · 4', 'Filtros · 5',
+  'Paginación · 7', 'Paginación · 9',
+  'Orden · 11', 'Orden · 12', 'Orden · 13',
+  'Filas desplegables · 28',
+
+  /* ── SIN PRUEBA, y se dice ────────────────────────────────────────────────
+     Estas dos no tienen ninguna. Casaban con las de «Filtros» por el numero y
+     nada mas; cuando esta lista nacio, el 2026-09-24, eran cinco y se
+     escribieron tres —[1] el foco, [3] la atenuacion, [4] el marco
+     alcanzable—, y las tres encontraron defectos reales el mismo dia. Quedan
+     dos porque su cumplimiento esta REPARTIDO por todo el sistema y no hay un
+     sitio donde mirarlo; eso no es excusa, es el motivo por el que siguen
+     aqui y no en verde. */
+  'Reglas transversales · 2',  // nada se distingue solo por color (SC 1.4.1)
+  'Reglas transversales · 5',  // tema, densidad y formato horario se recuerdan
+];
+
 const respaldada = (r) => {
   let texto = TODO;
   if (r.archivos) {
@@ -161,10 +187,26 @@ const respaldada = (r) => {
   if (t.includes(`[${r.n}]`)) return true;
   // Por el requerimiento citado, que es único de verdad…
   if (requisitos(r.texto).some((q) => new RegExp(`\\bR${q}\\b`).test(t))) return true;
-  // …o por el número de fila, que es la otra convención viva en el repositorio.
-  // Sin `<!-- pruebas: -->` esta forma vale poco —el número reinicia en cada
-  // sección— y por eso se cuenta y se dice cuántas secciones van sin declarar.
-  return new RegExp(`\\bR${r.n}\\b`).test(t);
+  /* …o por el número de fila a secas. ESTA VIA NO IDENTIFICA NADA Y SE
+     DECLARA COMO DEUDA. La cabecera de aquí arriba dice que «buscar el número
+     de fila a secas era el error» y que se arregló; se arregló en la vía `[N]`
+     y se dejó viva en ésta. Lo encontró una auditoría el 2026-09-24: la regla
+     transversal 7, recién escrita y sobre el encabezado del CATÁLOGO, salió
+     respaldada por `it('R7 · con una sola página NO se pinta la paginación…')`
+     de `TablaDatos.test.tsx`. Cero relación, y verde delante de una regla
+     obligatoria sin ninguna prueba.
+
+     Quitarla no es la salida: se probó y tumba 17 reglas que SÍ tienen su
+     prueba —`it('R1 · …')` en `TablaDatos.test.tsx` respalda de verdad a la
+     fila 1 de «Filtros»—, y romper lo que funciona para tapar lo que no es
+     cambiar un defecto por otro. Lo que sí se puede es dejar de fingir que es
+     un respaldo sólido: las que se apoyan SOLO en esto se cuentan, se nombran
+     y se comparan con una lista declarada. Si entra una nueva, el candado
+     falla; si se arregla una y no se poda la lista, también — porque una
+     lista de excepciones que nadie poda vuelve a ser el inventario a mano de
+     siempre. */
+  if (new RegExp(`\\bR${r.n}\\b`).test(t)) { COMODIN.push(`${r.seccion} · ${r.n}`); return true; }
+  return false;
 };
 
 // Secciones sin declarar: su respaldo se busca en el MONTÓN de todas las
@@ -255,5 +297,30 @@ if (sinRespaldo.length) {
   console.error('      dice la verdad aunque la verdad sea que falta.\n');
   process.exit(1);
 }
+
+
+/* ── LA DEUDA DEL COMODIN ─────────────────────────────────────────────────── */
+const comodinHoy = [...new Set(COMODIN)].sort();
+const declarada = [...new Set(DEUDA_COMODIN)].sort();
+const nuevas = comodinHoy.filter((c) => !declarada.includes(c));
+const arregladas = declarada.filter((c) => !comodinHoy.includes(c));
+if (nuevas.length || arregladas.length) {
+  console.error('\n  El respaldo por NUMERO DE FILA A SECAS no identifica nada.\n');
+  if (nuevas.length) {
+    console.error('  Estas reglas se sostienen solo por eso, y no estaban declaradas:\n');
+    for (const c of nuevas) console.error(`    ${c}`);
+    console.error('\n  Atala por su fila —`it(\'[N] …\')`— o cita su requerimiento.');
+    console.error('  Si de verdad no se puede, declarala en DEUDA_COMODIN con su motivo.');
+  }
+  if (arregladas.length) {
+    console.error('\n  Y estas ya NO lo necesitan: quitalas de DEUDA_COMODIN.\n');
+    for (const c of arregladas) console.error(`    ${c}`);
+    console.error('\n  Una lista de excepciones que nadie poda vuelve a ser el');
+    console.error('  inventario a mano de siempre.');
+  }
+  console.error('');
+  process.exit(1);
+}
+console.log(`  Respaldadas solo por el numero de fila: ${comodinHoy.length} — declaradas.`);
 
 console.log('  Toda regla obligatoria tiene prueba detrás.\n');

@@ -291,7 +291,7 @@ describe('R20 (pedido R33) · filtro de dominio cerrado', () => {
 });
 
 describe('R21 · la tabla vacía dice por qué', () => {
-  it('cero resultados por filtro: aviso y salida de un clic', async () => {
+  it('[21] cero resultados por filtro: aviso y salida de un clic', async () => {
     const u = userEvent.setup();
     pintar();
     await u.click(screen.getByRole('button', { name: 'Filtros' }));

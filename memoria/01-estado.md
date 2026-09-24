@@ -19,7 +19,7 @@ deja de depender de que la caja ya exista; la v1.147.0 lo arregló a medias
 El sistema es un **paquete que un producto instala y consume** —36 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **veintiún pasos de
 verificación** —los que corre `publicar.mjs`, más ESLint y las pruebas: veintidós
-en total—, **1282 pruebas en 60 archivos**, todas en verde—.
+en total—, **1285 pruebas en 60 archivos**, todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
 eran defectos reales del sistema, no de su pantalla.** R129: el calendario no
@@ -56,7 +56,7 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **1282 pruebas en 60 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **1285 pruebas en 60 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **1049 reglas de 1568** · **755 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **62 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |

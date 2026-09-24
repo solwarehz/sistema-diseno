@@ -336,6 +336,14 @@ const GENTE = [
    —«hora.slice(3)»— y eso da «+38» para quien llego a las 06:48: el reloj no se
    parte por el dos puntos. Se comparan minutos absolutos. */
 const ENTRADA = 7 * 60 + 10;
+/* Minutos a «HH:MM», con el dia como techo. Estuvo sin modulo ni tope y el
+   rotulo llego a imprimir «23:52», «30:23» y «46:35» — medido, en media hora
+   de tablero abierto. Un tablero se deja abierto y se mira de lejos: media
+   hora no es un caso limite, es el caso. */
+function deMinutos(min: number): string {
+  const m = Math.max(0, Math.min(Math.round(min), 23 * 60 + 59));
+  return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+}
 function tarde(hora: string): number {
   if (hora === '—') return 0;
   const [h, m] = hora.split(':').map(Number);
@@ -361,41 +369,39 @@ type Persona = readonly [string, string, string, string, string];
  */
 function useFlujoSimulado(inicial: readonly Persona[], cada = 2200) {
   const [gente, setGente] = useState<readonly Persona[]>(inicial);
-  const [ultimo, setUltimo] = useState('07:15');
   const [andando, setAndando] = useState(true);
-  /* EL RELOJ NO RETROCEDE. La primera version sacaba una hora al azar en cada
-     evento, y el rotulo llego a decir «ultimo dato 07:42» y despues «07:29»:
-     un dato en vivo que va hacia atras es una cifra falsa en pantalla, y la
-     regla de cero invencion no distingue entre inventar y desordenar. */
-  const reloj = useRef(7 * 60 + 15);
   useEffect(() => {
     if (!andando) return undefined;
     const id = window.setInterval(() => {
-      /* EL RELOJ AVANZA AQUI, FUERA DEL ACTUALIZADOR. Estuvo dentro, y un
-         actualizador de estado tiene que ser PURO: React lo doble-invoca en
-         modo estricto, asi que el reloj corria al doble —medido, siete avances
-         en cuatro tics—. El catalogo no monta en modo estricto y por eso no se
-         veia; el equipo que consume si lo usa, y es justo el patron contra el
-         que el propio sistema predica. */
-      /* Y al completarse el turno el reloj vuelve al principio con la lista. */
-      if (!gente.some((g) => g[4] === 'error')) reloj.current = 7 * 60 + 15;
-      reloj.current += 1 + Math.floor(Math.random() * 3);
-      const h = reloj.current;
-      const horaDelTic = `${String(Math.floor(h / 60)).padStart(2, '0')}:${String(h % 60).padStart(2, '0')}`;
-      setUltimo(horaDelTic);
+      /* EL ACTUALIZADOR ES PURO, Y COSTO TRES INTENTOS LLEGAR AQUI.
+         Primero el reloj avanzaba DENTRO con «reloj.current += …» y React, que
+         doble-invoca los actualizadores en modo estricto, lo hacia correr al
+         doble —medido, siete avances en cuatro tics—. Se saco fuera, y
+         entonces leia «gente» desde el cierre del intervalo: el cierre retiene
+         la lista INICIAL, asi que el reinicio del turno era CODIGO MUERTO con
+         un comentario que prometia lo contrario —medido, 07:15 a 09:09 en
+         sesenta tics, con ocho reinicios de la lista y ninguno del reloj, o
+         sea el rotulo contradiciendo a todas las celdas—. Y sin modulo ni tope
+         llego a imprimir «23:52», «30:23» y «46:35».
+         La salida no era colocarlo mejor: era que no hubiera nada que colocar.
+         La hora se DERIVA de la lista —quien marca lo hace dos minutos despues
+         del anterior— y el rotulo se deriva de la lista tambien. Nada que
+         guardar, nada que reiniciar, nada que desincronizar, y el actualizador
+         vuelve a ser una funcion de «antes» y nada mas: doble invocacion,
+         mismo resultado. */
       setGente((antes) => {
         const fuera = antes.filter((g) => g[4] === 'error');
-        /* CUANDO YA NO QUEDA NADIE FUERA, EL TURNO EMPIEZA DE NUEVO. No es
+        /* Cuando ya no queda nadie fuera, el turno empieza de nuevo. No es
            adorno: al volver a la lista inicial el grupo «asistio» ENCOGE de 24
            a 18, y ahi es donde el carril podria quedarse apuntando a una
            parada que ya no existe. Una demo que solo crece no enseña eso. */
         if (!fuera.length) return inicial;
-        const quien = fuera[Math.floor(Math.random() * fuera.length)];
-        const hora = horaDelTic;
-        /* SE DEVUELVE UNA LISTA NUEVA CON LA MISMA IDENTIDAD POR PERSONA. La
-           clave de cada celda es el nombre completo, no el indice: si fuera el
-           indice, al cambiar alguien de grupo React reutilizaria el nodo y la
-           FOTO de una persona se quedaria puesta en otra. */
+        /* Y se elige al PRIMERO, no al azar: `Math.random()` dentro de un
+           actualizador es lo mismo que mutar un ref dentro — deja de ser una
+           funcion de su entrada. */
+        const quien = fuera[0];
+        const marcados = antes.length - fuera.length;
+        const hora = deMinutos(ENTRADA + 5 + marcados * 2);
         return antes.map((g) => (g === quien
           ? [g[0], g[1], g[2], hora, 'exito'] as const satisfies Persona
           : g));
@@ -403,6 +409,13 @@ function useFlujoSimulado(inicial: readonly Persona[], cada = 2200) {
     }, cada);
     return () => window.clearInterval(id);
   }, [andando, cada, inicial]);
+  /* EL ROTULO SE DERIVA, NO SE GUARDA. Es la ultima hora que hay en la lista:
+     asi no puede contradecir a las celdas, que es lo que pasaba cuando era un
+     estado aparte. */
+  const ultimo = useMemo(() => {
+    const horas = gente.filter((g) => g[3] !== '—').map((g) => g[3]).sort();
+    return horas.length ? horas[horas.length - 1] : '—';
+  }, [gente]);
   return { gente, ultimo, andando, setAndando };
 }
 

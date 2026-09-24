@@ -378,3 +378,113 @@ describe('R6 · todo contenedor que se desplaza es bloque contenedor', () => {
     expect(hoja.slice(i, i + 200)).toMatch(/position:\s*absolute/);
   });
 });
+
+describe('Reglas transversales · las que el comodín daba por probadas', () => {
+  /* Estas cinco salían «respaldadas» casando su número de fila con las pruebas
+     de «Filtros» de `TablaDatos.test.tsx` — `R1`, `R2`… — que no tienen nada
+     que ver. Cero relación, y verde delante de cinco reglas obligatorias sin
+     una sola prueba. Lo destapó una auditoría al mirar el candado del contrato
+     en vez de mirar lo que el candado decía.
+
+     Tres se pueden comprobar sobre la hoja que viaja, que es lo que llega a los
+     productos. Las otras dos no, y por eso van declaradas en el candado con su
+     motivo en vez de fingidas aquí. */
+  const hoja = readFileSync(
+    resolve(process.cwd(), '..', 'sistema', 'componentes', 'componentes.css'), 'utf8',
+  );
+
+  /* Lo que sí puede apagar el foco, con su motivo. Es una lista corta y
+     declarada: si crece sin motivo, se nota. */
+  const EXCEPCIONES_FOCO = [
+    /* Recibe el foco al abrirse el diálogo, para que un lector lea el título.
+       Lleva `tabindex="-1"`: no es una parada del tabulador, así que el anillo
+       aparecería sin que nadie haya navegado hasta ahí. */
+    '.dialogo-tit:focus',
+  ];
+
+  it('[1] ninguna regla apaga el foco sin poner otro en su sitio', () => {
+    /* Es el defecto real de MMI-DS §1.3: con teclado te pierdes. El candado de
+       ESLint lo corta en el código de los productos; esto mira la HOJA, que es
+       por donde también se puede colar. */
+    const malas: string[] = [];
+    for (const bloque of hoja.split('}')) {
+      if (!bloque.includes('{')) continue;
+      const cuerpo = bloque.slice(bloque.indexOf('{') + 1);
+      if (!/outline:\s*(none|0)\b/.test(cuerpo)) continue;
+      /* Vale si la misma regla pone un reemplazo visible… */
+      if (/box-shadow|outline-offset|border-color|background/.test(cuerpo)) continue;
+      const sel = bloque.slice(0, bloque.indexOf('{')).trim().split('\n').pop()!.trim();
+      /* …o si lo pone OTRA regla del mismo selector: `.tna-disparo:focus-visible`
+         apaga el suyo y lo dibuja en su `::after`, que es legítimo y frecuente
+         cuando el anillo tiene que rodear algo más que la caja. */
+      if (new RegExp(`${sel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(::?[a-z-]+)?\\s*\\{[^}]*outline:\\s*\\d`)
+        .test(hoja)) continue;
+      /* Y `:focus` a secas sobre algo que solo recibe foco POR PROGRAMA
+         —`tabindex="-1"`, como el título de un diálogo al abrirse— no es una
+         parada del tabulador: ahí el anillo sería ruido, no ayuda. */
+      if (EXCEPCIONES_FOCO.includes(sel)) continue;
+      malas.push(sel);
+    }
+    expect(malas, `estas reglas apagan el foco y no ponen nada en su sitio: ${malas.join(' · ')}`)
+      .toEqual([]);
+  });
+
+  /* LOS QUE HAY, MEDIDOS. No se tapan: se cuentan, con su razón real al lado.
+     El daño de atenuar con `opacity` no es que baje el contraste por sistema —
+     es que el candado de contraste mide EL TOKEN y no lo que llega al ojo, así
+     que lo que se publica como 10,43:1 puede llegar a cualquier cosa y nadie
+     lo sabría. Estos seis se midieron uno a uno y los seis pasan AA con
+     holgura. Se quedan porque cambiarlos por `--marco-texto-tenue` los dejaría
+     MÁS apagados —5,87:1 contra los 7,06 de hoy—, y eso es un cambio de diseño,
+     no un arreglo.
+     Si aparece uno nuevo, esta prueba falla; si se quita uno y no se poda esta
+     lista, también, porque una lista de excepciones que nadie poda vuelve a ser
+     el inventario a mano de siempre. */
+  const ATENUADOS: Record<string, string> = {
+    '.nav-item': 'blanco al 78 % sobre `marco-fondo` → 7,06:1 (claro) y 8,19:1 (oscuro)',
+    '.nav-hijo': 'igual que `.nav-item`',
+    '.nav-nieto': 'igual que `.nav-item`',
+    '.cf-txt span': '`error-texto` al 85 % sobre `error-fondo` → 5,94:1',
+    '.psl-hero-et': 'blanco al 90 % sobre el hero → 8,83:1',
+    '.psl-hero-sub': 'igual que `.psl-hero-et`',
+  };
+
+  it('[3] el texto no se atenúa con `opacity` fuera de lo declarado y medido', () => {
+    /* Una `opacity` sobre texto cambia su color efectivo y el candado de
+       contraste mide el token, no el resultado: lo que se publica como 4,8:1
+       llega al ojo peor. Se permite en elementos que no llevan texto propio
+       —veladuras, capas, transiciones— y por eso se mira lo que declara
+       `color` o `font-` en la misma regla. */
+    const malas: string[] = [];
+    for (const bloque of hoja.split('}')) {
+      if (!bloque.includes('{')) continue;
+      const cuerpo = bloque.slice(bloque.indexOf('{') + 1);
+      const m = cuerpo.match(/(?<![\w-])opacity:\s*([\d.]+)/);
+      if (!m || Number(m[1]) >= 1 || Number(m[1]) === 0) continue;
+      if (!/(?<![\w-])(color|font-size|font-weight):/.test(cuerpo)) continue;
+      const sel = bloque.slice(0, bloque.indexOf('{')).trim().split('\n').pop()!.trim();
+      if (sel in ATENUADOS) continue;
+      malas.push(sel);
+    }
+    expect(malas, 'estas reglas atenúan texto con `opacity` y no están declaradas: el candado '
+      + 'de contraste mide el TOKEN, no lo que llega al ojo, así que lo que publica de esas '
+      + `no lo sabe nadie — ${malas.join(' · ')}`).toEqual([]);
+    /* Y la lista se poda: una excepción que ya no existe no se arrastra. */
+    const fantasmas = Object.keys(ATENUADOS).filter((k) => !hoja.includes(`${k}{`));
+    expect(fantasmas, `estas ya no atenúan nada: quítalas de ATENUADOS — ${fantasmas.join(' · ')}`)
+      .toEqual([]);
+  });
+
+  it('[4] lo ancho se desplaza DENTRO de su marco, y el marco es alcanzable con teclado', () => {
+    /* Un contenedor que desplaza y no es enfocable deja el contenido fuera del
+       alcance de quien no usa ratón: SC 2.1.1. En el sistema los marcos que
+       desplazan llevan `tabindex="0"` en el marcado, y la hoja les pinta su
+       anillo de foco — si no hubiera regla de foco, el marco sería alcanzable
+       y no se vería dónde está. */
+    for (const marco of ['.tb-envoltura', '.car']) {
+      const i = hoja.indexOf(`${marco}:focus-visible`);
+      expect(i, `«${marco}» desplaza y no declara foco visible: se puede tabular hasta él y `
+        + 'no se ve').toBeGreaterThan(-1);
+    }
+  });
+});
