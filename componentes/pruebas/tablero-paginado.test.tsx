@@ -1011,3 +1011,59 @@ describe('R17b · el índice de parada y el sistema de coordenadas', () => {
     expect(cuenta, 'la cuenta ya no resta el desplazamiento').toContain('el.scrollLeft');
   });
 });
+
+describe('lo que viaja SIN COMPILAR no puede apoyarse en cómo lo compile otro', () => {
+  /* El defecto que el equipo reportó contra la v1.148.0, y es el peor que ha
+     tenido este gancho porque rompía EXACTAMENTE el camino que esa versión
+     publicaba como recomendado: `TypeError: Cannot read properties of
+     undefined (reading 'current')` dentro de `medir`, al montar, y **sólo sin
+     argumento**.
+
+     La línea era `nodo.current ?? externa.current?.current`. Sin argumento
+     `caja` es `undefined`, así que la BASE del encadenamiento opcional era
+     `undefined`; con `RefObject` nunca lo era. Un A/B del equipo —mismo
+     archivo, misma versión, mismo navegador, misma sesión— lo aisló a eso, y
+     descartaron caché reiniciando el contenedor y comprobando que el paquete
+     servido traía el código nuevo.
+
+     Este paquete **viaja sin compilar** —es una decisión del sistema, no un
+     descuido—, así que quien transforma ese `?.` es la cadena de herramientas
+     del consumidor. La lección no es «ese `?.` estaba mal»: es que **lo que se
+     entrega sin compilar no puede apoyarse en que otro lo compile como
+     nosotros suponemos**, y menos el camino que uno mismo recomienda.
+
+     No se puede reproducir aquí: en jsdom, con nuestra cadena, las seis formas
+     montan sin tirar nada — se probó. Por eso la prueba no mira el síntoma,
+     mira la causa: que no quede ninguna forma sintáctica de la que dependa. */
+  const fuente = readFileSync(
+    join(process.cwd(), 'src', 'tablero.ts'), 'utf8');
+
+  /* Se quitan comentarios y cadenas antes de mirar: el propio archivo explica
+     el defecto citando `?.`, y eso no es código. */
+  const codigo = fuente
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/[^\n]*/g, '')
+    .replace(/'(?:[^'\\]|\\.)*'/g, "''")
+    .replace(/`(?:[^`\\]|\\.)*`/g, '``');
+
+  it('[19] el gancho no usa encadenamiento opcional', () => {
+    const usos = [...codigo.matchAll(/\?\./g)].length;
+    expect(usos, 'volvió un `?.` a `tablero.ts`. No es que esté mal escrito: es que este '
+      + 'archivo se entrega SIN COMPILAR y ya rompió el camino recomendado en un consumidor '
+      + 'cuya cadena lo transformó de otra forma. Se escribe con `if` o con `&&`, que no '
+      + 'depende de nadie').toBe(0);
+  });
+
+  it('[19] ni fusión de nulos, que es la misma apuesta', () => {
+    const usos = [...codigo.matchAll(/\?\?/g)].length;
+    expect(usos, 'volvió un `??` a `tablero.ts`: misma apuesta sobre la cadena de '
+      + 'herramientas ajena').toBe(0);
+  });
+
+  it('[19] y el espejo del `RefObject` guarda `null`, nunca `undefined`', () => {
+    /* Es lo que quita el filo: aunque algo se transforme raro, la base de la
+       lectura existe siempre. */
+    expect(codigo, 'el espejo puede volver a guardar `undefined`, que es la base que reventó')
+      .toMatch(/externa\.current\s*=\s*caja\s*\|\|\s*null/);
+  });
+});

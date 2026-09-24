@@ -215,9 +215,26 @@ export function useCapacidadTablero(
      preguntar «¿esta enganchado?» en vez de suponerlo. */
   const observado = useRef<HTMLElement | null>(null);
   /* El `RefObject` que nos hayan pasado, en un espejo, para que `medir` y
-     `sincronizar` no dependan de el y puedan ser estables. */
-  const externa = useRef(caja);
-  externa.current = caja;
+     `sincronizar` no dependan de el y puedan ser estables.
+
+     SE GUARDA COMO `null`, NUNCA COMO `undefined`, Y SE LEE SIN `?.`. Aqui
+     estuvo el defecto que el equipo reporto contra la v1.148.0 y es el peor de
+     los que ha tenido este gancho, porque rompia EXACTAMENTE el camino que la
+     version publicaba como recomendado: `TypeError: Cannot read properties of
+     undefined (reading 'current')` dentro de `medir`, al montar, y solo sin
+     argumento. La linea era `nodo.current ?? externa.current?.current`: sin
+     argumento `caja` es `undefined`, asi que la BASE del encadenamiento
+     opcional era `undefined` — y con `RefObject` nunca lo era. Un A/B del
+     equipo en el mismo archivo, misma version y mismo navegador lo aislo a eso.
+
+     El paquete VIAJA SIN COMPILAR: quien transforma ese `?.` es la cadena de
+     herramientas del consumidor, y el sistema no puede jugarse su camino
+     recomendado a que esa transformacion se comporte. La leccion no es «ese
+     `?.` estaba mal»: es que **lo que se entrega sin compilar no puede apoyarse
+     en que otro lo compile como nosotros suponemos**. Se quitan todos los
+     encadenamientos opcionales de este gancho y lo vigila una prueba. */
+  const externa = useRef<RefObject<HTMLElement | null> | null>(caja || null);
+  externa.current = caja || null;
   /* DOS banderas y no una: compartirlas hacia que el primer aviso silenciara
      al otro para siempre. Lo cazo la auditoria. */
   const avisadoSinRO = useRef(false);
@@ -228,7 +245,8 @@ export function useCapacidadTablero(
        la retrollamada, se mira el `RefObject` que nos dieron: es lo que hacia
        que en escritorio el defecto se curase al mover el borde, y quitarlo fue
        una regresion contra la v1.147.0 que cazo la auditoria. */
-    const el = nodo.current ?? externa.current?.current ?? null;
+    const ext = externa.current;
+    const el = nodo.current || (ext ? ext.current : null);
     if (!el) return;
     /* SE MIDE LA CAJA DE CONTENIDO, Y DE UN ELEMENTO QUE NO DEPENDA DEL
        CONTENIDO. `tbl-lleno` lleva `overflow: hidden`, así que su tamaño nunca
@@ -272,13 +290,14 @@ export function useCapacidadTablero(
    * después de cada render sin coste.
    */
   const sincronizar = useCallback(() => {
-    const el = nodo.current ?? externa.current?.current ?? null;
+    const ext = externa.current;
+    const el = nodo.current || (ext ? ext.current : null);
     if (observado.current === el) return;
-    if (observado.current) ro.current?.unobserve(observado.current);
+    if (observado.current && ro.current) ro.current.unobserve(observado.current);
     observado.current = el;
     if (!el) return;
     if (typeof ResizeObserver !== 'undefined') {
-      ro.current = ro.current ?? new ResizeObserver(medir);
+      if (!ro.current) ro.current = new ResizeObserver(medir);
       ro.current.observe(el);
     } else if (process.env.NODE_ENV !== 'production' && !avisadoSinRO.current) {
       avisadoSinRO.current = true;
@@ -307,16 +326,17 @@ export function useCapacidadTablero(
      gancho, no la de cada render. */
   enEfecto(() => {
     window.addEventListener('resize', medir);
-    window.visualViewport?.addEventListener('resize', medir);
+    const vv = window.visualViewport;
+    if (vv) vv.addEventListener('resize', medir);
     return () => {
       window.removeEventListener('resize', medir);
-      window.visualViewport?.removeEventListener('resize', medir);
+      if (vv) vv.removeEventListener('resize', medir);
       /* Se suelta el observador, pero NO se olvida el nodo: en `StrictMode`
          React corre limpieza y efecto otra vez SIN volver a llamar la
          retrollamada del `ref`, asi que olvidar el nodo aqui dejaba sordo al
          camino recomendado. Se olvida lo que se puede recuperar —a quien se
          estaba observando— y el efecto de abajo lo vuelve a enganchar. */
-      ro.current?.disconnect();
+      if (ro.current) ro.current.disconnect();
       observado.current = null;
     };
   }, [medir]);
@@ -355,7 +375,7 @@ export function useCapacidadTablero(
   enEfecto(() => {
     if (!caja || typeof MutationObserver === 'undefined') return undefined;
     const vigilante = new MutationObserver(() => {
-      if ((caja.current ?? null) === observado.current) return;
+      if ((caja.current || null) === observado.current) return;
       sincronizar();
       if (process.env.NODE_ENV !== 'production' && observado.current
           && !avisadoTarde.current) {

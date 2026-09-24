@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.148.1";
+export const VERSION = "1.148.2";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,38 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.148.2', fecha: '2026-09-24',
+    que: 'El camino que la v1.148.0 publicaba como RECOMENDADO rompia la pantalla',
+    porque:
+      'LO REPORTO EL EQUIPO Y ES EL PEOR DEFECTO QUE HA TENIDO ESTE GANCHO, porque no rompia '
+      + 'un caso raro: rompia EXACTAMENTE lo que esta version les dijo que usaran. '
+      + '`TypeError: Cannot read properties of undefined (reading \'current\')` dentro de '
+      + '`medir`, en el efecto de montaje, y solo con la forma sin argumento. '
+      + 'Su diagnostico fue impecable y hay que decirlo: un A/B en el MISMO archivo, misma '
+      + 'version, mismo navegador y misma sesion —`useCapacidadTablero()` con el `ref` de '
+      + 'retorno cae; `useCapacidadTablero(caja)` con `RefObject` funciona, caja de 564x433—, '
+      + 'probado ademas con y sin desestructurar por si el fallo era suyo, y con la cache '
+      + 'descartada por el camino largo: contenedor reiniciado, recargas con parametro distinto '
+      + 'y el paquete servido comprobado —trae `enganchar` y `observado`—. No era suyo. '
+      + 'LA CAUSA: `const el = nodo.current ?? externa.current?.current ?? null`. Sin argumento '
+      + '`caja` es `undefined`, asi que la BASE del encadenamiento opcional era `undefined`; '
+      + 'con `RefObject` no lo era NUNCA. Es la unica lectura que difiere entre los dos '
+      + 'caminos, y explica por si sola que uno caiga y el otro no. '
+      + 'Y LA LECCION NO ES «ESE `?.` ESTABA MAL». Este paquete VIAJA SIN COMPILAR —decision '
+      + 'del sistema, no descuido—, asi que quien transforma ese `?.` es la cadena de '
+      + 'herramientas del consumidor. Lo que no se puede es jugarse el camino que uno mismo '
+      + 'recomienda a que otro compile como uno supone. Se quitan TODOS los encadenamientos '
+      + 'opcionales y las fusiones de nulos del gancho —se escriben con `if` y con `&&`, que '
+      + 'no dependen de nadie— y el espejo del `RefObject` guarda `null` y nunca `undefined`, '
+      + 'que es lo que quita el filo. Lo vigilan tres pruebas sobre el propio archivo. '
+      + 'NO SE PUDO REPRODUCIR AQUI y se dice: en jsdom, con nuestra cadena, las seis formas '
+      + 'montan sin tirar nada —se probo—. Por eso la prueba no mira el sintoma sino la causa: '
+      + 'que no quede ninguna forma sintactica de la que dependa. Si tras esto sigue cayendo, '
+      + 'el diagnostico estaba incompleto y hay que volver con su traza.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.148.1', fecha: '2026-09-24',
     que: 'La guia de actualizacion avisa de la caché de npm, que sirvio la version vieja',
