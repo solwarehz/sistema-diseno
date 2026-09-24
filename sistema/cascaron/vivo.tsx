@@ -19,11 +19,12 @@
  * catálogo que se quedara sin el componente vivo y no lo dijera sería
  * exactamente la mentira que esto viene a cerrar.
  */
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MarcoApp, type GrupoNav } from '../../componentes/src/MarcoApp';
 import { Icono } from '../../componentes/src/Icono';
 import { Avatar } from '../../componentes/src/Avatar';
+import { Boton } from '../../componentes/src/Boton';
 import { Segmentado } from '../../componentes/src/Segmentado';
 /* R159 · La capacidad la calcula el SISTEMA, no esta pantalla. */
 import { useCapacidadTablero, enPaginas, cuentaBurbuja } from '../../componentes/src/tablero';
@@ -341,18 +342,88 @@ function tarde(hora: string): number {
   return Math.max(0, h * 60 + m - ENTRADA);
 }
 
+type Persona = readonly [string, string, string, string, string];
+
+/**
+ * EL FLUJO EN VIVO, SIMULADO.
+ *
+ * El sistema de diseno **no trae socket.io ni ningun transporte**: de donde
+ * salen los datos es del producto. Lo que el sistema tiene que garantizar es
+ * otra cosa, y es la que no se ve en una demo estatica: **que la pieza se
+ * comporte bien cuando los datos cambian DEBAJO**. Gente que marca y pasa de
+ * «no asistio» a «asistio», la cuenta que se mueve, la rejilla que se recoloca
+ * — y la pantalla en la que estas, que no puede quedarse mintiendo.
+ *
+ * Por eso el catalogo lo monta asi y no con una lista fija: los tres defectos
+ * que este modo enseña —la parada que se queda fuera de rango, el rotulo que
+ * anuncia lo que no cambio, y la foto que se recicla en otra persona— no
+ * aparecen NUNCA si la lista no se mueve.
+ */
+function useFlujoSimulado(inicial: readonly Persona[], cada = 2200) {
+  const [gente, setGente] = useState<readonly Persona[]>(inicial);
+  const [ultimo, setUltimo] = useState('07:15');
+  const [andando, setAndando] = useState(true);
+  /* EL RELOJ NO RETROCEDE. La primera version sacaba una hora al azar en cada
+     evento, y el rotulo llego a decir «ultimo dato 07:42» y despues «07:29»:
+     un dato en vivo que va hacia atras es una cifra falsa en pantalla, y la
+     regla de cero invencion no distingue entre inventar y desordenar. */
+  const reloj = useRef(7 * 60 + 15);
+  useEffect(() => {
+    if (!andando) return undefined;
+    const id = window.setInterval(() => {
+      setGente((antes) => {
+        const fuera = antes.filter((g) => g[4] === 'error');
+        /* CUANDO YA NO QUEDA NADIE FUERA, EL TURNO EMPIEZA DE NUEVO. No es
+           adorno: al volver a la lista inicial el grupo «asistio» ENCOGE de 24
+           a 18, y ahi es donde el carril podria quedarse apuntando a una
+           parada que ya no existe. Una demo que solo crece no enseña eso. */
+        if (!fuera.length) {
+          reloj.current = 7 * 60 + 15;
+          setUltimo('07:15');
+          return inicial;
+        }
+        const quien = fuera[Math.floor(Math.random() * fuera.length)];
+        reloj.current += 1 + Math.floor(Math.random() * 3);
+        const h = reloj.current;
+        const hora = `${String(Math.floor(h / 60)).padStart(2, '0')}:${String(h % 60).padStart(2, '0')}`;
+        setUltimo(hora);
+        /* SE DEVUELVE UNA LISTA NUEVA CON LA MISMA IDENTIDAD POR PERSONA. La
+           clave de cada celda es el nombre completo, no el indice: si fuera el
+           indice, al cambiar alguien de grupo React reutilizaria el nodo y la
+           FOTO de una persona se quedaria puesta en otra. */
+        return antes.map((g) => (g === quien
+          ? [g[0], g[1], g[2], hora, 'exito'] as const satisfies Persona
+          : g));
+      });
+    }, cada);
+    return () => window.clearInterval(id);
+  }, [andando, cada, inicial]);
+  return { gente, ultimo, andando, setAndando };
+}
+
 function TableroVivo() {
   const [grupo, setGrupo] = useState<'exito' | 'error'>('exito');
-  const dentro = GENTE.filter((g) => g[4] === 'exito');
-  const fuera = GENTE.filter((g) => g[4] === 'error');
+  /* LOS DATOS CAMBIAN DEBAJO. Es lo que pidio el responsable —«que funcione
+     como si tuviera socketio»— y es la unica forma de ver lo que una lista
+     fija esconde. El transporte no es del sistema; el comportamiento, si. */
+  const { gente, ultimo, andando, setAndando } = useFlujoSimulado(GENTE);
+  const dentro = useMemo(() => gente.filter((g) => g[4] === 'exito'), [gente]);
+  const fuera = useMemo(() => gente.filter((g) => g[4] === 'error'), [gente]);
   const lista = grupo === 'exito' ? dentro : fuera;
-  const caja = useRef<HTMLDivElement>(null);
-  const { porPagina } = useCapacidadTablero(caja);
+  /* R162 · SE ENGANCHA CON EL «ref» QUE DEVUELVE EL GANCHO, no con un
+     «useRef» propio. Es la forma recomendada y la razon es de orden: un
+     «RefObject» solo tiene nodo DESPUES de pintar, asi que el gancho tenia que
+     adivinar cuando mirarlo; el «ref» de retorno es React quien lo llama, con
+     el nodo en la mano, cada vez que cambia —y tambien cuando llega tarde
+     porque la caja se monta detras de una condicion—. La firma vieja sigue
+     funcionando: el gancho acepta los dos. */
+  const { porPagina, ref: medirCaja } = useCapacidadTablero();
   const paginas = enPaginas(lista, porPagina);
   /* En que parada esta. Se lee del desplazamiento del propio carril y no de un
      boton, porque aqui se pasa de pagina DESLIZANDO: un estado que solo cambie
      al pulsar diria lo que el usuario no hizo. */
   const [actual, setActual] = useState(0);
+  const carril = useRef<HTMLDivElement>(null);
   /* Y SE ACOTA AL NUMERO DE PANTALLAS QUE HAY AHORA. El estado solo lo escribia
      el desplazamiento, y nada lo comparaba con cuantas paginas quedan: al
      agrandar la caja de 18 paradas a 2, el carril seguia diciendo «Pantalla 20
@@ -360,6 +431,21 @@ function TableroVivo() {
      lo anuncia. Se acota al leer, no al escribir, porque el numero de paginas
      cambia sin que nadie deslice. */
   const enPantalla = Math.min(actual, Math.max(0, paginas.length - 1));
+  /* Y CUANDO LA LISTA ENCOGE, EL CARRIL VUELVE A UNA PARADA QUE EXISTE.
+     Solo se ve con datos en movimiento: estando en la pantalla 4 de 4, si dos
+     personas cambian de grupo quedan 3 paginas y el carril se queda desplazado
+     donde ya no hay nada — el navegador acota el desplazamiento, pero no
+     siempre dispara el evento que lo cuenta, asi que la tira podia seguir
+     encendiendo un punto que ya no era el suyo. Se acota tambien aqui. */
+  useEffect(() => {
+    const el = carril.current;
+    if (!el) return;
+    const tope = Math.max(0, paginas.length - 1);
+    if (actual <= tope) return;
+    setActual(tope);
+    const parada = el.children[tope] as HTMLElement | undefined;
+    if (parada) el.scrollTo({ left: parada.offsetLeft - el.offsetLeft });
+  }, [paginas.length, actual]);
   const alDeslizar = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
     /* SE BUSCA LA PARADA MAS CERCANA POR SU POSICION REAL, no se divide por el
@@ -399,12 +485,12 @@ function TableroVivo() {
           pantalla: si la calculara cada producto, la misma rejilla acabaria con
           tres respuestas distintas. Aqui solo se mide la caja que el sistema
           pide medir. */}
-      <div className={`sup sup-${grupo} tbl-lleno`} ref={caja}>
+      <div className={`sup sup-${grupo} tbl-lleno`} ref={medirCaja}>
         {/* SE MIDE EL CARRIL, NO LA SUPERFICIE DE FUERA. Cada parada mide lo
             mismo que el carril, y la superficie le quita su relleno y su borde
             —26 px medidos—: midiendo fuera, la cuenta salia para una caja mas
             grande que la real y la ultima fila quedaba CORTADA. */}
-        <div className="car car-pagina" onScroll={alDeslizar}
+        <div className="car car-pagina" onScroll={alDeslizar} ref={carril}
              tabIndex={0} role="region"
              aria-label={`Personas, ${paginas.length} ${paginas.length === 1 ? 'pantalla' : 'pantallas'}`}>
           {paginas.map((pagina, i) => (
@@ -446,13 +532,69 @@ function TableroVivo() {
         ))}
         <span className="sr-solo">Pantalla {enPantalla + 1} de {paginas.length}</span>
       </p>
-      <p className="vivo"><span className="vivo-punto" /> En vivo · último dato 07:15</p>
+      {/* EL ROTULO DICE LA HORA REAL DEL ULTIMO DATO, no una escrita a mano.
+          Decia «07:15» fijo, y con el flujo en marcha eso es una cifra
+          inventada en pantalla: lo que el sistema prohibe en su documentacion
+          no puede hacerlo su propio catalogo. */}
+      <p className="vivo">
+        <span className="vivo-punto" /> En vivo · último dato {ultimo}
+        {' · '}
+        {/* SE COMPONE, NO SE RECONSTRUYE (politica §4bis-2): el control es un
+            «Boton» terciario del sistema, no un «button» con clases propias. */}
+        <Boton variante="terciaria" mini onClick={() => setAndando((v) => !v)}>
+          {andando ? 'Pausar el flujo' : 'Reanudar el flujo'}
+        </Boton>
+      </p>
+    </div>
+  );
+}
+
+/**
+ * EL MISMO TABLERO EN UN PADRE QUE NO COOPERA.
+ *
+ * Regla 16 del contrato: una pieza que depende de su padre se demuestra en un
+ * padre que NO coopera. Estaba, y era marcado escrito a mano — que no demuestra
+ * la pieza, demuestra un marcado: a 360 px la caja da para 2x2 y las seis
+ * celdas fijas seguian ahi, enseñando el desplazamiento vertical que el
+ * sistema promete que no existe. Ahora monta el gancho de verdad, con datos
+ * que tambien se mueven, dentro de un contenedor liso sin flex.
+ */
+function TableroLisoVivo() {
+  const { gente } = useFlujoSimulado(GENTE, 3100);
+  const lista = useMemo(() => gente.filter((g) => g[4] === 'exito'), [gente]);
+  const { porPagina, ref: medirCaja } = useCapacidadTablero();
+  const paginas = enPaginas(lista, porPagina);
+  return (
+    <div className="sup sup-exito tbl-lleno" ref={medirCaja}>
+      <div className="car car-pagina" tabIndex={0} role="region"
+           aria-label={`Personas, ${paginas.length} ${paginas.length === 1 ? 'pantalla' : 'pantallas'}`}>
+        {paginas.map((pagina, i) => (
+          <ul className="tn-densa tn-densa-llena" key={i}>
+            {pagina.map(([corto, apellido, nombre, hora, tono]) => (
+              <li key={nombre} className="tbl-persona">
+                <span className="tbl-foto">
+                  <Avatar id={nombre} nombre={nombre} tamano="fluido"
+                          estado={tono} elevacion="relieve" />
+                  {tarde(hora) > 0 && <span className="badge">{cuentaBurbuja(tarde(hora), '+')}</span>}
+                </span>
+                <span className="sr-solo">{nombre} · {hora}</span>
+                <span className="tbl-nom">{corto}</span>
+                <span className="tbl-ape">{apellido}</span>
+                <span className="tbl-hora" aria-hidden="true">{hora}</span>
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
     </div>
   );
 }
 
 const enTablero = document.getElementById('tablero-vivo');
 if (enTablero) createRoot(enTablero).render(<TableroVivo />);
+
+const enLiso = document.getElementById('tablero-liso-vivo');
+if (enLiso) createRoot(enLiso).render(<TableroLisoVivo />);
 
 const enMatriz = document.getElementById('matriz-viva');
 if (enMatriz) createRoot(enMatriz).render(<MatrizViva />);

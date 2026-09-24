@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-**Última actualización:** 22 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.147.0** — el cierre del R157: lo que
-prometía y no entregaba, encontrado por una auditoría con todo en verde
+**Última actualización:** 24 de septiembre de 2026
+**Versión del sistema:** MMI-DS **v1.148.0** — R162: el gancho que mide la caja
+deja de depender de que la caja ya exista; la v1.147.0 lo arregló a medias
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
 > párrafos: un estado con capas es un estado que ya no se lee.
@@ -16,10 +16,10 @@ prometía y no entregaba, encontrado por una auditoría con todo en verde
 
 ## Dónde estamos, en una frase
 
-El sistema es un **paquete que un producto instala y consume** —35 componentes
+El sistema es un **paquete que un producto instala y consume** —36 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **veintiún pasos de
 verificación** —los que corre `publicar.mjs`, más ESLint y las pruebas: veintidós
-en total—, **1213 pruebas en 59 archivos**, todas en verde—.
+en total—, **1273 pruebas en 60 archivos**, todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
 eran defectos reales del sistema, no de su pantalla.** R129: el calendario no
@@ -56,7 +56,7 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
 | Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **1213 pruebas en 59 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **1273 pruebas en 60 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **1049 reglas de 1568** · **755 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **62 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |

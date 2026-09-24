@@ -39,7 +39,7 @@ export { CampoContrasena, type CampoContrasenaProps } from './CampoContrasena';
 export {
   capacidadDeRejilla, enPaginas, useCapacidadTablero, cuentaBurbuja,
   ANCHO_CELDA_TABLERO, ALTO_CELDA_TABLERO, RESERVA_BURBUJA, HUECO_TABLERO, HUECO_TABLERO_ANCHO,
-  type CapacidadTablero,
+  type CapacidadTablero, type CapacidadConRef,
 } from './tablero';
 export { Avatar, colorIdentidad, iniciales, type TamanoAvatar, type EstadoAvatar, type AvatarProps } from './Avatar';
 export { Paginacion, type PaginacionProps } from './Paginacion';

@@ -19,42 +19,37 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.147.0** — **el cierre del R157: lo que prometía y no
-entregaba**, encontrado por una auditoría con los veintiún pasos en verde.
+**Estado actual: v1.148.0** — **R162: el gancho que mide deja de depender de
+que la caja ya exista**, reportado por el equipo contra la v1.147.0.
 
-La v1.133.0 publicó siete piezas y **cuatro de ellas viajaban sin que el
-catálogo las pintara ni una vez** — el carril entero, los tres tonos de burbuja,
-dos tonos de superficie—. La causa era común y es la que de verdad se arregla:
-**todo el R157 se pintaba desde el guion `data-vivo`, y tres candados cortan el
-documento justo ahí**; el de la promesa tampoco lo veía, porque su lista de
-casos está escrita a mano y tenía 63 entradas y ninguna del R157. El catálogo
-pasa a montarlo también en **estático**, entran 22 casos, y el marcado —que en
-piezas sin componente **es** la interfaz— entra en el contrato, que tampoco lo
-llevaba.
+`useCapacidadTablero` recibía un `RefObject` y lo miraba **una vez**, dentro del
+efecto. Cuando la caja se monta detrás de una condición —un cargador, una
+consulta, un `Suspense`— en ese instante `caja.current` es `null`, el efecto se
+rinde y **el observador no se suscribe nunca**: el tablero se queda con la
+capacidad de una caja de 0×0. Sí volvía a medirse —en cada `resize` de
+ventana—, y ese matiz es del equipo: por eso el defecto **se cura con el gesto
+de ir a mirarlo** en escritorio y sobrevive entero en un teléfono, donde no se
+redimensiona nunca. Lo que no ocurría era **suscribirse**.
 
-Y **cinco afirmaciones del propio sistema eran falsas**: dos cifras que mezclaban
-medidas, «la burbuja sale del marco» con `badge` aún dentro del marco, un
-pendiente dado por cerrado que el auditor sigue imprimiendo, y un comentario que
-decía enseñar un carril que no monta. La regla de cero invención no distingue
-entre inventar una cifra y mezclar dos medidas.
+**La v1.147.0 lo arregló a medias**, y eso es lo que hay que decir: hizo que
+`medir` reintentara, pero dejó el `observe` detrás del mismo guardia. Medir una
+vez más no es suscribirse. **Media corrección se lee en verde igual que una
+entera.**
 
-Siete piezas para una pantalla que *no se consulta, se vigila*, y ninguna es de
-esa pantalla — ésa es la única razón por la que entraron: cuadrícula densa,
-anillo de estado en el avatar, tamaño fluido, relieve como **escala**, la burbuja
-fuera del marco y con tono, superficie tonal y carril con anclaje.
+La causa de fondo es de **orden**, no de código: un `RefObject` solo tiene nodo
+*después* de pintar, así que cualquier gancho que lo reciba tiene que adivinar
+cuándo mirarlo, y esa adivinanza falla siempre en el mismo sitio. La forma que
+no adivina es la contraria — que el gancho **devuelva** el `ref` y sea React
+quien lo llame, con el nodo en la mano. `useCapacidadTablero()` ahora devuelve
+`{ ...capacidad, ref }`, y **la firma vieja sigue funcionando**: quien ya pasa
+un `RefObject` no tiene por qué enterarse de esto para dejar de estar roto.
 
-**Lo que cambia el sistema y no sólo lo amplía:** la política de móvil primero
-decía «nada se lee deslizando en horizontal», y un tablero que se pasa como las
-páginas de iconos de un teléfono la ponía en duda. No se esquiva: se distingue.
-**Desbordamiento** es «el contenido no cupo y se sale»; **paginación por gesto**
-es «cada parada es una vista entera y no se pierde nada por no deslizar más» — y
-para que valga lo segundo hacen falta **tres** condiciones: alcanzable con
-teclado, que diga dónde estás y cuántas paradas hay, y que **nada quede sólo
-ahí**. Sin las tres, es desbordamiento con otro nombre.
+**Y el primer arreglo tampoco estaba bien.** Salió en verde con 39 pruebas y una
+auditoría lo tumbó por tres sitios —`StrictMode`, la caja que se desmonta y
+vuelve, y la pérdida del rescate por `resize`—, los tres el mismo error:
+**tratar el enganche como un suceso y no como un estado que hay que mantener**.
+Ahora se reconcilia después de cada render.
 
-Y el manual gana **el tablero como tipo de pantalla**: puede no llevar `h1` ni
-migas —cada línea de cabecera es una fila de datos que deja de verse— pero no
-puede quedarse sin nombre accesible ni fiar al color lo que se vigila.
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
 reescribe con cada cambio de estado — este número es lo único que se toca aquí.
 

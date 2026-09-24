@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.147.0";
+export const VERSION = "1.148.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,43 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.148.0', fecha: '2026-09-24',
+    que: 'El gancho que mide la caja deja de depender de que la caja ya exista: R162',
+    porque:
+      'LO ENCONTRO EL EQUIPO, NO LOS CANDADOS. `useCapacidadTablero` recibia un `RefObject` y lo '
+      + 'miraba UNA VEZ, dentro del efecto: `const el = caja.current; if (!el) return;`. Cuando la '
+      + 'caja se monta detras de una condicion —un cargador, una consulta, un `Suspense`—, en ese '
+      + 'instante `caja.current` es null, el efecto se rinde y el observador NO SE SUSCRIBE NUNCA. '
+      + 'El tablero se queda con la capacidad de una caja de 0x0. SI volvia a medirse —en cada '
+      + '`resize` de ventana—, y ese matiz es del equipo y hay que respetarlo: por eso el '
+      + 'defecto se cura en escritorio con el gesto de ir a mirarlo y sobrevive entero en un '
+      + 'telefono, donde no se redimensiona nunca. Lo que no ocurria era SUSCRIBIRSE. '
+      + 'LA v1.147.0 LO ARREGLO A MEDIAS Y ESO ES LO QUE HAY QUE DECIR: aquella version hizo que '
+      + '`medir` reintentara, pero dejo el `observe` detras del mismo guardia. Medir una vez mas no '
+      + 'es suscribirse: sin observador, la caja podia cambiar de tamaño cuantas veces quisiera y '
+      + 'nadie se enteraba. Media correccion se lee en verde igual que una entera. '
+      + 'LA CAUSA DE FONDO ES DE ORDEN, NO DE CODIGO. Un `RefObject` solo tiene nodo DESPUES de '
+      + 'pintar, asi que cualquier gancho que lo reciba tiene que adivinar cuando mirarlo, y esa '
+      + 'adivinanza falla siempre en el mismo sitio: cuando el nodo llega tarde. La forma que no '
+      + 'tiene que adivinar es la contraria: que el gancho DEVUELVA el `ref` y sea React quien lo '
+      + 'llame, con el nodo en la mano, cada vez que cambia. Es lo que ahora devuelve '
+      + '`useCapacidadTablero()`: `{ ...capacidad, ref }`. '
+      + 'LA FIRMA VIEJA SIGUE FUNCIONANDO, y no por cortesia: quien ya pasa un `RefObject` no tiene '
+      + 'por que enterarse de esto para dejar de estar roto. Si al montar la caja no esta, el gancho '
+      + 'pone un `MutationObserver` en el documento, se engancha en cuanto aparece, se desconecta, y '
+      + 'en desarrollo avisa por consola de que la caja llego tarde y de cual es la forma buena. '
+      + 'El catalogo pasa a usar el `ref` de retorno: lo que se enseña es lo que se recomienda. '
+      + 'LA PRUEBA SE ATO AL INVARIANTE, NO AL NUMERO. En jsdom no hay maquetado y la capacidad sale '
+      + 'siempre 1x1, asi que una prueba que mirara la cifra habria salido en verde con el defecto '
+      + 'puesto. Se espia el observador y se pregunta lo unico que importa: ¿llego a observar ESE '
+      + 'nodo? Con el codigo de la v1.147.0 devuelto a su sitio caen SEIS pruebas — medido, no '
+      + 'estimado; la primera redaccion de esta entrada decia «dos» y era una cifra sin contar. '
+      + 'Y LA PRIMERA VERSION DE ESTE ARREGLO TAMPOCO ESTABA BIEN. Salio en verde con 39 pruebas y una auditoria la tumbo por tres sitios: en `StrictMode` React vuelve a correr el efecto pero NO vuelve a llamar la retrollamada del `ref`, asi que anular el nodo en la limpieza dejaba sordo justo al camino recomendado —y el equipo usa modo estricto—; si la caja se desmontaba y volvia se seguia midiendo el nodo viejo, ya desprendido, que mide cero; y al pasar `medir` a leer solo el nodo propio se PERDIO el rescate por `resize` que la v1.147.0 si tenia, que es una regresion. Los tres son el mismo error: tratar el enganche como un SUCESO que ocurrio una vez en vez de como un ESTADO que hay que mantener. Ahora el gancho se reconcilia despues de cada render —una comparacion de referencias, sin maquetado forzado— y el `MutationObserver` sobre el documento entero sobra y se va. Y lo que devuelve se memoriza: envolver la capacidad para anadirle el `ref` hacia que cambiara de identidad en cada render, y eso dispara los efectos del consumidor que dependan de ella.',
+
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.147.0', fecha: '2026-09-23',
     que: 'Cuatro defectos que solo se ven midiendo, y dos declarados: la auditoria de 28 tamaños',

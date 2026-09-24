@@ -7560,55 +7560,13 @@ no leyó el contrato. <strong>Si la pieza sólo funcionara en el primero, se ver
 esto midiendo el catálogo, porque el defecto sólo aparece cuando el padre del
 <code>tbl-crece</code> no es flex»</em>. Tenían razón — la pieza se estaba validando en el único
 sitio donde funciona.</p>
-<div class="muestra-liso">
-  <div class="sup sup-exito tbl-lleno">
-    <div class="car car-pagina" tabindex="0" role="region" aria-label="Personas, 1 pantalla">
-      <ul class="tn-densa tn-densa-llena">
-        <li class="tbl-persona">
-          <span class="tbl-foto"><span class="avatar avatar-fluido avatar-1 avatar-estado avatar-exito avatar-relieve">QR</span></span>
-          <span class="sr-solo">Rosa Quispe · 06:48</span>
-          <span class="tbl-nom">Rosa</span>
-          <span class="tbl-ape">Quispe</span>
-          <span class="tbl-hora" aria-hidden="true">06:48</span>
-        </li>
-        <li class="tbl-persona">
-          <span class="tbl-foto"><span class="avatar avatar-fluido avatar-2 avatar-estado avatar-exito avatar-relieve">HL</span></span>
-          <span class="sr-solo">Luis Huamán · 06:51</span>
-          <span class="tbl-nom">Luis</span>
-          <span class="tbl-ape">Huamán</span>
-          <span class="tbl-hora" aria-hidden="true">06:51</span>
-        </li>
-        <li class="tbl-persona">
-          <span class="tbl-foto"><span class="avatar avatar-fluido avatar-3 avatar-estado avatar-exito avatar-relieve">CA</span></span>
-          <span class="sr-solo">Ana Ccahuana · 06:53</span>
-          <span class="tbl-nom">Ana</span>
-          <span class="tbl-ape">Ccahuana</span>
-          <span class="tbl-hora" aria-hidden="true">06:53</span>
-        </li>
-        <li class="tbl-persona">
-          <span class="tbl-foto"><span class="avatar avatar-fluido avatar-4 avatar-estado avatar-exito avatar-relieve">PJ</span></span>
-          <span class="sr-solo">José Pineda · 06:55</span>
-          <span class="tbl-nom">José</span>
-          <span class="tbl-ape">Pineda</span>
-          <span class="tbl-hora" aria-hidden="true">06:55</span>
-        </li>
-        <li class="tbl-persona">
-          <span class="tbl-foto"><span class="avatar avatar-fluido avatar-1 avatar-estado avatar-exito avatar-relieve">TE</span></span>
-          <span class="sr-solo">Elva Torres · 06:57</span>
-          <span class="tbl-nom">Elva</span>
-          <span class="tbl-ape">Torres</span>
-          <span class="tbl-hora" aria-hidden="true">06:57</span>
-        </li>
-        <li class="tbl-persona">
-          <span class="tbl-foto"><span class="avatar avatar-fluido avatar-2 avatar-estado avatar-exito avatar-relieve">AM</span></span>
-          <span class="sr-solo">Mateo Álvarez · 06:58</span>
-          <span class="tbl-nom">Mateo</span>
-          <span class="tbl-ape">Álvarez</span>
-          <span class="tbl-hora" aria-hidden="true">06:58</span>
-        </li>
-      </ul>
-    </div>
-  </div>
+<p class="seccion-sub"><strong>Y esta demostración es VIVA, no marcado escrito a mano.</strong> Lo era
+—seis personas fijas dentro de una caja fija— y por eso mentía: a <strong>360 px</strong> la caja da
+para <strong>2×2</strong> y las seis seguían ahí, así que la propia demostración de la regla enseñaba
+el <strong>desplazamiento vertical</strong> que el sistema promete que no existe. Un marcado fijo no
+demuestra la pieza: demuestra un marcado. Lo encontró la auditoría de anchos del R162, midiendo el
+catálogo a ocho tamaños.</p>
+<div class="muestra-liso" id="tablero-liso-vivo">
 </div>
 </div>
 
@@ -9795,6 +9753,15 @@ code { font-family: 'IBM Plex Mono', monospace; }
    scroll-margin-top reserva los 64px de la barra: sin el, tabular hacia arriba
    deja el elemento enfocado DEBAJO de la barra y eso incumple SC 2.4.11. */
 .top.top-cascaron { position: sticky; top: 0; z-index: 20; }
+/* Y ENVUELVE SIEMPRE QUE HAGA FALTA, no a partir de un ancho elegido.
+   Estaba en «@media (max-width: 700px)» y a 768 los filtros del catalogo
+   —Sistema, Version, Modo— no caben: la barra se salia 22 px y la PAGINA
+   ENTERA se desplazaba en horizontal, que es justo lo que la politica de
+   movil primero prohibe. Un umbral elegido a ojo acierta en el ancho en
+   que se miro y falla en el siguiente; envolver siempre no necesita saber
+   el ancho. Lo midio la auditoria de ocho anchos del R162. */
+.top.top-cascaron { height: auto; min-height: 64px; flex-wrap: wrap; row-gap: 8px; }
+.top.top-cascaron > * { min-width: 0; }
 
 /* ── REFLUJO — SC 1.4.10 ─────────────────────────────────────────────────────
    A 320px de ancho el armazón pedía 790px de mínimo y la página se desplazaba
@@ -10947,7 +10914,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    anónima: alineados por construcción, y el bloque se desplaza solo si hace
    falta. Y dentro de la envoltura —que ya resuelve el desbordamiento— vuelve
    a ser tabla plena a todo lo ancho. */
-.tabla-simple, .tb-sub { display: block; overflow-x: auto; }
+.tabla-simple, .tb-sub { display: block; overflow-x: auto; position: relative; }
 .tb-envoltura > .tabla-simple { display: table; width: 100%; min-width: 520px; }
 /* P3 (R85) · EL SUELO DE 520px SE PUEDE QUITAR, Y SE QUITA DICIENDOLO.
    Lo pidio Control Administrativos y el motivo es bueno: su apano era sacar la
@@ -11062,7 +11029,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    min-width: 0 para que pueda encoger dentro de un flex o un grid: sin eso el
    contenido ancho empuja al padre y la barra horizontal sale en la PAGINA. */
 .tb-bloque { min-width: 0; }
-.tb-envoltura { overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
+.tb-envoltura { overflow-x: auto; position: relative; border: 1px solid var(--borde); border-radius: 6px; }
 /* R142 · EL ANCHO DE LA N.o SE ESCRIBE UNA VEZ. Estaba en .tb-th-indice y otra
    vez en .tb-indice, identico, y el anclaje necesitaba un TERCERO: el
    desplazamiento de la columna de al lado. Tres numeros que tienen que ser el
@@ -11709,7 +11676,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    anclada se sujeta con min-width Y max-width porque en una tabla mas ancha que
    su contenedor el width es una sugerencia.
    ─────────────────────────────────────────────────────────────────────────── */
-.pm-envoltura { overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
+.pm-envoltura { overflow-x: auto; position: relative; border: 1px solid var(--borde); border-radius: 6px; }
 .pm { width: 100%; border-collapse: collapse; background: var(--fondo-tarjeta);
   --pm-nom: 220px; }
 .pm-col { background: var(--fondo-encabezado); border-bottom: 1px solid var(--borde);
@@ -12103,7 +12070,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    con grid-auto-flow: column el segundo caeria DEBAJO del primero, no a su
    lado. Lo aviso Tableros y es el detalle que obliga a partir la lista.
    ───────────────────────────────────────────────────────────────────────────── */
-.car { display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+.car { display: flex; overflow-x: auto; position: relative; scroll-snap-type: x mandatory;
   gap: 12px; scroll-behavior: smooth; }
 .car > * { flex: 0 0 100%; scroll-snap-align: start; min-width: 0; }
 .car:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
@@ -12509,7 +12476,7 @@ a.enlace.enl-nosub { text-decoration: none; }
 /* El horario se desplaza DENTRO de su marco. Nunca se encoge la letra para que
    quepa. Lleva tabindex para que el desplazamiento también se alcance con
    teclado: un área que solo se mueve con el ratón deja fuera a quien no lo usa. */
-.hor-env { overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px;
+.hor-env { overflow-x: auto; position: relative; border: 1px solid var(--borde); border-radius: 6px;
   background: var(--fondo-tarjeta); }
 .hor-env:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
 .hor { border-collapse: collapse; font-size: 13px; width: 100%; }
@@ -12791,7 +12758,7 @@ h2.seccion {
    y cada tira necesita ~59px para que quepa el hex: por debajo de 650px de
    contenido la última se salía y arrastraba la barra a toda la página. La regla
    del sistema es que lo ancho se desplaza en su caja, nunca la página. */
-.escala-tiras { display: flex; border-radius: 6px; overflow-x: auto;
+.escala-tiras { display: flex; border-radius: 6px; overflow-x: auto; position: relative;
   border: 1px solid var(--borde); }
 /* EL TEXTO NO VA ENCIMA DEL COLOR, VA DEBAJO.
    Antes el paso y el hex se pintaban sobre la propia muestra y la tinta se
@@ -13301,7 +13268,7 @@ select.campo:disabled { opacity: .75; }
    que además sobrevive a que el texto llegue ya escrito. */
 .ta { resize: vertical; min-height: 0; line-height: 1.5; width: 100%; }
 .ta-fija { display: block; }
-.ta-crece { display: grid; max-height: 18em; overflow: auto; }
+.ta-crece { display: grid; max-height: 18em; overflow: auto; position: relative; }
 .ta-crece > .ta { resize: none; overflow: hidden; }
 .ta-crece > .ta,
 .ta-crece::after {
@@ -13996,7 +13963,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 
 /* Misma regla que la escala de primitivas y que la tabla de datos: lo ancho se
    desplaza en su caja. La muestra de 56px del titular hero no encoge. */
-.tabla-escala-caja { overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
+.tabla-escala-caja { overflow-x: auto; position: relative; border: 1px solid var(--borde); border-radius: 6px; }
 .tabla-escala { width: 100%; border-collapse: collapse; font-size: 13px;
   background: var(--fondo-tarjeta); min-width: 520px; }
 .tabla-escala th { background: var(--fondo-encabezado); text-align: left;
@@ -14119,7 +14086,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 .cpe-lineas input.campo { width: 100%; }
 .cpe-lineas .cpe-num input.campo { text-align: right; }
 .cpe-lin-quitar { width: 40px; }
-.cpe-envoltura { overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
+.cpe-envoltura { overflow-x: auto; position: relative; border: 1px solid var(--borde); border-radius: 6px; }
 
 /* EL ESTADO ANTE SUNAT. No es un chip: lleva el codigo, la descripcion y el
    enlace al CDR, que es lo que un administrativo necesita para reclamar. */

@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.147.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.148.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -102,7 +102,7 @@
     --dur-onda: 0.01ms;
   }
 }
-:root{ --mmi-componentes: 1.147.0; }
+:root{ --mmi-componentes: 1.148.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -409,7 +409,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 
 .ta{ resize: vertical; min-height: 0; line-height: 1.5; width: 100%; }
 .ta-fija{ display: block; }
-.ta-crece{ display: grid; max-height: 18em; overflow: auto; }
+.ta-crece{ display: grid; max-height: 18em; overflow: auto; position: relative; }
 .ta-crece > .ta{ resize: none; overflow: hidden; }
 .ta-crece > .ta,
 .ta-crece::after{
@@ -665,7 +665,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .hor-grupo-et{ font-size: 12px; color: var(--texto-secundario); }
 .hor-botones{ display: flex; gap: 4px; }
 .hor-tit{ font-size: 13px; font-weight: 600; color: var(--texto-secundario); margin: 16px 0 4px; }
-.hor-env{ overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px;
+.hor-env{ overflow-x: auto; position: relative; border: 1px solid var(--borde); border-radius: 6px;
   background: var(--fondo-tarjeta); }
 .hor-env:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px; }
 .hor{ border-collapse: collapse; font-size: 13px; width: 100%; }
@@ -957,7 +957,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
    TABLA DE DATOS — 93 reglas · clases .tb-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-.tabla-simple, .tb-sub{ display: block; overflow-x: auto; }
+.tabla-simple, .tb-sub{ display: block; overflow-x: auto; position: relative; }
 .tb-envoltura > .tabla-simple{ display: table; width: 100%; min-width: 520px; }
 .tb-envoltura > .tabla-simple.tabla-libre{ min-width: 0; }
 .tb-barra{ display: flex; align-items: flex-end; justify-content: space-between;
@@ -979,7 +979,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   cursor: pointer; background: transparent; border: 0; border-top: 1px solid var(--borde);
   color: var(--enlace); }
 .tb-bloque{ min-width: 0; }
-.tb-envoltura{ overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
+.tb-envoltura{ overflow-x: auto; position: relative; border: 1px solid var(--borde); border-radius: 6px; }
 .tb{ width: 100%; border-collapse: collapse; font-size: 15px; background: var(--fondo-tarjeta);
   --tb-indice: 52px; }
 .tb-th{ background: var(--fondo-encabezado); text-align: left; padding: 0;
@@ -1095,7 +1095,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
    TABLA SIMPLE — 11 reglas · clases .tabla-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-.tabla-simple, .tb-sub{ display: block; overflow-x: auto; }
+.tabla-simple, .tb-sub{ display: block; overflow-x: auto; position: relative; }
 .tabla-simple.tabla-libre{ min-width: 0; }
 .tabla-simple{ width: 100%; border-collapse: collapse; font-size: 13px;
   background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 6px; }
@@ -1703,7 +1703,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pp-niveles{ display: flex; flex-direction: column; gap: 12px;
   margin: 12px 0 4px 52px; padding-left: 12px;
   border-left: 1px solid var(--borde); }
-.pm-envoltura{ overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
+.pm-envoltura{ overflow-x: auto; position: relative; border: 1px solid var(--borde); border-radius: 6px; }
 .pm{ width: 100%; border-collapse: collapse; background: var(--fondo-tarjeta);
   --pm-nom: 220px; }
 .pm-col{ background: var(--fondo-encabezado); border-bottom: 1px solid var(--borde);
@@ -1823,7 +1823,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .cpe-lineas input.campo{ width: 100%; }
 .cpe-lineas .cpe-num input.campo{ text-align: right; }
 .cpe-lin-quitar{ width: 40px; }
-.cpe-envoltura{ overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
+.cpe-envoltura{ overflow-x: auto; position: relative; border: 1px solid var(--borde); border-radius: 6px; }
 .cpe-sunat{ display: flex; align-items: flex-start; gap: 12px;
   padding: 12px; border-radius: 6px; border-left: 3px solid; }
 .cpe-sunat-ico{ flex: none; display: grid; place-items: center;
@@ -1996,7 +1996,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
    CARRIL CON ANCLAJE — 10 reglas · clases .car-*
    ─────────────────────────────────────────────────────────────────────────── */
 
-.car{ display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+.car{ display: flex; overflow-x: auto; position: relative; scroll-snap-type: x mandatory;
   gap: 12px; scroll-behavior: smooth; }
 .car > *{ flex: 0 0 100%; scroll-snap-align: start; min-width: 0; }
 .car:focus-visible{ outline: 2px solid var(--foco); outline-offset: 2px; }

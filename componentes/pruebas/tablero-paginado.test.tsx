@@ -7,8 +7,8 @@
  * paginación por gesto en desbordamiento con otro nombre — que es justo la
  * distinción que el R157 dejó escrita.
  */
-import { describe, it, expect, vi } from 'vitest';
-import { useRef } from 'react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { useRef, useState, StrictMode } from 'react';
 import { render, act } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -366,12 +366,19 @@ describe('R159 · la caja que se mide no puede depender del contenido', () => {
        tamaño nunca lo decide lo que hay dentro. */
     const demo = readFileSync(
       join(process.cwd(), '..', 'sistema', 'cascaron', 'vivo.tsx'), 'utf8');
+    /* Se persigue EL REF QUE MIDE, no cualquier `ref=`: desde el R162 la demo
+       cuelga el que devuelve el gancho —y le pone un nombre— y desde el flujo
+       en vivo el carril lleva un `ref` PROPIO, que es legítimo y no tiene nada
+       que ver con la medida. Lo que la regla dice es dónde va LA MEDIDA. */
+    const nombre = (demo.match(/useCapacidadTablero\(\)[\s\S]{0,80}?ref:\s*(\w+)/)
+      ?? demo.match(/ref:\s*(\w+)\s*\}\s*=\s*useCapacidadTablero/))?.[1];
+    expect(nombre, 'la demo ya no toma el `ref` que devuelve el gancho').toBeTruthy();
     const lineaLleno = demo.split('\n').find((l) => l.includes('tbl-lleno')) ?? '';
     expect(lineaLleno, 'la demo no mide `tbl-lleno`: la cuenta se clavará en la primera fila')
-      .toContain('ref={caja}');
+      .toContain(`ref={${nombre}}`);
     const lineaCarril = demo.split('\n').find((l) => l.includes('car car-pagina')) ?? '';
-    expect(lineaCarril, 'la referencia volvió al carril, que es lo que causaba el punto fijo')
-      .not.toContain('ref={caja}');
+    expect(lineaCarril, 'la MEDIDA volvió al carril, que es lo que causaba el punto fijo')
+      .not.toContain(`ref={${nombre}}`);
     /* Y lo que hace a `tbl-lleno` inmune: su tamaño no lo decide su contenido. */
     expect(regla('.tbl-lleno'), 'sin `overflow: hidden` el contenido puede estirar la caja '
       + 'que se mide, y vuelve el punto fijo').toMatch(/overflow:\s*hidden/);
@@ -507,9 +514,25 @@ describe('R161 · la pieza no puede depender de que su padre sea flex', () => {
     const estatico = cat.split('<script data-vivo>')[0];
     expect(estatico, 'el catálogo no monta el tablero en un padre sin flex: la pieza se '
       + 'sigue validando en el único sitio donde funciona').toMatch(/class="muestra-liso"/);
+    /* Y LA DEMOSTRACIÓN ES VIVA, no marcado escrito a mano. Lo era —seis celdas
+       fijas en una caja fija— y por eso mentía: a 360 px la caja da para 2×2 y
+       las seis seguían ahí, así que la propia demostración de esta regla
+       enseñaba el desplazamiento vertical que el sistema promete que no
+       existe. Un marcado fijo no demuestra la pieza: demuestra un marcado. */
     const i = estatico.indexOf('class="muestra-liso"');
-    const trozo = estatico.slice(i, i + 900);
-    expect(trozo, 'el contenedor liso no lleva dentro el tablero').toMatch(/tbl-lleno/);
+    const trozo = estatico.slice(i, i + 200);
+    expect(trozo, 'el contenedor liso no tiene ancla de montaje: si vuelve a ser marcado '
+      + 'fijo, deja de adaptarse y vuelve a desbordar en estrecho')
+      .toMatch(/id="tablero-liso-vivo"/);
+    expect(trozo, 'el contenedor liso trae celdas escritas a mano otra vez')
+      .not.toMatch(/tbl-persona/);
+    const guion = readFileSync(join(process.cwd(), '..', 'sistema', 'cascaron', 'vivo.tsx'), 'utf8');
+    expect(guion, 'nadie monta nada en el ancla del contenedor liso')
+      .toMatch(/getElementById\('tablero-liso-vivo'\)/);
+    const liso = guion.slice(guion.indexOf('function TableroLisoVivo'));
+    expect(liso.slice(0, 1600), 'la demo hostil no usa el gancho: no mide su caja')
+      .toMatch(/useCapacidadTablero\(\)/);
+    expect(liso.slice(0, 1600), 'la demo hostil no pinta `tbl-lleno`').toMatch(/tbl-lleno/);
     /* Y el contenedor tiene que ser LISO de verdad: si se le pone flex, deja de
        demostrar nada. */
     const cromo = cat.slice(cat.indexOf('.muestra-liso'));
@@ -518,8 +541,8 @@ describe('R161 · la pieza no puede depender de que su padre sea flex', () => {
   });
 });
 
-describe('R162 · lo que una auditoría en navegador midió a 28 tamaños', () => {
-  it('[11] la tira de paradas SIEMPRE ocupa: sin eso hay dos puntos fijos', () => {
+describe('auditoría de 28 tamaños · lo que sólo se ve midiendo', () => {
+  it('[17] la tira de paradas SIEMPRE ocupa: sin eso hay dos puntos fijos', () => {
     /* La tira vive dentro de la columna que se mide, así que aparecer o no
        cambia el alto disponible — y ese alto decide la capacidad, que decide el
        número de páginas, que decide si la tira aparece. Medido: la MISMA caja
@@ -535,7 +558,7 @@ describe('R162 · lo que una auditoría en navegador midió a 28 tamaños', () =
       .not.toMatch(/display:\s*none/);
   });
 
-  it('[11] el índice de parada no se calcula dividiendo por el ancho', () => {
+  it('[17] el índice de parada no se calcula dividiendo por el ancho', () => {
     /* El carril tiene `gap: 12px`: cada parada empieza en `i·(ancho+hueco)`, no
        en `i·ancho`. Dividiendo, el error se acumula — medido con 18 paradas,
        desde la 6 decía una de más y en la última «Pantalla 20 de 18» sin
@@ -548,7 +571,7 @@ describe('R162 · lo que una auditoría en navegador midió a 28 tamaños', () =
     expect(fn, 'no busca la parada por su posición real').toMatch(/offsetLeft/);
   });
 
-  it('[11] y el índice se acota al número de pantallas que hay', () => {
+  it('[17] y el índice se acota al número de pantallas que hay', () => {
     /* Nada lo comparaba con `paginas.length`: al pasar de 18 paradas a 2, el
        carril seguía diciendo «Pantalla 20 de 2» y sin ningún punto encendido,
        dentro de un `aria-live` que además lo anuncia. */
@@ -558,7 +581,7 @@ describe('R162 · lo que una auditoría en navegador midió a 28 tamaños', () =
       .toMatch(/Math\.min\(actual,\s*Math\.max\(0,\s*paginas\.length\s*-\s*1\)\)/);
   });
 
-  it('[11] la primera fila reserva lo que la burbuja sobresale', () => {
+  it('[18] la primera fila reserva lo que la burbuja sobresale', () => {
     /* La burbuja se apoya en el borde del disco y su borde superior queda
        `7,03 − 0,75·D` por encima de la foto: con el mayor que el sistema
        produce —«+99», 22 px— son 9,47. En la primera fila eso cae fuera del
@@ -581,5 +604,240 @@ describe('R162 · lo que una auditoría en navegador midió a 28 tamaños', () =
     // y justo para DOS
     expect(capacidadDeRejilla(400, fila + ALTO_CELDA_TABLERO + RESERVA_BURBUJA, 400).filas,
       'la cuenta no llega a dos filas cuando sí caben').toBe(2);
+  });
+});
+
+describe('R162 · el nodo que llega tarde', () => {
+  /* Se espía el observador para poder preguntar lo único que importa aquí:
+     ¿llegó a observar el nodo? El de jsdom no existe, así que se instala uno. */
+  let observados: Element[] = [];
+  /* Y quién está observado AHORA, que es otra pregunta. El defecto que encontró
+     la auditoría no era «no se observó nunca», era «se observó, se soltó y no
+     volvió nadie» — y la primera pregunta sale en verde delante de ése. */
+  let vivos = new Set<Element>();
+  const RealRO = (globalThis as any).ResizeObserver;
+  beforeEach(() => {
+    observados = [];
+    vivos = new Set<Element>();
+    (globalThis as any).ResizeObserver = class {
+      observe(el: Element) { observados.push(el); vivos.add(el); }
+      unobserve(el: Element) { vivos.delete(el); }
+      disconnect() { vivos.clear(); }
+    };
+  });
+  afterEach(() => { (globalThis as any).ResizeObserver = RealRO; });
+
+  /* Lo reprodujo el equipo EN PRODUCCIÓN, en un teléfono: «Dentro 27» y UNA
+     sola tarjeta. No era la cadena de alto —la midieron, 317×572, que son 3×4—:
+     era CUÁNDO se medía. La pantalla monta el carril de forma condicional, así
+     que en el momento del efecto la caja no existía; `ro.observe` no llegaba a
+     llamarse y `[caja]` es estable, así que el efecto no volvía a correr jamás.
+     La capacidad se quedaba en 1×1 toda la sesión.
+
+     Y lo más afilado de su parte: EL DEFECTO SE CURA CON EL GESTO DE IR A
+     MIRARLO. Los oyentes de ventana sí quedaban puestos, así que en escritorio
+     bastaba mover el borde una vez para que saltara al valor bueno. En un
+     teléfono no se redimensiona nunca. Por eso pasó una verificación. */
+
+  function Tarde({ montar }: { montar: boolean }) {
+    const caja = useRef<HTMLDivElement>(null);
+    const cap = useCapacidadTablero(caja);
+    return (
+      <div>
+        {montar ? <div ref={caja} data-caja style={{ width: 300, height: 500 }} /> : <span>cargando…</span>}
+        <b data-cap>{`${cap.columnas}x${cap.filas}`}</b>
+      </div>
+    );
+  }
+
+  it('[19] con `RefObject`, el observador se engancha cuando la caja APARECE', async () => {
+    const { container, rerender } = render(<Tarde montar={false} />);
+    expect(container.querySelector('[data-caja]'), 'la caja no debería existir aún').toBeNull();
+
+    /* El nodo llega después, como cuando responde el servidor. Antes del
+       arreglo, aquí no se suscribía nadie y la capacidad se quedaba congelada
+       en la del primer render, para siempre. */
+    await act(async () => { rerender(<Tarde montar />); });
+    expect(container.querySelector('[data-caja]'), 'la caja ya debería existir').not.toBeNull();
+
+    /* En jsdom no hay maquetado, así que el NÚMERO no prueba nada. Lo que se
+       comprueba es el invariante de verdad: que el observador llegó a observar
+       ESE nodo. Con el código anterior, `observe` no se llamaba nunca. */
+    expect(observados, 'nadie observó la caja: el observador no se enganchó cuando apareció')
+      .toContain(container.querySelector('[data-caja]'));
+  });
+
+  it('[19] y el `ref` que devuelve NO necesita ese rodeo', () => {
+    /* Es la forma que pidieron, y la que resuelve el problema de raíz: React
+       llama a la retrollamada en el momento en que el nodo entra en el árbol,
+       así que no existe el instante «la caja todavía no está». */
+    function ConRef() {
+      const { columnas, filas, ref } = useCapacidadTablero();
+      return (
+        <div>
+          <div ref={ref} data-caja style={{ width: 300, height: 500 }} />
+          <b data-cap>{`${columnas}x${filas}`}</b>
+        </div>
+      );
+    }
+    const { container } = render(<ConRef />);
+    expect(container.querySelector('[data-caja]')).not.toBeNull();
+    expect(container.querySelector('[data-cap]')?.textContent).toMatch(/^\d+x\d+$/);
+  });
+
+  it('[19] el gancho devuelve SIEMPRE un `ref`, sin pasarle nada', () => {
+    /* La firma vieja sigue valiendo —no se rompe a nadie— y la nueva no
+       necesita `useRef` en la pantalla. */
+    function Sonda() {
+      const cap = useCapacidadTablero();
+      return <b data-tipo={typeof cap.ref}>{cap.porPagina}</b>;
+    }
+    const { container } = render(<Sonda />);
+    expect(container.firstElementChild?.getAttribute('data-tipo'),
+      'el gancho no devuelve el `ref` de retrollamada').toBe('function');
+  });
+
+  /* LAS TRES QUE FALTABAN. El primer arreglo del R162 salió en verde con 39
+     pruebas y una auditoría lo tumbó por tres sitios. Las tres comparten la
+     misma causa de fondo: se trató el enganche como un SUCESO —ocurrió una
+     vez— y no como un ESTADO que hay que mantener. */
+
+  it('[19] en `StrictMode` el `ref` NO se vuelve a llamar, y aun así sigue observando', () => {
+    /* React en modo estricto monta, limpia y vuelve a montar — pero vuelve a
+       correr el EFECTO sin volver a llamar la retrollamada del `ref`. Anular el
+       nodo en la limpieza dejaba sordo al camino que el propio sistema
+       recomienda, y el equipo que reporta usa modo estricto. */
+    function ConRefEstricto() {
+      const { ref } = useCapacidadTablero();
+      return <div ref={ref} data-caja style={{ width: 300, height: 500 }} />;
+    }
+    const { container } = render(<StrictMode><ConRefEstricto /></StrictMode>);
+    const nodo = container.querySelector('[data-caja]');
+    expect(nodo, 'no hay caja que comprobar').not.toBeNull();
+    expect([...vivos], 'tras el doble montaje de `StrictMode` no queda nadie observando la '
+      + 'caja: el camino recomendado se ha quedado sordo').toContain(nodo);
+  });
+
+  it('[19] si la caja se desmonta y VUELVE, se engancha al nodo nuevo', async () => {
+    /* El nodo viejo, ya desprendido, mide cero en un navegador: seguir
+       midiéndolo es exactamente el síntoma del parte —una tarjeta y el resto
+       vacío—. Pasa al cambiar de pestaña o al recargar datos. */
+    const { container, rerender } = render(<Tarde montar />);
+    const primero = container.querySelector('[data-caja]');
+    await act(async () => { rerender(<Tarde montar={false} />); });
+    await act(async () => { rerender(<Tarde montar />); });
+    const segundo = container.querySelector('[data-caja]');
+    expect(segundo, 'no hay nodo nuevo que comprobar').not.toBe(primero);
+    expect([...vivos], 'se sigue observando el nodo VIEJO: al nuevo no lo mira nadie')
+      .toContain(segundo);
+    expect([...vivos], 'el nodo desprendido sigue observado').not.toContain(primero);
+  });
+
+  it('[19] con `RefObject` y sin `ResizeObserver`, el `resize` de ventana AÚN rescata', () => {
+    /* El rescate por ventana es lo que hacía que en escritorio el defecto se
+       curase al mover el borde —§3 del parte—. Al pasar `medir` a leer sólo el
+       nodo propio se perdió, y eso era una REGRESIÓN contra la v1.147.0: sin
+       observador y sin rescate, la caja tardía se queda en 1×1 y en silencio. */
+    const guarda = (globalThis as any).ResizeObserver;
+    delete (globalThis as any).ResizeObserver;
+    try {
+      const medidas: string[] = [];
+      function SoloVentana() {
+        const caja = useRef<HTMLDivElement>(null);
+        const cap = useCapacidadTablero(caja);
+        medidas.push(`${cap.columnas}x${cap.filas}`);
+        return <div ref={caja} data-caja style={{ width: 300, height: 500 }} />;
+      }
+      const { container } = render(<SoloVentana />);
+      const nodo = container.querySelector('[data-caja]') as HTMLElement;
+      /* jsdom no maqueta: se le da tamaño a mano y se avisa a la ventana, que
+         es el gesto que el equipo describe. */
+      Object.defineProperty(nodo, 'clientWidth', { value: 300, configurable: true });
+      Object.defineProperty(nodo, 'clientHeight', { value: 500, configurable: true });
+      act(() => { window.dispatchEvent(new Event('resize')); });
+      expect(medidas[medidas.length - 1], 'el `resize` de ventana no llegó a leer la caja: '
+        + 'se perdió el rescate que la v1.147.0 sí tenía').not.toBe('1x1');
+    } finally {
+      (globalThis as any).ResizeObserver = guarda;
+    }
+  });
+
+  it('[19] lo que devuelve NO cambia de identidad si la capacidad no cambia', () => {
+    /* Antes se devolvía el objeto del `useState`, que el gancho se esfuerza en
+       no cambiar salvo que cambie la capacidad. Al envolverlo para añadir el
+       `ref` se empezó a devolver uno nuevo en CADA render, y eso hace correr
+       los efectos del consumidor que dependan de la capacidad — con un
+       `setState` dentro de uno de ellos, es un bucle. Lo cazó la auditoría.
+       No es cosmético: el propio archivo tiene una prueba de que no
+       re-renderiza cuando la capacidad no cambia, y esto la vaciaba de sentido
+       aguas abajo. */
+    const vistos: unknown[] = [];
+    let forzar: (n: number) => void = () => {};
+    function Sonda() {
+      const [, set] = useState(0);
+      forzar = set;
+      const cap = useCapacidadTablero();
+      vistos.push(cap);
+      return <b>{cap.porPagina}</b>;
+    }
+    render(<Sonda />);
+    act(() => { forzar(1); });
+    act(() => { forzar(2); });
+    expect(vistos.length, 'no hubo re-renders que comparar').toBeGreaterThan(2);
+    const distintos = new Set(vistos).size;
+    expect(distintos, `el gancho devolvió ${distintos} objetos distintos en ${vistos.length} `
+      + 'renders sin que la capacidad cambiara').toBe(1);
+  });
+});
+
+describe('datos que cambian debajo · el tablero en vivo', () => {
+  /* Lo pidió el responsable: «que funcione como si tuviera socketio, que la
+     data cambie de estado en tiempo real». El transporte NO es del sistema
+     —de dónde salen los datos es del producto—; lo que sí es del sistema es
+     que la pieza no mienta cuando la lista se mueve. Estas tres cosas sólo
+     se rompen con datos en movimiento, y por eso no había prueba de ninguna. */
+
+  it('[19] nadie se pierde ni se repite al repaginar, sea cual sea el tamaño', () => {
+    /* Es el invariante de fondo: repaginar es RE-REPARTIR, nunca perder. Se
+       barre toda la combinación de tamaños de lista y capacidades. */
+    for (let n = 0; n <= 40; n += 1) {
+      const lista = Array.from({ length: n }, (_, i) => `p${i}`);
+      for (let cap = 1; cap <= 12; cap += 1) {
+        const paginas = enPaginas(lista, cap);
+        const plano = paginas.flat();
+        expect(plano, `con ${n} personas y capacidad ${cap} se perdió o se repitió alguien`)
+          .toEqual(lista);
+        if (n > 0) {
+          expect(paginas[paginas.length - 1].length,
+            `con ${n} y capacidad ${cap} la última página quedó vacía`).toBeGreaterThan(0);
+          expect(Math.max(...paginas.map((p) => p.length)),
+            `con ${n} y capacidad ${cap} una página se pasó de la capacidad`)
+            .toBeLessThanOrEqual(cap);
+        }
+      }
+    }
+  });
+
+  it('[19] al ENCOGER la lista, el número de paradas encoge con ella', () => {
+    /* El caso que el catálogo enseña al reiniciar el turno: el grupo pasa de
+       24 a 18 y el carril tiene que quedarse con menos paradas. Si el número
+       de paradas no bajara, la tira encendería un punto que ya no existe —y
+       vive dentro de un `aria-live`, así que además lo anuncia. */
+    const cap = 12;
+    const antes = enPaginas(Array.from({ length: 24 }, (_, i) => i), cap);
+    const despues = enPaginas(Array.from({ length: 18 }, (_, i) => i), cap);
+    expect(antes.length).toBe(2);
+    expect(despues.length, 'la lista encogió y el número de paradas no')
+      .toBeLessThan(antes.length + 1);
+    expect(despues.length).toBe(2);
+    const muyPocos = enPaginas(Array.from({ length: 5 }, (_, i) => i), cap);
+    expect(muyPocos.length, 'con 5 personas y capacidad 12 sobra una parada').toBe(1);
+  });
+
+  it('[19] una lista que se vacía en vivo sigue siendo UNA página, no ninguna', () => {
+    /* Con cero paradas el carril no tiene dónde estar y la tira se queda sin
+       punto que encender. Una pantalla vacía es una pantalla. */
+    expect(enPaginas([], 12).length).toBe(1);
+    expect(enPaginas([], 12)[0]).toEqual([]);
   });
 });
