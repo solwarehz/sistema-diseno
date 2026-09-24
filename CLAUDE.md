@@ -19,7 +19,7 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.148.0** — **R162: el gancho que mide deja de depender de
+**Estado actual: v1.148.1** — **R162: el gancho que mide deja de depender de
 que la caja ya exista**, reportado por el equipo contra la v1.147.0.
 
 `useCapacidadTablero` recibía un `RefObject` y lo miraba **una vez**, dentro del

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.148.0";
+export const VERSION = "1.148.1";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,36 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.148.1', fecha: '2026-09-24',
+    que: 'La guia de actualizacion avisa de la caché de npm, que sirvio la version vieja',
+    porque:
+      'PASO EL MISMO DIA DE PUBLICAR LA v1.148.0: `npm install` con la etiqueta nueva y llego la '
+      + 'ANTERIOR. La guia cubria la cache del servidor de desarrollo —el §1bis, que nacio de un '
+      + 'reporte en falso del 2026-09-13— y no cubria la de npm, que es ANTES y es otra cosa: '
+      + 'alli el paquete esta bien en el disco y el navegador recibe lo viejo; aqui el paquete '
+      + 'QUE HAY EN EL DISCO no es el que pide la etiqueta. '
+      + 'La razon es que una dependencia de GitHub se fija POR COMMIT y no por etiqueta: '
+      + '`package-lock.json` guarda el commit que se resolvio la primera vez y, mientras esa '
+      + 'entrada siga ahi, npm no vuelve a preguntarle al remoto. La etiqueta que el equipo '
+      + 'escribe no es lo que npm mira. '
+      + 'Entra el §1ante con los comandos y, sobre todo, con LA COMPROBACION, que es lo que de '
+      + 'verdad garantiza: `require(\'sistema-diseno-ae/package.json\').version` responde por el '
+      + 'DISCO y `--mmi-version`/`--mmi-componentes` responden por LO SERVIDO. Si la primera '
+      + 'acierta y las otras no, es el servidor; si la primera ya falla, es npm. Dos preguntas '
+      + 'distintas, y hasta hoy la guia solo ensenaba a hacer la segunda. '
+      + 'LO QUE NO SE PUDO PROBAR SE DICE: los comandos no se ejecutaron contra el repositorio '
+      + 'desde esta maquina —el contenedor no tiene `git` ni credenciales—, asi que quien '
+      + 'garantiza el resultado es el paso de comprobacion y no la receta. Lo que SI esta '
+      + 'verificado de punta a punta es la etiqueta: `v1.148.0` en el remoto apunta al commit '
+      + '`4ddb33f`, el mismo de `main`, y ahi `package.json`, `--mmi-version` y '
+      + '`--mmi-componentes` dicen 1.148.0. La entrega estaba bien. '
+      + 'Y LA GUIA TENIA DOS SECCIONES «1bis», una de ellas citada por el historial de la '
+      + 'v1.109.0: un indice que repite un numero manda al lector al sitio equivocado. La '
+      + 'segunda pasa a «1quater».',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.148.0', fecha: '2026-09-24',
     que: 'El gancho que mide la caja deja de depender de que la caja ya exista: R162',

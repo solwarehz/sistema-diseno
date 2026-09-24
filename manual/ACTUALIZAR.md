@@ -1,4 +1,4 @@
-# Actualizar al sistema de diseño v1.148.0
+# Actualizar al sistema de diseño v1.148.1
 
 Para el área de sistemas. Esto es todo lo que cambia y todo lo que hay que
 hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
@@ -9,7 +9,7 @@ hacer, vengas de la **v1.7.0** —la que se entregó en su momento— o de la
 ## 1 · Instalar
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.148.0"
+npm install "github:solwarehz/sistema-diseno#v1.148.1"
 ```
 
 **Usa la etiqueta.** Sin ella npm instala `main`, que hoy tiene esta misma
@@ -24,6 +24,59 @@ estar en una versión distinta de la real.
 Si el comando falla con `404` o `repository not found`, no es un problema del
 comando: es acceso al repositorio, que es privado. Pídelo.
 
+### 1ante · Y ANTES DE ESO: npm puede servirles la versión VIEJA
+
+**Son dos cachés distintas y se confunden todo el tiempo.** La de abajo —§1bis—
+es la del servidor de desarrollo: el paquete está bien en el disco y el
+navegador recibe lo anterior. Ésta es antes: **el paquete que hay en el disco
+NO es el que pide la etiqueta**.
+
+Pasó el 2026-09-24, al publicar la v1.148.0. `npm install` con la etiqueta
+nueva y llegó la anterior.
+
+La razón es que una dependencia de GitHub **se fija por commit**, no por
+etiqueta: `package-lock.json` guarda el commit que se resolvió la primera vez, y
+mientras esa entrada siga ahí, npm no vuelve a preguntarle al remoto. La
+etiqueta que ustedes escriben no es lo que npm mira.
+
+```bash
+# 1 · que npm se olvide de lo que creía saber
+npm uninstall sistema-diseno-ae      # quita la entrada del lockfile
+rm -rf node_modules/sistema-diseno-ae
+npm cache clean --force
+
+# 2 · y ahora sí
+npm install "github:solwarehz/sistema-diseno#v1.148.1"
+```
+
+**Y después comprueben, no confíen** — son dos preguntas distintas y hacen falta
+las dos:
+
+```bash
+# ¿npm trajo lo que le pedí? (mira el DISCO)
+node -p "require('sistema-diseno-ae/package.json').version"   # → 1.148.0
+```
+
+```js
+// ¿el navegador recibe eso? (mira LO SERVIDO) — esto es el §1bis
+getComputedStyle(document.documentElement).getPropertyValue('--mmi-version').trim()
+getComputedStyle(document.documentElement).getPropertyValue('--mmi-componentes').trim()
+```
+
+Si la primera dice `1.148.0` y las de abajo dicen otra cosa, **es el servidor**:
+§1bis. Si la primera ya dice otra cosa, **es npm**: vuelvan al bloque de arriba.
+
+> **Lo que no pudimos probar, y se dice.** Estos comandos no se ejecutaron
+> contra el repositorio desde nuestra máquina —el contenedor del sistema de
+> diseño no tiene `git` ni credenciales de GitHub—, así que el que garantiza el
+> resultado es **el paso de comprobación**, no la receta. Lo que sí está
+> verificado de punta a punta es la etiqueta: `v1.148.0` en el remoto apunta al
+> commit `4ddb33f`, el mismo de `main`, y ahí `package.json` dice `1.148.0` y
+> `--mmi-version` y `--mmi-componentes` dicen `1.148.0`. **Si al comprobar les
+> sale otra cosa, es de su lado y no de la entrega.**
+
+---
+
 ### 1bis · Instalar NO es servir. Reinicien el servidor.
 
 **Léanlo antes de medir nada**, porque ya costó un reporte en falso. El
@@ -37,7 +90,7 @@ está en marcha tiene el código viejo en memoria, y su caché de compilación n
 se entera de que cambió algo dentro de `node_modules`.
 
 ```bash
-npm install "github:solwarehz/sistema-diseno#v1.148.0"
+npm install "github:solwarehz/sistema-diseno#v1.148.1"
 # y ENTONCES, sin excepción:
 docker compose restart <su-servicio>     # o el reinicio que usen
 # si aun así ven lo de antes, tiren la caché de compilación —y reinicien OTRA
@@ -97,16 +150,16 @@ declara algo que no está, y el navegador **no protesta** — se cae al recurso 
 reserva y nadie se entera. Lo encontró una auditoría el 2026-09-11 buscando la
 familia entera de ese defecto.
 
-### 1bis · Si no instalas por npm: la descarga
+### 1quater · Si no instalas por npm: la descarga
 
 Cada versión se publica también como ZIP, adjunto a su publicación en GitHub:
 
-**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.148.0>**
+**<https://github.com/solwarehz/sistema-diseno/releases/tag/v1.148.1>**
 
 O desde la línea de órdenes:
 
 ```bash
-gh release download v1.148.0 --repo solwarehz/sistema-diseno
+gh release download v1.148.1 --repo solwarehz/sistema-diseno
 ```
 
 Son **60 archivos**: tokens, hoja de estilos, los **43 módulos de componente**
