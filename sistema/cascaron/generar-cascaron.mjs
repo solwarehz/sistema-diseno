@@ -9743,7 +9743,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
 /* La lateral plegada NO puede recortar el panel flotante, que sale fuera de
    sus 56px. El recorte se limita al eje vertical. */
 .app-cascaron .lat { position: sticky; top: 0; height: 100vh; overflow: visible; }
-.app-cascaron .lat-nav { overflow-y: auto; overflow-x: visible; }
+.app-cascaron .lat-nav { overflow-y: auto; overflow-x: visible; position: relative; }
 .app-cascaron .lat.colapsado .lat-nav { overflow: visible; }
 .app-cascaron .app-main { min-height: 100vh; }
 /* .top-cascaron y .top tenian la MISMA especificidad (0,1,0) y ganaba la
@@ -10003,7 +10003,7 @@ code { font-family: 'IBM Plex Mono', monospace; }
    importa para el lector. */
 .dialogo-tit:focus { outline: none; }
 .dialogo-cuerpo { padding: 12px 20px; overflow-y: auto; min-height: 0;
-  color: var(--texto-principal); }
+  color: var(--texto-principal);  position: relative; }
 /* El pie NO se desplaza con el cuerpo: los botones tienen que estar siempre a
    la vista, tambien en un dialogo largo. */
 .dialogo-pie { display: flex; justify-content: flex-end; gap: 8px;
@@ -10069,7 +10069,13 @@ code { font-family: 'IBM Plex Mono', monospace; }
    un alto de pantalla al bloque para que «tbl-marco» tenga algo que llenar.
    Es cromo del catalogo —prefijo «muestra»— porque el alto lo decide la
    pantalla que lo monta, nunca el sistema. */
-#tablero-vivo.bloque { height: min(70vh, 620px); display: flex; }
+/* Y UN SUELO, que el porcentaje solo no da. A 70vh de una ventana de 506 px
+   el bloque baja a 354, y con el segmentado, la tira y el renglon de «en
+   vivo» la caja que se mide se queda en 121 — cuando una fila pide 124:
+   114 de celda mas los 10 que reserva la burbuja. Medido: 3 px fuera y el
+   carril desplazandose en vertical dentro de la DEMOSTRACION del sistema.
+   El suelo son los 124 de la fila mas los 233 que consume el resto. */
+#tablero-vivo.bloque { height: min(70vh, 620px); min-height: 380px; display: flex; }
 #tablero-vivo > .muestra-tablero { flex: 1 1 auto; min-height: 0; }
 /* Cromo del catalogo para enseñar las piezas sueltas. Prefijo «muestra»: no
    viaja. Existen porque durante la v1.133.0 estas piezas viajaban en la hoja de
@@ -11980,7 +11986,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    decidiendo el alto de una pantalla ajena.
    ───────────────────────────────────────────────────────────────────────────── */
 .tbl-marco { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 8px; }
-.tbl-crece { flex: 1 1 0; min-height: 0; height: 100%; overflow-y: auto; }
+.tbl-crece { flex: 1 1 0; min-height: 0; height: 100%; overflow-y: auto; position: relative; }
 
 .tbl-persona { display: flex; flex-direction: column; align-items: center;
   gap: 0; min-width: 0; text-align: center; }
@@ -13311,7 +13317,7 @@ select.campo:disabled { opacity: .75; }
   min-height: 8em; max-height: 24em; overflow-y: auto;
   padding: 8px 8px; background: var(--fondo-tarjeta);
   color: var(--texto-principal);
-  border: 1px solid var(--borde-campo); border-radius: 0 0 6px 6px; }
+  border: 1px solid var(--borde-campo); border-radius: 0 0 6px 6px;  position: relative; }
 /* SIN BARRA DELANTE, LAS CUATRO ESQUINAS. Con una sola etiqueta sin control y
    sin huecos la barra no se pinta —esta probado—, y la caja se quedaba con el
    borde de arriba recto y nada encima: no se parecia a ningun otro campo. Se
@@ -13611,7 +13617,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    pintando de lado a lado. Lo pidió el responsable con captura de 1900px:
    contenido pegado al lateral y el menu de usuario exiliado en la esquina. */
 .app-contenido { flex: 1; min-width: 0; overflow-y: auto;
-  padding: 24px max(32px, calc((100% - 1056px) / 2)) 80px; width: 100%; }
+  padding: 24px max(32px, calc((100% - 1056px) / 2)) 80px; width: 100%;  position: relative; }
 @media (max-width: 700px) { .app-contenido { padding: 16px 16px 64px; } }
 
 /* ── REFLUJO ─────────────────────────────────────────────────────────────────
@@ -13836,7 +13842,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
    Se retiran las dos muertas en vez de duplicar la especificidad: lo que no se
    aplica no se escribe. El max-width se queda porque ese si gana. */
 .pb-panel { max-width: 360px; }
-.pb-lista { list-style: none; margin: 0; padding: 0; max-height: 320px; overflow-y: auto; }
+.pb-lista { list-style: none; margin: 0; padding: 0; max-height: 320px; overflow-y: auto;
+  position: relative; }
 .pb-item { display: flex; align-items: flex-start; gap: 8px; width: 100%;
   padding: 8px 12px; background: none; border: 0; text-align: left;
   font: inherit; color: var(--texto-principal); cursor: pointer; }

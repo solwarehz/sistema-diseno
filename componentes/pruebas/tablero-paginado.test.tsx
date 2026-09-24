@@ -841,3 +841,65 @@ describe('datos que cambian debajo · el tablero en vivo', () => {
     expect(enPaginas([], 12)[0]).toEqual([]);
   });
 });
+
+describe('el aviso de caja corta · el margen en que callaba', () => {
+  /* Lo encontró el propio catálogo, con el flujo en vivo corriendo: la caja
+     medía 121 px, la fila pedía 124 —114 de celda MÁS los 10 que reserva la
+     burbuja— y el carril se desplazaba 3 px en vertical, que es justo lo que el
+     sistema promete que no pasa. Y el aviso callaba, porque su umbral eran 114
+     a secas: DIEZ PÍXELES en los que el defecto existe y nadie lo dice. Un
+     umbral que ignora la reserva que la propia cuenta descuenta miente
+     exactamente en el margen donde hace falta. */
+
+  function conAlto(alto: number) {
+    function Sonda() {
+      const { ref } = useCapacidadTablero();
+      return (
+        <div
+          data-caja
+          ref={(el) => {
+            if (el) {
+              Object.defineProperty(el, 'clientWidth', { value: 400, configurable: true });
+              Object.defineProperty(el, 'clientHeight', { value: alto, configurable: true });
+            }
+            ref(el);
+          }}
+        />
+      );
+    }
+    return render(<Sonda />);
+  }
+
+  it('[22] avisa cuando la caja no llega para UNA fila con su reserva', () => {
+    const grito = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      conAlto(ALTO_CELDA_TABLERO + RESERVA_BURBUJA - 1);
+      expect(grito, `con ${ALTO_CELDA_TABLERO + RESERVA_BURBUJA - 1}px la fila no cabe y `
+        + 'el aviso calló: es el margen exacto en que el carril se desplaza en vertical '
+        + 'sin que nadie lo diga').toHaveBeenCalled();
+      const texto = String(grito.mock.calls[0]?.[0] ?? '');
+      expect(texto, 'el aviso no dice cuánto necesita de verdad')
+        .toContain(String(ALTO_CELDA_TABLERO + RESERVA_BURBUJA));
+    } finally { grito.mockRestore(); }
+  });
+
+  it('[22] y NO avisa cuando la fila cabe justa', () => {
+    const grito = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      conAlto(ALTO_CELDA_TABLERO + RESERVA_BURBUJA);
+      expect(grito, 'avisa con una caja que SÍ da para una fila: un aviso que grita '
+        + 'cuando todo está bien se deja de leer').not.toHaveBeenCalled();
+    } finally { grito.mockRestore(); }
+  });
+
+  it('[22] un alto de CERO no es una caja corta: es una caja sin maquetar', () => {
+    /* Render en servidor, pestaña oculta, `display: none`. Avisar ahí es ruido
+       en cada pestaña que nadie está mirando. Es la misma distinción que la
+       regla 33 del panel de privilegios hizo para el ancho. */
+    const grito = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      conAlto(0);
+      expect(grito, 'avisa con la caja sin maquetar').not.toHaveBeenCalled();
+    } finally { grito.mockRestore(); }
+  });
+});

@@ -329,3 +329,52 @@ describe('[0e] el candado de la altura nombra a todo el que emite un control de 
     ).toBe(true);
   });
 });
+
+describe('R6 · todo contenedor que se desplaza es bloque contenedor', () => {
+  /* Un descendiente posicionado en ABSOLUTO no queda recortado por un
+     antepasado con `overflow` si ese antepasado no es su bloque contenedor: su
+     bloque contenedor es el antepasado POSICIONADO más cercano, que está fuera,
+     y entonces el recorte no le alcanza y estira el documento.
+
+     No hace falta que nadie escriba un `absolute`: `.sr-solo` —el texto que
+     sólo ve un lector, que el sistema usa en medio mundo— YA lo es, con
+     desplazamientos `auto` y un padre normalmente estático. Medido en el
+     catálogo a 1024 px: la página entera se desplazaba 554 px en horizontal
+     —`scrollWidth` 1579 contra 1024— por el texto invisible de las celdas del
+     tablero dentro del carril. Ningún elemento «se salía»: todos estaban dentro
+     de un contenedor que recorta, pero el recorte no les alcanzaba.
+
+     Es la política de móvil primero incumplida de la peor manera, porque el
+     culpable es invisible por definición. Cuesta una declaración y no cambia
+     nada a la vista. */
+  const hoja = readFileSync(
+    resolve(process.cwd(), '..', 'sistema', 'componentes', 'componentes.css'), 'utf8',
+  );
+
+  it('[6] ninguna regla con `overflow` desplazable se queda sin `position`', () => {
+    const sinBloque: string[] = [];
+    /* Se lee regla a regla sobre la hoja QUE VIAJA, no sobre la del catálogo:
+       es la que acaba en los productos. */
+    for (const bloque of hoja.split('}')) {
+      const cuerpo = bloque.slice(bloque.indexOf('{') + 1);
+      if (!/overflow(-x|-y)?:\s*(auto|scroll)/.test(cuerpo)) continue;
+      /* `overflow-y: auto` sin desplazamiento horizontal también cuenta: el
+         escape es del recorte, no del eje. */
+      if (/position:\s*(relative|absolute|fixed|sticky)/.test(cuerpo)) continue;
+      const selector = bloque.slice(0, bloque.indexOf('{')).trim().split('\n').pop()!.trim();
+      if (selector.startsWith('@') || !selector) continue;
+      sinBloque.push(selector);
+    }
+    expect(sinBloque, 'estos contenedores desplazan y NO son bloque contenedor, así que '
+      + 'un descendiente absoluto —empezando por «.sr-solo»— se les escapa del recorte y '
+      + `estira el documento: ${sinBloque.join(' · ')}`).toEqual([]);
+  });
+
+  it('[6] y `.sr-solo` sigue siendo absoluta, que es lo que hace falta la regla', () => {
+    /* Si un día dejara de serlo, la regla de arriba pasaría a proteger de nada
+       y convendría saberlo en vez de arrastrarla como superstición. */
+    const i = hoja.indexOf('.sr-solo{');
+    expect(i, 'no existe `.sr-solo` en la hoja que viaja').toBeGreaterThan(-1);
+    expect(hoja.slice(i, i + 200)).toMatch(/position:\s*absolute/);
+  });
+});

@@ -233,12 +233,22 @@ export function useCapacidadTablero(
       - parseFloat(cs.paddingLeft || '0') - parseFloat(cs.paddingRight || '0');
     const alto = el.clientHeight
       - parseFloat(cs.paddingTop || '0') - parseFloat(cs.paddingBottom || '0');
-    if (alto > 0 && alto < ALTO_CELDA_TABLERO
+    /* EL SUELO DE UNA FILA INCLUYE LA RESERVA DE LA BURBUJA. El umbral estuvo
+       en `ALTO_CELDA_TABLERO` a secas —114— y eso deja un hueco de 10 px en el
+       que el aviso calla y la fila NO cabe: la rejilla reserva sus 10 px por
+       arriba, asi que pide 124. Medido en el propio catalogo: caja de 121, fila
+       de 124, 3 px fuera, y el carril desplazandose en vertical —que es lo que
+       el sistema promete que no pasa— con el aviso en silencio. Un umbral que
+       ignora la reserva que la propia cuenta descuenta es un aviso que miente
+       justo en el margen donde hace falta. */
+    if (alto > 0 && alto < ALTO_CELDA_TABLERO + RESERVA_BURBUJA
         && process.env.NODE_ENV !== 'production') {
       // eslint-disable-next-line no-console
       console.error(
-        `useCapacidadTablero: la caja mide ${Math.round(alto)}px de alto y una celda `
-        + `necesita ${ALTO_CELDA_TABLERO}. Casi seguro la cadena de alto esta rota: `
+        `useCapacidadTablero: la caja mide ${Math.round(alto)}px de alto y una fila `
+        + `necesita ${ALTO_CELDA_TABLERO + RESERVA_BURBUJA} `
+        + `(${ALTO_CELDA_TABLERO} de celda mas ${RESERVA_BURBUJA} que reserva la burbuja). `
+        + 'Casi seguro la cadena de alto esta rota: '
         + '`tbl-lleno` necesita que ALGUN antepasado tenga alto definido —`MarcoApp '
         + 'altoCompleto` lo da—. Sin eso la caja mide su propio contenido y el tablero '
         + 'se queda en una fila.',

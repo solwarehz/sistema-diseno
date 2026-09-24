@@ -123,7 +123,7 @@ sitio caen **seis** pruebas; la primera redacción de este informe decía «dos�
 era una cifra sin contar, corregida al medirla. Cada arreglo tiene además su
 mutación: rompimos el código a propósito y vimos caer **la suya**, una por una.
 
-La suite entera: **1273 pruebas en 60 archivos, todas en verde**, más los
+La suite entera: **1278 pruebas en 60 archivos, todas en verde**, más los
 veintiún candados, ESLint y `tsc --noEmit` limpio.
 
 En el catálogo, el tablero vive dentro de una sección `display: none` hasta que
@@ -166,9 +166,20 @@ afectan a lo que ustedes instalan:
 `position: absolute` con desplazamientos `auto`, y su padre es estático: su
 bloque contenedor quedaba **fuera** del carril, así que el recorte no le
 aplicaba y **la página entera se desplazaba en horizontal** — medido, **554 px**
-a 1024. Los **nueve** contenedores que desplazan de la hoja pasan a declarar
-`position: relative`, que es una línea y ningún cambio visual. Si tienen texto
-para lector dentro de una tabla o un carril, esto les afectaba.
+a 1024 px (`scrollWidth` 1579 contra 1024). Y esto es lo que lo hace difícil:
+**ningún elemento «se salía»**. Todos estaban dentro de algo que recorta; el
+recorte no les llegaba.
+
+La hoja declara desplazamiento en **quince** selectores; dos ya eran bloque
+contenedor y a los **trece** restantes se les añade `position: relative` — una
+línea cada uno y **ningún cambio visual**. Lo vigila una prueba que barre la
+hoja entregada regla a regla, no una lista escrita a mano. **Si tienen texto
+para lector dentro de una tabla, un diálogo, un panel o un carril, esto les
+afectaba**, y les afectaba en silencio.
+
+Y se comprobó donde sí podía romper: el panel flotante de la lateral plegada
+sale a propósito del carril de 56 px. Medido, **se sigue pintando 20 px más
+allá del borde**, igual que antes.
 
 **(b) La demostración de «padre hostil» era marcado escrito a mano.** Seis
 celdas fijas en una caja fija. A 360 px la caja da para 2×2 y las seis seguían
@@ -179,6 +190,16 @@ nosotros otra vez.
 **(c) La barra del catálogo se salía 22 px a 768.** Envolvía sólo por debajo de
 700, un umbral elegido a ojo. Ahora envuelve siempre que haga falta: un umbral
 acierta en el ancho en que se miró y falla en el siguiente.
+
+**(d) Y el aviso de caja corta callaba en diez píxeles.** Su umbral eran **114**
+—lo que mide la celda— pero la rejilla reserva **10** por arriba para que la
+burbuja no se corte, así que una fila pide **124**. En esa franja el defecto
+existe y nadie lo dice. Lo encontró **el propio catálogo con el flujo en vivo
+corriendo**: caja de 121, fila de 124, **3 px fuera**, el carril desplazándose
+en vertical —lo que el sistema promete que no pasa— y el aviso en silencio. Un
+umbral que ignora la reserva que la propia cuenta descuenta **miente justo en el
+margen donde hace falta**. Si su caja anda cerca de esa medida, ahora se lo
+dirá, y con el número correcto.
 
 ---
 
