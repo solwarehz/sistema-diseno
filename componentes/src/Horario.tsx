@@ -20,6 +20,12 @@ export type BloqueHorario = {
   titulo: string;
   detalle?: string;
   /**
+   * Peso del detalle. Por omisión va en negrita: es el rótulo que distingue un
+   * tramo (p. ej. «Remoto») y no puede pesar lo mismo que la franja. `false`
+   * devuelve el peso normal. R163.
+   */
+  detalleEnfasis?: boolean;
+  /**
    * Los seis primeros SIGNIFICAN algo y el color es la señal. Los cuatro de
    * identidad no significan nada: son los del avatar y agrupan —una sede, un
    * turno—, nunca informan. Por eso llevan el color en un filete de 6px y no
@@ -313,7 +319,11 @@ export function Horario({
                             title={`${dias[dia]}, ${rango}`}
                           >
                             <b>{pz.b.titulo}</b>
-                            {pz.b.detalle && <span>{pz.b.detalle}</span>}
+                            {pz.b.detalle && (
+                              <span className={pz.b.detalleEnfasis === false ? 'hor-det-normal' : undefined}>
+                                {pz.b.detalle}
+                              </span>
+                            )}
                             {/* El bloque SIEMPRE dice su franja en texto: deducirla de
                                 la altura de la celda no es leerla. Y con el sombreado
                                 fraccionado importa MÁS: el relleno redondea a cuartos,
