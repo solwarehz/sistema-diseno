@@ -94,6 +94,15 @@ describe('[8] el horario del catálogo emite lo que emite el componente', () => 
 
     const delComponente = container.querySelector('.hor-pila')!;
     expect(vocabulario(delComponente)).toEqual(['hueco', 'bloque']);
+    /* R163 · El detalle sin énfasis tiene su propia anatomía —lleva
+       `hor-det-normal`—, y el catálogo la enseña. Se compara contra lo que el
+       componente emite con `detalleEnfasis={false}`, no contra la omisión. */
+    const { container: sinEnfasis } = render(
+      <Horario titulo="Horario" dias={['Lun']} inicio="12:00" fin="14:00" paso={120}
+        bloques={[{ dia: 0, de: '12:20', a: '13:55', titulo: 'Tutoría', detalle: 'Sede Centro',
+          tono: 'identidad-1', detalleEnfasis: false }]} />
+    );
+    const delComponenteSinEnfasis = sinEnfasis.querySelector('.hor-pila')!;
 
     for (const p of doc().querySelectorAll('.hor-pila')) {
       expect(vocabulario(p), 'una pila del catálogo emite algo que el componente no emite')
@@ -103,7 +112,8 @@ describe('[8] el horario del catálogo emite lo que emite el componente', () => 
       for (const v of vocabulario(p)) {
         expect(['hueco', 'bloque'], `pieza sin cuartos declarados: ${v}`).toContain(v);
       }
-      expect(dentro(p), 'el bloque del catálogo tiene otra anatomía').toEqual(dentro(delComponente));
+      const referencia = p.querySelector('.hor-det-normal') ? delComponenteSinEnfasis : delComponente;
+      expect(dentro(p), 'el bloque del catálogo tiene otra anatomía').toEqual(dentro(referencia));
       expect(p.querySelector('.hor-b')!.getAttribute('title')).toBeTruthy();
     }
   });

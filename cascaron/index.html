@@ -13570,6 +13570,27 @@ caben en la misma celda.</p>
   </tbody>
 </table>
 
+<h3 class="sub-seccion">El detalle va en negrita, y se puede quitar</h3>
+<p class="seccion-sub">El <strong>detalle</strong> del bloque es el r&oacute;tulo que distingue un tramo &mdash;&laquo;Remoto&raquo; frente a uno
+presencial&mdash; y no puede pesar lo mismo que la franja. Por omisi&oacute;n va en <strong>negrita</strong>; con
+<code>detalleEnfasis={false}</code> conserva el peso normal. El rango y el t&iacute;tulo no cambian.</p>
+<div class="bloque">
+  <div class="hor-env" tabindex="0">
+    <table class="hor">
+      <thead><tr><th class="hor-esq" scope="col">Hora</th><th scope="col">Por omisi&oacute;n</th><th scope="col">detalleEnfasis={false}</th></tr></thead>
+      <tbody>
+        <tr><th class="hor-eje hor-eje-v" scope="row">16:00</th>
+          <td class="hor-c"><div class="hor-pila">
+            <span class="hor-b hor-info hor-d4" title="Por omisi&oacute;n, 16:00 &ndash; 17:00"><b>S2</b><span>Remoto</span><span class="hor-rango">16:00 &ndash; 17:00</span></span>
+          </div></td>
+          <td class="hor-c"><div class="hor-pila">
+            <span class="hor-b hor-info hor-d4" title="Sin &eacute;nfasis, 16:00 &ndash; 17:00"><b>S2</b><span class="hor-det-normal">Remoto</span><span class="hor-rango">16:00 &ndash; 17:00</span></span>
+          </div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
 <h3 class="sub-seccion">Y el descarte deja de ser silencioso</h3>
 <p class="seccion-sub">Lo que el horario no puede dibujar tal cual se anuncia por <code>onAjuste</code>, con su motivo.
 Antes desaparecía: una celda vacía es un estado normal, así que <strong>nadie echaba en falta el bloque</strong>.</p>
