@@ -30,7 +30,7 @@ Hechos verificados el 2026-10-30:
 **Fuera de alcance:**
 
 - Mover, borrar, recortar o reescribir `memoria/` o cambiar `generar.mjs`.
-- Implementar un hook, un candado o una herramienta automática para comprobar el límite y los disparadores; eso se define en SPEC 03.
+- Implementar un hook, un candado o una herramienta automática para comprobar el límite y los disparadores.
 - Modificar las skills `/spec` o `/spec-impl`.
 - Sustituir o modificar la memoria personal de Claude Code.
 
@@ -47,7 +47,9 @@ Se consideran importantes estos cambios:
 5. Se descubre o corrige un error con una regla preventiva reutilizable en este repositorio.
 6. Al reabrir una sesión, se confirma que la memoria contradice una fuente vigente o está desactualizada de forma que pueda desviar el trabajo.
 
-No se actualiza solo por iniciar o cerrar una sesión, iniciar o terminar `/spec` o `/spec-impl`, leer archivos, hacer una consulta de solo lectura, repetir una prueba que no cambió el estado ni aplicar formato sin efecto en el trabajo. Una prueba sí es motivo de actualización si cambia el estado, descubre un bloqueo o modifica el siguiente paso.
+No se actualiza solo por iniciar o cerrar una sesión, leer archivos, hacer una consulta de solo lectura, repetir una prueba que no cambió el estado ni aplicar formato sin efecto en el trabajo. Una prueba sí es motivo de actualización si cambia el estado, descubre un bloqueo o modifica el siguiente paso.
+
+El procedimiento que origina el cambio no decide nada: `/spec`, `/spec-impl` o trabajo directo actualizan la memoria cuando producen uno de los cambios importantes anteriores —por ejemplo, aprobar una spec o completar su implementación—.
 
 Si no ocurrió ninguno de los cambios importantes anteriores, `MEMORY.md` permanece intacto. No es una bitácora de cada comando ni una lista de actividad diaria.
 
@@ -91,7 +93,7 @@ Si la memoria corta contradice la fuente correspondiente, verificar la fuente, c
 2. Crear `MEMORY.md` con información vigente comprobada desde el repositorio y la rama de trabajo. Medir el archivo con `wc -l`.
 3. Incluir solo precauciones reutilizables verificadas en el repositorio. No convertir incidentes pasajeros o desacuerdos no resueltos en reglas.
 4. En `CLAUDE.md`, reemplazar la orden inicial de leer `memoria/` entera por la lectura de `MEMORY.md`, y enlazar `memoria/` como consulta. Añadir en el flujo de inicio la lectura de `MEMORY.md` después de actualizar el repositorio y antes de trabajar.
-5. Añadir a `CLAUDE.md` los disparadores de actualización, los casos que no requieren actualización y la comprobación de las 50 líneas. No exigir cambios por el mero inicio o cierre de `/spec` o `/spec-impl`.
+5. Añadir a `CLAUDE.md` los disparadores de actualización, los casos que no requieren actualización y la comprobación de las 50 líneas. La regla se basa en cambios de estado y avances importantes, no en el nombre del procedimiento.
 6. Ejecutar `node sistema/tokens/generar.mjs` y `node sistema/candado/verificar-contraste.mjs`. No modificar la versión del sistema ni `memoria/01-estado.md` por esta documentación, y confirmar que los generadores siguen validando el cruce de versión.
 7. Revisar el diff y confirmar que el commit de esta tarea solo incluya los archivos autorizados, sin secretos. Crear un commit atómico y hacer push a la misma rama autorizada existente; no crear ni cambiar de rama ni actualizar `main`.
 
@@ -102,7 +104,7 @@ Si la memoria corta contradice la fuente correspondiente, verificar la fuente, c
 - [ ] Las secciones de pendientes y precauciones tienen como máximo 10 líneas cada una.
 - [ ] La fecha, versión y rama coinciden con los valores que entregan las herramientas en la rama activa.
 - [ ] `CLAUDE.md` manda leer `MEMORY.md` al abrir sesión, después de actualizar el repositorio y antes de realizar trabajo.
-- [ ] `CLAUDE.md` manda actualizar la memoria cuando se confirma uno de los cambios importantes de esta spec, y no solo por iniciar o cerrar una sesión, `/spec` o `/spec-impl`.
+- [ ] `CLAUDE.md` manda actualizar la memoria cuando se confirma uno de los cambios importantes de esta spec, y no solo por iniciar o cerrar una sesión.
 - [ ] Una prueba positiva confirma que un cambio de estado —por ejemplo, aprobar una spec o resolver un bloqueo— actualiza el resumen y el siguiente paso.
 - [ ] Una prueba negativa confirma que una consulta de solo lectura o una prueba rutinaria sin cambio relevante deja `MEMORY.md` intacto.
 - [ ] La regla ordena actualizar la memoria antes de pausar o entregar una tarea si el trabajo produjo un cambio importante.
@@ -116,16 +118,16 @@ Si la memoria corta contradice la fuente correspondiente, verificar la fuente, c
 - **Sí:** `MEMORY.md` en la raíz y versionado, para que viaje con el repositorio y sirva de orientación compartida.
 - **Sí:** la memoria breve resume y enlaza; `memoria/` permanece intacta como fuente histórica y de detalle.
 - **Sí:** la lectura ocurre al abrir sesión; la escritura ocurre solo si cambió información importante para continuar.
-- **No:** actualizar al inicio o al final de cada `/spec` o `/spec-impl` por rutina. La actualización depende del cambio real de estado, no del nombre del procedimiento.
+- **Sí:** actualizar al guardar cambios o avances importantes y cambios de estado, venga del procedimiento que venga (`/spec`, `/spec-impl` o trabajo directo). Decisión del responsable el 2026-10-30.
 - **No:** registrar cada comando, consulta, ejecución rutinaria o incidente pasajero.
-- **No:** crear en esta spec el hook o la herramienta que verifique automáticamente el límite y la actualización; su diseño queda para SPEC 03.
+- **No:** crear en esta spec el hook o la herramienta que verifique automáticamente el límite y la actualización.
 
 ## Riesgos
 
 | Riesgo | Mitigación |
 |---|---|
 | «Importante» puede interpretarse de forma distinta | La lista de disparadores y los ejemplos positivos/negativos de esta spec delimitan cuándo actualizar |
-| Claude no actualiza la memoria después de un cambio relevante | `CLAUDE.md` debe exigir actualizar antes de pausar o entregar; la detección automática se define por separado en SPEC 03 |
+| Claude no actualiza la memoria después de un cambio relevante | `CLAUDE.md` debe exigir actualizar antes de pausar o entregar; esta spec no incluye detección automática |
 | La memoria se vuelve una bitácora y supera 50 líneas | Mantener solo estado vigente, limitar pendientes y precauciones, podar lo obsoleto y medir las líneas tras cada actualización |
 | La memoria contradice una fuente vigente | Corregirla tras verificar la fuente correspondiente y definir autoridad por tema |
 | Los campos fecha, versión o rama quedan desactualizados | Obtenerlos con herramientas cuando se actualice la memoria; una nueva versión o cambio de rama es un disparador importante |
