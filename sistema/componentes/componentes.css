@@ -656,7 +656,7 @@ button.fc-campo{ display: flex; align-items: center; justify-content: flex-start
 input[type='date'].campo, .fc-campo{ max-width: 172px; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   HORARIO — 83 reglas · clases .hor-*
+   HORARIO — 85 reglas · clases .hor-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 [data-densidad='compacta'] .hor-c{ --alto-franja: 28px; height: var(--alto-franja); }
@@ -736,6 +736,8 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .hor-pila > .hor-b.hor-d24{ flex: 1 0 calc(var(--alto-franja) * 24 / 4); }
 .hor-b b{ display: block; font-weight: 600; font-size: 13px; }
 .hor-b span{ display: block; font-size: 12px; }
+.hor-b span:not(.hor-rango){ font-weight: 600; }
+.hor-b span.hor-det-normal:not(.hor-rango){ font-weight: 400; }
 .hor-rango{ font-variant-numeric: tabular-nums; }
 .hor-info{ background: var(--info-fondo);      color: var(--info-texto);   border-left-color: var(--info-acento); }
 .hor-exito{ background: var(--exito-fondo);     color: var(--exito-texto);  border-left-color: var(--exito-acento); }

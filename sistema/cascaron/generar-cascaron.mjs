@@ -12603,6 +12603,11 @@ ${Array.from({ length: 24 }, (_, i) => {
 
 .hor-b b { display: block; font-weight: 600; font-size: 13px; }
 .hor-b span { display: block; font-size: 12px; }
+/* R163 - El detalle va en negrita por omision. NO en .hor-b span: el rango es
+   tambien un span y quedaria en negrita. El modificador gana por especificidad
+   (0,3,1 contra 0,2,1) y no por orden, porque el extractor reordena. */
+.hor-b span:not(.hor-rango) { font-weight: 600; }
+.hor-b span.hor-det-normal:not(.hor-rango) { font-weight: 400; }
 /* Sin opacidad. Atenuar texto con opacity lo saca del contrato: medido daba
    4,35:1 sobre el bloque oro, por debajo de 4,5. La jerarquia la hace el
    tamano, no la transparencia. */

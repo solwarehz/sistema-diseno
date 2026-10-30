@@ -1,5 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { Horario, escribirHora } from '../src/Horario';
 
 const DIAS = ['Lunes', 'Martes', 'Miércoles'];
@@ -281,5 +283,75 @@ describe('[4b] R138 · una celda lleva una pila de bloques', () => {
         bloques={[{ dia: 0, de: '08:30', a: '09:30', titulo: 'Centro' }]} />
     );
     expect(cuartos(container.querySelector('.hor-pila')!)).toEqual(['hor-h1', 'hor-d2', 'hor-h1']);
+  });
+});
+
+describe('R163 · el detalle del bloque va en negrita, y se puede quitar', () => {
+  /**
+   * SE LEE LA HOJA QUE VIAJA, no la cascada que resuelve jsdom: ignora la
+   * especificidad —está medido en MarcoApp.test.tsx— y daría falsos verdes.
+   * Aquí se comprueba lo que el componente EMITE y lo que la hoja DECLARA; el
+   * peso resuelto lo mide el navegador (criterios 1 y 2 de la spec 01).
+   */
+  const HOJA = readFileSync(
+    resolve(process.cwd(), '..', 'sistema', 'componentes', 'componentes.css'), 'utf8',
+  );
+  /** Las declaraciones del bloque cuyo selector es exactamente ése, o '' si no existe. */
+  const declarado = (selector: string) => {
+    const i = HOJA.indexOf(`\n${selector}{`);
+    return i < 0 ? '' : HOJA.slice(i, HOJA.indexOf('}', i));
+  };
+  const montar = (extra = {}) =>
+    render(
+      <Horario titulo="H" dias={['Lun']} inicio="08:00" fin="10:00" paso={60}
+        bloques={[{ dia: 0, de: '08:00', a: '09:00', titulo: 'S2', detalle: 'Remoto', ...extra }]} />,
+    );
+  const detalle = (c: HTMLElement) =>
+    [...c.querySelectorAll('.hor-b > span')].find((x) => !x.classList.contains('hor-rango'))!;
+
+  it('[1] por omisión el detalle NO lleva clase: la negrita la pone la hoja', () => {
+    const { container } = montar();
+    expect(detalle(container).textContent).toBe('Remoto');
+    expect(detalle(container).className, 'por omisión no se emite el modificador').toBe('');
+  });
+
+  it('[2] con `detalleEnfasis={false}` el detalle emite el modificador, y el rango no', () => {
+    const { container } = montar({ detalleEnfasis: false });
+    expect(detalle(container).className).toBe('hor-det-normal');
+    expect(container.querySelector('.hor-rango')!.className, 'el rango no se toca').toBe('hor-rango');
+  });
+
+  it('[3] `detalleEnfasis={true}` es lo mismo que no decir nada', () => {
+    const { container: a } = montar();
+    const { container: b } = montar({ detalleEnfasis: true });
+    expect(b.querySelector('.hor-b')!.outerHTML).toBe(a.querySelector('.hor-b')!.outerHTML);
+  });
+
+  it('[4] un bloque sin detalle emite el mismo marcado con o sin la propiedad', () => {
+    const { container: a } = montar({ detalle: undefined });
+    const { container: b } = montar({ detalle: undefined, detalleEnfasis: false });
+    expect(a.querySelectorAll('.hor-b > span').length, 'solo queda el rango').toBe(1);
+    expect(b.querySelector('.hor-b')!.outerHTML).toBe(a.querySelector('.hor-b')!.outerHTML);
+  });
+
+  it('[5] la hoja pone 600 al detalle y NO al rango', () => {
+    expect(declarado('.hor-b span:not(.hor-rango)'),
+      'la hoja no declara la negrita del detalle').toMatch(/font-weight:\s*600/);
+    expect(declarado('.hor-b span'),
+      'la negrita no puede ir en `.hor-b span`: el rango también quedaría en negrita')
+      .not.toMatch(/font-weight/);
+    expect(declarado('.hor-rango'), 'el rango conserva su peso de siempre')
+      .not.toMatch(/font-weight/);
+  });
+
+  it('[6] la hoja devuelve el peso normal con el modificador', () => {
+    expect(declarado('.hor-b span.hor-det-normal:not(.hor-rango)'),
+      'la hoja no declara el peso normal del detalle sin énfasis')
+      .toMatch(/font-weight:\s*400/);
+  });
+
+  it('[7] el tamaño del detalle sigue en 12px y el del título en 13px', () => {
+    expect(declarado('.hor-b span')).toMatch(/font-size:\s*12px/);
+    expect(declarado('.hor-b b')).toMatch(/font-weight:\s*600;\s*font-size:\s*13px/);
   });
 });
