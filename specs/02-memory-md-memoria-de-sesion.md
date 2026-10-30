@@ -1,105 +1,134 @@
 # SPEC 02 — MEMORY.md: memoria de sesión del repositorio
 
 > **Estado:** Borrador
-> **Depende de:** ninguna (SPEC 01 existe, pero no interviene)
+> **Depende de:** ninguna (SPEC 01 no interviene)
 > **Fecha:** 2026-10-30
-> **Objetivo:** Crear `MEMORY.md` en la raíz (máximo 50 líneas) con en qué estamos, qué queda pendiente y los errores a evitar, y fijar en `CLAUDE.md` que se lee al abrir sesión y se actualiza al iniciar y al terminar `/spec` y `/spec-impl`.
+> **Objetivo:** Crear `MEMORY.md` en la raíz, con un máximo de 50 líneas, para retomar el estado útil del proyecto. `CLAUDE.md` ordena leerlo al abrir sesión y actualizarlo solo cuando cambie información importante para continuar el trabajo.
 
 ## Por qué existe esta spec
 
-`memoria/01-estado.md` tiene 3.376 líneas y `memoria/04-pendientes.md` 313: sirven para el detalle, no para retomar una sesión en un minuto. Se pide una memoria corta que sustituya a `memoria/` **en el papel de lo primero que se lee**, sin tocar sus archivos.
+`memoria/01-estado.md` tiene 3.376 líneas y `memoria/04-pendientes.md` 313. Son útiles como registro detallado, pero demasiado extensos para retomar una sesión rápidamente. Se necesita una memoria breve que sirva de primer punto de orientación, sin reemplazar ni modificar los registros existentes.
 
 Hechos verificados el 2026-10-30:
 
-- `MEMORY.md` no existe en la raíz del repo y no está en `.gitignore`.
-- `sistema/tokens/generar.mjs:222` exige que `memoria/01-estado.md` contenga `MMI-DS **vX**` y lo cruza con `package.json` y `CLAUDE.md` (paso 1 de los 25). Por eso `memoria/` no se mueve ni se vacía.
-- `CLAUDE.md` tiene 4 referencias a `memoria/`, entre ellas la orden «Y después lee `memoria/`» de la sección 1.
-- Hay un `MEMORY.md` del agente en `~/.claude/projects/...`: es **otro archivo**, no se clona y no se toca.
-- `.claude/skills/spec-impl/SKILL.md` no menciona `CLAUDE.md`, así que la regla no puede depender de que esa skill lo lea; `CLAUDE.md` se carga solo al abrir sesión.
+- `MEMORY.md` no existe en la raíz del repositorio ni está en `.gitignore`.
+- `sistema/tokens/generar.mjs` comprueba que `memoria/01-estado.md` contenga la versión `MMI-DS **vX**` y la compara con `package.json` y `CLAUDE.md`. Por eso esta spec no mueve ni vacía `memoria/`.
+- `CLAUDE.md` ordena leer `memoria/` al abrir una sesión y también contiene referencias a archivos concretos de esa carpeta.
+- El `MEMORY.md` versionado aquí es distinto de la memoria personal que Claude Code mantiene fuera del repositorio. Esta spec no modifica la memoria personal.
+- `CLAUDE.md` se carga al iniciar Claude Code. La regla de esta spec debe indicar explícitamente que, después de cargarlo, también se lea el `MEMORY.md` del repositorio.
 
 ## Alcance
 
 **Dentro:**
 
-- Archivo nuevo `MEMORY.md` en la raíz, de **50 líneas como máximo**, con cinco bloques: estado actual, en qué estamos, pendientes, errores a evitar (máx. 10 líneas) y enlaces a `memoria/`.
-- Regla nueva en `CLAUDE.md`: leer `MEMORY.md` al abrir sesión, y actualizarlo al iniciar y al finalizar cada `/spec` y `/spec-impl`.
-- En `CLAUDE.md` sección 1, la orden «Y después lee `memoria/`» pasa a «Lee `MEMORY.md`; `memoria/` es el archivo de consulta por enlace».
-- Sembrar «errores a evitar» con los de esta sesión, cada uno verificado en el repo.
+- Crear `MEMORY.md` en la raíz, versionado y limitado a **50 líneas físicas**.
+- Incluir estado actual, trabajo en curso, siguiente paso o bloqueo, pendientes prioritarios, precauciones reutilizables y enlaces al detalle.
+- Establecer en `CLAUDE.md` que se lea `MEMORY.md` al abrir cada sesión.
+- Establecer que se actualice cuando cambie información importante para retomar o dirigir el trabajo, según los disparadores de esta spec.
+- Mantener intactos `memoria/` y las fuentes detalladas del proyecto.
 
-**Fuera de alcance (para otras specs):**
+**Fuera de alcance:**
 
-- Mover, borrar, recortar o reescribir `memoria/` y cambiar `generar.mjs`.
-- Editar `.claude/skills/spec` o `.claude/skills/spec-impl`, y cualquier hook en `settings`.
-- Un candado nuevo (paso 26) que valide el límite de 50 líneas.
-- Sustituir el `MEMORY.md` del agente en `~/.claude`.
+- Mover, borrar, recortar o reescribir `memoria/` o cambiar `generar.mjs`.
+- Implementar un hook, un candado o una herramienta automática para comprobar el límite y los disparadores; eso se define en SPEC 03.
+- Modificar las skills `/spec` o `/spec-impl`.
+- Sustituir o modificar la memoria personal de Claude Code.
 
-## Modelo de datos
+## Cuándo se actualiza
 
-Esta spec no introduce estructuras de datos. Es un archivo de texto con esta forma:
+Actualizar `MEMORY.md` **después de verificar un cambio importante**, tan pronto como afecte la información necesaria para continuar el trabajo. Si el cambio ocurre durante una tarea aún abierta, registrar el nuevo estado antes de entregar, pausar o transferir esa tarea.
+
+Se consideran importantes estos cambios:
+
+1. Cambia el estado de un trabajo activo: se crea, aprueba, implementa, bloquea, retoma o completa una spec o entrega.
+2. Cambia el siguiente paso concreto, aparece un bloqueo relevante o se resuelve uno existente.
+3. Se toma o modifica una decisión técnica u operativa que afectará trabajo futuro.
+4. Cambia la versión, la rama activa de trabajo o el estado de publicación que otra sesión necesitaría conocer para continuar con seguridad.
+5. Se descubre o corrige un error con una regla preventiva reutilizable en este repositorio.
+6. Al reabrir una sesión, se confirma que la memoria contradice una fuente vigente o está desactualizada de forma que pueda desviar el trabajo.
+
+No se actualiza solo por iniciar o cerrar una sesión, iniciar o terminar `/spec` o `/spec-impl`, leer archivos, hacer una consulta de solo lectura, repetir una prueba que no cambió el estado ni aplicar formato sin efecto en el trabajo. Una prueba sí es motivo de actualización si cambia el estado, descubre un bloqueo o modifica el siguiente paso.
+
+Si no ocurrió ninguno de los cambios importantes anteriores, `MEMORY.md` permanece intacto. No es una bitácora de cada comando ni una lista de actividad diaria.
+
+## Modelo de contenido
+
+`MEMORY.md` es una nota de traspaso breve. Su estructura recomendada es:
 
 ```markdown
 # MEMORY — Sistema de diseño AE
-Última actualización: AAAA-MM-DD · v1.148.2 · rama <nombre>
-
-## En qué estamos
-(3-8 líneas: spec activa, rama, qué sigue)
-
-## Pendiente
-(máx. 10 líneas, una por pendiente, con enlace a memoria/04-pendientes.md)
-
-## Errores a evitar
-(máx. 10 líneas: qué pasó → regla)
-
-## Detalle
-(enlaces: memoria/00-INDICE.md, specs/, CLAUDE.md)
+Actualizado: AAAA-MM-DD · versión vX · rama <nombre>
+## Estado y trabajo en curso
+(qué está activo, en qué estado verificado y cuál es el siguiente paso)
+## Pendientes prioritarios
+(hasta 10 líneas; enlaces al detalle en memoria/04-pendientes.md)
+## Precauciones reutilizables
+(hasta 10 líneas; solo errores verificados y reglas preventivas duraderas)
+## Fuentes de detalle
+(memoria/00-INDICE.md, memoria/01-estado.md, specs/, CLAUDE.md)
 ```
 
 Convenciones:
 
-- Una idea por línea; sin tablas ni bloques de código largos.
-- La fecha y la versión se leen con una herramienta (`date`, `package.json`), no se escriben de memoria.
-- Al superar 50 líneas se poda lo más viejo hacia `memoria/`; no se amplía el límite.
+- Una idea por línea; sin tablas ni bloques extensos.
+- La fecha, versión y rama se obtienen con herramientas, no se deducen de memoria.
+- Actualizar la fecha solo cuando cambie el contenido de forma importante.
+- Registrar hechos verificados y el siguiente paso accionable; enlazar la fuente cuando exista.
+- No copiar historial extenso, resultados rutinarios ni errores pasajeros. Conservar una precaución solo si ayuda a evitar que otro trabajo repita un daño relevante.
+- Mantener como máximo 10 líneas de pendientes y 10 de precauciones.
+- Tras cada actualización, comprobar con `wc -l MEMORY.md` que no supere 50 líneas y que termine con salto de línea. Si excede el límite, resumir o quitar información obsoleta; el límite no se amplía.
+- El detalle histórico o un pendiente que ya no sea prioritario permanece en su documento fuente, no se traslada automáticamente a la memoria corta.
+
+## Autoridad y coherencia
+
+`MEMORY.md` es un resumen de navegación, nunca reemplaza una fuente de verdad. Las reglas operativas se consultan en `CLAUDE.md`; el estado completo y las decisiones del sistema, en `memoria/01-estado.md` y `memoria/02-decisiones.md`; y el inventario de pendientes, en `memoria/04-pendientes.md`. Para una spec activa, manda su propio texto vigente.
+
+Si la memoria corta contradice la fuente correspondiente, verificar la fuente, corregir `MEMORY.md` y no ejecutar acciones basadas únicamente en el resumen. La autoridad se determina por el tema; `memoria/01-estado.md` no reemplaza las reglas operativas ni el contenido de una spec.
 
 ## Plan de implementación
 
-1. Crear la rama `feat/*` (CLAUDE.md §8) **antes** de editar.
-2. Crear `MEMORY.md` con las cinco secciones y contenido real: versión de `package.json`, rama y spec activa leídas con herramienta. Comprobar con `wc -l MEMORY.md`.
-3. Sembrar «errores a evitar» con los verificados en esta sesión: citar una sección que no está en el `CLAUDE.md` del repo (la §19.1 es del manual general del VPS); dar por listo Docker con el volumen `node_modules` vacío; crear una rama `docs/...` donde el repo manda `feat/*`.
-4. En `CLAUDE.md`, añadir una sección corta «Memoria de sesión» con la regla de leer y actualizar, y cambiar la orden de la sección 1. No tocar la línea `MMI-DS **vX**` ni el número de estado.
-5. Correr `node sistema/tokens/generar.mjs` y `node sistema/candado/verificar-contraste.mjs`: siguen en verde, porque `CLAUDE.md` y `memoria/01-estado.md` mantienen la versión.
-6. Commit y push de la rama.
+1. Trabajar en la rama autorizada existente; no crear ni cambiar a otra rama para esta tarea.
+2. Crear `MEMORY.md` con información vigente comprobada desde el repositorio y la rama de trabajo. Medir el archivo con `wc -l`.
+3. Incluir solo precauciones reutilizables verificadas en el repositorio. No convertir incidentes pasajeros o desacuerdos no resueltos en reglas.
+4. En `CLAUDE.md`, reemplazar la orden inicial de leer `memoria/` entera por la lectura de `MEMORY.md`, y enlazar `memoria/` como consulta. Añadir en el flujo de inicio la lectura de `MEMORY.md` después de actualizar el repositorio y antes de trabajar.
+5. Añadir a `CLAUDE.md` los disparadores de actualización, los casos que no requieren actualización y la comprobación de las 50 líneas. No exigir cambios por el mero inicio o cierre de `/spec` o `/spec-impl`.
+6. Ejecutar `node sistema/tokens/generar.mjs` y `node sistema/candado/verificar-contraste.mjs`. No modificar la versión del sistema ni `memoria/01-estado.md` por esta documentación, y confirmar que los generadores siguen validando el cruce de versión.
+7. Revisar el diff y confirmar que el commit de esta tarea solo incluya los archivos autorizados, sin secretos. Crear un commit atómico y hacer push a la misma rama autorizada existente; no crear ni cambiar de rama ni actualizar `main`.
 
 ## Criterios de aceptación
 
-- [ ] `MEMORY.md` existe en la raíz y `wc -l MEMORY.md` da 50 o menos.
-- [ ] `MEMORY.md` tiene los bloques «En qué estamos», «Pendiente», «Errores a evitar» y «Detalle».
-- [ ] «Errores a evitar» tiene como máximo 10 líneas y cada una nombra qué pasó y la regla.
-- [ ] La versión y la fecha de `MEMORY.md` coinciden con `package.json` y con `date`.
-- [ ] `CLAUDE.md` contiene la regla de leer `MEMORY.md` al abrir sesión y de actualizarlo al iniciar y finalizar `/spec` y `/spec-impl`.
-- [ ] `CLAUDE.md` ya no manda leer `memoria/` entera al abrir sesión y la enlaza como consulta.
-- [ ] `git diff --stat` no muestra cambios en `memoria/`, en `.claude/skills/` ni en `sistema/`.
-- [ ] `node sistema/tokens/generar.mjs` sale con 0 fallos.
-- [ ] El commit no contiene `.env`, claves ni credenciales.
+- [ ] `MEMORY.md` existe en la raíz, está versionado y tiene 50 líneas físicas o menos según `wc -l`.
+- [ ] El archivo incluye estado/trabajo en curso, siguiente paso o bloqueo, pendientes prioritarios, precauciones reutilizables y enlaces a las fuentes.
+- [ ] Las secciones de pendientes y precauciones tienen como máximo 10 líneas cada una.
+- [ ] La fecha, versión y rama coinciden con los valores que entregan las herramientas en la rama activa.
+- [ ] `CLAUDE.md` manda leer `MEMORY.md` al abrir sesión, después de actualizar el repositorio y antes de realizar trabajo.
+- [ ] `CLAUDE.md` manda actualizar la memoria cuando se confirma uno de los cambios importantes de esta spec, y no solo por iniciar o cerrar una sesión, `/spec` o `/spec-impl`.
+- [ ] Una prueba positiva confirma que un cambio de estado —por ejemplo, aprobar una spec o resolver un bloqueo— actualiza el resumen y el siguiente paso.
+- [ ] Una prueba negativa confirma que una consulta de solo lectura o una prueba rutinaria sin cambio relevante deja `MEMORY.md` intacto.
+- [ ] La regla ordena actualizar la memoria antes de pausar o entregar una tarea si el trabajo produjo un cambio importante.
+- [ ] Ante una discrepancia, la regla exige comprobar la fuente correspondiente y corregir el resumen; no atribuye autoridad universal a `memoria/01-estado.md`.
+- [ ] `CLAUDE.md` conserva los enlaces a `memoria/` como fuentes de detalle, sin mandar leerla completa en cada inicio de sesión.
+- [ ] `node sistema/tokens/generar.mjs` y `node sistema/candado/verificar-contraste.mjs` terminan sin fallos.
+- [ ] El diff y el commit no incluyen cambios no autorizados, `.env`, claves ni credenciales.
 
 ## Decisiones tomadas y descartadas
 
-- **Sí:** `MEMORY.md` en la raíz, versionado. Decisión del responsable el 2026-10-30; viaja con git y se lee en cualquier máquina.
-- **No:** ponerlo dentro de `memoria/`: menos visible.
-- **Sí:** `MEMORY.md` sustituye a `memoria/` como lo primero que se lee; `memoria/` queda intacta como archivo histórico. Decisión del responsable el 2026-10-30, con esa acotación para no romper `generar.mjs`.
-- **No:** mover o recortar `memoria/` en esta spec; exige tocar el generador y aprobar cada borrado (§15 del manual general); va en otra spec.
-- **Sí:** solo regla en `CLAUDE.md` para forzar la actualización. Decisión del responsable el 2026-10-30.
-- **No:** editar las skills ni añadir un hook. Más superficie y las skills aún no están versionadas.
-- **Sí:** errores a evitar, máximo 10 líneas y solo de este proyecto. Decisión del responsable.
+- **Sí:** `MEMORY.md` en la raíz y versionado, para que viaje con el repositorio y sirva de orientación compartida.
+- **Sí:** la memoria breve resume y enlaza; `memoria/` permanece intacta como fuente histórica y de detalle.
+- **Sí:** la lectura ocurre al abrir sesión; la escritura ocurre solo si cambió información importante para continuar.
+- **No:** actualizar al inicio o al final de cada `/spec` o `/spec-impl` por rutina. La actualización depende del cambio real de estado, no del nombre del procedimiento.
+- **No:** registrar cada comando, consulta, ejecución rutinaria o incidente pasajero.
+- **No:** crear en esta spec el hook o la herramienta que verifique automáticamente el límite y la actualización; su diseño queda para SPEC 03.
 
 ## Riesgos
 
 | Riesgo | Mitigación |
 |---|---|
-| La regla «depende de acordarse»: el repo ya sufrió pasos que nadie ejecutaba | Riesgo aceptado por el responsable. Verificación manual: al cerrar un `/spec` o `/spec-impl`, comprobar con `git diff` que `MEMORY.md` cambió |
-| `MEMORY.md` y `memoria/01-estado.md` se contradicen | `MEMORY.md` solo resume y enlaza; ante contradicción gana `memoria/01-estado.md` y se corrige `MEMORY.md` |
-| Editar `CLAUDE.md` rompe el cruce de versiones de `generar.mjs` | El paso 5 lo ejecuta; no se tocan la línea de estado ni el número de versión |
-| 50 líneas se quedan cortas | Se poda hacia `memoria/04-pendientes.md`; no se sube el límite sin otra spec |
-| Confusión con el `MEMORY.md` del agente en `~/.claude` | El archivo lo aclara en su cabecera: este viaja con git, aquel no |
+| «Importante» puede interpretarse de forma distinta | La lista de disparadores y los ejemplos positivos/negativos de esta spec delimitan cuándo actualizar |
+| Claude no actualiza la memoria después de un cambio relevante | `CLAUDE.md` debe exigir actualizar antes de pausar o entregar; la detección automática se define por separado en SPEC 03 |
+| La memoria se vuelve una bitácora y supera 50 líneas | Mantener solo estado vigente, limitar pendientes y precauciones, podar lo obsoleto y medir las líneas tras cada actualización |
+| La memoria contradice una fuente vigente | Corregirla tras verificar la fuente correspondiente y definir autoridad por tema |
+| Los campos fecha, versión o rama quedan desactualizados | Obtenerlos con herramientas cuando se actualice la memoria; una nueva versión o cambio de rama es un disparador importante |
 
 ## Lo que **no** está en esta spec
 
