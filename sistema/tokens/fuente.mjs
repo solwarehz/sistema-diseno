@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.148.2";
+export const VERSION = "1.148.3";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,24 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.148.3', fecha: '2026-10-30',
+    que: 'El detalle del bloque del Horario va en negrita, y detalleEnfasis={false} lo quita',
+    porque:
+      'LO PIDIO EL EQUIPO (R163). En un contrato hibrido, «Remoto» es lo unico que distingue '
+      + 'un tramo sin reloj de uno presencial, y al acortarlo de «Remoto · no marca reloj» para '
+      + 'que no ensanchara la rejilla pesaba lo mismo que la franja. Por omision el detalle '
+      + 'pasa a 600; con `detalleEnfasis={false}` emite `hor-det-normal` y vuelve a 400. '
+      + 'LA REGLA NO PUEDE IR EN `.hor-b span`: el rango es tambien un `span` y quedaria en '
+      + 'negrita; va en `.hor-b span:not(.hor-rango)`, y el modificador gana por especificidad '
+      + '(0,3,1 contra 0,2,1), no por orden, porque el extractor reordena. El titulo, el rango '
+      + 'y el tamano del detalle no cambian. CAMBIA EL ASPECTO POR OMISION de todo consumidor '
+      + 'que use `detalle`, y se declara: quien lo quiera como antes pone `detalleEnfasis={false}`. '
+      + 'SIN VERIFICAR EN NAVEGADOR cuando se escribio esta entrada: el peso resuelto y el '
+      + 'ancho de las siete columnas se miden aparte.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.148.2', fecha: '2026-09-24',
     que: 'El camino que la v1.148.0 publicaba como RECOMENDADO rompia la pantalla',

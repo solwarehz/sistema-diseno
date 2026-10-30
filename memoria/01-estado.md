@@ -1,7 +1,7 @@
 # Estado del proyecto
 
 **Última actualización:** 24 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.148.2** — R162: el gancho que mide la caja
+**Versión del sistema:** MMI-DS **v1.148.3** — R163: el detalle del bloque del Horario va en negrita por omisión y `detalleEnfasis={false}` lo quita (sobre la v1.148.2, R162: el gancho que mide la caja
 deja de depender de que la caja ya exista; la v1.147.0 lo arregló a medias
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
