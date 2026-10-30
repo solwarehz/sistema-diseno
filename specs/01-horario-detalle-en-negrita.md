@@ -1,6 +1,6 @@
 # SPEC 01 — Horario: detalle del bloque en negrita
 
-> **Estado:** Borrador
+> **Estado:** Approved
 > **Depende de:** ninguna (el «SPEC 12» del requerimiento es del equipo consumidor, no de este repositorio)
 > **Fecha:** 2026-10-30
 > **Objetivo:** Que el `detalle` de cada bloque de `Horario` se pinte en negrita por omisión, con `detalleEnfasis={false}` para volver al peso normal.
@@ -46,14 +46,18 @@ export type BloqueHorario = {
 };
 ```
 
-Convención: la clase modificadora la emite el componente solo cuando `detalleEnfasis === false` (el caso minoritario), de modo que el CSS base ya lleva la negrita y la omisión del catálogo coincide con lo que se entrega.
+Convenciones:
+
+- La clase modificadora la emite el componente solo cuando `detalleEnfasis === false` (el caso minoritario), de modo que el CSS base ya lleva la negrita y la omisión del catálogo coincide con lo que se entrega.
+- El detalle y el rango son ambos `<span>` y hoy comparten la regla `.hor-b span` (`componentes.css:738`). La negrita **no** puede ir en esa regla, o el rango también quedaría en negrita. Va en `.hor-b span:not(.hor-rango)`, que no obliga a tocar el marcado del detalle por omisión ni los bloques escritos a mano en `generar-cascaron.mjs`.
 
 ## Plan de implementación
 
-1. Rama de trabajo `feat/*` comprobada antes de editar. Escribir las pruebas nuevas en `componentes/pruebas/Horario.test.tsx` (detalle en negrita por omisión; `detalleEnfasis={false}` lo quita; bloque sin detalle no cambia) y verlas fallar.
-2. En `sistema/componentes/componentes.css`, añadir `font-weight: 600` al detalle del bloque y una regla modificadora para `detalleEnfasis={false}`. Sin hex ni tamaños arbitrarios.
+0. Requisitos previos, que no son parte del cambio: la rama de trabajo se llama `feat/<fecha>-<tema>` según `CLAUDE.md` §19.1 (no `spec-01-...`) y se crea **antes** de la primera edición; y las dependencias están instaladas **dentro del contenedor** (el volumen `node_modules` estaba vacío el 2026-10-30; el procedimiento está en `memoria/03-al-clonar.md`). Sin ellas no corren `esbuild`, Vitest ni ESLint.
+1. Con la rama ya creada, escribir las pruebas nuevas en `componentes/pruebas/Horario.test.tsx` (detalle en negrita por omisión; `detalleEnfasis={false}` lo quita; bloque sin detalle no cambia) y verlas fallar.
+2. En `sistema/componentes/componentes.css`, añadir `font-weight: 600` con el selector `.hor-b span:not(.hor-rango)` y una regla modificadora para `detalleEnfasis={false}` que devuelva `font-weight: 400`, con especificidad suficiente para ganarle. Sin hex ni tamaños arbitrarios, y sin tocar `.hor-rango`.
 3. En `componentes/src/Horario.tsx`, añadir `detalleEnfasis` al tipo y emitir la clase modificadora en el `<span>` del detalle cuando sea `false`. Las pruebas del paso 1 pasan.
-4. Mostrar en el catálogo (`/diseño`, vía `sistema/cascaron/generar-cascaron.mjs`) un bloque con detalle en negrita y otro con `detalleEnfasis={false}`.
+4. Mostrar en el catálogo (`/diseño`, vía `sistema/cascaron/generar-cascaron.mjs`) un bloque con detalle en negrita y otro con `detalleEnfasis={false}`. Los bloques existentes ya enseñan la omisión (negrita) sin cambios de marcado.
 5. Registrar el cambio en `sistema/componentes/comportamiento.md` y la regla de contrato correspondiente si el candado `verificar-contrato` lo exige.
 6. Subir `VERSION` a 1.148.3 y reescribir `memoria/01-estado.md` y el número de estado de `CLAUDE.md`.
 7. Correr los veinticinco pasos de la sección 8 de `CLAUDE.md` en verde, más las pruebas.
@@ -63,7 +67,7 @@ Convención: la clase modificadora la emite el componente solo cuando `detalleEn
 - [ ] Un bloque con `detalle: 'Remoto'` y sin `detalleEnfasis` renderiza el detalle con peso computado 600.
 - [ ] Un bloque con `detalleEnfasis: false` renderiza el detalle con peso computado 400, igual que en v1.148.2.
 - [ ] Un bloque sin `detalle` produce el mismo marcado que en v1.148.2.
-- [ ] El título (`<b>`) sigue en 600/13px y el rango no cambia de peso ni de tamaño.
+- [ ] El título (`<b>`) sigue en 600/13px y el rango (`.hor-rango`) conserva su peso y tamaño de v1.148.2.
 - [ ] En un navegador, con «Remoto» en negrita, las siete columnas de una rejilla de muestra mantienen el mismo ancho que antes del cambio (medido, no mirado).
 - [ ] A 360 px de ancho el detalle no se corta ni obliga a deslizar en horizontal.
 - [ ] Los colores, tonos y clases `hor-d1…hor-d24` no cambian; los pares de contraste del candado siguen en verde.
@@ -78,6 +82,9 @@ Convención: la clase modificadora la emite el componente solo cuando `detalleEn
 - **Sí:** peso 600 y tamaño 12px. Reutiliza el peso ya presente en el bloque; el título se distingue por tamaño (13px). Decisión del responsable el 2026-10-30.
 - **No:** peso 500. Habría que comprobar que sea uno de los cuatro permitidos y distinguible del 400.
 - **Sí:** v1.148.3 para este cambio.
+- **Sí:** selector `.hor-b span:not(.hor-rango)` para la negrita. Es lo único que separa el detalle del rango sin tocar el marcado; la clase solo aparece en el caso minoritario (`detalleEnfasis={false}`).
+- **No:** clase fija `hor-det` en todo detalle. Obligaría a cambiar el marcado a mano del catálogo y a pasar de nuevo los candados de elemento y atributo por un beneficio que el selector ya da.
+- **Sí:** rama `feat/<fecha>-<tema>` y no `spec-01-...`. `CLAUDE.md` §19.1 manda sobre el nombre por omisión de `/spec-impl`.
 
 ## Riesgos
 
@@ -87,6 +94,9 @@ Convención: la clase modificadora la emite el componente solo cuando `detalleEn
 | Añadir una prop pública bajo una versión de parche | Es aditiva y retrocompatible en tipos; solo cambia el aspecto por omisión. Si el responsable prefiere honrar la convención, subir a v1.149.0 |
 | Los consumidores que usen `detalle` con texto largo verán más peso | Pueden fijar `detalleEnfasis={false}`; se anuncia en las notas de la versión |
 | Los candados de omisión, promesa o forma detectan el cambio de aspecto por omisión | Es un cambio de aspecto declarado: se actualiza la declaración en el mismo commit, no se desactiva el candado |
+| `verificar-forma` marca el campo nuevo `detalleEnfasis` en `BloqueHorario` (no comprobado al escribir esta spec) | Si lo marca, se declara el cambio de forma como aditivo en el mismo commit; no se silencia |
+| El selector con `:not()` empata o pierde frente a otra regla de `.hor-b span` | Se mide con `verificar-empate` y `verificar-promesa`, y con el peso computado en los criterios 1 y 2 |
+| Dependencias sin instalar: los pasos 2 en adelante no se pueden verificar | El paso 0 las exige antes de empezar; si no se instalan, la tarea se detiene y se avisa |
 
 ## Lo que **no** está en esta spec
 
