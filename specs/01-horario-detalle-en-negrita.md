@@ -53,7 +53,7 @@ Convenciones:
 
 ## Plan de implementación
 
-0. Requisitos previos, que no son parte del cambio: la rama de trabajo se llama `feat/<fecha>-<tema>` según `CLAUDE.md` §19.1 (no `spec-01-...`) y se crea **antes** de la primera edición; y las dependencias están instaladas **dentro del contenedor** (el volumen `node_modules` estaba vacío el 2026-10-30; el procedimiento está en `memoria/03-al-clonar.md`). Sin ellas no corren `esbuild`, Vitest ni ESLint.
+0. Requisitos previos, que no son parte del cambio: la rama de trabajo es una `feat/*` según `CLAUDE.md` §8 del repositorio (por ejemplo `feat/2026-10-30-horario-detalle-negrita`, no `spec-01-...`) y se crea **antes** de la primera edición; y las dependencias están instaladas **dentro del contenedor** (el volumen `node_modules` estaba vacío el 2026-10-30; el procedimiento está en `memoria/03-al-clonar.md`). Sin ellas no corren `esbuild`, Vitest ni ESLint.
 1. Con la rama ya creada, escribir las pruebas nuevas en `componentes/pruebas/Horario.test.tsx` (detalle en negrita por omisión; `detalleEnfasis={false}` lo quita; bloque sin detalle no cambia) y verlas fallar.
 2. En `sistema/componentes/componentes.css`, añadir `font-weight: 600` con el selector `.hor-b span:not(.hor-rango)` y una regla modificadora para `detalleEnfasis={false}` que devuelva `font-weight: 400`, con especificidad suficiente para ganarle. Sin hex ni tamaños arbitrarios, y sin tocar `.hor-rango`.
 3. En `componentes/src/Horario.tsx`, añadir `detalleEnfasis` al tipo y emitir la clase modificadora en el `<span>` del detalle cuando sea `false`. Las pruebas del paso 1 pasan.
@@ -84,7 +84,7 @@ Convenciones:
 - **Sí:** v1.148.3 para este cambio.
 - **Sí:** selector `.hor-b span:not(.hor-rango)` para la negrita. Es lo único que separa el detalle del rango sin tocar el marcado; la clase solo aparece en el caso minoritario (`detalleEnfasis={false}`).
 - **No:** clase fija `hor-det` en todo detalle. Obligaría a cambiar el marcado a mano del catálogo y a pasar de nuevo los candados de elemento y atributo por un beneficio que el selector ya da.
-- **Sí:** rama `feat/<fecha>-<tema>` y no `spec-01-...`. `CLAUDE.md` §19.1 manda sobre el nombre por omisión de `/spec-impl`.
+- **Sí:** rama `feat/*` y no `spec-01-...`. `CLAUDE.md` §8 del repositorio manda sobre el nombre por omisión de `/spec-impl`. La convención `feat/<fecha>-<tema>` es solo un ejemplo: la §19.1 que la fija vive en el manual general del VPS, fuera del repo, y no se cita como norma de este proyecto.
 
 ## Riesgos
 
