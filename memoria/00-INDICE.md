@@ -13,6 +13,7 @@ Léelos en orden la primera vez que abras el proyecto en una máquina.
 | [`04-pendientes.md`](04-pendientes.md) | Lo que falta, ordenado por retorno | Al elegir en qué trabajar |
 | [`05-fases.md`](05-fases.md) | El plan por fases y qué necesita cada una | Al planificar |
 | [`06-cobertura.md`](06-cobertura.md) | Qué elementos hay y cuáles faltan | Antes de crear un componente |
+| [`07-plan-diseno-interfaz-2026-10-06.md`](07-plan-diseno-interfaz-2026-10-06.md) | Plan planificado de mejoras visuales y Web Interface Guidelines | Antes de retomar diseño o interfaz |
 | [`../peticiones/`](../peticiones/) | Lo que pide cada proyecto y qué se respondió | Cuando llegue un requerimiento |
 | [`../auditorias/`](../auditorias/) | Auditorías estrictas con sus hallazgos | Antes de dar algo por sano |
 

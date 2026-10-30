@@ -55,6 +55,16 @@ faltando un isotipo.
 
 ## Sistema — por retorno
 
+### P-00 · Plan de diseño e interfaz — PLANIFICADO el 06-10-2026
+
+Antes de tocar catálogo, demos visuales, componentes de formulario, diálogo,
+imágenes o estado navegable, leer
+[`07-plan-diseno-interfaz-2026-10-06.md`](07-plan-diseno-interfaz-2026-10-06.md).
+
+El plan junta dos hallazgos: dirección visual del sistema y revisión contra Web
+Interface Guidelines. Está planificado, no ejecutado. No autoriza colores nuevos,
+tipografías nuevas ni activos inventados.
+
 ### P-06 · Tabla de datos — RESUELTO en el cascarón
 
 Orden por columna, filtros por columna y globales, paginación, columnas
