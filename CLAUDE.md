@@ -514,3 +514,13 @@ En `texto-pista`, el gris más claro que alcanza 4,5:1 queda a **1,06:1** de
 `texto-secundario` — indistinguible. La jerarquía del placeholder no se puede
 expresar con color sin incumplir AA, así que pasó a regla de composición:
 **etiqueta siempre visible, placeholder solo como ejemplo de formato.**
+
+## 12. Memoria
+`MEMORY.md` de la raíz del repo es el estado del proyecto para todo agente. No
+es el índice de memoria automática de Claude Code (`~/.claude/projects/...`).
+- Al empezar, léelo para conocer el estado y las decisiones tomadas.
+- **Siempre al terminar una tarea, actualízalo**: estado actual, decisiones
+  importantes (con su porqué) y errores a evitar.
+- Mantenlo breve (máximo ~50 líneas): resume o elimina lo que ya no aporte.
+- Si algo se convierte en una regla permanente, propón moverlo a `AGENTS.md`.
+- No guardes nunca datos sensibles (claves, tokens, datos personales). 
