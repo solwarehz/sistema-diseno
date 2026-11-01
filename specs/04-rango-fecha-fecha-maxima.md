@@ -1,6 +1,6 @@
 # SPEC 04 — RangoFecha: una fecha máxima (`fechaMaxima`)
 
-> **Estado:** Borrador
+> **Estado:** Aprobada el 2026-11-01 con el mockup `cascaron/mockup-fecha-maxima.html` (decisiones a, b y c: las propuestas del mockup); pendiente de implementar
 > **Depende de:** ninguna (SPEC 03 ya está implementada en v1.149.0; no interviene)
 > **Fecha:** 2026-11-01
 > **Objetivo:** Añadir a `RangoFecha` la prop opcional `fechaMaxima`, que apaga en el calendario los días posteriores a ella, en los dos extremos, y que se combina con `maxDias`.
