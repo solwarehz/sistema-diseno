@@ -84,15 +84,15 @@ Convenciones:
 ## Criterios de aceptación
 
 - [ ] Con `fechaMaxima` en hoy, el calendario de «Desde» y el de «Hasta» dejan elegir **hoy** y apagan **mañana** (`aria-disabled`), medido en navegador y por prueba.
-- [ ] Hoy se puede elegir como inicio y como final a la vez: el rango resultante es de un día y `onCambio` lo entrega.
-- [ ] `fechaMaxima` acepta `string` ISO y `Date`, con el mismo resultado; una hora dentro del `Date` no mueve el día.
-- [ ] Un atajo cuyo `hasta` pasa de `fechaMaxima` no se pinta; uno que cabe sí. Con la máxima en hoy, «Hoy» (de `atajosDeDias(1)`) sigue pintado.
-- [ ] Un rango que llega ya puesto con `hasta` (o `desde`) posterior a la máxima muestra el aviso y **no se reescribe**: `onCambio` no se llama y los valores mostrados son los recibidos. Un `error` del producto manda sobre él.
-- [ ] Una `fechaMaxima` inválida avisa en desarrollo, se ignora y no rompe el render.
-- [ ] Con `fechaMaxima` y `maxDias={7}` a la vez, los dos topes se cumplen: no se puede elegir mañana ni un final a más de siete días del inicio; el techo de «Hasta» es el menor de los dos.
-- [ ] El nombre accesible de un día apagado por la máxima dice que es posterior al máximo, y el de uno apagado por `maxDias` sigue diciendo lo de siempre.
-- [ ] `Mes siguiente` queda apagado (`aria-disabled`, sin perder el foco) cuando el último mes visible contiene la máxima, y PageDown / flechas no muestran un mes entero posterior. Con `meses={1}` y con `meses={2}`.
-- [ ] Sin `fechaMaxima`, el componente se comporta como antes: las pruebas existentes de `RangoFecha` pasan sin modificarse, y `verificar-promesa` y `verificar-forma` siguen en verde.
+- [x] Hoy se puede elegir como inicio y como final a la vez: el rango resultante es de un día y `onCambio` lo entrega.
+- [x] `fechaMaxima` acepta `string` ISO y `Date`, con el mismo resultado; una hora dentro del `Date` no mueve el día.
+- [x] Un atajo cuyo `hasta` pasa de `fechaMaxima` no se pinta; uno que cabe sí. Con la máxima en hoy, «Hoy» (de `atajosDeDias(1)`) sigue pintado.
+- [x] Un rango que llega ya puesto con `hasta` (o `desde`) posterior a la máxima muestra el aviso y **no se reescribe**: `onCambio` no se llama y los valores mostrados son los recibidos. Un `error` del producto manda sobre él.
+- [x] Una `fechaMaxima` inválida avisa en desarrollo, se ignora y no rompe el render.
+- [x] Con `fechaMaxima` y `maxDias={7}` a la vez, los dos topes se cumplen: no se puede elegir mañana ni un final a más de siete días del inicio; el techo de «Hasta» es el menor de los dos.
+- [x] El nombre accesible de un día apagado por la máxima dice que es posterior al máximo, y el de uno apagado por `maxDias` sigue diciendo lo de siempre.
+- [x] `Mes siguiente` queda apagado (`aria-disabled`, sin perder el foco) cuando el último mes visible contiene la máxima, y PageDown / flechas no muestran un mes entero posterior. Con `meses={1}` y con `meses={2}`.
+- [x] (pruebas existentes: 1362 en verde sin tocarse; `verificar-promesa` y `verificar-forma` se miran en el paso 6) Sin `fechaMaxima`, el componente se comporta como antes: las pruebas existentes de `RangoFecha` pasan sin modificarse, y `verificar-promesa` y `verificar-forma` siguen en verde.
 - [ ] A 360 px, con `fechaMaxima`, el calendario no desborda ni obliga a deslizar, medido en navegador.
 - [ ] Cada regla nueva del contrato tiene su prueba declarada y `verificar-contrato` sale en verde.
 - [ ] Los veinticinco pasos de `CLAUDE.md` §8 salen en verde, y `tsc --noEmit` y la suite de `componentes/` también.

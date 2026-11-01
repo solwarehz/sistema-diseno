@@ -70,6 +70,25 @@ export type RangoFechaProps = {
   maxDias?: number;
 
   /**
+   * R166 · ÚLTIMO DÍA ELEGIBLE, **inclusive**. Los posteriores salen apagados en
+   * los dos extremos, y «Mes siguiente» se apaga cuando el último mes visible ya
+   * lo contiene. Cadena ISO `AAAA-MM-DD` o `Date` (cuenta el día local, sin hora).
+   *
+   * **Sin pasarla no hay límite**, y ese es el caso corriente. Se combina con
+   * `maxDias`: valen los dos, y el techo de «Hasta» es el menor. Los periodos
+   * (`atajos`) que terminan después de ella no se pintan.
+   *
+   * **El componente no conoce «hoy» ni la zona horaria de la empresa:** la app
+   * pasa la fecha, como ya hace con `hoy`. Un rango que LLEGA ya puesto con una
+   * fecha posterior se avisa y no se reescribe, igual que con `maxDias`. Una
+   * fecha que no lo es avisa en desarrollo y se ignora.
+   *
+   * Esto impide ELEGIR; no impide que el producto consulte un rango futuro por
+   * otro camino. Eso es del producto.
+   */
+  fechaMaxima?: string | Date;
+
+  /**
    * R139 · EL ERROR DEL PRODUCTO, como en todos los campos del sistema. Manda
    * sobre el que genere `maxDias`, igual que en el contador del editor.
    */
@@ -165,6 +184,22 @@ const deIso = (s: string) => {
   const [a, m, d] = s.split('-').map(Number);
   return new Date(a, m - 1, d);
 };
+/**
+ * R166 · UNA FECHA, O NADA. `deIso` no valida: `deIso('2026-02-31')` es el 3 de
+ * marzo y `deIso('basura')` un `Invalid Date`, y un tope que se corre solo es un
+ * dato cambiado en silencio. Aquí la cadena tiene que ser ISO y sobrevivir a la
+ * ida y vuelta; un `Date` tiene que ser válido y baja a medianoche local.
+ */
+const aFechaValida = (v: unknown): Date | null => {
+  if (v instanceof Date) {
+    return Number.isNaN(v.getTime()) ? null : new Date(v.getFullYear(), v.getMonth(), v.getDate());
+  }
+  if (typeof v !== 'string') return null;
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
+  if (!m) return null;
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  return iso(d) === v ? d : null;
+};
 const mismoDia = (a: Date, b: Date) => iso(a) === iso(b);
 const sumarDias = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
 /**
@@ -218,6 +253,7 @@ export function RangoFecha({
   atajos = ATAJOS_POR_OMISION,
   meses = 2,
   maxDias,
+  fechaMaxima,
   error,
   deshabilitado,
 }: RangoFechaProps) {
@@ -406,13 +442,18 @@ export function RangoFecha({
        visibles salian apagados, sin una sola pista de donde mirar ni por que.
        Lo cazo una auditoria. Ahora, eligiendo el inicio sin inicio puesto, la
        ventana va al final que hay: ahi es donde estan los dias validos. */
-    const d = cual === 'hasta'
+    const pedido = cual === 'hasta'
       ? (hasta ? deIso(hasta) : desde ? deIso(desde) : hoy)
       : (desde ? deIso(desde) : hasta ? deIso(hasta) : hoy);
+    /* R166 · NI EL FOCO NI LA VENTANA PASAN DE LA MÁXIMA. Con `hoy` o un rango
+       puesto posteriores a ella, la ventana se abría en meses enteros apagados.
+       El foco baja a la máxima —un día visible y recorrible— y la ventana no deja
+       a la vista ningún mes entero posterior, con una o con dos columnas. */
+    const d = max && aDia(pedido) > max ? max : pedido;
     setFoco(d);
     // La ventana se coloca al abrir, no de rebote por el efecto: así el primer
     // dibujado ya trae el mes correcto y no hay salto visible.
-    setMesBase(inicioDeMes(d));
+    setMesBase(acotarBase(inicioDeMes(d)));
     // `abrirCapa` y no `setAbierto`: cierra los demas desplegables antes.
     abrirCapa();
     debeEnfocar.current = true;
@@ -471,6 +512,30 @@ export function RangoFecha({
   const diasEntre = (a: Date, b: Date) =>
     Math.round((aDia(b).getTime() - aDia(a).getTime()) / 86400000) + 1;
 
+  /* ── LA MÁXIMA (R166) ────────────────────────────────────────────────────
+     Sin `fechaMaxima` nada de esto existe: `max` es null y todo lo que lo mira
+     devuelve lo que devolvía antes. Se SANEA como `maxDias`: lo que no es fecha
+     avisa en desarrollo y se ignora, sin romper el render. */
+  const max = fechaMaxima === undefined || fechaMaxima === null ? null : aFechaValida(fechaMaxima);
+  if (process.env.NODE_ENV !== 'production'
+      && fechaMaxima !== undefined && fechaMaxima !== null && max === null) {
+    console.error(
+      `RangoFecha: \`fechaMaxima\` recibió ${String(fechaMaxima)}, que no es una fecha. ` +
+      'Tiene que ser una cadena AAAA-MM-DD existente o un `Date` válido. ' +
+      'Se ignora: el rango queda sin fecha máxima.',
+    );
+  }
+  /** El último mes que puede verse: ninguno posterior al de la máxima. */
+  const mesDeLaMaxima = max ? inicioDeMes(max) : null;
+  /** El mes de la IZQUIERDA más tardío que no deja un mes entero posterior a la
+   *  máxima a la vista, con una o dos columnas. */
+  const baseMaxima = mesDeLaMaxima ? sumarMeses(mesDeLaMaxima, -(meses - 1)) : null;
+  const acotarBase = (m: Date) => (baseMaxima && m > baseMaxima ? baseMaxima : m);
+  /** El teclado no sale del mes de la máxima; dentro de él, los días posteriores
+   *  siguen siendo enfocables (apagados y con su nombre), como con `maxDias`. */
+  const mover = (desdeDia: Date, haciaDia: Date) =>
+    !max || aDia(haciaDia) <= finDeMes(max) ? haciaDia : desdeDia;
+
   /**
    * R139 (añadido) · UN PERIODO QUE NO CABE EN EL TOPE NO SE PINTA.
    *
@@ -490,7 +555,7 @@ export function RangoFecha({
    * `atajos={[]}` seguía siendo la forma de quitar el panel entero, y lo sigue
    * siendo. Esto es otra cosa: el panel se queda con los que sirven.
    */
-  const atajosQueCaben = tope === null ? atajos : atajos.filter((a) => {
+  const atajosQueCaben = tope === null && max === null ? atajos : atajos.filter((a) => {
     /* `rango` ES CÓDIGO DEL PRODUCTO y aquí se ejecuta DENTRO DEL RENDER. Sin
        la red, uno que lance tumbaba el campo entero al montar —con el
        calendario cerrado y sin que nadie hubiera pulsado nada—, cuando antes
@@ -499,7 +564,8 @@ export function RangoFecha({
        el que no cabe, y deja el resto del campo en pie. */
     try {
       const r = a.rango(hoy);
-      return diasEntre(r.desde, r.hasta) <= tope;
+      return (tope === null || diasEntre(r.desde, r.hasta) <= tope)
+        && (max === null || aDia(r.hasta) <= max);
     } catch (e) {
       if (process.env.NODE_ENV !== 'production') {
         console.error(`RangoFecha: el periodo «${a.texto}» falló al calcular su rango. Se oculta.`, e);
@@ -531,8 +597,13 @@ export function RangoFecha({
    * `maxDias` promete.
    */
   const suelo = tope && dHasta ? sumarDias(dHasta, -(tope - 1)) : null;
-  const fueraDeAlcance = (d: Date) =>
+  /** R166 · posterior a la máxima: vale en los DOS extremos. */
+  const pasaDeLaMaxima = (d: Date) => !!(max && aDia(d) > max);
+  /** El límite de `maxDias`, que depende del extremo que se está eligiendo. */
+  const pasaDelTope = (d: Date) =>
     modo === 'hasta' ? !!(techo && d > techo) : !!(suelo && d < suelo);
+  /** Valen los dos topes a la vez; en «Hasta», el techo es el menor. */
+  const fueraDeAlcance = (d: Date) => pasaDeLaMaxima(d) || pasaDelTope(d);
   /** Un rango que LLEGA ya pasado no se recorta ni se rechaza: se pinta y se dice. */
   const excede = !!(tope && dDesde && dHasta && diasEntre(dDesde, dHasta) > tope);
   /**
@@ -559,11 +630,16 @@ export function RangoFecha({
   const idError = `${id}-error`;
   /* El error del producto MANDA; el del tope aparece solo si no hay otro. Es la
      misma línea que `usarContador` del editor, no un criterio nuevo. */
+  /** R166 · un rango que LLEGA ya puesto con una fecha posterior a la máxima: se
+   *  pinta y se dice, no se recorta (decisión del responsable, 2026-11-01). */
+  const pasaMaxima = !!(max && ((dDesde && aDia(dDesde) > max) || (dHasta && aDia(dHasta) > max)));
   const elError = error ?? avisoTope ?? (invertido
     ? 'El final es anterior al inicio. Revise el rango.'
     : excede
     ? `El rango no puede pasar de ${tope} ${tope === 1 ? 'día' : 'días'}. `
       + `Has elegido ${diasEntre(dDesde!, dHasta!)}.`
+    : pasaMaxima
+    ? `La fecha no puede ser posterior al ${enCorto(max!)}.`
     : undefined);
 
   function elegir(d: Date) {
@@ -598,7 +674,7 @@ export function RangoFecha({
     };
     if (e.key in salto) {
       e.preventDefault();
-      setFoco((f) => sumarDias(f, salto[e.key]));
+      setFoco((f) => mover(f, sumarDias(f, salto[e.key])));
       debeEnfocar.current = true;
       return;
     }
@@ -607,7 +683,7 @@ export function RangoFecha({
       // Principio y fin de la SEMANA, que es lo que dice el patrón.
       setFoco((f) => {
         const dow = (f.getDay() - primerDia + 7) % 7;
-        return sumarDias(f, e.key === 'Home' ? -dow : 6 - dow);
+        return mover(f, sumarDias(f, e.key === 'Home' ? -dow : 6 - dow));
       });
       debeEnfocar.current = true;
       return;
@@ -616,7 +692,7 @@ export function RangoFecha({
       e.preventDefault();
       // Con Shift, un año. Sin Shift, un mes.
       const n = e.key === 'PageUp' ? -1 : 1;
-      setFoco((f) => sumarMeses(f, e.shiftKey ? n * 12 : n));
+      setFoco((f) => mover(f, sumarMeses(f, e.shiftKey ? n * 12 : n)));
       debeEnfocar.current = true;
       return;
     }
@@ -655,8 +731,8 @@ export function RangoFecha({
   useEffect(() => {
     const f = new Date(foco.getFullYear(), foco.getMonth(), 1).getTime();
     const dentro = visibles.some((m) => inicioDeMes(m).getTime() === f);
-    if (!dentro) setMesBase(inicioDeMes(foco));
-  }, [foco, visibles]);
+    if (!dentro) setMesBase(acotarBase(inicioDeMes(foco)));
+  }, [foco, visibles, max, meses]);
 
   /** R120 · con «desde» puesto y eligiendo «hasta», el rango que saldría si se
    *  pulsara donde está el ratón. Sin esto no se ve qué se está a punto de
@@ -695,6 +771,12 @@ export function RangoFecha({
   const esFin = (d: Date) => !!(finEfectivo && mismoDia(d, finEfectivo));
 
   const tituloMes = (m: Date) => `${MESES[m.getMonth()]} de ${m.getFullYear()}`;
+  /** R166 · «Mes siguiente» se apaga cuando el último mes visible ya contiene la
+   *  máxima (o es posterior). `aria-disabled` y no `disabled`: uno `disabled`
+   *  pierde el foco al llegar al último mes y quien navega con teclado se queda
+   *  sin sitio. Es el criterio de los días apagados. */
+  const siguienteApagado = !!(mesDeLaMaxima
+    && inicioDeMes(visibles[visibles.length - 1]) >= mesDeLaMaxima);
   const cabecera =
     visibles.length === 1
       ? tituloMes(visibles[0])
@@ -716,6 +798,13 @@ export function RangoFecha({
        por ejemplo— metería por aquí un rango que el calendario prohíbe. */
     if (tope && diasEntre(d, h) > tope) {
       setAvisoTope(`«${a.texto}» son ${diasEntre(d, h)} días y el máximo es ${tope}.`);
+      return;
+    }
+    /* R166 · LA MÁXIMA TAMBIÉN AQUÍ, por lo mismo: `rango` es código ajeno y uno
+       que devuelva otra cosa al pulsarlo que al filtrar metería por aquí un rango
+       que el calendario prohíbe. */
+    if (max && (aDia(h) > max || aDia(d) > max)) {
+      setAvisoTope(`«${a.texto}» llega más allá del ${enCorto(max)}, que es la fecha máxima.`);
       return;
     }
     setAvisoTope(null);
@@ -849,7 +938,12 @@ export function RangoFecha({
             <span className="fc-meses" id={`${id}-mes`} aria-live="polite">{cabecera}</span>
             <Boton mini variante="terciaria"
               aria-label="Mes siguiente"
-              onClick={() => { setSobre(null); setMesBase((m) => sumarMeses(m, 1)); setFoco((f) => sumarMeses(f, 1)); debeEnfocar.current = true; }}>›</Boton>
+              aria-disabled={siguienteApagado ? true : undefined}
+              onClick={() => {
+                // Apagado no actúa: ni mueve el mes ni le quita el foco al botón.
+                if (siguienteApagado) return;
+                setSobre(null); setMesBase((m) => sumarMeses(m, 1)); setFoco((f) => sumarMeses(f, 1)); debeEnfocar.current = true;
+              }}>›</Boton>
           </div>
 
           {/* `.fc-cal-marco` reparte el cuerpo y el panel de periodos en dos
@@ -926,7 +1020,12 @@ export function RangoFecha({
                                      del máximo» sobre el día que él mismo acababa de
                                      poner, sin que nada dijera que lo que fija el límite
                                      es el OTRO extremo. Las dos las cazó una auditoría. */
-                                  + (lejos
+                                  + (pasaDeLaMaxima(d)
+                                    /* R166 · si los DOS topes lo apagan, dice el de la
+                                       máxima: es el que no se arregla eligiendo otro
+                                       extremo. Sin mezclarlos. */
+                                    ? `, posterior al máximo del ${enPalabras(max!)}`
+                                    : lejos
                                     ? `, fuera del máximo de ${tope} ${tope === 1 ? 'día' : 'días'}`
                                       + (modo === 'desde' ? ' desde el final elegido' : ' desde el inicio elegido')
                                     : '')}

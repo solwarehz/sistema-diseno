@@ -1115,7 +1115,7 @@ describe('R166 · `fechaMaxima`', () => {
   describe('[30] R166 · «Mes siguiente» se apaga en el último mes permitido y el teclado no sale', () => {
     it.each([1, 2])('[30] R166 · con `meses={%i}` queda `aria-disabled` (no `disabled`) y no avanza', (meses) => {
       const { container } = render(
-        <RangoFecha {...props} meses={meses} fechaMaxima={MAX} desde={null} hasta={null} onCambio={() => {}} />
+        <RangoFecha {...props} meses={meses as 1 | 2} fechaMaxima={MAX} desde={null} hasta={null} onCambio={() => {}} />
       );
       fireEvent.click(disparadores(container)[0]);
       const boton = mesSiguiente();
@@ -1148,7 +1148,7 @@ describe('R166 · `fechaMaxima`', () => {
       );
       await u.click(disparadores(container)[0]);
       const antes = cabecera(container);
-      expect(diaConNombre(/domingo 15 de marzo/)).toHaveFocus();
+      expect(diaConNombre(/^domingo 15 de marzo/)).toHaveFocus();
       await u.keyboard('{PageDown}');
       await u.keyboard('{Shift>}{PageDown}{/Shift}');
       await u.keyboard('{ArrowDown}{ArrowDown}{ArrowDown}{ArrowRight}{End}');
@@ -1166,7 +1166,7 @@ describe('R166 · `fechaMaxima`', () => {
       );
       await u.click(disparadores(container)[0]);
       await u.keyboard('{ArrowRight}');
-      expect(diaConNombre(/lunes 16 de marzo/)).toHaveFocus();
+      expect(diaConNombre(/^lunes 16 de marzo/)).toHaveFocus();
     });
 
     it('[30] R166 · un clic en un día apagado no hace nada ni mueve la ventana', () => {
