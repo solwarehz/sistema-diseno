@@ -27,8 +27,8 @@ Hechos verificados en el repositorio el 2026-11-01 (rama `feat/2026-10-30-horari
 - Una sexta variante `tono="ninguno"` («sin estado»): borde **punteado**, **sin relleno**, color de borde y de letra de un token semántico nuevo que apunta a `gris_700` (color ya autorizado).
 - `letra` (un carácter, obligatoria) y `titulo` (nombre accesible, obligatorio).
 - Tamaño por **ventana**: 30 px por omisión (móvil primero) y 28 px cuando la ventana supera los 640 px.
-- Letra en el paso `s-etiqueta` de la escala (13px), con peso 600 (uno de los cuatro permitidos), para que quepa y se lea en 28 px.
-- Una **leyenda visible en el catálogo**, hecha con los propios cuadros y texto corriente (no un componente nuevo), junto a la fila de siete: «P Presente · T Tardanza…». Enseña el uso correcto y es lo que verifican los candados.
+- Letra de **13px**, el tamaño del paso `s-etiqueta`, con peso **600**. Los dos valores son distintos en origen: el tamaño sale de la escala; el 600 es una elección propia (`s-etiqueta` define 500) entre los cuatro pesos permitidos, la misma pareja 600/13px que usa el título del bloque de `Horario`. Se elige 600 para que la letra se lea sobre el tono en 28 px.
+- Una **leyenda visible en el catálogo**, hecha con los propios cuadros y texto corriente (no un componente nuevo), junto a la fila de siete. Explica **cada símbolo que pide el requerimiento**: «P Presente · T Tardanza · I Incompleto · F Falta · – No cuenta ese día». El texto va completo: sin puntos suspensivos, sin `title` como único medio y sin desplazamiento horizontal; si no cabe en una línea, pasa a la siguiente.
 - Una regla del contrato que **prohíbe el uso sin leyenda**: la letra sola no informa a quien la ve en un teléfono (`CLAUDE.md` §4bis).
 - En el catálogo, la serie de cuadros **envuelve a la línea siguiente** si no cabe; no desliza ni se recorta.
 - Esquinas apenas redondeadas (no círculo); mismo radio que `Chip` (3px), sin filete lateral.
@@ -79,14 +79,14 @@ Convenciones:
 - **Distinción sin color:** `ninguno` se distingue por la **forma** (borde punteado, sin relleno), no por el tono; es lo que cumple SC 1.4.1 aunque el gris se parezca al de `inactivo`.
 - **Contraste:** el borde de `ninguno` debe cumplir 3:1 (SC 1.4.11) y su letra 4,5:1 contra `fondo-pagina` y `fondo-tarjeta`, en claro y oscuro. Los pares nuevos entran en `verificar-contraste.mjs` como bloqueantes.
 - **Tamaño:** la regla base fija 30 px (móvil primero, §4bis) y la de 28 px va en `@media (min-width: 641px)`, de modo que 640 px exactos sigue siendo 30 px, el mismo corte de 640 px que ya usan 8 reglas de la hoja con `max-width`. El patrón `min-width` no es nuevo (hay una a 768px), pero es la minoría: el paso 3 lo comprueba contra los candados. No se usa `@container`: la hoja no lo emplea y el cuadro, que es una hoja del árbol, no puede consultar a un contenedor que nadie declara.
-- **Letra:** `font-size` y `font-weight` salen de la escala (`s-etiqueta`, 600); sin tamaños arbitrarios. Centrada con `display: inline-flex`; el cuadro no recorta la letra.
+- **Letra:** `font-size: 13px` (el tamaño de `s-etiqueta`) y `font-weight: 600` (elección declarada, no el 500 de `s-etiqueta`); sin tamaños fuera de la escala. Centrada con `display: inline-flex`; el cuadro no recorta la letra.
 
 ## Plan de implementación
 
 0. Requisitos previos, que no son parte del cambio: se parte de `main` actualizado, la rama de trabajo es una `feat/*` nueva (por ejemplo `feat/2026-11-01-cuadro-estado`) y se crea **antes** de la primera edición, y las dependencias están instaladas **dentro del contenedor** (`memoria/03-al-clonar.md`).
 1. Escribir `componentes/pruebas/CuadroEstado.test.tsx` y verlas fallar: emite `role="img"` con `aria-label` igual a `titulo`; clase por tono; `ninguno` sin relleno y con borde punteado; no es focalizable; el aviso de desarrollo con letra de longitud distinta de 1.
 2. Añadir el token `sin-estado` en `sistema/tokens/fuente.mjs` y correr `node sistema/tokens/generar.mjs` y `node sistema/candado/verificar-contraste.mjs`: los pares nuevos salen en verde en claro y oscuro.
-3. Añadir las reglas `.cuadro*` a `sistema/componentes/componentes.css` (30 px por omisión, 28 px bajo `@media (min-width: 641px)`; letra en `s-etiqueta`/600). Sin hex, sin `style` en línea, sin `outline-none`. Correr `verificar-promesa`, `verificar-empate` y `verificar-cascada` en ese paso para confirmar que resuelven el `min-width`.
+3. Añadir las reglas `.cuadro*` a `sistema/componentes/componentes.css` (30 px por omisión, 28 px bajo `@media (min-width: 641px)`; letra en 13px/600). Sin hex, sin `style` en línea, sin `outline-none`. Correr `verificar-promesa`, `verificar-empate` y `verificar-cascada` en ese paso para confirmar que resuelven el `min-width`.
 4. Crear `componentes/src/CuadroEstado.tsx` y exportarlo en `componentes/src/index.ts`. Las pruebas del paso 1 pasan.
 5. Registrar el componente en `sistema/componentes/extraer.mjs`, `sistema/candado/verificar-entrega.mjs` y `sistema/cascaron/generar-cascaron.mjs`. El catálogo muestra los seis tonos, una fila de siete cuadros **con su leyenda visible** y los dos tamaños, con marcado estático (si no, los candados de promesa no lo ven).
 6. Escribir el contrato en `sistema/componentes/comportamiento.md` (reglas **Obligatorio**, cada una con su prueba declarada): letra + `titulo` obligatorios, la forma distingue `ninguno`, no interactivo, tamaño por contenedor, y **no se usa sin leyenda visible en la misma pantalla**.
@@ -102,9 +102,10 @@ Convenciones:
 - [ ] En escala de grises, `ninguno` se distingue de `inactivo` por la forma (comprobado a ojo y por el estilo computado, no por el tono).
 - [ ] El cuadro mide 30×30 px con una ventana de 640 px y 28×28 px con una de 641 px, medido en navegador.
 - [ ] Móvil primero (§4bis): la regla de 30 px está fuera de toda `@media`, la de 28 px es la única que va dentro (`min-width: 641px`), y el cuadro no usa ninguna `max-width`. Con la hoja sin consultas, el cuadro sale a 30 px.
-- [ ] La letra usa 13px y peso 600 computados, y no se corta dentro de 28×28 px.
+- [ ] La letra usa 13px y peso 600 computados (no el 500 de `s-etiqueta`), y no se corta dentro de 28×28 px.
 - [ ] Siete cuadros en fila miden **menos de 360 px** de ancho sin desplazamiento horizontal a 360 y a 390 px, medido en navegador.
-- [ ] La fila de siete cuadros del catálogo lleva una leyenda visible sin puntero (texto en pantalla, no `title`), medida a 360 px.
+- [ ] La leyenda del catálogo nombra los cinco símbolos (P, T, I, F y –) con su significado completo, visible sin puntero (texto en pantalla, no `title`).
+- [ ] A 360 px la leyenda no tiene texto cortado (ningún elemento con `scrollWidth` mayor que `clientWidth`) y no produce desplazamiento horizontal, medido en navegador.
 - [ ] Con una caja más estrecha que la serie (por ejemplo 200 px), los cuadros pasan a la línea siguiente y no producen desplazamiento horizontal.
 - [ ] El criterio de móvil se mide a **360 px** y no solo al ancho de la maqueta (390 px).
 - [ ] El cuadro no recibe foco con tabulador y no tiene manejador de clic.
