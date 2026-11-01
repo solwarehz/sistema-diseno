@@ -1,7 +1,7 @@
 # Estado del proyecto
 
 **Última actualización:** 1 de noviembre de 2026
-**Versión del sistema:** MMI-DS **v1.149.0** — R165: `CuadroEstado`, un cuadrado de una letra con tono (SPEC 03; tamaño por ventana, 30 px base y 28 px desde 641 px) y el token `sin-estado` (sobre la v1.148.3, R163: el detalle del bloque del Horario va en negrita por omisión; y la v1.148.2, R162: el gancho que mide la caja
+**Versión del sistema:** MMI-DS **v1.150.0** — R166: `RangoFecha` acepta `fechaMaxima`, el último día elegible, inclusive (SPEC 04; los posteriores salen apagados en los dos extremos, los periodos que la pasan no se pintan y «Mes siguiente» y el teclado no salen del mes de la máxima) (sobre la v1.149.0, R165: `CuadroEstado`, un cuadrado de una letra con tono (SPEC 03; tamaño por ventana, 30 px base y 28 px desde 641 px) y el token `sin-estado` (sobre la v1.148.3, R163: el detalle del bloque del Horario va en negrita por omisión; y la v1.148.2, R162: el gancho que mide la caja
 deja de depender de que la caja ya exista; la v1.147.0 lo arregló a medias
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden

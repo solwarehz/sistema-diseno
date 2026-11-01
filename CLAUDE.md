@@ -12,7 +12,7 @@ La implementación ejecutable de `SISTEMA-DE-DISENO.md` (**MMI-DS**), el sistema
 Colegio Albert Einstein, Huaraz. El documento es la **especificación**; esto es el **código**. Si
 discrepan, gana el de versión más alta y se corrige el otro en el mismo commit.
 
-**Estado actual: v1.149.0** — R165: `CuadroEstado`, un cuadrado de una letra con tono (SPEC 03).
+**Estado actual: v1.150.0** — R166: `RangoFecha` acepta `fechaMaxima`, el último día elegible (SPEC 04).
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md); **este número es lo único que se toca aquí**.
 
 ## 2 · Lo primero al abrir sesión
