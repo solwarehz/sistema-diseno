@@ -1,6 +1,6 @@
 # SPEC 03 — CuadroEstado: un cuadro de una letra con tono
 
-> **Estado:** Approved
+> **Estado:** Implemented
 > **Depende de:** ninguna (SPEC 01 ya está implementada en v1.148.3; no interviene)
 > **Fecha:** 2026-11-01
 > **Objetivo:** Crear el componente `CuadroEstado`, un cuadrado de una letra con tono de estado (o «sin estado»), de 30 px en estrecho y 28 px en ancho, para mostrar una serie corta de estados en poco ancho.
