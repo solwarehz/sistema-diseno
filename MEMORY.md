@@ -3,9 +3,13 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no
 aporte.
 
-## Estado actual (2026-10-31)
+## Estado actual (2026-11-01)
 
-- Rama de trabajo: `feat/2026-10-30-horario-detalle-negrita`, subida a origin. Versión **v1.148.3**.
+- Versión **v1.148.3**. `main` lleva R163 y las specs 01-03. La rama de R163 ya se borró.
+- **SPEC 03 (R165, `CuadroEstado`) aprobada, sin implementar.** Tamaño por ventana: 30 px base,
+  28 px en `min-width: 641px`. Siguiente paso: `/spec-impl 03-cuadro-estado-una-letra`.
+  Fuera de ella: fila apilada de `TablaDatos` (no existe; la pide el equipo aparte).
+  Sin medir: par oscuro de `sin-estado` y que `verificar-promesa/empate/cascada` resuelvan `min-width`.
 - **R163 — detalle del bloque del Horario en negrita** (lo pidió el equipo). Implementado:
   - Por omisión el detalle pesa 600; `detalleEnfasis={false}` emite `hor-det-normal` y vuelve a 400.
   - La regla va en `.hor-b span:not(.hor-rango)`, no en `.hor-b span`: el rango también es `span`.
@@ -25,6 +29,9 @@ aporte.
 - `memoria/01-estado.md` dice «Última actualización: 24 de septiembre de 2026»: revisarla al reescribirlo.
 
 ## Errores a evitar
+
+- Un precedente se lee, no se cita: la spec 03 contó 33 reglas de 640 px y eran 8 (`CLAUDE.md` §4bis).
+- No hay `@container` en la hoja; el móvil se escribe base estrecha + `min-width`.
 
 - Comprobar la rama antes de editar; nunca commitear en `main` o `develop`.
 - No acuñar números R###: el registro es del equipo.

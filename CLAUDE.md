@@ -181,6 +181,18 @@ Qué significa, en concreto y sin margen:
   en el propio contenido. `title` es el suelo para ratón y lector, **no el
   techo**, y por sí solo no cumple esta política.
 - **Se verifica midiendo, no mirando.** A 360 px como mínimo, y en navegador.
+- **Cómo se escribe en la hoja.** La regla base es la estrecha, fuera de toda
+  `@media`; lo ancho entra con `min-width`. La hoja heredó consultas `max-width`
+  (escritas al revés): no se copian en piezas nuevas. **No hay `@container`** en
+  la hoja y no se introduce sin más: necesita un ancestro que declare el
+  contenedor y los candados de promesa, empate y muerta solo manejan `@media`.
+  El ancho de un contenedor se mide en JS (`ResizeObserver`, regla 33 de la
+  matriz de privilegios).
+- **Un precedente se lee, no se cita de memoria.** La spec 03 llamó «33 reglas de
+  640 px» a lo que eran las 33 `@media` de la hoja (8 de 640 px), y presentó
+  como CSS de contenedor la regla 33, que mide en JavaScript. Lo cazó la
+  evaluación de factibilidad, no el autor. Contar con `grep -c` y leer el
+  mecanismo antes de escribir «el sistema ya hace X».
 
 Lo que la hizo falta escribir: el R151 trajo la matriz de privilegios y su
 responsive quedó **fuera de alcance por petición del equipo** —lo pusieron como

@@ -15,7 +15,7 @@ Hechos verificados en el repositorio el 2026-11-01 (rama `feat/2026-10-30-horari
 - `TablaDatos` **no tiene vista de fila apilada** para móvil: a ancho estrecho solo desplaza dentro de `.tb-envoltura`. Es la respuesta a la «pregunta» del requerimiento.
 - Un componente nuevo se registra en: `componentes/src/index.ts`, `sistema/componentes/extraer.mjs` (lista `{ n, p }`, línea ~67 para `Chip`), `sistema/candado/verificar-entrega.mjs` (lista de pares, línea ~135), `sistema/cascaron/generar-cascaron.mjs`, `sistema/componentes/comportamiento.md` y `sistema/tokens/fuente.mjs`.
 - Mapa de tokens semánticos: `sistema/tokens/fuente.mjs` (por ejemplo `'borde-campo'`, línea ~6174). Las primitivas están prohibidas dentro de un componente (§2.5.1).
-- Corte ya usado por el sistema: **640 px**, escrito 33 veces en `componentes.css` como `@media (max-width: 640px)`, es decir, por **ventana**. La hoja no contiene ningún `@container` ni `container-type`; la regla 33 de la matriz de privilegios mide su contenedor con `ResizeObserver` en JavaScript (`PanelPrivilegios.tsx`), que es otro mecanismo.
+- Corte ya usado por el sistema: **640 px**, escrito 8 veces en `componentes.css` como `@media (max-width: 640px)`, es decir, por **ventana**. De las 33 `@media` de la hoja, 15 son `max-width` y solo una es `min-width` (768px); el resto son `prefers-reduced-motion` y `print`. La hoja no contiene ningún `@container` ni `container-type`; la regla 33 de la matriz de privilegios mide su contenedor con `ResizeObserver` en JavaScript (`PanelPrivilegios.tsx`), que es otro mecanismo.
 - Escala tipográfica: `s-etiqueta` es 13px/500 (`tailwind-preset.ts:253`); `CLAUDE.md` §6 prohíbe `text-[Npx]`.
 
 ## Alcance
@@ -75,7 +75,7 @@ Convenciones:
 - **Colores:** los cinco tonos de significado reutilizan los tokens `--<tono>-fondo`, `--<tono>-texto` y `--<tono>-acento` que ya usa `Chip`. `inactivo` reutiliza los de `.chip-inact`. No se añade ningún escalón a `autorizados.lock.json`.
 - **Distinción sin color:** `ninguno` se distingue por la **forma** (borde punteado, sin relleno), no por el tono; es lo que cumple SC 1.4.1 aunque el gris se parezca al de `inactivo`.
 - **Contraste:** el borde de `ninguno` debe cumplir 3:1 (SC 1.4.11) y su letra 4,5:1 contra `fondo-pagina` y `fondo-tarjeta`, en claro y oscuro. Los pares nuevos entran en `verificar-contraste.mjs` como bloqueantes.
-- **Tamaño:** la regla base fija 30 px (móvil primero, §4bis) y la de 28 px va en `@media (min-width: 641px)`, de modo que 640 px exactos sigue siendo 30 px, igual que `@media (max-width: 640px)` en las otras 33 reglas. No se usa `@container`: la hoja no lo emplea y el cuadro, que es una hoja del árbol, no puede consultar a un contenedor que nadie declara.
+- **Tamaño:** la regla base fija 30 px (móvil primero, §4bis) y la de 28 px va en `@media (min-width: 641px)`, de modo que 640 px exactos sigue siendo 30 px, el mismo corte de 640 px que ya usan 8 reglas de la hoja con `max-width`. El patrón `min-width` no es nuevo (hay una a 768px), pero es la minoría: el paso 3 lo comprueba contra los candados. No se usa `@container`: la hoja no lo emplea y el cuadro, que es una hoja del árbol, no puede consultar a un contenedor que nadie declara.
 - **Letra:** `font-size` y `font-weight` salen de la escala (`s-etiqueta`, 600); sin tamaños arbitrarios. Centrada con `display: inline-flex`; el cuadro no recorta la letra.
 
 ## Plan de implementación
