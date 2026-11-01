@@ -8,6 +8,7 @@ aporte.
 - Versión **v1.148.3**. `main` lleva R163 y las specs 01-03. La rama de R163 ya se borró.
 - **SPEC 03 (R165, `CuadroEstado`) aprobada, sin implementar.** Tamaño por ventana: 30 px base,
   28 px en `min-width: 641px`. Siguiente paso: `/spec-impl 03-cuadro-estado-una-letra`.
+  El contrato exige leyenda visible (una letra sola no informa en un teléfono).
   Fuera de ella: fila apilada de `TablaDatos` (no existe; la pide el equipo aparte).
   Sin medir: par oscuro de `sin-estado` y que `verificar-promesa/empate/cascada` resuelvan `min-width`.
 - **R163 — detalle del bloque del Horario en negrita** (lo pidió el equipo). Implementado:

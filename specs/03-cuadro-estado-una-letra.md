@@ -28,6 +28,9 @@ Hechos verificados en el repositorio el 2026-11-01 (rama `feat/2026-10-30-horari
 - `letra` (un carácter, obligatoria) y `titulo` (nombre accesible, obligatorio).
 - Tamaño por **ventana**: 30 px por omisión (móvil primero) y 28 px cuando la ventana supera los 640 px.
 - Letra en el paso `s-etiqueta` de la escala (13px), con peso 600 (uno de los cuatro permitidos), para que quepa y se lea en 28 px.
+- Una **leyenda visible en el catálogo**, hecha con los propios cuadros y texto corriente (no un componente nuevo), junto a la fila de siete: «P Presente · T Tardanza…». Enseña el uso correcto y es lo que verifican los candados.
+- Una regla del contrato que **prohíbe el uso sin leyenda**: la letra sola no informa a quien la ve en un teléfono (`CLAUDE.md` §4bis).
+- En el catálogo, la serie de cuadros **envuelve a la línea siguiente** si no cabe; no desliza ni se recorta.
 - Esquinas apenas redondeadas (no círculo); mismo radio que `Chip` (3px), sin filete lateral.
 - No interactivo: sin clic, sin foco, sin `tabindex`.
 - Estilos en `sistema/componentes/componentes.css`, sin hex ni tamaños arbitrarios.
@@ -39,7 +42,7 @@ Hechos verificados en el repositorio el 2026-11-01 (rama `feat/2026-10-30-horari
 - Una **vista de fila apilada** en `TablaDatos`. No existe hoy; el equipo la pide aparte y su número R### lo acuña el equipo.
 - Tonos nuevos de significado. Para «incompleto» el equipo usa `info`; si prefiere un tono entre `aviso` y `error`, es otra petición.
 - Interactividad, foco o un `title` como único medio de lectura.
-- Una **leyenda** (P = presente…): la pone la pantalla consumidora. El sistema solo garantiza que cada cuadro lleve su nombre completo.
+- Un **componente de leyenda**. El sistema no lo crea aquí; si se quiere uno, es otra spec y lo decide el responsable. Sin embargo, el uso del cuadro **sin leyenda visible** queda prohibido por el contrato (ver Alcance y Decisiones).
 - Una columna específica de `TablaDatos`.
 - Un círculo, o cualquier forma que no sea el cuadrado.
 - La pantalla `clasificacion-semanal` y su maqueta (viven en el repositorio del equipo consumidor).
@@ -85,8 +88,8 @@ Convenciones:
 2. Añadir el token `sin-estado` en `sistema/tokens/fuente.mjs` y correr `node sistema/tokens/generar.mjs` y `node sistema/candado/verificar-contraste.mjs`: los pares nuevos salen en verde en claro y oscuro.
 3. Añadir las reglas `.cuadro*` a `sistema/componentes/componentes.css` (30 px por omisión, 28 px bajo `@media (min-width: 641px)`; letra en `s-etiqueta`/600). Sin hex, sin `style` en línea, sin `outline-none`. Correr `verificar-promesa`, `verificar-empate` y `verificar-cascada` en ese paso para confirmar que resuelven el `min-width`.
 4. Crear `componentes/src/CuadroEstado.tsx` y exportarlo en `componentes/src/index.ts`. Las pruebas del paso 1 pasan.
-5. Registrar el componente en `sistema/componentes/extraer.mjs`, `sistema/candado/verificar-entrega.mjs` y `sistema/cascaron/generar-cascaron.mjs`. El catálogo muestra los seis tonos, una fila de siete cuadros y los dos tamaños, con marcado estático (si no, los candados de promesa no lo ven).
-6. Escribir el contrato en `sistema/componentes/comportamiento.md` (reglas **Obligatorio**, cada una con su prueba declarada): letra + `titulo` obligatorios, la forma distingue `ninguno`, no interactivo, tamaño por contenedor.
+5. Registrar el componente en `sistema/componentes/extraer.mjs`, `sistema/candado/verificar-entrega.mjs` y `sistema/cascaron/generar-cascaron.mjs`. El catálogo muestra los seis tonos, una fila de siete cuadros **con su leyenda visible** y los dos tamaños, con marcado estático (si no, los candados de promesa no lo ven).
+6. Escribir el contrato en `sistema/componentes/comportamiento.md` (reglas **Obligatorio**, cada una con su prueba declarada): letra + `titulo` obligatorios, la forma distingue `ninguno`, no interactivo, tamaño por contenedor, y **no se usa sin leyenda visible en la misma pantalla**.
 7. Subir la versión a 1.149.0 (`package.json`), añadir la entrada en `sistema/tokens/fuente.mjs` y `manual/ACTUALIZAR.md`, y reescribir `memoria/01-estado.md` y el número de estado de `CLAUDE.md`.
 8. Correr los veinticinco pasos de `CLAUDE.md` §8 en verde, más las pruebas, y medir en navegador a 360 y 390 px.
 
@@ -101,6 +104,9 @@ Convenciones:
 - [ ] Móvil primero (§4bis): la regla de 30 px está fuera de toda `@media`, la de 28 px es la única que va dentro (`min-width: 641px`), y el cuadro no usa ninguna `max-width`. Con la hoja sin consultas, el cuadro sale a 30 px.
 - [ ] La letra usa 13px y peso 600 computados, y no se corta dentro de 28×28 px.
 - [ ] Siete cuadros en fila miden **menos de 360 px** de ancho sin desplazamiento horizontal a 360 y a 390 px, medido en navegador.
+- [ ] La fila de siete cuadros del catálogo lleva una leyenda visible sin puntero (texto en pantalla, no `title`), medida a 360 px.
+- [ ] Con una caja más estrecha que la serie (por ejemplo 200 px), los cuadros pasan a la línea siguiente y no producen desplazamiento horizontal.
+- [ ] El criterio de móvil se mide a **360 px** y no solo al ancho de la maqueta (390 px).
 - [ ] El cuadro no recibe foco con tabulador y no tiene manejador de clic.
 - [ ] Los pares de contraste de `sin-estado` (borde 3:1, letra 4,5:1) en claro y oscuro salen en verde en `verificar-contraste.mjs`, y `verificar-tono.mjs` sigue en verde.
 - [ ] Un `letra` de longitud distinta de 1 dispara el aviso de desarrollo y no rompe el render.
@@ -122,7 +128,7 @@ Convenciones:
 - **Reconocido:** un panel estrecho dentro de una pantalla ancha recibe 28 px y no 30. Se acepta; la diferencia no afecta a la lectura ni al toque, porque el cuadro no es interactivo.
 - **No:** prop `tamano`. Cada pantalla tendría que repetir la decisión y podría olvidarla.
 - **Sí:** `role="img"` con `aria-label`. El cuadro es una imagen con nombre, no un control. **No** `title` como única vía: no se ve en un teléfono (§4bis).
-- **Sí:** la leyenda queda fuera. Los usuarios táctiles solo ven la letra; que la pantalla explique «P = presente» es parte de su diseño, no de la pieza.
+- **Sí:** el contrato exige leyenda visible; el componente de leyenda queda fuera. Primera redacción: «la leyenda queda fuera, es de la pantalla». Era insuficiente: `CLAUDE.md` §4bis dice que el texto completo debe ser alcanzable sin puntero, y `aria-label` solo llega al lector de pantalla; quien ve «P» en un teléfono no sabe qué es. Que el equipo no lo pida no lo saca de la política. Se hace barato: una regla de contrato y una leyenda de ejemplo en el catálogo. Si el responsable quiere un componente `Leyenda`, es otra spec.
 - **Sí:** la fila apilada de `TablaDatos` fuera de esta spec; se declara al equipo que hoy no existe y se pide aparte. Decisión del responsable el 2026-11-01. Mezclarla tocaría más de tres áreas.
 - **Sí:** v1.149.0 (minor). Un componente nuevo y público; así se numeraron las piezas nuevas anteriores (v1.133.0, v1.140.0).
 - **Sí:** 30 px es tamaño visual, no objetivo táctil: el cuadro no es interactivo, así que 2.5.8 no aplica. Se declara para que nadie lo lea como si lo fuera.
@@ -136,6 +142,7 @@ Convenciones:
 | El par oscuro de `sin-estado` no alcanza 3:1 con `fondo-tarjeta` | Se elige entre colores autorizados y se mide en el paso 2, antes de escribir el componente; si ninguno alcanza, se detiene y se avisa |
 | Un nuevo token cambia el recuento de pares del candado de contraste | La cifra publicada en `CLAUDE.md` se corrige con lo que mida el candado, no con una estimación |
 | Siete cuadros no caben junto a la foto y el nombre a 390 px | La pieza mide ~234 px por sí sola (7×30 + 6 huecos de 4 px, a confirmar al medir); la maquetación de la fila es de la pantalla consumidora. Sin vista apilada, se pide aparte |
+| Se da por cumplido «móvil primero» porque la pieza cabe, y la pantalla del equipo no | La pieza mide ~234 px; la fila con foto y nombre depende de la fila apilada que `TablaDatos` no tiene. Se declara al equipo; esta spec no promete la pantalla |
 | El catálogo no pinta el componente en estático y los candados no lo ven | El paso 5 exige marcado estático (`pieza-sin-componente-no-esta-entregada`) |
 | Los candados de promesa, empate o cascada no resuelven bien `@media (min-width: 641px)` (la hoja usa `max-width`) | El paso 3 los corre antes de seguir; si alguno la ignora, se detiene y se avisa en vez de pasar a `max-width` por comodidad |
 | `verificar-forma` marca el componente y el tipo nuevos | Es una adición; se declara en el mismo commit, no se silencia |
@@ -146,6 +153,6 @@ Convenciones:
 - Una fila apilada para móvil en `TablaDatos`.
 - Tonos nuevos de significado o una excepción a la regla de identidad.
 - Interactividad, foco, menú o descripción emergente.
-- La leyenda de letras y la pantalla `clasificacion-semanal`.
+- Un componente de leyenda y la pantalla `clasificacion-semanal`.
 - Un círculo u otra forma.
 - Verificación en `devgestion` y publicación.
