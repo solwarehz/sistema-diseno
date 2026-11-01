@@ -83,6 +83,9 @@ que el candado lo vigile. Un hex documentado como **valor probado y rechazado, c
 sustituye. **Todo componente nuevo se compone, no se reconstruye:** se usan los ya creados · los
 colores autorizados · si falta uno se crea · con el conjunto se crean los siguientes. Vinculante:
 [`sistema/componentes/POLITICA-DE-CREACION.md`](sistema/componentes/POLITICA-DE-CREACION.md).
+**Todo diseño o mejora visual se consulta primero con la skill `frontend-design`** (usuario, 2026-11-01): se invoca
+antes de proponer o escribir la interfaz. La skill **aconseja**; las reglas de este archivo (tokens, colores
+autorizados, móvil primero, componer) **mandan** si chocan con ella.
 
 ## 5 · Cómo se cambia un color
 
