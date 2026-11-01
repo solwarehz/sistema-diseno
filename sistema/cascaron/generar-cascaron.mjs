@@ -2840,6 +2840,104 @@ ${verCodigo(
   </tbody>
 </table>`;
 
+// ── Elemento: Cuadro de estado ──────────────────────────────────────────────
+// SPEC 03 (R165). Marcado estatico a proposito: si el catalogo no lo pinta, los
+// candados de promesa no lo ven y la pieza viaja sin comprobarse.
+
+const NOMBRE_CUADRO = { P: 'Presente', T: 'Tardanza', I: 'Incompleto', F: 'Falta', '–': 'No cuenta ese día', A: 'Inactivo' };
+/* `junto`: el cuadro va pegado a su nombre en texto; el lector no lo repite. */
+const cuadro = (tono, letra, junto = false) => junto
+  ? `<span class="cuadro cuadro-${tono}" aria-hidden="true">${letra}</span>`
+  : `<span class="cuadro cuadro-${tono}" role="img" aria-label="${NOMBRE_CUADRO[letra]}">${letra}</span>`;
+
+const TONOS_CUADRO = [
+  ['exito', 'P', 'exito', 'Presente'],
+  ['aviso', 'T', 'aviso', 'Tardanza'],
+  ['error', 'F', 'error', 'Falta'],
+  ['info', 'I', 'info', 'Incompleto'],
+];
+
+const ratioCuadro = (frente, fondo) => {
+  const par = lock.contrastes.find((x) => x.modo === 'claro' && x.frente === frente && x.fondo === fondo);
+  return par ? par.ratio.toFixed(2).replace('.', ',') + ':1' : '—';
+};
+
+const pagCuadro = `
+<p class="pag-intro">Un cuadrado con <strong>una letra</strong> y un tono, para mostrar una serie corta de
+estados en poco ancho: siete días de un trabajador caben en menos de 360&nbsp;px. No se pulsa, no
+recibe foco y no navega. <strong>La letra sola no informa a quien la ve en un teléfono</strong>: se usa
+siempre con una leyenda visible en la misma pantalla.</p>
+
+<h3 class="sub-seccion">Los seis tonos</h3>
+<p class="seccion-sub">Los cinco primeros son los del <a href="#chip" data-ir="chip" class="enlace">chip de estado</a>:
+mismos fondo, texto y acento. El sexto, <strong>sin estado</strong>, se distingue por la <strong>forma</strong>
+—borde punteado y sin relleno—, no por el tono.</p>
+<div class="bloque">
+  <table class="tabla-simple">
+    <thead><tr><th>Ejemplo</th><th>Tono</th><th>Tokens</th><th class="num">Letra sobre fondo</th></tr></thead>
+    <tbody>
+      ${TONOS_CUADRO.map(([c, l, k, n]) => `<tr><td>${cuadro(c, l, true)} ${n}</td><td class="mono">${c}</td>
+        <td class="mono">${k}-*</td>
+        <td class="num">${ratioCuadro(k + '-texto', k + '-fondo')}</td></tr>`).join('')}
+      <tr><td>${cuadro('inactivo', 'A', true)} Inactivo</td><td class="mono">inactivo</td>
+        <td class="mono">borde · borde-fuerte</td>
+        <td class="num">${ratioCuadro('texto-principal', 'borde')}</td></tr>
+      <tr><td>${cuadro('ninguno', '–', true)} No cuenta</td><td class="mono">ninguno</td>
+        <td class="mono">sin-estado</td>
+        <td class="num">${ratioCuadro('sin-estado', 'fondo-encabezado')}</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3 class="sub-seccion">Una serie, con su leyenda</h3>
+<p class="seccion-sub">Siete días de un trabajador. La serie <strong>pasa a la línea siguiente</strong> si no
+cabe: no desliza ni se recorta. La leyenda va en texto corriente, completa y sin <code>title</code>.</p>
+<div class="bloque">
+  <div class="chip-sup-fila">
+    ${[['exito', 'P'], ['exito', 'P'], ['aviso', 'T'], ['info', 'I'], ['error', 'F'], ['ninguno', '–'], ['ninguno', '–']].map(([t, l]) => cuadro(t, l)).join('')}
+  </div>
+  <p class="pag-intro">${cuadro('exito', 'P', true)} Presente · ${cuadro('aviso', 'T', true)} Tardanza · ${cuadro('info', 'I', true)} Incompleto · ${cuadro('error', 'F', true)} Falta · ${cuadro('ninguno', '–', true)} No cuenta ese día</p>
+</div>
+
+<h3 class="sub-seccion">Tamaño</h3>
+<p class="seccion-sub"><strong>30&nbsp;px por omisión</strong> (móvil primero) y <strong>28&nbsp;px</strong> cuando la
+ventana supera los 640&nbsp;px (de 641&nbsp;px en adelante). Se decide por la ventana, no por el contenedor, y por eso
+esta página enseña el que corresponde a tu ventana y no los dos a la vez. Letra de 13&nbsp;px con peso
+600, esquinas de 3&nbsp;px. Es tamaño visual, no objetivo táctil: el cuadro no es interactivo.</p>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Una letra, un carácter.</strong> El significado completo va en <code>titulo</code> y en la leyenda.</td></tr>
+    <tr><td class="num">2</td><td><strong>Nunca sin leyenda visible en la misma pantalla.</strong> <code>aria-label</code> sirve al lector de pantalla, no a quien ve «P» sin saber qué es.</td></tr>
+    <tr><td class="num">3</td><td><strong>«Sin estado» se distingue por la forma</strong>, no por el gris: es de la familia del gris de inactivo (SC 1.4.1).</td></tr>
+    <tr><td class="num">4</td><td>No se pulsa, no recibe foco, no navega.</td></tr>
+    <tr><td class="num">5</td><td>Cinco tonos de significado y uno de ausencia. Un tono nuevo es otra petición.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Código</h3>
+${verCodigo(
+  'Uso del componente',
+  `import { CuadroEstado } from 'sistema-diseno-ae/componentes';
+
+<CuadroEstado letra="P" tono="exito" titulo="Presente, lunes 26" />
+<CuadroEstado letra="T" tono="aviso" titulo="Tardanza, martes 27" />
+<CuadroEstado letra="I" tono="info" titulo="Incompleto, miércoles 28" />
+<CuadroEstado letra="F" tono="error" titulo="Falta, jueves 29" />
+<CuadroEstado letra="–" tono="ninguno" titulo="No cuenta ese día, viernes 30" />
+<CuadroEstado letra="A" tono="inactivo" titulo="Inactivo, sábado 31" />`
+)}
+<table class="tabla-simple" style="margin-top:16px">
+  <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>letra</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Un solo carácter. Es lo que informa</td></tr>
+    <tr><td><code>tono</code></td><td class="mono">exito · aviso · error · info · inactivo · ninguno</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> El tono acompaña; no informa solo</td></tr>
+    <tr><td><code>titulo</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Nombre accesible completo: sin él el lector diría solo «P»</td></tr>
+    <tr><td><code>className</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo">Clase adicional del consumidor</td></tr>
+  </tbody>
+</table>`;
+
 // ── Elemento: Tarjeta ───────────────────────────────────────────────────────
 
 // Silueta neutra. No se inventan fotos de personas: cuando no hay foto se
@@ -9429,6 +9527,7 @@ const CATALOGO = [
       { id: 'fecha', t: 'Fecha y rango', estado: 'listo', c: pagFecha },
       { id: 'horario', t: 'Horario', estado: 'listo', c: pagHorario },
       { id: 'chip', t: 'Chip de estado', estado: 'listo', c: pagChip },
+      { id: 'cuadro', t: 'Cuadro de estado', estado: 'listo', c: pagCuadro },
       { id: 'avatar', t: 'Avatar', estado: 'listo', c: pagAvatar },
       { id: 'tarjeta', t: 'Tarjeta', estado: 'listo', c: pagTarjeta },
       { id: 'tabla', t: 'Tabla de datos', estado: 'listo', c: pagTabla },

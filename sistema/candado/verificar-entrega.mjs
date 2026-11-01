@@ -133,7 +133,7 @@ const PAGINA_DE = new Map([
   // enseñar es justamente cuándo NO sirve el interruptor, y eso se pierde si se
   // cuenta como una variante suya.
   ['Segmentado', 'Segmentado'],
-  ['RangoFecha', 'Fecha y rango'], ['Horario', 'Horario'], ['Chip', 'Chip de estado'],
+  ['RangoFecha', 'Fecha y rango'], ['Horario', 'Horario'], ['Chip', 'Chip de estado'], ['CuadroEstado', 'Cuadro de estado'],
   ['Avatar', 'Avatar'], ['Tarjeta', 'Tarjeta'], ['TarjetaPersona', 'Tarjeta'],
   ['TablaDatos', 'Tabla de datos'], ['Paginacion', 'Paginación'],
   ['Progreso', 'Barra de progreso'], ['Aviso', 'Aviso temporal'],
