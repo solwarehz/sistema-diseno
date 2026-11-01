@@ -9,17 +9,17 @@
   ],
   "aviso": "Archivo generado. No editar a mano. La fuente es sistema/tokens/fuente.mjs. Cambiar un valor exige regenerar, re-verificar y subir versión (§2.5 regla 8).",
   "resumen": {
-    "paresTotales": 186,
-    "paresBloqueantes": 146,
+    "paresTotales": 196,
+    "paresBloqueantes": 156,
     "paresInformativos": 40,
     "fallos": 0,
     "porModo": {
       "claro": {
-        "bloqueantes": 73,
+        "bloqueantes": 78,
         "fallos": 0
       },
       "oscuro": {
-        "bloqueantes": 73,
+        "bloqueantes": 78,
         "fallos": 0
       }
     }
@@ -284,6 +284,15 @@
         "oscuro": "negro_300"
       },
       "uso": "Contorno de input, select, textarea"
+    },
+    "sin-estado": {
+      "claro": "#5C5955",
+      "oscuro": "#C3C1BD",
+      "origen": {
+        "claro": "gris_700",
+        "oscuro": "negro_100"
+      },
+      "uso": "Borde y letra del cuadro sin estado"
     },
     "accion": {
       "claro": "#0063CB",
@@ -1320,6 +1329,61 @@
     },
     {
       "modo": "claro",
+      "frente": "sin-estado",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#5C5955",
+      "hexFondo": "#FFFFFF",
+      "ratio": 6.96,
+      "minimo": 4.5,
+      "motivo": "Borde y letra del cuadro sin estado sobre tarjeta",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "sin-estado",
+      "fondo": "fondo-pagina",
+      "hexFrente": "#5C5955",
+      "hexFondo": "#F8F8F6",
+      "ratio": 6.54,
+      "minimo": 4.5,
+      "motivo": "Borde y letra del cuadro sin estado sobre página",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "sin-estado",
+      "fondo": "fondo-encabezado",
+      "hexFrente": "#5C5955",
+      "hexFondo": "#F0EFEE",
+      "ratio": 6.06,
+      "minimo": 4.5,
+      "motivo": "Borde y letra del cuadro sin estado sobre encabezado",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "sin-estado",
+      "fondo": "fondo-fila-alt",
+      "hexFrente": "#5C5955",
+      "hexFondo": "#F8F8F6",
+      "ratio": 6.54,
+      "minimo": 4.5,
+      "motivo": "Borde y letra del cuadro sin estado sobre fila alterna",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "sin-estado",
+      "fondo": "fondo-fila-hover",
+      "hexFrente": "#5C5955",
+      "hexFondo": "#E9F5FF",
+      "ratio": 6.29,
+      "minimo": 4.5,
+      "motivo": "Borde y letra del cuadro sin estado sobre fila bajo el cursor",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
       "frente": "exito-texto",
       "fondo": "exito-fondo",
       "hexFrente": "#14521A",
@@ -2339,6 +2403,61 @@
       "ratio": 4.65,
       "minimo": 3,
       "motivo": "Contorno de input sobre página",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "sin-estado",
+      "fondo": "fondo-tarjeta",
+      "hexFrente": "#C3C1BD",
+      "hexFondo": "#242422",
+      "ratio": 8.65,
+      "minimo": 4.5,
+      "motivo": "Borde y letra del cuadro sin estado sobre tarjeta",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "sin-estado",
+      "fondo": "fondo-pagina",
+      "hexFrente": "#C3C1BD",
+      "hexFondo": "#1E1D1C",
+      "ratio": 9.36,
+      "minimo": 4.5,
+      "motivo": "Borde y letra del cuadro sin estado sobre página",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "sin-estado",
+      "fondo": "fondo-encabezado",
+      "hexFrente": "#C3C1BD",
+      "hexFondo": "#2C2B29",
+      "ratio": 7.86,
+      "minimo": 4.5,
+      "motivo": "Borde y letra del cuadro sin estado sobre encabezado",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "sin-estado",
+      "fondo": "fondo-fila-alt",
+      "hexFrente": "#C3C1BD",
+      "hexFondo": "#2A2927",
+      "ratio": 8.08,
+      "minimo": 4.5,
+      "motivo": "Borde y letra del cuadro sin estado sobre fila alterna",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "sin-estado",
+      "fondo": "fondo-fila-hover",
+      "hexFrente": "#C3C1BD",
+      "hexFondo": "#363532",
+      "ratio": 6.82,
+      "minimo": 4.5,
+      "motivo": "Borde y letra del cuadro sin estado sobre fila bajo el cursor",
       "cumple": true
     },
     {

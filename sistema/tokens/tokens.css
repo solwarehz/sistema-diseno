@@ -1,6 +1,6 @@
 /* ───────────────────────────────────────────────────────────────────────────
    TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.148.3
-   WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
+   WCAG 2.2 AA · 156 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -45,6 +45,7 @@
   --borde: #E0DFDE;
   --borde-fuerte: #C8C6C4;
   --borde-campo: #8B8985;
+  --sin-estado: #5C5955;
 
   /* Acción */
   --accion: #0063CB;
@@ -128,6 +129,7 @@
   --borde: #44423F;
   --borde-fuerte: #575451;
   --borde-campo: #8A8681;
+  --sin-estado: #C3C1BD;
 
   /* Acción */
   --accion: #6CB2FF;
@@ -214,6 +216,7 @@
     --borde: #44423F;
     --borde-fuerte: #575451;
     --borde-campo: #8A8681;
+    --sin-estado: #C3C1BD;
 
     /* Acción */
     --accion: #6CB2FF;
@@ -593,6 +596,7 @@
 .token-borde { background-color: var(--borde); }
 .token-borde-fuerte { background-color: var(--borde-fuerte); }
 .token-borde-campo { background-color: var(--borde-campo); }
+.token-sin-estado { background-color: var(--sin-estado); }
 .token-accion { background-color: var(--accion); }
 .token-accion-hover { background-color: var(--accion-hover); }
 .token-accion-activa { background-color: var(--accion-activa); }

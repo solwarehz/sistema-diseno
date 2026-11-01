@@ -6172,6 +6172,10 @@ const declarados = {
   'borde-fuerte':      { claro: 'gris_300', oscuro: 'negro_500', uso: 'Hover de contorno, separadores con peso' },
   // v1.1.0 — corregido en claro. v1.2.0 — corregido también en oscuro.
   'borde-campo':       { claro: 'gris_500', oscuro: 'negro_300', uso: 'Contorno de input, select, textarea' },
+  // SPEC 03 · Borde y letra del `CuadroEstado` sin estado. No tiene relleno propio:
+  // se ve sobre lo que haya debajo, así que se mide contra los cinco fondos.
+  // `negro_200` se descartó en oscuro: no llega a 4,5:1 sobre `fondo-fila-hover`.
+  'sin-estado':        { claro: 'gris_700', oscuro: 'negro_100', uso: 'Borde y letra del cuadro sin estado' },
 
   // ── Acción ───────────────────────────────────────────────────────────────
   // En oscuro la acción SE INVIERTE: azul claro con texto oscuro. Ningún azul
@@ -6633,6 +6637,13 @@ export const pares = [
   // Bordes de control — 3:1 (límite de componente identificable)
   ['borde-campo',      'fondo-tarjeta',    3.0, 'Contorno de input sobre tarjeta'],
   ['borde-campo',      'fondo-pagina',     3.0, 'Contorno de input sobre página'],
+
+  // SPEC 03 · Cuadro sin estado: letra a 4,5:1 (el borde punteado exige 3:1 y queda cubierto).
+  ['sin-estado',       'fondo-tarjeta', 4.5, 'Borde y letra del cuadro sin estado sobre tarjeta'],
+  ['sin-estado',       'fondo-pagina', 4.5, 'Borde y letra del cuadro sin estado sobre página'],
+  ['sin-estado',       'fondo-encabezado', 4.5, 'Borde y letra del cuadro sin estado sobre encabezado'],
+  ['sin-estado',       'fondo-fila-alt', 4.5, 'Borde y letra del cuadro sin estado sobre fila alterna'],
+  ['sin-estado',       'fondo-fila-hover', 4.5, 'Borde y letra del cuadro sin estado sobre fila bajo el cursor'],
 
   // Estados — pares fondo/texto
   ['exito-texto',      'exito-fondo',      4.5, 'Chip «Activo»'],

@@ -162,6 +162,7 @@ export const semanticos = {
   "borde": "var(--borde)",
   "borde-fuerte": "var(--borde-fuerte)",
   "borde-campo": "var(--borde-campo)",
+  "sin-estado": "var(--sin-estado)",
   "accion": "var(--accion)",
   "accion-hover": "var(--accion-hover)",
   "accion-activa": "var(--accion-activa)",
