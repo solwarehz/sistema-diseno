@@ -6,7 +6,7 @@ una regla que un agente deba leer al abrir sesión. Las reglas siguen en `CLAUDE
 
 ## A · Estado «v1.148.3 / R162» (§1)
 
-**Estado actual: v1.149.0** — **R162: el gancho que mide deja de depender de
+**Estado actual: v1.148.3** (la cifra se actualizó a v1.149.0 antes de retirar el texto) — **R162: el gancho que mide deja de depender de
 que la caja ya exista**, reportado por el equipo contra la v1.147.0.
 
 `useCapacidadTablero` recibía un `RefObject` y lo miraba **una vez**, dentro del
@@ -148,7 +148,7 @@ reescribe con cada cambio de estado — este número es lo único que se toca aq
 
 ## C · «Móvil primero»: historia y anécdotas (§4bis)
 
-## 4bis · Tres reglas que el usuario fijó expresamente
+### 4bis · Tres reglas que el usuario fijó expresamente
 
 **MÓVIL PRIMERO. No es una preferencia: es política de diseño y se cumple.**
 La fijó el responsable el 2026-09-19, y entra aquí porque el sistema la estaba
