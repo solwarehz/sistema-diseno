@@ -309,9 +309,13 @@ No las «mejores» por iniciativa propia. Están razonadas:
 ## 8 · Git
 
 - Repositorio: **`solwarehz/sistema-diseno`** · privado.
-- Se trabaja en ramas **`feat/*`**.
+- **Se trabaja solo en la rama permanente `work`** (decisión del responsable, 2026-11-01).
+  Nunca se trabaja en `main`. De `work` salen las ramas temporales (`feat/*`, `fix/*`,
+  `docs/*`…) y a `work` vuelven. **A `main` solo se llega con un PR `work` → `main`**: nada de
+  push directo, ni siquiera de avance directo. Antes de la primera edición de una tarea se
+  comprueba que `HEAD` está en `work` o en una rama que salió de ella.
 - **`main` sí se actualiza en este proyecto** —y solo en este—, pero **únicamente
-  cuando está verificado y sin errores**. La condición no es una formalidad: es
+  por PR y cuando está verificado y sin errores**. La condición no es una formalidad: es
   lo que hace que la regla sea segura, porque `main` es de donde instala el área
   de sistemas. Antes de subir, los **veinticinco** pasos **en verde** y las pruebas
   pasando. **Son exactamente los de `sistema/paquete/publicar.mjs`, y en su mismo orden**, y esta lista
@@ -451,14 +455,18 @@ No las «mejores» por iniciativa propia. Están razonadas:
   que cualquiera de las dos hojas declare— porque elegir qué mirar es dejarlo
   a criterio, y eso es lo que se pidió que no se hiciera.
 
-  Se sube por **avance directo**, sin `checkout` y sin reescribir historia:
+  Se sube **solo por PR**, sin reescribir historia. Con los pasos en verde, `work` se
+  empuja y se abre el PR contra `main`; **el merge del PR es el despliegue y se pide antes
+  de hacerlo**:
 
   ```bash
-  git push origin feat/sistema-base-v1:main
+  git push origin work
+  gh pr create --base main --head work
   ```
 
-  Si algo sale en rojo, **no se sube**. Un `main` roto es un proyecto ajeno roto.
-  Y **nunca** con `--force`: eso sigue necesitando permiso expreso.
+  Si algo sale en rojo, **no se abre el PR**. Un `main` roto es un proyecto ajeno roto.
+  **Nunca** `git push` directo a `main`, y **nunca** con `--force`: eso sigue necesitando
+  permiso expreso. Tras mergear el PR, `work` se sincroniza con `main` antes de seguir.
 
 - **Subir a `main` no es publicar.** El área de sistemas instala de **dos
   formas**, y las dos tienen que funcionar **siempre**: por `npm` con la
@@ -486,8 +494,8 @@ No las «mejores» por iniciativa propia. Están razonadas:
   no se resuelve moviendo la etiqueta —una etiqueta movida entrega cosas
   distintas según cuándo se baje, que es el defecto abierto de `v1.10.5`—: se
   sube de versión.
-- En este proyecto **se commitea y se hace push al avanzar** — no se espera a que
-  el usuario lo pida.
+- En este proyecto **se commitea y se hace push al avanzar**, siempre a `work` o a sus ramas
+  temporales — no se espera a que el usuario lo pida. **Nunca** a `main`.
 - **Antes de cada commit, revisa el diff.** Si aparece `.env`, una clave o una
   credencial, **aborta**.
 - Commits atómicos y mensaje que explique **por qué**, no solo qué.
