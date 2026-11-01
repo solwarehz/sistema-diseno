@@ -859,3 +859,369 @@ describe('[22] añadido al R139 · un periodo que no cabe en el tope no se pinta
     expect(alCambiar).toHaveBeenCalledWith({ desde: '2026-03-09', hasta: '2026-03-15' });
   });
 });
+
+/**
+ * R166 · `fechaMaxima`: el último día elegible, inclusive.
+ *
+ * Lo pidió el equipo de Control de Asistencia: las consultas sobre hechos ya
+ * ocurridos no tienen respuesta para el futuro, y un día futuro con horario y sin
+ * marcas sale como falta. El calendario tiene que IMPEDIR elegirlos, no avisar
+ * después. Decisiones del responsable (2026-11-01): el rango que llega ya puesto
+ * se avisa y no se reescribe, los periodos que pasan de la máxima no se pintan, y
+ * «Mes siguiente» se apaga en el último mes permitido.
+ *
+ * Fecha de las pruebas: `HOY` es el domingo 15 de marzo de 2026, y la máxima es
+ * ese mismo día salvo que la prueba diga otra cosa.
+ */
+describe('R166 · `fechaMaxima`', () => {
+  const props = { titulo: 'Rango de fechas', hoy: HOY };
+  const MAX = '2026-03-15';
+  const disparadores = (c: HTMLElement) => [...c.querySelectorAll('.fc-campo')] as HTMLElement[];
+  const dia = (c: HTMLElement, n: string) =>
+    [...c.querySelectorAll('.fc-d')].find((b) => b.textContent === n) as HTMLElement;
+  const apagados = (c: HTMLElement) => c.querySelectorAll('.fc-d[aria-disabled="true"]');
+  const cabecera = (c: HTMLElement) => c.querySelector('.fc-meses')!.textContent;
+  const mesSiguiente = () => screen.getByRole('button', { name: 'Mes siguiente' });
+
+  describe('[24] R166 · los días posteriores salen apagados y la máxima se elige', () => {
+    it.each([['Desde', 0], ['Hasta', 1]])('[24] R166 · en «%s» hoy se elige y mañana no', (_n, i) => {
+      const alCambiar = vi.fn();
+      const { container } = render(
+        <RangoFecha {...props} meses={1} fechaMaxima={MAX} desde={null} hasta={null} onCambio={alCambiar} />
+      );
+      fireEvent.click(disparadores(container)[i]);
+      expect(dia(container, '15').getAttribute('aria-disabled'), 'la máxima debe poder elegirse').toBeNull();
+      expect(dia(container, '16').getAttribute('aria-disabled')).toBe('true');
+      expect(apagados(container), 'del 16 al 31 son dieciséis').toHaveLength(16);
+      fireEvent.click(dia(container, '16'));
+      expect(alCambiar, 'eligió un día posterior a la máxima').not.toHaveBeenCalled();
+    });
+
+    it('[24] R166 · hoy sirve de inicio y de final a la vez: un rango de un día', () => {
+      const alCambiar = vi.fn();
+      const { container } = render(
+        <RangoFecha {...props} meses={1} fechaMaxima={MAX} desde={MAX} hasta={null} onCambio={alCambiar} />
+      );
+      fireEvent.click(disparadores(container)[1]);
+      fireEvent.click(dia(container, '15'));
+      expect(alCambiar).toHaveBeenCalledWith({ desde: MAX, hasta: MAX });
+    });
+
+    it('[24] R166 · una cadena ISO y un `Date` dan lo mismo, y la hora del `Date` no mueve el día', () => {
+      for (const max of [MAX, new Date(2026, 2, 15), new Date(2026, 2, 15, 23, 59), new Date(2026, 2, 15, 0, 1)]) {
+        const { container, unmount } = render(
+          <RangoFecha {...props} meses={1} fechaMaxima={max} desde={null} hasta={null} onCambio={() => {}} />
+        );
+        fireEvent.click(disparadores(container)[1]);
+        expect(dia(container, '15').getAttribute('aria-disabled'), `${String(max)} apagó la máxima`).toBeNull();
+        expect(dia(container, '16').getAttribute('aria-disabled'), `${String(max)} dejó pasar el 16`).toBe('true');
+        expect(apagados(container), `${String(max)}`).toHaveLength(16);
+        unmount();
+      }
+    });
+  });
+
+  describe('[25] R166 · el argumento se sanea, como `maxDias`', () => {
+    it.each(['basura', '', '2026-02-31', '2026-13-01', '15/03/2026', new Date('no es fecha')])(
+      '[25] R166 · %s no es una fecha: avisa en desarrollo, se ignora y no rompe el render',
+      (malo) => {
+        const aviso = vi.spyOn(console, 'error').mockImplementation(() => {});
+        try {
+          const { container } = render(
+            <RangoFecha {...props} meses={1} fechaMaxima={malo as string} desde={null} hasta={null}
+              onCambio={() => {}} />
+          );
+          fireEvent.click(disparadores(container)[1]);
+          expect(apagados(container), `${String(malo)} apagó días`).toHaveLength(0);
+          expect(aviso.mock.calls.flat().join(' '), 'no avisó').toMatch(/fechaMaxima/);
+        } finally {
+          aviso.mockRestore();
+        }
+      }
+    );
+
+    it('[25] R166 · `2026-02-31` NO se normaliza al 3 de marzo', () => {
+      /* `deIso` no valida: `new Date(2026, 1, 31)` es el 3 de marzo, y una máxima
+         que se corre sola tres días es un dato cambiado en silencio. */
+      const aviso = vi.spyOn(console, 'error').mockImplementation(() => {});
+      try {
+        const { container } = render(
+          <RangoFecha {...props} meses={1} fechaMaxima="2026-02-31" desde={null} hasta={null} onCambio={() => {}} />
+        );
+        fireEvent.click(disparadores(container)[1]);
+        expect(dia(container, '16').getAttribute('aria-disabled')).toBeNull();
+        expect(dia(container, '4').getAttribute('aria-disabled'), 'la tomó por el 3 de marzo').toBeNull();
+      } finally {
+        aviso.mockRestore();
+      }
+    });
+  });
+
+  describe('[26] R166 · los periodos que pasan de la máxima no se pintan ni se aplican', () => {
+    const periodos = (c: HTMLElement) => [...c.querySelectorAll('.fc-atajo')].map((b) => b.textContent);
+
+    it('[26] R166 · con la máxima en hoy, «Hoy» y «Últimos 7 días» siguen; los cuatro de omisión no', () => {
+      const { container } = render(
+        <RangoFecha {...props} fechaMaxima={MAX} atajos={atajosDeDias(1, 7)} />
+      );
+      fireEvent.click(disparadores(container)[0]);
+      expect(periodos(container)).toEqual(['Hoy', 'Últimos 7 días']);
+      const { container: c2 } = render(<RangoFecha {...props} fechaMaxima={MAX} />);
+      fireEvent.click(disparadores(c2)[0]);
+      // «Mes pasado» (febrero) acaba antes de la máxima y se queda; los otros terminan después.
+      expect(periodos(c2)).toEqual(['Mes pasado']);
+    });
+
+    it('[26] R166 · sin `maxDias`, la máxima SOLA filtra los periodos', () => {
+      /* `atajosQueCaben` solo filtraba cuando había tope de días: con solo una
+         máxima, los cuatro de omisión pasaban de largo. */
+      const { container } = render(<RangoFecha {...props} fechaMaxima="2026-03-10" />);
+      fireEvent.click(disparadores(container)[0]);
+      expect(periodos(container)).toEqual(['Mes pasado']);
+    });
+
+    it('[26] R166 · si no queda ninguno, el panel «Periodos» desaparece entero', () => {
+      const { container } = render(
+        <RangoFecha {...props} fechaMaxima="2026-02-01" atajos={atajosDeDias(1)} />
+      );
+      fireEvent.click(disparadores(container)[0]);
+      expect(periodos(container)).toEqual([]);
+      expect(container.querySelector('.fc-atajos')).toBeNull();
+    });
+
+    it('[26] R166 · un periodo que devuelve OTRO rango al pulsarlo no se salta la máxima', () => {
+      /* `rango` es código ajeno: uno que lee un reloj devuelve algo en el filtro
+         y otra cosa en el clic. Es la misma guarda que ya tiene `maxDias`. */
+      let hostil = false;
+      const raro = {
+        texto: 'Raro',
+        rango: () => hostil
+          ? { desde: new Date(2026, 2, 20), hasta: new Date(2026, 2, 25) }
+          : { desde: new Date(2026, 2, 10), hasta: new Date(2026, 2, 15) },
+      };
+      const alCambiar = vi.fn();
+      const { container } = render(
+        <RangoFecha {...props} fechaMaxima={MAX} atajos={[raro]} desde={null} hasta={null} onCambio={alCambiar} />
+      );
+      fireEvent.click(disparadores(container)[0]);
+      expect(periodos(container)).toEqual(['Raro']);
+      hostil = true;
+      fireEvent.click(screen.getByRole('button', { name: 'Raro' }));
+      expect(alCambiar, 'aplicó un rango posterior a la máxima').not.toHaveBeenCalled();
+    });
+  });
+
+  describe('[27] R166 · un rango que llega ya puesto con fecha posterior se avisa y no se reescribe', () => {
+    it('[27] R166 · avisa, muestra lo recibido y no llama a `onCambio`', () => {
+      const alCambiar = vi.fn();
+      const { container } = render(
+        <RangoFecha {...props} fechaMaxima={MAX} desde="2026-03-10" hasta="2026-03-20" onCambio={alCambiar} />
+      );
+      expect(disparadores(container)[1], 'recortó el dato').toHaveTextContent('20/03/2026');
+      expect(container.querySelector('.cg-error')!.textContent)
+        .toContain('La fecha no puede ser posterior al 15/03/2026.');
+      expect(alCambiar).not.toHaveBeenCalled();
+    });
+
+    it('[27] R166 · también cuando es el inicio el que pasa', () => {
+      const { container } = render(
+        <RangoFecha {...props} fechaMaxima={MAX} desde="2026-03-18" hasta={null} onCambio={() => {}} />
+      );
+      expect(container.querySelector('.cg-error')!.textContent).toContain('posterior al 15/03/2026');
+    });
+
+    it('[27] R166 · el `error` del producto manda sobre este aviso', () => {
+      const { container } = render(
+        <RangoFecha {...props} fechaMaxima={MAX} desde="2026-03-10" hasta="2026-03-20"
+          error="La sede no tiene marcaciones." onCambio={() => {}} />
+      );
+      expect(container.querySelector('.cg-error')!.textContent).toContain('La sede no tiene');
+      expect(container.querySelector('.cg-error')!.textContent).not.toContain('posterior al');
+    });
+
+    it('[27] R166 · un rango que cabe no avisa de nada', () => {
+      const { container } = render(
+        <RangoFecha {...props} fechaMaxima={MAX} desde="2026-03-10" hasta="2026-03-15" onCambio={() => {}} />
+      );
+      expect(container.querySelector('.cg-error')).toBeNull();
+    });
+  });
+
+  describe('[28] R166 · el nombre accesible del día apagado dice por qué', () => {
+    it('[28] R166 · por la máxima dice «posterior al máximo del …», y nunca «null días»', () => {
+      const { container } = render(
+        <RangoFecha {...props} meses={1} fechaMaxima={MAX} desde={null} hasta={null} onCambio={() => {}} />
+      );
+      fireEvent.click(disparadores(container)[1]);
+      const nombre = dia(container, '16').getAttribute('aria-label')!;
+      expect(nombre).toContain('posterior al máximo del domingo 15 de marzo de 2026');
+      expect(nombre).not.toMatch(/null|fuera del máximo de/);
+    });
+
+    it('[28] R166 · el de `maxDias` sigue diciendo lo de siempre', () => {
+      const { container } = render(
+        <RangoFecha {...props} meses={1} maxDias={7} desde="2026-03-01" hasta={null} onCambio={() => {}} />
+      );
+      fireEvent.click(disparadores(container)[1]);
+      expect(dia(container, '9').getAttribute('aria-label')).toContain('fuera del máximo de 7 días');
+    });
+
+    it('[28] R166 · un día apagado por los dos topes dice solo el de la máxima', () => {
+      const { container } = render(
+        <RangoFecha {...props} meses={1} maxDias={7} fechaMaxima={MAX} desde="2026-03-01" hasta={null}
+          onCambio={() => {}} />
+      );
+      fireEvent.click(disparadores(container)[1]);
+      const ambos = dia(container, '16').getAttribute('aria-label')!;
+      expect(ambos).toContain('posterior al máximo del');
+      expect(ambos, 'mezcló los dos motivos').not.toContain('fuera del máximo de');
+    });
+  });
+
+  describe('[29] R166 · con `maxDias` valen los dos topes y el techo es el menor', () => {
+    it('[29] R166 · inicio el 10, siete días llegarían al 16: manda la máxima (15)', () => {
+      const alCambiar = vi.fn();
+      const { container } = render(
+        <RangoFecha {...props} meses={1} maxDias={7} fechaMaxima={MAX} desde="2026-03-10" hasta={null}
+          onCambio={alCambiar} />
+      );
+      fireEvent.click(disparadores(container)[1]);
+      expect(dia(container, '15').getAttribute('aria-disabled')).toBeNull();
+      expect(dia(container, '16').getAttribute('aria-disabled')).toBe('true');
+    });
+
+    it('[29] R166 · inicio el 1, la máxima llegaría al 15 pero siete días acaban el 7: manda `maxDias`', () => {
+      const { container } = render(
+        <RangoFecha {...props} meses={1} maxDias={7} fechaMaxima={MAX} desde="2026-03-01" hasta={null}
+          onCambio={() => {}} />
+      );
+      fireEvent.click(disparadores(container)[1]);
+      expect(dia(container, '7').getAttribute('aria-disabled')).toBeNull();
+      expect(dia(container, '8').getAttribute('aria-disabled')).toBe('true');
+      expect(dia(container, '15').getAttribute('aria-disabled')).toBe('true');
+      expect(dia(container, '16').getAttribute('aria-disabled')).toBe('true');
+    });
+
+    it('[29] R166 · solo `maxDias`: sin la máxima el techo es el de siempre', () => {
+      const { container } = render(
+        <RangoFecha {...props} meses={1} maxDias={7} desde="2026-03-10" hasta={null} onCambio={() => {}} />
+      );
+      fireEvent.click(disparadores(container)[1]);
+      expect(dia(container, '16').getAttribute('aria-disabled')).toBeNull();
+      expect(dia(container, '17').getAttribute('aria-disabled')).toBe('true');
+    });
+  });
+
+  describe('[30] R166 · «Mes siguiente» se apaga en el último mes permitido y el teclado no sale', () => {
+    it.each([1, 2])('[30] R166 · con `meses={%i}` queda `aria-disabled` (no `disabled`) y no avanza', (meses) => {
+      const { container } = render(
+        <RangoFecha {...props} meses={meses} fechaMaxima={MAX} desde={null} hasta={null} onCambio={() => {}} />
+      );
+      fireEvent.click(disparadores(container)[0]);
+      const boton = mesSiguiente();
+      expect(boton.getAttribute('aria-disabled')).toBe('true');
+      expect(boton.hasAttribute('disabled'), 'con `disabled` pierde el foco al llegar al último mes').toBe(false);
+      const antes = cabecera(container);
+      boton.focus();
+      fireEvent.click(boton);
+      expect(cabecera(container), 'avanzó a un mes entero posterior').toBe(antes);
+      expect(boton, 'el clic le quitó el foco y lo mandó a la rejilla').toHaveFocus();
+    });
+
+    it('[30] R166 · «Mes anterior» sigue funcionando y «Mes siguiente» se reabre al volver', () => {
+      const { container } = render(
+        <RangoFecha {...props} meses={1} fechaMaxima={MAX} desde={null} hasta={null} onCambio={() => {}} />
+      );
+      fireEvent.click(disparadores(container)[0]);
+      fireEvent.click(screen.getByRole('button', { name: 'Mes anterior' }));
+      expect(cabecera(container)).toBe('febrero de 2026');
+      expect(mesSiguiente().getAttribute('aria-disabled')).toBeNull();
+      fireEvent.click(mesSiguiente());
+      expect(cabecera(container)).toBe('marzo de 2026');
+      expect(mesSiguiente().getAttribute('aria-disabled')).toBe('true');
+    });
+
+    it('[30] R166 · PageDown, Shift+PageDown y las flechas no salen del mes de la máxima', async () => {
+      const u = userEvent.setup();
+      const { container } = render(
+        <RangoFecha {...props} meses={1} fechaMaxima={MAX} desde={null} hasta={null} onCambio={() => {}} />
+      );
+      await u.click(disparadores(container)[0]);
+      const antes = cabecera(container);
+      expect(diaConNombre(/domingo 15 de marzo/)).toHaveFocus();
+      await u.keyboard('{PageDown}');
+      await u.keyboard('{Shift>}{PageDown}{/Shift}');
+      await u.keyboard('{ArrowDown}{ArrowDown}{ArrowDown}{ArrowRight}{End}');
+      expect(cabecera(container), 'mostró un mes entero posterior').toBe(antes);
+      expect(document.activeElement!.getAttribute('aria-label'), 'el foco salió del mes').toMatch(/de marzo de 2026/);
+    });
+
+    it('[30] R166 · dentro del último mes, los días posteriores siguen siendo enfocables', async () => {
+      /* Es el mismo criterio de los días apagados por `maxDias`: con
+         `aria-disabled` y no `disabled`, el teclado recorre la rejilla y cada día
+         dice por qué no responde. */
+      const u = userEvent.setup();
+      const { container } = render(
+        <RangoFecha {...props} meses={1} fechaMaxima={MAX} desde={null} hasta={null} onCambio={() => {}} />
+      );
+      await u.click(disparadores(container)[0]);
+      await u.keyboard('{ArrowRight}');
+      expect(diaConNombre(/lunes 16 de marzo/)).toHaveFocus();
+    });
+
+    it('[30] R166 · un clic en un día apagado no hace nada ni mueve la ventana', () => {
+      const alCambiar = vi.fn();
+      const { container } = render(
+        <RangoFecha {...props} meses={1} fechaMaxima={MAX} desde={null} hasta={null} onCambio={alCambiar} />
+      );
+      fireEvent.click(disparadores(container)[0]);
+      const antes = cabecera(container);
+      fireEvent.click(dia(container, '16'));
+      expect(alCambiar).not.toHaveBeenCalled();
+      expect(cabecera(container)).toBe(antes);
+      expect(container.querySelector('[role="dialog"]'), 'se cerró por un clic que no eligió nada').not.toBeNull();
+    });
+  });
+
+  describe('[31] R166 · la apertura no enseña un mes entero posterior a la máxima', () => {
+    it('[31] R166 · con `meses={2}` y la máxima en el mes de hoy abre en febrero–marzo', () => {
+      const { container } = render(
+        <RangoFecha {...props} fechaMaxima={MAX} desde={null} hasta={null} onCambio={() => {}} />
+      );
+      fireEvent.click(disparadores(container)[0]);
+      expect(cabecera(container)).toBe('febrero – marzo de 2026');
+    });
+
+    it('[31] R166 · con la máxima ANTERIOR a hoy, abre donde está la máxima', () => {
+      const { container } = render(
+        <RangoFecha {...props} meses={1} fechaMaxima="2026-02-10" desde={null} hasta={null} onCambio={() => {}} />
+      );
+      fireEvent.click(disparadores(container)[0]);
+      expect(cabecera(container)).toBe('febrero de 2026');
+    });
+
+    it('[31] R166 · un rango puesto posterior a la máxima NO arrastra la ventana a meses apagados', () => {
+      /* Decisión del responsable: no se ve el valor recibido en el calendario;
+         lo dice el aviso del campo (regla 27). */
+      const { container } = render(
+        <RangoFecha {...props} meses={1} fechaMaxima={MAX} desde="2026-04-10" hasta="2026-04-20"
+          onCambio={() => {}} />
+      );
+      fireEvent.click(disparadores(container)[0]);
+      expect(cabecera(container)).toBe('marzo de 2026');
+    });
+  });
+
+  describe('[32] R166 · sin `fechaMaxima` nada cambia', () => {
+    it('[32] R166 · no hay días apagados y «Mes siguiente» está activo', () => {
+      const { container } = render(
+        <RangoFecha {...props} meses={1} desde={null} hasta={null} onCambio={() => {}} />
+      );
+      fireEvent.click(disparadores(container)[0]);
+      expect(apagados(container)).toHaveLength(0);
+      expect(mesSiguiente().getAttribute('aria-disabled')).toBeNull();
+      fireEvent.click(mesSiguiente());
+      expect(cabecera(container)).toBe('abril de 2026');
+    });
+  });
+});

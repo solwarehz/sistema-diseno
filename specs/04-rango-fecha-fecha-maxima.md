@@ -20,7 +20,7 @@ Hechos verificados en el repositorio el 2026-11-01 (rama `work`, versión 1.149.
 - **No hay campo de texto**: los dos extremos son botones que abren el calendario. «Al escribir» de la petición no aplica; el único camino de entrada de un valor es `desde`/`hasta` por props.
 - Los atajos que no caben en `maxDias` no se pintan (`atajosQueCaben`, línea 493). Los cuatro de `ATAJOS_POR_OMISION` van de un mes a un año y casi todos terminan en el futuro: con `fechaMaxima` en hoy, la mayoría **desaparecería** del panel.
 - Los botones de mes (`Mes anterior` / `Mes siguiente`, líneas 843-852) no tienen tope. Las fechas se leen con `deIso` (formato ISO `AAAA-MM-DD`).
-- El contrato «Rango de fechas» (`sistema/componentes/comportamiento.md`, línea 429) llega a la regla **11** y declara sus archivos de prueba: `RangoFecha.test.tsx`, `rango-fecha-anatomia.test.tsx`, `calendario-catalogo.test.tsx`.
+- El contrato «Rango de fechas» (`sistema/componentes/comportamiento.md`, línea 429) llega a la regla **23** (la 16 está al final de la sección; no existe la 24) y declara sus archivos de prueba: `RangoFecha.test.tsx`, `rango-fecha-anatomia.test.tsx`, `calendario-catalogo.test.tsx`.
 
 ## Alcance
 
@@ -35,7 +35,7 @@ Hechos verificados en el repositorio el 2026-11-01 (rama `work`, versión 1.149.
 - **Navegación acotada:** los botones de mes no permiten mostrar meses **enteramente posteriores** a `fechaMaxima`. `Mes siguiente` se apaga con `aria-disabled` cuando el último mes visible ya contiene la máxima (o es posterior); el teclado (PageDown, flechas) no sale de esos meses. La apertura se ajusta para que no se vea un mes entero posterior a la máxima.
 - Combinación con `maxDias`: **ambos topes valen a la vez**; en «Hasta», el techo es el menor de los dos.
 - Sin la prop, el comportamiento actual **no cambia**.
-- Pruebas, contrato en `comportamiento.md` (reglas nuevas, cada una con su prueba), catálogo (texto, código y fila de props de la página «Fecha y rango»), entrada de versión.
+- Pruebas, contrato en `comportamiento.md` (reglas nuevas, cada una con su prueba), catálogo (párrafo y ejemplo de código de la página «Fecha y rango»; esa página no tiene tabla de props y no se crea una), entrada de versión.
 - Subida de versión a **v1.150.0** (prop nueva y opcional: minor) y reescritura de los números de estado de `memoria/01-estado.md` y `CLAUDE.md` §1.
 
 **Fuera de alcance:**
@@ -74,11 +74,11 @@ Convenciones:
 ## Plan de implementación
 
 0. Requisitos previos: se parte de `work` actualizado y la rama se comprueba **antes** de la primera edición (`CLAUDE.md` §8); la rama de trabajo es una temporal que sale de `work` (por ejemplo `feat/2026-11-01-fecha-maxima`); las dependencias están dentro del contenedor.
-1. Escribir las pruebas y verlas fallar, en `RangoFecha.test.tsx` y `rango-fecha-anatomia.test.tsx` (titulándolas `R166 · …` para que el candado del contrato las ate): con `fechaMaxima` en hoy se puede elegir hoy como inicio y como final, y no mañana en ninguno de los dos; con `Date` y con cadena; los atajos que pasan de la máxima no se pintan; rango ya puesto posterior avisa y no se reescribe; `error` del producto manda; argumento inválido avisa en desarrollo y se ignora; combinada con `maxDias={7}` valen los dos; `Mes siguiente` apagado en el último mes permitido y el teclado no sale; sin la prop, nada cambia (las pruebas existentes pasan sin tocarse).
-2. Implementar `fechaMaxima` en `RangoFecha.tsx`: lectura y saneo del argumento, `fueraDeAlcance` combinando ambos topes, filtro de atajos, aviso de rango ya puesto, nombre accesible del día apagado, y `aria-disabled` en `Mes siguiente` con el límite en la navegación por botón y por teclado. Las pruebas del paso 1 pasan.
-3. Actualizar el catálogo (`sistema/cascaron/generar-cascaron.mjs`, página «Fecha y rango»): párrafo, ejemplo de código con `fechaMaxima` y su fila en la tabla de props, con marcado estático. Regenerar con `generar-cascaron.mjs` y `extraer.mjs`. Si se necesita CSS, va en la plantilla del generador, **no** en `componentes.css` (es derivado).
-4. Escribir las reglas nuevas en la sección «Rango de fechas» de `comportamiento.md`, continuando la numeración (12 en adelante), cada una **Obligatorio**, citando `(R166, v1.150.0)` y con su prueba. El comentario `<!-- pruebas: -->` de la sección ya incluye los archivos necesarios.
-5. Subir la versión a 1.150.0 (`package.json` y `componentes/package.json`), añadir la entrada en `CAMBIOS` de `sistema/tokens/fuente.mjs` (sin tokens), actualizar `manual/ACTUALIZAR.md`, corregir los números de `memoria/01-estado.md` y de `CLAUDE.md` §1, y `MEMORY.md`.
+1. Escribir las pruebas y verlas fallar, en `RangoFecha.test.tsx` y `rango-fecha-anatomia.test.tsx` (titulando cada una con el número de su regla, `[24] …`, `[25] …`, y con el prefijo `R166 · ` para que el candado del contrato las ate sin ambigüedad): con `fechaMaxima` en hoy se puede elegir hoy como inicio y como final, y no mañana en ninguno de los dos; con `Date` y con cadena; los atajos que pasan de la máxima no se pintan; rango ya puesto posterior avisa y no se reescribe; `error` del producto manda; argumento inválido avisa en desarrollo y se ignora; combinada con `maxDias={7}` valen los dos; `Mes siguiente` apagado en el último mes permitido y el teclado no sale; un atajo cuya función devuelve otro rango al pulsarlo no puede saltarse la máxima; `aria-disabled` en `Mes siguiente` y en un día apagado no deja avanzar ni elegir (ni mueve el foco); una fecha ISO imposible como `2026-02-31` se rechaza; sin la prop, nada cambia (las pruebas existentes pasan sin tocarse).
+2. Implementar `fechaMaxima` en `RangoFecha.tsx`: lectura y saneo del argumento (con un validador propio: `deIso` no valida y normaliza `2026-02-31` al 3 de marzo), `fueraDeAlcance` combinando ambos topes, filtro de atajos y la misma guarda en `aplicarAtajo`, aviso de rango ya puesto, nombre accesible del día apagado, y `aria-disabled` en `Mes siguiente` con el límite en la navegación por botón y por teclado. Las pruebas del paso 1 pasan.
+3. Actualizar el catálogo (`sistema/cascaron/generar-cascaron.mjs`, página «Fecha y rango»): párrafo, ejemplo de código con `fechaMaxima`, en prosa y código (la página no tiene tabla de props), con marcado estático. Regenerar con `generar-cascaron.mjs` y `extraer.mjs`. Si se necesita CSS, va en la plantilla del generador, **no** en `componentes.css` (es derivado).
+4. Escribir las reglas nuevas en la sección «Rango de fechas» de `comportamiento.md`, continuando la numeración (**24 en adelante**: la 12 a la 23 ya existen), cada una **Obligatorio**, citando `(R166, v1.150.0)` y con su prueba. El comentario `<!-- pruebas: -->` de la sección ya incluye los archivos necesarios.
+5. Subir la versión a 1.150.0 (`package.json` y `componentes/package.json`), cambiar `VERSION` (línea 14) y añadir la entrada en `CAMBIOS` de `sistema/tokens/fuente.mjs` (sin tokens; `generar.mjs` exige que coincidan), sin tocar los `package-lock.json`, actualizar `manual/ACTUALIZAR.md`, corregir los números de `memoria/01-estado.md` y de `CLAUDE.md` §1, y `MEMORY.md`.
 6. Correr los veinticinco pasos de `CLAUDE.md` §8 en verde, más `tsc --noEmit` y las pruebas; medir en navegador a 360 px.
 
 ## Criterios de aceptación
@@ -96,7 +96,7 @@ Convenciones:
 - [ ] A 360 px, con `fechaMaxima`, el calendario no desborda ni obliga a deslizar, medido en navegador.
 - [ ] Cada regla nueva del contrato tiene su prueba declarada y `verificar-contrato` sale en verde.
 - [ ] Los veinticinco pasos de `CLAUDE.md` §8 salen en verde, y `tsc --noEmit` y la suite de `componentes/` también.
-- [ ] Las pruebas nuevas se vieron fallar antes de la implementación (paso 1).
+- [x] Las pruebas nuevas se vieron fallar antes de la implementación (paso 1): 26 en rojo, 75 en verde, en `RangoFecha.test.tsx` (reglas [24] a [32]).
 
 ## Decisiones tomadas y descartadas
 
@@ -114,7 +114,7 @@ Convenciones:
 - **No:** `fechaMinima`: sin caso hoy.
 - **No:** que el componente conozca «hoy» o la zona horaria: la app lo pasa.
 - **Sí:** v1.150.0 (minor). Es una prop nueva y opcional, sin cambio de comportamiento por omisión; así se numeraron las adiciones anteriores.
-- **Sí:** el catálogo **documenta** la prop (texto, código y fila de props), pero no estrena un calendario interactivo nuevo. El calendario del catálogo es su propio guion y no el componente (`memoria`, «el catálogo no puede enseñarlo todo»): la prueba real de la prop es la suite del componente.
+- **Sí:** el catálogo **documenta** la prop (párrafo y ejemplo de código), pero no estrena un calendario interactivo nuevo. El calendario del catálogo es su propio guion y no el componente (`memoria`, «el catálogo no puede enseñarlo todo»): la prueba real de la prop es la suite del componente.
 
 ## Riesgos
 
