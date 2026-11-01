@@ -65,19 +65,20 @@ export type CuadroEstadoProps = {
 };
 ```
 
-Token semántico nuevo en `sistema/tokens/fuente.mjs`, con par claro y oscuro (el oscuro se elige entre colores ya autorizados y se mide; no se escribe a mano):
+Token semántico nuevo en `sistema/tokens/fuente.mjs`, con par claro y oscuro (el oscuro es `negro_100`, medido el 2026-11-01; `negro_200` se descartó porque no llega a 4,5:1 sobre `fondo-fila-hover` oscuro):
 
 ```js
-'sin-estado': { claro: 'gris_700', oscuro: /* a medir */, uso: 'Borde y letra del cuadro sin estado' }
+'sin-estado': { claro: 'gris_700', oscuro: 'negro_100', uso: 'Borde y letra del cuadro sin estado' }
 ```
 
 Convenciones:
 
 - **Emisión:** `<span class="cuadro cuadro-<tono>" role="img" aria-label={titulo}>{letra}</span>`. `role="img"` hace que el lector anuncie `titulo` completo y no solo «P». El prefijo de clases es `cuadro`, que `extraer.mjs` debe reconocer.
 - **Letra:** si `letra` no tiene exactamente un carácter, en desarrollo se avisa por consola con el mismo patrón que `TablaDatos` (`process.env.NODE_ENV !== 'production'`); en producción se pinta lo recibido.
+- **Tono de cada símbolo del requerimiento:** `P` → `exito`, `T` → `aviso`, `I` → `info` (lo fija el equipo: no hay tono entre `aviso` y `error`), `F` → `error`, `–` → `ninguno`. Es la asignación de la pantalla consumidora; el componente no la impone, pero el catálogo la usa como ejemplo.
 - **Colores:** los cinco tonos de significado reutilizan los tokens `--<tono>-fondo`, `--<tono>-texto` y `--<tono>-acento` que ya usa `Chip`. `inactivo` reutiliza los de `.chip-inact`. No se añade ningún escalón a `autorizados.lock.json`.
 - **Distinción sin color:** `ninguno` se distingue por la **forma** (borde punteado, sin relleno), no por el tono; es lo que cumple SC 1.4.1 aunque el gris se parezca al de `inactivo`.
-- **Contraste:** el borde de `ninguno` debe cumplir 3:1 (SC 1.4.11) y su letra 4,5:1 contra `fondo-pagina` y `fondo-tarjeta`, en claro y oscuro. Los pares nuevos entran en `verificar-contraste.mjs` como bloqueantes.
+- **Contraste:** el borde de `ninguno` debe cumplir 3:1 (SC 1.4.11) y su letra 4,5:1 contra **los cinco fondos donde puede caer**, ya que no tiene relleno propio y se ve sobre lo que haya debajo: `fondo-pagina`, `fondo-tarjeta`, `fondo-encabezado`, `fondo-fila-alt` y `fondo-fila-hover`, en claro y oscuro. Medido el 2026-11-01 (mínimo por modo): `gris_700` en claro 6,06:1 y `negro_100` en oscuro 6,82:1 (el mínimo está sobre `fondo-fila-hover`). Los diez pares nuevos entran en `verificar-contraste.mjs` como bloqueantes.
 - **Tamaño:** la regla base fija 30 px (móvil primero, §4bis) y la de 28 px va en `@media (min-width: 641px)`, de modo que 640 px exactos sigue siendo 30 px, el mismo corte de 640 px que ya usan 8 reglas de la hoja con `max-width`. El patrón `min-width` no es nuevo (hay una a 768px), pero es la minoría: el paso 3 lo comprueba contra los candados. No se usa `@container`: la hoja no lo emplea y el cuadro, que es una hoja del árbol, no puede consultar a un contenedor que nadie declara.
 - **Letra:** `font-size: 13px` (el tamaño de `s-etiqueta`) y `font-weight: 600` (elección declarada, no el 500 de `s-etiqueta`); sin tamaños fuera de la escala. Centrada con `display: inline-flex`; el cuadro no recorta la letra.
 
@@ -122,6 +123,7 @@ Convenciones:
 - **Sí:** color de `ninguno` = `gris_700` mediante un token semántico nuevo. Decisión del responsable el 2026-11-01. Es un color ya autorizado, no amplía la lista.
 - **No:** `identidad-2` (morado). Es el más lejano de los cinco estados, pero la identidad «agrupa, no informa» y ese morado ya marca una sede o turno en la misma pantalla. Se confundiría con un grupo.
 - **No:** `identidad-1` (verde azulado). Queda a 18,4 CIEDE2000 de `exito`: se leería como «presente».
+- **Sí:** `inactivo` en el API aunque ningún símbolo del requerimiento lo use: el equipo lo lista entre los tonos que pide, y otros usos de la misma pieza (pasos de un proceso, partidos) pueden necesitarlo. **No** `pendiente`: el equipo no lo pide y el candado `verificar-tono` ya vigila que los tonos se distingan; añadirlo sería ampliar sin petición.
 - **Reconocido:** el gris de `ninguno` es de la familia del gris de `inactivo`. Lo que los separa es la forma (punteado, sin relleno), no el tono; es lo que pide SC 1.4.1.
 - **Sí:** `tono` y `titulo` obligatorios. Sin `titulo` el lector de pantalla solo diría «P»; sin `tono` el cuadro sería color-nada. Misma lógica que el texto obligatorio de `Chip`. Decisión del responsable el 2026-11-01.
 - **Sí:** tamaño por **ventana**, con base de 30 px y 28 px desde 641 px. Decisión del responsable el 2026-11-01, que **sustituye** a la de contenedor tomada ese mismo día tras evaluar la factibilidad: la hoja no usa `@container` en ningún sitio, el cuadro no puede consultar un contenedor que nadie declara, y los candados de promesa, empate y muerta solo manejan `@media`. Respeta «móvil primero» (§4bis): el estado inicial es el estrecho.
@@ -140,7 +142,8 @@ Convenciones:
 | Riesgo | Mitigación |
 |---|---|
 | El gris de `ninguno` se confunde con el de `inactivo` si alguien mira solo el color | La forma lo separa (punteado, sin relleno); criterio de aceptación en escala de grises |
-| El par oscuro de `sin-estado` no alcanza 3:1 con `fondo-tarjeta` | Se elige entre colores autorizados y se mide en el paso 2, antes de escribir el componente; si ninguno alcanza, se detiene y se avisa |
+| Los pares de `sin-estado` fallan al entrar en el candado (el cálculo del 2026-11-01 es a mano) | `negro_100` y `gris_700` dan ≥ 6,06:1 en los cinco fondos; el paso 2 los confirma con `verificar-contraste.mjs` antes de escribir el componente, y si alguno falla se detiene y se avisa |
+| `ninguno` cae sobre filas alternas o bajo hover y pierde legibilidad | Los pares incluyen `fondo-fila-alt` y `fondo-fila-hover` en los dos modos; el borde punteado se mide contra los mismos cinco fondos |
 | Un nuevo token cambia el recuento de pares del candado de contraste | La cifra publicada en `CLAUDE.md` se corrige con lo que mida el candado, no con una estimación |
 | Siete cuadros no caben junto a la foto y el nombre a 390 px | La pieza mide ~234 px por sí sola (7×30 + 6 huecos de 4 px, a confirmar al medir); la maquetación de la fila es de la pantalla consumidora. Sin vista apilada, se pide aparte |
 | Se da por cumplido «móvil primero» porque la pieza cabe, y la pantalla del equipo no | La pieza mide ~234 px; la fila con foto y nombre depende de la fila apilada que `TablaDatos` no tiene. Se declara al equipo; esta spec no promete la pantalla |
