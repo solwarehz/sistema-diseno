@@ -312,7 +312,8 @@ No las «mejores» por iniciativa propia. Están razonadas:
 - **Se trabaja solo en la rama permanente `work`** (decisión del responsable, 2026-11-01).
   Nunca se trabaja en `main`. De `work` salen las ramas temporales (`feat/*`, `fix/*`,
   `docs/*`…) y a `work` vuelven. **A `main` solo se llega con un PR `work` → `main`**: nada de
-  push directo, ni siquiera de avance directo. Antes de la primera edición de una tarea se
+  push directo, ni siquiera de avance directo. **La única forma de llegar a `main` en GitHub
+  es un PR**, venga de quien venga —agente, usuario o automatización—. Antes de la primera edición de una tarea se
   comprueba que `HEAD` está en `work` o en una rama que salió de ella.
 - **`main` sí se actualiza en este proyecto** —y solo en este—, pero **únicamente
   por PR y cuando está verificado y sin errores**. La condición no es una formalidad: es
