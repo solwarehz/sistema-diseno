@@ -1,563 +1,172 @@
 # CLAUDE.md — Sistema de diseño Colegio Albert Einstein
 
-**Lee esto completo antes de tocar nada.** Este archivo viaja con el repositorio:
-es lo primero que ve cualquier agente que clone en una máquina nueva.
-
-**Y después lee [`memoria/`](memoria/00-INDICE.md)** — estado real, registro de
-decisiones con su porqué, qué falta tras un clon, y pendientes por retorno. La
-memoria del agente vive en `~/.claude` y **no se clona**; por eso lo que importa
-recordar está en el repositorio.
-
----
+**Lee esto completo antes de tocar nada.** Viaja con el repositorio: es lo primero que ve cualquier
+agente que clone en una máquina nueva. **Después lee [`memoria/`](memoria/00-INDICE.md)** (estado real,
+decisiones con su porqué, qué falta tras un clon): la memoria del agente vive en `~/.claude` y no se
+clona. La historia que se quitó de aquí está en
+[`memoria/08-texto-retirado-de-claude-md.md`](memoria/08-texto-retirado-de-claude-md.md).
 
 ## 1 · Qué es este repositorio
 
-La implementación ejecutable de `SISTEMA-DE-DISENO.md` (documento **MMI-DS**),
-el sistema de diseño web del Colegio Albert Einstein, Huaraz.
+La implementación ejecutable de `SISTEMA-DE-DISENO.md` (**MMI-DS**), el sistema de diseño web del
+Colegio Albert Einstein, Huaraz. El documento es la **especificación**; esto es el **código**. Si
+discrepan, gana el de versión más alta y se corrige el otro en el mismo commit.
 
-El documento es la **especificación**; esto es el **código**. Cuando ambos
-discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
-commit. Nunca se deja la contradicción viva.
-
-**Estado actual: v1.149.0** — **R162: el gancho que mide deja de depender de
-que la caja ya exista**, reportado por el equipo contra la v1.147.0.
-
-`useCapacidadTablero` recibía un `RefObject` y lo miraba **una vez**, dentro del
-efecto. Cuando la caja se monta detrás de una condición —un cargador, una
-consulta, un `Suspense`— en ese instante `caja.current` es `null`, el efecto se
-rinde y **el observador no se suscribe nunca**: el tablero se queda con la
-capacidad de una caja de 0×0. Sí volvía a medirse —en cada `resize` de
-ventana—, y ese matiz es del equipo: por eso el defecto **se cura con el gesto
-de ir a mirarlo** en escritorio y sobrevive entero en un teléfono, donde no se
-redimensiona nunca. Lo que no ocurría era **suscribirse**.
-
-**La v1.147.0 lo arregló a medias**, y eso es lo que hay que decir: hizo que
-`medir` reintentara, pero dejó el `observe` detrás del mismo guardia. Medir una
-vez más no es suscribirse. **Media corrección se lee en verde igual que una
-entera.**
-
-La causa de fondo es de **orden**, no de código: un `RefObject` solo tiene nodo
-*después* de pintar, así que cualquier gancho que lo reciba tiene que adivinar
-cuándo mirarlo, y esa adivinanza falla siempre en el mismo sitio. La forma que
-no adivina es la contraria — que el gancho **devuelva** el `ref` y sea React
-quien lo llame, con el nodo en la mano. `useCapacidadTablero()` ahora devuelve
-`{ ...capacidad, ref }`, y **la firma vieja sigue funcionando**: quien ya pasa
-un `RefObject` no tiene por qué enterarse de esto para dejar de estar roto.
-
-**Y el primer arreglo tampoco estaba bien.** Salió en verde con 39 pruebas y una
-auditoría lo tumbó por tres sitios —`StrictMode`, la caja que se desmonta y
-vuelve, y la pérdida del rescate por `resize`—, los tres el mismo error:
-**tratar el enganche como un suceso y no como un estado que hay que mantener**.
-Ahora se reconcilia después de cada render.
-
-El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se
-reescribe con cada cambio de estado — este número es lo único que se toca aquí.
-
----
+**Estado actual: v1.149.0** — R165: `CuadroEstado`, un cuadrado de una letra con tono (SPEC 03).
+El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md); **este número es lo único que se toca aquí**.
 
 ## 2 · Lo primero al abrir sesión
 
 ```bash
-git -C . pull --ff-only
+git branch --show-current              # debe ser `work` o una rama que salió de ella (§8)
+git pull --ff-only
 node sistema/tokens/generar.mjs
 node sistema/candado/verificar-contraste.mjs
 ```
 
-Si el verificador falla, **para y avisa**. Significa que alguien cambió un color
-sin regenerar el contrato, o que el contrato miente. No sigas trabajando encima.
-
-Nunca uses `git checkout` ni `git stash` sobre el árbol: trabajan varios agentes
-a la vez y te llevarías por delante trabajo ajeno. Para revertir un experimento,
-edición inversa.
-
----
+Si el verificador falla, **para y avisa**: alguien cambió un color sin regenerar el contrato, o el
+contrato miente. Nunca uses `git checkout` ni `git stash` sobre el árbol: trabajan varios agentes y te
+llevarías trabajo ajeno. Para ramas temporales, `git switch -c`; para revertir, edición inversa.
 
 ## 3 · Límites de la máquina — no negociables
 
-El usuario los fijó de forma expresa:
+- ✅ Escribir, leer y ejecutar **dentro de la carpeta del proyecto**. ❌ **No salir de ella** (ni
+  `~/Downloads`, ni `~/Documents`): si necesitas un archivo de fuera, **pídelo por el chat**.
+- ❌ **No instalar nada en la máquina** (ni node global, ni fuentes, ni Homebrew).
+- ✅ **Docker autorizado de forma permanente** (2026-08-10): contenedores, volúmenes e imágenes de este
+  repositorio, nada fuera. El comando lleva guion: `docker-compose`.
+- ❌ **Nunca borres un archivo del usuario sin permiso explícito**; autorizado, va a la papelera.
 
-- ✅ Escribir, leer y ejecutar **dentro de la carpeta del proyecto**.
-- ❌ **No salir de la carpeta.** Ni leer `~/Downloads`, ni `~/Documents`, ni nada
-  fuera. Si necesitas un archivo de fuera, **pídelo por el chat**: el usuario lo
-  manda y se guarda dentro.
-- ❌ **No instalar nada en la máquina.** Ni node global, ni fuentes, ni Homebrew.
-- ✅ **Docker: autorizado de forma permanente para este proyecto** (2026-08-10,
-  por el responsable). El agente puede levantar y apagar los contenedores del
-  proyecto según lo necesite, sin pedir permiso cada vez. El límite sigue siendo
-  el ambiente del proyecto: contenedores, volúmenes e imágenes que sirven a este
-  repositorio — nada fuera de él.
-- ❌ **Nunca borres un archivo del usuario sin permiso explícito.** Y cuando lo
-  autorice, va a la papelera, no a `rm -rf`.
+Un cambio en la máquina se autoriza **una vez, itemizado y por adelantado**. Las decisiones técnicas
+de dentro de la carpeta **se toman y se reportan**; solo se consultan reglas de negocio y cambios en la máquina.
 
-Para cualquier cambio en la máquina: **pide autorización una vez, itemizada y por
-adelantado** — qué archivos, qué descargas, qué puertos, qué huella queda. No en
-goteo: las aprobaciones constantes acaban en «sí» automáticos sin leer.
+## 4 · Qué NO está en el repositorio
 
-Las decisiones técnicas de dentro de la carpeta **se toman y se reportan**, no se
-consultan. Solo se consultan reglas de negocio y cambios en la máquina.
-
----
-
-## 4 · Qué NO está en el repositorio — y qué hacer
-
-`.gitignore` excluye los binarios de diseño porque **son propiedad del cliente**.
-Al clonar verás `marca/02_identidad/` con solo un `LEEME.md`. **Es lo correcto,
-no es un error.**
-
-| Falta | Cómo se consigue |
-|---|---|
-| `AE-nombre-horizontal.png` | Pedírselo al usuario por el chat |
-| `AE-nombre-vertical.png` | Pedírselo al usuario por el chat |
-| `TIPOGRAFIA-web-y-sistema.png` | Pedírselo al usuario por el chat |
-| `node_modules/` | `docker compose up` — nunca `npm install` en la máquina |
-
-**No inventes los activos que falten. No recortes el escudo del lockup**: produce
-bordes sucios y proporciones que no son las del original. Si falta un activo, el
-catálogo muestra un marcador de posición explícito.
-
-Dos huecos son **trabajo de diseñador** y no se resuelven con código:
-
-1. **No existe el escudo suelto.** MMI-DS §10 lista `AE-escudo-*.png`. No existen.
-2. **No existe el isotipo simplificado** (§8.6). Bajo 56px el escudo es ilegible.
-   Para el marco a 40px y el favicon a 16px **no hay activo válido**.
-
-Y un defecto de identidad abierto (§8.5): el escudo usa `#E30613`, el lockup usa
-`#EC2027`. **Son dos rojos distintos en la misma identidad.** El sistema adopta
-`#E30613` porque el escudo es el elemento primario.
-
----
+`.gitignore` excluye los binarios de diseño porque **son propiedad del cliente**; `marca/02_identidad/`
+trae solo un `LEEME.md` y **es lo correcto**. `AE-nombre-horizontal.png`, `AE-nombre-vertical.png` y
+`TIPOGRAFIA-web-y-sistema.png` se piden al usuario por el chat; `node_modules/` sale de
+`docker-compose up`, nunca de `npm install`. **No inventes los activos que falten ni recortes el
+escudo del lockup**: el catálogo muestra un marcador. Son trabajo de **diseñador**, no de código: el
+escudo suelto (`AE-escudo-*.png`) y el isotipo simplificado (§8.6; bajo 56 px el escudo es ilegible).
+Defecto abierto (§8.5): el escudo usa `#E30613` y el lockup `#EC2027`; el sistema adopta `#E30613`.
 
 ## 4ter · El registro de requerimientos no es del agente
 
-Los requerimientos llegan numerados desde el equipo que los pide
-—`requerimiento-R###-*.md`—. **Ese registro es la fuente de verdad y el agente
-no acuña números en él.**
+Los `R###` los numera el equipo que pide. El agente **no acuña números** (el «R118» inventado el
+2026-09-09 chocó con el real). Sin requerimiento detrás, se describe por lo que hace y por la versión;
+la concordancia está en `sistema/componentes/comportamiento.md`.
 
-Se saltó el 2026-09-09: existía `R123 · selector búsqueda asíncrono` desde las
-16:52 y el trabajo se publicó a las 20:27 como **R118**, un número inventado
-mirando el `R117` del historial de git. Colisionó con el R118 real del equipo
-—*diálogo con acción en gerundio*— y con el R119 —*editor de texto con
-huecos*—. Como la etiqueta y el ZIP de `v1.97.0` ya estaban entregados y no se
-reescriben, el arreglo fue una **tabla de concordancia** en
-`sistema/componentes/comportamiento.md`, no un renombrado.
+## 4bis · Móvil primero — política de diseño (usuario, 2026-09-19)
 
-Si un trabajo no tiene requerimiento detrás, se describe por lo que hace y por
-la versión en que entra. **Sin «R» inventada.**
+- **Lo estrecho es el caso por omisión.** Se diseña para el teléfono y se **gana** con el ancho; si el
+  componente decide su forma en ejecución, el estado inicial es el de móvil.
+- **Nada obliga a deslizar en horizontal para leer.** Deslizar solo vale como forma (un tablero que se
+  pasa como páginas) con tres condiciones: alcanzable con teclado, dice dónde estás y cuántas paradas
+  hay, y nada queda solo ahí (política de creación §5).
+- **Ningún texto queda cortado sin forma de leerlo entero, y `title` NO basta en un teléfono.** Primero
+  no recortar (envolver, apilar); si hay que recortar, el texto entero debe ser alcanzable sin puntero.
+- **Se verifica midiendo, no mirando:** a **360 px** como mínimo (no solo a 390) y en navegador.
+- **En la hoja:** la regla base es la estrecha, fuera de toda `@media`; lo ancho entra con `min-width`.
+  No se copian las `max-width` heredadas. **No hay `@container`** y no se introduce sin más (los
+  candados de promesa, empate y muerta solo manejan `@media`); el ancho de un contenedor se mide en JS.
+- **Evitar:** dar por buena la pantalla porque cabe la pieza; una letra, sigla o icono como única
+  información (`aria-label` no sirve a quien ve «P»: hace falta leyenda visible); recortar o deslizar
+  lo que puede envolver; escribir lo estrecho como excepción.
+- **Un precedente se lee, no se cita de memoria** (cuenta con `grep -c`). Que el equipo no lo pida **no
+  lo saca de la política**.
 
----
+## 4bis-2 · Color y componentes (usuario)
 
-## 4bis · Tres reglas que el usuario fijó expresamente
-
-**MÓVIL PRIMERO. No es una preferencia: es política de diseño y se cumple.**
-La fijó el responsable el 2026-09-19, y entra aquí porque el sistema la estaba
-incumpliendo sin darse cuenta.
-
-Qué significa, en concreto y sin margen:
-
-- **Lo estrecho es el caso por omisión, no la excepción.** Un componente se
-  diseña para la pantalla pequeña y **gana** cosas cuando hay sitio; no se
-  diseña ancho y se le recorta. Cuando el componente decide su forma en tiempo
-  de ejecución, **el estado inicial es el de móvil** y la forma ancha aparece al
-  comprobar que cabe — no al revés.
-- **Nada obliga a deslizar en horizontal para leer lo que la pantalla tiene que
-  decir.** Si a un ancho de teléfono hay que arrastrar para ver una columna,
-  eso es un defecto del componente, no del teléfono.
-  **Deslizar sí puede ser la forma** —un tablero que se pasa como las páginas de
-  iconos de un teléfono—, y entonces hacen falta las tres condiciones de la
-  política de creación §5: alcanzable con teclado, que diga dónde estás y
-  cuántas paradas hay, y que **nada quede sólo ahí**. Sin las tres, es
-  desbordamiento con otro nombre.
-- **Ningún texto queda cortado sin forma de leerlo entero — y `title` NO basta
-  en un teléfono.** El recorte con puntos suspensivos es presentación; si el
-  texto completo no se puede recuperar, la información **no está**.
-  **Esta regla se escribió mal la primera vez** y lo cazó una auditoría: decía
-  «si no está en `title`… no está», mandando como rescate justo lo que este
-  repositorio ya tenía registrado como inservible ahí —`memoria/06-cobertura.md`,
-  ficha C-08: *«Hoy solo hay `title`, que no se ve en móvil ni con teclado»*—.
-  En una pantalla táctil no hay puntero que pasar por encima.
-  Así que el orden es éste: **primero, no recortar** —envolver en dos líneas,
-  apilar, dar una presentación estrecha—; si hay que recortar, el texto entero
-  tiene que estar **alcanzable sin puntero**: al tocar, en una fila de detalle o
-  en el propio contenido. `title` es el suelo para ratón y lector, **no el
-  techo**, y por sí solo no cumple esta política.
-- **Se verifica midiendo, no mirando.** A 360 px como mínimo, y en navegador.
-- **Cómo se escribe en la hoja.** La regla base es la estrecha, fuera de toda
-  `@media`; lo ancho entra con `min-width`. La hoja heredó consultas `max-width`
-  (escritas al revés): no se copian en piezas nuevas. **No hay `@container`** en
-  la hoja y no se introduce sin más: necesita un ancestro que declare el
-  contenedor y los candados de promesa, empate y muerta solo manejan `@media`.
-  El ancho de un contenedor se mide en JS (`ResizeObserver`, regla 33 de la
-  matriz de privilegios).
-- **Evitar al diseñar para un teléfono pequeño:**
-  - **Medir al ancho de la maqueta.** El mínimo es 360 px (arriba). Un criterio
-    escrito a 390 px —el ancho de la maqueta del R165— deja fuera los teléfonos
-    que la política protege. Se escribe y se mide a 360.
-  - **Dar por buena la pantalla porque cabe la pieza.** Que siete cuadros midan
-    ~234 px no dice nada de la fila con foto y nombre: eso cabe o no según el
-    sitio que deja el resto. La pieza cumple lo suyo; la pantalla se mide entera.
-  - **Una letra, una sigla o un icono como única información.** `aria-label`
-    sirve al lector de pantalla, no a quien ve «P» sin saber qué es: sin puntero
-    no hay `title`. Si el significado no está a la vista, hace falta una leyenda
-    visible y alcanzable sin puntero, o el dato no está (política de arriba).
-  - **Recortar o deslizar lo que puede envolver.** Una serie que no cabe pasa a
-    la línea siguiente; deslizar solo cumple con las tres condiciones de arriba.
-  - **Escribir lo estrecho como excepción** (`max-width`): la base es la estrecha.
-- **Un precedente se lee, no se cita de memoria.** La spec 03 llamó «33 reglas de
-  640 px» a lo que eran las 33 `@media` de la hoja (8 de 640 px), y presentó
-  como CSS de contenedor la regla 33, que mide en JavaScript. Lo cazó la
-  evaluación de factibilidad, no el autor. Contar con `grep -c` y leer el
-  mecanismo antes de escribir «el sistema ya hace X».
-
-Lo que la hizo falta escribir: el R151 trajo la matriz de privilegios y su
-responsive quedó **fuera de alcance por petición del equipo** —lo pusieron como
-deseable, no como requisito—. Se declaró abierto dos veces y nunca se midió. Al
-medirlo: a 360 px la tabla ocupa **687 px** y sigue siendo tabla, con el nombre
-de fila recortado **y sin `title`**. Tres versiones diciendo «pendiente de
-medir» sobre algo que, medido, no servía en un teléfono.
-
-> Que el equipo no lo pida **no lo saca de la política**. Un requisito de
-> producto puede faltar; una política del sistema, no.
-
----
-
-## 4bis-2 · Dos reglas más que el usuario fijó expresamente
-
-**Ningún color autorizado más sin autorización.** Los «colores autorizados» son
-el panel de escalas: los únicos que pueden vivir en el sistema. Ampliarlo **no
-es decisión del agente**. Lo que sí es libre es *nombrar*: un valor que existe
-pero no se usa entra en la familia `marca` —conocida y **no** autorizada— para
-que el candado pueda vigilarlo. Lo que no tiene nombre no se puede bloquear.
-
-> Conocido ≠ autorizado. Nombrar mete el color bajo vigilancia; autorizar le da
-> permiso de uso, y eso lo decide el usuario.
-
-Y cuando un hexadecimal aparezca en documentación como **valor probado y
-rechazado, con su medición al lado**, no se sustituye por el autorizado más
-cercano: cambiaría lo que el registro dice que se midió.
-
-**Todo componente nuevo se compone, no se reconstruye.** Cuatro reglas, en este
-orden: se usan los componentes ya creados · se usan los colores autorizados · si
-falta un componente se crea · con el conjunto se crean los siguientes. Está
-desarrollado en [`sistema/componentes/POLITICA-DE-CREACION.md`](sistema/componentes/POLITICA-DE-CREACION.md)
-y es vinculante: lo que no la cumpla no entra en la entrega.
-
----
+**Ningún color autorizado más sin autorización:** ampliar el panel de escalas lo decide el usuario.
+*Nombrar* es libre: un valor sin uso entra en la familia `marca` (conocida, **no** autorizada) para
+que el candado lo vigile. Un hex documentado como **valor probado y rechazado, con su medición**, no se
+sustituye. **Todo componente nuevo se compone, no se reconstruye:** se usan los ya creados · los
+colores autorizados · si falta uno se crea · con el conjunto se crean los siguientes. Vinculante:
+[`sistema/componentes/POLITICA-DE-CREACION.md`](sistema/componentes/POLITICA-DE-CREACION.md).
 
 ## 5 · Cómo se cambia un color
 
-Hay **un solo** sitio donde se escribe un valor: `sistema/tokens/fuente.mjs`.
-Todo lo demás se genera.
-
-```bash
-# 1 · editar sistema/tokens/fuente.mjs
-# 2 · subir VERSION (§2.5 regla 8: cualquier cambio exige nueva versión)
-node sistema/tokens/generar.mjs          # regenera lock, CSS y preset
-node sistema/candado/verificar-contraste.mjs   # debe salir con 0 fallos
-```
-
-**Nunca edites a mano** `paleta.lock.json`, `tokens-light.css` ni
-`tailwind-preset.ts`. Llevan aviso de archivo generado. El verificador detecta la
-edición manual y falla.
-
-Si tu cambio hace fallar el candado, **el candado tiene razón**. No lo desactives.
-
----
+**Un solo** sitio donde se escribe un valor: `sistema/tokens/fuente.mjs`. Todo lo demás se genera.
+Edita, sube `VERSION` (todo cambio exige versión nueva), y corre `node sistema/tokens/generar.mjs` y
+`node sistema/candado/verificar-contraste.mjs` (0 fallos). **Nunca edites a mano** `paleta.lock.json`,
+`tokens-light.css`, `tailwind-preset.ts` ni `sistema/componentes/componentes.css`: son **generados**
+(el último lo extrae `extraer.mjs` del catálogo; el CSS se escribe en la plantilla de
+`sistema/cascaron/generar-cascaron.mjs`). Un token nuevo va también en `grupos` de `generar.mjs`. Si
+tu cambio hace fallar el candado, **el candado tiene razón**.
 
 ## 6 · Reglas que el código hace cumplir
 
-`sistema/candado/candado.eslint.config.mjs` prohíbe, con fallo de build:
+`sistema/candado/candado.eslint.config.mjs` prohíbe, con fallo de build: hex crudo, `rgb()`, `hsl()` ·
+`bg-[#fff]` y arbitrarios, `text-[Npx]` (solo los pasos de la escala) · `outline-none` (con teclado te
+pierdes) · primitivas en componentes · `marca-amarillo`/`marca-celeste` (1,2:1 y 2,6:1: no admiten
+texto) · `font-thin/light/extrabold/black` (cuatro pesos) · el atributo `style` en línea. Lo que no
+pasa por el token, el candado no lo protege. `app/diseno/**` está exento: exhibe la paleta.
 
-| Prohibido | Por qué |
-|---|---|
-| Hex crudo, `rgb()`, `hsl()` | §2.5.6 — lo que no pasa por el token, el candado no lo protege |
-| `bg-[#fff]` y arbitrarios | §2.5.6 — evaden el preset |
-| `text-[Npx]` | §3.6.3 — solo los pasos de la escala |
-| `outline-none` | §2.5.7 — es el defecto real de §1.3: con teclado te pierdes |
-| Primitivas en componentes | §2.5.1 — existen para que los semánticos elijan |
-| `marca-amarillo`, `marca-celeste` | §2.5.5 — 1,2:1 y 2,6:1, no admiten texto |
-| `font-thin/light/extrabold/black` | §3.2 — cuatro pesos y ninguno más |
-| Atributo `style` en línea | §2.5.6 — evade preset y candado |
+## 7 · Cuatro cosas que el documento prohíbe (§9) — no las «mejores» por iniciativa
 
-`app/diseno/**` está exento: su trabajo es exhibir la paleta.
-
----
-
-## 7 · Cuatro cosas que el documento prohíbe — §9
-
-No las «mejores» por iniciativa propia. Están razonadas:
-
-1. **No montar Storybook.** Para ocho componentes es sobrecarga y se desincroniza.
-   El catálogo es la ruta `/diseño` dentro de la app, que importa los componentes
-   reales y **no puede divergir**.
-2. ~~**No hacer modo oscuro.**~~ **APROBADO el 2026-08-09 por el responsable.**
-   Deja de ser una prohibición y pasa a ser superficie mantenida: los pares en
-   oscuro entran en el candado de contraste igual que los de claro, y ninguna
-   versión sube con uno en rojo. Lo que la prohibición decía sigue siendo cierto
-   —duplica la superficie de prueba— y por eso lo que se compra con la
-   aprobación es trabajo, no una casilla: **196 pares** en vez de 93 —156
-   bloqueantes, 78 por modo; eran 186/146/73 hasta que `sin-estado` sumó cinco por modo—. Aquí decía «178 en vez de 89» y llevaba versiones
-   sin medirse; lo cazó una auditoría el 2026-09-15.
-3. **No mostrar el markup interno de los componentes compartidos.** Lo que se
-   copia es **la importación y las props**. Copiar utilidades de Tailwind aplica
-   solo a composiciones puntuales.
-4. **No adoptar librería de componentes en general.** Sí primitivas accesibles
-   para exactamente tres casos: diálogo, menú y **selector con búsqueda**. El
-   patrón `combobox` de ARIA escrito a mano produce fallos sistemáticos.
-
----
+1. **No montar Storybook:** el catálogo es `/diseño` y no puede divergir.
+2. El modo oscuro **está aprobado** (2026-08-09) y es superficie mantenida: **196 pares, 156
+   bloqueantes, 78 por modo**; ninguna versión sube con uno en rojo.
+3. **No mostrar el markup interno** de los compartidos: se copia la importación y las props.
+4. **No adoptar librería de componentes**, salvo primitivas accesibles para diálogo, menú y selector con búsqueda.
 
 ## 8 · Git
 
 - Repositorio: **`solwarehz/sistema-diseno`** · privado.
-- **Se trabaja solo en la rama permanente `work`** (decisión del responsable, 2026-11-01).
-  Nunca se trabaja en `main`. De `work` salen las ramas temporales (`feat/*`, `fix/*`,
-  `docs/*`…) y a `work` vuelven. **A `main` solo se llega con un PR `work` → `main`**: nada de
-  push directo, ni siquiera de avance directo. **La única forma de llegar a `main` en GitHub
-  es un PR**, venga de quien venga —agente, usuario o automatización—.
-  **`work` es permanente y siempre queda**: nunca se borra, ni local ni remota, ni al mergear un PR
-  (sin «delete branch» al cerrarlo) ni para «limpiar». Se borran solo las ramas temporales ya fusionadas. Antes de la primera edición de una tarea se
-  comprueba que `HEAD` está en `work` o en una rama que salió de ella.
-- **`main` sí se actualiza en este proyecto** —y solo en este—, pero **únicamente
-  por PR y cuando está verificado y sin errores**. La condición no es una formalidad: es
-  lo que hace que la regla sea segura, porque `main` es de donde instala el área
-  de sistemas. Antes de subir, los **veinticinco** pasos **en verde** y las pruebas
-  pasando. **Son exactamente los de `sistema/paquete/publicar.mjs`, y en su mismo orden**, y esta lista
-  decía «dieciséis» y **le faltaba `generar-cascaron.mjs`** hasta la v1.107.0: el
-  catálogo se quedaba sin regenerar y los candados que lo leen medían la versión
-  anterior. Lo encontró una auditoría el 2026-09-11. Es el mismo defecto que esta
-  sección declara fatal dos párrafos más abajo, cometido aquí mismo:
+- **Se trabaja solo en la rama permanente `work`.** Nunca en `main`. De `work` salen las ramas
+  temporales (`feat/*`, `fix/*`, `docs/*`…) y a `work` vuelven. **La única forma de llegar a `main` en
+  GitHub es un PR `work` → `main`**, venga de quien venga: nada de push directo ni de avance directo.
+  Se comprueba la rama **antes de la primera edición** de una tarea.
+- **`work` es permanente y siempre queda**: nunca se borra, ni local ni remota, ni al mergear un PR
+  (sin «delete branch») ni para «limpiar». Solo se borran las ramas temporales ya fusionadas.
+- **El merge del PR es el despliegue y se pide antes de hacerlo.** Tras mergear, `work` se sincroniza
+  con `main`. **Nunca `--force`** sin permiso expreso.
+- Se **commitea y se hace push al avanzar** —a `work` o sus ramas temporales—, sin esperar a que se
+  pida. Commits atómicos, con mensaje que explique el **porqué**. **Antes de cada commit revisa el
+  diff**: si aparece `.env`, una clave o una credencial, **aborta**. No metas lo de `.gitignore`.
+- Para abrir el PR, **los veinticinco pasos en verde** y las pruebas pasando. **Son exactamente los de
+  `sistema/paquete/publicar.mjs` y en su orden** (una lista incompleta es un candado abierto):
 
   ```bash
   node sistema/tokens/generar.mjs
-  node sistema/cascaron/generar-cascaron.mjs  # el catálogo, ANTES de lo que lo lee
-  node sistema/componentes/extraer.mjs        # incluye el candado de huérfanas Y los @keyframes
-  node sistema/candado/verificar-contraste.mjs
-  node sistema/candado/verificar-tono.mjs     # y que dos tonos DISTINTOS se vean distintos
-  node sistema/candado/verificar-color.mjs
-  node sistema/candado/auditar-cascaron.mjs
-  node sistema/candado/probar-candado.mjs
-  node sistema/candado/verificar-cascada.mjs  # la hoja QUE VIAJA, a once anchos
-  node sistema/candado/verificar-altura.mjs   # una fila de controles es UNA fila
-  node sistema/candado/verificar-contrato.mjs # toda regla Obligatorio tiene prueba
-  node sistema/candado/verificar-entrega.mjs  # lo publicado está EN el paquete
-  node sistema/candado/verificar-promesa.mjs  # se VE igual que en el catálogo
-  node sistema/candado/verificar-elemento.mjs # se emite el MISMO elemento
-  node sistema/candado/verificar-atributo.mjs # y con los MISMOS atributos
-  node sistema/candado/verificar-empate.mjs   # el ORDEN no decide distinto en cada hoja
-  node sistema/candado/verificar-forma.mjs    # lo publicado no cambia de FORMA sin decirlo
-  node sistema/candado/verificar-omision.mjs  # el catálogo enseña lo que se ENTREGA por omisión
-  node sistema/candado/verificar-iconos.mjs   # el catálogo y el producto dibujan el MISMO icono
-  node sistema/candado/verificar-promesa-muerta.mjs # lo que VIAJA lo puede activar alguien
-  node sistema/candado/verificar-copia.mjs    # lo que se INVITA A COPIAR compila
-  node sistema/candado/verificar-muerta.mjs   # una regla escrita que NO se aplica nunca
-  node sistema/candado/verificar-ciegas.mjs   # lo que solo pinta el guion NO lo compara nadie
-  node sistema/candado/verificar-citas.mjs    # lo que el contrato CITA, la hoja lo entrega
-  # y el VEINTICINCO, DENTRO del contenedor, porque node_modules no vive aquí:
+  node sistema/cascaron/generar-cascaron.mjs   # el catálogo, ANTES de lo que lo lee
+  node sistema/componentes/extraer.mjs         # incluye huérfanas y @keyframes
+  for c in verificar-contraste verificar-tono verificar-color auditar-cascaron probar-candado \
+    verificar-cascada verificar-altura verificar-contrato verificar-entrega verificar-promesa \
+    verificar-elemento verificar-atributo verificar-empate verificar-forma verificar-omision \
+    verificar-iconos verificar-promesa-muerta verificar-copia verificar-muerta verificar-ciegas \
+    verificar-citas; do node sistema/candado/$c.mjs || break; done
+  # el 25, DENTRO del contenedor (node_modules no vive aquí), y las pruebas:
   docker-compose exec -T ds sh -c 'cd /trabajo && sh sistema/candado/probar-con-eslint.sh'
+  docker-compose exec -T ds sh -c "ulimit -c 0; cd componentes && npx vitest run --no-file-parallelism && npx tsc --noEmit"
+  git push origin work && gh pr create --base main --head work
   ```
 
-  **El de ESLint es el más joven y nació de una ausencia.** §6 dice que el
-  candado prohíbe ocho cosas «con fallo de build», y no había tal fallo: ESLint
-  no se corría en ningún paso. Al correrlo salieron **dieciocho infracciones**,
-  dieciséis de ellas desde la v1.123.0 — cinco versiones publicadas. Y su propio
-  guion **salía en verde cuando ESLint no podía ejecutarse**: contaba cero y daba
-  por bueno, que es el defecto que este archivo persigue, dentro del candado que
-  comprueba el candado.
-
-  Los dos últimos faltaban de esta lista y **la memoria los contaba entre los
-  ocho**: el 2026-08-10 pasaron un día entero sin correrse por eso, y al
-  correrlos salieron en rojo los dos. Una lista incompleta de candados es un
-  candado abierto.
-
-  El de la **promesa muerta** es el último, y el que enseña que quince no eran
-  suficientes. El 2026-08-28 el equipo que usa el sistema reportó que el
-  selector con búsqueda no se veía como el catálogo: tenían razón en **nueve**
-  puntos, y **los quince estaban en verde**. Dos de los nueve eran reglas que
-  viajaban en el paquete de todos los productos y que **ningún producto podía
-  activar** —`.sel-caja.abierta`, con el componente sin emitir nunca `abierta`—.
-
-  Ninguno de los otros podía verlo. El de huérfanas mira solo el **primer**
-  nombre del selector, así que `.sel-caja.abierta` no le parece huérfana porque
-  `.sel-caja` sí se usa: la ceguera de prefijo, la misma que dejó pasar
-  `.sel-op.activa`. El de la omisión hace la pregunta **contraria** —«¿el
-  catálogo enseña la base sin el modificador?»— y nadie hacía esta. Y el de la
-  promesa barre el marcado **estático** del catálogo, donde la lista del
-  selector es un `<ul hidden>` vacío que llena su guión: no había nada que
-  comparar.
-
-  Se ata **por archivo** y no en un montón común de clases. Fue la corrección
-  que hizo falta nada más probarlo: `abierta` la emite `MarcoApp` en
-  `.nav-rama.abierta`, así que con un montón global **el candado daba por viva
-  la clase y salía en verde delante del defecto que nació para cazar**. La
-  pregunta correcta no es «¿alguien emite esta clase?», es «¿alguien emite las
-  dos **juntas**?».
-
-  Y nada más escribirlo encontró un defecto que nadie buscaba: `Paginacion` no
-  emitía `activa`, así que **la página en curso no se pintaba en ningún
-  producto**. Lleva **deuda declarada** —nueve el día que nació, **siete** hoy, con su daño real— y falla
-  también si una se arregla y no se poda.
-
-  El de la cascada es el único que no lee lo que hay, sino lo que **falta**: el
-  defecto R25 —dos iconos pintados a la vez— vivía en la ausencia de una regla,
-  y por eso los otros seis no lo vieron en tres versiones.
-
-  El del **elemento** cierra el hueco que dejaba el de la promesa, y nació de
-  dos defectos de la misma semana: el catálogo pintaba la tarjeta pulsable como
-  `<a>` y el componente la emitía como `<button>` (R56), y la hoja estilizaba
-  `h4` donde el componente emitía `h3` (R58). En los dos, la tarjeta se veía
-  perfecta en el catálogo y mal en cada producto. **El candado de la promesa no
-  podía verlos**: resuelve la cascada sobre el MISMO marcado, así que cuando lo
-  que difiere es el elemento, le das lo mismo a las dos hojas y las dos
-  responden lo mismo. Verde, y la pantalla mal.
-
-  Lleva **deuda declarada**: cinco divergencias que encontró el día que se
-  escribió —hoy quedan **dos**—, verificadas a mano y escritas con su daño real. Protege ya de las
-  nuevas y no finge que las viejas no existen. Arreglar una es quitar su línea
-  —y si se arregla y no se quita, el candado también falla, porque una lista de
-  excepciones que nadie poda vuelve a ser el inventario a mano de siempre.
-
-  El de la **forma** es el más joven y el que menos se parece a los demás: no
-  mira lo que el sistema dice, sino **cómo está empaquetado lo que dice**. Nació
-  de un fallo propio. La v1.67.0 metió el analizador de TypeScript delante en el
-  candado de ESLint, y con eso `candado[0].rules` pasó a ser `undefined`: un
-  proyecto que copiaba a mano los cuatro campos de `candado[0]` se habría
-  quedado **sin ninguna regla activa y en verde**, porque ESLint no protesta
-  ante un bloque sin reglas — simplemente no comprueba nada.
-
-  Lo cazó Control Administrativos yendo a mirar la forma antes de confiar en
-  ella, **no porque algo fallara**. Nadie se habría enterado, y es la clase de
-  defecto que este repositorio ya conoce: el `box-sizing` que no viajaba y el
-  analizador que no se entregaba. Lo suyo lo resume mejor que nosotros:
-  *«cambiar la forma de lo exportado rompe a quien lo desarma, y verificar-entrega
-  comprueba que todo salga, no que la forma se mantenga»*.
-
-  Lo correcto sigue siendo esparcir —`...candado`—, pero **un paquete no puede
-  repartir la culpa**: si se puede desarmar, alguien lo desarmará.
-
-  El del **empate** nació de comprobar el anterior. Al montar el mismo marcado
-  con las dos hojas en un navegador —24.642 propiedades— el filtro de columna
-  de la tabla salió a 12px y 26,73px de alto con la hoja entregada y a 13px y
-  36,18 con la del catálogo. **Ninguna regla faltaba ni sobraba: las mismas, en
-  distinto orden.** `.tb-f` y `.campo` empatan en especificidad, y cuando dos
-  reglas empatan gana la última — pero el extractor agrupa por elemento y les
-  cambia el orden relativo. Ninguno de los otros podía verlo: el de la promesa
-  compara una lista de elementos escrita a mano y ése no estaba en ella; el de
-  la cascada resuelve la hoja que viaja contra sí misma, no una contra otra; el
-  del elemento compara etiquetas, no valores.
-
-  Se mide **solo sobre las combinaciones de clases que existen de verdad** en el
-  marcado. Sin ese filtro salen 25.823 pares teóricos —`.sr-solo` contra
-  `.nav-grupo` y demás parejas que no coinciden jamás—, y una lista así no se
-  lee: se ignora.
-
-  El de la **promesa** es el que compara las dos hojas resolviendo la cascada
-  sobre el mismo marcado. Existe porque «no veo el botón CSV como lo veo en el
-  cascarón» no lo cazaba ninguno: el reset `box-sizing: border-box` estaba en
-  el catálogo y **no viajaba**, así que cada producto maquetaba en
-  `content-box`. No lleva lista de propiedades «importantes» —compara todo lo
-  que cualquiera de las dos hojas declare— porque elegir qué mirar es dejarlo
-  a criterio, y eso es lo que se pidió que no se hiciera.
-
-  Se sube **solo por PR**, sin reescribir historia. Con los pasos en verde, `work` se
-  empuja y se abre el PR contra `main`; **el merge del PR es el despliegue y se pide antes
-  de hacerlo**:
-
-  ```bash
-  git push origin work
-  gh pr create --base main --head work
-  ```
-
-  Si algo sale en rojo, **no se abre el PR**. Un `main` roto es un proyecto ajeno roto.
-  **Nunca** `git push` directo a `main`, y **nunca** con `--force`: eso sigue necesitando
-  permiso expreso. Tras mergear el PR, `work` se sincroniza con `main` antes de seguir.
-
-- **Subir a `main` no es publicar.** El área de sistemas instala de **dos
-  formas**, y las dos tienen que funcionar **siempre**: por `npm` con la
-  etiqueta, y descargando el ZIP. Después del push:
-
-  ```bash
-  npm run publicar              # dice qué haría
-  npm run publicar -- --publicar
-  ```
-
-  Pone la etiqueta, crea la publicación con el ZIP adjunto, y **borra los ZIP de
-  las versiones anteriores** — solo la última conserva el suyo. Las etiquetas y
-  las publicaciones **no se tocan**: si se borraran, `npm install` de una versión
-  vieja dejaría de funcionar, que es lo contrario de lo que se garantiza.
-
-  Es un comando y no tres pasos porque los tres pasos ya fallaron: el 2026-08-13
-  se descubrió que las etiquetas se cortaban en **v1.38.0** con el sistema en
-  v1.48.0 —doce versiones sin etiquetar— y que `ACTUALIZAR.md` mandaba instalar
-  `#v1.48.0`, que **no existía**. Nadie podía actualizar y nada lo comprobaba.
-  Mismo defecto que la lista de componentes del empaquetador y que la lista de
-  candados de aquí arriba: **un paso que depende de acordarse.**
-
-  El publicador **se niega** si el árbol está sucio, si `HEAD` no coincide con
-  `origin/main`, o si la etiqueta ya existe apuntando a otro commit. Eso último
-  no se resuelve moviendo la etiqueta —una etiqueta movida entrega cosas
-  distintas según cuándo se baje, que es el defecto abierto de `v1.10.5`—: se
-  sube de versión.
-- En este proyecto **se commitea y se hace push al avanzar**, siempre a `work` o a sus ramas
-  temporales — no se espera a que el usuario lo pida. **Nunca** a `main`.
-- **Antes de cada commit, revisa el diff.** Si aparece `.env`, una clave o una
-  credencial, **aborta**.
-- Commits atómicos y mensaje que explique **por qué**, no solo qué.
-- No metas archivos generados que ya estén en `.gitignore`.
-
----
+  Qué mira cada candado y por qué nació: [`memoria/08-texto-retirado-de-claude-md.md`](memoria/08-texto-retirado-de-claude-md.md) §B.
+  Si algo sale en rojo, **no se abre el PR**: un `main` roto es un proyecto ajeno roto.
+- **Subir a `main` no es publicar.** El área de sistemas instala por `npm` con etiqueta **y** por el ZIP;
+  las dos deben funcionar siempre. Tras el merge, `npm run publicar` (dice qué haría) y
+  `npm run publicar -- --publicar` (etiqueta + publicación con ZIP; borra los ZIP de versiones
+  anteriores). Las etiquetas y publicaciones **no se tocan** (borrarlas rompe `npm install` de versiones
+  viejas). El publicador **se niega** si el árbol está sucio, si `HEAD` no coincide con `origin/main` o
+  si la etiqueta ya existe en otro commit: no se mueve la etiqueta, **se sube de versión**. Publicar
+  requiere petición expresa.
 
 ## 9 · Definición de terminado
 
-Una tarea no está hecha hasta que:
-
-- Se verificó **con una herramienta**, no «debería funcionar».
-- El candado de contraste sale en verde.
-- No quedan artefactos temporales sueltos.
-- Lo que no se pudo verificar **se declara explícitamente**.
-
-**Cero invención.** Ninguna cifra, contraste ni versión sin comprobarla. Si una
-herramienta no da el dato, se dice — no se rellena con lo que parece razonable.
-
-Una prueba que no se ha visto fallar no protege nada: rómpela a propósito, mírala
-en rojo, reviértela.
-
----
+Una tarea no está hecha hasta que se verificó **con una herramienta** (no «debería funcionar»), el
+candado de contraste sale en verde, no quedan artefactos temporales y **lo no verificado se declara**.
+**Cero invención:** ninguna cifra, contraste ni versión sin comprobarla. Una prueba que no se ha visto
+fallar no protege nada: rómpela a propósito, mírala en rojo, reviértela.
 
 ## 10 · Estado
 
-La tabla de módulos que vivía aquí **se quedaba vieja entre versiones** —llegó
-a decir «Componentes: pendiente» con 23 publicados y «Docker sin autorizar» con
-la autorización ya permanente—. Un registro desfasado es peor que ninguno,
-porque se lee como si fuera cierto. El estado por módulo vive en
-[`memoria/01-estado.md`](memoria/01-estado.md), que se reescribe entero con
-cada cambio; aquí solo queda lo que no cambia: las correcciones históricas de
-abajo.
-
-### Correcciones aplicadas sobre MMI-DS v1.0.0
-
-v1.0.0 declara «26 pares verificados, cero fallos». Al verificar los 46 que exige
-la composición base (§5.1) aparecieron dos tokens fuera de norma. Ninguno estaba
-entre los 26 originales:
-
-| Token | Antes | Ahora | Medido | Norma |
-|---|---|---|---|---|
-| `borde-campo` | `#C8C6C4` | `#8B8985` | 1,70:1 → **3,48:1** | SC 1.4.11 |
-| `texto-pista` | `#8B8985` | `#6A6864` | 3,49:1 → **5,55:1** | SC 1.4.3 |
-
-El contorno de los campos a 1,70:1 era imperceptible: los inputs no se distinguían
-del fondo.
-
-En `texto-pista`, el gris más claro que alcanza 4,5:1 queda a **1,06:1** de
-`texto-secundario` — indistinguible. La jerarquía del placeholder no se puede
-expresar con color sin incumplir AA, así que pasó a regla de composición:
-**etiqueta siempre visible, placeholder solo como ejemplo de formato.**
+El estado por módulo vive en [`memoria/01-estado.md`](memoria/01-estado.md), que se reescribe con cada
+cambio; aquí solo está el número de versión (§1). Las correcciones sobre MMI-DS v1.0.0 (`borde-campo`,
+`texto-pista`) están en [`memoria/08-texto-retirado-de-claude-md.md`](memoria/08-texto-retirado-de-claude-md.md) §D.
 
 ## 12. Memoria
-`MEMORY.md` de la raíz del repo es el estado del proyecto para todo agente. No
-es el índice de memoria automática de Claude Code (`~/.claude/projects/...`).
-- Al empezar, léelo para conocer el estado y las decisiones tomadas.
-- **Siempre al terminar una tarea, actualízalo**: estado actual, decisiones
-  importantes (con su porqué) y errores a evitar.
-- Mantenlo breve (máximo ~50 líneas): resume o elimina lo que ya no aporte.
-- Si algo se convierte en una regla permanente, propón moverlo a `AGENTS.md`.
-- No guardes nunca datos sensibles (claves, tokens, datos personales). 
+
+`MEMORY.md` de la raíz es el estado del proyecto para todo agente (no el índice de memoria automática
+de Claude Code). Léelo al empezar y **actualízalo siempre al terminar una tarea**: estado, decisiones
+(con su porqué) y errores a evitar. Máximo ~50 líneas; nunca claves, tokens ni datos personales.
