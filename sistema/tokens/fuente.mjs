@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.148.3";
+export const VERSION = "1.149.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,26 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.149.0', fecha: '2026-11-01',
+    que: 'Componente nuevo: CuadroEstado, un cuadrado de una letra con tono (R165)',
+    porque:
+      'LO PIDIO EL EQUIPO (R165): siete dias por trabajador, a 390 px, con P presente, T tardanza, '
+      + 'I incompleto, F falta y un guion para el dia que no cuenta. Es un componente aparte y no una '
+      + 'variante de `Chip`: el filete de la pildora es estructural y esta pensado para texto. '
+      + 'Cinco tonos de significado con los mismos tokens que el chip, y un sexto, `ninguno`, que se '
+      + 'distingue por la FORMA (borde punteado, sin relleno) y no por el gris. Tamano por ventana, '
+      + 'movil primero: 30 px de base y 28 px desde 641 px. Entra un token, `sin-estado` '
+      + '(gris_700 en claro, negro_100 en oscuro), medido contra los cinco fondos donde cae: minimo '
+      + '6,06:1 en claro y 6,82:1 en oscuro; los pares pasan de 186 a 196. Sin colores nuevos. '
+      + 'LA LETRA SOLA NO INFORMA EN UN TELEFONO: el contrato prohibe usarlo sin una leyenda visible '
+      + 'en la misma pantalla, y el catalogo la lleva. Es una ADICION: nada existente cambia. '
+      + 'FUERA: la fila apilada de `TablaDatos` (hoy no existe; el equipo la pide aparte) y la '
+      + 'pantalla del equipo. SIN VERIFICAR EN NAVEGADOR cuando se escribio esta entrada: las medidas '
+      + '(30x30 y 28x28, siete cuadros bajo 360 px, leyenda sin texto cortado) se miden aparte.',
+    tokens: { alta: ['sin-estado'], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.148.3', fecha: '2026-10-30',
     que: 'El detalle del bloque del Horario va en negrita, y detalleEnfasis={false} lo quita',

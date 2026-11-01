@@ -19,7 +19,7 @@ El documento es la **especificación**; esto es el **código**. Cuando ambos
 discrepen, gana el que tenga la versión más alta y se corrige el otro en el mismo
 commit. Nunca se deja la contradicción viva.
 
-**Estado actual: v1.148.3** — **R162: el gancho que mide deja de depender de
+**Estado actual: v1.149.0** — **R162: el gancho que mide deja de depender de
 que la caja ya exista**, reportado por el equipo contra la v1.147.0.
 
 `useCapacidadTablero` recibía un `RefObject` y lo miraba **una vez**, dentro del
@@ -294,8 +294,8 @@ No las «mejores» por iniciativa propia. Están razonadas:
    oscuro entran en el candado de contraste igual que los de claro, y ninguna
    versión sube con uno en rojo. Lo que la prohibición decía sigue siendo cierto
    —duplica la superficie de prueba— y por eso lo que se compra con la
-   aprobación es trabajo, no una casilla: **186 pares** en vez de 93 —146
-   bloqueantes, 73 por modo—. Aquí decía «178 en vez de 89» y llevaba versiones
+   aprobación es trabajo, no una casilla: **196 pares** en vez de 93 —156
+   bloqueantes, 78 por modo; eran 186/146/73 hasta que `sin-estado` sumó cinco por modo—. Aquí decía «178 en vez de 89» y llevaba versiones
    sin medirse; lo cazó una auditoría el 2026-09-15.
 3. **No mostrar el markup interno de los componentes compartidos.** Lo que se
    copia es **la importación y las props**. Copiar utilidades de Tailwind aplica

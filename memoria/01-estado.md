@@ -1,7 +1,7 @@
 # Estado del proyecto
 
-**Última actualización:** 24 de septiembre de 2026
-**Versión del sistema:** MMI-DS **v1.148.3** — R163: el detalle del bloque del Horario va en negrita por omisión y `detalleEnfasis={false}` lo quita (sobre la v1.148.2, R162: el gancho que mide la caja
+**Última actualización:** 1 de noviembre de 2026
+**Versión del sistema:** MMI-DS **v1.149.0** — R165: `CuadroEstado`, un cuadrado de una letra con tono (SPEC 03; tamaño por ventana, 30 px base y 28 px desde 641 px) y el token `sin-estado` (sobre la v1.148.3, R163: el detalle del bloque del Horario va en negrita por omisión; y la v1.148.2, R162: el gancho que mide la caja
 deja de depender de que la caja ya exista; la v1.147.0 lo arregló a medias
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
@@ -16,10 +16,10 @@ deja de depender de que la caja ya exista; la v1.147.0 lo arregló a medias
 
 ## Dónde estamos, en una frase
 
-El sistema es un **paquete que un producto instala y consume** —36 componentes
+El sistema es un **paquete que un producto instala y consume** —37 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **veintiún pasos de
 verificación** —los que corre `publicar.mjs`, más ESLint y las pruebas: veintidós
-en total—, **1285 pruebas en 60 archivos**, todas en verde—.
+en total—, **1327 pruebas en 62 archivos**, todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
 eran defectos reales del sistema, no de su pantalla.** R129: el calendario no
@@ -52,13 +52,13 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 
 | Módulo | Estado | Cómo se comprobó |
 |---|---|---|
-| Motor de tokens | ✅ | `generar.mjs` — 56 semánticos + 5 de marca, claro y oscuro |
+| Motor de tokens | ✅ | `generar.mjs` — 57 semánticos + 5 de marca, claro y oscuro |
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
-| Contraste en **los dos modos** | ✅ | `verificar-contraste` · **186 pares** · 146 bloqueantes · **0 fallos** |
+| Contraste en **los dos modos** | ✅ | `verificar-contraste` · **196 pares** · 156 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **1285 pruebas en 60 archivos** · `tsc --noEmit` limpio |
-| La hoja que viaja | ✅ | `extraer.mjs` · **1049 reglas de 1568** · **755 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
-| Catálogo navegable | ✅ | `cascaron/index.html` · **70 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
+| Componentes de React | ✅ | **1327 pruebas en 62 archivos** · `tsc --noEmit` limpio |
+| La hoja que viaja | ✅ | `extraer.mjs` · **1114 reglas de 1645** · **804 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
+| Catálogo navegable | ✅ | `cascaron/index.html` · **71 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **62 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
 | Entrega ZIP | ✅ | `sistema-diseno-v1.134.0.zip` · **60 archivos** · **1.465 KB** · se publica con `npm run publicar` |
 | Modo oscuro | ✅ | Aprobado 2026-08-09 · marco en escala de negros |
