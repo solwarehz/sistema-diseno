@@ -188,6 +188,20 @@ Qué significa, en concreto y sin margen:
   contenedor y los candados de promesa, empate y muerta solo manejan `@media`.
   El ancho de un contenedor se mide en JS (`ResizeObserver`, regla 33 de la
   matriz de privilegios).
+- **Evitar al diseñar para un teléfono pequeño:**
+  - **Medir al ancho de la maqueta.** El mínimo es 360 px (arriba). Un criterio
+    escrito a 390 px —el ancho de la maqueta del R165— deja fuera los teléfonos
+    que la política protege. Se escribe y se mide a 360.
+  - **Dar por buena la pantalla porque cabe la pieza.** Que siete cuadros midan
+    ~234 px no dice nada de la fila con foto y nombre: eso cabe o no según el
+    sitio que deja el resto. La pieza cumple lo suyo; la pantalla se mide entera.
+  - **Una letra, una sigla o un icono como única información.** `aria-label`
+    sirve al lector de pantalla, no a quien ve «P» sin saber qué es: sin puntero
+    no hay `title`. Si el significado no está a la vista, hace falta una leyenda
+    visible y alcanzable sin puntero, o el dato no está (política de arriba).
+  - **Recortar o deslizar lo que puede envolver.** Una serie que no cabe pasa a
+    la línea siguiente; deslizar solo cumple con las tres condiciones de arriba.
+  - **Escribir lo estrecho como excepción** (`max-width`): la base es la estrecha.
 - **Un precedente se lee, no se cita de memoria.** La spec 03 llamó «33 reglas de
   640 px» a lo que eran las 33 `@media` de la hoja (8 de 640 px), y presentó
   como CSS de contenedor la regla 33, que mide en JavaScript. Lo cazó la
