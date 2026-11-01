@@ -94,7 +94,7 @@ Convenciones:
 - [x] `Mes siguiente` queda apagado (`aria-disabled`, sin perder el foco) cuando el último mes visible contiene la máxima, y PageDown / flechas no muestran un mes entero posterior. Con `meses={1}` y con `meses={2}`.
 - [x] (pruebas existentes: 1362 en verde sin tocarse; `verificar-promesa` y `verificar-forma` se miran en el paso 6) Sin `fechaMaxima`, el componente se comporta como antes: las pruebas existentes de `RangoFecha` pasan sin modificarse, y `verificar-promesa` y `verificar-forma` siguen en verde.
 - [ ] A 360 px, con `fechaMaxima`, el calendario no desborda ni obliga a deslizar, medido en navegador.
-- [ ] Cada regla nueva del contrato tiene su prueba declarada y `verificar-contrato` sale en verde.
+- [x] Cada regla nueva del contrato (24 a 32) tiene su prueba declarada y `verificar-contrato` sale en verde (visto en rojo con una regla sin respaldo, y revertido).
 - [ ] Los veinticinco pasos de `CLAUDE.md` §8 salen en verde, y `tsc --noEmit` y la suite de `componentes/` también.
 - [x] Las pruebas nuevas se vieron fallar antes de la implementación (paso 1): 26 en rojo, 75 en verde, en `RangoFecha.test.tsx` (reglas [24] a [32]).
 
