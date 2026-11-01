@@ -31,6 +31,7 @@ export { comprimirPdf, formatearPeso, ahorro, esPdf } from './interno/comprimir-
 export { Confirmacion, type ConfirmacionProps } from './Confirmacion';
 export { Boton, type VarianteBoton, type BotonProps } from './Boton';
 export { Chip, type TonoChip, type ChipProps } from './Chip';
+export { CuadroEstado, type TonoCuadro, type CuadroEstadoProps } from './CuadroEstado';
 export { Enlace, type EnlaceProps } from './Enlace';
 export { Campo, Selector, type CampoProps, type SelectorProps } from './Campo';
 export { CampoContrasena, type CampoContrasenaProps } from './CampoContrasena';

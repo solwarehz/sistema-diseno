@@ -69,6 +69,22 @@ describe('CuadroEstado · emisión', () => {
   });
 });
 
+describe('CuadroEstado · tipos', () => {
+  it('tsc rechaza una llamada sin titulo o sin tono (se comprueba con `npm run tipos`)', () => {
+    // Estas líneas no se ejecutan: solo existen para que `tsc` las examine.
+    // Si el tipo dejara de exigir `titulo` o `tono`, el @ts-expect-error sobraría y tsc fallaría.
+    const _sinTitulo = () => (
+      // @ts-expect-error — falta `titulo`
+      <CuadroEstado letra="P" tono="exito" />
+    );
+    const _sinTono = () => (
+      // @ts-expect-error — falta `tono`
+      <CuadroEstado letra="P" titulo="t" />
+    );
+    expect([_sinTitulo, _sinTono]).toHaveLength(2);
+  });
+});
+
 describe('CuadroEstado · aviso de desarrollo', () => {
   it.each(['', 'PP'])('letra «%s» avisa por consola y no rompe el render', (letra) => {
     const aviso = vi.spyOn(console, 'warn').mockImplementation(() => {});
