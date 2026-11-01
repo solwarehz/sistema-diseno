@@ -1,6 +1,6 @@
 # SPEC 04 — RangoFecha: una fecha máxima (`fechaMaxima`)
 
-> **Estado:** Aprobada el 2026-11-01 con el mockup `cascaron/mockup-fecha-maxima.html` (decisiones a, b y c: las propuestas del mockup); pendiente de implementar
+> **Estado:** Aprobada el 2026-11-01 con el mockup `cascaron/mockup-fecha-maxima.html` (decisiones a, b y c: las propuestas del mockup); implementada en v1.150.0, criterios verificados; pasarla a «Implemented» es del responsable
 > **Depende de:** ninguna (SPEC 03 ya está implementada en v1.149.0; no interviene)
 > **Fecha:** 2026-11-01
 > **Objetivo:** Añadir a `RangoFecha` la prop opcional `fechaMaxima`, que apaga en el calendario los días posteriores a ella, en los dos extremos, y que se combina con `maxDias`.
@@ -83,7 +83,7 @@ Convenciones:
 
 ## Criterios de aceptación
 
-- [ ] Con `fechaMaxima` en hoy, el calendario de «Desde» y el de «Hasta» dejan elegir **hoy** y apagan **mañana** (`aria-disabled`), medido en navegador y por prueba.
+- [x] Con `fechaMaxima` en hoy, el calendario de «Desde» y el de «Hasta» dejan elegir **hoy** y apagan **mañana** (`aria-disabled`), medido en navegador y por prueba. (Navegador, componente real a 360 px: con máxima el 12 de noviembre, el 12 elegible y del 13 al 30 apagados, 18 días; «Desde» y «Hasta» por prueba, regla 24.)
 - [x] Hoy se puede elegir como inicio y como final a la vez: el rango resultante es de un día y `onCambio` lo entrega.
 - [x] `fechaMaxima` acepta `string` ISO y `Date`, con el mismo resultado; una hora dentro del `Date` no mueve el día.
 - [x] Un atajo cuyo `hasta` pasa de `fechaMaxima` no se pinta; uno que cabe sí. Con la máxima en hoy, «Hoy» (de `atajosDeDias(1)`) sigue pintado.
@@ -93,9 +93,9 @@ Convenciones:
 - [x] El nombre accesible de un día apagado por la máxima dice que es posterior al máximo, y el de uno apagado por `maxDias` sigue diciendo lo de siempre.
 - [x] `Mes siguiente` queda apagado (`aria-disabled`, sin perder el foco) cuando el último mes visible contiene la máxima, y PageDown / flechas no muestran un mes entero posterior. Con `meses={1}` y con `meses={2}`.
 - [x] (pruebas existentes: 1362 en verde sin tocarse; `verificar-promesa` y `verificar-forma` se miran en el paso 6) Sin `fechaMaxima`, el componente se comporta como antes: las pruebas existentes de `RangoFecha` pasan sin modificarse, y `verificar-promesa` y `verificar-forma` siguen en verde.
-- [ ] A 360 px, con `fechaMaxima`, el calendario no desborda ni obliga a deslizar, medido en navegador.
+- [x] A 360 px, con `fechaMaxima`, el calendario no desborda ni obliga a deslizar, medido en navegador. (Componente real, una y dos columnas: `scrollWidth` igual a `clientWidth` en el calendario y 360 igual a 360 en el documento; celda de 30 px.)
 - [x] Cada regla nueva del contrato (24 a 32) tiene su prueba declarada y `verificar-contrato` sale en verde (visto en rojo con una regla sin respaldo, y revertido).
-- [ ] Los veinticinco pasos de `CLAUDE.md` §8 salen en verde, y `tsc --noEmit` y la suite de `componentes/` también.
+- [x] Los veinticinco pasos de `CLAUDE.md` §8 salen en verde, y `tsc --noEmit` y la suite de `componentes/` también. (3 generadores y 21 candados en 0, el 25 en el contenedor en 0, `tsc` en 0 y 62 archivos con 1362 pruebas en verde.)
 - [x] Las pruebas nuevas se vieron fallar antes de la implementación (paso 1): 26 en rojo, 75 en verde, en `RangoFecha.test.tsx` (reglas [24] a [32]).
 
 ## Decisiones tomadas y descartadas

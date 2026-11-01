@@ -7,9 +7,10 @@ aporte.
 
 - Versión **v1.150.0** en `work`. **Sin subir a `main`, sin `npm run publicar`** (etiqueta + ZIP): ambos
   requieren petición expresa. `main` sigue en v1.148.3; el merge a `main` es un PR `work` → `main`.
-- **SPEC 04 (R166, `fechaMaxima` en `RangoFecha`) implementada** pasos 1 a 5; el 6 (los 25 pasos de
-  CLAUDE.md §8 y la medición a 360 px en navegador) se registra al cerrarlo. Estado de la spec: ver
-  `specs/04-…md`; pasarla a «Implemented» es del responsable.
+- **SPEC 04 (R166, `fechaMaxima` en `RangoFecha`) implementada**, los 6 pasos y los 14 criterios
+  marcados `[x]`. Los 25 pasos de CLAUDE.md §8, `tsc` y 1362 pruebas, en verde; medido a 360 px en
+  navegador con el componente real (sin desborde). La spec sigue en «Aprobada»: pasarla a
+  «Implemented» es del responsable.
   - Último día elegible, inclusive, en los dos extremos; `string` ISO o `Date`; validador propio
     (`deIso` no valida: `2026-02-31` pasaba a ser el 3 de marzo). Reglas 24 a 32 del contrato.
   - Periodos que la pasan no se pintan (y `aplicarAtajo` tiene su guarda). Rango ya puesto posterior:
