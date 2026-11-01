@@ -29,7 +29,8 @@ aporte.
 - Un precedente se lee, no se cita: la spec 03 contó 33 reglas de 640 px y eran 8 (`CLAUDE.md` §4bis).
 - No hay `@container` en la hoja; el móvil se escribe base estrecha + `min-width`.
 - Medir las tablas del catálogo a 360 px: `tabla-simple` con 4 columnas obliga a deslizar.
-- Se trabaja directo en `work`, sin ramas `feat/*` salvo que el usuario las pida; nunca en `main` o `develop`. Falta el hook `pre-commit`
+- Se trabaja directo en `work`, sin ramas `feat/*` salvo que el usuario las pida; nunca en `main` o `develop`.
+  `/spec` no crea rama, pero `/spec-impl` SÍ la pide (`spec-NN-slug`, Phase 3) y eso es solicitud expresa: se crea. Falta el hook `pre-commit`
   que exige CLAUDE.md §19.1: no está instalado en `.git/hooks`.
 - No acuñar números R###: el registro es del equipo.
 - La extensión de Chrome puede no estar conectada: `playwright-cli` + `servir.mjs` (loopback) sirve.
