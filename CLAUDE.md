@@ -12,7 +12,7 @@ La implementación ejecutable de `SISTEMA-DE-DISENO.md` (**MMI-DS**), el sistema
 Colegio Albert Einstein, Huaraz. El documento es la **especificación**; esto es el **código**. Si
 discrepan, gana el de versión más alta y se corrige el otro en el mismo commit.
 
-**Estado actual: v1.149.0** — R165: `CuadroEstado`, un cuadrado de una letra con tono (SPEC 03).
+**Estado actual: v1.150.0** — R166: `RangoFecha` acepta `fechaMaxima`, el último día elegible (SPEC 04).
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md); **este número es lo único que se toca aquí**.
 
 ## 2 · Lo primero al abrir sesión
@@ -83,6 +83,9 @@ que el candado lo vigile. Un hex documentado como **valor probado y rechazado, c
 sustituye. **Todo componente nuevo se compone, no se reconstruye:** se usan los ya creados · los
 colores autorizados · si falta uno se crea · con el conjunto se crean los siguientes. Vinculante:
 [`sistema/componentes/POLITICA-DE-CREACION.md`](sistema/componentes/POLITICA-DE-CREACION.md).
+**Todo diseño o mejora visual se consulta primero con la skill `frontend-design`** (usuario, 2026-11-01): se invoca
+antes de proponer o escribir la interfaz. La skill **aconseja**; las reglas de este archivo (tokens, colores
+autorizados, móvil primero, componer) **mandan** si chocan con ella.
 
 ## 5 · Cómo se cambia un color
 

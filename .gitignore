@@ -79,3 +79,6 @@ core.*
 
 # Artefactos del candado de la copia: se generan y se borran en cada corrida.
 componentes/copia-tmp/
+
+# Salida del navegador automatizado (playwright-cli): basura de medicion, no del proyecto
+.playwright-cli/

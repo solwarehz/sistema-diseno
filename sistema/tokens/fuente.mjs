@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.149.0";
+export const VERSION = "1.150.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,26 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.150.0', fecha: '2026-11-01',
+    que: 'RangoFecha: la prop opcional fechaMaxima, el ultimo dia elegible (R166)',
+    porque:
+      'LO PIDIO EL EQUIPO (R166): las consultas sobre hechos ya ocurridos no tienen respuesta para el '
+      + 'futuro, y un dia futuro con horario y sin marcas sale como falta, que es una afirmacion falsa. '
+      + 'El calendario IMPIDE elegirlos en vez de avisar despues: los posteriores salen apagados '
+      + '(`aria-disabled`) en «Desde» y en «Hasta», y la propia maxima se elige, de modo que inicio y '
+      + 'final pueden ser los dos hoy. Acepta cadena ISO o `Date`. Se combina con `maxDias`: valen los '
+      + 'dos y el techo de «Hasta» es el menor. Los periodos que terminan despues de la maxima no se '
+      + 'pintan —con la maxima en hoy casi desaparecen los cuatro de omision y la app pasa los suyos '
+      + 'con `atajosDeDias`—. Un rango que llega ya puesto con fecha posterior se AVISA y no se '
+      + 'reescribe. «Mes siguiente» se apaga (`aria-disabled`, no `disabled`) en el ultimo mes permitido '
+      + 'y el teclado no sale de el. `deIso` no valida —`2026-02-31` pasaba a ser el 3 de marzo—, asi '
+      + 'que el argumento tiene su propio validador. Es una ADICION: sin la prop nada cambia. '
+      + 'FUERA: `fechaMinima`, que el componente conozca «hoy», y la pantalla del equipo; el componente '
+      + 'impide ELEGIR, no que el producto consulte un rango futuro por otro camino.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.149.0', fecha: '2026-11-01',
     que: 'Componente nuevo: CuadroEstado, un cuadrado de una letra con tono (R165)',
