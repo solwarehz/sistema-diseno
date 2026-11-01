@@ -14020,26 +14020,20 @@ siempre con una leyenda visible en la misma pantalla.</p>
 
 <h3 class="sub-seccion">Los seis tonos</h3>
 <p class="seccion-sub">Los cinco primeros son los del <a href="#chip" data-ir="chip" class="enlace">chip de estado</a>:
-mismos fondo, texto y acento. El sexto, <strong>sin estado</strong>, se distingue por la <strong>forma</strong>
+mismos tokens de fondo, texto y acento (<code>exito-*</code>, <code>aviso-*</code>, …). El sexto, <strong>sin estado</strong>, se distingue por la <strong>forma</strong>
 —borde punteado y sin relleno—, no por el tono.</p>
 <div class="bloque">
   <table class="tabla-simple">
-    <thead><tr><th>Ejemplo</th><th>Tono</th><th>Tokens</th><th class="num">Letra sobre fondo</th></tr></thead>
+    <thead><tr><th>Ejemplo</th><th>Tono</th><th class="num">Contraste</th></tr></thead>
     <tbody>
       <tr><td><span class="cuadro cuadro-exito" aria-hidden="true">P</span> Presente</td><td class="mono">exito</td>
-        <td class="mono">exito-*</td>
         <td class="num">8,12:1</td></tr><tr><td><span class="cuadro cuadro-aviso" aria-hidden="true">T</span> Tardanza</td><td class="mono">aviso</td>
-        <td class="mono">aviso-*</td>
         <td class="num">8,04:1</td></tr><tr><td><span class="cuadro cuadro-error" aria-hidden="true">F</span> Falta</td><td class="mono">error</td>
-        <td class="mono">error-*</td>
         <td class="num">7,82:1</td></tr><tr><td><span class="cuadro cuadro-info" aria-hidden="true">I</span> Incompleto</td><td class="mono">info</td>
-        <td class="mono">info-*</td>
         <td class="num">8,07:1</td></tr>
       <tr><td><span class="cuadro cuadro-inactivo" aria-hidden="true">A</span> Inactivo</td><td class="mono">inactivo</td>
-        <td class="mono">borde · borde-fuerte</td>
         <td class="num">—</td></tr>
       <tr><td><span class="cuadro cuadro-ninguno" aria-hidden="true">–</span> No cuenta</td><td class="mono">ninguno</td>
-        <td class="mono">sin-estado</td>
         <td class="num">6,06:1</td></tr>
     </tbody>
   </table>
@@ -14052,7 +14046,7 @@ cabe: no desliza ni se recorta. La leyenda va en texto corriente, completa y sin
   <div class="chip-sup-fila">
     <span class="cuadro cuadro-exito" role="img" aria-label="Presente">P</span><span class="cuadro cuadro-exito" role="img" aria-label="Presente">P</span><span class="cuadro cuadro-aviso" role="img" aria-label="Tardanza">T</span><span class="cuadro cuadro-info" role="img" aria-label="Incompleto">I</span><span class="cuadro cuadro-error" role="img" aria-label="Falta">F</span><span class="cuadro cuadro-ninguno" role="img" aria-label="No cuenta ese día">–</span><span class="cuadro cuadro-ninguno" role="img" aria-label="No cuenta ese día">–</span>
   </div>
-  <p class="pag-intro"><span class="cuadro cuadro-exito" aria-hidden="true">P</span> Presente · <span class="cuadro cuadro-aviso" aria-hidden="true">T</span> Tardanza · <span class="cuadro cuadro-info" aria-hidden="true">I</span> Incompleto · <span class="cuadro cuadro-error" aria-hidden="true">F</span> Falta · <span class="cuadro cuadro-ninguno" aria-hidden="true">–</span> No cuenta ese día</p>
+  <p class="pag-intro" style="margin-top:12px;line-height:2.2"><span class="cuadro cuadro-exito" aria-hidden="true">P</span> Presente · <span class="cuadro cuadro-aviso" aria-hidden="true">T</span> Tardanza · <span class="cuadro cuadro-info" aria-hidden="true">I</span> Incompleto · <span class="cuadro cuadro-error" aria-hidden="true">F</span> Falta · <span class="cuadro cuadro-ninguno" aria-hidden="true">–</span> No cuenta ese día</p>
 </div>
 
 <h3 class="sub-seccion">Tamaño</h3>
@@ -14092,12 +14086,12 @@ esta página enseña el que corresponde a tu ventana y no los dos a la vez. Letr
 &lt;CuadroEstado letra="A" tono="inactivo" titulo="Inactivo, sábado 31" /&gt;</pre>
   </div>
 <table class="tabla-simple" style="margin-top:16px">
-  <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
+  <thead><tr><th>Prop</th><th>Qué hace</th></tr></thead>
   <tbody>
-    <tr><td><code>letra</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Un solo carácter. Es lo que informa</td></tr>
-    <tr><td><code>tono</code></td><td class="mono">exito · aviso · error · info · inactivo · ninguno</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> El tono acompaña; no informa solo</td></tr>
-    <tr><td><code>titulo</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Nombre accesible completo: sin él el lector diría solo «P»</td></tr>
-    <tr><td><code>className</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo">Clase adicional del consumidor</td></tr>
+    <tr><td><code>letra</code></td><td class="motivo"><strong>Obligatorio.</strong> Un solo carácter. Es lo que informa</td></tr>
+    <tr><td><code>tono</code></td><td class="motivo"><strong>Obligatorio.</strong> <code>exito</code>, <code>aviso</code>, <code>error</code>, <code>info</code>, <code>inactivo</code> o <code>ninguno</code>. El tono acompaña; no informa solo</td></tr>
+    <tr><td><code>titulo</code></td><td class="motivo"><strong>Obligatorio.</strong> Nombre accesible completo: sin él el lector diría solo «P»</td></tr>
+    <tr><td><code>className</code></td><td class="motivo">Clase adicional del consumidor</td></tr>
   </tbody>
 </table>
     </section><section class="pagina" id="pg-avatar" hidden>

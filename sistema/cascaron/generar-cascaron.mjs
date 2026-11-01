@@ -2870,20 +2870,17 @@ siempre con una leyenda visible en la misma pantalla.</p>
 
 <h3 class="sub-seccion">Los seis tonos</h3>
 <p class="seccion-sub">Los cinco primeros son los del <a href="#chip" data-ir="chip" class="enlace">chip de estado</a>:
-mismos fondo, texto y acento. El sexto, <strong>sin estado</strong>, se distingue por la <strong>forma</strong>
+mismos tokens de fondo, texto y acento (<code>exito-*</code>, <code>aviso-*</code>, …). El sexto, <strong>sin estado</strong>, se distingue por la <strong>forma</strong>
 —borde punteado y sin relleno—, no por el tono.</p>
 <div class="bloque">
   <table class="tabla-simple">
-    <thead><tr><th>Ejemplo</th><th>Tono</th><th>Tokens</th><th class="num">Letra sobre fondo</th></tr></thead>
+    <thead><tr><th>Ejemplo</th><th>Tono</th><th class="num">Contraste</th></tr></thead>
     <tbody>
       ${TONOS_CUADRO.map(([c, l, k, n]) => `<tr><td>${cuadro(c, l, true)} ${n}</td><td class="mono">${c}</td>
-        <td class="mono">${k}-*</td>
         <td class="num">${ratioCuadro(k + '-texto', k + '-fondo')}</td></tr>`).join('')}
       <tr><td>${cuadro('inactivo', 'A', true)} Inactivo</td><td class="mono">inactivo</td>
-        <td class="mono">borde · borde-fuerte</td>
         <td class="num">${ratioCuadro('texto-principal', 'borde')}</td></tr>
       <tr><td>${cuadro('ninguno', '–', true)} No cuenta</td><td class="mono">ninguno</td>
-        <td class="mono">sin-estado</td>
         <td class="num">${ratioCuadro('sin-estado', 'fondo-encabezado')}</td></tr>
     </tbody>
   </table>
@@ -2896,7 +2893,7 @@ cabe: no desliza ni se recorta. La leyenda va en texto corriente, completa y sin
   <div class="chip-sup-fila">
     ${[['exito', 'P'], ['exito', 'P'], ['aviso', 'T'], ['info', 'I'], ['error', 'F'], ['ninguno', '–'], ['ninguno', '–']].map(([t, l]) => cuadro(t, l)).join('')}
   </div>
-  <p class="pag-intro">${cuadro('exito', 'P', true)} Presente · ${cuadro('aviso', 'T', true)} Tardanza · ${cuadro('info', 'I', true)} Incompleto · ${cuadro('error', 'F', true)} Falta · ${cuadro('ninguno', '–', true)} No cuenta ese día</p>
+  <p class="pag-intro" style="margin-top:12px;line-height:2.2">${cuadro('exito', 'P', true)} Presente · ${cuadro('aviso', 'T', true)} Tardanza · ${cuadro('info', 'I', true)} Incompleto · ${cuadro('error', 'F', true)} Falta · ${cuadro('ninguno', '–', true)} No cuenta ese día</p>
 </div>
 
 <h3 class="sub-seccion">Tamaño</h3>
@@ -2929,12 +2926,12 @@ ${verCodigo(
 <CuadroEstado letra="A" tono="inactivo" titulo="Inactivo, sábado 31" />`
 )}
 <table class="tabla-simple" style="margin-top:16px">
-  <thead><tr><th>Prop</th><th>Tipo</th><th>Por defecto</th><th>Qué hace</th></tr></thead>
+  <thead><tr><th>Prop</th><th>Qué hace</th></tr></thead>
   <tbody>
-    <tr><td><code>letra</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Un solo carácter. Es lo que informa</td></tr>
-    <tr><td><code>tono</code></td><td class="mono">exito · aviso · error · info · inactivo · ninguno</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> El tono acompaña; no informa solo</td></tr>
-    <tr><td><code>titulo</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo"><strong>Obligatorio.</strong> Nombre accesible completo: sin él el lector diría solo «P»</td></tr>
-    <tr><td><code>className</code></td><td class="mono">string</td><td class="mono">—</td><td class="motivo">Clase adicional del consumidor</td></tr>
+    <tr><td><code>letra</code></td><td class="motivo"><strong>Obligatorio.</strong> Un solo carácter. Es lo que informa</td></tr>
+    <tr><td><code>tono</code></td><td class="motivo"><strong>Obligatorio.</strong> <code>exito</code>, <code>aviso</code>, <code>error</code>, <code>info</code>, <code>inactivo</code> o <code>ninguno</code>. El tono acompaña; no informa solo</td></tr>
+    <tr><td><code>titulo</code></td><td class="motivo"><strong>Obligatorio.</strong> Nombre accesible completo: sin él el lector diría solo «P»</td></tr>
+    <tr><td><code>className</code></td><td class="motivo">Clase adicional del consumidor</td></tr>
   </tbody>
 </table>`;
 

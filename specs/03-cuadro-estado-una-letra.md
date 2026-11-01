@@ -99,20 +99,20 @@ Convenciones:
 - [x] `<CuadroEstado letra="P" tono="exito" titulo="Presente, lunes 26" />` renderiza un único elemento con `role="img"` y `aria-label="Presente, lunes 26"`.
 - [x] El tipo rechaza una llamada sin `titulo` o sin `tono` (comprobado con `tsc`).
 - [x] Los cinco tonos de significado usan los mismos tokens de fondo, texto y acento que `Chip`; ningún hex ni primitiva aparece en el componente ni en su CSS.
-- [ ] `tono="ninguno"` se renderiza con `border-style: dashed` y fondo transparente, medido en el estilo computado en navegador.
-- [ ] En escala de grises, `ninguno` se distingue de `inactivo` por la forma (comprobado a ojo y por el estilo computado, no por el tono).
-- [ ] El cuadro mide 30×30 px con una ventana de 640 px y 28×28 px con una de 641 px, medido en navegador.
+- [x] `tono="ninguno"` se renderiza con `border-style: dashed` y fondo transparente, medido en el estilo computado en navegador.
+- [x] En escala de grises, `ninguno` se distingue de `inactivo` por la forma (comprobado a ojo y por el estilo computado, no por el tono).
+- [x] El cuadro mide 30×30 px con una ventana de 640 px y 28×28 px con una de 641 px, medido en navegador.
 - [x] Móvil primero (§4bis): la regla de 30 px está fuera de toda `@media`, la de 28 px es la única que va dentro (`min-width: 641px`), y el cuadro no usa ninguna `max-width`. Con la hoja sin consultas, el cuadro sale a 30 px.
-- [ ] La letra usa 13px y peso 600 computados (no el 500 de `s-etiqueta`), y no se corta dentro de 28×28 px.
-- [ ] Siete cuadros en fila miden **menos de 360 px** de ancho sin desplazamiento horizontal a 360 y a 390 px, medido en navegador.
+- [x] La letra usa 13px y peso 600 computados (no el 500 de `s-etiqueta`), y no se corta dentro de 28×28 px.
+- [x] Siete cuadros en fila miden **menos de 360 px** de ancho sin desplazamiento horizontal a 360 y a 390 px, medido en navegador.
 - [x] La leyenda del catálogo nombra los cinco símbolos (P, T, I, F y –) con su significado completo, visible sin puntero (texto en pantalla, no `title`).
-- [ ] A 360 px la leyenda no tiene texto cortado (ningún elemento con `scrollWidth` mayor que `clientWidth`) y no produce desplazamiento horizontal, medido en navegador.
-- [ ] Con una caja más estrecha que la serie (por ejemplo 200 px), los cuadros pasan a la línea siguiente y no producen desplazamiento horizontal.
-- [ ] El criterio de móvil se mide a **360 px** y no solo al ancho de la maqueta (390 px).
+- [x] A 360 px la leyenda no tiene texto cortado (ningún elemento con `scrollWidth` mayor que `clientWidth`) y no produce desplazamiento horizontal, medido en navegador.
+- [x] Con una caja más estrecha que la serie (por ejemplo 200 px), los cuadros pasan a la línea siguiente y no producen desplazamiento horizontal.
+- [x] El criterio de móvil se mide a **360 px** y no solo al ancho de la maqueta (390 px).
 - [x] El cuadro no recibe foco con tabulador y no tiene manejador de clic.
 - [x] Los pares de contraste de `sin-estado` (borde 3:1, letra 4,5:1) en claro y oscuro salen en verde en `verificar-contraste.mjs`, y `verificar-tono.mjs` sigue en verde.
 - [x] Un `letra` de longitud distinta de 1 dispara el aviso de desarrollo y no rompe el render.
-- [ ] Los veinticinco pasos de `CLAUDE.md` §8 salen en verde, incluidos `verificar-promesa`, `verificar-omision`, `verificar-promesa-muerta` y `verificar-contrato`.
+- [x] Los veinticinco pasos de `CLAUDE.md` §8 salen en verde, incluidos `verificar-promesa`, `verificar-omision`, `verificar-promesa-muerta` y `verificar-contrato`.
 - [x] Las pruebas nuevas se vieron fallar antes de la implementación (paso 1).
 
 ## Decisiones tomadas y descartadas
