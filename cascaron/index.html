@@ -13411,6 +13411,22 @@ que en esta pantalla <strong>no existe</strong>.</p>
   </tbody>
 </table>
 
+<h3 class="sub-seccion">Fecha m&aacute;xima</h3>
+<p class="seccion-sub">Para consultas sobre <strong>hechos ya ocurridos</strong>,
+<code>fechaMaxima</code> —cadena <code>AAAA-MM-DD</code> o <code>Date</code>— fija el
+&uacute;ltimo d&iacute;a elegible, <strong>inclusive</strong>. Los posteriores van
+<code>aria-disabled</code> en «Desde» y en «Hasta», y hoy se puede elegir como inicio y como final
+a la vez: un rango de un d&iacute;a. «Mes siguiente» se apaga cuando el &uacute;ltimo mes visible ya
+contiene la m&aacute;xima, tambi&eacute;n con <code>aria-disabled</code> para no perder el foco, y el
+teclado no sale de ese mes.</p>
+<p class="seccion-sub"><strong>Con la m&aacute;xima en hoy, los cuatro periodos por omisi&oacute;n casi
+desaparecen:</strong> terminan en el futuro y no se pintan. Pasa los tuyos con
+<code>atajosDeDias(1, 7, 30)</code>. Se combina con <code>maxDias</code>: valen los dos y el techo de
+«Hasta» es el menor. Un rango que llega ya puesto con una fecha posterior
+<strong>se avisa y no se reescribe</strong>. El componente no conoce «hoy» ni la zona horaria de la
+empresa: la app pasa la fecha. Esto impide <strong>elegir</strong>; que el producto consulte un rango
+futuro por otro camino es cosa del producto.</p>
+
 <h3 class="sub-seccion">Las cuatro reglas del rango</h3>
 <table class="tabla-simple">
   <tbody>
@@ -13461,6 +13477,7 @@ const [r, setR] = useState&lt;{ desde: string | null; hasta: string | null }&gt;
   hasta={r.hasta}
   onCambio={setR}
   maxDias={7}                  // el calendario IMPIDE pasar de ahi
+  fechaMaxima={new Date()}      // ultimo dia elegible: la app pasa «hoy»
   atajos={atajosDeDias(1, 3, 7)}   // con tope, los de meses no caben y no se pintan
   error={sinSede ? 'Seleccione sede' : undefined}
   deshabilitado={sinSede}      // sale del tabulador, no solo se ve apagado
