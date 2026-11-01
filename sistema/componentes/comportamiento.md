@@ -893,6 +893,26 @@ una persona o una clave de API.
 
 ---
 
+## Cuadro de estado
+
+<!-- pruebas: CuadroEstado.test.tsx, cuadro-catalogo.test.ts -->
+
+Un cuadrado de una letra con tono, para mostrar una serie corta de estados en
+poco ancho. Lo pidió el equipo para siete días por trabajador a 390 px; el
+sistema lo ofrece como pieza y no como caso de esa pantalla.
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (SPEC 03, v1.149.0) `letra` y `titulo` son obligatorios, y `tono` también. Emite un solo `<span role="img" aria-label={titulo}>`: sin `titulo` el lector de pantalla diría solo «P», y sin `tono` el cuadro sería color-nada. Lo comprueba `tsc`, no el render. |
+| **2** | **Obligatorio.** (SPEC 03, v1.149.0) **«Sin estado» (`ninguno`) se distingue por la forma**: borde punteado y sin relleno. Su gris es de la familia del de `inactivo`, así que el tono no basta (SC 1.4.1). |
+| **3** | **Obligatorio.** (SPEC 03, v1.149.0) **No es interactivo**: sin clic, sin foco, sin `tabindex`, sin `title` como único medio. Los 30 px son tamaño visual, no objetivo táctil: 2.5.8 no aplica porque no se pulsa. |
+| **4** | **Obligatorio.** (SPEC 03, v1.149.0) **El tamaño lo decide la ventana, móvil primero**: 30 px por omisión y 28 px desde 641 px (`min-width`). No se decide por el contenedor: la hoja no usa `@container`, y un panel estrecho dentro de una pantalla ancha recibe 28 px. La letra mide 13 px con peso 600. |
+| **5** | **Obligatorio.** (SPEC 03, v1.149.0) **Cinco tonos de significado —`exito`, `aviso`, `error`, `info`, `inactivo`— con los mismos tokens que `Chip`, y uno de ausencia, `ninguno`.** No hay un `pendiente` ni un tono entre `aviso` y `error`: un tono nuevo es otra petición. |
+| **6** | **Obligatorio.** (SPEC 03, v1.149.0) **`letra` es exactamente un carácter.** En desarrollo, otra longitud avisa por consola; en producción se pinta lo recibido. El significado completo va en `titulo` y en la leyenda. |
+| **7** | **Obligatorio.** (SPEC 03, v1.149.0) **No se usa sin una leyenda visible en la misma pantalla.** `aria-label` llega al lector de pantalla y no a quien ve «P» en un teléfono, donde no hay `title` (CLAUDE.md §4bis). **El sistema no puede hacerlo cumplir en cada producto**: el catálogo la cumple y una prueba lo ata; en el producto es de quien lo usa. La leyenda va en texto corriente, completa, sin puntos suspensivos y pasando a la línea siguiente si no cabe. |
+
+---
+
 ## Color de identidad · Horario y Chip
 
 <!-- pruebas: identidad-tono.test.ts, distancia.test.ts, Avatar.test.tsx -->

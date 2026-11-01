@@ -90,7 +90,7 @@ Convenciones:
 3. Añadir las reglas `.cuadro*` a `sistema/componentes/componentes.css` (30 px por omisión, 28 px bajo `@media (min-width: 641px)`; letra en 13px/600). Sin hex, sin `style` en línea, sin `outline-none`. Correr `verificar-promesa`, `verificar-empate` y `verificar-cascada` en ese paso para confirmar que resuelven el `min-width`.
 4. Crear `componentes/src/CuadroEstado.tsx` y exportarlo en `componentes/src/index.ts`. Las pruebas del paso 1 pasan.
 5. Registrar el componente en `sistema/componentes/extraer.mjs`, `sistema/candado/verificar-entrega.mjs` y `sistema/cascaron/generar-cascaron.mjs`. El catálogo muestra los seis tonos, una fila de siete cuadros **con su leyenda visible** y los dos tamaños, con marcado estático (si no, los candados de promesa no lo ven).
-6. Escribir el contrato en `sistema/componentes/comportamiento.md` (reglas **Obligatorio**, cada una con su prueba declarada): letra + `titulo` obligatorios, la forma distingue `ninguno`, no interactivo, tamaño por contenedor, y **no se usa sin leyenda visible en la misma pantalla**.
+6. Escribir el contrato en `sistema/componentes/comportamiento.md` (reglas **Obligatorio**, cada una con su prueba declarada): letra + `titulo` obligatorios, la forma distingue `ninguno`, no interactivo, tamaño por ventana (decisión del responsable; ver «Decisiones»), y **no se usa sin leyenda visible en la misma pantalla**.
 7. Subir la versión a 1.149.0 (`package.json`), añadir la entrada en `sistema/tokens/fuente.mjs` y `manual/ACTUALIZAR.md`, y reescribir `memoria/01-estado.md` y el número de estado de `CLAUDE.md`.
 8. Correr los veinticinco pasos de `CLAUDE.md` §8 en verde, más las pruebas, y medir en navegador a 360 y 390 px.
 
