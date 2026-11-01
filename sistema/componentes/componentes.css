@@ -799,6 +799,25 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .chip.chip-info, .msj.msj-info{ background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
 
 /* ───────────────────────────────────────────────────────────────────────────
+   CUADRO DE ESTADO — 8 reglas · clases .cuadro-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.cuadro{ display: inline-flex; align-items: center; justify-content: center;
+  box-sizing: border-box; width: 30px; height: 30px; flex: none;
+  border: 1px solid; border-radius: 3px; padding: 0;
+  font-size: 13px; font-weight: 600; line-height: 1; }
+.cuadro.cuadro-exito{ background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.cuadro.cuadro-aviso{ background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.cuadro.cuadro-error{ background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
+.cuadro.cuadro-info{ background: var(--info-fondo); color: var(--info-texto); border-color: var(--info-acento); }
+.cuadro.cuadro-inactivo{ background: var(--borde); color: var(--texto-principal); border-color: var(--borde-fuerte); }
+.cuadro.cuadro-ninguno{ background: transparent; color: var(--sin-estado);
+  border-width: 2px; border-style: dashed; border-color: var(--sin-estado); }
+@media (min-width: 641px) {
+  .cuadro{ width: 28px; height: 28px; }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
    AVATAR — 21 reglas · clases .avatar-*
    ─────────────────────────────────────────────────────────────────────────── */
 

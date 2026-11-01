@@ -68,6 +68,8 @@ const ELEMENTOS = [
   { n: 'Fecha y rango',         p: ['fc'] },
   { n: 'Horario',               p: ['hor'] },
   { n: 'Chip de estado',        p: ['chip'] },
+  // SPEC 03 (R165): cuadrado de una letra con tono; no es variante de `chip`, que es una píldora con filete.
+  { n: 'Cuadro de estado',      p: ['cuadro'] },
   { n: 'Avatar',                p: ['avatar'] },
   { n: 'Tarjeta de persona',    p: ['tp'] },
   // R59 · Prefijo propio y no `tn-`: el corte de prefijos es en el guion, así

@@ -8,7 +8,7 @@
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
    TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.148.3
-   WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
+   WCAG 2.2 AA · 156 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -53,6 +53,7 @@
   --borde: #E0DFDE;
   --borde-fuerte: #C8C6C4;
   --borde-campo: #8B8985;
+  --sin-estado: #5C5955;
 
   /* Acción */
   --accion: #0063CB;
@@ -136,6 +137,7 @@
   --borde: #44423F;
   --borde-fuerte: #575451;
   --borde-campo: #8A8681;
+  --sin-estado: #C3C1BD;
 
   /* Acción */
   --accion: #6CB2FF;
@@ -222,6 +224,7 @@
     --borde: #44423F;
     --borde-fuerte: #575451;
     --borde-campo: #8A8681;
+    --sin-estado: #C3C1BD;
 
     /* Acción */
     --accion: #6CB2FF;
@@ -601,6 +604,7 @@
 .token-borde { background-color: var(--borde); }
 .token-borde-fuerte { background-color: var(--borde-fuerte); }
 .token-borde-campo { background-color: var(--borde-campo); }
+.token-sin-estado { background-color: var(--sin-estado); }
 .token-accion { background-color: var(--accion); }
 .token-accion-hover { background-color: var(--accion-hover); }
 .token-accion-activa { background-color: var(--accion-activa); }
@@ -2533,6 +2537,25 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
   border-color: var(--borde-fuerte); }
 .chip.chip-inact { background: var(--borde); color: var(--texto-principal);
   border-color: var(--borde-fuerte); }
+/* ───────────────────────────────────────────────────────────────────────────
+   CUADRO DE ESTADO · clases .cuadro*
+   Movil primero: la base es 30px y los 28px entran con min-width (CLAUDE.md
+   4bis). El tono lo acompaña la letra; solo lo informa la letra (SC 1.4.1).
+   ─────────────────────────────────────────────────────────────────────────── */
+.cuadro { display: inline-flex; align-items: center; justify-content: center;
+  box-sizing: border-box; width: 30px; height: 30px; flex: none;
+  border: 1px solid; border-radius: 3px; padding: 0;
+  font-size: 13px; font-weight: 600; line-height: 1; }
+.cuadro.cuadro-exito { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.cuadro.cuadro-aviso { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.cuadro.cuadro-error { background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
+.cuadro.cuadro-info { background: var(--info-fondo); color: var(--info-texto); border-color: var(--info-acento); }
+.cuadro.cuadro-inactivo { background: var(--borde); color: var(--texto-principal); border-color: var(--borde-fuerte); }
+.cuadro.cuadro-ninguno { background: transparent; color: var(--sin-estado);
+  border-width: 2px; border-style: dashed; border-color: var(--sin-estado); }
+@media (min-width: 641px) {
+  .cuadro { width: 28px; height: 28px; }
+}
 /* ───────────────────────────────────────────────────────────────────────────
    PANEL DE PRIVILEGIOS · clases .pp-*
    Reparte permisos por modulo. Aqui SOLO vive el andamiaje de la lista: el
@@ -6000,8 +6023,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 El menú de la izquierda lo abre por partes.</p>
 
 <div class="estado-rejilla">
-  <div class="est"><b>56</b><span>tokens semánticos</span></div>
-  <div class="est"><b>146</b><span>pares verificados</span></div>
+  <div class="est"><b>57</b><span>tokens semánticos</span></div>
+  <div class="est"><b>156</b><span>pares verificados</span></div>
   <div class="est est-ok"><b>0</b><span>fallos de contraste</span></div>
   <div class="est"><b>2</b><span>modos, claro y oscuro</span></div>
 </div>
@@ -6504,7 +6527,7 @@ El menú de la izquierda lo abre por partes.</p>
   <a href="#espaciado" data-ir="espaciado" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
     <span><strong>Espaciado</strong>Rejilla de 4px y tamaños de control</span></a>
   <a href="#contraste" data-ir="contraste" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg></span>
-    <span><strong>Contrastes</strong>Los 146 pares medidos</span></a>
+    <span><strong>Contrastes</strong>Los 156 pares medidos</span></a>
 </div>
     </section><section class="pagina" id="pg-entrega-real" hidden>
       <nav class="migas" aria-label="Ubicación">
@@ -6539,7 +6562,7 @@ vieja.</div>
 
 <script type="text/plain" id="tokens-entregados">/* ───────────────────────────────────────────────────────────────────────────
    TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.148.3
-   WCAG 2.2 AA · 146 pares verificados en los dos modos, 0 fallos
+   WCAG 2.2 AA · 156 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -6584,6 +6607,7 @@ vieja.</div>
   --borde: #E0DFDE;
   --borde-fuerte: #C8C6C4;
   --borde-campo: #8B8985;
+  --sin-estado: #5C5955;
 
   /* Acción */
   --accion: #0063CB;
@@ -6667,6 +6691,7 @@ vieja.</div>
   --borde: #44423F;
   --borde-fuerte: #575451;
   --borde-campo: #8A8681;
+  --sin-estado: #C3C1BD;
 
   /* Acción */
   --accion: #6CB2FF;
@@ -6753,6 +6778,7 @@ vieja.</div>
     --borde: #44423F;
     --borde-fuerte: #575451;
     --borde-campo: #8A8681;
+    --sin-estado: #C3C1BD;
 
     /* Acción */
     --accion: #6CB2FF;
@@ -7132,6 +7158,7 @@ vieja.</div>
 .token-borde { background-color: var(--borde); }
 .token-borde-fuerte { background-color: var(--borde-fuerte); }
 .token-borde-campo { background-color: var(--borde-campo); }
+.token-sin-estado { background-color: var(--sin-estado); }
 .token-accion { background-color: var(--accion); }
 .token-accion-hover { background-color: var(--accion-hover); }
 .token-accion-activa { background-color: var(--accion-activa); }
@@ -7977,6 +8004,25 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .chip.chip-aviso, .msj.msj-aviso{ background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
 .chip.chip-error, .msj.msj-error{ background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
 .chip.chip-info, .msj.msj-info{ background: var(--info-fondo);  color: var(--info-texto);  border-color: var(--info-acento); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   CUADRO DE ESTADO — 8 reglas · clases .cuadro-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.cuadro{ display: inline-flex; align-items: center; justify-content: center;
+  box-sizing: border-box; width: 30px; height: 30px; flex: none;
+  border: 1px solid; border-radius: 3px; padding: 0;
+  font-size: 13px; font-weight: 600; line-height: 1; }
+.cuadro.cuadro-exito{ background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.cuadro.cuadro-aviso{ background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.cuadro.cuadro-error{ background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
+.cuadro.cuadro-info{ background: var(--info-fondo); color: var(--info-texto); border-color: var(--info-acento); }
+.cuadro.cuadro-inactivo{ background: var(--borde); color: var(--texto-principal); border-color: var(--borde-fuerte); }
+.cuadro.cuadro-ninguno{ background: transparent; color: var(--sin-estado);
+  border-width: 2px; border-style: dashed; border-color: var(--sin-estado); }
+@media (min-width: 641px) {
+  .cuadro{ width: 28px; height: 28px; }
+}
 
 /* ───────────────────────────────────────────────────────────────────────────
    AVATAR — 21 reglas · clases .avatar-*
@@ -9331,7 +9377,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
       </nav>
       <div class="pant-cab"><h1>Color</h1></div>
       
-<p class="pag-intro">56 tokens semánticos sobre 10 rampas y 2 familias categóricas.
+<p class="pag-intro">57 tokens semánticos sobre 10 rampas y 2 familias categóricas.
 Es lo único que un componente consume. <strong>Las primitivas están prohibidas dentro de un componente.</strong></p>
 
   <section class="grupo">
@@ -10272,7 +10318,7 @@ que son los que están medidos contra un fondo concreto.</p>
           <code class="tira-nombre">gris_600</code>
           <span class="tira-hex">#6A6864</span>
         </div>
-        <div class="tira">
+        <div class="tira tira-usada">
           <span class="tira-color color-gris_700"></span>
           <code class="tira-nombre">gris_700</code>
           <span class="tira-hex">#5C5955</span>
@@ -21879,7 +21925,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       </nav>
       <div class="pant-cab"><h1>Contrastes</h1></div>
       
-<p class="pag-intro">146 pares bloqueantes en los dos modos ·
+<p class="pag-intro">156 pares bloqueantes en los dos modos ·
 <strong>0 fallos</strong> · WCAG 2.2 AA. Recalculados en cada build por
 <code>verificar-contraste.mjs</code>: si el contrato miente, el build falla.</p>
 <h3 class="sub-seccion">Modo claro</h3>
@@ -22245,6 +22291,46 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       <td class="num">3</td>
       <td class="ok">cumple</td>
       <td class="motivo">Contorno de input sobre página</td>
+    </tr>
+    <tr>
+      <td><code>sin-estado</code></td>
+      <td><code>fondo-tarjeta</code></td>
+      <td class="num">6.96:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Borde y letra del cuadro sin estado sobre tarjeta</td>
+    </tr>
+    <tr>
+      <td><code>sin-estado</code></td>
+      <td><code>fondo-pagina</code></td>
+      <td class="num">6.54:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Borde y letra del cuadro sin estado sobre página</td>
+    </tr>
+    <tr>
+      <td><code>sin-estado</code></td>
+      <td><code>fondo-encabezado</code></td>
+      <td class="num">6.06:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Borde y letra del cuadro sin estado sobre encabezado</td>
+    </tr>
+    <tr>
+      <td><code>sin-estado</code></td>
+      <td><code>fondo-fila-alt</code></td>
+      <td class="num">6.54:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Borde y letra del cuadro sin estado sobre fila alterna</td>
+    </tr>
+    <tr>
+      <td><code>sin-estado</code></td>
+      <td><code>fondo-fila-hover</code></td>
+      <td class="num">6.29:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Borde y letra del cuadro sin estado sobre fila bajo el cursor</td>
     </tr>
     <tr>
       <td><code>exito-texto</code></td>
@@ -22834,6 +22920,46 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       <td class="num">3</td>
       <td class="ok">cumple</td>
       <td class="motivo">Contorno de input sobre página</td>
+    </tr>
+    <tr>
+      <td><code>sin-estado</code></td>
+      <td><code>fondo-tarjeta</code></td>
+      <td class="num">8.65:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Borde y letra del cuadro sin estado sobre tarjeta</td>
+    </tr>
+    <tr>
+      <td><code>sin-estado</code></td>
+      <td><code>fondo-pagina</code></td>
+      <td class="num">9.36:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Borde y letra del cuadro sin estado sobre página</td>
+    </tr>
+    <tr>
+      <td><code>sin-estado</code></td>
+      <td><code>fondo-encabezado</code></td>
+      <td class="num">7.86:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Borde y letra del cuadro sin estado sobre encabezado</td>
+    </tr>
+    <tr>
+      <td><code>sin-estado</code></td>
+      <td><code>fondo-fila-alt</code></td>
+      <td class="num">8.08:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Borde y letra del cuadro sin estado sobre fila alterna</td>
+    </tr>
+    <tr>
+      <td><code>sin-estado</code></td>
+      <td><code>fondo-fila-hover</code></td>
+      <td class="num">6.82:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Borde y letra del cuadro sin estado sobre fila bajo el cursor</td>
     </tr>
     <tr>
       <td><code>exito-texto</code></td>
@@ -24162,7 +24288,7 @@ async function esPdf(archivo) {
 
   // La CLASE de cada token en cada modo. Antes era el hexadecimal, pero un
   // hexadecimal no se puede escribir en el codigo: lo que se aplica es la clase.
-  var clases = {"fondo-pagina":{"claro":"gris_50","oscuro":"negro_950"},"fondo-tarjeta":{"claro":"gris_0","oscuro":"negro_850"},"fondo-encabezado":{"claro":"gris_100","oscuro":"negro_750"},"fondo-fila-alt":{"claro":"gris_50","oscuro":"negro_800"},"fondo-fila-hover":{"claro":"azul_50","oscuro":"negro_700"},"texto-principal":{"claro":"gris_900","oscuro":"negro_50"},"texto-secundario":{"claro":"gris_600","oscuro":"negro_100"},"texto-pista":{"claro":"gris_600","oscuro":"negro_200"},"texto-invertido":{"claro":"gris_0","oscuro":"negro_900"},"borde":{"claro":"gris_200","oscuro":"negro_600"},"borde-fuerte":{"claro":"gris_300","oscuro":"negro_500"},"borde-campo":{"claro":"gris_500","oscuro":"negro_300"},"accion":{"claro":"azul_600","oscuro":"azul_300"},"accion-hover":{"claro":"azul_700","oscuro":"azul_200"},"accion-activa":{"claro":"azul_800","oscuro":"azul_100"},"accion-texto":{"claro":"gris_0","oscuro":"negro_900"},"accion-deshabilitada":{"claro":"gris_300","oscuro":"negro_600"},"accion-texto-desh":{"claro":"gris_500","oscuro":"negro_200"},"accion-2":{"claro":"oro_700","oscuro":"oro_200"},"enlace":{"claro":"azul_600","oscuro":"azul_300"},"accion-2-fondo":{"claro":"oro_100","oscuro":"oro_800"},"neutra-fondo":{"claro":"gris_100","oscuro":"negro_650"},"neutra-texto":{"claro":"gris_900","oscuro":"negro_50"},"destructiva":{"claro":"rojo_600","oscuro":"rojo_300"},"destructiva-hover":{"claro":"rojo_700","oscuro":"rojo_200"},"destructiva-texto":{"claro":"gris_0","oscuro":"negro_900"},"marco-fondo":{"claro":"indigo_800","oscuro":"negro_700"},"marco-texto":{"claro":"gris_0","oscuro":"gris_0"},"marco-acento":{"claro":"oro_200","oscuro":"oro_200"},"marco-item-activo":{"claro":"indigo_900","oscuro":"negro_800"},"marco-nivel-1":{"claro":"indigo_700","oscuro":"negro_600"},"marco-nivel-2":{"claro":"indigo_600","oscuro":"negro_500"},"marco-borde":{"claro":"indigo_500","oscuro":"negro_500"},"marco-texto-tenue":{"claro":"indigo_200","oscuro":"negro_100"},"foco":{"claro":"ambar_600","oscuro":"ambar_300"},"foco-en-marco":{"claro":"ambar_300","oscuro":"ambar_300"},"exito-fondo":{"claro":"verde_50","oscuro":"verde_950"},"exito-texto":{"claro":"verde_900","oscuro":"verde_200"},"exito-acento":{"claro":"verde_700","oscuro":"verde_500"},"aviso-fondo":{"claro":"ambar_50","oscuro":"ambar_950"},"aviso-texto":{"claro":"ambar_900","oscuro":"ambar_200"},"aviso-acento":{"claro":"ambar_700","oscuro":"ambar_500"},"error-fondo":{"claro":"alerta_50","oscuro":"alerta_900"},"error-texto":{"claro":"alerta_800","oscuro":"alerta_100"},"error-acento":{"claro":"alerta_500","oscuro":"alerta_400"},"info-fondo":{"claro":"informacion_50","oscuro":"informacion_900"},"info-texto":{"claro":"informacion_800","oscuro":"informacion_100"},"info-acento":{"claro":"informacion_500","oscuro":"informacion_400"},"apagado-fondo":{"claro":"rojo_300","oscuro":"rojo_900"},"apagado-borde":{"claro":"rojo_500","oscuro":"rojo_300"},"apagado-bolita":{"claro":"rojo_900","oscuro":"rojo_100"},"identidad-1":{"claro":"identidad_1","oscuro":"identidad_1"},"identidad-2":{"claro":"identidad_2","oscuro":"identidad_2"},"identidad-3":{"claro":"identidad_3","oscuro":"identidad_3"},"identidad-4":{"claro":"identidad_4","oscuro":"identidad_4"},"identidad-texto":{"claro":"gris_0","oscuro":"gris_0"}};
+  var clases = {"fondo-pagina":{"claro":"gris_50","oscuro":"negro_950"},"fondo-tarjeta":{"claro":"gris_0","oscuro":"negro_850"},"fondo-encabezado":{"claro":"gris_100","oscuro":"negro_750"},"fondo-fila-alt":{"claro":"gris_50","oscuro":"negro_800"},"fondo-fila-hover":{"claro":"azul_50","oscuro":"negro_700"},"texto-principal":{"claro":"gris_900","oscuro":"negro_50"},"texto-secundario":{"claro":"gris_600","oscuro":"negro_100"},"texto-pista":{"claro":"gris_600","oscuro":"negro_200"},"texto-invertido":{"claro":"gris_0","oscuro":"negro_900"},"borde":{"claro":"gris_200","oscuro":"negro_600"},"borde-fuerte":{"claro":"gris_300","oscuro":"negro_500"},"borde-campo":{"claro":"gris_500","oscuro":"negro_300"},"sin-estado":{"claro":"gris_700","oscuro":"negro_100"},"accion":{"claro":"azul_600","oscuro":"azul_300"},"accion-hover":{"claro":"azul_700","oscuro":"azul_200"},"accion-activa":{"claro":"azul_800","oscuro":"azul_100"},"accion-texto":{"claro":"gris_0","oscuro":"negro_900"},"accion-deshabilitada":{"claro":"gris_300","oscuro":"negro_600"},"accion-texto-desh":{"claro":"gris_500","oscuro":"negro_200"},"accion-2":{"claro":"oro_700","oscuro":"oro_200"},"enlace":{"claro":"azul_600","oscuro":"azul_300"},"accion-2-fondo":{"claro":"oro_100","oscuro":"oro_800"},"neutra-fondo":{"claro":"gris_100","oscuro":"negro_650"},"neutra-texto":{"claro":"gris_900","oscuro":"negro_50"},"destructiva":{"claro":"rojo_600","oscuro":"rojo_300"},"destructiva-hover":{"claro":"rojo_700","oscuro":"rojo_200"},"destructiva-texto":{"claro":"gris_0","oscuro":"negro_900"},"marco-fondo":{"claro":"indigo_800","oscuro":"negro_700"},"marco-texto":{"claro":"gris_0","oscuro":"gris_0"},"marco-acento":{"claro":"oro_200","oscuro":"oro_200"},"marco-item-activo":{"claro":"indigo_900","oscuro":"negro_800"},"marco-nivel-1":{"claro":"indigo_700","oscuro":"negro_600"},"marco-nivel-2":{"claro":"indigo_600","oscuro":"negro_500"},"marco-borde":{"claro":"indigo_500","oscuro":"negro_500"},"marco-texto-tenue":{"claro":"indigo_200","oscuro":"negro_100"},"foco":{"claro":"ambar_600","oscuro":"ambar_300"},"foco-en-marco":{"claro":"ambar_300","oscuro":"ambar_300"},"exito-fondo":{"claro":"verde_50","oscuro":"verde_950"},"exito-texto":{"claro":"verde_900","oscuro":"verde_200"},"exito-acento":{"claro":"verde_700","oscuro":"verde_500"},"aviso-fondo":{"claro":"ambar_50","oscuro":"ambar_950"},"aviso-texto":{"claro":"ambar_900","oscuro":"ambar_200"},"aviso-acento":{"claro":"ambar_700","oscuro":"ambar_500"},"error-fondo":{"claro":"alerta_50","oscuro":"alerta_900"},"error-texto":{"claro":"alerta_800","oscuro":"alerta_100"},"error-acento":{"claro":"alerta_500","oscuro":"alerta_400"},"info-fondo":{"claro":"informacion_50","oscuro":"informacion_900"},"info-texto":{"claro":"informacion_800","oscuro":"informacion_100"},"info-acento":{"claro":"informacion_500","oscuro":"informacion_400"},"apagado-fondo":{"claro":"rojo_300","oscuro":"rojo_900"},"apagado-borde":{"claro":"rojo_500","oscuro":"rojo_300"},"apagado-bolita":{"claro":"rojo_900","oscuro":"rojo_100"},"identidad-1":{"claro":"identidad_1","oscuro":"identidad_1"},"identidad-2":{"claro":"identidad_2","oscuro":"identidad_2"},"identidad-3":{"claro":"identidad_3","oscuro":"identidad_3"},"identidad-4":{"claro":"identidad_4","oscuro":"identidad_4"},"identidad-texto":{"claro":"gris_0","oscuro":"gris_0"}};
 
   function aplicar(modo) {
     raiz.setAttribute('data-tema', modo);

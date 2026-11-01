@@ -87,8 +87,8 @@ describe('CuadroEstado · aviso de desarrollo', () => {
 
 describe('CuadroEstado · la hoja', () => {
   it('«ninguno» se distingue por la forma: borde punteado y sin relleno', () => {
-    const cuerpo = regla('.cuadro-ninguno');
-    expect(cuerpo, 'no hay una regla `.cuadro-ninguno {…}` de selector único en la hoja').not.toBe('');
+    const cuerpo = regla('.cuadro.cuadro-ninguno');
+    expect(cuerpo, 'no hay una regla `.cuadro.cuadro-ninguno {…}` de selector único en la hoja').not.toBe('');
     expect(cuerpo).toMatch(/border(-style)?:[^;]*\bdashed\b/);
     expect(cuerpo).toMatch(/background(-color)?:\s*(transparent|none)\b/);
   });

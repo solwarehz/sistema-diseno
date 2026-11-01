@@ -11494,6 +11494,25 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .chip.chip-inact { background: var(--borde); color: var(--texto-principal);
   border-color: var(--borde-fuerte); }
 /* ───────────────────────────────────────────────────────────────────────────
+   CUADRO DE ESTADO · clases .cuadro*
+   Movil primero: la base es 30px y los 28px entran con min-width (CLAUDE.md
+   4bis). El tono lo acompaña la letra; solo lo informa la letra (SC 1.4.1).
+   ─────────────────────────────────────────────────────────────────────────── */
+.cuadro { display: inline-flex; align-items: center; justify-content: center;
+  box-sizing: border-box; width: 30px; height: 30px; flex: none;
+  border: 1px solid; border-radius: 3px; padding: 0;
+  font-size: 13px; font-weight: 600; line-height: 1; }
+.cuadro.cuadro-exito { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.cuadro.cuadro-aviso { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.cuadro.cuadro-error { background: var(--error-fondo); color: var(--error-texto); border-color: var(--error-acento); }
+.cuadro.cuadro-info { background: var(--info-fondo); color: var(--info-texto); border-color: var(--info-acento); }
+.cuadro.cuadro-inactivo { background: var(--borde); color: var(--texto-principal); border-color: var(--borde-fuerte); }
+.cuadro.cuadro-ninguno { background: transparent; color: var(--sin-estado);
+  border-width: 2px; border-style: dashed; border-color: var(--sin-estado); }
+@media (min-width: 641px) {
+  .cuadro { width: 28px; height: 28px; }
+}
+/* ───────────────────────────────────────────────────────────────────────────
    PANEL DE PRIVILEGIOS · clases .pp-*
    Reparte permisos por modulo. Aqui SOLO vive el andamiaje de la lista: el
    interruptor, el chip y el boton de dentro son los del sistema, importados.
