@@ -15,7 +15,8 @@ Hechos verificados en el repositorio el 2026-11-01 (rama `feat/2026-10-30-horari
 - `TablaDatos` **no tiene vista de fila apilada** para móvil: a ancho estrecho solo desplaza dentro de `.tb-envoltura`. Es la respuesta a la «pregunta» del requerimiento.
 - Un componente nuevo se registra en: `componentes/src/index.ts`, `sistema/componentes/extraer.mjs` (lista `{ n, p }`, línea ~67 para `Chip`), `sistema/candado/verificar-entrega.mjs` (lista de pares, línea ~135), `sistema/cascaron/generar-cascaron.mjs`, `sistema/componentes/comportamiento.md` y `sistema/tokens/fuente.mjs`.
 - Mapa de tokens semánticos: `sistema/tokens/fuente.mjs` (por ejemplo `'borde-campo'`, línea ~6174). Las primitivas están prohibidas dentro de un componente (§2.5.1).
-- Corte de contenedor ya usado por el sistema: **640 px** (matriz de privilegios, regla 33).
+- Corte ya usado por el sistema: **640 px**, escrito 33 veces en `componentes.css` como `@media (max-width: 640px)`, es decir, por **ventana**. La hoja no contiene ningún `@container` ni `container-type`; la regla 33 de la matriz de privilegios mide su contenedor con `ResizeObserver` en JavaScript (`PanelPrivilegios.tsx`), que es otro mecanismo.
+- Escala tipográfica: `s-etiqueta` es 13px/500 (`tailwind-preset.ts:253`); `CLAUDE.md` §6 prohíbe `text-[Npx]`.
 
 ## Alcance
 
@@ -25,7 +26,8 @@ Hechos verificados en el repositorio el 2026-11-01 (rama `feat/2026-10-30-horari
 - Cinco tonos de significado, copiados de los de `Chip`: `exito`, `aviso`, `error`, `info`, `inactivo`.
 - Una sexta variante `tono="ninguno"` («sin estado»): borde **punteado**, **sin relleno**, color de borde y de letra de un token semántico nuevo que apunta a `gris_700` (color ya autorizado).
 - `letra` (un carácter, obligatoria) y `titulo` (nombre accesible, obligatorio).
-- Tamaño por **contenedor**: 30 px por omisión (móvil primero) y 28 px cuando el contenedor mide 640 px o más.
+- Tamaño por **ventana**: 30 px por omisión (móvil primero) y 28 px cuando la ventana supera los 640 px.
+- Letra en el paso `s-etiqueta` de la escala (13px), con peso 600 (uno de los cuatro permitidos), para que quepa y se lea en 28 px.
 - Esquinas apenas redondeadas (no círculo); mismo radio que `Chip` (3px), sin filete lateral.
 - No interactivo: sin clic, sin foco, sin `tabindex`.
 - Estilos en `sistema/componentes/componentes.css`, sin hex ni tamaños arbitrarios.
@@ -73,14 +75,15 @@ Convenciones:
 - **Colores:** los cinco tonos de significado reutilizan los tokens `--<tono>-fondo`, `--<tono>-texto` y `--<tono>-acento` que ya usa `Chip`. `inactivo` reutiliza los de `.chip-inact`. No se añade ningún escalón a `autorizados.lock.json`.
 - **Distinción sin color:** `ninguno` se distingue por la **forma** (borde punteado, sin relleno), no por el tono; es lo que cumple SC 1.4.1 aunque el gris se parezca al de `inactivo`.
 - **Contraste:** el borde de `ninguno` debe cumplir 3:1 (SC 1.4.11) y su letra 4,5:1 contra `fondo-pagina` y `fondo-tarjeta`, en claro y oscuro. Los pares nuevos entran en `verificar-contraste.mjs` como bloqueantes.
-- **Tamaño:** la regla de 28 px va dentro de una consulta de **contenedor** (no de ventana) con corte en 640 px, y el estado inicial es el de 30 px.
+- **Tamaño:** la regla base fija 30 px (móvil primero, §4bis) y la de 28 px va en `@media (min-width: 641px)`, de modo que 640 px exactos sigue siendo 30 px, igual que `@media (max-width: 640px)` en las otras 33 reglas. No se usa `@container`: la hoja no lo emplea y el cuadro, que es una hoja del árbol, no puede consultar a un contenedor que nadie declara.
+- **Letra:** `font-size` y `font-weight` salen de la escala (`s-etiqueta`, 600); sin tamaños arbitrarios. Centrada con `display: inline-flex`; el cuadro no recorta la letra.
 
 ## Plan de implementación
 
-0. Requisitos previos, que no son parte del cambio: la rama de trabajo es una `feat/*` (por ejemplo `feat/2026-11-01-cuadro-estado`) y se crea **antes** de la primera edición, y las dependencias están instaladas **dentro del contenedor** (`memoria/03-al-clonar.md`). El árbol de trabajo está en `feat/2026-10-30-horario-detalle-negrita`, que ya está subida a `main`; no se edita ahí.
+0. Requisitos previos, que no son parte del cambio: se parte de `main` actualizado, la rama de trabajo es una `feat/*` nueva (por ejemplo `feat/2026-11-01-cuadro-estado`) y se crea **antes** de la primera edición, y las dependencias están instaladas **dentro del contenedor** (`memoria/03-al-clonar.md`).
 1. Escribir `componentes/pruebas/CuadroEstado.test.tsx` y verlas fallar: emite `role="img"` con `aria-label` igual a `titulo`; clase por tono; `ninguno` sin relleno y con borde punteado; no es focalizable; el aviso de desarrollo con letra de longitud distinta de 1.
 2. Añadir el token `sin-estado` en `sistema/tokens/fuente.mjs` y correr `node sistema/tokens/generar.mjs` y `node sistema/candado/verificar-contraste.mjs`: los pares nuevos salen en verde en claro y oscuro.
-3. Añadir las reglas `.cuadro*` a `sistema/componentes/componentes.css` (30 px por omisión, 28 px en el corte de contenedor). Sin hex, sin `style` en línea, sin `outline-none`.
+3. Añadir las reglas `.cuadro*` a `sistema/componentes/componentes.css` (30 px por omisión, 28 px bajo `@media (min-width: 641px)`; letra en `s-etiqueta`/600). Sin hex, sin `style` en línea, sin `outline-none`. Correr `verificar-promesa`, `verificar-empate` y `verificar-cascada` en ese paso para confirmar que resuelven el `min-width`.
 4. Crear `componentes/src/CuadroEstado.tsx` y exportarlo en `componentes/src/index.ts`. Las pruebas del paso 1 pasan.
 5. Registrar el componente en `sistema/componentes/extraer.mjs`, `sistema/candado/verificar-entrega.mjs` y `sistema/cascaron/generar-cascaron.mjs`. El catálogo muestra los seis tonos, una fila de siete cuadros y los dos tamaños, con marcado estático (si no, los candados de promesa no lo ven).
 6. Escribir el contrato en `sistema/componentes/comportamiento.md` (reglas **Obligatorio**, cada una con su prueba declarada): letra + `titulo` obligatorios, la forma distingue `ninguno`, no interactivo, tamaño por contenedor.
@@ -94,7 +97,9 @@ Convenciones:
 - [ ] Los cinco tonos de significado usan los mismos tokens de fondo, texto y acento que `Chip`; ningún hex ni primitiva aparece en el componente ni en su CSS.
 - [ ] `tono="ninguno"` se renderiza con `border-style: dashed` y fondo transparente, medido en el estilo computado en navegador.
 - [ ] En escala de grises, `ninguno` se distingue de `inactivo` por la forma (comprobado a ojo y por el estilo computado, no por el tono).
-- [ ] El cuadro mide 30×30 px con un contenedor de 639 px y 28×28 px con uno de 640 px, medido en navegador.
+- [ ] El cuadro mide 30×30 px con una ventana de 640 px y 28×28 px con una de 641 px, medido en navegador.
+- [ ] Móvil primero (§4bis): la regla de 30 px está fuera de toda `@media`, la de 28 px es la única que va dentro (`min-width: 641px`), y el cuadro no usa ninguna `max-width`. Con la hoja sin consultas, el cuadro sale a 30 px.
+- [ ] La letra usa 13px y peso 600 computados, y no se corta dentro de 28×28 px.
 - [ ] Siete cuadros en fila miden **menos de 360 px** de ancho sin desplazamiento horizontal a 360 y a 390 px, medido en navegador.
 - [ ] El cuadro no recibe foco con tabulador y no tiene manejador de clic.
 - [ ] Los pares de contraste de `sin-estado` (borde 3:1, letra 4,5:1) en claro y oscuro salen en verde en `verificar-contraste.mjs`, y `verificar-tono.mjs` sigue en verde.
@@ -112,8 +117,9 @@ Convenciones:
 - **No:** `identidad-1` (verde azulado). Queda a 18,4 CIEDE2000 de `exito`: se leería como «presente».
 - **Reconocido:** el gris de `ninguno` es de la familia del gris de `inactivo`. Lo que los separa es la forma (punteado, sin relleno), no el tono; es lo que pide SC 1.4.1.
 - **Sí:** `tono` y `titulo` obligatorios. Sin `titulo` el lector de pantalla solo diría «P»; sin `tono` el cuadro sería color-nada. Misma lógica que el texto obligatorio de `Chip`. Decisión del responsable el 2026-11-01.
-- **Sí:** tamaño por **contenedor** en el corte de 640 px, partiendo de 30 px. Es el umbral que el sistema ya usa y respeta «móvil primero» (§4bis). Decisión del responsable el 2026-11-01.
-- **No:** media query de ventana. Un panel estrecho dentro de una pantalla ancha recibiría 28 px.
+- **Sí:** tamaño por **ventana**, con base de 30 px y 28 px desde 641 px. Decisión del responsable el 2026-11-01, que **sustituye** a la de contenedor tomada ese mismo día tras evaluar la factibilidad: la hoja no usa `@container` en ningún sitio, el cuadro no puede consultar un contenedor que nadie declara, y los candados de promesa, empate y muerta solo manejan `@media`. Respeta «móvil primero» (§4bis): el estado inicial es el estrecho.
+- **No:** `@container`. Exigiría una pieza nueva que declare el contenedor, o que cada pantalla lo haga, y verificar o ampliar tres candados. Para una diferencia de 2 px en una pieza no interactiva no compensa.
+- **Reconocido:** un panel estrecho dentro de una pantalla ancha recibe 28 px y no 30. Se acepta; la diferencia no afecta a la lectura ni al toque, porque el cuadro no es interactivo.
 - **No:** prop `tamano`. Cada pantalla tendría que repetir la decisión y podría olvidarla.
 - **Sí:** `role="img"` con `aria-label`. El cuadro es una imagen con nombre, no un control. **No** `title` como única vía: no se ve en un teléfono (§4bis).
 - **Sí:** la leyenda queda fuera. Los usuarios táctiles solo ven la letra; que la pantalla explique «P = presente» es parte de su diseño, no de la pieza.
@@ -131,7 +137,7 @@ Convenciones:
 | Un nuevo token cambia el recuento de pares del candado de contraste | La cifra publicada en `CLAUDE.md` se corrige con lo que mida el candado, no con una estimación |
 | Siete cuadros no caben junto a la foto y el nombre a 390 px | La pieza mide ~234 px por sí sola (7×30 + 6 huecos de 4 px, a confirmar al medir); la maquetación de la fila es de la pantalla consumidora. Sin vista apilada, se pide aparte |
 | El catálogo no pinta el componente en estático y los candados no lo ven | El paso 5 exige marcado estático (`pieza-sin-componente-no-esta-entregada`) |
-| La regla del tamaño por contenedor no actúa en un entorno sin layout (ancho 0) | Se respeta el tamaño por omisión de 30 px, igual que la regla 33 de la matriz de privilegios |
+| Los candados de promesa, empate o cascada no resuelven bien `@media (min-width: 641px)` (la hoja usa `max-width`) | El paso 3 los corre antes de seguir; si alguno la ignora, se detiene y se avisa en vez de pasar a `max-width` por comodidad |
 | `verificar-forma` marca el componente y el tipo nuevos | Es una adición; se declara en el mismo commit, no se silencia |
 | Versión mayor sin publicar | La publicación (`npm run publicar`) es un paso posterior y requiere petición expresa |
 
