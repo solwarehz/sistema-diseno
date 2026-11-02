@@ -11686,6 +11686,9 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
   justify-content: flex-end; font-weight: 400; }
 .pm-tags:empty { display: none; }
 .pm-conteo { font-size: 13px; font-weight: 400; color: var(--texto-secundario); }
+/* Bajo el cursor la banda baja a borde, y el secundario sobre ese fondo da 4,17:1 en
+   claro: no llega a los 4,5 que pide el texto. Pasa a texto-principal, como el chevron. */
+.pm-mod-cab:hover .pm-conteo { color: var(--texto-principal); }
 .pm tbody tr[hidden] { display: none; }
 
 /* R168 · EL ENCABEZADO CON ICONO. Solo con iconos (pm-con-iconos): una

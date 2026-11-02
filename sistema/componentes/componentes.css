@@ -1671,7 +1671,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pb-todos{ justify-content: center; border-top: 1px solid var(--borde); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   PANEL DE PRIVILEGIOS — 96 reglas · clases .pp-*, .pm-*
+   PANEL DE PRIVILEGIOS — 97 reglas · clases .pp-*, .pm-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .pp{ display: flex; flex-direction: column; gap: 16px; }
@@ -1775,6 +1775,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   justify-content: flex-end; font-weight: 400; }
 .pm-tags:empty{ display: none; }
 .pm-conteo{ font-size: 13px; font-weight: 400; color: var(--texto-secundario); }
+.pm-mod-cab:hover .pm-conteo{ color: var(--texto-principal); }
 .pm tbody tr[hidden]{ display: none; }
 .pm-con-iconos .pm-col, .pm-con-iconos .pm-esquina{ background: var(--fondo-tarjeta);
   border-bottom: 1px solid var(--borde-fuerte); vertical-align: bottom; }

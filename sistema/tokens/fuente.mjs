@@ -6641,6 +6641,7 @@ export const pares = [
   ['texto-secundario', 'fondo-pagina',     4.5, 'Dato de apoyo sobre página'],
   ['texto-secundario', 'fondo-encabezado', 4.5, 'Etiqueta de columna no primaria'],
   ['texto-secundario', 'fondo-fila-hover', 4.5, 'Dato de apoyo en fila activa'],
+  ['texto-principal',  'borde',            4.5, 'Título de banda de módulo bajo el cursor'],
   ['texto-pista',      'fondo-tarjeta',    4.5, 'Placeholder dentro de campo'],
   ['texto-pista',      'fondo-pagina',     4.5, 'Texto de ayuda sobre página'],
 

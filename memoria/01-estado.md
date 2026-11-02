@@ -54,7 +54,7 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 |---|---|---|
 | Motor de tokens | ✅ | `generar.mjs` — 57 semánticos + 5 de marca, claro y oscuro |
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
-| Contraste en **los dos modos** | ✅ | `verificar-contraste` · **196 pares** · 156 bloqueantes · **0 fallos** |
+| Contraste en **los dos modos** | ✅ | `verificar-contraste` · **198 pares** · 158 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
 | Componentes de React | ✅ | **1327 pruebas en 62 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **1114 reglas de 1645** · **804 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |

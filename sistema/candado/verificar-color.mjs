@@ -33,6 +33,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import * as fsSync from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
 import { primitivas, categoricas, autorizados, restringidos, semanticos, marca, VERSION } from '../tokens/fuente.mjs';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
@@ -219,6 +220,13 @@ const revisarCss = (cssCrudo, archivo, desplazamiento = 0) => {
 // Lo que se salta es explícito y corto:
 //
 //   · `node_modules`, `.git` y las carpetas de salida — no son nuestros.
+//   · lo que git IGNORA. Un equipo manda su maqueta, una captura o un logo del
+//     cliente y se deja en el disco como referencia: trae sus propios colores y
+//     es una maqueta, no el sistema. El sistema trabaja con los colores
+//     autorizados y no juzga lo que otros dibujan. Se salta lo que el
+//     `.gitignore` ya declara ajeno en vez de repetir aquí el nombre de cada
+//     carpeta, que es la lista a mano que este candado dejó atrás. Un archivo
+//     que git SÍ versiona se revisa siempre, aunque coincida con un patrón.
 //   · los `.md` — son prosa. Media docena de documentos explican POR QUÉ se
 //     rechazó un tono, y esos textos tienen que poder decir cuál era. Se
 //     censan al final para que no queden invisibles, pero no bloquean.
@@ -228,6 +236,21 @@ const revisarCss = (cssCrudo, archivo, desplazamiento = 0) => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const SALTAR_CARPETA = new Set(['node_modules', '.git', 'dist', 'build', 'cobertura']);
+
+/* Lo que git ignora y existe en el disco: rutas relativas a la raíz, y con «/»
+   final las carpetas. Si no hay git (un ZIP descomprimido, un contenedor sin el
+   binario) la lista queda vacía y se revisa TODO, que es el lado seguro: un
+   candado que no puede preguntar no se relaja. */
+const IGNORADAS_POR_GIT = (() => {
+  try {
+    const salida = execFileSync('git',
+      ['ls-files', '--others', '--ignored', '--exclude-standard', '--directory'],
+      { cwd: RAIZ, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+    return new Set(salida.split('\n').filter(Boolean));
+  } catch {
+    return new Set();
+  }
+})();
 
 const BANCADAS = new Set([
   'pruebas/infracciones.tsx',               // las 10 infracciones que el lint debe bloquear
@@ -242,6 +265,7 @@ const listar = (dir) => {
   for (const e of readdirSync(dir, { withFileTypes: true })) {
     if (SALTAR_CARPETA.has(e.name)) continue;
     const p = join(dir, e.name);
+    if (IGNORADAS_POR_GIT.has(relative(RAIZ, p) + (e.isDirectory() ? '/' : ''))) continue;
     if (e.isDirectory()) salida.push(...listar(p));
     else salida.push(p);
   }
@@ -329,6 +353,7 @@ console.log(`  Familias:     ${Object.keys(primitivas).length} rampas · ${Objec
 console.log(`  Autorizados:  ${autorizados.length} escalones — pueden vivir en el sistema`);
 console.log(`  Restringidos: ${restringidos.length} de marca — se nombran para poder vigilarlos, no para usarlos`);
 console.log(`  Tokens:       ${tokensRevisados} valores comprobados contra las familias`);
+console.log(`  Ignorado:     ${IGNORADAS_POR_GIT.size} rutas que git ya declara ajenas (no se revisan)`);
 console.log(`  Recorrido:    ${cssRevisados} hojas de estilo · ${htmlRevisados} documentos HTML · ${componentesRevisados} componentes`);
 console.log(`                de ${todos.length} archivos del repositorio`);
 console.log(`  Fallos:       ${fallos.length}\n`);
