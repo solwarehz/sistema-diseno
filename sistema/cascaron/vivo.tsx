@@ -296,6 +296,52 @@ function MatrizViva() {
   );
 }
 
+/* R168 · LOS TÍTULOS DEL MENÚ, MONTADOS Y VIVOS: cinco bandas plegables en el
+   orden del menú, una sola con opciones y cuatro todavía vacías. Es el caso que
+   pidió el equipo, y va vivo por lo mismo que la matriz de arriba: plegar,
+   el teclado y el resaltado de la columna se miden con el componente real.
+   «Dar alta» y «Desactivar» van SIN icono a propósito —no hay uno obvio en el
+   juego— para que se vea cómo se alinean junto a las que sí lo llevan. */
+const COLUMNAS_MENU: ColumnaPrivilegios[] = [
+  { id: 'ver', titulo: 'Ver', icono: 'ojo' },
+  { id: 'editar', titulo: 'Editar', icono: 'lapiz' },
+  { id: 'crear', titulo: 'Crear', icono: 'suma' },
+  { id: 'alta', titulo: 'Dar alta' },
+  { id: 'desactivar', titulo: 'Desactivar' },
+  { id: 'descargar', titulo: 'Descargar', icono: 'descargar', aparte: true },
+];
+
+const MODULOS_MENU: ModuloPrivilegios[] = [
+  {
+    id: 'dashboard', nombre: 'Dashboard',
+    filas: [{ id: 'clasificacion', nombre: 'Clasificación semanal' }],
+    privilegios: [{ id: 'cs-ver', nombre: 'Ver', columna: 'ver', fila: 'clasificacion' }],
+  },
+  { id: 'horarios', nombre: 'Horarios', privilegios: [] },
+  { id: 'marcaciones', nombre: 'Marcaciones', privilegios: [] },
+  { id: 'reportes-menu', nombre: 'Reportes', privilegios: [] },
+  { id: 'config-modulo', nombre: 'Configuración del módulo', privilegios: [] },
+];
+
+function PlegableViva() {
+  const [v, setV] = useState<ValorPrivilegios>({ dashboard: { 'cs-ver': true } });
+  const [abiertos, setAbiertos] = useState<string[]>(['dashboard']);
+  return (
+    <PanelPrivilegios
+      presentacion="matriz"
+      plegable
+      resumen="concedido"
+      columnas={COLUMNAS_MENU}
+      modulos={MODULOS_MENU}
+      base={null}
+      valor={v}
+      onCambio={(completo) => setV(completo)}
+      abiertos={abiertos}
+      onAbiertos={setAbiertos}
+    />
+  );
+}
+
 /* R157 · EL TABLERO DENSO, montado y vivo: la rejilla, el anillo, el relieve,
    la burbuja, la superficie tonal y el indicador de «en vivo», a la vez, que es
    como se ven si conviven.
@@ -637,5 +683,7 @@ if (enTablero) createRoot(enTablero).render(<TableroVivo />);
 const enLiso = document.getElementById('tablero-liso-vivo');
 if (enLiso) createRoot(enLiso).render(<TableroLisoVivo />);
 
+const enPlegable = document.getElementById('plegable-viva');
+if (enPlegable) createRoot(enPlegable).render(<PlegableViva />);
 const enMatriz = document.getElementById('matriz-viva');
 if (enMatriz) createRoot(enMatriz).render(<MatrizViva />);

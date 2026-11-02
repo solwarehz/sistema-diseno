@@ -1315,7 +1315,8 @@ export function PanelPrivilegios({
        de celda y ninguna tendría por qué saber esto. */
     const alTocar = (e: React.SyntheticEvent) => {
       const td = (e.target as HTMLElement).closest('td');
-      const c = td ? cols[(td as HTMLTableCellElement).cellIndex - 1] : undefined;
+      const ata = (td?.getAttribute('headers') ?? '').split(' ');
+      const c = cols.find((x) => ata.includes(`${idPanel}-col-${x.id}`));
       setColumnaOn(c ? c.id : null);
     };
     const alSalir = () => setColumnaOn(null);
@@ -1468,7 +1469,11 @@ export function PanelPrivilegios({
                          25 se cumplia mirando la pantalla y no sin verla, que
                          es justo lo que dice cubrir. */
                       const atada = [
-                        modulos.length > 1 ? `${idPanel}-mod-${im}` : '',
+                        /* R168 · CON `plegable` LA BANDA ES UN BOTON con chips y
+                           contador, y `headers` leeria todo eso como parte del
+                           nombre de CADA interruptor del modulo. Su nombre ya
+                           viaja en el texto oculto de la celda (`conModulo`). */
+                        modulos.length > 1 && !plegable ? `${idPanel}-mod-${im}` : '',
                         idFila, `${idPanel}-col-${c.id}`,
                       ].filter(Boolean).join(' ');
                       /* SIN PRIVILEGIO NO HAY NADA QUE DECIR, y eso es distinto
@@ -1786,6 +1791,11 @@ export function PanelPrivilegios({
           // Lo que no se puede repartir no cuenta en el «4 de 6»: contarlo haría
           // que un cargo pareciera incompleto por reglas que no dependen de él.
           const posibles = lista.filter((p) => !p.cerrado).length;
+          /* R168 · La banda limpia: con `resumen="concedido"`, o en un título
+             todavía sin opciones, no se dice «sin permisos» ni «n de n». Un
+             módulo vacío no tiene permisos concedidos NI negados: no tiene
+             opciones, y el chip y el «0 de 0» dicen otra cosa. */
+          const bandaLimpia = resumen === 'concedido' || vacioDe(m);
           /* Tambien por `baseDe`: con un modulo colocado por columnas, `base`
              no es un id y este `concedido(..., base)` decia que falta el base
              CON TODO CONCEDIDO — la pantalla contradiciendo al backend. */
@@ -1825,7 +1835,7 @@ export function PanelPrivilegios({
             >
               <button
                 type="button"
-                className="pp-mod-cab"
+                className={bandaLimpia ? 'pp-mod-cab pp-sin-conteo' : 'pp-mod-cab'}
                 aria-expanded={abiertoM}
                 aria-controls={`pp-${m.id}`}
                 onClick={() => alternar(m.id)}
@@ -1841,7 +1851,7 @@ export function PanelPrivilegios({
                 <span className="pp-tags">
                   {dados.length
                     ? dados.map((p) => <Chip key={p.id} tono="info">{p.nombre}</Chip>)
-                    : <Chip tono="pendiente">sin permisos</Chip>}
+                    : (!bandaLimpia && <Chip tono="pendiente">sin permisos</Chip>)}
                   {/* R145 · El resumen del móvil. Se emite SIEMPRE y la hoja lo
                       enseña solo bajo 900 px: un componente no puede preguntar
                       cuánto mide la pantalla sin medir, y medir para decidir
@@ -1852,7 +1862,7 @@ export function PanelPrivilegios({
                     <Chip tono="info" className="pp-tags-mas">+{dados.length - 2}</Chip>
                   )}
                 </span>
-                <span className="pp-conteo">{dados.length} de {posibles}</span>
+                {!bandaLimpia && <span className="pp-conteo">{dados.length} de {posibles}</span>}
               </button>
 
               <div className="pp-mod-cuerpo" id={`pp-${m.id}`} hidden={!abiertoM}>

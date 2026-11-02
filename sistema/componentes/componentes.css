@@ -1671,7 +1671,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pb-todos{ justify-content: center; border-top: 1px solid var(--borde); }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   PANEL DE PRIVILEGIOS — 67 reglas · clases .pp-*, .pm-*
+   PANEL DE PRIVILEGIOS — 89 reglas · clases .pp-*, .pm-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .pp{ display: flex; flex-direction: column; gap: 16px; }
@@ -1690,6 +1690,14 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pp-abierto .pp-chev{ transform: rotate(180deg); }
 .pp-mod-nom{ font-size: 15px; font-weight: 500; min-width: 0; }
 .pp-marca{ margin-left: 8px; }
+.pp-mod-cab.pp-sin-conteo{ grid-template-columns: 20px 1fr;
+  grid-template-areas: 'chev nombre'; }
+.pp-sin-conteo .pp-tags{ grid-area: auto; grid-column: 2; justify-content: flex-start; }
+.pp-sin-conteo .pp-tags:empty{ display: none; }
+@media (min-width: 901px) {
+  .pp-mod-cab.pp-sin-conteo{ grid-template-columns: 20px 1fr auto; grid-template-areas: none; }
+  .pp-sin-conteo .pp-tags{ grid-column: auto; justify-content: flex-end; }
+}
 .pp-tags{ display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; max-width: 46ch; }
 .pp-tags .pp-tags-mas{ display: none; }
 .pp-conteo{ font-size: 12px; color: var(--texto-secundario);
@@ -1752,6 +1760,34 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .pm-mod-nom{ position: sticky; left: 0; text-align: left; font-weight: 600;
   font-size: 13px; color: var(--texto-secundario); background: var(--fondo-encabezado);
   padding: 8px 12px; border-bottom: 1px solid var(--borde); }
+.pm-mod-plegable .pm-mod-nom{ padding: 0; }
+.pm-mod-cab{ display: flex; align-items: center; gap: 10px; width: 100%; margin: 0;
+  padding: 8px 12px; border: 0; background: transparent; font: inherit; font-size: 13px;
+  font-weight: 600; color: var(--texto-principal); text-align: left; cursor: pointer; }
+.pm-mod-cab:hover{ background: var(--borde); }
+.pm-mod-cab:focus-visible{ outline: 2px solid var(--foco); outline-offset: -2px; }
+.pm-chev{ display: grid; place-items: center; flex: none; color: var(--texto-secundario);
+  transition: transform var(--dur-media) var(--curva), color var(--dur-media) var(--curva); }
+.pm-mod-cab:hover .pm-chev{ color: var(--texto-principal); }
+.pm-mod-cab[aria-expanded='true'] .pm-chev{ transform: rotate(180deg); }
+.pm-mod-txt{ flex: none; }
+.pm-tags{ display: flex; flex-wrap: wrap; gap: 4px; margin-left: auto;
+  justify-content: flex-end; font-weight: 400; }
+.pm-tags:empty{ display: none; }
+.pm-conteo{ font-size: 13px; font-weight: 400; color: var(--texto-secundario); }
+.pm tbody tr[hidden]{ display: none; }
+.pm-con-iconos .pm-col, .pm-con-iconos .pm-esquina{ background: var(--fondo-tarjeta);
+  border-bottom: 1px solid var(--borde-fuerte); vertical-align: bottom; }
+.pm-con-iconos .pm-col{ color: var(--texto-secundario);
+  transition: color var(--dur-media) var(--curva); }
+.pm-con-iconos .pm-col-on{ color: var(--enlace); }
+.pm-col-ic{ display: inline-flex; flex-direction: column; align-items: center;
+  justify-content: flex-end; gap: 4px; line-height: 1.2; }
+.pm-con-iconos tbody tr.pm-fila:focus-within,
+.pm-con-iconos tbody tr.pm-fila:focus-within .pm-nom{ background: var(--fondo-fila-hover); }
+@media (prefers-reduced-motion: reduce) {
+  .pm-chev, .pm-con-iconos .pm-col{ transition: none; }
+}
 .pm-sin-base .pm-nom{ box-shadow: inset 3px 0 0 var(--aviso-acento); }
 .pm-no{ color: var(--texto-pista); }
 .pm-no-ic{ display: inline-grid; place-items: center; }

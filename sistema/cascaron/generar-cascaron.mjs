@@ -8814,6 +8814,92 @@ periódicamente quién tiene qué es obligación legal, y se hace mirando una co
 </div>
 <div class="bloque" id="matriz-viva"></div>
 
+<h3 class="sub-seccion">R168 · Los títulos del menú: módulos plegables</h3>
+<p class="seccion-sub">Una pantalla de privilegios puede seguir la estructura del menú: cada título es una
+<strong>banda que pliega y despliega</strong> sus filas, aunque todavía no tenga ninguna opción debajo. Con
+<code>plegable</code> la banda es el control (<code>aria-expanded</code>, teclado, chevron que gira) y sale
+<strong>siempre</strong>, también con un solo módulo. Un módulo con <code>privilegios: []</code> se dibuja como
+<strong>solo título</strong>: sin fila repetida, sin «Sin declarar», sin «sin permisos» ni «0 de 0», porque no es que
+no tenga permisos sino que aún no tiene opciones. Con <code>resumen="concedido"</code> la banda dice
+<strong>solo lo concedido</strong>. Y si alguna columna declara un <code>icono</code>, el encabezado pasa a fondo
+blanco y el cursor o el foco sobre un interruptor ilumina su columna y su fila.</p>
+<div class="aviso">
+  Va <strong>montado y vivo</strong>: pliega Dashboard, pasa el cursor por el «Ver» de «Clasificación semanal» o
+  recorre las bandas con el tabulador. «Dar alta» y «Desactivar» van <strong>sin icono</strong> a propósito: no hay
+  uno obvio en el juego del sistema, y se ve cómo se alinean junto a las que sí lo llevan. Sin ninguna prop
+  nueva el panel sale exactamente como antes.
+</div>
+<div class="bloque" id="plegable-viva"></div>
+
+<h4 class="sub-seccion">Lo mismo, sin JavaScript</h4>
+<p class="seccion-sub">Lo que emite el componente con una banda cerrada y con chip, una abierta y un título aún vacío.
+Existe porque los candados leen el documento estático y no lo que monta el guion de arriba.</p>
+<div class="bloque">
+  <div class="pm-envoltura">
+    <table class="pm pm-con-iconos">
+      <thead>
+        <tr>
+          <th class="pm-esquina" scope="col"><span class="sr-solo">Opción</span></th>
+          <th class="pm-col pm-col-on" scope="col"><span class="pm-col-txt pm-col-ic">${icono('ojo')}<span>Ver</span></span></th>
+          <th class="pm-col" scope="col"><span class="pm-col-txt pm-col-ic">${icono('lapiz')}<span>Editar</span></span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="pm-mod pm-mod-plegable">
+          <th scope="colgroup" colspan="3" class="pm-mod-nom">
+            <button type="button" class="pm-mod-cab" aria-expanded="false">
+              <span class="pm-chev" aria-hidden="true">${icono('chevron')}</span>
+              <span class="pm-mod-txt">Dashboard</span>
+              <span class="pm-tags"><span class="chip chip-info">Ver</span></span>
+            </button>
+          </th>
+        </tr>
+        <tr class="pm-fila" hidden>
+          <th scope="row" class="pm-nom"><span class="pm-nom-txt">Clasificación semanal</span></th>
+          <td class="pm-celda pm-vacia"><span class="sr-solo">Sin declarar</span></td>
+          <td class="pm-celda pm-vacia"><span class="sr-solo">Sin declarar</span></td>
+        </tr>
+        <tr class="pm-mod pm-mod-plegable pm-abierto">
+          <th scope="colgroup" colspan="3" class="pm-mod-nom">
+            <button type="button" class="pm-mod-cab" aria-expanded="true">
+              <span class="pm-chev" aria-hidden="true">${icono('chevron')}</span>
+              <span class="pm-mod-txt">Horarios</span>
+              <span class="pm-tags"></span>
+            </button>
+          </th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<h4 class="sub-seccion">Copia esto</h4>
+<pre class="cod"><code>const columnas = [
+  { id: 'ver',      titulo: 'Ver',      icono: 'ojo' },
+  { id: 'editar',   titulo: 'Editar',   icono: 'lapiz' },
+  { id: 'alta',     titulo: 'Dar alta' },                 // sin icono: sale como siempre
+];
+
+// Un título todavía sin opciones: solo el título.
+const modulos = [
+  { id: 'dashboard', nombre: 'Dashboard', filas: [{ id: 'clasificacion', nombre: 'Clasificación semanal' }],
+    privilegios: [{ id: 'cs-ver', nombre: 'Ver', columna: 'ver', fila: 'clasificacion' }] },
+  { id: 'horarios',  nombre: 'Horarios',  privilegios: [] },
+];
+
+&lt;PanelPrivilegios
+  presentacion="matriz"
+  plegable
+  resumen="concedido"
+  columnas={columnas}
+  modulos={modulos}
+  base={null}
+  valor={valor}
+  onCambio={setValor}
+  abiertos={abiertos}        // opcional: sin él el panel recuerda por su cuenta,
+  onAbiertos={setAbiertos}   // y todo empieza cerrado, como la lista
+/&gt;</code></pre>
+
 <h3 class="sub-seccion">R152 · Una llave que abre dos puertas</h3>
 <p class="seccion-sub">Cuando <strong>el mismo permiso</strong> se ofrece desde dos pantallas
 distintas —dos opciones del menú, dos módulos—, <code>clave</code> no llega: une dentro de un
@@ -11652,6 +11738,18 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .pp-abierto .pp-chev { transform: rotate(180deg); }
 .pp-mod-nom { font-size: 15px; font-weight: 500; min-width: 0; }
 .pp-marca { margin-left: 8px; }
+/* R168 · LA BANDA LIMPIA, sin el «n de n». La rejilla de arriba reserva una
+   columna para el contador; sin contador, esa columna vacia seguiria sumando
+   un hueco de 12px. Se escribe de lo estrecho a lo ancho: la base es el
+   telefono y la columna del contador solo se quita donde ya cabe el resumen. */
+.pp-mod-cab.pp-sin-conteo { grid-template-columns: 20px 1fr;
+  grid-template-areas: 'chev nombre'; }
+.pp-sin-conteo .pp-tags { grid-area: auto; grid-column: 2; justify-content: flex-start; }
+.pp-sin-conteo .pp-tags:empty { display: none; }
+@media (min-width: 901px) {
+  .pp-mod-cab.pp-sin-conteo { grid-template-columns: 20px 1fr auto; grid-template-areas: none; }
+  .pp-sin-conteo .pp-tags { grid-column: auto; justify-content: flex-end; }
+}
 .pp-tags { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; max-width: 46ch; }
 /* R145 · El resumen «+N» lo emite el componente SIEMPRE y solo se ve en el
    telefono: asi la cabecera no necesita saber cuanto mide la pantalla, que es
@@ -11886,6 +11984,46 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .pm-mod-nom { position: sticky; left: 0; text-align: left; font-weight: 600;
   font-size: 13px; color: var(--texto-secundario); background: var(--fondo-encabezado);
   padding: 8px 12px; border-bottom: 1px solid var(--borde); }
+
+/* R168 · LA BANDA PLEGABLE. El boton ocupa la celda entera, como en la lista:
+   el relleno es suyo y no del th, para que toda la banda sea blanco de clic.
+   Al pasar el cursor baja un tono —de fondo-encabezado a borde, el escalon
+   siguiente de la misma familia de grises— y el chevron se oscurece. */
+.pm-mod-plegable .pm-mod-nom { padding: 0; }
+.pm-mod-cab { display: flex; align-items: center; gap: 10px; width: 100%; margin: 0;
+  padding: 8px 12px; border: 0; background: transparent; font: inherit; font-size: 13px;
+  font-weight: 600; color: var(--texto-principal); text-align: left; cursor: pointer; }
+.pm-mod-cab:hover { background: var(--borde); }
+.pm-mod-cab:focus-visible { outline: 2px solid var(--foco); outline-offset: -2px; }
+.pm-chev { display: grid; place-items: center; flex: none; color: var(--texto-secundario);
+  transition: transform var(--dur-media) var(--curva), color var(--dur-media) var(--curva); }
+.pm-mod-cab:hover .pm-chev { color: var(--texto-principal); }
+.pm-mod-cab[aria-expanded='true'] .pm-chev { transform: rotate(180deg); }
+.pm-mod-txt { flex: none; }
+.pm-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-left: auto;
+  justify-content: flex-end; font-weight: 400; }
+.pm-tags:empty { display: none; }
+.pm-conteo { font-size: 13px; font-weight: 400; color: var(--texto-secundario); }
+.pm tbody tr[hidden] { display: none; }
+
+/* R168 · EL ENCABEZADO CON ICONO. Solo con iconos (pm-con-iconos): una
+   matriz sin ellos sale como siempre. Va sobre fondo-tarjeta con una linea
+   inferior mas firme, para que las bandas de modulo sean lo mas fuerte de la
+   tabla; el icono y la etiqueta son una guia discreta que se enciende cuando
+   el cursor o el foco tocan un interruptor de su columna. Las columnas sin
+   icono se alinean por abajo con las que si lo llevan. */
+.pm-con-iconos .pm-col, .pm-con-iconos .pm-esquina { background: var(--fondo-tarjeta);
+  border-bottom: 1px solid var(--borde-fuerte); vertical-align: bottom; }
+.pm-con-iconos .pm-col { color: var(--texto-secundario);
+  transition: color var(--dur-media) var(--curva); }
+.pm-con-iconos .pm-col-on { color: var(--enlace); }
+.pm-col-ic { display: inline-flex; flex-direction: column; align-items: center;
+  justify-content: flex-end; gap: 4px; line-height: 1.2; }
+.pm-con-iconos tbody tr.pm-fila:focus-within,
+.pm-con-iconos tbody tr.pm-fila:focus-within .pm-nom { background: var(--fondo-fila-hover); }
+@media (prefers-reduced-motion: reduce) {
+  .pm-chev, .pm-con-iconos .pm-col { transition: none; }
+}
 
 .pm-sin-base .pm-nom { box-shadow: inset 3px 0 0 var(--aviso-acento); }
 /* El interruptor se centra en su celda: su etiqueta existe pero no se ve. */
