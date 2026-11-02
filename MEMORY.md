@@ -5,9 +5,9 @@ aporte.
 
 ## Estado actual (2026-11-02)
 
-- **v1.151.0 PUBLICADA** por las dos vías (etiqueta `v1.151.0` + release con ZIP, 2026-11-02):
-  `npm install "github:solwarehz/sistema-diseno#v1.151.0"`. `main` = `work` = `cdfe262` al publicar. No probada la
-  instalación desde un proyecto limpio. El ZIP de v1.150.0 se borró (flujo normal); su etiqueta y release siguen.
+- **v1.152.0** lleva la SPEC 06 (la que el responsable asignó: «corresponde la 152»). La **v1.151.0 ya estaba publicada con el
+  mismo código** (2026-11-02; etiqueta y release no se tocan): `npm install "github:solwarehz/sistema-diseno#v1.152.0"`.
+  No probada la instalación desde un proyecto limpio. El ZIP de v1.150.0 se borró (flujo normal); su etiqueta y release siguen.
 - **SPEC 06 (R168, `PanelPrivilegios` plegable) en «Implemented»**, reglas 34-40, 1399 pruebas, 198 pares de contraste
   (158 bloqueantes). `plegable` (cabecera de columnas dentro de cada módulo), `resumen` `'completo'|'ninguno'` (el equipo
   pidió `'concedido'`; el sistema es para todos y se simplificó: **avisarles**), `icono` por columna y por fila,

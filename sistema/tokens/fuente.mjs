@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.151.0";
+export const VERSION = "1.152.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,20 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.152.0', fecha: '2026-11-02',
+    que: 'PanelPrivilegios (R168, SPEC 06) publicado con el numero 1.152.0: mismo codigo que la 1.151.0',
+    porque:
+      'NO HAY NINGUN CAMBIO DE CODIGO NI DE COMPORTAMIENTO respecto a la 1.151.0. Esa version ya estaba '
+      + 'publicada con este mismo PanelPrivilegios —`plegable`, `resumen`, `icono` por columna y por fila, '
+      + '`posicionIconoFila`— y su etiqueta y su publicacion no se tocan: un `npm install` de la 1.151.0 tiene '
+      + 'que seguir funcionando. El responsable pidio que la SPEC 06 viaje como 1.152.0 («corresponde la 152»), '
+      + 'y como una etiqueta no se mueve, se sube de version. Quien tenga la 1.151.0 no necesita pasar a la '
+      + '1.152.0; quien parta de la 1.150.0 puede ir directo a la 1.152.0. El detalle de lo que trae la pieza '
+      + 'esta en la entrada de la 1.151.0, justo debajo.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.151.0', fecha: '2026-11-02',
     que: 'PanelPrivilegios: modulos plegables en matriz y lista, titulo sin privilegios, resumen limpio e icono por columna (R168)',
