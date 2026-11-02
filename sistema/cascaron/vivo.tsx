@@ -213,85 +213,128 @@ if (conAncla) createRoot(conAncla).render(<TablaViva anclar={1} />);
 const sinAncla = document.getElementById('tabla-viva-suelta');
 if (sinAncla) createRoot(sinAncla).render(<TablaViva anclar={0} />);
 
-/* ───────────────────────────────────────────────────────────────────────────
-   R151 · LA MATRIZ, MONTADA Y VIVA
-
-   Va viva y no de cartón por lo mismo que la tabla anclada: una celda de esta
-   rejilla se decide con `columna`, `fila`, los cuatro motivos, `depende`,
-   `clave` y `deshabilitado` a la vez. Eso escrito a mano diverge a la primera —y
-   la maqueta de la LISTA, que se escribió a mano, divergió en ocho sitios y lo
-   encontró una verificación, no un candado.
-   ─────────────────────────────────────────────────────────────────────────── */
-
-const COLUMNAS: ColumnaPrivilegios[] = [
-  { id: 'ver', titulo: 'Ver' },
-  { id: 'editar', titulo: 'Editar' },
-  { id: 'crear', titulo: 'Crear' },
+/* R168 · LOS TÍTULOS DEL MENÚ, MONTADOS Y VIVOS: cinco bandas plegables en el
+   orden del menú, una sola con opciones y cuatro todavía vacías. Es el caso que
+   pidió el equipo, y va vivo por lo mismo que la matriz de arriba: plegar,
+   el teclado y el resaltado de la columna se miden con el componente real.
+   «Dar alta» y «Desactivar» van SIN icono a propósito —no hay uno obvio en el
+   juego— para que se vea cómo se alinean junto a las que sí lo llevan. */
+const COLUMNAS_MENU: ColumnaPrivilegios[] = [
+  { id: 'ver', titulo: 'Ver', icono: 'ojo' },
+  { id: 'editar', titulo: 'Editar', icono: 'lapiz' },
+  { id: 'crear', titulo: 'Crear', icono: 'suma' },
+  { id: 'alta', titulo: 'Dar alta' },
   { id: 'desactivar', titulo: 'Desactivar' },
-  { id: 'reporte', titulo: 'Crear reporte' },
-  { id: 'descargar', titulo: 'Descargar', aparte: true },
+  { id: 'descargar', titulo: 'Descargar', icono: 'descargar', aparte: true },
 ];
 
-const MODULOS_MATRIZ: ModuloPrivilegios[] = [
+const MODULOS_MENU: ModuloPrivilegios[] = [
   {
-    id: 'personal', nombre: 'Personal',
-    filas: [
-      { id: 'trabajadores', nombre: 'Trabajadores' },
-      { id: 'contratos', nombre: 'Contratos' },
-    ],
-    privilegios: [
-      { id: 'tr-ver', nombre: 'Ver trabajadores', columna: 'ver', fila: 'trabajadores' },
-      { id: 'tr-editar', nombre: 'Editar trabajador', columna: 'editar', fila: 'trabajadores' },
-      { id: 'tr-crear', nombre: 'Crear trabajador', columna: 'crear', fila: 'trabajadores' },
-      { id: 'tr-desactivar', nombre: 'Desactivar trabajador', columna: 'desactivar', fila: 'trabajadores',
-        depende: 'tr-editar' },
-      { id: 'tr-descargar', nombre: 'Descargar trabajadores', columna: 'descargar', fila: 'trabajadores' },
-      { id: 'co-ver', nombre: 'Ver contratos', columna: 'ver', fila: 'contratos' },
-      { id: 'co-editar', nombre: 'Editar contrato', columna: 'editar', fila: 'contratos' },
-      { id: 'co-crear', nombre: 'Crear contrato', columna: 'crear', fila: 'contratos',
-        cerrado: { tipo: 'ajeno', motivo: 'Crear contratos es del Jefe de personal.' } },
-      /* EL HUECO QUE HABLA: la acción no existe para este recurso, y decirlo no
-         es lo mismo que omitirlo. Es el argumento con el que llegó el R151. */
-      { id: 'co-desactivar', nombre: 'Desactivar contrato', columna: 'desactivar', fila: 'contratos',
-        cerrado: { tipo: 'noAplica', motivo: 'Un contrato no se apaga: se cierra con fecha.' } },
-      { id: 'co-descargar', nombre: 'Descargar contratos', columna: 'descargar', fila: 'contratos' },
-      /* R152 · LA MISMA LLAVE QUE «Reportes». «Crear reporte» es UN permiso
-         ofrecido desde dos pantallas: encender uno enciende el otro, y el aviso
-         nombra el módulo del compañero. Para unir DENTRO de un módulo está
-         «clave»; esto cruza todos. */
-      { id: 'co-reporte', nombre: 'Crear reporte', columna: 'reporte', fila: 'contratos',
-        claveGlobal: 'crear-reporte' },
-    ],
+    id: 'dashboard', nombre: 'Dashboard',
+    filas: [{ id: 'clasificacion', nombre: 'Clasificación semanal', icono: 'panel' }],
+    privilegios: [{ id: 'cs-ver', nombre: 'Ver clasificación semanal', columna: 'ver', fila: 'clasificacion' }],
   },
-  {
-    id: 'reportes', nombre: 'Reportes',
-    filas: [{ id: 'asistencia', nombre: 'Reporte de asistencia' }],
-    privilegios: [
-      { id: 're-ver', nombre: 'Ver reporte', columna: 'ver', fila: 'asistencia' },
-      { id: 're-descargar', nombre: 'Descargar reporte', columna: 'descargar', fila: 'asistencia',
-        deshabilitado: true },
-      /* R152 · LA MISMA LLAVE QUE «Personal». Encender este enciende el de allí
-         y al revés: es un solo permiso ofrecido desde dos pantallas. El aviso
-         nombra el módulo del compañero — sin eso diría la verdad a medias. */
-      { id: 're-crear', nombre: 'Crear reporte', columna: 'reporte', fila: 'asistencia',
-        claveGlobal: 'crear-reporte' },
-    ],
-  },
+  { id: 'horarios', nombre: 'Horarios', privilegios: [] },
+  { id: 'marcaciones', nombre: 'Marcaciones', privilegios: [] },
+  { id: 'reportes-menu', nombre: 'Reportes', privilegios: [] },
+  { id: 'config-modulo', nombre: 'Configuración del módulo', privilegios: [] },
 ];
 
-function MatrizViva() {
-  const [v, setV] = useState<ValorPrivilegios>({
-    personal: { 'tr-ver': true, 'tr-editar': true, 'co-ver': true },
-    reportes: { 're-ver': true, 're-descargar': true },
-  });
+function PlegableViva() {
+  const [v, setV] = useState<ValorPrivilegios>({ dashboard: { 'cs-ver': true } });
+  const [abiertos, setAbiertos] = useState<string[]>(['dashboard']);
+  const [lado, setLado] = useState<'izquierda' | 'derecha'>('izquierda');
   return (
     <PanelPrivilegios
       presentacion="matriz"
-      columnas={COLUMNAS}
-      modulos={MODULOS_MATRIZ}
+      plegable
+      resumen="ninguno"
+      posicionIconoFila={lado}
+      columnas={COLUMNAS_MENU}
+      modulos={MODULOS_MENU}
       base={null}
       valor={v}
       onCambio={(completo) => setV(completo)}
+      abiertos={abiertos}
+      onAbiertos={setAbiertos}
+    >
+      <Segmentado
+        etiqueta="Icono de la fila"
+        opciones={[{ valor: 'izquierda', texto: 'Icono a la izquierda' }, { valor: 'derecha', texto: 'Icono a la derecha' }]}
+        valor={lado}
+        onCambio={(x) => setLado(x as 'izquierda' | 'derecha')}
+      />
+    </PanelPrivilegios>
+  );
+}
+
+/* LAS VISTAS DE TELÉFONO, MONTADAS DE VERDAD. Antes eran una lista dibujada a mano
+   que se quedó atrás del componente. El panel mide su contenedor y por debajo de
+   640 px pinta la lista aunque se pida matriz, así que basta con montarlo en una
+   caja de 390 px: lo que se ve es lo que emite. */
+function MovilMenuViva() {
+  const [v, setV] = useState<ValorPrivilegios>({ dashboard: { 'cs-ver': true } });
+  const [abiertos, setAbiertos] = useState<string[]>(['dashboard']);
+  return (
+    <PanelPrivilegios
+      presentacion="matriz"
+      plegable
+      resumen="ninguno"
+      columnas={COLUMNAS_MENU}
+      modulos={MODULOS_MENU}
+      base={null}
+      valor={v}
+      onCambio={(completo) => setV(completo)}
+      abiertos={abiertos}
+      onAbiertos={setAbiertos}
+    />
+  );
+}
+
+/* Un privilegio que no se puede pulsar, por cada razón que el panel distingue, y
+   con niveles por campo. El «ver» de cada módulo es el base: sin él, lo demás no
+   se aplica y el panel lo dice. */
+const MODULOS_ESTADOS: ModuloPrivilegios[] = [
+  {
+    id: 'trabajadores', nombre: 'Trabajadores',
+    privilegios: [
+      { id: 'ver', nombre: 'Ver', niveles: [{ id: 'doc', nombre: 'Documento', opciones: [
+        { valor: 'completo', texto: 'Completo', ejemplo: '71602303' },
+        { valor: 'parcial', texto: 'Parcial', ejemplo: '*****303' },
+        { valor: 'oculto', texto: 'Oculto' },
+      ] }] },
+      { id: 'editar', nombre: 'Editar' },
+      { id: 'alta', nombre: 'Dar de alta', cerrado: 'Dar de alta a una persona es del Jefe de personal.' },
+      { id: 'descargar', nombre: 'Descargar', deshabilitado: true, ayuda: 'No puede repartir este permiso.' },
+    ],
+  },
+  {
+    id: 'planilla', nombre: 'Planilla',
+    privilegios: [
+      { id: 'ver', nombre: 'Ver' },
+      { id: 'ver-planilla', nombre: 'Ver planilla',
+        cerrado: { tipo: 'ajeno', motivo: 'No se reparte lo que uno no tiene.' } },
+      { id: 'sunat', nombre: 'Exportar a SUNAT',
+        cerrado: { tipo: 'pendiente', motivo: 'Llega con el módulo de planilla.' } },
+      { id: 'crear', nombre: 'Crear trabajador' },
+      { id: 'masiva', nombre: 'Carga masiva', depende: 'crear' },
+    ],
+  },
+];
+
+function MovilEstadosViva() {
+  const [v, setV] = useState<ValorPrivilegios>({
+    trabajadores: { ver: true, 'ver:doc': 'parcial', editar: true, descargar: true },
+    planilla: { ver: true },
+  });
+  const [abiertos, setAbiertos] = useState<string[]>(['trabajadores', 'planilla']);
+  return (
+    <PanelPrivilegios
+      modulos={MODULOS_ESTADOS}
+      valor={v}
+      onCambio={(completo) => setV(completo)}
+      abiertos={abiertos}
+      onAbiertos={setAbiertos}
     />
   );
 }
@@ -637,5 +680,9 @@ if (enTablero) createRoot(enTablero).render(<TableroVivo />);
 const enLiso = document.getElementById('tablero-liso-vivo');
 if (enLiso) createRoot(enLiso).render(<TableroLisoVivo />);
 
-const enMatriz = document.getElementById('matriz-viva');
-if (enMatriz) createRoot(enMatriz).render(<MatrizViva />);
+const enMovilMenu = document.getElementById('movil-menu-viva');
+if (enMovilMenu) createRoot(enMovilMenu).render(<MovilMenuViva />);
+const enMovilEstados = document.getElementById('movil-estados-viva');
+if (enMovilEstados) createRoot(enMovilEstados).render(<MovilEstadosViva />);
+const enPlegable = document.getElementById('plegable-viva');
+if (enPlegable) createRoot(enPlegable).render(<PlegableViva />);

@@ -26,7 +26,7 @@ import { Interruptor } from './Interruptor';
 import { Segmentado, type OpcionSegmento } from './Segmentado';
 import { Chip } from './Chip';
 import { Boton } from './Boton';
-import { Icono } from './Icono';
+import { Icono, type NombreIcono } from './Icono';
 
 /**
  * R98 · CUÁNTO se ve de un campo, dentro de un privilegio que ya está concedido.
@@ -108,6 +108,13 @@ export type ColumnaPrivilegios = {
   titulo: React.ReactNode;
   /** Se separa de la anterior con un filete: es otra clase de acción. */
   aparte?: boolean;
+  /**
+   * R168 · Icono de línea sobre la etiqueta, centrado sobre el interruptor. Del
+   * juego del sistema y no un nodo libre: cada pantalla dibujaría el suyo. Sin
+   * él la columna sale como siempre; con él en alguna columna el encabezado
+   * pasa a fondo blanco y el cursor ilumina la columna del interruptor.
+   */
+  icono?: NombreIcono;
 };
 
 export type Privilegio = {
@@ -262,7 +269,9 @@ export type ModuloPrivilegios = {
    * decisión escrita seis veces se separa. Es la misma razón por la que las
    * columnas las declara el panel.
    */
-  filas?: { id: string; nombre: React.ReactNode }[];
+  /** R168 · `icono`: del juego del sistema, junto al nombre de la fila (ver
+   *  `posicionIconoFila`). Sin él la fila sale como siempre. */
+  filas?: { id: string; nombre: React.ReactNode; icono?: NombreIcono }[];
 };
 
 /**
@@ -312,6 +321,26 @@ export type PanelPrivilegiosProps = {
   /** Módulos abiertos. Si no se pasa, el panel los recuerda por su cuenta. */
   abiertos?: string[];
   onAbiertos?: (ids: string[]) => void;
+  /**
+   * R168 · La banda de cada módulo despliega y pliega sus filas, también en la
+   * matriz, donde hasta ahora `abiertos` no hacía nada. Con ella la banda sale
+   * SIEMPRE (un solo módulo incluido), un módulo sin privilegios se dibuja como
+   * un título y sin ella nada cambia. Todo empieza cerrado, como la lista.
+   */
+  plegable?: boolean;
+  /**
+   * R168 · Qué dice la banda sin abrir. `'completo'` (por omisión): lo concedido
+   * y el «n de n». `'ninguno'`: la banda no resume nada, ni chips ni cuenta;
+   * plegada no dice qué hay concedido, y es el producto quien lo elige. En la
+   * matriz solo tiene efecto con `plegable`: sin él la banda no lleva resumen.
+   */
+  resumen?: 'completo' | 'ninguno';
+  /**
+   * R168 · De qué lado del nombre de la fila va su `icono`. Es del panel y no de
+   * cada fila: dos filas con el icono en lados distintos no se leen como una
+   * columna. Solo en la matriz; la lista nombra privilegios, no filas.
+   */
+  posicionIconoFila?: 'izquierda' | 'derecha';
   soloLectura?: boolean;
   /**
    * R151 · **Lista o matriz.** Por omisión, lista.
@@ -793,9 +822,14 @@ export function privilegiosEfectivos(
 export function PanelPrivilegios({
   modulos, valor, onCambio, base = 'ver', preset, onVolverAlPreset,
   abiertos, onAbiertos, soloLectura = false, children, className = '',
-  presentacion = 'lista', columnas,
+  presentacion = 'lista', columnas, plegable = false, resumen = 'completo',
+  posicionIconoFila = 'izquierda',
 }: PanelPrivilegiosProps) {
   const [propios, setPropios] = useState<string[]>([]);
+  /* R168 · La columna que el cursor o el foco están tocando, para iluminar su
+     encabezado. Es estado y no `:has()` porque las columnas las declara el
+     producto: una hoja no puede enumerar ids que no conoce. */
+  const [columnaOn, setColumnaOn] = useState<{ col: string; mod: number | null } | null>(null);
   /* R146 · Para nombrar y describir la fila bloqueada por `depende`. Se llama
      `idPanel` y no `id` a propósito: `alternar(id)` ya usa ese nombre para otra
      cosa, y una variable sombreada dentro de un componente de 700 líneas es
@@ -1263,24 +1297,87 @@ export function PanelPrivilegios({
      solución ya estaba escrita para `TablaDatos` y aquí se repite el patrón,
      no el código: son dos hojas distintas porque son dos componentes distintos.
      ───────────────────────────────────────────────────────────────────────── */
+  /* R168 · Lo concedido de un módulo y cuántas opciones se pueden repartir. Sale
+     de `privilegiosEfectivos`, como el de la lista: un «Ver» que lleva el valor
+     guardado pero no surte efecto no cuenta, ni aquí ni allá. */
+  const resumenDe = (m: ModuloPrivilegios) => {
+    const lista = todos(m);
+    const efectivo = privilegiosEfectivos([m], valor, base)[m.id] ?? {};
+    return {
+      dados: lista.filter((p) => efectivo[p.id] === true),
+      posibles: lista.filter((p) => !p.cerrado).length,
+    };
+  };
+  /* R168 · «VACÍO» ES UN TÍTULO TODAVÍA SIN OPCIONES, no un módulo que no tenga
+     permisos. Sin privilegios, sin grupos con privilegios y sin `filas`. Un
+     `filas: []` JUNTO A privilegios no lo es: ese es el módulo que desaparece
+     sin avisar y la regla 24 sigue obligando a decirlo. Solo con `plegable`:
+     sin él, un panel que ya existe no puede cambiar de aspecto. */
+  const vacioDe = (m: ModuloPrivilegios) =>
+    plegable && todos(m).length === 0 && !m.filas?.length;
+
   const matriz = () => {
     const cols = columnas ?? [];
+    const conIconos = cols.some((c) => c.icono);
+    /* Los cuatro eventos solo existen con iconos: son lo que ilumina la columna
+       y, sin iconos, el encabezado sale como siempre. La columna se saca de la
+       posición de la celda y no de un atributo en cada `<td>`: hay cinco clases
+       de celda y ninguna tendría por qué saber esto. */
+    /* R168 · CON `plegable` CADA MODULO LLEVA SU PROPIA CABECERA DE COLUMNAS,
+       justo encima de sus filas: con cinco secciones, una cabecera unica queda
+       muchas lineas por encima del interruptor y obliga a subir la vista para
+       saber de que opcion es. Por eso el `id` de cada columna lleva el modulo. */
+    const idCol = (im: number | null, c: ColumnaPrivilegios) =>
+      im === null ? `${idPanel}-col-${c.id}` : `${idPanel}-col-${im}-${c.id}`;
+    const alTocar = (e: React.SyntheticEvent) => {
+      const td = (e.target as HTMLElement).closest('td');
+      const ata = (td?.getAttribute('headers') ?? '').split(' ');
+      const prefijo = `${idPanel}-col-`;
+      let hallada: { col: string; mod: number | null } | null = null;
+      for (const c of cols) {
+        if (!plegable) {
+          if (ata.includes(idCol(null, c))) hallada = { col: c.id, mod: null };
+        } else {
+          const t = ata.find((x) => x.startsWith(prefijo) && x.endsWith(`-${c.id}`));
+          const mod = t ? t.slice(prefijo.length, t.length - c.id.length - 1) : '';
+          if (/^\d+$/.test(mod)) hallada = { col: c.id, mod: Number(mod) };
+        }
+        if (hallada) break;
+      }
+      setColumnaOn(hallada);
+    };
+    const celdaCol = (c: ColumnaPrivilegios, im: number | null) => (
+      <th key={c.id} scope="col" id={idCol(im, c)}
+          className={[
+            c.aparte ? 'pm-col pm-col-aparte' : 'pm-col',
+            columnaOn?.col === c.id && (im === null || columnaOn.mod === im) ? 'pm-col-on' : '',
+          ].filter(Boolean).join(' ')}>
+        {c.icono ? (
+          <span className="pm-col-txt pm-col-ic">
+            <Icono nombre={c.icono} />
+            <span>{c.titulo}</span>
+          </span>
+        ) : (
+          <span className="pm-col-txt">{c.titulo}</span>
+        )}
+      </th>
+    );
+    const alSalir = () => setColumnaOn(null);
     return (
       <div className="pm-envoltura">
-        <table className="pm">
-          <thead>
-            <tr>
-              {/* La esquina no es un encabezado de nada: va vacía y se dice. */}
-              <th className="pm-esquina" scope="col"><span className="sr-solo">Opción</span></th>
-              {cols.map((c) => (
-                <th key={c.id} scope="col" id={`${idPanel}-col-${c.id}`}
-                    className={c.aparte ? 'pm-col pm-col-aparte' : 'pm-col'}>
-                  <span className="pm-col-txt">{c.titulo}</span>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
+        <table className={conIconos ? 'pm pm-con-iconos' : 'pm'}>
+          {!plegable && (
+            <thead>
+              <tr>
+                {/* La esquina no es un encabezado de nada: va vacía y se dice. */}
+                <th className="pm-esquina" scope="col"><span className="sr-solo">Opción</span></th>
+                {cols.map((c) => celdaCol(c, null))}
+              </tr>
+            </thead>
+          )}
+          <tbody {...(conIconos ? {
+            onMouseOver: alTocar, onFocus: alTocar, onMouseLeave: alSalir, onBlur: alSalir,
+          } : {})}>
             {modulos.flatMap((m, im) => {
               const lista = todos(m);
               /* `m.filas ?? […]` dejaba pasar `filas: []` —un array vacio no es
@@ -1288,13 +1385,45 @@ export function PanelPrivilegios({
                  AVISO, con sus permisos intactos en el valor: el peor caso que
                  la regla 24 dice cerrar, vivo. Sale de un `filter` que un dia no
                  devuelve nada. `?.length` en todas partes, y se avisa. */
-              const filas = m.filas?.length ? m.filas : [{ id: m.id, nombre: m.nombre }];
+              const vacio = vacioDe(m);
+              const filas = vacio ? [] : (m.filas?.length ? m.filas : [{ id: m.id, nombre: m.nombre }]);
+              const abiertoM = visibles.includes(m.id);
               /* CON VARIOS MODULOS, DE QUE MODULO ES CADA FILA. Sin esto las
                  filas de «Personal» y las de «Reportes» salian seguidas y sin
                  distinguir: una pantalla de revision que no dice de que es cada
                  recurso no se puede revisar. Lo cazo una auditoria. Con un solo
                  modulo no hace falta y no se pinta. */
-              const cabecera = modulos.length > 1 ? (
+              /* R168 · CON `plegable` LA BANDA ES EL CONTROL, y sale aunque haya un
+                 solo módulo. `aria-controls` nombra las filas que mueve; un
+                 título sin filas no controla nada y no lo lleva. */
+              const resumenM = plegable ? resumenDe(m) : null;
+              const cabecera = plegable && resumenM ? (
+                <tr key={`${m.id}-cab`} className="pm-mod pm-mod-plegable">
+                  <th scope="colgroup" colSpan={cols.length + 1} className="pm-mod-nom"
+                      id={`${idPanel}-mod-${im}`}>
+                    <button
+                      type="button"
+                      className="pm-mod-cab"
+                      aria-expanded={abiertoM}
+                      aria-controls={filas.length
+                        ? [`${idPanel}-cols-${im}`, ...filas.map((_, iF) => `${idPanel}-fila-${im}-${iF}-tr`)].join(' ')
+                        : undefined}
+                      onClick={() => alternar(m.id)}
+                    >
+                      <span className="pm-chev" aria-hidden="true"><Icono nombre="chevron" /></span>
+                      <span className="pm-mod-txt">{m.nombre}</span>
+                      <span className="pm-tags">
+                        {resumen !== 'ninguno' && (resumenM.dados.length
+                          ? resumenM.dados.map((p) => <Chip key={p.id} tono="info">{p.nombre}</Chip>)
+                          : (resumen === 'completo' && !vacio && <Chip tono="pendiente">sin permisos</Chip>))}
+                      </span>
+                      {resumen === 'completo' && !vacio && (
+                        <span className="pm-conteo">{resumenM.dados.length} de {resumenM.posibles}</span>
+                      )}
+                    </button>
+                  </th>
+                </tr>
+              ) : modulos.length > 1 ? (
                 <tr key={`${m.id}-cab`} className="pm-mod">
                   <th scope="colgroup" colSpan={cols.length + 1} className="pm-mod-nom"
                       id={`${idPanel}-mod-${im}`}>
@@ -1319,8 +1448,11 @@ export function PanelPrivilegios({
                   && (idBaseFila === null || !concedido(valor, m.id, idBaseFila));
                 const nombreDelBase = idBaseFila
                   ? lista.find((x) => x.id === idBaseFila)?.nombre : undefined;
+                const iconoF = 'icono' in f ? f.icono : undefined;
                 return (
-                  <tr key={`${m.id}-${f.id}`} className={sinBase ? 'pm-fila pm-sin-base' : 'pm-fila'}>
+                  <tr key={`${m.id}-${f.id}`} className={sinBase ? 'pm-fila pm-sin-base' : 'pm-fila'}
+                      id={plegable ? `${idFila}-tr` : undefined}
+                      hidden={plegable && !abiertoM}>
                     <th scope="row" className="pm-nom" id={idFila}>
                       {/* CON `title` SIEMPRE. El nombre se recorta con puntos
                           suspensivos —presentacion— y sin esto el nombre
@@ -1329,9 +1461,17 @@ export function PanelPrivilegios({
                           midio el equipo en su pantalla: «Fijar sobre que sedes
                           alcanza u…» sin forma de leerlo entero. El recorte es
                           presentacion; la informacion no se recorta. */}
-                      <span className="pm-nom-txt" title={textoDe(f.nombre)}>
-                        {f.nombre}
-                      </span>
+                      {iconoF ? (
+                        <span className="pm-nom-fila">
+                          {posicionIconoFila === 'izquierda' && <Icono nombre={iconoF} tam="control" />}
+                          <span className="pm-nom-txt" title={textoDe(f.nombre)}>{f.nombre}</span>
+                          {posicionIconoFila === 'derecha' && <Icono nombre={iconoF} tam="control" />}
+                        </span>
+                      ) : (
+                        <span className="pm-nom-txt" title={textoDe(f.nombre)}>
+                          {f.nombre}
+                        </span>
+                      )}
                       {/* R144 · Y SE DICE CON PALABRAS, no solo con el filete.
                           La lista lleva «Sin este permiso, el resto del modulo
                           no se aplica» desde el R144; la matriz solo tenia un
@@ -1369,8 +1509,12 @@ export function PanelPrivilegios({
                          25 se cumplia mirando la pantalla y no sin verla, que
                          es justo lo que dice cubrir. */
                       const atada = [
-                        modulos.length > 1 ? `${idPanel}-mod-${im}` : '',
-                        idFila, `${idPanel}-col-${c.id}`,
+                        /* R168 · CON `plegable` LA BANDA ES UN BOTON con chips y
+                           contador, y `headers` leeria todo eso como parte del
+                           nombre de CADA interruptor del modulo. Su nombre ya
+                           viaja en el texto oculto de la celda (`conModulo`). */
+                        modulos.length > 1 && !plegable ? `${idPanel}-mod-${im}` : '',
+                        idFila, idCol(plegable ? im : null, c),
                       ].filter(Boolean).join(' ');
                       /* SIN PRIVILEGIO NO HAY NADA QUE DECIR, y eso es distinto
                          de decir que no aplica: la celda se queda vacia y se
@@ -1491,7 +1635,16 @@ export function PanelPrivilegios({
                   </tr>
                 );
               });
-              return cabecera ? [cabecera, ...cuerpo] : cuerpo;
+              /* R168 · La cabecera de columnas del modulo, plegada con el. Un
+                 titulo sin filas no la lleva: no tiene interruptores que nombrar. */
+              const colsM = plegable && filas.length ? (
+                <tr key={`${m.id}-cols`} className="pm-cab-cols" id={`${idPanel}-cols-${im}`}
+                    hidden={!abiertoM}>
+                  <th className="pm-esquina" scope="col"><span className="sr-solo">Opción</span></th>
+                  {cols.map((c) => celdaCol(c, im))}
+                </tr>
+              ) : null;
+              return [cabecera, colsM, ...cuerpo].filter(Boolean) as React.ReactElement[];
             })}
           </tbody>
         </table>
@@ -1643,13 +1796,13 @@ export function PanelPrivilegios({
        el ancho en el que importa, e invitaba a quitar una prop que alli hace
        falta. Lo cazo una auditoria: se disparaba en las ocho pruebas de la
        caida a lista. */
-    if (cabeLaMatriz && (abiertos || onAbiertos)) {
+    if (cabeLaMatriz && !plegable && (abiertos || onAbiertos)) {
       dis.push('`abiertos`/`onAbiertos` no hacen nada MIENTRAS SE PINTA LA MATRIZ: no hay '
         + 'modulos que plegar. Por debajo de 640 px se pinta la lista y ahi si mandan, '
-        + 'asi que no los quite.');
+        + 'asi que no los quite. Con `plegable` si hacen algo tambien en la matriz.');
     }
     return dis;
-  }, [presentacion, columnas, modulos, base, abiertos, onAbiertos]);
+  }, [presentacion, columnas, modulos, base, abiertos, onAbiertos, plegable]);
 
   /* «UNA SOLA VEZ» LO DECIA EL COMENTARIO Y NO ERA VERDAD: el memo depende de
      `columnas` y `modulos`, y con literales en linea —el caso normal, y el del
@@ -1687,6 +1840,11 @@ export function PanelPrivilegios({
           // Lo que no se puede repartir no cuenta en el «4 de 6»: contarlo haría
           // que un cargo pareciera incompleto por reglas que no dependen de él.
           const posibles = lista.filter((p) => !p.cerrado).length;
+          /* R168 · La banda limpia: con `resumen="ninguno"`, o en un título
+             todavía sin opciones, no se dice «sin permisos» ni «n de n». Un
+             módulo vacío no tiene permisos concedidos NI negados: no tiene
+             opciones, y el chip y el «0 de 0» dicen otra cosa. */
+          const bandaLimpia = resumen === 'ninguno' || vacioDe(m);
           /* Tambien por `baseDe`: con un modulo colocado por columnas, `base`
              no es un id y este `concedido(..., base)` decia que falta el base
              CON TODO CONCEDIDO — la pantalla contradiciendo al backend. */
@@ -1726,7 +1884,7 @@ export function PanelPrivilegios({
             >
               <button
                 type="button"
-                className="pp-mod-cab"
+                className={bandaLimpia ? 'pp-mod-cab pp-sin-conteo' : 'pp-mod-cab'}
                 aria-expanded={abiertoM}
                 aria-controls={`pp-${m.id}`}
                 onClick={() => alternar(m.id)}
@@ -1740,20 +1898,20 @@ export function PanelPrivilegios({
                     enterarse. Con diez módulos, obligar a abrir uno por uno para
                     saber qué hay concedido es diez veces el mismo gesto. */}
                 <span className="pp-tags">
-                  {dados.length
+                  {resumen !== 'ninguno' && (dados.length
                     ? dados.map((p) => <Chip key={p.id} tono="info">{p.nombre}</Chip>)
-                    : <Chip tono="pendiente">sin permisos</Chip>}
+                    : (!bandaLimpia && <Chip tono="pendiente">sin permisos</Chip>))}
                   {/* R145 · El resumen del móvil. Se emite SIEMPRE y la hoja lo
                       enseña solo bajo 900 px: un componente no puede preguntar
                       cuánto mide la pantalla sin medir, y medir para decidir
                       marcado es lo que hace que el servidor y el navegador
                       pinten cosas distintas. Aquí decide la hoja, que es quien
                       sabe. */}
-                  {dados.length > 2 && (
+                  {resumen !== 'ninguno' && dados.length > 2 && (
                     <Chip tono="info" className="pp-tags-mas">+{dados.length - 2}</Chip>
                   )}
                 </span>
-                <span className="pp-conteo">{dados.length} de {posibles}</span>
+                {!bandaLimpia && <span className="pp-conteo">{dados.length} de {posibles}</span>}
               </button>
 
               <div className="pp-mod-cuerpo" id={`pp-${m.id}`} hidden={!abiertoM}>
