@@ -5,9 +5,9 @@ aporte.
 
 ## Estado actual (2026-11-02)
 
-- **v1.152.0 PUBLICADA** (2026-11-02, `main` = `work` = `14d3acf`, etiqueta + release con ZIP) y lleva la SPEC 06 (la que el responsable asignó: «corresponde la 152»). La **v1.151.0 ya estaba publicada con el
+- **v1.152.0 PUBLICADA** (2026-11-02, etiqueta + release con ZIP; `main` = `14d3acf`) y lleva la SPEC 06 (la que el responsable asignó: «corresponde la 152»). La **v1.151.0 ya estaba publicada con el
   mismo código** (2026-11-02; etiqueta y release no se tocan): `npm install "github:solwarehz/sistema-diseno#v1.152.0"`.
-  No probada la instalación desde un proyecto limpio. El ZIP de v1.150.0 se borró (flujo normal); su etiqueta y release siguen.
+  No probada la instalación desde un proyecto limpio. Los ZIP de v1.150.0 y v1.151.0 se borraron (flujo normal: solo queda el de la última); sus etiquetas y releases siguen.
 - **SPEC 06 (R168, `PanelPrivilegios` plegable) en «Implemented»**, reglas 34-40, 1399 pruebas, 198 pares de contraste
   (158 bloqueantes). `plegable` (cabecera de columnas dentro de cada módulo), `resumen` `'completo'|'ninguno'` (el equipo
   pidió `'concedido'`; el sistema es para todos y se simplificó: **avisarles**), `icono` por columna y por fila,
@@ -30,11 +30,15 @@ aporte.
 - Un precedente se lee, no se cita: la spec 03 contó 33 reglas de 640 px y eran 8 (`CLAUDE.md` §4bis).
 - No hay `@container` en la hoja; el móvil se escribe base estrecha + `min-width`.
 - Medir las tablas del catálogo a 360 px: `tabla-simple` con 4 columnas obliga a deslizar.
-- Se trabaja directo en `work`, sin ramas `feat/*` salvo que el usuario las pida; nunca en `main` o `develop`.
-  Tras `/spec-impl` se trabaja en `spec-NN-slug` y el usuario dijo que la rama es obligatoria.
-  `/spec` no crea rama, pero `/spec-impl` SÍ la pide (`spec-NN-slug`, Phase 3) y eso es solicitud expresa: se crea. Falta el hook `pre-commit`
-  que exige CLAUDE.md §19.1: no está instalado en `.git/hooks`.
+- **Ramas:** se está sobre `work` y solo existen `main` y `work`. Una rama temporal (`spec-NN-slug` tras `/spec-impl`,
+  que es obligatoria; `fix/`, `docs/`, `chore/`…) sale de `work`, se mergea por PR y **se borra** (local y remota, `-d`).
+  Nunca se trabaja en `main`. `/spec` no crea rama. Falta el hook `pre-commit` de CLAUDE.md §19.1: no está instalado.
 - No acuñar números R###: el registro es del equipo.
 - La extensión de Chrome puede no estar conectada: `playwright-cli` + `servir.mjs` (loopback) sirve.
 - Los backticks dentro de comentarios CSS de la plantilla de `generar-cascaron.mjs` rompen el build (pasó en SPEC 06).
 - Para comparar marcado entre dos versiones, normalizar `useId` (`:r0:`): su contador es global y todo sale distinto.
+- `.claude/skills/spec` es un enlace a `.agents/skills/spec`: se edita el destino. Un `cp -R` del enlace sale roto.
+- Con `/imagenes` ignorada, `git add -A -- . ':!imagenes'` falla y corta la cadena `&&`: usar `git add -A`.
+- zsh no separa una variable por espacios en un `for`: listar los nombres a mano.
+- Al cambiar de rama con `git switch` puede que el editor del usuario recree un archivo (pasó con la spec 06 →
+  «Implemented»): mirar `git status` y no pisarlo; apartarlo, cambiar de rama y restaurarlo.
