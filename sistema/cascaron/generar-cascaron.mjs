@@ -8610,160 +8610,21 @@ interruptor tiene su etiqueta cerca. Una banda cerrada se queda en su título.</
 
 <h3 class="sub-seccion">En un teléfono</h3>
 <p class="seccion-sub">Por debajo de 640 px de ancho del contenedor el panel se pinta como lista aunque pidas
-matriz: el mismo componente, el mismo valor y las mismas props. Cada módulo es un acordeón con el resumen de lo
-concedido, y los privilegios, sus niveles y sus avisos van debajo.</p>
-<div class="bloque">
-  <div class="pp">
-    <div class="pp-lista">
+matriz: el mismo componente, el mismo valor y las mismas props. Lo de abajo está montado de verdad en una caja de
+390 px, no dibujado: pliega los módulos y prueba los interruptores.</p>
 
-      <section class="pp-mod pp-abierto">
-        <button class="pp-mod-cab" type="button" aria-expanded="true">
-          <span class="pp-chev">${icono('chevron', 18)}</span>
-          <span class="pp-mod-nom">Trabajadores</span>
-          <span class="pp-tags">
-            <span class="chip chip-info">Ver</span><span class="chip chip-info">Editar</span>
-            <span class="chip chip-info">Ver documento, dirección y correo</span>
-            <span class="chip chip-info pp-tags-mas">+1</span>
-          </span>
-          <span class="pp-conteo">3 de 3</span>
-        </button>
-        <div class="pp-mod-cuerpo">
-          <div class="pp-priv pp-priv-base">
-            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="true" aria-label="Ver"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Ver</span></span></label>
-          <div class="pp-niveles">
-            <fieldset class="sg">
-              <legend class="sg-et">Documento</legend>
-              <div class="sg-barra">
-                <label class="sg-op"><input class="sg-in" type="radio" name="doc" checked><span class="sg-txt">Completo</span><span class="sg-ej">71602303</span></label>
-                <label class="sg-op"><input class="sg-in" type="radio" name="doc"><span class="sg-txt">Parcial</span><span class="sg-ej">*****303</span></label>
-                <label class="sg-op"><input class="sg-in" type="radio" name="doc"><span class="sg-txt">Oculto</span></label>
-              </div>
-            </fieldset>
-          </div>
-          </div>
-          <div class="pp-priv">
-            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="true" aria-label="Editar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar</span></span></label>
-          </div>
-          <div class="pp-priv pp-no-cerrado">
-            <div class="pp-cerrado">
-              <span class="pp-cerrado-ic">${icono('candado', 18)}</span>
-              <span class="pp-cerrado-txt">
-                <span class="pp-cerrado-nom">Dar de alta</span>
-                <span class="pp-cerrado-eti"><span class="chip chip-inact">no se puede conceder</span></span>
-                <span class="pp-cerrado-motivo">Dar de alta a una persona es del Jefe de personal.</span>
-              </span>
-            </div>
-          </div>
-          <div class="pp-grupo">
-            <p class="pp-grupo-tit">Dentro del módulo</p>
-            <div class="pp-priv">
-              <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="true" aria-label="Ver documento, dirección y correo"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Ver documento, dirección y correo</span><span class="sw-ayuda">Dato sensible: quien lo tenga verá el número completo.</span></span></label>
-            </div>
-          </div>
-        </div>
-      </section>
+<h4 class="sub-seccion">Los títulos del menú</h4>
+<p class="seccion-sub">El mismo ejemplo de arriba. Cada banda es un acordeón y las opciones llevan su nombre
+completo, porque en la lista no hay columnas que lo completen.</p>
+<div class="bloque"><div class="demo-movil" id="movil-menu-viva"></div></div>
 
-      <section class="pp-mod">
-        <button class="pp-mod-cab" type="button" aria-expanded="false">
-          <span class="pp-chev">${icono('chevron', 18)}</span>
-          <span class="pp-mod-nom">Marcaciones<span class="pp-marca"><span class="chip chip-identidad-3">modificado</span></span></span>
-          <span class="pp-tags"><span class="chip chip-info">Ver</span></span>
-          <span class="pp-conteo">1 de 1</span>
-        </button>
-      </section>
-
-      <section class="pp-mod pp-sin-base pp-abierto">
-        <button class="pp-mod-cab" type="button" aria-expanded="true">
-          <span class="pp-chev">${icono('chevron', 18)}</span>
-          <span class="pp-mod-nom">Horarios</span>
-          <span class="pp-tags"><span class="chip chip-info">Descargar</span></span>
-          <span class="pp-conteo">1 de 3</span>
-        </button>
-        <div class="pp-mod-cuerpo">
-          <div class="pp-priv pp-priv-base">
-            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Ver"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Ver</span></span></label>
-          </div>
-          <p class="pp-aviso">${icono('alerta', 16)}<span>Sin este permiso, el resto del módulo no se aplica.</span></p>
-          <div class="pp-priv">
-            <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Editar · enciende también «Ver»"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar<span class="pp-junto"> · enciende también «Ver»</span></span></span></label>
-          </div>
-          <div class="pp-priv">
-            <label class="sw-fila sw-desh"><button type="button" role="switch" class="sw" aria-checked="true" aria-disabled="true" aria-label="Descargar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Descargar</span><span class="sw-ayuda">No puede repartir este permiso.</span></span></label>
-          </div>
-        </div>
-      </section>
-
-    </div>
-    <div class="pp-pie">
-      <span class="pp-pie-txt">1 módulo modificado</span>
-      <button class="btn btn-neutro btn-mini" type="button">Volver al preset</button>
-    </div>
-  </div>
-</div>
-
-<h3 class="sub-seccion">Un privilegio que no se puede pulsar</h3>
+<h4 class="sub-seccion">Un privilegio que no se puede pulsar</h4>
 <p class="seccion-sub">Cuando algo no se puede repartir, el panel lo dice y dice por qué, en vez de dejar un
 interruptor apagado que invita a insistir. Tres razones salen de <code>cerrado</code> —no se podrá conceder nunca,
 quien reparte no lo tiene, o todavía no existe— y la cuarta de <code>depende</code>: antes hay que conceder otro
-permiso.</p>
-<div class="bloque">
-  <div class="pp">
-    <div class="pp-lista">
-      <section class="pp-mod pp-abierto">
-        <button class="pp-mod-cab" type="button" aria-expanded="true">
-          <span class="pp-chev">${icono('chevron', 18)}</span>
-          <span class="pp-mod-nom">Personal</span>
-          <span class="pp-tags"><span class="chip chip-pend">sin permisos</span></span>
-          <span class="pp-conteo">0 de 1</span>
-        </button>
-        <div class="pp-mod-cuerpo">
-          <div class="pp-priv pp-no-cerrado">
-            <div class="pp-cerrado">
-              <span class="pp-cerrado-ic">${icono('candado', 18)}</span>
-              <span class="pp-cerrado-txt">
-                <span class="pp-cerrado-nom">Dar de alta</span>
-                <span class="pp-cerrado-eti"><span class="chip chip-inact">no se puede conceder</span></span>
-                <span class="pp-cerrado-motivo">Dar de alta es del Jefe de personal.</span>
-              </span>
-            </div>
-          </div>
-          <div class="pp-priv pp-no-ajeno">
-            <div class="pp-cerrado">
-              <span class="pp-cerrado-ic">${icono('usuarios', 18)}</span>
-              <span class="pp-cerrado-txt">
-                <span class="pp-cerrado-nom">Ver planilla</span>
-                <span class="pp-cerrado-eti"><span class="chip chip-info">no lo tiene usted</span></span>
-                <span class="pp-cerrado-motivo">No se reparte lo que uno no tiene.</span>
-              </span>
-            </div>
-          </div>
-          <div class="pp-priv pp-no-pendiente">
-            <div class="pp-cerrado">
-              <span class="pp-cerrado-ic">${icono('informacion', 18)}</span>
-              <span class="pp-cerrado-txt">
-                <span class="pp-cerrado-nom">Exportar a SUNAT</span>
-                <span class="pp-cerrado-eti"><span class="chip chip-pend">todavía no existe</span></span>
-                <span class="pp-cerrado-motivo">Llega con el módulo de planilla.</span>
-              </span>
-            </div>
-          </div>
-          <div class="pp-priv pp-no-depende">
-            <div class="pp-cerrado" role="switch" aria-checked="false" aria-disabled="true"
-                 tabindex="0" aria-labelledby="pp-dem-cm-nom pp-dem-cm-eti"
-                 aria-describedby="pp-dem-cm-mot">
-              <span class="pp-cerrado-ic">${icono('capas', 18)}</span>
-              <span class="pp-cerrado-txt">
-                <span class="pp-cerrado-nom" id="pp-dem-cm-nom">Carga masiva</span>
-                <span class="pp-cerrado-eti" id="pp-dem-cm-eti"><span class="chip chip-aviso">necesita otro permiso</span></span>
-                <span class="pp-cerrado-motivo" id="pp-dem-cm-mot">Antes hay que conceder «Crear trabajador».</span>
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  </div>
-</div>
+permiso. <code>deshabilitado</code> deja el estado a la vista sin dejar tocarlo, y <code>niveles</code> reparte
+por campo. Apaga «Ver» en un módulo y verás el aviso de que sin él lo demás no se aplica.</p>
+<div class="bloque"><div class="demo-movil" id="movil-estados-viva"></div></div>
 
 <h3 class="sub-seccion">Cómo se usa</h3>
 <p class="seccion-sub">Lo que se copia es la importación y las props. Este bloque compila tal cual.</p>
@@ -11851,6 +11712,9 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 /* R168 · El icono de la fila va al lado del nombre, y el nombre sigue
    recortandose con puntos suspensivos si no cabe. */
 .pm-nom-fila { display: flex; align-items: center; gap: 8px; }
+/* La caja de teléfono de las demos del panel: 390 px, o todo el ancho si no cabe.
+   El panel mide su contenedor, y por debajo de 640 px pinta la lista. */
+.demo-movil { width: 390px; max-width: 100%; }
 .pm-nom-fila .pm-nom-txt { flex: 0 1 auto; min-width: 0; }
 .pm-nom-fila svg { flex: none; color: var(--texto-secundario); }
 .pm-col-ic { display: inline-flex; flex-direction: column; align-items: center;

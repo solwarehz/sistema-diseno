@@ -232,7 +232,7 @@ const MODULOS_MENU: ModuloPrivilegios[] = [
   {
     id: 'dashboard', nombre: 'Dashboard',
     filas: [{ id: 'clasificacion', nombre: 'Clasificación semanal', icono: 'panel' }],
-    privilegios: [{ id: 'cs-ver', nombre: 'Ver', columna: 'ver', fila: 'clasificacion' }],
+    privilegios: [{ id: 'cs-ver', nombre: 'Ver clasificación semanal', columna: 'ver', fila: 'clasificacion' }],
   },
   { id: 'horarios', nombre: 'Horarios', privilegios: [] },
   { id: 'marcaciones', nombre: 'Marcaciones', privilegios: [] },
@@ -245,13 +245,6 @@ function PlegableViva() {
   const [abiertos, setAbiertos] = useState<string[]>(['dashboard']);
   const [lado, setLado] = useState<'izquierda' | 'derecha'>('izquierda');
   return (
-    <div className="pp">
-    <Segmentado
-      etiqueta="Icono de la fila"
-      opciones={[{ valor: 'izquierda', texto: 'Icono a la izquierda' }, { valor: 'derecha', texto: 'Icono a la derecha' }]}
-      valor={lado}
-      onCambio={(v) => setLado(v as 'izquierda' | 'derecha')}
-    />
     <PanelPrivilegios
       presentacion="matriz"
       plegable
@@ -264,8 +257,85 @@ function PlegableViva() {
       onCambio={(completo) => setV(completo)}
       abiertos={abiertos}
       onAbiertos={setAbiertos}
+    >
+      <Segmentado
+        etiqueta="Icono de la fila"
+        opciones={[{ valor: 'izquierda', texto: 'Icono a la izquierda' }, { valor: 'derecha', texto: 'Icono a la derecha' }]}
+        valor={lado}
+        onCambio={(x) => setLado(x as 'izquierda' | 'derecha')}
+      />
+    </PanelPrivilegios>
+  );
+}
+
+/* LAS VISTAS DE TELÉFONO, MONTADAS DE VERDAD. Antes eran una lista dibujada a mano
+   que se quedó atrás del componente. El panel mide su contenedor y por debajo de
+   640 px pinta la lista aunque se pida matriz, así que basta con montarlo en una
+   caja de 390 px: lo que se ve es lo que emite. */
+function MovilMenuViva() {
+  const [v, setV] = useState<ValorPrivilegios>({ dashboard: { 'cs-ver': true } });
+  const [abiertos, setAbiertos] = useState<string[]>(['dashboard']);
+  return (
+    <PanelPrivilegios
+      presentacion="matriz"
+      plegable
+      resumen="ninguno"
+      columnas={COLUMNAS_MENU}
+      modulos={MODULOS_MENU}
+      base={null}
+      valor={v}
+      onCambio={(completo) => setV(completo)}
+      abiertos={abiertos}
+      onAbiertos={setAbiertos}
     />
-    </div>
+  );
+}
+
+/* Un privilegio que no se puede pulsar, por cada razón que el panel distingue, y
+   con niveles por campo. El «ver» de cada módulo es el base: sin él, lo demás no
+   se aplica y el panel lo dice. */
+const MODULOS_ESTADOS: ModuloPrivilegios[] = [
+  {
+    id: 'trabajadores', nombre: 'Trabajadores',
+    privilegios: [
+      { id: 'ver', nombre: 'Ver', niveles: [{ id: 'doc', nombre: 'Documento', opciones: [
+        { valor: 'completo', texto: 'Completo', ejemplo: '71602303' },
+        { valor: 'parcial', texto: 'Parcial', ejemplo: '*****303' },
+        { valor: 'oculto', texto: 'Oculto' },
+      ] }] },
+      { id: 'editar', nombre: 'Editar' },
+      { id: 'alta', nombre: 'Dar de alta', cerrado: 'Dar de alta a una persona es del Jefe de personal.' },
+      { id: 'descargar', nombre: 'Descargar', deshabilitado: true, ayuda: 'No puede repartir este permiso.' },
+    ],
+  },
+  {
+    id: 'planilla', nombre: 'Planilla',
+    privilegios: [
+      { id: 'ver', nombre: 'Ver' },
+      { id: 'ver-planilla', nombre: 'Ver planilla',
+        cerrado: { tipo: 'ajeno', motivo: 'No se reparte lo que uno no tiene.' } },
+      { id: 'sunat', nombre: 'Exportar a SUNAT',
+        cerrado: { tipo: 'pendiente', motivo: 'Llega con el módulo de planilla.' } },
+      { id: 'crear', nombre: 'Crear trabajador' },
+      { id: 'masiva', nombre: 'Carga masiva', depende: 'crear' },
+    ],
+  },
+];
+
+function MovilEstadosViva() {
+  const [v, setV] = useState<ValorPrivilegios>({
+    trabajadores: { ver: true, 'ver:doc': 'parcial', editar: true, descargar: true },
+    planilla: { ver: true },
+  });
+  const [abiertos, setAbiertos] = useState<string[]>(['trabajadores', 'planilla']);
+  return (
+    <PanelPrivilegios
+      modulos={MODULOS_ESTADOS}
+      valor={v}
+      onCambio={(completo) => setV(completo)}
+      abiertos={abiertos}
+      onAbiertos={setAbiertos}
+    />
   );
 }
 
@@ -610,5 +680,9 @@ if (enTablero) createRoot(enTablero).render(<TableroVivo />);
 const enLiso = document.getElementById('tablero-liso-vivo');
 if (enLiso) createRoot(enLiso).render(<TableroLisoVivo />);
 
+const enMovilMenu = document.getElementById('movil-menu-viva');
+if (enMovilMenu) createRoot(enMovilMenu).render(<MovilMenuViva />);
+const enMovilEstados = document.getElementById('movil-estados-viva');
+if (enMovilEstados) createRoot(enMovilEstados).render(<MovilEstadosViva />);
 const enPlegable = document.getElementById('plegable-viva');
 if (enPlegable) createRoot(enPlegable).render(<PlegableViva />);
