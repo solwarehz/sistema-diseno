@@ -5,18 +5,19 @@ aporte.
 
 ## Estado actual (2026-11-02)
 
-- `main` = `work` = `f80a46e`, v1.150.0 PUBLICADA (SPEC 04, R166 `fechaMaxima`). SPEC 03 «Implemented».
-- **SPEC 05** (`BotonAccion`: Aceptar/Guardar/Agregar) en `work`, estado Draft, sin implementar. Reserva 1.151.0.
-- **SPEC 06 (R168, `PanelPrivilegios` plegable) IMPLEMENTADA en la rama `spec-06-panel-privilegios-modulos-plegables`**
-  (v1.151.0, reglas 34-40; NO en `main`, sin PR, sin publicar). 1399 pruebas, `tsc` y el 25 en verde; marcado
-  idéntico a v1.150.0 sin props nuevas (comparado byte a byte). Demo viva en `#panelprivilegios`.
-  - `plegable` (cabecera de columnas dentro de cada módulo), `resumen="ninguno"` (sin chips; el equipo pidió «concedido» y se simplificó, el sistema es para todos) e `icono` por columna. Vacío y resumen en matriz solo con `plegable`.
-  - **Pendiente del responsable:** aprobar la demo (no hubo mockup previo, se saltó el paso 1), decidir iconos
-    de «Dar alta» y «Desactivar» (sin icono hoy), y qué hacer con `imagenes/control-de-asistencia-titulos.html`:
-    `verificar-color` falla con 37 hallazgos por sus hex y por eso el paso 6 de §8 NO sale verde en el árbol
-    real (sí en una copia sin `imagenes/`). No lo toqué ni excluí la carpeta del candado.
-  - Contraste del hover de la banda medido a mano (no hay par declarado en `verificar-contraste`).
-- Para subir: PR rama → `work` → `main`, pedir permiso de merge (es despliegue); luego `npm run publicar`.
+- **v1.151.0 PUBLICADA** por las dos vías (etiqueta `v1.151.0` + release con ZIP, 2026-11-02):
+  `npm install "github:solwarehz/sistema-diseno#v1.151.0"`. `main` = `work` = `cdfe262` al publicar. No probada la
+  instalación desde un proyecto limpio. El ZIP de v1.150.0 se borró (flujo normal); su etiqueta y release siguen.
+- **SPEC 06 (R168, `PanelPrivilegios` plegable) en «Implemented»**, reglas 34-40, 1399 pruebas, 198 pares de contraste
+  (158 bloqueantes). `plegable` (cabecera de columnas dentro de cada módulo), `resumen` `'completo'|'ninguno'` (el equipo
+  pidió `'concedido'`; el sistema es para todos y se simplificó: **avisarles**), `icono` por columna y por fila,
+  `posicionIconoFila`. Un criterio sin marcar: el mockup previo (la demo del catálogo hizo de mockup).
+  - Pendiente del responsable: iconos de «Dar alta» y «Desactivar» (sin icono hoy).
+- `verificar-color` salta lo que git ignora; `/imagenes` está en `.gitignore` (maquetas de otros equipos: referencia, no sistema).
+- **SPEC 05** (`BotonAccion`: Aceptar/Guardar/Agregar) sigue en Draft; reservaba 1.151.0, tomará 1.152.0.
+- La skill `/spec` pide en toda spec el criterio «entrega = promesa» (modificación local de una skill externa de
+  `Klerith/fernando-skills`; una actualización desde su origen la sobrescribiría). El `computedHash` del lock no se tocó.
+- Para publicar la siguiente: PR rama → `work` → `main` (pedir permiso, es despliegue), luego `npm run publicar`.
 
 ## Errores a evitar
 
