@@ -108,8 +108,8 @@ pasa por el token, el candado no lo protege. `app/diseno/**` está exento: exhib
 ## 7 · Cuatro cosas que el documento prohíbe (§9) — no las «mejores» por iniciativa
 
 1. **No montar Storybook:** el catálogo es `/diseño` y no puede divergir.
-2. El modo oscuro **está aprobado** (2026-08-09) y es superficie mantenida: **196 pares, 156
-   bloqueantes, 78 por modo**; ninguna versión sube con uno en rojo.
+2. El modo oscuro **está aprobado** (2026-08-09) y es superficie mantenida: **198 pares, 158
+   bloqueantes, 79 por modo**; ninguna versión sube con uno en rojo.
 3. **No mostrar el markup interno** de los compartidos: se copia la importación y las props.
 4. **No adoptar librería de componentes**, salvo primitivas accesibles para diálogo, menú y selector con búsqueda.
 
