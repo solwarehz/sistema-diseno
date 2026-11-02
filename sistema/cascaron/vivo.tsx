@@ -330,7 +330,7 @@ function PlegableViva() {
     <PanelPrivilegios
       presentacion="matriz"
       plegable
-      resumen="concedido"
+      resumen="ninguno"
       columnas={COLUMNAS_MENU}
       modulos={MODULOS_MENU}
       base={null}

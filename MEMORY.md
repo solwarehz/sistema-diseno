@@ -10,7 +10,7 @@ aporte.
 - **SPEC 06 (R168, `PanelPrivilegios` plegable) IMPLEMENTADA en la rama `spec-06-panel-privilegios-modulos-plegables`**
   (v1.151.0, reglas 34-38; NO en `main`, sin PR, sin publicar). 1392 pruebas, `tsc` y el 25 en verde; marcado
   idéntico a v1.150.0 sin props nuevas (comparado byte a byte). Demo viva en `#panelprivilegios`.
-  - `plegable`, `resumen="concedido"` e `icono` por columna. Vacío y resumen en matriz solo con `plegable`.
+  - `plegable`, `resumen="ninguno"` (sin chips; el equipo pidió «concedido» y se simplificó, el sistema es para todos) e `icono` por columna. Vacío y resumen en matriz solo con `plegable`.
   - **Pendiente del responsable:** aprobar la demo (no hubo mockup previo, se saltó el paso 1), decidir iconos
     de «Dar alta» y «Desactivar» (sin icono hoy), y qué hacer con `imagenes/control-de-asistencia-titulos.html`:
     `verificar-color` falla con 37 hallazgos por sus hex y por eso el paso 6 de §8 NO sale verde en el árbol

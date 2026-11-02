@@ -168,38 +168,28 @@ describe('R168 · [35] un módulo sin privilegios es solo un título', () => {
 });
 
 describe('R168 · [36] el resumen de la banda', () => {
-  it('[36] `resumen="concedido"`: solo los chips de lo concedido, sin «n de n» ni «sin permisos»', () => {
-    const { container } = render(<Panel plegable resumen="concedido" inicial={DASH_VER} />);
-    const [dash, horarios] = bandas(container);
-    expect(dash.textContent).toContain('Ver');
-    expect(dash.textContent).not.toMatch(/\d+ de \d+/);
-    expect(dash.textContent).not.toMatch(/sin permisos/);
-    expect(horarios.querySelector('.chip')).toBeNull();
-  });
-
-  it('[36] con nada concedido la banda queda limpia', () => {
-    const { container } = render(<Panel plegable resumen="concedido" />);
-    for (const b of bandas(container)) {
+  it('[36] `resumen="ninguno"`: ni chips ni cuenta en la banda, en matriz y en lista', () => {
+    const m = render(<Panel plegable resumen="ninguno" inicial={DASH_VER} />);
+    for (const b of bandas(m.container)) {
       expect(b.querySelector('.chip')).toBeNull();
       expect(b.textContent).not.toMatch(/\d+ de \d+|sin permisos/);
+    }
+    m.unmount();
+    const l = render(<Panel {...lista({ resumen: 'ninguno', inicial: { dash: { 'd-ver': true, 'd-editar': true } } })} />);
+    for (const b of bandas(l.container, '.pp-mod-cab')) {
+      expect(b.querySelector('.chip')).toBeNull();
+      expect(b.querySelector('.pp-conteo')).toBeNull();
     }
   });
 
   it('[36] por omisión («completo») la banda dice lo concedido y «n de n»', () => {
     const { container } = render(<Panel plegable inicial={DASH_VER} />);
     expect(bandas(container)[0].textContent).toMatch(/1 de 2/);
-  });
-
-  it('[36] en lista, `resumen="concedido"` quita «n de n» y «sin permisos»', () => {
-    const { container } = render(<Panel {...lista({ resumen: 'concedido', inicial: DASH_VER })} />);
-    const [dash, horarios] = bandas(container, '.pp-mod-cab');
-    expect(dash.textContent).toContain('Ver');
-    expect(dash.querySelector('.pp-conteo')).toBeNull();
-    expect(horarios.textContent).not.toMatch(/sin permisos/);
+    expect(bandas(container)[0].querySelector('.chip')).not.toBeNull();
   });
 
   it('[36] en matriz sin `plegable`, la banda no lleva resumen aunque se pida', () => {
-    const { container } = render(<Panel resumen="concedido" inicial={DASH_VER} />);
+    const { container } = render(<Panel resumen="ninguno" inicial={DASH_VER} />);
     expect(container.querySelector('.pm-chev')).toBeNull();
     expect(container.querySelector('.pm-tags')).toBeNull();
   });

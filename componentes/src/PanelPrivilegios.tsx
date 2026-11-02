@@ -328,10 +328,11 @@ export type PanelPrivilegiosProps = {
   plegable?: boolean;
   /**
    * R168 · Qué dice la banda sin abrir. `'completo'` (por omisión): lo concedido
-   * y el «n de n». `'concedido'`: solo los chips de lo concedido. En la matriz
-   * solo tiene efecto con `plegable`: sin él la banda no lleva resumen.
+   * y el «n de n». `'ninguno'`: la banda no resume nada, ni chips ni cuenta;
+   * plegada no dice qué hay concedido, y es el producto quien lo elige. En la
+   * matriz solo tiene efecto con `plegable`: sin él la banda no lleva resumen.
    */
-  resumen?: 'completo' | 'concedido';
+  resumen?: 'completo' | 'ninguno';
   soloLectura?: boolean;
   /**
    * R151 · **Lista o matriz.** Por omisión, lista.
@@ -1382,9 +1383,9 @@ export function PanelPrivilegios({
                       <span className="pm-chev" aria-hidden="true"><Icono nombre="chevron" /></span>
                       <span className="pm-mod-txt">{m.nombre}</span>
                       <span className="pm-tags">
-                        {resumenM.dados.length
+                        {resumen !== 'ninguno' && (resumenM.dados.length
                           ? resumenM.dados.map((p) => <Chip key={p.id} tono="info">{p.nombre}</Chip>)
-                          : (resumen === 'completo' && !vacio && <Chip tono="pendiente">sin permisos</Chip>)}
+                          : (resumen === 'completo' && !vacio && <Chip tono="pendiente">sin permisos</Chip>))}
                       </span>
                       {resumen === 'completo' && !vacio && (
                         <span className="pm-conteo">{resumenM.dados.length} de {resumenM.posibles}</span>
@@ -1791,11 +1792,11 @@ export function PanelPrivilegios({
           // Lo que no se puede repartir no cuenta en el «4 de 6»: contarlo haría
           // que un cargo pareciera incompleto por reglas que no dependen de él.
           const posibles = lista.filter((p) => !p.cerrado).length;
-          /* R168 · La banda limpia: con `resumen="concedido"`, o en un título
+          /* R168 · La banda limpia: con `resumen="ninguno"`, o en un título
              todavía sin opciones, no se dice «sin permisos» ni «n de n». Un
              módulo vacío no tiene permisos concedidos NI negados: no tiene
              opciones, y el chip y el «0 de 0» dicen otra cosa. */
-          const bandaLimpia = resumen === 'concedido' || vacioDe(m);
+          const bandaLimpia = resumen === 'ninguno' || vacioDe(m);
           /* Tambien por `baseDe`: con un modulo colocado por columnas, `base`
              no es un id y este `concedido(..., base)` decia que falta el base
              CON TODO CONCEDIDO — la pantalla contradiciendo al backend. */
@@ -1849,16 +1850,16 @@ export function PanelPrivilegios({
                     enterarse. Con diez módulos, obligar a abrir uno por uno para
                     saber qué hay concedido es diez veces el mismo gesto. */}
                 <span className="pp-tags">
-                  {dados.length
+                  {resumen !== 'ninguno' && (dados.length
                     ? dados.map((p) => <Chip key={p.id} tono="info">{p.nombre}</Chip>)
-                    : (!bandaLimpia && <Chip tono="pendiente">sin permisos</Chip>)}
+                    : (!bandaLimpia && <Chip tono="pendiente">sin permisos</Chip>))}
                   {/* R145 · El resumen del móvil. Se emite SIEMPRE y la hoja lo
                       enseña solo bajo 900 px: un componente no puede preguntar
                       cuánto mide la pantalla sin medir, y medir para decidir
                       marcado es lo que hace que el servidor y el navegador
                       pinten cosas distintas. Aquí decide la hoja, que es quien
                       sabe. */}
-                  {dados.length > 2 && (
+                  {resumen !== 'ninguno' && dados.length > 2 && (
                     <Chip tono="info" className="pp-tags-mas">+{dados.length - 2}</Chip>
                   )}
                 </span>

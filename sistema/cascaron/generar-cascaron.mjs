@@ -8820,19 +8820,18 @@ periódicamente quién tiene qué es obligación legal, y se hace mirando una co
 <code>plegable</code> la banda es el control (<code>aria-expanded</code>, teclado, chevron que gira) y sale
 <strong>siempre</strong>, también con un solo módulo. Un módulo con <code>privilegios: []</code> se dibuja como
 <strong>solo título</strong>: sin fila repetida, sin «Sin declarar», sin «sin permisos» ni «0 de 0», porque no es que
-no tenga permisos sino que aún no tiene opciones. Con <code>resumen="concedido"</code> la banda dice
-<strong>solo lo concedido</strong>. Y si alguna columna declara un <code>icono</code>, el encabezado pasa a fondo
+no tenga permisos sino que aún no tiene opciones. <code>resumen</code> decide qué dice la banda: <code>"completo"</code> (por omisión) lo concedido y el «n de n»; <code>"ninguno"</code> <strong>nada</strong>, ni chips ni cuenta —así va la demo—. Y si alguna columna declara un <code>icono</code>, el encabezado pasa a fondo
 blanco y el cursor o el foco sobre un interruptor ilumina su columna y su fila.</p>
 <div class="aviso">
   Va <strong>montado y vivo</strong>: pliega Dashboard, pasa el cursor por el «Ver» de «Clasificación semanal» o
-  recorre las bandas con el tabulador. «Dar alta» y «Desactivar» van <strong>sin icono</strong> a propósito: no hay
+  recorre las bandas con el tabulador. La banda <strong>no muestra chips</strong>: plegada no dice qué hay concedido. «Dar alta» y «Desactivar» van <strong>sin icono</strong> a propósito: no hay
   uno obvio en el juego del sistema, y se ve cómo se alinean junto a las que sí lo llevan. Sin ninguna prop
   nueva el panel sale exactamente como antes.
 </div>
 <div class="bloque" id="plegable-viva"></div>
 
 <h4 class="sub-seccion">Lo mismo, sin JavaScript</h4>
-<p class="seccion-sub">Lo que emite el componente con una banda cerrada y con chip, una abierta y un título aún vacío.
+<p class="seccion-sub">Lo que emite el componente con una banda cerrada, otra abierta y un título aún vacío, con <code>resumen="ninguno"</code>.
 Existe porque los candados leen el documento estático y no lo que monta el guion de arriba.</p>
 <div class="bloque">
   <div class="pm-envoltura">
@@ -8850,7 +8849,7 @@ Existe porque los candados leen el documento estático y no lo que monta el guio
             <button type="button" class="pm-mod-cab" aria-expanded="false">
               <span class="pm-chev" aria-hidden="true">${icono('chevron')}</span>
               <span class="pm-mod-txt">Dashboard</span>
-              <span class="pm-tags"><span class="chip chip-info">Ver</span></span>
+              <span class="pm-tags"></span>
             </button>
           </th>
         </tr>
@@ -8890,7 +8889,7 @@ const modulos = [
 &lt;PanelPrivilegios
   presentacion="matriz"
   plegable
-  resumen="concedido"
+  resumen="ninguno"        // sin chips ni cuenta en la banda
   columnas={columnas}
   modulos={modulos}
   base={null}
