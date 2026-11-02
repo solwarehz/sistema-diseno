@@ -12,7 +12,7 @@ La implementación ejecutable de `SISTEMA-DE-DISENO.md` (**MMI-DS**), el sistema
 Colegio Albert Einstein, Huaraz. El documento es la **especificación**; esto es el **código**. Si
 discrepan, gana el de versión más alta y se corrige el otro en el mismo commit.
 
-**Estado actual: v1.151.0** — R168: `PanelPrivilegios` pliega sus módulos en matriz y lista, dibuja un título vacío como título, resume solo lo concedido y admite icono por columna (SPEC 06).
+**Estado actual: v1.152.0** — R168: `PanelPrivilegios` pliega sus módulos en matriz y lista, dibuja un título vacío como título, resume solo lo concedido y admite icono por columna (SPEC 06).
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md); **este número es lo único que se toca aquí**.
 
 ## 2 · Lo primero al abrir sesión
