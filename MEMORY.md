@@ -14,7 +14,6 @@ aporte.
   `posicionIconoFila`. Un criterio sin marcar: el mockup previo (la demo del catálogo hizo de mockup).
   - Pendiente del responsable: iconos de «Dar alta» y «Desactivar» (sin icono hoy).
 - `verificar-color` salta lo que git ignora; `/imagenes` está en `.gitignore` (maquetas de otros equipos: referencia, no sistema).
-- **SPEC 05** (`BotonAccion`: Aceptar/Guardar/Agregar) sigue en Draft; reservaba 1.151.0, tomará 1.152.0.
 - La skill `/spec` pide en toda spec el criterio «entrega = promesa» (modificación local de una skill externa de
   `Klerith/fernando-skills`; una actualización desde su origen la sobrescribiría). El `computedHash` del lock no se tocó.
 - Para publicar la siguiente: PR rama → `work` → `main` (pedir permiso, es despliegue), luego `npm run publicar`.
