@@ -1398,7 +1398,7 @@ export function PanelPrivilegios({
                  título sin filas no controla nada y no lo lleva. */
               const resumenM = plegable ? resumenDe(m) : null;
               const cabecera = plegable && resumenM ? (
-                <tr key={`${m.id}-cab`} className={`pm-mod pm-mod-plegable${abiertoM ? ' pm-abierto' : ''}`}>
+                <tr key={`${m.id}-cab`} className="pm-mod pm-mod-plegable">
                   <th scope="colgroup" colSpan={cols.length + 1} className="pm-mod-nom"
                       id={`${idPanel}-mod-${im}`}>
                     <button

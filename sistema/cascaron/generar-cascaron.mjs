@@ -8575,7 +8575,7 @@ interruptor tiene su etiqueta cerca. Una banda cerrada se queda en su título.</
   <div class="pm-envoltura">
     <table class="pm pm-con-iconos">
       <tbody>
-        <tr class="pm-mod pm-mod-plegable pm-abierto">
+        <tr class="pm-mod pm-mod-plegable">
           <th scope="colgroup" colspan="3" class="pm-mod-nom">
             <button type="button" class="pm-mod-cab" aria-expanded="true">
               <span class="pm-chev" aria-hidden="true">${icono('chevron')}</span>
@@ -8628,7 +8628,7 @@ por campo. Apaga «Ver» en un módulo y verás el aviso de que sin él lo demá
 
 <h3 class="sub-seccion">Cómo se usa</h3>
 <p class="seccion-sub">Lo que se copia es la importación y las props. Este bloque compila tal cual.</p>
-<pre class="cod"><code>import { useState } from 'react';
+<pre class="cod-pre"><code>import { useState } from 'react';
 import { PanelPrivilegios } from 'sistema-diseno-ae/componentes';
 import type { ColumnaPrivilegios, ModuloPrivilegios, ValorPrivilegios } from 'sistema-diseno-ae/componentes';
 
