@@ -1,6 +1,6 @@
 # SPEC 06 — PanelPrivilegios: módulos plegables, títulos sin privilegios, resumen limpio y encabezado con icono
 
-> **Estado:** Approved
+> **Estado:** Implemented
 > **Depende de:** ninguna en este repositorio (la SPEC 05 también reserva la versión 1.151.0; ver Decisiones). La SPEC 16 del equipo, que esta spec desbloquea, vive en su repositorio y no se enlaza aquí.
 > **Fecha:** 2026-11-02
 > **Objetivo:** Dar a `PanelPrivilegios` cuatro opciones nuevas y retrocompatibles —módulos plegables en matriz y lista, módulo sin privilegios dibujado como un solo título, resumen de banda reducido a lo concedido y encabezado de columnas con icono— para que una pantalla de privilegios siga la estructura del menú aunque algunos títulos aún no tengan opciones.
