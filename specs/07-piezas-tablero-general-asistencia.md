@@ -1,6 +1,6 @@
 # SPEC 07 — Piezas del tablero «General»: GraficoTendencia, MapaCalor, FranjaCifras, ListaRanking y jerarquía en SelectorBusqueda
 
-> **Estado:** Draft
+> **Estado:** Approved
 > **Depende de:** SPEC 04 (`RangoFecha` con `fechaMaxima`, ya implementada). Ninguna otra en este repositorio. La SPEC 18 del equipo, que esta spec desbloquea, vive en su repositorio y no se enlaza aquí.
 > **Fecha:** 2026-11-02
 > **Objetivo:** Crear cuatro piezas nuevas —`GraficoTendencia`, `MapaCalor`, `FranjaCifras` con `CifraConDiferencia`, y `ListaRanking`—, dar árbol y cuenta a las opciones de `SelectorBusqueda` y comprobar con pruebas que `RangoFecha` ya cumple lo que el tablero necesita, para que una pantalla de asistencia dibuje tendencias, mapas, cifras y rankings sin escribir CSS propio.
