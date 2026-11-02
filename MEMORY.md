@@ -5,7 +5,7 @@ aporte.
 
 ## Estado actual (2026-11-02)
 
-- **v1.152.0** lleva la SPEC 06 (la que el responsable asignó: «corresponde la 152»). La **v1.151.0 ya estaba publicada con el
+- **v1.152.0 PUBLICADA** (2026-11-02, `main` = `work` = `14d3acf`, etiqueta + release con ZIP) y lleva la SPEC 06 (la que el responsable asignó: «corresponde la 152»). La **v1.151.0 ya estaba publicada con el
   mismo código** (2026-11-02; etiqueta y release no se tocan): `npm install "github:solwarehz/sistema-diseno#v1.152.0"`.
   No probada la instalación desde un proyecto limpio. El ZIP de v1.150.0 se borró (flujo normal); su etiqueta y release siguen.
 - **SPEC 06 (R168, `PanelPrivilegios` plegable) en «Implemented»**, reglas 34-40, 1399 pruebas, 198 pares de contraste
