@@ -99,6 +99,7 @@ Numbered steps. Each step must leave the system in a **functional and runnable**
 - Each step must be commitable on its own.
 - If a step requires more than 30–50 lines of code, split it.
 - The last step of the plan is **not** "test everything" — that is the acceptance criteria.
+- One step runs the delivery check from Section 5, **after** the artifact is built and against that artifact, not against the development environment or the demo. If the repo has no such check, an earlier step creates it.
 
 ---
 
@@ -119,7 +120,37 @@ Boolean checklist. Each item can be verified with yes or no.
 - ❌ "That it works well." → not verifiable.
 - ❌ "Good UX." → subjective.
 - ❌ "No bugs." → not operational.
+- ❌ "It looks the same as the demo." → judged by eye, and the demo is not the artifact the consumer receives.
 - ✅ "Pressing Esc pauses the game and shows the menu." → verifiable, boolean.
+
+### The mandatory criterion: delivery equals promise
+
+**Every spec carries exactly one criterion of this kind.** A feature can pass every check made where it was built and still arrive different, because the consumer receives another artifact: a generated stylesheet, a package, a build. The rule is *the delivery must equal the promise; don't leave it to judgment*.
+
+It is valid only if it names:
+
+1. **The promise** — where it is stated (spec, docs, demo or catalog, contract, prop name).
+2. **The delivered artifact** — what the consumer actually receives.
+3. **The mechanical check** — a command or test that compares them and fails when they differ.
+4. **The deliberate break** — what was changed on purpose to see the check go red.
+
+```markdown
+- [ ] What the catalog promises for `ActionButton` is what ships: `node checks/verify-promise.mjs` compares the catalog markup resolved with the catalog stylesheet against the same markup resolved with the shipped `components.css`, exits 0, and was seen failing after changing one declaration in the shipped sheet.
+```
+
+The examples here are in English only because this file is. **Write the line in the language of the spec**, including the fixed words (in Spanish: `Entrega = promesa: no aplica — <motivo>`). Copying an English line into a Spanish spec is the mistake to avoid.
+
+When the spec delivers nothing that anyone else consumes, the line stays, with a reason:
+
+```markdown
+- [ ] Delivery = promise: not applicable — internal refactor, no public name, file or behaviour changes.
+```
+
+Weak forms to reject:
+
+- ❌ "The package has the same behaviour as the demo." → no command, no artifact named.
+- ❌ "Verified in the browser." → that is the development environment, and nobody can repeat it.
+- ❌ A check that was never seen failing → it may be checking nothing.
 
 ---
 

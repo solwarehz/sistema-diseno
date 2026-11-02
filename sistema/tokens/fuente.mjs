@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.150.0";
+export const VERSION = "1.151.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,25 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.151.0', fecha: '2026-11-02',
+    que: 'PanelPrivilegios: modulos plegables en matriz y lista, titulo sin privilegios, resumen limpio e icono por columna (R168)',
+    porque:
+      'LO PIDIO EL EQUIPO (R168, que absorbe a R167): una pantalla de privilegios sigue la estructura del '
+      + 'menu, con titulos que todavia no tienen opciones debajo. La matriz no plegaba —`abiertos` no hacia '
+      + 'nada con `presentacion="matriz"`— y un modulo vacio salia con el titulo dos veces y seis celdas '
+      + '«Sin declarar», o con «sin permisos» y «0 de 0» en la lista, que dicen algo falso. Tres props '
+      + 'opcionales y un campo: `plegable` (la banda es el control, en matriz y lista, sale tambien con un '
+      + 'solo modulo; todo empieza cerrado; las filas plegadas llevan `hidden`), `resumen="ninguno"` (la banda '
+      + 'no resume nada, ni chips ni «n de n») e `icono` en cada columna (encabezado '
+      + 'blanco, y el cursor o el foco sobre un interruptor ilumina su columna y su fila). Con `plegable` un '
+      + 'modulo sin privilegios es solo un titulo, sin linea explicativa, y cada modulo lleva su propia cabecera de columnas encima de sus filas. Una fila admite `icono` a un lado u otro de su nombre (`posicionIconoFila`). Es una ADICION: sin ninguna prop '
+      + 'nueva el marcado es identico (regla 38). No se anade ningun color ni token: la banda baja al '
+      + 'escalon siguiente de sus grises. FUERA: iconos nuevos —«Dar alta» y «Desactivar» no tienen uno '
+      + 'obvio en el juego—, plegar por omision y la pantalla del equipo.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.150.0', fecha: '2026-11-01',
     que: 'RangoFecha: la prop opcional fechaMaxima, el ultimo dia elegible (R166)',
@@ -6622,6 +6641,7 @@ export const pares = [
   ['texto-secundario', 'fondo-pagina',     4.5, 'Dato de apoyo sobre página'],
   ['texto-secundario', 'fondo-encabezado', 4.5, 'Etiqueta de columna no primaria'],
   ['texto-secundario', 'fondo-fila-hover', 4.5, 'Dato de apoyo en fila activa'],
+  ['texto-principal',  'borde',            4.5, 'Título de banda de módulo bajo el cursor'],
   ['texto-pista',      'fondo-tarjeta',    4.5, 'Placeholder dentro de campo'],
   ['texto-pista',      'fondo-pagina',     4.5, 'Texto de ayuda sobre página'],
 

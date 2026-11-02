@@ -1,6 +1,6 @@
 {
   "documento": "MMI-DS",
-  "version": "1.150.0",
+  "version": "1.151.0",
   "norma": "WCAG 2.2 AA",
   "generado": "node sistema/tokens/generar.mjs",
   "modos": [
@@ -9,17 +9,17 @@
   ],
   "aviso": "Archivo generado. No editar a mano. La fuente es sistema/tokens/fuente.mjs. Cambiar un valor exige regenerar, re-verificar y subir versión (§2.5 regla 8).",
   "resumen": {
-    "paresTotales": 196,
-    "paresBloqueantes": 156,
+    "paresTotales": 198,
+    "paresBloqueantes": 158,
     "paresInformativos": 40,
     "fallos": 0,
     "porModo": {
       "claro": {
-        "bloqueantes": 78,
+        "bloqueantes": 79,
         "fallos": 0
       },
       "oscuro": {
-        "bloqueantes": 78,
+        "bloqueantes": 79,
         "fallos": 0
       }
     }
@@ -874,6 +874,17 @@
       "ratio": 5.02,
       "minimo": 4.5,
       "motivo": "Dato de apoyo en fila activa",
+      "cumple": true
+    },
+    {
+      "modo": "claro",
+      "frente": "texto-principal",
+      "fondo": "borde",
+      "hexFrente": "#2C2A25",
+      "hexFondo": "#E0DFDE",
+      "ratio": 10.77,
+      "minimo": 4.5,
+      "motivo": "Título de banda de módulo bajo el cursor",
       "cumple": true
     },
     {
@@ -1952,6 +1963,17 @@
       "ratio": 6.82,
       "minimo": 4.5,
       "motivo": "Dato de apoyo en fila activa",
+      "cumple": true
+    },
+    {
+      "modo": "oscuro",
+      "frente": "texto-principal",
+      "fondo": "borde",
+      "hexFrente": "#EFEEEB",
+      "hexFondo": "#44423F",
+      "ratio": 8.63,
+      "minimo": 4.5,
+      "motivo": "Título de banda de módulo bajo el cursor",
       "cumple": true
     },
     {

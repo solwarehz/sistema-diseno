@@ -42,6 +42,10 @@ next-env.d.ts
 *.sketch
 *.fig
 
+# Material de referencia que el usuario deja en local (capturas, logos del cliente,
+# maquetas del equipo con sus propios colores): no es del sistema y no se versiona.
+/imagenes
+
 # Excepción: los SVG del sistema (iconos, marcadores de posición) sí se versionan
 !sistema/**/*.svg
 !app/**/*.svg
