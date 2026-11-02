@@ -8,7 +8,7 @@
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
    TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.152.0
-   WCAG 2.2 AA · 158 pares verificados en los dos modos, 0 fallos
+   WCAG 2.2 AA · 184 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -111,6 +111,32 @@
   --identidad-4: #4A5568;
   --identidad-texto: #FFFFFF;
 
+  /* Gráfico de tendencia — panel que cambia con el tema (SPEC 07) */
+  --grafico-fondo: #E5E8F2;
+  --grafico-texto: #2C2A25;
+  --grafico-texto-tenue: #5C5955;
+  --grafico-linea: #2C3D71;
+  --grafico-rejilla: #B9C2DC;
+  --grafico-base: #8D9BC6;
+  --grafico-ref: #5C5955;
+  --grafico-guia: #5C5955;
+  --grafico-halo: #AA8E41;
+  --grafico-punto0: #FFFFFF;
+  --grafico-ventana-fondo: #1D3163;
+  --grafico-ventana-texto: #FFFFFF;
+  --grafico-foco: #A46300;
+
+  /* Barra del ranking (SPEC 07) */
+  --barra-relleno: #45558A;
+  --barra-pista: #E0DFDE;
+
+  /* Mapa de calor — cinco pasos de un tono (SPEC 07) */
+  --mapa-1: #E5E8F2;
+  --mapa-2: #B9C2DC;
+  --mapa-3: #8D9BC6;
+  --mapa-4: #45558A;
+  --mapa-5: #2C3D71;
+
   /* Marca — FUERA del sistema. Prohibidos en interfaz (§2.3) */
   --marca-rojo: #E30613;
   --marca-rojo-panel: #E30613;
@@ -194,6 +220,32 @@
   --identidad-3: #9B3B6E;
   --identidad-4: #4A5568;
   --identidad-texto: #FFFFFF;
+
+  /* Gráfico de tendencia — panel que cambia con el tema (SPEC 07) */
+  --grafico-fondo: #1D3163;
+  --grafico-texto: #FFFFFF;
+  --grafico-texto-tenue: #B9C2DC;
+  --grafico-linea: #DFCA9C;
+  --grafico-rejilla: #39497A;
+  --grafico-base: #45558A;
+  --grafico-ref: #FFFFFF;
+  --grafico-guia: #FFFFFF;
+  --grafico-halo: #DFCA9C;
+  --grafico-punto0: #FFFFFF;
+  --grafico-ventana-fondo: #FFFFFF;
+  --grafico-ventana-texto: #2C2A25;
+  --grafico-foco: #F0C060;
+
+  /* Barra del ranking (SPEC 07) */
+  --barra-relleno: #8D9BC6;
+  --barra-pista: #44423F;
+
+  /* Mapa de calor — cinco pasos de un tono (SPEC 07) */
+  --mapa-1: #1D3163;
+  --mapa-2: #39497A;
+  --mapa-3: #45558A;
+  --mapa-4: #8D9BC6;
+  --mapa-5: #B9C2DC;
 
   /* Marca en oscuro. El titular sube a rojo-400; el panel de marca baja
      a #930000 porque el rojo del escudo se aplana contra la página (§2.4). */
@@ -281,6 +333,32 @@
     --identidad-3: #9B3B6E;
     --identidad-4: #4A5568;
     --identidad-texto: #FFFFFF;
+
+    /* Gráfico de tendencia — panel que cambia con el tema (SPEC 07) */
+    --grafico-fondo: #1D3163;
+    --grafico-texto: #FFFFFF;
+    --grafico-texto-tenue: #B9C2DC;
+    --grafico-linea: #DFCA9C;
+    --grafico-rejilla: #39497A;
+    --grafico-base: #45558A;
+    --grafico-ref: #FFFFFF;
+    --grafico-guia: #FFFFFF;
+    --grafico-halo: #DFCA9C;
+    --grafico-punto0: #FFFFFF;
+    --grafico-ventana-fondo: #FFFFFF;
+    --grafico-ventana-texto: #2C2A25;
+    --grafico-foco: #F0C060;
+
+    /* Barra del ranking (SPEC 07) */
+    --barra-relleno: #8D9BC6;
+    --barra-pista: #44423F;
+
+    /* Mapa de calor — cinco pasos de un tono (SPEC 07) */
+    --mapa-1: #1D3163;
+    --mapa-2: #39497A;
+    --mapa-3: #45558A;
+    --mapa-4: #8D9BC6;
+    --mapa-5: #B9C2DC;
 
     --marca-rojo: #FF4C37;
     --marca-rojo-panel: #930000;
@@ -649,6 +727,26 @@
 .token-identidad-3 { background-color: var(--identidad-3); }
 .token-identidad-4 { background-color: var(--identidad-4); }
 .token-identidad-texto { background-color: var(--identidad-texto); }
+.token-grafico-fondo { background-color: var(--grafico-fondo); }
+.token-grafico-texto { background-color: var(--grafico-texto); }
+.token-grafico-texto-tenue { background-color: var(--grafico-texto-tenue); }
+.token-grafico-linea { background-color: var(--grafico-linea); }
+.token-grafico-rejilla { background-color: var(--grafico-rejilla); }
+.token-grafico-base { background-color: var(--grafico-base); }
+.token-grafico-ref { background-color: var(--grafico-ref); }
+.token-grafico-guia { background-color: var(--grafico-guia); }
+.token-grafico-halo { background-color: var(--grafico-halo); }
+.token-grafico-punto0 { background-color: var(--grafico-punto0); }
+.token-grafico-ventana-fondo { background-color: var(--grafico-ventana-fondo); }
+.token-grafico-ventana-texto { background-color: var(--grafico-ventana-texto); }
+.token-grafico-foco { background-color: var(--grafico-foco); }
+.token-barra-relleno { background-color: var(--barra-relleno); }
+.token-barra-pista { background-color: var(--barra-pista); }
+.token-mapa-1 { background-color: var(--mapa-1); }
+.token-mapa-2 { background-color: var(--mapa-2); }
+.token-mapa-3 { background-color: var(--mapa-3); }
+.token-mapa-4 { background-color: var(--mapa-4); }
+.token-mapa-5 { background-color: var(--mapa-5); }
 
 
 /* ── Cascarón. Estilos de la propia página de revisión ───────────────────── */
@@ -2555,6 +2653,36 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
   border-width: 2px; border-style: dashed; border-color: var(--sin-estado); }
 @media (min-width: 641px) {
   .cuadro { width: 28px; height: 28px; }
+}
+/* ───────────────────────────────────────────────────────────────────────────
+   FRANJA DE CIFRAS · clases .franja*, .cifra*  (SPEC 07, R169)
+   Cifras separadas por una linea fina, sin tarjetas sueltas. La separacion es
+   el hueco de 1px de la rejilla sobre el fondo del borde. Movil primero: DOS
+   columnas de base y, con numero impar, la ultima ocupa el ancho completo; los
+   5 entran con min-width. La diferencia lleva flecha, signo y palabra: el
+   color acompana (SC 1.4.1), no sostiene.
+   ─────────────────────────────────────────────────────────────────────────── */
+.franja { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px;
+  background: var(--borde); border: 1px solid var(--borde); border-radius: 8px;
+  overflow: hidden; margin: 0; padding: 0; list-style: none; }
+.franja-item { background: var(--fondo-tarjeta); padding: 16px 16px 12px; min-width: 0; }
+.franja-item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.cifra { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.cifra-titulo { font-size: 13px; font-weight: 500; color: var(--texto-secundario); }
+.cifra-valor { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px;
+  font-size: 34px; font-weight: 600; line-height: 1.05; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums; color: var(--texto-principal); }
+.cifra-unidad { font-size: 15px; font-weight: 500; letter-spacing: 0; color: var(--texto-secundario); }
+.cifra-dif { position: relative; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start;
+  font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 6px;
+  font-variant-numeric: tabular-nums; border: 1px solid transparent; }
+.cifra-dif.cifra-dif-peor { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.cifra-dif.cifra-dif-mejor { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.cifra-dif.cifra-dif-igual { background: var(--neutra-fondo); color: var(--neutra-texto); border-color: var(--borde-fuerte); }
+.cifra-detalle { font-size: 12px; color: var(--texto-secundario); }
+@media (min-width: 900px) {
+  .franja { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .franja-item:last-child:nth-child(odd) { grid-column: auto; }
 }
 /* ───────────────────────────────────────────────────────────────────────────
    PANEL DE PRIVILEGIOS · clases .pp-*
@@ -5720,7 +5848,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                           <span class="nav-txt">Chip de estado</span></a><a class="nav-nieto" href="#cuadro" data-ir="cuadro" title="Cuadro de estado">
                           <span class="nav-txt">Cuadro de estado</span></a><a class="nav-nieto" href="#avatar" data-ir="avatar" title="Avatar">
                           <span class="nav-txt">Avatar</span></a><a class="nav-nieto" href="#tarjeta" data-ir="tarjeta" title="Tarjeta">
-                          <span class="nav-txt">Tarjeta</span></a>
+                          <span class="nav-txt">Tarjeta</span></a><a class="nav-nieto" href="#franjacifras" data-ir="franjacifras" title="Franja de cifras">
+                          <span class="nav-txt">Franja de cifras</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="2-3">
                   <!-- aria-controls e id, como los emite el componente: un
@@ -6097,8 +6226,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 El menú de la izquierda lo abre por partes.</p>
 
 <div class="estado-rejilla">
-  <div class="est"><b>57</b><span>tokens semánticos</span></div>
-  <div class="est"><b>158</b><span>pares verificados</span></div>
+  <div class="est"><b>77</b><span>tokens semánticos</span></div>
+  <div class="est"><b>184</b><span>pares verificados</span></div>
   <div class="est est-ok"><b>0</b><span>fallos de contraste</span></div>
   <div class="est"><b>2</b><span>modos, claro y oscuro</span></div>
 </div>
@@ -6601,7 +6730,7 @@ El menú de la izquierda lo abre por partes.</p>
   <a href="#espaciado" data-ir="espaciado" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
     <span><strong>Espaciado</strong>Rejilla de 4px y tamaños de control</span></a>
   <a href="#contraste" data-ir="contraste" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg></span>
-    <span><strong>Contrastes</strong>Los 158 pares medidos</span></a>
+    <span><strong>Contrastes</strong>Los 184 pares medidos</span></a>
 </div>
     </section><section class="pagina" id="pg-entrega-real" hidden>
       <nav class="migas" aria-label="Ubicación">
@@ -6636,7 +6765,7 @@ vieja.</div>
 
 <script type="text/plain" id="tokens-entregados">/* ───────────────────────────────────────────────────────────────────────────
    TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.152.0
-   WCAG 2.2 AA · 158 pares verificados en los dos modos, 0 fallos
+   WCAG 2.2 AA · 184 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -6739,6 +6868,32 @@ vieja.</div>
   --identidad-4: #4A5568;
   --identidad-texto: #FFFFFF;
 
+  /* Gráfico de tendencia — panel que cambia con el tema (SPEC 07) */
+  --grafico-fondo: #E5E8F2;
+  --grafico-texto: #2C2A25;
+  --grafico-texto-tenue: #5C5955;
+  --grafico-linea: #2C3D71;
+  --grafico-rejilla: #B9C2DC;
+  --grafico-base: #8D9BC6;
+  --grafico-ref: #5C5955;
+  --grafico-guia: #5C5955;
+  --grafico-halo: #AA8E41;
+  --grafico-punto0: #FFFFFF;
+  --grafico-ventana-fondo: #1D3163;
+  --grafico-ventana-texto: #FFFFFF;
+  --grafico-foco: #A46300;
+
+  /* Barra del ranking (SPEC 07) */
+  --barra-relleno: #45558A;
+  --barra-pista: #E0DFDE;
+
+  /* Mapa de calor — cinco pasos de un tono (SPEC 07) */
+  --mapa-1: #E5E8F2;
+  --mapa-2: #B9C2DC;
+  --mapa-3: #8D9BC6;
+  --mapa-4: #45558A;
+  --mapa-5: #2C3D71;
+
   /* Marca — FUERA del sistema. Prohibidos en interfaz (§2.3) */
   --marca-rojo: #E30613;
   --marca-rojo-panel: #E30613;
@@ -6822,6 +6977,32 @@ vieja.</div>
   --identidad-3: #9B3B6E;
   --identidad-4: #4A5568;
   --identidad-texto: #FFFFFF;
+
+  /* Gráfico de tendencia — panel que cambia con el tema (SPEC 07) */
+  --grafico-fondo: #1D3163;
+  --grafico-texto: #FFFFFF;
+  --grafico-texto-tenue: #B9C2DC;
+  --grafico-linea: #DFCA9C;
+  --grafico-rejilla: #39497A;
+  --grafico-base: #45558A;
+  --grafico-ref: #FFFFFF;
+  --grafico-guia: #FFFFFF;
+  --grafico-halo: #DFCA9C;
+  --grafico-punto0: #FFFFFF;
+  --grafico-ventana-fondo: #FFFFFF;
+  --grafico-ventana-texto: #2C2A25;
+  --grafico-foco: #F0C060;
+
+  /* Barra del ranking (SPEC 07) */
+  --barra-relleno: #8D9BC6;
+  --barra-pista: #44423F;
+
+  /* Mapa de calor — cinco pasos de un tono (SPEC 07) */
+  --mapa-1: #1D3163;
+  --mapa-2: #39497A;
+  --mapa-3: #45558A;
+  --mapa-4: #8D9BC6;
+  --mapa-5: #B9C2DC;
 
   /* Marca en oscuro. El titular sube a rojo-400; el panel de marca baja
      a #930000 porque el rojo del escudo se aplana contra la página (§2.4). */
@@ -6909,6 +7090,32 @@ vieja.</div>
     --identidad-3: #9B3B6E;
     --identidad-4: #4A5568;
     --identidad-texto: #FFFFFF;
+
+    /* Gráfico de tendencia — panel que cambia con el tema (SPEC 07) */
+    --grafico-fondo: #1D3163;
+    --grafico-texto: #FFFFFF;
+    --grafico-texto-tenue: #B9C2DC;
+    --grafico-linea: #DFCA9C;
+    --grafico-rejilla: #39497A;
+    --grafico-base: #45558A;
+    --grafico-ref: #FFFFFF;
+    --grafico-guia: #FFFFFF;
+    --grafico-halo: #DFCA9C;
+    --grafico-punto0: #FFFFFF;
+    --grafico-ventana-fondo: #FFFFFF;
+    --grafico-ventana-texto: #2C2A25;
+    --grafico-foco: #F0C060;
+
+    /* Barra del ranking (SPEC 07) */
+    --barra-relleno: #8D9BC6;
+    --barra-pista: #44423F;
+
+    /* Mapa de calor — cinco pasos de un tono (SPEC 07) */
+    --mapa-1: #1D3163;
+    --mapa-2: #39497A;
+    --mapa-3: #45558A;
+    --mapa-4: #8D9BC6;
+    --mapa-5: #B9C2DC;
 
     --marca-rojo: #FF4C37;
     --marca-rojo-panel: #930000;
@@ -7277,6 +7484,26 @@ vieja.</div>
 .token-identidad-3 { background-color: var(--identidad-3); }
 .token-identidad-4 { background-color: var(--identidad-4); }
 .token-identidad-texto { background-color: var(--identidad-texto); }
+.token-grafico-fondo { background-color: var(--grafico-fondo); }
+.token-grafico-texto { background-color: var(--grafico-texto); }
+.token-grafico-texto-tenue { background-color: var(--grafico-texto-tenue); }
+.token-grafico-linea { background-color: var(--grafico-linea); }
+.token-grafico-rejilla { background-color: var(--grafico-rejilla); }
+.token-grafico-base { background-color: var(--grafico-base); }
+.token-grafico-ref { background-color: var(--grafico-ref); }
+.token-grafico-guia { background-color: var(--grafico-guia); }
+.token-grafico-halo { background-color: var(--grafico-halo); }
+.token-grafico-punto0 { background-color: var(--grafico-punto0); }
+.token-grafico-ventana-fondo { background-color: var(--grafico-ventana-fondo); }
+.token-grafico-ventana-texto { background-color: var(--grafico-ventana-texto); }
+.token-grafico-foco { background-color: var(--grafico-foco); }
+.token-barra-relleno { background-color: var(--barra-relleno); }
+.token-barra-pista { background-color: var(--barra-pista); }
+.token-mapa-1 { background-color: var(--mapa-1); }
+.token-mapa-2 { background-color: var(--mapa-2); }
+.token-mapa-3 { background-color: var(--mapa-3); }
+.token-mapa-4 { background-color: var(--mapa-4); }
+.token-mapa-5 { background-color: var(--mapa-5); }
 </script>
 <script type="text/plain" id="hoja-entregada">
 /* ───────────────────────────────────────────────────────────────────────────
@@ -8096,6 +8323,33 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   border-width: 2px; border-style: dashed; border-color: var(--sin-estado); }
 @media (min-width: 641px) {
   .cuadro{ width: 28px; height: 28px; }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   FRANJA DE CIFRAS — 13 reglas · clases .franja-*, .cifra-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.franja{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px;
+  background: var(--borde); border: 1px solid var(--borde); border-radius: 8px;
+  overflow: hidden; margin: 0; padding: 0; list-style: none; }
+.franja-item{ background: var(--fondo-tarjeta); padding: 16px 16px 12px; min-width: 0; }
+.franja-item:last-child:nth-child(odd){ grid-column: 1 / -1; }
+.cifra{ display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.cifra-titulo{ font-size: 13px; font-weight: 500; color: var(--texto-secundario); }
+.cifra-valor{ display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px;
+  font-size: 34px; font-weight: 600; line-height: 1.05; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums; color: var(--texto-principal); }
+.cifra-unidad{ font-size: 15px; font-weight: 500; letter-spacing: 0; color: var(--texto-secundario); }
+.cifra-dif{ position: relative; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start;
+  font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 6px;
+  font-variant-numeric: tabular-nums; border: 1px solid transparent; }
+.cifra-dif.cifra-dif-peor{ background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.cifra-dif.cifra-dif-mejor{ background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.cifra-dif.cifra-dif-igual{ background: var(--neutra-fondo); color: var(--neutra-texto); border-color: var(--borde-fuerte); }
+.cifra-detalle{ font-size: 12px; color: var(--texto-secundario); }
+@media (min-width: 900px) {
+  .franja{ grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .franja-item:last-child:nth-child(odd){ grid-column: auto; }
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
@@ -9497,7 +9751,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
       </nav>
       <div class="pant-cab"><h1>Color</h1></div>
       
-<p class="pag-intro">57 tokens semánticos sobre 10 rampas y 2 familias categóricas.
+<p class="pag-intro">77 tokens semánticos sobre 10 rampas y 2 familias categóricas.
 Es lo único que un componente consume. <strong>Las primitivas están prohibidas dentro de un componente.</strong></p>
 
   <section class="grupo">
@@ -9981,7 +10235,7 @@ que son los que están medidos contra un fondo concreto.</p>
           <code class="tira-nombre">oro_300</code>
           <span class="tira-hex">#C6AB6B</span>
         </div>
-        <div class="tira">
+        <div class="tira tira-usada">
           <span class="tira-color color-oro_400"></span>
           <code class="tira-nombre">oro_400</code>
           <span class="tira-hex">#AA8E41</span>
@@ -10144,7 +10398,7 @@ que son los que están medidos contra un fondo concreto.</p>
           <code class="tira-nombre">indigo_50</code>
           <span class="tira-hex">#F8F9FC</span>
         </div>
-        <div class="tira">
+        <div class="tira tira-usada">
           <span class="tira-color color-indigo_100"></span>
           <code class="tira-nombre">indigo_100</code>
           <span class="tira-hex">#E5E8F2</span>
@@ -10154,7 +10408,7 @@ que son los que están medidos contra un fondo concreto.</p>
           <code class="tira-nombre">indigo_200</code>
           <span class="tira-hex">#B9C2DC</span>
         </div>
-        <div class="tira">
+        <div class="tira tira-usada">
           <span class="tira-color color-indigo_300"></span>
           <code class="tira-nombre">indigo_300</code>
           <span class="tira-hex">#8D9BC6</span>
@@ -12960,13 +13214,13 @@ engaña: la persona lo mueve, se va, y el cambio no se aplicó.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod13" aria-expanded="false" aria-controls="cod13">
+      <button class="cod-ver" data-ver="cod14" aria-expanded="false" aria-controls="cod14">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod13">Copiar</button>
+      <button class="copiar" data-copiar-de="cod14">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod13" hidden>import { Interruptor } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod14" hidden>import { Interruptor } from 'sistema-diseno-ae/componentes';
 
 &lt;Interruptor
   etiqueta="Notificar tardanzas por correo"
@@ -13064,13 +13318,13 @@ de las de abajo.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod14" aria-expanded="false" aria-controls="cod14">
+      <button class="cod-ver" data-ver="cod15" aria-expanded="false" aria-controls="cod15">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod14">Copiar</button>
+      <button class="copiar" data-copiar-de="cod15">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod14" hidden>import { SeleccionMultiple, GrupoOpcion } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod15" hidden>import { SeleccionMultiple, GrupoOpcion } from 'sistema-diseno-ae/componentes';
 
 &lt;SeleccionMultiple
   leyenda="Aspectos observados en la visita de aula"
@@ -13280,13 +13534,13 @@ mismo</strong>. Eso casi nunca cierra el campo entero: cierra <strong>un nivel</
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod15" aria-expanded="false" aria-controls="cod15">
+      <button class="cod-ver" data-ver="cod16" aria-expanded="false" aria-controls="cod16">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod15">Copiar</button>
+      <button class="copiar" data-copiar-de="cod16">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod15" hidden>import { Segmentado } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod16" hidden>import { Segmentado } from 'sistema-diseno-ae/componentes';
 
 &lt;Segmentado
   etiqueta="Documento"
@@ -13572,13 +13826,13 @@ futuro por otro camino es cosa del producto.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod16" aria-expanded="false" aria-controls="cod16">
+      <button class="cod-ver" data-ver="cod17" aria-expanded="false" aria-controls="cod17">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod16">Copiar</button>
+      <button class="copiar" data-copiar-de="cod17">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod16" hidden>import { RangoFecha, atajosDeDias } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod17" hidden>import { RangoFecha, atajosDeDias } from 'sistema-diseno-ae/componentes';
 
 // Sin `desde`/`hasta` se gobierna solo.
 &lt;RangoFecha titulo="Rango de fechas" /&gt;
@@ -14931,13 +15185,13 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod8" aria-expanded="false" aria-controls="cod8">
+      <button class="cod-ver" data-ver="cod9" aria-expanded="false" aria-controls="cod9">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Tarjeta de persona</span>
-      <button class="copiar" data-copiar-de="cod8">Copiar</button>
+      <button class="copiar" data-copiar-de="cod9">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod8" hidden>import { TarjetaPersona } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod9" hidden>import { TarjetaPersona } from 'sistema-diseno-ae/componentes';
 
 &lt;TarjetaPersona
   nombre="Álvarez Ponce, Rosa"
@@ -14951,13 +15205,13 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod9" aria-expanded="false" aria-controls="cod9">
+      <button class="cod-ver" data-ver="cod10" aria-expanded="false" aria-controls="cod10">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Tarjeta normal</span>
-      <button class="copiar" data-copiar-de="cod9">Copiar</button>
+      <button class="copiar" data-copiar-de="cod10">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod9" hidden>import { Tarjeta } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod10" hidden>import { Tarjeta } from 'sistema-diseno-ae/componentes';
 
 &lt;Tarjeta titulo="Resumen del mes"&gt;
   &lt;p&gt;Contenido&lt;/p&gt;
@@ -14972,6 +15226,137 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 
 &lt;Tarjeta href="/estudiantes/71234567" titulo="Quispe Mamani, Ana" /&gt;</pre>
   </div>
+    </section><section class="pagina" id="pg-franjacifras" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#franjacifras" data-ir="franjacifras" class="migas-actual" aria-current="page">Franja de cifras</a>
+      </nav>
+      <div class="pant-cab"><h1>Franja de cifras</h1></div>
+      
+<p class="pag-intro">Una fila de <strong>cifras grandes separadas por una línea fina</strong>, sin tarjetas
+sueltas: título, número, unidad y cuánto cambió frente al periodo anterior. La app entrega los números y la
+diferencia <strong>ya calculados</strong>; la pieza solo los dibuja y decide cómo se ven y cómo se leen.</p>
+
+<h3 class="sub-seccion">La franja</h3>
+<p class="seccion-sub">Cinco cifras. En un teléfono caben <strong>dos por fila</strong> y, si el total es impar, la
+última ocupa el ancho completo (aquí, la quinta); desde 900&nbsp;px caben las cinco en una sola fila. Cada
+cifra es un elemento de lista.</p>
+<div class="bloque">
+  <ul class="franja" aria-label="Resumen de la semana">
+    <li class="franja-item"><div class="cifra"><span class="cifra-titulo">Tardanzas</span><span class="cifra-valor">612 <span class="cifra-unidad">min</span></span><span class="cifra-dif cifra-dif-peor"><span aria-hidden="true">▲ +72 min</span><span class="sr-solo">empeoró: +72 min</span></span></div></li>
+    <li class="franja-item"><div class="cifra"><span class="cifra-titulo">Faltas</span><span class="cifra-valor">7 <span class="cifra-unidad">trab.</span></span><span class="cifra-dif cifra-dif-mejor"><span aria-hidden="true">▼ −3 trab.</span><span class="sr-solo">mejoró: −3 trab.</span></span></div></li>
+    <li class="franja-item"><div class="cifra"><span class="cifra-titulo">Faltas</span><span class="cifra-valor">38:20 <span class="cifra-unidad">hrs</span></span><span class="cifra-dif cifra-dif-mejor"><span aria-hidden="true">▼ −2:50 hrs</span><span class="sr-solo">mejoró: −2:50 hrs</span></span></div></li>
+    <li class="franja-item"><div class="cifra"><span class="cifra-titulo">Días incompletos</span><span class="cifra-valor">11 <span class="cifra-unidad">días</span></span><span class="cifra-dif cifra-dif-igual"><span aria-hidden="true">= igual que antes</span><span class="sr-solo">sin cambio</span></span></div></li>
+    <li class="franja-item"><div class="cifra"><span class="cifra-titulo">Memorándums cerrados</span><span class="cifra-valor">5</span><span class="cifra-dif cifra-dif-mejor"><span aria-hidden="true">▲ +2</span><span class="sr-solo">mejoró: +2</span></span></div></li>
+  </ul>
+</div>
+
+<h3 class="sub-seccion">La diferencia: seis combinaciones</h3>
+<p class="seccion-sub">La diferencia lleva <strong>flecha, signo y una palabra</strong>: se entiende sin color. Que subir
+sea peor o mejor lo dice <code>sentido</code>, no la dirección: más tardanza es malo, más memorándums cerrados es
+bueno. Con <code>igual</code> no hay cantidad que mostrar y se lee «sin cambio».</p>
+<div class="bloque">
+  <table class="tabla-simple">
+    <thead><tr><th>Caso</th><th>Se ve</th><th><code>direccion</code></th><th><code>sentido</code></th><th>Lo que oye el lector</th></tr></thead>
+    <tbody>
+      <tr><td>Tardanzas: subir es malo</td><td><span class="cifra-dif cifra-dif-peor"><span aria-hidden="true">▲ +72 min</span><span class="sr-solo">empeoró: +72 min</span></span></td><td class="mono">sube</td><td class="mono">subir-es-peor</td><td>empeoró: +72 min</td></tr>
+      <tr><td>Faltas: bajar es bueno</td><td><span class="cifra-dif cifra-dif-mejor"><span aria-hidden="true">▼ −3 trab.</span><span class="sr-solo">mejoró: −3 trab.</span></span></td><td class="mono">baja</td><td class="mono">subir-es-peor</td><td>mejoró: −3 trab.</td></tr>
+      <tr><td>Memorándums cerrados: subir es bueno</td><td><span class="cifra-dif cifra-dif-mejor"><span aria-hidden="true">▲ +2</span><span class="sr-solo">mejoró: +2</span></span></td><td class="mono">sube</td><td class="mono">subir-es-mejor</td><td>mejoró: +2</td></tr>
+      <tr><td>Memorándums cerrados: bajar es malo</td><td><span class="cifra-dif cifra-dif-peor"><span aria-hidden="true">▼ −2</span><span class="sr-solo">empeoró: −2</span></span></td><td class="mono">baja</td><td class="mono">subir-es-mejor</td><td>empeoró: −2</td></tr>
+      <tr><td>Sin cambio, sentido «subir es peor»</td><td><span class="cifra-dif cifra-dif-igual"><span aria-hidden="true">= igual que antes</span><span class="sr-solo">sin cambio</span></span></td><td class="mono">igual</td><td class="mono">subir-es-peor</td><td>sin cambio</td></tr>
+      <tr><td>Sin cambio, sentido «subir es mejor»</td><td><span class="cifra-dif cifra-dif-igual"><span aria-hidden="true">= igual que antes</span><span class="sr-solo">sin cambio</span></span></td><td class="mono">igual</td><td class="mono">subir-es-mejor</td><td>sin cambio</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Es una lista:</strong> un elemento de lista por cifra. Un hijo nulo o falso no deja un elemento vacío.</td></tr>
+    <tr><td class="num">2</td><td><strong>Título, valor y unidad; el resto es opcional.</strong> Sin <code>diferencia</code> no sale nada de diferencia, y <code>detalle</code> es una línea de apoyo que el tablero aprobado no usa.</td></tr>
+    <tr><td class="num">3</td><td><strong>La diferencia llega calculada.</strong> La pieza no resta, no compara y no formatea: pinta <code>cantidad</code> tal cual.</td></tr>
+    <tr><td class="num">4</td><td><strong>Flecha y signo:</strong> ▲ con «+» si sube, ▼ con «−» (el signo menos de verdad) si baja, «=» sin cantidad si es igual.</td></tr>
+    <tr><td class="num">5</td><td><strong>El color no va solo.</strong> El lector oye «empeoró: +72 min», «mejoró: −3 trab.» o «sin cambio», y el dibujo de la flecha no se lee dos veces.</td></tr>
+    <tr><td class="num">6</td><td><strong><code>sentido</code> manda sobre el tono.</strong> Peor usa los tokens de aviso, mejor los de éxito e igual los neutros; subir y bajar se invierten entre <code>subir-es-peor</code> y <code>subir-es-mejor</code>.</td></tr>
+    <tr><td class="num">7</td><td><strong>Móvil primero:</strong> dos columnas de base, la última a ancho completo si son impares; cinco desde 900&nbsp;px.</td></tr>
+    <tr><td class="num">8</td><td><strong>Cifras tabulares</strong> (los dígitos no bailan al cambiar) y colores solo de tokens.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Cómo se usa</h3>
+<p class="seccion-sub">Lo que se copia es la importación y las props. La diferencia la calcula la app.</p>
+
+  <div class="cod-bloque">
+    <div class="cod-cab">
+      <button class="cod-ver" data-ver="cod8" aria-expanded="false" aria-controls="cod8">
+        <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
+      </button>
+      <span class="cod-tit">Uso de FranjaCifras y CifraConDiferencia</span>
+      <button class="copiar" data-copiar-de="cod8">Copiar</button>
+    </div>
+    <pre class="cod-pre" id="cod8" hidden>import { FranjaCifras, CifraConDiferencia } from 'sistema-diseno-ae/componentes';
+
+export function ResumenSemana() {
+  return (
+    &lt;FranjaCifras etiqueta="Resumen de la semana"&gt;
+      &lt;CifraConDiferencia
+        titulo="Tardanzas"
+        valor="612"
+        unidad="min"
+        diferencia={{ cantidad: '72 min', direccion: 'sube', sentido: 'subir-es-peor' }}
+      /&gt;
+      &lt;CifraConDiferencia
+        titulo="Faltas"
+        valor="7"
+        unidad="trab."
+        diferencia={{ cantidad: '3 trab.', direccion: 'baja', sentido: 'subir-es-peor' }}
+      /&gt;
+      &lt;CifraConDiferencia
+        titulo="Días incompletos"
+        valor="11"
+        unidad="días"
+        diferencia={{ cantidad: '0', direccion: 'igual', sentido: 'subir-es-peor' }}
+      /&gt;
+    &lt;/FranjaCifras&gt;
+  );
+}</pre>
+  </div>
+
+<h3 class="sub-seccion">Cómo se configura</h3>
+<h4 class="sub-seccion">La franja</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>children</code><br><span class="seccion-sub">ReactNode</span></td><td>Las cifras, una <code>CifraConDiferencia</code> por cifra. Cada una se envuelve en su elemento de lista. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>etiqueta</code><br><span class="seccion-sub">string</span></td><td>Nombre accesible de la lista, p. ej. «Resumen de la semana».</td></tr>
+    <tr><td><code>className</code><br><span class="seccion-sub">string</span></td><td>Clase extra para la lista.</td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">Cada cifra</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>titulo</code><br><span class="seccion-sub">string</span></td><td>El nombre de la medida: «Tardanzas», «Faltas». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>valor</code><br><span class="seccion-sub">string</span></td><td>El número, ya formateado: «612», «38:20». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>unidad</code><br><span class="seccion-sub">string</span></td><td>La unidad, pequeña y junto al valor: «min», «trab.», «hrs».</td></tr>
+    <tr><td><code>diferencia</code><br><span class="seccion-sub">DiferenciaCifra</span></td><td>Cuánto cambió, ya calculado. Sin ella no sale nada. Ver la tabla siguiente.</td></tr>
+    <tr><td><code>detalle</code><br><span class="seccion-sub">ReactNode</span></td><td>Una línea de apoyo bajo la diferencia. Opcional; el ejemplo aprobado del tablero no la usa.</td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">La diferencia</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>cantidad</code><br><span class="seccion-sub">string</span></td><td>La magnitud, sin signo ni flecha: «72 min», «3 trab.», «2:50 hrs». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>direccion</code><br><span class="seccion-sub">'sube' | 'baja' | 'igual'</span></td><td>Lo que pasó: la app ya comparó el actual con el anterior. Con <code>igual</code> no se pinta la cantidad. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>sentido</code><br><span class="seccion-sub">'subir-es-peor' | 'subir-es-mejor'</span></td><td>Cómo se lee subir. Decide si la diferencia es «empeoró» (tono de aviso) o «mejoró» (tono de éxito). <strong>Obligatoria.</strong></td></tr>
+  </tbody>
+</table>
     </section><section class="pagina" id="pg-tabla" hidden>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
@@ -15458,13 +15843,13 @@ comportamiento de siempre y <strong>no cambia para nadie que no pida el anclaje<
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod10" aria-expanded="false" aria-controls="cod10">
+      <button class="cod-ver" data-ver="cod11" aria-expanded="false" aria-controls="cod11">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod10">Copiar</button>
+      <button class="copiar" data-copiar-de="cod11">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod10" hidden>import { TablaDatos, Enlace } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod11" hidden>import { TablaDatos, Enlace } from 'sistema-diseno-ae/componentes';
 
 &lt;TablaDatos
   titulo="Personal"               // obligatorio: nombra la tabla para el lector
@@ -15599,13 +15984,13 @@ cualquier otro listado: no tiene paginación propia.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod11" aria-expanded="false" aria-controls="cod11">
+      <button class="cod-ver" data-ver="cod12" aria-expanded="false" aria-controls="cod12">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod11">Copiar</button>
+      <button class="copiar" data-copiar-de="cod12">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod11" hidden>import { Paginacion } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod12" hidden>import { Paginacion } from 'sistema-diseno-ae/componentes';
 
 &lt;Paginacion
   total={1240}
@@ -15722,13 +16107,13 @@ no aportan nada sobre una barra.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod17" aria-expanded="false" aria-controls="cod17">
+      <button class="cod-ver" data-ver="cod18" aria-expanded="false" aria-controls="cod18">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod17">Copiar</button>
+      <button class="copiar" data-copiar-de="cod18">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod17" hidden>import { Progreso, ProgresoPasos } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod18" hidden>import { Progreso, ProgresoPasos } from 'sistema-diseno-ae/componentes';
 
 &lt;Progreso
   etiqueta="Importando trabajadores"
@@ -15873,13 +16258,13 @@ dato</strong>; el detalle vive en la pantalla, no en algo que se va en cuatro se
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod18" aria-expanded="false" aria-controls="cod18">
+      <button class="cod-ver" data-ver="cod19" aria-expanded="false" aria-controls="cod19">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod18">Copiar</button>
+      <button class="copiar" data-copiar-de="cod19">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod18" hidden>import { avisar } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod19" hidden>import { avisar } from 'sistema-diseno-ae/componentes';
 
 avisar.exito('Se guardó la asistencia de marzo');
 avisar.info('Se exportaron 38 filas a CSV');
@@ -16011,13 +16396,13 @@ se pliega y el contenido vuelve a subir.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod19" aria-expanded="false" aria-controls="cod19">
+      <button class="cod-ver" data-ver="cod20" aria-expanded="false" aria-controls="cod20">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod19">Copiar</button>
+      <button class="copiar" data-copiar-de="cod20">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod19" hidden>import { useConfirmar } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod20" hidden>import { useConfirmar } from 'sistema-diseno-ae/componentes';
 
 const confirmar = useConfirmar();
 
@@ -16260,13 +16645,13 @@ antes que la causa técnica.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod12" aria-expanded="false" aria-controls="cod12">
+      <button class="cod-ver" data-ver="cod13" aria-expanded="false" aria-controls="cod13">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod12">Copiar</button>
+      <button class="copiar" data-copiar-de="cod13">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod12" hidden>import { EstadoPantalla } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod13" hidden>import { EstadoPantalla } from 'sistema-diseno-ae/componentes';
 
 // El componente elige el estado; la pantalla no lo decide a mano
 &lt;EstadoPantalla
@@ -16497,7 +16882,7 @@ telefono lo que se busca es <strong>volver</strong>, no situarse.</p>
       <div class="pant-cab"><h1>Cabecera de pantalla</h1></div>
       
 <p class="pag-intro">Migas, titulo, accion y descripcion. El bloque con el que abre
-<strong>toda</strong> pantalla, y con el que abren las 71 paginas de este catalogo.</p>
+<strong>toda</strong> pantalla, y con el que abren las 72 paginas de este catalogo.</p>
 
 <h3 class="sub-seccion">Por que es componente y no una convencion</h3>
 <p class="seccion-sub">El titulo de pantalla es el <code>&lt;h1&gt;</code> del documento, y
@@ -21941,7 +22326,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       </nav>
       <div class="pant-cab"><h1>Contrastes</h1></div>
       
-<p class="pag-intro">158 pares bloqueantes en los dos modos ·
+<p class="pag-intro">184 pares bloqueantes en los dos modos ·
 <strong>0 fallos</strong> · WCAG 2.2 AA. Recalculados en cada build por
 <code>verificar-contraste.mjs</code>: si el contrato miente, el build falla.</p>
 <h3 class="sub-seccion">Modo claro</h3>
@@ -22579,6 +22964,110 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       <td class="num">4.5</td>
       <td class="ok">cumple</td>
       <td class="motivo">Iniciales del avatar sobre pizarra</td>
+    </tr>
+    <tr>
+      <td><code>grafico-texto</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">11.71:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Título, valor grande y valores del gráfico sobre su panel</td>
+    </tr>
+    <tr>
+      <td><code>grafico-texto-tenue</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">5.68:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Rótulos del eje, unidad y resumen de la tabla sobre el panel</td>
+    </tr>
+    <tr>
+      <td><code>grafico-ventana-texto</code></td>
+      <td><code>grafico-ventana-fondo</code></td>
+      <td class="num">12.56:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Texto de la ventana del gráfico</td>
+    </tr>
+    <tr>
+      <td><code>grafico-linea</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">8.52:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Trazo de la tendencia sobre el panel</td>
+    </tr>
+    <tr>
+      <td><code>grafico-foco</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">3.93:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Anillo de foco sobre el panel del gráfico</td>
+    </tr>
+    <tr>
+      <td><code>grafico-ventana-fondo</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">10.26:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">La ventana se separa del panel</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>mapa-1</code></td>
+      <td class="num">11.71:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 1</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>mapa-2</code></td>
+      <td class="num">8.06:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 2</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>mapa-3</code></td>
+      <td class="num">5.21:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 3</td>
+    </tr>
+    <tr>
+      <td><code>texto-invertido</code></td>
+      <td><code>mapa-4</code></td>
+      <td class="num">7.19:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 4 (texto invertido)</td>
+    </tr>
+    <tr>
+      <td><code>texto-invertido</code></td>
+      <td><code>mapa-5</code></td>
+      <td class="num">10.43:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 5 (texto invertido)</td>
+    </tr>
+    <tr>
+      <td><code>barra-relleno</code></td>
+      <td><code>fondo-tarjeta</code></td>
+      <td class="num">7.19:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Barra del ranking contra la tarjeta</td>
+    </tr>
+    <tr>
+      <td><code>barra-relleno</code></td>
+      <td><code>barra-pista</code></td>
+      <td class="num">5.40:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Relleno de la barra contra su pista</td>
     </tr></tbody>
 </table>
 <h3 class="sub-seccion">Modo oscuro</h3>
@@ -23216,6 +23705,110 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       <td class="num">4.5</td>
       <td class="ok">cumple</td>
       <td class="motivo">Iniciales del avatar sobre pizarra</td>
+    </tr>
+    <tr>
+      <td><code>grafico-texto</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">12.56:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Título, valor grande y valores del gráfico sobre su panel</td>
+    </tr>
+    <tr>
+      <td><code>grafico-texto-tenue</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">7.06:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Rótulos del eje, unidad y resumen de la tabla sobre el panel</td>
+    </tr>
+    <tr>
+      <td><code>grafico-ventana-texto</code></td>
+      <td><code>grafico-ventana-fondo</code></td>
+      <td class="num">14.33:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Texto de la ventana del gráfico</td>
+    </tr>
+    <tr>
+      <td><code>grafico-linea</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">7.81:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Trazo de la tendencia sobre el panel</td>
+    </tr>
+    <tr>
+      <td><code>grafico-foco</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">7.42:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Anillo de foco sobre el panel del gráfico</td>
+    </tr>
+    <tr>
+      <td><code>grafico-ventana-fondo</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">12.56:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">La ventana se separa del panel</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>mapa-1</code></td>
+      <td class="num">10.82:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 1</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>mapa-2</code></td>
+      <td class="num">7.51:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 2</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>mapa-3</code></td>
+      <td class="num">6.19:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 3</td>
+    </tr>
+    <tr>
+      <td><code>texto-invertido</code></td>
+      <td><code>mapa-4</code></td>
+      <td class="num">5.93:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 4 (texto invertido)</td>
+    </tr>
+    <tr>
+      <td><code>texto-invertido</code></td>
+      <td><code>mapa-5</code></td>
+      <td class="num">9.18:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 5 (texto invertido)</td>
+    </tr>
+    <tr>
+      <td><code>barra-relleno</code></td>
+      <td><code>fondo-tarjeta</code></td>
+      <td class="num">5.65:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Barra del ranking contra la tarjeta</td>
+    </tr>
+    <tr>
+      <td><code>barra-relleno</code></td>
+      <td><code>barra-pista</code></td>
+      <td class="num">3.64:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Relleno de la barra contra su pista</td>
     </tr></tbody>
 </table>
 <h3 class="sub-seccion">Correcciones sobre el documento original</h3>
@@ -24320,7 +24913,7 @@ async function esPdf(archivo) {
 
   // La CLASE de cada token en cada modo. Antes era el hexadecimal, pero un
   // hexadecimal no se puede escribir en el codigo: lo que se aplica es la clase.
-  var clases = {"fondo-pagina":{"claro":"gris_50","oscuro":"negro_950"},"fondo-tarjeta":{"claro":"gris_0","oscuro":"negro_850"},"fondo-encabezado":{"claro":"gris_100","oscuro":"negro_750"},"fondo-fila-alt":{"claro":"gris_50","oscuro":"negro_800"},"fondo-fila-hover":{"claro":"azul_50","oscuro":"negro_700"},"texto-principal":{"claro":"gris_900","oscuro":"negro_50"},"texto-secundario":{"claro":"gris_600","oscuro":"negro_100"},"texto-pista":{"claro":"gris_600","oscuro":"negro_200"},"texto-invertido":{"claro":"gris_0","oscuro":"negro_900"},"borde":{"claro":"gris_200","oscuro":"negro_600"},"borde-fuerte":{"claro":"gris_300","oscuro":"negro_500"},"borde-campo":{"claro":"gris_500","oscuro":"negro_300"},"sin-estado":{"claro":"gris_700","oscuro":"negro_100"},"accion":{"claro":"azul_600","oscuro":"azul_300"},"accion-hover":{"claro":"azul_700","oscuro":"azul_200"},"accion-activa":{"claro":"azul_800","oscuro":"azul_100"},"accion-texto":{"claro":"gris_0","oscuro":"negro_900"},"accion-deshabilitada":{"claro":"gris_300","oscuro":"negro_600"},"accion-texto-desh":{"claro":"gris_500","oscuro":"negro_200"},"accion-2":{"claro":"oro_700","oscuro":"oro_200"},"enlace":{"claro":"azul_600","oscuro":"azul_300"},"accion-2-fondo":{"claro":"oro_100","oscuro":"oro_800"},"neutra-fondo":{"claro":"gris_100","oscuro":"negro_650"},"neutra-texto":{"claro":"gris_900","oscuro":"negro_50"},"destructiva":{"claro":"rojo_600","oscuro":"rojo_300"},"destructiva-hover":{"claro":"rojo_700","oscuro":"rojo_200"},"destructiva-texto":{"claro":"gris_0","oscuro":"negro_900"},"marco-fondo":{"claro":"indigo_800","oscuro":"negro_700"},"marco-texto":{"claro":"gris_0","oscuro":"gris_0"},"marco-acento":{"claro":"oro_200","oscuro":"oro_200"},"marco-item-activo":{"claro":"indigo_900","oscuro":"negro_800"},"marco-nivel-1":{"claro":"indigo_700","oscuro":"negro_600"},"marco-nivel-2":{"claro":"indigo_600","oscuro":"negro_500"},"marco-borde":{"claro":"indigo_500","oscuro":"negro_500"},"marco-texto-tenue":{"claro":"indigo_200","oscuro":"negro_100"},"foco":{"claro":"ambar_600","oscuro":"ambar_300"},"foco-en-marco":{"claro":"ambar_300","oscuro":"ambar_300"},"exito-fondo":{"claro":"verde_50","oscuro":"verde_950"},"exito-texto":{"claro":"verde_900","oscuro":"verde_200"},"exito-acento":{"claro":"verde_700","oscuro":"verde_500"},"aviso-fondo":{"claro":"ambar_50","oscuro":"ambar_950"},"aviso-texto":{"claro":"ambar_900","oscuro":"ambar_200"},"aviso-acento":{"claro":"ambar_700","oscuro":"ambar_500"},"error-fondo":{"claro":"alerta_50","oscuro":"alerta_900"},"error-texto":{"claro":"alerta_800","oscuro":"alerta_100"},"error-acento":{"claro":"alerta_500","oscuro":"alerta_400"},"info-fondo":{"claro":"informacion_50","oscuro":"informacion_900"},"info-texto":{"claro":"informacion_800","oscuro":"informacion_100"},"info-acento":{"claro":"informacion_500","oscuro":"informacion_400"},"apagado-fondo":{"claro":"rojo_300","oscuro":"rojo_900"},"apagado-borde":{"claro":"rojo_500","oscuro":"rojo_300"},"apagado-bolita":{"claro":"rojo_900","oscuro":"rojo_100"},"identidad-1":{"claro":"identidad_1","oscuro":"identidad_1"},"identidad-2":{"claro":"identidad_2","oscuro":"identidad_2"},"identidad-3":{"claro":"identidad_3","oscuro":"identidad_3"},"identidad-4":{"claro":"identidad_4","oscuro":"identidad_4"},"identidad-texto":{"claro":"gris_0","oscuro":"gris_0"}};
+  var clases = {"fondo-pagina":{"claro":"gris_50","oscuro":"negro_950"},"fondo-tarjeta":{"claro":"gris_0","oscuro":"negro_850"},"fondo-encabezado":{"claro":"gris_100","oscuro":"negro_750"},"fondo-fila-alt":{"claro":"gris_50","oscuro":"negro_800"},"fondo-fila-hover":{"claro":"azul_50","oscuro":"negro_700"},"texto-principal":{"claro":"gris_900","oscuro":"negro_50"},"texto-secundario":{"claro":"gris_600","oscuro":"negro_100"},"texto-pista":{"claro":"gris_600","oscuro":"negro_200"},"texto-invertido":{"claro":"gris_0","oscuro":"negro_900"},"borde":{"claro":"gris_200","oscuro":"negro_600"},"borde-fuerte":{"claro":"gris_300","oscuro":"negro_500"},"borde-campo":{"claro":"gris_500","oscuro":"negro_300"},"sin-estado":{"claro":"gris_700","oscuro":"negro_100"},"accion":{"claro":"azul_600","oscuro":"azul_300"},"accion-hover":{"claro":"azul_700","oscuro":"azul_200"},"accion-activa":{"claro":"azul_800","oscuro":"azul_100"},"accion-texto":{"claro":"gris_0","oscuro":"negro_900"},"accion-deshabilitada":{"claro":"gris_300","oscuro":"negro_600"},"accion-texto-desh":{"claro":"gris_500","oscuro":"negro_200"},"accion-2":{"claro":"oro_700","oscuro":"oro_200"},"enlace":{"claro":"azul_600","oscuro":"azul_300"},"accion-2-fondo":{"claro":"oro_100","oscuro":"oro_800"},"neutra-fondo":{"claro":"gris_100","oscuro":"negro_650"},"neutra-texto":{"claro":"gris_900","oscuro":"negro_50"},"destructiva":{"claro":"rojo_600","oscuro":"rojo_300"},"destructiva-hover":{"claro":"rojo_700","oscuro":"rojo_200"},"destructiva-texto":{"claro":"gris_0","oscuro":"negro_900"},"marco-fondo":{"claro":"indigo_800","oscuro":"negro_700"},"marco-texto":{"claro":"gris_0","oscuro":"gris_0"},"marco-acento":{"claro":"oro_200","oscuro":"oro_200"},"marco-item-activo":{"claro":"indigo_900","oscuro":"negro_800"},"marco-nivel-1":{"claro":"indigo_700","oscuro":"negro_600"},"marco-nivel-2":{"claro":"indigo_600","oscuro":"negro_500"},"marco-borde":{"claro":"indigo_500","oscuro":"negro_500"},"marco-texto-tenue":{"claro":"indigo_200","oscuro":"negro_100"},"foco":{"claro":"ambar_600","oscuro":"ambar_300"},"foco-en-marco":{"claro":"ambar_300","oscuro":"ambar_300"},"exito-fondo":{"claro":"verde_50","oscuro":"verde_950"},"exito-texto":{"claro":"verde_900","oscuro":"verde_200"},"exito-acento":{"claro":"verde_700","oscuro":"verde_500"},"aviso-fondo":{"claro":"ambar_50","oscuro":"ambar_950"},"aviso-texto":{"claro":"ambar_900","oscuro":"ambar_200"},"aviso-acento":{"claro":"ambar_700","oscuro":"ambar_500"},"error-fondo":{"claro":"alerta_50","oscuro":"alerta_900"},"error-texto":{"claro":"alerta_800","oscuro":"alerta_100"},"error-acento":{"claro":"alerta_500","oscuro":"alerta_400"},"info-fondo":{"claro":"informacion_50","oscuro":"informacion_900"},"info-texto":{"claro":"informacion_800","oscuro":"informacion_100"},"info-acento":{"claro":"informacion_500","oscuro":"informacion_400"},"apagado-fondo":{"claro":"rojo_300","oscuro":"rojo_900"},"apagado-borde":{"claro":"rojo_500","oscuro":"rojo_300"},"apagado-bolita":{"claro":"rojo_900","oscuro":"rojo_100"},"identidad-1":{"claro":"identidad_1","oscuro":"identidad_1"},"identidad-2":{"claro":"identidad_2","oscuro":"identidad_2"},"identidad-3":{"claro":"identidad_3","oscuro":"identidad_3"},"identidad-4":{"claro":"identidad_4","oscuro":"identidad_4"},"identidad-texto":{"claro":"gris_0","oscuro":"gris_0"},"grafico-fondo":{"claro":"indigo_100","oscuro":"indigo_900"},"grafico-texto":{"claro":"gris_900","oscuro":"gris_0"},"grafico-texto-tenue":{"claro":"gris_700","oscuro":"indigo_200"},"grafico-linea":{"claro":"indigo_800","oscuro":"oro_200"},"grafico-rejilla":{"claro":"indigo_200","oscuro":"indigo_700"},"grafico-base":{"claro":"indigo_300","oscuro":"indigo_500"},"grafico-ref":{"claro":"gris_700","oscuro":"gris_0"},"grafico-guia":{"claro":"gris_700","oscuro":"gris_0"},"grafico-halo":{"claro":"oro_400","oscuro":"oro_200"},"grafico-punto0":{"claro":"gris_0","oscuro":"gris_0"},"grafico-ventana-fondo":{"claro":"indigo_900","oscuro":"gris_0"},"grafico-ventana-texto":{"claro":"gris_0","oscuro":"gris_900"},"grafico-foco":{"claro":"ambar_700","oscuro":"ambar_300"},"barra-relleno":{"claro":"indigo_500","oscuro":"indigo_300"},"barra-pista":{"claro":"gris_200","oscuro":"negro_600"},"mapa-1":{"claro":"indigo_100","oscuro":"indigo_900"},"mapa-2":{"claro":"indigo_200","oscuro":"indigo_700"},"mapa-3":{"claro":"indigo_300","oscuro":"indigo_500"},"mapa-4":{"claro":"indigo_500","oscuro":"indigo_300"},"mapa-5":{"claro":"indigo_800","oscuro":"indigo_200"}};
 
   function aplicar(modo) {
     raiz.setAttribute('data-tema', modo);

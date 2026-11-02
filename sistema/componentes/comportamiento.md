@@ -929,6 +929,29 @@ sistema lo ofrece como pieza y no como caso de esa pantalla.
 
 ---
 
+## Franja de cifras y cifra con diferencia
+
+<!-- pruebas: franja-cifras.test.tsx -->
+
+Una fila de cifras grandes separadas por una línea fina, sin tarjetas sueltas
+(`FranjaCifras`), y cada cifra con su diferencia frente al periodo anterior
+(`CifraConDiferencia`). La app entrega los números ya calculados; la pieza solo
+los dibuja.
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R169, v1.153.0) **`FranjaCifras` es una lista `ul` con un `li` por cifra.** Cada hijo se envuelve en su `li`; un hijo nulo, falso o indefinido no deja un `li` vacío. Lleva nombre accesible con `etiqueta`. |
+| **2** | **Obligatorio.** (R169, v1.153.0) **`titulo`, `valor` y `unidad` se pintan en ese orden; `unidad`, `diferencia` y `detalle` son opcionales** y, ausentes, no dejan ningún elemento. El valor y la unidad llevan un espacio entre sí para el lector («612 min», no «612min»). `detalle` es una línea de apoyo que el ejemplo aprobado del tablero no usa. |
+| **3** | **Obligatorio.** (R169, v1.153.0) **La diferencia llega calculada**: la pieza pinta `cantidad` tal cual. No resta, no compara actual con anterior y no formatea. |
+| **4** | **Obligatorio.** (R169, v1.153.0) **Flecha y signo**: `sube` pinta ▲ y «+», `baja` pinta ▼ y «−» (el signo menos U+2212, no el guion), `igual` pinta «=» y «igual que antes» **sin cantidad ni signo**. |
+| **5** | **Obligatorio.** (R169, v1.153.0) **El color no va solo, y el dibujo no se lee dos veces.** Flecha y signo van en un `aria-hidden`; el nombre accesible es una frase en `sr-solo`: «empeoró: +72 min», «mejoró: −3 trab.» o «sin cambio». Se entiende en escala de grises (SC 1.4.1). |
+| **6** | **Obligatorio.** (R169, v1.153.0) **`sentido` decide si es mejor o peor, no la dirección**: con `subir-es-peor`, subir es «empeoró» y bajar «mejoró»; con `subir-es-mejor`, al revés; `igual` es neutro en los dos. Peor usa `aviso-*`, mejor `exito-*` e igual `neutra-*`: tokens que `verificar-contraste` mide a 4,5:1 en los dos modos. |
+| **7** | **Obligatorio.** (R169, v1.153.0) **Móvil primero**: dos columnas de base, fuera de toda `@media`; si el total es impar, la última ocupa el ancho completo; desde `min-width: 900px` son cinco columnas y la última deja de estirarse. No hay `max-width` ni `@container`. |
+| **8** | **Obligatorio.** (R169, v1.153.0) **La cifra usa números tabulares** (`font-variant-numeric: tabular-nums`) y todos los colores salen de tokens. |
+| **9** | **Obligatorio.** (R169, v1.153.0) **`index.ts` exporta `FranjaCifras`, `CifraConDiferencia` y los tipos `DiferenciaCifra`, `CifraConDiferenciaProps` y `FranjaCifrasProps`.** |
+
+---
+
 ## Color de identidad · Horario y Chip
 
 <!-- pruebas: identidad-tono.test.ts, distancia.test.ts, Avatar.test.tsx -->

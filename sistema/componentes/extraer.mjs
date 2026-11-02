@@ -70,6 +70,8 @@ const ELEMENTOS = [
   { n: 'Chip de estado',        p: ['chip'] },
   // SPEC 03 (R165): cuadrado de una letra con tono; no es variante de `chip`, que es una píldora con filete.
   { n: 'Cuadro de estado',      p: ['cuadro'] },
+  // SPEC 07 (R169): cifras separadas por línea fina y su diferencia con flecha. `franja` y `cifra` son prefijos de este elemento.
+  { n: 'Franja de cifras',      p: ['franja', 'cifra'] },
   { n: 'Avatar',                p: ['avatar'] },
   { n: 'Tarjeta de persona',    p: ['tp'] },
   // R59 · Prefijo propio y no `tn-`: el corte de prefijos es en el guion, así

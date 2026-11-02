@@ -2935,6 +2935,152 @@ ${verCodigo(
   </tbody>
 </table>`;
 
+// ── Elemento: Franja de cifras (SPEC 07, R169) ──────────────────────────────
+
+/* El marcado de abajo es el que emite el componente, escrito a mano en una sola
+   función: lo que el catálogo enseña y lo que se entrega no pueden divergir. */
+const cifraEj = ({ t, v, u, dir, sen, c, d }) => {
+  let dif = '';
+  if (dir === 'igual') {
+    dif = `<span class="cifra-dif cifra-dif-igual"><span aria-hidden="true">= igual que antes</span><span class="sr-solo">sin cambio</span></span>`;
+  } else if (dir) {
+    const sube = dir === 'sube';
+    const signo = sube ? '+' : '−';
+    const mejora = sube === (sen === 'subir-es-mejor');
+    dif = `<span class="cifra-dif cifra-dif-${mejora ? 'mejor' : 'peor'}"><span aria-hidden="true">${sube ? '▲' : '▼'} ${signo}${c}</span><span class="sr-solo">${mejora ? 'mejoró' : 'empeoró'}: ${signo}${c}</span></span>`;
+  }
+  return `<li class="franja-item"><div class="cifra"><span class="cifra-titulo">${t}</span><span class="cifra-valor">${v}${u ? ` <span class="cifra-unidad">${u}</span>` : ''}</span>${dif}${d ? `<span class="cifra-detalle">${d}</span>` : ''}</div></li>`;
+};
+
+const CIFRAS_EJ = [
+  { t: 'Tardanzas', v: '612', u: 'min', dir: 'sube', sen: 'subir-es-peor', c: '72 min' },
+  { t: 'Faltas', v: '7', u: 'trab.', dir: 'baja', sen: 'subir-es-peor', c: '3 trab.' },
+  { t: 'Faltas', v: '38:20', u: 'hrs', dir: 'baja', sen: 'subir-es-peor', c: '2:50 hrs' },
+  { t: 'Días incompletos', v: '11', u: 'días', dir: 'igual', sen: 'subir-es-peor' },
+  { t: 'Memorándums cerrados', v: '5', u: '', dir: 'sube', sen: 'subir-es-mejor', c: '2' },
+];
+
+const SEIS_DIF = [
+  ['sube', 'subir-es-peor', '72 min', 'Tardanzas: subir es malo'],
+  ['baja', 'subir-es-peor', '3 trab.', 'Faltas: bajar es bueno'],
+  ['sube', 'subir-es-mejor', '2', 'Memorándums cerrados: subir es bueno'],
+  ['baja', 'subir-es-mejor', '2', 'Memorándums cerrados: bajar es malo'],
+  ['igual', 'subir-es-peor', '0', 'Sin cambio, sentido «subir es peor»'],
+  ['igual', 'subir-es-mejor', '0', 'Sin cambio, sentido «subir es mejor»'],
+];
+
+const pagFranjaCifras = `
+<p class="pag-intro">Una fila de <strong>cifras grandes separadas por una línea fina</strong>, sin tarjetas
+sueltas: título, número, unidad y cuánto cambió frente al periodo anterior. La app entrega los números y la
+diferencia <strong>ya calculados</strong>; la pieza solo los dibuja y decide cómo se ven y cómo se leen.</p>
+
+<h3 class="sub-seccion">La franja</h3>
+<p class="seccion-sub">Cinco cifras. En un teléfono caben <strong>dos por fila</strong> y, si el total es impar, la
+última ocupa el ancho completo (aquí, la quinta); desde 900&nbsp;px caben las cinco en una sola fila. Cada
+cifra es un elemento de lista.</p>
+<div class="bloque">
+  <ul class="franja" aria-label="Resumen de la semana">
+    ${CIFRAS_EJ.map(cifraEj).join('\n    ')}
+  </ul>
+</div>
+
+<h3 class="sub-seccion">La diferencia: seis combinaciones</h3>
+<p class="seccion-sub">La diferencia lleva <strong>flecha, signo y una palabra</strong>: se entiende sin color. Que subir
+sea peor o mejor lo dice <code>sentido</code>, no la dirección: más tardanza es malo, más memorándums cerrados es
+bueno. Con <code>igual</code> no hay cantidad que mostrar y se lee «sin cambio».</p>
+<div class="bloque">
+  <table class="tabla-simple">
+    <thead><tr><th>Caso</th><th>Se ve</th><th><code>direccion</code></th><th><code>sentido</code></th><th>Lo que oye el lector</th></tr></thead>
+    <tbody>
+      ${SEIS_DIF.map(([dir, sen, c, caso]) => {
+        const sube = dir === 'sube';
+        const mejora = sube === (sen === 'subir-es-mejor');
+        const oido = dir === 'igual' ? 'sin cambio' : `${mejora ? 'mejoró' : 'empeoró'}: ${sube ? '+' : '−'}${c}`;
+        return `<tr><td>${caso}</td><td>${cifraEj({ t: '', v: '', dir, sen, c }).replace(/^.*?(<span class="cifra-dif[\s\S]*?<\/span><\/span>).*$/, '$1')}</td><td class="mono">${dir}</td><td class="mono">${sen}</td><td>${oido}</td></tr>`;
+      }).join('\n      ')}
+    </tbody>
+  </table>
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Es una lista:</strong> un elemento de lista por cifra. Un hijo nulo o falso no deja un elemento vacío.</td></tr>
+    <tr><td class="num">2</td><td><strong>Título, valor y unidad; el resto es opcional.</strong> Sin <code>diferencia</code> no sale nada de diferencia, y <code>detalle</code> es una línea de apoyo que el tablero aprobado no usa.</td></tr>
+    <tr><td class="num">3</td><td><strong>La diferencia llega calculada.</strong> La pieza no resta, no compara y no formatea: pinta <code>cantidad</code> tal cual.</td></tr>
+    <tr><td class="num">4</td><td><strong>Flecha y signo:</strong> ▲ con «+» si sube, ▼ con «−» (el signo menos de verdad) si baja, «=» sin cantidad si es igual.</td></tr>
+    <tr><td class="num">5</td><td><strong>El color no va solo.</strong> El lector oye «empeoró: +72 min», «mejoró: −3 trab.» o «sin cambio», y el dibujo de la flecha no se lee dos veces.</td></tr>
+    <tr><td class="num">6</td><td><strong><code>sentido</code> manda sobre el tono.</strong> Peor usa los tokens de aviso, mejor los de éxito e igual los neutros; subir y bajar se invierten entre <code>subir-es-peor</code> y <code>subir-es-mejor</code>.</td></tr>
+    <tr><td class="num">7</td><td><strong>Móvil primero:</strong> dos columnas de base, la última a ancho completo si son impares; cinco desde 900&nbsp;px.</td></tr>
+    <tr><td class="num">8</td><td><strong>Cifras tabulares</strong> (los dígitos no bailan al cambiar) y colores solo de tokens.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Cómo se usa</h3>
+<p class="seccion-sub">Lo que se copia es la importación y las props. La diferencia la calcula la app.</p>
+${verCodigo(
+  'Uso de FranjaCifras y CifraConDiferencia',
+  `import { FranjaCifras, CifraConDiferencia } from 'sistema-diseno-ae/componentes';
+
+export function ResumenSemana() {
+  return (
+    <FranjaCifras etiqueta="Resumen de la semana">
+      <CifraConDiferencia
+        titulo="Tardanzas"
+        valor="612"
+        unidad="min"
+        diferencia={{ cantidad: '72 min', direccion: 'sube', sentido: 'subir-es-peor' }}
+      />
+      <CifraConDiferencia
+        titulo="Faltas"
+        valor="7"
+        unidad="trab."
+        diferencia={{ cantidad: '3 trab.', direccion: 'baja', sentido: 'subir-es-peor' }}
+      />
+      <CifraConDiferencia
+        titulo="Días incompletos"
+        valor="11"
+        unidad="días"
+        diferencia={{ cantidad: '0', direccion: 'igual', sentido: 'subir-es-peor' }}
+      />
+    </FranjaCifras>
+  );
+}`
+)}
+
+<h3 class="sub-seccion">Cómo se configura</h3>
+<h4 class="sub-seccion">La franja</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>children</code><br><span class="seccion-sub">ReactNode</span></td><td>Las cifras, una <code>CifraConDiferencia</code> por cifra. Cada una se envuelve en su elemento de lista. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>etiqueta</code><br><span class="seccion-sub">string</span></td><td>Nombre accesible de la lista, p. ej. «Resumen de la semana».</td></tr>
+    <tr><td><code>className</code><br><span class="seccion-sub">string</span></td><td>Clase extra para la lista.</td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">Cada cifra</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>titulo</code><br><span class="seccion-sub">string</span></td><td>El nombre de la medida: «Tardanzas», «Faltas». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>valor</code><br><span class="seccion-sub">string</span></td><td>El número, ya formateado: «612», «38:20». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>unidad</code><br><span class="seccion-sub">string</span></td><td>La unidad, pequeña y junto al valor: «min», «trab.», «hrs».</td></tr>
+    <tr><td><code>diferencia</code><br><span class="seccion-sub">DiferenciaCifra</span></td><td>Cuánto cambió, ya calculado. Sin ella no sale nada. Ver la tabla siguiente.</td></tr>
+    <tr><td><code>detalle</code><br><span class="seccion-sub">ReactNode</span></td><td>Una línea de apoyo bajo la diferencia. Opcional; el ejemplo aprobado del tablero no la usa.</td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">La diferencia</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>cantidad</code><br><span class="seccion-sub">string</span></td><td>La magnitud, sin signo ni flecha: «72 min», «3 trab.», «2:50 hrs». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>direccion</code><br><span class="seccion-sub">'sube' | 'baja' | 'igual'</span></td><td>Lo que pasó: la app ya comparó el actual con el anterior. Con <code>igual</code> no se pinta la cantidad. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>sentido</code><br><span class="seccion-sub">'subir-es-peor' | 'subir-es-mejor'</span></td><td>Cómo se lee subir. Decide si la diferencia es «empeoró» (tono de aviso) o «mejoró» (tono de éxito). <strong>Obligatoria.</strong></td></tr>
+  </tbody>
+</table>`;
+
 // ── Elemento: Tarjeta ───────────────────────────────────────────────────────
 
 // Silueta neutra. No se inventan fotos de personas: cuando no hay foto se
@@ -9283,12 +9429,13 @@ const CATALOGO = [
       // +1 en los tres cortes de detrás al entrar «Fila de carga» (R102,
       // v1.77.0). Es la cuarta vez que hay que correrlos a mano.
       { t: 'Formulario', desde: 2, hasta: 13 },
-      { t: 'Datos', desde: 13, hasta: 19 },
-      { t: 'Respuesta', desde: 19, hasta: 25 },
+      // +1 en los dos cortes de detras al entrar «Franja de cifras» (SPEC 07).
+      { t: 'Datos', desde: 13, hasta: 20 },
+      { t: 'Respuesta', desde: 20, hasta: 26 },
       // `Infinity` y no un numero: el ULTIMO tramo llega siempre al final, asi
       // que meter un elemento al final deja de tener trampa. Los cortes de en
       // medio siguen siendo indices, y por eso existe `comprobarTramos`.
-      { t: 'Marco y navegación', desde: 25, hasta: Infinity },
+      { t: 'Marco y navegación', desde: 26, hasta: Infinity },
     ],
     items: [
       { id: 'boton', t: 'Botón', estado: 'listo', c: pagBoton },
@@ -9312,6 +9459,7 @@ const CATALOGO = [
       { id: 'cuadro', t: 'Cuadro de estado', estado: 'listo', c: pagCuadro },
       { id: 'avatar', t: 'Avatar', estado: 'listo', c: pagAvatar },
       { id: 'tarjeta', t: 'Tarjeta', estado: 'listo', c: pagTarjeta },
+      { id: 'franjacifras', t: 'Franja de cifras', estado: 'listo', c: pagFranjaCifras },
       { id: 'tabla', t: 'Tabla de datos', estado: 'listo', c: pagTabla },
       { id: 'paginacion', t: 'Paginación', estado: 'listo', c: pagPaginacion },
       { id: 'progreso', t: 'Barra de progreso', estado: 'listo', c: pagProgreso },
@@ -11392,6 +11540,36 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
   border-width: 2px; border-style: dashed; border-color: var(--sin-estado); }
 @media (min-width: 641px) {
   .cuadro { width: 28px; height: 28px; }
+}
+/* ───────────────────────────────────────────────────────────────────────────
+   FRANJA DE CIFRAS · clases .franja*, .cifra*  (SPEC 07, R169)
+   Cifras separadas por una linea fina, sin tarjetas sueltas. La separacion es
+   el hueco de 1px de la rejilla sobre el fondo del borde. Movil primero: DOS
+   columnas de base y, con numero impar, la ultima ocupa el ancho completo; los
+   5 entran con min-width. La diferencia lleva flecha, signo y palabra: el
+   color acompana (SC 1.4.1), no sostiene.
+   ─────────────────────────────────────────────────────────────────────────── */
+.franja { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px;
+  background: var(--borde); border: 1px solid var(--borde); border-radius: 8px;
+  overflow: hidden; margin: 0; padding: 0; list-style: none; }
+.franja-item { background: var(--fondo-tarjeta); padding: 16px 16px 12px; min-width: 0; }
+.franja-item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.cifra { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.cifra-titulo { font-size: 13px; font-weight: 500; color: var(--texto-secundario); }
+.cifra-valor { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px;
+  font-size: 34px; font-weight: 600; line-height: 1.05; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums; color: var(--texto-principal); }
+.cifra-unidad { font-size: 15px; font-weight: 500; letter-spacing: 0; color: var(--texto-secundario); }
+.cifra-dif { position: relative; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start;
+  font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 6px;
+  font-variant-numeric: tabular-nums; border: 1px solid transparent; }
+.cifra-dif.cifra-dif-peor { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.cifra-dif.cifra-dif-mejor { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.cifra-dif.cifra-dif-igual { background: var(--neutra-fondo); color: var(--neutra-texto); border-color: var(--borde-fuerte); }
+.cifra-detalle { font-size: 12px; color: var(--texto-secundario); }
+@media (min-width: 900px) {
+  .franja { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .franja-item:last-child:nth-child(odd) { grid-column: auto; }
 }
 /* ───────────────────────────────────────────────────────────────────────────
    PANEL DE PRIVILEGIOS · clases .pp-*

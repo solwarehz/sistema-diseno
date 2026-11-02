@@ -6416,6 +6416,35 @@ const declarados = {
   // Blanco en los DOS modos. texto-invertido no sirve: en oscuro vale #20201E
   // y las iniciales quedarían oscuras sobre un disco oscuro.
   'identidad-texto': { claro: 'gris_0', oscuro: 'gris_0',  uso: 'Texto sobre un color de identidad pleno — hoy, las iniciales del avatar' },
+
+  // ── SPEC 07 · Piezas del tablero (R169) ──────────────────────────────────
+  // Panel del `GraficoTendencia`. CAMBIA con el tema: en claro un indigo muy
+  // suave con la linea en indigo oscuro; en oscuro el indigo hondo con la linea
+  // de oro. Todo apunta a rampas YA autorizadas; ningun primitivo nuevo.
+  'grafico-fondo':          { claro: 'indigo_100', oscuro: 'indigo_900', uso: 'Fondo del panel del grafico de tendencia' },
+  'grafico-texto':          { claro: 'gris_900',   oscuro: 'gris_0',     uso: 'Titulo, valor grande y valores sobre los puntos del grafico' },
+  'grafico-texto-tenue':    { claro: 'gris_700',   oscuro: 'indigo_200', uso: 'Rotulos del eje, unidad y resumen de la tabla desplegable del grafico' },
+  'grafico-linea':          { claro: 'indigo_800', oscuro: 'oro_200',    uso: 'Trazo de la tendencia y contorno de sus puntos' },
+  'grafico-rejilla':        { claro: 'indigo_200', oscuro: 'indigo_700', uso: 'Cuadricula y contorno del panel del grafico. Adorno' },
+  'grafico-base':           { claro: 'indigo_300', oscuro: 'indigo_500', uso: 'Linea base (cero) del grafico. Adorno' },
+  'grafico-ref':            { claro: 'gris_700',   oscuro: 'gris_0',     uso: 'Linea punteada de referencia del grafico' },
+  'grafico-guia':           { claro: 'gris_700',   oscuro: 'gris_0',     uso: 'Guia vertical y anillo del punto activo del grafico' },
+  'grafico-halo':           { claro: 'oro_400',    oscuro: 'oro_200',    uso: 'Halo del punto 0 del grafico (translucido)' },
+  'grafico-punto0':         { claro: 'gris_0',     oscuro: 'gris_0',     uso: 'Relleno del punto 0 del grafico' },
+  'grafico-ventana-fondo':  { claro: 'indigo_900', oscuro: 'gris_0',     uso: 'Fondo de la ventana que sale al pasar por un punto' },
+  'grafico-ventana-texto':  { claro: 'gris_0',     oscuro: 'gris_900',   uso: 'Texto de la ventana del grafico' },
+  // Claro: ambar_600 (el `foco` general) daba 2,86:1 sobre indigo_100; ambar_700 llega.
+  'grafico-foco':           { claro: 'ambar_700',  oscuro: 'ambar_300',  uso: 'Anillo de foco dentro del panel del grafico' },
+  // Barra proporcional del `ListaRanking`.
+  'barra-relleno':          { claro: 'indigo_500', oscuro: 'indigo_300', uso: 'Relleno de la barra proporcional del ranking' },
+  'barra-pista':            { claro: 'gris_200',   oscuro: 'negro_600',  uso: 'Pista de la barra proporcional del ranking' },
+  // Escala del `MapaCalor`: cinco pasos de UN tono. El texto de la celda cambia
+  // en el paso 4: 1-3 llevan `texto-principal`, 4-5 `texto-invertido`.
+  'mapa-1':                 { claro: 'indigo_100', oscuro: 'indigo_900', uso: 'Mapa de calor, paso 1 (el mas bajo). Texto: texto-principal' },
+  'mapa-2':                 { claro: 'indigo_200', oscuro: 'indigo_700', uso: 'Mapa de calor, paso 2. Texto: texto-principal' },
+  'mapa-3':                 { claro: 'indigo_300', oscuro: 'indigo_500', uso: 'Mapa de calor, paso 3. Texto: texto-principal' },
+  'mapa-4':                 { claro: 'indigo_500', oscuro: 'indigo_300', uso: 'Mapa de calor, paso 4. Texto: texto-invertido' },
+  'mapa-5':                 { claro: 'indigo_800', oscuro: 'indigo_200', uso: 'Mapa de calor, paso 5 (el mas alto). Texto: texto-invertido' },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -6803,4 +6832,33 @@ export const pares = [
   ['identidad-texto',  'identidad-2',      4.5, 'Iniciales del avatar sobre violeta'],
   ['identidad-texto',  'identidad-3',      4.5, 'Iniciales del avatar sobre magenta'],
   ['identidad-texto',  'identidad-4',      4.5, 'Iniciales del avatar sobre pizarra'],
+
+  // SPEC 07 · Panel del gráfico de tendencia (R169). Texto a 4,5; el trazo y el
+  // anillo de foco son contenido no textual (SC 1.4.11), 3:1.
+  ['grafico-texto',       'grafico-fondo',        4.5, 'Título, valor grande y valores del gráfico sobre su panel'],
+  ['grafico-texto-tenue', 'grafico-fondo',        4.5, 'Rótulos del eje, unidad y resumen de la tabla sobre el panel'],
+  ['grafico-ventana-texto','grafico-ventana-fondo',4.5, 'Texto de la ventana del gráfico'],
+  ['grafico-linea',       'grafico-fondo',        3.0, 'Trazo de la tendencia sobre el panel'],
+  ['grafico-foco',        'grafico-fondo',        3.0, 'Anillo de foco sobre el panel del gráfico'],
+  ['grafico-ventana-fondo','grafico-fondo',       3.0, 'La ventana se separa del panel'],
+  ['grafico-rejilla',     'grafico-fondo',        'informativo', 'Cuadrícula. Adorno'],
+  ['grafico-base',        'grafico-fondo',        'informativo', 'Línea base. Adorno'],
+  ['grafico-ref',         'grafico-fondo',        'informativo', 'Línea de referencia: la etiqueta lleva el dato'],
+  ['grafico-guia',        'grafico-fondo',        'informativo', 'Guía vertical: la ventana lleva el dato'],
+  ['grafico-halo',        'grafico-fondo',        'informativo', 'Halo del punto 0. Adorno'],
+  ['grafico-punto0',      'grafico-linea',        'informativo', 'Relleno del punto 0 contra su contorno: el contorno ya cumple 3:1 contra el panel'],
+
+  // SPEC 07 · Mapa de calor: texto de cada paso. El cambio de texto es en el paso 4.
+  ['texto-principal',  'mapa-1',           4.5, 'Valor de la celda del mapa, paso 1'],
+  ['texto-principal',  'mapa-2',           4.5, 'Valor de la celda del mapa, paso 2'],
+  ['texto-principal',  'mapa-3',           4.5, 'Valor de la celda del mapa, paso 3'],
+  ['texto-invertido',  'mapa-4',           4.5, 'Valor de la celda del mapa, paso 4 (texto invertido)'],
+  ['texto-invertido',  'mapa-5',           4.5, 'Valor de la celda del mapa, paso 5 (texto invertido)'],
+  ['mapa-1',           'fondo-tarjeta',    'informativo', 'Paso 1 del mapa contra su tarjeta. Relleno: el valor va en texto'],
+  ['mapa-5',           'fondo-tarjeta',    'informativo', 'Paso 5 del mapa contra su tarjeta. Relleno: el valor va en texto'],
+
+  // SPEC 07 · Barra del ranking. El valor va escrito al lado: la barra repite.
+  ['barra-relleno',    'fondo-tarjeta',    3.0, 'Barra del ranking contra la tarjeta'],
+  ['barra-relleno',    'barra-pista',      3.0, 'Relleno de la barra contra su pista'],
+  ['barra-pista',      'fondo-tarjeta',    'informativo', 'Pista de la barra. Adorno'],
 ];

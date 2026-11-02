@@ -818,6 +818,33 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
+   FRANJA DE CIFRAS — 13 reglas · clases .franja-*, .cifra-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.franja{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px;
+  background: var(--borde); border: 1px solid var(--borde); border-radius: 8px;
+  overflow: hidden; margin: 0; padding: 0; list-style: none; }
+.franja-item{ background: var(--fondo-tarjeta); padding: 16px 16px 12px; min-width: 0; }
+.franja-item:last-child:nth-child(odd){ grid-column: 1 / -1; }
+.cifra{ display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.cifra-titulo{ font-size: 13px; font-weight: 500; color: var(--texto-secundario); }
+.cifra-valor{ display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px;
+  font-size: 34px; font-weight: 600; line-height: 1.05; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums; color: var(--texto-principal); }
+.cifra-unidad{ font-size: 15px; font-weight: 500; letter-spacing: 0; color: var(--texto-secundario); }
+.cifra-dif{ position: relative; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start;
+  font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 6px;
+  font-variant-numeric: tabular-nums; border: 1px solid transparent; }
+.cifra-dif.cifra-dif-peor{ background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.cifra-dif.cifra-dif-mejor{ background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.cifra-dif.cifra-dif-igual{ background: var(--neutra-fondo); color: var(--neutra-texto); border-color: var(--borde-fuerte); }
+.cifra-detalle{ font-size: 12px; color: var(--texto-secundario); }
+@media (min-width: 900px) {
+  .franja{ grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .franja-item:last-child:nth-child(odd){ grid-column: auto; }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
    AVATAR — 21 reglas · clases .avatar-*
    ─────────────────────────────────────────────────────────────────────────── */
 
