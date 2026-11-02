@@ -3081,6 +3081,200 @@ export function ResumenSemana() {
   </tbody>
 </table>`;
 
+// ── Elemento: Mapa de calor (SPEC 07, R169) ─────────────────────────────────
+
+/* Mismo marcado que emite el componente, escrito a mano en una funcion: lo que el
+   catalogo enseña y lo que se entrega no pueden divergir. */
+const mapaEj = ({ id, titulo, desc, total, filas, columnas, celdas, pocos = 2 }) => {
+  let max = 0;
+  celdas.forEach((f) => f.forEach((c) => { if (c.n > 0 && c.valor > max) max = c.valor; }));
+  const paso = (v) => (max > 0 ? Math.max(1, Math.min(5, Math.ceil((5 * v) / max))) : 1);
+  const cuerpo = filas.map((f, a) => `<tr><th scope="row">${f}</th>${columnas.map((c, b) => {
+    const { valor, n } = celdas[a][b];
+    if (n <= 0) return `<td><div class="mapa-celda mapa-vacia"><span class="mapa-valor">—</span><span class="mapa-n">0 trab.</span></div></td>`;
+    const p = n <= pocos;
+    return `<td><div class="mapa-celda mapa-p${paso(valor)}${p ? ' mapa-pocos' : ''}"><span class="mapa-valor">${valor}</span><span class="mapa-n">${n} trab.</span>${p ? `<span class="sr-solo">Pocos datos: ${n} ${n === 1 ? 'trabajador' : 'trabajadores'}</span>` : ''}</div></td>`;
+  }).join('')}</tr>`).join('');
+  return `<article class="mapa"><header><h3 class="mapa-titulo" id="${id}">${titulo}</h3>${desc ? `<p class="mapa-desc">${desc}</p>` : ''}${total ? `<p class="mapa-desc mapa-total">Total <strong>${total}</strong></p>` : ''}</header><div class="mapa-vista" role="region" tabindex="0" aria-labelledby="${id}"><table class="mapa-tabla"><thead><tr><td></td>${columnas.map((c) => `<th scope="col">${c}</th>`).join('')}</tr></thead><tbody>${cuerpo}</tbody></table></div><div class="mapa-escala" aria-hidden="true"><span>Menos</span><span class="mapa-pasos"><i class="mapa-paso mapa-p1"></i><i class="mapa-paso mapa-p2"></i><i class="mapa-paso mapa-p3"></i><i class="mapa-paso mapa-p4"></i><i class="mapa-paso mapa-p5"></i></span><span>Más</span></div></article>`;
+};
+
+const MAPA_N = [[3, 5, 5, 1, 0], [4, 6, 5, 5, 2]];
+const MAPA_V = [[48, 96, 108, 52, 0], [31, 84, 66, 100, 18]];
+const MAPA_CELDAS = MAPA_V.map((f, a) => f.map((valor, b) => ({ valor, n: MAPA_N[a][b] })));
+const MAPA_TOTAL = MAPA_V.flat().reduce((s, v) => s + v, 0);
+
+const pagMapaCalor = `
+<p class="pag-intro">Una <strong>tabla de filas por columnas</strong> donde la intensidad de un solo tono dice
+cuánto y el número dice cuánto exactamente. Trae su propio título, descripción, total y escala «Menos – Más»:
+la app no la envuelve en otra tarjeta. Las celdas con pocos trabajadores se marcan con borde punteado.</p>
+
+<h3 class="sub-seccion">El mapa</h3>
+<p class="seccion-sub">Tardanzas por sexo y edad. La intensidad va en <strong>cinco pasos</strong> (no continua) para
+que cada par de colores se pueda medir. «Pocos datos» (borde punteado) son las celdas de 1 o 2 trabajadores; la
+vacía lleva «—» y «0 trab.» y no tiene color. En un teléfono la tabla se desliza <strong>dentro</strong> de su
+recuadro, que se alcanza con el teclado; la página no.</p>
+<div class="bloque">
+  ${mapaEj({ id: 'mapa-ej-1', titulo: 'Tardanzas', desc: 'Por sexo y edad', total: `${MAPA_TOTAL} min`, filas: ['Hombre', 'Mujer'], columnas: ['18-29', '30-39', '40-49', '50-59', '60+'], celdas: MAPA_CELDAS })}
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Es una tabla</strong> con cabecera de columna y de fila (<code>th scope</code>); una celda se lee «Hombre, 30-39, 96, 5 trab.».</td></tr>
+    <tr><td class="num">2</td><td><strong>Título, descripción y total propios.</strong> Sin descripción o sin total no queda un elemento vacío.</td></tr>
+    <tr><td class="num">3</td><td><strong>El recuadro que se desliza</strong> es una región enfocable con el título por nombre.</td></tr>
+    <tr><td class="num">4</td><td><strong>Cinco pasos:</strong> <code>ceil(5·valor/máximo)</code>, con el máximo tomado solo entre las celdas con trabajadores. Cada celda escribe el valor y «n trab.».</td></tr>
+    <tr><td class="num">5</td><td><strong>El texto cambia con el fondo:</strong> principal en los pasos 1 a 3, invertido en 4 y 5.</td></tr>
+    <tr><td class="num">6</td><td><strong>«Pocos datos»:</strong> <code>n</code> menor o igual que <code>pocosDatosHasta</code> (2 por omisión) lleva borde punteado y el nombre accesible «Pocos datos: n trabajadores» (singular con 1).</td></tr>
+    <tr><td class="num">7</td><td><strong>Celda vacía:</strong> con <code>n</code> igual a 0, «—» y «0 trab.», sin paso de color.</td></tr>
+    <tr><td class="num">8</td><td><strong>Escala «Menos – Más»</strong> de cinco pasos bajo la tabla; solo para la vista, y sin leyenda de «Pocos datos».</td></tr>
+    <tr><td class="num">9</td><td><strong>Móvil primero:</strong> ancho mínimo de 350&nbsp;px y desplazamiento horizontal dentro del recuadro.</td></tr>
+    <tr><td class="num">10</td><td><strong>Cifras tabulares</strong> y colores solo de tokens.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Cómo se usa</h3>
+<p class="seccion-sub">Lo que se copia es la importación y las props. El total y el formato los calcula y escribe la app.</p>
+${verCodigo(
+  'Uso de MapaCalor',
+  `import { MapaCalor } from 'sistema-diseno-ae/componentes';
+
+export function TardanzasPorSexoYEdad() {
+  return (
+    <MapaCalor
+      titulo="Tardanzas"
+      descripcion="Por sexo y edad"
+      total="603 min"
+      filas={['Hombre', 'Mujer']}
+      columnas={['18-29', '30-39', '40-49', '50-59', '60+']}
+      celdas={[
+        [{ valor: 48, n: 3 }, { valor: 96, n: 5 }, { valor: 108, n: 5 }, { valor: 52, n: 1 }, { valor: 0, n: 0 }],
+        [{ valor: 31, n: 4 }, { valor: 84, n: 6 }, { valor: 66, n: 5 }, { valor: 100, n: 5 }, { valor: 18, n: 2 }],
+      ]}
+      formato={(minutos) => String(minutos)}
+    />
+  );
+}`
+)}
+
+<h3 class="sub-seccion">Cómo se configura</h3>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>titulo</code><br><span class="seccion-sub">string</span></td><td>El título del mapa: «Tardanzas». Nombra también la tabla y su recuadro. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>descripcion</code><br><span class="seccion-sub">ReactNode</span></td><td>Una línea bajo el título: «Por sexo y edad».</td></tr>
+    <tr><td><code>total</code><br><span class="seccion-sub">string</span></td><td>El total del mapa, ya escrito: «603 min». Sale como «Total 603 min».</td></tr>
+    <tr><td><code>filas</code><br><span class="seccion-sub">string[]</span></td><td>El rótulo de cada fila. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>columnas</code><br><span class="seccion-sub">string[]</span></td><td>El rótulo de cada columna. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>celdas</code><br><span class="seccion-sub">CeldaMapaCalor[][]</span></td><td><code>celdas[fila][columna]</code>, cada una con <code>valor</code> (decide el paso de color) y <code>n</code> (trabajadores). <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>formato</code><br><span class="seccion-sub">(valor: number) =&gt; string</span></td><td>Cómo se escribe el valor de cada celda. Sin él, el número tal cual.</td></tr>
+    <tr><td><code>pocosDatosHasta</code><br><span class="seccion-sub">number</span></td><td>Una celda con <code>n</code> menor o igual que esto es «Pocos datos». 2 por omisión.</td></tr>
+  </tbody>
+</table>`;
+
+// ── Elemento: Lista de ranking (SPEC 07, R169) ──────────────────────────────
+
+const rankColor = (id) => {
+  let n = 0;
+  for (let i = 0; i < id.length; i++) n = (n * 31 + id.charCodeAt(i)) >>> 0;
+  return (n % 4) + 1;
+};
+const rankIniciales = (nombre) => {
+  const partes = nombre.includes(',') ? nombre.split(',') : nombre.trim().split(/\s+/);
+  return ((partes[0]?.trim()[0] ?? '') + (partes[1]?.trim()[0] ?? '')).toUpperCase();
+};
+
+const rankingEj = ({ id, titulo, filas, vacio }) => {
+  if (!filas.length) return `<section class="ranking" aria-labelledby="${id}"><h3 class="ranking-titulo" id="${id}">${titulo}</h3><p class="ranking-vacio">${vacio}</p></section>`;
+  const primero = filas[0].valor;
+  const pct = (v) => (primero > 0 && v > 0 ? Math.min(100, Math.round((v / primero) * 10000) / 100) : 0);
+  return `<section class="ranking" aria-labelledby="${id}"><h3 class="ranking-titulo" id="${id}">${titulo}</h3><ol class="ranking-lista" role="list">${filas.map((f, i) => `<li class="ranking-fila"><span class="ranking-pos">${i + 1}</span><span class="ranking-avatar" aria-hidden="true"><span class="avatar avatar-m avatar-${rankColor(f.id)}" title="${f.nombre}">${rankIniciales(f.nombre)}</span></span><div class="ranking-quien"><div class="ranking-nombre">${f.nombre}</div>${f.detalle ? `<div class="ranking-detalle">${f.detalle}</div>` : ''}<svg class="ranking-barra" aria-hidden="true" focusable="false">${pct(f.valor) > 0 ? `<rect class="ranking-barra-relleno" width="${pct(f.valor)}%" height="100%" rx="3"></rect>` : ''}</svg></div><span class="ranking-valor">${f.texto}</span></li>`).join('')}</ol></section>`;
+};
+
+const RANKING_FILAS = [
+  { id: 'rk-1', nombre: 'Salazar Quispe de la Cruz, María Guadalupe del Carmen', valor: 74, texto: '74 min', detalle: 'Nivel Inicial' },
+  { id: 'rk-2', nombre: 'Huamán Ríos, Luis', valor: 61, texto: '61 min', detalle: 'Nivel Primaria' },
+  { id: 'rk-3', nombre: 'Paredes Soto, Elena', valor: 55, texto: '55 min', detalle: 'Nivel Secundaria' },
+  { id: 'rk-4', nombre: 'Cárdenas Vega, Jorge', valor: 49, texto: '49 min', detalle: 'Nivel Inicial' },
+  { id: 'rk-5', nombre: 'Mendoza Lara, Rosa', valor: 44, texto: '44 min', detalle: 'Secretaría' },
+];
+
+const pagListaRanking = `
+<p class="pag-intro">Una <strong>lista corta de personas ordenada por una medida</strong>: posición, avatar,
+nombre, una línea gris, el valor escrito y una barra proporcional al primero. La app entrega las filas ya
+ordenadas y con el texto del valor; la pieza solo las dibuja.</p>
+
+<h3 class="sub-seccion">Con filas</h3>
+<p class="seccion-sub">Cinco filas, la primera con un nombre largo: <strong>envuelve</strong> en vez de cortarse, también
+a 360&nbsp;px. La barra del primero llena el ancho y las demás miden <code>valor / primero</code>, sin saltos.</p>
+<div class="bloque">
+  ${rankingEj({ id: 'rk-ej-1', titulo: 'Tardanzas', filas: RANKING_FILAS })}
+</div>
+
+<h3 class="sub-seccion">Sin filas</h3>
+<p class="seccion-sub">En lugar de una lista vacía, el texto que pase la app.</p>
+<div class="bloque">
+  ${rankingEj({ id: 'rk-ej-2', titulo: 'Faltas', filas: [], vacio: 'Nadie tiene faltas en esta unidad esta semana' })}
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Es una sección</strong> con su título y una lista ordenada; el título le da el nombre.</td></tr>
+    <tr><td class="num">2</td><td><strong>Cada fila</strong> lleva posición, <code>Avatar</code> (tamaño m, sin leerse dos veces), nombre, una línea gris opcional y el valor.</td></tr>
+    <tr><td class="num">3</td><td><strong>La barra es proporcional al primero:</strong> el primero llena el ancho y los demás miden <code>valor / primero</code>, exacto. Es decoración: el valor ya está escrito.</td></tr>
+    <tr><td class="num">4</td><td><strong>Con valor 0 en el primero no hay barra</strong> en ninguna fila.</td></tr>
+    <tr><td class="num">5</td><td><strong>Sin filas</strong> sale <code>textoVacio</code> y no una lista vacía.</td></tr>
+    <tr><td class="num">6</td><td><strong>El nombre envuelve:</strong> nunca se corta con puntos suspensivos ni queda detrás de un <code>title</code>.</td></tr>
+    <tr><td class="num">7</td><td><strong>Muestra las filas que recibe:</strong> el tablero pasa hasta cinco, la pieza no recorta ni rellena.</td></tr>
+    <tr><td class="num">8</td><td><strong>Móvil primero</strong>, cifras tabulares y colores solo de tokens.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Cómo se usa</h3>
+<p class="seccion-sub">Lo que se copia es la importación y las props. La app ordena y escribe el texto del valor.</p>
+${verCodigo(
+  'Uso de ListaRanking',
+  `import { ListaRanking } from 'sistema-diseno-ae/componentes';
+
+export function RankingTardanzas() {
+  return (
+    <ListaRanking
+      titulo="Tardanzas"
+      textoVacio="Nadie llegó tarde esta semana"
+      filas={[
+        { id: '71234567', nombre: 'Huamán Ríos, Luis', valor: 74, texto: '74 min', detalle: 'Nivel Primaria' },
+        { id: '08765432', nombre: 'Paredes Soto, Elena', valor: 55, texto: '55 min', detalle: 'Nivel Secundaria' },
+      ]}
+    />
+  );
+}`
+)}
+
+<h3 class="sub-seccion">Cómo se configura</h3>
+<h4 class="sub-seccion">La lista</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>titulo</code><br><span class="seccion-sub">string</span></td><td>El título de la lista: «Tardanzas». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>filas</code><br><span class="seccion-sub">FilaRanking[]</span></td><td>Las filas, ya ordenadas. La pieza muestra las que recibe. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>textoVacio</code><br><span class="seccion-sub">string</span></td><td>Lo que se lee cuando no hay filas. <strong>Obligatoria.</strong></td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">Cada fila</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>id</code><br><span class="seccion-sub">string</span></td><td>Identificador estable de la persona; de él sale el color del avatar. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>nombre</code><br><span class="seccion-sub">string</span></td><td>Apellidos y nombres. Puede ser largo y envuelve. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>valor</code><br><span class="seccion-sub">number</span></td><td>Solo para la proporción de la barra. El primero es el 100&nbsp;%. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>texto</code><br><span class="seccion-sub">string</span></td><td>Lo que se lee: «74 min», «2 días». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>foto</code><br><span class="seccion-sub">string</span></td><td>URL de la foto; sin ella, o si falla, el avatar muestra las iniciales.</td></tr>
+    <tr><td><code>detalle</code><br><span class="seccion-sub">string</span></td><td>Una línea gris bajo el nombre (la unidad organizativa).</td></tr>
+  </tbody>
+</table>`;
+
 // ── Elemento: Tarjeta ───────────────────────────────────────────────────────
 
 // Silueta neutra. No se inventan fotos de personas: cuando no hay foto se
@@ -9430,12 +9624,13 @@ const CATALOGO = [
       // v1.77.0). Es la cuarta vez que hay que correrlos a mano.
       { t: 'Formulario', desde: 2, hasta: 13 },
       // +1 en los dos cortes de detras al entrar «Franja de cifras» (SPEC 07).
-      { t: 'Datos', desde: 13, hasta: 20 },
-      { t: 'Respuesta', desde: 20, hasta: 26 },
+      // +2 al entrar «Mapa de calor» y «Lista de ranking» (SPEC 07).
+      { t: 'Datos', desde: 13, hasta: 22 },
+      { t: 'Respuesta', desde: 22, hasta: 28 },
       // `Infinity` y no un numero: el ULTIMO tramo llega siempre al final, asi
       // que meter un elemento al final deja de tener trampa. Los cortes de en
       // medio siguen siendo indices, y por eso existe `comprobarTramos`.
-      { t: 'Marco y navegación', desde: 26, hasta: Infinity },
+      { t: 'Marco y navegación', desde: 28, hasta: Infinity },
     ],
     items: [
       { id: 'boton', t: 'Botón', estado: 'listo', c: pagBoton },
@@ -9460,6 +9655,8 @@ const CATALOGO = [
       { id: 'avatar', t: 'Avatar', estado: 'listo', c: pagAvatar },
       { id: 'tarjeta', t: 'Tarjeta', estado: 'listo', c: pagTarjeta },
       { id: 'franjacifras', t: 'Franja de cifras', estado: 'listo', c: pagFranjaCifras },
+      { id: 'mapacalor', t: 'Mapa de calor', estado: 'listo', c: pagMapaCalor },
+      { id: 'listaranking', t: 'Lista de ranking', estado: 'listo', c: pagListaRanking },
       { id: 'tabla', t: 'Tabla de datos', estado: 'listo', c: pagTabla },
       { id: 'paginacion', t: 'Paginación', estado: 'listo', c: pagPaginacion },
       { id: 'progreso', t: 'Barra de progreso', estado: 'listo', c: pagProgreso },
@@ -11571,6 +11768,63 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
   .franja { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .franja-item:last-child:nth-child(odd) { grid-column: auto; }
 }
+/* ───────────────────────────────────────────────────────────────────────────
+   MAPA DE CALOR · clases .mapa*  (SPEC 07, R169)
+   Tabla filas x columnas con cinco pasos de un solo tono (tokens --mapa-1..5).
+   El texto es el principal en los pasos 1-3 y el invertido en 4-5; cada par se
+   mide en verificar-contraste. El desplazamiento es del contenedor .mapa-vista
+   (ancho minimo 350px), nunca de la pagina. position: relative porque las celdas
+   llevan texto .sr-solo (absoluto): sin ella se escaparia del recorte.
+   ─────────────────────────────────────────────────────────────────────────── */
+.mapa { background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 8px;
+  padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.mapa-titulo { margin: 0; font-size: 16px; font-weight: 600; }
+.mapa-desc { margin: 4px 0 0; font-size: 13px; color: var(--texto-secundario); }
+.mapa-desc strong { font-weight: 600; color: var(--texto-principal); font-variant-numeric: tabular-nums; }
+.mapa-total { margin-top: 0; }
+.mapa-vista { position: relative; overflow-x: auto; border-radius: 6px; }
+.mapa-vista:focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; }
+/* separate es el valor por omision: R142 prohibe escribirlo en la hoja. */
+.mapa-tabla { border-spacing: 4px; min-width: 350px; width: 100%; table-layout: fixed; }
+.mapa-tabla th { font-size: 12px; font-weight: 500; color: var(--texto-secundario); text-align: center; padding: 0 0 4px; }
+.mapa-tabla tbody th { text-align: left; color: var(--texto-principal); font-size: 13px; width: 64px; padding: 0; }
+.mapa-tabla td { padding: 0; }
+.mapa-celda { display: flex; flex-direction: column; gap: 0; padding: 8px 4px; text-align: center;
+  border: 2px solid transparent; border-radius: 6px; font-variant-numeric: tabular-nums; }
+.mapa-valor { font-size: 16px; font-weight: 600; line-height: 1.1; }
+.mapa-n { font-size: 12px; }
+.mapa-p1 { background: var(--mapa-1); color: var(--texto-principal); }
+.mapa-p2 { background: var(--mapa-2); color: var(--texto-principal); }
+.mapa-p3 { background: var(--mapa-3); color: var(--texto-principal); }
+.mapa-p4 { background: var(--mapa-4); color: var(--texto-invertido); }
+.mapa-p5 { background: var(--mapa-5); color: var(--texto-invertido); }
+.mapa-celda.mapa-pocos { border-color: currentColor; border-style: dashed; }
+.mapa-celda.mapa-vacia { background: transparent; color: var(--texto-secundario);
+  border: 1px dashed var(--borde-fuerte); }
+.mapa-escala { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; color: var(--texto-secundario); }
+.mapa-pasos { display: inline-flex; gap: 4px; }
+.mapa-paso { display: block; width: 16px; height: 12px; border-radius: 3px; }
+/* ───────────────────────────────────────────────────────────────────────────
+   LISTA DE RANKING · clases .ranking*  (SPEC 07, R169)
+   Posicion, avatar, nombre que envuelve, valor y barra proporcional al primero.
+   La barra es un SVG: el ancho exacto es un atributo del rect, no un estilo.
+   La columna del nombre lleva min-width 0 para que un apellido largo envuelva
+   en vez de empujar la fila fuera de la pantalla.
+   ─────────────────────────────────────────────────────────────────────────── */
+.ranking { background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 8px;
+  padding: 16px; min-width: 0; }
+.ranking-titulo { margin: 0; font-size: 16px; font-weight: 600; }
+.ranking-lista { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.ranking-fila { display: grid; grid-template-columns: 20px 32px minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.ranking-pos { font-weight: 600; color: var(--texto-secundario); font-variant-numeric: tabular-nums; text-align: right; }
+.ranking-avatar { display: flex; }
+.ranking-quien { min-width: 0; }
+.ranking-nombre { font-size: 15px; font-weight: 500; line-height: 1.3; overflow-wrap: anywhere; }
+.ranking-detalle { font-size: 12px; color: var(--texto-secundario); }
+.ranking-barra { display: block; width: 100%; height: 4px; margin-top: 8px; border-radius: 3px; background: var(--barra-pista); }
+.ranking-barra-relleno { fill: var(--barra-relleno); }
+.ranking-valor { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ranking-vacio { margin: 12px 0 0; font-size: 15px; color: var(--texto-secundario); }
 /* ───────────────────────────────────────────────────────────────────────────
    PANEL DE PRIVILEGIOS · clases .pp-*
    Reparte permisos por modulo. Aqui SOLO vive el andamiaje de la lista: el

@@ -137,6 +137,7 @@ const PAGINA_DE = new Map([
   ['Avatar', 'Avatar'], ['Tarjeta', 'Tarjeta'], ['TarjetaPersona', 'Tarjeta'],
   // SPEC 07 (R169) · las dos piezas se enseñan juntas: la cifra suelta no existe sin su franja.
   ['FranjaCifras', 'Franja de cifras'], ['CifraConDiferencia', 'Franja de cifras'],
+  ['MapaCalor', 'Mapa de calor'], ['ListaRanking', 'Lista de ranking'],
   ['TablaDatos', 'Tabla de datos'], ['Paginacion', 'Paginación'],
   ['Progreso', 'Barra de progreso'], ['Aviso', 'Aviso temporal'],
   // La zona se demuestra CON los avisos: es donde viven, y por separado no se

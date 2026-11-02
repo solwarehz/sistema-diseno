@@ -952,6 +952,54 @@ los dibuja.
 
 ---
 
+## Mapa de calor
+
+<!-- pruebas: mapa-calor.test.tsx -->
+
+Una cuadrícula filas × columnas con título, descripción, total y escala propios.
+La intensidad va en cinco pasos de un solo tono y el número dice lo exacto: el
+color acompaña, no sostiene.
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R169, v1.153.0) **Es una tabla real**: `th scope="col"` por columna y `th scope="row"` por fila, para que se lea «Hombre, 30-39, 96, 5 trab.». |
+| **2** | **Obligatorio.** (R169, v1.153.0) **Dibuja su título (`h3`), su descripción y su total** («Total 603 min»); sin descripción o sin total no deja un elemento vacío. |
+| **3** | **Obligatorio.** (R169, v1.153.0) **El contenedor que se desplaza es una región enfocable con nombre**: `role="region"`, `tabindex="0"` y `aria-labelledby` del título. Se llega con teclado. |
+| **4** | **Obligatorio.** (R169, v1.153.0) **Pasos discretos 1 a 5 por `ceil(5·valor/máximo)`**, con el máximo tomado solo sobre las celdas con `n > 0`; la clase de la celda es `mapa-pN`. Cada celda escribe el valor (con `formato` si se pasa) y «n trab.». |
+| **5** | **Obligatorio.** (R169, v1.153.0) **El texto cambia con el fondo**: `texto-principal` en los pasos 1 a 3 e `texto-invertido` en 4 y 5, sobre los tokens `mapa-1…5` que `verificar-contraste` mide en los dos modos. |
+| **6** | **Obligatorio.** (R169, v1.153.0) **«Pocos datos»**: `n ≤ pocosDatosHasta` (2 por omisión) lleva borde punteado y el nombre accesible «Pocos datos: n trabajadores» (singular con 1). Conserva su paso de color. |
+| **7** | **Obligatorio.** (R169, v1.153.0) **Celda con `n = 0` vacía**: muestra «—» y «0 trab.», sin paso de color y sin «Pocos datos»; no cuenta para el máximo. |
+| **8** | **Obligatorio.** (R169, v1.153.0) **Escala «Menos – Más» de cinco pasos debajo de la tabla**, solo para la vista (`aria-hidden`) y sin leyenda de «Pocos datos». |
+| **9** | **Obligatorio.** (R169, v1.153.0) **Móvil primero**: la tabla tiene ancho mínimo de 350 px y se desliza horizontalmente dentro de su contenedor (`overflow-x: auto`), nunca la página; el contenedor tiene foco visible; «Pocos datos» y la celda vacía usan borde punteado. |
+| **10** | **Obligatorio.** (R169, v1.153.0) **Cifras tabulares y colores solo de tokens**; la hoja no usa `max-width` ni `@container`. |
+| **11** | **Obligatorio.** (R169, v1.153.0) **`index.ts` exporta `MapaCalor`, `pasoMapa`, `pasosDelMapa`, `PASOS_MAPA` y los tipos `CeldaMapaCalor` y `MapaCalorProps`.** |
+| **12** | **Obligatorio.** (R169, v1.153.0) **Un valor que no es número cae en el paso 1** (nunca produce una clase inválida), y **solo la región desplazable lleva el título como nombre**: la tabla no lo repite, para que el lector de pantalla no lo anuncie dos veces. |
+
+---
+
+## Lista de ranking
+
+<!-- pruebas: lista-ranking.test.tsx -->
+
+Una lista corta de personas ordenada por una medida: posición, avatar, nombre,
+una línea gris, el valor escrito y una barra proporcional al primero. La app
+entrega las filas ya ordenadas; la pieza solo las dibuja.
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R169, v1.153.0) **Es una `section` con título (`h3`) y una lista ordenada `ol`**; el título le da el nombre accesible (`aria-labelledby`). |
+| **2** | **Obligatorio.** (R169, v1.153.0) **Cada fila lleva posición, `Avatar` (tamaño m), nombre, `detalle` opcional y el valor `texto`.** El avatar se compone con el existente y va fuera del árbol accesible: el nombre ya está al lado. |
+| **3** | **Obligatorio.** (R169, v1.153.0) **La barra es proporcional al primero**: `rect` SVG con `width="N%"`, donde el primero es 100 % y los demás `valor / primero`, exacto (dos decimales) y sin `style`. Es decoración (`aria-hidden`); el valor ya está escrito. |
+| **4** | **Obligatorio.** (R169, v1.153.0) **Con `valor` 0 en el primero no hay barra** en ninguna fila. |
+| **5** | **Obligatorio.** (R169, v1.153.0) **Sin filas se muestra `textoVacio`** y no una lista vacía; el título se conserva. |
+| **6** | **Obligatorio.** (R169, v1.153.0) **El nombre envuelve y no se corta**: `overflow-wrap: anywhere` en el nombre y `min-width: 0` en su columna; sin `text-overflow` ni `nowrap`. Un nombre de 60 caracteres cabe a 360 px sin desbordar. |
+| **7** | **Obligatorio.** (R169, v1.153.0) **Muestra las filas que recibe**: el tablero pasa hasta cinco, pero la pieza no recorta ni rellena. |
+| **8** | **Obligatorio.** (R169, v1.153.0) **Móvil primero y colores de token**: pista y relleno de la barra con `barra-pista` y `barra-relleno`, posición y valor con números tabulares, sin `max-width`. |
+| **9** | **Obligatorio.** (R169, v1.153.0) **`index.ts` exporta `ListaRanking`, `porcentajeBarra` y los tipos `FilaRanking` y `ListaRankingProps`.** |
+| **10** | **Obligatorio.** (R169, v1.153.0) **El `ol` declara `role="list"`**: sin viñetas, Safari y VoiceOver le quitan la semántica de lista y se pierde «elemento N de M». |
+
+---
+
 ## Color de identidad · Horario y Chip
 
 <!-- pruebas: identidad-tono.test.ts, distancia.test.ts, Avatar.test.tsx -->

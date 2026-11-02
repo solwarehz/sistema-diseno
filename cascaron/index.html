@@ -2685,6 +2685,63 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
   .franja-item:last-child:nth-child(odd) { grid-column: auto; }
 }
 /* ───────────────────────────────────────────────────────────────────────────
+   MAPA DE CALOR · clases .mapa*  (SPEC 07, R169)
+   Tabla filas x columnas con cinco pasos de un solo tono (tokens --mapa-1..5).
+   El texto es el principal en los pasos 1-3 y el invertido en 4-5; cada par se
+   mide en verificar-contraste. El desplazamiento es del contenedor .mapa-vista
+   (ancho minimo 350px), nunca de la pagina. position: relative porque las celdas
+   llevan texto .sr-solo (absoluto): sin ella se escaparia del recorte.
+   ─────────────────────────────────────────────────────────────────────────── */
+.mapa { background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 8px;
+  padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.mapa-titulo { margin: 0; font-size: 16px; font-weight: 600; }
+.mapa-desc { margin: 4px 0 0; font-size: 13px; color: var(--texto-secundario); }
+.mapa-desc strong { font-weight: 600; color: var(--texto-principal); font-variant-numeric: tabular-nums; }
+.mapa-total { margin-top: 0; }
+.mapa-vista { position: relative; overflow-x: auto; border-radius: 6px; }
+.mapa-vista:focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; }
+/* separate es el valor por omision: R142 prohibe escribirlo en la hoja. */
+.mapa-tabla { border-spacing: 4px; min-width: 350px; width: 100%; table-layout: fixed; }
+.mapa-tabla th { font-size: 12px; font-weight: 500; color: var(--texto-secundario); text-align: center; padding: 0 0 4px; }
+.mapa-tabla tbody th { text-align: left; color: var(--texto-principal); font-size: 13px; width: 64px; padding: 0; }
+.mapa-tabla td { padding: 0; }
+.mapa-celda { display: flex; flex-direction: column; gap: 0; padding: 8px 4px; text-align: center;
+  border: 2px solid transparent; border-radius: 6px; font-variant-numeric: tabular-nums; }
+.mapa-valor { font-size: 16px; font-weight: 600; line-height: 1.1; }
+.mapa-n { font-size: 12px; }
+.mapa-p1 { background: var(--mapa-1); color: var(--texto-principal); }
+.mapa-p2 { background: var(--mapa-2); color: var(--texto-principal); }
+.mapa-p3 { background: var(--mapa-3); color: var(--texto-principal); }
+.mapa-p4 { background: var(--mapa-4); color: var(--texto-invertido); }
+.mapa-p5 { background: var(--mapa-5); color: var(--texto-invertido); }
+.mapa-celda.mapa-pocos { border-color: currentColor; border-style: dashed; }
+.mapa-celda.mapa-vacia { background: transparent; color: var(--texto-secundario);
+  border: 1px dashed var(--borde-fuerte); }
+.mapa-escala { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; color: var(--texto-secundario); }
+.mapa-pasos { display: inline-flex; gap: 4px; }
+.mapa-paso { display: block; width: 16px; height: 12px; border-radius: 3px; }
+/* ───────────────────────────────────────────────────────────────────────────
+   LISTA DE RANKING · clases .ranking*  (SPEC 07, R169)
+   Posicion, avatar, nombre que envuelve, valor y barra proporcional al primero.
+   La barra es un SVG: el ancho exacto es un atributo del rect, no un estilo.
+   La columna del nombre lleva min-width 0 para que un apellido largo envuelva
+   en vez de empujar la fila fuera de la pantalla.
+   ─────────────────────────────────────────────────────────────────────────── */
+.ranking { background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 8px;
+  padding: 16px; min-width: 0; }
+.ranking-titulo { margin: 0; font-size: 16px; font-weight: 600; }
+.ranking-lista { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.ranking-fila { display: grid; grid-template-columns: 20px 32px minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.ranking-pos { font-weight: 600; color: var(--texto-secundario); font-variant-numeric: tabular-nums; text-align: right; }
+.ranking-avatar { display: flex; }
+.ranking-quien { min-width: 0; }
+.ranking-nombre { font-size: 15px; font-weight: 500; line-height: 1.3; overflow-wrap: anywhere; }
+.ranking-detalle { font-size: 12px; color: var(--texto-secundario); }
+.ranking-barra { display: block; width: 100%; height: 4px; margin-top: 8px; border-radius: 3px; background: var(--barra-pista); }
+.ranking-barra-relleno { fill: var(--barra-relleno); }
+.ranking-valor { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ranking-vacio { margin: 12px 0 0; font-size: 15px; color: var(--texto-secundario); }
+/* ───────────────────────────────────────────────────────────────────────────
    PANEL DE PRIVILEGIOS · clases .pp-*
    Reparte permisos por modulo. Aqui SOLO vive el andamiaje de la lista: el
    interruptor, el chip y el boton de dentro son los del sistema, importados.
@@ -5849,7 +5906,9 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                           <span class="nav-txt">Cuadro de estado</span></a><a class="nav-nieto" href="#avatar" data-ir="avatar" title="Avatar">
                           <span class="nav-txt">Avatar</span></a><a class="nav-nieto" href="#tarjeta" data-ir="tarjeta" title="Tarjeta">
                           <span class="nav-txt">Tarjeta</span></a><a class="nav-nieto" href="#franjacifras" data-ir="franjacifras" title="Franja de cifras">
-                          <span class="nav-txt">Franja de cifras</span></a>
+                          <span class="nav-txt">Franja de cifras</span></a><a class="nav-nieto" href="#mapacalor" data-ir="mapacalor" title="Mapa de calor">
+                          <span class="nav-txt">Mapa de calor</span></a><a class="nav-nieto" href="#listaranking" data-ir="listaranking" title="Lista de ranking">
+                          <span class="nav-txt">Lista de ranking</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="2-3">
                   <!-- aria-controls e id, como los emite el componente: un
@@ -8351,6 +8410,57 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   .franja{ grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .franja-item:last-child:nth-child(odd){ grid-column: auto; }
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   MAPA DE CALOR — 24 reglas · clases .mapa-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.mapa{ background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 8px;
+  padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.mapa-titulo{ margin: 0; font-size: 16px; font-weight: 600; }
+.mapa-desc{ margin: 4px 0 0; font-size: 13px; color: var(--texto-secundario); }
+.mapa-desc strong{ font-weight: 600; color: var(--texto-principal); font-variant-numeric: tabular-nums; }
+.mapa-total{ margin-top: 0; }
+.mapa-vista{ position: relative; overflow-x: auto; border-radius: 6px; }
+.mapa-vista:focus-visible{ outline: 3px solid var(--foco); outline-offset: 2px; }
+.mapa-tabla{ border-spacing: 4px; min-width: 350px; width: 100%; table-layout: fixed; }
+.mapa-tabla th{ font-size: 12px; font-weight: 500; color: var(--texto-secundario); text-align: center; padding: 0 0 4px; }
+.mapa-tabla tbody th{ text-align: left; color: var(--texto-principal); font-size: 13px; width: 64px; padding: 0; }
+.mapa-tabla td{ padding: 0; }
+.mapa-celda{ display: flex; flex-direction: column; gap: 0; padding: 8px 4px; text-align: center;
+  border: 2px solid transparent; border-radius: 6px; font-variant-numeric: tabular-nums; }
+.mapa-valor{ font-size: 16px; font-weight: 600; line-height: 1.1; }
+.mapa-n{ font-size: 12px; }
+.mapa-p1{ background: var(--mapa-1); color: var(--texto-principal); }
+.mapa-p2{ background: var(--mapa-2); color: var(--texto-principal); }
+.mapa-p3{ background: var(--mapa-3); color: var(--texto-principal); }
+.mapa-p4{ background: var(--mapa-4); color: var(--texto-invertido); }
+.mapa-p5{ background: var(--mapa-5); color: var(--texto-invertido); }
+.mapa-celda.mapa-pocos{ border-color: currentColor; border-style: dashed; }
+.mapa-celda.mapa-vacia{ background: transparent; color: var(--texto-secundario);
+  border: 1px dashed var(--borde-fuerte); }
+.mapa-escala{ display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; color: var(--texto-secundario); }
+.mapa-pasos{ display: inline-flex; gap: 4px; }
+.mapa-paso{ display: block; width: 16px; height: 12px; border-radius: 3px; }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   LISTA DE RANKING — 13 reglas · clases .ranking-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.ranking{ background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 8px;
+  padding: 16px; min-width: 0; }
+.ranking-titulo{ margin: 0; font-size: 16px; font-weight: 600; }
+.ranking-lista{ list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.ranking-fila{ display: grid; grid-template-columns: 20px 32px minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.ranking-pos{ font-weight: 600; color: var(--texto-secundario); font-variant-numeric: tabular-nums; text-align: right; }
+.ranking-avatar{ display: flex; }
+.ranking-quien{ min-width: 0; }
+.ranking-nombre{ font-size: 15px; font-weight: 500; line-height: 1.3; overflow-wrap: anywhere; }
+.ranking-detalle{ font-size: 12px; color: var(--texto-secundario); }
+.ranking-barra{ display: block; width: 100%; height: 4px; margin-top: 8px; border-radius: 3px; background: var(--barra-pista); }
+.ranking-barra-relleno{ fill: var(--barra-relleno); }
+.ranking-valor{ font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ranking-vacio{ margin: 12px 0 0; font-size: 15px; color: var(--texto-secundario); }
 
 /* ───────────────────────────────────────────────────────────────────────────
    AVATAR — 21 reglas · clases .avatar-*
@@ -13214,13 +13324,13 @@ engaña: la persona lo mueve, se va, y el cambio no se aplicó.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod14" aria-expanded="false" aria-controls="cod14">
+      <button class="cod-ver" data-ver="cod16" aria-expanded="false" aria-controls="cod16">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod14">Copiar</button>
+      <button class="copiar" data-copiar-de="cod16">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod14" hidden>import { Interruptor } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod16" hidden>import { Interruptor } from 'sistema-diseno-ae/componentes';
 
 &lt;Interruptor
   etiqueta="Notificar tardanzas por correo"
@@ -13318,13 +13428,13 @@ de las de abajo.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod15" aria-expanded="false" aria-controls="cod15">
+      <button class="cod-ver" data-ver="cod17" aria-expanded="false" aria-controls="cod17">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod15">Copiar</button>
+      <button class="copiar" data-copiar-de="cod17">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod15" hidden>import { SeleccionMultiple, GrupoOpcion } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod17" hidden>import { SeleccionMultiple, GrupoOpcion } from 'sistema-diseno-ae/componentes';
 
 &lt;SeleccionMultiple
   leyenda="Aspectos observados en la visita de aula"
@@ -13534,13 +13644,13 @@ mismo</strong>. Eso casi nunca cierra el campo entero: cierra <strong>un nivel</
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod16" aria-expanded="false" aria-controls="cod16">
+      <button class="cod-ver" data-ver="cod18" aria-expanded="false" aria-controls="cod18">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod16">Copiar</button>
+      <button class="copiar" data-copiar-de="cod18">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod16" hidden>import { Segmentado } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod18" hidden>import { Segmentado } from 'sistema-diseno-ae/componentes';
 
 &lt;Segmentado
   etiqueta="Documento"
@@ -13826,13 +13936,13 @@ futuro por otro camino es cosa del producto.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod17" aria-expanded="false" aria-controls="cod17">
+      <button class="cod-ver" data-ver="cod19" aria-expanded="false" aria-controls="cod19">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod17">Copiar</button>
+      <button class="copiar" data-copiar-de="cod19">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod17" hidden>import { RangoFecha, atajosDeDias } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod19" hidden>import { RangoFecha, atajosDeDias } from 'sistema-diseno-ae/componentes';
 
 // Sin `desde`/`hasta` se gobierna solo.
 &lt;RangoFecha titulo="Rango de fechas" /&gt;
@@ -15185,13 +15295,13 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod9" aria-expanded="false" aria-controls="cod9">
+      <button class="cod-ver" data-ver="cod11" aria-expanded="false" aria-controls="cod11">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Tarjeta de persona</span>
-      <button class="copiar" data-copiar-de="cod9">Copiar</button>
+      <button class="copiar" data-copiar-de="cod11">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod9" hidden>import { TarjetaPersona } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod11" hidden>import { TarjetaPersona } from 'sistema-diseno-ae/componentes';
 
 &lt;TarjetaPersona
   nombre="Álvarez Ponce, Rosa"
@@ -15205,13 +15315,13 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod10" aria-expanded="false" aria-controls="cod10">
+      <button class="cod-ver" data-ver="cod12" aria-expanded="false" aria-controls="cod12">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Tarjeta normal</span>
-      <button class="copiar" data-copiar-de="cod10">Copiar</button>
+      <button class="copiar" data-copiar-de="cod12">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod10" hidden>import { Tarjeta } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod12" hidden>import { Tarjeta } from 'sistema-diseno-ae/componentes';
 
 &lt;Tarjeta titulo="Resumen del mes"&gt;
   &lt;p&gt;Contenido&lt;/p&gt;
@@ -15355,6 +15465,181 @@ export function ResumenSemana() {
     <tr><td><code>cantidad</code><br><span class="seccion-sub">string</span></td><td>La magnitud, sin signo ni flecha: «72 min», «3 trab.», «2:50 hrs». <strong>Obligatoria.</strong></td></tr>
     <tr><td><code>direccion</code><br><span class="seccion-sub">'sube' | 'baja' | 'igual'</span></td><td>Lo que pasó: la app ya comparó el actual con el anterior. Con <code>igual</code> no se pinta la cantidad. <strong>Obligatoria.</strong></td></tr>
     <tr><td><code>sentido</code><br><span class="seccion-sub">'subir-es-peor' | 'subir-es-mejor'</span></td><td>Cómo se lee subir. Decide si la diferencia es «empeoró» (tono de aviso) o «mejoró» (tono de éxito). <strong>Obligatoria.</strong></td></tr>
+  </tbody>
+</table>
+    </section><section class="pagina" id="pg-mapacalor" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#mapacalor" data-ir="mapacalor" class="migas-actual" aria-current="page">Mapa de calor</a>
+      </nav>
+      <div class="pant-cab"><h1>Mapa de calor</h1></div>
+      
+<p class="pag-intro">Una <strong>tabla de filas por columnas</strong> donde la intensidad de un solo tono dice
+cuánto y el número dice cuánto exactamente. Trae su propio título, descripción, total y escala «Menos – Más»:
+la app no la envuelve en otra tarjeta. Las celdas con pocos trabajadores se marcan con borde punteado.</p>
+
+<h3 class="sub-seccion">El mapa</h3>
+<p class="seccion-sub">Tardanzas por sexo y edad. La intensidad va en <strong>cinco pasos</strong> (no continua) para
+que cada par de colores se pueda medir. «Pocos datos» (borde punteado) son las celdas de 1 o 2 trabajadores; la
+vacía lleva «—» y «0 trab.» y no tiene color. En un teléfono la tabla se desliza <strong>dentro</strong> de su
+recuadro, que se alcanza con el teclado; la página no.</p>
+<div class="bloque">
+  <article class="mapa"><header><h3 class="mapa-titulo" id="mapa-ej-1">Tardanzas</h3><p class="mapa-desc">Por sexo y edad</p><p class="mapa-desc mapa-total">Total <strong>603 min</strong></p></header><div class="mapa-vista" role="region" tabindex="0" aria-labelledby="mapa-ej-1"><table class="mapa-tabla"><thead><tr><td></td><th scope="col">18-29</th><th scope="col">30-39</th><th scope="col">40-49</th><th scope="col">50-59</th><th scope="col">60+</th></tr></thead><tbody><tr><th scope="row">Hombre</th><td><div class="mapa-celda mapa-p3"><span class="mapa-valor">48</span><span class="mapa-n">3 trab.</span></div></td><td><div class="mapa-celda mapa-p5"><span class="mapa-valor">96</span><span class="mapa-n">5 trab.</span></div></td><td><div class="mapa-celda mapa-p5"><span class="mapa-valor">108</span><span class="mapa-n">5 trab.</span></div></td><td><div class="mapa-celda mapa-p3 mapa-pocos"><span class="mapa-valor">52</span><span class="mapa-n">1 trab.</span><span class="sr-solo">Pocos datos: 1 trabajador</span></div></td><td><div class="mapa-celda mapa-vacia"><span class="mapa-valor">—</span><span class="mapa-n">0 trab.</span></div></td></tr><tr><th scope="row">Mujer</th><td><div class="mapa-celda mapa-p2"><span class="mapa-valor">31</span><span class="mapa-n">4 trab.</span></div></td><td><div class="mapa-celda mapa-p4"><span class="mapa-valor">84</span><span class="mapa-n">6 trab.</span></div></td><td><div class="mapa-celda mapa-p4"><span class="mapa-valor">66</span><span class="mapa-n">5 trab.</span></div></td><td><div class="mapa-celda mapa-p5"><span class="mapa-valor">100</span><span class="mapa-n">5 trab.</span></div></td><td><div class="mapa-celda mapa-p1 mapa-pocos"><span class="mapa-valor">18</span><span class="mapa-n">2 trab.</span><span class="sr-solo">Pocos datos: 2 trabajadores</span></div></td></tr></tbody></table></div><div class="mapa-escala" aria-hidden="true"><span>Menos</span><span class="mapa-pasos"><i class="mapa-paso mapa-p1"></i><i class="mapa-paso mapa-p2"></i><i class="mapa-paso mapa-p3"></i><i class="mapa-paso mapa-p4"></i><i class="mapa-paso mapa-p5"></i></span><span>Más</span></div></article>
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Es una tabla</strong> con cabecera de columna y de fila (<code>th scope</code>); una celda se lee «Hombre, 30-39, 96, 5 trab.».</td></tr>
+    <tr><td class="num">2</td><td><strong>Título, descripción y total propios.</strong> Sin descripción o sin total no queda un elemento vacío.</td></tr>
+    <tr><td class="num">3</td><td><strong>El recuadro que se desliza</strong> es una región enfocable con el título por nombre.</td></tr>
+    <tr><td class="num">4</td><td><strong>Cinco pasos:</strong> <code>ceil(5·valor/máximo)</code>, con el máximo tomado solo entre las celdas con trabajadores. Cada celda escribe el valor y «n trab.».</td></tr>
+    <tr><td class="num">5</td><td><strong>El texto cambia con el fondo:</strong> principal en los pasos 1 a 3, invertido en 4 y 5.</td></tr>
+    <tr><td class="num">6</td><td><strong>«Pocos datos»:</strong> <code>n</code> menor o igual que <code>pocosDatosHasta</code> (2 por omisión) lleva borde punteado y el nombre accesible «Pocos datos: n trabajadores» (singular con 1).</td></tr>
+    <tr><td class="num">7</td><td><strong>Celda vacía:</strong> con <code>n</code> igual a 0, «—» y «0 trab.», sin paso de color.</td></tr>
+    <tr><td class="num">8</td><td><strong>Escala «Menos – Más»</strong> de cinco pasos bajo la tabla; solo para la vista, y sin leyenda de «Pocos datos».</td></tr>
+    <tr><td class="num">9</td><td><strong>Móvil primero:</strong> ancho mínimo de 350&nbsp;px y desplazamiento horizontal dentro del recuadro.</td></tr>
+    <tr><td class="num">10</td><td><strong>Cifras tabulares</strong> y colores solo de tokens.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Cómo se usa</h3>
+<p class="seccion-sub">Lo que se copia es la importación y las props. El total y el formato los calcula y escribe la app.</p>
+
+  <div class="cod-bloque">
+    <div class="cod-cab">
+      <button class="cod-ver" data-ver="cod9" aria-expanded="false" aria-controls="cod9">
+        <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
+      </button>
+      <span class="cod-tit">Uso de MapaCalor</span>
+      <button class="copiar" data-copiar-de="cod9">Copiar</button>
+    </div>
+    <pre class="cod-pre" id="cod9" hidden>import { MapaCalor } from 'sistema-diseno-ae/componentes';
+
+export function TardanzasPorSexoYEdad() {
+  return (
+    &lt;MapaCalor
+      titulo="Tardanzas"
+      descripcion="Por sexo y edad"
+      total="603 min"
+      filas={['Hombre', 'Mujer']}
+      columnas={['18-29', '30-39', '40-49', '50-59', '60+']}
+      celdas={[
+        [{ valor: 48, n: 3 }, { valor: 96, n: 5 }, { valor: 108, n: 5 }, { valor: 52, n: 1 }, { valor: 0, n: 0 }],
+        [{ valor: 31, n: 4 }, { valor: 84, n: 6 }, { valor: 66, n: 5 }, { valor: 100, n: 5 }, { valor: 18, n: 2 }],
+      ]}
+      formato={(minutos) =&gt; String(minutos)}
+    /&gt;
+  );
+}</pre>
+  </div>
+
+<h3 class="sub-seccion">Cómo se configura</h3>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>titulo</code><br><span class="seccion-sub">string</span></td><td>El título del mapa: «Tardanzas». Nombra también la tabla y su recuadro. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>descripcion</code><br><span class="seccion-sub">ReactNode</span></td><td>Una línea bajo el título: «Por sexo y edad».</td></tr>
+    <tr><td><code>total</code><br><span class="seccion-sub">string</span></td><td>El total del mapa, ya escrito: «603 min». Sale como «Total 603 min».</td></tr>
+    <tr><td><code>filas</code><br><span class="seccion-sub">string[]</span></td><td>El rótulo de cada fila. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>columnas</code><br><span class="seccion-sub">string[]</span></td><td>El rótulo de cada columna. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>celdas</code><br><span class="seccion-sub">CeldaMapaCalor[][]</span></td><td><code>celdas[fila][columna]</code>, cada una con <code>valor</code> (decide el paso de color) y <code>n</code> (trabajadores). <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>formato</code><br><span class="seccion-sub">(valor: number) =&gt; string</span></td><td>Cómo se escribe el valor de cada celda. Sin él, el número tal cual.</td></tr>
+    <tr><td><code>pocosDatosHasta</code><br><span class="seccion-sub">number</span></td><td>Una celda con <code>n</code> menor o igual que esto es «Pocos datos». 2 por omisión.</td></tr>
+  </tbody>
+</table>
+    </section><section class="pagina" id="pg-listaranking" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#listaranking" data-ir="listaranking" class="migas-actual" aria-current="page">Lista de ranking</a>
+      </nav>
+      <div class="pant-cab"><h1>Lista de ranking</h1></div>
+      
+<p class="pag-intro">Una <strong>lista corta de personas ordenada por una medida</strong>: posición, avatar,
+nombre, una línea gris, el valor escrito y una barra proporcional al primero. La app entrega las filas ya
+ordenadas y con el texto del valor; la pieza solo las dibuja.</p>
+
+<h3 class="sub-seccion">Con filas</h3>
+<p class="seccion-sub">Cinco filas, la primera con un nombre largo: <strong>envuelve</strong> en vez de cortarse, también
+a 360&nbsp;px. La barra del primero llena el ancho y las demás miden <code>valor / primero</code>, sin saltos.</p>
+<div class="bloque">
+  <section class="ranking" aria-labelledby="rk-ej-1"><h3 class="ranking-titulo" id="rk-ej-1">Tardanzas</h3><ol class="ranking-lista" role="list"><li class="ranking-fila"><span class="ranking-pos">1</span><span class="ranking-avatar" aria-hidden="true"><span class="avatar avatar-m avatar-2" title="Salazar Quispe de la Cruz, María Guadalupe del Carmen">SM</span></span><div class="ranking-quien"><div class="ranking-nombre">Salazar Quispe de la Cruz, María Guadalupe del Carmen</div><div class="ranking-detalle">Nivel Inicial</div><svg class="ranking-barra" aria-hidden="true" focusable="false"><rect class="ranking-barra-relleno" width="100%" height="100%" rx="3"></rect></svg></div><span class="ranking-valor">74 min</span></li><li class="ranking-fila"><span class="ranking-pos">2</span><span class="ranking-avatar" aria-hidden="true"><span class="avatar avatar-m avatar-3" title="Huamán Ríos, Luis">HL</span></span><div class="ranking-quien"><div class="ranking-nombre">Huamán Ríos, Luis</div><div class="ranking-detalle">Nivel Primaria</div><svg class="ranking-barra" aria-hidden="true" focusable="false"><rect class="ranking-barra-relleno" width="82.43%" height="100%" rx="3"></rect></svg></div><span class="ranking-valor">61 min</span></li><li class="ranking-fila"><span class="ranking-pos">3</span><span class="ranking-avatar" aria-hidden="true"><span class="avatar avatar-m avatar-4" title="Paredes Soto, Elena">PE</span></span><div class="ranking-quien"><div class="ranking-nombre">Paredes Soto, Elena</div><div class="ranking-detalle">Nivel Secundaria</div><svg class="ranking-barra" aria-hidden="true" focusable="false"><rect class="ranking-barra-relleno" width="74.32%" height="100%" rx="3"></rect></svg></div><span class="ranking-valor">55 min</span></li><li class="ranking-fila"><span class="ranking-pos">4</span><span class="ranking-avatar" aria-hidden="true"><span class="avatar avatar-m avatar-1" title="Cárdenas Vega, Jorge">CJ</span></span><div class="ranking-quien"><div class="ranking-nombre">Cárdenas Vega, Jorge</div><div class="ranking-detalle">Nivel Inicial</div><svg class="ranking-barra" aria-hidden="true" focusable="false"><rect class="ranking-barra-relleno" width="66.22%" height="100%" rx="3"></rect></svg></div><span class="ranking-valor">49 min</span></li><li class="ranking-fila"><span class="ranking-pos">5</span><span class="ranking-avatar" aria-hidden="true"><span class="avatar avatar-m avatar-2" title="Mendoza Lara, Rosa">MR</span></span><div class="ranking-quien"><div class="ranking-nombre">Mendoza Lara, Rosa</div><div class="ranking-detalle">Secretaría</div><svg class="ranking-barra" aria-hidden="true" focusable="false"><rect class="ranking-barra-relleno" width="59.46%" height="100%" rx="3"></rect></svg></div><span class="ranking-valor">44 min</span></li></ol></section>
+</div>
+
+<h3 class="sub-seccion">Sin filas</h3>
+<p class="seccion-sub">En lugar de una lista vacía, el texto que pase la app.</p>
+<div class="bloque">
+  <section class="ranking" aria-labelledby="rk-ej-2"><h3 class="ranking-titulo" id="rk-ej-2">Faltas</h3><p class="ranking-vacio">Nadie tiene faltas en esta unidad esta semana</p></section>
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Es una sección</strong> con su título y una lista ordenada; el título le da el nombre.</td></tr>
+    <tr><td class="num">2</td><td><strong>Cada fila</strong> lleva posición, <code>Avatar</code> (tamaño m, sin leerse dos veces), nombre, una línea gris opcional y el valor.</td></tr>
+    <tr><td class="num">3</td><td><strong>La barra es proporcional al primero:</strong> el primero llena el ancho y los demás miden <code>valor / primero</code>, exacto. Es decoración: el valor ya está escrito.</td></tr>
+    <tr><td class="num">4</td><td><strong>Con valor 0 en el primero no hay barra</strong> en ninguna fila.</td></tr>
+    <tr><td class="num">5</td><td><strong>Sin filas</strong> sale <code>textoVacio</code> y no una lista vacía.</td></tr>
+    <tr><td class="num">6</td><td><strong>El nombre envuelve:</strong> nunca se corta con puntos suspensivos ni queda detrás de un <code>title</code>.</td></tr>
+    <tr><td class="num">7</td><td><strong>Muestra las filas que recibe:</strong> el tablero pasa hasta cinco, la pieza no recorta ni rellena.</td></tr>
+    <tr><td class="num">8</td><td><strong>Móvil primero</strong>, cifras tabulares y colores solo de tokens.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Cómo se usa</h3>
+<p class="seccion-sub">Lo que se copia es la importación y las props. La app ordena y escribe el texto del valor.</p>
+
+  <div class="cod-bloque">
+    <div class="cod-cab">
+      <button class="cod-ver" data-ver="cod10" aria-expanded="false" aria-controls="cod10">
+        <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
+      </button>
+      <span class="cod-tit">Uso de ListaRanking</span>
+      <button class="copiar" data-copiar-de="cod10">Copiar</button>
+    </div>
+    <pre class="cod-pre" id="cod10" hidden>import { ListaRanking } from 'sistema-diseno-ae/componentes';
+
+export function RankingTardanzas() {
+  return (
+    &lt;ListaRanking
+      titulo="Tardanzas"
+      textoVacio="Nadie llegó tarde esta semana"
+      filas={[
+        { id: '71234567', nombre: 'Huamán Ríos, Luis', valor: 74, texto: '74 min', detalle: 'Nivel Primaria' },
+        { id: '08765432', nombre: 'Paredes Soto, Elena', valor: 55, texto: '55 min', detalle: 'Nivel Secundaria' },
+      ]}
+    /&gt;
+  );
+}</pre>
+  </div>
+
+<h3 class="sub-seccion">Cómo se configura</h3>
+<h4 class="sub-seccion">La lista</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>titulo</code><br><span class="seccion-sub">string</span></td><td>El título de la lista: «Tardanzas». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>filas</code><br><span class="seccion-sub">FilaRanking[]</span></td><td>Las filas, ya ordenadas. La pieza muestra las que recibe. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>textoVacio</code><br><span class="seccion-sub">string</span></td><td>Lo que se lee cuando no hay filas. <strong>Obligatoria.</strong></td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">Cada fila</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>id</code><br><span class="seccion-sub">string</span></td><td>Identificador estable de la persona; de él sale el color del avatar. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>nombre</code><br><span class="seccion-sub">string</span></td><td>Apellidos y nombres. Puede ser largo y envuelve. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>valor</code><br><span class="seccion-sub">number</span></td><td>Solo para la proporción de la barra. El primero es el 100&nbsp;%. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>texto</code><br><span class="seccion-sub">string</span></td><td>Lo que se lee: «74 min», «2 días». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>foto</code><br><span class="seccion-sub">string</span></td><td>URL de la foto; sin ella, o si falla, el avatar muestra las iniciales.</td></tr>
+    <tr><td><code>detalle</code><br><span class="seccion-sub">string</span></td><td>Una línea gris bajo el nombre (la unidad organizativa).</td></tr>
   </tbody>
 </table>
     </section><section class="pagina" id="pg-tabla" hidden>
@@ -15843,13 +16128,13 @@ comportamiento de siempre y <strong>no cambia para nadie que no pida el anclaje<
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod11" aria-expanded="false" aria-controls="cod11">
+      <button class="cod-ver" data-ver="cod13" aria-expanded="false" aria-controls="cod13">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod11">Copiar</button>
+      <button class="copiar" data-copiar-de="cod13">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod11" hidden>import { TablaDatos, Enlace } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod13" hidden>import { TablaDatos, Enlace } from 'sistema-diseno-ae/componentes';
 
 &lt;TablaDatos
   titulo="Personal"               // obligatorio: nombra la tabla para el lector
@@ -15984,13 +16269,13 @@ cualquier otro listado: no tiene paginación propia.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod12" aria-expanded="false" aria-controls="cod12">
+      <button class="cod-ver" data-ver="cod14" aria-expanded="false" aria-controls="cod14">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod12">Copiar</button>
+      <button class="copiar" data-copiar-de="cod14">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod12" hidden>import { Paginacion } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod14" hidden>import { Paginacion } from 'sistema-diseno-ae/componentes';
 
 &lt;Paginacion
   total={1240}
@@ -16107,13 +16392,13 @@ no aportan nada sobre una barra.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod18" aria-expanded="false" aria-controls="cod18">
+      <button class="cod-ver" data-ver="cod20" aria-expanded="false" aria-controls="cod20">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod18">Copiar</button>
+      <button class="copiar" data-copiar-de="cod20">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod18" hidden>import { Progreso, ProgresoPasos } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod20" hidden>import { Progreso, ProgresoPasos } from 'sistema-diseno-ae/componentes';
 
 &lt;Progreso
   etiqueta="Importando trabajadores"
@@ -16258,13 +16543,13 @@ dato</strong>; el detalle vive en la pantalla, no en algo que se va en cuatro se
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod19" aria-expanded="false" aria-controls="cod19">
+      <button class="cod-ver" data-ver="cod21" aria-expanded="false" aria-controls="cod21">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod19">Copiar</button>
+      <button class="copiar" data-copiar-de="cod21">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod19" hidden>import { avisar } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod21" hidden>import { avisar } from 'sistema-diseno-ae/componentes';
 
 avisar.exito('Se guardó la asistencia de marzo');
 avisar.info('Se exportaron 38 filas a CSV');
@@ -16396,13 +16681,13 @@ se pliega y el contenido vuelve a subir.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod20" aria-expanded="false" aria-controls="cod20">
+      <button class="cod-ver" data-ver="cod22" aria-expanded="false" aria-controls="cod22">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod20">Copiar</button>
+      <button class="copiar" data-copiar-de="cod22">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod20" hidden>import { useConfirmar } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod22" hidden>import { useConfirmar } from 'sistema-diseno-ae/componentes';
 
 const confirmar = useConfirmar();
 
@@ -16645,13 +16930,13 @@ antes que la causa técnica.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod13" aria-expanded="false" aria-controls="cod13">
+      <button class="cod-ver" data-ver="cod15" aria-expanded="false" aria-controls="cod15">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod13">Copiar</button>
+      <button class="copiar" data-copiar-de="cod15">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod13" hidden>import { EstadoPantalla } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod15" hidden>import { EstadoPantalla } from 'sistema-diseno-ae/componentes';
 
 // El componente elige el estado; la pantalla no lo decide a mano
 &lt;EstadoPantalla
@@ -16882,7 +17167,7 @@ telefono lo que se busca es <strong>volver</strong>, no situarse.</p>
       <div class="pant-cab"><h1>Cabecera de pantalla</h1></div>
       
 <p class="pag-intro">Migas, titulo, accion y descripcion. El bloque con el que abre
-<strong>toda</strong> pantalla, y con el que abren las 72 paginas de este catalogo.</p>
+<strong>toda</strong> pantalla, y con el que abren las 74 paginas de este catalogo.</p>
 
 <h3 class="sub-seccion">Por que es componente y no una convencion</h3>
 <p class="seccion-sub">El titulo de pantalla es el <code>&lt;h1&gt;</code> del documento, y

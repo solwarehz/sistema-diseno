@@ -72,6 +72,9 @@ const ELEMENTOS = [
   { n: 'Cuadro de estado',      p: ['cuadro'] },
   // SPEC 07 (R169): cifras separadas por línea fina y su diferencia con flecha. `franja` y `cifra` son prefijos de este elemento.
   { n: 'Franja de cifras',      p: ['franja', 'cifra'] },
+  // SPEC 07 (R169): tabla de cinco pasos de un tono y lista corta con barra. `mapa` y `ranking` son prefijos de cada una.
+  { n: 'Mapa de calor',         p: ['mapa'] },
+  { n: 'Lista de ranking',      p: ['ranking'] },
   { n: 'Avatar',                p: ['avatar'] },
   { n: 'Tarjeta de persona',    p: ['tp'] },
   // R59 · Prefijo propio y no `tn-`: el corte de prefijos es en el guion, así
