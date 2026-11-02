@@ -82,7 +82,7 @@ export const CAMBIOS = [
       + 'solo modulo; todo empieza cerrado; las filas plegadas llevan `hidden`), `resumen="ninguno"` (la banda '
       + 'no resume nada, ni chips ni «n de n») e `icono` en cada columna (encabezado '
       + 'blanco, y el cursor o el foco sobre un interruptor ilumina su columna y su fila). Con `plegable` un '
-      + 'modulo sin privilegios es solo un titulo, sin linea explicativa. Es una ADICION: sin ninguna prop '
+      + 'modulo sin privilegios es solo un titulo, sin linea explicativa, y cada modulo lleva su propia cabecera de columnas encima de sus filas. Una fila admite `icono` a un lado u otro de su nombre (`posicionIconoFila`). Es una ADICION: sin ninguna prop '
       + 'nueva el marcado es identico (regla 38). No se anade ningun color ni token: la banda baja al '
       + 'escalon siguiente de sus grises. FUERA: iconos nuevos —«Dar alta» y «Desactivar» no tienen uno '
       + 'obvio en el juego—, plegar por omision y la pantalla del equipo.',

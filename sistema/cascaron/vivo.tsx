@@ -314,7 +314,7 @@ const COLUMNAS_MENU: ColumnaPrivilegios[] = [
 const MODULOS_MENU: ModuloPrivilegios[] = [
   {
     id: 'dashboard', nombre: 'Dashboard',
-    filas: [{ id: 'clasificacion', nombre: 'Clasificación semanal' }],
+    filas: [{ id: 'clasificacion', nombre: 'Clasificación semanal', icono: 'panel' }],
     privilegios: [{ id: 'cs-ver', nombre: 'Ver', columna: 'ver', fila: 'clasificacion' }],
   },
   { id: 'horarios', nombre: 'Horarios', privilegios: [] },
@@ -326,11 +326,20 @@ const MODULOS_MENU: ModuloPrivilegios[] = [
 function PlegableViva() {
   const [v, setV] = useState<ValorPrivilegios>({ dashboard: { 'cs-ver': true } });
   const [abiertos, setAbiertos] = useState<string[]>(['dashboard']);
+  const [lado, setLado] = useState<'izquierda' | 'derecha'>('izquierda');
   return (
+    <div className="pp">
+    <Segmentado
+      etiqueta="Icono de la fila"
+      opciones={[{ valor: 'izquierda', texto: 'Icono a la izquierda' }, { valor: 'derecha', texto: 'Icono a la derecha' }]}
+      valor={lado}
+      onCambio={(v) => setLado(v as 'izquierda' | 'derecha')}
+    />
     <PanelPrivilegios
       presentacion="matriz"
       plegable
       resumen="ninguno"
+      posicionIconoFila={lado}
       columnas={COLUMNAS_MENU}
       modulos={MODULOS_MENU}
       base={null}
@@ -339,6 +348,7 @@ function PlegableViva() {
       abiertos={abiertos}
       onAbiertos={setAbiertos}
     />
+    </div>
   );
 }
 

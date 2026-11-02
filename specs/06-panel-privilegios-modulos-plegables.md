@@ -40,6 +40,8 @@ Hechos verificados en el repositorio el 2026-11-02 (rama `work`, versión 1.150.
 - `resumen?: 'completo' | 'ninguno'` (`'completo'` por omisión, como siempre: lo concedido y el «n de n»). Con `'ninguno'`: la banda no resume nada, ni chips ni cuenta. Aplica a matriz y a lista. *(La petición del equipo pedía `'concedido'`, solo los chips; el responsable del sistema lo sustituyó el 2026-11-02: ver Decisiones.)*
 - `icono?: NombreIcono` en `ColumnaPrivilegios`: icono de línea sobre la etiqueta, centrado sobre el interruptor. Una columna sin `icono` sale como hoy.
 - Encabezado de columnas sobre fondo blanco (`fondo-tarjeta`) con una línea inferior, para que las bandas sean lo más fuerte.
+- **Cabecera de columnas dentro de cada módulo** (añadido el 2026-11-02 por decisión del responsable tras ver la demo): con `plegable` desaparece la cabecera única de arriba y cada módulo con filas lleva la suya justo encima de ellas, plegada con él. Así el nombre de la opción queda junto al interruptor y no varias líneas más arriba.
+- **Icono en la fila** (añadido el 2026-11-02): `icono?: NombreIcono` en cada fila de `filas` y `posicionIconoFila?: 'izquierda' | 'derecha'` en el panel (`'izquierda'` por omisión). Solo en la matriz.
 - Resaltado: al pasar el cursor o enfocar un interruptor de la matriz, se iluminan su columna (etiqueta e icono) y su fila, con el color `enlace`.
 - Aviso de diagnóstico: `plegable` con `abiertos` y sin `onAbiertos` avisa, como ya hace la lista. El aviso «no hacen nada» de la matriz se retira **solo** cuando `plegable` está activo.
 - Una **maqueta** (pedida por el chat) y un **mockup** hecho con la skill `frontend-design` (`CLAUDE.md` §4bis-2), que el responsable aprueba antes de implementar.
@@ -77,6 +79,8 @@ export type PanelPrivilegiosProps = {
   plegable?: boolean;
   /** Qué dice la banda sin abrir. 'ninguno' = ni chips ni cuenta. */
   resumen?: 'completo' | 'ninguno';
+  /** De qué lado del nombre de la fila va su `icono`. */
+  posicionIconoFila?: 'izquierda' | 'derecha';
 };
 ```
 
@@ -121,6 +125,8 @@ Convenciones:
 - [x] Una columna con `icono` pinta el icono sobre la etiqueta, oculto al lector, y su nombre accesible sigue siendo el `titulo`; una columna sin `icono` queda alineada con las demás y sale como hoy. (pruebas [37])
 - [x] El encabezado de columnas usa `fondo-tarjeta` con una línea inferior, y las bandas de módulo se distinguen de él (medido en navegador). (visto en navegador, en captura; no se midió numéricamente)
 - [x] Al pasar el cursor o enfocar un interruptor de la matriz, se ilumina con `enlace` el encabezado de su columna (etiqueta e icono) y su fila toma un fondo tenue, como en la maqueta; la fila también reacciona al foco dentro de ella; al salir, vuelve. (pruebas [37] y visto en navegador)
+- [x] Con `plegable`, no hay cabecera única arriba y cada módulo con filas lleva la suya, plegada con él; las celdas apuntan a la de su módulo y la iluminación es del módulo tocado. (pruebas [39]; visto en navegador)
+- [x] Una fila con `icono` lo pinta a la izquierda de su nombre, o a la derecha con `posicionIconoFila="derecha"`; sin `icono` conserva su marcado. (pruebas [40]; visto en navegador con el selector de la demo)
 - [x] `plegable` con `abiertos` y sin `onAbiertos` avisa en desarrollo; sin `plegable`, el aviso de la matriz sigue como hoy. (prueba [34])
 - [x] A 360 y 390 px (donde se pinta la lista) y en escritorio (matriz), con cinco módulos de los cuales cuatro son vacíos, no hay desplazamiento horizontal ni texto cortado, medido en navegador. (medido a 360 px: sin desbordamiento (scrollWidth 360) ni texto cortado, con cinco módulos de los que cuatro son vacíos; 390 px no se midió aparte)
 - [ ] Los pares de contraste del fondo del hover de la banda y del texto sobre él salen en verde en claro y oscuro en `verificar-contraste.mjs`; no se añade ningún color a `autorizados.lock.json`. (NO CUMPLIDO TAL CUAL: no se añadió ningún par a `verificar-contraste.mjs` y no se creó token ni color. Medido a mano en navegador: texto sobre el hover 10,77:1 claro y 8,63:1 oscuro, chevron en reposo 4,18:1 y 5,57:1, etiqueta de columna 5,56:1 y 8,65:1, enlace 5,76:1 y 7,00:1)
@@ -153,6 +159,10 @@ Convenciones:
 
 - **Sí:** `resumen` con solo dos valores, `'completo'` y `'ninguno'`. El equipo pidió `'concedido'` (solo los chips); el responsable lo cambió el 2026-11-02 tras ver la demo: *«tú eres responsable del sistema de diseño… lo debes hacer flexible para que funcione para todos… chips le quita seriedad… principio KISS»*. Los chips se quitan de la banda y no se ofrecen tres modos cuando bastan dos. **Consecuencia aceptada:** plegada, la banda no dice qué hay concedido, que era la razón de ser de los chips en la maqueta del equipo; hay que abrirla. **El equipo debe saberlo:** su R168 pedía `'concedido'` y el sistema les entrega `'ninguno'`.
 
+- **Sí:** la cabecera de columnas va **dentro de cada módulo** con `plegable`, y no una sola arriba. Decisión del responsable el 2026-11-02: *«el tener el nombre de la columna fuera se ve feo, métela dentro de cada wrap… será más fácil saber a qué opción es el interruptor, porque la tengo cerca»*. Cambia el `id` de cada columna (lleva el módulo) y la iluminación pasa a ser del módulo tocado.
+- **No:** mantener la cabecera única y hacerla pegajosa (`sticky`) arriba. Seguiría lejos de las filas de un módulo largo y gastaría alto de pantalla en el teléfono.
+- **Sí:** `icono` en la fila, con `posicionIconoFila` en el panel y no en cada fila. Decisión del responsable el 2026-11-02 («que se posicione a la izquierda o derecha del nombre»). **No** por fila: dos filas con el icono en lados distintos no se leen como una columna. **No** en la lista: nombra privilegios, no filas; si se quiere, es otra spec.
+
 ## Riesgos
 
 | Riesgo | Mitigación |
@@ -164,6 +174,7 @@ Convenciones:
 | Ningún color autorizado da el «tono más oscuro» con contraste suficiente | El paso 1 lo resuelve en el mockup; si no hay, se detiene y se pregunta al responsable |
 | El resaltado de columna y fila exige selectores que los candados no manejan (solo `@media`) | El paso 6 lo mide; si un candado no lo resuelve, se detiene y se avisa en vez de silenciarlo |
 | Columnas con y sin icono desalinean las etiquetas | Criterio de aceptación y caso en el mockup |
+| Los `id` de columna cambian con `plegable` (llevan el módulo) y algún consumidor los usaba | Solo con `plegable`, que es nuevo: sin él los `id` son los de siempre (regla 38 y comparación byte a byte) |
 | Dos specs reservan la misma versión | Se numera al implementar, no antes; declarado en Decisiones |
 | El mockup se aparta de lo que aprobó el dueño al pasar de los colores del producto a los tokens | El responsable aprueba el mockup comparándolo con la maqueta; las diferencias de color son esperadas y se listan |
 | La maqueta no define los iconos de columna | Decisión pendiente declarada; `icono` es opcional |

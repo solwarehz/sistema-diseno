@@ -8821,7 +8821,7 @@ periódicamente quién tiene qué es obligación legal, y se hace mirando una co
 <strong>siempre</strong>, también con un solo módulo. Un módulo con <code>privilegios: []</code> se dibuja como
 <strong>solo título</strong>: sin fila repetida, sin «Sin declarar», sin «sin permisos» ni «0 de 0», porque no es que
 no tenga permisos sino que aún no tiene opciones. <code>resumen</code> decide qué dice la banda: <code>"completo"</code> (por omisión) lo concedido y el «n de n»; <code>"ninguno"</code> <strong>nada</strong>, ni chips ni cuenta —así va la demo—. Y si alguna columna declara un <code>icono</code>, el encabezado pasa a fondo
-blanco y el cursor o el foco sobre un interruptor ilumina su columna y su fila.</p>
+blanco y el cursor o el foco sobre un interruptor ilumina su columna y su fila. Con <code>plegable</code> cada módulo lleva <strong>su propia cabecera de columnas justo encima de sus filas</strong>, y la cabecera única de arriba desaparece: así el nombre de la opción queda junto al interruptor y no varias líneas más arriba. Una fila puede llevar <code>icono</code>, a la izquierda o a la derecha de su nombre según <code>posicionIconoFila</code>.</p>
 <div class="aviso">
   Va <strong>montado y vivo</strong>: pliega Dashboard, pasa el cursor por el «Ver» de «Clasificación semanal» o
   recorre las bandas con el tabulador. La banda <strong>no muestra chips</strong>: plegada no dice qué hay concedido. «Dar alta» y «Desactivar» van <strong>sin icono</strong> a propósito: no hay
@@ -8831,36 +8831,34 @@ blanco y el cursor o el foco sobre un interruptor ilumina su columna y su fila.<
 <div class="bloque" id="plegable-viva"></div>
 
 <h4 class="sub-seccion">Lo mismo, sin JavaScript</h4>
-<p class="seccion-sub">Lo que emite el componente con una banda cerrada, otra abierta y un título aún vacío, con <code>resumen="ninguno"</code>.
+<p class="seccion-sub">Lo que emite el componente con una banda abierta —su cabecera de columnas y su fila, con icono— y otra cerrada, con <code>resumen="ninguno"</code>.
 Existe porque los candados leen el documento estático y no lo que monta el guion de arriba.</p>
 <div class="bloque">
   <div class="pm-envoltura">
     <table class="pm pm-con-iconos">
-      <thead>
-        <tr>
-          <th class="pm-esquina" scope="col"><span class="sr-solo">Opción</span></th>
-          <th class="pm-col pm-col-on" scope="col"><span class="pm-col-txt pm-col-ic">${icono('ojo')}<span>Ver</span></span></th>
-          <th class="pm-col" scope="col"><span class="pm-col-txt pm-col-ic">${icono('lapiz')}<span>Editar</span></span></th>
-        </tr>
-      </thead>
       <tbody>
-        <tr class="pm-mod pm-mod-plegable">
+        <tr class="pm-mod pm-mod-plegable pm-abierto">
           <th scope="colgroup" colspan="3" class="pm-mod-nom">
-            <button type="button" class="pm-mod-cab" aria-expanded="false">
+            <button type="button" class="pm-mod-cab" aria-expanded="true">
               <span class="pm-chev" aria-hidden="true">${icono('chevron')}</span>
               <span class="pm-mod-txt">Dashboard</span>
               <span class="pm-tags"></span>
             </button>
           </th>
         </tr>
-        <tr class="pm-fila" hidden>
-          <th scope="row" class="pm-nom"><span class="pm-nom-txt">Clasificación semanal</span></th>
+        <tr class="pm-cab-cols">
+          <th class="pm-esquina" scope="col"><span class="sr-solo">Opción</span></th>
+          <th class="pm-col pm-col-on" scope="col"><span class="pm-col-txt pm-col-ic">${icono('ojo')}<span>Ver</span></span></th>
+          <th class="pm-col" scope="col"><span class="pm-col-txt pm-col-ic">${icono('lapiz')}<span>Editar</span></span></th>
+        </tr>
+        <tr class="pm-fila">
+          <th scope="row" class="pm-nom"><span class="pm-nom-fila">${icono('panel')}<span class="pm-nom-txt">Clasificación semanal</span></span></th>
           <td class="pm-celda pm-vacia"><span class="sr-solo">Sin declarar</span></td>
           <td class="pm-celda pm-vacia"><span class="sr-solo">Sin declarar</span></td>
         </tr>
-        <tr class="pm-mod pm-mod-plegable pm-abierto">
+        <tr class="pm-mod pm-mod-plegable">
           <th scope="colgroup" colspan="3" class="pm-mod-nom">
-            <button type="button" class="pm-mod-cab" aria-expanded="true">
+            <button type="button" class="pm-mod-cab" aria-expanded="false">
               <span class="pm-chev" aria-hidden="true">${icono('chevron')}</span>
               <span class="pm-mod-txt">Horarios</span>
               <span class="pm-tags"></span>
@@ -8881,7 +8879,8 @@ Existe porque los candados leen el documento estático y no lo que monta el guio
 
 // Un título todavía sin opciones: solo el título.
 const modulos = [
-  { id: 'dashboard', nombre: 'Dashboard', filas: [{ id: 'clasificacion', nombre: 'Clasificación semanal' }],
+  { id: 'dashboard', nombre: 'Dashboard',
+    filas: [{ id: 'clasificacion', nombre: 'Clasificación semanal', icono: 'panel' }],
     privilegios: [{ id: 'cs-ver', nombre: 'Ver', columna: 'ver', fila: 'clasificacion' }] },
   { id: 'horarios',  nombre: 'Horarios',  privilegios: [] },
 ];
@@ -8890,6 +8889,7 @@ const modulos = [
   presentacion="matriz"
   plegable
   resumen="ninguno"        // sin chips ni cuenta en la banda
+  posicionIconoFila="izquierda"   // o "derecha"; por omisión, izquierda
   columnas={columnas}
   modulos={modulos}
   base={null}
@@ -12016,12 +12016,27 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .pm-con-iconos .pm-col { color: var(--texto-secundario);
   transition: color var(--dur-media) var(--curva); }
 .pm-con-iconos .pm-col-on { color: var(--enlace); }
+/* R168 · LA CABECERA DE COLUMNAS DENTRO DE CADA MODULO. Con plegable cada
+   modulo lleva la suya justo encima de sus filas, y plegada se va con el.
+   Siempre sobre fondo-tarjeta, lleve o no iconos: si fuera del gris de la
+   banda, se confundiria con ella. No entra en el rayado ni en el hover. */
+.pm tbody tr.pm-cab-cols, .pm tbody tr.pm-cab-cols:hover { background: transparent; }
+.pm-cab-cols .pm-col, .pm-cab-cols .pm-esquina { background: var(--fondo-tarjeta);
+  border-bottom: 1px solid var(--borde); vertical-align: bottom; }
+.pm-cab-cols .pm-col { color: var(--texto-secundario);
+  transition: color var(--dur-media) var(--curva); }
+.pm-cab-cols .pm-col-on { color: var(--enlace); }
+/* R168 · El icono de la fila va al lado del nombre, y el nombre sigue
+   recortandose con puntos suspensivos si no cabe. */
+.pm-nom-fila { display: flex; align-items: center; gap: 8px; }
+.pm-nom-fila .pm-nom-txt { flex: 0 1 auto; min-width: 0; }
+.pm-nom-fila svg { flex: none; color: var(--texto-secundario); }
 .pm-col-ic { display: inline-flex; flex-direction: column; align-items: center;
   justify-content: flex-end; gap: 4px; line-height: 1.2; }
 .pm-con-iconos tbody tr.pm-fila:focus-within,
 .pm-con-iconos tbody tr.pm-fila:focus-within .pm-nom { background: var(--fondo-fila-hover); }
 @media (prefers-reduced-motion: reduce) {
-  .pm-chev, .pm-con-iconos .pm-col { transition: none; }
+  .pm-chev, .pm-con-iconos .pm-col, .pm-cab-cols .pm-col { transition: none; }
 }
 
 .pm-sin-base .pm-nom { box-shadow: inset 3px 0 0 var(--aviso-acento); }

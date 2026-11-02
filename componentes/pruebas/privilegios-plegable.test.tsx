@@ -246,6 +246,82 @@ describe('R168 · [37] el encabezado de columnas con icono', () => {
   });
 });
 
+const DOS: ModuloPrivilegios[] = [
+  { id: 'a', nombre: 'Alfa', filas: [{ id: 'fa', nombre: 'Fila A', icono: 'panel' }],
+    privilegios: [{ id: 'a-ver', nombre: 'Ver A', columna: 'ver', fila: 'fa' }] },
+  { id: 'b', nombre: 'Beta', filas: [{ id: 'fb', nombre: 'Fila B' }],
+    privilegios: [{ id: 'b-ver', nombre: 'Ver B', columna: 'ver', fila: 'fb' }] },
+  { id: 'c', nombre: 'Gamma', privilegios: [] },
+];
+const cabeceras = (c: HTMLElement) => Array.from(c.querySelectorAll<HTMLElement>('tr.pm-cab-cols'));
+
+describe('R168 · [39] con `plegable`, cada módulo lleva su cabecera de columnas', () => {
+  it('[39] no hay cabecera única arriba: la lleva cada módulo con filas, y un título vacío no', () => {
+    const { container } = render(<Panel plegable modulos={DOS} />);
+    expect(container.querySelector('thead')).toBeNull();
+    expect(cabeceras(container)).toHaveLength(2);
+  });
+
+  it('[39] la cabecera se pliega con su módulo', () => {
+    const { container } = render(<Panel plegable modulos={DOS} />);
+    expect(cabeceras(container).every((r) => r.hidden)).toBe(true);
+    fireEvent.click(bandas(container)[0]);
+    expect(cabeceras(container).map((r) => r.hidden)).toEqual([false, true]);
+  });
+
+  it('[39] el `id` de cada columna es único y lleva el módulo; las celdas apuntan a la de SU módulo', () => {
+    const { container } = render(<Panel plegable modulos={DOS} abiertos={['a', 'b']} onAbiertos={() => {}} />);
+    const ids = Array.from(container.querySelectorAll('th.pm-col')).map((t) => t.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    const filaB = filas(container)[1];
+    const headers = (filaB.querySelector('td')!.getAttribute('headers') ?? '').split(' ');
+    const colB = headers.find((h) => h.includes('-col-'))!;
+    expect(container.querySelector(`[id="${colB}"]`)!.closest('tr')).toBe(cabeceras(container)[1]);
+  });
+
+  it('[39] el resaltado es del módulo tocado, no de todos', () => {
+    const { container } = render(<Panel plegable modulos={DOS} abiertos={['a', 'b']} onAbiertos={() => {}} />);
+    fireEvent.mouseOver(filas(container)[1].querySelector('td')!);
+    const [cA, cB] = cabeceras(container);
+    expect(cA.querySelector('.pm-col-on')).toBeNull();
+    expect(cB.querySelector('.pm-col-on')).not.toBeNull();
+  });
+
+  it('[39] sin `plegable` la cabecera única de arriba sigue donde estaba', () => {
+    const { container } = render(<Panel modulos={DOS} />);
+    expect(container.querySelector('thead')).not.toBeNull();
+    expect(cabeceras(container)).toHaveLength(0);
+  });
+});
+
+describe('R168 · [40] una fila puede llevar icono, a un lado u otro de su nombre', () => {
+  const orden = (c: HTMLElement) =>
+    Array.from(c.querySelector('.pm-nom-fila')!.children).map((n) => n.tagName.toLowerCase());
+
+  it('[40] por omisión el icono va a la izquierda y está oculto al lector', () => {
+    const { container } = render(<Panel modulos={DOS} />);
+    expect(orden(container)).toEqual(['svg', 'span']);
+    expect(container.querySelector('.pm-nom-fila svg')!.closest('[aria-hidden="true"]')).not.toBeNull();
+  });
+
+  it('[40] `posicionIconoFila="derecha"` lo pone después del nombre', () => {
+    const { container } = render(<Panel modulos={DOS} posicionIconoFila="derecha" />);
+    expect(orden(container)).toEqual(['span', 'svg']);
+  });
+
+  it('[40] la fila sin icono conserva su marcado de siempre', () => {
+    const { container } = render(<Panel modulos={DOS} />);
+    const filaB = filas(container)[1];
+    expect(filaB.querySelector('.pm-nom-fila')).toBeNull();
+    expect(filaB.querySelector('.pm-nom > .pm-nom-txt')).not.toBeNull();
+  });
+
+  it('[40] el nombre accesible de la fila no cambia por llevar icono', () => {
+    const { container } = render(<Panel modulos={DOS} />);
+    expect(filas(container)[0].querySelector('.pm-nom-txt')!.textContent).toBe('Fila A');
+  });
+});
+
 describe('R168 · [38] sin ninguna prop nueva, nada cambia', () => {
   const NUEVO = ['pm-mod-plegable', 'pm-mod-cab', 'pm-chev', 'pm-tags', 'pm-conteo', 'pm-con-iconos',
     'pm-col-ic', 'pm-col-on', 'pp-sin-conteo'];
