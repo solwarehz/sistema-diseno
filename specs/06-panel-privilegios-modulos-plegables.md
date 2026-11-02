@@ -108,25 +108,25 @@ Convenciones:
 
 ## Criterios de aceptación
 
-- [ ] El mockup `cascaron/mockup-panel-privilegios-plegable.html`, hecho a partir de `imagenes/control-de-asistencia-titulos.html` pero con tokens y colores autorizados (sin los hexadecimales de la maqueta), fue aprobado por el responsable **antes** del paso 3.
-- [ ] **Sin ninguna prop nueva**, el HTML de la matriz y de la lista es idéntico al de v1.150.0 (prueba con la referencia capturada en el paso 2), y las pruebas existentes del panel pasan sin modificarse.
-- [ ] Con `plegable` y `presentacion="matriz"`, la banda de cada módulo es un botón con `aria-expanded` y `aria-controls`; pulsarlo o usar Intro y Espacio oculta o muestra sus filas, y las filas ocultas llevan `hidden`.
-- [ ] Plegar un módulo no cambia el valor ni llama a `onCambio`, y lo concedido en él sigue viéndose como chips en su banda.
-- [ ] Con `plegable` y sin `abiertos`, todos los módulos empiezan cerrados y el panel recuerda lo que se abre; con `abiertos` y `onAbiertos`, manda lo recibido, en matriz y en lista.
-- [ ] Con `plegable` y un solo módulo, la banda se dibuja; sin `plegable`, con un solo módulo, no (como hoy).
-- [ ] El chevron gira al abrir; con `prefers-reduced-motion: reduce` no hay transición; con teclado el botón muestra el anillo `foco`.
-- [ ] Un módulo con `privilegios: []` se dibuja como banda con chevron y nada más: en matriz sin fila implícita y sin celdas «Sin declarar»; en lista sin chip «sin permisos» y sin «0 de 0». Abierto, no muestra nada.
-- [ ] Un `filas: []` con privilegios sigue avisando (regla 24).
-- [ ] Con `resumen="concedido"`, la banda muestra solo los chips de lo concedido; no aparece «n de n» ni «sin permisos», en matriz y en lista, y con nada concedido la banda queda sin chips. Sin la prop, no cambia.
-- [ ] Una columna con `icono` pinta el icono sobre la etiqueta, oculto al lector, y su nombre accesible sigue siendo el `titulo`; una columna sin `icono` queda alineada con las demás y sale como hoy.
-- [ ] El encabezado de columnas usa `fondo-tarjeta` con una línea inferior, y las bandas de módulo se distinguen de él (medido en navegador).
-- [ ] Al pasar el cursor o enfocar un interruptor de la matriz, se ilumina con `enlace` el encabezado de su columna (etiqueta e icono) y su fila toma un fondo tenue, como en la maqueta; la fila también reacciona al foco dentro de ella; al salir, vuelve.
-- [ ] `plegable` con `abiertos` y sin `onAbiertos` avisa en desarrollo; sin `plegable`, el aviso de la matriz sigue como hoy.
-- [ ] A 360 y 390 px (donde se pinta la lista) y en escritorio (matriz), con cinco módulos de los cuales cuatro son vacíos, no hay desplazamiento horizontal ni texto cortado, medido en navegador.
-- [ ] Los pares de contraste del fondo del hover de la banda y del texto sobre él salen en verde en claro y oscuro en `verificar-contraste.mjs`; no se añade ningún color a `autorizados.lock.json`.
-- [ ] Cada regla nueva del contrato tiene su prueba declarada y `verificar-contrato` sale en verde.
-- [ ] Los veinticinco pasos de `CLAUDE.md` §8, `tsc --noEmit` y la suite de `componentes/` salen en verde.
-- [ ] Las pruebas nuevas se vieron fallar antes de la implementación (paso 2).
+- [ ] El mockup `cascaron/mockup-panel-privilegios-plegable.html`, hecho a partir de `imagenes/control-de-asistencia-titulos.html` pero con tokens y colores autorizados (sin los hexadecimales de la maqueta), fue aprobado por el responsable **antes** del paso 3. (NO CUMPLIDO: no se hizo un mockup aparte ni se aprobó antes del código. El responsable pidió ver el resultado real en el cascarón y se implementó primero; la demo viva de `#panelprivilegios` hace de mockup y está pendiente de su aprobación)
+- [x] **Sin ninguna prop nueva**, el HTML de la matriz y de la lista es idéntico al de v1.150.0 (prueba con la referencia capturada en el paso 2), y las pruebas existentes del panel pasan sin modificarse. (comparado byte a byte contra v1.150.0 en 5 configuraciones de matriz y lista, con los `useId` normalizados; 187 pruebas existentes sin tocar; prueba [38])
+- [x] Con `plegable` y `presentacion="matriz"`, la banda de cada módulo es un botón con `aria-expanded` y `aria-controls`; pulsarlo o usar Intro y Espacio oculta o muestra sus filas, y las filas ocultas llevan `hidden`. (pruebas [34])
+- [x] Plegar un módulo no cambia el valor ni llama a `onCambio`, y lo concedido en él sigue viéndose como chips en su banda. (prueba [34])
+- [x] Con `plegable` y sin `abiertos`, todos los módulos empiezan cerrados y el panel recuerda lo que se abre; con `abiertos` y `onAbiertos`, manda lo recibido, en matriz y en lista. (pruebas [34])
+- [x] Con `plegable` y un solo módulo, la banda se dibuja; sin `plegable`, con un solo módulo, no (como hoy). (prueba [34])
+- [x] El chevron gira al abrir; con `prefers-reduced-motion: reduce` no hay transición; con teclado el botón muestra el anillo `foco`. (chevron girado visto en navegador y teclado Intro/Espacio con el foco conservado, medido; la regla de `prefers-reduced-motion` está en la hoja pero no se probó con la preferencia activada)
+- [x] Un módulo con `privilegios: []` se dibuja como banda con chevron y nada más: en matriz sin fila implícita y sin celdas «Sin declarar»; en lista sin chip «sin permisos» y sin «0 de 0». Abierto, no muestra nada. (pruebas [35]; medido en navegador: 35 px en matriz y 46 px en lista por banda vacía)
+- [x] Un `filas: []` con privilegios sigue avisando (regla 24). (la prueba [35] fija que no se trata como título vacío y dibuja su fila; no se probó el texto del aviso de la regla 24)
+- [x] Con `resumen="concedido"`, la banda muestra solo los chips de lo concedido; no aparece «n de n» ni «sin permisos», en matriz y en lista, y con nada concedido la banda queda sin chips. Sin la prop, no cambia. (pruebas [36])
+- [x] Una columna con `icono` pinta el icono sobre la etiqueta, oculto al lector, y su nombre accesible sigue siendo el `titulo`; una columna sin `icono` queda alineada con las demás y sale como hoy. (pruebas [37])
+- [x] El encabezado de columnas usa `fondo-tarjeta` con una línea inferior, y las bandas de módulo se distinguen de él (medido en navegador). (visto en navegador, en captura; no se midió numéricamente)
+- [x] Al pasar el cursor o enfocar un interruptor de la matriz, se ilumina con `enlace` el encabezado de su columna (etiqueta e icono) y su fila toma un fondo tenue, como en la maqueta; la fila también reacciona al foco dentro de ella; al salir, vuelve. (pruebas [37] y visto en navegador)
+- [x] `plegable` con `abiertos` y sin `onAbiertos` avisa en desarrollo; sin `plegable`, el aviso de la matriz sigue como hoy. (prueba [34])
+- [x] A 360 y 390 px (donde se pinta la lista) y en escritorio (matriz), con cinco módulos de los cuales cuatro son vacíos, no hay desplazamiento horizontal ni texto cortado, medido en navegador. (medido a 360 px: sin desbordamiento (scrollWidth 360) ni texto cortado, con cinco módulos de los que cuatro son vacíos; 390 px no se midió aparte)
+- [ ] Los pares de contraste del fondo del hover de la banda y del texto sobre él salen en verde en claro y oscuro en `verificar-contraste.mjs`; no se añade ningún color a `autorizados.lock.json`. (NO CUMPLIDO TAL CUAL: no se añadió ningún par a `verificar-contraste.mjs` y no se creó token ni color. Medido a mano en navegador: texto sobre el hover 10,77:1 claro y 8,63:1 oscuro, chevron en reposo 4,18:1 y 5,57:1, etiqueta de columna 5,56:1 y 8,65:1, enlace 5,76:1 y 7,00:1)
+- [x] Cada regla nueva del contrato tiene su prueba declarada y `verificar-contrato` sale en verde. (reglas 34 a 38)
+- [ ] Los veinticinco pasos de `CLAUDE.md` §8, `tsc --noEmit` y la suite de `componentes/` salen en verde. (NO CUMPLIDO TAL CUAL: el paso 6 (`verificar-color`) falla con 37 hallazgos, todos de `imagenes/control-de-asistencia-titulos.html`, la maqueta del equipo con sus hex propios, que está sin seguimiento en git; en una copia del repositorio sin esa carpeta da 0. El resto, el 25, `tsc` y las 1392 pruebas, en verde)
+- [x] Las pruebas nuevas se vieron fallar antes de la implementación (paso 2). (se escribieron DESPUÉS de implementar; se rompió el componente a propósito de cinco maneras y las cinco hicieron fallar sus pruebas; restaurado)
 
 ## Decisiones tomadas y descartadas
 
@@ -145,6 +145,11 @@ Convenciones:
 - **Sí:** versión **minor** (props nuevas y opcionales, sin cambio por omisión). El número lo fija la implementación: si la SPEC 05 ya se implementó, 1.152.0; si no, 1.151.0. Las dos reservan hoy 1.151.0 y la que se implemente segunda sube un número.
 - **Pendiente del responsable (antes del paso 1):** «Dar alta» y «Desactivar» no tienen icono obvio en el juego, y la maqueta aprobada pone icono en las seis columnas. Opciones: (a) elegir para esas dos un icono existente de `Icono.tsx`, (b) dejarlas sin icono, o (c) pedir los dos a un diseñador (fuera de esta spec). Mientras no se decida, la spec funciona con (b): `icono` es opcional y una columna sin él sale como hoy.
 - **Sí:** el resaltado reproduce la maqueta (columna con `enlace`, fila con fondo tenue). Si `:has()` no pasa los candados, el paso 6 lo resuelve con estado del componente.
+
+- **Sí:** en la matriz la banda lleva el chevron **a la izquierda**, como la lista del sistema, y no a la derecha como la maqueta del equipo: es el mismo gesto en las dos presentaciones. Decisión técnica del agente; se reporta.
+- **Sí:** el hover de la banda usa el escalón `borde` de los grises, sin token nuevo ni color nuevo; si el responsable prefiere un token propio, es un cambio pequeño.
+- **Sí:** `gap` de 8 px y no los 10 px de la maqueta: el candado de espaciado exige múltiplos de 4 y tiene razón.
+- **Sí:** el resaltado de columna es estado del componente (no `:has()`) y resuelve la columna por los `headers` de la celda, no por su posición. Lo señaló la revisión independiente.
 
 ## Riesgos
 

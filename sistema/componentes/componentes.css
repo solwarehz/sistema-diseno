@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.150.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.151.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -102,7 +102,7 @@
     --dur-onda: 0.01ms;
   }
 }
-:root{ --mmi-componentes: 1.150.0; }
+:root{ --mmi-componentes: 1.151.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -1761,7 +1761,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   font-size: 13px; color: var(--texto-secundario); background: var(--fondo-encabezado);
   padding: 8px 12px; border-bottom: 1px solid var(--borde); }
 .pm-mod-plegable .pm-mod-nom{ padding: 0; }
-.pm-mod-cab{ display: flex; align-items: center; gap: 10px; width: 100%; margin: 0;
+.pm-mod-cab{ display: flex; align-items: center; gap: 8px; width: 100%; margin: 0;
   padding: 8px 12px; border: 0; background: transparent; font: inherit; font-size: 13px;
   font-weight: 600; color: var(--texto-principal); text-align: left; cursor: pointer; }
 .pm-mod-cab:hover{ background: var(--borde); }

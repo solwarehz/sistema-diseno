@@ -11990,7 +11990,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    Al pasar el cursor baja un tono —de fondo-encabezado a borde, el escalon
    siguiente de la misma familia de grises— y el chevron se oscurece. */
 .pm-mod-plegable .pm-mod-nom { padding: 0; }
-.pm-mod-cab { display: flex; align-items: center; gap: 10px; width: 100%; margin: 0;
+.pm-mod-cab { display: flex; align-items: center; gap: 8px; width: 100%; margin: 0;
   padding: 8px 12px; border: 0; background: transparent; font: inherit; font-size: 13px;
   font-weight: 600; color: var(--texto-principal); text-align: left; cursor: pointer; }
 .pm-mod-cab:hover { background: var(--borde); }
