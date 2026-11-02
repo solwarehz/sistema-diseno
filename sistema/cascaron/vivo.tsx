@@ -213,89 +213,6 @@ if (conAncla) createRoot(conAncla).render(<TablaViva anclar={1} />);
 const sinAncla = document.getElementById('tabla-viva-suelta');
 if (sinAncla) createRoot(sinAncla).render(<TablaViva anclar={0} />);
 
-/* ───────────────────────────────────────────────────────────────────────────
-   R151 · LA MATRIZ, MONTADA Y VIVA
-
-   Va viva y no de cartón por lo mismo que la tabla anclada: una celda de esta
-   rejilla se decide con `columna`, `fila`, los cuatro motivos, `depende`,
-   `clave` y `deshabilitado` a la vez. Eso escrito a mano diverge a la primera —y
-   la maqueta de la LISTA, que se escribió a mano, divergió en ocho sitios y lo
-   encontró una verificación, no un candado.
-   ─────────────────────────────────────────────────────────────────────────── */
-
-const COLUMNAS: ColumnaPrivilegios[] = [
-  { id: 'ver', titulo: 'Ver' },
-  { id: 'editar', titulo: 'Editar' },
-  { id: 'crear', titulo: 'Crear' },
-  { id: 'desactivar', titulo: 'Desactivar' },
-  { id: 'reporte', titulo: 'Crear reporte' },
-  { id: 'descargar', titulo: 'Descargar', aparte: true },
-];
-
-const MODULOS_MATRIZ: ModuloPrivilegios[] = [
-  {
-    id: 'personal', nombre: 'Personal',
-    filas: [
-      { id: 'trabajadores', nombre: 'Trabajadores' },
-      { id: 'contratos', nombre: 'Contratos' },
-    ],
-    privilegios: [
-      { id: 'tr-ver', nombre: 'Ver trabajadores', columna: 'ver', fila: 'trabajadores' },
-      { id: 'tr-editar', nombre: 'Editar trabajador', columna: 'editar', fila: 'trabajadores' },
-      { id: 'tr-crear', nombre: 'Crear trabajador', columna: 'crear', fila: 'trabajadores' },
-      { id: 'tr-desactivar', nombre: 'Desactivar trabajador', columna: 'desactivar', fila: 'trabajadores',
-        depende: 'tr-editar' },
-      { id: 'tr-descargar', nombre: 'Descargar trabajadores', columna: 'descargar', fila: 'trabajadores' },
-      { id: 'co-ver', nombre: 'Ver contratos', columna: 'ver', fila: 'contratos' },
-      { id: 'co-editar', nombre: 'Editar contrato', columna: 'editar', fila: 'contratos' },
-      { id: 'co-crear', nombre: 'Crear contrato', columna: 'crear', fila: 'contratos',
-        cerrado: { tipo: 'ajeno', motivo: 'Crear contratos es del Jefe de personal.' } },
-      /* EL HUECO QUE HABLA: la acción no existe para este recurso, y decirlo no
-         es lo mismo que omitirlo. Es el argumento con el que llegó el R151. */
-      { id: 'co-desactivar', nombre: 'Desactivar contrato', columna: 'desactivar', fila: 'contratos',
-        cerrado: { tipo: 'noAplica', motivo: 'Un contrato no se apaga: se cierra con fecha.' } },
-      { id: 'co-descargar', nombre: 'Descargar contratos', columna: 'descargar', fila: 'contratos' },
-      /* R152 · LA MISMA LLAVE QUE «Reportes». «Crear reporte» es UN permiso
-         ofrecido desde dos pantallas: encender uno enciende el otro, y el aviso
-         nombra el módulo del compañero. Para unir DENTRO de un módulo está
-         «clave»; esto cruza todos. */
-      { id: 'co-reporte', nombre: 'Crear reporte', columna: 'reporte', fila: 'contratos',
-        claveGlobal: 'crear-reporte' },
-    ],
-  },
-  {
-    id: 'reportes', nombre: 'Reportes',
-    filas: [{ id: 'asistencia', nombre: 'Reporte de asistencia' }],
-    privilegios: [
-      { id: 're-ver', nombre: 'Ver reporte', columna: 'ver', fila: 'asistencia' },
-      { id: 're-descargar', nombre: 'Descargar reporte', columna: 'descargar', fila: 'asistencia',
-        deshabilitado: true },
-      /* R152 · LA MISMA LLAVE QUE «Personal». Encender este enciende el de allí
-         y al revés: es un solo permiso ofrecido desde dos pantallas. El aviso
-         nombra el módulo del compañero — sin eso diría la verdad a medias. */
-      { id: 're-crear', nombre: 'Crear reporte', columna: 'reporte', fila: 'asistencia',
-        claveGlobal: 'crear-reporte' },
-    ],
-  },
-];
-
-function MatrizViva() {
-  const [v, setV] = useState<ValorPrivilegios>({
-    personal: { 'tr-ver': true, 'tr-editar': true, 'co-ver': true },
-    reportes: { 're-ver': true, 're-descargar': true },
-  });
-  return (
-    <PanelPrivilegios
-      presentacion="matriz"
-      columnas={COLUMNAS}
-      modulos={MODULOS_MATRIZ}
-      base={null}
-      valor={v}
-      onCambio={(completo) => setV(completo)}
-    />
-  );
-}
-
 /* R168 · LOS TÍTULOS DEL MENÚ, MONTADOS Y VIVOS: cinco bandas plegables en el
    orden del menú, una sola con opciones y cuatro todavía vacías. Es el caso que
    pidió el equipo, y va vivo por lo mismo que la matriz de arriba: plegar,
@@ -695,5 +612,3 @@ if (enLiso) createRoot(enLiso).render(<TableroLisoVivo />);
 
 const enPlegable = document.getElementById('plegable-viva');
 if (enPlegable) createRoot(enPlegable).render(<PlegableViva />);
-const enMatriz = document.getElementById('matriz-viva');
-if (enMatriz) createRoot(enMatriz).render(<MatrizViva />);

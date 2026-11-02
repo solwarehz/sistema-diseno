@@ -8562,11 +8562,56 @@ const pagPanelPrivilegios = `
 aplicación. No sabe de negocio —ni de cargos, ni de sedes— así que el mismo panel sirve para los permisos de un
 puesto, los de una persona suelta o los de una clave de API.</p>
 
-<h3 class="sub-seccion">Se compone, no se dibuja</h3>
-<p class="seccion-sub">El interruptor, el chip y el botón de dentro son los del sistema. Lo único propio es el
-andamiaje de la lista, y si fueran muchas más sería señal de estar reconstruyendo. <em>Aquí ponía
-«catorce reglas» a mano y se quedó ahí: la cuenta de verdad la lleva la propia hoja, en su cabecera de
-sección.</em></p>
+<h3 class="sub-seccion">El componente</h3>
+<p class="seccion-sub">Cada título es una banda que pliega y despliega sus opciones. Aquí hay cinco módulos y solo
+el primero tiene opciones; los otros cuatro son solo título. Pliega Dashboard, pasa el cursor por el interruptor
+de «Clasificación semanal» —se ilumina su columna y su fila— o recorre las bandas con el tabulador.</p>
+<div class="bloque" id="plegable-viva"></div>
+
+<h4 class="sub-seccion">Plegada y abierta</h4>
+<p class="seccion-sub">Una banda abierta lleva, justo encima de sus filas, los nombres de las columnas: el
+interruptor tiene su etiqueta cerca. Una banda cerrada se queda en su título.</p>
+<div class="bloque">
+  <div class="pm-envoltura">
+    <table class="pm pm-con-iconos">
+      <tbody>
+        <tr class="pm-mod pm-mod-plegable pm-abierto">
+          <th scope="colgroup" colspan="3" class="pm-mod-nom">
+            <button type="button" class="pm-mod-cab" aria-expanded="true">
+              <span class="pm-chev" aria-hidden="true">${icono('chevron')}</span>
+              <span class="pm-mod-txt">Dashboard</span>
+              <span class="pm-tags"></span>
+            </button>
+          </th>
+        </tr>
+        <tr class="pm-cab-cols">
+          <th class="pm-esquina" scope="col"><span class="sr-solo">Opción</span></th>
+          <th class="pm-col pm-col-on" scope="col"><span class="pm-col-txt pm-col-ic">${icono('ojo')}<span>Ver</span></span></th>
+          <th class="pm-col" scope="col"><span class="pm-col-txt pm-col-ic">${icono('lapiz')}<span>Editar</span></span></th>
+        </tr>
+        <tr class="pm-fila">
+          <th scope="row" class="pm-nom"><span class="pm-nom-fila">${icono('panel')}<span class="pm-nom-txt">Clasificación semanal</span></span></th>
+          <td class="pm-celda pm-vacia"><span class="sr-solo">Sin declarar</span></td>
+          <td class="pm-celda pm-vacia"><span class="sr-solo">Sin declarar</span></td>
+        </tr>
+        <tr class="pm-mod pm-mod-plegable">
+          <th scope="colgroup" colspan="3" class="pm-mod-nom">
+            <button type="button" class="pm-mod-cab" aria-expanded="false">
+              <span class="pm-chev" aria-hidden="true">${icono('chevron')}</span>
+              <span class="pm-mod-txt">Horarios</span>
+              <span class="pm-tags"></span>
+            </button>
+          </th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<h3 class="sub-seccion">En un teléfono</h3>
+<p class="seccion-sub">Por debajo de 640 px de ancho del contenedor el panel se pinta como lista aunque pidas
+matriz: el mismo componente, el mismo valor y las mismas props. Cada módulo es un acordeón con el resumen de lo
+concedido, y los privilegios, sus niveles y sus avisos van debajo.</p>
 <div class="bloque">
   <div class="pp">
     <div class="pp-lista">
@@ -8575,9 +8620,6 @@ sección.</em></p>
         <button class="pp-mod-cab" type="button" aria-expanded="true">
           <span class="pp-chev">${icono('chevron', 18)}</span>
           <span class="pp-mod-nom">Trabajadores</span>
-          <!-- Los chips y el conteo SALEN DEL CUERPO: Ver, Editar y el del grupo.
-               «Dar de alta» es cerrado y no cuenta (regla 2ter). Aqui habia cuatro
-               chips y «4 de 4», que no corresponden a ninguna de estas filas. -->
           <span class="pp-tags">
             <span class="chip chip-info">Ver</span><span class="chip chip-info">Editar</span>
             <span class="chip chip-info">Ver documento, dirección y correo</span>
@@ -8588,11 +8630,6 @@ sección.</em></p>
         <div class="pp-mod-cuerpo">
           <div class="pp-priv pp-priv-base">
             <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="true" aria-label="Ver"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Ver</span></span></label>
-          <!-- B11 · LOS NIVELES VAN DENTRO DEL .pp-priv de su privilegio, que es
-               lo que emite el componente y lo que dice la regla 5ter. Aqui
-               colgaban del cuerpo, detras de la fila cerrada, asi que se leian
-               como si fueran de «Dar de alta» — y recibian otro relleno y otro
-               border-bottom. -->
           <div class="pp-niveles">
             <fieldset class="sg">
               <legend class="sg-et">Documento</legend>
@@ -8607,11 +8644,6 @@ sección.</em></p>
           <div class="pp-priv">
             <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="true" aria-label="Editar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar</span></span></label>
           </div>
-          <!-- R99 · UN PRIVILEGIO CERRADO NO ES UN INTERRUPTOR CERRADO. Aqui se
-               dibujaba con sw-fila sw-cerrado, que es otro arbol: el componente
-               emite div.pp-priv.pp-no-cerrado > div.pp-cerrado con su icono, su
-               chip y su motivo. Dos marcados distintos para el mismo estado, en
-               la primera demo de la pagina. -->
           <div class="pp-priv pp-no-cerrado">
             <div class="pp-cerrado">
               <span class="pp-cerrado-ic">${icono('candado', 18)}</span>
@@ -8644,9 +8676,6 @@ sección.</em></p>
         <button class="pp-mod-cab" type="button" aria-expanded="true">
           <span class="pp-chev">${icono('chevron', 18)}</span>
           <span class="pp-mod-nom">Horarios</span>
-          <!-- R148 · «Descargar» esta CONCEDIDO y deshabilitado: cuenta en los
-               chips y en el conteo. Aqui ponia «sin permisos» y «0 de 3», que es
-               el defecto que R148 cerro, ensenado en la pagina que lo explica. -->
           <span class="pp-tags"><span class="chip chip-info">Descargar</span></span>
           <span class="pp-conteo">1 de 3</span>
         </button>
@@ -8658,8 +8687,6 @@ sección.</em></p>
           <div class="pp-priv">
             <label class="sw-fila"><button type="button" role="switch" class="sw" aria-checked="false" aria-label="Editar · enciende también «Ver»"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Editar<span class="pp-junto"> · enciende también «Ver»</span></span></span></label>
           </div>
-          <!-- R148 · concedido y NO repartible por quien mira: el estado se ve,
-               el control no se toca. aria-disabled y no disabled. -->
           <div class="pp-priv">
             <label class="sw-fila sw-desh"><button type="button" role="switch" class="sw" aria-checked="true" aria-disabled="true" aria-label="Descargar"><span class="sw-bolita"></span></button><span class="sw-txt"><span class="sw-et">Descargar</span><span class="sw-ayuda">No puede repartir este permiso.</span></span></label>
           </div>
@@ -8674,32 +8701,18 @@ sección.</em></p>
   </div>
 </div>
 
-<h3 class="sub-seccion">Cuatro motivos para no poder pulsar un interruptor</h3>
-<p class="seccion-sub">Los tres primeros son de R99 y dicen por qué un privilegio
-<strong>no se puede repartir</strong>. El cuarto es de R110 y es distinto: no dice que no se
-pueda, dice que <strong>todavía no</strong> — y se resuelve encendiendo el de arriba.</p>
-<div class="msj msj-aviso">
-  <span class="msj-ico">${icono('alerta')}</span>
-  <span class="msj-txt"><strong>R110 · Estas cuatro clases viajaban desde R99 y el catálogo no
-  pintaba ninguna.</strong> Se descubrió al añadir la cuarta: un producto recibía los cuatro
-  tratamientos sin una sola pantalla que le dijera a qué se parecen. Es el mismo defecto que
-  <code>cpe-no-imprime</code> ayer, y <code>verificar-omision</code> tampoco puede verlo — escriben
-  su modificador como clase suelta, no como regla compuesta.</span>
-</div>
+<h3 class="sub-seccion">Un privilegio que no se puede pulsar</h3>
+<p class="seccion-sub">Cuando algo no se puede repartir, el panel lo dice y dice por qué, en vez de dejar un
+interruptor apagado que invita a insistir. Tres razones salen de <code>cerrado</code> —no se podrá conceder nunca,
+quien reparte no lo tiene, o todavía no existe— y la cuarta de <code>depende</code>: antes hay que conceder otro
+permiso.</p>
 <div class="bloque">
   <div class="pp">
     <div class="pp-lista">
       <section class="pp-mod pp-abierto">
-        <!-- R111 · La cabecera va aunque la demo sea de las filas: el componente
-             SIEMPRE la emite, y sin ella el borde superior del cuerpo cae contra
-             el borde de la tarjeta, que es un sitio donde en el producto nunca
-             cae. Lo cazo el auditor comparando el marcado elemento por elemento. -->
         <button class="pp-mod-cab" type="button" aria-expanded="true">
           <span class="pp-chev">${icono('chevron', 18)}</span>
           <span class="pp-mod-nom">Personal</span>
-          <!-- pp-tags va SIEMPRE: el componente la emite aunque este vacia, y
-               sin ella la rejilla de cuatro columnas de .pp-mod-cab se descuadra.
-               Y el conteo NO cuenta lo cerrado: tres de las cuatro filas lo son. -->
           <span class="pp-tags"><span class="chip chip-pend">sin permisos</span></span>
           <span class="pp-conteo">0 de 1</span>
         </button>
@@ -8751,307 +8764,116 @@ pueda, dice que <strong>todavía no</strong> — y se resuelve encendiendo el de
     </div>
   </div>
 </div>
-<div class="msj msj-exito">
-  <span class="msj-ico">${icono('visto', 16)}</span>
-  <span class="msj-txt"><strong>R146 · La decisión está tomada: el cuarto SÍ se alcanza con teclado.</strong>
-  Aquí ponía «declarado y no resuelto», y lo siguió poniendo <strong>dos meses</strong>. Lo desatascó
-  Control Administrativos V2.0 trayendo el dato que faltaba: el bloqueado por <code>depende</code> es el
-  <strong>único transitorio</strong> —se desbloquea sin recargar en cuanto se enciende el otro—, así que
-  quien reparte con teclado veía aparecer en el recorrido una fila que un segundo antes no podía
-  alcanzar, y no tenía forma de llegar a ella para saber qué le falta. Va como
-  <code>role="switch"</code> con <strong><code>aria-disabled</code> y no <code>disabled</code></strong>,
-  con su nombre, su chip, su motivo y su anillo de foco. Los otros tres —<em>cerrado</em>,
-  <em>ajeno</em>, <em>pendiente</em>— son estables y son texto: quedarse fuera del recorrido es
-  correcto ahí.</span>
-</div>
-<div class="msj msj-exito">
-  <span class="msj-ico">${icono('visto', 16)}</span>
-  <span class="msj-txt"><strong>R144 · Y la opacidad se fue.</strong> Aquí ponía que
-  <code>.pp-sin-base</code> baja las filas al 50 % dejando el nombre a <strong>2,07:1</strong> con los
-  interruptores <strong>aún pulsables</strong>, y que quedaba abierto. Lo estuvo desde la v1.72.0.
-  Lo reclamó el equipo con el dato que lo vuelve urgente: <strong>«sin base» no es un caso raro, es el
-  estado INICIAL de la pantalla</strong> — repartir a un cargo nuevo empieza con los diez módulos sin su
-  «ver»—. Ahora es un <strong>carril de 3 px</strong> en <code>aviso-acento</code>, el mismo del aviso,
-  y <strong>ninguna relación de contraste se toca</strong>: medido en Chrome, el nombre pasa de
-  <strong>2,07:1 a 14,33:1</strong> y el filete da <strong>4,81:1</strong> contra la tarjeta. No se
-  bloquean las filas: encender algo antes de conceder el base es legítimo.</span>
-</div>
-<div class="aviso"><strong>Las dos de arriba llevaban meses escritas aquí como «queda abierto», con sus
-cifras.</strong> Las encontró el equipo que iba a adoptar el componente, leyendo esta misma página.
-Declarar no es arreglar — y una deuda declarada que nadie vuelve a mirar envejece sola hasta que la
-descubre quien la sufre.</div>
-<p class="seccion-sub"><strong>Por qué el cuarto no reutiliza ninguno de los tres.</strong> Lo pidió
-Control Administrativos y el argumento es suyo: <code>NoRepartible</code> describe por qué algo
-<em>no se puede</em> repartir, no un estado que cambia con lo que el usuario acaba de pulsar.
-Recalcularlo como <code>cerrado</code> en cada pintada funciona —por eso no se pidió como bloqueo—
-pero desdibuja los tres motivos. Se declara con <code>depende: 'crear'</code>, y encender arrastra
-la cadena entera hacia arriba.</p>
 
-<h3 class="sub-seccion">R151 · La misma pieza, en MATRIZ — <strong>y esto no es una maqueta</strong></h3>
-<p class="seccion-sub">La lista responde <strong>«¿qué puede hacer este cargo con Contratos?»</strong>.
-La matriz responde además <strong>«¿a quién le he dado Crear?»</strong>, que en lista <strong>no se
-puede responder</strong>: hay que abrir los once acordeones y recorrerlos. No es comodidad — revisar
-periódicamente quién tiene qué es obligación legal, y se hace mirando una columna.</p>
-<div class="aviso">
-  <strong>Es el MISMO componente</strong>, con <code>presentacion="matriz"</code>:
-  <code>base</code>, <code>depende</code>, <code>clave</code>, <code>deshabilitado</code>, los cuatro
-  motivos y lo efectivo se calculan en el mismo sitio. Partirlo en dos componentes habría sido partir
-  la lógica, y <strong>dos lógicas que tienen que coincidir dejan de coincidir</strong>.
-  <br><br>
-  <strong>Y «el mismo código» no basta.</strong> Esta caja decía «la MISMA lógica» y era cierta al pie
-  de la letra y falsa en su propósito: la primera matriz <strong>consumía cuatro de los seis campos
-  que el cálculo devuelve</strong> y tiraba el aviso de que encender arrastra el base (R149) y el de
-  que dos privilegios van juntos (R99), y no llevaba el porqué de un <code>deshabilitado</code>
-  (R148) a la celda. No eran dos lógicas: era una lógica y <strong>dos pantallas diciendo cosas
-  distintas sobre quién puede qué</strong> — justo lo que se quería evitar. Lo cazó una auditoría
-  adversaria antes de publicar, junto con algo peor: con <code>filas</code>, el <code>base</code> por
-  omisión <strong>vaciaba el módulo entero en silencio</strong>, y con un backend de juego completo
-  eso borra permisos que nadie retiró. Está en las reglas <strong>21, 23, 24 y 25</strong>.
-  <br><br>
-  Lo de abajo va <strong>montado y vivo</strong>: una celda se decide con la columna, la fila, el
-  motivo, la dependencia y el apagado <strong>a la vez</strong>. Escrito a mano diverge a la primera —
-  y la maqueta de la lista, que sí se escribió a mano, <strong>divergió en ocho sitios</strong>.
-</div>
-<div class="bloque" id="matriz-viva"></div>
+<h3 class="sub-seccion">Cómo se usa</h3>
+<p class="seccion-sub">Lo que se copia es la importación y las props. Este bloque compila tal cual.</p>
+<pre class="cod"><code>import { useState } from 'react';
+import { PanelPrivilegios } from 'sistema-diseno-ae/componentes';
+import type { ColumnaPrivilegios, ModuloPrivilegios, ValorPrivilegios } from 'sistema-diseno-ae/componentes';
 
-<h3 class="sub-seccion">R168 · Los títulos del menú: módulos plegables</h3>
-<p class="seccion-sub">Una pantalla de privilegios puede seguir la estructura del menú: cada título es una
-<strong>banda que pliega y despliega</strong> sus filas, aunque todavía no tenga ninguna opción debajo. Con
-<code>plegable</code> la banda es el control (<code>aria-expanded</code>, teclado, chevron que gira) y sale
-<strong>siempre</strong>, también con un solo módulo. Un módulo con <code>privilegios: []</code> se dibuja como
-<strong>solo título</strong>: sin fila repetida, sin «Sin declarar», sin «sin permisos» ni «0 de 0», porque no es que
-no tenga permisos sino que aún no tiene opciones. <code>resumen</code> decide qué dice la banda: <code>"completo"</code> (por omisión) lo concedido y el «n de n»; <code>"ninguno"</code> <strong>nada</strong>, ni chips ni cuenta —así va la demo—. Y si alguna columna declara un <code>icono</code>, el encabezado pasa a fondo
-blanco y el cursor o el foco sobre un interruptor ilumina su columna y su fila. Con <code>plegable</code> cada módulo lleva <strong>su propia cabecera de columnas justo encima de sus filas</strong>, y la cabecera única de arriba desaparece: así el nombre de la opción queda junto al interruptor y no varias líneas más arriba. Una fila puede llevar <code>icono</code>, a la izquierda o a la derecha de su nombre según <code>posicionIconoFila</code>.</p>
-<div class="aviso">
-  Va <strong>montado y vivo</strong>: pliega Dashboard, pasa el cursor por el «Ver» de «Clasificación semanal» o
-  recorre las bandas con el tabulador. La banda <strong>no muestra chips</strong>: plegada no dice qué hay concedido. «Dar alta» y «Desactivar» van <strong>sin icono</strong> a propósito: no hay
-  uno obvio en el juego del sistema, y se ve cómo se alinean junto a las que sí lo llevan. Sin ninguna prop
-  nueva el panel sale exactamente como antes.
-</div>
-<div class="bloque" id="plegable-viva"></div>
-
-<h4 class="sub-seccion">Lo mismo, sin JavaScript</h4>
-<p class="seccion-sub">Lo que emite el componente con una banda abierta —su cabecera de columnas y su fila, con icono— y otra cerrada, con <code>resumen="ninguno"</code>.
-Existe porque los candados leen el documento estático y no lo que monta el guion de arriba.</p>
-<div class="bloque">
-  <div class="pm-envoltura">
-    <table class="pm pm-con-iconos">
-      <tbody>
-        <tr class="pm-mod pm-mod-plegable pm-abierto">
-          <th scope="colgroup" colspan="3" class="pm-mod-nom">
-            <button type="button" class="pm-mod-cab" aria-expanded="true">
-              <span class="pm-chev" aria-hidden="true">${icono('chevron')}</span>
-              <span class="pm-mod-txt">Dashboard</span>
-              <span class="pm-tags"></span>
-            </button>
-          </th>
-        </tr>
-        <tr class="pm-cab-cols">
-          <th class="pm-esquina" scope="col"><span class="sr-solo">Opción</span></th>
-          <th class="pm-col pm-col-on" scope="col"><span class="pm-col-txt pm-col-ic">${icono('ojo')}<span>Ver</span></span></th>
-          <th class="pm-col" scope="col"><span class="pm-col-txt pm-col-ic">${icono('lapiz')}<span>Editar</span></span></th>
-        </tr>
-        <tr class="pm-fila">
-          <th scope="row" class="pm-nom"><span class="pm-nom-fila">${icono('panel')}<span class="pm-nom-txt">Clasificación semanal</span></span></th>
-          <td class="pm-celda pm-vacia"><span class="sr-solo">Sin declarar</span></td>
-          <td class="pm-celda pm-vacia"><span class="sr-solo">Sin declarar</span></td>
-        </tr>
-        <tr class="pm-mod pm-mod-plegable">
-          <th scope="colgroup" colspan="3" class="pm-mod-nom">
-            <button type="button" class="pm-mod-cab" aria-expanded="false">
-              <span class="pm-chev" aria-hidden="true">${icono('chevron')}</span>
-              <span class="pm-mod-txt">Horarios</span>
-              <span class="pm-tags"></span>
-            </button>
-          </th>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<h4 class="sub-seccion">Copia esto</h4>
-<pre class="cod"><code>const columnas = [
-  { id: 'ver',      titulo: 'Ver',      icono: 'ojo' },
-  { id: 'editar',   titulo: 'Editar',   icono: 'lapiz' },
-  { id: 'alta',     titulo: 'Dar alta' },                 // sin icono: sale como siempre
+const columnas: ColumnaPrivilegios[] = [
+  { id: 'ver',    titulo: 'Ver',    icono: 'ojo' },
+  { id: 'editar', titulo: 'Editar', icono: 'lapiz' },
+  { id: 'crear',  titulo: 'Crear',  icono: 'suma' },
 ];
 
-// Un título todavía sin opciones: solo el título.
-const modulos = [
+const modulos: ModuloPrivilegios[] = [
   { id: 'dashboard', nombre: 'Dashboard',
     filas: [{ id: 'clasificacion', nombre: 'Clasificación semanal', icono: 'panel' }],
     privilegios: [{ id: 'cs-ver', nombre: 'Ver', columna: 'ver', fila: 'clasificacion' }] },
-  { id: 'horarios',  nombre: 'Horarios',  privilegios: [] },
+  // Un título todavía sin opciones: se dibuja solo como título.
+  { id: 'horarios', nombre: 'Horarios', privilegios: [] },
 ];
 
-&lt;PanelPrivilegios
-  presentacion="matriz"
-  plegable
-  resumen="ninguno"        // sin chips ni cuenta en la banda
-  posicionIconoFila="izquierda"   // o "derecha"; por omisión, izquierda
-  columnas={columnas}
-  modulos={modulos}
-  base={null}
-  valor={valor}
-  onCambio={setValor}
-  abiertos={abiertos}        // opcional: sin él el panel recuerda por su cuenta,
-  onAbiertos={setAbiertos}   // y todo empieza cerrado, como la lista
-/&gt;</code></pre>
+export function Privilegios() {
+  const [valor, setValor] = useState&lt;ValorPrivilegios&gt;({});
+  const [abiertos, setAbiertos] = useState&lt;string[]&gt;(['dashboard']);
+  return (
+    &lt;PanelPrivilegios
+      presentacion="matriz"
+      plegable
+      resumen="ninguno"
+      columnas={columnas}
+      modulos={modulos}
+      base={null}
+      valor={valor}
+      onCambio={(completo, efectivo) =&gt; {
+        setValor(completo);   // lo que la pantalla muestra: no borra nada
+        guardar(efectivo);    // lo que de verdad rige
+      }}
+      abiertos={abiertos}
+      onAbiertos={setAbiertos}
+    /&gt;
+  );
+}</code></pre>
+<p class="seccion-sub"><code>onCambio</code> entrega dos valores: guarda el <code>efectivo</code>, que es lo que
+de verdad rige. Además se exportan <code>privilegiosEfectivos(modulos, valor, base)</code>, que calcula ese
+efectivo; <code>clavesEfectivas(modulos, valor, base)</code>, que devuelve las llaves compartidas concedidas; y
+<code>resumirPrivilegios(modulos, valor)</code>, que dice lo concedido en una frase por módulo. En desarrollo el
+panel avisa por consola si un privilegio no cae en ninguna celda de la matriz, si el <code>base</code> no lo
+encarna nadie o si pasa algo que la matriz no puede dibujar.</p>
 
-<h3 class="sub-seccion">R152 · Una llave que abre dos puertas</h3>
-<p class="seccion-sub">Cuando <strong>el mismo permiso</strong> se ofrece desde dos pantallas
-distintas —dos opciones del menú, dos módulos—, <code>clave</code> no llega: une dentro de un
-módulo, que es donde el estado los guarda juntos. Para eso está <code>claveGlobal</code>, que
-cruza <strong>todos</strong> los módulos.</p>
-<div class="aviso">
-  <strong>El argumento es de seguridad, no de comodidad</strong>, y es de quien lo pidió:
-  «dar de alta enciende Contrato → Puesto → Cargo → PrivilegioCargo… ese daño es idéntico se
-  pulse el botón donde se pulse, y <strong>un acto irreversible merece una sola llave</strong>.
-  Con dos, quitar una da la sensación de haber cerrado sin haber cerrado».
-  <br><br>
-  <strong>Por qué no se amplió <code>clave</code> sin más</strong>, que era la otra salida y la
-  de menos conceptos: las claves son cadenas cortas y genéricas —<code>editar</code>,
-  <code>alta</code>— y hacerlas cruzar por omisión fundiría en <strong>un</strong> permiso dos
-  que solo coinciden de nombre, en silencio, en productos que ya la usan. Es el daño del R152 al
-  revés. El ámbito va en el nombre y se elige a propósito.
-</div>
-<table class="tabla-simple">
+<h3 class="sub-seccion">Cómo se configura</h3>
+<h4 class="sub-seccion">El panel</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
   <tbody>
-    <tr><td class="num">1</td><td><strong>Encender uno enciende a todos.</strong> Y apagar, igual: es <em>una</em> llave.</td></tr>
-    <tr><td class="num">2</td><td><strong>El aviso nombra el módulo del compañero.</strong> «va con Dar alta <em>(Contrato)</em>» no dice lo mismo que «va con Dar alta»: quien reparte tiene que ver que está abriendo también otra puerta.</td></tr>
-    <tr><td class="num">3</td><td><strong>El gemelo arrastra el base de SU módulo.</strong> Si no, viajaría encendido en pantalla y vacío en lo efectivo.</td></tr>
-    <tr><td class="num">4</td><td><strong>No enciende de rebote lo que no se puede repartir</strong> (<code>cerrado</code>, <code>deshabilitado</code>). Si una mitad de la llave no es suya, el permiso no es suyo.</td></tr>
-    <tr><td class="num">5</td><td><strong>Está concedida si sobrevive en al menos un módulo</strong>, y eso lo responde <code>clavesEfectivas()</code>. Ver abajo.</td></tr>
-  </tbody>
-</table>
-<p class="seccion-sub"><strong>La pregunta que hicieron, respondida en código y no en prosa:</strong>
-«¿qué devuelve <code>privilegiosEfectivos</code> para una llave compartida cuyo módulo A sobrevive
-y cuyo módulo B se vacía?». <strong><code>privilegiosEfectivos</code> no cambia</strong>: sigue
-limpiando módulo a módulo, porque «el módulo B no aplica nada» es una verdad sobre B y falsearla
-para acertar sobre la llave sería mentir sobre B. Para aplanar a «¿está dada la llave?» use
-<code>clavesEfectivas()</code>: <strong>una llave está concedida si sobrevive en al menos un
-módulo donde está declarada</strong>. Exigir que sobreviva en todos convertiría un módulo sin su
-<code>base</code> en un <strong>revocador silencioso</strong> de permisos concedidos en otra
-pantalla.</p>
-
-<h3 class="sub-seccion">Copia esto</h3>
-<p class="seccion-sub">Lo que se copia es <strong>la importación y las props</strong>, nunca el
-marcado interno. Este bloque compila tal cual.</p>
-<pre class="cod-pre"><code>import { PanelPrivilegios, privilegiosEfectivos, clavesEfectivas } from 'sistema-diseno-ae/componentes';
-import type { ColumnaPrivilegios, ModuloPrivilegios } from 'sistema-diseno-ae/componentes';
-
-// Las columnas las declara EL PANEL, no los módulos: una matriz con columnas
-// distintas por fila no es una matriz, es una lista con más huecos.
-const COLUMNAS: ColumnaPrivilegios[] = [
-  { id: 'ver',       titulo: 'Ver' },
-  { id: 'editar',    titulo: 'Editar' },
-  { id: 'crear',     titulo: 'Crear' },
-  { id: 'alta',      titulo: 'Dar de alta' },
-  { id: 'descargar', titulo: 'Descargar', aparte: true },  // separada por una línea
-];
-
-const MODULOS: ModuloPrivilegios[] = [{
-  id: 'personal',
-  nombre: 'Personal',
-  // Las filas son los RECURSOS, y aquí es donde tienen nombre.
-  filas: [
-    { id: 'trab', nombre: 'Trabajadores' },
-    { id: 'cont', nombre: 'Contratos' },
-  ],
-  privilegios: [
-    { id: 'trab-ver',    nombre: 'Ver trabajadores',  columna: 'ver',    fila: 'trab' },
-    { id: 'trab-editar', nombre: 'Editar trabajador', columna: 'editar', fila: 'trab' },
-    { id: 'trab-crear',  nombre: 'Crear trabajador',  columna: 'crear',  fila: 'trab',
-      depende: 'trab-editar' },
-    { id: 'cont-ver',    nombre: 'Ver contratos',     columna: 'ver',    fila: 'cont' },
-    { id: 'cont-alta',   nombre: 'Dar de alta',       columna: 'alta',   fila: 'cont',
-      claveGlobal: 'alta-contrato' },
-    // El hueco que HABLA. Omitirlo sería un espacio en blanco entre cien
-    // casillas, y nadie se enteraría de que esa acción existe para otro recurso.
-    { id: 'cont-crear',  nombre: 'Crear contrato',    columna: 'crear',  fila: 'cont',
-      cerrado: { tipo: 'noAplica', motivo: 'Un contrato se crea desde la ficha.' } },
-    // Concedido y no repartible por quien mira: se ve el estado y se dice el porqué.
-    { id: 'cont-desc',   nombre: 'Descargar contratos', columna: 'descargar', fila: 'cont',
-      deshabilitado: true, ayuda: 'Solo lo concede Dirección.' },
-  ],
-}, {
-  // R152 · OTRA PANTALLA, Y LA MISMA LLAVE. «Dar de alta» es el MISMO permiso
-  // aqui y en Contrato: encender uno enciende el otro, y el aviso lo dice
-  // nombrando el modulo. Para unir DENTRO de un modulo es «clave»; esto cruza
-  // todos los modulos, incluidos los que se añadan despues.
-  id: 'historia',
-  nombre: 'Historia de contratos',
-  filas: [{ id: 'hist', nombre: 'Historial' }],
-  privilegios: [
-    { id: 'hist-ver',  nombre: 'Ver historial',  columna: 'ver',   fila: 'hist' },
-    { id: 'hist-alta', nombre: 'Dar de alta',    columna: 'alta',  fila: 'hist',
-      claveGlobal: 'alta-contrato' },
-  ],
-}];
-
-// CON «filas», «base» NOMBRA LA COLUMNA BASE, y manda sobre SU fila: sin «ver
-// Contratos» no hay nada de Contratos, y eso no dice nada de Trabajadores.
-// Si su dominio no funciona con un privilegio que manda, pase base={null}.
-&lt;PanelPrivilegios
-  presentacion="matriz"
-  columnas={COLUMNAS}
-  modulos={MODULOS}
-  base="ver"
-  valor={valor}
-  onCambio={(completo, efectivo) =&gt; {
-    setValor(completo);   // lo que la pantalla muestra: NO borra nada
-    guardar(efectivo);    // lo que de verdad rige: sin base, sin depende, sin cerrados
-  }}
-/&gt;
-
-// R152 · Y para aplanar a «que llaves estan dadas», sin deducirlo:
-//   una llave compartida esta concedida si sobrevive en AL MENOS UN modulo.
-const llaves = clavesEfectivas(MODULOS, valor, 'ver');   // Set&lt;string&gt;</code></pre>
-<p class="seccion-sub"><strong>En desarrollo el panel avisa por consola</strong> si un privilegio
-no cae en ninguna celda —sin <code>columna</code>, con una <code>columna</code> o una
-<code>fila</code> que no existen, o dos en la misma casilla—, si el <code>base</code> no lo encarna
-nadie, y si pasa algo que una matriz no puede dibujar (<code>niveles</code>, el título de un
-<code>grupo</code>, <code>abiertos</code>). Un permiso que desaparece de la pantalla de revisión
-<strong>sigue concedido</strong>, así que callarlo era la peor salida posible.</p>
-<table class="tabla-simple" style="margin-top:16px">
-  <tbody>
-    <tr><td class="num">1</td><td><strong>Las columnas las declara el panel, no los módulos.</strong> Una matriz con columnas distintas por fila no es una matriz: es una lista con más huecos. Que la rejilla sea igual en todas las filas es lo que permite leer hacia abajo.</td></tr>
-    <tr><td class="num">2</td><td><strong>El hueco habla.</strong> «Desactivar contrato» lleva <code>cerrado: {'{'} tipo: 'noAplica' {'}'}</code>: la acción <em>no existe</em> para ese recurso, y decirlo no es lo mismo que omitirlo. Omitiendo, quien reparte nunca se entera de que esa acción existe. Es el cuarto motivo de <code>NoRepartible</code>, y su texto es <strong>obligatorio</strong>.</td></tr>
-    <tr><td class="num">3</td><td><strong>Una celda sin privilegio declarado no dice nada</strong>, y se ve: un punto tenue. No es lo mismo que «no aplica» — es que nadie lo declaró.</td></tr>
-    <tr><td class="num">4</td><td><strong>Cada interruptor se llama por su cruce.</strong> Su etiqueta existe pero no se ve: un lector anuncia «Contratos · Editar», no doscientas veces «Editar». Una rejilla de controles sin nombre propio solo se puede usar mirándola.</td></tr>
-    <tr><td class="num">5</td><td><strong>La primera columna va anclada</strong>, que es el R142 otra vez: con siete columnas en un teléfono, una fila desplazada no dice de quién es. Se repite el <em>patrón</em>, no el código.</td></tr>
+    <tr><td><code>modulos</code><br><span class="seccion-sub">ModuloPrivilegios[]</span></td><td>Los módulos y sus privilegios, en el orden en que se pintan. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>valor</code><br><span class="seccion-sub">ValorPrivilegios</span></td><td>Lo concedido: <code>{ módulo: { privilegio: true } }</code>. Lo que no está, no está concedido. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>onCambio</code><br><span class="seccion-sub">(completo, efectivo) =&gt; void</span></td><td>Se llama al cambiar un interruptor. <code>completo</code> es lo que la pantalla muestra y no borra nada; <code>efectivo</code> es lo que de verdad rige —sin base, sin dependencias pendientes y sin cerrados—. Se guarda el efectivo. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>presentacion</code><br><span class="seccion-sub">'lista' | 'matriz' · por omisión 'lista'</span></td><td>La lista responde «¿qué puede hacer este cargo?»; la matriz, filas por columnas, responde además «¿a quién le he dado Crear?». La matriz necesita <code>columnas</code>. Por debajo de 640 px de ancho del contenedor se pinta la lista aunque pidas matriz.</td></tr>
+    <tr><td><code>columnas</code><br><span class="seccion-sub">ColumnaPrivilegios[]</span></td><td>Las columnas de la matriz. Las declara el panel y no los módulos, para que la rejilla sea la misma en todas las filas.</td></tr>
+    <tr><td><code>plegable</code><br><span class="seccion-sub">boolean · por omisión false</span></td><td>La banda de cada módulo pliega y despliega sus filas, en matriz y en lista. Con él la banda sale aunque haya un solo módulo; un módulo sin privilegios se dibuja como solo título; y en la matriz cada módulo lleva su cabecera de columnas encima de sus filas.</td></tr>
+    <tr><td><code>abiertos, onAbiertos</code><br><span class="seccion-sub">string[] · (ids) =&gt; void · por omisión el panel los recuerda</span></td><td>Los módulos abiertos, si quieres gobernarlos desde fuera. Todo empieza cerrado. Pasar <code>abiertos</code> sin <code>onAbiertos</code> deja el panel sin poder abrirse y avisa en desarrollo.</td></tr>
+    <tr><td><code>resumen</code><br><span class="seccion-sub">'completo' | 'ninguno' · por omisión 'completo'</span></td><td>Qué dice la banda sin abrir: lo concedido y el «n de n», o nada. Con <code>ninguno</code>, plegada, la banda no dice qué hay concedido: hay que abrirla. En la matriz solo tiene efecto con <code>plegable</code>.</td></tr>
+    <tr><td><code>posicionIconoFila</code><br><span class="seccion-sub">'izquierda' | 'derecha' · por omisión 'izquierda'</span></td><td>De qué lado del nombre va el <code>icono</code> de cada fila. Es del panel y no de cada fila, para que todas se lean como una columna. Solo en la matriz.</td></tr>
+    <tr><td><code>base</code><br><span class="seccion-sub">string | null · por omisión 'ver'</span></td><td>El privilegio del que dependen los demás dentro de cada módulo: sin él, el resto no se aplica. Con <code>null</code> se desactiva, para dominios donde los permisos son independientes. Con <code>filas</code>, nombra la <strong>columna</strong> base y manda sobre su fila.</td></tr>
+    <tr><td><code>preset, onVolverAlPreset</code><br><span class="seccion-sub">ValorPrivilegios · () =&gt; void</span></td><td>El estado de fábrica. Con él, cada módulo que difiere se marca como modificado y aparece cómo volver.</td></tr>
+    <tr><td><code>soloLectura</code><br><span class="seccion-sub">boolean · por omisión false</span></td><td>Muestra el estado sin dejar cambiarlo.</td></tr>
+    <tr><td><code>children</code><br><span class="seccion-sub">ReactNode</span></td><td>Encabezado libre encima del panel: el selector de cargo, un buscador, lo que haga falta.</td></tr>
+    <tr><td><code>className</code><br><span class="seccion-sub">string</span></td><td>Clase extra para la raíz.</td></tr>
   </tbody>
 </table>
 
-<h3 class="sub-seccion">Las decisiones que lleva dentro</h3>
-<p class="seccion-sub">Éstas son las ocho con las que nació. <strong>El contrato tiene
-${enLetra(reglasDelContrato('Panel de privilegios'))}</strong> —las demás llegaron entre la
-v1.125.0 y la v1.128.0— y están en <code>comportamiento.md</code>, que es la fuente. Este título
-decía «las ocho» sin más, y una lista cerrada con número en el título es una lista que envejece.
-Y decía «diecisiete» con veinticinco escritas: <strong>ahora la cifra se cuenta del contrato</strong>,
-porque una cifra a mano dentro de un documento generado es la única parte que envejece sola.</p>
-<table class="tabla-simple">
+<h4 class="sub-seccion">Cada módulo</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
   <tbody>
-    <tr><td class="num">1</td><td><strong>Hay un privilegio que manda.</strong> Sin «ver», editar no significa nada: apagarlo apaga el módulo, y encender cualquier otro lo enciende solo. Se cambia con <code>base</code> o se desactiva con <code>base={null}</code> cuando el dominio no funcione así. Sin esto se puede guardar «editar sin ver», y cada producto lo resolvería a su manera.</td></tr>
-    <tr><td class="num">2</td><td><strong>Lo cerrado dice por qué.</strong> Se pasa el motivo, no un booleano. Es el <code>cerrado</code> del Interruptor (R66), que nació para esto: un candado sin explicación se lee como un fallo del sistema.</td></tr>
-    <tr><td class="num">3</td><td><strong>Lo que no aplica no se pasa… salvo que quiera decirlo.</strong> En la lista, si un módulo no tiene «descargar», ese privilegio no está en su lista: una casilla vacía y un permiso denegado no son lo mismo. <strong>El R151 le puso la otra mitad</strong>: en una matriz, omitir es un hueco entre cien casillas y nadie se entera de que esa acción existe para otros recursos, así que se puede declarar <code>cerrado: { tipo: 'noAplica', motivo }</code> — con motivo obligatorio, porque un «no aplica» sin explicación es la casilla vacía otra vez.</td></tr>
-    <tr><td class="num">4</td><td><strong>Lo concedido se ve sin abrir.</strong> Los chips y el «4 de 6» están en la cabecera: abrir es para <em>cambiar</em>, no para <em>enterarse</em>. Con diez módulos, obligar a abrirlos uno por uno es diez veces el mismo gesto.</td></tr>
-    <tr><td class="num">5</td><td><strong>El preset se ve y se recupera.</strong> Pasando <code>preset</code>, cada módulo que difiera se marca y aparece cómo volver. Sin él nadie sabe qué tocó.</td></tr>
-    <tr><td class="num">6</td><td><strong>Un privilegio puede declarar niveles por campo</strong> — cuánto se ve de un dato sensible. Van en <a href="#segmentado" data-ir="segmentado" class="enlace">Segmentado</a>, que nació para esto, y <strong>dentro del privilegio</strong>: sin «ver» concedido, elegir cuánto se ve no significa nada.</td></tr>
-    <tr><td class="num">7</td><td><strong>Apagar el privilegio que manda no borra nada.</strong> Lo configurado se conserva para cuando se vuelva a encender — igual que los filtros de la tabla al plegarse. Lo que no se conserva es el <em>efecto</em>: <code>privilegiosEfectivos()</code> devuelve lo que de verdad se aplica, que es lo que va al backend.</td></tr>
-    <tr><td class="num">8</td><td><strong>R110 · Un privilegio puede depender de otro, y la cadena se recorre entera.</strong> <code>depende: 'crear'</code>. El <code>base</code> es <strong>uno solo y de un salto</strong>, así que no sabe expresar <code>leer → crear → carga&#8209;masiva</code>: dejarlo en <code>'leer'</code> permite encender la carga masiva sin poder crear, que es un botón que responde 403. Mientras falte, se ve bloqueado y dice cuál falta; apagar aquél <strong>no borra</strong> éste, pero <code>privilegiosEfectivos()</code> le quita el efecto. <strong>El encendido en cascada es una red, no el camino normal</strong>: como la fila bloqueada no se puede pulsar, la cascada solo llega a actuar cuando el privilegio se enciende por otra vía —compartir <code>clave</code> con otro (R99), o venir así en el <code>valor</code> inicial—. Ahí es donde evita guardar un permiso sin el que lo sostiene. <strong>Ojo al tacto:</strong> mientras la cadena esté incompleta el privilegio <strong>no se puede pulsar</strong>, así que en la práctica se enciende de uno en uno, de arriba abajo. Lo que <strong>no</strong> cambia es el <code>base</code>: sigue encendiéndose de rebote al pulsar cualquier privilegio que sí sea pulsable — <strong>se midió, y la primera redacción de esta línea decía lo contrario</strong>.</td></tr>
+    <tr><td><code>id</code><br><span class="seccion-sub">string</span></td><td>Identifica al módulo en <code>valor</code> y en <code>abiertos</code>.</td></tr>
+    <tr><td><code>nombre</code><br><span class="seccion-sub">ReactNode</span></td><td>El título de la banda.</td></tr>
+    <tr><td><code>privilegios</code><br><span class="seccion-sub">Privilegio[]</span></td><td>Lo que se reparte en el módulo. Con <code>[]</code> y <code>plegable</code>, el módulo se dibuja como un título sin opciones todavía.</td></tr>
+    <tr><td><code>grupos</code><br><span class="seccion-sub">{ titulo, privilegios }[]</span></td><td>Más privilegios, agrupados bajo un título. La matriz no dibuja el título del grupo.</td></tr>
+    <tr><td><code>filas</code><br><span class="seccion-sub">{ id, nombre, icono? }[]</span></td><td>Los recursos de la matriz: Trabajadores, Contratos. Sin ellas, el módulo entero es una fila. <code>icono</code> es un nombre del juego de iconos y va junto al nombre, del lado que diga <code>posicionIconoFila</code>.</td></tr>
   </tbody>
 </table>
 
-<h3 class="sub-seccion">Lo que NO hace, y es a propósito</h3>
-<table class="tabla-simple">
+<h4 class="sub-seccion">Cada privilegio</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
   <tbody>
-    <tr><td class="num">1</td><td><strong>No ordena por estado.</strong> Subir los concedidos al principio haría que la fila saltara bajo el dedo justo después de tocarla, y borraría el orden ver → editar → crear → desactivar, que es una escalera de riesgo. El orden lo pone quien pasa los datos.</td></tr>
-    <tr><td class="num">2</td><td><strong>No guarda.</strong> Es controlado: recibe <code>valor</code> y emite <code>onCambio</code>, que desde la v1.126.0 entrega <strong>dos</strong> cosas — el mapa completo y <strong>lo efectivo</strong>. Lo natural es guardar el primero y mandar el segundo. Cuándo se persiste es del producto.</td></tr>
-    <tr><td class="num">3</td><td><strong>No sabe de cargos.</strong> El selector de arriba lo pone el producto por <code>children</code>. El día que esto sirva para permisos de una clave de API, no habrá que tocarlo.</td></tr>
+    <tr><td><code>id, nombre</code><br><span class="seccion-sub">string · ReactNode</span></td><td>Identifican al privilegio y lo nombran.</td></tr>
+    <tr><td><code>ayuda</code><br><span class="seccion-sub">ReactNode</span></td><td>Una explicación junto al interruptor; en la matriz va en el globito y en lo que lee el lector.</td></tr>
+    <tr><td><code>columna, fila</code><br><span class="seccion-sub">string</span></td><td>En la matriz, en qué columna y en qué fila cae. Si no cae en ninguna celda, el panel avisa en desarrollo.</td></tr>
+    <tr><td><code>depende</code><br><span class="seccion-sub">string</span></td><td>El <code>id</code> de otro privilegio del mismo módulo. Mientras aquél esté apagado, éste se ve pero no se puede encender, y dice qué falta.</td></tr>
+    <tr><td><code>clave</code><br><span class="seccion-sub">string</span></td><td>Varios privilegios del mismo módulo con la misma clave son <strong>el mismo permiso</strong>: se encienden y se apagan juntos.</td></tr>
+    <tr><td><code>claveGlobal</code><br><span class="seccion-sub">string</span></td><td>Lo mismo, pero entre módulos distintos: encender uno enciende a todos los que la comparten, y el aviso nombra el módulo del compañero. <code>clavesEfectivas()</code> dice qué llaves están dadas.</td></tr>
+    <tr><td><code>cerrado</code><br><span class="seccion-sub">string | NoRepartible</span></td><td>Por qué no se puede repartir. Un texto vale como <code>cerrado</code>; o <code>{ tipo, motivo }</code> con <code>cerrado</code> (no se podrá conceder nunca), <code>ajeno</code> (existe, pero quien reparte no lo tiene), <code>pendiente</code> (todavía no existe) o <code>noAplica</code> (la acción no existe para este recurso; en la matriz es un hueco que lo dice). Nunca un booleano: un candado sin explicación se lee como un fallo.</td></tr>
+    <tr><td><code>deshabilitado</code><br><span class="seccion-sub">boolean · por omisión false</span></td><td>Apagado para quien mira, pero sin dejar de decir cómo está: que el cargo tenga «Editar» y que tú no puedas tocarlo son dos hechos distintos.</td></tr>
+    <tr><td><code>niveles</code><br><span class="seccion-sub">NivelPrivilegio[]</span></td><td>Niveles por campo —Completo, Parcial, Oculto—. Solo se reparten si el privilegio está concedido, y la matriz no los dibuja.</td></tr>
   </tbody>
 </table>
+
+<h4 class="sub-seccion">Cada columna</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>id</code><br><span class="seccion-sub">string</span></td><td>Lo que <code>columna</code> de cada privilegio nombra.</td></tr>
+    <tr><td><code>titulo</code><br><span class="seccion-sub">ReactNode</span></td><td>La etiqueta de la columna.</td></tr>
+    <tr><td><code>icono</code><br><span class="seccion-sub">NombreIcono</span></td><td>Un icono de línea sobre la etiqueta. Con alguno, el encabezado pasa a fondo blanco y el cursor o el foco sobre un interruptor ilumina su columna y su fila. Una columna sin icono sale como siempre y se alinea por abajo con las demás.</td></tr>
+    <tr><td><code>aparte</code><br><span class="seccion-sub">boolean · por omisión false</span></td><td>La separa de la anterior con un filete: es otra clase de acción.</td></tr>
+  </tbody>
+</table>
+
 `;
 
 const pagPanelBarra = `
