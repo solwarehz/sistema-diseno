@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.152.0</title>
+<title>Cascarón · Sistema de diseño Colegio Albert Einstein v1.153.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.152.0
-   WCAG 2.2 AA · 158 pares verificados en los dos modos, 0 fallos
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.153.0
+   WCAG 2.2 AA · 184 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -35,7 +35,7 @@
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.152.0;
+  --mmi-version: 1.153.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -110,6 +110,32 @@
   --identidad-3: #9B3B6E;
   --identidad-4: #4A5568;
   --identidad-texto: #FFFFFF;
+
+  /* Gráfico de tendencia — panel que cambia con el tema (SPEC 07) */
+  --grafico-fondo: #E5E8F2;
+  --grafico-texto: #2C2A25;
+  --grafico-texto-tenue: #5C5955;
+  --grafico-linea: #2C3D71;
+  --grafico-rejilla: #B9C2DC;
+  --grafico-base: #8D9BC6;
+  --grafico-ref: #5C5955;
+  --grafico-guia: #5C5955;
+  --grafico-halo: #AA8E41;
+  --grafico-punto0: #FFFFFF;
+  --grafico-ventana-fondo: #1D3163;
+  --grafico-ventana-texto: #FFFFFF;
+  --grafico-foco: #A46300;
+
+  /* Barra del ranking (SPEC 07) */
+  --barra-relleno: #45558A;
+  --barra-pista: #E0DFDE;
+
+  /* Mapa de calor — cinco pasos de un tono (SPEC 07) */
+  --mapa-1: #E5E8F2;
+  --mapa-2: #B9C2DC;
+  --mapa-3: #8D9BC6;
+  --mapa-4: #45558A;
+  --mapa-5: #2C3D71;
 
   /* Marca — FUERA del sistema. Prohibidos en interfaz (§2.3) */
   --marca-rojo: #E30613;
@@ -194,6 +220,32 @@
   --identidad-3: #9B3B6E;
   --identidad-4: #4A5568;
   --identidad-texto: #FFFFFF;
+
+  /* Gráfico de tendencia — panel que cambia con el tema (SPEC 07) */
+  --grafico-fondo: #1D3163;
+  --grafico-texto: #FFFFFF;
+  --grafico-texto-tenue: #B9C2DC;
+  --grafico-linea: #DFCA9C;
+  --grafico-rejilla: #39497A;
+  --grafico-base: #45558A;
+  --grafico-ref: #FFFFFF;
+  --grafico-guia: #FFFFFF;
+  --grafico-halo: #DFCA9C;
+  --grafico-punto0: #FFFFFF;
+  --grafico-ventana-fondo: #FFFFFF;
+  --grafico-ventana-texto: #2C2A25;
+  --grafico-foco: #F0C060;
+
+  /* Barra del ranking (SPEC 07) */
+  --barra-relleno: #8D9BC6;
+  --barra-pista: #44423F;
+
+  /* Mapa de calor — cinco pasos de un tono (SPEC 07) */
+  --mapa-1: #1D3163;
+  --mapa-2: #39497A;
+  --mapa-3: #45558A;
+  --mapa-4: #8D9BC6;
+  --mapa-5: #B9C2DC;
 
   /* Marca en oscuro. El titular sube a rojo-400; el panel de marca baja
      a #930000 porque el rojo del escudo se aplana contra la página (§2.4). */
@@ -281,6 +333,32 @@
     --identidad-3: #9B3B6E;
     --identidad-4: #4A5568;
     --identidad-texto: #FFFFFF;
+
+    /* Gráfico de tendencia — panel que cambia con el tema (SPEC 07) */
+    --grafico-fondo: #1D3163;
+    --grafico-texto: #FFFFFF;
+    --grafico-texto-tenue: #B9C2DC;
+    --grafico-linea: #DFCA9C;
+    --grafico-rejilla: #39497A;
+    --grafico-base: #45558A;
+    --grafico-ref: #FFFFFF;
+    --grafico-guia: #FFFFFF;
+    --grafico-halo: #DFCA9C;
+    --grafico-punto0: #FFFFFF;
+    --grafico-ventana-fondo: #FFFFFF;
+    --grafico-ventana-texto: #2C2A25;
+    --grafico-foco: #F0C060;
+
+    /* Barra del ranking (SPEC 07) */
+    --barra-relleno: #8D9BC6;
+    --barra-pista: #44423F;
+
+    /* Mapa de calor — cinco pasos de un tono (SPEC 07) */
+    --mapa-1: #1D3163;
+    --mapa-2: #39497A;
+    --mapa-3: #45558A;
+    --mapa-4: #8D9BC6;
+    --mapa-5: #B9C2DC;
 
     --marca-rojo: #FF4C37;
     --marca-rojo-panel: #930000;
@@ -649,6 +727,26 @@
 .token-identidad-3 { background-color: var(--identidad-3); }
 .token-identidad-4 { background-color: var(--identidad-4); }
 .token-identidad-texto { background-color: var(--identidad-texto); }
+.token-grafico-fondo { background-color: var(--grafico-fondo); }
+.token-grafico-texto { background-color: var(--grafico-texto); }
+.token-grafico-texto-tenue { background-color: var(--grafico-texto-tenue); }
+.token-grafico-linea { background-color: var(--grafico-linea); }
+.token-grafico-rejilla { background-color: var(--grafico-rejilla); }
+.token-grafico-base { background-color: var(--grafico-base); }
+.token-grafico-ref { background-color: var(--grafico-ref); }
+.token-grafico-guia { background-color: var(--grafico-guia); }
+.token-grafico-halo { background-color: var(--grafico-halo); }
+.token-grafico-punto0 { background-color: var(--grafico-punto0); }
+.token-grafico-ventana-fondo { background-color: var(--grafico-ventana-fondo); }
+.token-grafico-ventana-texto { background-color: var(--grafico-ventana-texto); }
+.token-grafico-foco { background-color: var(--grafico-foco); }
+.token-barra-relleno { background-color: var(--barra-relleno); }
+.token-barra-pista { background-color: var(--barra-pista); }
+.token-mapa-1 { background-color: var(--mapa-1); }
+.token-mapa-2 { background-color: var(--mapa-2); }
+.token-mapa-3 { background-color: var(--mapa-3); }
+.token-mapa-4 { background-color: var(--mapa-4); }
+.token-mapa-5 { background-color: var(--mapa-5); }
 
 
 /* ── Cascarón. Estilos de la propia página de revisión ───────────────────── */
@@ -732,6 +830,8 @@
   --dur-lenta: 220ms;
   --dur-giro: 700ms;
   --dur-onda: 1300ms;
+  /* El trazo del grafico de tendencia al abrir (SPEC 07): una vez, no un adorno que se repite. */
+  --dur-trazo: 1000ms;
   --curva: ease;
   --curva-vaiven: ease-in-out;
   --curva-giro: linear;
@@ -754,6 +854,7 @@
     --dur-lenta: 0.01ms;
     --dur-giro: 0.01ms;
     --dur-onda: 0.01ms;
+    --dur-trazo: 0.01ms;
   }
 }
 
@@ -1507,7 +1608,7 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
    como cualquier otra regla, para que el catalogo y la entrega digan lo mismo:
    inyectarlo solo en la entrega dejaba una regla que el catalogo no tenia, y
    el candado de la promesa lo caza —con razon—. Los dos salen de VERSION. */
-:root { --mmi-componentes: 1.152.0; }
+:root { --mmi-componentes: 1.153.0; }
 
 .fc-zona { position: relative; }
 /* R129.2 · EL TOPE ERA MENOR QUE EL CONTENIDO. Con R129.1 puesto, lo que el
@@ -2557,6 +2658,156 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
   .cuadro { width: 28px; height: 28px; }
 }
 /* ───────────────────────────────────────────────────────────────────────────
+   FRANJA DE CIFRAS · clases .franja*, .cifra*  (SPEC 07, R169)
+   Cifras separadas por una linea fina, sin tarjetas sueltas. La separacion es
+   el hueco de 1px de la rejilla sobre el fondo del borde. Movil primero: DOS
+   columnas de base y, con numero impar, la ultima ocupa el ancho completo; los
+   5 entran con min-width. La diferencia lleva flecha, signo y palabra: el
+   color acompana (SC 1.4.1), no sostiene.
+   ─────────────────────────────────────────────────────────────────────────── */
+.franja { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px;
+  background: var(--borde); border: 1px solid var(--borde); border-radius: 8px;
+  overflow: hidden; margin: 0; padding: 0; list-style: none; }
+.franja-item { background: var(--fondo-tarjeta); padding: 16px 16px 12px; min-width: 0; }
+.franja-item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.cifra { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.cifra-titulo { font-size: 13px; font-weight: 500; color: var(--texto-secundario); }
+.cifra-valor { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px;
+  font-size: 34px; font-weight: 600; line-height: 1.05; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums; color: var(--texto-principal); }
+.cifra-unidad { font-size: 15px; font-weight: 500; letter-spacing: 0; color: var(--texto-secundario); }
+.cifra-dif { position: relative; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start;
+  font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 6px;
+  font-variant-numeric: tabular-nums; border: 1px solid transparent; }
+.cifra-dif.cifra-dif-peor { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.cifra-dif.cifra-dif-mejor { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.cifra-dif.cifra-dif-igual { background: var(--neutra-fondo); color: var(--neutra-texto); border-color: var(--borde-fuerte); }
+.cifra-detalle { font-size: 12px; color: var(--texto-secundario); }
+@media (min-width: 900px) {
+  .franja { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .franja-item:last-child:nth-child(odd) { grid-column: auto; }
+}
+/* ───────────────────────────────────────────────────────────────────────────
+   MAPA DE CALOR · clases .mapa*  (SPEC 07, R169)
+   Tabla filas x columnas con cinco pasos de un solo tono (tokens --mapa-1..5).
+   El texto es el principal en los pasos 1-3 y el invertido en 4-5; cada par se
+   mide en verificar-contraste. El desplazamiento es del contenedor .mapa-vista
+   (ancho minimo 350px), nunca de la pagina. position: relative porque las celdas
+   llevan texto .sr-solo (absoluto): sin ella se escaparia del recorte.
+   ─────────────────────────────────────────────────────────────────────────── */
+.mapa { background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 8px;
+  padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.mapa-titulo { margin: 0; font-size: 16px; font-weight: 600; }
+.mapa-desc { margin: 4px 0 0; font-size: 13px; color: var(--texto-secundario); }
+.mapa-desc strong { font-weight: 600; color: var(--texto-principal); font-variant-numeric: tabular-nums; }
+.mapa-total { margin-top: 0; }
+.mapa-vista { position: relative; overflow-x: auto; border-radius: 6px; }
+.mapa-vista:focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; }
+/* separate es el valor por omision: R142 prohibe escribirlo en la hoja. */
+.mapa-tabla { border-spacing: 4px; min-width: 350px; width: 100%; table-layout: fixed; }
+.mapa-tabla th { font-size: 12px; font-weight: 500; color: var(--texto-secundario); text-align: center; padding: 0 0 4px; }
+.mapa-tabla tbody th { text-align: left; color: var(--texto-principal); font-size: 13px; width: 64px; padding: 0; }
+.mapa-tabla td { padding: 0; }
+.mapa-celda { display: flex; flex-direction: column; gap: 0; padding: 8px 4px; text-align: center;
+  border: 2px solid transparent; border-radius: 6px; font-variant-numeric: tabular-nums; }
+.mapa-valor { font-size: 16px; font-weight: 600; line-height: 1.1; }
+.mapa-n { font-size: 12px; }
+.mapa-p1 { background: var(--mapa-1); color: var(--texto-principal); }
+.mapa-p2 { background: var(--mapa-2); color: var(--texto-principal); }
+.mapa-p3 { background: var(--mapa-3); color: var(--texto-principal); }
+.mapa-p4 { background: var(--mapa-4); color: var(--texto-invertido); }
+.mapa-p5 { background: var(--mapa-5); color: var(--texto-invertido); }
+.mapa-celda.mapa-pocos { border-color: currentColor; border-style: dashed; }
+.mapa-celda.mapa-vacia { background: transparent; color: var(--texto-secundario);
+  border: 1px dashed var(--borde-fuerte); }
+.mapa-escala { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; color: var(--texto-secundario); }
+.mapa-pasos { display: inline-flex; gap: 4px; }
+.mapa-paso { display: block; width: 16px; height: 12px; border-radius: 3px; }
+/* ───────────────────────────────────────────────────────────────────────────
+   LISTA DE RANKING · clases .ranking*  (SPEC 07, R169)
+   Posicion, avatar, nombre que envuelve, valor y barra proporcional al primero.
+   La barra es un SVG: el ancho exacto es un atributo del rect, no un estilo.
+   La columna del nombre lleva min-width 0 para que un apellido largo envuelva
+   en vez de empujar la fila fuera de la pantalla.
+   ─────────────────────────────────────────────────────────────────────────── */
+.ranking { background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 8px;
+  padding: 16px; min-width: 0; }
+.ranking-titulo { margin: 0; font-size: 16px; font-weight: 600; }
+.ranking-lista { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.ranking-fila { display: grid; grid-template-columns: 20px 32px minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.ranking-pos { font-weight: 600; color: var(--texto-secundario); font-variant-numeric: tabular-nums; text-align: right; }
+.ranking-avatar { display: flex; }
+.ranking-quien { min-width: 0; }
+.ranking-nombre { font-size: 15px; font-weight: 500; line-height: 1.3; overflow-wrap: anywhere; }
+.ranking-detalle { font-size: 12px; color: var(--texto-secundario); }
+.ranking-barra { display: block; width: 100%; height: 4px; margin-top: 8px; border-radius: 3px; background: var(--barra-pista); }
+.ranking-barra-relleno { fill: var(--barra-relleno); }
+.ranking-valor { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ranking-vacio { margin: 12px 0 0; font-size: 15px; color: var(--texto-secundario); }
+/* ───────────────────────────────────────────────────────────────────────────
+   GRAFICO DE TENDENCIA · clases .graf*  (SPEC 07, R169)
+   Panel con tokens --grafico-* (indigo suave en claro, marino en oscuro: el
+   cambio de tema lo hacen los tokens, aqui no hay ramas por tema). Todo color
+   del SVG sale de una clase, y la forma (x, y, d, r) de atributos SVG: ni un
+   style en linea. Escala tipografica del sistema: titulo 28 (34 desde 520px),
+   cifra grande 56, rotulos 12/13/15. El alto del SVG (250 estrecho, 300 ancho)
+   lo decide la pieza midiendo SU contenedor, no la ventana.
+   DESVIACIONES DEL MOCKUP APROBADO, por la escala de auditar-cascaron (solo
+   56/34/28/24/20/19/16/15/13/12 y multiplos de 4): el titulo es 28 (34 desde
+   520px) y no 30/36; la cifra grande es 56 en los dos anchos y no 56/72 (72 no
+   esta en la escala); los textos del SVG 12/13/15 y no 11,5/12,5; la ventana
+   mide 220px fijos; los espacios de 6 pasan a 8. Cambiar la escala es decision
+   del responsable, no de esta hoja.
+   ─────────────────────────────────────────────────────────────────────────── */
+.graf { background: var(--grafico-fondo); color: var(--grafico-texto); border: 1px solid var(--grafico-rejilla);
+  border-radius: 12px; padding: 16px 12px 8px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.graf-cab { display: flex; flex-direction: column; gap: 12px; }
+.graf-titulo { margin: 0 0 8px; font-size: 28px; font-weight: 600; line-height: 1.15; color: var(--grafico-texto); }
+.graf-num { font-size: 56px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.graf-num small { font-size: 20px; font-weight: 500; color: var(--grafico-texto-tenue); }
+.graf-chips { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.graf-chips .chip { white-space: normal; }
+.graf-vista { position: relative; border-radius: 6px; min-width: 0; }
+.graf-vista:focus-visible { outline: 3px solid var(--grafico-foco); outline-offset: 2px; }
+.graf-svg { display: block; width: 100%; height: auto; touch-action: pan-y; font-family: inherit; }
+.graf-det summary { cursor: pointer; font-size: 13px; color: var(--grafico-texto-tenue); padding: 8px 0; }
+.graf-det summary:focus-visible { outline: 3px solid var(--grafico-foco); outline-offset: 2px; }
+.graf-tabla { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; margin: 4px 0 8px; }
+.graf-tabla th, .graf-tabla td { text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--grafico-rejilla); }
+.graf-tabla thead th { color: var(--grafico-texto-tenue); font-weight: 500; }
+.graf-tabla tbody th { font-weight: 400; }
+.graf-rej { stroke: var(--grafico-rejilla); stroke-width: 1; }
+.graf-base { stroke: var(--grafico-base); stroke-width: 1; }
+.graf-eje { fill: var(--grafico-texto-tenue); font-size: 12px; }
+.graf-numero { fill: var(--grafico-texto-tenue); font-size: 15px; font-weight: 600; }
+.graf-num0 { fill: var(--grafico-texto); font-size: 15px; font-weight: 600; }
+.graf-sub { fill: var(--grafico-texto-tenue); font-size: 12px; }
+.graf-lin { fill: none; stroke: var(--grafico-linea); stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round; }
+.graf-stop { stop-color: var(--grafico-linea); }
+.graf-area { stroke: none; }
+.graf-ref { stroke: var(--grafico-ref); stroke-opacity: .75; stroke-width: 1.5; stroke-dasharray: 5 5; }
+.graf-ref-t { fill: var(--grafico-texto); font-size: 12px; stroke: var(--grafico-fondo); stroke-width: 4; paint-order: stroke; }
+.graf-halo { fill: var(--grafico-halo); fill-opacity: .3; }
+.graf-p0 { fill: var(--grafico-punto0); stroke: var(--grafico-linea); stroke-width: 3; }
+.graf-p { fill: var(--grafico-fondo); stroke: var(--grafico-linea); stroke-width: 2.5; }
+.graf-val { fill: var(--grafico-texto); font-size: 13px; font-weight: 600; stroke: var(--grafico-fondo); stroke-width: 4; paint-order: stroke; }
+.graf-guia { stroke: var(--grafico-guia); stroke-opacity: .6; stroke-width: 1; }
+.graf-anillo { fill: none; stroke: var(--grafico-guia); stroke-width: 2; }
+/* La ventana no recibe el puntero: si lo recibiera taparia el punto que la abrio y parpadearia. */
+.graf-vent { pointer-events: none; }
+.graf-vent-fondo { fill: var(--grafico-ventana-fondo); }
+.graf-vent-t { fill: var(--grafico-ventana-texto); font-size: 13px; }
+.graf-vent-b { fill: var(--grafico-ventana-texto); font-size: 13px; font-weight: 600; }
+/* El trazo se anima UNA vez: la clase solo esta en el primer dibujo (el componente la suelta al redibujar). */
+@keyframes graf-trazo { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.graf-anima { stroke-dasharray: 1; animation: graf-trazo var(--dur-trazo) var(--curva) both; }
+@media (prefers-reduced-motion: reduce) { .graf-anima { animation: none; stroke-dasharray: none; } }
+@media (min-width: 520px) {
+  .graf { padding: 20px 16px 8px; }
+  .graf-titulo { font-size: 34px; }
+  .graf-cab { flex-direction: row; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px 24px; }
+}
+/* ───────────────────────────────────────────────────────────────────────────
    PANEL DE PRIVILEGIOS · clases .pp-*
    Reparte permisos por modulo. Aqui SOLO vive el andamiaje de la lista: el
    interruptor, el chip y el boton de dentro son los del sistema, importados.
@@ -3562,6 +3813,20 @@ input.campo.sel-in { width: 100%; padding-right: 32px; }
 .sel-notas { font-size: 13px; color: var(--texto-secundario); font-weight: 400; flex: none; }
 .sel-check { color: var(--accion); display: grid; place-items: center; }
 .sel-check .ic { width: 16px; height: 16px; }
+/* R169 · JERARQUIA: `nivel` y `cuenta` en las opciones. El sangrado es una
+   clase por nivel (`sel-n1`…`sel-n4`) y no un `style`, que el candado
+   prohibe; mas alla del cuarto se queda en el cuarto, porque sangrar sin tope
+   se come el ancho de un telefono. Se sangra el texto y no la fila, para que
+   el marcado y el hover sigan ocupando todo el ancho. `sel-ctx` es el
+   ancestro que se conserva al buscar: sigue siendo elegible, solo se lee como
+   contexto. `sel-cuenta` va a la derecha, tabular, y no se parte. */
+.sel-op.sel-n1 .sel-op-txt { padding-left: 20px; }
+.sel-op.sel-n2 .sel-op-txt { padding-left: 40px; }
+.sel-op.sel-n3 .sel-op-txt { padding-left: 60px; }
+.sel-op.sel-n4 .sel-op-txt { padding-left: 80px; }
+.sel-op.sel-ctx:not([aria-selected="true"]) .sel-op-txt { color: var(--texto-secundario); }
+.sel-cuenta { margin-left: auto; flex: none; padding-left: 8px; font-size: 13px;
+  color: var(--texto-secundario); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .sel-vacio { padding: 12px 12px; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .sel-vacio strong { color: var(--texto-principal); }
 /* R118 · LA BUSQUEDA CONTRA EL SERVIDOR — esqueleto y fallo.
@@ -3579,6 +3844,7 @@ input.campo.sel-in { width: 100%; padding-right: 32px; }
   color: var(--texto-secundario); padding: 12px; }
 .sel-op.sel-fallo strong { color: var(--texto-principal); }
 .sel-demo-abierto { position: relative; min-height: 148px; }
+.sel-demo-abierto.sel-demo-alto { min-height: 360px; }
 /* La entrega real: el marco aislado. Estas reglas son MOBILIARIO y no viajan
    —lo que va dentro del iframe es lo unico que cuenta—. */
 .er-caso { padding: 0; overflow: hidden; }
@@ -5720,7 +5986,11 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                           <span class="nav-txt">Chip de estado</span></a><a class="nav-nieto" href="#cuadro" data-ir="cuadro" title="Cuadro de estado">
                           <span class="nav-txt">Cuadro de estado</span></a><a class="nav-nieto" href="#avatar" data-ir="avatar" title="Avatar">
                           <span class="nav-txt">Avatar</span></a><a class="nav-nieto" href="#tarjeta" data-ir="tarjeta" title="Tarjeta">
-                          <span class="nav-txt">Tarjeta</span></a>
+                          <span class="nav-txt">Tarjeta</span></a><a class="nav-nieto" href="#franjacifras" data-ir="franjacifras" title="Franja de cifras">
+                          <span class="nav-txt">Franja de cifras</span></a><a class="nav-nieto" href="#mapacalor" data-ir="mapacalor" title="Mapa de calor">
+                          <span class="nav-txt">Mapa de calor</span></a><a class="nav-nieto" href="#listaranking" data-ir="listaranking" title="Lista de ranking">
+                          <span class="nav-txt">Lista de ranking</span></a><a class="nav-nieto" href="#graficotendencia" data-ir="graficotendencia" title="Gráfico de tendencia">
+                          <span class="nav-txt">Gráfico de tendencia</span></a>
                   </div></div>
                 </div><div class="nav-rama" data-rama="2-3">
                   <!-- aria-controls e id, como los emite el componente: un
@@ -5987,7 +6257,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
         <label class="cg"><span class="cg-et">Sistema</span>
           <select class="campo cg-in"><option>Colegio Albert Einstein</option></select></label>
         <label class="cg"><span class="cg-et">Versión</span>
-          <select class="campo cg-in"><option>v1.152.0</option></select></label>
+          <select class="campo cg-in"><option>v1.153.0</option></select></label>
         <label class="cg"><span class="cg-et">Modo</span>
           <select class="campo cg-in"><option>Catálogo</option><option>Producción</option></select></label>
       </div>
@@ -6075,8 +6345,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
                  botón porque descargar un archivo es navegar a él: así funciona
                  con «guardar como», con el botón central y con teclado, sin
                  una línea de JavaScript. -->
-            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.152.0.zip" download
-               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.152.0</span></span></a>
+            <a class="us-op us-zip" role="menuitem" href="sistema-diseno-v1.153.0.zip" download
+               ><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span>Descargar el sistema <span class="us-zip-det">v1.153.0</span></span></a>
 
             <button class="us-op us-salir" role="menuitem"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Salir del sistema</span></button>
           </div>
@@ -6097,8 +6367,8 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator { display: 
 El menú de la izquierda lo abre por partes.</p>
 
 <div class="estado-rejilla">
-  <div class="est"><b>57</b><span>tokens semánticos</span></div>
-  <div class="est"><b>158</b><span>pares verificados</span></div>
+  <div class="est"><b>77</b><span>tokens semánticos</span></div>
+  <div class="est"><b>184</b><span>pares verificados</span></div>
   <div class="est est-ok"><b>0</b><span>fallos de contraste</span></div>
   <div class="est"><b>2</b><span>modos, claro y oscuro</span></div>
 </div>
@@ -6601,7 +6871,7 @@ El menú de la izquierda lo abre por partes.</p>
   <a href="#espaciado" data-ir="espaciado" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
     <span><strong>Espaciado</strong>Rejilla de 4px y tamaños de control</span></a>
   <a href="#contraste" data-ir="contraste" class="atajo"><span class="atajo-ic"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M12 15v6"/></svg></span>
-    <span><strong>Contrastes</strong>Los 158 pares medidos</span></a>
+    <span><strong>Contrastes</strong>Los 184 pares medidos</span></a>
 </div>
     </section><section class="pagina" id="pg-entrega-real" hidden>
       <nav class="migas" aria-label="Ubicación">
@@ -6635,8 +6905,8 @@ demostraciones de al lado. Y la hoja no es una copia: se inyecta desde
 vieja.</div>
 
 <script type="text/plain" id="tokens-entregados">/* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.152.0
-   WCAG 2.2 AA · 158 pares verificados en los dos modos, 0 fallos
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.153.0
+   WCAG 2.2 AA · 184 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -6663,7 +6933,7 @@ vieja.</div>
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.152.0;
+  --mmi-version: 1.153.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -6738,6 +7008,32 @@ vieja.</div>
   --identidad-3: #9B3B6E;
   --identidad-4: #4A5568;
   --identidad-texto: #FFFFFF;
+
+  /* Gráfico de tendencia — panel que cambia con el tema (SPEC 07) */
+  --grafico-fondo: #E5E8F2;
+  --grafico-texto: #2C2A25;
+  --grafico-texto-tenue: #5C5955;
+  --grafico-linea: #2C3D71;
+  --grafico-rejilla: #B9C2DC;
+  --grafico-base: #8D9BC6;
+  --grafico-ref: #5C5955;
+  --grafico-guia: #5C5955;
+  --grafico-halo: #AA8E41;
+  --grafico-punto0: #FFFFFF;
+  --grafico-ventana-fondo: #1D3163;
+  --grafico-ventana-texto: #FFFFFF;
+  --grafico-foco: #A46300;
+
+  /* Barra del ranking (SPEC 07) */
+  --barra-relleno: #45558A;
+  --barra-pista: #E0DFDE;
+
+  /* Mapa de calor — cinco pasos de un tono (SPEC 07) */
+  --mapa-1: #E5E8F2;
+  --mapa-2: #B9C2DC;
+  --mapa-3: #8D9BC6;
+  --mapa-4: #45558A;
+  --mapa-5: #2C3D71;
 
   /* Marca — FUERA del sistema. Prohibidos en interfaz (§2.3) */
   --marca-rojo: #E30613;
@@ -6822,6 +7118,32 @@ vieja.</div>
   --identidad-3: #9B3B6E;
   --identidad-4: #4A5568;
   --identidad-texto: #FFFFFF;
+
+  /* Gráfico de tendencia — panel que cambia con el tema (SPEC 07) */
+  --grafico-fondo: #1D3163;
+  --grafico-texto: #FFFFFF;
+  --grafico-texto-tenue: #B9C2DC;
+  --grafico-linea: #DFCA9C;
+  --grafico-rejilla: #39497A;
+  --grafico-base: #45558A;
+  --grafico-ref: #FFFFFF;
+  --grafico-guia: #FFFFFF;
+  --grafico-halo: #DFCA9C;
+  --grafico-punto0: #FFFFFF;
+  --grafico-ventana-fondo: #FFFFFF;
+  --grafico-ventana-texto: #2C2A25;
+  --grafico-foco: #F0C060;
+
+  /* Barra del ranking (SPEC 07) */
+  --barra-relleno: #8D9BC6;
+  --barra-pista: #44423F;
+
+  /* Mapa de calor — cinco pasos de un tono (SPEC 07) */
+  --mapa-1: #1D3163;
+  --mapa-2: #39497A;
+  --mapa-3: #45558A;
+  --mapa-4: #8D9BC6;
+  --mapa-5: #B9C2DC;
 
   /* Marca en oscuro. El titular sube a rojo-400; el panel de marca baja
      a #930000 porque el rojo del escudo se aplana contra la página (§2.4). */
@@ -6909,6 +7231,32 @@ vieja.</div>
     --identidad-3: #9B3B6E;
     --identidad-4: #4A5568;
     --identidad-texto: #FFFFFF;
+
+    /* Gráfico de tendencia — panel que cambia con el tema (SPEC 07) */
+    --grafico-fondo: #1D3163;
+    --grafico-texto: #FFFFFF;
+    --grafico-texto-tenue: #B9C2DC;
+    --grafico-linea: #DFCA9C;
+    --grafico-rejilla: #39497A;
+    --grafico-base: #45558A;
+    --grafico-ref: #FFFFFF;
+    --grafico-guia: #FFFFFF;
+    --grafico-halo: #DFCA9C;
+    --grafico-punto0: #FFFFFF;
+    --grafico-ventana-fondo: #FFFFFF;
+    --grafico-ventana-texto: #2C2A25;
+    --grafico-foco: #F0C060;
+
+    /* Barra del ranking (SPEC 07) */
+    --barra-relleno: #8D9BC6;
+    --barra-pista: #44423F;
+
+    /* Mapa de calor — cinco pasos de un tono (SPEC 07) */
+    --mapa-1: #1D3163;
+    --mapa-2: #39497A;
+    --mapa-3: #45558A;
+    --mapa-4: #8D9BC6;
+    --mapa-5: #B9C2DC;
 
     --marca-rojo: #FF4C37;
     --marca-rojo-panel: #930000;
@@ -7277,10 +7625,30 @@ vieja.</div>
 .token-identidad-3 { background-color: var(--identidad-3); }
 .token-identidad-4 { background-color: var(--identidad-4); }
 .token-identidad-texto { background-color: var(--identidad-texto); }
+.token-grafico-fondo { background-color: var(--grafico-fondo); }
+.token-grafico-texto { background-color: var(--grafico-texto); }
+.token-grafico-texto-tenue { background-color: var(--grafico-texto-tenue); }
+.token-grafico-linea { background-color: var(--grafico-linea); }
+.token-grafico-rejilla { background-color: var(--grafico-rejilla); }
+.token-grafico-base { background-color: var(--grafico-base); }
+.token-grafico-ref { background-color: var(--grafico-ref); }
+.token-grafico-guia { background-color: var(--grafico-guia); }
+.token-grafico-halo { background-color: var(--grafico-halo); }
+.token-grafico-punto0 { background-color: var(--grafico-punto0); }
+.token-grafico-ventana-fondo { background-color: var(--grafico-ventana-fondo); }
+.token-grafico-ventana-texto { background-color: var(--grafico-ventana-texto); }
+.token-grafico-foco { background-color: var(--grafico-foco); }
+.token-barra-relleno { background-color: var(--barra-relleno); }
+.token-barra-pista { background-color: var(--barra-pista); }
+.token-mapa-1 { background-color: var(--mapa-1); }
+.token-mapa-2 { background-color: var(--mapa-2); }
+.token-mapa-3 { background-color: var(--mapa-3); }
+.token-mapa-4 { background-color: var(--mapa-4); }
+.token-mapa-5 { background-color: var(--mapa-5); }
 </script>
 <script type="text/plain" id="hoja-entregada">
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.152.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.153.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -7359,6 +7727,8 @@ vieja.</div>
   --dur-lenta: 220ms;
   --dur-giro: 700ms;
   --dur-onda: 1300ms;
+  /* El trazo del grafico de tendencia al abrir (SPEC 07): una vez, no un adorno que se repite. */
+  --dur-trazo: 1000ms;
   --curva: ease;
   --curva-vaiven: ease-in-out;
   --curva-giro: linear;
@@ -7381,9 +7751,10 @@ vieja.</div>
     --dur-lenta: 0.01ms;
     --dur-giro: 0.01ms;
     --dur-onda: 0.01ms;
+    --dur-trazo: 0.01ms;
   }
 }
-:root{ --mmi-componentes: 1.152.0; }
+:root{ --mmi-componentes: 1.153.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -7708,7 +8079,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .ta-cuenta-mal{ color: var(--error-texto); font-weight: 500; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   SELECTOR — 23 reglas · clases .sel-*
+   SELECTOR — 29 reglas · clases .sel-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .sel{ position: relative; }
@@ -7733,6 +8104,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .sel-notas{ font-size: 13px; color: var(--texto-secundario); font-weight: 400; flex: none; }
 .sel-check{ color: var(--accion); display: grid; place-items: center; }
 .sel-check .ic{ width: 16px; height: 16px; }
+.sel-op.sel-n1 .sel-op-txt{ padding-left: 20px; }
+.sel-op.sel-n2 .sel-op-txt{ padding-left: 40px; }
+.sel-op.sel-n3 .sel-op-txt{ padding-left: 60px; }
+.sel-op.sel-n4 .sel-op-txt{ padding-left: 80px; }
+.sel-op.sel-ctx:not([aria-selected="true"]) .sel-op-txt{ color: var(--texto-secundario); }
+.sel-cuenta{ margin-left: auto; flex: none; padding-left: 8px; font-size: 13px;
+  color: var(--texto-secundario); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .sel-vacio{ padding: 12px 12px; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .sel-vacio strong{ color: var(--texto-principal); }
 .sel-cargando{ display: grid; gap: 11px; padding: 13px 12px; }
@@ -8096,6 +8474,136 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   border-width: 2px; border-style: dashed; border-color: var(--sin-estado); }
 @media (min-width: 641px) {
   .cuadro{ width: 28px; height: 28px; }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   FRANJA DE CIFRAS — 13 reglas · clases .franja-*, .cifra-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.franja{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px;
+  background: var(--borde); border: 1px solid var(--borde); border-radius: 8px;
+  overflow: hidden; margin: 0; padding: 0; list-style: none; }
+.franja-item{ background: var(--fondo-tarjeta); padding: 16px 16px 12px; min-width: 0; }
+.franja-item:last-child:nth-child(odd){ grid-column: 1 / -1; }
+.cifra{ display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.cifra-titulo{ font-size: 13px; font-weight: 500; color: var(--texto-secundario); }
+.cifra-valor{ display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px;
+  font-size: 34px; font-weight: 600; line-height: 1.05; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums; color: var(--texto-principal); }
+.cifra-unidad{ font-size: 15px; font-weight: 500; letter-spacing: 0; color: var(--texto-secundario); }
+.cifra-dif{ position: relative; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start;
+  font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 6px;
+  font-variant-numeric: tabular-nums; border: 1px solid transparent; }
+.cifra-dif.cifra-dif-peor{ background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.cifra-dif.cifra-dif-mejor{ background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.cifra-dif.cifra-dif-igual{ background: var(--neutra-fondo); color: var(--neutra-texto); border-color: var(--borde-fuerte); }
+.cifra-detalle{ font-size: 12px; color: var(--texto-secundario); }
+@media (min-width: 900px) {
+  .franja{ grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .franja-item:last-child:nth-child(odd){ grid-column: auto; }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   MAPA DE CALOR — 24 reglas · clases .mapa-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.mapa{ background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 8px;
+  padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.mapa-titulo{ margin: 0; font-size: 16px; font-weight: 600; }
+.mapa-desc{ margin: 4px 0 0; font-size: 13px; color: var(--texto-secundario); }
+.mapa-desc strong{ font-weight: 600; color: var(--texto-principal); font-variant-numeric: tabular-nums; }
+.mapa-total{ margin-top: 0; }
+.mapa-vista{ position: relative; overflow-x: auto; border-radius: 6px; }
+.mapa-vista:focus-visible{ outline: 3px solid var(--foco); outline-offset: 2px; }
+.mapa-tabla{ border-spacing: 4px; min-width: 350px; width: 100%; table-layout: fixed; }
+.mapa-tabla th{ font-size: 12px; font-weight: 500; color: var(--texto-secundario); text-align: center; padding: 0 0 4px; }
+.mapa-tabla tbody th{ text-align: left; color: var(--texto-principal); font-size: 13px; width: 64px; padding: 0; }
+.mapa-tabla td{ padding: 0; }
+.mapa-celda{ display: flex; flex-direction: column; gap: 0; padding: 8px 4px; text-align: center;
+  border: 2px solid transparent; border-radius: 6px; font-variant-numeric: tabular-nums; }
+.mapa-valor{ font-size: 16px; font-weight: 600; line-height: 1.1; }
+.mapa-n{ font-size: 12px; }
+.mapa-p1{ background: var(--mapa-1); color: var(--texto-principal); }
+.mapa-p2{ background: var(--mapa-2); color: var(--texto-principal); }
+.mapa-p3{ background: var(--mapa-3); color: var(--texto-principal); }
+.mapa-p4{ background: var(--mapa-4); color: var(--texto-invertido); }
+.mapa-p5{ background: var(--mapa-5); color: var(--texto-invertido); }
+.mapa-celda.mapa-pocos{ border-color: currentColor; border-style: dashed; }
+.mapa-celda.mapa-vacia{ background: transparent; color: var(--texto-secundario);
+  border: 1px dashed var(--borde-fuerte); }
+.mapa-escala{ display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; color: var(--texto-secundario); }
+.mapa-pasos{ display: inline-flex; gap: 4px; }
+.mapa-paso{ display: block; width: 16px; height: 12px; border-radius: 3px; }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   LISTA DE RANKING — 13 reglas · clases .ranking-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.ranking{ background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 8px;
+  padding: 16px; min-width: 0; }
+.ranking-titulo{ margin: 0; font-size: 16px; font-weight: 600; }
+.ranking-lista{ list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.ranking-fila{ display: grid; grid-template-columns: 20px 32px minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.ranking-pos{ font-weight: 600; color: var(--texto-secundario); font-variant-numeric: tabular-nums; text-align: right; }
+.ranking-avatar{ display: flex; }
+.ranking-quien{ min-width: 0; }
+.ranking-nombre{ font-size: 15px; font-weight: 500; line-height: 1.3; overflow-wrap: anywhere; }
+.ranking-detalle{ font-size: 12px; color: var(--texto-secundario); }
+.ranking-barra{ display: block; width: 100%; height: 4px; margin-top: 8px; border-radius: 3px; background: var(--barra-pista); }
+.ranking-barra-relleno{ fill: var(--barra-relleno); }
+.ranking-valor{ font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ranking-vacio{ margin: 12px 0 0; font-size: 15px; color: var(--texto-secundario); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   GRÁFICO DE TENDENCIA — 40 reglas · clases .graf-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.graf{ background: var(--grafico-fondo); color: var(--grafico-texto); border: 1px solid var(--grafico-rejilla);
+  border-radius: 12px; padding: 16px 12px 8px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.graf-cab{ display: flex; flex-direction: column; gap: 12px; }
+.graf-titulo{ margin: 0 0 8px; font-size: 28px; font-weight: 600; line-height: 1.15; color: var(--grafico-texto); }
+.graf-num{ font-size: 56px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.graf-num small{ font-size: 20px; font-weight: 500; color: var(--grafico-texto-tenue); }
+.graf-chips{ display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.graf-chips .chip{ white-space: normal; }
+.graf-vista{ position: relative; border-radius: 6px; min-width: 0; }
+.graf-vista:focus-visible{ outline: 3px solid var(--grafico-foco); outline-offset: 2px; }
+.graf-svg{ display: block; width: 100%; height: auto; touch-action: pan-y; font-family: inherit; }
+.graf-det summary{ cursor: pointer; font-size: 13px; color: var(--grafico-texto-tenue); padding: 8px 0; }
+.graf-det summary:focus-visible{ outline: 3px solid var(--grafico-foco); outline-offset: 2px; }
+.graf-tabla{ border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; margin: 4px 0 8px; }
+.graf-tabla th, .graf-tabla td{ text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--grafico-rejilla); }
+.graf-tabla thead th{ color: var(--grafico-texto-tenue); font-weight: 500; }
+.graf-tabla tbody th{ font-weight: 400; }
+.graf-rej{ stroke: var(--grafico-rejilla); stroke-width: 1; }
+.graf-base{ stroke: var(--grafico-base); stroke-width: 1; }
+.graf-eje{ fill: var(--grafico-texto-tenue); font-size: 12px; }
+.graf-numero{ fill: var(--grafico-texto-tenue); font-size: 15px; font-weight: 600; }
+.graf-num0{ fill: var(--grafico-texto); font-size: 15px; font-weight: 600; }
+.graf-sub{ fill: var(--grafico-texto-tenue); font-size: 12px; }
+.graf-lin{ fill: none; stroke: var(--grafico-linea); stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round; }
+.graf-stop{ stop-color: var(--grafico-linea); }
+.graf-area{ stroke: none; }
+.graf-ref{ stroke: var(--grafico-ref); stroke-opacity: .75; stroke-width: 1.5; stroke-dasharray: 5 5; }
+.graf-ref-t{ fill: var(--grafico-texto); font-size: 12px; stroke: var(--grafico-fondo); stroke-width: 4; paint-order: stroke; }
+.graf-halo{ fill: var(--grafico-halo); fill-opacity: .3; }
+.graf-p0{ fill: var(--grafico-punto0); stroke: var(--grafico-linea); stroke-width: 3; }
+.graf-p{ fill: var(--grafico-fondo); stroke: var(--grafico-linea); stroke-width: 2.5; }
+.graf-val{ fill: var(--grafico-texto); font-size: 13px; font-weight: 600; stroke: var(--grafico-fondo); stroke-width: 4; paint-order: stroke; }
+.graf-guia{ stroke: var(--grafico-guia); stroke-opacity: .6; stroke-width: 1; }
+.graf-anillo{ fill: none; stroke: var(--grafico-guia); stroke-width: 2; }
+.graf-vent{ pointer-events: none; }
+.graf-vent-fondo{ fill: var(--grafico-ventana-fondo); }
+.graf-vent-t{ fill: var(--grafico-ventana-texto); font-size: 13px; }
+.graf-vent-b{ fill: var(--grafico-ventana-texto); font-size: 13px; font-weight: 600; }
+.graf-anima{ stroke-dasharray: 1; animation: graf-trazo var(--dur-trazo) var(--curva) both; }
+@media (prefers-reduced-motion: reduce) {
+  .graf-anima{ animation: none; stroke-dasharray: none; }
+}
+@media (min-width: 520px) {
+  .graf{ padding: 20px 16px 8px; }
+  .graf-titulo{ font-size: 34px; }
+  .graf-cab{ flex-direction: row; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px 24px; }
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
@@ -9398,13 +9906,14 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .mono-lista.mono{ font-family: 'IBM Plex Mono', monospace; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   ANIMACIONES — 3 · las que estas reglas invocan, con sus variantes
+   ANIMACIONES — 4 · las que estas reglas invocan, con sus variantes
    Sin su @keyframes, `animation:` se ignora EN SILENCIO. Hasta la v1.107.0
    no viajaban: el giro del botón ocupado y la barra indeterminada estaban
    quietos en todos los productos.
    ─────────────────────────────────────────────────────────────────────────── */
 
 @keyframes btn-girar{ to { transform: rotate(360deg); } }
+@keyframes graf-trazo{ from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes latido{
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: .45; transform: scale(.82); }
@@ -9497,7 +10006,7 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
       </nav>
       <div class="pant-cab"><h1>Color</h1></div>
       
-<p class="pag-intro">57 tokens semánticos sobre 10 rampas y 2 familias categóricas.
+<p class="pag-intro">77 tokens semánticos sobre 10 rampas y 2 familias categóricas.
 Es lo único que un componente consume. <strong>Las primitivas están prohibidas dentro de un componente.</strong></p>
 
   <section class="grupo">
@@ -9981,7 +10490,7 @@ que son los que están medidos contra un fondo concreto.</p>
           <code class="tira-nombre">oro_300</code>
           <span class="tira-hex">#C6AB6B</span>
         </div>
-        <div class="tira">
+        <div class="tira tira-usada">
           <span class="tira-color color-oro_400"></span>
           <code class="tira-nombre">oro_400</code>
           <span class="tira-hex">#AA8E41</span>
@@ -10144,7 +10653,7 @@ que son los que están medidos contra un fondo concreto.</p>
           <code class="tira-nombre">indigo_50</code>
           <span class="tira-hex">#F8F9FC</span>
         </div>
-        <div class="tira">
+        <div class="tira tira-usada">
           <span class="tira-color color-indigo_100"></span>
           <code class="tira-nombre">indigo_100</code>
           <span class="tira-hex">#E5E8F2</span>
@@ -10154,7 +10663,7 @@ que son los que están medidos contra un fondo concreto.</p>
           <code class="tira-nombre">indigo_200</code>
           <span class="tira-hex">#B9C2DC</span>
         </div>
-        <div class="tira">
+        <div class="tira tira-usada">
           <span class="tira-color color-indigo_300"></span>
           <code class="tira-nombre">indigo_300</code>
           <span class="tira-hex">#8D9BC6</span>
@@ -12744,6 +13253,104 @@ la firma prometía y no emitía (R103). El componente recuerda la última opció
 valor: no es una caché, es <strong>la única copia que queda</strong> del texto de algo que ya no
 está en ninguna lista.</div>
 
+<h3 class="sub-seccion">Con jerarquía — <code>nivel</code> y <code>cuenta</code></h3>
+<p class="seccion-sub">Una lista que es en realidad un <strong>árbol</strong> —unidades organizativas, sedes con
+aulas— se sangra por <code>nivel</code> y lleva a la derecha cuántos hay en cada una, en <code>cuenta</code>.
+La jerarquía <strong>no se declara con un <code>padre</code></strong>: se lee del orden. Los ancestros de una
+opción son las <strong>anteriores</strong> de nivel estrictamente menor, hasta la raíz.</p>
+<div class="bloque">
+  <div class="campos-rejilla">
+    <div class="cg">
+      <span class="cg-et" id="sel-jer-et">Sin filtro</span>
+      <div class="sel sel-demo-abierto sel-demo-alto">
+        <div class="sel-caja sel-con-lupa abierta">
+          <span class="sel-lupa" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+          <input class="campo sel-in" placeholder="Buscar unidad" readonly>
+          <span aria-hidden="true" class="sel-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+        </div>
+        <ul class="sel-lista" role="listbox" aria-labelledby="sel-jer-et">
+          <li class="sel-op" role="option" aria-selected="true"><span class="sel-op-txt">Todas las unidades</span><span class="sel-cuenta">62 trab.</span><span class="sel-check"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 5 5L20 7"/></svg></span></li>
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Dirección General</span><span class="sel-cuenta">4 trab.</span></li>
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Nivel Inicial</span><span class="sel-cuenta">14 trab.</span></li>
+          <li class="sel-op marcado" role="option" aria-selected="false"><span class="sel-op-txt">Nivel Primaria</span><span class="sel-cuenta">18 trab.</span></li>
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Nivel Secundaria</span><span class="sel-cuenta">16 trab.</span></li>
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Administración</span><span class="sel-cuenta">10 trab.</span></li>
+          <li class="sel-op sel-n1" role="option" aria-selected="false"><span class="sel-op-txt">Secretaría<span class="sr-solo">, nivel 1</span></span><span class="sel-cuenta">6 trab.</span></li>
+          <li class="sel-op sel-n1" role="option" aria-selected="false"><span class="sel-op-txt">Mantenimiento<span class="sr-solo">, nivel 1</span></span><span class="sel-cuenta">4 trab.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="cg">
+      <span class="cg-et" id="sel-jer2-et">Buscando «secre»</span>
+      <div class="sel sel-demo-abierto">
+        <div class="sel-caja sel-con-lupa abierta">
+          <span class="sel-lupa" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+          <input class="campo sel-in" value="secre" readonly>
+          <span aria-hidden="true" class="sel-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+        </div>
+        <ul class="sel-lista" role="listbox" aria-labelledby="sel-jer2-et">
+          <li class="sel-op sel-ctx" role="option" aria-selected="false"><span class="sel-op-txt">Administración<span class="sr-solo">, contexto</span></span><span class="sel-cuenta">10 trab.</span></li>
+          <li class="sel-op sel-n1 marcado" role="option" aria-selected="false"><span class="sel-op-txt">Secretaría<span class="sr-solo">, nivel 1</span></span><span class="sel-cuenta">6 trab.</span></li>
+        </ul>
+      </div>
+      <span class="cg-ayuda"><strong>El padre sigue ahí.</strong> «Secretaría» sin «Administración» es una
+      fila huérfana: no dice de qué es. El ancestro se lee en gris y <strong>se puede elegir</strong>; la
+      marcada de partida es la coincidencia, no el contexto.</span>
+    </div>
+  </div>
+</div>
+
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Regla</th><th>Qué pasa</th></tr></thead>
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Se conservan los ancestros, no los descendientes.</strong> Buscar «admin» muestra solo «Administración», sin sus hijos.</td></tr>
+    <tr><td class="num">2</td><td><strong>Cuatro niveles de sangrado.</strong> Un <code>nivel</code> mayor se dibuja como el cuarto, aunque cuenta con su valor al buscar ancestros.</td></tr>
+    <tr><td class="num">3</td><td><strong>Contra el servidor, la lista llega tal cual.</strong> Con <code>onBuscar</code> el componente no añade ancestros: si la app quiere el contexto, lo incluye en lo que devuelve.</td></tr>
+    <tr><td class="num">4</td><td><strong>La cuenta no se busca.</strong> Es una cifra al margen, no parte del nombre.</td></tr>
+    <tr><td class="num">5</td><td><strong>Sin <code>nivel</code> ni <code>cuenta</code>, nada cambia.</strong> El marcado es el de siempre.</td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">Cómo se usa</h4>
+<p class="seccion-sub">Lo que se copia es la importación y las props. Las opciones van en el orden del árbol, padres antes que hijos.</p>
+
+  <div class="cod-bloque">
+    <div class="cod-cab">
+      <button class="cod-ver" data-ver="cod5" aria-expanded="false" aria-controls="cod5">
+        <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
+      </button>
+      <span class="cod-tit">Uso de SelectorBusqueda con jerarquía</span>
+      <button class="copiar" data-copiar-de="cod5">Copiar</button>
+    </div>
+    <pre class="cod-pre" id="cod5" hidden>import { useState } from 'react';
+import { SelectorBusqueda } from 'sistema-diseno-ae/componentes';
+
+export function FiltroUnidad() {
+  const [unidad, setUnidad] = useState&lt;string | null&gt;(null);
+  return (
+    &lt;SelectorBusqueda
+      etiqueta="Unidad organizativa"
+      valor={unidad}
+      onCambio={setUnidad}
+      opciones={[
+        { valor: 'todas', texto: 'Todas las unidades', cuenta: '62 trab.' },
+        { valor: 'adm', texto: 'Administración', cuenta: '10 trab.' },
+        { valor: 'sec', texto: 'Secretaría', nivel: 1, cuenta: '6 trab.' },
+        { valor: 'man', texto: 'Mantenimiento', nivel: 1, cuenta: '4 trab.' },
+      ]}
+    /&gt;
+  );
+}</pre>
+  </div>
+<h4 class="sub-seccion">Cómo se configura</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad de la opción</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>nivel</code><br><span class="seccion-sub">number</span></td><td>Sangrado a la izquierda. 0 o ausente es la raíz; se dibujan hasta cuatro niveles. Define los ancestros que se conservan al buscar.</td></tr>
+    <tr><td><code>cuenta</code><br><span class="seccion-sub">string | number</span></td><td>Cifra o texto a la derecha de la fila, tabular y sin partirse: «12 trab.». No entra en la búsqueda.</td></tr>
+  </tbody>
+</table>
+
 <h3 class="sub-seccion">Teclado — es donde se cae este componente</h3>
 <table class="tabla-simple">
   <thead><tr><th>Tecla</th><th>Qué hace</th></tr></thead>
@@ -12787,13 +13394,13 @@ está en ninguna lista.</div>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod5" aria-expanded="false" aria-controls="cod5">
+      <button class="cod-ver" data-ver="cod6" aria-expanded="false" aria-controls="cod6">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod5">Copiar</button>
+      <button class="copiar" data-copiar-de="cod6">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod5" hidden>import { Selector } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod6" hidden>import { Selector } from 'sistema-diseno-ae/componentes';
 
 // 3 a 8 opciones
 &lt;Selector etiqueta="Nivel" opciones={niveles} /&gt;
@@ -12960,13 +13567,13 @@ engaña: la persona lo mueve, se va, y el cambio no se aplicó.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod13" aria-expanded="false" aria-controls="cod13">
+      <button class="cod-ver" data-ver="cod18" aria-expanded="false" aria-controls="cod18">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod13">Copiar</button>
+      <button class="copiar" data-copiar-de="cod18">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod13" hidden>import { Interruptor } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod18" hidden>import { Interruptor } from 'sistema-diseno-ae/componentes';
 
 &lt;Interruptor
   etiqueta="Notificar tardanzas por correo"
@@ -13064,13 +13671,13 @@ de las de abajo.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod14" aria-expanded="false" aria-controls="cod14">
+      <button class="cod-ver" data-ver="cod19" aria-expanded="false" aria-controls="cod19">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod14">Copiar</button>
+      <button class="copiar" data-copiar-de="cod19">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod14" hidden>import { SeleccionMultiple, GrupoOpcion } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod19" hidden>import { SeleccionMultiple, GrupoOpcion } from 'sistema-diseno-ae/componentes';
 
 &lt;SeleccionMultiple
   leyenda="Aspectos observados en la visita de aula"
@@ -13280,13 +13887,13 @@ mismo</strong>. Eso casi nunca cierra el campo entero: cierra <strong>un nivel</
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod15" aria-expanded="false" aria-controls="cod15">
+      <button class="cod-ver" data-ver="cod20" aria-expanded="false" aria-controls="cod20">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod15">Copiar</button>
+      <button class="copiar" data-copiar-de="cod20">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod15" hidden>import { Segmentado } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod20" hidden>import { Segmentado } from 'sistema-diseno-ae/componentes';
 
 &lt;Segmentado
   etiqueta="Documento"
@@ -13572,13 +14179,13 @@ futuro por otro camino es cosa del producto.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod16" aria-expanded="false" aria-controls="cod16">
+      <button class="cod-ver" data-ver="cod21" aria-expanded="false" aria-controls="cod21">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod16">Copiar</button>
+      <button class="copiar" data-copiar-de="cod21">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod16" hidden>import { RangoFecha, atajosDeDias } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod21" hidden>import { RangoFecha, atajosDeDias } from 'sistema-diseno-ae/componentes';
 
 // Sin `desde`/`hasta` se gobierna solo.
 &lt;RangoFecha titulo="Rango de fechas" /&gt;
@@ -14116,13 +14723,13 @@ completo se lee como algo pulsable, y este componente no se pulsa.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod6" aria-expanded="false" aria-controls="cod6">
+      <button class="cod-ver" data-ver="cod7" aria-expanded="false" aria-controls="cod7">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod6">Copiar</button>
+      <button class="copiar" data-copiar-de="cod7">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod6" hidden>import { Chip } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod7" hidden>import { Chip } from 'sistema-diseno-ae/componentes';
 
 &lt;Chip estado="exito"&gt;Activo&lt;/Chip&gt;
 &lt;Chip estado="aviso"&gt;Parcial&lt;/Chip&gt;
@@ -14206,13 +14813,13 @@ esta página enseña el que corresponde a tu ventana y no los dos a la vez. Letr
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod7" aria-expanded="false" aria-controls="cod7">
+      <button class="cod-ver" data-ver="cod8" aria-expanded="false" aria-controls="cod8">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod7">Copiar</button>
+      <button class="copiar" data-copiar-de="cod8">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod7" hidden>import { CuadroEstado } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod8" hidden>import { CuadroEstado } from 'sistema-diseno-ae/componentes';
 
 &lt;CuadroEstado letra="P" tono="exito" titulo="Presente, lunes 26" /&gt;
 &lt;CuadroEstado letra="T" tono="aviso" titulo="Tardanza, martes 27" /&gt;
@@ -14931,13 +15538,13 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod8" aria-expanded="false" aria-controls="cod8">
+      <button class="cod-ver" data-ver="cod13" aria-expanded="false" aria-controls="cod13">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Tarjeta de persona</span>
-      <button class="copiar" data-copiar-de="cod8">Copiar</button>
+      <button class="copiar" data-copiar-de="cod13">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod8" hidden>import { TarjetaPersona } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod13" hidden>import { TarjetaPersona } from 'sistema-diseno-ae/componentes';
 
 &lt;TarjetaPersona
   nombre="Álvarez Ponce, Rosa"
@@ -14951,13 +15558,13 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod9" aria-expanded="false" aria-controls="cod9">
+      <button class="cod-ver" data-ver="cod14" aria-expanded="false" aria-controls="cod14">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Tarjeta normal</span>
-      <button class="copiar" data-copiar-de="cod9">Copiar</button>
+      <button class="copiar" data-copiar-de="cod14">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod9" hidden>import { Tarjeta } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod14" hidden>import { Tarjeta } from 'sistema-diseno-ae/componentes';
 
 &lt;Tarjeta titulo="Resumen del mes"&gt;
   &lt;p&gt;Contenido&lt;/p&gt;
@@ -14972,6 +15579,429 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 
 &lt;Tarjeta href="/estudiantes/71234567" titulo="Quispe Mamani, Ana" /&gt;</pre>
   </div>
+    </section><section class="pagina" id="pg-franjacifras" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#franjacifras" data-ir="franjacifras" class="migas-actual" aria-current="page">Franja de cifras</a>
+      </nav>
+      <div class="pant-cab"><h1>Franja de cifras</h1></div>
+      
+<p class="pag-intro">Una fila de <strong>cifras grandes separadas por una línea fina</strong>, sin tarjetas
+sueltas: título, número, unidad y cuánto cambió frente al periodo anterior. La app entrega los números y la
+diferencia <strong>ya calculados</strong>; la pieza solo los dibuja y decide cómo se ven y cómo se leen.</p>
+
+<h3 class="sub-seccion">La franja</h3>
+<p class="seccion-sub">Cinco cifras. En un teléfono caben <strong>dos por fila</strong> y, si el total es impar, la
+última ocupa el ancho completo (aquí, la quinta); desde 900&nbsp;px caben las cinco en una sola fila. Cada
+cifra es un elemento de lista.</p>
+<div class="bloque">
+  <ul class="franja" aria-label="Resumen de la semana">
+    <li class="franja-item"><div class="cifra"><span class="cifra-titulo">Tardanzas</span><span class="cifra-valor">612 <span class="cifra-unidad">min</span></span><span class="cifra-dif cifra-dif-peor"><span aria-hidden="true">▲ +72 min</span><span class="sr-solo">empeoró: +72 min</span></span></div></li>
+    <li class="franja-item"><div class="cifra"><span class="cifra-titulo">Faltas</span><span class="cifra-valor">7 <span class="cifra-unidad">trab.</span></span><span class="cifra-dif cifra-dif-mejor"><span aria-hidden="true">▼ −3 trab.</span><span class="sr-solo">mejoró: −3 trab.</span></span></div></li>
+    <li class="franja-item"><div class="cifra"><span class="cifra-titulo">Faltas</span><span class="cifra-valor">38:20 <span class="cifra-unidad">hrs</span></span><span class="cifra-dif cifra-dif-mejor"><span aria-hidden="true">▼ −2:50 hrs</span><span class="sr-solo">mejoró: −2:50 hrs</span></span></div></li>
+    <li class="franja-item"><div class="cifra"><span class="cifra-titulo">Días incompletos</span><span class="cifra-valor">11 <span class="cifra-unidad">días</span></span><span class="cifra-dif cifra-dif-igual"><span aria-hidden="true">= igual que antes</span><span class="sr-solo">sin cambio</span></span></div></li>
+    <li class="franja-item"><div class="cifra"><span class="cifra-titulo">Memorándums cerrados</span><span class="cifra-valor">5</span><span class="cifra-dif cifra-dif-mejor"><span aria-hidden="true">▲ +2</span><span class="sr-solo">mejoró: +2</span></span></div></li>
+  </ul>
+</div>
+
+<h3 class="sub-seccion">La diferencia: seis combinaciones</h3>
+<p class="seccion-sub">La diferencia lleva <strong>flecha, signo y una palabra</strong>: se entiende sin color. Que subir
+sea peor o mejor lo dice <code>sentido</code>, no la dirección: más tardanza es malo, más memorándums cerrados es
+bueno. Con <code>igual</code> no hay cantidad que mostrar y se lee «sin cambio».</p>
+<div class="bloque">
+  <table class="tabla-simple">
+    <thead><tr><th>Caso</th><th>Se ve</th><th><code>direccion</code></th><th><code>sentido</code></th><th>Lo que oye el lector</th></tr></thead>
+    <tbody>
+      <tr><td>Tardanzas: subir es malo</td><td><span class="cifra-dif cifra-dif-peor"><span aria-hidden="true">▲ +72 min</span><span class="sr-solo">empeoró: +72 min</span></span></td><td class="mono">sube</td><td class="mono">subir-es-peor</td><td>empeoró: +72 min</td></tr>
+      <tr><td>Faltas: bajar es bueno</td><td><span class="cifra-dif cifra-dif-mejor"><span aria-hidden="true">▼ −3 trab.</span><span class="sr-solo">mejoró: −3 trab.</span></span></td><td class="mono">baja</td><td class="mono">subir-es-peor</td><td>mejoró: −3 trab.</td></tr>
+      <tr><td>Memorándums cerrados: subir es bueno</td><td><span class="cifra-dif cifra-dif-mejor"><span aria-hidden="true">▲ +2</span><span class="sr-solo">mejoró: +2</span></span></td><td class="mono">sube</td><td class="mono">subir-es-mejor</td><td>mejoró: +2</td></tr>
+      <tr><td>Memorándums cerrados: bajar es malo</td><td><span class="cifra-dif cifra-dif-peor"><span aria-hidden="true">▼ −2</span><span class="sr-solo">empeoró: −2</span></span></td><td class="mono">baja</td><td class="mono">subir-es-mejor</td><td>empeoró: −2</td></tr>
+      <tr><td>Sin cambio, sentido «subir es peor»</td><td><span class="cifra-dif cifra-dif-igual"><span aria-hidden="true">= igual que antes</span><span class="sr-solo">sin cambio</span></span></td><td class="mono">igual</td><td class="mono">subir-es-peor</td><td>sin cambio</td></tr>
+      <tr><td>Sin cambio, sentido «subir es mejor»</td><td><span class="cifra-dif cifra-dif-igual"><span aria-hidden="true">= igual que antes</span><span class="sr-solo">sin cambio</span></span></td><td class="mono">igual</td><td class="mono">subir-es-mejor</td><td>sin cambio</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Es una lista:</strong> un elemento de lista por cifra. Un hijo nulo o falso no deja un elemento vacío.</td></tr>
+    <tr><td class="num">2</td><td><strong>Título, valor y unidad; el resto es opcional.</strong> Sin <code>diferencia</code> no sale nada de diferencia, y <code>detalle</code> es una línea de apoyo que el tablero aprobado no usa.</td></tr>
+    <tr><td class="num">3</td><td><strong>La diferencia llega calculada.</strong> La pieza no resta, no compara y no formatea: pinta <code>cantidad</code> tal cual.</td></tr>
+    <tr><td class="num">4</td><td><strong>Flecha y signo:</strong> ▲ con «+» si sube, ▼ con «−» (el signo menos de verdad) si baja, «=» sin cantidad si es igual.</td></tr>
+    <tr><td class="num">5</td><td><strong>El color no va solo.</strong> El lector oye «empeoró: +72 min», «mejoró: −3 trab.» o «sin cambio», y el dibujo de la flecha no se lee dos veces.</td></tr>
+    <tr><td class="num">6</td><td><strong><code>sentido</code> manda sobre el tono.</strong> Peor usa los tokens de aviso, mejor los de éxito e igual los neutros; subir y bajar se invierten entre <code>subir-es-peor</code> y <code>subir-es-mejor</code>.</td></tr>
+    <tr><td class="num">7</td><td><strong>Móvil primero:</strong> dos columnas de base, la última a ancho completo si son impares; cinco desde 900&nbsp;px.</td></tr>
+    <tr><td class="num">8</td><td><strong>Cifras tabulares</strong> (los dígitos no bailan al cambiar) y colores solo de tokens.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Cómo se usa</h3>
+<p class="seccion-sub">Lo que se copia es la importación y las props. La diferencia la calcula la app.</p>
+
+  <div class="cod-bloque">
+    <div class="cod-cab">
+      <button class="cod-ver" data-ver="cod9" aria-expanded="false" aria-controls="cod9">
+        <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
+      </button>
+      <span class="cod-tit">Uso de FranjaCifras y CifraConDiferencia</span>
+      <button class="copiar" data-copiar-de="cod9">Copiar</button>
+    </div>
+    <pre class="cod-pre" id="cod9" hidden>import { FranjaCifras, CifraConDiferencia } from 'sistema-diseno-ae/componentes';
+
+export function ResumenSemana() {
+  return (
+    &lt;FranjaCifras etiqueta="Resumen de la semana"&gt;
+      &lt;CifraConDiferencia
+        titulo="Tardanzas"
+        valor="612"
+        unidad="min"
+        diferencia={{ cantidad: '72 min', direccion: 'sube', sentido: 'subir-es-peor' }}
+      /&gt;
+      &lt;CifraConDiferencia
+        titulo="Faltas"
+        valor="7"
+        unidad="trab."
+        diferencia={{ cantidad: '3 trab.', direccion: 'baja', sentido: 'subir-es-peor' }}
+      /&gt;
+      &lt;CifraConDiferencia
+        titulo="Días incompletos"
+        valor="11"
+        unidad="días"
+        diferencia={{ cantidad: '0', direccion: 'igual', sentido: 'subir-es-peor' }}
+      /&gt;
+    &lt;/FranjaCifras&gt;
+  );
+}</pre>
+  </div>
+
+<h3 class="sub-seccion">Cómo se configura</h3>
+<h4 class="sub-seccion">La franja</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>children</code><br><span class="seccion-sub">ReactNode</span></td><td>Las cifras, una <code>CifraConDiferencia</code> por cifra. Cada una se envuelve en su elemento de lista. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>etiqueta</code><br><span class="seccion-sub">string</span></td><td>Nombre accesible de la lista, p. ej. «Resumen de la semana».</td></tr>
+    <tr><td><code>className</code><br><span class="seccion-sub">string</span></td><td>Clase extra para la lista.</td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">Cada cifra</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>titulo</code><br><span class="seccion-sub">string</span></td><td>El nombre de la medida: «Tardanzas», «Faltas». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>valor</code><br><span class="seccion-sub">string</span></td><td>El número, ya formateado: «612», «38:20». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>unidad</code><br><span class="seccion-sub">string</span></td><td>La unidad, pequeña y junto al valor: «min», «trab.», «hrs».</td></tr>
+    <tr><td><code>diferencia</code><br><span class="seccion-sub">DiferenciaCifra</span></td><td>Cuánto cambió, ya calculado. Sin ella no sale nada. Ver la tabla siguiente.</td></tr>
+    <tr><td><code>detalle</code><br><span class="seccion-sub">ReactNode</span></td><td>Una línea de apoyo bajo la diferencia. Opcional; el ejemplo aprobado del tablero no la usa.</td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">La diferencia</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>cantidad</code><br><span class="seccion-sub">string</span></td><td>La magnitud, sin signo ni flecha: «72 min», «3 trab.», «2:50 hrs». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>direccion</code><br><span class="seccion-sub">'sube' | 'baja' | 'igual'</span></td><td>Lo que pasó: la app ya comparó el actual con el anterior. Con <code>igual</code> no se pinta la cantidad. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>sentido</code><br><span class="seccion-sub">'subir-es-peor' | 'subir-es-mejor'</span></td><td>Cómo se lee subir. Decide si la diferencia es «empeoró» (tono de aviso) o «mejoró» (tono de éxito). <strong>Obligatoria.</strong></td></tr>
+  </tbody>
+</table>
+    </section><section class="pagina" id="pg-mapacalor" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#mapacalor" data-ir="mapacalor" class="migas-actual" aria-current="page">Mapa de calor</a>
+      </nav>
+      <div class="pant-cab"><h1>Mapa de calor</h1></div>
+      
+<p class="pag-intro">Una <strong>tabla de filas por columnas</strong> donde la intensidad de un solo tono dice
+cuánto y el número dice cuánto exactamente. Trae su propio título, descripción, total y escala «Menos – Más»:
+la app no la envuelve en otra tarjeta. Las celdas con pocos trabajadores se marcan con borde punteado.</p>
+
+<h3 class="sub-seccion">El mapa</h3>
+<p class="seccion-sub">Tardanzas por sexo y edad. La intensidad va en <strong>cinco pasos</strong> (no continua) para
+que cada par de colores se pueda medir. «Pocos datos» (borde punteado) son las celdas de 1 o 2 trabajadores; la
+vacía lleva «—» y «0 trab.» y no tiene color. En un teléfono la tabla se desliza <strong>dentro</strong> de su
+recuadro, que se alcanza con el teclado; la página no.</p>
+<div class="bloque">
+  <article class="mapa"><header><h3 class="mapa-titulo" id="mapa-ej-1">Tardanzas</h3><p class="mapa-desc mapa-total">Total <strong>603 min</strong></p></header><div class="mapa-vista" role="region" tabindex="0" aria-labelledby="mapa-ej-1"><table class="mapa-tabla"><thead><tr><td></td><th scope="col">18-29</th><th scope="col">30-39</th><th scope="col">40-49</th><th scope="col">50-59</th><th scope="col">60+</th></tr></thead><tbody><tr><th scope="row">Hombre</th><td><div class="mapa-celda mapa-p3"><span class="mapa-valor">48</span><span class="mapa-n">3 trab.</span></div></td><td><div class="mapa-celda mapa-p5"><span class="mapa-valor">96</span><span class="mapa-n">5 trab.</span></div></td><td><div class="mapa-celda mapa-p5"><span class="mapa-valor">108</span><span class="mapa-n">5 trab.</span></div></td><td><div class="mapa-celda mapa-p3 mapa-pocos"><span class="mapa-valor">52</span><span class="mapa-n">1 trab.</span><span class="sr-solo">Pocos datos: 1 trabajador</span></div></td><td><div class="mapa-celda mapa-vacia"><span class="mapa-valor">—</span><span class="mapa-n">0 trab.</span></div></td></tr><tr><th scope="row">Mujer</th><td><div class="mapa-celda mapa-p2"><span class="mapa-valor">31</span><span class="mapa-n">4 trab.</span></div></td><td><div class="mapa-celda mapa-p4"><span class="mapa-valor">84</span><span class="mapa-n">6 trab.</span></div></td><td><div class="mapa-celda mapa-p4"><span class="mapa-valor">66</span><span class="mapa-n">5 trab.</span></div></td><td><div class="mapa-celda mapa-p5"><span class="mapa-valor">100</span><span class="mapa-n">5 trab.</span></div></td><td><div class="mapa-celda mapa-p1 mapa-pocos"><span class="mapa-valor">18</span><span class="mapa-n">2 trab.</span><span class="sr-solo">Pocos datos: 2 trabajadores</span></div></td></tr></tbody></table></div><div class="mapa-escala" aria-hidden="true"><span>Menos</span><span class="mapa-pasos"><i class="mapa-paso mapa-p1"></i><i class="mapa-paso mapa-p2"></i><i class="mapa-paso mapa-p3"></i><i class="mapa-paso mapa-p4"></i><i class="mapa-paso mapa-p5"></i></span><span>Más</span></div></article>
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Es una tabla</strong> con cabecera de columna y de fila (<code>th scope</code>); una celda se lee «Hombre, 30-39, 96, 5 trab.».</td></tr>
+    <tr><td class="num">2</td><td><strong>Título, descripción y total propios.</strong> Sin descripción o sin total no queda un elemento vacío.</td></tr>
+    <tr><td class="num">3</td><td><strong>El recuadro que se desliza</strong> es una región enfocable con el título por nombre.</td></tr>
+    <tr><td class="num">4</td><td><strong>Cinco pasos:</strong> <code>ceil(5·valor/máximo)</code>, con el máximo tomado solo entre las celdas con trabajadores. Cada celda escribe el valor y «n trab.».</td></tr>
+    <tr><td class="num">5</td><td><strong>El texto cambia con el fondo:</strong> principal en los pasos 1 a 3, invertido en 4 y 5.</td></tr>
+    <tr><td class="num">6</td><td><strong>«Pocos datos»:</strong> <code>n</code> menor o igual que <code>pocosDatosHasta</code> (2 por omisión) lleva borde punteado y el nombre accesible «Pocos datos: n trabajadores» (singular con 1).</td></tr>
+    <tr><td class="num">7</td><td><strong>Celda vacía:</strong> con <code>n</code> igual a 0, «—» y «0 trab.», sin paso de color.</td></tr>
+    <tr><td class="num">8</td><td><strong>Escala «Menos – Más»</strong> de cinco pasos bajo la tabla; solo para la vista, y sin leyenda de «Pocos datos».</td></tr>
+    <tr><td class="num">9</td><td><strong>Móvil primero:</strong> ancho mínimo de 350&nbsp;px y desplazamiento horizontal dentro del recuadro.</td></tr>
+    <tr><td class="num">10</td><td><strong>Cifras tabulares</strong> y colores solo de tokens.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Cómo se usa</h3>
+<p class="seccion-sub">Lo que se copia es la importación y las props. El total y el formato los calcula y escribe la app.</p>
+
+  <div class="cod-bloque">
+    <div class="cod-cab">
+      <button class="cod-ver" data-ver="cod10" aria-expanded="false" aria-controls="cod10">
+        <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
+      </button>
+      <span class="cod-tit">Uso de MapaCalor</span>
+      <button class="copiar" data-copiar-de="cod10">Copiar</button>
+    </div>
+    <pre class="cod-pre" id="cod10" hidden>import { MapaCalor } from 'sistema-diseno-ae/componentes';
+
+export function TardanzasPorSexoYEdad() {
+  return (
+    &lt;MapaCalor
+      titulo="Tardanzas"
+      total="603 min"
+      filas={['Hombre', 'Mujer']}
+      columnas={['18-29', '30-39', '40-49', '50-59', '60+']}
+      celdas={[
+        [{ valor: 48, n: 3 }, { valor: 96, n: 5 }, { valor: 108, n: 5 }, { valor: 52, n: 1 }, { valor: 0, n: 0 }],
+        [{ valor: 31, n: 4 }, { valor: 84, n: 6 }, { valor: 66, n: 5 }, { valor: 100, n: 5 }, { valor: 18, n: 2 }],
+      ]}
+      formato={(minutos) =&gt; String(minutos)}
+    /&gt;
+  );
+}</pre>
+  </div>
+
+<h3 class="sub-seccion">Cómo se configura</h3>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>titulo</code><br><span class="seccion-sub">string</span></td><td>El título del mapa: «Tardanzas». Nombra también la tabla y su recuadro. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>descripcion</code><br><span class="seccion-sub">ReactNode</span></td><td>Una línea bajo el título: «Por sexo y edad».</td></tr>
+    <tr><td><code>total</code><br><span class="seccion-sub">string</span></td><td>El total del mapa, ya escrito: «603 min». Sale como «Total 603 min».</td></tr>
+    <tr><td><code>filas</code><br><span class="seccion-sub">string[]</span></td><td>El rótulo de cada fila. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>columnas</code><br><span class="seccion-sub">string[]</span></td><td>El rótulo de cada columna. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>celdas</code><br><span class="seccion-sub">CeldaMapaCalor[][]</span></td><td><code>celdas[fila][columna]</code>, cada una con <code>valor</code> (decide el paso de color) y <code>n</code> (trabajadores). <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>formato</code><br><span class="seccion-sub">(valor: number) =&gt; string</span></td><td>Cómo se escribe el valor de cada celda. Sin él, el número tal cual.</td></tr>
+    <tr><td><code>pocosDatosHasta</code><br><span class="seccion-sub">number</span></td><td>Una celda con <code>n</code> menor o igual que esto es «Pocos datos». 2 por omisión.</td></tr>
+  </tbody>
+</table>
+    </section><section class="pagina" id="pg-listaranking" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#listaranking" data-ir="listaranking" class="migas-actual" aria-current="page">Lista de ranking</a>
+      </nav>
+      <div class="pant-cab"><h1>Lista de ranking</h1></div>
+      
+<p class="pag-intro">Una <strong>lista corta de personas ordenada por una medida</strong>: posición, avatar,
+nombre, una línea gris, el valor escrito y una barra proporcional al primero. La app entrega las filas ya
+ordenadas y con el texto del valor; la pieza solo las dibuja.</p>
+
+<h3 class="sub-seccion">Con filas</h3>
+<p class="seccion-sub">Cinco filas, la primera con un nombre largo: <strong>envuelve</strong> en vez de cortarse, también
+a 360&nbsp;px. La barra del primero llena el ancho y las demás miden <code>valor / primero</code>, sin saltos.</p>
+<div class="bloque">
+  <section class="ranking" aria-labelledby="rk-ej-1"><h3 class="ranking-titulo" id="rk-ej-1">Tardanzas</h3><ol class="ranking-lista" role="list"><li class="ranking-fila"><span class="ranking-pos">1</span><span class="ranking-avatar" aria-hidden="true"><span class="avatar avatar-m avatar-2" title="Salazar Quispe de la Cruz, María Guadalupe del Carmen">SM</span></span><div class="ranking-quien"><div class="ranking-nombre">Salazar Quispe de la Cruz, María Guadalupe del Carmen</div><div class="ranking-detalle">Nivel Inicial</div><svg class="ranking-barra" aria-hidden="true" focusable="false"><rect class="ranking-barra-relleno" width="100%" height="100%" rx="3"></rect></svg></div><span class="ranking-valor">74 min</span></li><li class="ranking-fila"><span class="ranking-pos">2</span><span class="ranking-avatar" aria-hidden="true"><span class="avatar avatar-m avatar-3" title="Huamán Ríos, Luis">HL</span></span><div class="ranking-quien"><div class="ranking-nombre">Huamán Ríos, Luis</div><div class="ranking-detalle">Nivel Primaria</div><svg class="ranking-barra" aria-hidden="true" focusable="false"><rect class="ranking-barra-relleno" width="82.43%" height="100%" rx="3"></rect></svg></div><span class="ranking-valor">61 min</span></li><li class="ranking-fila"><span class="ranking-pos">3</span><span class="ranking-avatar" aria-hidden="true"><span class="avatar avatar-m avatar-4" title="Paredes Soto, Elena">PE</span></span><div class="ranking-quien"><div class="ranking-nombre">Paredes Soto, Elena</div><div class="ranking-detalle">Nivel Secundaria</div><svg class="ranking-barra" aria-hidden="true" focusable="false"><rect class="ranking-barra-relleno" width="74.32%" height="100%" rx="3"></rect></svg></div><span class="ranking-valor">55 min</span></li><li class="ranking-fila"><span class="ranking-pos">4</span><span class="ranking-avatar" aria-hidden="true"><span class="avatar avatar-m avatar-1" title="Cárdenas Vega, Jorge">CJ</span></span><div class="ranking-quien"><div class="ranking-nombre">Cárdenas Vega, Jorge</div><div class="ranking-detalle">Nivel Inicial</div><svg class="ranking-barra" aria-hidden="true" focusable="false"><rect class="ranking-barra-relleno" width="66.22%" height="100%" rx="3"></rect></svg></div><span class="ranking-valor">49 min</span></li><li class="ranking-fila"><span class="ranking-pos">5</span><span class="ranking-avatar" aria-hidden="true"><span class="avatar avatar-m avatar-2" title="Mendoza Lara, Rosa">MR</span></span><div class="ranking-quien"><div class="ranking-nombre">Mendoza Lara, Rosa</div><div class="ranking-detalle">Secretaría</div><svg class="ranking-barra" aria-hidden="true" focusable="false"><rect class="ranking-barra-relleno" width="59.46%" height="100%" rx="3"></rect></svg></div><span class="ranking-valor">44 min</span></li></ol></section>
+</div>
+
+<h3 class="sub-seccion">Sin filas</h3>
+<p class="seccion-sub">En lugar de una lista vacía, el texto que pase la app.</p>
+<div class="bloque">
+  <section class="ranking" aria-labelledby="rk-ej-2"><h3 class="ranking-titulo" id="rk-ej-2">Faltas</h3><p class="ranking-vacio">Nadie tiene faltas en esta unidad esta semana</p></section>
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Es una sección</strong> con su título y una lista ordenada; el título le da el nombre.</td></tr>
+    <tr><td class="num">2</td><td><strong>Cada fila</strong> lleva posición, <code>Avatar</code> (tamaño m, sin leerse dos veces), nombre, una línea gris opcional y el valor.</td></tr>
+    <tr><td class="num">3</td><td><strong>La barra es proporcional al primero:</strong> el primero llena el ancho y los demás miden <code>valor / primero</code>, exacto. Es decoración: el valor ya está escrito.</td></tr>
+    <tr><td class="num">4</td><td><strong>Con valor 0 en el primero no hay barra</strong> en ninguna fila.</td></tr>
+    <tr><td class="num">5</td><td><strong>Sin filas</strong> sale <code>textoVacio</code> y no una lista vacía.</td></tr>
+    <tr><td class="num">6</td><td><strong>El nombre envuelve:</strong> nunca se corta con puntos suspensivos ni queda detrás de un <code>title</code>.</td></tr>
+    <tr><td class="num">7</td><td><strong>Muestra las filas que recibe:</strong> el tablero pasa hasta cinco, la pieza no recorta ni rellena.</td></tr>
+    <tr><td class="num">8</td><td><strong>Móvil primero</strong>, cifras tabulares y colores solo de tokens.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Cómo se usa</h3>
+<p class="seccion-sub">Lo que se copia es la importación y las props. La app ordena y escribe el texto del valor.</p>
+
+  <div class="cod-bloque">
+    <div class="cod-cab">
+      <button class="cod-ver" data-ver="cod11" aria-expanded="false" aria-controls="cod11">
+        <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
+      </button>
+      <span class="cod-tit">Uso de ListaRanking</span>
+      <button class="copiar" data-copiar-de="cod11">Copiar</button>
+    </div>
+    <pre class="cod-pre" id="cod11" hidden>import { ListaRanking } from 'sistema-diseno-ae/componentes';
+
+export function RankingTardanzas() {
+  return (
+    &lt;ListaRanking
+      titulo="Tardanzas"
+      textoVacio="Nadie llegó tarde esta semana"
+      filas={[
+        { id: '71234567', nombre: 'Huamán Ríos, Luis', valor: 74, texto: '74 min', detalle: 'Nivel Primaria' },
+        { id: '08765432', nombre: 'Paredes Soto, Elena', valor: 55, texto: '55 min', detalle: 'Nivel Secundaria' },
+      ]}
+    /&gt;
+  );
+}</pre>
+  </div>
+
+<h3 class="sub-seccion">Cómo se configura</h3>
+<h4 class="sub-seccion">La lista</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>titulo</code><br><span class="seccion-sub">string</span></td><td>El título de la lista: «Tardanzas». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>filas</code><br><span class="seccion-sub">FilaRanking[]</span></td><td>Las filas, ya ordenadas. La pieza muestra las que recibe. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>textoVacio</code><br><span class="seccion-sub">string</span></td><td>Lo que se lee cuando no hay filas. <strong>Obligatoria.</strong></td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">Cada fila</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>id</code><br><span class="seccion-sub">string</span></td><td>Identificador estable de la persona; de él sale el color del avatar. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>nombre</code><br><span class="seccion-sub">string</span></td><td>Apellidos y nombres. Puede ser largo y envuelve. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>valor</code><br><span class="seccion-sub">number</span></td><td>Solo para la proporción de la barra. El primero es el 100&nbsp;%. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>texto</code><br><span class="seccion-sub">string</span></td><td>Lo que se lee: «74 min», «2 días». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>foto</code><br><span class="seccion-sub">string</span></td><td>URL de la foto; sin ella, o si falla, el avatar muestra las iniciales.</td></tr>
+    <tr><td><code>detalle</code><br><span class="seccion-sub">string</span></td><td>Una línea gris bajo el nombre (la unidad organizativa).</td></tr>
+  </tbody>
+</table>
+    </section><section class="pagina" id="pg-graficotendencia" hidden>
+      <nav class="migas" aria-label="Ubicación">
+        <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#boton" data-ir="boton" class="migas-grupo">Elementos</a>
+        <span class="migas-sep" aria-hidden="true">/</span>
+        <a href="#graficotendencia" data-ir="graficotendencia" class="migas-actual" aria-current="page">Gráfico de tendencia</a>
+      </nav>
+      <div class="pant-cab"><h1>Gráfico de tendencia</h1></div>
+      
+<p class="pag-intro">Un <strong>panel con el título, el valor grande de esta semana y una línea de siete
+puntos</strong> sobre un eje de «semanas atrás». La app entrega los puntos ya calculados y cómo se escribe un
+número; la pieza reparte el espacio, elige el tope del eje y dibuja. Sin librería de gráficos. El panel es
+oscuro en los dos temas (el cambio lo hacen los tokens).</p>
+
+<h3 class="sub-seccion">Tardanzas, en minutos</h3>
+<p class="seccion-sub">Con referencia («Promedio: 603») y un solo chip de comparación, que arma la app. El punto 0
+va pegado al eje vertical y no repite su valor, que ya está arriba en grande. Aquí se ve a 600&nbsp;px de ancho,
+donde los puntos 1 a 6 llevan su valor encima; con menos de 520&nbsp;px de <strong>la pieza</strong> (no de la
+ventana) desaparecen, el alto baja a 250 y se lee con la ventana, el teclado o la tabla.</p>
+<div class="bloque">
+  <section class="graf" aria-labelledby="gr-ej-1t"><div class="graf-cab"><div><h2 class="graf-titulo" id="gr-ej-1t">Tardanzas</h2><div class="graf-num"><span>612</span> <small>min</small></div></div><div class="graf-chips"><span class="chip chip-aviso">▲ +72 min frente a la semana previa</span></div></div><div class="graf-vista" tabindex="0" role="group" aria-label="Tardanzas por semana. Esta semana 612 min; Promedio: 603. Flechas para recorrer las semanas."><svg class="graf-svg" width="600" height="300" viewBox="0 0 600 300" aria-hidden="true" focusable="false"><defs><linearGradient id="gr-ej-1a" x1="0" y1="0" x2="0" y2="1"><stop class="graf-stop" offset="0" stop-opacity=".38"></stop><stop class="graf-stop" offset="1" stop-opacity="0"></stop></linearGradient></defs><g><line class="graf-base" x1="56" x2="570" y1="236" y2="236"></line><text class="graf-eje" x="48" y="240" text-anchor="end">0</text></g><g><line class="graf-rej" x1="56" x2="570" y1="186.5" y2="186.5"></line><text class="graf-eje" x="48" y="190.5" text-anchor="end">200</text></g><g><line class="graf-rej" x1="56" x2="570" y1="137" y2="137"></line><text class="graf-eje" x="48" y="141" text-anchor="end">400</text></g><g><line class="graf-rej" x1="56" x2="570" y1="87.5" y2="87.5"></line><text class="graf-eje" x="48" y="91.5" text-anchor="end">600</text></g><g><line class="graf-rej" x1="56" x2="570" y1="38" y2="38"></line><text class="graf-eje" x="48" y="42" text-anchor="end">800</text></g><path class="graf-area" d="M72,84.53 L155,102.35 L238,91.21 L321,112.74 L404,72.65 L487,62.26 L570,79.83 L570,236 L72,236 Z" fill="url(#gr-ej-1a)"></path><g><line class="graf-ref" x1="56" x2="570" y1="86.76" y2="86.76"></line><text class="graf-ref-t" x="570" y="78.76" text-anchor="end">Promedio: 603</text></g><path class="graf-lin graf-anima" d="M72,84.53 L155,102.35 L238,91.21 L321,112.74 L404,72.65 L487,62.26 L570,79.83" pathLength="1"></path><g><circle class="graf-halo" cx="72" cy="84.53" r="14"></circle><circle class="graf-p0" cx="72" cy="84.53" r="7"></circle></g><g><circle class="graf-p" cx="155" cy="102.35" r="4.5"></circle><text class="graf-val" x="155" y="90.35" text-anchor="middle">540</text></g><g><circle class="graf-p" cx="238" cy="91.21" r="4.5"></circle><text class="graf-val" x="238" y="79.21" text-anchor="middle">585</text></g><g><circle class="graf-p" cx="321" cy="112.74" r="4.5"></circle><text class="graf-val" x="321" y="100.74" text-anchor="middle">498</text></g><g><circle class="graf-p" cx="404" cy="72.65" r="4.5"></circle><text class="graf-val" x="404" y="60.650000000000006" text-anchor="middle">660</text></g><g><circle class="graf-p" cx="487" cy="62.26" r="4.5"></circle><text class="graf-val" x="487" y="50.26" text-anchor="middle">702</text></g><g><circle class="graf-p" cx="570" cy="79.83" r="4.5"></circle><text class="graf-val" x="570" y="67.83" text-anchor="middle">631</text></g><text class="graf-num0" x="72" y="260" text-anchor="middle">0</text><text class="graf-numero" x="155" y="260" text-anchor="middle">1</text><text class="graf-numero" x="238" y="260" text-anchor="middle">2</text><text class="graf-numero" x="321" y="260" text-anchor="middle">3</text><text class="graf-numero" x="404" y="260" text-anchor="middle">4</text><text class="graf-numero" x="487" y="260" text-anchor="middle">5</text><text class="graf-numero" x="570" y="260" text-anchor="middle">6</text><text class="graf-sub" x="72" y="278" text-anchor="middle">actual</text></svg></div><div class="sr-solo" aria-live="polite" aria-atomic="true"><span></span></div><details class="graf-det"><summary>Ver las cifras de cada semana</summary><table class="graf-tabla"><caption class="sr-solo">Tardanzas: cifras de cada semana</caption><thead><tr><th scope="col">Semana atrás</th><th scope="col">Periodo</th><th scope="col">Minutos</th></tr></thead><tbody><tr><th scope="row">0 (actual)</th><td>26 oct – 1 nov</td><td>612</td></tr><tr><th scope="row">1</th><td>19 oct – 25 oct</td><td>540</td></tr><tr><th scope="row">2</th><td>12 oct – 18 oct</td><td>585</td></tr><tr><th scope="row">3</th><td>5 oct – 11 oct</td><td>498</td></tr><tr><th scope="row">4</th><td>28 sep – 4 oct</td><td>660</td></tr><tr><th scope="row">5</th><td>21 sep – 27 sep</td><td>702</td></tr><tr><th scope="row">6</th><td>14 sep – 20 sep</td><td>631</td></tr></tbody></table></details></section>
+</div>
+
+<h3 class="sub-seccion">Faltas, en horas, con la ventana abierta</h3>
+<p class="seccion-sub">Los minutos se escriben como <code>h:mm</code> y <code>base={60}</code> hace que las marcas del eje caigan en horas
+enteras. La ventana de la semana 3 sale al pasar el cursor, al tocar o con las flechas; dice la semana, el rango, el
+valor con su unidad y la diferencia frente a esta semana.</p>
+<div class="bloque">
+  <section class="graf" aria-labelledby="gr-ej-2t"><div class="graf-cab"><div><h2 class="graf-titulo" id="gr-ej-2t">Faltas</h2><div class="graf-num"><span>38:20</span> <small>hrs</small></div></div><div class="graf-chips"><span class="chip chip-exito">▼ −2:50 hrs frente a la semana previa</span></div></div><div class="graf-vista" tabindex="0" role="group" aria-label="Faltas por semana. Esta semana 38:20 hrs; Promedio: 44:02. Flechas para recorrer las semanas."><svg class="graf-svg" width="600" height="300" viewBox="0 0 600 300" aria-hidden="true" focusable="false"><defs><linearGradient id="gr-ej-2a" x1="0" y1="0" x2="0" y2="1"><stop class="graf-stop" offset="0" stop-opacity=".38"></stop><stop class="graf-stop" offset="1" stop-opacity="0"></stop></linearGradient></defs><g><line class="graf-base" x1="56" x2="570" y1="236" y2="236"></line><text class="graf-eje" x="48" y="240" text-anchor="end">0:00</text></g><g><line class="graf-rej" x1="56" x2="570" y1="186.5" y2="186.5"></line><text class="graf-eje" x="48" y="190.5" text-anchor="end">20:00</text></g><g><line class="graf-rej" x1="56" x2="570" y1="137" y2="137"></line><text class="graf-eje" x="48" y="141" text-anchor="end">40:00</text></g><g><line class="graf-rej" x1="56" x2="570" y1="87.5" y2="87.5"></line><text class="graf-eje" x="48" y="91.5" text-anchor="end">60:00</text></g><g><line class="graf-rej" x1="56" x2="570" y1="38" y2="38"></line><text class="graf-eje" x="48" y="42" text-anchor="end">80:00</text></g><path class="graf-area" d="M72,141.13 L155,134.11 L238,154.32 L321,122.15 L404,108.12 L487,127.1 L570,116.38 L570,236 L72,236 Z" fill="url(#gr-ej-2a)"></path><g><line class="graf-ref" x1="56" x2="570" y1="127.02" y2="127.02"></line><text class="graf-ref-t" x="570" y="119.02" text-anchor="end">Promedio: 44:02</text></g><path class="graf-lin graf-anima" d="M72,141.13 L155,134.11 L238,154.32 L321,122.15 L404,108.12 L487,127.1 L570,116.38" pathLength="1"></path><g><circle class="graf-halo" cx="72" cy="141.13" r="14"></circle><circle class="graf-p0" cx="72" cy="141.13" r="7"></circle></g><g><circle class="graf-p" cx="155" cy="134.11" r="4.5"></circle><text class="graf-val" x="155" y="122.11000000000001" text-anchor="middle">41:10</text></g><g><circle class="graf-p" cx="238" cy="154.32" r="4.5"></circle><text class="graf-val" x="238" y="142.32" text-anchor="middle">33:00</text></g><g><circle class="graf-p" cx="321" cy="122.15" r="4.5"></circle><text class="graf-val" x="321" y="110.15" text-anchor="middle">46:00</text></g><g><circle class="graf-p" cx="404" cy="108.12" r="4.5"></circle><text class="graf-val" x="404" y="96.12" text-anchor="middle">51:40</text></g><g><circle class="graf-p" cx="487" cy="127.1" r="4.5"></circle><text class="graf-val" x="487" y="115.1" text-anchor="middle">44:00</text></g><g><circle class="graf-p" cx="570" cy="116.38" r="4.5"></circle><text class="graf-val" x="570" y="104.38" text-anchor="middle">48:20</text></g><text class="graf-num0" x="72" y="260" text-anchor="middle">0</text><text class="graf-numero" x="155" y="260" text-anchor="middle">1</text><text class="graf-numero" x="238" y="260" text-anchor="middle">2</text><text class="graf-numero" x="321" y="260" text-anchor="middle">3</text><text class="graf-numero" x="404" y="260" text-anchor="middle">4</text><text class="graf-numero" x="487" y="260" text-anchor="middle">5</text><text class="graf-numero" x="570" y="260" text-anchor="middle">6</text><text class="graf-sub" x="72" y="278" text-anchor="middle">actual</text><g><line class="graf-guia" x1="321" x2="321" y1="38" y2="236"></line><circle class="graf-anillo" cx="321" cy="122.15" r="9"></circle><g class="graf-vent"><rect class="graf-vent-fondo" x="211" y="18.150000000000006" width="220" height="88" rx="8"></rect><text class="graf-vent-b" x="221" y="38.150000000000006">Hace 3 semanas</text><text class="graf-vent-t" x="221" y="56.150000000000006">5 oct – 11 oct</text><text class="graf-vent-b" x="221" y="74.15">46:00 hrs</text><text class="graf-vent-t" x="221" y="92.15">+7:40 frente a esta semana</text></g></g></svg></div><div class="sr-solo" aria-live="polite" aria-atomic="true"><span>Hace 3 semanas, 5 oct – 11 oct: 46:00 hrs</span></div><details class="graf-det"><summary>Ver las cifras de cada semana</summary><table class="graf-tabla"><caption class="sr-solo">Faltas: cifras de cada semana</caption><thead><tr><th scope="col">Semana atrás</th><th scope="col">Periodo</th><th scope="col">Horas</th></tr></thead><tbody><tr><th scope="row">0 (actual)</th><td>26 oct – 1 nov</td><td>38:20</td></tr><tr><th scope="row">1</th><td>19 oct – 25 oct</td><td>41:10</td></tr><tr><th scope="row">2</th><td>12 oct – 18 oct</td><td>33:00</td></tr><tr><th scope="row">3</th><td>5 oct – 11 oct</td><td>46:00</td></tr><tr><th scope="row">4</th><td>28 sep – 4 oct</td><td>51:40</td></tr><tr><th scope="row">5</th><td>21 sep – 27 sep</td><td>44:00</td></tr><tr><th scope="row">6</th><td>14 sep – 20 sep</td><td>48:20</td></tr></tbody></table></details></section>
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Es una sección</strong> con el título en un <code>h2</code> corto («Tardanzas», «Faltas») y el valor grande del punto 0 con su unidad. Los chips son un hueco: <code>comparaciones</code>.</td></tr>
+    <tr><td class="num">2</td><td><strong>El punto 0 va pegado al eje vertical</strong> (a 16&nbsp;px como mucho) y el último es el más alejado; un punto por valor. Posiciones, tope y marcas son funciones puras exportadas.</td></tr>
+    <tr><td class="num">3</td><td><strong>El eje</strong> lleva el cero y cuatro marcas escritas con <code>formato</code>; el tope se redondea hacia arriba, y con <code>base</code> 60 las marcas caen en horas enteras. Cuadrícula tenue y base más fuerte.</td></tr>
+    <tr><td class="num">4</td><td><strong>Línea y área</strong> con degradado por clase; punto 0 con halo y sin su valor repetido; bajo cada punto su número de semana y «actual» bajo el 0, sin fechas.</td></tr>
+    <tr><td class="num">5</td><td><strong>La referencia es opcional:</strong> línea punteada con su etiqueta a la derecha; sin ella no sale ni la línea ni la etiqueta.</td></tr>
+    <tr><td class="num">6</td><td><strong>Los valores sobre los puntos 1 a 6</strong> solo con la pieza de 520&nbsp;px o más, medida en JavaScript sobre su propio contenedor; se redibuja al cambiar el ancho.</td></tr>
+    <tr><td class="num">7</td><td><strong>La ventana</strong> (cursor, toque o teclado) con guía vertical y punto resaltado: «Esta semana» / «Hace N semanas», el rango, el valor con unidad y la diferencia frente a esta semana.</td></tr>
+    <tr><td class="num">8</td><td><strong>Teclado:</strong> el contenedor entra en el orden de tabulación; las flechas recorren, Inicio y Fin saltan a los extremos, Escape cierra. Foco visible.</td></tr>
+    <tr><td class="num">9</td><td><strong>Una región <code>aria-live</code></strong> anuncia el punto activo: semana, rango y valor.</td></tr>
+    <tr><td class="num">10</td><td><strong>El SVG es decoración</strong> (<code>aria-hidden</code>). La alternativa es el contenedor enfocable con nombre (valor actual y referencia) y la tabla.</td></tr>
+    <tr><td class="num">11</td><td><strong>Tabla desplegable</strong> «Ver las cifras de cada semana»: «Semana atrás · Periodo · valor». El rango y el valor salen de la misma función que la ventana.</td></tr>
+    <tr><td class="num">12</td><td><strong>El trazo se anima una sola vez</strong>, al abrir, y la clase se suelta cuando la animación termina (nada la suelta a media). No se repite al redibujar por el ancho ni al cambiar los puntos, y no se anima con <code>prefers-reduced-motion</code>.</td></tr>
+    <tr><td class="num">13</td><td><strong>Móvil primero:</strong> alto de 250 en estrecho y 300 en ancho, sin <code>max-width</code> ni <code>@container</code>; cifras tabulares, colores solo de tokens.</td></tr>
+    <tr><td class="num">14</td><td><strong>Se exportan</strong> la pieza, <code>escalaEje</code>, <code>geometriaGrafico</code>, <code>puntoMasCercano</code>, <code>tramosVisibles</code>, <code>textosPunto</code> y <code>nombreSemana</code>, con sus tipos.</td></tr>
+    <tr><td class="num">15</td><td><strong>Lo que no se puede dibujar se acota:</strong> un valor no finito no se dibuja ni se conecta (el trazo se parte), un negativo se dibuja en 0; el texto escribe lo que <code>formato</code> dé.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Cómo se usa</h3>
+<p class="seccion-sub">Lo que se copia es la importación y las props. La app calcula el promedio, escribe los rangos
+y arma los chips; la pieza no calcula nada de negocio.</p>
+
+  <div class="cod-bloque">
+    <div class="cod-cab">
+      <button class="cod-ver" data-ver="cod12" aria-expanded="false" aria-controls="cod12">
+        <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
+      </button>
+      <span class="cod-tit">Uso de GraficoTendencia</span>
+      <button class="copiar" data-copiar-de="cod12">Copiar</button>
+    </div>
+    <pre class="cod-pre" id="cod12" hidden>import { GraficoTendencia, Chip } from 'sistema-diseno-ae/componentes';
+
+const minutosAHoraMinuto = (m: number) =&gt; `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`;
+
+export function GraficoDeFaltas() {
+  return (
+    &lt;GraficoTendencia
+      titulo="Faltas"
+      unidad="hrs"
+      columnaValor="Horas"
+      base={60}
+      formato={minutosAHoraMinuto}
+      puntos={[
+        { valor: 2300, detalle: '26 oct – 1 nov' },
+        { valor: 2470, detalle: '19 oct – 25 oct' },
+        { valor: 1980, detalle: '12 oct – 18 oct' },
+        { valor: 2760, detalle: '5 oct – 11 oct' },
+        { valor: 3100, detalle: '28 sep – 4 oct' },
+        { valor: 2640, detalle: '21 sep – 27 sep' },
+        { valor: 2900, detalle: '14 sep – 20 sep' },
+      ]}
+      referencia={{ valor: 2642, etiqueta: 'Promedio: 44:02' }}
+      comparaciones={&lt;Chip tono="exito"&gt;▼ −2:50 hrs frente a la semana previa&lt;/Chip&gt;}
+    /&gt;
+  );
+}</pre>
+  </div>
+
+<h3 class="sub-seccion">Cómo se configura</h3>
+<h4 class="sub-seccion">El gráfico</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>titulo</code><br><span class="seccion-sub">string</span></td><td>El título corto del panel: «Tardanzas», «Faltas». Nombra el panel. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>puntos</code><br><span class="seccion-sub">PuntoTendencia[]</span></td><td>Siete en el tablero. El primero es el periodo actual y va pegado al eje; el orden es el de «semanas atrás». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>formato</code><br><span class="seccion-sub">(valor: number) =&gt; string</span></td><td>Cómo se escribe un número en el eje, sobre los puntos, en la ventana y en la tabla: minutos o <code>h:mm</code>. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>unidad</code><br><span class="seccion-sub">string</span></td><td>«min» o «hrs»: va junto al valor grande y a la ventana. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>columnaValor</code><br><span class="seccion-sub">string</span></td><td>El rótulo de la última columna de la tabla: «Minutos», «Horas». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>base</code><br><span class="seccion-sub">number</span></td><td>Unidad base del eje vertical. 1 por omisión; 60 con minutos escritos como <code>h:mm</code>, para que las marcas caigan en horas enteras.</td></tr>
+    <tr><td><code>comparaciones</code><br><span class="seccion-sub">ReactNode</span></td><td>El hueco de los chips que arma la app («▲ +72 min frente a la semana previa»). Sin él no queda contenedor.</td></tr>
+    <tr><td><code>referencia</code><br><span class="seccion-sub">{ valor: number; etiqueta: string }</span></td><td>Línea punteada opcional. La app calcula el valor y escribe la etiqueta («Promedio: 603»). Sin ella no sale ni la línea ni la etiqueta.</td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">Cada punto</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>valor</code><br><span class="seccion-sub">number</span></td><td>El número que se dibuja. El índice 0 del arreglo es el periodo consultado. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>detalle</code><br><span class="seccion-sub">string</span></td><td>El rango de fechas, ya escrito: «19 oct – 25 oct». Sale en la ventana y en la tabla. <strong>Obligatoria.</strong></td></tr>
+  </tbody>
+</table>
+
     </section><section class="pagina" id="pg-tabla" hidden>
       <nav class="migas" aria-label="Ubicación">
         <a href="#inicio" data-ir="inicio">Sistema de diseño</a>
@@ -15458,13 +16488,13 @@ comportamiento de siempre y <strong>no cambia para nadie que no pida el anclaje<
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod10" aria-expanded="false" aria-controls="cod10">
+      <button class="cod-ver" data-ver="cod15" aria-expanded="false" aria-controls="cod15">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod10">Copiar</button>
+      <button class="copiar" data-copiar-de="cod15">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod10" hidden>import { TablaDatos, Enlace } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod15" hidden>import { TablaDatos, Enlace } from 'sistema-diseno-ae/componentes';
 
 &lt;TablaDatos
   titulo="Personal"               // obligatorio: nombra la tabla para el lector
@@ -15599,13 +16629,13 @@ cualquier otro listado: no tiene paginación propia.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod11" aria-expanded="false" aria-controls="cod11">
+      <button class="cod-ver" data-ver="cod16" aria-expanded="false" aria-controls="cod16">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod11">Copiar</button>
+      <button class="copiar" data-copiar-de="cod16">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod11" hidden>import { Paginacion } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod16" hidden>import { Paginacion } from 'sistema-diseno-ae/componentes';
 
 &lt;Paginacion
   total={1240}
@@ -15722,13 +16752,13 @@ no aportan nada sobre una barra.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod17" aria-expanded="false" aria-controls="cod17">
+      <button class="cod-ver" data-ver="cod22" aria-expanded="false" aria-controls="cod22">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod17">Copiar</button>
+      <button class="copiar" data-copiar-de="cod22">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod17" hidden>import { Progreso, ProgresoPasos } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod22" hidden>import { Progreso, ProgresoPasos } from 'sistema-diseno-ae/componentes';
 
 &lt;Progreso
   etiqueta="Importando trabajadores"
@@ -15873,13 +16903,13 @@ dato</strong>; el detalle vive en la pantalla, no en algo que se va en cuatro se
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod18" aria-expanded="false" aria-controls="cod18">
+      <button class="cod-ver" data-ver="cod23" aria-expanded="false" aria-controls="cod23">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod18">Copiar</button>
+      <button class="copiar" data-copiar-de="cod23">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod18" hidden>import { avisar } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod23" hidden>import { avisar } from 'sistema-diseno-ae/componentes';
 
 avisar.exito('Se guardó la asistencia de marzo');
 avisar.info('Se exportaron 38 filas a CSV');
@@ -16011,13 +17041,13 @@ se pliega y el contenido vuelve a subir.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod19" aria-expanded="false" aria-controls="cod19">
+      <button class="cod-ver" data-ver="cod24" aria-expanded="false" aria-controls="cod24">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod19">Copiar</button>
+      <button class="copiar" data-copiar-de="cod24">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod19" hidden>import { useConfirmar } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod24" hidden>import { useConfirmar } from 'sistema-diseno-ae/componentes';
 
 const confirmar = useConfirmar();
 
@@ -16260,13 +17290,13 @@ antes que la causa técnica.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod12" aria-expanded="false" aria-controls="cod12">
+      <button class="cod-ver" data-ver="cod17" aria-expanded="false" aria-controls="cod17">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod12">Copiar</button>
+      <button class="copiar" data-copiar-de="cod17">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod12" hidden>import { EstadoPantalla } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod17" hidden>import { EstadoPantalla } from 'sistema-diseno-ae/componentes';
 
 // El componente elige el estado; la pantalla no lo decide a mano
 &lt;EstadoPantalla
@@ -16497,7 +17527,7 @@ telefono lo que se busca es <strong>volver</strong>, no situarse.</p>
       <div class="pant-cab"><h1>Cabecera de pantalla</h1></div>
       
 <p class="pag-intro">Migas, titulo, accion y descripcion. El bloque con el que abre
-<strong>toda</strong> pantalla, y con el que abren las 71 paginas de este catalogo.</p>
+<strong>toda</strong> pantalla, y con el que abren las 75 paginas de este catalogo.</p>
 
 <h3 class="sub-seccion">Por que es componente y no una convencion</h3>
 <p class="seccion-sub">El titulo de pantalla es el <code>&lt;h1&gt;</code> del documento, y
@@ -21016,6 +22046,11 @@ repositorio; el porqué es lo único escrito a mano.</p>
 Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado abajo.</div>
 
 
+<h3 class="sub-seccion">v1.153.0 <span class="cam-fecha">2026-11-02</span></h3>
+<p class="pag-intro"><strong>Piezas del tablero: FranjaCifras con CifraConDiferencia, ListaRanking, MapaCalor y GraficoTendencia, y nivel y cuenta en SelectorBusqueda (R169).</strong> LO PIDIO EL EQUIPO (R169, SPEC 07): el tablero general de asistencia necesita piezas que el sistema no tenia, y armarlas en cada app las haria divergir. Cuatro piezas nuevas, sueltas: `FranjaCifras` (dos columnas en movil, la ultima a ancho completo si el total es impar; cinco desde escritorio) con `CifraConDiferencia` (flecha, signo y nombre accesible en las seis combinaciones de direccion y sentido: se entiende en escala de grises); `ListaRanking` (sobre `Avatar`, barra proporcional al primero dibujada como atributo SVG, sin `style`); `MapaCalor` (tabla accesible de cinco pasos de un solo tono, celda de «Pocos datos» con borde punteado y celda vacia sin paso, en un contenedor desplazable y con nombre); y `GraficoTendencia` (SVG medido en JavaScript, ventana, guia y punto activo por raton, toque y teclado con `aria-live`, tabla desplegable, `base`, `referencia` y animacion unica de entrada que respeta `prefers-reduced-motion`). `SelectorBusqueda` gana dos campos opcionales por opcion: `nivel` (sangrado de cuatro niveles; la jerarquia se lee del orden, y al buscar se conservan los ancestros como contexto) y `cuenta` (a la derecha, tabular). Es una ADICION: sin los campos nuevos el HTML del selector es identico al de la 1.152.0, y `Tarjeta`, `TablaDatos`, `Chip` y `Avatar` no se tocan. Veinte tokens semanticos nuevos, todos sobre primitivos YA autorizados (ningun color nuevo en `autorizados.lock.json`): trece `grafico-*`, dos `barra-*` y cinco `mapa-*`. El contrato de contraste pasa de 198 pares (158 bloqueantes, 79 por modo) a 242 pares (184 bloqueantes, 92 por modo), con 0 fallos. Un ajuste de color nacido de la medicion: en claro el foco del grafico es `ambar_700`, porque `ambar_600` (el foco general) daba 2,86:1 sobre el panel. DIFERENCIAS CON EL MOCKUP aprobado, por la escala de tipografia que vigila `auditar-cascaron`: la cifra de la franja sale a 34 px, y en el grafico la cifra a 56 px y el titulo a 28/34 px, los pasos mas cercanos de la escala. FUERA: armar el tablero, los calculos (promedios, diferencias, redondeos del eje) y el formato de numeros, que son de la app.</p>
+
+<p class="cam-tok"><strong>Tokens nuevos:</strong> <code>grafico-fondo</code> · <code>grafico-texto</code> · <code>grafico-texto-tenue</code> · <code>grafico-linea</code> · <code>grafico-rejilla</code> · <code>grafico-base</code> · <code>grafico-ref</code> · <code>grafico-guia</code> · <code>grafico-halo</code> · <code>grafico-punto0</code> · <code>grafico-ventana-fondo</code> · <code>grafico-ventana-texto</code> · <code>grafico-foco</code> · <code>barra-relleno</code> · <code>barra-pista</code> · <code>mapa-1</code> · <code>mapa-2</code> · <code>mapa-3</code> · <code>mapa-4</code> · <code>mapa-5</code></p>
+
 <h3 class="sub-seccion">v1.152.0 <span class="cam-fecha">2026-11-02</span></h3>
 <p class="pag-intro"><strong>PanelPrivilegios (R168, SPEC 06) publicado con el numero 1.152.0: mismo codigo que la 1.151.0.</strong> NO HAY NINGUN CAMBIO DE CODIGO NI DE COMPORTAMIENTO respecto a la 1.151.0. Esa version ya estaba publicada con este mismo PanelPrivilegios —`plegable`, `resumen`, `icono` por columna y por fila, `posicionIconoFila`— y su etiqueta y su publicacion no se tocan: un `npm install` de la 1.151.0 tiene que seguir funcionando. El responsable pidio que la SPEC 06 viaje como 1.152.0 («corresponde la 152»), y como una etiqueta no se mueve, se sube de version. Quien tenga la 1.151.0 no necesita pasar a la 1.152.0; quien parta de la 1.150.0 puede ir directo a la 1.152.0. El detalle de lo que trae la pieza esta en la entrada de la 1.151.0, justo debajo.</p>
 
@@ -21941,7 +22976,7 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       </nav>
       <div class="pant-cab"><h1>Contrastes</h1></div>
       
-<p class="pag-intro">158 pares bloqueantes en los dos modos ·
+<p class="pag-intro">184 pares bloqueantes en los dos modos ·
 <strong>0 fallos</strong> · WCAG 2.2 AA. Recalculados en cada build por
 <code>verificar-contraste.mjs</code>: si el contrato miente, el build falla.</p>
 <h3 class="sub-seccion">Modo claro</h3>
@@ -22579,6 +23614,110 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       <td class="num">4.5</td>
       <td class="ok">cumple</td>
       <td class="motivo">Iniciales del avatar sobre pizarra</td>
+    </tr>
+    <tr>
+      <td><code>grafico-texto</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">11.71:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Título, valor grande y valores del gráfico sobre su panel</td>
+    </tr>
+    <tr>
+      <td><code>grafico-texto-tenue</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">5.68:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Rótulos del eje, unidad y resumen de la tabla sobre el panel</td>
+    </tr>
+    <tr>
+      <td><code>grafico-ventana-texto</code></td>
+      <td><code>grafico-ventana-fondo</code></td>
+      <td class="num">12.56:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Texto de la ventana del gráfico</td>
+    </tr>
+    <tr>
+      <td><code>grafico-linea</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">8.52:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Trazo de la tendencia sobre el panel</td>
+    </tr>
+    <tr>
+      <td><code>grafico-foco</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">3.93:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Anillo de foco sobre el panel del gráfico</td>
+    </tr>
+    <tr>
+      <td><code>grafico-ventana-fondo</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">10.26:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">La ventana se separa del panel</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>mapa-1</code></td>
+      <td class="num">11.71:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 1</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>mapa-2</code></td>
+      <td class="num">8.06:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 2</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>mapa-3</code></td>
+      <td class="num">5.21:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 3</td>
+    </tr>
+    <tr>
+      <td><code>texto-invertido</code></td>
+      <td><code>mapa-4</code></td>
+      <td class="num">7.19:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 4 (texto invertido)</td>
+    </tr>
+    <tr>
+      <td><code>texto-invertido</code></td>
+      <td><code>mapa-5</code></td>
+      <td class="num">10.43:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 5 (texto invertido)</td>
+    </tr>
+    <tr>
+      <td><code>barra-relleno</code></td>
+      <td><code>fondo-tarjeta</code></td>
+      <td class="num">7.19:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Barra del ranking contra la tarjeta</td>
+    </tr>
+    <tr>
+      <td><code>barra-relleno</code></td>
+      <td><code>barra-pista</code></td>
+      <td class="num">5.40:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Relleno de la barra contra su pista</td>
     </tr></tbody>
 </table>
 <h3 class="sub-seccion">Modo oscuro</h3>
@@ -23216,6 +24355,110 @@ Solo altas. Lo que sí se rompió dos veces fue otra cosa, y está declarado aba
       <td class="num">4.5</td>
       <td class="ok">cumple</td>
       <td class="motivo">Iniciales del avatar sobre pizarra</td>
+    </tr>
+    <tr>
+      <td><code>grafico-texto</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">12.56:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Título, valor grande y valores del gráfico sobre su panel</td>
+    </tr>
+    <tr>
+      <td><code>grafico-texto-tenue</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">7.06:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Rótulos del eje, unidad y resumen de la tabla sobre el panel</td>
+    </tr>
+    <tr>
+      <td><code>grafico-ventana-texto</code></td>
+      <td><code>grafico-ventana-fondo</code></td>
+      <td class="num">14.33:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Texto de la ventana del gráfico</td>
+    </tr>
+    <tr>
+      <td><code>grafico-linea</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">7.81:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Trazo de la tendencia sobre el panel</td>
+    </tr>
+    <tr>
+      <td><code>grafico-foco</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">7.42:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Anillo de foco sobre el panel del gráfico</td>
+    </tr>
+    <tr>
+      <td><code>grafico-ventana-fondo</code></td>
+      <td><code>grafico-fondo</code></td>
+      <td class="num">12.56:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">La ventana se separa del panel</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>mapa-1</code></td>
+      <td class="num">10.82:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 1</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>mapa-2</code></td>
+      <td class="num">7.51:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 2</td>
+    </tr>
+    <tr>
+      <td><code>texto-principal</code></td>
+      <td><code>mapa-3</code></td>
+      <td class="num">6.19:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 3</td>
+    </tr>
+    <tr>
+      <td><code>texto-invertido</code></td>
+      <td><code>mapa-4</code></td>
+      <td class="num">5.93:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 4 (texto invertido)</td>
+    </tr>
+    <tr>
+      <td><code>texto-invertido</code></td>
+      <td><code>mapa-5</code></td>
+      <td class="num">9.18:1</td>
+      <td class="num">4.5</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Valor de la celda del mapa, paso 5 (texto invertido)</td>
+    </tr>
+    <tr>
+      <td><code>barra-relleno</code></td>
+      <td><code>fondo-tarjeta</code></td>
+      <td class="num">5.65:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Barra del ranking contra la tarjeta</td>
+    </tr>
+    <tr>
+      <td><code>barra-relleno</code></td>
+      <td><code>barra-pista</code></td>
+      <td class="num">3.64:1</td>
+      <td class="num">3</td>
+      <td class="ok">cumple</td>
+      <td class="motivo">Relleno de la barra contra su pista</td>
     </tr></tbody>
 </table>
 <h3 class="sub-seccion">Correcciones sobre el documento original</h3>
@@ -24320,7 +25563,7 @@ async function esPdf(archivo) {
 
   // La CLASE de cada token en cada modo. Antes era el hexadecimal, pero un
   // hexadecimal no se puede escribir en el codigo: lo que se aplica es la clase.
-  var clases = {"fondo-pagina":{"claro":"gris_50","oscuro":"negro_950"},"fondo-tarjeta":{"claro":"gris_0","oscuro":"negro_850"},"fondo-encabezado":{"claro":"gris_100","oscuro":"negro_750"},"fondo-fila-alt":{"claro":"gris_50","oscuro":"negro_800"},"fondo-fila-hover":{"claro":"azul_50","oscuro":"negro_700"},"texto-principal":{"claro":"gris_900","oscuro":"negro_50"},"texto-secundario":{"claro":"gris_600","oscuro":"negro_100"},"texto-pista":{"claro":"gris_600","oscuro":"negro_200"},"texto-invertido":{"claro":"gris_0","oscuro":"negro_900"},"borde":{"claro":"gris_200","oscuro":"negro_600"},"borde-fuerte":{"claro":"gris_300","oscuro":"negro_500"},"borde-campo":{"claro":"gris_500","oscuro":"negro_300"},"sin-estado":{"claro":"gris_700","oscuro":"negro_100"},"accion":{"claro":"azul_600","oscuro":"azul_300"},"accion-hover":{"claro":"azul_700","oscuro":"azul_200"},"accion-activa":{"claro":"azul_800","oscuro":"azul_100"},"accion-texto":{"claro":"gris_0","oscuro":"negro_900"},"accion-deshabilitada":{"claro":"gris_300","oscuro":"negro_600"},"accion-texto-desh":{"claro":"gris_500","oscuro":"negro_200"},"accion-2":{"claro":"oro_700","oscuro":"oro_200"},"enlace":{"claro":"azul_600","oscuro":"azul_300"},"accion-2-fondo":{"claro":"oro_100","oscuro":"oro_800"},"neutra-fondo":{"claro":"gris_100","oscuro":"negro_650"},"neutra-texto":{"claro":"gris_900","oscuro":"negro_50"},"destructiva":{"claro":"rojo_600","oscuro":"rojo_300"},"destructiva-hover":{"claro":"rojo_700","oscuro":"rojo_200"},"destructiva-texto":{"claro":"gris_0","oscuro":"negro_900"},"marco-fondo":{"claro":"indigo_800","oscuro":"negro_700"},"marco-texto":{"claro":"gris_0","oscuro":"gris_0"},"marco-acento":{"claro":"oro_200","oscuro":"oro_200"},"marco-item-activo":{"claro":"indigo_900","oscuro":"negro_800"},"marco-nivel-1":{"claro":"indigo_700","oscuro":"negro_600"},"marco-nivel-2":{"claro":"indigo_600","oscuro":"negro_500"},"marco-borde":{"claro":"indigo_500","oscuro":"negro_500"},"marco-texto-tenue":{"claro":"indigo_200","oscuro":"negro_100"},"foco":{"claro":"ambar_600","oscuro":"ambar_300"},"foco-en-marco":{"claro":"ambar_300","oscuro":"ambar_300"},"exito-fondo":{"claro":"verde_50","oscuro":"verde_950"},"exito-texto":{"claro":"verde_900","oscuro":"verde_200"},"exito-acento":{"claro":"verde_700","oscuro":"verde_500"},"aviso-fondo":{"claro":"ambar_50","oscuro":"ambar_950"},"aviso-texto":{"claro":"ambar_900","oscuro":"ambar_200"},"aviso-acento":{"claro":"ambar_700","oscuro":"ambar_500"},"error-fondo":{"claro":"alerta_50","oscuro":"alerta_900"},"error-texto":{"claro":"alerta_800","oscuro":"alerta_100"},"error-acento":{"claro":"alerta_500","oscuro":"alerta_400"},"info-fondo":{"claro":"informacion_50","oscuro":"informacion_900"},"info-texto":{"claro":"informacion_800","oscuro":"informacion_100"},"info-acento":{"claro":"informacion_500","oscuro":"informacion_400"},"apagado-fondo":{"claro":"rojo_300","oscuro":"rojo_900"},"apagado-borde":{"claro":"rojo_500","oscuro":"rojo_300"},"apagado-bolita":{"claro":"rojo_900","oscuro":"rojo_100"},"identidad-1":{"claro":"identidad_1","oscuro":"identidad_1"},"identidad-2":{"claro":"identidad_2","oscuro":"identidad_2"},"identidad-3":{"claro":"identidad_3","oscuro":"identidad_3"},"identidad-4":{"claro":"identidad_4","oscuro":"identidad_4"},"identidad-texto":{"claro":"gris_0","oscuro":"gris_0"}};
+  var clases = {"fondo-pagina":{"claro":"gris_50","oscuro":"negro_950"},"fondo-tarjeta":{"claro":"gris_0","oscuro":"negro_850"},"fondo-encabezado":{"claro":"gris_100","oscuro":"negro_750"},"fondo-fila-alt":{"claro":"gris_50","oscuro":"negro_800"},"fondo-fila-hover":{"claro":"azul_50","oscuro":"negro_700"},"texto-principal":{"claro":"gris_900","oscuro":"negro_50"},"texto-secundario":{"claro":"gris_600","oscuro":"negro_100"},"texto-pista":{"claro":"gris_600","oscuro":"negro_200"},"texto-invertido":{"claro":"gris_0","oscuro":"negro_900"},"borde":{"claro":"gris_200","oscuro":"negro_600"},"borde-fuerte":{"claro":"gris_300","oscuro":"negro_500"},"borde-campo":{"claro":"gris_500","oscuro":"negro_300"},"sin-estado":{"claro":"gris_700","oscuro":"negro_100"},"accion":{"claro":"azul_600","oscuro":"azul_300"},"accion-hover":{"claro":"azul_700","oscuro":"azul_200"},"accion-activa":{"claro":"azul_800","oscuro":"azul_100"},"accion-texto":{"claro":"gris_0","oscuro":"negro_900"},"accion-deshabilitada":{"claro":"gris_300","oscuro":"negro_600"},"accion-texto-desh":{"claro":"gris_500","oscuro":"negro_200"},"accion-2":{"claro":"oro_700","oscuro":"oro_200"},"enlace":{"claro":"azul_600","oscuro":"azul_300"},"accion-2-fondo":{"claro":"oro_100","oscuro":"oro_800"},"neutra-fondo":{"claro":"gris_100","oscuro":"negro_650"},"neutra-texto":{"claro":"gris_900","oscuro":"negro_50"},"destructiva":{"claro":"rojo_600","oscuro":"rojo_300"},"destructiva-hover":{"claro":"rojo_700","oscuro":"rojo_200"},"destructiva-texto":{"claro":"gris_0","oscuro":"negro_900"},"marco-fondo":{"claro":"indigo_800","oscuro":"negro_700"},"marco-texto":{"claro":"gris_0","oscuro":"gris_0"},"marco-acento":{"claro":"oro_200","oscuro":"oro_200"},"marco-item-activo":{"claro":"indigo_900","oscuro":"negro_800"},"marco-nivel-1":{"claro":"indigo_700","oscuro":"negro_600"},"marco-nivel-2":{"claro":"indigo_600","oscuro":"negro_500"},"marco-borde":{"claro":"indigo_500","oscuro":"negro_500"},"marco-texto-tenue":{"claro":"indigo_200","oscuro":"negro_100"},"foco":{"claro":"ambar_600","oscuro":"ambar_300"},"foco-en-marco":{"claro":"ambar_300","oscuro":"ambar_300"},"exito-fondo":{"claro":"verde_50","oscuro":"verde_950"},"exito-texto":{"claro":"verde_900","oscuro":"verde_200"},"exito-acento":{"claro":"verde_700","oscuro":"verde_500"},"aviso-fondo":{"claro":"ambar_50","oscuro":"ambar_950"},"aviso-texto":{"claro":"ambar_900","oscuro":"ambar_200"},"aviso-acento":{"claro":"ambar_700","oscuro":"ambar_500"},"error-fondo":{"claro":"alerta_50","oscuro":"alerta_900"},"error-texto":{"claro":"alerta_800","oscuro":"alerta_100"},"error-acento":{"claro":"alerta_500","oscuro":"alerta_400"},"info-fondo":{"claro":"informacion_50","oscuro":"informacion_900"},"info-texto":{"claro":"informacion_800","oscuro":"informacion_100"},"info-acento":{"claro":"informacion_500","oscuro":"informacion_400"},"apagado-fondo":{"claro":"rojo_300","oscuro":"rojo_900"},"apagado-borde":{"claro":"rojo_500","oscuro":"rojo_300"},"apagado-bolita":{"claro":"rojo_900","oscuro":"rojo_100"},"identidad-1":{"claro":"identidad_1","oscuro":"identidad_1"},"identidad-2":{"claro":"identidad_2","oscuro":"identidad_2"},"identidad-3":{"claro":"identidad_3","oscuro":"identidad_3"},"identidad-4":{"claro":"identidad_4","oscuro":"identidad_4"},"identidad-texto":{"claro":"gris_0","oscuro":"gris_0"},"grafico-fondo":{"claro":"indigo_100","oscuro":"indigo_900"},"grafico-texto":{"claro":"gris_900","oscuro":"gris_0"},"grafico-texto-tenue":{"claro":"gris_700","oscuro":"indigo_200"},"grafico-linea":{"claro":"indigo_800","oscuro":"oro_200"},"grafico-rejilla":{"claro":"indigo_200","oscuro":"indigo_700"},"grafico-base":{"claro":"indigo_300","oscuro":"indigo_500"},"grafico-ref":{"claro":"gris_700","oscuro":"gris_0"},"grafico-guia":{"claro":"gris_700","oscuro":"gris_0"},"grafico-halo":{"claro":"oro_400","oscuro":"oro_200"},"grafico-punto0":{"claro":"gris_0","oscuro":"gris_0"},"grafico-ventana-fondo":{"claro":"indigo_900","oscuro":"gris_0"},"grafico-ventana-texto":{"claro":"gris_0","oscuro":"gris_900"},"grafico-foco":{"claro":"ambar_700","oscuro":"ambar_300"},"barra-relleno":{"claro":"indigo_500","oscuro":"indigo_300"},"barra-pista":{"claro":"gris_200","oscuro":"negro_600"},"mapa-1":{"claro":"indigo_100","oscuro":"indigo_900"},"mapa-2":{"claro":"indigo_200","oscuro":"indigo_700"},"mapa-3":{"claro":"indigo_300","oscuro":"indigo_500"},"mapa-4":{"claro":"indigo_500","oscuro":"indigo_300"},"mapa-5":{"claro":"indigo_800","oscuro":"indigo_200"}};
 
   function aplicar(modo) {
     raiz.setAttribute('data-tema', modo);

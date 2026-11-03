@@ -2521,6 +2521,97 @@ la firma prometía y no emitía (R103). El componente recuerda la última opció
 valor: no es una caché, es <strong>la única copia que queda</strong> del texto de algo que ya no
 está en ninguna lista.</div>
 
+<h3 class="sub-seccion">Con jerarquía — <code>nivel</code> y <code>cuenta</code></h3>
+<p class="seccion-sub">Una lista que es en realidad un <strong>árbol</strong> —unidades organizativas, sedes con
+aulas— se sangra por <code>nivel</code> y lleva a la derecha cuántos hay en cada una, en <code>cuenta</code>.
+La jerarquía <strong>no se declara con un <code>padre</code></strong>: se lee del orden. Los ancestros de una
+opción son las <strong>anteriores</strong> de nivel estrictamente menor, hasta la raíz.</p>
+<div class="bloque">
+  <div class="campos-rejilla">
+    <div class="cg">
+      <span class="cg-et" id="sel-jer-et">Sin filtro</span>
+      <div class="sel sel-demo-abierto sel-demo-alto">
+        <div class="sel-caja sel-con-lupa abierta">
+          <span class="sel-lupa" aria-hidden="true">${ICO_LUPA}</span>
+          <input class="campo sel-in" placeholder="Buscar unidad" readonly>
+          <span aria-hidden="true" class="sel-chev">${ICONOS.chevron}</span>
+        </div>
+        <ul class="sel-lista" role="listbox" aria-labelledby="sel-jer-et">
+          <li class="sel-op" role="option" aria-selected="true"><span class="sel-op-txt">Todas las unidades</span><span class="sel-cuenta">62 trab.</span><span class="sel-check">${ICO_CHECK}</span></li>
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Dirección General</span><span class="sel-cuenta">4 trab.</span></li>
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Nivel Inicial</span><span class="sel-cuenta">14 trab.</span></li>
+          <li class="sel-op marcado" role="option" aria-selected="false"><span class="sel-op-txt">Nivel Primaria</span><span class="sel-cuenta">18 trab.</span></li>
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Nivel Secundaria</span><span class="sel-cuenta">16 trab.</span></li>
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Administración</span><span class="sel-cuenta">10 trab.</span></li>
+          <li class="sel-op sel-n1" role="option" aria-selected="false"><span class="sel-op-txt">Secretaría<span class="sr-solo">, nivel 1</span></span><span class="sel-cuenta">6 trab.</span></li>
+          <li class="sel-op sel-n1" role="option" aria-selected="false"><span class="sel-op-txt">Mantenimiento<span class="sr-solo">, nivel 1</span></span><span class="sel-cuenta">4 trab.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="cg">
+      <span class="cg-et" id="sel-jer2-et">Buscando «secre»</span>
+      <div class="sel sel-demo-abierto">
+        <div class="sel-caja sel-con-lupa abierta">
+          <span class="sel-lupa" aria-hidden="true">${ICO_LUPA}</span>
+          <input class="campo sel-in" value="secre" readonly>
+          <span aria-hidden="true" class="sel-chev">${ICONOS.chevron}</span>
+        </div>
+        <ul class="sel-lista" role="listbox" aria-labelledby="sel-jer2-et">
+          <li class="sel-op sel-ctx" role="option" aria-selected="false"><span class="sel-op-txt">Administración<span class="sr-solo">, contexto</span></span><span class="sel-cuenta">10 trab.</span></li>
+          <li class="sel-op sel-n1 marcado" role="option" aria-selected="false"><span class="sel-op-txt">Secretaría<span class="sr-solo">, nivel 1</span></span><span class="sel-cuenta">6 trab.</span></li>
+        </ul>
+      </div>
+      <span class="cg-ayuda"><strong>El padre sigue ahí.</strong> «Secretaría» sin «Administración» es una
+      fila huérfana: no dice de qué es. El ancestro se lee en gris y <strong>se puede elegir</strong>; la
+      marcada de partida es la coincidencia, no el contexto.</span>
+    </div>
+  </div>
+</div>
+
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Regla</th><th>Qué pasa</th></tr></thead>
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Se conservan los ancestros, no los descendientes.</strong> Buscar «admin» muestra solo «Administración», sin sus hijos.</td></tr>
+    <tr><td class="num">2</td><td><strong>Cuatro niveles de sangrado.</strong> Un <code>nivel</code> mayor se dibuja como el cuarto, aunque cuenta con su valor al buscar ancestros.</td></tr>
+    <tr><td class="num">3</td><td><strong>Contra el servidor, la lista llega tal cual.</strong> Con <code>onBuscar</code> el componente no añade ancestros: si la app quiere el contexto, lo incluye en lo que devuelve.</td></tr>
+    <tr><td class="num">4</td><td><strong>La cuenta no se busca.</strong> Es una cifra al margen, no parte del nombre.</td></tr>
+    <tr><td class="num">5</td><td><strong>Sin <code>nivel</code> ni <code>cuenta</code>, nada cambia.</strong> El marcado es el de siempre.</td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">Cómo se usa</h4>
+<p class="seccion-sub">Lo que se copia es la importación y las props. Las opciones van en el orden del árbol, padres antes que hijos.</p>
+${verCodigo(
+  'Uso de SelectorBusqueda con jerarquía',
+  `import { useState } from 'react';
+import { SelectorBusqueda } from 'sistema-diseno-ae/componentes';
+
+export function FiltroUnidad() {
+  const [unidad, setUnidad] = useState<string | null>(null);
+  return (
+    <SelectorBusqueda
+      etiqueta="Unidad organizativa"
+      valor={unidad}
+      onCambio={setUnidad}
+      opciones={[
+        { valor: 'todas', texto: 'Todas las unidades', cuenta: '62 trab.' },
+        { valor: 'adm', texto: 'Administración', cuenta: '10 trab.' },
+        { valor: 'sec', texto: 'Secretaría', nivel: 1, cuenta: '6 trab.' },
+        { valor: 'man', texto: 'Mantenimiento', nivel: 1, cuenta: '4 trab.' },
+      ]}
+    />
+  );
+}`
+)}
+<h4 class="sub-seccion">Cómo se configura</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad de la opción</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>nivel</code><br><span class="seccion-sub">number</span></td><td>Sangrado a la izquierda. 0 o ausente es la raíz; se dibujan hasta cuatro niveles. Define los ancestros que se conservan al buscar.</td></tr>
+    <tr><td><code>cuenta</code><br><span class="seccion-sub">string | number</span></td><td>Cifra o texto a la derecha de la fila, tabular y sin partirse: «12 trab.». No entra en la búsqueda.</td></tr>
+  </tbody>
+</table>
+
 <h3 class="sub-seccion">Teclado — es donde se cae este componente</h3>
 <table class="tabla-simple">
   <thead><tr><th>Tecla</th><th>Qué hace</th></tr></thead>
@@ -2934,6 +3025,532 @@ ${verCodigo(
     <tr><td><code>className</code></td><td class="motivo">Clase adicional del consumidor</td></tr>
   </tbody>
 </table>`;
+
+// ── Elemento: Franja de cifras (SPEC 07, R169) ──────────────────────────────
+
+/* El marcado de abajo es el que emite el componente, escrito a mano en una sola
+   función: lo que el catálogo enseña y lo que se entrega no pueden divergir. */
+const cifraEj = ({ t, v, u, dir, sen, c, d }) => {
+  let dif = '';
+  if (dir === 'igual') {
+    dif = `<span class="cifra-dif cifra-dif-igual"><span aria-hidden="true">= igual que antes</span><span class="sr-solo">sin cambio</span></span>`;
+  } else if (dir) {
+    const sube = dir === 'sube';
+    const signo = sube ? '+' : '−';
+    const mejora = sube === (sen === 'subir-es-mejor');
+    dif = `<span class="cifra-dif cifra-dif-${mejora ? 'mejor' : 'peor'}"><span aria-hidden="true">${sube ? '▲' : '▼'} ${signo}${c}</span><span class="sr-solo">${mejora ? 'mejoró' : 'empeoró'}: ${signo}${c}</span></span>`;
+  }
+  return `<li class="franja-item"><div class="cifra"><span class="cifra-titulo">${t}</span><span class="cifra-valor">${v}${u ? ` <span class="cifra-unidad">${u}</span>` : ''}</span>${dif}${d ? `<span class="cifra-detalle">${d}</span>` : ''}</div></li>`;
+};
+
+const CIFRAS_EJ = [
+  { t: 'Tardanzas', v: '612', u: 'min', dir: 'sube', sen: 'subir-es-peor', c: '72 min' },
+  { t: 'Faltas', v: '7', u: 'trab.', dir: 'baja', sen: 'subir-es-peor', c: '3 trab.' },
+  { t: 'Faltas', v: '38:20', u: 'hrs', dir: 'baja', sen: 'subir-es-peor', c: '2:50 hrs' },
+  { t: 'Días incompletos', v: '11', u: 'días', dir: 'igual', sen: 'subir-es-peor' },
+  { t: 'Memorándums cerrados', v: '5', u: '', dir: 'sube', sen: 'subir-es-mejor', c: '2' },
+];
+
+const SEIS_DIF = [
+  ['sube', 'subir-es-peor', '72 min', 'Tardanzas: subir es malo'],
+  ['baja', 'subir-es-peor', '3 trab.', 'Faltas: bajar es bueno'],
+  ['sube', 'subir-es-mejor', '2', 'Memorándums cerrados: subir es bueno'],
+  ['baja', 'subir-es-mejor', '2', 'Memorándums cerrados: bajar es malo'],
+  ['igual', 'subir-es-peor', '0', 'Sin cambio, sentido «subir es peor»'],
+  ['igual', 'subir-es-mejor', '0', 'Sin cambio, sentido «subir es mejor»'],
+];
+
+const pagFranjaCifras = `
+<p class="pag-intro">Una fila de <strong>cifras grandes separadas por una línea fina</strong>, sin tarjetas
+sueltas: título, número, unidad y cuánto cambió frente al periodo anterior. La app entrega los números y la
+diferencia <strong>ya calculados</strong>; la pieza solo los dibuja y decide cómo se ven y cómo se leen.</p>
+
+<h3 class="sub-seccion">La franja</h3>
+<p class="seccion-sub">Cinco cifras. En un teléfono caben <strong>dos por fila</strong> y, si el total es impar, la
+última ocupa el ancho completo (aquí, la quinta); desde 900&nbsp;px caben las cinco en una sola fila. Cada
+cifra es un elemento de lista.</p>
+<div class="bloque">
+  <ul class="franja" aria-label="Resumen de la semana">
+    ${CIFRAS_EJ.map(cifraEj).join('\n    ')}
+  </ul>
+</div>
+
+<h3 class="sub-seccion">La diferencia: seis combinaciones</h3>
+<p class="seccion-sub">La diferencia lleva <strong>flecha, signo y una palabra</strong>: se entiende sin color. Que subir
+sea peor o mejor lo dice <code>sentido</code>, no la dirección: más tardanza es malo, más memorándums cerrados es
+bueno. Con <code>igual</code> no hay cantidad que mostrar y se lee «sin cambio».</p>
+<div class="bloque">
+  <table class="tabla-simple">
+    <thead><tr><th>Caso</th><th>Se ve</th><th><code>direccion</code></th><th><code>sentido</code></th><th>Lo que oye el lector</th></tr></thead>
+    <tbody>
+      ${SEIS_DIF.map(([dir, sen, c, caso]) => {
+        const sube = dir === 'sube';
+        const mejora = sube === (sen === 'subir-es-mejor');
+        const oido = dir === 'igual' ? 'sin cambio' : `${mejora ? 'mejoró' : 'empeoró'}: ${sube ? '+' : '−'}${c}`;
+        return `<tr><td>${caso}</td><td>${cifraEj({ t: '', v: '', dir, sen, c }).replace(/^.*?(<span class="cifra-dif[\s\S]*?<\/span><\/span>).*$/, '$1')}</td><td class="mono">${dir}</td><td class="mono">${sen}</td><td>${oido}</td></tr>`;
+      }).join('\n      ')}
+    </tbody>
+  </table>
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Es una lista:</strong> un elemento de lista por cifra. Un hijo nulo o falso no deja un elemento vacío.</td></tr>
+    <tr><td class="num">2</td><td><strong>Título, valor y unidad; el resto es opcional.</strong> Sin <code>diferencia</code> no sale nada de diferencia, y <code>detalle</code> es una línea de apoyo que el tablero aprobado no usa.</td></tr>
+    <tr><td class="num">3</td><td><strong>La diferencia llega calculada.</strong> La pieza no resta, no compara y no formatea: pinta <code>cantidad</code> tal cual.</td></tr>
+    <tr><td class="num">4</td><td><strong>Flecha y signo:</strong> ▲ con «+» si sube, ▼ con «−» (el signo menos de verdad) si baja, «=» sin cantidad si es igual.</td></tr>
+    <tr><td class="num">5</td><td><strong>El color no va solo.</strong> El lector oye «empeoró: +72 min», «mejoró: −3 trab.» o «sin cambio», y el dibujo de la flecha no se lee dos veces.</td></tr>
+    <tr><td class="num">6</td><td><strong><code>sentido</code> manda sobre el tono.</strong> Peor usa los tokens de aviso, mejor los de éxito e igual los neutros; subir y bajar se invierten entre <code>subir-es-peor</code> y <code>subir-es-mejor</code>.</td></tr>
+    <tr><td class="num">7</td><td><strong>Móvil primero:</strong> dos columnas de base, la última a ancho completo si son impares; cinco desde 900&nbsp;px.</td></tr>
+    <tr><td class="num">8</td><td><strong>Cifras tabulares</strong> (los dígitos no bailan al cambiar) y colores solo de tokens.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Cómo se usa</h3>
+<p class="seccion-sub">Lo que se copia es la importación y las props. La diferencia la calcula la app.</p>
+${verCodigo(
+  'Uso de FranjaCifras y CifraConDiferencia',
+  `import { FranjaCifras, CifraConDiferencia } from 'sistema-diseno-ae/componentes';
+
+export function ResumenSemana() {
+  return (
+    <FranjaCifras etiqueta="Resumen de la semana">
+      <CifraConDiferencia
+        titulo="Tardanzas"
+        valor="612"
+        unidad="min"
+        diferencia={{ cantidad: '72 min', direccion: 'sube', sentido: 'subir-es-peor' }}
+      />
+      <CifraConDiferencia
+        titulo="Faltas"
+        valor="7"
+        unidad="trab."
+        diferencia={{ cantidad: '3 trab.', direccion: 'baja', sentido: 'subir-es-peor' }}
+      />
+      <CifraConDiferencia
+        titulo="Días incompletos"
+        valor="11"
+        unidad="días"
+        diferencia={{ cantidad: '0', direccion: 'igual', sentido: 'subir-es-peor' }}
+      />
+    </FranjaCifras>
+  );
+}`
+)}
+
+<h3 class="sub-seccion">Cómo se configura</h3>
+<h4 class="sub-seccion">La franja</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>children</code><br><span class="seccion-sub">ReactNode</span></td><td>Las cifras, una <code>CifraConDiferencia</code> por cifra. Cada una se envuelve en su elemento de lista. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>etiqueta</code><br><span class="seccion-sub">string</span></td><td>Nombre accesible de la lista, p. ej. «Resumen de la semana».</td></tr>
+    <tr><td><code>className</code><br><span class="seccion-sub">string</span></td><td>Clase extra para la lista.</td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">Cada cifra</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>titulo</code><br><span class="seccion-sub">string</span></td><td>El nombre de la medida: «Tardanzas», «Faltas». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>valor</code><br><span class="seccion-sub">string</span></td><td>El número, ya formateado: «612», «38:20». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>unidad</code><br><span class="seccion-sub">string</span></td><td>La unidad, pequeña y junto al valor: «min», «trab.», «hrs».</td></tr>
+    <tr><td><code>diferencia</code><br><span class="seccion-sub">DiferenciaCifra</span></td><td>Cuánto cambió, ya calculado. Sin ella no sale nada. Ver la tabla siguiente.</td></tr>
+    <tr><td><code>detalle</code><br><span class="seccion-sub">ReactNode</span></td><td>Una línea de apoyo bajo la diferencia. Opcional; el ejemplo aprobado del tablero no la usa.</td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">La diferencia</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>cantidad</code><br><span class="seccion-sub">string</span></td><td>La magnitud, sin signo ni flecha: «72 min», «3 trab.», «2:50 hrs». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>direccion</code><br><span class="seccion-sub">'sube' | 'baja' | 'igual'</span></td><td>Lo que pasó: la app ya comparó el actual con el anterior. Con <code>igual</code> no se pinta la cantidad. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>sentido</code><br><span class="seccion-sub">'subir-es-peor' | 'subir-es-mejor'</span></td><td>Cómo se lee subir. Decide si la diferencia es «empeoró» (tono de aviso) o «mejoró» (tono de éxito). <strong>Obligatoria.</strong></td></tr>
+  </tbody>
+</table>`;
+
+// ── Elemento: Mapa de calor (SPEC 07, R169) ─────────────────────────────────
+
+/* Mismo marcado que emite el componente, escrito a mano en una funcion: lo que el
+   catalogo enseña y lo que se entrega no pueden divergir. */
+const mapaEj = ({ id, titulo, desc, total, filas, columnas, celdas, pocos = 2 }) => {
+  let max = 0;
+  celdas.forEach((f) => f.forEach((c) => { if (c.n > 0 && c.valor > max) max = c.valor; }));
+  const paso = (v) => (max > 0 ? Math.max(1, Math.min(5, Math.ceil((5 * v) / max))) : 1);
+  const cuerpo = filas.map((f, a) => `<tr><th scope="row">${f}</th>${columnas.map((c, b) => {
+    const { valor, n } = celdas[a][b];
+    if (n <= 0) return `<td><div class="mapa-celda mapa-vacia"><span class="mapa-valor">—</span><span class="mapa-n">0 trab.</span></div></td>`;
+    const p = n <= pocos;
+    return `<td><div class="mapa-celda mapa-p${paso(valor)}${p ? ' mapa-pocos' : ''}"><span class="mapa-valor">${valor}</span><span class="mapa-n">${n} trab.</span>${p ? `<span class="sr-solo">Pocos datos: ${n} ${n === 1 ? 'trabajador' : 'trabajadores'}</span>` : ''}</div></td>`;
+  }).join('')}</tr>`).join('');
+  return `<article class="mapa"><header><h3 class="mapa-titulo" id="${id}">${titulo}</h3>${desc ? `<p class="mapa-desc">${desc}</p>` : ''}${total ? `<p class="mapa-desc mapa-total">Total <strong>${total}</strong></p>` : ''}</header><div class="mapa-vista" role="region" tabindex="0" aria-labelledby="${id}"><table class="mapa-tabla"><thead><tr><td></td>${columnas.map((c) => `<th scope="col">${c}</th>`).join('')}</tr></thead><tbody>${cuerpo}</tbody></table></div><div class="mapa-escala" aria-hidden="true"><span>Menos</span><span class="mapa-pasos"><i class="mapa-paso mapa-p1"></i><i class="mapa-paso mapa-p2"></i><i class="mapa-paso mapa-p3"></i><i class="mapa-paso mapa-p4"></i><i class="mapa-paso mapa-p5"></i></span><span>Más</span></div></article>`;
+};
+
+const MAPA_N = [[3, 5, 5, 1, 0], [4, 6, 5, 5, 2]];
+const MAPA_V = [[48, 96, 108, 52, 0], [31, 84, 66, 100, 18]];
+const MAPA_CELDAS = MAPA_V.map((f, a) => f.map((valor, b) => ({ valor, n: MAPA_N[a][b] })));
+const MAPA_TOTAL = MAPA_V.flat().reduce((s, v) => s + v, 0);
+
+const pagMapaCalor = `
+<p class="pag-intro">Una <strong>tabla de filas por columnas</strong> donde la intensidad de un solo tono dice
+cuánto y el número dice cuánto exactamente. Trae su propio título, descripción, total y escala «Menos – Más»:
+la app no la envuelve en otra tarjeta. Las celdas con pocos trabajadores se marcan con borde punteado.</p>
+
+<h3 class="sub-seccion">El mapa</h3>
+<p class="seccion-sub">Tardanzas por sexo y edad. La intensidad va en <strong>cinco pasos</strong> (no continua) para
+que cada par de colores se pueda medir. «Pocos datos» (borde punteado) son las celdas de 1 o 2 trabajadores; la
+vacía lleva «—» y «0 trab.» y no tiene color. En un teléfono la tabla se desliza <strong>dentro</strong> de su
+recuadro, que se alcanza con el teclado; la página no.</p>
+<div class="bloque">
+  ${mapaEj({ id: 'mapa-ej-1', titulo: 'Tardanzas', total: `${MAPA_TOTAL} min`, filas: ['Hombre', 'Mujer'], columnas: ['18-29', '30-39', '40-49', '50-59', '60+'], celdas: MAPA_CELDAS })}
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Es una tabla</strong> con cabecera de columna y de fila (<code>th scope</code>); una celda se lee «Hombre, 30-39, 96, 5 trab.».</td></tr>
+    <tr><td class="num">2</td><td><strong>Título, descripción y total propios.</strong> Sin descripción o sin total no queda un elemento vacío.</td></tr>
+    <tr><td class="num">3</td><td><strong>El recuadro que se desliza</strong> es una región enfocable con el título por nombre.</td></tr>
+    <tr><td class="num">4</td><td><strong>Cinco pasos:</strong> <code>ceil(5·valor/máximo)</code>, con el máximo tomado solo entre las celdas con trabajadores. Cada celda escribe el valor y «n trab.».</td></tr>
+    <tr><td class="num">5</td><td><strong>El texto cambia con el fondo:</strong> principal en los pasos 1 a 3, invertido en 4 y 5.</td></tr>
+    <tr><td class="num">6</td><td><strong>«Pocos datos»:</strong> <code>n</code> menor o igual que <code>pocosDatosHasta</code> (2 por omisión) lleva borde punteado y el nombre accesible «Pocos datos: n trabajadores» (singular con 1).</td></tr>
+    <tr><td class="num">7</td><td><strong>Celda vacía:</strong> con <code>n</code> igual a 0, «—» y «0 trab.», sin paso de color.</td></tr>
+    <tr><td class="num">8</td><td><strong>Escala «Menos – Más»</strong> de cinco pasos bajo la tabla; solo para la vista, y sin leyenda de «Pocos datos».</td></tr>
+    <tr><td class="num">9</td><td><strong>Móvil primero:</strong> ancho mínimo de 350&nbsp;px y desplazamiento horizontal dentro del recuadro.</td></tr>
+    <tr><td class="num">10</td><td><strong>Cifras tabulares</strong> y colores solo de tokens.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Cómo se usa</h3>
+<p class="seccion-sub">Lo que se copia es la importación y las props. El total y el formato los calcula y escribe la app.</p>
+${verCodigo(
+  'Uso de MapaCalor',
+  `import { MapaCalor } from 'sistema-diseno-ae/componentes';
+
+export function TardanzasPorSexoYEdad() {
+  return (
+    <MapaCalor
+      titulo="Tardanzas"
+      total="603 min"
+      filas={['Hombre', 'Mujer']}
+      columnas={['18-29', '30-39', '40-49', '50-59', '60+']}
+      celdas={[
+        [{ valor: 48, n: 3 }, { valor: 96, n: 5 }, { valor: 108, n: 5 }, { valor: 52, n: 1 }, { valor: 0, n: 0 }],
+        [{ valor: 31, n: 4 }, { valor: 84, n: 6 }, { valor: 66, n: 5 }, { valor: 100, n: 5 }, { valor: 18, n: 2 }],
+      ]}
+      formato={(minutos) => String(minutos)}
+    />
+  );
+}`
+)}
+
+<h3 class="sub-seccion">Cómo se configura</h3>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>titulo</code><br><span class="seccion-sub">string</span></td><td>El título del mapa: «Tardanzas». Nombra también la tabla y su recuadro. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>descripcion</code><br><span class="seccion-sub">ReactNode</span></td><td>Una línea bajo el título: «Por sexo y edad».</td></tr>
+    <tr><td><code>total</code><br><span class="seccion-sub">string</span></td><td>El total del mapa, ya escrito: «603 min». Sale como «Total 603 min».</td></tr>
+    <tr><td><code>filas</code><br><span class="seccion-sub">string[]</span></td><td>El rótulo de cada fila. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>columnas</code><br><span class="seccion-sub">string[]</span></td><td>El rótulo de cada columna. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>celdas</code><br><span class="seccion-sub">CeldaMapaCalor[][]</span></td><td><code>celdas[fila][columna]</code>, cada una con <code>valor</code> (decide el paso de color) y <code>n</code> (trabajadores). <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>formato</code><br><span class="seccion-sub">(valor: number) =&gt; string</span></td><td>Cómo se escribe el valor de cada celda. Sin él, el número tal cual.</td></tr>
+    <tr><td><code>pocosDatosHasta</code><br><span class="seccion-sub">number</span></td><td>Una celda con <code>n</code> menor o igual que esto es «Pocos datos». 2 por omisión.</td></tr>
+  </tbody>
+</table>`;
+
+// ── Elemento: Lista de ranking (SPEC 07, R169) ──────────────────────────────
+
+const rankColor = (id) => {
+  let n = 0;
+  for (let i = 0; i < id.length; i++) n = (n * 31 + id.charCodeAt(i)) >>> 0;
+  return (n % 4) + 1;
+};
+const rankIniciales = (nombre) => {
+  const partes = nombre.includes(',') ? nombre.split(',') : nombre.trim().split(/\s+/);
+  return ((partes[0]?.trim()[0] ?? '') + (partes[1]?.trim()[0] ?? '')).toUpperCase();
+};
+
+const rankingEj = ({ id, titulo, filas, vacio }) => {
+  if (!filas.length) return `<section class="ranking" aria-labelledby="${id}"><h3 class="ranking-titulo" id="${id}">${titulo}</h3><p class="ranking-vacio">${vacio}</p></section>`;
+  const primero = filas[0].valor;
+  const pct = (v) => (primero > 0 && v > 0 ? Math.min(100, Math.round((v / primero) * 10000) / 100) : 0);
+  return `<section class="ranking" aria-labelledby="${id}"><h3 class="ranking-titulo" id="${id}">${titulo}</h3><ol class="ranking-lista" role="list">${filas.map((f, i) => `<li class="ranking-fila"><span class="ranking-pos">${i + 1}</span><span class="ranking-avatar" aria-hidden="true"><span class="avatar avatar-m avatar-${rankColor(f.id)}" title="${f.nombre}">${rankIniciales(f.nombre)}</span></span><div class="ranking-quien"><div class="ranking-nombre">${f.nombre}</div>${f.detalle ? `<div class="ranking-detalle">${f.detalle}</div>` : ''}<svg class="ranking-barra" aria-hidden="true" focusable="false">${pct(f.valor) > 0 ? `<rect class="ranking-barra-relleno" width="${pct(f.valor)}%" height="100%" rx="3"></rect>` : ''}</svg></div><span class="ranking-valor">${f.texto}</span></li>`).join('')}</ol></section>`;
+};
+
+const RANKING_FILAS = [
+  { id: 'rk-1', nombre: 'Salazar Quispe de la Cruz, María Guadalupe del Carmen', valor: 74, texto: '74 min', detalle: 'Nivel Inicial' },
+  { id: 'rk-2', nombre: 'Huamán Ríos, Luis', valor: 61, texto: '61 min', detalle: 'Nivel Primaria' },
+  { id: 'rk-3', nombre: 'Paredes Soto, Elena', valor: 55, texto: '55 min', detalle: 'Nivel Secundaria' },
+  { id: 'rk-4', nombre: 'Cárdenas Vega, Jorge', valor: 49, texto: '49 min', detalle: 'Nivel Inicial' },
+  { id: 'rk-5', nombre: 'Mendoza Lara, Rosa', valor: 44, texto: '44 min', detalle: 'Secretaría' },
+];
+
+const pagListaRanking = `
+<p class="pag-intro">Una <strong>lista corta de personas ordenada por una medida</strong>: posición, avatar,
+nombre, una línea gris, el valor escrito y una barra proporcional al primero. La app entrega las filas ya
+ordenadas y con el texto del valor; la pieza solo las dibuja.</p>
+
+<h3 class="sub-seccion">Con filas</h3>
+<p class="seccion-sub">Cinco filas, la primera con un nombre largo: <strong>envuelve</strong> en vez de cortarse, también
+a 360&nbsp;px. La barra del primero llena el ancho y las demás miden <code>valor / primero</code>, sin saltos.</p>
+<div class="bloque">
+  ${rankingEj({ id: 'rk-ej-1', titulo: 'Tardanzas', filas: RANKING_FILAS })}
+</div>
+
+<h3 class="sub-seccion">Sin filas</h3>
+<p class="seccion-sub">En lugar de una lista vacía, el texto que pase la app.</p>
+<div class="bloque">
+  ${rankingEj({ id: 'rk-ej-2', titulo: 'Faltas', filas: [], vacio: 'Nadie tiene faltas en esta unidad esta semana' })}
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Es una sección</strong> con su título y una lista ordenada; el título le da el nombre.</td></tr>
+    <tr><td class="num">2</td><td><strong>Cada fila</strong> lleva posición, <code>Avatar</code> (tamaño m, sin leerse dos veces), nombre, una línea gris opcional y el valor.</td></tr>
+    <tr><td class="num">3</td><td><strong>La barra es proporcional al primero:</strong> el primero llena el ancho y los demás miden <code>valor / primero</code>, exacto. Es decoración: el valor ya está escrito.</td></tr>
+    <tr><td class="num">4</td><td><strong>Con valor 0 en el primero no hay barra</strong> en ninguna fila.</td></tr>
+    <tr><td class="num">5</td><td><strong>Sin filas</strong> sale <code>textoVacio</code> y no una lista vacía.</td></tr>
+    <tr><td class="num">6</td><td><strong>El nombre envuelve:</strong> nunca se corta con puntos suspensivos ni queda detrás de un <code>title</code>.</td></tr>
+    <tr><td class="num">7</td><td><strong>Muestra las filas que recibe:</strong> el tablero pasa hasta cinco, la pieza no recorta ni rellena.</td></tr>
+    <tr><td class="num">8</td><td><strong>Móvil primero</strong>, cifras tabulares y colores solo de tokens.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Cómo se usa</h3>
+<p class="seccion-sub">Lo que se copia es la importación y las props. La app ordena y escribe el texto del valor.</p>
+${verCodigo(
+  'Uso de ListaRanking',
+  `import { ListaRanking } from 'sistema-diseno-ae/componentes';
+
+export function RankingTardanzas() {
+  return (
+    <ListaRanking
+      titulo="Tardanzas"
+      textoVacio="Nadie llegó tarde esta semana"
+      filas={[
+        { id: '71234567', nombre: 'Huamán Ríos, Luis', valor: 74, texto: '74 min', detalle: 'Nivel Primaria' },
+        { id: '08765432', nombre: 'Paredes Soto, Elena', valor: 55, texto: '55 min', detalle: 'Nivel Secundaria' },
+      ]}
+    />
+  );
+}`
+)}
+
+<h3 class="sub-seccion">Cómo se configura</h3>
+<h4 class="sub-seccion">La lista</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>titulo</code><br><span class="seccion-sub">string</span></td><td>El título de la lista: «Tardanzas». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>filas</code><br><span class="seccion-sub">FilaRanking[]</span></td><td>Las filas, ya ordenadas. La pieza muestra las que recibe. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>textoVacio</code><br><span class="seccion-sub">string</span></td><td>Lo que se lee cuando no hay filas. <strong>Obligatoria.</strong></td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">Cada fila</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>id</code><br><span class="seccion-sub">string</span></td><td>Identificador estable de la persona; de él sale el color del avatar. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>nombre</code><br><span class="seccion-sub">string</span></td><td>Apellidos y nombres. Puede ser largo y envuelve. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>valor</code><br><span class="seccion-sub">number</span></td><td>Solo para la proporción de la barra. El primero es el 100&nbsp;%. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>texto</code><br><span class="seccion-sub">string</span></td><td>Lo que se lee: «74 min», «2 días». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>foto</code><br><span class="seccion-sub">string</span></td><td>URL de la foto; sin ella, o si falla, el avatar muestra las iniciales.</td></tr>
+    <tr><td><code>detalle</code><br><span class="seccion-sub">string</span></td><td>Una línea gris bajo el nombre (la unidad organizativa).</td></tr>
+  </tbody>
+</table>`;
+
+// ── Elemento: Gráfico de tendencia (SPEC 07, R169) ──────────────────────────
+
+/* Mismo marcado que emite el componente a un ancho dado, escrito a mano: el
+   catalogo no ejecuta React y lo que enseña no puede divergir de lo que se
+   entrega. La prueba `grafico-tendencia-catalogo` compara este marcado con el
+   del componente nodo por nodo. La geometria repite, a proposito, la de
+   `geometriaGrafico`; si una cambia sin la otra, esa prueba lo dice. */
+const grRed = (n) => Math.round(n * 100) / 100;
+const grEscala = (maximo, base = 1) => {
+  const b = base > 0 && Number.isFinite(base) ? base : 1;
+  const m = Number.isFinite(maximo) && maximo > 0 ? maximo : 0;
+  const crudo = ((m / b) * 1.12) / 4;
+  let unidades = 1;
+  if (crudo > 1) {
+    const pot = Math.pow(10, Math.floor(Math.log10(crudo)));
+    unidades = ([1, 2, 5, 10].find((k) => k * pot >= crudo) ?? 10) * pot;
+  }
+  const paso = unidades * b;
+  return { tope: paso * 4, marcas: [0, 1, 2, 3, 4].map((k) => k * paso) };
+};
+const grHm = (m) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`;
+
+const graficoEj = ({ id, titulo, unidad, formato, puntos, base = 1, referencia, columna, chip, activo = -1, ancho = 600 }) => {
+  const W = Math.max(280, ancho);
+  const ancha = W >= 520;
+  const alto = ancha ? 300 : 250;
+  const izq = ancha ? 56 : 44;
+  const der = ancha ? 30 : 18;
+  const arriba = 38;
+  const yBase = alto - (ancha ? 64 : 54);
+  const valores = puntos.map((p) => p.valor);
+  const esc = grEscala(Math.max(0, ...valores, ...(referencia ? [referencia.valor] : [])), base);
+  const Y = (v) => grRed(arriba + (yBase - arriba) * (1 - v / esc.tope));
+  const paso = valores.length > 1 ? (W - izq - der - 16) / (valores.length - 1) : 0;
+  const P = valores.map((v, i) => ({ x: grRed(izq + 16 + i * paso), y: Y(v), v }));
+  const trazo = `M${P.map((p) => `${p.x},${p.y}`).join(' L')}`;
+  const nombre = (i) => (i === 0 ? 'Esta semana' : `Hace ${i} ${i === 1 ? 'semana' : 'semanas'}`);
+  const textos = (i) => {
+    const v = valores[i];
+    const d = v - valores[0];
+    return {
+      semana: nombre(i), rango: puntos[i].detalle, valor: formato(v), valorUnidad: `${formato(v)} ${unidad}`,
+      dif: i === 0 ? '' : d === 0 ? 'igual que esta semana' : `${d > 0 ? '+' : '−'}${formato(Math.abs(d))} frente a esta semana`,
+    };
+  };
+  const t0 = textos(0);
+  let svg = `<svg class="graf-svg" width="${W}" height="${alto}" viewBox="0 0 ${W} ${alto}" aria-hidden="true" focusable="false"><defs><linearGradient id="${id}a" x1="0" y1="0" x2="0" y2="1"><stop class="graf-stop" offset="0" stop-opacity=".38"></stop><stop class="graf-stop" offset="1" stop-opacity="0"></stop></linearGradient></defs>`;
+  esc.marcas.forEach((m, k) => {
+    const y = Y(m);
+    svg += `<g><line class="${k === 0 ? 'graf-base' : 'graf-rej'}" x1="${izq}" x2="${W - der}" y1="${y}" y2="${y}"></line><text class="graf-eje" x="${izq - 8}" y="${y + 4}" text-anchor="end">${formato(m)}</text></g>`;
+  });
+  svg += `<path class="graf-area" d="${trazo} L${P[P.length - 1].x},${yBase} L${P[0].x},${yBase} Z" fill="url(#${id}a)"></path>`;
+  if (referencia) {
+    const yr = Y(referencia.valor);
+    svg += `<g><line class="graf-ref" x1="${izq}" x2="${W - der}" y1="${yr}" y2="${yr}"></line><text class="graf-ref-t" x="${W - der}" y="${yr - 8}" text-anchor="end">${referencia.etiqueta}</text></g>`;
+  }
+  svg += `<path class="graf-lin graf-anima" d="${trazo}" pathLength="1"></path>`;
+  P.forEach((p, i) => {
+    svg += i === 0
+      ? `<g><circle class="graf-halo" cx="${p.x}" cy="${p.y}" r="14"></circle><circle class="graf-p0" cx="${p.x}" cy="${p.y}" r="7"></circle></g>`
+      : `<g><circle class="graf-p" cx="${p.x}" cy="${p.y}" r="4.5"></circle>${ancha ? `<text class="graf-val" x="${p.x}" y="${p.y - 12}" text-anchor="middle">${formato(p.v)}</text>` : ''}</g>`;
+  });
+  P.forEach((p, i) => { svg += `<text class="${i === 0 ? 'graf-num0' : 'graf-numero'}" x="${p.x}" y="${yBase + 24}" text-anchor="middle">${i}</text>`; });
+  svg += `<text class="graf-sub" x="${P[0].x}" y="${yBase + 42}" text-anchor="middle">actual</text>`;
+  if (activo >= 0) {
+    const p = P[activo];
+    const t = textos(activo);
+    const h = 16 + (t.dif ? 4 : 3) * 18;
+    const x = Math.max(4, Math.min(W - 220 - 4, p.x - 110));
+    const y = Math.max(4, p.y - h - 16);
+    svg += `<g><line class="graf-guia" x1="${p.x}" x2="${p.x}" y1="${arriba}" y2="${yBase}"></line><circle class="graf-anillo" cx="${p.x}" cy="${p.y}" r="9"></circle><g class="graf-vent"><rect class="graf-vent-fondo" x="${x}" y="${y}" width="220" height="${h}" rx="8"></rect><text class="graf-vent-b" x="${x + 10}" y="${y + 20}">${t.semana}</text><text class="graf-vent-t" x="${x + 10}" y="${y + 38}">${t.rango}</text><text class="graf-vent-b" x="${x + 10}" y="${y + 56}">${t.valorUnidad}</text>${t.dif ? `<text class="graf-vent-t" x="${x + 10}" y="${y + 74}">${t.dif}</text>` : ''}</g></g>`;
+  }
+  svg += '</svg>';
+  const etiqueta = `${titulo} por semana. Esta semana ${t0.valorUnidad}${referencia ? `; ${referencia.etiqueta}` : ''}. Flechas para recorrer las semanas.`;
+  const filas = puntos.map((_, i) => { const t = textos(i); return `<tr><th scope="row">${i === 0 ? '0 (actual)' : i}</th><td>${t.rango}</td><td>${t.valor}</td></tr>`; }).join('');
+  return `<section class="graf" aria-labelledby="${id}t"><div class="graf-cab"><div><h2 class="graf-titulo" id="${id}t">${titulo}</h2><div class="graf-num"><span>${t0.valor}</span> <small>${unidad}</small></div></div>${chip ? `<div class="graf-chips">${chip}</div>` : ''}</div><div class="graf-vista" tabindex="0" role="group" aria-label="${etiqueta}">${svg}</div><div class="sr-solo" aria-live="polite" aria-atomic="true"><span>${activo >= 0 ? `${textos(activo).semana}, ${textos(activo).rango}: ${textos(activo).valorUnidad}` : ''}</span></div><details class="graf-det"><summary>Ver las cifras de cada semana</summary><table class="graf-tabla"><caption class="sr-solo">${titulo}: cifras de cada semana</caption><thead><tr><th scope="col">Semana atrás</th><th scope="col">Periodo</th><th scope="col">${columna}</th></tr></thead><tbody>${filas}</tbody></table></details></section>`;
+};
+
+const GRAF_RANGOS = ['26 oct – 1 nov', '19 oct – 25 oct', '12 oct – 18 oct', '5 oct – 11 oct', '28 sep – 4 oct', '21 sep – 27 sep', '14 sep – 20 sep'];
+const grPuntos = (v) => v.map((valor, i) => ({ valor, detalle: GRAF_RANGOS[i] }));
+const GRAF_TARDANZA = [612, 540, 585, 498, 660, 702, 631];
+const GRAF_FALTA = [2300, 2470, 1980, 2760, 3100, 2640, 2900];
+const grProm = (v) => Math.round(v.slice(1).reduce((a, b) => a + b, 0) / 6);
+
+const pagGraficoTendencia = `
+<p class="pag-intro">Un <strong>panel con el título, el valor grande de esta semana y una línea de siete
+puntos</strong> sobre un eje de «semanas atrás». La app entrega los puntos ya calculados y cómo se escribe un
+número; la pieza reparte el espacio, elige el tope del eje y dibuja. Sin librería de gráficos. El panel es
+oscuro en los dos temas (el cambio lo hacen los tokens).</p>
+
+<h3 class="sub-seccion">Tardanzas, en minutos</h3>
+<p class="seccion-sub">Con referencia («Promedio: 603») y un solo chip de comparación, que arma la app. El punto 0
+va pegado al eje vertical y no repite su valor, que ya está arriba en grande. Aquí se ve a 600&nbsp;px de ancho,
+donde los puntos 1 a 6 llevan su valor encima; con menos de 520&nbsp;px de <strong>la pieza</strong> (no de la
+ventana) desaparecen, el alto baja a 250 y se lee con la ventana, el teclado o la tabla.</p>
+<div class="bloque">
+  ${graficoEj({ id: 'gr-ej-1', titulo: 'Tardanzas', unidad: 'min', formato: String, puntos: grPuntos(GRAF_TARDANZA), base: 1, referencia: { valor: grProm(GRAF_TARDANZA), etiqueta: `Promedio: ${grProm(GRAF_TARDANZA)}` }, columna: 'Minutos', chip: '<span class="chip chip-aviso">▲ +72 min frente a la semana previa</span>' })}
+</div>
+
+<h3 class="sub-seccion">Faltas, en horas, con la ventana abierta</h3>
+<p class="seccion-sub">Los minutos se escriben como <code>h:mm</code> y <code>base={60}</code> hace que las marcas del eje caigan en horas
+enteras. La ventana de la semana 3 sale al pasar el cursor, al tocar o con las flechas; dice la semana, el rango, el
+valor con su unidad y la diferencia frente a esta semana.</p>
+<div class="bloque">
+  ${graficoEj({ id: 'gr-ej-2', titulo: 'Faltas', unidad: 'hrs', formato: grHm, puntos: grPuntos(GRAF_FALTA), base: 60, referencia: { valor: grProm(GRAF_FALTA), etiqueta: `Promedio: ${grHm(grProm(GRAF_FALTA))}` }, columna: 'Horas', chip: '<span class="chip chip-exito">▼ −2:50 hrs frente a la semana previa</span>', activo: 3 })}
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Es una sección</strong> con el título en un <code>h2</code> corto («Tardanzas», «Faltas») y el valor grande del punto 0 con su unidad. Los chips son un hueco: <code>comparaciones</code>.</td></tr>
+    <tr><td class="num">2</td><td><strong>El punto 0 va pegado al eje vertical</strong> (a 16&nbsp;px como mucho) y el último es el más alejado; un punto por valor. Posiciones, tope y marcas son funciones puras exportadas.</td></tr>
+    <tr><td class="num">3</td><td><strong>El eje</strong> lleva el cero y cuatro marcas escritas con <code>formato</code>; el tope se redondea hacia arriba, y con <code>base</code> 60 las marcas caen en horas enteras. Cuadrícula tenue y base más fuerte.</td></tr>
+    <tr><td class="num">4</td><td><strong>Línea y área</strong> con degradado por clase; punto 0 con halo y sin su valor repetido; bajo cada punto su número de semana y «actual» bajo el 0, sin fechas.</td></tr>
+    <tr><td class="num">5</td><td><strong>La referencia es opcional:</strong> línea punteada con su etiqueta a la derecha; sin ella no sale ni la línea ni la etiqueta.</td></tr>
+    <tr><td class="num">6</td><td><strong>Los valores sobre los puntos 1 a 6</strong> solo con la pieza de 520&nbsp;px o más, medida en JavaScript sobre su propio contenedor; se redibuja al cambiar el ancho.</td></tr>
+    <tr><td class="num">7</td><td><strong>La ventana</strong> (cursor, toque o teclado) con guía vertical y punto resaltado: «Esta semana» / «Hace N semanas», el rango, el valor con unidad y la diferencia frente a esta semana.</td></tr>
+    <tr><td class="num">8</td><td><strong>Teclado:</strong> el contenedor entra en el orden de tabulación; las flechas recorren, Inicio y Fin saltan a los extremos, Escape cierra. Foco visible.</td></tr>
+    <tr><td class="num">9</td><td><strong>Una región <code>aria-live</code></strong> anuncia el punto activo: semana, rango y valor.</td></tr>
+    <tr><td class="num">10</td><td><strong>El SVG es decoración</strong> (<code>aria-hidden</code>). La alternativa es el contenedor enfocable con nombre (valor actual y referencia) y la tabla.</td></tr>
+    <tr><td class="num">11</td><td><strong>Tabla desplegable</strong> «Ver las cifras de cada semana»: «Semana atrás · Periodo · valor». El rango y el valor salen de la misma función que la ventana.</td></tr>
+    <tr><td class="num">12</td><td><strong>El trazo se anima una sola vez</strong>, al abrir, y la clase se suelta cuando la animación termina (nada la suelta a media). No se repite al redibujar por el ancho ni al cambiar los puntos, y no se anima con <code>prefers-reduced-motion</code>.</td></tr>
+    <tr><td class="num">13</td><td><strong>Móvil primero:</strong> alto de 250 en estrecho y 300 en ancho, sin <code>max-width</code> ni <code>@container</code>; cifras tabulares, colores solo de tokens.</td></tr>
+    <tr><td class="num">14</td><td><strong>Se exportan</strong> la pieza, <code>escalaEje</code>, <code>geometriaGrafico</code>, <code>puntoMasCercano</code>, <code>tramosVisibles</code>, <code>textosPunto</code> y <code>nombreSemana</code>, con sus tipos.</td></tr>
+    <tr><td class="num">15</td><td><strong>Lo que no se puede dibujar se acota:</strong> un valor no finito no se dibuja ni se conecta (el trazo se parte), un negativo se dibuja en 0; el texto escribe lo que <code>formato</code> dé.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Cómo se usa</h3>
+<p class="seccion-sub">Lo que se copia es la importación y las props. La app calcula el promedio, escribe los rangos
+y arma los chips; la pieza no calcula nada de negocio.</p>
+${verCodigo(
+  'Uso de GraficoTendencia',
+  `import { GraficoTendencia, Chip } from 'sistema-diseno-ae/componentes';
+
+const minutosAHoraMinuto = (m: number) => \`\${Math.floor(m / 60)}:\${String(m % 60).padStart(2, '0')}\`;
+
+export function GraficoDeFaltas() {
+  return (
+    <GraficoTendencia
+      titulo="Faltas"
+      unidad="hrs"
+      columnaValor="Horas"
+      base={60}
+      formato={minutosAHoraMinuto}
+      puntos={[
+        { valor: 2300, detalle: '26 oct – 1 nov' },
+        { valor: 2470, detalle: '19 oct – 25 oct' },
+        { valor: 1980, detalle: '12 oct – 18 oct' },
+        { valor: 2760, detalle: '5 oct – 11 oct' },
+        { valor: 3100, detalle: '28 sep – 4 oct' },
+        { valor: 2640, detalle: '21 sep – 27 sep' },
+        { valor: 2900, detalle: '14 sep – 20 sep' },
+      ]}
+      referencia={{ valor: 2642, etiqueta: 'Promedio: 44:02' }}
+      comparaciones={<Chip tono="exito">▼ −2:50 hrs frente a la semana previa</Chip>}
+    />
+  );
+}`
+)}
+
+<h3 class="sub-seccion">Cómo se configura</h3>
+<h4 class="sub-seccion">El gráfico</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>titulo</code><br><span class="seccion-sub">string</span></td><td>El título corto del panel: «Tardanzas», «Faltas». Nombra el panel. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>puntos</code><br><span class="seccion-sub">PuntoTendencia[]</span></td><td>Siete en el tablero. El primero es el periodo actual y va pegado al eje; el orden es el de «semanas atrás». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>formato</code><br><span class="seccion-sub">(valor: number) =&gt; string</span></td><td>Cómo se escribe un número en el eje, sobre los puntos, en la ventana y en la tabla: minutos o <code>h:mm</code>. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>unidad</code><br><span class="seccion-sub">string</span></td><td>«min» o «hrs»: va junto al valor grande y a la ventana. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>columnaValor</code><br><span class="seccion-sub">string</span></td><td>El rótulo de la última columna de la tabla: «Minutos», «Horas». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>base</code><br><span class="seccion-sub">number</span></td><td>Unidad base del eje vertical. 1 por omisión; 60 con minutos escritos como <code>h:mm</code>, para que las marcas caigan en horas enteras.</td></tr>
+    <tr><td><code>comparaciones</code><br><span class="seccion-sub">ReactNode</span></td><td>El hueco de los chips que arma la app («▲ +72 min frente a la semana previa»). Sin él no queda contenedor.</td></tr>
+    <tr><td><code>referencia</code><br><span class="seccion-sub">{ valor: number; etiqueta: string }</span></td><td>Línea punteada opcional. La app calcula el valor y escribe la etiqueta («Promedio: 603»). Sin ella no sale ni la línea ni la etiqueta.</td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">Cada punto</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>valor</code><br><span class="seccion-sub">number</span></td><td>El número que se dibuja. El índice 0 del arreglo es el periodo consultado. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>detalle</code><br><span class="seccion-sub">string</span></td><td>El rango de fechas, ya escrito: «19 oct – 25 oct». Sale en la ventana y en la tabla. <strong>Obligatoria.</strong></td></tr>
+  </tbody>
+</table>
+`;
 
 // ── Elemento: Tarjeta ───────────────────────────────────────────────────────
 
@@ -9283,12 +9900,15 @@ const CATALOGO = [
       // +1 en los tres cortes de detrás al entrar «Fila de carga» (R102,
       // v1.77.0). Es la cuarta vez que hay que correrlos a mano.
       { t: 'Formulario', desde: 2, hasta: 13 },
-      { t: 'Datos', desde: 13, hasta: 19 },
-      { t: 'Respuesta', desde: 19, hasta: 25 },
+      // +1 en los dos cortes de detras al entrar «Franja de cifras» (SPEC 07).
+      // +2 al entrar «Mapa de calor» y «Lista de ranking» (SPEC 07).
+      // +1 en los dos cortes de detras al entrar «Gráfico de tendencia» (SPEC 07).
+      { t: 'Datos', desde: 13, hasta: 23 },
+      { t: 'Respuesta', desde: 23, hasta: 29 },
       // `Infinity` y no un numero: el ULTIMO tramo llega siempre al final, asi
       // que meter un elemento al final deja de tener trampa. Los cortes de en
       // medio siguen siendo indices, y por eso existe `comprobarTramos`.
-      { t: 'Marco y navegación', desde: 25, hasta: Infinity },
+      { t: 'Marco y navegación', desde: 29, hasta: Infinity },
     ],
     items: [
       { id: 'boton', t: 'Botón', estado: 'listo', c: pagBoton },
@@ -9312,6 +9932,10 @@ const CATALOGO = [
       { id: 'cuadro', t: 'Cuadro de estado', estado: 'listo', c: pagCuadro },
       { id: 'avatar', t: 'Avatar', estado: 'listo', c: pagAvatar },
       { id: 'tarjeta', t: 'Tarjeta', estado: 'listo', c: pagTarjeta },
+      { id: 'franjacifras', t: 'Franja de cifras', estado: 'listo', c: pagFranjaCifras },
+      { id: 'mapacalor', t: 'Mapa de calor', estado: 'listo', c: pagMapaCalor },
+      { id: 'listaranking', t: 'Lista de ranking', estado: 'listo', c: pagListaRanking },
+      { id: 'graficotendencia', t: 'Gráfico de tendencia', estado: 'listo', c: pagGraficoTendencia },
       { id: 'tabla', t: 'Tabla de datos', estado: 'listo', c: pagTabla },
       { id: 'paginacion', t: 'Paginación', estado: 'listo', c: pagPaginacion },
       { id: 'progreso', t: 'Barra de progreso', estado: 'listo', c: pagProgreso },
@@ -9569,6 +10193,8 @@ ${tokensCss}
   --dur-lenta: 220ms;
   --dur-giro: 700ms;
   --dur-onda: 1300ms;
+  /* El trazo del grafico de tendencia al abrir (SPEC 07): una vez, no un adorno que se repite. */
+  --dur-trazo: 1000ms;
   --curva: ease;
   --curva-vaiven: ease-in-out;
   --curva-giro: linear;
@@ -9591,6 +10217,7 @@ ${tokensCss}
     --dur-lenta: 0.01ms;
     --dur-giro: 0.01ms;
     --dur-onda: 0.01ms;
+    --dur-trazo: 0.01ms;
   }
 }
 
@@ -11394,6 +12021,156 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
   .cuadro { width: 28px; height: 28px; }
 }
 /* ───────────────────────────────────────────────────────────────────────────
+   FRANJA DE CIFRAS · clases .franja*, .cifra*  (SPEC 07, R169)
+   Cifras separadas por una linea fina, sin tarjetas sueltas. La separacion es
+   el hueco de 1px de la rejilla sobre el fondo del borde. Movil primero: DOS
+   columnas de base y, con numero impar, la ultima ocupa el ancho completo; los
+   5 entran con min-width. La diferencia lleva flecha, signo y palabra: el
+   color acompana (SC 1.4.1), no sostiene.
+   ─────────────────────────────────────────────────────────────────────────── */
+.franja { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px;
+  background: var(--borde); border: 1px solid var(--borde); border-radius: 8px;
+  overflow: hidden; margin: 0; padding: 0; list-style: none; }
+.franja-item { background: var(--fondo-tarjeta); padding: 16px 16px 12px; min-width: 0; }
+.franja-item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.cifra { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.cifra-titulo { font-size: 13px; font-weight: 500; color: var(--texto-secundario); }
+.cifra-valor { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px;
+  font-size: 34px; font-weight: 600; line-height: 1.05; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums; color: var(--texto-principal); }
+.cifra-unidad { font-size: 15px; font-weight: 500; letter-spacing: 0; color: var(--texto-secundario); }
+.cifra-dif { position: relative; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start;
+  font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 6px;
+  font-variant-numeric: tabular-nums; border: 1px solid transparent; }
+.cifra-dif.cifra-dif-peor { background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.cifra-dif.cifra-dif-mejor { background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.cifra-dif.cifra-dif-igual { background: var(--neutra-fondo); color: var(--neutra-texto); border-color: var(--borde-fuerte); }
+.cifra-detalle { font-size: 12px; color: var(--texto-secundario); }
+@media (min-width: 900px) {
+  .franja { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .franja-item:last-child:nth-child(odd) { grid-column: auto; }
+}
+/* ───────────────────────────────────────────────────────────────────────────
+   MAPA DE CALOR · clases .mapa*  (SPEC 07, R169)
+   Tabla filas x columnas con cinco pasos de un solo tono (tokens --mapa-1..5).
+   El texto es el principal en los pasos 1-3 y el invertido en 4-5; cada par se
+   mide en verificar-contraste. El desplazamiento es del contenedor .mapa-vista
+   (ancho minimo 350px), nunca de la pagina. position: relative porque las celdas
+   llevan texto .sr-solo (absoluto): sin ella se escaparia del recorte.
+   ─────────────────────────────────────────────────────────────────────────── */
+.mapa { background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 8px;
+  padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.mapa-titulo { margin: 0; font-size: 16px; font-weight: 600; }
+.mapa-desc { margin: 4px 0 0; font-size: 13px; color: var(--texto-secundario); }
+.mapa-desc strong { font-weight: 600; color: var(--texto-principal); font-variant-numeric: tabular-nums; }
+.mapa-total { margin-top: 0; }
+.mapa-vista { position: relative; overflow-x: auto; border-radius: 6px; }
+.mapa-vista:focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; }
+/* separate es el valor por omision: R142 prohibe escribirlo en la hoja. */
+.mapa-tabla { border-spacing: 4px; min-width: 350px; width: 100%; table-layout: fixed; }
+.mapa-tabla th { font-size: 12px; font-weight: 500; color: var(--texto-secundario); text-align: center; padding: 0 0 4px; }
+.mapa-tabla tbody th { text-align: left; color: var(--texto-principal); font-size: 13px; width: 64px; padding: 0; }
+.mapa-tabla td { padding: 0; }
+.mapa-celda { display: flex; flex-direction: column; gap: 0; padding: 8px 4px; text-align: center;
+  border: 2px solid transparent; border-radius: 6px; font-variant-numeric: tabular-nums; }
+.mapa-valor { font-size: 16px; font-weight: 600; line-height: 1.1; }
+.mapa-n { font-size: 12px; }
+.mapa-p1 { background: var(--mapa-1); color: var(--texto-principal); }
+.mapa-p2 { background: var(--mapa-2); color: var(--texto-principal); }
+.mapa-p3 { background: var(--mapa-3); color: var(--texto-principal); }
+.mapa-p4 { background: var(--mapa-4); color: var(--texto-invertido); }
+.mapa-p5 { background: var(--mapa-5); color: var(--texto-invertido); }
+.mapa-celda.mapa-pocos { border-color: currentColor; border-style: dashed; }
+.mapa-celda.mapa-vacia { background: transparent; color: var(--texto-secundario);
+  border: 1px dashed var(--borde-fuerte); }
+.mapa-escala { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; color: var(--texto-secundario); }
+.mapa-pasos { display: inline-flex; gap: 4px; }
+.mapa-paso { display: block; width: 16px; height: 12px; border-radius: 3px; }
+/* ───────────────────────────────────────────────────────────────────────────
+   LISTA DE RANKING · clases .ranking*  (SPEC 07, R169)
+   Posicion, avatar, nombre que envuelve, valor y barra proporcional al primero.
+   La barra es un SVG: el ancho exacto es un atributo del rect, no un estilo.
+   La columna del nombre lleva min-width 0 para que un apellido largo envuelva
+   en vez de empujar la fila fuera de la pantalla.
+   ─────────────────────────────────────────────────────────────────────────── */
+.ranking { background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 8px;
+  padding: 16px; min-width: 0; }
+.ranking-titulo { margin: 0; font-size: 16px; font-weight: 600; }
+.ranking-lista { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.ranking-fila { display: grid; grid-template-columns: 20px 32px minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.ranking-pos { font-weight: 600; color: var(--texto-secundario); font-variant-numeric: tabular-nums; text-align: right; }
+.ranking-avatar { display: flex; }
+.ranking-quien { min-width: 0; }
+.ranking-nombre { font-size: 15px; font-weight: 500; line-height: 1.3; overflow-wrap: anywhere; }
+.ranking-detalle { font-size: 12px; color: var(--texto-secundario); }
+.ranking-barra { display: block; width: 100%; height: 4px; margin-top: 8px; border-radius: 3px; background: var(--barra-pista); }
+.ranking-barra-relleno { fill: var(--barra-relleno); }
+.ranking-valor { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ranking-vacio { margin: 12px 0 0; font-size: 15px; color: var(--texto-secundario); }
+/* ───────────────────────────────────────────────────────────────────────────
+   GRAFICO DE TENDENCIA · clases .graf*  (SPEC 07, R169)
+   Panel con tokens --grafico-* (indigo suave en claro, marino en oscuro: el
+   cambio de tema lo hacen los tokens, aqui no hay ramas por tema). Todo color
+   del SVG sale de una clase, y la forma (x, y, d, r) de atributos SVG: ni un
+   style en linea. Escala tipografica del sistema: titulo 28 (34 desde 520px),
+   cifra grande 56, rotulos 12/13/15. El alto del SVG (250 estrecho, 300 ancho)
+   lo decide la pieza midiendo SU contenedor, no la ventana.
+   DESVIACIONES DEL MOCKUP APROBADO, por la escala de auditar-cascaron (solo
+   56/34/28/24/20/19/16/15/13/12 y multiplos de 4): el titulo es 28 (34 desde
+   520px) y no 30/36; la cifra grande es 56 en los dos anchos y no 56/72 (72 no
+   esta en la escala); los textos del SVG 12/13/15 y no 11,5/12,5; la ventana
+   mide 220px fijos; los espacios de 6 pasan a 8. Cambiar la escala es decision
+   del responsable, no de esta hoja.
+   ─────────────────────────────────────────────────────────────────────────── */
+.graf { background: var(--grafico-fondo); color: var(--grafico-texto); border: 1px solid var(--grafico-rejilla);
+  border-radius: 12px; padding: 16px 12px 8px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.graf-cab { display: flex; flex-direction: column; gap: 12px; }
+.graf-titulo { margin: 0 0 8px; font-size: 28px; font-weight: 600; line-height: 1.15; color: var(--grafico-texto); }
+.graf-num { font-size: 56px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.graf-num small { font-size: 20px; font-weight: 500; color: var(--grafico-texto-tenue); }
+.graf-chips { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.graf-chips .chip { white-space: normal; }
+.graf-vista { position: relative; border-radius: 6px; min-width: 0; }
+.graf-vista:focus-visible { outline: 3px solid var(--grafico-foco); outline-offset: 2px; }
+.graf-svg { display: block; width: 100%; height: auto; touch-action: pan-y; font-family: inherit; }
+.graf-det summary { cursor: pointer; font-size: 13px; color: var(--grafico-texto-tenue); padding: 8px 0; }
+.graf-det summary:focus-visible { outline: 3px solid var(--grafico-foco); outline-offset: 2px; }
+.graf-tabla { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; margin: 4px 0 8px; }
+.graf-tabla th, .graf-tabla td { text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--grafico-rejilla); }
+.graf-tabla thead th { color: var(--grafico-texto-tenue); font-weight: 500; }
+.graf-tabla tbody th { font-weight: 400; }
+.graf-rej { stroke: var(--grafico-rejilla); stroke-width: 1; }
+.graf-base { stroke: var(--grafico-base); stroke-width: 1; }
+.graf-eje { fill: var(--grafico-texto-tenue); font-size: 12px; }
+.graf-numero { fill: var(--grafico-texto-tenue); font-size: 15px; font-weight: 600; }
+.graf-num0 { fill: var(--grafico-texto); font-size: 15px; font-weight: 600; }
+.graf-sub { fill: var(--grafico-texto-tenue); font-size: 12px; }
+.graf-lin { fill: none; stroke: var(--grafico-linea); stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round; }
+.graf-stop { stop-color: var(--grafico-linea); }
+.graf-area { stroke: none; }
+.graf-ref { stroke: var(--grafico-ref); stroke-opacity: .75; stroke-width: 1.5; stroke-dasharray: 5 5; }
+.graf-ref-t { fill: var(--grafico-texto); font-size: 12px; stroke: var(--grafico-fondo); stroke-width: 4; paint-order: stroke; }
+.graf-halo { fill: var(--grafico-halo); fill-opacity: .3; }
+.graf-p0 { fill: var(--grafico-punto0); stroke: var(--grafico-linea); stroke-width: 3; }
+.graf-p { fill: var(--grafico-fondo); stroke: var(--grafico-linea); stroke-width: 2.5; }
+.graf-val { fill: var(--grafico-texto); font-size: 13px; font-weight: 600; stroke: var(--grafico-fondo); stroke-width: 4; paint-order: stroke; }
+.graf-guia { stroke: var(--grafico-guia); stroke-opacity: .6; stroke-width: 1; }
+.graf-anillo { fill: none; stroke: var(--grafico-guia); stroke-width: 2; }
+/* La ventana no recibe el puntero: si lo recibiera taparia el punto que la abrio y parpadearia. */
+.graf-vent { pointer-events: none; }
+.graf-vent-fondo { fill: var(--grafico-ventana-fondo); }
+.graf-vent-t { fill: var(--grafico-ventana-texto); font-size: 13px; }
+.graf-vent-b { fill: var(--grafico-ventana-texto); font-size: 13px; font-weight: 600; }
+/* El trazo se anima UNA vez: la clase solo esta en el primer dibujo (el componente la suelta al redibujar). */
+@keyframes graf-trazo { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.graf-anima { stroke-dasharray: 1; animation: graf-trazo var(--dur-trazo) var(--curva) both; }
+@media (prefers-reduced-motion: reduce) { .graf-anima { animation: none; stroke-dasharray: none; } }
+@media (min-width: 520px) {
+  .graf { padding: 20px 16px 8px; }
+  .graf-titulo { font-size: 34px; }
+  .graf-cab { flex-direction: row; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px 24px; }
+}
+/* ───────────────────────────────────────────────────────────────────────────
    PANEL DE PRIVILEGIOS · clases .pp-*
    Reparte permisos por modulo. Aqui SOLO vive el andamiaje de la lista: el
    interruptor, el chip y el boton de dentro son los del sistema, importados.
@@ -12399,6 +13176,20 @@ input.campo.sel-in { width: 100%; padding-right: 32px; }
 .sel-notas { font-size: 13px; color: var(--texto-secundario); font-weight: 400; flex: none; }
 .sel-check { color: var(--accion); display: grid; place-items: center; }
 .sel-check .ic { width: 16px; height: 16px; }
+/* R169 · JERARQUIA: \`nivel\` y \`cuenta\` en las opciones. El sangrado es una
+   clase por nivel (\`sel-n1\`…\`sel-n4\`) y no un \`style\`, que el candado
+   prohibe; mas alla del cuarto se queda en el cuarto, porque sangrar sin tope
+   se come el ancho de un telefono. Se sangra el texto y no la fila, para que
+   el marcado y el hover sigan ocupando todo el ancho. \`sel-ctx\` es el
+   ancestro que se conserva al buscar: sigue siendo elegible, solo se lee como
+   contexto. \`sel-cuenta\` va a la derecha, tabular, y no se parte. */
+.sel-op.sel-n1 .sel-op-txt { padding-left: 20px; }
+.sel-op.sel-n2 .sel-op-txt { padding-left: 40px; }
+.sel-op.sel-n3 .sel-op-txt { padding-left: 60px; }
+.sel-op.sel-n4 .sel-op-txt { padding-left: 80px; }
+.sel-op.sel-ctx:not([aria-selected="true"]) .sel-op-txt { color: var(--texto-secundario); }
+.sel-cuenta { margin-left: auto; flex: none; padding-left: 8px; font-size: 13px;
+  color: var(--texto-secundario); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .sel-vacio { padding: 12px 12px; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .sel-vacio strong { color: var(--texto-principal); }
 /* R118 · LA BUSQUEDA CONTRA EL SERVIDOR — esqueleto y fallo.
@@ -12416,6 +13207,7 @@ input.campo.sel-in { width: 100%; padding-right: 32px; }
   color: var(--texto-secundario); padding: 12px; }
 .sel-op.sel-fallo strong { color: var(--texto-principal); }
 .sel-demo-abierto { position: relative; min-height: 148px; }
+.sel-demo-abierto.sel-demo-alto { min-height: 360px; }
 /* La entrega real: el marco aislado. Estas reglas son MOBILIARIO y no viajan
    —lo que va dentro del iframe es lo unico que cuenta—. */
 .er-caso { padding: 0; overflow: hidden; }

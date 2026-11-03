@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.152.0
+   ESTILOS DE COMPONENTE — Colegio Albert Einstein · MMI-DS v1.153.0
 
    ARCHIVO GENERADO. No editar a mano.
    Se EXTRAE del catálogo con `node sistema/componentes/extraer.mjs`, así que
@@ -78,6 +78,8 @@
   --dur-lenta: 220ms;
   --dur-giro: 700ms;
   --dur-onda: 1300ms;
+  /* El trazo del grafico de tendencia al abrir (SPEC 07): una vez, no un adorno que se repite. */
+  --dur-trazo: 1000ms;
   --curva: ease;
   --curva-vaiven: ease-in-out;
   --curva-giro: linear;
@@ -100,9 +102,10 @@
     --dur-lenta: 0.01ms;
     --dur-giro: 0.01ms;
     --dur-onda: 0.01ms;
+    --dur-trazo: 0.01ms;
   }
 }
-:root{ --mmi-componentes: 1.152.0; }
+:root{ --mmi-componentes: 1.153.0; }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BOTÓN — 32 reglas · clases .btn-*
@@ -427,7 +430,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .ta-cuenta-mal{ color: var(--error-texto); font-weight: 500; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   SELECTOR — 23 reglas · clases .sel-*
+   SELECTOR — 29 reglas · clases .sel-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .sel{ position: relative; }
@@ -452,6 +455,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .sel-notas{ font-size: 13px; color: var(--texto-secundario); font-weight: 400; flex: none; }
 .sel-check{ color: var(--accion); display: grid; place-items: center; }
 .sel-check .ic{ width: 16px; height: 16px; }
+.sel-op.sel-n1 .sel-op-txt{ padding-left: 20px; }
+.sel-op.sel-n2 .sel-op-txt{ padding-left: 40px; }
+.sel-op.sel-n3 .sel-op-txt{ padding-left: 60px; }
+.sel-op.sel-n4 .sel-op-txt{ padding-left: 80px; }
+.sel-op.sel-ctx:not([aria-selected="true"]) .sel-op-txt{ color: var(--texto-secundario); }
+.sel-cuenta{ margin-left: auto; flex: none; padding-left: 8px; font-size: 13px;
+  color: var(--texto-secundario); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .sel-vacio{ padding: 12px 12px; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .sel-vacio strong{ color: var(--texto-principal); }
 .sel-cargando{ display: grid; gap: 11px; padding: 13px 12px; }
@@ -815,6 +825,136 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
   border-width: 2px; border-style: dashed; border-color: var(--sin-estado); }
 @media (min-width: 641px) {
   .cuadro{ width: 28px; height: 28px; }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   FRANJA DE CIFRAS — 13 reglas · clases .franja-*, .cifra-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.franja{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px;
+  background: var(--borde); border: 1px solid var(--borde); border-radius: 8px;
+  overflow: hidden; margin: 0; padding: 0; list-style: none; }
+.franja-item{ background: var(--fondo-tarjeta); padding: 16px 16px 12px; min-width: 0; }
+.franja-item:last-child:nth-child(odd){ grid-column: 1 / -1; }
+.cifra{ display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.cifra-titulo{ font-size: 13px; font-weight: 500; color: var(--texto-secundario); }
+.cifra-valor{ display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px;
+  font-size: 34px; font-weight: 600; line-height: 1.05; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums; color: var(--texto-principal); }
+.cifra-unidad{ font-size: 15px; font-weight: 500; letter-spacing: 0; color: var(--texto-secundario); }
+.cifra-dif{ position: relative; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start;
+  font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 6px;
+  font-variant-numeric: tabular-nums; border: 1px solid transparent; }
+.cifra-dif.cifra-dif-peor{ background: var(--aviso-fondo); color: var(--aviso-texto); border-color: var(--aviso-acento); }
+.cifra-dif.cifra-dif-mejor{ background: var(--exito-fondo); color: var(--exito-texto); border-color: var(--exito-acento); }
+.cifra-dif.cifra-dif-igual{ background: var(--neutra-fondo); color: var(--neutra-texto); border-color: var(--borde-fuerte); }
+.cifra-detalle{ font-size: 12px; color: var(--texto-secundario); }
+@media (min-width: 900px) {
+  .franja{ grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .franja-item:last-child:nth-child(odd){ grid-column: auto; }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   MAPA DE CALOR — 24 reglas · clases .mapa-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.mapa{ background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 8px;
+  padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.mapa-titulo{ margin: 0; font-size: 16px; font-weight: 600; }
+.mapa-desc{ margin: 4px 0 0; font-size: 13px; color: var(--texto-secundario); }
+.mapa-desc strong{ font-weight: 600; color: var(--texto-principal); font-variant-numeric: tabular-nums; }
+.mapa-total{ margin-top: 0; }
+.mapa-vista{ position: relative; overflow-x: auto; border-radius: 6px; }
+.mapa-vista:focus-visible{ outline: 3px solid var(--foco); outline-offset: 2px; }
+.mapa-tabla{ border-spacing: 4px; min-width: 350px; width: 100%; table-layout: fixed; }
+.mapa-tabla th{ font-size: 12px; font-weight: 500; color: var(--texto-secundario); text-align: center; padding: 0 0 4px; }
+.mapa-tabla tbody th{ text-align: left; color: var(--texto-principal); font-size: 13px; width: 64px; padding: 0; }
+.mapa-tabla td{ padding: 0; }
+.mapa-celda{ display: flex; flex-direction: column; gap: 0; padding: 8px 4px; text-align: center;
+  border: 2px solid transparent; border-radius: 6px; font-variant-numeric: tabular-nums; }
+.mapa-valor{ font-size: 16px; font-weight: 600; line-height: 1.1; }
+.mapa-n{ font-size: 12px; }
+.mapa-p1{ background: var(--mapa-1); color: var(--texto-principal); }
+.mapa-p2{ background: var(--mapa-2); color: var(--texto-principal); }
+.mapa-p3{ background: var(--mapa-3); color: var(--texto-principal); }
+.mapa-p4{ background: var(--mapa-4); color: var(--texto-invertido); }
+.mapa-p5{ background: var(--mapa-5); color: var(--texto-invertido); }
+.mapa-celda.mapa-pocos{ border-color: currentColor; border-style: dashed; }
+.mapa-celda.mapa-vacia{ background: transparent; color: var(--texto-secundario);
+  border: 1px dashed var(--borde-fuerte); }
+.mapa-escala{ display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; color: var(--texto-secundario); }
+.mapa-pasos{ display: inline-flex; gap: 4px; }
+.mapa-paso{ display: block; width: 16px; height: 12px; border-radius: 3px; }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   LISTA DE RANKING — 13 reglas · clases .ranking-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.ranking{ background: var(--fondo-tarjeta); border: 1px solid var(--borde); border-radius: 8px;
+  padding: 16px; min-width: 0; }
+.ranking-titulo{ margin: 0; font-size: 16px; font-weight: 600; }
+.ranking-lista{ list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.ranking-fila{ display: grid; grid-template-columns: 20px 32px minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.ranking-pos{ font-weight: 600; color: var(--texto-secundario); font-variant-numeric: tabular-nums; text-align: right; }
+.ranking-avatar{ display: flex; }
+.ranking-quien{ min-width: 0; }
+.ranking-nombre{ font-size: 15px; font-weight: 500; line-height: 1.3; overflow-wrap: anywhere; }
+.ranking-detalle{ font-size: 12px; color: var(--texto-secundario); }
+.ranking-barra{ display: block; width: 100%; height: 4px; margin-top: 8px; border-radius: 3px; background: var(--barra-pista); }
+.ranking-barra-relleno{ fill: var(--barra-relleno); }
+.ranking-valor{ font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ranking-vacio{ margin: 12px 0 0; font-size: 15px; color: var(--texto-secundario); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   GRÁFICO DE TENDENCIA — 40 reglas · clases .graf-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.graf{ background: var(--grafico-fondo); color: var(--grafico-texto); border: 1px solid var(--grafico-rejilla);
+  border-radius: 12px; padding: 16px 12px 8px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.graf-cab{ display: flex; flex-direction: column; gap: 12px; }
+.graf-titulo{ margin: 0 0 8px; font-size: 28px; font-weight: 600; line-height: 1.15; color: var(--grafico-texto); }
+.graf-num{ font-size: 56px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.graf-num small{ font-size: 20px; font-weight: 500; color: var(--grafico-texto-tenue); }
+.graf-chips{ display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.graf-chips .chip{ white-space: normal; }
+.graf-vista{ position: relative; border-radius: 6px; min-width: 0; }
+.graf-vista:focus-visible{ outline: 3px solid var(--grafico-foco); outline-offset: 2px; }
+.graf-svg{ display: block; width: 100%; height: auto; touch-action: pan-y; font-family: inherit; }
+.graf-det summary{ cursor: pointer; font-size: 13px; color: var(--grafico-texto-tenue); padding: 8px 0; }
+.graf-det summary:focus-visible{ outline: 3px solid var(--grafico-foco); outline-offset: 2px; }
+.graf-tabla{ border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; margin: 4px 0 8px; }
+.graf-tabla th, .graf-tabla td{ text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--grafico-rejilla); }
+.graf-tabla thead th{ color: var(--grafico-texto-tenue); font-weight: 500; }
+.graf-tabla tbody th{ font-weight: 400; }
+.graf-rej{ stroke: var(--grafico-rejilla); stroke-width: 1; }
+.graf-base{ stroke: var(--grafico-base); stroke-width: 1; }
+.graf-eje{ fill: var(--grafico-texto-tenue); font-size: 12px; }
+.graf-numero{ fill: var(--grafico-texto-tenue); font-size: 15px; font-weight: 600; }
+.graf-num0{ fill: var(--grafico-texto); font-size: 15px; font-weight: 600; }
+.graf-sub{ fill: var(--grafico-texto-tenue); font-size: 12px; }
+.graf-lin{ fill: none; stroke: var(--grafico-linea); stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round; }
+.graf-stop{ stop-color: var(--grafico-linea); }
+.graf-area{ stroke: none; }
+.graf-ref{ stroke: var(--grafico-ref); stroke-opacity: .75; stroke-width: 1.5; stroke-dasharray: 5 5; }
+.graf-ref-t{ fill: var(--grafico-texto); font-size: 12px; stroke: var(--grafico-fondo); stroke-width: 4; paint-order: stroke; }
+.graf-halo{ fill: var(--grafico-halo); fill-opacity: .3; }
+.graf-p0{ fill: var(--grafico-punto0); stroke: var(--grafico-linea); stroke-width: 3; }
+.graf-p{ fill: var(--grafico-fondo); stroke: var(--grafico-linea); stroke-width: 2.5; }
+.graf-val{ fill: var(--grafico-texto); font-size: 13px; font-weight: 600; stroke: var(--grafico-fondo); stroke-width: 4; paint-order: stroke; }
+.graf-guia{ stroke: var(--grafico-guia); stroke-opacity: .6; stroke-width: 1; }
+.graf-anillo{ fill: none; stroke: var(--grafico-guia); stroke-width: 2; }
+.graf-vent{ pointer-events: none; }
+.graf-vent-fondo{ fill: var(--grafico-ventana-fondo); }
+.graf-vent-t{ fill: var(--grafico-ventana-texto); font-size: 13px; }
+.graf-vent-b{ fill: var(--grafico-ventana-texto); font-size: 13px; font-weight: 600; }
+.graf-anima{ stroke-dasharray: 1; animation: graf-trazo var(--dur-trazo) var(--curva) both; }
+@media (prefers-reduced-motion: reduce) {
+  .graf-anima{ animation: none; stroke-dasharray: none; }
+}
+@media (min-width: 520px) {
+  .graf{ padding: 20px 16px 8px; }
+  .graf-titulo{ font-size: 34px; }
+  .graf-cab{ flex-direction: row; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px 24px; }
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
@@ -2117,13 +2257,14 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .mono-lista.mono{ font-family: 'IBM Plex Mono', monospace; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   ANIMACIONES — 3 · las que estas reglas invocan, con sus variantes
+   ANIMACIONES — 4 · las que estas reglas invocan, con sus variantes
    Sin su @keyframes, `animation:` se ignora EN SILENCIO. Hasta la v1.107.0
    no viajaban: el giro del botón ocupado y la barra indeterminada estaban
    quietos en todos los productos.
    ─────────────────────────────────────────────────────────────────────────── */
 
 @keyframes btn-girar{ to { transform: rotate(360deg); } }
+@keyframes graf-trazo{ from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes latido{
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: .45; transform: scale(.82); }

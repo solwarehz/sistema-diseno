@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   PRESET DE TAILWIND 3.4 — Colegio Albert Einstein · MMI-DS v1.152.0
+   PRESET DE TAILWIND 3.4 — Colegio Albert Einstein · MMI-DS v1.153.0
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -206,7 +206,27 @@ export const semanticos = {
   "identidad-2": "var(--identidad-2)",
   "identidad-3": "var(--identidad-3)",
   "identidad-4": "var(--identidad-4)",
-  "identidad-texto": "var(--identidad-texto)"
+  "identidad-texto": "var(--identidad-texto)",
+  "grafico-fondo": "var(--grafico-fondo)",
+  "grafico-texto": "var(--grafico-texto)",
+  "grafico-texto-tenue": "var(--grafico-texto-tenue)",
+  "grafico-linea": "var(--grafico-linea)",
+  "grafico-rejilla": "var(--grafico-rejilla)",
+  "grafico-base": "var(--grafico-base)",
+  "grafico-ref": "var(--grafico-ref)",
+  "grafico-guia": "var(--grafico-guia)",
+  "grafico-halo": "var(--grafico-halo)",
+  "grafico-punto0": "var(--grafico-punto0)",
+  "grafico-ventana-fondo": "var(--grafico-ventana-fondo)",
+  "grafico-ventana-texto": "var(--grafico-ventana-texto)",
+  "grafico-foco": "var(--grafico-foco)",
+  "barra-relleno": "var(--barra-relleno)",
+  "barra-pista": "var(--barra-pista)",
+  "mapa-1": "var(--mapa-1)",
+  "mapa-2": "var(--mapa-2)",
+  "mapa-3": "var(--mapa-3)",
+  "mapa-4": "var(--mapa-4)",
+  "mapa-5": "var(--mapa-5)"
 } as const;
 
 /** Marca. Fuera del sistema: landing, impresos, escudo. Nunca en interfaz. */

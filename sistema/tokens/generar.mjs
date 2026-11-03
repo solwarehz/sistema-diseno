@@ -154,6 +154,13 @@ const grupos = {
   'Identidad — avatar. NO significan nada': [
     'identidad-1', 'identidad-2', 'identidad-3', 'identidad-4', 'identidad-texto',
   ],
+  'Gráfico de tendencia — panel que cambia con el tema (SPEC 07)': [
+    'grafico-fondo', 'grafico-texto', 'grafico-texto-tenue', 'grafico-linea', 'grafico-rejilla',
+    'grafico-base', 'grafico-ref', 'grafico-guia', 'grafico-halo', 'grafico-punto0',
+    'grafico-ventana-fondo', 'grafico-ventana-texto', 'grafico-foco',
+  ],
+  'Barra del ranking (SPEC 07)': ['barra-relleno', 'barra-pista'],
+  'Mapa de calor — cinco pasos de un tono (SPEC 07)': ['mapa-1', 'mapa-2', 'mapa-3', 'mapa-4', 'mapa-5'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────────

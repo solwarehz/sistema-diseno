@@ -424,6 +424,12 @@ ningún candado mira no es un contrato, es una intención.
 | **18** | **Obligatorio.** (R118, v1.97.0) **El ciclo de la consulta es del componente, no del producto**: el rebote (300 ms desde la última tecla), la **cancelación** de la consulta anterior por `AbortSignal`, y el **descarte** de la respuesta que llegue fuera de orden. Las tres o ninguna: la carrera es un fallo **silencioso** —se teclea «ana», la respuesta de «an» llega después y la lista enseña otra búsqueda sin que nada avise—, y repartirla por cada pantalla es repartir el mismo defecto. **Abortar pide que se pare, no garantiza que no llegue**, así que además se descarta por bandera. Y `onBuscar` se lee por **referencia viva**: escrita en línea —que es como se escribe— no puede disparar un bucle de peticiones. |
 | **19** | **Obligatorio.** (R118, v1.97.0) **La elección sobrevive a la siguiente búsqueda.** `elegida` salía de buscar el valor dentro de `opciones`; contra el servidor eso se rompe solo, porque al teclear otra cosa la opción elegida **deja de estar en ninguna lista** y el campo se quedaba **en blanco con un valor puesto**. El componente recuerda la última opción que casaba con `valor`: no es una caché, es la única copia que queda de su texto. Se arregla dentro y no pidiéndole al producto que pase el texto — lo que el producto no puede olvidarse de hacer es lo que no se le pide. Misma familia que el `null` que la firma prometía y no emitía (R103). |
 | **20** | **Obligatorio.** (R118, v1.97.0) **Mientras se busca: esqueleto, y solo pasado el umbral.** Tres renglones con la clase `.esqueleto` del sistema —no un giro, que la tabla del catálogo reserva para «cuando no se puede dibujar el esqueleto»— y **no antes de 300 ms desde que la consulta sale**, no desde la tecla: un parpadeo por pulsación se percibe como un fallo. El campo lleva `aria-busy` mientras tanto, o el lector anuncia una lista vacía y da por hecho que no hay resultados. **El fallo de la consulta no reaprovecha `textoVacio`** —«no hay resultados» y «no se pudo preguntar» mandan a sitios distintos— y es una fila **pulsable que reintenta**, con el ratón y con Enter. Sobre un fallo **no se ofrece «Crear»**: ahí no se sabe si existe o no. |
+| **21** | **Obligatorio.** (R169, v1.153.0) **`nivel` sangra con una clase por nivel (`sel-n1` a `sel-n4`), nunca con `style`.** 0 o ausente es la raíz y no lleva clase. Se dibujan **cuatro** niveles: uno mayor se dibuja como el cuarto —sangrar sin tope se come el ancho de un teléfono—, pero cuenta con su valor real para hallar ancestros. Se sangra el texto y no la fila, así que el marcado ocupa todo el ancho. *(prueba: `[21]`)* |
+| **22** | **Obligatorio.** (R169, v1.153.0) **`cuenta` va a la derecha, fuera de `.sel-op-txt`, en `.sel-cuenta`: tabular y sin partirse.** Es otra columna y no parte del nombre; `ayuda` sigue siendo la nota que va junto a él. Admite texto o número, `0` incluido; sin `cuenta` no hay elemento. Con la opción elegida va antes del visto. **No entra en la búsqueda.** *(prueba: `[22]`)* |
+| **23** | **Obligatorio.** (R169, v1.153.0) **Al filtrar en el navegador se conservan los ANCESTROS de cada coincidencia, y solo ellos.** La jerarquía no se declara con un `padre`, se lee del orden: los ancestros de una opción son la cadena de opciones **anteriores** de `nivel` estrictamente menor, hasta la raíz (sin `nivel` cuenta como 0). Un ancestro compartido no se duplica, el orden original se respeta, y **los descendientes de una coincidencia no se añaden**. Los ancestros añadidos llevan `sel-ctx` (texto secundario) y **siguen siendo elegibles**; uno que además coincide no es contexto. Sin `nivel` en ninguna opción no hay nada que añadir y filtrar es lo de siempre. *(prueba: `[23]`)* |
+| **24** | **Obligatorio.** (R169, v1.153.0) **El teclado recorre también las filas de contexto, pero la marcada de partida es la primera COINCIDENCIA.** Con un ancestro arriba, Enter elegiría el contexto en vez de lo buscado. Las flechas, Inicio y Fin pasan por todas las filas y ciclan como siempre. Sin contexto la marcada de partida es la primera fila, como antes. *(prueba: `[24]`)* |
+| **25** | **Obligatorio.** (R169, v1.153.0) **Con `onBuscar` la lista que devuelve la app se muestra TAL CUAL: el componente no añade ancestros.** Lo que se devuelve a propósito no se reescribe —es la misma razón de la regla 17—; si la app quiere el contexto, lo incluye. `nivel` y `cuenta` de lo devuelto sí se pintan. **Sin `nivel` ni `cuenta`, el marcado es el de v1.152.0**, byte a byte. *(prueba: `[25]`)* |
+| **26** | **Obligatorio.** (R169, v1.153.0) **La jerarquía y el contexto también llegan al lector.** El sangrado y el gris solo los ve quien ve, así que, **solo cuando hay props nuevas**, el nombre lleva un `<span class="sr-solo">` con «, contexto» en las filas de contexto y «, nivel N» con `nivel` mayor que 0. **N es el nivel real**, no el tope visual de cuatro. Sin `nivel` y sin contexto no se emite nada: el marcado es el de v1.152.0. *(prueba: `[26]`)* |
 
 
 ## Rango de fechas
@@ -853,7 +859,7 @@ sección que no existe, y lo que no existe no se puede atar.
 
 ## Panel de privilegios
 
-<!-- pruebas: PanelPrivilegios.test.tsx, privilegios-depende.test.tsx, privilegios-adopcion.test.tsx, privilegios-matriz.test.tsx, privilegios-llave-compartida.test.tsx, privilegios-movil-primero.test.tsx, privilegios-plegable.test.tsx -->
+<!-- pruebas: PanelPrivilegios.test.tsx, privilegios-depende.test.tsx, privilegios-adopcion.test.tsx, privilegios-matriz.test.tsx, privilegios-llave-compartida.test.tsx, privilegios-movil-primero.test.tsx, privilegios-plegable.test.tsx, privilegios-sin-props-nuevas.test.tsx -->
 
 Reparte permisos por módulo. **No sabe de negocio**: recibe módulos con
 privilegios y devuelve qué está concedido, así que sirve igual para un cargo,
@@ -926,6 +932,106 @@ sistema lo ofrece como pieza y no como caso de esa pantalla.
 | **5** | **Obligatorio.** (SPEC 03, v1.149.0) **Cinco tonos de significado —`exito`, `aviso`, `error`, `info`, `inactivo`— con los mismos tokens que `Chip`, y uno de ausencia, `ninguno`.** No hay un `pendiente` ni un tono entre `aviso` y `error`: un tono nuevo es otra petición. |
 | **6** | **Obligatorio.** (SPEC 03, v1.149.0) **`letra` es exactamente un carácter.** En desarrollo, otra longitud avisa por consola; en producción se pinta lo recibido. El significado completo va en `titulo` y en la leyenda. |
 | **7** | **Obligatorio.** (SPEC 03, v1.149.0) **No se usa sin una leyenda visible en la misma pantalla.** `aria-label` llega al lector de pantalla y no a quien ve «P» en un teléfono, donde no hay `title` (CLAUDE.md §4bis). **El sistema no puede hacerlo cumplir en cada producto**: el catálogo la cumple y una prueba lo ata; en el producto es de quien lo usa. La leyenda va en texto corriente, completa, sin puntos suspensivos y pasando a la línea siguiente si no cabe. |
+
+---
+
+## Franja de cifras y cifra con diferencia
+
+<!-- pruebas: franja-cifras.test.tsx -->
+
+Una fila de cifras grandes separadas por una línea fina, sin tarjetas sueltas
+(`FranjaCifras`), y cada cifra con su diferencia frente al periodo anterior
+(`CifraConDiferencia`). La app entrega los números ya calculados; la pieza solo
+los dibuja.
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R169, v1.153.0) **`FranjaCifras` es una lista `ul` con un `li` por cifra.** Cada hijo se envuelve en su `li`; un hijo nulo, falso o indefinido no deja un `li` vacío. Lleva nombre accesible con `etiqueta`. |
+| **2** | **Obligatorio.** (R169, v1.153.0) **`titulo`, `valor` y `unidad` se pintan en ese orden; `unidad`, `diferencia` y `detalle` son opcionales** y, ausentes, no dejan ningún elemento. El valor y la unidad llevan un espacio entre sí para el lector («612 min», no «612min»). `detalle` es una línea de apoyo que el ejemplo aprobado del tablero no usa. |
+| **3** | **Obligatorio.** (R169, v1.153.0) **La diferencia llega calculada**: la pieza pinta `cantidad` tal cual. No resta, no compara actual con anterior y no formatea. |
+| **4** | **Obligatorio.** (R169, v1.153.0) **Flecha y signo**: `sube` pinta ▲ y «+», `baja` pinta ▼ y «−» (el signo menos U+2212, no el guion), `igual` pinta «=» y «igual que antes» **sin cantidad ni signo**. |
+| **5** | **Obligatorio.** (R169, v1.153.0) **El color no va solo, y el dibujo no se lee dos veces.** Flecha y signo van en un `aria-hidden`; el nombre accesible es una frase en `sr-solo`: «empeoró: +72 min», «mejoró: −3 trab.» o «sin cambio». Se entiende en escala de grises (SC 1.4.1). |
+| **6** | **Obligatorio.** (R169, v1.153.0) **`sentido` decide si es mejor o peor, no la dirección**: con `subir-es-peor`, subir es «empeoró» y bajar «mejoró»; con `subir-es-mejor`, al revés; `igual` es neutro en los dos. Peor usa `aviso-*`, mejor `exito-*` e igual `neutra-*`: tokens que `verificar-contraste` mide a 4,5:1 en los dos modos. |
+| **7** | **Obligatorio.** (R169, v1.153.0) **Móvil primero**: dos columnas de base, fuera de toda `@media`; si el total es impar, la última ocupa el ancho completo; desde `min-width: 900px` son cinco columnas y la última deja de estirarse. No hay `max-width` ni `@container`. |
+| **8** | **Obligatorio.** (R169, v1.153.0) **La cifra usa números tabulares** (`font-variant-numeric: tabular-nums`) y todos los colores salen de tokens. |
+| **9** | **Obligatorio.** (R169, v1.153.0) **`index.ts` exporta `FranjaCifras`, `CifraConDiferencia` y los tipos `DiferenciaCifra`, `CifraConDiferenciaProps` y `FranjaCifrasProps`.** |
+
+---
+
+## Mapa de calor
+
+<!-- pruebas: mapa-calor.test.tsx -->
+
+Una cuadrícula filas × columnas con título, descripción, total y escala propios.
+La intensidad va en cinco pasos de un solo tono y el número dice lo exacto: el
+color acompaña, no sostiene.
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R169, v1.153.0) **Es una tabla real**: `th scope="col"` por columna y `th scope="row"` por fila, para que se lea «Hombre, 30-39, 96, 5 trab.». |
+| **2** | **Obligatorio.** (R169, v1.153.0) **Dibuja su título (`h3`), su descripción y su total** («Total 603 min»); sin descripción o sin total no deja un elemento vacío. |
+| **3** | **Obligatorio.** (R169, v1.153.0) **El contenedor que se desplaza es una región enfocable con nombre**: `role="region"`, `tabindex="0"` y `aria-labelledby` del título. Se llega con teclado. |
+| **4** | **Obligatorio.** (R169, v1.153.0) **Pasos discretos 1 a 5 por `ceil(5·valor/máximo)`**, con el máximo tomado solo sobre las celdas con `n > 0`; la clase de la celda es `mapa-pN`. Cada celda escribe el valor (con `formato` si se pasa) y «n trab.». |
+| **5** | **Obligatorio.** (R169, v1.153.0) **El texto cambia con el fondo**: `texto-principal` en los pasos 1 a 3 e `texto-invertido` en 4 y 5, sobre los tokens `mapa-1…5` que `verificar-contraste` mide en los dos modos. |
+| **6** | **Obligatorio.** (R169, v1.153.0) **«Pocos datos»**: `n ≤ pocosDatosHasta` (2 por omisión) lleva borde punteado y el nombre accesible «Pocos datos: n trabajadores» (singular con 1). Conserva su paso de color. |
+| **7** | **Obligatorio.** (R169, v1.153.0) **Celda con `n = 0` vacía**: muestra «—» y «0 trab.», sin paso de color y sin «Pocos datos»; no cuenta para el máximo. |
+| **8** | **Obligatorio.** (R169, v1.153.0) **Escala «Menos – Más» de cinco pasos debajo de la tabla**, solo para la vista (`aria-hidden`) y sin leyenda de «Pocos datos». |
+| **9** | **Obligatorio.** (R169, v1.153.0) **Móvil primero**: la tabla tiene ancho mínimo de 350 px y se desliza horizontalmente dentro de su contenedor (`overflow-x: auto`), nunca la página; el contenedor tiene foco visible; «Pocos datos» y la celda vacía usan borde punteado. |
+| **10** | **Obligatorio.** (R169, v1.153.0) **Cifras tabulares y colores solo de tokens**; la hoja no usa `max-width` ni `@container`. |
+| **11** | **Obligatorio.** (R169, v1.153.0) **`index.ts` exporta `MapaCalor`, `pasoMapa`, `pasosDelMapa`, `PASOS_MAPA` y los tipos `CeldaMapaCalor` y `MapaCalorProps`.** |
+| **12** | **Obligatorio.** (R169, v1.153.0) **Un valor que no es número cae en el paso 1** (nunca produce una clase inválida), y **solo la región desplazable lleva el título como nombre**: la tabla no lo repite, para que el lector de pantalla no lo anuncie dos veces. |
+
+---
+
+## Lista de ranking
+
+<!-- pruebas: lista-ranking.test.tsx -->
+
+Una lista corta de personas ordenada por una medida: posición, avatar, nombre,
+una línea gris, el valor escrito y una barra proporcional al primero. La app
+entrega las filas ya ordenadas; la pieza solo las dibuja.
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R169, v1.153.0) **Es una `section` con título (`h3`) y una lista ordenada `ol`**; el título le da el nombre accesible (`aria-labelledby`). |
+| **2** | **Obligatorio.** (R169, v1.153.0) **Cada fila lleva posición, `Avatar` (tamaño m), nombre, `detalle` opcional y el valor `texto`.** El avatar se compone con el existente y va fuera del árbol accesible: el nombre ya está al lado. |
+| **3** | **Obligatorio.** (R169, v1.153.0) **La barra es proporcional al primero**: `rect` SVG con `width="N%"`, donde el primero es 100 % y los demás `valor / primero`, exacto (dos decimales) y sin `style`. Es decoración (`aria-hidden`); el valor ya está escrito. |
+| **4** | **Obligatorio.** (R169, v1.153.0) **Con `valor` 0 en el primero no hay barra** en ninguna fila. |
+| **5** | **Obligatorio.** (R169, v1.153.0) **Sin filas se muestra `textoVacio`** y no una lista vacía; el título se conserva. |
+| **6** | **Obligatorio.** (R169, v1.153.0) **El nombre envuelve y no se corta**: `overflow-wrap: anywhere` en el nombre y `min-width: 0` en su columna; sin `text-overflow` ni `nowrap`. Un nombre de 60 caracteres cabe a 360 px sin desbordar. |
+| **7** | **Obligatorio.** (R169, v1.153.0) **Muestra las filas que recibe**: el tablero pasa hasta cinco, pero la pieza no recorta ni rellena. |
+| **8** | **Obligatorio.** (R169, v1.153.0) **Móvil primero y colores de token**: pista y relleno de la barra con `barra-pista` y `barra-relleno`, posición y valor con números tabulares, sin `max-width`. |
+| **9** | **Obligatorio.** (R169, v1.153.0) **`index.ts` exporta `ListaRanking`, `porcentajeBarra` y los tipos `FilaRanking` y `ListaRankingProps`.** |
+| **10** | **Obligatorio.** (R169, v1.153.0) **El `ol` declara `role="list"`**: sin viñetas, Safari y VoiceOver le quitan la semántica de lista y se pierde «elemento N de M». |
+
+---
+
+## Gráfico de tendencia
+
+<!-- pruebas: grafico-tendencia.test.tsx, grafico-tendencia-catalogo.test.tsx -->
+
+Un panel con el título, el valor grande de esta semana y una línea de puntos
+sobre un eje de «semanas atrás». SVG propio, sin librería. La app entrega los
+puntos ya calculados y cómo se escribe un número; la pieza solo los reparte en
+el espacio (posición de cada punto, tope y marcas del eje).
+
+| | Regla |
+|---|---|
+| **1** | **Obligatorio.** (R169, v1.153.0) **Es una `section` con el título en un `h2` que la nombra (`aria-labelledby`) y el valor grande del punto 0, escrito con `formato`, junto a su `unidad`.** `comparaciones` es un hueco para los chips que arma la app: sale tal cual y, ausente, no deja un contenedor vacío. |
+| **2** | **Obligatorio.** (R169, v1.153.0) **Un punto por valor; el punto 0 queda a 16 px o menos del eje vertical y el último es el más alejado**, en todo ancho. La posición de cada punto la da una función pura exportada, `geometriaGrafico`, que también fija el alto (250 en estrecho, 300 desde 520 px) y trata un ancho menor de 280 como 280. |
+| **3** | **Obligatorio.** (R169, v1.153.0) **El eje vertical lleva el cero y cuatro marcas equidistantes, escritas con `formato`; el tope se redondea HACIA ARRIBA a un número «bonito» y nunca queda por debajo del máximo** (la referencia cuenta para el máximo). **Deja un 12 % de aire sobre el máximo**: 700 da tope 800, pero 800 —que ya no cabe con aire— sube al siguiente paso «bonito» (2000), y el punto más alto nunca toca la línea del tope. Con `base` 60 las marcas caen en horas enteras. Lo hace una función pura exportada, `escalaEje`; un máximo 0, negativo o no numérico da un eje de tope 4 bases, nunca vacío. Cuadrícula tenue y línea base (el cero) más fuerte. |
+| **4** | **Obligatorio.** (R169, v1.153.0) **Línea y área bajo la línea con degradado cuyo color sale de una clase (`graf-stop`), nunca de `style`.** El punto 0 lleva halo y **no repite su valor**, que ya está en grande. Bajo cada punto va su número de semana y «actual» bajo el 0; **no hay fechas bajo el eje**: salen en la ventana y en la tabla. |
+| **5** | **Obligatorio.** (R169, v1.153.0) **`referencia` es opcional: con ella, una línea punteada con su etiqueta a la derecha; sin ella no sale ni la línea ni la etiqueta** ni la mención en el texto alternativo. |
+| **6** | **Obligatorio.** (R169, v1.153.0) **Los valores sobre los puntos 1 a 6 salen solo con la pieza de 520 px o más, medida en JavaScript sobre su propio contenedor (no la ventana) con `ResizeObserver`.** El punto 0 no lo repite. Se redibuja al cambiar el ancho, en los dos sentidos, sin recargar; sin `ResizeObserver` queda la medida de montaje. No hay `@container`. |
+| **7** | **Obligatorio.** (R169, v1.153.0) **Con el cursor, el toque o el teclado aparecen la guía vertical, el punto resaltado y la ventana**: «Esta semana» o «Hace N semana(s)» (singular con 1), el rango (`detalle`), el valor con su unidad y, salvo en el punto 0, la diferencia frente a esta semana («+90 frente a esta semana», con el signo menos U+2212; «igual que esta semana»). La ventana no se sale del dibujo. El cursor elige el punto más cercano (`puntoMasCercano`). Cierra al salir el **ratón** (si el contenedor no tiene el foco) y al perder el foco; con el dedo (`pointerType` distinto de `mouse`) NO cierra al salir el puntero. Con un contenedor de menos de 280 px el dibujo (de 280) se encoge por CSS y la posición del puntero se escala por `ancho del dibujo / ancho de la caja` antes de elegir el punto. |
+| **8** | **Obligatorio.** (R169, v1.153.0) **Teclado completo**: el contenedor entra en el orden de tabulación (`tabindex="0"`); flecha derecha o arriba avanza, izquierda o abajo retrocede (la primera pulsación abre en el punto 0), Inicio y Fin saltan a los extremos, Escape cierra y solo se atiende si había algo abierto. Las teclas atendidas hacen `preventDefault`. El foco es visible (`outline` de 3 px con `--grafico-foco`, también en el resumen de la tabla). |
+| **9** | **Obligatorio.** (R169, v1.153.0) **Una región `aria-live="polite"` fuera del SVG anuncia el punto activo** («Hace 6 semanas, 14 sep – 20 sep: 631 min») y se vacía al cerrar. **Cada acción de teclado repinta el texto en un nodo nuevo** (`key`), de modo que Fin estando ya en el último, o Inicio en el primero, se vuelve a decir; el ratón anuncia solo al cambiar de punto y no repinta mientras siga en el mismo. |
+| **10** | **Obligatorio.** (R169, v1.153.0) **El SVG es decoración (`aria-hidden`, `focusable="false"`); la alternativa accesible es el contenedor `role="group"` enfocable, con nombre**: título, valor actual con unidad, la etiqueta de la referencia si la hay y «Flechas para recorrer las semanas». |
+| **11** | **Obligatorio.** (R169, v1.153.0) **Tabla desplegable «Ver las cifras de cada semana» (`details`, cerrado de entrada)** con las columnas «Semana atrás», «Periodo» y la que pasa la app (`columnaValor`), una fila por punto, la primera «0 (actual)». **El rango y el valor de la fila y los de la ventana salen de la MISMA función, `textosPunto`**; la prueba compara los siete pares en minutos y en h:mm. |
+| **12** | **Obligatorio.** (R169, v1.153.0) **El trazo se anima UNA sola vez, al abrir**: la clase `graf-anima` está desde el primer dibujo CON puntos (si el montaje llega sin ellos, el primer dibujo con puntos) y se suelta **cuando la animación termina** (`animationend`), o, si ese aviso no llega, pasados 1,2 s. Mientras dura el trazo nada la suelta —ni un cambio de ancho de pocos píxeles, ni cambiar `puntos`, ni el cursor, el teclado o un padre que repinta—, porque soltarla a media cortaría la línea. Soltada, no reaparece al redibujar por el ancho ni al cambiar `puntos` (aunque luego vuelvan los de antes). Un montaje nuevo vuelve a animar. Con `prefers-reduced-motion: reduce` la hoja quita la animación. |
+| **13** | **Obligatorio.** (R169, v1.153.0) **Móvil primero y colores de token**: la regla base es la estrecha; el panel usa `--grafico-fondo` (oscuro en los dos temas por tokens) y todo color del SVG sale de una clase o de un atributo de presentación SVG que apunta a una clase (`stop-opacity` en el degradado, `fill="url(#…)"` del área, con un id de caracteres seguros), nunca de `style`; cifras tabulares; sin `style` en el marcado, sin `max-width` ni `@container` en la hoja. El marcado estático del catálogo es el que emite el componente (se compara nodo por nodo). |
+| **14** | **Obligatorio.** (R169, v1.153.0) **`index.ts` exporta `GraficoTendencia`, `escalaEje`, `geometriaGrafico`, `puntoMasCercano`, `tramosVisibles`, `textosPunto`, `nombreSemana`, `ANCHO_VALORES`, `SEPARACION_EJE` y los tipos `PuntoTendencia`, `GraficoTendenciaProps`, `EscalaEje`, `GeometriaGrafico`, `PuntoGeo` y `TextosPunto`.** |
+| **15** | **Obligatorio.** (R169, v1.153.0) **Los valores que no se pueden dibujar se acotan, sin inventar datos.** Un valor **no finito** (NaN, ±Infinity) no se dibuja ni se conecta: no lleva punto, halo ni valor encima, y el trazo y el área se parten en tramos (`tramosVisibles`) en vez de cruzar el hueco; ninguna coordenada del SVG es NaN. Un **negativo** se dibuja acotado a 0 (nunca bajo la línea base). La ventana, la tabla y el texto alternativo escriben lo que `formato` dé para el número tal cual, y sin número en alguno de los dos no hay diferencia frente a esta semana. El eje se calcula solo con los valores finitos. |
 
 ---
 

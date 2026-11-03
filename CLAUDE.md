@@ -12,7 +12,7 @@ La implementación ejecutable de `SISTEMA-DE-DISENO.md` (**MMI-DS**), el sistema
 Colegio Albert Einstein, Huaraz. El documento es la **especificación**; esto es el **código**. Si
 discrepan, gana el de versión más alta y se corrige el otro en el mismo commit.
 
-**Estado actual: v1.152.0** — R168: `PanelPrivilegios` pliega sus módulos en matriz y lista, dibuja un título vacío como título, resume solo lo concedido y admite icono por columna (SPEC 06).
+**Estado actual: v1.153.0** — R169: cuatro piezas para el tablero de asistencia (`FranjaCifras` con `CifraConDiferencia`, `ListaRanking`, `MapaCalor`, `GraficoTendencia`) y `nivel` y `cuenta` en `SelectorBusqueda` (SPEC 07).
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md); **este número es lo único que se toca aquí**.
 
 ## 2 · Lo primero al abrir sesión
@@ -45,7 +45,9 @@ de dentro de la carpeta **se toman y se reportan**; solo se consultan reglas de 
 `.gitignore` excluye los binarios de diseño porque **son propiedad del cliente**; `marca/02_identidad/`
 trae solo un `LEEME.md` y **es lo correcto**. `AE-nombre-horizontal.png`, `AE-nombre-vertical.png` y
 `TIPOGRAFIA-web-y-sistema.png` se piden al usuario por el chat; `node_modules/` sale de
-`docker-compose up`, nunca de `npm install`. **No inventes los activos que falten ni recortes el
+`docker-compose up`, nunca de `npm install`. **`imagenes/`** es material de referencia que el usuario o
+otro equipo deja en local (capturas, logos, maquetas con sus propios colores): está en `.gitignore`, no es del
+sistema, y `verificar-color` salta lo que git ignora. **No inventes los activos que falten ni recortes el
 escudo del lockup**: el catálogo muestra un marcador. Son trabajo de **diseñador**, no de código: el
 escudo suelto (`AE-escudo-*.png`) y el isotipo simplificado (§8.6; bajo 56 px el escudo es ilegible).
 Defecto abierto (§8.5): el escudo usa `#E30613` y el lockup `#EC2027`; el sistema adopta `#E30613`.
@@ -108,8 +110,8 @@ pasa por el token, el candado no lo protege. `app/diseno/**` está exento: exhib
 ## 7 · Cuatro cosas que el documento prohíbe (§9) — no las «mejores» por iniciativa
 
 1. **No montar Storybook:** el catálogo es `/diseño` y no puede divergir.
-2. El modo oscuro **está aprobado** (2026-08-09) y es superficie mantenida: **198 pares, 158
-   bloqueantes, 79 por modo**; ninguna versión sube con uno en rojo.
+2. El modo oscuro **está aprobado** (2026-08-09) y es superficie mantenida: **242 pares, 184
+   bloqueantes, 92 por modo**; ninguna versión sube con uno en rojo.
 3. **No mostrar el markup interno** de los compartidos: se copia la importación y las props.
 4. **No adoptar librería de componentes**, salvo primitivas accesibles para diálogo, menú y selector con búsqueda.
 
@@ -121,7 +123,7 @@ pasa por el token, el candado no lo protege. `app/diseno/**` está exento: exhib
   GitHub es un PR `work` → `main`**, venga de quien venga: nada de push directo ni de avance directo.
   Se comprueba la rama **antes de la primera edición** de una tarea.
 - **`work` es permanente y siempre queda**: nunca se borra, ni local ni remota, ni al mergear un PR
-  (sin «delete branch») ni para «limpiar». Solo se borran las ramas temporales ya fusionadas.
+  (sin «delete branch») ni para «limpiar». Las ramas temporales ya fusionadas **se borran** —local y remota, con `git branch -d`, que se niega si queda algo sin fusionar—: al terminar, solo existen `main` y `work`, y se está sobre `work`.
 - **El merge del PR es el despliegue y se pide antes de hacerlo.** Tras mergear, `work` se sincroniza
   con `main`. **Nunca `--force`** sin permiso expreso.
 - Se **commitea y se hace push al avanzar** —a `work` o sus ramas temporales—, sin esperar a que se

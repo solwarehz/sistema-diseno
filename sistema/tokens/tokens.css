@@ -1,6 +1,6 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.152.0
-   WCAG 2.2 AA · 158 pares verificados en los dos modos, 0 fallos
+   TOKENS DE COLOR — Colegio Albert Einstein · MMI-DS v1.153.0
+   WCAG 2.2 AA · 184 pares verificados en los dos modos, 0 fallos
 
    ARCHIVO GENERADO. No editar a mano.
    Fuente: sistema/tokens/fuente.mjs → node sistema/tokens/generar.mjs
@@ -27,7 +27,7 @@
      DISCO, no lo que la aplicacion sirve, asi que pasaba en verde mientras el
      navegador recibia la version anterior. Y lo que cambio en R129 y R130 era
      CSS: desde JavaScript no habia forma de preguntarlo. Ahora si. */
-  --mmi-version: 1.152.0;
+  --mmi-version: 1.153.0;
   /* Superficies */
   --fondo-pagina: #F8F8F6;
   --fondo-tarjeta: #FFFFFF;
@@ -102,6 +102,32 @@
   --identidad-3: #9B3B6E;
   --identidad-4: #4A5568;
   --identidad-texto: #FFFFFF;
+
+  /* Gráfico de tendencia — panel que cambia con el tema (SPEC 07) */
+  --grafico-fondo: #E5E8F2;
+  --grafico-texto: #2C2A25;
+  --grafico-texto-tenue: #5C5955;
+  --grafico-linea: #2C3D71;
+  --grafico-rejilla: #B9C2DC;
+  --grafico-base: #8D9BC6;
+  --grafico-ref: #5C5955;
+  --grafico-guia: #5C5955;
+  --grafico-halo: #AA8E41;
+  --grafico-punto0: #FFFFFF;
+  --grafico-ventana-fondo: #1D3163;
+  --grafico-ventana-texto: #FFFFFF;
+  --grafico-foco: #A46300;
+
+  /* Barra del ranking (SPEC 07) */
+  --barra-relleno: #45558A;
+  --barra-pista: #E0DFDE;
+
+  /* Mapa de calor — cinco pasos de un tono (SPEC 07) */
+  --mapa-1: #E5E8F2;
+  --mapa-2: #B9C2DC;
+  --mapa-3: #8D9BC6;
+  --mapa-4: #45558A;
+  --mapa-5: #2C3D71;
 
   /* Marca — FUERA del sistema. Prohibidos en interfaz (§2.3) */
   --marca-rojo: #E30613;
@@ -186,6 +212,32 @@
   --identidad-3: #9B3B6E;
   --identidad-4: #4A5568;
   --identidad-texto: #FFFFFF;
+
+  /* Gráfico de tendencia — panel que cambia con el tema (SPEC 07) */
+  --grafico-fondo: #1D3163;
+  --grafico-texto: #FFFFFF;
+  --grafico-texto-tenue: #B9C2DC;
+  --grafico-linea: #DFCA9C;
+  --grafico-rejilla: #39497A;
+  --grafico-base: #45558A;
+  --grafico-ref: #FFFFFF;
+  --grafico-guia: #FFFFFF;
+  --grafico-halo: #DFCA9C;
+  --grafico-punto0: #FFFFFF;
+  --grafico-ventana-fondo: #FFFFFF;
+  --grafico-ventana-texto: #2C2A25;
+  --grafico-foco: #F0C060;
+
+  /* Barra del ranking (SPEC 07) */
+  --barra-relleno: #8D9BC6;
+  --barra-pista: #44423F;
+
+  /* Mapa de calor — cinco pasos de un tono (SPEC 07) */
+  --mapa-1: #1D3163;
+  --mapa-2: #39497A;
+  --mapa-3: #45558A;
+  --mapa-4: #8D9BC6;
+  --mapa-5: #B9C2DC;
 
   /* Marca en oscuro. El titular sube a rojo-400; el panel de marca baja
      a #930000 porque el rojo del escudo se aplana contra la página (§2.4). */
@@ -273,6 +325,32 @@
     --identidad-3: #9B3B6E;
     --identidad-4: #4A5568;
     --identidad-texto: #FFFFFF;
+
+    /* Gráfico de tendencia — panel que cambia con el tema (SPEC 07) */
+    --grafico-fondo: #1D3163;
+    --grafico-texto: #FFFFFF;
+    --grafico-texto-tenue: #B9C2DC;
+    --grafico-linea: #DFCA9C;
+    --grafico-rejilla: #39497A;
+    --grafico-base: #45558A;
+    --grafico-ref: #FFFFFF;
+    --grafico-guia: #FFFFFF;
+    --grafico-halo: #DFCA9C;
+    --grafico-punto0: #FFFFFF;
+    --grafico-ventana-fondo: #FFFFFF;
+    --grafico-ventana-texto: #2C2A25;
+    --grafico-foco: #F0C060;
+
+    /* Barra del ranking (SPEC 07) */
+    --barra-relleno: #8D9BC6;
+    --barra-pista: #44423F;
+
+    /* Mapa de calor — cinco pasos de un tono (SPEC 07) */
+    --mapa-1: #1D3163;
+    --mapa-2: #39497A;
+    --mapa-3: #45558A;
+    --mapa-4: #8D9BC6;
+    --mapa-5: #B9C2DC;
 
     --marca-rojo: #FF4C37;
     --marca-rojo-panel: #930000;
@@ -641,3 +719,23 @@
 .token-identidad-3 { background-color: var(--identidad-3); }
 .token-identidad-4 { background-color: var(--identidad-4); }
 .token-identidad-texto { background-color: var(--identidad-texto); }
+.token-grafico-fondo { background-color: var(--grafico-fondo); }
+.token-grafico-texto { background-color: var(--grafico-texto); }
+.token-grafico-texto-tenue { background-color: var(--grafico-texto-tenue); }
+.token-grafico-linea { background-color: var(--grafico-linea); }
+.token-grafico-rejilla { background-color: var(--grafico-rejilla); }
+.token-grafico-base { background-color: var(--grafico-base); }
+.token-grafico-ref { background-color: var(--grafico-ref); }
+.token-grafico-guia { background-color: var(--grafico-guia); }
+.token-grafico-halo { background-color: var(--grafico-halo); }
+.token-grafico-punto0 { background-color: var(--grafico-punto0); }
+.token-grafico-ventana-fondo { background-color: var(--grafico-ventana-fondo); }
+.token-grafico-ventana-texto { background-color: var(--grafico-ventana-texto); }
+.token-grafico-foco { background-color: var(--grafico-foco); }
+.token-barra-relleno { background-color: var(--barra-relleno); }
+.token-barra-pista { background-color: var(--barra-pista); }
+.token-mapa-1 { background-color: var(--mapa-1); }
+.token-mapa-2 { background-color: var(--mapa-2); }
+.token-mapa-3 { background-color: var(--mapa-3); }
+.token-mapa-4 { background-color: var(--mapa-4); }
+.token-mapa-5 { background-color: var(--mapa-5); }

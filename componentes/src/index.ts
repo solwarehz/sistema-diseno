@@ -43,6 +43,14 @@ export {
   type CapacidadTablero, type CapacidadConRef,
 } from './tablero';
 export { Avatar, colorIdentidad, iniciales, type TamanoAvatar, type EstadoAvatar, type AvatarProps } from './Avatar';
+export { FranjaCifras, CifraConDiferencia, type DiferenciaCifra, type CifraConDiferenciaProps, type FranjaCifrasProps } from './FranjaCifras';
+export { ListaRanking, porcentajeBarra, type FilaRanking, type ListaRankingProps } from './ListaRanking';
+export { MapaCalor, pasoMapa, pasosDelMapa, PASOS_MAPA, type CeldaMapaCalor, type MapaCalorProps } from './MapaCalor';
+export {
+  GraficoTendencia, escalaEje, geometriaGrafico, puntoMasCercano, tramosVisibles, textosPunto, nombreSemana,
+  ANCHO_VALORES, SEPARACION_EJE,
+  type PuntoTendencia, type GraficoTendenciaProps, type EscalaEje, type GeometriaGrafico, type PuntoGeo, type TextosPunto,
+} from './GraficoTendencia';
 export { Paginacion, type PaginacionProps } from './Paginacion';
 export { Interruptor, SeleccionMultiple, type Opcion, type InterruptorProps, type SeleccionMultipleProps } from './Interruptor';
 export { Segmentado, type OpcionSegmento, type SegmentadoProps } from './Segmentado';
