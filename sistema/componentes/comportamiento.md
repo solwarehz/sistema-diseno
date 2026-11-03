@@ -859,7 +859,7 @@ sección que no existe, y lo que no existe no se puede atar.
 
 ## Panel de privilegios
 
-<!-- pruebas: PanelPrivilegios.test.tsx, privilegios-depende.test.tsx, privilegios-adopcion.test.tsx, privilegios-matriz.test.tsx, privilegios-llave-compartida.test.tsx, privilegios-movil-primero.test.tsx, privilegios-plegable.test.tsx -->
+<!-- pruebas: PanelPrivilegios.test.tsx, privilegios-depende.test.tsx, privilegios-adopcion.test.tsx, privilegios-matriz.test.tsx, privilegios-llave-compartida.test.tsx, privilegios-movil-primero.test.tsx, privilegios-plegable.test.tsx, privilegios-sin-props-nuevas.test.tsx -->
 
 Reparte permisos por módulo. **No sabe de negocio**: recibe módulos con
 privilegios y devuelve qué está concedido, así que sirve igual para un cargo,

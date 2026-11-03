@@ -165,6 +165,20 @@ describe('R168 · [35] un módulo sin privilegios es solo un título', () => {
     const { container } = render(<Panel plegable modulos={roto} abiertos={['x']} onAbiertos={() => {}} />);
     expect(filas(container).length).toBeGreaterThan(0);
   });
+
+  it('[35] el aviso de la regla 24 por `filas: []` dice el módulo, qué se hizo y qué sospechar', () => {
+    const gritar = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const roto: ModuloPrivilegios[] = [{ id: 'x', nombre: 'Roto', filas: [],
+      privilegios: [{ id: 'x-ver', nombre: 'Ver', columna: 'ver' }] }];
+    render(<Panel plegable modulos={roto} abiertos={['x']} onAbiertos={() => {}} />);
+    const textos = gritar.mock.calls.map((a) => String(a[0]));
+    gritar.mockRestore();
+    const aviso = textos.find((t) => t.includes('filas: []'));
+    expect(aviso, 'no avisó del `filas: []`').toBeDefined();
+    expect(aviso).toContain('«x» declara `filas: []`');
+    expect(aviso).toContain('se trata como si no declarara filas y todo cae en una sola, la del modulo');
+    expect(aviso).toContain('Si esperaba una fila por recurso, la lista llego vacia.');
+  });
 });
 
 describe('R168 · [36] el resumen de la banda', () => {
