@@ -26,7 +26,24 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react';
 import { Icono } from './Icono';
 
-export type OpcionBusqueda = { valor: string; texto: string; ayuda?: string };
+export type OpcionBusqueda = {
+  valor: string;
+  texto: string;
+  ayuda?: string;
+  /**
+   * R169 · SANGRADO. 0 o ausente = raíz. La jerarquía NO se declara con un
+   * `padre`: se lee del orden. Los ancestros de una opción son la cadena de
+   * opciones ANTERIORES cuyo `nivel` es estrictamente menor, hasta la raíz.
+   * Una sola fuente de verdad, y no hay lista que pueda contradecirse.
+   *
+   * Se dibujan cuatro niveles (`sel-n1`…`sel-n4`); un `nivel` mayor se dibuja
+   * como el cuarto —sangrar sin tope se come el ancho de un teléfono—, pero
+   * cuenta con su valor real para hallar ancestros.
+   */
+  nivel?: number;
+  /** R169 · A la derecha, tabular: «12 trab.». No se busca en ella. */
+  cuenta?: string | number;
+};
 
 export type SelectorBusquedaProps = {
   /** Obligatoria y visible. Igual que en `Campo`: el placeholder es ejemplo de
@@ -200,6 +217,15 @@ const normalizar = (t: string) =>
  *  mismo umbral de la tabla «Cargando: esqueleto, giro o nada» del catálogo:
  *  bajo 300 ms no se enseña nada porque un parpadeo se percibe como un fallo. */
 const UMBRAL = 300;
+
+/** R169 · el nivel que se dibuja: entero, entre 0 y 4. */
+const NIVEL_MAX = 4;
+const nivelDe = (o: OpcionBusqueda) =>
+  Number.isFinite(o.nivel) ? Math.max(0, Math.floor(o.nivel as number)) : 0;
+/* Literales y no `sel-n${n}`: el candado de la promesa lee las clases que el
+   componente EMITE como texto, y una plantilla no la puede casar. */
+const CLASES_NIVEL = ['', 'sel-n1', 'sel-n2', 'sel-n3', 'sel-n4'];
+const claseNivel = (o: OpcionBusqueda) => CLASES_NIVEL[Math.min(nivelDe(o), NIVEL_MAX)];
 
 export function SelectorBusqueda({
   etiqueta,
@@ -431,14 +457,32 @@ export function SelectorBusqueda({
   const mostrado = abierto ? texto : elegida?.texto ?? pendiente ?? '';
 
   const filtradas = useMemo(() => {
-    if (!abierto || !texto.trim()) return opciones;
+    const solas = (ops: OpcionBusqueda[]) => ops.map((o) => ({ o, ctx: false }));
+    if (!abierto || !texto.trim()) return solas(opciones);
     /* En `servidor` el componente NO filtra. Volver a filtrar lo que el
        servidor ya recortó esconde lo que devolvió a propósito —una coincidencia
        aproximada, un alias, un DNI que no se parece al nombre— y deja al
        buscador contradiciéndose a sí mismo sin que nada falle. */
-    if (remoto) return fallo ? [] : remotas ?? [];
+    if (remoto) return fallo ? [] : solas(remotas ?? []);
     const q = normalizar(texto);
-    return opciones.filter((o) => normalizar(o.texto).includes(q));
+    const casa = opciones.map((o) => normalizar(o.texto).includes(q));
+    /* R169 · ANCESTROS. Por cada coincidencia, hacia atrás: cada opción
+       anterior de `nivel` estrictamente menor que el último hallado es su
+       ancestro, hasta llegar a la raíz. Se conservan como CONTEXTO (`ctx`);
+       los descendientes de una coincidencia no se añaden. Sin `nivel` en
+       ninguna opción no hay nivel menor que 0, así que no se añade nada. */
+    const ctx = new Set<number>();
+    casa.forEach((c, i) => {
+      if (!c) return;
+      let tope = nivelDe(opciones[i]);
+      for (let j = i - 1; j >= 0 && tope > 0; j--) {
+        const n = nivelDe(opciones[j]);
+        if (n < tope) { ctx.add(j); tope = n; }
+      }
+    });
+    return opciones.flatMap((o, i) =>
+      casa[i] ? [{ o, ctx: false }] : ctx.has(i) ? [{ o, ctx: true }] : [],
+    );
   }, [remoto, remotas, fallo, opciones, texto, abierto]);
 
   /**
@@ -450,7 +494,7 @@ export function SelectorBusqueda({
    * empujaría la primera coincidencia fuera del sitio donde el dedo ya va.
    */
   const filas = useMemo(() => {
-    const ops = filtradas.map((o) => ({ tipo: 'opcion' as const, o }));
+    const ops = filtradas.map(({ o, ctx }) => ({ tipo: 'opcion' as const, o, ctx }));
     const sePuedeVaciar = vacio !== undefined && valor !== null && !texto.trim();
     return sePuedeVaciar ? [{ tipo: 'vaciar' as const }, ...ops] : ops;
   }, [filtradas, vacio, valor, texto]);
@@ -474,7 +518,13 @@ export function SelectorBusqueda({
 
   // El índice activo no puede quedarse fuera de una lista que encogió — y con
   // el servidor la lista cambia sin que nadie toque el teclado.
-  useEffect(() => { setActivo(0); }, [texto, abierto, remotas, fallo]);
+  /* R169 · la marcada de partida es la primera COINCIDENCIA, no la primera
+     fila: con un ancestro de contexto arriba, Enter elegiría el contexto en
+     vez de lo buscado. Sin `nivel` no hay contexto y es 0, como siempre. */
+  const primera = Math.max(0, filas.findIndex((f) => f.tipo === 'vaciar' || !f.ctx));
+  const primeraRef = useRef(primera);
+  primeraRef.current = primera;
+  useEffect(() => { setActivo(primeraRef.current); }, [texto, abierto, remotas, fallo]);
 
   // Cerrar al pulsar fuera. Sin esto la lista se queda abierta sobre otra cosa.
   useEffect(() => {
@@ -741,7 +791,8 @@ export function SelectorBusqueda({
               // (.sel-op.marcado). Con `activa` la opción resaltada por
               // teclado no se pintaba en ningún producto — y el candado no lo
               // vio porque .pgn-btn.activa declara «activa» en otra familia.
-              className={['sel-op', i === activo ? 'marcado' : ''].filter(Boolean).join(' ')}
+              className={['sel-op', claseNivel(f.o), f.ctx ? 'sel-ctx' : '', i === activo ? 'marcado' : '']
+                .filter(Boolean).join(' ')}
               role="option"
               aria-selected={f.o.valor === valor}
               // `mousedown` y no `click`: el clic llega después del blur, y para
@@ -757,8 +808,23 @@ export function SelectorBusqueda({
                   y la lista deja de salir escalonada. */}
               <span className="sel-op-txt">
                 {f.o.texto}
+                {/* R169 · la jerarquía y el contexto también para el lector:
+                    el sangrado y el gris solo los ve quien ve. SOLO con props
+                    nuevas, para que el marcado de antes no cambie. `nivel N` es
+                    el REAL, no el tope visual de cuatro. */}
+                {(f.ctx || nivelDe(f.o) > 0) && (
+                  <span className="sr-solo">
+                    {f.ctx ? ', contexto' : ''}{nivelDe(f.o) > 0 ? `, nivel ${nivelDe(f.o)}` : ''}
+                  </span>
+                )}
                 {f.o.ayuda && <span className="sel-notas">{f.o.ayuda}</span>}
               </span>
+              {/* R169 · la cuenta, a la derecha y ANTES del visto. Fuera de
+                  `.sel-op-txt` a propósito: es otra columna, no parte del
+                  nombre, y `ayuda` sigue siendo la nota que va junto a él. */}
+              {f.o.cuenta !== undefined && f.o.cuenta !== null && (
+                <span className="sel-cuenta">{f.o.cuenta}</span>
+              )}
               {/* R115 · el visto va DETRÁS, que es donde lo pone el catálogo.
                   Delante lo mandaba al borde izquierdo: 8 px contra los 306,4
                   de la demostración, 298,4 px de diferencia en la misma lista.

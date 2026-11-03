@@ -3747,6 +3747,20 @@ input.campo.sel-in { width: 100%; padding-right: 32px; }
 .sel-notas { font-size: 13px; color: var(--texto-secundario); font-weight: 400; flex: none; }
 .sel-check { color: var(--accion); display: grid; place-items: center; }
 .sel-check .ic { width: 16px; height: 16px; }
+/* R169 · JERARQUIA: `nivel` y `cuenta` en las opciones. El sangrado es una
+   clase por nivel (`sel-n1`…`sel-n4`) y no un `style`, que el candado
+   prohibe; mas alla del cuarto se queda en el cuarto, porque sangrar sin tope
+   se come el ancho de un telefono. Se sangra el texto y no la fila, para que
+   el marcado y el hover sigan ocupando todo el ancho. `sel-ctx` es el
+   ancestro que se conserva al buscar: sigue siendo elegible, solo se lee como
+   contexto. `sel-cuenta` va a la derecha, tabular, y no se parte. */
+.sel-op.sel-n1 .sel-op-txt { padding-left: 20px; }
+.sel-op.sel-n2 .sel-op-txt { padding-left: 40px; }
+.sel-op.sel-n3 .sel-op-txt { padding-left: 60px; }
+.sel-op.sel-n4 .sel-op-txt { padding-left: 80px; }
+.sel-op.sel-ctx:not([aria-selected="true"]) .sel-op-txt { color: var(--texto-secundario); }
+.sel-cuenta { margin-left: auto; flex: none; padding-left: 8px; font-size: 13px;
+  color: var(--texto-secundario); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .sel-vacio { padding: 12px 12px; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .sel-vacio strong { color: var(--texto-principal); }
 /* R118 · LA BUSQUEDA CONTRA EL SERVIDOR — esqueleto y fallo.
@@ -3764,6 +3778,7 @@ input.campo.sel-in { width: 100%; padding-right: 32px; }
   color: var(--texto-secundario); padding: 12px; }
 .sel-op.sel-fallo strong { color: var(--texto-principal); }
 .sel-demo-abierto { position: relative; min-height: 148px; }
+.sel-demo-abierto.sel-demo-alto { min-height: 360px; }
 /* La entrega real: el marco aislado. Estas reglas son MOBILIARIO y no viajan
    —lo que va dentro del iframe es lo unico que cuenta—. */
 .er-caso { padding: 0; overflow: hidden; }
@@ -7994,7 +8009,7 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .ta-cuenta-mal{ color: var(--error-texto); font-weight: 500; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   SELECTOR — 23 reglas · clases .sel-*
+   SELECTOR — 29 reglas · clases .sel-*
    ─────────────────────────────────────────────────────────────────────────── */
 
 .sel{ position: relative; }
@@ -8019,6 +8034,13 @@ input[type='date'].campo:disabled::-webkit-calendar-picker-indicator{ display: n
 .sel-notas{ font-size: 13px; color: var(--texto-secundario); font-weight: 400; flex: none; }
 .sel-check{ color: var(--accion); display: grid; place-items: center; }
 .sel-check .ic{ width: 16px; height: 16px; }
+.sel-op.sel-n1 .sel-op-txt{ padding-left: 20px; }
+.sel-op.sel-n2 .sel-op-txt{ padding-left: 40px; }
+.sel-op.sel-n3 .sel-op-txt{ padding-left: 60px; }
+.sel-op.sel-n4 .sel-op-txt{ padding-left: 80px; }
+.sel-op.sel-ctx:not([aria-selected="true"]) .sel-op-txt{ color: var(--texto-secundario); }
+.sel-cuenta{ margin-left: auto; flex: none; padding-left: 8px; font-size: 13px;
+  color: var(--texto-secundario); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .sel-vacio{ padding: 12px 12px; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .sel-vacio strong{ color: var(--texto-principal); }
 .sel-cargando{ display: grid; gap: 11px; padding: 13px 12px; }
@@ -13108,6 +13130,104 @@ la firma prometía y no emitía (R103). El componente recuerda la última opció
 valor: no es una caché, es <strong>la única copia que queda</strong> del texto de algo que ya no
 está en ninguna lista.</div>
 
+<h3 class="sub-seccion">Con jerarquía — <code>nivel</code> y <code>cuenta</code></h3>
+<p class="seccion-sub">Una lista que es en realidad un <strong>árbol</strong> —unidades organizativas, sedes con
+aulas— se sangra por <code>nivel</code> y lleva a la derecha cuántos hay en cada una, en <code>cuenta</code>.
+La jerarquía <strong>no se declara con un <code>padre</code></strong>: se lee del orden. Los ancestros de una
+opción son las <strong>anteriores</strong> de nivel estrictamente menor, hasta la raíz.</p>
+<div class="bloque">
+  <div class="campos-rejilla">
+    <div class="cg">
+      <span class="cg-et" id="sel-jer-et">Sin filtro</span>
+      <div class="sel sel-demo-abierto sel-demo-alto">
+        <div class="sel-caja sel-con-lupa abierta">
+          <span class="sel-lupa" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+          <input class="campo sel-in" placeholder="Buscar unidad" readonly>
+          <span aria-hidden="true" class="sel-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+        </div>
+        <ul class="sel-lista" role="listbox" aria-labelledby="sel-jer-et">
+          <li class="sel-op" role="option" aria-selected="true"><span class="sel-op-txt">Todas las unidades</span><span class="sel-cuenta">62 trab.</span><span class="sel-check"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 5 5L20 7"/></svg></span></li>
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Dirección General</span><span class="sel-cuenta">4 trab.</span></li>
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Nivel Inicial</span><span class="sel-cuenta">14 trab.</span></li>
+          <li class="sel-op marcado" role="option" aria-selected="false"><span class="sel-op-txt">Nivel Primaria</span><span class="sel-cuenta">18 trab.</span></li>
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Nivel Secundaria</span><span class="sel-cuenta">16 trab.</span></li>
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Administración</span><span class="sel-cuenta">10 trab.</span></li>
+          <li class="sel-op sel-n1" role="option" aria-selected="false"><span class="sel-op-txt">Secretaría<span class="sr-solo">, nivel 1</span></span><span class="sel-cuenta">6 trab.</span></li>
+          <li class="sel-op sel-n1" role="option" aria-selected="false"><span class="sel-op-txt">Mantenimiento<span class="sr-solo">, nivel 1</span></span><span class="sel-cuenta">4 trab.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="cg">
+      <span class="cg-et" id="sel-jer2-et">Buscando «secre»</span>
+      <div class="sel sel-demo-abierto">
+        <div class="sel-caja sel-con-lupa abierta">
+          <span class="sel-lupa" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+          <input class="campo sel-in" value="secre" readonly>
+          <span aria-hidden="true" class="sel-chev"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></span>
+        </div>
+        <ul class="sel-lista" role="listbox" aria-labelledby="sel-jer2-et">
+          <li class="sel-op sel-ctx" role="option" aria-selected="false"><span class="sel-op-txt">Administración<span class="sr-solo">, contexto</span></span><span class="sel-cuenta">10 trab.</span></li>
+          <li class="sel-op sel-n1 marcado" role="option" aria-selected="false"><span class="sel-op-txt">Secretaría<span class="sr-solo">, nivel 1</span></span><span class="sel-cuenta">6 trab.</span></li>
+        </ul>
+      </div>
+      <span class="cg-ayuda"><strong>El padre sigue ahí.</strong> «Secretaría» sin «Administración» es una
+      fila huérfana: no dice de qué es. El ancestro se lee en gris y <strong>se puede elegir</strong>; la
+      marcada de partida es la coincidencia, no el contexto.</span>
+    </div>
+  </div>
+</div>
+
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Regla</th><th>Qué pasa</th></tr></thead>
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Se conservan los ancestros, no los descendientes.</strong> Buscar «admin» muestra solo «Administración», sin sus hijos.</td></tr>
+    <tr><td class="num">2</td><td><strong>Cuatro niveles de sangrado.</strong> Un <code>nivel</code> mayor se dibuja como el cuarto, aunque cuenta con su valor al buscar ancestros.</td></tr>
+    <tr><td class="num">3</td><td><strong>Contra el servidor, la lista llega tal cual.</strong> Con <code>onBuscar</code> el componente no añade ancestros: si la app quiere el contexto, lo incluye en lo que devuelve.</td></tr>
+    <tr><td class="num">4</td><td><strong>La cuenta no se busca.</strong> Es una cifra al margen, no parte del nombre.</td></tr>
+    <tr><td class="num">5</td><td><strong>Sin <code>nivel</code> ni <code>cuenta</code>, nada cambia.</strong> El marcado es el de siempre.</td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">Cómo se usa</h4>
+<p class="seccion-sub">Lo que se copia es la importación y las props. Las opciones van en el orden del árbol, padres antes que hijos.</p>
+
+  <div class="cod-bloque">
+    <div class="cod-cab">
+      <button class="cod-ver" data-ver="cod5" aria-expanded="false" aria-controls="cod5">
+        <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
+      </button>
+      <span class="cod-tit">Uso de SelectorBusqueda con jerarquía</span>
+      <button class="copiar" data-copiar-de="cod5">Copiar</button>
+    </div>
+    <pre class="cod-pre" id="cod5" hidden>import { useState } from 'react';
+import { SelectorBusqueda } from 'sistema-diseno-ae/componentes';
+
+export function FiltroUnidad() {
+  const [unidad, setUnidad] = useState&lt;string | null&gt;(null);
+  return (
+    &lt;SelectorBusqueda
+      etiqueta="Unidad organizativa"
+      valor={unidad}
+      onCambio={setUnidad}
+      opciones={[
+        { valor: 'todas', texto: 'Todas las unidades', cuenta: '62 trab.' },
+        { valor: 'adm', texto: 'Administración', cuenta: '10 trab.' },
+        { valor: 'sec', texto: 'Secretaría', nivel: 1, cuenta: '6 trab.' },
+        { valor: 'man', texto: 'Mantenimiento', nivel: 1, cuenta: '4 trab.' },
+      ]}
+    /&gt;
+  );
+}</pre>
+  </div>
+<h4 class="sub-seccion">Cómo se configura</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad de la opción</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>nivel</code><br><span class="seccion-sub">number</span></td><td>Sangrado a la izquierda. 0 o ausente es la raíz; se dibujan hasta cuatro niveles. Define los ancestros que se conservan al buscar.</td></tr>
+    <tr><td><code>cuenta</code><br><span class="seccion-sub">string | number</span></td><td>Cifra o texto a la derecha de la fila, tabular y sin partirse: «12 trab.». No entra en la búsqueda.</td></tr>
+  </tbody>
+</table>
+
 <h3 class="sub-seccion">Teclado — es donde se cae este componente</h3>
 <table class="tabla-simple">
   <thead><tr><th>Tecla</th><th>Qué hace</th></tr></thead>
@@ -13151,13 +13271,13 @@ está en ninguna lista.</div>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod5" aria-expanded="false" aria-controls="cod5">
+      <button class="cod-ver" data-ver="cod6" aria-expanded="false" aria-controls="cod6">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod5">Copiar</button>
+      <button class="copiar" data-copiar-de="cod6">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod5" hidden>import { Selector } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod6" hidden>import { Selector } from 'sistema-diseno-ae/componentes';
 
 // 3 a 8 opciones
 &lt;Selector etiqueta="Nivel" opciones={niveles} /&gt;
@@ -13324,13 +13444,13 @@ engaña: la persona lo mueve, se va, y el cambio no se aplicó.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod16" aria-expanded="false" aria-controls="cod16">
+      <button class="cod-ver" data-ver="cod17" aria-expanded="false" aria-controls="cod17">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod16">Copiar</button>
+      <button class="copiar" data-copiar-de="cod17">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod16" hidden>import { Interruptor } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod17" hidden>import { Interruptor } from 'sistema-diseno-ae/componentes';
 
 &lt;Interruptor
   etiqueta="Notificar tardanzas por correo"
@@ -13428,13 +13548,13 @@ de las de abajo.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod17" aria-expanded="false" aria-controls="cod17">
+      <button class="cod-ver" data-ver="cod18" aria-expanded="false" aria-controls="cod18">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod17">Copiar</button>
+      <button class="copiar" data-copiar-de="cod18">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod17" hidden>import { SeleccionMultiple, GrupoOpcion } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod18" hidden>import { SeleccionMultiple, GrupoOpcion } from 'sistema-diseno-ae/componentes';
 
 &lt;SeleccionMultiple
   leyenda="Aspectos observados en la visita de aula"
@@ -13644,13 +13764,13 @@ mismo</strong>. Eso casi nunca cierra el campo entero: cierra <strong>un nivel</
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod18" aria-expanded="false" aria-controls="cod18">
+      <button class="cod-ver" data-ver="cod19" aria-expanded="false" aria-controls="cod19">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod18">Copiar</button>
+      <button class="copiar" data-copiar-de="cod19">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod18" hidden>import { Segmentado } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod19" hidden>import { Segmentado } from 'sistema-diseno-ae/componentes';
 
 &lt;Segmentado
   etiqueta="Documento"
@@ -13936,13 +14056,13 @@ futuro por otro camino es cosa del producto.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod19" aria-expanded="false" aria-controls="cod19">
+      <button class="cod-ver" data-ver="cod20" aria-expanded="false" aria-controls="cod20">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod19">Copiar</button>
+      <button class="copiar" data-copiar-de="cod20">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod19" hidden>import { RangoFecha, atajosDeDias } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod20" hidden>import { RangoFecha, atajosDeDias } from 'sistema-diseno-ae/componentes';
 
 // Sin `desde`/`hasta` se gobierna solo.
 &lt;RangoFecha titulo="Rango de fechas" /&gt;
@@ -14480,13 +14600,13 @@ completo se lee como algo pulsable, y este componente no se pulsa.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod6" aria-expanded="false" aria-controls="cod6">
+      <button class="cod-ver" data-ver="cod7" aria-expanded="false" aria-controls="cod7">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod6">Copiar</button>
+      <button class="copiar" data-copiar-de="cod7">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod6" hidden>import { Chip } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod7" hidden>import { Chip } from 'sistema-diseno-ae/componentes';
 
 &lt;Chip estado="exito"&gt;Activo&lt;/Chip&gt;
 &lt;Chip estado="aviso"&gt;Parcial&lt;/Chip&gt;
@@ -14570,13 +14690,13 @@ esta página enseña el que corresponde a tu ventana y no los dos a la vez. Letr
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod7" aria-expanded="false" aria-controls="cod7">
+      <button class="cod-ver" data-ver="cod8" aria-expanded="false" aria-controls="cod8">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod7">Copiar</button>
+      <button class="copiar" data-copiar-de="cod8">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod7" hidden>import { CuadroEstado } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod8" hidden>import { CuadroEstado } from 'sistema-diseno-ae/componentes';
 
 &lt;CuadroEstado letra="P" tono="exito" titulo="Presente, lunes 26" /&gt;
 &lt;CuadroEstado letra="T" tono="aviso" titulo="Tardanza, martes 27" /&gt;
@@ -15295,13 +15415,13 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod11" aria-expanded="false" aria-controls="cod11">
+      <button class="cod-ver" data-ver="cod12" aria-expanded="false" aria-controls="cod12">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Tarjeta de persona</span>
-      <button class="copiar" data-copiar-de="cod11">Copiar</button>
+      <button class="copiar" data-copiar-de="cod12">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod11" hidden>import { TarjetaPersona } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod12" hidden>import { TarjetaPersona } from 'sistema-diseno-ae/componentes';
 
 &lt;TarjetaPersona
   nombre="Álvarez Ponce, Rosa"
@@ -15315,13 +15435,13 @@ identifican, la silueta no. La foto es un lujo; las iniciales son el suelo. Y el
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod12" aria-expanded="false" aria-controls="cod12">
+      <button class="cod-ver" data-ver="cod13" aria-expanded="false" aria-controls="cod13">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Tarjeta normal</span>
-      <button class="copiar" data-copiar-de="cod12">Copiar</button>
+      <button class="copiar" data-copiar-de="cod13">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod12" hidden>import { Tarjeta } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod13" hidden>import { Tarjeta } from 'sistema-diseno-ae/componentes';
 
 &lt;Tarjeta titulo="Resumen del mes"&gt;
   &lt;p&gt;Contenido&lt;/p&gt;
@@ -15401,13 +15521,13 @@ bueno. Con <code>igual</code> no hay cantidad que mostrar y se lee «sin cambio�
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod8" aria-expanded="false" aria-controls="cod8">
+      <button class="cod-ver" data-ver="cod9" aria-expanded="false" aria-controls="cod9">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso de FranjaCifras y CifraConDiferencia</span>
-      <button class="copiar" data-copiar-de="cod8">Copiar</button>
+      <button class="copiar" data-copiar-de="cod9">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod8" hidden>import { FranjaCifras, CifraConDiferencia } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod9" hidden>import { FranjaCifras, CifraConDiferencia } from 'sistema-diseno-ae/componentes';
 
 export function ResumenSemana() {
   return (
@@ -15511,13 +15631,13 @@ recuadro, que se alcanza con el teclado; la página no.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod9" aria-expanded="false" aria-controls="cod9">
+      <button class="cod-ver" data-ver="cod10" aria-expanded="false" aria-controls="cod10">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso de MapaCalor</span>
-      <button class="copiar" data-copiar-de="cod9">Copiar</button>
+      <button class="copiar" data-copiar-de="cod10">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod9" hidden>import { MapaCalor } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod10" hidden>import { MapaCalor } from 'sistema-diseno-ae/componentes';
 
 export function TardanzasPorSexoYEdad() {
   return (
@@ -15597,13 +15717,13 @@ a 360&nbsp;px. La barra del primero llena el ancho y las demás miden <code>valo
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod10" aria-expanded="false" aria-controls="cod10">
+      <button class="cod-ver" data-ver="cod11" aria-expanded="false" aria-controls="cod11">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso de ListaRanking</span>
-      <button class="copiar" data-copiar-de="cod10">Copiar</button>
+      <button class="copiar" data-copiar-de="cod11">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod10" hidden>import { ListaRanking } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod11" hidden>import { ListaRanking } from 'sistema-diseno-ae/componentes';
 
 export function RankingTardanzas() {
   return (
@@ -16128,13 +16248,13 @@ comportamiento de siempre y <strong>no cambia para nadie que no pida el anclaje<
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod13" aria-expanded="false" aria-controls="cod13">
+      <button class="cod-ver" data-ver="cod14" aria-expanded="false" aria-controls="cod14">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod13">Copiar</button>
+      <button class="copiar" data-copiar-de="cod14">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod13" hidden>import { TablaDatos, Enlace } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod14" hidden>import { TablaDatos, Enlace } from 'sistema-diseno-ae/componentes';
 
 &lt;TablaDatos
   titulo="Personal"               // obligatorio: nombra la tabla para el lector
@@ -16269,13 +16389,13 @@ cualquier otro listado: no tiene paginación propia.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod14" aria-expanded="false" aria-controls="cod14">
+      <button class="cod-ver" data-ver="cod15" aria-expanded="false" aria-controls="cod15">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod14">Copiar</button>
+      <button class="copiar" data-copiar-de="cod15">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod14" hidden>import { Paginacion } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod15" hidden>import { Paginacion } from 'sistema-diseno-ae/componentes';
 
 &lt;Paginacion
   total={1240}
@@ -16392,13 +16512,13 @@ no aportan nada sobre una barra.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod20" aria-expanded="false" aria-controls="cod20">
+      <button class="cod-ver" data-ver="cod21" aria-expanded="false" aria-controls="cod21">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod20">Copiar</button>
+      <button class="copiar" data-copiar-de="cod21">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod20" hidden>import { Progreso, ProgresoPasos } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod21" hidden>import { Progreso, ProgresoPasos } from 'sistema-diseno-ae/componentes';
 
 &lt;Progreso
   etiqueta="Importando trabajadores"
@@ -16543,13 +16663,13 @@ dato</strong>; el detalle vive en la pantalla, no en algo que se va en cuatro se
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod21" aria-expanded="false" aria-controls="cod21">
+      <button class="cod-ver" data-ver="cod22" aria-expanded="false" aria-controls="cod22">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod21">Copiar</button>
+      <button class="copiar" data-copiar-de="cod22">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod21" hidden>import { avisar } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod22" hidden>import { avisar } from 'sistema-diseno-ae/componentes';
 
 avisar.exito('Se guardó la asistencia de marzo');
 avisar.info('Se exportaron 38 filas a CSV');
@@ -16681,13 +16801,13 @@ se pliega y el contenido vuelve a subir.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod22" aria-expanded="false" aria-controls="cod22">
+      <button class="cod-ver" data-ver="cod23" aria-expanded="false" aria-controls="cod23">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod22">Copiar</button>
+      <button class="copiar" data-copiar-de="cod23">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod22" hidden>import { useConfirmar } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod23" hidden>import { useConfirmar } from 'sistema-diseno-ae/componentes';
 
 const confirmar = useConfirmar();
 
@@ -16930,13 +17050,13 @@ antes que la causa técnica.</p>
 
   <div class="cod-bloque">
     <div class="cod-cab">
-      <button class="cod-ver" data-ver="cod15" aria-expanded="false" aria-controls="cod15">
+      <button class="cod-ver" data-ver="cod16" aria-expanded="false" aria-controls="cod16">
         <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span>Ver código</span>
       </button>
       <span class="cod-tit">Uso del componente</span>
-      <button class="copiar" data-copiar-de="cod15">Copiar</button>
+      <button class="copiar" data-copiar-de="cod16">Copiar</button>
     </div>
-    <pre class="cod-pre" id="cod15" hidden>import { EstadoPantalla } from 'sistema-diseno-ae/componentes';
+    <pre class="cod-pre" id="cod16" hidden>import { EstadoPantalla } from 'sistema-diseno-ae/componentes';
 
 // El componente elige el estado; la pantalla no lo decide a mano
 &lt;EstadoPantalla

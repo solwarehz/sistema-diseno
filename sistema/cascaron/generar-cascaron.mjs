@@ -2521,6 +2521,97 @@ la firma prometía y no emitía (R103). El componente recuerda la última opció
 valor: no es una caché, es <strong>la única copia que queda</strong> del texto de algo que ya no
 está en ninguna lista.</div>
 
+<h3 class="sub-seccion">Con jerarquía — <code>nivel</code> y <code>cuenta</code></h3>
+<p class="seccion-sub">Una lista que es en realidad un <strong>árbol</strong> —unidades organizativas, sedes con
+aulas— se sangra por <code>nivel</code> y lleva a la derecha cuántos hay en cada una, en <code>cuenta</code>.
+La jerarquía <strong>no se declara con un <code>padre</code></strong>: se lee del orden. Los ancestros de una
+opción son las <strong>anteriores</strong> de nivel estrictamente menor, hasta la raíz.</p>
+<div class="bloque">
+  <div class="campos-rejilla">
+    <div class="cg">
+      <span class="cg-et" id="sel-jer-et">Sin filtro</span>
+      <div class="sel sel-demo-abierto sel-demo-alto">
+        <div class="sel-caja sel-con-lupa abierta">
+          <span class="sel-lupa" aria-hidden="true">${ICO_LUPA}</span>
+          <input class="campo sel-in" placeholder="Buscar unidad" readonly>
+          <span aria-hidden="true" class="sel-chev">${ICONOS.chevron}</span>
+        </div>
+        <ul class="sel-lista" role="listbox" aria-labelledby="sel-jer-et">
+          <li class="sel-op" role="option" aria-selected="true"><span class="sel-op-txt">Todas las unidades</span><span class="sel-cuenta">62 trab.</span><span class="sel-check">${ICO_CHECK}</span></li>
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Dirección General</span><span class="sel-cuenta">4 trab.</span></li>
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Nivel Inicial</span><span class="sel-cuenta">14 trab.</span></li>
+          <li class="sel-op marcado" role="option" aria-selected="false"><span class="sel-op-txt">Nivel Primaria</span><span class="sel-cuenta">18 trab.</span></li>
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Nivel Secundaria</span><span class="sel-cuenta">16 trab.</span></li>
+          <li class="sel-op" role="option" aria-selected="false"><span class="sel-op-txt">Administración</span><span class="sel-cuenta">10 trab.</span></li>
+          <li class="sel-op sel-n1" role="option" aria-selected="false"><span class="sel-op-txt">Secretaría<span class="sr-solo">, nivel 1</span></span><span class="sel-cuenta">6 trab.</span></li>
+          <li class="sel-op sel-n1" role="option" aria-selected="false"><span class="sel-op-txt">Mantenimiento<span class="sr-solo">, nivel 1</span></span><span class="sel-cuenta">4 trab.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="cg">
+      <span class="cg-et" id="sel-jer2-et">Buscando «secre»</span>
+      <div class="sel sel-demo-abierto">
+        <div class="sel-caja sel-con-lupa abierta">
+          <span class="sel-lupa" aria-hidden="true">${ICO_LUPA}</span>
+          <input class="campo sel-in" value="secre" readonly>
+          <span aria-hidden="true" class="sel-chev">${ICONOS.chevron}</span>
+        </div>
+        <ul class="sel-lista" role="listbox" aria-labelledby="sel-jer2-et">
+          <li class="sel-op sel-ctx" role="option" aria-selected="false"><span class="sel-op-txt">Administración<span class="sr-solo">, contexto</span></span><span class="sel-cuenta">10 trab.</span></li>
+          <li class="sel-op sel-n1 marcado" role="option" aria-selected="false"><span class="sel-op-txt">Secretaría<span class="sr-solo">, nivel 1</span></span><span class="sel-cuenta">6 trab.</span></li>
+        </ul>
+      </div>
+      <span class="cg-ayuda"><strong>El padre sigue ahí.</strong> «Secretaría» sin «Administración» es una
+      fila huérfana: no dice de qué es. El ancestro se lee en gris y <strong>se puede elegir</strong>; la
+      marcada de partida es la coincidencia, no el contexto.</span>
+    </div>
+  </div>
+</div>
+
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Regla</th><th>Qué pasa</th></tr></thead>
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Se conservan los ancestros, no los descendientes.</strong> Buscar «admin» muestra solo «Administración», sin sus hijos.</td></tr>
+    <tr><td class="num">2</td><td><strong>Cuatro niveles de sangrado.</strong> Un <code>nivel</code> mayor se dibuja como el cuarto, aunque cuenta con su valor al buscar ancestros.</td></tr>
+    <tr><td class="num">3</td><td><strong>Contra el servidor, la lista llega tal cual.</strong> Con <code>onBuscar</code> el componente no añade ancestros: si la app quiere el contexto, lo incluye en lo que devuelve.</td></tr>
+    <tr><td class="num">4</td><td><strong>La cuenta no se busca.</strong> Es una cifra al margen, no parte del nombre.</td></tr>
+    <tr><td class="num">5</td><td><strong>Sin <code>nivel</code> ni <code>cuenta</code>, nada cambia.</strong> El marcado es el de siempre.</td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">Cómo se usa</h4>
+<p class="seccion-sub">Lo que se copia es la importación y las props. Las opciones van en el orden del árbol, padres antes que hijos.</p>
+${verCodigo(
+  'Uso de SelectorBusqueda con jerarquía',
+  `import { useState } from 'react';
+import { SelectorBusqueda } from 'sistema-diseno-ae/componentes';
+
+export function FiltroUnidad() {
+  const [unidad, setUnidad] = useState<string | null>(null);
+  return (
+    <SelectorBusqueda
+      etiqueta="Unidad organizativa"
+      valor={unidad}
+      onCambio={setUnidad}
+      opciones={[
+        { valor: 'todas', texto: 'Todas las unidades', cuenta: '62 trab.' },
+        { valor: 'adm', texto: 'Administración', cuenta: '10 trab.' },
+        { valor: 'sec', texto: 'Secretaría', nivel: 1, cuenta: '6 trab.' },
+        { valor: 'man', texto: 'Mantenimiento', nivel: 1, cuenta: '4 trab.' },
+      ]}
+    />
+  );
+}`
+)}
+<h4 class="sub-seccion">Cómo se configura</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad de la opción</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>nivel</code><br><span class="seccion-sub">number</span></td><td>Sangrado a la izquierda. 0 o ausente es la raíz; se dibujan hasta cuatro niveles. Define los ancestros que se conservan al buscar.</td></tr>
+    <tr><td><code>cuenta</code><br><span class="seccion-sub">string | number</span></td><td>Cifra o texto a la derecha de la fila, tabular y sin partirse: «12 trab.». No entra en la búsqueda.</td></tr>
+  </tbody>
+</table>
+
 <h3 class="sub-seccion">Teclado — es donde se cae este componente</h3>
 <table class="tabla-simple">
   <thead><tr><th>Tecla</th><th>Qué hace</th></tr></thead>
@@ -12831,6 +12922,20 @@ input.campo.sel-in { width: 100%; padding-right: 32px; }
 .sel-notas { font-size: 13px; color: var(--texto-secundario); font-weight: 400; flex: none; }
 .sel-check { color: var(--accion); display: grid; place-items: center; }
 .sel-check .ic { width: 16px; height: 16px; }
+/* R169 · JERARQUIA: \`nivel\` y \`cuenta\` en las opciones. El sangrado es una
+   clase por nivel (\`sel-n1\`…\`sel-n4\`) y no un \`style\`, que el candado
+   prohibe; mas alla del cuarto se queda en el cuarto, porque sangrar sin tope
+   se come el ancho de un telefono. Se sangra el texto y no la fila, para que
+   el marcado y el hover sigan ocupando todo el ancho. \`sel-ctx\` es el
+   ancestro que se conserva al buscar: sigue siendo elegible, solo se lee como
+   contexto. \`sel-cuenta\` va a la derecha, tabular, y no se parte. */
+.sel-op.sel-n1 .sel-op-txt { padding-left: 20px; }
+.sel-op.sel-n2 .sel-op-txt { padding-left: 40px; }
+.sel-op.sel-n3 .sel-op-txt { padding-left: 60px; }
+.sel-op.sel-n4 .sel-op-txt { padding-left: 80px; }
+.sel-op.sel-ctx:not([aria-selected="true"]) .sel-op-txt { color: var(--texto-secundario); }
+.sel-cuenta { margin-left: auto; flex: none; padding-left: 8px; font-size: 13px;
+  color: var(--texto-secundario); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .sel-vacio { padding: 12px 12px; font-size: 13px; color: var(--texto-secundario); line-height: 1.55; }
 .sel-vacio strong { color: var(--texto-principal); }
 /* R118 · LA BUSQUEDA CONTRA EL SERVIDOR — esqueleto y fallo.
@@ -12848,6 +12953,7 @@ input.campo.sel-in { width: 100%; padding-right: 32px; }
   color: var(--texto-secundario); padding: 12px; }
 .sel-op.sel-fallo strong { color: var(--texto-principal); }
 .sel-demo-abierto { position: relative; min-height: 148px; }
+.sel-demo-abierto.sel-demo-alto { min-height: 360px; }
 /* La entrega real: el marco aislado. Estas reglas son MOBILIARIO y no viajan
    —lo que va dentro del iframe es lo unico que cuenta—. */
 .er-caso { padding: 0; overflow: hidden; }
