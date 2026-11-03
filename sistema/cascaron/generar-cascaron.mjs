@@ -3205,7 +3205,7 @@ que cada par de colores se pueda medir. «Pocos datos» (borde punteado) son las
 vacía lleva «—» y «0 trab.» y no tiene color. En un teléfono la tabla se desliza <strong>dentro</strong> de su
 recuadro, que se alcanza con el teclado; la página no.</p>
 <div class="bloque">
-  ${mapaEj({ id: 'mapa-ej-1', titulo: 'Tardanzas', desc: 'Por sexo y edad', total: `${MAPA_TOTAL} min`, filas: ['Hombre', 'Mujer'], columnas: ['18-29', '30-39', '40-49', '50-59', '60+'], celdas: MAPA_CELDAS })}
+  ${mapaEj({ id: 'mapa-ej-1', titulo: 'Tardanzas', total: `${MAPA_TOTAL} min`, filas: ['Hombre', 'Mujer'], columnas: ['18-29', '30-39', '40-49', '50-59', '60+'], celdas: MAPA_CELDAS })}
 </div>
 
 <h3 class="sub-seccion">Reglas</h3>
@@ -3234,7 +3234,6 @@ export function TardanzasPorSexoYEdad() {
   return (
     <MapaCalor
       titulo="Tardanzas"
-      descripcion="Por sexo y edad"
       total="603 min"
       filas={['Hombre', 'Mujer']}
       columnas={['18-29', '30-39', '40-49', '50-59', '60+']}
