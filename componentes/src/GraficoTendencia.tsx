@@ -179,6 +179,128 @@ export function puntoMasCercano(x: number, geo: GeometriaGrafico): number {
   return Math.max(0, Math.min(n - 1, Math.round((x - geo.puntos[0].x) / geo.paso)));
 }
 
+// ── Etiqueta de la referencia: dónde cabe sin tapar nada ──────────────────────
+
+export type PosicionEtiqueta = {
+  /** x del texto: el extremo derecho si `anchor` es `end`, el izquierdo si es `start`. */
+  x: number;
+  /** Línea base del texto. */
+  y: number;
+  anchor: 'start' | 'end';
+  lado: 'derecha' | 'izquierda';
+  vertical: 'encima' | 'debajo';
+  /** 0 si no toca nada de lo dibujado; mayor, más solape (último recurso). */
+  solape: number;
+};
+
+/**
+ * Ancho medio de un glifo a 12 px y a 13 px (valores sobre los puntos).
+ * MEDIDO en navegador (v1.153.1, `getComputedTextLength` sobre `.graf-ref-t`, IBM Plex Sans 12 px del
+ * catálogo): «Promedio: 603» 6,15 px por glifo, «Promedio: 44:02» 6,04, «Promedio de tardanzas» 5,91,
+ * «Objetivo: 88:88 hrs» 5,44; con la fuente de reserva del arnés hasta 6,42. Solo una etiqueta de
+ * mayúsculas anchas (MMM, WWW) llega a 8,2 a 8,8 y no es una etiqueta real. Se usa 7: cota alta con ~9 %
+ * de margen sobre lo peor medido en texto normal. El espejo del catálogo (`grEtiqueta`) lleva el mismo 7.
+ */
+const GLIFO_ETIQUETA = 7;
+const GLIFO_VALOR = 7.6;
+const AIRE_ETIQUETA = 2;
+const RADIO_HALO = 14;
+const RADIO_PUNTO = 4.5;
+
+type Caja = { x0: number; x1: number; y0: number; y1: number };
+
+/**
+ * Elige dónde escribir la etiqueta de la referencia. Prueba, en este orden,
+ * derecha-encima, derecha-debajo, izquierda-encima e izquierda-debajo de la
+ * línea punteada, y se queda con el primero que NO toca el trazo, un punto (con
+ * su halo el 0) ni el valor escrito sobre un punto. Si ninguno está libre,
+ * añade aire (12 px, luego 24) y, si aun así todos chocan, se queda con el de
+ * menor solape. Solo depende de la geometría: misma entrada, misma salida.
+ *
+ * El texto no sale del área del gráfico (entre el eje vertical y el margen
+ * derecho, y entre el tope y la línea base) ni cae sobre los rótulos del eje.
+ */
+export function posicionEtiquetaReferencia(
+  geo: GeometriaGrafico,
+  etiqueta: string,
+  formato: (valor: number) => string = String,
+): PosicionEtiqueta | null {
+  if (geo.yReferencia === null) return null;
+  const yr = geo.yReferencia;
+  const w = etiqueta.length * GLIFO_ETIQUETA + 2 * AIRE_ETIQUETA;
+  const visibles = geo.puntos.filter((p) => p.visible);
+
+  // Lo dibujado que la etiqueta no debe tocar.
+  const tramos = tramosVisibles(geo.puntos);
+  const circulos = geo.puntos.map((p, i) => ({ p, r: i === 0 ? RADIO_HALO : RADIO_PUNTO })).filter(({ p }) => p.visible);
+  const valores: Caja[] = geo.ancha
+    ? geo.puntos.flatMap((p, i) => {
+      if (i === 0 || !p.visible) return [];
+      const ancho = formato(p.valor).length * GLIFO_VALOR + 4;
+      return [{ x0: p.x - ancho / 2, x1: p.x + ancho / 2, y0: p.y - 12 - 12, y1: p.y - 12 + 4 }];
+    })
+    : [];
+
+  const solapeDe = (c: Caja): number => {
+    let s = 0;
+    for (const t of tramos) {
+      for (let k = 1; k < t.length; k++) {
+        const a = t[k - 1], b = t[k];
+        const largo = Math.hypot(b.x - a.x, b.y - a.y);
+        const pasos = Math.max(1, Math.ceil(largo));
+        for (let j = 0; j <= pasos; j++) {
+          const x = a.x + ((b.x - a.x) * j) / pasos;
+          const y = a.y + ((b.y - a.y) * j) / pasos;
+          if (x >= c.x0 - 2 && x <= c.x1 + 2 && y >= c.y0 - 2 && y <= c.y1 + 2) s += 1;
+        }
+      }
+    }
+    for (const { p, r } of circulos) {
+      const dx = Math.max(c.x0 - p.x, 0, p.x - c.x1);
+      const dy = Math.max(c.y0 - p.y, 0, p.y - c.y1);
+      const d = Math.hypot(dx, dy);
+      if (d < r + 1) s += 100 + (r + 1 - d);
+    }
+    for (const v of valores) {
+      const ox = Math.min(c.x1, v.x1) - Math.max(c.x0, v.x0);
+      const oy = Math.min(c.y1, v.y1) - Math.max(c.y0, v.y0);
+      if (ox > 0 && oy > 0) s += 100 + ox * oy;
+    }
+    return s;
+  };
+
+  const derecha = geo.ancho - geo.der;
+  const izquierda = (visibles.length ? geo.puntos[0].x : geo.izq + SEPARACION_EJE) + RADIO_HALO + 4;
+  const minX = geo.izq + 2;
+  const minY = 2;
+  const maxY = geo.yBase - 1;
+
+  let mejor: PosicionEtiqueta | null = null;
+  for (const extra of [0, 12, 24]) {
+    for (const [lado, vertical] of [
+      ['derecha', 'encima'], ['derecha', 'debajo'], ['izquierda', 'encima'], ['izquierda', 'debajo'],
+    ] as const) {
+      const anchor = lado === 'derecha' ? 'end' : 'start';
+      const x = lado === 'derecha' ? derecha : izquierda;
+      const y = redondear(vertical === 'encima' ? yr - 8 - extra : yr + 17 + extra);
+      const caja: Caja = {
+        x0: anchor === 'end' ? x - w : x - AIRE_ETIQUETA,
+        x1: anchor === 'end' ? x + AIRE_ETIQUETA : x + w,
+        y0: y - 11 - AIRE_ETIQUETA, y1: y + 3 + AIRE_ETIQUETA,
+      };
+      let solape = solapeDe(caja);
+      // Fuera del área del gráfico: nunca es libre, pero puede ser el menos malo.
+      if (caja.x0 < minX) solape += 1000 + (minX - caja.x0);
+      if (caja.x1 > geo.ancho - 2) solape += 1000 + (caja.x1 - geo.ancho + 2);
+      if (caja.y0 < minY) solape += 1000 + (minY - caja.y0);
+      if (caja.y1 > maxY) solape += 1000 + (caja.y1 - maxY);
+      if (solape === 0) return { x, y, anchor, lado, vertical, solape };
+      if (mejor === null || solape < mejor.solape) mejor = { x, y, anchor, lado, vertical, solape };
+    }
+  }
+  return mejor;
+}
+
 // ── Texto de un punto: UNA función para la ventana y la tabla ────────────────
 
 export type TextosPunto = {
@@ -313,6 +435,7 @@ export function GraficoTendencia({
       + 'Flechas para recorrer las semanas.'
     : titulo;
 
+  const etiquetaRef = referencia ? posicionEtiquetaReferencia(geo, referencia.etiqueta, formato) : null;
   const tramos = tramosVisibles(geo.puntos);
   const trazoDe = (t: PuntoGeo[]) => `M${t.map((p) => `${p.x},${p.y}`).join(' L')}`;
   const trazo = tramos.map(trazoDe).join(' ');
@@ -377,7 +500,9 @@ export function GraficoTendencia({
             {referencia && geo.yReferencia !== null && (
               <g>
                 <line className="graf-ref" x1={geo.izq} x2={geo.ancho - geo.der} y1={geo.yReferencia} y2={geo.yReferencia} />
-                <text className="graf-ref-t" x={geo.ancho - geo.der} y={geo.yReferencia - 8} textAnchor="end">{referencia.etiqueta}</text>
+                {etiquetaRef && (
+                  <text className="graf-ref-t" x={etiquetaRef.x} y={etiquetaRef.y} textAnchor={etiquetaRef.anchor}>{referencia.etiqueta}</text>
+                )}
               </g>
             )}
 

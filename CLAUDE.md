@@ -12,7 +12,7 @@ La implementación ejecutable de `SISTEMA-DE-DISENO.md` (**MMI-DS**), el sistema
 Colegio Albert Einstein, Huaraz. El documento es la **especificación**; esto es el **código**. Si
 discrepan, gana el de versión más alta y se corrige el otro en el mismo commit.
 
-**Estado actual: v1.153.0** — R169: cuatro piezas para el tablero de asistencia (`FranjaCifras` con `CifraConDiferencia`, `ListaRanking`, `MapaCalor`, `GraficoTendencia`) y `nivel` y `cuenta` en `SelectorBusqueda` (SPEC 07).
+**Estado actual: v1.153.1** — parche: la etiqueta de la referencia de `GraficoTendencia` ya no se solapa con el trazo ni con los puntos (`posicionEtiquetaReferencia`); sobre la v1.153.0, R169 (cuatro piezas del tablero de asistencia, SPEC 07).
 El detalle vive en [`memoria/01-estado.md`](memoria/01-estado.md); **este número es lo único que se toca aquí**.
 
 ## 2 · Lo primero al abrir sesión

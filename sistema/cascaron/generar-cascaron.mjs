@@ -3387,6 +3387,52 @@ const grEscala = (maximo, base = 1) => {
 };
 const grHm = (m) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`;
 
+/* Dónde va la etiqueta de la referencia: réplica de `posicionEtiquetaReferencia`
+   (mismos candidatos, mismas medidas) para el trazo único del ejemplo. */
+const grEtiqueta = ({ W, der, izq, yBase, ancha, yr, P, etiqueta, formato }) => {
+  const w = etiqueta.length * 7 + 4;
+  const circ = P.map((p, i) => ({ p, r: i === 0 ? 14 : 4.5 }));
+  const vals = ancha ? P.slice(1).map((p) => { const a = formato(p.v).length * 7.6 + 4; return { x0: p.x - a / 2, x1: p.x + a / 2, y0: p.y - 24, y1: p.y - 8 }; }) : [];
+  const solapeDe = (c) => {
+    let s = 0;
+    for (let k = 1; k < P.length; k++) {
+      const a = P[k - 1], b = P[k];
+      const n = Math.max(1, Math.ceil(Math.hypot(b.x - a.x, b.y - a.y)));
+      for (let j = 0; j <= n; j++) {
+        const x = a.x + ((b.x - a.x) * j) / n, y = a.y + ((b.y - a.y) * j) / n;
+        if (x >= c.x0 - 2 && x <= c.x1 + 2 && y >= c.y0 - 2 && y <= c.y1 + 2) s += 1;
+      }
+    }
+    for (const { p, r } of circ) {
+      const d = Math.hypot(Math.max(c.x0 - p.x, 0, p.x - c.x1), Math.max(c.y0 - p.y, 0, p.y - c.y1));
+      if (d < r + 1) s += 100 + (r + 1 - d);
+    }
+    for (const v of vals) {
+      const ox = Math.min(c.x1, v.x1) - Math.max(c.x0, v.x0), oy = Math.min(c.y1, v.y1) - Math.max(c.y0, v.y0);
+      if (ox > 0 && oy > 0) s += 100 + ox * oy;
+    }
+    return s;
+  };
+  let mejor = null;
+  for (const extra of [0, 12, 24]) {
+    for (const [lado, vert] of [['d', 'e'], ['d', 'b'], ['i', 'e'], ['i', 'b']]) {
+      const end = lado === 'd';
+      const x = end ? W - der : P[0].x + 18;
+      const y = grRed(vert === 'e' ? yr - 8 - extra : yr + 17 + extra);
+      const c = { x0: end ? x - w : x - 2, x1: end ? x + 2 : x + w, y0: y - 13, y1: y + 5 };
+      let s = solapeDe(c);
+      if (c.x0 < izq + 2) s += 1000 + (izq + 2 - c.x0);
+      if (c.x1 > W - 2) s += 1000 + (c.x1 - W + 2);
+      if (c.y0 < 2) s += 1000 + (2 - c.y0);
+      if (c.y1 > yBase - 1) s += 1000 + (c.y1 - yBase + 1);
+      const r = { x, y, anchor: end ? 'end' : 'start', s };
+      if (s === 0) return r;
+      if (!mejor || s < mejor.s) mejor = r;
+    }
+  }
+  return mejor;
+};
+
 const graficoEj = ({ id, titulo, unidad, formato, puntos, base = 1, referencia, columna, chip, activo = -1, ancho = 600 }) => {
   const W = Math.max(280, ancho);
   const ancha = W >= 520;
@@ -3419,7 +3465,8 @@ const graficoEj = ({ id, titulo, unidad, formato, puntos, base = 1, referencia, 
   svg += `<path class="graf-area" d="${trazo} L${P[P.length - 1].x},${yBase} L${P[0].x},${yBase} Z" fill="url(#${id}a)"></path>`;
   if (referencia) {
     const yr = Y(referencia.valor);
-    svg += `<g><line class="graf-ref" x1="${izq}" x2="${W - der}" y1="${yr}" y2="${yr}"></line><text class="graf-ref-t" x="${W - der}" y="${yr - 8}" text-anchor="end">${referencia.etiqueta}</text></g>`;
+    const pe = grEtiqueta({ W, der, izq, yBase, ancha, yr, P, etiqueta: referencia.etiqueta, formato });
+    svg += `<g><line class="graf-ref" x1="${izq}" x2="${W - der}" y1="${yr}" y2="${yr}"></line><text class="graf-ref-t" x="${pe.x}" y="${pe.y}" text-anchor="${pe.anchor}">${referencia.etiqueta}</text></g>`;
   }
   svg += `<path class="graf-lin graf-anima" d="${trazo}" pathLength="1"></path>`;
   P.forEach((p, i) => {
@@ -3479,7 +3526,7 @@ valor con su unidad y la diferencia frente a esta semana.</p>
     <tr><td class="num">2</td><td><strong>El punto 0 va pegado al eje vertical</strong> (a 16&nbsp;px como mucho) y el último es el más alejado; un punto por valor. Posiciones, tope y marcas son funciones puras exportadas.</td></tr>
     <tr><td class="num">3</td><td><strong>El eje</strong> lleva el cero y cuatro marcas escritas con <code>formato</code>; el tope se redondea hacia arriba, y con <code>base</code> 60 las marcas caen en horas enteras. Cuadrícula tenue y base más fuerte.</td></tr>
     <tr><td class="num">4</td><td><strong>Línea y área</strong> con degradado por clase; punto 0 con halo y sin su valor repetido; bajo cada punto su número de semana y «actual» bajo el 0, sin fechas.</td></tr>
-    <tr><td class="num">5</td><td><strong>La referencia es opcional:</strong> línea punteada con su etiqueta a la derecha; sin ella no sale ni la línea ni la etiqueta.</td></tr>
+    <tr><td class="num">5</td><td><strong>La referencia es opcional:</strong> línea punteada con su etiqueta, en el primer lugar que no tapa nada (regla 16); sin ella no sale ni la línea ni la etiqueta.</td></tr>
     <tr><td class="num">6</td><td><strong>Los valores sobre los puntos 1 a 6</strong> solo con la pieza de 520&nbsp;px o más, medida en JavaScript sobre su propio contenedor; se redibuja al cambiar el ancho.</td></tr>
     <tr><td class="num">7</td><td><strong>La ventana</strong> (cursor, toque o teclado) con guía vertical y punto resaltado: «Esta semana» / «Hace N semanas», el rango, el valor con unidad y la diferencia frente a esta semana.</td></tr>
     <tr><td class="num">8</td><td><strong>Teclado:</strong> el contenedor entra en el orden de tabulación; las flechas recorren, Inicio y Fin saltan a los extremos, Escape cierra. Foco visible.</td></tr>
@@ -3488,8 +3535,9 @@ valor con su unidad y la diferencia frente a esta semana.</p>
     <tr><td class="num">11</td><td><strong>Tabla desplegable</strong> «Ver las cifras de cada semana»: «Semana atrás · Periodo · valor». El rango y el valor salen de la misma función que la ventana.</td></tr>
     <tr><td class="num">12</td><td><strong>El trazo se anima una sola vez</strong>, al abrir, y la clase se suelta cuando la animación termina (nada la suelta a media). No se repite al redibujar por el ancho ni al cambiar los puntos, y no se anima con <code>prefers-reduced-motion</code>.</td></tr>
     <tr><td class="num">13</td><td><strong>Móvil primero:</strong> alto de 250 en estrecho y 300 en ancho, sin <code>max-width</code> ni <code>@container</code>; cifras tabulares, colores solo de tokens.</td></tr>
-    <tr><td class="num">14</td><td><strong>Se exportan</strong> la pieza, <code>escalaEje</code>, <code>geometriaGrafico</code>, <code>puntoMasCercano</code>, <code>tramosVisibles</code>, <code>textosPunto</code> y <code>nombreSemana</code>, con sus tipos.</td></tr>
+    <tr><td class="num">14</td><td><strong>Se exportan</strong> la pieza, <code>escalaEje</code>, <code>geometriaGrafico</code>, <code>puntoMasCercano</code>, <code>tramosVisibles</code>, <code>textosPunto</code>, <code>nombreSemana</code> y <code>posicionEtiquetaReferencia</code>, con sus tipos.</td></tr>
     <tr><td class="num">15</td><td><strong>Lo que no se puede dibujar se acota:</strong> un valor no finito no se dibuja ni se conecta (el trazo se parte), un negativo se dibuja en 0; el texto escribe lo que <code>formato</code> dé.</td></tr>
+    <tr><td class="num">16</td><td><strong>La etiqueta de la referencia no tapa nada:</strong> se prueba derecha-encima, derecha-debajo, izquierda-encima e izquierda-debajo de la línea punteada y se queda con el primer lugar que no toca el trazo, un punto ni un valor; solo sobresale del gráfico si, por larga, la etiqueta no cabe entre el eje y el margen. La elige <code>posicionEtiquetaReferencia</code>, que solo depende de la geometría.</td></tr>
   </tbody>
 </table>
 
