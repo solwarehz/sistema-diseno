@@ -995,7 +995,7 @@ export function PanelPrivilegios({
            RECIEN encendido: recorrer el mapa entero despertaba permisos
            dormidos del otro modulo. */
         for (const id of [...(encendidos.get(idModulo) as Set<string>)]) {
-          const elPriv = todos(mod).find((x) => x.id === id);
+          const elPriv: Privilegio | undefined = todos(mod).find((x) => x.id === id);
           const suBase = elPriv ? baseDe(mod, elPriv, base) : null;
           if (!suBase || suBase === id || mapa[suBase] === true) continue;
           /* R149 · El base tiene que EXISTIR —`baseDe` lo garantiza— y poder

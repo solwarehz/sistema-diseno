@@ -7,11 +7,13 @@ aporte.
 
 - **v1.152.0 PUBLICADA** (2026-11-02, etiqueta + release con ZIP; `main` = `14d3acf`) lleva la SPEC 06 (`PanelPrivilegios`
   plegable). La v1.151.0 tenía el mismo código; etiquetas y releases no se tocan.
-- **v1.153.0 PREPARADA, NO PUBLICADA** (rama `spec-07-piezas-tablero-general-asistencia`; falta PR y `npm run publicar`).
-  SPEC 07 (R169): `FranjaCifras`+`CifraConDiferencia`, `ListaRanking`, `MapaCalor`, `GraficoTendencia` y `nivel`/`cuenta` en
-  `SelectorBusqueda`; 20 tokens (`grafico-*`, `barra-*`, `mapa-*`) sobre primitivos ya autorizados; contraste **242 pares,
-  184 bloqueantes, 92 por modo**, 0 fallos. Cifras del mockup ajustadas a la escala: franja 34 px; gráfico cifra 56, título 28/34.
-  Sin `style` en línea: barras en SVG (atributos) y celdas por clases `-p1`…`-p5`. No probada la instalación limpia.
+- **v1.153.0 PUBLICADA** (etiqueta `v1.153.0` + ZIP; mergeada en `main`): SPEC 07 (R169), `FranjaCifras`+`CifraConDiferencia`,
+  `ListaRanking`, `MapaCalor`, `GraficoTendencia` y `nivel`/`cuenta` en `SelectorBusqueda`; 20 tokens (`grafico-*`, `barra-*`,
+  `mapa-*`) sobre primitivos ya autorizados; contraste **242 pares, 184 bloqueantes, 92 por modo**, 0 fallos. Sin `style` en
+  línea: barras en SVG (atributos) y celdas por clases `-p1`…`-p5`. No probada la instalación limpia.
+- **v1.153.1 PREPARADA, NO PUBLICADA** (parche sin R, rama `work`; falta PR y `npm run publicar`): la etiqueta de la referencia
+  de `GraficoTendencia` ya no se solapa con trazo, puntos ni valores (`posicionEtiquetaReferencia`, regla 16; ancho de glifo 7 px
+  medido en navegador; el catálogo la repite y una prueba compara ambos a 280-520 px).
   - Pendiente del responsable: iconos de «Dar alta» y «Desactivar» del panel de privilegios (sin icono hoy).
 - `verificar-color` salta lo que git ignora; `/imagenes` está en `.gitignore` (maquetas de otros equipos: referencia, no sistema).
 - La skill `/spec` pide en toda spec el criterio «entrega = promesa» (modificación local de una skill externa de

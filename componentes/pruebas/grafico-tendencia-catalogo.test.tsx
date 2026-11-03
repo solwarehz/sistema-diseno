@@ -21,11 +21,13 @@ const pts = (v: number[]) => v.map((valor, i) => ({ valor, detalle: RANGOS[i] })
 const TARDANZA = [612, 540, 585, 498, 660, 702, 631];
 const FALTA = [2300, 2470, 1980, 2760, 3100, 2640, 2900];
 
+let anchoSim = 600;
 beforeEach(() => {
+  anchoSim = 600;
   vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} });
   Object.defineProperty(HTMLElement.prototype, 'clientWidth', {
     configurable: true,
-    get() { return (this as HTMLElement).classList.contains('graf-vista') ? 600 : 0; },
+    get() { return (this as HTMLElement).classList.contains('graf-vista') ? anchoSim : 0; },
   });
 });
 afterEach(() => {
@@ -41,7 +43,8 @@ function canon(n: Node, ids: Map<string, string>): string {
   const atrs = [...el.attributes]
     .map((a) => {
       let v = a.value;
-      for (const [id, k] of ids) v = v.split(id).join(k);
+      // Solo donde un id puede estar: un id corto («rd») también aparece dentro de «Tardanzas».
+      if (['id', 'aria-labelledby', 'fill'].includes(a.name.toLowerCase())) for (const [id, k] of ids) v = v.split(id).join(k);
       return `${a.name.toLowerCase()}=${v}`;
     })
     .sort()
@@ -86,4 +89,47 @@ describe('GraficoTendencia · el catálogo enseña lo que el componente emite (R
     for (let k = 0; k < 3; k++) act(() => { fireEvent.keyDown(v, { key: 'ArrowRight' }); });
     expect(normalizado(delCatalogo('gr-ej-2')).split('<')).toEqual(normalizado(container.querySelector('section.graf')!).split('<'));
   });
+});
+
+/**
+ * La función del catálogo (`graficoEj`) vive en un `.mjs` que escribe archivos al importarse: no se
+ * importa, se EXTRAE su texto (de `grRed` a antes de `GRAF_RANGOS`) y se evalúa. Así la prueba compara
+ * el marcado que el catálogo sabría dibujar a CUALQUIER ancho con el del componente, también donde la
+ * etiqueta de la referencia no va a la derecha-encima.
+ */
+const FUENTE = readFileSync(resolve(process.cwd(), '..', 'sistema', 'cascaron', 'generar-cascaron.mjs'), 'utf8');
+const TROZO = FUENTE.slice(FUENTE.indexOf('const grRed ='), FUENTE.indexOf('const GRAF_RANGOS'));
+const { graficoEj } = new Function(`${TROZO}; return { graficoEj };`)() as {
+  graficoEj: (o: Record<string, unknown>) => string;
+};
+
+describe('GraficoTendencia · el catálogo y el componente coinciden a cualquier ancho (v1.153.1)', () => {
+  const casos = [
+    { id: 'gr-ej-1', titulo: 'Tardanzas', unidad: 'min', formato: String, valores: TARDANZA, base: 1, ref: 603, etiqueta: 'Promedio: 603', columna: 'Minutos' },
+    { id: 'gr-ej-2', titulo: 'Faltas', unidad: 'hrs', formato: hm, valores: FALTA, base: 60, ref: 2642, etiqueta: `Promedio: ${hm(2642)}`, columna: 'Horas' },
+  ];
+  // Además de las etiquetas reales, etiquetas de otros largos: el ancho estimado del texto decide el lado.
+  const variantes = casos.flatMap((c) => [0, 6, 12, 18, 24].map((n) => ({
+    ...c, etiqueta: n === 0 ? c.etiqueta : `${c.etiqueta}${'x'.repeat(n)}`,
+  })));
+  for (const c of variantes) {
+    for (const w of [280, 360, 390, 520]) {
+      it(`[16] (v1.153.1) ${c.titulo} a ${w} px con «${c.etiqueta}»: el SVG del catálogo y el del componente son el mismo`, () => {
+        anchoSim = w;
+        const { container } = render(
+          <GraficoTendencia
+            titulo={c.titulo} unidad={c.unidad} formato={c.formato} puntos={pts(c.valores)} base={c.base}
+            referencia={{ valor: c.ref, etiqueta: c.etiqueta }} columnaValor={c.columna}
+          />,
+        );
+        const html = graficoEj({
+          id: c.id, titulo: c.titulo, unidad: c.unidad, formato: c.formato, puntos: pts(c.valores), base: c.base,
+          referencia: { valor: c.ref, etiqueta: c.etiqueta }, columna: c.columna, ancho: w,
+        });
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const real = normalizado(container.querySelector('section.graf')!);
+        expect(normalizado(doc.querySelector('section.graf')!).split('<')).toEqual(real.split('<'));
+      });
+    }
+  }
 });

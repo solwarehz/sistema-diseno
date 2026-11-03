@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.153.0";
+export const VERSION = "1.153.1";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,26 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.153.1', fecha: '2026-11-02',
+    que: 'GraficoTendencia: la etiqueta de la referencia ya no se solapa con el trazo ni con los puntos (parche, sin requerimiento nuevo)',
+    porque:
+      'PARCHE SOBRE LA 1.153.0, SIN REQUERIMIENTO NUEVO. Medido en navegador a 360, 390 y 1280 px, en claro y '
+      + 'oscuro: la etiqueta de la referencia («Promedio: 603», «Promedio: 44:02») iba siempre al extremo derecho '
+      + 'de la linea punteada y justo encima, y se solapaba con la linea de datos y con los puntos 5 y 6; a 1280 el '
+      + 'valor «631» quedaba pegado a ella. El mockup aprobado hacia lo mismo y el responsable pidio corregirlo. '
+      + 'Ahora una funcion pura exportada, `posicionEtiquetaReferencia`, prueba derecha-encima, derecha-debajo, '
+      + 'izquierda-encima e izquierda-debajo de la linea y elige el primer lugar que no toca el trazo, un punto ni '
+      + 'el valor de un punto; si ninguno esta libre añade aire y, si aun asi todos chocan, el de menor solape. '
+      + 'Solo sobresale del area del grafico si, por larga, la etiqueta no cabe entre el eje y el margen; no cae '
+      + 'sobre el rotulo del eje. Solo depende de la geometria. Sin `referencia` no cambia nada. El catalogo '
+      + 'repite la funcion y una prueba compara su SVG con el del componente a 280, 360, 390 y 520 px. Sin '
+      + 'tokens nuevos ni cambio de cifras de contraste. TAMBIEN: `PanelPrivilegios` anota el tipo de `elPriv` '
+      + '(`Privilegio | undefined`) porque TypeScript 7 daba TS7022 («implicitly has type any, referenced in its own '
+      + 'initializer») en un consumidor estricto; sin cambio de comportamiento ni de HTML.',
+    tokens: { alta: [], baja: [] },
+    rompe: [],
+  },
   {
     v: '1.153.0', fecha: '2026-11-02',
     que: 'Piezas del tablero: FranjaCifras con CifraConDiferencia, ListaRanking, MapaCalor y GraficoTendencia, y nivel y cuenta en SelectorBusqueda (R169)',
