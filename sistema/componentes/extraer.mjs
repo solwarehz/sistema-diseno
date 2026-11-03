@@ -75,6 +75,8 @@ const ELEMENTOS = [
   // SPEC 07 (R169): tabla de cinco pasos de un tono y lista corta con barra. `mapa` y `ranking` son prefijos de cada una.
   { n: 'Mapa de calor',         p: ['mapa'] },
   { n: 'Lista de ranking',      p: ['ranking'] },
+  // SPEC 07 (R169): panel con linea de siete puntos, ventana y tabla. `graf` es el prefijo de todo el.
+  { n: 'Gráfico de tendencia',   p: ['graf'] },
   { n: 'Avatar',                p: ['avatar'] },
   { n: 'Tarjeta de persona',    p: ['tp'] },
   // R59 · Prefijo propio y no `tn-`: el corte de prefijos es en el guion, así

@@ -78,6 +78,8 @@
   --dur-lenta: 220ms;
   --dur-giro: 700ms;
   --dur-onda: 1300ms;
+  /* El trazo del grafico de tendencia al abrir (SPEC 07): una vez, no un adorno que se repite. */
+  --dur-trazo: 1000ms;
   --curva: ease;
   --curva-vaiven: ease-in-out;
   --curva-giro: linear;
@@ -100,6 +102,7 @@
     --dur-lenta: 0.01ms;
     --dur-giro: 0.01ms;
     --dur-onda: 0.01ms;
+    --dur-trazo: 0.01ms;
   }
 }
 :root{ --mmi-componentes: 1.152.0; }
@@ -901,6 +904,58 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .ranking-barra-relleno{ fill: var(--barra-relleno); }
 .ranking-valor{ font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .ranking-vacio{ margin: 12px 0 0; font-size: 15px; color: var(--texto-secundario); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   GRÁFICO DE TENDENCIA — 40 reglas · clases .graf-*
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.graf{ background: var(--grafico-fondo); color: var(--grafico-texto); border: 1px solid var(--grafico-rejilla);
+  border-radius: 12px; padding: 16px 12px 8px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.graf-cab{ display: flex; flex-direction: column; gap: 12px; }
+.graf-titulo{ margin: 0 0 8px; font-size: 28px; font-weight: 600; line-height: 1.15; color: var(--grafico-texto); }
+.graf-num{ font-size: 56px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.graf-num small{ font-size: 20px; font-weight: 500; color: var(--grafico-texto-tenue); }
+.graf-chips{ display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.graf-chips .chip{ white-space: normal; }
+.graf-vista{ position: relative; border-radius: 6px; min-width: 0; }
+.graf-vista:focus-visible{ outline: 3px solid var(--grafico-foco); outline-offset: 2px; }
+.graf-svg{ display: block; width: 100%; height: auto; touch-action: pan-y; font-family: inherit; }
+.graf-det summary{ cursor: pointer; font-size: 13px; color: var(--grafico-texto-tenue); padding: 8px 0; }
+.graf-det summary:focus-visible{ outline: 3px solid var(--grafico-foco); outline-offset: 2px; }
+.graf-tabla{ border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; margin: 4px 0 8px; }
+.graf-tabla th, .graf-tabla td{ text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--grafico-rejilla); }
+.graf-tabla thead th{ color: var(--grafico-texto-tenue); font-weight: 500; }
+.graf-tabla tbody th{ font-weight: 400; }
+.graf-rej{ stroke: var(--grafico-rejilla); stroke-width: 1; }
+.graf-base{ stroke: var(--grafico-base); stroke-width: 1; }
+.graf-eje{ fill: var(--grafico-texto-tenue); font-size: 12px; }
+.graf-numero{ fill: var(--grafico-texto-tenue); font-size: 15px; font-weight: 600; }
+.graf-num0{ fill: var(--grafico-texto); font-size: 15px; font-weight: 600; }
+.graf-sub{ fill: var(--grafico-texto-tenue); font-size: 12px; }
+.graf-lin{ fill: none; stroke: var(--grafico-linea); stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round; }
+.graf-stop{ stop-color: var(--grafico-linea); }
+.graf-area{ stroke: none; }
+.graf-ref{ stroke: var(--grafico-ref); stroke-opacity: .75; stroke-width: 1.5; stroke-dasharray: 5 5; }
+.graf-ref-t{ fill: var(--grafico-texto); font-size: 12px; stroke: var(--grafico-fondo); stroke-width: 4; paint-order: stroke; }
+.graf-halo{ fill: var(--grafico-halo); fill-opacity: .3; }
+.graf-p0{ fill: var(--grafico-punto0); stroke: var(--grafico-linea); stroke-width: 3; }
+.graf-p{ fill: var(--grafico-fondo); stroke: var(--grafico-linea); stroke-width: 2.5; }
+.graf-val{ fill: var(--grafico-texto); font-size: 13px; font-weight: 600; stroke: var(--grafico-fondo); stroke-width: 4; paint-order: stroke; }
+.graf-guia{ stroke: var(--grafico-guia); stroke-opacity: .6; stroke-width: 1; }
+.graf-anillo{ fill: none; stroke: var(--grafico-guia); stroke-width: 2; }
+.graf-vent{ pointer-events: none; }
+.graf-vent-fondo{ fill: var(--grafico-ventana-fondo); }
+.graf-vent-t{ fill: var(--grafico-ventana-texto); font-size: 13px; }
+.graf-vent-b{ fill: var(--grafico-ventana-texto); font-size: 13px; font-weight: 600; }
+.graf-anima{ stroke-dasharray: 1; animation: graf-trazo var(--dur-trazo) var(--curva) both; }
+@media (prefers-reduced-motion: reduce) {
+  .graf-anima{ animation: none; stroke-dasharray: none; }
+}
+@media (min-width: 520px) {
+  .graf{ padding: 20px 16px 8px; }
+  .graf-titulo{ font-size: 34px; }
+  .graf-cab{ flex-direction: row; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px 24px; }
+}
 
 /* ───────────────────────────────────────────────────────────────────────────
    AVATAR — 21 reglas · clases .avatar-*
@@ -2202,13 +2257,14 @@ input[type='date'].campo, .fc-campo{ max-width: 172px; }
 .mono-lista.mono{ font-family: 'IBM Plex Mono', monospace; }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   ANIMACIONES — 3 · las que estas reglas invocan, con sus variantes
+   ANIMACIONES — 4 · las que estas reglas invocan, con sus variantes
    Sin su @keyframes, `animation:` se ignora EN SILENCIO. Hasta la v1.107.0
    no viajaban: el giro del botón ocupado y la barra indeterminada estaban
    quietos en todos los productos.
    ─────────────────────────────────────────────────────────────────────────── */
 
 @keyframes btn-girar{ to { transform: rotate(360deg); } }
+@keyframes graf-trazo{ from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes latido{
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: .45; transform: scale(.82); }

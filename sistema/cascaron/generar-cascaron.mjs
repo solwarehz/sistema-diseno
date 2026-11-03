@@ -3366,6 +3366,193 @@ export function RankingTardanzas() {
   </tbody>
 </table>`;
 
+// ── Elemento: Gráfico de tendencia (SPEC 07, R169) ──────────────────────────
+
+/* Mismo marcado que emite el componente a un ancho dado, escrito a mano: el
+   catalogo no ejecuta React y lo que enseña no puede divergir de lo que se
+   entrega. La prueba `grafico-tendencia-catalogo` compara este marcado con el
+   del componente nodo por nodo. La geometria repite, a proposito, la de
+   `geometriaGrafico`; si una cambia sin la otra, esa prueba lo dice. */
+const grRed = (n) => Math.round(n * 100) / 100;
+const grEscala = (maximo, base = 1) => {
+  const b = base > 0 && Number.isFinite(base) ? base : 1;
+  const m = Number.isFinite(maximo) && maximo > 0 ? maximo : 0;
+  const crudo = ((m / b) * 1.12) / 4;
+  let unidades = 1;
+  if (crudo > 1) {
+    const pot = Math.pow(10, Math.floor(Math.log10(crudo)));
+    unidades = ([1, 2, 5, 10].find((k) => k * pot >= crudo) ?? 10) * pot;
+  }
+  const paso = unidades * b;
+  return { tope: paso * 4, marcas: [0, 1, 2, 3, 4].map((k) => k * paso) };
+};
+const grHm = (m) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`;
+
+const graficoEj = ({ id, titulo, unidad, formato, puntos, base = 1, referencia, columna, chip, activo = -1, ancho = 600 }) => {
+  const W = Math.max(280, ancho);
+  const ancha = W >= 520;
+  const alto = ancha ? 300 : 250;
+  const izq = ancha ? 56 : 44;
+  const der = ancha ? 30 : 18;
+  const arriba = 38;
+  const yBase = alto - (ancha ? 64 : 54);
+  const valores = puntos.map((p) => p.valor);
+  const esc = grEscala(Math.max(0, ...valores, ...(referencia ? [referencia.valor] : [])), base);
+  const Y = (v) => grRed(arriba + (yBase - arriba) * (1 - v / esc.tope));
+  const paso = valores.length > 1 ? (W - izq - der - 16) / (valores.length - 1) : 0;
+  const P = valores.map((v, i) => ({ x: grRed(izq + 16 + i * paso), y: Y(v), v }));
+  const trazo = `M${P.map((p) => `${p.x},${p.y}`).join(' L')}`;
+  const nombre = (i) => (i === 0 ? 'Esta semana' : `Hace ${i} ${i === 1 ? 'semana' : 'semanas'}`);
+  const textos = (i) => {
+    const v = valores[i];
+    const d = v - valores[0];
+    return {
+      semana: nombre(i), rango: puntos[i].detalle, valor: formato(v), valorUnidad: `${formato(v)} ${unidad}`,
+      dif: i === 0 ? '' : d === 0 ? 'igual que esta semana' : `${d > 0 ? '+' : '−'}${formato(Math.abs(d))} frente a esta semana`,
+    };
+  };
+  const t0 = textos(0);
+  let svg = `<svg class="graf-svg" width="${W}" height="${alto}" viewBox="0 0 ${W} ${alto}" aria-hidden="true" focusable="false"><defs><linearGradient id="${id}a" x1="0" y1="0" x2="0" y2="1"><stop class="graf-stop" offset="0" stop-opacity=".38"></stop><stop class="graf-stop" offset="1" stop-opacity="0"></stop></linearGradient></defs>`;
+  esc.marcas.forEach((m, k) => {
+    const y = Y(m);
+    svg += `<g><line class="${k === 0 ? 'graf-base' : 'graf-rej'}" x1="${izq}" x2="${W - der}" y1="${y}" y2="${y}"></line><text class="graf-eje" x="${izq - 8}" y="${y + 4}" text-anchor="end">${formato(m)}</text></g>`;
+  });
+  svg += `<path class="graf-area" d="${trazo} L${P[P.length - 1].x},${yBase} L${P[0].x},${yBase} Z" fill="url(#${id}a)"></path>`;
+  if (referencia) {
+    const yr = Y(referencia.valor);
+    svg += `<g><line class="graf-ref" x1="${izq}" x2="${W - der}" y1="${yr}" y2="${yr}"></line><text class="graf-ref-t" x="${W - der}" y="${yr - 8}" text-anchor="end">${referencia.etiqueta}</text></g>`;
+  }
+  svg += `<path class="graf-lin graf-anima" d="${trazo}" pathLength="1"></path>`;
+  P.forEach((p, i) => {
+    svg += i === 0
+      ? `<g><circle class="graf-halo" cx="${p.x}" cy="${p.y}" r="14"></circle><circle class="graf-p0" cx="${p.x}" cy="${p.y}" r="7"></circle></g>`
+      : `<g><circle class="graf-p" cx="${p.x}" cy="${p.y}" r="4.5"></circle>${ancha ? `<text class="graf-val" x="${p.x}" y="${p.y - 12}" text-anchor="middle">${formato(p.v)}</text>` : ''}</g>`;
+  });
+  P.forEach((p, i) => { svg += `<text class="${i === 0 ? 'graf-num0' : 'graf-numero'}" x="${p.x}" y="${yBase + 24}" text-anchor="middle">${i}</text>`; });
+  svg += `<text class="graf-sub" x="${P[0].x}" y="${yBase + 42}" text-anchor="middle">actual</text>`;
+  if (activo >= 0) {
+    const p = P[activo];
+    const t = textos(activo);
+    const h = 16 + (t.dif ? 4 : 3) * 18;
+    const x = Math.max(4, Math.min(W - 220 - 4, p.x - 110));
+    const y = Math.max(4, p.y - h - 16);
+    svg += `<g><line class="graf-guia" x1="${p.x}" x2="${p.x}" y1="${arriba}" y2="${yBase}"></line><circle class="graf-anillo" cx="${p.x}" cy="${p.y}" r="9"></circle><g class="graf-vent"><rect class="graf-vent-fondo" x="${x}" y="${y}" width="220" height="${h}" rx="8"></rect><text class="graf-vent-b" x="${x + 10}" y="${y + 20}">${t.semana}</text><text class="graf-vent-t" x="${x + 10}" y="${y + 38}">${t.rango}</text><text class="graf-vent-b" x="${x + 10}" y="${y + 56}">${t.valorUnidad}</text>${t.dif ? `<text class="graf-vent-t" x="${x + 10}" y="${y + 74}">${t.dif}</text>` : ''}</g></g>`;
+  }
+  svg += '</svg>';
+  const etiqueta = `${titulo} por semana. Esta semana ${t0.valorUnidad}${referencia ? `; ${referencia.etiqueta}` : ''}. Flechas para recorrer las semanas.`;
+  const filas = puntos.map((_, i) => { const t = textos(i); return `<tr><th scope="row">${i === 0 ? '0 (actual)' : i}</th><td>${t.rango}</td><td>${t.valor}</td></tr>`; }).join('');
+  return `<section class="graf" aria-labelledby="${id}t"><div class="graf-cab"><div><h2 class="graf-titulo" id="${id}t">${titulo}</h2><div class="graf-num"><span>${t0.valor}</span> <small>${unidad}</small></div></div>${chip ? `<div class="graf-chips">${chip}</div>` : ''}</div><div class="graf-vista" tabindex="0" role="group" aria-label="${etiqueta}">${svg}</div><div class="sr-solo" aria-live="polite" aria-atomic="true"><span>${activo >= 0 ? `${textos(activo).semana}, ${textos(activo).rango}: ${textos(activo).valorUnidad}` : ''}</span></div><details class="graf-det"><summary>Ver las cifras de cada semana</summary><table class="graf-tabla"><caption class="sr-solo">${titulo}: cifras de cada semana</caption><thead><tr><th scope="col">Semana atrás</th><th scope="col">Periodo</th><th scope="col">${columna}</th></tr></thead><tbody>${filas}</tbody></table></details></section>`;
+};
+
+const GRAF_RANGOS = ['26 oct – 1 nov', '19 oct – 25 oct', '12 oct – 18 oct', '5 oct – 11 oct', '28 sep – 4 oct', '21 sep – 27 sep', '14 sep – 20 sep'];
+const grPuntos = (v) => v.map((valor, i) => ({ valor, detalle: GRAF_RANGOS[i] }));
+const GRAF_TARDANZA = [612, 540, 585, 498, 660, 702, 631];
+const GRAF_FALTA = [2300, 2470, 1980, 2760, 3100, 2640, 2900];
+const grProm = (v) => Math.round(v.slice(1).reduce((a, b) => a + b, 0) / 6);
+
+const pagGraficoTendencia = `
+<p class="pag-intro">Un <strong>panel con el título, el valor grande de esta semana y una línea de siete
+puntos</strong> sobre un eje de «semanas atrás». La app entrega los puntos ya calculados y cómo se escribe un
+número; la pieza reparte el espacio, elige el tope del eje y dibuja. Sin librería de gráficos. El panel es
+oscuro en los dos temas (el cambio lo hacen los tokens).</p>
+
+<h3 class="sub-seccion">Tardanzas, en minutos</h3>
+<p class="seccion-sub">Con referencia («Promedio: 603») y un solo chip de comparación, que arma la app. El punto 0
+va pegado al eje vertical y no repite su valor, que ya está arriba en grande. Aquí se ve a 600&nbsp;px de ancho,
+donde los puntos 1 a 6 llevan su valor encima; con menos de 520&nbsp;px de <strong>la pieza</strong> (no de la
+ventana) desaparecen, el alto baja a 250 y se lee con la ventana, el teclado o la tabla.</p>
+<div class="bloque">
+  ${graficoEj({ id: 'gr-ej-1', titulo: 'Tardanzas', unidad: 'min', formato: String, puntos: grPuntos(GRAF_TARDANZA), base: 1, referencia: { valor: grProm(GRAF_TARDANZA), etiqueta: `Promedio: ${grProm(GRAF_TARDANZA)}` }, columna: 'Minutos', chip: '<span class="chip chip-aviso">▲ +72 min frente a la semana previa</span>' })}
+</div>
+
+<h3 class="sub-seccion">Faltas, en horas, con la ventana abierta</h3>
+<p class="seccion-sub">Los minutos se escriben como <code>h:mm</code> y <code>base={60}</code> hace que las marcas del eje caigan en horas
+enteras. La ventana de la semana 3 sale al pasar el cursor, al tocar o con las flechas; dice la semana, el rango, el
+valor con su unidad y la diferencia frente a esta semana.</p>
+<div class="bloque">
+  ${graficoEj({ id: 'gr-ej-2', titulo: 'Faltas', unidad: 'hrs', formato: grHm, puntos: grPuntos(GRAF_FALTA), base: 60, referencia: { valor: grProm(GRAF_FALTA), etiqueta: `Promedio: ${grHm(grProm(GRAF_FALTA))}` }, columna: 'Horas', chip: '<span class="chip chip-exito">▼ −2:50 hrs frente a la semana previa</span>', activo: 3 })}
+</div>
+
+<h3 class="sub-seccion">Reglas</h3>
+<table class="tabla-simple">
+  <tbody>
+    <tr><td class="num">1</td><td><strong>Es una sección</strong> con el título en un <code>h2</code> corto («Tardanzas», «Faltas») y el valor grande del punto 0 con su unidad. Los chips son un hueco: <code>comparaciones</code>.</td></tr>
+    <tr><td class="num">2</td><td><strong>El punto 0 va pegado al eje vertical</strong> (a 16&nbsp;px como mucho) y el último es el más alejado; un punto por valor. Posiciones, tope y marcas son funciones puras exportadas.</td></tr>
+    <tr><td class="num">3</td><td><strong>El eje</strong> lleva el cero y cuatro marcas escritas con <code>formato</code>; el tope se redondea hacia arriba, y con <code>base</code> 60 las marcas caen en horas enteras. Cuadrícula tenue y base más fuerte.</td></tr>
+    <tr><td class="num">4</td><td><strong>Línea y área</strong> con degradado por clase; punto 0 con halo y sin su valor repetido; bajo cada punto su número de semana y «actual» bajo el 0, sin fechas.</td></tr>
+    <tr><td class="num">5</td><td><strong>La referencia es opcional:</strong> línea punteada con su etiqueta a la derecha; sin ella no sale ni la línea ni la etiqueta.</td></tr>
+    <tr><td class="num">6</td><td><strong>Los valores sobre los puntos 1 a 6</strong> solo con la pieza de 520&nbsp;px o más, medida en JavaScript sobre su propio contenedor; se redibuja al cambiar el ancho.</td></tr>
+    <tr><td class="num">7</td><td><strong>La ventana</strong> (cursor, toque o teclado) con guía vertical y punto resaltado: «Esta semana» / «Hace N semanas», el rango, el valor con unidad y la diferencia frente a esta semana.</td></tr>
+    <tr><td class="num">8</td><td><strong>Teclado:</strong> el contenedor entra en el orden de tabulación; las flechas recorren, Inicio y Fin saltan a los extremos, Escape cierra. Foco visible.</td></tr>
+    <tr><td class="num">9</td><td><strong>Una región <code>aria-live</code></strong> anuncia el punto activo: semana, rango y valor.</td></tr>
+    <tr><td class="num">10</td><td><strong>El SVG es decoración</strong> (<code>aria-hidden</code>). La alternativa es el contenedor enfocable con nombre (valor actual y referencia) y la tabla.</td></tr>
+    <tr><td class="num">11</td><td><strong>Tabla desplegable</strong> «Ver las cifras de cada semana»: «Semana atrás · Periodo · valor». El rango y el valor salen de la misma función que la ventana.</td></tr>
+    <tr><td class="num">12</td><td><strong>El trazo se anima una sola vez</strong>, al abrir, y la clase se suelta cuando la animación termina (nada la suelta a media). No se repite al redibujar por el ancho ni al cambiar los puntos, y no se anima con <code>prefers-reduced-motion</code>.</td></tr>
+    <tr><td class="num">13</td><td><strong>Móvil primero:</strong> alto de 250 en estrecho y 300 en ancho, sin <code>max-width</code> ni <code>@container</code>; cifras tabulares, colores solo de tokens.</td></tr>
+    <tr><td class="num">14</td><td><strong>Se exportan</strong> la pieza, <code>escalaEje</code>, <code>geometriaGrafico</code>, <code>puntoMasCercano</code>, <code>tramosVisibles</code>, <code>textosPunto</code> y <code>nombreSemana</code>, con sus tipos.</td></tr>
+    <tr><td class="num">15</td><td><strong>Lo que no se puede dibujar se acota:</strong> un valor no finito no se dibuja ni se conecta (el trazo se parte), un negativo se dibuja en 0; el texto escribe lo que <code>formato</code> dé.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub-seccion">Cómo se usa</h3>
+<p class="seccion-sub">Lo que se copia es la importación y las props. La app calcula el promedio, escribe los rangos
+y arma los chips; la pieza no calcula nada de negocio.</p>
+${verCodigo(
+  'Uso de GraficoTendencia',
+  `import { GraficoTendencia, Chip } from 'sistema-diseno-ae/componentes';
+
+const minutosAHoraMinuto = (m: number) => \`\${Math.floor(m / 60)}:\${String(m % 60).padStart(2, '0')}\`;
+
+export function GraficoDeFaltas() {
+  return (
+    <GraficoTendencia
+      titulo="Faltas"
+      unidad="hrs"
+      columnaValor="Horas"
+      base={60}
+      formato={minutosAHoraMinuto}
+      puntos={[
+        { valor: 2300, detalle: '26 oct – 1 nov' },
+        { valor: 2470, detalle: '19 oct – 25 oct' },
+        { valor: 1980, detalle: '12 oct – 18 oct' },
+        { valor: 2760, detalle: '5 oct – 11 oct' },
+        { valor: 3100, detalle: '28 sep – 4 oct' },
+        { valor: 2640, detalle: '21 sep – 27 sep' },
+        { valor: 2900, detalle: '14 sep – 20 sep' },
+      ]}
+      referencia={{ valor: 2642, etiqueta: 'Promedio: 44:02' }}
+      comparaciones={<Chip tono="exito">▼ −2:50 hrs frente a la semana previa</Chip>}
+    />
+  );
+}`
+)}
+
+<h3 class="sub-seccion">Cómo se configura</h3>
+<h4 class="sub-seccion">El gráfico</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>titulo</code><br><span class="seccion-sub">string</span></td><td>El título corto del panel: «Tardanzas», «Faltas». Nombra el panel. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>puntos</code><br><span class="seccion-sub">PuntoTendencia[]</span></td><td>Siete en el tablero. El primero es el periodo actual y va pegado al eje; el orden es el de «semanas atrás». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>formato</code><br><span class="seccion-sub">(valor: number) =&gt; string</span></td><td>Cómo se escribe un número en el eje, sobre los puntos, en la ventana y en la tabla: minutos o <code>h:mm</code>. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>unidad</code><br><span class="seccion-sub">string</span></td><td>«min» o «hrs»: va junto al valor grande y a la ventana. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>columnaValor</code><br><span class="seccion-sub">string</span></td><td>El rótulo de la última columna de la tabla: «Minutos», «Horas». <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>base</code><br><span class="seccion-sub">number</span></td><td>Unidad base del eje vertical. 1 por omisión; 60 con minutos escritos como <code>h:mm</code>, para que las marcas caigan en horas enteras.</td></tr>
+    <tr><td><code>comparaciones</code><br><span class="seccion-sub">ReactNode</span></td><td>El hueco de los chips que arma la app («▲ +72 min frente a la semana previa»). Sin él no queda contenedor.</td></tr>
+    <tr><td><code>referencia</code><br><span class="seccion-sub">{ valor: number; etiqueta: string }</span></td><td>Línea punteada opcional. La app calcula el valor y escribe la etiqueta («Promedio: 603»). Sin ella no sale ni la línea ni la etiqueta.</td></tr>
+  </tbody>
+</table>
+
+<h4 class="sub-seccion">Cada punto</h4>
+<table class="tabla-simple tabla-libre">
+  <thead><tr><th>Propiedad</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>valor</code><br><span class="seccion-sub">number</span></td><td>El número que se dibuja. El índice 0 del arreglo es el periodo consultado. <strong>Obligatoria.</strong></td></tr>
+    <tr><td><code>detalle</code><br><span class="seccion-sub">string</span></td><td>El rango de fechas, ya escrito: «19 oct – 25 oct». Sale en la ventana y en la tabla. <strong>Obligatoria.</strong></td></tr>
+  </tbody>
+</table>
+`;
+
 // ── Elemento: Tarjeta ───────────────────────────────────────────────────────
 
 // Silueta neutra. No se inventan fotos de personas: cuando no hay foto se
@@ -9716,12 +9903,13 @@ const CATALOGO = [
       { t: 'Formulario', desde: 2, hasta: 13 },
       // +1 en los dos cortes de detras al entrar «Franja de cifras» (SPEC 07).
       // +2 al entrar «Mapa de calor» y «Lista de ranking» (SPEC 07).
-      { t: 'Datos', desde: 13, hasta: 22 },
-      { t: 'Respuesta', desde: 22, hasta: 28 },
+      // +1 en los dos cortes de detras al entrar «Gráfico de tendencia» (SPEC 07).
+      { t: 'Datos', desde: 13, hasta: 23 },
+      { t: 'Respuesta', desde: 23, hasta: 29 },
       // `Infinity` y no un numero: el ULTIMO tramo llega siempre al final, asi
       // que meter un elemento al final deja de tener trampa. Los cortes de en
       // medio siguen siendo indices, y por eso existe `comprobarTramos`.
-      { t: 'Marco y navegación', desde: 28, hasta: Infinity },
+      { t: 'Marco y navegación', desde: 29, hasta: Infinity },
     ],
     items: [
       { id: 'boton', t: 'Botón', estado: 'listo', c: pagBoton },
@@ -9748,6 +9936,7 @@ const CATALOGO = [
       { id: 'franjacifras', t: 'Franja de cifras', estado: 'listo', c: pagFranjaCifras },
       { id: 'mapacalor', t: 'Mapa de calor', estado: 'listo', c: pagMapaCalor },
       { id: 'listaranking', t: 'Lista de ranking', estado: 'listo', c: pagListaRanking },
+      { id: 'graficotendencia', t: 'Gráfico de tendencia', estado: 'listo', c: pagGraficoTendencia },
       { id: 'tabla', t: 'Tabla de datos', estado: 'listo', c: pagTabla },
       { id: 'paginacion', t: 'Paginación', estado: 'listo', c: pagPaginacion },
       { id: 'progreso', t: 'Barra de progreso', estado: 'listo', c: pagProgreso },
@@ -10005,6 +10194,8 @@ ${tokensCss}
   --dur-lenta: 220ms;
   --dur-giro: 700ms;
   --dur-onda: 1300ms;
+  /* El trazo del grafico de tendencia al abrir (SPEC 07): una vez, no un adorno que se repite. */
+  --dur-trazo: 1000ms;
   --curva: ease;
   --curva-vaiven: ease-in-out;
   --curva-giro: linear;
@@ -10027,6 +10218,7 @@ ${tokensCss}
     --dur-lenta: 0.01ms;
     --dur-giro: 0.01ms;
     --dur-onda: 0.01ms;
+    --dur-trazo: 0.01ms;
   }
 }
 
@@ -11916,6 +12108,69 @@ button.fc-campo { display: flex; align-items: center; justify-content: flex-star
 .ranking-barra-relleno { fill: var(--barra-relleno); }
 .ranking-valor { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .ranking-vacio { margin: 12px 0 0; font-size: 15px; color: var(--texto-secundario); }
+/* ───────────────────────────────────────────────────────────────────────────
+   GRAFICO DE TENDENCIA · clases .graf*  (SPEC 07, R169)
+   Panel con tokens --grafico-* (indigo suave en claro, marino en oscuro: el
+   cambio de tema lo hacen los tokens, aqui no hay ramas por tema). Todo color
+   del SVG sale de una clase, y la forma (x, y, d, r) de atributos SVG: ni un
+   style en linea. Escala tipografica del sistema: titulo 28 (34 desde 520px),
+   cifra grande 56, rotulos 12/13/15. El alto del SVG (250 estrecho, 300 ancho)
+   lo decide la pieza midiendo SU contenedor, no la ventana.
+   DESVIACIONES DEL MOCKUP APROBADO, por la escala de auditar-cascaron (solo
+   56/34/28/24/20/19/16/15/13/12 y multiplos de 4): el titulo es 28 (34 desde
+   520px) y no 30/36; la cifra grande es 56 en los dos anchos y no 56/72 (72 no
+   esta en la escala); los textos del SVG 12/13/15 y no 11,5/12,5; la ventana
+   mide 220px fijos; los espacios de 6 pasan a 8. Cambiar la escala es decision
+   del responsable, no de esta hoja.
+   ─────────────────────────────────────────────────────────────────────────── */
+.graf { background: var(--grafico-fondo); color: var(--grafico-texto); border: 1px solid var(--grafico-rejilla);
+  border-radius: 12px; padding: 16px 12px 8px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.graf-cab { display: flex; flex-direction: column; gap: 12px; }
+.graf-titulo { margin: 0 0 8px; font-size: 28px; font-weight: 600; line-height: 1.15; color: var(--grafico-texto); }
+.graf-num { font-size: 56px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.graf-num small { font-size: 20px; font-weight: 500; color: var(--grafico-texto-tenue); }
+.graf-chips { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.graf-chips .chip { white-space: normal; }
+.graf-vista { position: relative; border-radius: 6px; min-width: 0; }
+.graf-vista:focus-visible { outline: 3px solid var(--grafico-foco); outline-offset: 2px; }
+.graf-svg { display: block; width: 100%; height: auto; touch-action: pan-y; font-family: inherit; }
+.graf-det summary { cursor: pointer; font-size: 13px; color: var(--grafico-texto-tenue); padding: 8px 0; }
+.graf-det summary:focus-visible { outline: 3px solid var(--grafico-foco); outline-offset: 2px; }
+.graf-tabla { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; margin: 4px 0 8px; }
+.graf-tabla th, .graf-tabla td { text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--grafico-rejilla); }
+.graf-tabla thead th { color: var(--grafico-texto-tenue); font-weight: 500; }
+.graf-tabla tbody th { font-weight: 400; }
+.graf-rej { stroke: var(--grafico-rejilla); stroke-width: 1; }
+.graf-base { stroke: var(--grafico-base); stroke-width: 1; }
+.graf-eje { fill: var(--grafico-texto-tenue); font-size: 12px; }
+.graf-numero { fill: var(--grafico-texto-tenue); font-size: 15px; font-weight: 600; }
+.graf-num0 { fill: var(--grafico-texto); font-size: 15px; font-weight: 600; }
+.graf-sub { fill: var(--grafico-texto-tenue); font-size: 12px; }
+.graf-lin { fill: none; stroke: var(--grafico-linea); stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round; }
+.graf-stop { stop-color: var(--grafico-linea); }
+.graf-area { stroke: none; }
+.graf-ref { stroke: var(--grafico-ref); stroke-opacity: .75; stroke-width: 1.5; stroke-dasharray: 5 5; }
+.graf-ref-t { fill: var(--grafico-texto); font-size: 12px; stroke: var(--grafico-fondo); stroke-width: 4; paint-order: stroke; }
+.graf-halo { fill: var(--grafico-halo); fill-opacity: .3; }
+.graf-p0 { fill: var(--grafico-punto0); stroke: var(--grafico-linea); stroke-width: 3; }
+.graf-p { fill: var(--grafico-fondo); stroke: var(--grafico-linea); stroke-width: 2.5; }
+.graf-val { fill: var(--grafico-texto); font-size: 13px; font-weight: 600; stroke: var(--grafico-fondo); stroke-width: 4; paint-order: stroke; }
+.graf-guia { stroke: var(--grafico-guia); stroke-opacity: .6; stroke-width: 1; }
+.graf-anillo { fill: none; stroke: var(--grafico-guia); stroke-width: 2; }
+/* La ventana no recibe el puntero: si lo recibiera taparia el punto que la abrio y parpadearia. */
+.graf-vent { pointer-events: none; }
+.graf-vent-fondo { fill: var(--grafico-ventana-fondo); }
+.graf-vent-t { fill: var(--grafico-ventana-texto); font-size: 13px; }
+.graf-vent-b { fill: var(--grafico-ventana-texto); font-size: 13px; font-weight: 600; }
+/* El trazo se anima UNA vez: la clase solo esta en el primer dibujo (el componente la suelta al redibujar). */
+@keyframes graf-trazo { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.graf-anima { stroke-dasharray: 1; animation: graf-trazo var(--dur-trazo) var(--curva) both; }
+@media (prefers-reduced-motion: reduce) { .graf-anima { animation: none; stroke-dasharray: none; } }
+@media (min-width: 520px) {
+  .graf { padding: 20px 16px 8px; }
+  .graf-titulo { font-size: 34px; }
+  .graf-cab { flex-direction: row; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px 24px; }
+}
 /* ───────────────────────────────────────────────────────────────────────────
    PANEL DE PRIVILEGIOS · clases .pp-*
    Reparte permisos por modulo. Aqui SOLO vive el andamiaje de la lista: el
