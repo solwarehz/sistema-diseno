@@ -5,14 +5,14 @@ aporte.
 
 ## Estado actual (2026-11-02)
 
-- **v1.152.0 PUBLICADA** (2026-11-02, etiqueta + release con ZIP; `main` = `14d3acf`) y lleva la SPEC 06 (la que el responsable asignó: «corresponde la 152»). La **v1.151.0 ya estaba publicada con el
-  mismo código** (2026-11-02; etiqueta y release no se tocan): `npm install "github:solwarehz/sistema-diseno#v1.152.0"`.
-  No probada la instalación desde un proyecto limpio. Los ZIP de v1.150.0 y v1.151.0 se borraron (flujo normal: solo queda el de la última); sus etiquetas y releases siguen.
-- **SPEC 06 (R168, `PanelPrivilegios` plegable) en «Implemented»**, reglas 34-40, 1399 pruebas, 198 pares de contraste
-  (158 bloqueantes). `plegable` (cabecera de columnas dentro de cada módulo), `resumen` `'completo'|'ninguno'` (el equipo
-  pidió `'concedido'`; el sistema es para todos y se simplificó: **avisarles**), `icono` por columna y por fila,
-  `posicionIconoFila`. Un criterio sin marcar: el mockup previo (la demo del catálogo hizo de mockup).
-  - Pendiente del responsable: iconos de «Dar alta» y «Desactivar» (sin icono hoy).
+- **v1.152.0 PUBLICADA** (2026-11-02, etiqueta + release con ZIP; `main` = `14d3acf`) lleva la SPEC 06 (`PanelPrivilegios`
+  plegable). La v1.151.0 tenía el mismo código; etiquetas y releases no se tocan.
+- **v1.153.0 PREPARADA, NO PUBLICADA** (rama `spec-07-piezas-tablero-general-asistencia`; falta PR y `npm run publicar`).
+  SPEC 07 (R169): `FranjaCifras`+`CifraConDiferencia`, `ListaRanking`, `MapaCalor`, `GraficoTendencia` y `nivel`/`cuenta` en
+  `SelectorBusqueda`; 20 tokens (`grafico-*`, `barra-*`, `mapa-*`) sobre primitivos ya autorizados; contraste **242 pares,
+  184 bloqueantes, 92 por modo**, 0 fallos. Cifras del mockup ajustadas a la escala: franja 34 px; gráfico cifra 56, título 28/34.
+  Sin `style` en línea: barras en SVG (atributos) y celdas por clases `-p1`…`-p5`. No probada la instalación limpia.
+  - Pendiente del responsable: iconos de «Dar alta» y «Desactivar» del panel de privilegios (sin icono hoy).
 - `verificar-color` salta lo que git ignora; `/imagenes` está en `.gitignore` (maquetas de otros equipos: referencia, no sistema).
 - La skill `/spec` pide en toda spec el criterio «entrega = promesa» (modificación local de una skill externa de
   `Klerith/fernando-skills`; una actualización desde su origen la sobrescribiría). El `computedHash` del lock no se tocó.

@@ -11,7 +11,7 @@
  * Cambiar un valor aquí obliga a regenerar y a subir versión (§2.5 regla 8).
  */
 
-export const VERSION = "1.152.0";
+export const VERSION = "1.153.0";
 export const NORMA = 'WCAG 2.2 AA';
 
 /**
@@ -70,6 +70,43 @@ export const correcciones = [
  * deberían haber sido mayor. Se dejan escritos en vez de disimularlos.
  */
 export const CAMBIOS = [
+  {
+    v: '1.153.0', fecha: '2026-11-02',
+    que: 'Piezas del tablero: FranjaCifras con CifraConDiferencia, ListaRanking, MapaCalor y GraficoTendencia, y nivel y cuenta en SelectorBusqueda (R169)',
+    porque:
+      'LO PIDIO EL EQUIPO (R169, SPEC 07): el tablero general de asistencia necesita piezas que el sistema no '
+      + 'tenia, y armarlas en cada app las haria divergir. Cuatro piezas nuevas, sueltas: `FranjaCifras` '
+      + '(dos columnas en movil, la ultima a ancho completo si el total es impar; cinco desde escritorio) con '
+      + '`CifraConDiferencia` (flecha, signo y nombre accesible en las seis combinaciones de direccion y sentido: '
+      + 'se entiende en escala de grises); `ListaRanking` (sobre `Avatar`, barra proporcional al primero dibujada '
+      + 'como atributo SVG, sin `style`); `MapaCalor` (tabla accesible de cinco pasos de un solo tono, celda de '
+      + '«Pocos datos» con borde punteado y celda vacia sin paso, en un contenedor desplazable y con nombre); y '
+      + '`GraficoTendencia` (SVG medido en JavaScript, ventana, guia y punto activo por raton, toque y teclado con '
+      + '`aria-live`, tabla desplegable, `base`, `referencia` y animacion unica de entrada que respeta '
+      + '`prefers-reduced-motion`). `SelectorBusqueda` gana dos campos opcionales por opcion: `nivel` '
+      + '(sangrado de cuatro niveles; la jerarquia se lee del orden, y al buscar se conservan los ancestros como '
+      + 'contexto) y `cuenta` (a la derecha, tabular). Es una ADICION: sin los campos nuevos el HTML del '
+      + 'selector es identico al de la 1.152.0, y `Tarjeta`, `TablaDatos`, `Chip` y `Avatar` no se tocan. '
+      + 'Veinte tokens semanticos nuevos, todos sobre primitivos YA autorizados (ningun color nuevo en '
+      + '`autorizados.lock.json`): trece `grafico-*`, dos `barra-*` y cinco `mapa-*`. El contrato de contraste '
+      + 'pasa de 198 pares (158 bloqueantes, 79 por modo) a 242 pares (184 bloqueantes, 92 por modo), con 0 '
+      + 'fallos. Un ajuste de color nacido de la medicion: en claro el foco del grafico es `ambar_700`, porque '
+      + '`ambar_600` (el foco general) daba 2,86:1 sobre el panel. DIFERENCIAS CON EL MOCKUP aprobado, por la '
+      + 'escala de tipografia que vigila `auditar-cascaron`: la cifra de la franja sale a 34 px, y en el grafico '
+      + 'la cifra a 56 px y el titulo a 28/34 px, los pasos mas cercanos de la escala. FUERA: armar el tablero, '
+      + 'los calculos (promedios, diferencias, redondeos del eje) y el formato de numeros, que son de la app.',
+    tokens: {
+      alta: [
+        'grafico-fondo', 'grafico-texto', 'grafico-texto-tenue', 'grafico-linea', 'grafico-rejilla',
+        'grafico-base', 'grafico-ref', 'grafico-guia', 'grafico-halo', 'grafico-punto0',
+        'grafico-ventana-fondo', 'grafico-ventana-texto', 'grafico-foco',
+        'barra-relleno', 'barra-pista',
+        'mapa-1', 'mapa-2', 'mapa-3', 'mapa-4', 'mapa-5',
+      ],
+      baja: [],
+    },
+    rompe: [],
+  },
   {
     v: '1.152.0', fecha: '2026-11-02',
     que: 'PanelPrivilegios (R168, SPEC 06) publicado con el numero 1.152.0: mismo codigo que la 1.151.0',

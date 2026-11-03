@@ -1,7 +1,7 @@
 # Estado del proyecto
 
 **Última actualización:** 2 de noviembre de 2026
-**Versión del sistema:** MMI-DS **v1.152.0** (mismo código que la 1.151.0) — R168: `PanelPrivilegios` con `plegable` (la banda de cada módulo pliega sus filas en matriz y lista, también con un solo módulo; todo empieza cerrado; filas plegadas con `hidden`), módulo sin privilegios dibujado como solo título, `resumen="ninguno"` (la banda no resume nada) e `icono` por columna con encabezado blanco y resaltado de columna y fila, una cabecera de columnas dentro de cada módulo plegable e `icono` en la fila a izquierda o derecha (`posicionIconoFila`); sin props nuevas el marcado es idéntico (SPEC 06; reglas 34 a 38) (sobre la v1.150.0, R166: R166: `RangoFecha` acepta `fechaMaxima`, el último día elegible, inclusive (SPEC 04; los posteriores salen apagados en los dos extremos, los periodos que la pasan no se pintan y «Mes siguiente» y el teclado no salen del mes de la máxima) (sobre la v1.149.0, R165: `CuadroEstado`, un cuadrado de una letra con tono (SPEC 03; tamaño por ventana, 30 px base y 28 px desde 641 px) y el token `sin-estado` (sobre la v1.148.3, R163: el detalle del bloque del Horario va en negrita por omisión; y la v1.148.2, R162: el gancho que mide la caja
+**Versión del sistema:** MMI-DS **v1.153.0** — R169: cuatro piezas nuevas para el tablero general de asistencia —`FranjaCifras` con `CifraConDiferencia` (dos columnas en móvil, cinco desde escritorio; flecha, signo y nombre accesible), `ListaRanking` (sobre `Avatar`, barra proporcional al primero), `MapaCalor` (tabla de cinco pasos, «Pocos datos» punteado, celda vacía sin paso) y `GraficoTendencia` (SVG medido en JavaScript, ventana, guía y punto activo con ratón, toque y teclado, tabla desplegable, `base` y `referencia`)— y `nivel` y `cuenta` en las opciones de `SelectorBusqueda` (sangrado, ancestros conservados al buscar, cuenta tabular); sin los campos nuevos el selector es idéntico; veinte tokens (`grafico-*`, `barra-*`, `mapa-*`) sobre primitivos ya autorizados; contraste 242 pares, 184 bloqueantes, 92 por modo (SPEC 07; reglas en `comportamiento.md`) (sobre la v1.152.0, R168: `PanelPrivilegios` con `plegable` (la banda de cada módulo pliega sus filas en matriz y lista, también con un solo módulo; todo empieza cerrado; filas plegadas con `hidden`), módulo sin privilegios dibujado como solo título, `resumen="ninguno"` (la banda no resume nada) e `icono` por columna con encabezado blanco y resaltado de columna y fila, una cabecera de columnas dentro de cada módulo plegable e `icono` en la fila a izquierda o derecha (`posicionIconoFila`); sin props nuevas el marcado es idéntico (SPEC 06; reglas 34 a 38) (sobre la v1.150.0, R166: R166: `RangoFecha` acepta `fechaMaxima`, el último día elegible, inclusive (SPEC 04; los posteriores salen apagados en los dos extremos, los periodos que la pasan no se pintan y «Mes siguiente» y el teclado no salen del mes de la máxima) (sobre la v1.149.0, R165: `CuadroEstado`, un cuadrado de una letra con tono (SPEC 03; tamaño por ventana, 30 px base y 28 px desde 641 px) y el token `sin-estado` (sobre la v1.148.3, R163: el detalle del bloque del Horario va en negrita por omisión; y la v1.148.2, R162: el gancho que mide la caja
 deja de depender de que la caja ya exista; la v1.147.0 lo arregló a medias
 
 > Este archivo se reescribe entero cuando cambia el estado. No se le añaden
@@ -16,10 +16,10 @@ deja de depender de que la caja ya exista; la v1.147.0 lo arregló a medias
 
 ## Dónde estamos, en una frase
 
-El sistema es un **paquete que un producto instala y consume** —37 componentes
+El sistema es un **paquete que un producto instala y consume** —41 componentes
 publicados (`verificar-entrega`), la hoja que viaja, **veintiún pasos de
 verificación** —los que corre `publicar.mjs`, más ESLint y las pruebas: veintidós
-en total—, **1327 pruebas en 62 archivos**, todas en verde—.
+en total—, **1583 pruebas en 70 archivos**, todas en verde—.
 
 **Tres días seguidos entregando a Control Administrativos, y los tres reportes
 eran defectos reales del sistema, no de su pantalla.** R129: el calendario no
@@ -54,9 +54,9 @@ Cada cifra sale del comando que está al lado. **No se repiten de memoria.**
 |---|---|---|
 | Motor de tokens | ✅ | `generar.mjs` — 57 semánticos + 5 de marca, claro y oscuro |
 | Contrato `paleta.lock.json` | ✅ | Generado desde `fuente.mjs`, nunca a mano |
-| Contraste en **los dos modos** | ✅ | `verificar-contraste` · **198 pares** · 158 bloqueantes · **0 fallos** |
+| Contraste en **los dos modos** | ✅ | `verificar-contraste` · **242 pares** · 184 bloqueantes · **0 fallos** |
 | Candado de lint | ✅ | `probar-candado` (62 casos) y `probar-con-eslint.sh` (3 pasos) en Docker |
-| Componentes de React | ✅ | **1327 pruebas en 62 archivos** · `tsc --noEmit` limpio |
+| Componentes de React | ✅ | **1583 pruebas en 70 archivos** · `tsc --noEmit` limpio |
 | La hoja que viaja | ✅ | `extraer.mjs` · **1114 reglas de 1645** · **804 clases, 0 huérfanas** — y desde v1.77.0 el barrido mira también `interno/` |
 | Catálogo navegable | ✅ | `cascaron/index.html` · **71 páginas** (`grep -c '<section class="pagina"'`) · lo genera `generar-cascaron.mjs` |
 | Iconografía | ✅ | **62 trazos** en `iconos.mjs`, React real · los siete de edición entraron con R124 (v1.102.0) |
